@@ -38,10 +38,7 @@ import CreateChapterType from './create-chapter-type';
 import ChapterTypeCard from './chapter-type-card';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    boxShadow: 'none',
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '70vh',
   },
@@ -410,22 +407,17 @@ const ChapterTypeTable = (setCentralSubjectName) => {
   return (
     <>
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Master Management'
-              childComponentName='Chapter List'
-              childComponentNameNext={
-                addFlag && !tableFlag
-                  ? 'Add Chapter'
-                  : editFlag && !tableFlag
-                  ? 'Edit Chapter'
-                  : null
-              }
-            />
-          </div>
-        </div>
-
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Chapter List'
+          childComponentNameNext={
+            addFlag && !tableFlag
+              ? 'Add Chapter'
+              : editFlag && !tableFlag
+              ? 'Edit Chapter'
+              : null
+          }
+        />
         {!tableFlag && addFlag && !editFlag && (
           <CreateChapterType setLoading={setLoading} handleGoBack={handleGoBack} />
         )}
@@ -579,23 +571,23 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    className='labelColor buttonModifiedDesign'
+                    className='labelColor cancelButton'
+                    style={{ width: '100%' }}
                     size='medium'
                     onClick={handleClear}
                   >
-                    CLEAR ALL
+                    Clear All
                   </Button>
                 </Grid>
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
                     color='primary'
-                    className='buttonModifiedDesign'
                     size='medium'
                     onClick={handleFilter}
                   >
-                    FILTER
+                    Filter
                   </Button>
                 </Grid>
                 <div>
@@ -621,8 +613,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                     variant='contained'
                     color='primary'
                     size='medium'
-                    className='buttonModifiedDesign'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
                     title='Add Chapter'
                     onClick={handleAddChapterType}
                   >
@@ -666,7 +657,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                             }}
                             title='Delete Chapter'
                           >
-                            <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                            <DeleteOutlinedIcon />
                           </IconButton>
 
                           <IconButton
@@ -675,7 +666,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
                             }
                             title='Edit Chapter'
                           >
-                            <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
+                            <EditOutlinedIcon />
                           </IconButton>
                         </TableCell>
                       </TableRow>
@@ -735,7 +726,12 @@ const ChapterTypeTable = (setCentralSubjectName) => {
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color='primary' onClick={handleDeleteMessageType}>
+            <Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color='primary'
+              onClick={handleDeleteMessageType}
+            >
               Confirm
             </Button>
           </DialogActions>

@@ -136,29 +136,24 @@ const handleSubmit = () =>{
   }else{
     role=1
   }
-
   const { 
     lobby_uuid : lobbyUuid= 'uuid-mk-default',
     // lobby_identifier: onlineClassId,
     // question_paper: questionPaperId
   }= lobbyInfoObj||{}
   const questionPaperId = preQuizInfo?.assessment_details?.question_paper_id
-
   const {online_class_info: onlineClassInfo} = preQuizInfo||{}
   const {online_class: onlineClassObj} = onlineClassInfo||{}
   const {id: onlineClassId} = onlineClassObj||{}
-
-  
   const url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`
   let link = document.createElement('a')
   link.href = url
   link.target = '_blank'
   link.click()
   link.remove()
-
 }
-const handleCreateLobby = ()=>{
 
+const handleCreateLobby = ()=>{
   const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
   const hostSplitArray = host.split('.');
   const subDomainLevels = hostSplitArray.length - 2;
@@ -183,7 +178,6 @@ const handleCreateLobby = ()=>{
     role=1
   }
   const questionPaperId = preQuizInfo?.assessment_details?.question_paper_id
-
   const {online_class_info: onlineClassInfo} = preQuizInfo||{}
   const {online_class: onlineClassObj} = onlineClassInfo||{}
   const {id: onlineClassId} = onlineClassObj||{}
@@ -217,7 +211,7 @@ const handleCreateLobby = ()=>{
         status: { success, message: statusMessage } = {},
         quiz_details: { lobby_uuid: lobbyUuid = 'uuid-mk-default', 
         lobby_identifier: onlineClassId,
-        question_paper: questionPaperId
+        // question_paper: questionPaperId
       }={}
       } = messageFromServer
       if (success) {
@@ -226,10 +220,10 @@ const handleCreateLobby = ()=>{
         // this.setState({ creatingLobby: false, creationFailed: false })
         getPreQuizStatus()
         // const url = `/quiz/:onlineClassId/:questionpaperId/:lobbyUuid`
-        const url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`
         // history.push(`/quiz/game/${data}/${lobbyUuid}/${lobbyId}/`)
-        history.push(url)
-        setCreateLobby(false)
+        const url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`;
+        history.push(url);
+        setCreateLobby(false);
       } 
       else {
         setAlert('error', `${statusMessage}`);
@@ -293,9 +287,8 @@ return (
 
             <Button
               variant='contained'
-              style={{ color: 'white'}}
+              style={{ color: 'white', width: '100%'}}
               color="primary"
-              className="custom_button_master"
               size='medium'
               type='submit'
               onClick={handleSubmit}
@@ -310,9 +303,8 @@ return (
 
         <Button
         variant='contained'
-        style={{ color: 'white'}}
+        style={{ color: 'white', width: '100%' }}
         color="primary"
-        className="custom_button_master"
         size='medium'
         type='submit'
         onClick={handleCreateLobby}

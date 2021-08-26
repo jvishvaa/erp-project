@@ -7,6 +7,8 @@ import {
   useTheme,
   SvgIcon,
   IconButton,
+  Typography,
+  makeStyles
 } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
@@ -19,7 +21,67 @@ import SingleOption from './single-option';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import './multiple-choice.css';
 import MyTinyEditor from '../../tinymce-editor';
-import axios from 'axios';
+
+const useStyles = makeStyles((theme) => ({
+  questionTag: {
+    color: theme.palette.secondary.main,
+    fontSize: "16px",
+    fontWeight: 600,
+  },
+  questionHeaderContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingBottom: "7px",
+    borderBottom: `1px solid ${theme.palette.secondary.main}`,
+  },
+  answerTag: {
+    color: theme.palette.secondary.main,
+    fontSize: "16px",
+    fontWeight: 600,
+    width: "100%",
+    paddingBottom: "7px",
+    borderBottom: `1px solid ${theme.palette.secondary.main}`,
+    marginBottom: "10px",
+  },
+  tooltiptext: theme.toolTipText,
+  multipleChoiceContainer: {
+    width: "95%",
+    margin: '20px auto 0 auto',
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: '10px',
+    padding: '20px',
+  },
+  draftbtn: {
+    width: '100%',
+    border: `1px solid ${theme.palette.primary.main}`,
+    background: 'white',
+    color: theme.palette.secondary.main
+  },
+  addOutlinedIcon: {
+    color: `${theme.palette.primary.main} !important`,
+    fontSize: '30px'
+  },
+  addnewOutlinedIcon: {
+    color: `${theme.palette.secondary.main} !important`,
+    fontSize: '30px'
+  },
+  matchingOptionsWrapper: {
+    border: `1px solid ${theme.palette.secondary.main}`,
+    borderRadius: "10px",
+    padding: "20px",
+    marginTop: "20px",
+  },
+  addAnotherMatrixButton: {
+    border: `1px solid ${theme.palette.secondary.main}`,
+    color: theme.palette.secondary.main,
+    background: "#def2ff",
+    boxShadow: "none",
+    padding: '0.5rem',
+    width: '100%',
+    marginTop: '10px',
+  }
+}))
 
 const MultipleChoice = ({
   editData,
@@ -40,6 +102,7 @@ const MultipleChoice = ({
   setLoading,
 }) => {
   const themeContext = useTheme();
+  const classes = useStyles()
   const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -54,7 +117,7 @@ const MultipleChoice = ({
     showQuestionType?.FillInTheBlanks
       ? [{ optionValue: '', images: [] }]
       : showQuestionType?.MatrixQuestion || showQuestionType?.MatchTheFollowing
-      ? [
+        ? [
           { optionValue: '', images: [] },
           { optionValue: '', images: [] },
           { optionValue: '', images: [] },
@@ -67,20 +130,20 @@ const MultipleChoice = ({
           { isChecked: false, optionValue: '', images: [] },
         ]
       : showQuestionType?.TrueFalse
-      ? [{ isChecked: false }, { isChecked: false }]
+      ? [{ isChecked: false ,optionValue:true}, { isChecked: false ,optionValue:false}]
       : []
   );
 
   const [matchingOptionsList, setMatchingOptionsList] = useState(
     showQuestionType?.MatchTheFollowing
       ? [
-          { optionValue: '', images: [] },
-          { optionValue: '', images: [] },
-          { optionValue: '', images: [] },
-        ]
+        { optionValue: '', images: [] },
+        { optionValue: '', images: [] },
+        { optionValue: '', images: [] },
+      ]
       : showQuestionType?.MatrixQuestion
-      ? [{ optionValue: '' }, { optionValue: '' }, { optionValue: '' }]
-      : []
+        ? [{ optionValue: '' }, { optionValue: '' }, { optionValue: '' }]
+        : []
   );
 
   useEffect(() => {
@@ -182,66 +245,74 @@ const MultipleChoice = ({
     }
   };
 
-  const handleOptionData = (e, index) => {
-    let name = e.target?.name;
-    let value;
+  const updateOptionCheckBox = (name, value, index) => {
     const list = [...optionsList];
-
-    if (name === 'isChecked') {
-      value = e.target?.checked;
-      list[index][name] = value;
-      if (showQuestionType?.MultipleChoiceSingleSelect || showQuestionType?.TrueFalse) {
-        for (let i = 0; i < list?.length; i++) {
-          if (i != index) {
-            list[i][name] = false;
-          }
+    list[index][name] = value;
+    if (showQuestionType?.MultipleChoiceSingleSelect || showQuestionType?.TrueFalse) {
+      for (let i = 0; i < list?.length; i++) {
+        if (i != index) {
+          list[i][name] = false;
         }
-        let answerList = [];
-        if (value) {
-          answerList.push(`option${index + 1}`);
-        } else {
-          answerList.splice(answerList.indexOf(`option${index + 1}`), 1);
-        }
-        setAnswers(answerList);
-      } else if (showQuestionType?.MultipleChoiceMultipleSelect) {
-        let answerList = [...answers];
-        if (value) {
-          answerList.push(`option${index + 1}`);
-        } else {
-          answerList.splice(answerList.indexOf(`option${index + 1}`), 1);
-        }
-        setAnswers([...new Set(answerList)]);
       }
-    } else if (name === 'optionValue') {
-      value = e.target?.value;
-      list[index][name] = value;
-    } else if (name === 'images' && !showQuestionType?.TrueFalse) {
-      if (list[index][name]?.length < 2) {
-        const file = e.target?.files;
-        handleFileUpload([...optionsList], file, name, index);
+      let answerList = [];
+      if (value) {
+        answerList.push(`option${index + 1}`);
       } else {
-        setAlert('error', "Can't upload more than 2 images for one option");
+        answerList.splice(answerList.indexOf(`option${index + 1}`), 1);
       }
+      setAnswers(answerList);
+    }  
+    if (showQuestionType?.MultipleChoiceMultipleSelect) {
+      let answerList = [...answers];
+      if (value) {
+        answerList.push(`option${index + 1}`);
+      } else {
+        answerList.splice(answerList.indexOf(`option${index + 1}`), 1);
+      }
+      setAnswers([...new Set(answerList)]);
     }
     setOptionsList(list);
   };
 
+  const updateOptionValue = (name, value, index, isMatching = false) => {
+    const list = isMatching ? [...matchingOptionsList] : [...optionsList];
+    list[index][name] = value;
+    if (isMatching) setMatchingOptionsList(list);
+    else setOptionsList(list);
+  };
+
+  const updateOptionImage = (name, file, index, isMatching = false) => {
+    const list = isMatching ? [...matchingOptionsList] : [...optionsList];
+    if (list[index][name]?.length < 1) {
+      handleFileUpload(list, file, name, index);
+    } else {
+      setAlert('error', "Can't upload more than 1 image for one option");
+    }
+    if (isMatching) setMatchingOptionsList(list);
+    else setOptionsList(list);
+  };
+
+  const handleOptionData = (e, index) => {
+    let name = e.target?.name;
+    if (name === 'isChecked') {
+      updateOptionCheckBox(name, e?.target?.checked, index);
+    }
+    if (name === 'optionValue') {
+      updateOptionValue(name, e?.target?.value, index);
+    }
+    if (name === 'images' && !showQuestionType?.TrueFalse) {
+      updateOptionImage(name, e?.target?.files, index);
+    }
+  };
+
   const handleMatchingOptionData = (e, index) => {
     let name = e.target?.name;
-    let value;
-    let list = [...matchingOptionsList];
     if (name === 'optionValue') {
-      value = e.target?.value;
-      list[index][name] = value;
-    } else if (name === 'images') {
-      if (list[index][name]?.length < 1) {
-        const file = e.target?.files;
-        handleFileUpload([...matchingOptionsList], file, name, index);
-      } else {
-        setAlert('error', "Can't upload more than 1 image for matching option");
-      }
+      updateOptionValue(name, e?.target?.value, index, true);
     }
-    setMatchingOptionsList(list);
+    if (name === 'images') {
+      updateOptionImage(name, e?.target?.files, index, true);
+    }
   };
 
   const handleDeleteImage = (rowIndex, imageIndex, isMatching) => {
@@ -307,35 +378,54 @@ const MultipleChoice = ({
     }
   };
 
+  const deleteFromOptionsList = (index) => {
+    const list = [...optionsList];
+    list.splice(index, 1);
+    setOptionsList(list);
+  };
+
+  const deleteFromMatchingOptionsList = (index) => {
+    const matchingList = [...matchingOptionsList];
+    matchingList.splice(index, 1);
+    setMatchingOptionsList(matchingList);
+  };
+
+  //On matching-option delete it's corresponding option should be deleted & vice versa
+  const deleteMatchingOption = (index) => {
+    deleteFromMatchingOptionsList(index);
+    if (showQuestionType?.MatchTheFollowing) {
+      deleteFromOptionsList(index);
+    }
+  };
+
+  //On matching option delete it's corresponding option should be deleted & vice versa
+  const deleteOption = (index) => {
+    deleteFromOptionsList(index);
+    if (showQuestionType?.MatchTheFollowing) {
+      deleteFromMatchingOptionsList(index);
+    }
+    deleteFromAnswerList(index);
+  };
+
+  //deleting from answer-list which is used in creating request
+  const deleteFromAnswerList = (index) => {
+    const answerList = [...answers];
+    if (answerList?.length > 0) {
+      for (let k = 0; k < answerList?.length; k++) {
+        if (answerList[k] === `option${index + 1}`) {
+          answerList.splice(k, 1);
+          break;
+        }
+      }
+      setAnswers(answerList);
+    }
+  };
+
   const handleDeleteOption = (index, isMatching) => {
     if (isMatching) {
-      const matchingList = [...matchingOptionsList];
-      matchingList.splice(index, 1);
-      setMatchingOptionsList(matchingList);
-      if (showQuestionType?.MatchTheFollowing) {
-        const list = [...optionsList];
-        list.splice(index, 1);
-        setOptionsList(list);
-      }
+      deleteMatchingOption(index);
     } else {
-      const list = [...optionsList];
-      list.splice(index, 1);
-      setOptionsList(list);
-      if (showQuestionType?.MatchTheFollowing) {
-        const matchingList = [...matchingOptionsList];
-        matchingList.splice(index, 1);
-        setMatchingOptionsList(matchingList);
-      }
-      const answerList = [...answers];
-      if (answerList?.length > 0) {
-        for (let k = 0; k < answerList?.length; k++) {
-          if (answerList[k] === `option${index + 1}`) {
-            answerList.splice(k, 1);
-            break;
-          }
-        }
-        setAnswers(answerList);
-      }
+      deleteOption(index);
     }
   };
 
@@ -521,9 +611,8 @@ const MultipleChoice = ({
       ? showQuestionType?.MatrixQuestion
         ? `Value is required for Matrix Option ${String.fromCharCode(i + 65)}`
         : `Value or Image is required for Matching Option ${String.fromCharCode(i + 65)}`
-      : `Value or Image is required for ${
-          showQuestionType?.FillInTheBlanks ? 'Blank' : 'Option'
-        } ${String.fromCharCode(i + 65)}`;
+      : `Value or Image is required for ${showQuestionType?.FillInTheBlanks ? 'Blank' : 'Option'
+      } ${String.fromCharCode(i + 65)}`;
   };
 
   const handleValidateOptions = (list, isMatchingOption) => {
@@ -629,11 +718,11 @@ const MultipleChoice = ({
       className={
         parentQuestionType?.ComprehensionQuestions || parentQuestionType?.VideoQuestion
           ? 'compMultipleChoiceContainer'
-          : 'multipleChoiceContainer'
+          : `${classes.multipleChoiceContainer}`
       }
     >
-      <div className='questionHeaderContainer'>
-        <div className='questionTag'>
+      <div className={classes.questionHeaderContainer}>
+        <div className={classes.questionTag}>
           {parentQuestionType?.ComprehensionQuestions || parentQuestionType?.VideoQuestion
             ? `Question ${[...comprehensionQuestions][index]['count']}`
             : 'Question'}
@@ -663,32 +752,32 @@ const MultipleChoice = ({
         )}
         {(parentQuestionType?.ComprehensionQuestions ||
           parentQuestionType?.VideoQuestion) && (
-          <div
-            className='questionHeaderIcon'
-            onClick={handleMenuOpen}
-            onMouseLeave={handleMenuClose}
-          >
-            <IconButton>
-              <MoreVertIcon />
-            </IconButton>
-            {showMenu ? (
-              <div className='tooltipContainer'>
-                <div className='tooltiptext'>
-                  <div onClick={() => handleDeleteComprehensionQuestion(index)}>
-                    Delete
-                  </div>
-                  <div
-                    onClick={() => {
-                      setIsMinimized((prev) => !prev);
-                    }}
-                  >
-                    {isMinimized ? 'Maximize' : 'Minimize'}
+            <div
+              className='questionHeaderIcon'
+              onClick={handleMenuOpen}
+              onMouseLeave={handleMenuClose}
+            >
+              <IconButton>
+                <MoreVertIcon />
+              </IconButton>
+              {showMenu ? (
+                <div className='tooltipContainer'>
+                  <div className={` ${classes.tooltiptext} tooltiptext `}>
+                    <div onClick={() => handleDeleteComprehensionQuestion(index)}>
+                      Delete
+                    </div>
+                    <div
+                      onClick={() => {
+                        setIsMinimized((prev) => !prev);
+                      }}
+                    >
+                      {isMinimized ? 'Maximize' : 'Minimize'}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ) : null}
-          </div>
-        )}
+              ) : null}
+            </div>
+          )}
       </div>
       {toggle ? (
         <div className='questionContainer'>
@@ -696,7 +785,7 @@ const MultipleChoice = ({
             <MyTinyEditor
               id={
                 parentQuestionType?.ComprehensionQuestions ||
-                parentQuestionType?.VideoQuestion
+                  parentQuestionType?.VideoQuestion
                   ? `questionEditor${index}`
                   : 'questionEditor'
               }
@@ -713,7 +802,7 @@ const MultipleChoice = ({
               style={{ width: '100%' }}
               id={
                 parentQuestionType?.ComprehensionQuestions ||
-                parentQuestionType?.VideoQuestion
+                  parentQuestionType?.VideoQuestion
                   ? `questionDisplay${index}`
                   : 'questionDisplay'
               }
@@ -724,7 +813,7 @@ const MultipleChoice = ({
               value={questionDisplay}
               name={
                 parentQuestionType?.ComprehensionQuestions ||
-                parentQuestionType?.VideoQuestion
+                  parentQuestionType?.VideoQuestion
                   ? `questionDisplay${index}`
                   : 'questionDisplay'
               }
@@ -745,13 +834,12 @@ const MultipleChoice = ({
                         margin: '0px 0px 0px 15px',
                       }}
                       color='primary'
-                      className='modifyDesign'
                       size='small'
                       onClick={() => setOpenEditor(true)}
                     >
                       {isMobile ? 'Format' : 'Format Text'}
                     </Button>
-                    <IconButton>
+                    {/* <IconButton>
                       <div>
                         <SvgIcon
                           component={() => (
@@ -762,7 +850,7 @@ const MultipleChoice = ({
                           )}
                         />
                       </div>
-                    </IconButton>
+                    </IconButton> */}
                   </>
                 ),
               }}
@@ -774,7 +862,7 @@ const MultipleChoice = ({
       )}
       {!isMinimized && (
         <>
-          <div className='answerTag'>
+          <div className={classes.answerTag}>
             {showQuestionType?.Descriptive || showQuestionType?.TrueFalse
               ? 'Answer'
               : 'Answers'}
@@ -785,7 +873,7 @@ const MultipleChoice = ({
                 <MyTinyEditor
                   id={
                     parentQuestionType?.ComprehensionQuestions ||
-                    parentQuestionType?.VideoQuestion
+                      parentQuestionType?.VideoQuestion
                       ? `answerEditor${index}`
                       : 'answerEditor'
                   }
@@ -824,27 +912,29 @@ const MultipleChoice = ({
               {!showQuestionType?.TrueFalse && optionsList?.length < 6 && (
                 <div>
                   <Button
-                    className='modifyDesign addAnotherButton'
-                    title='Add another option'
+                    className='addAnotherButton'
+                    title='Add Another Option'
                     variant='contained'
                     size='medium'
-                    startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                    startIcon={
+                      <AddOutlinedIcon className={classes.addOutlinedIcon} />
+                    }
                     disableRipple
                     disableElevation
                     disableFocusRipple
                     disableTouchRipple
-                    style={{ textTransform: 'none' }}
+                    style={{ width: '100%' }}
                     onClick={handleAddOption}
                   >
-                    Add another option
+                    <Typography color='primary'>Add another option</Typography>
                   </Button>
                 </div>
               )}
             </div>
           )}
           {(showQuestionType?.MatchTheFollowing || showQuestionType?.MatrixQuestion) && (
-            <div className='matchingOptionsWrapper'>
-              <div className='matchingAnswerTag'>
+            <div className={classes.matchingOptionsWrapper}>
+              <div className={classes.answerTag}>
                 {showQuestionType.MatrixQuestion ? 'Matrix Options' : 'Matching Options'}
               </div>
               <div className='matchingOptionsContainer'>
@@ -872,18 +962,20 @@ const MultipleChoice = ({
                     <Button
                       className={
                         showQuestionType?.MatchTheFollowing
-                          ? 'modifyDesign addAnotherMatchButton'
-                          : 'modifyDesign addAnotherMatrixButton'
+                          ? 'addAnotherMatchButton'
+                          : `${classes.addAnotherMatrixButton}`
                       }
                       title='Add New'
                       variant='contained'
                       size='medium'
-                      startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                      startIcon={
+                        <AddOutlinedIcon className={classes.addnewOutlinedIcon} />
+                      }
                       disableRipple
                       disableElevation
                       disableFocusRipple
                       disableTouchRipple
-                      style={{ textTransform: 'none' }}
+                      style={{ width: '100%' }}
                       onClick={handleAddMatchingOption}
                     >
                       Add New
@@ -902,8 +994,8 @@ const MultipleChoice = ({
                   <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                     <Button
                       variant='contained'
-                      style={{ textTransform: 'none' }}
-                      className='custom_button_master modifyDesign cancelButtonLabel'
+                      style={{ width: '100%' }}
+                      className=' cancelButton labelColor'
                       size='medium'
                       onClick={handleCancel}
                     >
@@ -916,9 +1008,11 @@ const MultipleChoice = ({
                     <Button
                       variant='contained'
                       color='primary'
-                      className='custom_button_master modifyDesign saveAsDraftButton'
                       size='medium'
-                      style={{ textTransform: 'none' }}
+                      className={classes.draftbtn}
+                      style={{
+
+                      }}
                       onClick={handleSave}
                     >
                       Save as Draft
@@ -929,9 +1023,8 @@ const MultipleChoice = ({
                   <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                     <Button
                       variant='contained'
-                      style={{ color: 'white', textTransform: 'none' }}
+                      style={{ color: 'white', width: '100%' }}
                       color='primary'
-                      className='custom_button_master modifyDesign'
                       size='medium'
                       onClick={handleSubmit}
                     >

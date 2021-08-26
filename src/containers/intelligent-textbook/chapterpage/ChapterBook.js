@@ -185,11 +185,11 @@ const ChapterBook = (props) => {
                                 <Grid item md={12} xs={12}>
                                   <Typography
                                     title='wings'
+                                    color="secondary"
                                     className={classes.textEffect}
                                     style={{
                                       fontSize: '16px',
                                       fontWeight: 'bold',
-                                      color: '#014B7E',
                                       marginTop: '15px',
                                     }}
                                   >
@@ -202,9 +202,9 @@ const ChapterBook = (props) => {
                                 )}
                                 <Grid item md={12} xs={12}>
                                   <Typography
+                                  color = "secondary"
                                     style={{
                                       fontSize: '9px',
-                                      color: '#042955',
                                       margin: '10px 0',
                                     }}
                                   >
@@ -222,6 +222,7 @@ const ChapterBook = (props) => {
                                       height: '25px',
                                       fontSize: '15px',
                                       borderRadius: '6px',
+                                      color:"white"
                                     }}
                                     onClick={() => handleClickOpen(item)}
                                   >

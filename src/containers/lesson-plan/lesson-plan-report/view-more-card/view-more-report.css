@@ -1,132 +1,29 @@
-.rootViewMoreReport{
-    border: 1px solid #ff6b6b;
-    border-radius: 10px !important;
-    height:70vh;
-    width:95%;
-    margin:20px auto;
-    box-shadow: none;
-    overflow-y: scroll;
-    position: sticky;
-    position: -webkit-sticky;
-    top: 12%; /* required */
-    animation-duration: 500ms;
-    animation-name: slidein;
+@keyframes slidein {
+  from {
+    margin-left: 100%;
   }
-
-  
-  /* width */
-  .rootViewMore::-webkit-scrollbar {
-    width: 10px;
+  to {
+    margin-left: 10%;
+    width: 100%;
   }
-  
-  /* Track */
-  .rootViewMore::-webkit-scrollbar-track {
-    background: #F9F9F9; 
-    border-radius: 10px;
-  }
-   
-  /* Handle */
-  .rootViewMore::-webkit-scrollbar-thumb {
-    background: #949090; 
-    border-radius: 10px;
-  }
-  
-  /* Handle on hover */
-  .rootViewMore::-webkit-scrollbar-thumb:hover {
-    background: #949090; 
-  }
-  
-  @keyframes slidein {
-    from {
-      margin-left: 100%;
-    }
-    to {
-      margin-left: 10%;
-      width: 100%;
-    }
-  }
+}
 
 .downloadAllContainer {
-    display: flex;
+  display: flex;
 }
 .downloadAllIcon {
-    margin: 5px;
-}
-
-.viewMoreHeader {
-    background-color: #FCEEEE;
-    display: flex;
-    justify-content: space-between;
-    border-radius: 10px 0px 0px 0px;
-    position: sticky;
-    position: -webkit-sticky;
-    top: 0; /* required */
-}
-
-.leftHeader, .rightHeader {
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
-}
-
-.closeIcon>.MuiIconButton-root {
-    padding: 0px;
-}
-
-.closeIcon, .viewUpdatedDate {
-    align-self: flex-end;
-}
-
-.headerTitle {
-    font-size: 1.1rem;
-    color: #ff6b6b;
-    margin-bottom: 7px;
-}
-
-.headerContent {
-    font-size: 1.1rem;
-    color: #014b7e;
-    display: flex;
-    flex-direction: column;
+  margin: 5px;
 }
 
 .resourceBulkDownload {
-    font-size: 1.1rem;
-    color: #ff6b6b;
-    display: flex;
-    justify-content: space-between;
-    margin: 15px 15px 10px 15px;
+  font-size: 1.1rem;
+  color: #ff6b6b;
+  display: flex;
+  justify-content: space-between;
+  margin: 15px 15px 10px 15px;
 }
 
-.viewMoreBody {
-    margin: 15px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #E2E2E2;
-}
-
-.bodyTitle {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #014b7e;
-    margin:10px 0px 0px 20px;
-    display: flex;
-    justify-content:space-between;
-}
-.totalPeriod{
+.totalPeriod {
   font-size: 1rem;
   font-weight: 500;
-}
-
-.bodyContent {
-    font-size: 1rem;
-    color: #014b7e;
-    margin:5px 10px 0px 20px;
-    display: flex;
-    justify-content: space-between;
-}
-
-@media screen and (max-width:768px) {
-    .rootViewMoreReport {
-        margin:0 auto;
-      }
 }

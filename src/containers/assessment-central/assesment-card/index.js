@@ -145,7 +145,7 @@ const AssesmentCard = ({
         <div className='btn-container'>
           {!isSelected && (
             <Button
-              style={{ borderRadius: '10px', color: 'white' }}
+              style={{ width: '100%', color: 'white' }}
               variant='contained'
               color='primary'
               onClick={() => {

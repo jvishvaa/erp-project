@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import FormControl from '@material-ui/core/FormControl';
@@ -19,6 +19,8 @@ import {
 } from '../../redux/actions';
 import { connect, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+
 
 const BackButton = withStyles({
   root: {
@@ -34,6 +36,7 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   const [academicYears, setAcademicYears] = useState([]);
   const [branches, setBranches] = useState([]);
   const [grades, setGrades] = useState([]);
+  const { setAlert } = useContext(AlertNotificationContext);
   const [sections, setSections] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const history = useHistory();
@@ -302,6 +305,18 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       }
   }, [moduleId , selectedYear]);
 
+  const handleSubmit = () => {
+
+    if(formik.values.subjects.length === 0){
+      console.log("no sub");
+      setAlert('error','Please select all fields')
+    }
+    else {
+      console.log("proceed");
+      formik.handleSubmit()
+    }
+  }
+
   const classes = useStyles();
 
   return (
@@ -517,8 +532,9 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
             variant='contained'
             color='primary'
             onClick={() => {
-              formik.handleSubmit();
-              console.log(formik , "formik")
+              // formik.handleSubmit();
+              // console.log(formik , "formik")
+              handleSubmit()
             }}
             style={{ float: 'right' }}
           >

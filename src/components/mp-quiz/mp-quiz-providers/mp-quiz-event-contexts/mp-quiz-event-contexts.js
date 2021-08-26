@@ -87,7 +87,7 @@ export function QuizContextProvider({ children }) {
       prev: { ...(data || {}) },
     };
     setData(variableData);
-
+    console.log({variableData})
     const { quiz_details: quizDetailsData = {} } = eventMessageData || {};
     // const { is_started: isQuizStarted, is_ended: isQuizEnded } = quizDetailsData;
     // quizDetailsData.started_at = new Date(new Date().getTime() - 1000);
@@ -99,6 +99,7 @@ export function QuizContextProvider({ children }) {
   function getCurrentPlayerInfo() {
     const { currentUserId } = getUserAndQuizInfoStatus();
     const { data: leaderBoardArray = [] } = leaderboard || {};
+    console.log({leaderBoardArray})
     const tempArray = (leaderBoardArray || []).filter(
       (playerObj) => String(playerObj.user_id) === String(currentUserId)
     );
@@ -134,9 +135,11 @@ export function QuizContextProvider({ children }) {
       data: {
         is_host: isHost,
         is_participant: isParticipant,
-        user_id: currentUserId,
+        // user_id: currentUserId,
+        user_id: currentUserDetails = {},
       } = {},
     } = joinLobby || {};
+    const { user_id:currentUserId } = currentUserDetails || {};
     const userType = isHost ? 'HOST' : 'JOINEE';
     const quizStatus = isQuizStarted ? 'QUIZ' : 'LOBBY';
     return {

@@ -15,7 +15,21 @@ import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './change-password.css';
+import { makeStyles } from '@material-ui/core';
 
+const useStyles = makeStyles((theme) => ({
+  profilePasswordWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    color: theme.palette.secondary.main,
+    textAlign: "left",
+  },
+  dialogTitle: {
+    cursor: "move",
+    color: theme.palette.secondary.main
+  }
+
+}));
 const ChangePassword = (props) => {
   const { close, id } = props || {};
   const { setAlert } = useContext(AlertNotificationContext);
@@ -24,6 +38,8 @@ const ChangePassword = (props) => {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [openModal, setOpenModal] = useState(true);
   const [errorPassword, setErrorPassword] = useState('');
+  const classes = useStyles();
+
   const handleCancel = () => {
     close(false);
   };
@@ -85,7 +101,8 @@ const ChangePassword = (props) => {
       aria-labelledby='draggable-dialog-title'
     >
       <DialogTitle
-        style={{ cursor: 'move', color: '#014b7e' }}
+        style={{ cursor: 'move' }}
+        className={classes.dialogTitle}
         id='draggable-dialog-title'
       >
         Change Password
@@ -93,7 +110,7 @@ const ChangePassword = (props) => {
 
       <DialogContent>
         <div className='password_wrapper'>
-          <div className='profile_password_wrapper'>
+          <div className={classes.profilePasswordWrapper}>
             <span className='password_label'>Old Password</span>
             <CustomInput
               className='profile_change_password_input'
@@ -105,7 +122,7 @@ const ChangePassword = (props) => {
               onChange={(e) => setPreviousPassword(e.target.value)}
             />
           </div>
-          <div className='profile_password_wrapper'>
+          <div className={classes.profilePasswordWrapper}>
             <span className='password_label'>New Password</span>
             <CustomInput
               className='profile_change_password_input'
@@ -117,7 +134,7 @@ const ChangePassword = (props) => {
               onChange={(e) => setNewPassword(e.target.value)}
             />
           </div>
-          <div className='profile_password_wrapper'>
+          <div className={classes.profilePasswordWrapper}>
             <span className='password_label'>Confirm New Password</span>
             <CustomInput
               className='profile_change_password_input'
@@ -134,14 +151,16 @@ const ChangePassword = (props) => {
       </DialogContent>
       <DialogActions>
         <Button
-          autoFocus
           onClick={handleCancel}
-          className='view_group_delete_alert_button_cancel'
-          color='secondary'
+          className='labelColor cancelButton'
         >
           Cancel
         </Button>
-        <Button className='view_group_delete_alert_button' onClick={handleChangePassword}>
+        <Button
+          color='primary'
+          variant='contained'
+          style={{ color: 'white' }}
+          onClick={handleChangePassword}>
           Confirm
         </Button>
       </DialogActions>

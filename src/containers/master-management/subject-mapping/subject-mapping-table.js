@@ -8,11 +8,19 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import { Grid, TextField, Button, useTheme, FormControl, InputLabel, OutlinedInput, Divider } from '@material-ui/core';
+import {
+  Grid,
+  TextField,
+  Button,
+  useTheme,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+  Divider,
+} from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import Dialog from '@material-ui/core/Dialog';
@@ -27,19 +35,13 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import CreateSubjectMapping from './create-subject-mapping';
-import EditSubjectMapping from './edit-subject-mapping';
 import Loading from '../../../components/loader/loader';
 import '../master-management.css';
 import SubjectMappingCard from './subject-mapping-card';
 import { SearchOutlined } from '@material-ui/icons';
-const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    margin: '0 auto',
-    boxShadow: 'none',
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '70vh',
     width: '100%',
@@ -112,7 +114,6 @@ const SubjectMappingTable = () => {
   const [subjectId, setSubjectId] = useState();
   const [subjectName, setSubjectName] = useState('');
   const [addFlag, setAddFlag] = useState(false);
-  const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
   const [desc, setDesc] = useState('');
   const [delFlag, setDelFlag] = useState(false);
@@ -145,7 +146,9 @@ const SubjectMappingTable = () => {
 
   const getYearApi = async () => {
     try {
-      const result = await axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`);
+      const result = await axiosInstance.get(
+        `/erp_user/list-academic_year/?module_id=${moduleId}`
+      );
       if (result.status === 200) {
         setAcademicYearList(result.data.data);
       } else {
@@ -173,7 +176,8 @@ const SubjectMappingTable = () => {
   const getGradeApi = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch.id}&module_id=${moduleId}`);
+        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch.id}&module_id=${moduleId}`
+      );
       if (result.data.status_code === 200) {
         setGradeList(result.data.data);
       } else {
@@ -187,13 +191,9 @@ const SubjectMappingTable = () => {
     try {
       const selectedGradeId = selectedGrades.map((el) => el.id);
       const result = await axiosInstance.get(
-        `${endpoints.communication.sections
-        }?session_year=${selectedYear.id}&branch_id=${selectedBranch?.branch.id}&grade_id=${selectedGradeId.toString()}&module_id=${moduleId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        `${endpoints.communication.sections}?session_year=${selectedYear.id}&branch_id=${
+          selectedBranch?.branch.id
+        }&grade_id=${selectedGradeId.toString()}&module_id=${moduleId}`
       );
       if (result.status === 200) {
         setSectionList(result.data.data);
@@ -210,7 +210,6 @@ const SubjectMappingTable = () => {
       getBranchApi();
     }
   }, [selectedYear]);
-
 
   useEffect(() => {
     if (moduleId) getYearApi();
@@ -274,7 +273,6 @@ const SubjectMappingTable = () => {
     }
   };
 
-
   const handleFilterCheck = () => {
     if (
       selectedYear ||
@@ -292,9 +290,7 @@ const SubjectMappingTable = () => {
     }
   };
 
-
   useEffect(() => {
-  
     if (clearAll) {
       setClearAll(false);
     }
@@ -304,15 +300,10 @@ const SubjectMappingTable = () => {
   }, [clearAll, filterCheck]);
 
   useEffect(() => {
-    if (
-      selectedGrades.length ||
-      selectedSections.length ||
-      searchSubject
-    ) {
+    if (selectedGrades.length || selectedSections.length || searchSubject) {
       setClearAllActive(true);
     }
-  }, [ selectedGrades, selectedSections, searchSubject]);
-
+  }, [selectedGrades, selectedSections, searchSubject]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -346,21 +337,9 @@ const SubjectMappingTable = () => {
     }
     if (searchSubject) {
       getUserListUrl += `&subject=${searchSubject}`;
-
     }
-    // if (selectedSections.length) {
-    //   const selectedSectionId = selectedSections.map((el) => el.section_name);
-    //   getUserListUrl += `&section_name=${selectedSectionId.toString()}`;
-    // }
-    // if (searchText) {
-    //   getUserListUrl += `&search=${searchText}`;
-    // }
     try {
-      const result = await axiosInstance.get(getUserListUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const result = await axiosInstance.get(getUserListUrl);
       if (result.status === 200) {
         setTotalCount(result.data?.data?.count);
         setSubjects(result.data?.data?.results);
@@ -379,24 +358,12 @@ const SubjectMappingTable = () => {
   const handleAddSubjectMapping = () => {
     setTableFlag(false);
     setAddFlag(true);
-    setEditFlag(false);
-  };
-
-  const handleEditSubjectMapping = (id, name, desc, optional) => {
-    setTableFlag(false);
-    setAddFlag(false);
-    setEditFlag(true);
-    setSubjectId(id);
-    setSubjectName(name);
-    setDesc(desc);
-    setOpt(optional);
   };
 
   const handleGoBack = () => {
     setPage(1);
     setTableFlag(true);
     setAddFlag(false);
-    setEditFlag(false);
     setSearchSubject('');
     setGoBackFlag(!goBackFlag);
   };
@@ -463,49 +430,34 @@ const SubjectMappingTable = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Master Management'
-              childComponentName='Subject Mapping List'
-              childComponentNameNext={
-                addFlag && !tableFlag
-                  ? 'Add Subject Mapping'
-                  : editFlag && !tableFlag
-                  ? 'Edit Mapping Subject'
-                  : null
-              }
-            />
-          </div>
-        </div>
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Subject Mapping List'
+          childComponentNameNext={
+            addFlag && !tableFlag
+              ? 'Add Subject Mapping'
+              : !tableFlag
+              ? 'Edit Mapping Subject'
+              : null
+          }
+        />
 
-        {!tableFlag && addFlag && !editFlag && (
+        {!tableFlag && addFlag && (
           <CreateSubjectMapping
             moduleId={moduleId}
             setLoading={setLoading}
             handleGoBack={handleGoBack}
           />
         )}
-        {!tableFlag && !addFlag && editFlag && (
-          <EditSubjectMapping
-            id={subjectId}
-            desc={desc}
-            name={subjectName}
-            setLoading={setLoading}
-            handleGoBack={handleGoBack}
-            opt={opt}
-          />
-        )}
 
-        {tableFlag && !addFlag && !editFlag && (
+        {tableFlag && !addFlag && (
           <>
             <Grid
               container
               spacing={isMobile ? 3 : 5}
               style={{ width: widerWidth, margin: wider }}
             >
-              
-                <Grid item xs={12} sm={3}>
+              <Grid item xs={12} sm={3}>
                 <FormControl
                   variant='outlined'
                   className={classes.formControl}
@@ -527,74 +479,74 @@ const SubjectMappingTable = () => {
               </Grid>
 
               <Grid item xs={12} md={3}>
-              <Autocomplete
-                size='small'
-                onChange={handleYear}
-                value={selectedYear || ''}
-                id='message_log-branch'
-                className='message_log_branch'
-                options={academicYearList || []}
-                getOptionLabel={(option) => option?.session_year || ''}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Academic Year'
-                    placeholder='Academic Year'
-                  />
-                )}
-              />
-            </Grid>
-              
-               {selectedYear && (
-              <Grid item xs={12} md={3}>
                 <Autocomplete
                   size='small'
-                  onChange={handleBranch}
-                  value={selectedBranch || ''}
+                  onChange={handleYear}
+                  value={selectedYear || ''}
                   id='message_log-branch'
                   className='message_log_branch'
-                  options={branchList || []}
-                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                  options={academicYearList || []}
+                  getOptionLabel={(option) => option?.session_year || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
                       className='message_log-textfield'
                       {...params}
                       variant='outlined'
-                      label='Branch'
-                      placeholder='Branch'
+                      label='Academic Year'
+                      placeholder='Academic Year'
                     />
                   )}
                 />
               </Grid>
-            )}
-          {selectedBranch && (
-              <Grid item xs={12} md={3}>
-                <Autocomplete
-                  multiple
-                  size='small'
-                  onChange={handleGrades}
-                  value={selectedGrades || ''}
-                  id='message_log-smsType'
-                  options={gradeList || []}
-                  getOptionLabel={(option) => option?.grade__grade_name || ''}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      className='message_log-textfield'
-                      {...params}
-                      variant='outlined'
-                      label='Grade'
-                      placeholder='Grade'
-                    />
-                  )}
-                />
-              </Grid>
-            )}
-          
+
+              {selectedYear && (
+                <Grid item xs={12} md={3}>
+                  <Autocomplete
+                    size='small'
+                    onChange={handleBranch}
+                    value={selectedBranch || ''}
+                    id='message_log-branch'
+                    className='message_log_branch'
+                    options={branchList || []}
+                    getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        className='message_log-textfield'
+                        {...params}
+                        variant='outlined'
+                        label='Branch'
+                        placeholder='Branch'
+                      />
+                    )}
+                  />
+                </Grid>
+              )}
+              {selectedBranch && (
+                <Grid item xs={12} md={3}>
+                  <Autocomplete
+                    multiple
+                    size='small'
+                    onChange={handleGrades}
+                    value={selectedGrades || ''}
+                    id='message_log-smsType'
+                    options={gradeList || []}
+                    getOptionLabel={(option) => option?.grade__grade_name || ''}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        className='message_log-textfield'
+                        {...params}
+                        variant='outlined'
+                        label='Grade'
+                        placeholder='Grade'
+                      />
+                    )}
+                  />
+                </Grid>
+              )}
+
               <Grid
                 container
                 spacing={isMobile ? 3 : 5}
@@ -603,23 +555,23 @@ const SubjectMappingTable = () => {
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    className='labelColor buttonModifiedDesign'
+                    className='labelColor cancelButton'
+                    style={{ width: '100%' }}
                     size='medium'
-                  onClick={handleClearAll}
+                    onClick={handleClearAll}
                   >
-                    CLEAR ALL
+                    Clear All
                   </Button>
                 </Grid>
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
                     color='primary'
-                    className='buttonModifiedDesign'
                     size='medium'
-                  onClick={handleFilterCheck}
+                    onClick={handleFilterCheck}
                   >
-                    FILTER
+                    Filter
                   </Button>
                 </Grid>
                 <div>
@@ -639,8 +591,8 @@ const SubjectMappingTable = () => {
                     startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
                     variant='contained'
                     color='primary'
-                    size='small'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
+                    size='medium'
                     title='Add Subject Mapping'
                     onClick={handleAddSubjectMapping}
                   >
@@ -655,7 +607,7 @@ const SubjectMappingTable = () => {
         <>
           {/* {!isMobile ? ( */}
           <>
-            {tableFlag && !addFlag && !editFlag && (
+            {tableFlag && !addFlag && (
               <Paper className={`${classes.root} common-table`}>
                 <TableContainer className={classes.container}>
                   <Table stickyHeader aria-label='sticky table'>
@@ -675,26 +627,14 @@ const SubjectMappingTable = () => {
                     </TableHead>
                     <TableBody>
                       {subjects.map((subject, index) => {
-                        // const {
-                        //   created_by,
-                        //   id,
-                        //   subject: { subject_name, subject_description, is_optional },
-                        //   section_mapping: {
-                        //     grade: { grade_name },
-                        //     section: { section_name },
-                        //     acad_session: {
-                        //       branch: { branch_name },
-                        //       session_year: { session_year },
-                        //     },
-                        //   },
-                        // } = subject || '';
                         const {
                           created_by,
                           id,
                           subject: subjectObject = {},
                           section_mapping: subjectMapping = {},
                         } = subject || {};
-                        const { subject_name, subject_description, is_optional } = subjectObject || {};
+                        const { subject_name, subject_description, is_optional } =
+                          subjectObject || {};
                         const {
                           grade: { grade_name } = {},
                           section: { section_name } = {},
@@ -704,29 +644,28 @@ const SubjectMappingTable = () => {
                           } = subjectMapping || {},
                         } = subjectMapping || {};
 
-
                         return (
                           <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
                             <TableCell className={classes.tableCell}>
-                              {session_year||''}
+                              {session_year || ''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {branch_name||''}
+                              {branch_name || ''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {grade_name||''}
+                              {grade_name || ''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {section_name||''}
+                              {section_name || ''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {subject_name||''}
+                              {subject_name || ''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {created_by||''}
+                              {created_by || ''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              {subject_description||''}
+                              {subject_description || ''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
                               {is_optional ? 'Yes' : 'No'}
@@ -738,15 +677,8 @@ const SubjectMappingTable = () => {
                                 }}
                                 title='Delete Subject Mapping'
                               >
-                                <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                                <DeleteOutlinedIcon />
                               </IconButton>
-
-                              {/* <IconButton
-                                  onClick={e => handleEditSubjectMapping(subject.subject.id, subject.subject.subject_name, subject.subject.subject_description, subject.subject.is_optional)}
-                                  title='Edit Subject'
-                                >
-                                  <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
-                                </IconButton> */}
                             </TableCell>
                           </TableRow>
                         );
@@ -802,12 +734,7 @@ const SubjectMappingTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle
-            style={{ cursor: 'move', color: '#014b7e' }}
-            id='draggable-dialog-title'
-          >
-            Delete Subject
-          </DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Delete Subject</DialogTitle>
           <DialogContent>
             <DialogContentText>{`Confirm Delete Subject Mapping`}</DialogContentText>
           </DialogContent>
@@ -815,7 +742,12 @@ const SubjectMappingTable = () => {
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color='primary' onClick={handleDeleteSubject}>
+            <Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color='primary'
+              onClick={handleDeleteSubject}
+            >
               Confirm
             </Button>
           </DialogActions>

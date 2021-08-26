@@ -111,7 +111,7 @@ const CreateQuestionPaper = ({
   }, []);
 
   useEffect(() => {
-    if ((moduleId, selectedAcademicYear)) {
+    if (moduleId) {
       getAcademic();
       if (formik.values.academic && moduleId) {
         getBranch(formik.values.academic?.id);
@@ -133,7 +133,7 @@ const CreateQuestionPaper = ({
         setBranchDropdown([]);
       }
     }
-  }, [moduleId, selectedAcademicYear]);
+  }, [moduleId]);
 
   const validationSchema = Yup.object({
     academic: Yup.object('').required('Required').nullable(),
@@ -224,14 +224,14 @@ const CreateQuestionPaper = ({
     initAddQuestion(question);
   };
   const handleClearAll = () => {
-    initSetFilter('selectedAcademic', '');
+    // initSetFilter('selectedAcademic', '');
     initSetFilter('selectedBranch', []);
     initSetFilter('selectedGrade', '');
     initSetFilter('selectedSubject', []);
     initSetFilter('selectedLevel', '');
   };
   const handleClearFilters = () => {
-    formik.setFieldValue('academic', {});
+    // formik.setFieldValue('academic', {});
     formik.setFieldValue('branch', []);
     formik.setFieldValue('grade', {});
     formik.setFieldValue('subject', []);
@@ -345,14 +345,6 @@ const CreateQuestionPaper = ({
   };
 
   const handleAcademicYear = (event = {}, value = '') => {
-    formik.setFieldValue('academic', {});
-    formik.setFieldValue('branch', []);
-    formik.setFieldValue('grade', {});
-    formik.setFieldValue('subject', []);
-    initSetFilter('selectedAcademic', '');
-    initSetFilter('selectedBranch', []);
-    initSetFilter('selectedGrade', '');
-    initSetFilter('selectedSubject', []);
     setBranchDropdown([]);
     setGrades([]);
     setSubjects([]);
@@ -409,15 +401,13 @@ const CreateQuestionPaper = ({
 
   return (
     <Layout>
+      <CommonBreadcrumbs
+        componentName='Assessment'
+        childComponentName='Question Paper'
+        childComponentNameNext='Create New'
+        isAcademicYearVisible={true}
+      />
       <div className='create-question-paper-container'>
-        <div>
-          <CommonBreadcrumbs
-            componentName='Assesment'
-            childComponentName='Question paper'
-            childComponentNameNext='Create new'
-            isAcademicYearVisible={true}
-          />
-        </div>
         <div className='content-container'>
           <Accordion
             className='collapsible-section'
@@ -508,7 +498,7 @@ const CreateQuestionPaper = ({
                       getOptionSelected={(option, value) => option?.id === value?.id}
                       value={selectedBranch || []}
                       options={branchDropdown || []}
-                      getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                      getOptionLabel={(option) => option?.branch?.branch_name}
                       renderInput={(params) => (
                         <TextField
                           {...params}
@@ -619,29 +609,16 @@ const CreateQuestionPaper = ({
             <div className='btn-container'>
               <Button
                 variant='contained'
-                className='disabled-btn'
-                style={{ borderRadius: '10px' }}
+                className='cancelButton labelColor'
+                style={{ width: '100%' }}
                 onClick={() => {
                   handleClearAll();
                   formik.handleReset();
                 }}
               >
-                CLEAR ALL
+                Clear All
               </Button>
             </div>
-
-            {/* <div className='btn-container '>
-              <Button
-                variant='contained'
-                className=''
-                color='primary'
-                onClick={() => {
-                  formik.handleSubmit();
-                }}
-              >
-                FILTER
-              </Button>
-            </div> */}
           </div>
           {showQuestionPaper && (
             <QuestionPaper

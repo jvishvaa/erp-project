@@ -34,7 +34,7 @@ import GiveAwardDialog from './GiveAwardDialog';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 // import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   paperStyels: {
     padding: '15px',
   },
@@ -50,7 +50,7 @@ const useStyles = makeStyles({
     borderRadius: '10px 10px 0px 0px',
   },
   discussionCategoryTitle: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontFamily: 'Open Sans',
     lineHeight: '27px',
@@ -59,7 +59,7 @@ const useStyles = makeStyles({
     padding: '7px 22px 19px',
   },
   discussionTitle: {
-    color: '#FF6B6B',
+    color: theme.palette.primary.main,
     fontSize: '24px',
     fontWeight: 'bold',
     fontFamily: 'Open Sans',
@@ -68,29 +68,29 @@ const useStyles = makeStyles({
   },
   backslash: {
     marginLeft: '5px',
-    color: '#042955',
+    color: theme.palette.secondary.main,
   },
   dotSeparator: {
     height: '12px',
     width: '12px',
-    fill: '#FF6B6B',
+    fill: theme.palette.primary.main,
     marginRight: '10px',
   },
   postByText: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '18px',
     fontWeight: 'lighter',
     fontFamily: 'Open Sans',
   },
   username: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontFamily: 'Open Sans',
     lineHeight: '27px',
   },
   discussionTime: {
     marginLeft: '6px',
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontWeight: 'bold',
     fontFamily: 'Open Sans',
@@ -100,7 +100,7 @@ const useStyles = makeStyles({
     float: 'right',
   },
   discussionIcon: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontWeight: 300,
     fontFamily: 'Open Sans',
@@ -109,10 +109,10 @@ const useStyles = makeStyles({
     verticalAlign: 'super',
   },
   discussionDotIcon: {
-    fill: '#FF6B6B',
+    fill: theme.palette.primary.main,
   },
   discussionParagraph: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '18px',
     fontFamily: 'Open Sans',
     lineHeight: '24px',
@@ -123,13 +123,13 @@ const useStyles = makeStyles({
     marginRight: '10px',
     height: '150px',
     borderRadius: '10px',
-    border: '1px solid #FF6B6B',
+    border: `1px solid ${theme.palette.secondary.main}`,
   },
   discussionDivider: {
     marginTop: '25px',
   },
   answersText: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '16px',
     fontFamily: 'Open Sans',
     fontWeight: 'bold',
@@ -151,13 +151,13 @@ const useStyles = makeStyles({
     fontSize: '36px',
     fontWeight: 'bold',
   }
-});
+}));
 
-const StyledOutlinedButton = withStyles({
+const StyledOutlinedButton = withStyles((theme)=>({
   root: {
     height: '45px',
-    color: '#FE6B6B',
-    border: '1px solid #FF6B6B',
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '10px',
     marginTop: '15px',
     backgroundColor: 'transparent',
@@ -165,32 +165,21 @@ const StyledOutlinedButton = withStyles({
       backgroundColor: 'transparent !important',
     },
   },
-})(Button);
+}))(Button);
 
-const StyledCancelButton = withStyles({
+const StyledButton = withStyles((theme) => ({
   root: {
-    height: '44px',
-    color: '#D85806',
-    border: '1px solid #FF6B6B',
-    borderRadius: '10px',
-    padding: '0 18px',
-    backgroundColor: 'transparent',
-  },
-})(Button);
-
-const StyledButton = withStyles({
-  root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: theme.palette.primary.main,
     color: '#FFFFFF',
     height: '44px',
     borderRadius: '10px',
     padding: '0 25px',
     marginLeft: '15px',
     '&:hover': {
-      backgroundColor: '#FF6B6B',
+      backgroundColor: theme.palette.primary.main,
     },
   },
-})(Button);
+}))(Button);
 
 const StyledInput = withStyles({
   root: {
@@ -462,7 +451,6 @@ useEffect(()=>{
                               <ProfileIcon
                                   firstname={postsData.post_by ? postsData.post_by.first_name : ''}
                                   lastname={postsData.post_by ? postsData.post_by.last_name : ''}
-                                  bgColor='#3E9CF7'
                               />
                               <span className={classes.username}>
                                   {`${postsData.post_by ? postsData.post_by.first_name : ''} ${postsData.post_by ? postsData.post_by.last_name : ''}`}

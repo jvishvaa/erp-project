@@ -31,6 +31,16 @@ const useStyles = makeStyles((theme) => ({
     width: 60,
     height: 60,
   },
+  pagercoustom: {
+    display: "flex",
+    margin: "0px",
+    padding: "10px",
+    backgroundColor: theme.palette.primary.main,
+    color: "#fff",
+    position: "fixed",
+    width: "100%",
+    bottom: 0,
+  }
 }));
 const IbookPdf = (props) => {
   const [page, setPage] = useState(1);
@@ -375,7 +385,7 @@ const IbookPdf = (props) => {
         {hover ? (
           ''
         ) : (
-          <div className='pager-coustom'>
+          <div className={classes.pagerCoustom}>
             <Grid container spacing={2}>
               <Grid item xs={4} sm={4} md={4}>
                 <ArrowBack

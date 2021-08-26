@@ -8,9 +8,6 @@ const {
   urls: { quizSocketURL: { endpoint: quizSocketURLEndpoint } = {} } = {},
 } = constants;
 
-const { token: userAuthToken } =
-  JSON.parse(localStorage.getItem('userDetails') || JSON.stringify({})) || {};
-
 function MpQuizHome(props) {
   // const { lobbyIdentifier: lobbyIdentifierFProps = 907 } = props || {};
   // const { params: { lobby_identifier: lobbyIdentifierFProps } = {} } = constants;
@@ -37,6 +34,9 @@ function MpQuizHome(props) {
     subDomain = hostSplitArray[0];
   }
 
+  const { token } =
+  JSON.parse(localStorage.getItem('userDetails')) || {};
+
   const domainTobeSent = subDomain;
 // need to change questionPaperId dynamically
   const socketUrl = quizSocketURLEndpoint
@@ -44,7 +44,7 @@ function MpQuizHome(props) {
     .replace('<role>',roleId)
     .replace('<online_class_id>', lobbyIdentifier)
     .replace('<question_paper>',questionPaperId)
-    .replace('<user_auth_token>', userAuthToken)
+    .replace('<user_auth_token>', token)
   // setParamConstants({
   //   online_class_id: 70,
   //   question_paper: 80,

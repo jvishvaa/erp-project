@@ -18,7 +18,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { fetchCategory, fetchSubCategory, fetchSubSubCategoryList, createAllCategory, createNewCategory } from '../../../redux/actions/discussionForumActions';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme)=>({
   paperStyle: {
     height: '100vh',
     width: '100%',
@@ -31,7 +31,7 @@ const useStyles = makeStyles({
     padding: '18px 25px 25px 35px',
   },
   categoryTitle: {
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontWeight: 'bold',
     fontFamily: 'Raleway',
@@ -40,16 +40,15 @@ const useStyles = makeStyles({
   dividerLine: {
     marginTop: '19px',
   },
-});
+}));
 
-const StyledButton = withStyles({
+const StyledButton = withStyles((theme)=>({
   root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: theme.palette.primary.main,
     color: '#FFFFFF',
     height: '42px',
-    marginTop: '29px',
   },
-})(Button);
+}))(Button);
 
 const StyledInput = withStyles({
   root: {
@@ -326,10 +325,10 @@ const CreateCategories = () => {
                 <Divider className={classes.dividerLine} />
 
                 <div>
-                  <StyledButton variant='contained' color='inherit' onClick={handleBack}>
+                  <Button variant='contained' className = "labelColor cancelButton" onClick={handleBack}>
                     Back
-                  </StyledButton>
-                  <StyledButton variant='contained' color='inherit' onClick={handleSubmit} style={{float:'right'}}>
+                  </Button>
+                  <StyledButton variant='contained' onClick={handleSubmit} style={{float:'right'}}>
                     Submit
                   </StyledButton>
                 </div>

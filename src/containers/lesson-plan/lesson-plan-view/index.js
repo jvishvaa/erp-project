@@ -18,18 +18,13 @@ import LessonViewFilters from './lesson-view-filters';
 import ViewMoreCard from './view-more-card';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
-import hidefilter from '../../../assets/images/hidefilter.svg';
-import showfilter from '../../../assets/images/showfilter.svg';
+import BreadcrumbToggler from '../../../components/breadcrumb-toggler';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     margin: '-10px auto',
     boxShadow: 'none',
-  },
-  container: {
-    maxHeight: '70vh',
-    width: '100%',
   },
 }));
 
@@ -115,28 +110,11 @@ const LessonPlan = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className={isMobile ? 'breadCrumbFilterRow' : null}>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='View' />
-          </div>
-          {isMobile ? (
-            <div className='hideShowFilterIcon'>
-              <IconButton onClick={() => setIsFilter(!isFilter)}>
-                <SvgIcon
-                  component={() => (
-                    <img
-                      style={{ height: '20px', width: '25px' }}
-                      src={isFilter ? hidefilter : showfilter}
-                    />
-                  )}
-                />
-              </IconButton>
-            </div>
-          ) : null}
-        </div>
-        <div
-          className={!isMobile ? 'showFilters' : isFilter ? 'showFilters' : 'hideFilters'}
-        >
+        <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
+          <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='View' />
+        </BreadcrumbToggler>
+
+        <div className={isFilter ? 'showFilters' : 'hideFilters'}>
           <LessonViewFilters
             handlePeriodList={handlePeriodList}
             setPeriodData={setPeriodData}
@@ -158,8 +136,8 @@ const LessonPlan = () => {
               container
               style={
                 isMobile
-                  ? { width: '95%', margin: '20px auto' }
-                  : { width: '100%', margin: '20px auto' }
+                  ? { width: '95%', margin: '0 auto 20px auto' }
+                  : { width: '100%', margin: '0 auto 20px auto' }
               }
               spacing={5}
             >

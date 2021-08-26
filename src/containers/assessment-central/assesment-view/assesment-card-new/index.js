@@ -206,7 +206,7 @@ const AssessmentCard = ({
               {showPeriodIndex === index && showMenu ? (
                 <div className='tooltipContainer'>
                   {period.is_verified && (
-                    <span className='tooltiptext' style={{width:'105px'}}>
+                    <span className={` ${classes.tooltiptext} tooltiptext`} style={{width:'105px'}}>
                       <span onClick={handleAssign}>Assign Test</span>
                       <Divider/>
                       <span onClick={handleDelete}>Delete</span>
@@ -251,9 +251,8 @@ const AssessmentCard = ({
           {!periodColor && (
             <Button
               variant='contained'
-              style={{ color: 'white' }}
+              style={{color:'white', width: '100%' }}
               color='primary'
-              className='custom_button_master modifyDesign'
               size='small'
               onClick={handleViewMore}
             >

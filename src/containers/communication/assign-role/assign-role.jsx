@@ -9,7 +9,7 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Divider, Grid, TextField, Button, OutlinedInput } from '@material-ui/core';
+import { Divider, Grid, TextField, Button, OutlinedInput, Typography } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -94,8 +94,8 @@ const AssignRole = (props) => {
   }, []);
 
   useEffect(() => {
-    if (moduleId && selectedYear ) getBranchApi();
-  }, [moduleId , selectedYear]);
+    if (moduleId && selectedYear) getBranchApi();
+  }, [moduleId, selectedYear]);
 
   // useEffect(() => {
   //   if (selectedYear) {
@@ -522,28 +522,12 @@ const AssignRole = (props) => {
 
   return (
     <Layout>
+      <CommonBreadcrumbs
+        componentName='User Management'
+        childComponentName='Assign role'
+      />
       <div className='assign-role-container'>
         <div className={classes.filtersContainer}>
-          <div className={`bread-crumbs-container ${classes.spacer}`}>
-            <CommonBreadcrumbs
-              componentName='User Management'
-              childComponentName='Assign role'
-            isAcademicYearVisible={true}
-            />
-          </div>
-          {/* <Grid container className='message_log_container' spacing={10}>
-          <Grid lg={10} item>
-            <div className='user_search_wrapper'>
-              <TextField
-                id='user_search'
-                label='Search'
-                value={searchText}
-                onChange={handleTextSearch}
-              />
-            </div>
-          </Grid>
-
-        </Grid> */}
           <Grid container spacing={2} className={classes.spacer}>
             <Grid item xs={12} md={3}>
               <FormControl
@@ -677,153 +661,32 @@ const AssignRole = (props) => {
                 />
               </Grid>
             )}
-            {/* <Grid xs={4}></Grid> */}
           </Grid>
           <Divider className={classes.spacer} />
           <Grid container spacing={4} className={classes.spacer}>
             <Grid item md={2} xs={12}>
               <Button
                 variant='contained'
-                className='disabled-btn'
+                className='cancelButton labelColor'
                 onClick={handleClearAll}
-                fullWidth
+                size='medium'
+                style={{ width: '100%' }}
               >
-                CLEAR ALL
+                Clear All
               </Button>
-
-              {/* <input
-              className={clearAllActive ? 'profile_update_button' : 'deactive_clearAll'}
-              // className='profile_update_button'
-              type='button'
-              onClick={handleClearAll}
-              value='Clear All'
-            /> */}
-
-              {/* <input
-              className='profile_update_button'
-              type='button'
-              onClick={handleFilterCheck}
-              value='Filter'
-            /> */}
             </Grid>
             <Grid item md={2} xs={12}>
               <Button
                 variant='contained'
                 onClick={handleFilterCheck}
                 color='primary'
-                fullWidth
+                size='medium'
+                style={{ color: 'white', width: '100%' }}
               >
-                FILTER
+                Filter
               </Button>
             </Grid>
           </Grid>
-          {/* <Grid container className='message_log_container' spacing={5}>
-          <Grid lg={3} item>
-            <Autocomplete
-              multiple
-              size='small'
-              onChange={handleMultipleRoles}
-              value={selectedMultipleRoles}
-              id='message_log-smsType'
-              options={roles}
-              getOptionLabel={(option) => option?.role_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  className='message_log-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='Role'
-                  placeholder='Role'
-                />
-              )}
-            />
-          </Grid>
-          <Grid lg={3} item>
-            <Autocomplete
-              size='small'
-              onChange={handleBranch}
-              value={selectedBranch}
-              id='message_log-branch'
-              className='message_log_branch'
-              options={branchList}
-              getOptionLabel={(option) => option?.branch_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  className='message_log-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                />
-              )}
-            />
-          </Grid>
-          <Grid lg={3} item>
-            {selectedBranch ? (
-              <Autocomplete
-                multiple
-                size='small'
-                onChange={handleGrades}
-                value={selectedGrades}
-                id='message_log-smsType'
-                options={gradeList}
-                getOptionLabel={(option) => option?.grade__grade_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Grade'
-                    placeholder='Grade'
-                  />
-                )}
-              />
-            ) : null}
-          </Grid>
-          <Grid lg={3} item>
-            {selectedGrades.length ? (
-              <Autocomplete
-                multiple
-                size='small'
-                onChange={handleSections}
-                value={selectedSections}
-                id='message_log-smsType'
-                options={sectionList}
-                getOptionLabel={(option) => option?.section__section_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Sections'
-                    placeholder='Sections'
-                  />
-                )}
-              />
-            ) : null}
-          </Grid>
-        </Grid> */}
-          {/* <Grid container className='message_log_container' spacing={2}>
-          <Grid lg={5} item>
-            <input
-              className={clearAllActive ? 'profile_update_button' : 'deactive_clearAll'}
-              // className='profile_update_button'
-              type='button'
-              onClick={handleClearAll}
-              value='Clear All'
-            />
-
-            <input
-              className='profile_update_button'
-              type='button'
-              onClick={handleFilterCheck}
-              value='Filter'
-              </Grid>
-        </Grid> */}
         </div>
         <div
           className={`${classes.tableActionsContainer} ${classes.spacer}`}
@@ -834,7 +697,6 @@ const AssignRole = (props) => {
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
-                //onChange={(e) => setSelectedBranch(e.target.value)}
                 onChange={(event, value) => {
                   setSelectedRole(value);
                 }}
@@ -854,53 +716,30 @@ const AssignRole = (props) => {
                 )}
               />
             </Grid>
-            {/*
-            <Grid item xs={12} md={4}>
-              <FormControl variant='outlined' fullWidth size='small'>
-                <InputLabel id='demo-simple-select-outlined-label'>
-                  Assign Role
-                </InputLabel>
-                <Select
-                  labelId='demo-simple-select-outlined-label'
-                  id='demo-simple-select-outlined'
-                  value={selectedRole}
-                  onChange={(e) => setSelectedRole(e.target.value)}
-                  label='Assign Role'
-                >
-                  <MenuItem>
-                    <em>None</em>
-                  </MenuItem>
-                  {roles.map((items, index) => (
-                    <MenuItem key={`roles_assign_${index}`} value={items.id}>
-                      {items.role_name}
-                    </MenuItem>
-                  ))}
-                </Select>
-                <FormHelperText style={{ color: 'red' }}>{roleError}</FormHelperText>
-              </FormControl>
-            </Grid>
-            */}
-
             <Grid item md={2} xs={4}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={!!checkAll}
-                    onChange={(e) => handleSelectAll(e)}
-                    color='primary'
-                  />
-                }
-                label='Select all'
-              />
+              <Typography color="secondary">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={!!checkAll}
+                      onChange={(e) => handleSelectAll(e)}
+                      color='primary'
+                    />
+                  }
+                  label='Select all'
+                />
+              </Typography>
             </Grid>
             <Grid item md={2} xs={4}>
               <Button
                 onClick={assignRole}
                 variant='contained'
                 color='primary'
+                size='medium'
+                style={{ width: '100%', color: 'white' }}
                 disabled={!selectedRole}
               >
-                ASSIGN ROLE
+                Assign Role
               </Button>
             </Grid>
             {isMobile && (
@@ -922,17 +761,6 @@ const AssignRole = (props) => {
           <div>Please Wait ...</div>
         ) : (
           <>
-            {/* {usersRow.length && selectAllObj.length ? (
-            <div className='assign_role_select_all_wrapper'>
-              <input
-                type='checkbox'
-                className='assign_role_select_all_checkbox'
-                checked={selectAllObj[pageno - 1].selectAll}
-                onChange={handleSelectAll}
-              />
-              <span>Select All</span>
-            </div>
-          ) : null} */}
             <span className='create_group_error_span'>{selectectUserError}</span>
             <CustomSelectionTable
 
@@ -959,102 +787,10 @@ const AssignRole = (props) => {
               setSelectedUsers={setSelectedUsers}
               pageSize={15}
             />
-            {/*
-            
-                  import { DataGrid } from '@material-ui/data-grid';
-
-                  const columns = [
-                    { field: 'fullName', headerName: 'Name', width: 250 },
-                    { field: 'email', headerName: 'Email Id', width: 250 },
-                    { field: 'erp_id', headerName: 'ERP Id', width: 150 },
-                    { field: 'gender', headerName: 'Gender', width: 150 },
-                    { field: 'contact', headerName: 'Contact', width: 150 },
-                    {
-                      field: 'role',
-                      headerName: 'Role',
-                      width: 150,
-                    },
-                  ];
-
-                  const rows = [
-                    { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-                    { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-                    { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-                    { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-                    { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-                    { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-                    { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-                    { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-                    { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-                  ];
-
-                  export default function DataGridDemo() {
-                    return (
-                      <div style={{ height: 400, width: '100%' }}>
-                        <DataGrid rows={rows} columns={columns} pageSize={5} checkboxSelection />
-                      </div>
-                    );
-                  }
-
-            
-            <Grid container className='message_log_container' spacing={5}>
-            <Grid lg={3} item>
-              <input
-                className='assign_role_button'
-                type='button'
-                onClick={assignRole}
-                value='Assign Role'
-              />
-            </Grid>
-            <Grid lg={3} item>
-              <div className='assign_role_roles'>
-                <span className='create_group_error_span'>{roleError}</span>
-                <FormControl variant='outlined' className={classes.formControl}>
-                  <InputLabel id='demo-simple-select-outlined-label'>
-                    Assign Role
-                  </InputLabel>
-                  <Select
-                    labelId='demo-simple-select-outlined-label'
-                    id='demo-simple-select-outlined'
-                    value={selectedRole}
-                    onChange={(e) => setSelectedRole(e.target.value)}
-                    label='Roles'
-                  >
-                    <MenuItem>
-                      <em>None</em>
-                    </MenuItem>
-                    {roles.map((items, index) => (
-                      <MenuItem key={`roles_assign_${index}`} value={items.id}>
-                        {items.role_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </div>
-            </Grid>
-          </Grid> */}
-            {/*
-            <Grid
-              container
-              className={`${classes.assignRoleBtnContainer} ${classes.spacer}`}
-              justify={isMobile && 'center'}
-            >
-              <Grid item md={4}>
-                <Button
-                  onClick={assignRole}
-                  variant='contained'
-                  color='primary'
-                  disabled={!selectedRole}
-                >
-                  ASSIGN ROLE
-                </Button>
-              </Grid>
-            </Grid>
-            */}
           </>
         )}
       </div>
-    </Layout>
+    </Layout >
   );
 };
 

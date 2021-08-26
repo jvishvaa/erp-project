@@ -11,6 +11,7 @@ import axios from 'axios';
 import endpoints from '../../../../config/endpoints';
 
 import Loading from '../../../../components/loader/loader';
+import { useHistory } from 'react-router-dom';
 
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
@@ -69,13 +70,13 @@ const templateFiles = {
       types: 'xls, xlsx',
     },
     templateFileHeaders: [
-      'Question',
-      'Option1',
-      'Option2',
-      'Option3',
-      'Option4',
-      'Option5',
-      'Correct_Answer',
+      'question',
+      'option1',
+      'option2',
+      'option3',
+      'option4',
+      'option5',
+      'correct_answer',
     ],
   },
   [fillBlankQuesTypeId]: {
@@ -88,7 +89,7 @@ const templateFiles = {
         'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       types: 'xls, xlsx',
     },
-    templateFileHeaders: ['Question', 'Answer'],
+    templateFileHeaders: ['question', 'answer'],
   },
   [trueOrFQuesTypeId]: {
     templateFile:
@@ -100,10 +101,11 @@ const templateFiles = {
         'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       types: 'xls, xlsx',
     },
-    templateFileHeaders: ['Question', 'Option1', 'Option2', 'Correct_Answer'],
+    templateFileHeaders: ['question', 'option1', 'option2', 'correct_answer'],
   },
 };
 function QuestionBulkCreation(props) {
+  const history = useHistory();
   const { attributes = {} } = props || {};
   const {
     category: { id: questionCategoryId = 1, category: categoryLabel } = {},
@@ -114,7 +116,7 @@ function QuestionBulkCreation(props) {
     academic: { id: acadId = '', session_year: acadYear = '' } = {},
     grade: { grade_id: gradeId = '' } = {},
     branch: { branch: branchData = {} } = {},
-    chapter: {id: chapterId = ''}
+    chapter: { id: chapterId = '' },
   } = attributes || {};
   const { id: branchId = '' } = branchData || {};
   const classes = useStyles();
@@ -222,7 +224,9 @@ function QuestionBulkCreation(props) {
             const {
               data: { status_code: statusCode, message },
             } = response;
-            // if (statusCode !== 200) {
+            if (statusCode === 200) {
+              history.push('/question-bank');
+            }
             setAlert(statusCode === 200 ? 'success' : 'error', `${message}`);
             // }
           }
@@ -230,6 +234,7 @@ function QuestionBulkCreation(props) {
         .catch((error) => {
           setUploading(false);
         });
+      history.push('/question-bank');
     }
     return true;
   }
@@ -297,8 +302,10 @@ function QuestionBulkCreation(props) {
           </Grid>
           <Grid item>
             <Button
-              size='small'
+              size='medium'
               style={{
+                width: '100%',
+                color: 'white',
                 margin: 4,
                 textTransform: 'none',
                 fontSize: '0.8rem',
@@ -306,37 +313,14 @@ function QuestionBulkCreation(props) {
               }}
               color='primary'
               variant='contained'
-              className='modifyDesign'
               onClick={() => {
                 downloadSampleFile(templateFile);
               }}
             >
-              download template file
+              Download Template File
             </Button>
           </Grid>
         </Grid>
-        {/* <div style={{ display: 'flex', justifyContent: 'start' }}>
-          <div style={{ margin: 4 }} className={classes.root}>
-            {columns}
-          </div>
-          <Button
-            size='small'
-            style={{
-              margin: 4,
-              textTransform: 'none',
-              fontSize: '0.8rem',
-              display: 'inline-block',
-            }}
-            color='primary'
-            variant='contained'
-            className='modifyDesign'
-            onClick={() => {
-              downloadSampleFile(templateFile);
-            }}
-          >
-            download template file
-          </Button>
-        </div> */}
       </>
     );
   }
@@ -379,11 +363,11 @@ function QuestionBulkCreation(props) {
           <Button
             variant='contained'
             color='primary'
-            className='modifyDesign'
-            size='small'
+            size='medium'
             disabled={!file}
             style={{
               margin: 4,
+              color: 'white',
               textTransform: 'none',
               fontSize: '1rem',
               display: 'inline-block',

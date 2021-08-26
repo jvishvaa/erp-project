@@ -26,6 +26,7 @@ import {
   withStyles,
   List,
   ListItem,
+  Typography
 } from '@material-ui/core';
 import {
   LocalizationProvider,
@@ -65,6 +66,7 @@ import { Autocomplete } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
   root: {
+    ...theme.homeworkTableWrapper,
     '& > *': {
       marginTop: theme.spacing(2),
     },
@@ -79,6 +81,26 @@ const useStyles = makeStyles((theme) => ({
   container: {
     maxHeight: 440,
   },
+  vertical_divider:{
+    height: "80px",
+    width: "1px",
+    margin: "5px 20px",
+    backgroundColor: theme.palette.primary.main,
+  },
+  homeworkTableMobileView:{
+    color : theme.palette.secondary.main
+  }
+  ,horizontal_divider:{
+    marginTop: '15px',
+    marginBottom: '15px',
+    backgroundColor: theme.palette.primary.main,
+  },
+  homeworkblock:{
+    color : theme.palette.secondary.main,
+    fontWeight: 600
+  },
+  dayicon :theme.dayIcon
+
 }));
 
 const StyledClearButton = withStyles({
@@ -96,6 +118,7 @@ const StyledClearButton = withStyles({
       backgroundColor: '#E2E2E2 !important',
     },
   },
+  
 })(Button);
 
 function getDaysAfter(date, amount) {
@@ -220,20 +243,6 @@ const CoordinatorTeacherHomework = withRouter(
       });
       setActiveView('view-homework');
     };
-
-    // const handleStartDateChange = (date) => {
-    //   const endDate = getDaysAfter(date.clone(), 7);
-    //   setEndDate(endDate);
-    //   setStartDate(date.format('YYYY-MM-DD'));
-    //   getTeacherHomeworkDetails(3384, date, endDate);
-    // };
-
-    // const handleEndDateChange = (date) => {
-    //   const startDate = getDaysBefore(date.clone(), 7);
-    //   setStartDate(startDate);
-    //   setEndDate(date.format('YYYY-MM-DD'));
-    //   getTeacherHomeworkDetails(2, startDate, date);
-    // };
 
     const handleSelectCol = (col, view) => {
       const { homeworkId, subjectId, sectionId, coord_selected_teacher_id } = col;
@@ -798,57 +807,16 @@ const CoordinatorTeacherHomework = withRouter(
                   {isMobile ? (
                     <Grid item xs={12} className='date-container4'>
                       <Divider
-                        style={{
-                          backgroundColor: '#ff6b6b',
-                          marginTop: '15px',
-                          marginBottom: '15px',
-                        }}
+                      className={classes.horizontal_divider}
                       />
                     </Grid>
                   ) : (
-                    <div className='vertical_divider'></div>
+                    <div className={classes.vertical_divider}></div>
                   )}
                   <Grid item xs={12} sm={3}>
                     <Grid container>
                       <Grid item xs={12} sm={12} className='date-container3'>
-                        {/* <LocalizationProvider dateAdapter={MomentUtils}>
-                          <DateRangePicker
-                            startText='Select-date-range'
-                            value={dateRangeTechPer}
-                            onChange={(newValue) => {
-                              setDateRangeTechPer(newValue);
-                            }}
-                            renderInput={({ inputProps, ...startProps }, endProps) => {
-                              return (
-                                <>
-                                  <TextField
-                                    {...startProps}
-                                    inputProps={{
-                                      ...inputProps,
-                                      value: `${inputProps.value} - ${endProps.inputProps.value}`,
-                                      readOnly: true,
-                                    }}
-                                    size='small'
-                                    style={{ minWidth: '100%' }}
-                                  />
-                                </>
-                              );
-                            }}
-                          />
-                        </LocalizationProvider> */}
-                        {/* <div className='download_button'>
-                          <Button
-                            style={{
-                              cursor: 'pointer',
-                              backgroundColor: '#ffffff',
-                              border: '1px solid #ff6b6b',
-                              borderRadius: '5px',
-                            }}
-                            onClick={downloadGetTeacherPerformanceListApi}
-                          >
-                            <GetAppIcon color='primary' />
-                          </Button>
-                        </div> */}
+                       
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <div className='download_button'>
@@ -857,25 +825,6 @@ const CoordinatorTeacherHomework = withRouter(
                           </StyledClearButton>
                         </div>
                       </Grid>
-                      {/* <Grid item xs={12} sm={6} className='bulk_container'>
-                        <div className='download_button'>
-                          <Button
-                            style={{
-                              cursor: 'pointer',
-                              backgroundColor: '#ffffff',
-                              color: '#ff6b6b',
-                              border: '1px solid #ff6b6b',
-                              borderRadius: '5px',
-                              height: '35px',
-                              width: '100%',
-                            }}
-                            onClick={downloadGetTeacherPerformanceListApi}
-                            endIcon={<GetAppIcon style={{ color: '#ff6b6b', }} />}
-                          >
-                            Download
-                          </Button>
-                        </div>
-                      </Grid> */}
                     </Grid>
                   </Grid>
                 </Grid>
@@ -884,7 +833,7 @@ const CoordinatorTeacherHomework = withRouter(
                 activeView !== 'view-received-homework' &&
                 isMobile && (
                   <div className='homework_block_wrapper'>
-                    <div className='homework_block'>Weekly Time table</div>
+                    <div className={classes.homeworkblock}>Weekly Time table</div>
                     <div className='icon-desc-container'>
                       <SvgIcon
                         component={() => (
@@ -895,7 +844,7 @@ const CoordinatorTeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <span>Assigned</span>
+                      <Typography color ="secondary">Assigned</Typography>
                     </div>
                     <div className='icon-desc-container'>
                       <SvgIcon
@@ -907,7 +856,7 @@ const CoordinatorTeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <span>Submitted</span>
+                      <Typography color ="secondary">Submitted</Typography>
                     </div>
                     <div className='icon-desc-container'>
                       <SvgIcon
@@ -919,7 +868,7 @@ const CoordinatorTeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <span>Evaluated</span>
+                      <Typography color ="secondary">Evaluated</Typography>
                     </div>
                   </div>
                 )}
@@ -955,7 +904,7 @@ const CoordinatorTeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <span>HW given</span>
+                              <Typography color = "secondary">HW given</Typography>
                             </div>
                             <div className='icon-desc-container'>
                               <SvgIcon
@@ -967,7 +916,7 @@ const CoordinatorTeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <span>Students submitted</span>
+                              <Typography color="secondary">Students submitted</Typography>
                             </div>
                             <div className='icon-desc-container'>
                               <SvgIcon
@@ -979,7 +928,7 @@ const CoordinatorTeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <span>HW Evaluated</span>
+                              <Typography color = "secondary">HW Evaluated</Typography>
                             </div>
                           </div>
                         )}
@@ -1002,7 +951,7 @@ const CoordinatorTeacherHomework = withRouter(
                           className='home-work-grid'
                         >
                           <Paper
-                            className={`homework_table_wrapper ${classes.root}`}
+                            className={classes.root}
                             ref={tableContainer}
                           >
                             <TableContainer
@@ -1063,8 +1012,8 @@ const CoordinatorTeacherHomework = withRouter(
                                   {homeworkRows.map((row) => {
                                     const data = row[col.subject_name];
                                     return (
-                                      <ListItem className='homework-table-mobile-view'>
-                                        <div className='day-icon'>
+                                      <ListItem className={` ${classes.homeworkTableMobileView} homework-table-mobile-view`}> 
+                                        <div className={classes.dayicon}>
                                           {moment(row.date).format('dddd').split('')[0]}
                                         </div>
                                         <div className='date'>{row.date}</div>

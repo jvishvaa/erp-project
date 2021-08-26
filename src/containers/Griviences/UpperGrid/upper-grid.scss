@@ -114,9 +114,6 @@ $font-roboto: 'Roboto', sans-serif;
       padding-left: 16px;
     }
   }
-  option {
-    color: $text-color;
-  }
   .box-last-1 {
     @include box-right();
     background: #ffe5e5;
@@ -159,7 +156,7 @@ $font-roboto: 'Roboto', sans-serif;
   flex-wrap: wrap;
   padding-bottom: 30px;
   .MuiButton-contained {
-    color: gray !important;
+    // color: gray !important;
   }
 }
 .generate-button {

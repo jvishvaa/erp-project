@@ -2,26 +2,56 @@ import React, { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 // import { browserHistory } from 'react-router-dom'
 import ReactPlayer from 'react-player';
-import Paper from '@material-ui/core/Paper';
-import { IconButton, SvgIcon, Button } from '@material-ui/core';
+import { IconButton, SvgIcon, Button, Paper, makeStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import axiosInstance from '../../../../config/axios';
 import './view-more.css';
-// import './styles.scss';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import endpoints from '../../../../config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { AttachmentPreviewerContext } from '../../../../components/attachment-previewer/attachment-previewer-contexts';
 import axios from 'axios';
 
+const useStyles = makeStyles((theme) => ({
+  rootViewMore: theme.rootViewMore,
+  assesmentQuestions:{
+    fontSize: "1.1rem",
+    color: `${theme.palette.secondary.main} !important`,
+    display: "flex",
+    justifyContent: 'space-between',
+    marginLeft: '15px !important',
+  },
+  assesmentAnswers:{
+    fontSize: "1.1rem",
+    color: `${theme.palette.secondary.main} !important`,
+    display: "flex",
+    justifyContent: 'space-between',
+  },
+  resourceBulkDownload:{
+    fontSize: "1.1rem",
+    color: `${theme.palette.secondary.main} !important`,
+    display: "flex",
+    justifyContent: 'space-between',
+  },
+  questionContainer:{
+    border: '1px solid #dbdbdb',
+    padding: '1rem',
+    fontSize: '0.9rem',
+    borderRadius: '10px',
+    margin: '1rem 0',
+    color: theme.palette.secondary.main,
+    wordWrap: 'break-word',
+  }
+}));
+
 const ViewMoreCard = ({
   viewMoreData,
   setViewMore,
-  filterDataDown,
   periodDataForView,
   setSelectedIndex,
   setCallFlag,
 }) => {
+  const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
@@ -55,7 +85,6 @@ const ViewMoreCard = ({
         return 'Fill In The Blanks';
       case 10:
         return 'Descriptive';
-
       default:
         return '--';
     }
@@ -156,7 +185,7 @@ const ViewMoreCard = ({
   };
 
   return (
-    <Paper className='rootViewMore'>
+    <Paper className={classes.rootViewMore}>
       <div className='viewMoreHeader'>
         <div className='leftHeader'>
           <div className='headerTitle'>
@@ -193,16 +222,16 @@ const ViewMoreCard = ({
           )}
         </div>
       </div>
-      <div className='assesmentQuestions'>Questions</div>
+      <div className={classes.assesmentQuestions}>Questions</div>
       <div className='divider'>{/* <Divider/> */}</div>
 
       <div className='viewMoreBody'>
         {(periodDataForView.question_type == 1 ||
           periodDataForView.question_type == 2) && (
           <div className='mcq-container'>
-            <div className='question-container'>
+            <div className={classes.questionContainer}>
               {Data?.map((p) => (
-                <div style={{ color: '#014B7E' }}>
+                <div>
                   {extractContent(p?.question)}
                   <div>
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
@@ -239,16 +268,14 @@ const ViewMoreCard = ({
               ))}
             </div>
 
-            <div className='assesmentAnswers'>Answers</div>
-            <div className='question-container'>
-              {Data[0]?.answer?.map((obj, i) => (
-                <div>{obj}</div>
-              )) || ''}
+            <div className={classes.assesmentAnswers}>Answers</div>
+            <div className={classes.questionContainer}>
+              {Data[0]?.answer?.map((obj, i) => <div>{obj}</div>) || ''}
             </div>
-            <div className='resourceBulkDownload'>Options</div>
+            <div className={classes.resourceBulkDownload}>Options</div>
             <div>
               {Data?.[0]?.options?.map((obj, i) => (
-                <div className='question-container'>
+                <div className={classes.questionContainer}>
                   {`OPTION${i + 1}:   ${obj[`option${i + 1}`]?.optionValue}`}
                   {`${obj[`option${i + 1}`]?.images}`?.length > 0 && (
                     <div>
@@ -285,9 +312,9 @@ const ViewMoreCard = ({
 
         {periodDataForView?.question_type === 3 && (
           <div className='ccc'>
-            <div className='question-container'>
+            <div className={classes.questionContainer}>
               {Data?.map((p) => (
-                <div style={{ color: '#014B7E' }}>
+                <div>
                   {extractContent(p.question)}
                   {p?.question?.split('"').filter((str) => str.startsWith('https'))
                     ?.length > 0 && (
@@ -324,12 +351,12 @@ const ViewMoreCard = ({
               ))}
             </div>
 
-            <div className='assesmentAnswers'>Answers</div>
+            <div className={classes.assesmentAnswers}>Answers</div>
             {/* <Divider className='secondary-divider' /> */}
             <div>
               {Data?.[0]?.questionAnswer?.map((obj, index) => (
                 <>
-                  <div style={{ display: 'flex' }} className='question-container'>
+                  <div style={{ display: 'flex' }} className={classes.questionContainer}>
                     <div className='option'>{obj?.answer}</div>
                     <div className='option' style={{ marginLeft: '2rem' }}>
                       {obj.question}
@@ -339,10 +366,10 @@ const ViewMoreCard = ({
               ))}
             </div>
 
-            <div className='resourceBulkDownload'>Options</div>
+            <div className={classes.resourceBulkDownload}>Options</div>
             <div>
               {Data?.[0]?.options?.map((obj, i) => (
-                <div className='question-container'>
+                <div className={classes.questionContainer}>
                   {`OPTION${i + 1}:   ${obj?.optionValue}`}
                   {obj?.images?.length > 0 && (
                     <div>
@@ -376,7 +403,7 @@ const ViewMoreCard = ({
                 Match with the following{' '}
               </div>
               {Data?.[0]?.matchingOptions?.map((obj, i) => (
-                <div className='question-container'>
+                <div className={classes.questionContainer}>
                   {`OPTION${i + 1}:   ${obj?.optionValue}`}
                   {obj?.images?.length > 0 && (
                     <div>
@@ -412,7 +439,9 @@ const ViewMoreCard = ({
 
         {periodDataForView?.question_type === 4 && (
           <div>
-            <div className='question-container'>{extractContent(Data?.[0]?.question)}</div>
+            <div className={classes.questionContainer}>
+              {extractContent(Data?.[0]?.question)}
+            </div>
             <ReactPlayer
               playing={false}
               controls
@@ -425,8 +454,8 @@ const ViewMoreCard = ({
                   return (
                     <>
                       <div>
-                        <div className='question-container'>
-                          <div style={{ color: '#014B7E' }}>
+                        <div className={classes.questionContainer}>
+                          <div>
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>
@@ -434,10 +463,10 @@ const ViewMoreCard = ({
                           </div>
                         </div>
 
-                        <div className='assesmentAnswers'>Answers</div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
 
-                        <div className='question-container'>
-                          <div style={{ color: '#014B7E' }}>
+                        <div className={classes.questionContainer}>
+                          <div>
                             {extractContent(childQuestions?.question_answer[0]?.answer)}
                           </div>
                         </div>
@@ -449,24 +478,24 @@ const ViewMoreCard = ({
                   return (
                     <>
                       <div>
-                        <div className='question-container'>
-                          <div style={{ color: '#014B7E' }}>
+                        <div className={classes.questionContainer}>
+                          <div>
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        {/* <div className='resourceBulkDownload'>Answers</div>
-                        <div className='question-container'>
+                        {/* <div className={classes.resourceBulkDownload}>Answers</div>
+                        <div className={classes.questionContainer}>
                           {childQuestions?.question_answer[0]?.answer.map((obj, i) => (
                             <div>{obj}</div>
                           ))}
                         </div> */}
-                        <div className='assesmentAnswers'>Answers</div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
-                            <div className='question-container'>
+                            <div className={classes.questionContainer}>
                               {obj[`option${i + 1}`]?.optionValue}
                               {`${obj[`option${i + 1}`]?.images}`?.length > 0 && (
                                 <div>
@@ -513,27 +542,27 @@ const ViewMoreCard = ({
                   return (
                     <>
                       <div>
-                        <div className='question-container'>
-                          <div style={{ color: '#014B7E' }}>
+                        <div className={classes.questionContainer}>
+                          <div>
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='assesmentAnswers'>Answers</div>
-                        <div className='question-container'>
+                        <div className={classes.assesmentAnswers}>Answers</div>
+                        <div className={classes.questionContainer}>
                           {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
                             <div>{obj}</div>
                           ))}
                         </div>
-                        <div className='resourceBulkDownload'>Options</div>
-                        <div className='question-container'>
+                        <div className={classes.resourceBulkDownload}>Options</div>
+                        <div className={classes.questionContainer}>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => {
                             return (
                               <div>
                                 {Object.keys(obj)[0] || ''} :{' '}
-                                {obj[Object.keys(obj)[0]]?.isChecked ? 'True' : 'False'}
+                                {obj[Object.keys(obj)[0]]?.optionValue ? 'True' : 'False'}
                               </div>
                             );
                           })}
@@ -546,22 +575,22 @@ const ViewMoreCard = ({
                   return (
                     <>
                       <div className='ccc'>
-                        <div className='question-container'>
-                          <div style={{ color: '#014B7E' }}>
+                        <div className={classes.questionContainer}>
+                          <div>
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='assesmentAnswers'>Answers</div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
                         <div>
                           {childQuestions?.question_answer[0]?.questionAnswer?.map(
                             (obj, index) => (
                               <>
                                 <div
                                   style={{ display: 'flex' }}
-                                  className='question-container'
+                                  className={classes.questionContainer}
                                 >
                                   <div className='option'>{obj?.answer}</div>
                                   <div className='option' style={{ marginLeft: '2rem' }}>
@@ -573,10 +602,10 @@ const ViewMoreCard = ({
                           )}
                         </div>
 
-                        <div className='resourceBulkDownload'>Options</div>
+                        <div className={classes.resourceBulkDownload}>Options</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
-                            <div className='question-container'>
+                            <div className={classes.questionContainer}>
                               {`OPTION${i + 1}:   ${obj?.optionValue}`}
                               {obj?.images?.length > 0 && (
                                 <div>
@@ -616,7 +645,7 @@ const ViewMoreCard = ({
                           </div>
                           {childQuestions?.question_answer[0]?.matrixOptions.map(
                             (obj, i) => (
-                              <div className='question-container'>
+                              <div className={classes.questionContainer}>
                                 {`OPTION${i + 1}:   ${obj?.optionValue}`}
                               </div>
                             )
@@ -630,22 +659,22 @@ const ViewMoreCard = ({
                   return (
                     <>
                       <div className='ccc'>
-                        <div className='question-container'>
-                          <div style={{ color: '#014B7E' }}>
+                        <div className={classes.questionContainer}>
+                          <div>
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='assesmentAnswers'>Answers</div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
                         <div>
                           {childQuestions?.question_answer[0]?.questionAnswer?.map(
                             (obj, index) => (
                               <>
                                 <div
                                   style={{ display: 'flex' }}
-                                  className='question-container'
+                                  className={classes.questionContainer}
                                 >
                                   <div className='option'>{obj?.answer}</div>
                                   <div className='option' style={{ marginLeft: '2rem' }}>
@@ -656,10 +685,10 @@ const ViewMoreCard = ({
                             )
                           )}
                         </div>
-                        <div className='resourceBulkDownload'>Options</div>
+                        <div className={classes.resourceBulkDownload}>Options</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
-                            <div className='question-container'>
+                            <div className={classes.questionContainer}>
                               {`OPTION${i + 1}:   ${obj?.optionValue}`}
                               {obj?.images?.length > 0 && (
                                 <div>
@@ -699,7 +728,7 @@ const ViewMoreCard = ({
                           </div>
                           {childQuestions?.question_answer[0]?.matchingOptions?.map(
                             (obj, i) => (
-                              <div className='question-container'>
+                              <div className={classes.questionContainer}>
                                 {`OPTION${i + 1}:   ${obj?.optionValue}`}
                                 {obj?.images?.length > 0 && (
                                   <div>
@@ -747,29 +776,29 @@ const ViewMoreCard = ({
                   return (
                     <>
                       <div className='mcq-container'>
-                        <div className='question-container'>
+                        <div className={classes.questionContainer}>
                           <div>
                             {childQuestions.question_type === 1
                               ? 'MCQ SINGLE'
                               : 'MCQ MULTI'}
                           </div>
-                          <div style={{ color: '#014B7E' }}>
+                          <div>
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='assesmentAnswers'>Answers</div>
-                        <div className='question-container'>
+                        <div className={classes.assesmentAnswers}>Answers</div>
+                        <div className={classes.questionContainer}>
                           {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
                             <div>{obj}</div>
                           ))}
                         </div>
-                        <div className='resourceBulkDownload'>Options</div>
+                        <div className={classes.resourceBulkDownload}>Options</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
-                            <div className='question-container'>
+                            <div className={classes.questionContainer}>
                               {`OPTION${i + 1}:   ${obj[`option${i + 1}`]?.optionValue}`}
                               {`${obj[`option${i + 1}`]?.images}`?.length > 0 && (
                                 <div>
@@ -818,9 +847,9 @@ const ViewMoreCard = ({
 
         {periodDataForView?.question_type === 6 && (
           <div className='ccc'>
-            <div className='question-container'>
+            <div className={classes.questionContainer}>
               {Data?.map((p) => (
-                <div style={{ color: '#014B7E' }}>
+                <div>
                   {extractContent(p.question)}
                   {p?.question?.split('"').filter((str) => str.startsWith('https'))
                     .length > 0 && (
@@ -857,12 +886,12 @@ const ViewMoreCard = ({
               ))}
             </div>
 
-            <div className='assesmentAnswers'>Answers</div>
+            <div className={classes.assesmentAnswers}>Answers</div>
             {/* <Divider className='secondary-divider' /> */}
             <div>
               {Data?.[0]?.questionAnswer?.map((obj, index) => (
                 <>
-                  <div style={{ display: 'flex' }} className='question-container'>
+                  <div style={{ display: 'flex' }} className={classes.questionContainer}>
                     <div className='option'>{obj?.answer}</div>
                     <div className='option' style={{ marginLeft: '2rem' }}>
                       {obj.question}
@@ -872,10 +901,10 @@ const ViewMoreCard = ({
               ))}
             </div>
 
-            <div className='resourceBulkDownload'>Options</div>
+            <div className={classes.resourceBulkDownload}>Options</div>
             <div>
               {Data?.[0]?.options?.map((obj, i) => (
-                <div className='question-container'>
+                <div className={classes.questionContainer}>
                   {`OPTION${i + 1}:   ${obj?.optionValue}`}
                   {obj?.images?.length > 0 && (
                     <div>
@@ -909,7 +938,7 @@ const ViewMoreCard = ({
                 Match with the following{' '}
               </div>
               {Data?.[0]?.matrixOptions.map((obj, i) => (
-                <div className='question-container'>
+                <div className={classes.questionContainer}>
                   {`OPTION${i + 1}:   ${obj?.optionValue}`}
                 </div>
               ))}
@@ -919,9 +948,9 @@ const ViewMoreCard = ({
 
         {periodDataForView?.question_type === 7 && (
           <div className='ccc'>
-            <div className='question-container'>
+            <div className={classes.questionContainer}>
               {Data?.map((p) => (
-                <div style={{ color: '#014B7E' }}>
+                <div>
                   {extractContent(p?.question)}
                   {p?.question?.split('"').filter((str) => str.startsWith('https'))
                     ?.length > 0 && (
@@ -963,8 +992,8 @@ const ViewMoreCard = ({
                   return (
                     <>
                       <div>
-                        <div className='question-container'>
-                          <div style={{ color: '#014B7E' }}>
+                        <div className={classes.questionContainer}>
+                          <div>
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
@@ -972,10 +1001,10 @@ const ViewMoreCard = ({
                           </div>
                         </div>
 
-                        <div className='assesmentAnswers'>Answers</div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
 
-                        <div className='question-container'>
-                          <div style={{ color: '#014B7E' }}>
+                        <div className={classes.questionContainer}>
+                          <div>
                             {extractContent(childQuestions?.question_answer[0]?.answer)}
                           </div>
                         </div>
@@ -987,24 +1016,24 @@ const ViewMoreCard = ({
                   return (
                     <>
                       <div>
-                        <div className='question-container'>
-                          <div style={{ color: '#014B7E' }}>
+                        <div className={classes.questionContainer}>
+                          <div>
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        {/* <div className='resourceBulkDownload'>Answers</div>
-                        <div className='question-container'>
+                        {/* <div className={classes.resourceBulkDownload}>Answers</div>
+                        <div className={classes.questionContainer}>
                           {childQuestions?.question_answer[0]?.answer.map((obj, i) => (
                             <div>{obj}</div>
                           ))}
                         </div> */}
-                        <div className='assesmentAnswers'>Answers</div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
-                            <div className='question-container'>
+                            <div className={classes.questionContainer}>
                               {obj[`option${i + 1}`]?.optionValue}
                               {`${obj[`option${i + 1}`]?.images}`.length > 0 && (
                                 <div>
@@ -1051,27 +1080,27 @@ const ViewMoreCard = ({
                   return (
                     <>
                       <div>
-                        <div className='question-container'>
-                          <div style={{ color: '#014B7E' }}>
+                        <div className={classes.questionContainer}>
+                          <div>
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='assesmentAnswers'>Answers</div>
-                        <div className='question-container'>
+                        <div className={classes.assesmentAnswers}>Answers</div>
+                        <div className={classes.questionContainer}>
                           {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
                             <div>{obj}</div>
                           ))}
                         </div>
-                        <div className='resourceBulkDownload'>Options</div>
-                        <div className='question-container'>
+                        <div className={classes.resourceBulkDownload}>Options</div>
+                        <div className={classes.questionContainer}>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => {
                             return (
                               <div>
                                 {Object.keys(obj)[0] || ''} :{' '}
-                                {obj[Object.keys(obj)[0]]?.isChecked ? 'True' : 'False'}
+                                {obj[Object.keys(obj)[0]]?.optionValue ? 'True' : 'False'}
                               </div>
                             );
                           })}
@@ -1084,22 +1113,22 @@ const ViewMoreCard = ({
                   return (
                     <>
                       <div className='ccc'>
-                        <div className='question-container'>
-                          <div style={{ color: '#014B7E' }}>
+                        <div className={classes.questionContainer}>
+                          <div>
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='assesmentAnswers'>Answers</div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
                         <div>
                           {childQuestions?.question_answer[0]?.questionAnswer?.map(
                             (obj, index) => (
                               <>
                                 <div
                                   style={{ display: 'flex' }}
-                                  className='question-container'
+                                  className={classes.questionContainer}
                                 >
                                   <div className='option'>{obj?.answer}</div>
                                   <div className='option' style={{ marginLeft: '2rem' }}>
@@ -1111,10 +1140,10 @@ const ViewMoreCard = ({
                           )}
                         </div>
 
-                        <div className='resourceBulkDownload'>Options</div>
+                        <div className={classes.resourceBulkDownload}>Options</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
-                            <div className='question-container'>
+                            <div className={classes.questionContainer}>
                               {`OPTION${i + 1}:   ${obj?.optionValue}`}
                               {obj?.images?.length > 0 && (
                                 <div>
@@ -1154,7 +1183,7 @@ const ViewMoreCard = ({
                           </div>
                           {childQuestions?.question_answer[0]?.matrixOptions.map(
                             (obj, i) => (
-                              <div className='question-container'>
+                              <div className={classes.questionContainer}>
                                 {`OPTION${i + 1}:   ${obj?.optionValue}`}
                               </div>
                             )
@@ -1168,22 +1197,22 @@ const ViewMoreCard = ({
                   return (
                     <>
                       <div className='ccc'>
-                        <div className='question-container'>
-                          <div style={{ color: '#014B7E' }}>
+                        <div className={classes.questionContainer}>
+                          <div>
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='assesmentAnswers'>Answers</div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
                         <div>
                           {childQuestions?.question_answer[0]?.questionAnswer?.map(
                             (obj, index) => (
                               <>
                                 <div
                                   style={{ display: 'flex' }}
-                                  className='question-container'
+                                  className={classes.questionContainer}
                                 >
                                   <div className='option'>{obj?.answer}</div>
                                   <div className='option' style={{ marginLeft: '2rem' }}>
@@ -1194,10 +1223,10 @@ const ViewMoreCard = ({
                             )
                           )}
                         </div>
-                        <div className='resourceBulkDownload'>Options</div>
+                        <div className={classes.resourceBulkDownload}>Options</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
-                            <div className='question-container'>
+                            <div className={classes.questionContainer}>
                               {`OPTION${i + 1}:   ${obj?.optionValue}`}
                               {obj?.images?.length > 0 && (
                                 <div>
@@ -1237,7 +1266,7 @@ const ViewMoreCard = ({
                           </div>
                           {childQuestions?.question_answer[0]?.matchingOptions?.map(
                             (obj, i) => (
-                              <div className='question-container'>
+                              <div className={classes.questionContainer}>
                                 {`OPTION${i + 1}:   ${obj?.optionValue}`}
                                 {obj?.images?.length > 0 && (
                                   <div>
@@ -1285,29 +1314,29 @@ const ViewMoreCard = ({
                   return (
                     <>
                       <div className='mcq-container'>
-                        <div className='question-container'>
+                        <div className={classes.questionContainer}>
                           <div>
                             {childQuestions.question_type === 1
                               ? 'MCQ SINGLE'
                               : 'MCQ MULTI'}
                           </div>
-                          <div style={{ color: '#014B7E' }}>
+                          <div>
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
                             {extractContent(childQuestions?.question_answer[0]?.question)}
                           </div>
                         </div>
-                        <div className='assesmentAnswers'>Answers</div>
-                        <div className='question-container'>
+                        <div className={classes.assesmentAnswers}>Answers</div>
+                        <div className={classes.questionContainer}>
                           {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
                             <div>{obj}</div>
                           ))}
                         </div>
-                        <div className='resourceBulkDownload'>Options</div>
+                        <div className={classes.resourceBulkDownload}>Options</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
-                            <div className='question-container'>
+                            <div className={classes.questionContainer}>
                               {`OPTION${i + 1}:   ${obj[`option${i + 1}`]?.optionValue}`}
                               {`${obj[`option${i + 1}`]?.images}`?.length > 0 && (
                                 <div>
@@ -1356,10 +1385,10 @@ const ViewMoreCard = ({
 
         {periodDataForView.question_type === 8 && (
           <div>
-            <div className='question-container'>
+            <div className={classes.questionContainer}>
               {Data &&
                 Data?.map((p) => (
-                  <div style={{ color: '#014B7E' }}>
+                  <div>
                     {extractContent(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
                       ?.length > 0 && (
@@ -1395,18 +1424,18 @@ const ViewMoreCard = ({
                   </div>
                 ))}
             </div>
-            <div className='assesmentAnswers'>Answers</div>
-            <div className='question-container'>
+            <div className={classes.assesmentAnswers}>Answers</div>
+            <div className={classes.questionContainer}>
               {Data && Data?.[0]?.answer.map((obj, i) => <div>{obj}</div>)}
             </div>
-            <div className='resourceBulkDownload'>Options</div>
-            <div className='question-container'>
+            <div className={classes.resourceBulkDownload}>Options</div>
+            <div className={classes.questionContainer}>
               {Data &&
                 Data?.[0]?.options?.map((obj, i) => {
                   return (
                     <div>
                       {Object.keys(obj)[0] || ''} :{' '}
-                      {obj[Object.keys(obj)[0]]?.isChecked ? 'True' : 'False'}
+                      {obj[Object.keys(obj)[0]]?.optionValue ? 'True' : 'False'}
                     </div>
                   );
                 })}
@@ -1416,10 +1445,10 @@ const ViewMoreCard = ({
 
         {periodDataForView.question_type === 9 && (
           <div>
-            <div className='question-container'>
+            <div className={classes.questionContainer}>
               {Data &&
                 Data?.map((p) => (
-                  <div style={{ color: '#014B7E' }}>
+                  <div>
                     {extractContent(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
                       ?.length > 0 && (
@@ -1455,16 +1484,11 @@ const ViewMoreCard = ({
                   </div>
                 ))}
             </div>
-
-            {/* <div className='resourceBulkDownload'>Answers</div>
-            <div className='question-container'>
-              {Data && Data[0]?.answer.map((obj, i) => <div>{obj}</div>)}
-            </div> */}
-            <div className='assesmentAnswers'>Answers</div>
+            <div className={classes.assesmentAnswers}>Answers</div>
             <div>
               {Data &&
                 Data?.[0]?.options?.map((obj, i) => (
-                  <div className='question-container'>
+                  <div className={classes.questionContainer}>
                     {obj[`option${i + 1}`]?.optionValue}
                     {`${obj[`option${i + 1}`]?.images}`?.length > 0 && (
                       <div>
@@ -1500,10 +1524,10 @@ const ViewMoreCard = ({
         )}
         {periodDataForView.question_type === 10 && (
           <div>
-            <div className='question-container'>
+            <div className={classes.questionContainer}>
               {Data &&
                 Data?.map((p) => (
-                  <div style={{ color: '#014B7E' }}>
+                  <div>
                     {extractContent(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
                       ?.length > 0 && (
@@ -1540,47 +1564,44 @@ const ViewMoreCard = ({
                 ))}
             </div>
 
-            <div className='assesmentAnswers'>Answers</div>
+            <div className={classes.assesmentAnswers}>Answers</div>
 
-            <div className='question-container'>
+            <div className={classes.questionContainer}>
               {Data &&
                 Data?.map((p) => (
-                  <div style={{ color: '#014B7E' }}>{extractContent(p?.answer)}</div>
+                  <div>{extractContent(p?.answer)}</div>
                 ))}
             </div>
           </div>
         )}
       </div>
-      {/* {viewMoreData?.parent?.question_status === 1 ||
-      viewMoreData?.parent?.question_status === 3 ? ( */}
       {viewMoreData?.parent?.is_central ? null : (
         <div style={{ margin: '5px 15px 15px 15px' }}>
-          {viewMoreData?.parent?.question_status == 3 ? (
-            <Button
-              style={{ marginRight: '1rem', borderRadius: '10px' }}
-              onClick={(e) => handlePublish(viewMoreData)}
-              color='primary'
-              variant='contained'
-              size='small'
-            >
-              PUBLISH
-            </Button>
-          ) : null}
           {viewMoreData?.parent?.question_status == 2 ||
           viewMoreData?.parent?.question_status == 3 ? (
             <Button
-              style={{ marginRight: '1rem', borderRadius: '10px' }}
+              style={{ margin: '0.5rem', color: 'white', width: '100%' }}
               onClick={(e) => handleDelete(viewMoreData)}
               color='secondary'
               variant='contained'
-              size='small'
+              size='medium'
             >
               REJECT
             </Button>
           ) : null}
+          {viewMoreData?.parent?.question_status == 3 ? (
+            <Button
+              style={{ margin: '0.5rem', color: 'white', width: '100%' }}
+              onClick={(e) => handlePublish(viewMoreData)}
+              color='primary'
+              variant='contained'
+              size='medium'
+            >
+              PUBLISH
+            </Button>
+          ) : null}
         </div>
       )}
-      {/* ) : null} */}
     </Paper>
   );
 };

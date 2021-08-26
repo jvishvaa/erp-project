@@ -11,8 +11,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
-import hidefilter from '../../../assets/images/hidefilter.svg';
-import showfilter from '../../../assets/images/showfilter.svg';
+import BreadcrumbToggler from '../../../components/breadcrumb-toggler';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import TopFilters from './top-filters';
@@ -26,6 +25,30 @@ const useStyles = makeStyles((theme) => ({
     margin: '0px auto',
     boxShadow: 'none',
   },
+  filterDataHeader:{
+    color: theme.palette.secondary.main,
+  fontSize: "16px",
+  width: "95%",
+  display: "flex",
+  margin: "0 auto",
+  textTransform: "capitalize",
+  padding: "30px 0 15px 5px",
+  },
+  // divfilterData:{
+  //   '& :not':{
+  //     '&::after':{
+  //       content: " ",
+  //       height: "6px",
+  //       width: "6px",
+  //       backgroundColor:theme.palette.secondary.main,
+  //       borderRadius: "50%",
+  //       display: "inline-block",
+  //       margin: "0 10px",
+  //       verticalAlign: "baseline",
+  //     }
+     
+  //   }
+  // }
 }));
 
 const CreateQuestion = () => {
@@ -184,42 +207,14 @@ const CreateQuestion = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div className='breadCrumbFilterRow'>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Question Bank'
-              childComponentName='Create Question'
-            />
-          </div>
-          {!qId && (
-            <div className='hideShowFilterIcon'>
-              <div>
-                <IconButton
-                  disableRipple
-                  onClick={() => setIsTopFilterOpen(!isTopFilterOpen)}
-                >
-                  <div>
-                    {!isMobile && (
-                      <div className='hideShowFilterText'>
-                        {isTopFilterOpen ? 'Close Filter' : 'Expand Filter'}
-                      </div>
-                    )}
-                  </div>
-                  <div>
-                    <SvgIcon
-                      component={() => (
-                        <img
-                          style={{ height: '20px', width: '25px' }}
-                          src={isTopFilterOpen ? hidefilter : showfilter}
-                        />
-                      )}
-                    />
-                  </div>
-                </IconButton>
-              </div>
-            </div>
-          )}
-        </div>
+        <BreadcrumbToggler isFilter={isTopFilterOpen} setIsFilter={setIsTopFilterOpen}>
+          <CommonBreadcrumbs
+            componentName='Question Bank'
+            childComponentName='Create Question'
+            isAcademicYearVisible={true}
+          />
+        </BreadcrumbToggler>
+
         <div className={isTopFilterOpen ? 'showFiltersCreate' : 'hideFiltersCreate'}>
           <TopFilters
             editData={editData}
@@ -230,30 +225,28 @@ const CreateQuestion = () => {
         </div>
         {!isTopFilterOpen && <Divider style={{ width: '100%' }} />}
         {isFilter ? (
-          <div>
-            <Paper className={classes.root}>
-              <div className='filterDataHeader'>
-                <div className='divfilterData'>
-                  {filterDataDisplay?.grade?.grade__grade_name}
-                </div>
-                <div className='divfilterData'>
-                  {filterDataDisplay?.subject?.subject_name}
-                </div>
-                <div className='divfilterData'>
-                  {filterDataDisplay?.chapter?.chapter_name}
-                </div>
-                <div className='divfilterData'>{filterDataDisplay?.topic?.topic_name}</div>
+          <Paper className={classes.root}>
+            <div className={classes.filterDataHeader}>
+              <div className='divfilterData'>
+                {filterDataDisplay?.grade?.grade__grade_name}
               </div>
-              <QuestionTypeFilters
-                editData={editData}
-                setEditData={setEditData}
-                setLoading={setLoading}
-                attributes={filterDataDisplay || {}}
-                setIsTopFilterOpen={setIsTopFilterOpen}
-                filterDataDisplay={filterDataDisplay}
-              />
-            </Paper>
-          </div>
+              <div className='divfilterData'>
+                {filterDataDisplay?.subject?.subject_name}
+              </div>
+              <div className='divfilterData'>
+                {filterDataDisplay?.chapter?.chapter_name}
+              </div>
+              <div className='divfilterData'>{filterDataDisplay?.topic?.topic_name}</div>
+            </div>
+            <QuestionTypeFilters
+              editData={editData}
+              setEditData={setEditData}
+              setLoading={setLoading}
+              attributes={filterDataDisplay || {}}
+              setIsTopFilterOpen={setIsTopFilterOpen}
+              filterDataDisplay={filterDataDisplay}
+            />
+          </Paper>
         ) : (
           <div className='periodDataUnavailable'>
             <SvgIcon

@@ -34,11 +34,8 @@ import SubjectCard from './subjects-card';
 import ClearAllIcon from '@material-ui/icons/ClearAll';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    margin: '0 auto',
-    boxShadow: 'none',
-  },
+  root: theme.commonTableRoot,
+
   container: {
     maxHeight: '70vh',
     width: '100%',
@@ -440,19 +437,17 @@ const TopicTable = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div style={{ width: '95%', margin: '20px auto' }}>
-          <CommonBreadcrumbs
-            componentName='Master Management'
-            childComponentName='Topic List'
-            childComponentNameNext={
-              addFlag && !tableFlag
-                ? 'Add Topic'
-                : editFlag && !tableFlag
-                ? 'Edit Topic'
-                : null
-            }
-          />
-        </div>
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Topic List'
+          childComponentNameNext={
+            addFlag && !tableFlag
+              ? 'Add Topic'
+              : editFlag && !tableFlag
+              ? 'Edit Topic'
+              : null
+          }
+        />
 
         {!tableFlag && addFlag && !editFlag && (
           <CreateTopic
@@ -611,24 +606,23 @@ const TopicTable = () => {
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    className='labelColor buttonModifiedDesign'
+                    className='labelColor cancelButton'
                     size='medium'
                     title='Clear All'
                     onClick={handleClearFilter}
                   >
-                    CLEAR ALL
+                    Clear All
                   </Button>
                 </Grid>
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    style={{ color: 'white' }}
+                    style={{ color: 'white', width: '100%' }}
                     color='primary'
-                    className='buttonModifiedDesign'
                     size='medium'
                     onClick={handleFilter}
                   >
-                    FILTER
+                    Filter
                   </Button>
                 </Grid>
                 <div>
@@ -654,8 +648,7 @@ const TopicTable = () => {
                     variant='contained'
                     color='primary'
                     size='small'
-                    style={{ color: 'white' }}
-                    className='buttonModifiedDesign'
+                    style={{ color: 'white', width: '100%' }}
                     title='Add Topic'
                     onClick={handleAddSubject}
                   >
@@ -705,13 +698,13 @@ const TopicTable = () => {
                                   }}
                                   title='Delete Topic'
                                 >
-                                  <DeleteOutlinedIcon style={{ color: '#fe6b6b' }} />
+                                  <DeleteOutlinedIcon />
                                 </IconButton>
                                 <IconButton
                                   onClick={(e) => handleEditSubject(topic)}
                                   title='Edit Topic'
                                 >
-                                  <EditOutlinedIcon style={{ color: '#fe6b6b' }} />
+                                  <EditOutlinedIcon />
                                 </IconButton>
                               </TableCell>
                             </TableRow>
@@ -768,12 +761,7 @@ const TopicTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle
-            style={{ cursor: 'move', color: '#014b7e' }}
-            id='draggable-dialog-title'
-          >
-            Delete Topic
-          </DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Delete Topic</DialogTitle>
           <DialogContent>
             <DialogContentText>
               {`Confirm Delete Topic : ${subjectName}`}

@@ -273,50 +273,36 @@ const history=useHistory()
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          className='custom_button_master labelColor'
+          style={{ width: '100%' }}
+          className='cancelButton labelColor'
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          style={{ color: 'white' }}
+          style={{color:'white', width: '100%' }}
           color='primary'
-          className='custom_button_master'
           size='medium'
           type='submit'
           onClick={handleFilter}
         >
-          FILTER
+          Filter
         </Button>
       </Grid>
-      {/* <Grid item xs={6} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
-        <Button
-          variant='contained'
-          style={{ color: 'white' }}
-          color='primary'
-          className='custom_button_master'
-          size='medium'
-          type='submit'
-          onClick={()=>history.push("/create/general-dairy")}
-        >
-          CREATE GENERAL DAIRY
-        </Button>
-      </Grid> */}
       <Grid item xs={6} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          style={{ color: 'white' }}
+          style={{color:'white', width: '100%' }}
           color='primary'
-          className='custom_button_master'
           size='medium'
           type='submit'
           onClick={()=>history.push("/create/daily-diary")}
         >
-          CREATE DAILY DIARY
+          Create Daily Diary
         </Button>
       </Grid>
     </Grid>

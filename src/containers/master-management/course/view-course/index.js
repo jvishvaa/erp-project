@@ -37,8 +37,6 @@ const CourseView = () => {
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
-  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
-  const widerWidth = isMobile ? '98%' : '95%';
   const [loading, setLoading] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [periodColor, setPeriodColor] = useState(false);
@@ -61,7 +59,10 @@ const CourseView = () => {
     setLoading(true);
     setSendGrade(gradeIds);
     setCourseData([]);
-    if (gradeIds.length !== 0 && (tabMenuval === 0 || tabMenuval === undefined || tabMenuval === null)) {
+    if (
+      gradeIds.length !== 0 &&
+      (tabMenuval === 0 || tabMenuval === undefined || tabMenuval === null)
+    ) {
       axiosInstance
         .get(
           `${endpoints.onlineCourses.courseList}?grade=${gradeIds}&page=${page}&page_size=${limit}`
@@ -124,7 +125,7 @@ const CourseView = () => {
     if (gradeIds.length === 0) {
       setAlert('warning', 'Select Grade');
     }
-  }
+  };
 
   const handleClearFilter = () => {
     setSendGrade([]);
@@ -152,39 +153,31 @@ const CourseView = () => {
       {sendGrade.length !== 0 && loading ? <Loading message='Loading...' /> : null}
 
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='Master Management'
-              childComponentName='Course List'
-            />
-          </div>
-        </div>
-        <div>
-          <CourseFilter
-            handleCourseList={handleCourseList}
-            handleClearFilter={handleClearFilter}
-            setCourseData={setCourseData}
-            setPageFlag={setPageFlag}
-            tabValue={tabValue}
-          />
-        </div>
-        <div>
-          <TabPanel
-            handleCourseList={handleCourseList}
-            sendGrade={sendGrade}
-            setTabValue={setTabValue}
-            tabValue={tabValue}
-          />
-        </div>
+        <CommonBreadcrumbs
+          componentName='Master Management'
+          childComponentName='Course List'
+        />
+        <CourseFilter
+          handleCourseList={handleCourseList}
+          handleClearFilter={handleClearFilter}
+          setCourseData={setCourseData}
+          setPageFlag={setPageFlag}
+          tabValue={tabValue}
+        />
+        <TabPanel
+          handleCourseList={handleCourseList}
+          sendGrade={sendGrade}
+          setTabValue={setTabValue}
+          tabValue={tabValue}
+        />
         <Paper className={classes.root}>
           {courseData && courseData.length > 0 ? (
             <Grid
               container
               style={
                 isMobile
-                  ? { width: '95%', margin: '20px auto' }
-                  : { width: '100%', margin: '20px auto' }
+                  ? { width: '95%', margin: '0 auto 20px auto' }
+                  : { width: '100%', margin: '0 auto 20px auto' }
               }
               spacing={5}
             >

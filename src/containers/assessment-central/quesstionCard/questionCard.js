@@ -187,9 +187,8 @@ const QuestionCard = (props) => {
 
           <Button
             variant='contained'
-            style={{ color: 'white' }}
+            style={{color:'white', width: '100%' }}
             color='primary'
-            className='custom_button_master modifyDesign'
             size='small'
             onClick={(e) => handleViewMore(result)}
           >

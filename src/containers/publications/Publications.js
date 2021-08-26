@@ -139,6 +139,39 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(1),
     paddingBottom: theme.spacing(1),
   },
+  tabletopHeader:{
+    display: "flex",
+    flexDirection: "row",
+    marginLeft: "1%",
+  },
+  dot:{
+    height: "7px",
+    width: "7px",
+    backgroundColor: theme.palette.secondary.main,
+    borderRadius: "50%",
+    display: "inline-block",
+    margin: "10px 7px",
+  },
+  tableHeadedata:{
+    fontSize: "19px",
+    color: theme.palette.secondary.main,
+    fontWeight: 600,
+    // fontFamily: $font-roboto,
+  },
+  filter :{
+    color: theme.palette.secondary.main,
+    fontSize: "11px",
+    fontWeight: 600,
+    marginRight: "4px",
+    cursor: "pointer",
+  },
+  textFixed:{
+    color: theme.palette.secondary.main,
+    fontSize: "20px",
+    padding: "13px",
+    fontFamily: "roboto"
+  }
+
 }));
 
 const StyledClearButton = withStyles({
@@ -161,9 +194,9 @@ const StyledButton = withStyles({
   iconSize: {},
 })(Button);
 
-const StyledFilterButton = withStyles({
+const StyledFilterButton = withStyles((theme)=>({
   root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: theme.palette.primary.main,
     color: '#FFFFFF',
     height: '42px',
     borderRadius: '10px',
@@ -171,14 +204,14 @@ const StyledFilterButton = withStyles({
     marginLeft: '20px',
     marginTop: 'auto',
     '&:hover': {
-      backgroundColor: '#FF6B6B',
+      backgroundColor: theme.palette.primary.main,
     },
   },
   startIcon: {
     fill: '#FFFFFF',
     stroke: '#FFFFFF',
   },
-})(Button);
+}))(Button);
 
 const Publications = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -691,7 +724,7 @@ const Publications = (props) => {
                                 </DialogTitle>
 
                                 <DialogActions>
-                                  <Button onClick={handleClose1} color='primary'>
+                                  <Button variant='contained' onClick={handleClose1} color='primary'>
                                     cancel
                                   </Button>
                                   <Button
@@ -700,7 +733,7 @@ const Publications = (props) => {
                                       handleClose1();
                                     }}
                                     color='primary'
-                                    autoFocus
+                                    variant='contained'
                                   >
                                     Delete
                                   </Button>
@@ -732,9 +765,9 @@ const Publications = (props) => {
                               </Typography>
                               <Typography>
                                 <Button
-                                  size='small'
-                                  type='submit'
+                                variant="contained"
                                   color='primary'
+                                  size='small'
                                   style={{ paddingLeft: '50px', paddingRight: '50px' }}
                                   onClick={(e) => {
                                     handleRead(item.id);
@@ -800,7 +833,7 @@ const Publications = (props) => {
                               </DialogTitle>
 
                               <DialogActions>
-                                <Button onClick={handleClose1} color='primary'>
+                                <Button onClick={handleClose1} style ={{color:"white"}} color='primary' variant="contained">
                                   cancel
                                 </Button>
                                 <Button
@@ -810,6 +843,8 @@ const Publications = (props) => {
                                   }}
                                   color='primary'
                                   autoFocus
+                                  style ={{color:"white"}}
+                                  variant="contained"
                                 >
                                   Delete
                                 </Button>
@@ -854,11 +889,12 @@ const Publications = (props) => {
                                 size='small'
                                 type='submit'
                                 color='primary'
+                                variant="contained"
                                 onClick={(e) => {
                                   handleRead(item.id);
                                 }}
                               >
-                                <span style={{ fontSize: '13px' }}> READ</span>
+                                <span style={{ color : "white" ,fontSize: '13px' }}> READ</span>
                               </Button>
                             </Typography>
                           </Grid>
@@ -967,6 +1003,7 @@ const Publications = (props) => {
                                   size='small'
                                   type='submit'
                                   color='primary'
+                                  variant = "contained"
                                   style={{ paddingLeft: '50px', paddingRight: '50px' }}
                                   onClick={(e) => {
                                     handleRead(item.id);
@@ -1479,6 +1516,7 @@ const Publications = (props) => {
                                   size='small'
                                   type='submit'
                                   color='primary'
+                                  variant = "contained"
                                   style={{ paddingLeft: '50px', paddingRight: '50px' }}
                                   onClick={(e) => {
                                     handleRead(item.id);
@@ -1606,6 +1644,7 @@ const Publications = (props) => {
                                 size='small'
                                 type='submit'
                                 color='primary'
+                                variant = "contained"
                                 onClick={(e) => {
                                   handleRead(item.id);
                                 }}
@@ -1727,6 +1766,7 @@ const Publications = (props) => {
                                   size='small'
                                   type='submit'
                                   color='primary'
+                                  variant = "contained"
                                   style={{ paddingLeft: '50px', paddingRight: '50px' }}
                                   onClick={(e) => {
                                     handleRead(item.id);
@@ -1851,6 +1891,8 @@ const Publications = (props) => {
                                 <Button
                                   size='small'
                                   type='submit'
+                                  variant = "contained"
+                                  color="primary"
                                   style={{ margin: '2%' }}
                                   onClick={(e) => {
                                     handleRead(item.id);
@@ -1861,6 +1903,7 @@ const Publications = (props) => {
                                 <Button
                                   size='small'
                                   type='submit'
+                                  color="primary"
                                   onClick={(e) => {
                                     handlePublish(item.id);
                                   }}
@@ -2148,6 +2191,7 @@ const Publications = (props) => {
                                   size='small'
                                   type='submit'
                                   color='primary'
+                                  variant = "contained"
                                   style={{ margin: '2%' }}
                                   onClick={(e) => {
                                     handleRead(item.id);
@@ -2241,7 +2285,7 @@ const Publications = (props) => {
                         >
                           {counter === 2 ? (
                             <>
-                              <div className='text-fixed'>Subject</div>
+                              <div className={classes.textFixed}>Subject</div>
                               <div className='inner-grade-container'>
                                 <div className='change-grade-options'>
                                   <Select
@@ -2265,17 +2309,6 @@ const Publications = (props) => {
                                       ))}
                                   </Select>
                                 </div>
-                                {/* <div className='text-fixed-last'>
-                                  Expand
-                                  <IconButton
-                                    aria-label='delete'
-                                    onClick={() => setCounter(counter - 1)}
-                                    size='small'
-                                  >
-                                    <ArrowBackIcon className='arrow-button' />
-                                    <ArrowForwardIcon className='arrow-button' />
-                                  </IconButton>
-                                </div> */}
                               </div>
                             </>
                           ) : (
@@ -2309,7 +2342,6 @@ const Publications = (props) => {
                       </StyledFilterButton>
                       <StyledFilterButton
                         variant='contained'
-                        color='secondary'
                         className={classes.filterButton}
                         style={{ fontSize: '13px' }}
                         onClick={(e) => {
@@ -2325,7 +2357,7 @@ const Publications = (props) => {
                           handleFilter(false);
                         }}
                       >
-                        <div className='filter'>HIDE FILTER</div>
+                        <div className={classes.filter}>HIDE FILTER</div>
                         <img src={FilterImage} />
                       </div>
                     </span>
@@ -2366,7 +2398,7 @@ const Publications = (props) => {
                         >
                           {counter === 2 ? (
                             <>
-                              <div className='text-fixed1'>Subject</div>
+                              <div className={classes.textFixed}>Subject</div>
                               <div className='inner-grade-container1'>
                                 <div className='change-grade-options1'>
                                   <Select
@@ -2444,7 +2476,7 @@ const Publications = (props) => {
                             handleFilter(false);
                           }}
                         >
-                          <div className='filter'>HIDE FILTER</div>
+                          <div className={classes.filter}>HIDE FILTER</div>
                           <img src={FilterImage} />
                         </div>
                       </div>
@@ -2476,10 +2508,10 @@ const Publications = (props) => {
 
             <br />
             <Grid container direction='row'>
-              <div className='table-top-header'>
-                <div className='table-header-data'>{academicYear}</div>
-                <span class='dot'></span>
-                <div className='table-header-data'>{subjectID}</div>
+              <div className={classes.tabletopHeader}>
+                <div className={classes.tableHeadedata}>{academicYear}</div>
+                <span class={classes.dot}></span>
+                <div className={classes.tableHeadedata}>{subjectID}</div>
               </div>
             </Grid>
             <br />

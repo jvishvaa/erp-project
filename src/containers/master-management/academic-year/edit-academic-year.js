@@ -26,7 +26,10 @@ const EditAcademicYear = ({ id, year, handleGoBack, setLoading }) => {
             handleGoBack();
             setSessionYear('');
             setLoading(false);
-            setAlert('success', ` Academic Year ${result.data.message || result.data.msg}`);
+            setAlert(
+              'success',
+              ` Academic Year ${result.data.message || result.data.msg}`
+            );
           } else {
             setLoading(false);
             setAlert('error', result.data.message || result.data.msg);
@@ -65,7 +68,7 @@ const EditAcademicYear = ({ id, year, handleGoBack, setLoading }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            className='custom_button_master labelColor'
+            className='cancelButton labelColor'
             size='medium'
             onClick={handleGoBack}
           >
@@ -75,9 +78,8 @@ const EditAcademicYear = ({ id, year, handleGoBack, setLoading }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            style={{ color: 'white' }}
+            style={{ color: 'white', width: '100%' }}
             color='primary'
-            className='custom_button_master'
             size='medium'
             type='submit'
           >

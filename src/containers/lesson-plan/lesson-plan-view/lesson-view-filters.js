@@ -12,6 +12,15 @@ import axios from 'axios';
 import './lesson.css';
 import { useLocation } from 'react-router-dom';
 import { getModuleInfo } from '../../../utility-functions';
+import { makeStyles } from '@material-ui/core/styles';
+const useStyles = makeStyles((theme) => ({
+  overviewSynopsisTag : {
+    fontSize: "16px",
+    fontWeight:"600",
+     color: theme.palette.secondary.main,
+  }
+
+ }))
 
 const LessonViewFilters = ({
   handlePeriodList,
@@ -47,6 +56,8 @@ const LessonViewFilters = ({
   const [centralGsMappingId, setCentralGsMappingId] = useState();
   let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
   const [erpYear, setErpYear] = useState({});
+  const classes = useStyles();
+
   const [filterData, setFilterData] = useState({
     academic: '',
     branch: '',
@@ -560,11 +571,12 @@ const LessonViewFilters = ({
       >
         <Button
           variant='contained'
-          className='custom_button_master labelColor modifyDesign'
+          className='labelColor cancelButton'
+          style={{ width: '100%' }}
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       {isMobile && <Grid item xs={3} />}
@@ -572,31 +584,31 @@ const LessonViewFilters = ({
       <Grid item xs={12} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          style={{ color: 'white' }}
+          style={{ color: 'white', width: '100%' }}
           color='primary'
-          className='custom_button_master modifyDesign'
           size='medium'
           onClick={handleFilter}
         >
-          FILTER
+          Filter
         </Button>
       </Grid>
       {overviewSynopsis?.map((obj) => (
         <Grid item xs={6} sm={4} className={isMobile ? '' : 'addButtonPadding'}>
           <a
             className='underlineRemove'
+           
             onClick={() => {
+             
               const fileSrc = `${endpoints.lessonPlan.s3}${obj?.media_file[0]}`;
               openPreview({
                 currentAttachmentIndex: 0,
                 attachmentsArray: [
                   {
                     src: fileSrc,
+                    
                     name: `${
                       obj.lesson_type === '1'
-                        ? location.pathname === '/lesson-plan/teacher-view'
-                          ? 'Portion Document'
-                          : ''
+                        ? 'Portion Document'
                         : 'Yearly Curriculum on the ERP (new)'
                     }`,
                     extension: '.' + fileSrc.split('.')[fileSrc.split('.').length - 1],
@@ -606,25 +618,25 @@ const LessonViewFilters = ({
             }}
           >
             <div className='overviewSynopsisContainer'>
-              <div className='overviewSynopsisTag'>
+             
+              <div className={classes.overviewSynopsisTag}>
                 {obj.lesson_type === '1'
-                  ? location.pathname === '/lesson-plan/teacher-view'
-                    ? 'Portion Document'
-                    : ''
+                  ? 'Portion Document'
                   : 'Yearly Curriculum on the ERP (new)'}
               </div>
-              {location.pathname === '/lesson-plan/teacher-view' ||
-              obj.lesson_type === '2' ? (
-                <div className='overviewSynopsisIcon'>
-                  <SvgIcon component={() => <VisibilityIcon color='primary' />} />
-                </div>
-              ) : (
-                <></>
-              )}
+              <div className='overviewSynopsisIcon'>
+                <SvgIcon
+                  component={() => (
+                   
+                    <VisibilityIcon color='primary' />
+                  )}
+                />
+              </div>
             </div>
           </a>
         </Grid>
       ))}
+
     </Grid>
   );
 };

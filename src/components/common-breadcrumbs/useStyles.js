@@ -4,13 +4,13 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    width: '98%',
-    margin: '0 1%'
+    width: '96%',
+    margin: '1% auto',
   },
   navigationIcon: {
     marginLeft: theme.spacing(-1),
     marginRight: theme.spacing(-1),
-    color: '#FF6B6B',
+    color: theme.palette.primary.main,
     fontSize: '30px',
   },
   button: {
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
       cursor: 'pointer',
       backgroundColor: 'transparent',
     },
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     fontWeight: 'bold',
     fontSize: '18px',
     fontFamily: 'Raleway SemiBold',

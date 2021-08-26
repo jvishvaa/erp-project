@@ -23,9 +23,6 @@ border-radius: 10px;
     .rdrDateDisplayWrapper{
         display: none;
     }
-    .rdrStartEdge, .rdrEndEdge{
-        color: #FF6B6B !important;
-    }
     .rdrInRange{
         color: #FFCBCB !important;
     }
@@ -42,7 +39,7 @@ border-radius: 10px;
         outline: none !important;
     }
     .rdrDayNumber {
-        color: #014B7E !important;
+        // color: #014B7E !important;
     }&:hover{
         background-color: #FFFF !important;
     }

@@ -431,8 +431,14 @@ const CustomScopeModal = ({
       <Grid container sm={12} justify='flex-end' mx={5}>
         <Grid item>
           <Box px={5}>
-            <Button className='disabled-btn' onClick={onResetInputs}>
-              CLEAR ALL
+            <Button
+              variant='contained'
+              size='medium'
+              className='labelColor cancelButton'
+              style={{ width: '100%' }}
+              onClick={onResetInputs}
+            >
+              Clear All
             </Button>
           </Box>
         </Grid>

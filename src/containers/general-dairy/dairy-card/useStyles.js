@@ -2,16 +2,14 @@ import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    border: '1px solid',
-    borderColor:'#E2E2E2',
+    border: '1px solid #E2E2E2',
     padding: '0.9rem',
     borderRadius: '10px',
     width: '105%',
     boxShadow: 'none',
   },
   selectedRoot: {
-    border: '1px solid',
-    borderColor:'#ff6b6b',
+    border: `1px solid ${theme.palette.primary.main}`,
     background: '#FCEEEE',
     padding: '0.9rem',
     borderRadius: '10px',
@@ -19,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     fontSize: '1.1rem',
-    color: '#014B7E',
+    // color: '#014B7E',
   },
   content: {
     fontSize: '0.9rem',
@@ -27,6 +25,21 @@ const useStyles = makeStyles((theme) => ({
   textRight: {
     textAlign: 'right',
   },
+  topictitle: {
+    color: theme.palette.primary.main,
+  },
+  createdby: {
+    color: theme.palette.secondary.main,
+  },
+  tooltiptext: theme.toolTipText,
+  tooltip: {
+    display: "flex",
+    backgroundColor: "#F9F9F9",
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    marginBottom: "10%",
+  }
 }));
 
 export default useStyles;

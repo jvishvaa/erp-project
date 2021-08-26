@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Autocomplete } from '@material-ui/lab';
 import { TextField } from '@material-ui/core';
-import './days-filter.css';
+import useStyles from './useStyles';
 
 const DaysFilterContainer = (props) => {
+  const classes = useStyles();
   const { selectedLimit, collectData, setCollectData, firstHit, clearFlag } = props;
 
   const [daysDisplay, setDaysDisplay] = useState([]);
@@ -108,7 +109,7 @@ const DaysFilterContainer = (props) => {
   };
 
   return (
-    <div className='daysFilterWrapper'>
+    <div className={classes.daysFilterWrapper}>
       <div className='daysTag'>Days</div>
       {daysDisplay?.length > 0 ? (
         <div className='daysDisplayWrapper'>

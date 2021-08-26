@@ -9,6 +9,7 @@ import {
   TextField,
   Grid,
   withStyles,
+  makeStyles
 } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import cuid from 'cuid';
@@ -34,19 +35,36 @@ const validateQuestions = (obj) => {
   return { error, errorObj };
 };
 
-const StyledOutlinedButton = withStyles({
+const useStyles = makeStyles((theme) => ({
+  headerText: {
+    color: theme.palette.secondary.main,
+    fontWeight: 600,
+    fontSize: "1rem",
+    ['@media screen(min-width:780px)']: {
+      fontSize: "0.85rem",
+    }
+  },navCard:{
+    border : `1px solid ${theme.palette.primary.main}`
+  }
+}))
+const StyledOutlinedButton = withStyles((theme)=>({
   root: {
     height: '42px',
-    color: '#FE6B6B',
-    border: '1px solid #FF6B6B',
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
     backgroundColor: 'transparent',
+    '& .MuiSvgIcon-root': {
+      color: theme.palette.primary.main,
+      fontSize:'20px'
+    },
     '@media (min-width: 600px)': {
       marginRight: '10px',
     },
   },
-})(Button);
+}))(Button);
 
 const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
+  const classes = useStyles()
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [errors, setErrors] = useState({ name: '', description: '' });
@@ -215,28 +233,28 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
 
   return (
     <Layout>
-      <div className='add-homework-container-coordinator'>
-        <CommonBreadcrumbs
+      <CommonBreadcrumbs
           componentName='Homework'
           childComponentName='Add Homework'
           isAcademicYearVisible={true}
         />
+      <div className={ `${classes.ahcc} add-homework-container-coordinator`}>
         <Grid container spacing={2} className='add-homework-inner-container'>
           <Grid item xs={12} className='add-homework-title-container' md={3}>
             <div className='nav-cards-container'>
               <div
-                className='nav-card'
+                className={` ${classes.navCard} nav-card`}
                 onClick={() => {
                   history.push('/homework/coordinator/');
                 }}
               >
-                <div className='header-text text-center non_selected_homework_type_item'>
+                <div className={` ${classes.headerText} text-center non_selected_homework_type_item`}>
                   All Homeworks
                 </div>
               </div>
-              <div className='nav-card'>
-                <div className='header-text text-center'>{params.date}</div>
-                <div className='header-text text-center'>{params.subject}</div>
+              <div className={` ${classes.navCard} nav-card`}>
+                <div className={`${classes.headerText} text-center`}>{params.date}</div>
+                <div className={`${classes.headerText} text-center`}>{params.subject}</div>
               </div>
             </div>
           </Grid>
@@ -317,36 +335,25 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
               <Grid container item xs={12}>
                 <Grid item xs={12} md={6} className='form-field'>
                   <div className='finish-btn-container'>
-                    {/**
-                     * <Button
-                      startIcon={<AddCircleOutlineIcon />}
-                      onClick={() => {
-                        setQueIndexCounter(queIndexCounter + 1);
-                        addNewQuestion(queIndexCounter + 1);
-                      }}
-                      title='Add Question'
-                      className='btn add-quesiton-btn outlined-btn'
-                      color='primary'
-                      variant='outlined'
-                    >
-                      Add another question
-                    </Button>
-                    */}
                     <StyledOutlinedButton
-                      startIcon={<AddCircleOutlineIcon />}
+                      startIcon={<AddCircleOutlineIcon color="primary"/>}
                       onClick={() => {
                         setQueIndexCounter(queIndexCounter + 1);
                         addNewQuestion(queIndexCounter + 1);
                       }}
                       fullWidth
                     >
-                      Add another question
+                      Add Another Question
                     </StyledOutlinedButton>
                   </div>
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <div className='finish-btn-container'>
-                    <Button className='btn' color='primary' onClick={handleAddHomeWork}>
+                    <Button
+                    style={{color: 'white', width: '100%' }}  
+                    color='primary' 
+                    variant = "contained" 
+                    onClick={handleAddHomeWork}>
                       Finish
                     </Button>
                   </div>

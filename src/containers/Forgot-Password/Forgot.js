@@ -143,7 +143,7 @@ function Forgot({ onLogin, history, aolOnLogin }) {
                 }}
                 className='forgot'
               >
-                Sign in
+                <Typography color='secondary'>Sign In</Typography>
               </div>
             </form>
           </div>

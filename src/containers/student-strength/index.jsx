@@ -16,7 +16,18 @@ import TotalStudentWiseDetails from './totalStudentWiseDetails';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import filterImage from '../../assets/images/unfiltered.svg';
 import Layout from '../Layout';
+import { makeStyles } from '@material-ui/core';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 
+const useStyles = makeStyles((theme) => ({
+  studentStrenghtDownloadButton: {
+    width: '100%',
+    color: theme.palette.secondary.main,
+    border: `1px solid ${theme.palette.primary.main} !important`,
+    backgroundColor: "white !important",
+  }
+
+}));
 const StudentStrength = ({ history }) => {
   const [acadminYearList, setAcadminYearList] = useState([]);
   const [branchList, setBranchList] = useState([]);
@@ -30,6 +41,7 @@ const StudentStrength = ({ history }) => {
   const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const classes = useStyles();
 
   const handlePagination = (event, page) => {
     setPage(page);
@@ -40,14 +52,12 @@ const StudentStrength = ({ history }) => {
   useEffect(() => {
     setHRef([
       {
-        csv: `${endpoints.studentListApis.downloadExcelAllstudents}?academic_year_id=${
-          selectedAcademicYear && selectedAcademicYear.id
-        }&export_type=csv`,
+        csv: `${endpoints.studentListApis.downloadExcelAllstudents}?academic_year_id=${selectedAcademicYear && selectedAcademicYear.id
+          }&export_type=csv`,
       },
       {
-        csv: `${endpoints.studentListApis.downloadBranchWiseStudent}?academic_year_id=${
-          selectedAcademicYear && selectedAcademicYear.id
-        }&branch_id=${selectedBranch?.branch?.id}
+        csv: `${endpoints.studentListApis.downloadBranchWiseStudent}?academic_year_id=${selectedAcademicYear && selectedAcademicYear.id
+          }&branch_id=${selectedBranch?.branch?.id}
           &export_type=csv`,
       },
     ]);
@@ -104,10 +114,8 @@ const StudentStrength = ({ history }) => {
     console.log(selectedBranch, 'branch');
     axiosInstance
       .get(
-        `${endpoints.studentListApis.branchWiseStudentCount}?academic_year_id=${
-          selectedAcademicYear && selectedAcademicYear.id
-        }&branch_id=${selectedBranch && selectedBranch.branch.id}&page_number=${
-          pageNumber || 1
+        `${endpoints.studentListApis.branchWiseStudentCount}?academic_year_id=${selectedAcademicYear && selectedAcademicYear.id
+        }&branch_id=${selectedBranch && selectedBranch.branch.id}&page_number=${pageNumber || 1
         }&page_size=${15}`
       )
       .then((result) => {
@@ -128,24 +136,11 @@ const StudentStrength = ({ history }) => {
 
   return (
     <Layout>
+      <CommonBreadcrumbs
+        componentName='School Strength'
+      />
       <div style={{ width: '100%', overflow: 'hidden' }}>
         <Grid container spacing={2} className='studentStrenghtBody'>
-          <Grid item md={12} xs={12}>
-            <Grid container spacing={2} justify='middle' className='signatureNavDiv'>
-              <Grid item md={12} xs={12} style={{ display: 'flex' }}>
-                <button
-                  type='button'
-                  className='SignatureNavigationLinks'
-                  onClick={() => history.push('/dashboard')}
-                >
-                  Dashboard
-                </button>
-                <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                <span className='SignatureNavigationLinks'>School Strength</span>
-              </Grid>
-            </Grid>
-          </Grid>
-
           <Grid item md={12} xs={12} className='studentStrengthFilterDiv'>
             <Grid container spacing={2}>
               <Grid item md={4} xs={12}>
@@ -188,8 +183,7 @@ const StudentStrength = ({ history }) => {
                       const selectedId = value.branch.id;
                       setSelectedBranch(value);
                       callApi(
-                        `${endpoints.academics.grades}?session_year=${
-                          selectedAcademicYear.id
+                        `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id
                         }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
                         'gradeList'
                       );
@@ -218,51 +212,50 @@ const StudentStrength = ({ history }) => {
                 <Grid item md={1} xs={12}>
                   <Button
                     variant='contained'
-                    size='small'
-                    fullWidth
-                    className='studentStrenghtFilterButton'
+                    size='medium'
+                    style={{ width: '100%' }}
+                    className='cancelButton labelColor'
                     onClick={() => handleClearFilter()}
                   >
-                    CLEAR ALL
+                    Clear All
                   </Button>
                 </Grid>
                 <Grid item md={1} xs={12}>
                   <Button
                     variant='contained'
-                    size='small'
+                    size='medium'
                     color='primary'
-                    fullWidth
+                    style={{ color: 'white', width: '100%' }}
                     onClick={() => {
                       setPage(1);
                       handleFilter(1);
                       setSelectedCard('');
                     }}
-                    className='studentStrenghtFilterButton'
                   >
-                    FILTER
+                    Filter
                   </Button>
                 </Grid>
                 <Grid item md={3} />
 
                 <Grid item>
                   <Button
-                    size='small'
+                    size='medium'
                     href={hRef && hRef[0] && hRef[0].csv}
-                    className='studentStrenghtDownloadButton'
+                    className={classes.studentStrenghtDownloadButton}
                   >
-                    Download all Branch excel
+                    Download All Branch Excel
                   </Button>
                 </Grid>
 
                 <Grid item>
                   <Button
                     variant='contained'
-                    size='small'
+                    size='medium'
                     color='primary'
+                    style={{ color: 'white', width: '100%' }}
                     href={hRef && hRef[1] && hRef[1].csv}
-                    className='studentStrenghtFilterButton'
                   >
-                    Download Branch excel
+                    Download Branch Excel
                   </Button>
                 </Grid>
               </MediaQuery>
@@ -270,50 +263,50 @@ const StudentStrength = ({ history }) => {
                 <Grid item>
                   <Button
                     variant='contained'
-                    size='small'
-                    className='studentStrenghtFilterButton'
+                    size='medium'
+                    className='cancelButton labelColor'
+                    style={{ width: '100%' }}
                     onClick={() => handleClearFilter()}
                   >
-                    <span style={{ fontSize: '13px' }}> CLEAR ALL</span>
+                    <span style={{ fontSize: '13px' }}> Clear All</span>
                   </Button>
                 </Grid>
                 <Grid item md={1}>
                   <Button
                     variant='contained'
-                    size='small'
-                    fullWidth
+                    size='medium'
+                    style={{ color: 'white', width: '100%' }}
                     color='primary'
                     onClick={() => {
                       setPage(1);
                       handleFilter(1);
                       setSelectedCard('');
                     }}
-                    className='studentStrenghtFilterButton'
                   >
-                    <span style={{ fontSize: '13px' }}> FILTER</span>
+                    <span style={{ fontSize: '13px' }}>Filter</span>
                   </Button>
                 </Grid>
                 <Grid item md={4} />
 
                 <Grid item style={{ marginLeft: '5%' }}>
                   <Button
-                    size='small'
+                    size='medium'
                     href={hRef && hRef[0] && hRef[0].csv}
-                    className='studentStrenghtDownloadButton'
+                    className={classes.studentStrenghtDownloadButton}
                   >
-                    <span style={{ fontSize: '13px' }}> Download all Branch excel</span>
+                    <span style={{ fontSize: '13px' }}> Download All Branch Excel</span>
                   </Button>
                 </Grid>
 
                 <Grid item>
                   <Button
                     variant='contained'
-                    size='small'
+                    size='medium'
                     color='primary'
+                    style={{ color: 'white', width: '100%' }}
                     href={hRef && hRef[1] && hRef[1].csv}
-                    className='studentStrenghtFilterButton'
                   >
-                    <span style={{ fontSize: '13px' }}> Download Branch excel</span>{' '}
+                    <span style={{ fontSize: '13px' }}> Download Branch Excel</span>{' '}
                   </Button>
                 </Grid>
               </MediaQuery>
@@ -321,48 +314,49 @@ const StudentStrength = ({ history }) => {
                 <Grid item>
                   <Button
                     variant='contained'
-                    size='small'
-                    className='studentStrenghtFilterButton'
+                    size='medium'
+                    style={{ width: '100%' }}
+                    className='cancelButton labelColor'
                     onClick={() => handleClearFilter()}
                   >
-                    CLEAR ALL
+                    Clear All
                   </Button>
                 </Grid>
                 <Grid item>
                   <Button
                     variant='contained'
-                    size='small'
+                    size='medium'
                     color='primary'
                     onClick={() => {
                       setPage(1);
                       handleFilter(1);
                       setSelectedCard('');
                     }}
-                    className='studentStrenghtFilterButton'
+                    style={{ color: 'white', width: '100%' }}
                   >
-                    FILTER
+                    Filter
                   </Button>
                 </Grid>
 
                 <Grid item>
                   <Button
-                    size='small'
+                    size='medium'
                     href={hRef && hRef[0] && hRef[0].csv}
-                    className='studentStrenghtDownloadButton'
+                    className={classes.studentStrenghtDownloadButton}
                   >
-                    Download all Branch excel
+                    Download All Branch Excel
                   </Button>
                 </Grid>
 
                 <Grid item>
                   <Button
                     variant='contained'
-                    size='small'
+                    size='medium'
                     color='primary'
                     href={hRef && hRef[1] && hRef[1].csv}
-                    className='studentStrenghtFilterButton'
+                    style={{ color: 'white', width: '100%' }}
                   >
-                    Download Branch excel
+                    Download Branch Excel
                   </Button>
                 </Grid>
               </MediaQuery>
@@ -370,53 +364,50 @@ const StudentStrength = ({ history }) => {
                 <Grid item xs={12}>
                   <Button
                     variant='contained'
-                    size='small'
-                    fullWidth
-                    className='studentStrenghtFilterButton'
+                    size='medium'
+                    style={{ width: '100%' }}
+                    className='cancelButton labelColor'
                     onClick={() => handleClearFilter()}
                   >
-                    CLEAR ALL
+                    Clear All
                   </Button>
                 </Grid>
                 <Grid item xs={12}>
                   <Button
                     variant='contained'
-                    size='small'
+                    size='medium'
                     color='primary'
-                    fullWidth
                     onClick={() => {
                       setPage(1);
                       handleFilter(1);
                       setSelectedCard('');
                     }}
-                    className='studentStrenghtFilterButton'
+                    style={{ color: 'white', width: '100%' }}
                   >
-                    FILTER
+                    Filter
                   </Button>
                 </Grid>
                 <Grid item md={4} />
 
                 <Grid item xs={12}>
                   <Button
-                    size='small'
+                    size='medium'
                     href={hRef && hRef[0] && hRef[0].csv}
-                    className='studentStrenghtDownloadButton'
-                    fullWidth
+                    className={classes.studentStrenghtDownloadButton}
                   >
-                    Download all Branch excel
+                    Download All Branch Excel
                   </Button>
                 </Grid>
 
                 <Grid item xs={12}>
                   <Button
                     variant='contained'
-                    size='small'
-                    fullWidth
+                    size='medium'
                     color='primary'
                     href={hRef && hRef[1] && hRef[1].csv}
-                    className='studentStrenghtFilterButton'
+                    style={{ color: 'white', width: '100%' }}
                   >
-                    Download Branch excel
+                    Download Branch Excel
                   </Button>
                 </Grid>
               </MediaQuery>

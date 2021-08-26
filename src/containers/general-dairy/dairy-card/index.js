@@ -104,10 +104,10 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               color='primary'
               noWrap
             >
-              Topic: <span style={{ color: 'red'}}>{lesson.title}</span>
+              Topic: <span className= {classes.topictitle}>{lesson.title}</span>
             </Typography>
           </Box>
-          <Typography style={{fontSize: '15px',marginTop: '10px'}}> General Diary</Typography>
+          <Typography color = "secondary" style={{fontSize: '15px',marginTop: '10px'}}> General Diary</Typography>
           <Divider className='divider'/>
           <Box mt={2}>
             <Typography
@@ -139,8 +139,8 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               {(showPeriodIndex === index &&
                 showMenu) ? (
                   <div className="tooltip" style={{display:'flex',justifyContent:'space-between'}}>
-                  <span className='tooltiptext' >
-                        <Button className='tooltip' onClick={e=> handleDelete(lesson)}>Delete</Button>
+                  <span className={` ${classes.tooltiptext} tooltiptext`} >
+                        <Button className={classes.tooltip} onClick={e=> handleDelete(lesson)}>Delete</Button>
                         {/* <Button className='tooltip' onClick={e=> handleEdit(lesson)}> Edit</Button> */}
                     </span>
                   </div>
@@ -158,7 +158,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               component='p'
               color='secondary'
             >
-              Created By -<p>{lesson.created_by.first_name} {lesson.created_at.substring(0, 10)}</p>
+              Created By -<p className = {classes.createdby}>{lesson.created_by.first_name} {lesson.created_at.substring(0, 10)}</p>
               </Typography>
           </Box>
           <div>
@@ -183,9 +183,8 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
          {!periodColor && 
           <Button
             variant='contained'
-            style={{ color: 'white' }}
+            style={{color:'white', width: '100%' }}
             color="primary"
-            className="custom_button_master"
             size='small'
             onClick={handleViewMore}
           >

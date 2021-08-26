@@ -1,11 +1,12 @@
 @import '../../assets/styles/variables';
 
 .home-question-container {
-  // width: 75%;
-  // display: flex;
-  // margin: 1rem 0;
+  width: 100%;
+  overflow: hidden;
+  box-sizing: content-box;
+  position: relative;
   .question-card {
-    border: 2px solid $primary-color;
+    // border: 2px solid $primary-color;
     .file-upload-input {
       display: none;
     }
@@ -104,7 +105,7 @@
 .question-cntrl-file-upload {
   margin-left: 2rem !important;
 }
-.question-ctrls-inner{
+.question-ctrls-inner {
   margin-left: 2.5% !important;
 }
 // box-sizing: content-box;

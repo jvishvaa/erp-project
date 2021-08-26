@@ -21,19 +21,13 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
+import {Typography} from '@material-ui/core';
 import { connect, useSelector } from 'react-redux';
 
-
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '40vh',
-  },
-  buttonContainer: {
-    background: theme.palette.background.secondary,
-    paddingBottom: theme.spacing(2),
   },
   columnHeader: {
     color: `${theme.palette.secondary.main} !important`,
@@ -44,6 +38,20 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     color: theme.palette.secondary.main,
   },
+   guidelineval : {
+    color: theme.palette.primary.main,
+     fontWeight: '600'
+},
+guideline:{
+    color: theme.palette.secondary.main,
+     fontSize: '16px',
+      padding: '10px'
+},
+guidelinesText: {
+  fontSize: '20px',
+  fontWeight: 'bold',
+  color : theme.palette.secondary.main
+},
 }));
 
 const columnsGrade = [
@@ -498,7 +506,8 @@ const BulkUpload = ({ onUploadSuccess }) => {
         <Grid item md={2} xs={6}>
           <Button
             variant='contained'
-            className='custom_button_master labelColor'
+            className='canceButton labelColor'
+            style={{ width: '100%' }}
             size='medium'
             onClick={handleClearAll}
           >
@@ -517,9 +526,8 @@ const BulkUpload = ({ onUploadSuccess }) => {
           ) : (
             <Button
               variant='contained'
-              style={{ color: 'white' }}
+              style={{color:'white', width: '100%' }}
               color='primary'
-              className='custom_button_master'
               size='medium'
               onClick={handleFileUpload}
             >
@@ -533,17 +541,17 @@ const BulkUpload = ({ onUploadSuccess }) => {
           <hr style={{ backgroundColor: '#e2e2e2', border: 'none', height: '1px' }} />
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <h2 style={{ color: '#014B7e' }}>Guidelines:</h2>
+            <Typography className={classes.guidelinesText}>Guidelines:</Typography>
             </Grid>
             <Grid item xs={12}>
               <Paper className={classes.root}>
                 {guidelines.map((val, i) => {
                   return (
-                    <div style={{ color: '#014b7e', fontSize: '16px', padding: '10px' }}>
-                      {i + 1}. 
-                      <span style={{ color: '#fe6b6b', fontWeight: '600' }}>
-                        {val.name}
-                      </span>
+                    <div className={classes.guideline}>
+                                        {i + 1}. 
+                                        <span className = {classes.guidelineval}>
+                                            {val.name}
+                                        </span>
                       <span>{val.field}</span>
                     </div>
                   );
@@ -551,7 +559,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
               </Paper>
             </Grid>
             <Grid item xs={12}>
-              <h2 style={{ color: '#014B7e' }}>Suggestions:</h2>
+            <Typography className={classes.guidelinesText}>Suggestions:</Typography>
             </Grid>
             <Grid item xs={12} sm={4}>
               <Autocomplete
@@ -560,6 +568,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                 style={{ width: '100%' }}
                 id='grade'
                 options={grades || []}
+                className='dropdownIcon'
                 getOptionLabel={(option) => option?.grade__grade_name || ''}
                 filterSelectedOptions
                 renderInput={(params) => (
@@ -619,6 +628,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
                   size='small'
                   onChange={handleSection}
                   id='section'
+                  className='dropdownIcon'
                   options={sections || []}
                   value={sectionDisp || ''}
                   getOptionLabel={(option) => option?.section__section_name || ''}
