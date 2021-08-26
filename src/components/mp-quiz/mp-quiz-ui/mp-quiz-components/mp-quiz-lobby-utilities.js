@@ -275,7 +275,7 @@ export function RenderUtilityContent({ showUtilities }) {
   const [currentUserId, currentPlayerObj] = getCurrentPlayerInfo();
   const { total_score: totalScore, rank } = currentPlayerObj || {};
   const {
-    timeToRenderControls: { timeToRender } = {},
+    timeToRenderControls: { timeToRender } = {},  
     controls: { currentQuesionIndex = 0 } = {},
   } = useQuizQuesContext();
   const { total_no_of_questions: totQestionCount = 0 } = quizDetails || {};
@@ -307,13 +307,13 @@ export function RenderUtilityContent({ showUtilities }) {
             />
           </span>
           <span className='quiz__topbar--participantcount'>
-            <ParticipantCount participantsCount={leaderboardData.length} />
+            <ParticipantCount participantsCount={leaderboardData.length || participants.length} />
           </span>
           <span className='quiz__topbar--currentrank'>
             {isHost ? (
               <div className='paricipant__attended--count'>
                 {`${leaderboardData.filter((item) => item.has_finished).length} / ${
-                  leaderboardData.length
+                  leaderboardData.length||participants.length
                 } done`}
               </div>
             ) : (
@@ -400,7 +400,6 @@ export function LobbyParticipantsContainer() {
       ) : (
         <GetAvatar avatar={avatar} firstName={firstName} />
       )}
-
       <div className='lobby__participants'>
         {participants.length
           ? participantsArray.map((participant) => {

@@ -70,13 +70,13 @@ const templateFiles = {
       types: 'xls, xlsx',
     },
     templateFileHeaders: [
-      'Question',
-      'Option1',
-      'Option2',
-      'Option3',
-      'Option4',
-      'Option5',
-      'Correct_Answer',
+      'question',
+      'option1',
+      'option2',
+      'option3',
+      'option4',
+      'option5',
+      'correct_answer',
     ],
   },
   [fillBlankQuesTypeId]: {
@@ -89,7 +89,7 @@ const templateFiles = {
         'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       types: 'xls, xlsx',
     },
-    templateFileHeaders: ['Question', 'Answer'],
+    templateFileHeaders: ['question', 'answer'],
   },
   [trueOrFQuesTypeId]: {
     templateFile:
@@ -101,7 +101,7 @@ const templateFiles = {
         'application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       types: 'xls, xlsx',
     },
-    templateFileHeaders: ['Question', 'Option1', 'Option2', 'Correct_Answer'],
+    templateFileHeaders: ['question', 'option1', 'option2', 'correct_answer'],
   },
 };
 function QuestionBulkCreation(props) {
