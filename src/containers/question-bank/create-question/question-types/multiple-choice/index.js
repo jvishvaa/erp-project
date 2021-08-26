@@ -122,16 +122,16 @@ const MultipleChoice = ({
           { optionValue: '', images: [] },
           { optionValue: '', images: [] },
         ]
-        : showQuestionType?.MultipleChoiceMultipleSelect ||
-          showQuestionType?.MultipleChoiceSingleSelect
-          ? [
-            { isChecked: false, optionValue: '', images: [] },
-            { isChecked: false, optionValue: '', images: [] },
-            { isChecked: false, optionValue: '', images: [] },
-          ]
-          : showQuestionType?.TrueFalse
-            ? [{ isChecked: false }, { isChecked: false }]
-            : []
+      : showQuestionType?.MultipleChoiceMultipleSelect ||
+        showQuestionType?.MultipleChoiceSingleSelect
+      ? [
+          { isChecked: false, optionValue: '', images: [] },
+          { isChecked: false, optionValue: '', images: [] },
+          { isChecked: false, optionValue: '', images: [] },
+        ]
+      : showQuestionType?.TrueFalse
+      ? [{ isChecked: false ,optionValue:true}, { isChecked: false ,optionValue:false}]
+      : []
   );
 
   const [matchingOptionsList, setMatchingOptionsList] = useState(
