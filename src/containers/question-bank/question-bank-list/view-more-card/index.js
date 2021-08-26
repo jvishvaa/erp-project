@@ -534,7 +534,7 @@ const ViewMoreCard = ({
                             return (
                               <div>
                                 {Object.keys(obj)[0] || ''} :{' '}
-                                {obj[Object.keys(obj)[0]]?.isChecked ? 'True' : 'False'}
+                                {obj[Object.keys(obj)[0]]?.optionValue ? 'True' : 'False'}
                               </div>
                             );
                           })}
@@ -1072,7 +1072,7 @@ const ViewMoreCard = ({
                             return (
                               <div>
                                 {Object.keys(obj)[0] || ''} :{' '}
-                                {obj[Object.keys(obj)[0]]?.isChecked ? 'True' : 'False'}
+                                {obj[Object.keys(obj)[0]]?.optionValue ? 'True' : 'False'}
                               </div>
                             );
                           })}
@@ -1407,7 +1407,7 @@ const ViewMoreCard = ({
                   return (
                     <div>
                       {Object.keys(obj)[0] || ''} :{' '}
-                      {obj[Object.keys(obj)[0]]?.isChecked ? 'True' : 'False'}
+                      {obj[Object.keys(obj)[0]]?.optionValue ? 'True' : 'False'}
                     </div>
                   );
                 })}
