@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, Button, SvgIcon, IconButton, Checkbox,makeStyles } from '@material-ui/core';
+import { TextField, Button, SvgIcon, IconButton, Checkbox, makeStyles } from '@material-ui/core';
 import endpoints from '../../../../../../config/endpoints';
 import CancelIcon from '@material-ui/icons/Cancel';
 import checkedicon from '../../../../../../assets/images/checkedicon.svg';
@@ -11,17 +11,17 @@ import './single-option.css';
 import axios from 'axios';
 import placeholder from '../../../../../../assets/images/placeholder_small.jpg';
 
-const useStyles = makeStyles((theme)=>({
-  optionTag : {
+const useStyles = makeStyles((theme) => ({
+  optionTag: {
     color: theme.palette.secondary.main,
-  fontSize: "16px",
-  alignSelf: 'center',
-  flexBasis: '12%',
-  margin: '0 1% 0 0.5%',
-  display: "flex",
-  flexDirection: 'column',
+    fontSize: "16px",
+    alignSelf: 'center',
+    flexBasis: '12%',
+    margin: '0 1% 0 0.5%',
+    display: "flex",
+    flexDirection: 'column',
   },
-  trueFalseOptionTag:{
+  trueFalseOptionTag: {
     color: theme.palette.secondary.main,
     fontSize: "16px",
     fontWeight: 600,
@@ -29,7 +29,29 @@ const useStyles = makeStyles((theme)=>({
     margin: "0 1% 0 2%",
     display: "flex",
     flexDirection: 'column',
+  },
+  answerBox: {
+    '& .MuiInputBase-input': {
+      color: theme.palette.secondary.main,
+      padding: "14px",
+    }
+
+  },
+  matrixAnswerBox: {
+    '& .MuiInputBase-input': {
+      color: theme.palette.secondary.main,
+      padding: 0,
+      fontSize: '16px',
+    }
+  },
+  matchingAnswerBox: {
+    '& .MuiInputBase-input': {
+      color: theme.palette.secondary.main,
+      padding: '0 0 40px 0',
+      fontSize: '16px',
+    }
   }
+
 }))
 
 const SingleOption = ({
@@ -50,10 +72,10 @@ const SingleOption = ({
           showQuestionType?.TrueFalse
             ? 'trueFalseOptionBox'
             : isMatching
-            ? showQuestionType?.MatrixQuestion
-              ? 'matrixOptionBox'
-              : 'matchingOptionBox'
-            : 'optionBox'
+              ? showQuestionType?.MatrixQuestion
+                ? 'matrixOptionBox'
+                : 'matchingOptionBox'
+              : 'optionBox'
         }
       >
         {!isMatching && (
@@ -63,39 +85,39 @@ const SingleOption = ({
               showQuestionType?.MatrixQuestion ||
               showQuestionType?.MatchTheFollowing
             ) && (
-              <Checkbox
-                id={`is_checked${index}`}
-                checked={option?.isChecked}
-                icon={
-                  <SvgIcon
-                    component={() => (
-                      <img
-                        style={{ height: '22px', width: '22px' }}
-                        src={uncheckedicon}
-                      />
-                    )}
-                  />
-                }
-                checkedIcon={
-                  <SvgIcon
-                    component={() => (
-                      <img style={{ height: '22px', width: '22px' }} src={checkedicon} />
-                    )}
-                  />
-                }
-                onChange={(e) => {
-                  handleOptionData(e, index);
-                }}
-                name='isChecked'
-              />
-            )}
+                <Checkbox
+                  id={`is_checked${index}`}
+                  checked={option?.isChecked}
+                  icon={
+                    <SvgIcon
+                      component={() => (
+                        <img
+                          style={{ height: '22px', width: '22px' }}
+                          src={uncheckedicon}
+                        />
+                      )}
+                    />
+                  }
+                  checkedIcon={
+                    <SvgIcon
+                      component={() => (
+                        <img style={{ height: '22px', width: '22px' }} src={checkedicon} />
+                      )}
+                    />
+                  }
+                  onChange={(e) => {
+                    handleOptionData(e, index);
+                  }}
+                  name='isChecked'
+                />
+              )}
           </div>
         )}
         {isMatching ? (
           <div className='matchTheFollowingIndex'>{String.fromCharCode(index + 65)}</div>
         ) : (
           <div
-            className={showQuestionType?.TrueFalse ? `${classes.trueFalseOptionTag}`: `${classes.optionTag}`}
+            className={showQuestionType?.TrueFalse ? `${classes.trueFalseOptionTag}` : `${classes.optionTag}`}
           >
             {showQuestionType?.TrueFalse ? (
               <div>{index === 0 ? 'True' : 'False'}</div>
@@ -135,9 +157,9 @@ const SingleOption = ({
                 className={
                   isMatching
                     ? showQuestionType?.MatchTheFollowing
-                      ? 'dropdownIcon matchingAnswerBox'
-                      : 'dropdownIcon matrixAnswerBox'
-                    : 'dropdownIcon answerBox'
+                      ? `dropdownIcon ${classes.matchingAnswerBox}`
+                      : `dropdownIcon ${classes.matrixAnswerBox}`
+                    : `dropdownIcon ${classes.answerBox}`
                 }
                 onChange={(e) => {
                   isMatching
