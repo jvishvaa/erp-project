@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Divider } from '@material-ui/core';
+import { Button, Divider,makeStyles } from '@material-ui/core';
 import ReactPlayer from 'react-player';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
@@ -8,6 +8,40 @@ import AssignMarksMenu from '../assign-marks-menu';
 import endpoints from '../../../../config/endpoints';
 
 import './styles.scss';
+
+const useStyles = makeStyles((theme)=>({
+
+  questionContainer:{
+    border: '1px solid #dbdbdb',
+    padding: '1rem',
+    fontSize: '0.9rem',
+    borderRadius: '10px',
+    margin: '1rem 0',
+    color : `${theme.palette.secondary.main} !important`,
+  },
+  answersHeader : {
+    color: theme.palette.secondary.main,
+    fontSize: '1.1rem',
+    margin: '10px 0',
+  },
+  questionHeader : {
+    color: theme.palette.secondary.main,
+    fontSize: '1.1rem',
+    margin: '10px 0',
+  },
+  answersContainer:{
+    color:theme.palette.secondary.main
+  },
+  option:{
+    backgroundColor: '#f3f3f3',
+    padding: "1rem",
+    margin: '1rem 0',
+    borderRadius: '10px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  }
+}))
 
 const menuOptions = [
   'Assign marks',
@@ -74,6 +108,7 @@ const QuestionView = ({
   parentQuestionId,
   showSlide,
 }) => {
+  const classes = useStyles()
   const { question_type: questionType } = question;
   const [expand, setExpand] = useState(true);
   
@@ -98,7 +133,7 @@ const QuestionView = ({
       {expand && (
         <>
           <div
-            className='question-header '
+            className={classes.questionHeader}
             style={{ display: 'flex', justifyContent: 'space-between' }}
           >
             Question{' '}
@@ -122,34 +157,16 @@ const QuestionView = ({
           <Divider className='secondary-divider' />
           {(questionType == 1 || questionType == 2) && (
             <div className='mcq-container'>
-              <div className='question-container'>
+              <div className={classes.questionContainer}>
                 {extractContent(question.question_answer[0].question)}
               </div>
-              <div className='answers-container'>
-                <div className='answers-header '>Answers</div>
+              <div className={classes.answersContainer}>
+                <div className={classes.answersheader}>Answers</div>
                 <Divider className='secondary-divider' />
                 <div className='options-container'>
-                  {/* {Object.keys(question.question_answer[0].options).map((optionKey) => (
-                    <div className='option' key={`${optionKey}-${index}`}>
-                      {extractContent(question.question_answer[0].options[optionKey])}
-                      <AssignMarksMenu
-                        menuOptions={menuOptions}
-                        handleChange={(field, value) => {
-                          onChangeMarks(
-                            field,
-                            value,
-                            optionKey,
-                            false,
-                            question.id,
-                            subQuestion && parentQuestionId
-                          );
-                        }}
-                      />
-                    </div>
-                  ))} */}
                   {question.question_answer[0].options.map((option, index) => {
                     return (
-                      <div className='option' key={`option${index}`}>
+                      <div className={classes.option} key={`option${index}`}>
                         {/* {extractContent(question.question_answer[0].options[optionKey])} */}
                         {/* {`option${index}`} */}
                         {option[`option${index + 1}`]?.optionValue}
@@ -180,11 +197,11 @@ const QuestionView = ({
                 What a question is this question to a question whos question was that ?
               </div>
               <div className='answers-container'>
-                <div className='answers-header '>Answers</div>
+                <div className={classes.answersheader}>Answers</div>
                 <Divider className='secondary-divider' />
                 <div className='options-container'>
                   {question.question_answer.map((obj, index) => (
-                    <div className='option'>
+                    <div className={classes.option}>
                       {obj[`question${index + 1}`]}{' '}
                       <AssignMarksMenu
                         menuOptions={menuOptions}
@@ -209,7 +226,7 @@ const QuestionView = ({
                 </div>
                 <div className='options-container'>
                   {question.question_answer.map((obj, index) => (
-                    <div className='option'>
+                    <div className={classes.option}>
                       {obj[`answer${index + 1}`]}{' '}
                       {/* <AssignMarksMenu
                         menuOptions={menuOptions}
@@ -227,7 +244,7 @@ const QuestionView = ({
                 {extractContent(question.question_answer[0]?.question)}
               </div>
               <div className='answers-container'>
-                <div className='answers-header '>Answers</div>
+                <div className={classes.answersheader}>Answers</div>
                 <Divider className='secondary-divider' />
                 <div className='matrix-columns'>
                   {question.question_answer[0]?.options.map((obj) => (
@@ -240,7 +257,7 @@ const QuestionView = ({
 
                 <div className='options-container'>
                   {question.question_answer[0]?.matrixOptions.map((opt, index) => (
-                    <div className='option'>{opt[`optionValue`]} </div>
+                    <div className={classes.option}>{opt[`optionValue`]} </div>
                   ))}
                 </div>
               </div>
@@ -253,7 +270,7 @@ const QuestionView = ({
                 {extractContent(question.question_answer[0]?.question)}{' '}
               </div>
               <div className='answers-container'>
-                <div className='answers-header '>Answers</div>
+                <div className={classes.answersheader}>Answers</div>
                 <div className='options-container '>
                   {question.question_answer[0]?.options.map((opt, index) => (
                     <div className='option flex-space-between'>
@@ -277,11 +294,11 @@ const QuestionView = ({
                 {extractContent(question.question_answer[0]?.question)}
               </div>
               <div className='answers-container'>
-                <div className='answers-header '>Answers</div>
+                <div className={classes.answersheader}>Answers</div>
                 <Divider className='secondary-divider' />
                 <div className='options-container'>
                   {question.question_answer[0]?.options.map((opt, index) => (
-                    <div className='option'>
+                    <div className={classes.option}>
                       {opt[`option${index + 1}`].optionValue}
                       <AssignMarksMenu
                         menuOptions={menuOptions}
@@ -300,15 +317,15 @@ const QuestionView = ({
                       />
                     </div>
                   ))}
-                  {/* <div className='option'>
+                  {/* <div className={classes.option}>
                     OPTION A{' '}
                     <AssignMarksMenu menuOptions={menuOptions} handleChange={() => {}} />
                   </div>
-                  <div className='option'>
+                  <div className={classes.option}>
                     OPTION A{' '}
                     <AssignMarksMenu menuOptions={menuOptions} handleChange={() => {}} />
                   </div>
-                  <div className='option'>
+                  <div className={classes.option}>
                     OPTION A{' '}
                     <AssignMarksMenu menuOptions={menuOptions} handleChange={() => {}} />
                   </div> */}
@@ -343,10 +360,10 @@ const QuestionView = ({
                 {question.question_answer?.question}
               </div>
               <div className='answers-container'>
-                <div className='answers-header '>Answers</div>
+                <div className={classes.answersheader}>Answers</div>
                 <Divider className='secondary-divider' />
                 <div className='options-container'>
-                  <div className='option'>
+                  <div className={classes.option}>
                     Answer{' '}
                     {/* <AssignMarksMenu menuOptions={menuOptions} handleChange={() => {}} /> */}
                   </div>
