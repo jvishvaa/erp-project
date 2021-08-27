@@ -265,6 +265,7 @@ class EditUser extends Component {
                 )}
                 {activeStep === 1 && (
                   <UserDetailsForm
+                    isEdit={true}
                     onSubmit={this.onSubmitUserDetails}
                     details={user}
                     handleBack={this.handleBack}
