@@ -716,8 +716,13 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
           });
         });
       }
+    
       if (selectAll) {
-        selectionArray.push(0);
+        completeData
+          .forEach((items) => {
+            selectionArray.push(items.id);
+          });
+        // selectionArray.push(0);
       }
 
       if (!title || !description) {
