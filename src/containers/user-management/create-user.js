@@ -314,6 +314,7 @@ class CreateUser extends Component {
                 )}
                 {activeStep === 1 && (
                   <UserDetailsForm
+                    isEdit={false}
                     onSubmit={this.onSubmitUserDetails}
                     details={user}
                     handleBack={this.handleBack}
