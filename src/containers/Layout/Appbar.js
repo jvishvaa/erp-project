@@ -297,16 +297,28 @@ const Appbar = ({ children, history, ...props }) => {
               </div>
             </Box>
           )}
-          <Box px={7}>
-            <img
-              src={logo}
-              alt='logo'
-              style={{ height: '35px' }}
-              className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
-            />
-          </Box>
-          {isMobile ? null : <SearchBar/>}
-          
+          {props.drawerOpen ? (
+            <Box pr={7} pl={40}>
+              <img
+                src={logo}
+                alt='logo'
+                style={{ height: '35px' }}
+                className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
+              />
+            </Box>
+          ) : (
+            <Box px={7}>
+              <img
+                src={logo}
+                alt='logo'
+                style={{ height: '35px' }}
+                className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
+              />
+            </Box>
+          )}
+
+          {isMobile ? null : <SearchBar />}
+
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
             <IconButton

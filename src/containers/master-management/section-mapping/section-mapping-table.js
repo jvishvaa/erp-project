@@ -380,239 +380,244 @@ const SectionTable = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <CommonBreadcrumbs
-          componentName='Master Management'
-          childComponentName='Section Mapping List'
-          childComponentNameNext={
-            addFlag && !tableFlag
-              ? 'Add Section Mapping'
-              : !tableFlag
-              ? 'Edit Section Mapping'
-              : null
-          }
-        />
-        {!tableFlag && addFlag && (
-          <CreateSectionMapping
-            moduleId={moduleId}
-            setLoading={setLoading}
-            handleGoBack={handleGoBack}
+        <div style={{ height: '100%' }}>
+          <CommonBreadcrumbs
+            componentName='Master Management'
+            childComponentName='Section Mapping List'
+            childComponentNameNext={
+              addFlag && !tableFlag
+                ? 'Add Section Mapping'
+                : !tableFlag
+                ? 'Edit Section Mapping'
+                : null
+            }
           />
-        )}
+          {!tableFlag && addFlag && (
+            <CreateSectionMapping
+              moduleId={moduleId}
+              setLoading={setLoading}
+              handleGoBack={handleGoBack}
+            />
+          )}
 
-        {tableFlag && !addFlag && (
-          <Grid
-            container
-            spacing={isMobile ? 3 : 5}
-            style={{ width: widerWidth, margin: wider }}
-          >
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <Box className={classes.centerInMobile}>
-                <TextField
-                  id='secname'
-                  style={{ width: '100%' }}
-                  label='Section Name'
-                  variant='outlined'
-                  size='small'
-                  autoComplete='off'
-                  name='secname'
-                  onChange={(e) => setSearchSection(e.target.value)}
-                />
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <Autocomplete
-                size='small'
-                onChange={handleAcademicYear}
-                // style={{ width: '100%' }}
-                id='session-year'
-                options={academicYearList || []}
-                value={yearDisplay || ''}
-                getOptionLabel={(option) => option?.session_year || ''}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Academic Year'
-                    placeholder='Academic Year'
-                  />
-                )}
-              />
-            </Grid>
-            {selectedYear && (
-              <Grid item xs={12} md={3}>
-                <Autocomplete
-                  size='small'
-                  onChange={handleBranch}
-                  value={searchBranch || ''}
-                  id='message_log-branch'
-                  className='message_log_branch'
-                  options={branchList || []}
-                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      className='message_log-textfield'
-                      {...params}
-                      variant='outlined'
-                      label='Branch'
-                      placeholder='Branch'
-                    />
-                  )}
-                />
-              </Grid>
-            )}
-            {searchBranch && (
-              <Grid item xs={12} md={3}>
-                <Autocomplete
-                  multiple
-                  size='small'
-                  onChange={handleGrades}
-                  value={searchGrades || ''}
-                  id='message_log-smsType'
-                  options={gradeList || []}
-                  getOptionLabel={(option) => option?.grade__grade_name || ''}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      className='message_log-textfield'
-                      {...params}
-                      variant='outlined'
-                      label='Grade'
-                      placeholder='Grade'
-                    />
-                  )}
-                />
-              </Grid>
-            )}
-            <Grid item xs sm={6} className={isMobile ? 'hideGridItem' : ''} />
+          {tableFlag && !addFlag && (
             <Grid
               container
               spacing={isMobile ? 3 : 5}
               style={{ width: widerWidth, margin: wider }}
             >
-              <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-                <Button
-                  variant='contained'
-                  size='medium'
-                  style={{ width: '100%' }}
-                  className='labelColor cancelButton'
-                  onClick={handleClearAll}
-                >
-                  Clear All
-                </Button>
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Box className={classes.centerInMobile}>
+                  <TextField
+                    id='secname'
+                    style={{ width: '100%' }}
+                    label='Section Name'
+                    variant='outlined'
+                    size='small'
+                    autoComplete='off'
+                    name='secname'
+                    onChange={(e) => setSearchSection(e.target.value)}
+                  />
+                </Box>
               </Grid>
-              <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-                <Button
-                  variant='contained'
-                  style={{ color: 'white', width: '100%' }}
-                  color='primary'
-                  size='medium'
-                  onClick={handleFilterCheck}
-                >
-                  Filter
-                </Button>
-              </Grid>
-              <div>
-                <Divider
-                  orientation='vertical'
-                  style={{
-                    backgroundColor: '#014e7b',
-                    height: '40px',
-                    marginTop: '1rem',
-                    marginLeft: '2rem',
-                    marginRight: '1.25rem',
-                  }}
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  size='small'
+                  onChange={handleAcademicYear}
+                  // style={{ width: '100%' }}
+                  id='session-year'
+                  options={academicYearList || []}
+                  value={yearDisplay || ''}
+                  getOptionLabel={(option) => option?.session_year || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Academic Year'
+                      placeholder='Academic Year'
+                    />
+                  )}
                 />
-              </div>
-              <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
-                <Button
-                  startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-                  variant='contained'
-                  color='primary'
-                  size='medium'
-                  style={{ color: 'white', width: '100%' }}
-                  title='Add Section Mapping'
-                  onClick={handleAddSection}
-                >
-                  Add Section Mapping
-                </Button>
+              </Grid>
+              {selectedYear && (
+                <Grid item xs={12} md={3}>
+                  <Autocomplete
+                    size='small'
+                    onChange={handleBranch}
+                    value={searchBranch || ''}
+                    id='message_log-branch'
+                    className='message_log_branch'
+                    options={branchList || []}
+                    getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        className='message_log-textfield'
+                        {...params}
+                        variant='outlined'
+                        label='Branch'
+                        placeholder='Branch'
+                      />
+                    )}
+                  />
+                </Grid>
+              )}
+              {searchBranch && (
+                <Grid item xs={12} md={3}>
+                  <Autocomplete
+                    multiple
+                    size='small'
+                    onChange={handleGrades}
+                    value={searchGrades || ''}
+                    id='message_log-smsType'
+                    options={gradeList || []}
+                    getOptionLabel={(option) => option?.grade__grade_name || ''}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        className='message_log-textfield'
+                        {...params}
+                        variant='outlined'
+                        label='Grade'
+                        placeholder='Grade'
+                      />
+                    )}
+                  />
+                </Grid>
+              )}
+              <Grid item xs sm={6} className={isMobile ? 'hideGridItem' : ''} />
+              <Grid
+                container
+                spacing={isMobile ? 3 : 5}
+                style={{ width: widerWidth, margin: wider }}
+              >
+                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                  <Button
+                    variant='contained'
+                    size='medium'
+                    style={{ width: '100%' }}
+                    className='labelColor cancelButton'
+                    onClick={handleClearAll}
+                  >
+                    Clear All
+                  </Button>
+                </Grid>
+                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                  <Button
+                    variant='contained'
+                    style={{ color: 'white', width: '100%' }}
+                    color='primary'
+                    size='medium'
+                    onClick={handleFilterCheck}
+                  >
+                    Filter
+                  </Button>
+                </Grid>
+                <div>
+                  <Divider
+                    orientation='vertical'
+                    style={{
+                      backgroundColor: '#014e7b',
+                      height: '40px',
+                      marginTop: '1rem',
+                      marginLeft: '2rem',
+                      marginRight: '1.25rem',
+                    }}
+                  />
+                </div>
+                <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
+                  <Button
+                    startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                    variant='contained'
+                    color='primary'
+                    size='medium'
+                    style={{ color: 'white', width: '100%' }}
+                    title='Add Section Mapping'
+                    onClick={handleAddSection}
+                  >
+                    Add Section Mapping
+                  </Button>
+                </Grid>
               </Grid>
             </Grid>
-          </Grid>
-        )}
+          )}
 
-        {tableFlag && !addFlag && (
-          <Paper className={`${classes.root} common-table`}>
-            <TableContainer className={classes.container}>
-              <Table stickyHeader aria-label='sticky table'>
-                <TableHead className='table-header-row'>
-                  <TableRow>
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth }}
-                        className={classes.columnHeader}
-                      >
-                        {column.label}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {sections.map((sect, index) => {
-                    const {
-                      id,
-                      section,
-                      grade: { grade_name },
-                      acad_session: {
-                        branch: branchObj = {},
-                        session_year: sessionObj = {},
-                      },
-                    } = sect;
-                    const { branch_name = 'Branch not found' } = branchObj || {};
-                    const { session_year = 'Session not found' } = sessionObj || {};
-                    return (
-                      <TableRow hover section='checkbox' tabIndex={-1} key={index}>
-                        <TableCell className={classes.tableCell}>
-                          {session_year || ''}
+          {tableFlag && !addFlag && (
+            <Paper className={`${classes.root} common-table`}>
+              <TableContainer className={classes.container}>
+                <Table stickyHeader aria-label='sticky table'>
+                  <TableHead className='table-header-row'>
+                    <TableRow>
+                      {columns.map((column) => (
+                        <TableCell
+                          key={column.id}
+                          align={column.align}
+                          style={{ minWidth: column.minWidth }}
+                          className={classes.columnHeader}
+                        >
+                          {column.label}
                         </TableCell>
-                        <TableCell className={classes.tableCell}>{branch_name}</TableCell>
-                        <TableCell className={classes.tableCell}>{grade_name}</TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {section?.section_name}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          {section?.created_by}
-                        </TableCell>
-                        <TableCell className={classes.tableCell}>
-                          <IconButton
-                            onClick={() => handleOpenDeleteModal(id, section)}
-                            title='Delete Section Mapping'
-                          >
-                            <DeleteOutlinedIcon />
-                          </IconButton>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <div className='paginateData'>
-              <TablePagination
-                component='div'
-                count={totalCount}
-                rowsPerPage={limit}
-                page={page - 1}
-                onChangePage={handleChangePage}
-                rowsPerPageOptions={false}
-              />
-            </div>
-          </Paper>
-        )}
-        {/* {isMobile && tableFlag && !addFlag && (
+                      ))}
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {sections.map((sect, index) => {
+                      const {
+                        id,
+                        section,
+                        grade: { grade_name },
+                        acad_session: {
+                          branch: branchObj = {},
+                          session_year: sessionObj = {},
+                        },
+                      } = sect;
+                      const { branch_name = 'Branch not found' } = branchObj || {};
+                      const { session_year = 'Session not found' } = sessionObj || {};
+                      return (
+                        <TableRow hover section='checkbox' tabIndex={-1} key={index}>
+                          <TableCell className={classes.tableCell}>
+                            {session_year || ''}
+                          </TableCell>
+                          <TableCell className={classes.tableCell}>
+                            {branch_name}
+                          </TableCell>
+                          <TableCell className={classes.tableCell}>
+                            {grade_name}
+                          </TableCell>
+                          <TableCell className={classes.tableCell}>
+                            {section?.section_name}
+                          </TableCell>
+                          <TableCell className={classes.tableCell}>
+                            {section?.created_by}
+                          </TableCell>
+                          <TableCell className={classes.tableCell}>
+                            <IconButton
+                              onClick={() => handleOpenDeleteModal(id, section)}
+                              title='Delete Section Mapping'
+                            >
+                              <DeleteOutlinedIcon />
+                            </IconButton>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <div className='paginateData'>
+                <TablePagination
+                  component='div'
+                  count={totalCount}
+                  rowsPerPage={limit}
+                  page={page - 1}
+                  onChangePage={handleChangePage}
+                  rowsPerPageOptions={false}
+                />
+              </div>
+            </Paper>
+          )}
+          {/* {isMobile && tableFlag && !addFlag && (
           <>
             <Container className={classes.cardsContainer}>
               {sections.map((section, i) => (
@@ -639,29 +644,33 @@ const SectionTable = () => {
             </div>
           </>
         )} */}
-        <Dialog
-          open={openDeleteModal}
-          onClose={handleCloseDeleteModal}
-          aria-labelledby='draggable-dialog-title'
-        >
-          <DialogTitle id='draggable-dialog-title'>Delete Section</DialogTitle>
-          <DialogContent>
-            <DialogContentText>{`Confirm Delete Section Mapping`}</DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
-              Cancel
-            </Button>
-            <Button
-              variant='contained'
-              style={{ color: 'white' }}
-              color='primary'
-              onClick={handleDeleteSection}
-            >
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
+          <Dialog
+            open={openDeleteModal}
+            onClose={handleCloseDeleteModal}
+            aria-labelledby='draggable-dialog-title'
+          >
+            <DialogTitle id='draggable-dialog-title'>Delete Section</DialogTitle>
+            <DialogContent>
+              <DialogContentText>{`Confirm Delete Section Mapping`}</DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={handleCloseDeleteModal}
+                className='labelColor cancelButton'
+              >
+                Cancel
+              </Button>
+              <Button
+                variant='contained'
+                style={{ color: 'white' }}
+                color='primary'
+                onClick={handleDeleteSection}
+              >
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
       </Layout>
     </>
   );

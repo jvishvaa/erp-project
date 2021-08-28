@@ -437,350 +437,362 @@ const TopicTable = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <CommonBreadcrumbs
-          componentName='Master Management'
-          childComponentName='Topic List'
-          childComponentNameNext={
-            addFlag && !tableFlag
-              ? 'Add Topic'
-              : editFlag && !tableFlag
-              ? 'Edit Topic'
-              : null
-          }
-        />
-
-        {!tableFlag && addFlag && !editFlag && (
-          <CreateTopic
-            grades={grades}
-            setLoading={setLoading}
-            handleGoBack={handleGoBack}
+        <div style={{ height: '100%' }}>
+          <CommonBreadcrumbs
+            componentName='Master Management'
+            childComponentName='Topic List'
+            childComponentNameNext={
+              addFlag && !tableFlag
+                ? 'Add Topic'
+                : editFlag && !tableFlag
+                ? 'Edit Topic'
+                : null
+            }
           />
-        )}
-        {!tableFlag && !addFlag && editFlag && (
-          <EditTopic
-            topicData={chapterEditDetails}
-            setLoading={setLoading}
-            handleGoBack={handleGoBack}
-          />
-        )}
 
-        {tableFlag && !addFlag && !editFlag && (
-          <>
-            <Grid
-              container
-              spacing={isMobile ? 3 : 5}
-              style={{ width: widerWidth, margin: wider }}
-            >
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
-                <Autocomplete
-                  size='small'
-                  onChange={handleAcademicYear}
-                  style={{ width: '100%' }}
-                  id='grade'
-                  options={academicYearDropdown}
-                  value={filterData.year}
-                  getOptionLabel={(option) => option?.session_year}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Academic Year'
-                      placeholder='Academic Year'
-                      required
-                    />
-                  )}
-                />
-              </Grid>
+          {!tableFlag && addFlag && !editFlag && (
+            <CreateTopic
+              grades={grades}
+              setLoading={setLoading}
+              handleGoBack={handleGoBack}
+            />
+          )}
+          {!tableFlag && !addFlag && editFlag && (
+            <EditTopic
+              topicData={chapterEditDetails}
+              setLoading={setLoading}
+              handleGoBack={handleGoBack}
+            />
+          )}
 
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
-                <Autocomplete
-                  size='small'
-                  onChange={handleBranch}
-                  style={{ width: '100%' }}
-                  id='grade'
-                  options={branchDropdown}
-                  value={filterData.branch}
-                  getOptionLabel={(option) => option?.branch?.branch_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Branch'
-                      placeholder='Branch'
-                      required
-                    />
-                  )}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
-                <Autocomplete
-                  size='small'
-                  onChange={handleGrade}
-                  style={{ width: '100%' }}
-                  id='grade'
-                  options={gradeDropdown}
-                  value={filterData.grade}
-                  getOptionLabel={(option) => option?.grade__grade_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Grades'
-                      placeholder='Grades'
-                      required
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleSection}
-                  id='grade'
-                  value={filterData?.section}
-                  options={sectionDropdown}
-                  getOptionLabel={(option) => option?.section__section_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Section'
-                      placeholder='Section'
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
-                <Autocomplete
-                  size='small'
-                  onChange={handleSubject}
-                  style={{ width: '100%' }}
-                  id='grade'
-                  options={subjectDropdown}
-                  value={filterData.subject}
-                  getOptionLabel={(option) => option?.subject__subject_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Subject'
-                      placeholder='Subject'
-                      required
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
-                <Autocomplete
-                  size='small'
-                  onChange={handleChapter}
-                  style={{ width: '100%' }}
-                  id='grade'
-                  options={chapterDropdown}
-                  value={filterData.chapter}
-                  getOptionLabel={(option) => option?.chapter_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Chapter'
-                      placeholder='Chapter'
-                      required
-                    />
-                  )}
-                />
-              </Grid>
+          {tableFlag && !addFlag && !editFlag && (
+            <>
               <Grid
                 container
                 spacing={isMobile ? 3 : 5}
                 style={{ width: widerWidth, margin: wider }}
               >
-                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-                  <Button
-                    variant='contained'
-                    className='labelColor cancelButton'
-                    size='medium'
-                    title='Clear All'
-                    onClick={handleClearFilter}
-                  >
-                    Clear All
-                  </Button>
-                </Grid>
-                <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-                  <Button
-                    variant='contained'
-                    style={{ color: 'white', width: '100%' }}
-                    color='primary'
-                    size='medium'
-                    onClick={handleFilter}
-                  >
-                    Filter
-                  </Button>
-                </Grid>
-                <div>
-                  <Divider
-                    orientation='vertical'
-                    style={{
-                      backgroundColor: '#014e7b',
-                      height: '40px',
-                      marginTop: '1rem',
-                      marginLeft: '2rem',
-                      marginRight: '1.25rem',
-                    }}
-                  />
-                </div>
-                <Grid
-                  item
-                  xs={6}
-                  sm={2}
-                  className={isMobile ? 'createButton' : 'createButton addButtonPadding'}
-                >
-                  <Button
-                    startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-                    variant='contained'
-                    color='primary'
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+                  <Autocomplete
                     size='small'
-                    style={{ color: 'white', width: '100%' }}
-                    title='Add Topic'
-                    onClick={handleAddSubject}
-                  >
-                    Add Topic
-                  </Button>
+                    onChange={handleAcademicYear}
+                    style={{ width: '100%' }}
+                    id='grade'
+                    options={academicYearDropdown}
+                    value={filterData.year}
+                    getOptionLabel={(option) => option?.session_year}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Academic Year'
+                        placeholder='Academic Year'
+                        required
+                      />
+                    )}
+                  />
                 </Grid>
-              </Grid>
-            </Grid>
-          </>
-        )}
 
-        <>
-          {!isMobile ? (
-            <>
-              {tableFlag && !addFlag && !editFlag && (
-                <Paper className={`${classes.root} common-table`}>
-                  <TableContainer className={classes.container}>
-                    <Table stickyHeader aria-label='sticky table'>
-                      <TableHead className='table-header-row'>
-                        <TableRow>
-                          {columns.map((column) => (
-                            <TableCell
-                              key={column.id}
-                              align={column.align}
-                              style={{ minWidth: column.minWidth }}
-                              className={classes.columnHeader}
-                            >
-                              {column.label}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {topicList.map((topic, index) => {
-                          return (
-                            <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
-                              <TableCell className={classes.tableCell}>
-                                {topic.topic_name}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                {topic.chapter?.chapter_name}
-                              </TableCell>
-                              <TableCell className={classes.tableCell}>
-                                <IconButton
-                                  onClick={(e) => {
-                                    handleDelete(topic);
-                                  }}
-                                  title='Delete Topic'
-                                >
-                                  <DeleteOutlinedIcon />
-                                </IconButton>
-                                <IconButton
-                                  onClick={(e) => handleEditSubject(topic)}
-                                  title='Edit Topic'
-                                >
-                                  <EditOutlinedIcon />
-                                </IconButton>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <div className='paginateData'>
-                    <TablePagination
-                      component='div'
-                      count={totalCount}
-                      className='customPagination'
-                      rowsPerPage={limit}
-                      page={page - 1}
-                      onChangePage={handleChangePage}
-                      rowsPerPageOptions={false}
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+                  <Autocomplete
+                    size='small'
+                    onChange={handleBranch}
+                    style={{ width: '100%' }}
+                    id='grade'
+                    options={branchDropdown}
+                    value={filterData.branch}
+                    getOptionLabel={(option) => option?.branch?.branch_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Branch'
+                        placeholder='Branch'
+                        required
+                      />
+                    )}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+                  <Autocomplete
+                    size='small'
+                    onChange={handleGrade}
+                    style={{ width: '100%' }}
+                    id='grade'
+                    options={gradeDropdown}
+                    value={filterData.grade}
+                    getOptionLabel={(option) => option?.grade__grade_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Grades'
+                        placeholder='Grades'
+                        required
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    onChange={handleSection}
+                    id='grade'
+                    value={filterData?.section}
+                    options={sectionDropdown}
+                    getOptionLabel={(option) => option?.section__section_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Section'
+                        placeholder='Section'
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+                  <Autocomplete
+                    size='small'
+                    onChange={handleSubject}
+                    style={{ width: '100%' }}
+                    id='grade'
+                    options={subjectDropdown}
+                    value={filterData.subject}
+                    getOptionLabel={(option) => option?.subject__subject_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Subject'
+                        placeholder='Subject'
+                        required
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+                  <Autocomplete
+                    size='small'
+                    onChange={handleChapter}
+                    style={{ width: '100%' }}
+                    id='grade'
+                    options={chapterDropdown}
+                    value={filterData.chapter}
+                    getOptionLabel={(option) => option?.chapter_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Chapter'
+                        placeholder='Chapter'
+                        required
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid
+                  container
+                  spacing={isMobile ? 3 : 5}
+                  style={{ width: widerWidth, margin: wider }}
+                >
+                  <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                    <Button
+                      variant='contained'
+                      className='labelColor cancelButton'
+                      size='medium'
+                      title='Clear All'
+                      onClick={handleClearFilter}
+                    >
+                      Clear All
+                    </Button>
+                  </Grid>
+                  <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                    <Button
+                      variant='contained'
+                      style={{ color: 'white', width: '100%' }}
+                      color='primary'
+                      size='medium'
+                      onClick={handleFilter}
+                    >
+                      Filter
+                    </Button>
+                  </Grid>
+                  <div>
+                    <Divider
+                      orientation='vertical'
+                      style={{
+                        backgroundColor: '#014e7b',
+                        height: '40px',
+                        marginTop: '1rem',
+                        marginLeft: '2rem',
+                        marginRight: '1.25rem',
+                      }}
                     />
                   </div>
-                </Paper>
-              )}
+                  <Grid
+                    item
+                    xs={6}
+                    sm={2}
+                    className={
+                      isMobile ? 'createButton' : 'createButton addButtonPadding'
+                    }
+                  >
+                    <Button
+                      startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                      variant='contained'
+                      color='primary'
+                      size='small'
+                      style={{ color: 'white', width: '100%' }}
+                      title='Add Topic'
+                      onClick={handleAddSubject}
+                    >
+                      Add Topic
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
             </>
-          ) : (
-            <>
+          )}
+
+          <>
+            {!isMobile ? (
               <>
                 {tableFlag && !addFlag && !editFlag && (
-                  <>
-                    {topicList.map((topic) => (
-                      <SubjectCard
-                        data={topic}
-                        handleDelete={handleDelete}
-                        handleEditSubject={handleEditSubject}
-                      />
-                    ))}
-                    <div className='paginateData paginateMobileMargin'>
+                  <Paper className={`${classes.root} common-table`}>
+                    <TableContainer className={classes.container}>
+                      <Table stickyHeader aria-label='sticky table'>
+                        <TableHead className='table-header-row'>
+                          <TableRow>
+                            {columns.map((column) => (
+                              <TableCell
+                                key={column.id}
+                                align={column.align}
+                                style={{ minWidth: column.minWidth }}
+                                className={classes.columnHeader}
+                              >
+                                {column.label}
+                              </TableCell>
+                            ))}
+                          </TableRow>
+                        </TableHead>
+                        <TableBody>
+                          {topicList.map((topic, index) => {
+                            return (
+                              <TableRow
+                                hover
+                                subject='checkbox'
+                                tabIndex={-1}
+                                key={index}
+                              >
+                                <TableCell className={classes.tableCell}>
+                                  {topic.topic_name}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  {topic.chapter?.chapter_name}
+                                </TableCell>
+                                <TableCell className={classes.tableCell}>
+                                  <IconButton
+                                    onClick={(e) => {
+                                      handleDelete(topic);
+                                    }}
+                                    title='Delete Topic'
+                                  >
+                                    <DeleteOutlinedIcon />
+                                  </IconButton>
+                                  <IconButton
+                                    onClick={(e) => handleEditSubject(topic)}
+                                    title='Edit Topic'
+                                  >
+                                    <EditOutlinedIcon />
+                                  </IconButton>
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    <div className='paginateData'>
                       <TablePagination
                         component='div'
                         count={totalCount}
+                        className='customPagination'
                         rowsPerPage={limit}
                         page={page - 1}
                         onChangePage={handleChangePage}
                         rowsPerPageOptions={false}
-                        className='table-pagination'
                       />
                     </div>
-                  </>
+                  </Paper>
                 )}
               </>
-            </>
-          )}
-        </>
-        <Dialog
-          open={openDeleteModal}
-          onClose={handleCloseDeleteModal}
-          aria-labelledby='draggable-dialog-title'
-        >
-          <DialogTitle id='draggable-dialog-title'>Delete Topic</DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              {`Confirm Delete Topic : ${subjectName}`}
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
-              Cancel
-            </Button>
-            <Button
-              color='primary'
-              variant='contained'
-              style={{ color: 'white' }}
-              onClick={handleDeleteTopic}
-            >
-              Confirm
-            </Button>
-          </DialogActions>
-        </Dialog>
+            ) : (
+              <>
+                <>
+                  {tableFlag && !addFlag && !editFlag && (
+                    <>
+                      {topicList.map((topic) => (
+                        <SubjectCard
+                          data={topic}
+                          handleDelete={handleDelete}
+                          handleEditSubject={handleEditSubject}
+                        />
+                      ))}
+                      <div className='paginateData paginateMobileMargin'>
+                        <TablePagination
+                          component='div'
+                          count={totalCount}
+                          rowsPerPage={limit}
+                          page={page - 1}
+                          onChangePage={handleChangePage}
+                          rowsPerPageOptions={false}
+                          className='table-pagination'
+                        />
+                      </div>
+                    </>
+                  )}
+                </>
+              </>
+            )}
+          </>
+          <Dialog
+            open={openDeleteModal}
+            onClose={handleCloseDeleteModal}
+            aria-labelledby='draggable-dialog-title'
+          >
+            <DialogTitle id='draggable-dialog-title'>Delete Topic</DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                {`Confirm Delete Topic : ${subjectName}`}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={handleCloseDeleteModal}
+                className='labelColor cancelButton'
+              >
+                Cancel
+              </Button>
+              <Button
+                color='primary'
+                variant='contained'
+                style={{ color: 'white' }}
+                onClick={handleDeleteTopic}
+              >
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </div>
       </Layout>
     </>
   );

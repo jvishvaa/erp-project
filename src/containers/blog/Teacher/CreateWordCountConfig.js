@@ -217,7 +217,7 @@ const CreateWordCountConfig = (props) => {
 
   const viewTabContent = () => {
     return (
-      <div>
+      <div style={{ height: '100%' }}>
         <Grid container spacing={2}>
           {activeListRes && activeListRes.length
             ? activeListRes.map((item) => {

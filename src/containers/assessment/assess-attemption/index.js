@@ -9,9 +9,11 @@ const AssessmentAttemption = (props) => {
   return (
     <>
       <Layout>
-        <AssessmentHandlerContextProvider assessmentId={assessmentId}>
-          <AssessmentAttemptionUI />
-        </AssessmentHandlerContextProvider>
+        <div style={{ height: '100%' }}>
+          <AssessmentHandlerContextProvider assessmentId={assessmentId}>
+            <AssessmentAttemptionUI />
+          </AssessmentHandlerContextProvider>
+        </div>
       </Layout>
     </>
   );
