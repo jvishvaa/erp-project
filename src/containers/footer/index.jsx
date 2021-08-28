@@ -6,14 +6,14 @@ function TermsAndCondition(props) {
   return (
     <Typography variant='body1' color='textSecondary' align='center'>
       <Link
-        style={{ cursor: 'pointer' }}
+        style={{ cursor: 'pointer', textDecoration: 'none' }}
         onClick={() => (window.location.pathname = '/terms-condition')}
       >
         Terms and Conditions&nbsp;
       </Link>
       |
       <Link
-        style={{ cursor: 'pointer' }}
+        style={{ cursor: 'pointer', textDecoration: 'none' }}
         onClick={() => (window.location.pathname = '/privacy-policy')}
       >
         &nbsp;Privacy Policy
@@ -25,19 +25,17 @@ function TermsAndCondition(props) {
 function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
-      {'Copyright © '}
-      {new Date().getFullYear()}, K12 Techno Services Pvt. Ltd.
+      {'Copyright  '}
+      &copy; {new Date().getFullYear()}, K12 Techno Services Pvt. Ltd.
     </Typography>
   );
 }
 const Footer = () => {
   return (
-    <div>
-      <Box mt={3} p={2} width='auto'>
-        <Copyright />
-        <TermsAndCondition />
-      </Box>
-    </div>
+    <Box mt={3} p={2} width='auto'>
+      <Copyright />
+      <TermsAndCondition />
+    </Box>
   );
 };
 

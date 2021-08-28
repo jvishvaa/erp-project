@@ -859,7 +859,6 @@ const Layout = ({ children, history }) => {
 
   return (
     <div className={classes.rootColumn}>
-      <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
       <div className={classes.root}>
         <Drawer
           open={drawerOpen}
@@ -923,8 +922,10 @@ const Layout = ({ children, history }) => {
                 )}
           </List>
         </Drawer>
+
         <main className={classes.content}>
           <div className={classes.appBarSpacer} />
+          <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
           <ContainerContext.Provider value={{ containerRef }}>
             <div className={classes.container} ref={containerRef}>
               {children}

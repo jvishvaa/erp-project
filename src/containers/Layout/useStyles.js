@@ -138,6 +138,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
   },
   drawerPaper: {
+    zIndex: theme.zIndex.drawer + 500,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -145,6 +146,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('xs')]: { width: '100vw' },
   },
   drawerPaperClose: {
+    zIndex: theme.zIndex.drawer + 500,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -160,14 +162,16 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
   },
   menuItemIcon: {
-    color: '#ffffff',
+    '& .MuiSvgIcon-root': {
+      color: '#ffffff',
+    },
   },
   menuItemText: {
     color: '#ffffff',
   },
   appBarSpacer: {
     // minHeight: theme.mixins.toolbar.minHeight,
-    minHeight: '64px',
+    // minHeight: '64px',
   },
   content: {
     // flexGrow: 1,
@@ -260,7 +264,7 @@ const useStyles = makeStyles((theme) => ({
     // paddingBottom: theme.spacing(1),
     paddingLeft: 0,
     paddingRight: 0,
-    height: `calc(100% - 64px)`,
+    height: `calc(100% - 0px)`,
     overflow: 'auto',
   },
   desktopToolbarComponents: {
