@@ -928,7 +928,7 @@ const Layout = ({ children, history }) => {
           <ContainerContext.Provider value={{ containerRef }}>
             <div className={classes.container} ref={containerRef}>
               {children}
-              <div position='absolute' className={classAppBar.appBar}>
+              <div className={classAppBar.footerBar}>
                 <Footer />
               </div>
             </div>
