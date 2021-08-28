@@ -30,6 +30,7 @@ import { useStyles } from './useStyles';
 import ImageUpload from '../../components/image-upload';
 import CustomizedSelects from './country-code';
 const UserDetailsForm = ({
+  isEdit,
   details,
   onSubmit,
   handleBack,
@@ -64,6 +65,7 @@ const UserDetailsForm = ({
     },
     validationSchema,
     onSubmit: (values) => {
+      console.log({ details });
       onSubmit(values);
     },
     validateOnChange: false,
@@ -289,7 +291,8 @@ const UserDetailsForm = ({
             id='username'
             name='username'
             inputProps={{ maxLength: 20 }}
-            onChange={formik.handleChange}
+            disabled={isEdit}
+            onChange={isEdit ? () => {} : formik.handleChange}
             value={formik.values.username}
             label='Username'
           />
