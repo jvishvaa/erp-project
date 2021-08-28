@@ -293,7 +293,11 @@ import ViewiBook from './containers/intelligent-textbook/ViewiBook';
 import AllBooksPage from 'containers/intelligent-textbook/bookpage/AllBooksPage';
 import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook';
 import { themeGenerator } from '../src/utility-functions/themeGenerator';
-import { isMsAPI } from "./utility-functions/index";
+import { isMsAPI } from './utility-functions/index';
+import StoreAtStudent from 'containers/Finance/src/components/Inventory/Student/storeAtStudent';
+import PolicyPrivacy from 'containers/login/TermsAndCondition/policy';
+import TermsAndCondition from 'containers/login/TermsAndCondition/termsAndCondition';
+import EditStoreTransactionDetails from 'containers/Finance/src/components/Finance/StorePaymentRequests/editStoreTransactionDetails';
 
 function App({ alert }) {
   isMsAPI();
@@ -430,6 +434,12 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/blog/admin/contentViewPublishAdmin'>
                             {({ match }) => <ContentViewPublishAdmin match={match} />}
+                          </Route>
+                          <Route exact path='/privacy-policy'>
+                            {({ match }) => <PolicyPrivacy match={match} />}
+                          </Route>
+                          <Route exact path='/terms-condition'>
+                            {({ match }) => <TermsAndCondition match={match} />}
                           </Route>
                           <Route exact path='/blog/teacher/publish/view'>
                             {({ match }) => <TeacherPublishBlogView match={match} />}

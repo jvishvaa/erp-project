@@ -16,6 +16,13 @@ import { login, aolLogin } from '../../redux/actions';
 import Loader from '../../components/loader/loader';
 import axiosInstance from '../../config/axios';
 
+function TermsAndCondition() {
+  return (
+    <Typography variant='body1' color='textSecondary' align='center'>
+      By proceeding, you agree to our Terms and Conditions and Privacy Policy.
+    </Typography>
+  );
+}
 function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
@@ -147,6 +154,9 @@ function Forgot({ onLogin, history, aolOnLogin }) {
               </div>
             </form>
           </div>
+          <Box mt={4}>
+            <TermsAndCondition />
+          </Box>
           <Box mt={8}>
             <Copyright />
           </Box>

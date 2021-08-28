@@ -25,6 +25,29 @@ import {
   isFetchThemeRequired,
   themeGenerator,
 } from '../../utility-functions/themeGenerator';
+
+function TermsAndCondition(props) {
+  return (
+    <Typography variant='body1' color='textSecondary' align='center'>
+      By proceeding, you agree to our
+      <Link
+        style={{ cursor: 'pointer' }}
+        onClick={() => (window.location.pathname = '/terms-condition')}
+      >
+        &nbsp;Terms and Conditions&nbsp;
+      </Link>
+      and
+      <Link
+        style={{ cursor: 'pointer' }}
+        onClick={() => (window.location.pathname = '/privacy-policy')}
+      >
+        &nbsp;Privacy Policy
+      </Link>
+      .
+    </Typography>
+  );
+}
+
 function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
@@ -227,7 +250,10 @@ function SignIn({ onLogin, history, aolOnLogin, setTheme }) {
               </div>
             </form>
           </div>
-          <Box mt={8}>
+          <Box mt={4}>
+            <TermsAndCondition />
+          </Box>
+          <Box mt={4}>
             <Copyright />
           </Box>
         </Container>
