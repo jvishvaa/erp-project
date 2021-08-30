@@ -2,14 +2,19 @@ import React from 'react'
 import Rating from '@material-ui/lab/Rating'
 import withStyles from '@material-ui/core/styles/withStyles';
 
-const StyledRating = withStyles({
+const StyledRating = withStyles((theme) => ({
   iconFilled: {
-    color: '#ff6b6b',
+    color:theme.palette.primary.main,
+  },
+  root : {
+    '& .MuiSvgIcon-root':{
+      color : "currentColor"
+    }
   },
   iconHover: {
-    color: '#ff6b6b',
+    color: theme.palette.primary.main,
   },
-})(Rating);
+}))(Rating);
 export default function RatingScale (props) {
 
   return (
