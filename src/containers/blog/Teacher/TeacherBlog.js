@@ -474,7 +474,7 @@ class TeacherBlog extends Component {
                     disabled={!startDate || !endDate}
                     onClick={this.handleFilter}
                   >
-                    Clear
+                    Filter
                   </Button>
                   <Button
                     style={{ margin: '20px', marginTop: '30px' }}
