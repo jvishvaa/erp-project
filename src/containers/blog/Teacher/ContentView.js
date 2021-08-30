@@ -57,7 +57,7 @@ const styles = (theme) => ({
   media: {
     height: 300,
     borderRadius: 16,
-    backgroundSize:380
+    backgroundSize: 380
 
   },
   author: {
@@ -71,15 +71,29 @@ const styles = (theme) => ({
     marginBottom: 20,
     textAlign: 'center',
   },
+  ViewColor: {
+    color: `${theme.palette.primary.main} !important`
+  },
+  likeColor: {
+    color: 'red !important'
+  },
+  likeAndViewbtn: {
+    fontFamily: 'Open Sans',
+    fontSize: '12px',
+    fontWeight: 'lighter',
+    textTransform: 'capitalize',
+    color: theme.palette.primary.main,
+    backgroundColor: 'white',
+  }
 });
 
 
-const publishLevelChoice=[ 
+const publishLevelChoice = [
   { label: 'Branch', value: '2' },
   { label: 'Grade', value: '3' },
   { label: 'Section', value: '4' }
 
-  ] 
+]
 class ContentView extends Component {
   constructor(props) {
     super(props);
@@ -87,49 +101,49 @@ class ContentView extends Component {
       relatedBlog: true,
       starsRating: 0,
       feedBack: false,
-      isPublish:false,
+      isPublish: false,
       blogId: this.props.location.state.data && this.props.location.state.data.id,
       data: this.props.location.state.data && this.props.location.state.data,
-      tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
-      feedbackrevisionReq:'',
+      tabValue: this.props.location.state.tabValue && this.props.location.state.tabValue,
+      feedbackrevisionReq: '',
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
-      blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
-      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
-      likeStatus:false,
+      blogRatings: this.props.location.state.data && this.props.location.state.data.remark_rating,
+      overallRemark: this.props.location.state.data && this.props.location.state.data.overall_remark,
+      likeStatus: false,
       currentLikes: 0,
-      loading:false,
+      loading: false,
       likes: this.props.location.state.data && this.props.location.state.data.likes,
-      loginUserName : JSON.parse(localStorage.getItem('userDetails')).erp_user_id
+      loginUserName: JSON.parse(localStorage.getItem('userDetails')).erp_user_id
 
 
     };
-   
+
 
   }
   static contextType = AlertNotificationContext
   componentDidMount() {
-    let {blogId} = this.state
+    let { blogId } = this.state
     this.handleView(blogId)
   }
 
 
   handleView = (blogId) => {
     let requestData = {
-      "blog_id": blogId ,
+      "blog_id": blogId,
     }
-  axiosInstance.post(`${endpoints.blog.BlogView}`, requestData)
-  .then(result=>{
-  if (result.data.status_code === 200) {
-  } else {        
+    axiosInstance.post(`${endpoints.blog.BlogView}`, requestData)
+      .then(result => {
+        if (result.data.status_code === 200) {
+        } else {
+        }
+      }).catch((error) => {
+      })
   }
-  }).catch((error)=>{
-  })
-}
 
 
 
   submitRevisionFeedback = () => {
-    const {  data, feedbackrevisionReq } = this.state;
+    const { data, feedbackrevisionReq } = this.state;
     const formData = new FormData();
     formData.set('blog_id', data.id);
     formData.set('status', 5);
@@ -150,24 +164,24 @@ class ContentView extends Component {
       });
   };
   handleReivisionNameChange = (e) => {
-    this.setState({feedbackrevisionReq:e.target.value})
+    this.setState({ feedbackrevisionReq: e.target.value })
   };
   submitPublish = () => {
-  const {  data, publishedLevel ,roleDetails} = this.state;
-  const formData = new FormData();
-  formData.set('blog_id', data.id);
-  formData.set('status', 4);
-  formData.set('published_level', publishedLevel);
-  if(publishedLevel === '2'){
-    let branchId = roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
-    formData.set('branch_id', branchId);
-    
+    const { data, publishedLevel, roleDetails } = this.state;
+    const formData = new FormData();
+    formData.set('blog_id', data.id);
+    formData.set('status', 4);
+    formData.set('published_level', publishedLevel);
+    if (publishedLevel === '2') {
+      let branchId = roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
+      formData.set('branch_id', branchId);
+
     }
     axios
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
-        this.context.setAlert('success',"Blog Published Successfully")
+          this.context.setAlert('success', "Blog Published Successfully")
           this.props.history.push({
             pathname: '/blog/teacher',
           });
@@ -179,18 +193,18 @@ class ContentView extends Component {
       .catch((error) => {
       });
   };
-  
+
   handlePublishLevelType = (event, value) => {
-    if (value && value.value){
-      this.setState({publishedLevel:value.value})
+    if (value && value.value) {
+      this.setState({ publishedLevel: value.value })
     }
-    else{
-      this.setState({publishedLevel:''})
+    else {
+      this.setState({ publishedLevel: '' })
 
     }
   }
   getRatings = () => {
-    let {blogRatings} =this.state
+    let { blogRatings } = this.state
     if (!blogRatings) {
       return []
     }
@@ -200,56 +214,56 @@ class ContentView extends Component {
     return allRatingParamters
   }
 
- getOverAllRemark = () => {
-   let {overallRemark} = this.state
-   return overallRemark
+  getOverAllRemark = () => {
+    let { overallRemark } = this.state
+    return overallRemark
   }
-getLikeStatus = (isLiked) => {
-  let { likeStatus,likes }=this.state
-  if (isLiked === true && likeStatus === false) {
-    this.setState({currentLikes :likes-1,likeStatus:true})
-  } else if (isLiked === true && likeStatus === true) {
-    this.setState({currentLikes :likes+1,likeStatus:false})
+  getLikeStatus = (isLiked) => {
+    let { likeStatus, likes } = this.state
+    if (isLiked === true && likeStatus === false) {
+      this.setState({ currentLikes: likes - 1, likeStatus: true })
+    } else if (isLiked === true && likeStatus === true) {
+      this.setState({ currentLikes: likes + 1, likeStatus: false })
 
-  } else if (isLiked === false && likeStatus === false) {
-    this.setState({currentLikes :likes+1,likeStatus:true})
+    } else if (isLiked === false && likeStatus === false) {
+      this.setState({ currentLikes: likes + 1, likeStatus: true })
 
-  } else if (isLiked === false && likeStatus === true) {
-    this.setState({currentLikes :likes,likeStatus:false})
+    } else if (isLiked === false && likeStatus === true) {
+      this.setState({ currentLikes: likes, likeStatus: false })
 
+    }
   }
-}
-handleLike = (isLiked,blogId) => {
-  this.getLikeStatus(isLiked)
-  let requestData = {
-    "blog_id": blogId ,
+  handleLike = (isLiked, blogId) => {
+    this.getLikeStatus(isLiked)
+    let requestData = {
+      "blog_id": blogId,
 
-  }
-axiosInstance.post(`${endpoints.blog.BlogLike}`, requestData)
+    }
+    axiosInstance.post(`${endpoints.blog.BlogLike}`, requestData)
 
-.then(result=>{
-if (result.data.status_code === 200) {
-  this.setState({loading:false})
-  // setAlert('success', result.data.message);
-} else {        
-  this.setState({loading:false})
-  // setAlert('error', result.data.message);
-}
-}).catch((error)=>{
-  this.setState({loading:false})
-  // setAlert('error', error.message);
-})
+      .then(result => {
+        if (result.data.status_code === 200) {
+          this.setState({ loading: false })
+          // setAlert('success', result.data.message);
+        } else {
+          this.setState({ loading: false })
+          // setAlert('error', result.data.message);
+        }
+      }).catch((error) => {
+        this.setState({ loading: false })
+        // setAlert('error', error.message);
+      })
   }
-  
+
   render() {
     const { classes } = this.props;
-    const {likes,currentLikes,likeStatus,loginUserName, tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel,roleDetails} = this.state;
-    const blogFkLike= data && data.blog_fk_like
-    const likedUserIds=blogFkLike.map(blog => blog.user)
-    const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
-    const loginUser=likedUserIds.includes(roleDetails.user_id)
+    const { likes, currentLikes, likeStatus, loginUserName, tabValue, relatedBlog, starsRating, feedBack, data, feedbackrevisionReq, isPublish, publishedLevel, roleDetails } = this.state;
+    const blogFkLike = data && data.blog_fk_like
+    const likedUserIds = blogFkLike.map(blog => blog.user)
+    const indexOfLoginUser = likedUserIds.indexOf(roleDetails.user_id)
+    const loginUser = likedUserIds.includes(roleDetails.user_id)
     const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
-    const name =data && data.author && data.author.id
+    const name = data && data.author && data.author.id
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -262,43 +276,47 @@ if (result.data.status_code === 200) {
               <div className='create_group_filter_container'>
                 <div className={classes.root}>
                   <Grid container spacing={3}>
-                  <Grid item xs={12}>
+                    <Grid item xs={12}>
                       <Button
+                        className='labelColor cancelButton'
                         style={{ cursor: 'Pointer' }}
                         onClick={() => window.history.back()}
                         align='right'
                       >
                         <i>Back</i>
                       </Button>
-                      </Grid>
-                      <Grid item xs={9}>
+                    </Grid>
+                    <Grid item xs={9}>
                       <Card className={classes.cardRoot}>
                         <Typography
                           variant='h5'
                           component='h2'
                           style={{ marginBottom: 10 }}
                         >
-                            {data.title}
+                          {data.title}
                         </Typography>
-                       
+
                         <CardMedia className={classes.media} image={data.thumbnail} />
                         {
                           data && data.feedback_revision_required ?
-                        <CardContent> <Typography
-                          style={{color:'#ff6b6b', fontSize:'12px'}}
-                        >Revision Feedback:{data.feedback_revision_required}
-                       
-                        </Typography>
-                        <Typography style={{fontSize:'12px'}}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent> 
-                        :'' } {data.comment ? 
-                        <CardContent> <Typography
-                        style={{color:'#ff6b6b', fontSize:'12px'}}
-                      >Comment:{data.comment}
-                     
-                      </Typography>
-                      <Typography style={{fontSize:'12px'}}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
-                      </CardContent>  :''}
-                       
+                            <CardContent>
+                              <Typography
+                                color="primary"
+                                style={{ fontSize: '12px' }}
+                              >Revision Feedback:{data.feedback_revision_required}
+
+                              </Typography>
+                              <Typography style={{ fontSize: '12px' }}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent>
+                            : ''} {data.comment ?
+                              <CardContent> <Typography
+                                color="primary"
+                                style={{ fontSize: '12px' }}
+                              >Comment:{data.comment}
+
+                              </Typography>
+                                <Typography style={{ fontSize: '12px' }}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                              </CardContent> : ''}
+
                         <CardHeader
                           className={classes.author}
                           title={data.author.first_name}
@@ -308,45 +326,46 @@ if (result.data.status_code === 200) {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                          {ReactHtmlParser(data.content)}
+                            {ReactHtmlParser(data.content)}
                           </Typography>
-                          <Typography component='p'  style={{ paddingRight: '650px',fontSize:'12px'}}
->
-                          Total Words : {data.word_count}
-                          
-                          </Typography>
-                          <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
-                           Genre: {data.genre && data.genre.genre}
-                          </Typography>
-                          
-                        </CardContent>
-                        <CardActions> 
-                           {loginUserName !== name ? <Button
-                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
-                              onClick={()=>this.handleLike(isLiked,data.id)}
-                            > {isLiked || likeStatus ? <Favorite style={{ color: '#ff6b6b' }} />
-                                : <FavoriteBorder style={{ color: '#ff6b6b' }} />} {currentLikes === 0 ? likes
-                                : currentLikes
-                              }Likes
-                            </Button> : ''} &nbsp;&nbsp;&nbsp;
-                            <Button
-                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
-
-                            >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
-                            </Button>
-                            {!data.feedback_revision_required  ? 
-                          <Button
-                            size='small'
-                            color='primary'
-                            onClick={() => {
-                              this.setState({
-                                relatedBlog: !relatedBlog,
-                                feedBack: false,
-                              });
-                            }}
+                          <Typography component='p' style={{ paddingRight: '650px', fontSize: '12px' }}
                           >
-                           {tabValue === 0 ? 'Add Review' : 'View/Edit Review' }
-                          </Button>  :''}
+                            Total Words : {data.word_count}
+
+                          </Typography>
+                          <Typography component='p' style={{ paddingRight: '650px', fontSize: '12px' }}>
+                            Genre: {data.genre && data.genre.genre}
+                          </Typography>
+
+                        </CardContent>
+                        <CardActions>
+                          {loginUserName !== name ? <Button
+                            className={classes.likeAndViewbtn}
+                             onClick={() => this.handleLike(isLiked, data.id)}
+                          > {isLiked || likeStatus ? <Favorite className={classes.likeColor} />
+                            : <FavoriteBorder className={classes.likeColor} />} {currentLikes === 0 ? likes
+                              : currentLikes
+                            }Likes
+                          </Button> : ''} &nbsp;&nbsp;&nbsp;
+                          <Button
+                            className={classes.likeAndViewbtn}
+
+                          >   <Visibility className={classes.ViewColor} />{data.views}Views
+                          </Button>
+                          {!data.feedback_revision_required ?
+                            <Button
+                              size='small'
+                              color='primary'
+                              variant="contained"
+                              onClick={() => {
+                                this.setState({
+                                  relatedBlog: !relatedBlog,
+                                  feedBack: false,
+                                });
+                              }}
+                            >
+                              {tabValue === 0 ? 'Add Review' : 'View/Edit Review'}
+                            </Button> : ''}
                           {/* {tabValue === 0 ? 
                           <Button
                             size='small'
@@ -361,21 +380,22 @@ if (result.data.status_code === 200) {
                            {tabValue === 0 ? 'Add Review' : 'View Review' }
                           </Button>  :''} */}
                           {tabValue === 0 ?
-                          <Button
-                            size='small'
-                            color='primary'
-                            onClick={() => this.setState({ feedBack: true,relatedBlog:true })}
-                          >
-                            Add Revision Feedback
-                          </Button> : !data.feedback_revision_required ?
-                          <Button
-                            size='small'
-                            color='primary'
-                            onClick={() => this.setState({ isPublish: true })}
-                          >
-                            Publish
-                          </Button> 
-:''
+                            <Button
+                              size='small'
+                              color='primary'
+                              variant="contained"
+                              onClick={() => this.setState({ feedBack: true, relatedBlog: true })}
+                            >
+                              Add Revision Feedback
+                            </Button> : !data.feedback_revision_required ?
+                              <Button
+                                size='small'
+                                color='primary'
+                                onClick={() => this.setState({ isPublish: true })}
+                              >
+                                Publish
+                              </Button>
+                              : ''
                           }
                         </CardActions>
                       </Card>
@@ -390,7 +410,7 @@ if (result.data.status_code === 200) {
                               rows={12}
                               placeholder='Provide Feedback related to this blog..'
                               variant='outlined'
-                              onChange={(event,value)=>{this.handleReivisionNameChange(event);}}
+                              onChange={(event, value) => { this.handleReivisionNameChange(event); }}
 
                             />
                             <br />
@@ -398,45 +418,47 @@ if (result.data.status_code === 200) {
                               <Button
                                 style={{ fontSize: 12 }}
                                 size='small'
+                                variant="contained"
                                 color='primary'
                                 disabled={!feedbackrevisionReq}
-                                onClick ={this.submitRevisionFeedback}
+                                onClick={this.submitRevisionFeedback}
                               >
                                 Revision required
                               </Button>
                             </CardActions>
                           </CardContent>
                         </Card>
-                      ):isPublish ? (
+                      ) : isPublish ? (
                         <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
                           <CardContent>
-                          <Autocomplete
-                            style={{ width: '100%' }}
-                            size='small'
-                            disableClearable
-                            onChange={this.handlePublishLevelType}
-                            id='category'
-                            required
-                            options={publishLevelChoice}
-                            getOptionLabel={(option) => option?.label}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                variant='outlined'
-                                label='Publish Level'
-                                placeholder='Publish Level'
-                              />
-                            )}
-                          />
+                            <Autocomplete
+                              style={{ width: '100%' }}
+                              size='small'
+                              disableClearable
+                              onChange={this.handlePublishLevelType}
+                              id='category'
+                              required
+                              options={publishLevelChoice}
+                              getOptionLabel={(option) => option?.label}
+                              filterSelectedOptions
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  variant='outlined'
+                                  label='Publish Level'
+                                  placeholder='Publish Level'
+                                />
+                              )}
+                            />
                             <br />
                             <CardActions>
                               <Button
                                 style={{ fontSize: 12 }}
                                 size='small'
+                                variant="contained"
                                 color='primary'
                                 disabled={!publishedLevel}
-                                onClick ={this.submitPublish}
+                                onClick={this.submitPublish}
                               >
                                 Submit
                               </Button>
@@ -444,20 +466,22 @@ if (result.data.status_code === 200) {
                           </CardContent>
                         </Card>
                       )
-                      : relatedBlog ? ''
-                      : (
-                        <Grid>
-                        <Typography
-                        style={{ fontSize:'12px', width: '300px',
-                        paddingLeft: '30px',
-                        color: '#ff6b6b'}}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
-                     
-                      </Typography>
-                        <Review  blogId={data.id}  ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
-                        />
-</Grid>
+                        : relatedBlog ? ''
+                          : (
+                            <Grid>
+                              <Typography
+                              color = "primary"
+                                style={{
+                                  fontSize: '12px', width: '300px',
+                                  paddingLeft: '30px',
+                                }}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
 
-                      )
+                              </Typography>
+                              <Review blogId={data.id} ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
+                              />
+                            </Grid>
+
+                          )
                       }
                     </Grid>
                   </Grid>
