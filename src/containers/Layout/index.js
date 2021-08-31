@@ -880,7 +880,7 @@ const Layout = ({ children, history }) => {
           }}
           onClose={() => setDrawerOpen(false)}
         >
-          <div className={classes.appBarSpacer} />
+          {/* <div className={classes.appBarSpacer} /> */}
           {isMobile ? <SearchBar /> : null}
           <List>
             <ListItem

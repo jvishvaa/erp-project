@@ -171,7 +171,7 @@ const useStyles = makeStyles((theme) => ({
   },
   appBarSpacer: {
     // minHeight: theme.mixins.toolbar.minHeight,
-    // minHeight: '64px',
+    minHeight: '64px',
   },
   content: {
     // flexGrow: 1,
@@ -264,7 +264,8 @@ const useStyles = makeStyles((theme) => ({
     // paddingBottom: theme.spacing(1),
     paddingLeft: 0,
     paddingRight: 0,
-    height: `calc(100% - 0px)`,
+    // height: `calc(100% - 0px)`,
+    height: `calc(100% - 64px)`,
     overflow: 'auto',
   },
   desktopToolbarComponents: {
