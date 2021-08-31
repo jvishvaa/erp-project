@@ -341,7 +341,7 @@ class ContentView extends Component {
                         <CardActions>
                           {loginUserName !== name ? <Button
                             className={classes.likeAndViewbtn}
-                             onClick={() => this.handleLike(isLiked, data.id)}
+                            onClick={() => this.handleLike(isLiked, data.id)}
                           > {isLiked || likeStatus ? <Favorite className={classes.likeColor} />
                             : <FavoriteBorder className={classes.likeColor} />} {currentLikes === 0 ? likes
                               : currentLikes
@@ -357,6 +357,7 @@ class ContentView extends Component {
                               size='small'
                               color='primary'
                               variant="contained"
+                              style={{ color: "white" }}
                               onClick={() => {
                                 this.setState({
                                   relatedBlog: !relatedBlog,
@@ -384,12 +385,15 @@ class ContentView extends Component {
                               size='small'
                               color='primary'
                               variant="contained"
+                              style={{ color: "white" }}
                               onClick={() => this.setState({ feedBack: true, relatedBlog: true })}
                             >
                               Add Revision Feedback
                             </Button> : !data.feedback_revision_required ?
                               <Button
                                 size='small'
+                                style={{ color: "white" }}
+                                variant="contained"
                                 color='primary'
                                 onClick={() => this.setState({ isPublish: true })}
                               >
@@ -470,7 +474,7 @@ class ContentView extends Component {
                           : (
                             <Grid>
                               <Typography
-                              color = "primary"
+                                color="primary"
                                 style={{
                                   fontSize: '12px', width: '300px',
                                   paddingLeft: '30px',
