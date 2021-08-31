@@ -274,7 +274,8 @@ const UserDetailsForm = ({
           <OutlinedInput
             id='contact'
             name='contact'
-            inputProps={{ maxLength: 11 }}
+            // inputProps={{ maxLength: 11 }}
+            // inputProps={{ pattern: { min: 5, max: 15 } }}
             onChange={formik.handleChange}
             value={formik.values.contact}
             label='Mobile no.'
