@@ -46,8 +46,10 @@
 .volume__controller {
     width: 2.5em;
     position: absolute;
-    left: 7%;
-    top: 1em;
+    /* left: 7%;
+    top: 1em; */
+    left: 10%;
+    top: 3%;
     z-index: 1000;
 }
 

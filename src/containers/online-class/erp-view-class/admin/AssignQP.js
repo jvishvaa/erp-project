@@ -10,8 +10,6 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import endpoints from '../../../../config/endpoints';
 import axiosInstance from '../../../../config/axios';
-import axios from 'axios';
-
 import Loading from '../../../../components/loader/loader';
 import APIREQUEST from '../../../../config/apiRequest';
 
@@ -51,9 +49,10 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '10px',
   },
   cardContainer: {
-    width: '98%',
+    width: '94%',
     minHeight: '100px',
     border: '1px solid black',
+    borderRadius: '10px',
     margin: 'auto',
     marginTop: '15px',
     padding: '8px',
@@ -80,22 +79,16 @@ const AssignQP = (props) => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '0 0 -1rem 1.5%';
   const widerWidth = isMobile ? '90%' : '85%';
-  const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
-  const JSON5 = require('json5');
   const [selectedQp, setSelectedQp] = useState();
-
   const [qpList, setQpList] = useState([]);
   const [questionData, setQuestionData] = useState([]);
-  const branchId =
-    roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0];
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   useEffect(() => {
     getQP();
   }, []);
 
   const getQP = () => {
     axiosInstance
-      .get(`${endpoints.questionPaper.FETCHQP}`, {})
+      .get(`${endpoints.questionPaper.FETCHQP}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setQpList(result.data.result);
@@ -125,6 +118,7 @@ const AssignQP = (props) => {
         setAlert('error', 'Cant Assign Question Paper');
       });
   };
+
   const handleSubmit = (e) => {
     setLoading(true);
     let requestData = {};
@@ -160,12 +154,7 @@ const AssignQP = (props) => {
       : endpoints.questionPaper.QuestionsInQP;
     axiosInstance
       .get(
-        `${QuestionsInQP}?question_paper=${value.question_paper}&lobby_identifier=${params.id}&question_paper_list=1`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
+        `${QuestionsInQP}?question_paper=${value.question_paper}&lobby_identifier=${params.id}&question_paper_list=1`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -178,6 +167,7 @@ const AssignQP = (props) => {
         setAlert('error', error.message);
       });
   };
+  
   const questionCard = (data, index) => {
     try {
       const filteredOptions = Object.entries(data.options).filter(
@@ -241,9 +231,16 @@ const AssignQP = (props) => {
     } catch (err) {
       return (
         // <span>The JSON is not in the proper format. Please Contact Technical Team</span>
-        <span style={{margin: 'auto 2.5rem'}}>The is not a single choice question.</span>
+        <span style={{ margin: 'auto 2.5rem' }}>
+          The is not a single choice question.
+        </span>
       );
     }
+  };
+
+  const isValidPaper = () => {
+    const { questions = [] } = { ...questionData } || {};
+    return questions.every(({ question_type = 0 }) => question_type === 1) && selectedQp;
   };
 
   return (
@@ -300,23 +297,27 @@ const AssignQP = (props) => {
           spacing={isMobile ? 1 : 5}
           style={{ width: '95%', margin: '-1.25rem 1.5% 0 1.5%' }}
         >
-          <Grid item xs={12} sm={12}>
+          {/* <Grid item xs={12} sm={12}>
             <div style={{ fontSize: '14px', color: 'orange' }}>
               {' '}
               Warning: *Please select a question paper with single choice questions only
             </div>
-          </Grid>
-          <Grid item xs={6} sm={2}>
+          </Grid> */}
+          <Grid item xs={6} sm={6}>
             <Button
               variant='contained'
-              style={{ color: 'white', marginTop: '30px', width: '100%' }}
+              style={{ color: 'white', marginTop: '15px' }}
               color='primary'
+              className={isValidPaper() ? null : 'cancelButton labelColor'}
               size='medium'
               type='submit'
               onClick={handleSubmit}
-              disabled={!selectedQp}
+              // disabled={!selectedQp}
+              disabled={!isValidPaper()}
             >
-              Assign
+              {isValidPaper()
+                ? 'Assign'
+                : 'Please select a question paper with single choice questions only'}
             </Button>
           </Grid>
         </Grid>
