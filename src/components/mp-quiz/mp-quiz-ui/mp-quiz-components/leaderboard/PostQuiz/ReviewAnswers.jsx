@@ -54,12 +54,11 @@ export class ReviewAnswers extends Component {
     });
   }
 
-  renderQuestion = (question) => {
+  renderQuestion = (index, question) => {
     return (
-      <div>
-        <div className='resizeable'>
-          {ReactHTMLParser(question.replace(/&nbsp;/g, ' '))}
-        </div>
+      <div className='resizeable question_container--quiz'>
+        <div>{`${index + 1}`}.</div>&nbsp;
+        <div>{ReactHTMLParser(question.replace(/&nbsp;/g, ' '))}</div>
       </div>
     );
   };
@@ -163,8 +162,7 @@ export class ReviewAnswers extends Component {
               : [{}];
             return (
               <div className='review__answers--quiz'>
-                <h1>{`${index + 1}`}</h1>
-                {this.renderQuestion(questionContent)}
+                {this.renderQuestion(index, questionContent)}
                 {this.getOptionList(question)}
               </div>
             );
