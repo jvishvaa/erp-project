@@ -71,6 +71,7 @@ const styles = (theme) => ({
     flexGrow: 1,
   },
 });
+let blogFilter
 class PrincipalBlog extends Component {
   constructor(props) {
     super(props);
@@ -126,6 +127,14 @@ class PrincipalBlog extends Component {
       startDate,
       endDate,
     } = this.state;
+    localStorage.setItem('blogFilterData',JSON.stringify({
+      // selectedYear: selectedYear,
+      selectedBranch: selectedBranch,
+      selectedGrade: selectedGrade,
+      selectedSection: selectedSection,
+      startDate: startDate,
+      endDate: endDate
+    }))
     let urlPath = '';
     if (selectedSection) {
       urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}&grade_id=${selectedGrade.grade_id}`;
@@ -227,11 +236,46 @@ class PrincipalBlog extends Component {
   getBlog = (status) => {
     // const { pageNo, pageSize,tabValue,moduleId } = this.state;
     const { pageNo, pageSize, tabValue, moduleId, startDate, endDate } = this.state;
+    blogFilter=JSON.parse(localStorage.getItem('blogFilterData'));
 
+    if(blogFilter?.selectedBranch){
+      this.handleYear("",blogFilter.selectedBranch.session_year);
+      this.handleBranch('',blogFilter.selectedBranch)
+    }
+    if(blogFilter?.selectedGrade){
+      this.handleGrade("",blogFilter?.selectedGrade)
+    }
+    if(blogFilter?.selectedSection){
+      this.handleSection("",blogFilter?.selectedSection)
+    }
+    this.handleFilter2();
+  };
+  handleFilter2 = () => {
+    // localStorage.removeItem('blogFilterData');
+    const {
+      pageNo,
+      pageSize,
+      tabValue,
+      status,
+      selectedBranch,
+      selectedGrade,
+      selectedSection,
+      moduleId,
+      startDate,
+      endDate,
+    } = this.state;
+    let urlPath = '';
+    if (blogFilter?.selectedSection) {
+      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${blogFilter?.selectedSection?.section_id}&start_date=${startDate}&end_date=${endDate}&grade_id=${blogFilter?.selectedGrade?.grade_id}&branch_id=${blogFilter?.selectedBranch?.branch?.id}`;
+    } else if (selectedGrade) {
+      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&grade_id=${blogFilter?.selectedGrade?.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${blogFilter?.selectedBranch?.branch?.id}`;
+    } else if(blogFilter?.selectedBranch){
+      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&branch_id=${blogFilter?.selectedBranch?.branch?.id}&start_date=${startDate}&end_date=${endDate}`;
+    } else {
+      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}`
+    }
     axios
-      .get(
-        `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}`
-      )
+      .get(urlPath)
       .then((result) => {
         if (result.data.status_code === 200) {
           this.setState({
@@ -319,6 +363,7 @@ class PrincipalBlog extends Component {
   };
   clearSelection = () => {
     let { status } = this.state;
+    localStorage.removeItem('blogFilterData');
     this.setState(
       { selectedYear: '', selectedBranch: '', selectedGrade: '', selectedSection: '' },
       () => {
