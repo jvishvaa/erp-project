@@ -191,6 +191,7 @@ class ContentView extends Component {
                           <Button
                             style={{ width: 150 }}
                             size='small'
+                            variant = "contained"
                             color='primary'
                             onClick={this.WriteBlogNav}
                           >
@@ -199,6 +200,7 @@ class ContentView extends Component {
                           <Button
                             style={{ width: 150 }}
                             size='small'
+                            variant = "contained"
                             color='primary'
                             onClick={() => this.submitBlog('Publish')}
                           >
@@ -207,6 +209,7 @@ class ContentView extends Component {
                           <Button
                             style={{ width: 150 }}
                             size='small'
+                            variant = "contained"
                             color='primary'
                             onClick={() => this.submitBlog('Draft')}
                           >
