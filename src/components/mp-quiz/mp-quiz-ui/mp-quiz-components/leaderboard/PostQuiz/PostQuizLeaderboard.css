@@ -216,7 +216,9 @@
 .options__container--quiz {
     margin-top: 40px !important;
 } 
-
+.question_container--quiz {
+    display: flex;
+}
 @media only screen and (max-width: 900px) {
 .postquiz__playerinfo--background {
     content: url('../assets/post_quiz_Player_info_BG_tablet.png');
