@@ -5,7 +5,8 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import axiosInstance from '../../../../../config/axios';
 import endpoints from '../../../../../config/endpoints';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
-import './course-price-filters.css';
+import useStyles from './useStyles';
+import clsx from 'clsx';
 
 const CoursePriceFilters = (props) => {
   const {
@@ -20,6 +21,8 @@ const CoursePriceFilters = (props) => {
     courseKey,
     gradeKey,
   } = props;
+
+  const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectedGrade, setSelectedGrade] = useState('');
   const themeContext = useTheme();
@@ -125,10 +128,10 @@ const CoursePriceFilters = (props) => {
           size='small'
           id='grades'
           className='dropdownIcon'
-          options={gradeList||[]}
-          getOptionLabel={(option) => option?.grade__grade_name||''}
+          options={gradeList || []}
+          getOptionLabel={(option) => option?.grade__grade_name || ''}
           filterSelectedOptions
-          value={selectedGrade||''}
+          value={selectedGrade || ''}
           onChange={handleGrade}
           disabled={gradeKey && courseKey}
           renderInput={(params) => (
@@ -147,10 +150,10 @@ const CoursePriceFilters = (props) => {
           size='small'
           id='courseName'
           className='dropdownIcon'
-          options={courseList||[]}
-          getOptionLabel={(option) => option?.course_name||''}
+          options={courseList || []}
+          getOptionLabel={(option) => option?.course_name || ''}
           filterSelectedOptions
-          value={selectedCourse||''}
+          value={selectedCourse || ''}
           onChange={handleCourse}
           disabled={gradeKey && courseKey}
           renderInput={(params) => (
@@ -170,7 +173,7 @@ const CoursePriceFilters = (props) => {
           item
           xs={12}
           sm={9}
-          className={isMobile ? 'timeSlotWrapper' : 'timeSlotWrapper filterPadding'}
+          className={clsx({ filterPadding: !isMobile }, classes.timeSlotWrapper)}
         >
           <div className='timeSlotTag'>Time Slots:</div>
           {timeSlotDisplay.map((value) => (
@@ -184,10 +187,10 @@ const CoursePriceFilters = (props) => {
             size='small'
             id='timeSlots'
             className='dropdownIcon'
-            options={timeSlotList||[]}
-            getOptionLabel={(option) => option?.slot||''}
+            options={timeSlotList || []}
+            getOptionLabel={(option) => option?.slot || ''}
             filterSelectedOptions
-            value={timeSlot||''}
+            value={timeSlot || ''}
             onChange={handleTimeSlot}
             filterSelectedOptions
             renderInput={(params) => (

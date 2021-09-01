@@ -1,8 +1,9 @@
 .evaluvation_tool_bar {
+  padding-top: 2%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 57px !important;
+  /* width: 40px !important; */
   align-self: flex-end;
   background: whitesmoke;
   position: absolute;
@@ -10,9 +11,10 @@
   z-index: 1000;
   /* height: 46px; */
   /* height: 65px !important; */
-  margin-top: 10vh;
+  margin-top: 12vh;
   margin-right: 5vh;
-  /* width:max-content; */
+  width:min-content;
+  align-items: center;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.07),
     0 4px 8px rgba(0, 0, 0, 0.07), 0 8px 16px rgba(0, 0, 0, 0.07),
     0 16px 32px rgba(0, 0, 0, 0.07), 0 32px 64px rgba(0, 0, 0, 0.07);
@@ -73,4 +75,8 @@
 .arrow-middle {
   margin-left: 50%;
 }
-/* style={{position:'absolute',left:"2%",top:'50%'}} */
+.MuiToggleButton-root{
+  min-height: 5vh;
+  height: 6vh;
+  /* width:40px; */
+}

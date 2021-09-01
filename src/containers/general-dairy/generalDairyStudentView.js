@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, useStyles } from 'react';
 import Divider from '@material-ui/core/Divider';
-import {useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom';
 import { Grid, TextField, Button, useTheme } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -28,10 +28,10 @@ const GeneralDairyStudentView = ({
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const [volumeDropdown, setVolumeDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
-  const [sectionDropdown,setSectionDropdown] = useState([])
+  const [sectionDropdown, setSectionDropdown] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
-//   const [subjectIds, setSubjectIds] = useState([]);
-const [sectionIds,setSectionIds] = useState([])
+  //   const [subjectIds, setSubjectIds] = useState([]);
+  const [sectionIds, setSectionIds] = useState([]);
   const [branchId, setBranchId] = useState('');
 
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -56,7 +56,7 @@ const [sectionIds,setSectionIds] = useState([])
   const [datePopperOpen, setDatePopperOpen] = useState(false);
 
   const [teacherModuleId, setTeacherModuleId] = useState(null);
-const history=useHistory()
+  const history = useHistory();
 
   const [filterData, setFilterData] = useState({
     grade: '',
@@ -88,62 +88,66 @@ const history=useHistory()
     setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
     // setOverviewSynopsis([]);
     if (value && filterData.branch) {
-        setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`)
-            .then(result => {
-                if (result.data.status_code === 200) {
-                    setSectionDropdown(result.data.data);
-                }
-                else {
-                    setAlert('error', result.data.message);
-                   setSectionDropdown([])
-                }
-            })
-            .catch(error => {
-                setAlert('error', error.message);
-                setSectionDropdown([])
-            })
+      setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
+      axiosInstance
+        .get(
+          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setSectionDropdown(result.data.data);
+          } else {
+            setAlert('error', result.data.message);
+            setSectionDropdown([]);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+          setSectionDropdown([]);
+        });
+    } else {
+      setSectionDropdown([]);
     }
-    else {
-        setSectionDropdown([])
-    }
-};
-
+  };
 
   const handleSection = (event, value) => {
     setFilterData({ ...filterData });
     if (value.length) {
       const ids = value.map((el) => el.id);
-    //   setSubjectIds(ids);
-      setSectionIds(ids)
+      //   setSubjectIds(ids);
+      setSectionIds(ids);
     }
   };
-
 
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '' });
     // setOverviewSynopsis([]);
     if (value) {
-        setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
-            .then(result => {
-                if (result.data.status_code === 200) {
-                    setGradeDropdown(result.data.data);
-                }
-                else {
-                    setAlert('error', result.data.message);
-                    setGradeDropdown([]);
-                }
-            })
-            .catch(error => {
-                setAlert('error', error.message);
-                setGradeDropdown([]);
-            })
+      setFilterData({
+        ...filterData,
+        branch: value,
+        grade: '',
+        subject: '',
+        chapter: '',
+      });
+      axiosInstance
+        .get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setGradeDropdown(result.data.data);
+          } else {
+            setAlert('error', result.data.message);
+            setGradeDropdown([]);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+          setGradeDropdown([]);
+        });
+    } else {
+      setGradeDropdown([]);
     }
-    else {
-        setGradeDropdown([]);
-    }
-};
+  };
 
   const handleFilter = () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
@@ -157,17 +161,19 @@ const history=useHistory()
     );
   };
 
-    useEffect(() => {
-        axiosInstance.get(`${endpoints.communication.branches}`)
-            .then(result => {
-                if (result.data.status_code === 200) {
-                    setBranchDropdown(result.data.data);
-                } else {
-                    setAlert('error', result.data.message);
-                }
-            }).catch(error => {
-                setBranchDropdown('error', error.message);
-            })
+  useEffect(() => {
+    axiosInstance
+      .get(`${endpoints.communication.branches}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setBranchDropdown(result.data.data);
+        } else {
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setBranchDropdown('error', error.message);
+      });
   }, []);
 
   return (
@@ -270,52 +276,26 @@ const history=useHistory()
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          className='custom_button_master labelColor'
+          style={{ width: '100%' }}
+          className='cancelButton labelColor'
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          style={{ color: 'white' }}
+          style={{ color: 'white', width: '100%' }}
           color='primary'
-          className='custom_button_master'
           size='medium'
           type='submit'
           onClick={handleFilter}
         >
-          FILTER
+          Filter
         </Button>
       </Grid>
-      {/* <Grid item xs={6} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
-        <Button
-          variant='contained'
-          style={{ color: 'white' }}
-          color='primary'
-          className='custom_button_master'
-          size='medium'
-          type='submit'
-          onClick={()=>history.push("/create/general-dairy")}
-        >
-          CREATE GENERAL DAIRY
-        </Button>
-      </Grid> */}
-      {/* <Grid item xs={6} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
-        <Button
-          variant='contained'
-          style={{ color: 'white' }}
-          color='primary'
-          className='custom_button_master'
-          size='medium'
-          type='submit'
-          onClick={()=>history.push("/create/general-dairy")}
-        >
-          CREATE DAILY DAIRY
-        </Button>
-      </Grid> */}
     </Grid>
   );
 };

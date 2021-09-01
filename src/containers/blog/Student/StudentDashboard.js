@@ -374,9 +374,9 @@ this.setState({status:[8,5]}
                     </Grid> */}
                     <Grid item>
                       <Button
-                        style={{ fontSize: 'small', margin: '20px', width: 150 }}
+                        style={{ margin: '20px',color : "white" }}
                         color='primary'
-                        size='small'
+                        size='medium'
                         variant='contained'
                         disabled ={!startDate || !endDate}
                         onClick={this.handleFilter}
@@ -389,8 +389,8 @@ this.setState({status:[8,5]}
                     <Grid item>
                       <Button
                         color='primary'
-                        style={{ fontSize: 'small', margin: '20px', width: 150 }}
-                        size='small'
+                        style={{ margin: '20px', color : "white" }}
+                        size='medium'
                         variant='contained'
                         onClick={this.PublishBlogNav}
 
@@ -400,9 +400,10 @@ this.setState({status:[8,5]}
                     </Grid>
                     <Grid item>
                       <Button
-                        style={{ fontSize: 'small', margin: '20px', width: 150 }}
+                        style={{ margin: '20px',color : "white" }}
+                        variant = "contained"
                         color='primary'
-                        size='small'
+                        size='medium'
                         onClick={this.WriteBlogNav}
                       >
                         Create New
@@ -431,8 +432,9 @@ this.setState({status:[8,5]}
                         <li style={{ listStyleType: 'none' }}>
                           <Typography
                             align='right'
+                            color="secondary"
                             className={classes.dividerInset}
-                            style={{ font: '#014b7e', fontWeight: 600 }}
+                            style={{fontWeight: 600 }}
                             display='block'
                             variant='caption'
                           >

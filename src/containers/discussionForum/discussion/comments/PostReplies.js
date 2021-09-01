@@ -8,7 +8,7 @@ const useStyles = makeStyles({
     marginBottom: '8px',
   },
   replyByText: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '18px',
     fontWeight: 'lighter',
     fontFamily: 'Open Sans',
@@ -27,7 +27,7 @@ const useStyles = makeStyles({
     marginLeft: '5px',
   },
   replyUsername: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontFamily: 'Open Sans',
     fontWeight: 'normal',
@@ -48,7 +48,7 @@ const useStyles = makeStyles({
     width: '85%',
     height: '24px',
     fontSize: '18px',
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontFamily: 'Open Sans',
     fontWeight: 'normal',
     lineHeight: '24px',
@@ -57,7 +57,7 @@ const useStyles = makeStyles({
   commentsCount: {
     display: 'inline-block',
     width: '15%',
-    color: '#042955',
+    color: theme.palette.secondary.main,
     float: 'right',
     fontSize: '18px',
     fontWeight: 'bold',

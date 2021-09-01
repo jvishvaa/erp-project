@@ -21,23 +21,9 @@
   margin-top: 30px;
 }
 .message_log_table_wrapper {
-  border: 1px solid #ff6b6b;
+  /* border: 1px solid #ff6b6b; */
 }
-.deactive_clearAll {
-  font-size: 0.9rem;
-  height: 45px;
-  width: 100%;
-  border: none;
-  border-radius: 5px;
-  text-transform: uppercase;
-  cursor: pointer;
-  outline: none !important;
-  color: grey;
-  background-color: rgba(0, 0, 0, 0.12);
-}
-.message_log_date_piker svg {
-  fill: #ff6b6b;
-}
+
 .message_log_branch .MuiIconButton-label {
   color: #ff6b6b !important;
 }
@@ -62,9 +48,6 @@
 .MuiButton-textPrimary {
   color: white !important;
 }
-.MuiButton-textPrimary:hover {
-  background-color: #ff6b6b !important;
-}
 .message_log_table_wrapper .message_log_table tr th:not(:last-child):after {
   content: '';
   height: 50%;
@@ -78,9 +61,7 @@
 .message_log_table_wrapper > * {
   margin-top: 0px !important;
 }
-.message_log_send_by {
-  min-width: 100px;
-}
+
 .message_log_table_wrapper {
   border-radius: 0px !important;
 }
@@ -130,9 +111,7 @@ color: white !important;
   .message_log_wrapper {
     text-align: center;
   }
-  .deactive_clearAll {
-    width: 100%;
-  }
+
   .message_log_expand_manage {
     float: right;
     margin: 0px 20px 0px 0px;

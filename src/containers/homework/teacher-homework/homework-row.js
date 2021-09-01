@@ -4,9 +4,15 @@ import TableCell from '@material-ui/core/TableCell';
 import TableRow from '@material-ui/core/TableRow';
 import HomeworkCol from './homework-col';
 import moment from 'moment';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles((theme) => ({
+  dayicon : theme.dayIcon
+}))
 
 const HomeworkRow = ({ data, cols, selectedCol, sectionId, setSelectedCol, handleViewHomework }) => {
   const history = useHistory();
+  const classes = useStyles()
   const navigateToAddScreen = ({ date, sessionYear, branch, grade, subject, subjectId }) => {
     history.push(`/homework/add/${date}/${sessionYear}/${branch}/${grade}/${subject}/${subjectId}`);
   };
@@ -54,7 +60,7 @@ const HomeworkRow = ({ data, cols, selectedCol, sectionId, setSelectedCol, handl
         ) : (
           <TableCell className='no-wrap-col' style={{ minWidth: '188px'}}>
             <div>
-              <div className='day-icon'>
+              <div className={classes.dayicon}>
                 {moment(data.date).format('dddd').split('')[0]}
               </div>
               {moment(data.date).format('DD-MM-YYYY')}

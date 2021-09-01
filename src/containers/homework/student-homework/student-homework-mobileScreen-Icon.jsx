@@ -1,5 +1,5 @@
 import React from 'react';
-import { SvgIcon } from '@material-ui/core';
+import { makeStyles, SvgIcon } from '@material-ui/core';
 import studentHomeworkEvaluted from '../../../assets/images/Group-8288.svg';
 import hwFileUnopened from '../../../assets/images/hw-file-unopened.svg';
 import hwFileOpened from '../../../assets/images/File-opened-small.svg';
@@ -7,7 +7,15 @@ import Expired from '../../../assets/images/Expired-small.svg';
 import hwSubmitted from '../../../assets/images/File-submitted-small.svg';
 import './student-homework.css';
 
+
+const useStyles = makeStyles((theme)=>({
+  iconText: {
+    color: theme.palette.secondary.main,
+    fontSize: "14px"
+  }
+}))
 const MobileIconScreen = (props) => {
+  const classes = useStyles()
   return (
     <>
       {!props.isOpen && (
@@ -23,7 +31,7 @@ const MobileIconScreen = (props) => {
                   />
                 )}
               />
-              <p className='icon-text'>Unopened</p>
+              <p className={classes.iconText}>Unopened</p>
             </div>
             <div className='icon-file-opned'>
               <SvgIcon
@@ -35,7 +43,7 @@ const MobileIconScreen = (props) => {
                   />
                 )}
               />
-              <p className='icon-text'>Opened</p>
+              <p className={classes.iconText}>Opened</p>
             </div>
             <div className='icon-submitted'>
               <SvgIcon
@@ -47,7 +55,7 @@ const MobileIconScreen = (props) => {
                   />
                 )}
               />
-              <p className='icon-text'>Submitted</p>
+              <p className={classes.iconText}>Submitted</p>
             </div>
             <div className='icon-evaluated'>
               <SvgIcon
@@ -59,7 +67,7 @@ const MobileIconScreen = (props) => {
                   />
                 )}
               />
-              <p className='icon-text'>Evaluated</p>
+              <p className={classes.iconText}>Evaluated</p>
             </div>
             <div className='icon-expired'>
               <SvgIcon
@@ -71,7 +79,7 @@ const MobileIconScreen = (props) => {
                   />
                 )}
               />
-              <p className='icon-text'>Expired</p>
+              <p className={classes.iconText}>Expired</p>
             </div>
           </div>
         </div>

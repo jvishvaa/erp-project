@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { Grid, TextField, Button } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { connect } from 'react-redux';
 import { fetchAssessmentReportList, setClearFilters } from '../../../../redux/actions';
 import { generateQueryParamSting } from '../../../../utility-functions';
 import axiosInstance from 'config/axios';
+import { connect, useSelector } from 'react-redux';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
@@ -25,9 +25,11 @@ const AssessmentReportFilters = ({
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [dropdownData, setDropdownData] = useState({
-    academic: [],
     branch: [],
     grade: [],
     section: [],
@@ -56,7 +58,6 @@ const AssessmentReportFilters = ({
   }, []);
 
   const [filterData, setFilterData] = useState({
-    academic: '',
     branch: '',
     grade: '',
     section: '',
@@ -71,24 +72,25 @@ const AssessmentReportFilters = ({
   }, [page]);
 
   useEffect(() => {
+    handleAcademicYear('', selectedAcademicYear);
     url = '';
     setIsFilter(false);
     setPage(1);
     if (selectedReportType?.id) {
-      if (dropdownData.academic.length === 0 && moduleId) getAcademicYear();
-      setDropdownData({
-        ...dropdownData,
-        branch: [],
-        grade: [],
-        section: [],
-        subject: [],
-        test: [],
-        chapter: [],
-        topic: [],
-      });
+      // if (dropdownData.academic.length === 0 && moduleId)
+      //   handleAcademicYear('', selectedAcademicYear);
+      // setDropdownData({
+      //   ...dropdownData,
+      //   branch: [],
+      //   grade: [],
+      //   section: [],
+      //   subject: [],
+      //   test: [],
+      //   chapter: [],
+      //   topic: [],
+      // });
 
       setFilterData({
-        academic: '',
         branch: '',
         grade: '',
         section: '',
@@ -131,21 +133,21 @@ const AssessmentReportFilters = ({
     }
   };
 
-  function getAcademicYear() {
-    axiosInstance
-      .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setDropdownData((prev) => {
-            return {
-              ...prev,
-              academic: result.data?.data,
-            };
-          });
-        }
-      })
-      .catch((error) => {});
-  }
+  // function getAcademicYear() {
+  //   axiosInstance
+  //     .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
+  //     .then((result) => {
+  //       if (result.data.status_code === 200) {
+  //         setDropdownData((prev) => {
+  //           return {
+  //             ...prev,
+  //             academic: result.data?.data,
+  //           };
+  //         });
+  //       }
+  //     })
+  //     .catch((error) => {});
+  // }
 
   function getBranch(acadId) {
     axiosInstance
@@ -299,7 +301,6 @@ const AssessmentReportFilters = ({
     });
     setFilterData({
       ...filterData,
-      academic: '',
       branch: '',
       grade: '',
       section: '',
@@ -310,7 +311,8 @@ const AssessmentReportFilters = ({
     });
     if (value) {
       getBranch(value?.id);
-      setFilterData({ ...filterData, academic: value });
+      setFilterData({ ...filterData, selectedAcademicYear });
+      console.log('acad', filterData);
     }
   };
 
@@ -335,7 +337,8 @@ const AssessmentReportFilters = ({
       topic: '',
     });
     if (value) {
-      getGrade(filterData.academic?.id, value?.branch?.id);
+      console.log(filterData, 'acadYear');
+      getGrade(selectedAcademicYear?.id, value?.branch?.id);
       setFilterData({ ...filterData, branch: value });
     }
   };
@@ -358,11 +361,12 @@ const AssessmentReportFilters = ({
       chapter: '',
       topic: '',
     });
+    console.log(filterData, 'grade');
     if (value) {
       getSubject(filterData.branch?.id, value?.grade_id);
       if (selectedReportType.id === 3 || selectedReportType.id === 4) {
         getSection(
-          filterData.academic?.id,
+          selectedAcademicYear?.id,
           filterData.branch?.branch?.id,
           value?.grade_id
         );
@@ -442,7 +446,6 @@ const AssessmentReportFilters = ({
     });
 
     setFilterData({
-      academic: '',
       branch: '',
       grade: '',
       section: '',
@@ -463,7 +466,7 @@ const AssessmentReportFilters = ({
           margin: isMobile ? '10px 0px -10px 0px' : '-20px 0px 20px 8px',
         }}
       >
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -483,7 +486,7 @@ const AssessmentReportFilters = ({
               />
             )}
           />
-        </Grid>
+        </Grid> */}
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -656,24 +659,23 @@ const AssessmentReportFilters = ({
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            className='custom_button_master labelColor modifyDesign'
+            className='canceButton labelColor'
             size='medium'
-            style={{ borderRadius: '10px' }}
+            style={{ width: '100%' }}
             onClick={handleClear}
           >
-            CLEAR ALL
+            Clear All
           </Button>
         </Grid>
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            className='custom_button_master modifyDesign'
             size='medium'
             color='primary'
-            style={{ borderRadius: '10px', color: 'white' }}
+            style={{ color: 'white', width: '100%' }}
             onClick={handleFilter}
           >
-            FILTER
+            Filter
           </Button>
         </Grid>
       </Grid>

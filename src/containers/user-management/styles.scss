@@ -22,14 +22,6 @@
           fill: #ffffff;
         }
       }
-      &:not(.MuiStepIcon-active) {
-        circle {
-          stroke: $primary-color;
-        }
-        .MuiStepIcon-text {
-          fill: $primary-color;
-        }
-      }
     }
   }
 
@@ -37,53 +29,17 @@
   .parent-form-container,
   .user-details-form-container,
   .guardian-form-container {
-    // width: 95%;
-    // margin: 20px auto;
     margin: 20px 0;
-
-    .MuiFormControl-root {
-      .MuiSvgIcon-root {
-        color: #ff6b6b;
-      }
-    }
-    & .MuiInputBase-root {
-      border-radius: 10px;
-    }
-    & .MuiInputLabel-root {
-      color: #014b7e;
-    }
-    & .MuiInputBase-input {
-      color: #014b7e;
-    }
-
-    & .MuiFormLabel-root.Mui-focused {
-      font-weight: 600;
-      color: #014b7e;
-    }
   }
   .form-action-btn-container {
-    // width: 95%;
-    // margin: 20px auto;
     margin: 20px 0;
   }
   .bread-crumbs-container {
-    // width: 95%;
-    // margin: 20px auto;
     margin: 20px 0;
   }
   .bulk-upload-check-box-container,
   .bulk-upload-container {
-    // width: 95%;
-    // margin: 20px auto;
     margin: 20px 0;
-    // .MuiFormControl-root {
-    //   .MuiSvgIcon-root {
-    //     color: #ff6b6b;
-    //   }
-    // }
-    // a {
-    //   color: #ff6b6b;
-    // }
   }
 
   .create-user-container,

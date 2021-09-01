@@ -715,7 +715,7 @@ const Filter = (props) => {
               <Button
                 variant='contained'
                 size='large'
-                className='BatchViewfilterButtons'
+                className='labelColor cancelButton'
                 onClick={() => handleClearFilter()}
               >
                 Clear All
@@ -723,9 +723,9 @@ const Filter = (props) => {
             </Grid>
             <Grid item md={3} xs={12}>
               <Button
-                variant='contained'
-                size='large'
                 color='primary'
+                variant='contained'
+                style={{ color: 'white' }}
                 onClick={() => handleFilter()}
               >
                 Get Resources

@@ -46,7 +46,6 @@ export default function Meme() {
   const loaderUrl =
     'https://www.demilked.com/magazine/wp-content/uploads/2016/06/gif-animations-replace-loading-screen-14.gif';
   memeUrl = isLatestMeme ? memeUrl : loaderUrl;
-
   return (
     <>
       {getBgmAudioTag('meme')}
@@ -56,7 +55,7 @@ export default function Meme() {
             <img
               className='meme__image'
               src={
-                memeUrl ||
+                // memeUrl ||
                 'https://assets.memedrop.io/memes/qL5XLO0MTOCe54QNSzQhDIdggKqdEd9VIE39E2Aq.gif'
               }
               alt='meme'
@@ -65,7 +64,7 @@ export default function Meme() {
             <img
               className='meme__image'
               src={
-                memeUrl ||
+                // memeUrl ||
                 'http://julianfrost.co.nz/work/skypeemoticons/images/thumbsdown.gif'
               }
               alt='meme'

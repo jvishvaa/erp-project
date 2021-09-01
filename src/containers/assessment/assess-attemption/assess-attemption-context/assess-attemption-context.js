@@ -404,7 +404,7 @@ export const AssessmentHandlerContextProvider = ({
     } = questionsObj;
     if (isFirstQues) {
       // eslint-disable-next-line no-alert
-      window.alert('Jump to last question ?');
+      window.alert('Already at first question ?');
     } else {
       selectQues(prevQuesId);
     }

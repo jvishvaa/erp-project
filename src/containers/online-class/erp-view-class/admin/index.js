@@ -28,7 +28,7 @@ import Layout from '../../../Layout';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import DetailCardView from './DetailCardView';
 import TabPanel from './tab-panel/TabPanel';
-import APIREQUEST from "../../../../config/apiRequest";
+import APIREQUEST from '../../../../config/apiRequest';
 
 const ErpAdminViewClass = ({ history }) => {
   const [branchList, setBranchList] = useState([]);
@@ -57,7 +57,7 @@ const ErpAdminViewClass = ({ history }) => {
   const viewMoreRef = useRef(null);
   const limit = 12;
   const [tabValue, setTabValue] = useState(
-    JSON.parse(localStorage.getItem('filterData'))?.tabValue || null
+    JSON.parse(localStorage.getItem('filterData'))?.tabValue || 0
   );
 
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
@@ -204,7 +204,7 @@ const ErpAdminViewClass = ({ history }) => {
     }
   }, [moduleId, window.location.pathname]);
 
-  const handleApiRes = (result) =>{
+  const handleApiRes = (result) => {
     setTotalCount(result?.data?.count);
     const response = result?.data?.data || [];
     setFilterList(response);
@@ -216,18 +216,18 @@ const ErpAdminViewClass = ({ history }) => {
       setSelectedViewMore(newViewData[0] || {});
     }
     setLoading(false);
-  }
+  };
 
-  function msCallFilterApi(api){
-    var url  = api.split("?");
-      url.shift();
-      var path = url.join("?");
-      let endpoint1 =  `/oncls/v1/retrieve-online-class/`
-      if (window.location.pathname === '/erp-online-class-student-view') {
-        endpoint1 = "/oncls/v1/student-oncls/"
-      }
-      APIREQUEST("get", `${endpoint1}?${path}`)
-      .then((result)=>{
+  function msCallFilterApi(api) {
+    var url = api.split('?');
+    url.shift();
+    var path = url.join('?');
+    let endpoint1 = `/oncls/v1/retrieve-online-class/`;
+    if (window.location.pathname === '/erp-online-class-student-view') {
+      endpoint1 = '/oncls/v1/student-oncls/';
+    }
+    APIREQUEST('get', `${endpoint1}?${path}`)
+      .then((result) => {
         handleApiRes(result);
       })
       .catch((error) => {
@@ -239,7 +239,7 @@ const ErpAdminViewClass = ({ history }) => {
 
   function callApi(api, key) {
     setLoading(true);
-    if(key === "filter" && JSON.parse(localStorage.getItem('isMsAPI'))){
+    if (key === 'filter' && JSON.parse(localStorage.getItem('isMsAPI'))) {
       msCallFilterApi(api);
       return;
     }
@@ -564,14 +564,25 @@ const ErpAdminViewClass = ({ history }) => {
   const handleDownload = async () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     try {
-      const { data } = await axiosInstance.get(
-        `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
-          startDateTechPer
-        ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
-        {
-          responseType: 'arraybuffer',
-        }
-      );
+      const { data } = JSON.parse(localStorage.getItem('isMsAPI'))
+        ? await APIREQUEST(
+            'get',
+            `/oncls/v1/oncls-report/?start_date=${moment(startDateTechPer).format(
+              'YYYY-MM-DD'
+            )}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
+            null,
+            'arraybuffer'
+          )
+        : await axiosInstance.get(
+            `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
+              startDateTechPer
+            ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format(
+              'YYYY-MM-DD'
+            )}`,
+            {
+              responseType: 'arraybuffer',
+            }
+          );
       const blob = new Blob([data], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
@@ -724,396 +735,361 @@ const ErpAdminViewClass = ({ history }) => {
   return (
     <>
       <Layout>
-        {loading && <Loader />}
-        <Grid container spacing={2} className='teacherBatchViewMainDiv'>
-          <Grid item md={12} xs={12}>
-            <Grid container spacing={2} justify='middle' className='signatureNavDiv'>
-              <Grid item md={12} xs={12} style={{ display: 'flex' }}>
-                <CommonBreadcrumbs
-                  componentName='Online Class'
-                  //    <button
-                  //   type='button'
-                  //   className='SignatureNavigationLinks'
-                  //   onClick={() => history.push('/dashboard')}
-                  // >
-                  //   Dashboard
-                  // </button>
-                  // <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                  // <span className='SignatureNavigationLinks'>Online Class</span>
-                  // <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                  //    <span className='SignatureNavigationLinks'>
-                  childComponentName={
-                    window.location.pathname === '/erp-online-class'
-                      ? 'Online Class View'
-                      : window.location.pathname === '/erp-online-class-teacher-view'
-                      ? 'Teacher Class View'
-                      : window.location.pathname === '/erp-online-class-student-view'
-                      ? 'Student Class View'
-                      : ''
-                  }
-                  isAcademicYearVisible={true}
-                />
-              </Grid>
-            </Grid>
-          </Grid>
-          <Grid item md={12} xs={12} className='teacherBatchViewFilter'>
-            <Grid container spacing={2} style={{ marginTop: '10px' }}>
-              <Grid item md={3} xs={12}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleClassType}
-                  id='branch_id'
-                  className='dropdownIcon'
-                  value={selectedClassType}
-                  options={classTypes || []}
-                  getOptionLabel={(option) => option?.type || ''}
-                  filterSelectedOptions
-                  getOptionSelected={(option, value) => option?.id == value?.id}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Class Type'
-                      placeholder='Class Type'
-                    />
-                  )}
-                />
-              </Grid>
-              {window.location.pathname !== '/erp-online-class-student-view' && (
-                <>
-                  {/* <Grid item md={3} xs={12}>
-                    <Autocomplete
-                      style={{ width: '100%' }}
-                      size='small'
-                      onChange={handleAcademicYear}
-                      id='branch_id'
-                      className='dropdownIcon'
-                      value={selectedAcademicYear || ''}
-                      options={academicYear || []}
-                      getOptionLabel={(option) => option?.session_year || ''}
-                      getOptionSelected={(option, value) => option?.id == value?.id}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant='outlined'
-                          label='Academic Year'
-                          placeholder='Academic Year'
-                        />
-                      )}
-                    />
-                  </Grid> */}
-                  <Grid item md={3} xs={12}>
-                    <Autocomplete
-                      multiple
-                      style={{ width: '100%' }}
-                      size='small'
-                      onChange={handleBranch}
-                      id='branch_id'
-                      className='dropdownIcon'
-                      value={selectedBranch || []}
-                      options={branchList || []}
-                      getOptionLabel={(option) => option?.branch?.branch_name || ''}
-                      getOptionSelected={(option, value) =>
-                        option?.branch?.id == value?.branch?.id
-                      }
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant='outlined'
-                          label='Branch'
-                          placeholder='Branch'
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item md={3} xs={12}>
-                    <Autocomplete
-                      multiple
-                      style={{ width: '100%' }}
-                      size='small'
-                      limitTags={2}
-                      onChange={handleGrade}
-                      id='grade_id'
-                      className='dropdownIcon'
-                      value={selectedGrade || []}
-                      options={gradeList || []}
-                      getOptionLabel={(option) => option?.grade__grade_name || ''}
-                      getOptionSelected={(option, value) => option?.id == value?.id}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant='outlined'
-                          label='Grade'
-                          placeholder='Grade'
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item md={3} xs={12}>
-                    <Autocomplete
-                      multiple
-                      style={{ width: '100%' }}
-                      size='small'
-                      limitTags={2}
-                      onChange={handleSection}
-                      id='section_id'
-                      className='dropdownIcon'
-                      value={selectedSection || []}
-                      options={sectionList || []}
-                      getOptionLabel={(option) => option?.section__section_name || ''}
-                      getOptionSelected={(option, value) => option?.id == value?.id}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant='outlined'
-                          label='Section'
-                          placeholder='Section'
-                        />
-                      )}
-                    />
-                  </Grid>
-
-                  {selectedClassType?.id === 0 && (
+        <div style={{ height: '100%' }}>
+          {loading && <Loader />}
+          <CommonBreadcrumbs
+            componentName='Online Class'
+            childComponentName={
+              window.location.pathname === '/erp-online-class'
+                ? 'Online Class View'
+                : window.location.pathname === '/erp-online-class-teacher-view'
+                ? 'Teacher Class View'
+                : window.location.pathname === '/erp-online-class-student-view'
+                ? 'Student Class View'
+                : ''
+            }
+            isAcademicYearVisible={true}
+          />
+          <Grid container spacing={2} className='teacherBatchViewMainDiv'>
+            <Grid item md={12} xs={12} className='teacherBatchViewFilter'>
+              <Grid container spacing={2}>
+                <Grid item md={3} xs={12}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    onChange={handleClassType}
+                    id='branch_id'
+                    className='dropdownIcon'
+                    value={selectedClassType}
+                    options={classTypes || []}
+                    getOptionLabel={(option) => option?.type || ''}
+                    filterSelectedOptions
+                    getOptionSelected={(option, value) => option?.id == value?.id}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Class Type'
+                        placeholder='Class Type'
+                      />
+                    )}
+                  />
+                </Grid>
+                {window.location.pathname !== '/erp-online-class-student-view' && (
+                  <>
                     <Grid item md={3} xs={12}>
                       <Autocomplete
                         multiple
                         style={{ width: '100%' }}
                         size='small'
-                        onChange={handleSubject}
-                        id='course_id'
+                        onChange={handleBranch}
+                        id='branch_id'
                         className='dropdownIcon'
-                        value={selectedSubject}
-                        options={subjectList}
-                        limitTags={2}
-                        getOptionLabel={(option) => option?.subject__subject_name}
-                        getOptionSelected={(option, value) => option?.id == value?.id}
+                        value={selectedBranch || []}
+                        options={branchList || []}
+                        getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                        getOptionSelected={(option, value) =>
+                          option?.branch?.id == value?.branch?.id
+                        }
                         renderInput={(params) => (
                           <TextField
                             {...params}
                             variant='outlined'
-                            label='Subject'
-                            placeholder='Subject'
+                            label='Branch'
+                            placeholder='Branch'
                           />
                         )}
                       />
                     </Grid>
-                  )}
-
-                  {selectedClassType?.id > 0 && (
                     <Grid item md={3} xs={12}>
                       <Autocomplete
+                        multiple
                         style={{ width: '100%' }}
                         size='small'
-                        onChange={handleCourse}
-                        id='course_id'
+                        limitTags={2}
+                        onChange={handleGrade}
+                        id='grade_id'
                         className='dropdownIcon'
-                        value={selectedCourse || ''}
-                        options={courseList || []}
-                        getOptionLabel={(option) => option?.course_name || ''}
-                        filterSelectedOptions
+                        value={selectedGrade || []}
+                        options={gradeList || []}
+                        getOptionLabel={(option) => option?.grade__grade_name || ''}
                         getOptionSelected={(option, value) => option?.id == value?.id}
                         renderInput={(params) => (
                           <TextField
                             {...params}
                             variant='outlined'
-                            label='Course'
-                            placeholder='Course'
+                            label='Grade'
+                            placeholder='Grade'
                           />
                         )}
                       />
                     </Grid>
-                  )}
-                  <Grid item xs={12} sm={3}>
-                    <LocalizationProvider dateAdapter={MomentUtils}>
-                      <DateRangePicker
-                        startText='Select-date-range'
-                        value={dateRangeTechPer}
-                        onChange={(newValue) => {
-                          setDateRangeTechPer(newValue);
-                        }}
-                        renderInput={({ inputProps, ...startProps }, endProps) => {
-                          return (
-                            <>
-                              <TextField
-                                {...startProps}
-                                inputProps={{
-                                  ...inputProps,
-                                  value: `${moment(inputProps.value).format(
-                                    'MM/DD/YYYY'
-                                  )} - ${moment(endProps.inputProps.value).format(
-                                    'MM/DD/YYYY'
-                                  )}`,
-                                  readOnly: true,
-                                  endAdornment: (
-                                    <IconButton>
-                                      <DateRangeIcon
-                                        style={{ width: '35px' }}
-                                        color='primary'
-                                      />
-                                    </IconButton>
-                                  ),
-                                }}
-                                size='small'
-                              />
-                            </>
-                          );
-                        }}
-                      />
-                    </LocalizationProvider>
-                  </Grid>
-                </>
-              )}
-            </Grid>
-
-            {window.location.pathname !== '/erp-online-class-student-view' && (
-              <Grid container spacing={2} style={{ marginTop: '5px' }}>
-                <Grid item md={2} xs={12}>
-                  <Button
-                    variant='contained'
-                    size='medium'
-                    className='custom_button_master labelColor'
-                    onClick={() => handleClearFilter()}
-                  >
-                    Clear All
-                  </Button>
-                </Grid>
-                <Grid item md={2} xs={12}>
-                  <Button
-                    variant='contained'
-                    size='medium'
-                    style={{ color: 'white' }}
-                    color='primary'
-                    className='custom_button_master'
-                    onClick={() => handleFilter()}
-                  >
-                    Get Classes
-                  </Button>
-                </Grid>
-                <Grid item md={3} xs={12}>
-                  <Button
-                    variant='contained'
-                    size='medium'
-                    color='primary'
-                    style={{ color: 'white' }}
-                    className='custom_button_master'
-                    onClick={handleDownload}
-                  >
-                    Download Class Data
-                  </Button>
-                </Grid>
-              </Grid>
-            )}
-            {window.location.pathname !== '/erp-online-class-student-view' && (
-              <Divider style={{ margin: '10px 0px' }} />
-            )}
-            <Grid container spacing={2}>
-              <Grid item md={12} xs={12} className='teacherBatchViewLCardList'>
-                <TabPanel
-                  tabValue={tabValue}
-                  setTabValue={setTabValue}
-                  setPage={setPage}
-                  setSelectedViewMore={setSelectedViewMore}
-                />
-              </Grid>
-              {window.location.pathname !== '/erp-online-class-student-view' && (
-                <Grid item md={12} xs={12}>
-                  {filterList?.length === 0 && (
-                    <Grid item md={12} xs={12}>
-                      <Grid container spacing={2}>
-                        <Grid
-                          item
-                          md={12}
-                          xs={12}
-                          style={{ textAlign: 'center', marginTop: '10px' }}
-                        >
-                          <img
-                            src={filterImage}
-                            alt='crash'
-                            height='250px'
-                            width='250px'
+                    <Grid item md={3} xs={12}>
+                      <Autocomplete
+                        multiple
+                        style={{ width: '100%' }}
+                        size='small'
+                        limitTags={2}
+                        onChange={handleSection}
+                        id='section_id'
+                        className='dropdownIcon'
+                        value={selectedSection || []}
+                        options={sectionList || []}
+                        getOptionLabel={(option) => option?.section__section_name || ''}
+                        getOptionSelected={(option, value) => option?.id == value?.id}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Section'
+                            placeholder='Section'
                           />
-                          <Typography>
-                            Please select the filter to dislpay classes
-                          </Typography>
-                        </Grid>
-                      </Grid>
+                        )}
+                      />
                     </Grid>
-                  )}
+
+                    {selectedClassType?.id === 0 && (
+                      <Grid item md={3} xs={12}>
+                        <Autocomplete
+                          multiple
+                          style={{ width: '100%' }}
+                          size='small'
+                          onChange={handleSubject}
+                          id='course_id'
+                          className='dropdownIcon'
+                          value={selectedSubject}
+                          options={subjectList}
+                          limitTags={2}
+                          getOptionLabel={(option) => option?.subject__subject_name}
+                          getOptionSelected={(option, value) => option?.id == value?.id}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Subject'
+                              placeholder='Subject'
+                            />
+                          )}
+                        />
+                      </Grid>
+                    )}
+
+                    {selectedClassType?.id > 0 && (
+                      <Grid item md={3} xs={12}>
+                        <Autocomplete
+                          style={{ width: '100%' }}
+                          size='small'
+                          onChange={handleCourse}
+                          id='course_id'
+                          className='dropdownIcon'
+                          value={selectedCourse || ''}
+                          options={courseList || []}
+                          getOptionLabel={(option) => option?.course_name || ''}
+                          filterSelectedOptions
+                          getOptionSelected={(option, value) => option?.id == value?.id}
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Course'
+                              placeholder='Course'
+                            />
+                          )}
+                        />
+                      </Grid>
+                    )}
+                    <Grid item xs={12} sm={3}>
+                      <LocalizationProvider dateAdapter={MomentUtils}>
+                        <DateRangePicker
+                          startText='Select-date-range'
+                          value={dateRangeTechPer}
+                          onChange={(newValue) => {
+                            setDateRangeTechPer(newValue);
+                          }}
+                          renderInput={({ inputProps, ...startProps }, endProps) => {
+                            return (
+                              <>
+                                <TextField
+                                  {...startProps}
+                                  inputProps={{
+                                    ...inputProps,
+                                    value: `${moment(inputProps.value).format(
+                                      'MM/DD/YYYY'
+                                    )} - ${moment(endProps.inputProps.value).format(
+                                      'MM/DD/YYYY'
+                                    )}`,
+                                    readOnly: true,
+                                    endAdornment: (
+                                      <IconButton>
+                                        <DateRangeIcon
+                                          style={{ width: '35px' }}
+                                          color='primary'
+                                        />
+                                      </IconButton>
+                                    ),
+                                  }}
+                                  size='small'
+                                />
+                              </>
+                            );
+                          }}
+                        />
+                      </LocalizationProvider>
+                    </Grid>
+                  </>
+                )}
+              </Grid>
+
+              {window.location.pathname !== '/erp-online-class-student-view' && (
+                <Grid container spacing={2} style={{ marginTop: '5px' }}>
+                  <Grid item md={2} xs={12}>
+                    <Button
+                      variant='contained'
+                      size='medium'
+                      style={{ width: '100%' }}
+                      className='cancelButton labelColor'
+                      onClick={() => handleClearFilter()}
+                    >
+                      Clear All
+                    </Button>
+                  </Grid>
+                  <Grid item md={2} xs={12}>
+                    <Button
+                      variant='contained'
+                      size='medium'
+                      style={{ color: 'white', width: '100%' }}
+                      color='primary'
+                      onClick={() => handleFilter()}
+                    >
+                      Get Classes
+                    </Button>
+                  </Grid>
+                  <Grid item md={3} xs={12}>
+                    <Button
+                      variant='contained'
+                      size='medium'
+                      color='primary'
+                      style={{ color: 'white', width: '100%' }}
+                      onClick={handleDownload}
+                    >
+                      Download Class Data
+                    </Button>
+                  </Grid>
                 </Grid>
               )}
-              {filterList?.length > 0 && (
+              {window.location.pathname !== '/erp-online-class-student-view' && (
+                <Divider style={{ margin: '10px 0px' }} />
+              )}
+              <Grid container spacing={2}>
                 <Grid item md={12} xs={12} className='teacherBatchViewLCardList'>
-                  <Grid container spacing={2}>
+                  <TabPanel
+                    tabValue={tabValue}
+                    setTabValue={setTabValue}
+                    setPage={setPage}
+                    setSelectedViewMore={setSelectedViewMore}
+                  />
+                </Grid>
+                {window.location.pathname !== '/erp-online-class-student-view' && (
+                  <Grid item md={12} xs={12}>
                     {filterList?.length === 0 && (
                       <Grid item md={12} xs={12}>
                         <Grid container spacing={2}>
-                          <Grid item md={12} xs={12} style={{ textAlign: 'center' }}>
+                          <Grid
+                            item
+                            md={12}
+                            xs={12}
+                            style={{ textAlign: 'center', marginTop: '10px' }}
+                          >
                             <img
                               src={filterImage}
                               alt='crash'
                               height='250px'
                               width='250px'
                             />
-                            <Typography style={{ fontSize: '24px', fontWeight: 'bold' }}>
-                              Classes Not Found
+                            <Typography>
+                              Please select the filter to dislpay classes
                             </Typography>
                           </Grid>
                         </Grid>
                       </Grid>
                     )}
+                  </Grid>
+                )}
+                {filterList?.length > 0 && (
+                  <Grid item md={12} xs={12} className='teacherBatchViewLCardList'>
                     <Grid container spacing={2}>
-                      <Grid item md={selectedViewMore ? 8 : 12} xs={12}>
-                        <Grid container spacing={2}>
-                          {filterList?.map((item, i) => (
-                            <Grid item md={selectedViewMore ? 4 : 3} xs={12}>
-                              <CardView
-                                tabValue={tabValue}
-                                fullData={item}
-                                handleViewMore={setSelectedViewMore}
-                                selectedViewMore={selectedViewMore || {}}
+                      {filterList?.length === 0 && (
+                        <Grid item md={12} xs={12}>
+                          <Grid container spacing={2}>
+                            <Grid item md={12} xs={12} style={{ textAlign: 'center' }}>
+                              <img
+                                src={filterImage}
+                                alt='crash'
+                                height='250px'
+                                width='250px'
                               />
+                              <Typography
+                                style={{ fontSize: '24px', fontWeight: 'bold' }}
+                              >
+                                Classes Not Found
+                              </Typography>
                             </Grid>
-                          ))}
-                        </Grid>
-                      </Grid>
-                      {selectedViewMore?.id && (
-                        <Grid item md={selectedViewMore ? 4 : 0} xs={12}>
-                          <DetailCardView
-                            tabValue={tabValue}
-                            loading={loading}
-                            setLoading={setLoading}
-                            fullData={selectedViewMore}
-                            handleClose={handleClose}
-                            viewMoreRef={viewMoreRef}
-                            selectedClassType={selectedClassType}
-                            selectedGrade={selectedGrade}
-                          />
+                          </Grid>
                         </Grid>
                       )}
-                    </Grid>
+                      <Grid container spacing={2}>
+                        <Grid item md={selectedViewMore ? 8 : 12} xs={12}>
+                          <Grid container spacing={2}>
+                            {filterList?.map((item, i) => (
+                              <Grid item md={selectedViewMore ? 4 : 3} xs={12}>
+                                <CardView
+                                  tabValue={tabValue}
+                                  fullData={item}
+                                  handleViewMore={setSelectedViewMore}
+                                  selectedViewMore={selectedViewMore || {}}
+                                />
+                              </Grid>
+                            ))}
+                          </Grid>
+                        </Grid>
+                        {selectedViewMore?.id && (
+                          <Grid item md={selectedViewMore ? 4 : 0} xs={12}>
+                            <DetailCardView
+                              tabValue={tabValue}
+                              loading={loading}
+                              setLoading={setLoading}
+                              fullData={selectedViewMore}
+                              handleClose={handleClose}
+                              viewMoreRef={viewMoreRef}
+                              selectedClassType={selectedClassType}
+                              selectedGrade={selectedGrade}
+                            />
+                          </Grid>
+                        )}
+                      </Grid>
 
-                    <Grid
-                      container
-                      spacing={3}
-                      className='paginateData paginateMobileMargin'
-                    >
-                      <Grid item md={12}>
-                        <Pagination
-                          onChange={handlePagination}
-                          style={{ marginTop: 25, marginLeft: 500 }}
-                          count={Math.ceil(totalCount / limit)}
-                          color='primary'
-                          page={page}
-                        />
+                      <Grid
+                        container
+                        spacing={3}
+                        className='paginateData paginateMobileMargin'
+                      >
+                        <Grid item md={12}>
+                          <Pagination
+                            onChange={handlePagination}
+                            style={{ marginTop: 25, marginLeft: 500 }}
+                            count={Math.ceil(totalCount / limit)}
+                            color='primary'
+                            page={page}
+                          />
+                        </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
-                </Grid>
-              )}
+                )}
+              </Grid>
             </Grid>
           </Grid>
-        </Grid>
+        </div>
       </Layout>
     </>
   );

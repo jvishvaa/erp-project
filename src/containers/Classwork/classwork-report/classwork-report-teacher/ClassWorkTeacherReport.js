@@ -434,96 +434,100 @@ export default function ClassWorkTeacherReport() {
     <>
       <Layout>
         {loading && <Loader />}
-        <div style={{ width: '95%', margin: '20px auto', marginLeft: '30px' }}>
-          <CommonBreadcrumbs
-            componentName={`Online Class`}
-            childComponentName={`Teacher Classwork Report`}
-            isAcademicYearVisible={true}
-          />
-        </div>
-        <Grid container spacing={5} style={{ width: widerWidth, margin: wider }}>
-          <Grid item xs={12} sm={3}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleSubject}
-              id='grade'
-              className='dropdownIcon'
-              value={selectedSubject || {}}
-              options={subjectDropdown || []}
-              getOptionLabel={(option) => option?.subject_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Subject'
-                  placeholder='Subject'
-                />
-              )}
+        <div style={{ height: '100%' }}>
+          <div style={{ width: '95%', margin: '20px auto', marginLeft: '30px' }}>
+            <CommonBreadcrumbs
+              componentName={`Online Class`}
+              childComponentName={`Teacher Classwork Report`}
+              isAcademicYearVisible={true}
             />
-          </Grid>
-          <Grid item xs={12} sm={3}>
-            <LocalizationProvider dateAdapter={MomentUtils} className='dropdownIcon'>
-              <DateRangePicker
-                startText='Select-Date-Range'
+          </div>
+          <Grid container spacing={5} style={{ width: widerWidth, margin: wider }}>
+            <Grid item xs={12} sm={3}>
+              <Autocomplete
+                style={{ width: '100%' }}
                 size='small'
-                value={dateRangeTechPer}
-                onChange={(newValue) => {
-                  setDateRangeTechPer(()=>newValue);
-                  if(selectedSubject){
-                    handleSubject(selectedSubject)
-                  }
-                }}
-                renderInput={({ inputProps, ...startProps }, endProps) => {
-                  return (
-                    <>
-                      <TextField
-                        {...startProps}
-                        format={(date) => moment(date).format('DD-MM-YYYY')}
-                        inputProps={{
-                          ...inputProps,
-                          value: `${moment(inputProps.value).format(
-                            'DD-MM-YYYY'
-                          )} - ${moment(endProps.inputProps.value).format('DD-MM-YYYY')}`,
-                          readOnly: true,
-                        }}
-                        size='small'
-                        style={{ minWidth: '100%' }}
-                      />
-                    </>
-                  );
-                }}
-              />
-            </LocalizationProvider>
-          </Grid>
-        </Grid>
-        <div style={{ width: widerWidth, margin: wider }}>
-          <TableContainer component={Paper}>
-            <Table aria-label='collapsible table'>
-              <TableHead>
-                <TableRow className={classes.head}>
-                  <TableCell />
-                  <TableCell>SL NO.</TableCell>
-                  <TableCell align='right'>Branch</TableCell>
-                  <TableCell align='right'>TOTAL CW SUBMITTED</TableCell>
-                  {/* <TableCell align='right'>TOTAL HW SUBMITTED</TableCell>
-                  <TableCell align='right'>TOTAL HW EVALUATED</TableCell> */}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {branchWiseData?.map((branch_level_data, index) => (
-                  <BranchTable
-                    key={branch_level_data?.branch_id}
-                    index={index}
-                    branch_level_data={branch_level_data}
-                    selectedSubject={selectedSubject}
-                    dateRange={dateRangeTechPer}
+                onChange={handleSubject}
+                id='grade'
+                className='dropdownIcon'
+                value={selectedSubject || {}}
+                options={subjectDropdown || []}
+                getOptionLabel={(option) => option?.subject_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Subject'
+                    placeholder='Subject'
                   />
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={3}>
+              <LocalizationProvider dateAdapter={MomentUtils} className='dropdownIcon'>
+                <DateRangePicker
+                  startText='Select-Date-Range'
+                  size='small'
+                  value={dateRangeTechPer}
+                  onChange={(newValue) => {
+                    setDateRangeTechPer(() => newValue);
+                    if (selectedSubject) {
+                      handleSubject(selectedSubject);
+                    }
+                  }}
+                  renderInput={({ inputProps, ...startProps }, endProps) => {
+                    return (
+                      <>
+                        <TextField
+                          {...startProps}
+                          format={(date) => moment(date).format('DD-MM-YYYY')}
+                          inputProps={{
+                            ...inputProps,
+                            value: `${moment(inputProps.value).format(
+                              'DD-MM-YYYY'
+                            )} - ${moment(endProps.inputProps.value).format(
+                              'DD-MM-YYYY'
+                            )}`,
+                            readOnly: true,
+                          }}
+                          size='small'
+                          style={{ minWidth: '100%' }}
+                        />
+                      </>
+                    );
+                  }}
+                />
+              </LocalizationProvider>
+            </Grid>
+          </Grid>
+          <div style={{ width: widerWidth, margin: wider }}>
+            <TableContainer component={Paper}>
+              <Table aria-label='collapsible table'>
+                <TableHead>
+                  <TableRow className={classes.head}>
+                    <TableCell />
+                    <TableCell>SL NO.</TableCell>
+                    <TableCell align='right'>Branch</TableCell>
+                    <TableCell align='right'>TOTAL CW SUBMITTED</TableCell>
+                    {/* <TableCell align='right'>TOTAL HW SUBMITTED</TableCell>
+                  <TableCell align='right'>TOTAL HW EVALUATED</TableCell> */}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {branchWiseData?.map((branch_level_data, index) => (
+                    <BranchTable
+                      key={branch_level_data?.branch_id}
+                      index={index}
+                      branch_level_data={branch_level_data}
+                      selectedSubject={selectedSubject}
+                      dateRange={dateRangeTechPer}
+                    />
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </div>
         </div>
       </Layout>
     </>

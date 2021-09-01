@@ -49,8 +49,16 @@ export default function OptionsHandler(props) {
   };
 
   const wrongAnsStyles = { backgroundColor: 'rgb(231,69,70)', border: 'rgb(231,69,70)' };
+  let size =
+    optionsArray.length === 2
+      ? 6
+      : optionsArray.length === 3
+      ? 4
+      : optionsArray.length === 4
+      ? 3
+      : 2;   
   return (
-    <Grid container className='options-grid'>
+    <Grid container spacing={1} className='options-grid'>
       {isAttempted
         ? isCorrect
           ? getBgmAudioTag('right')
@@ -61,9 +69,9 @@ export default function OptionsHandler(props) {
           <Grid
             item
             xs={12}
-            sm={3}
-            md={3}
-            lg={3}
+            sm={size}
+            md={size}
+            lg={size}
             className={`option option-${index + 1}`}
             onClick={() => {
               handleOptionValue(option.identifier);

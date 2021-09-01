@@ -2,22 +2,22 @@ import React, { useContext } from 'react';
 import {
   Box,
   Button,
-  makeStyles,
   withStyles,
   TextField,
-  FormControlLabel,
   Switch,
 } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 import CloseIcon from '@material-ui/icons/Close';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateAllCategory, editCategoryDataAction, editCategoryDataUpdated } from '../../../redux/actions/discussionForumActions';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
-const useStyles = makeStyles({
+
+const useStyles = makeStyles((theme) => ({
   paperStyles: {
     textAlign: 'center',
     backgroundColor: '#FFF6F6',
-    border: '1px solid #FE6B6B',
+    border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '12px',
     marginTop: '10px',
     marginLeft: '10px',
@@ -32,17 +32,17 @@ const useStyles = makeStyles({
     marginRight: '10px',
   },
   activeLabel: {
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
   },
   closeIcon: {
     float: 'right',
     marginBottom: '10px',
   },
-});
+}));
 
-const StyledButton = withStyles({
+const StyledButton = withStyles((theme) => ({
   root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: theme.palette.primary.main,
     color: '#FFFFFF',
     width: '156px',
     height: '36px',
@@ -50,7 +50,7 @@ const StyledButton = withStyles({
     marginTop: '20px',
     marginBottom: '10px',
   },
-})(Button);
+}))(Button);
 
 const StyledTextField = withStyles({
   root: {
@@ -183,17 +183,6 @@ const CategoryEdit = ({cardData, hadleClose}) => {
             className={classes.switchButton}
             color="primary"
           />
-        {/* <FormControlLabel
-          control={(
-            <Switch
-              checked={activeCategory}
-              onChange={handleCategoryStatus}
-              className={classes.switchButton}
-              color="primary"
-            />
-          )}
-          style={{display: 'inline !important'}}
-        /> */}
         <span className={classes.activeLabel}>Active</span>
       </div>
       <StyledButton onClick={handleUpdateCategory}>Save</StyledButton>

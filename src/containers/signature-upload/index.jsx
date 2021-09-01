@@ -14,6 +14,7 @@ import ViewSignatureCards from './signatureCardView';
 import filterImage from '../../assets/images/unfiltered.svg';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Layout from '../Layout';
+import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 
 const SignatureUpload = ({ history }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -41,20 +42,6 @@ const SignatureUpload = ({ history }) => {
         setLoading(false);
         setAlert('error', error.message);
       });
-    // axiosInstance
-    //   .get(endpoints.communication.branches)
-    //   .then((result) => {
-    //     setLoading(false);
-    //     if (result.data.status_code === 200) {
-    //       setBranchList(result.data.data);
-    //     } else {
-    //       setAlert('error', result.data.message);
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     setLoading(false);
-    //     setAlert('error', error.message);
-    //   });
   }
 
   function getSignatures(selectedBranch) {
@@ -62,8 +49,7 @@ const SignatureUpload = ({ history }) => {
       setLoading(true);
       axiosInstance
         .get(
-          `${endpoints.signature.getSignatureList}?branch_id=${
-            selectedBranch && selectedBranch.id
+          `${endpoints.signature.getSignatureList}?branch_id=${selectedBranch && selectedBranch.id
           }&is_delete=False`
         )
         .then((result) => {
@@ -89,13 +75,13 @@ const SignatureUpload = ({ history }) => {
   useEffect(() => {
     getBranchList('');
   }, []);
-/*
-  useEffect(() => {
-    if(selectedBranch === ''){
-      setsignatureList([]);
-    }
-  }, [selectedBranch]);
-*/
+  /*
+    useEffect(() => {
+      if(selectedBranch === ''){
+        setsignatureList([]);
+      }
+    }, [selectedBranch]);
+  */
   function handleEdit(data) {
     setUpdateData(data);
     setEdit(true);
@@ -122,23 +108,9 @@ const SignatureUpload = ({ history }) => {
       <Layout>
         <div style={{ width: '100%', overflow: 'hidden' }}>
           <Grid container spacing={2} className='signatureUploadHead'>
-            <Grid item md={12} xs={12}>
-              <Grid container spacing={2} justify='middle' className='signatureNavDiv'>
-                <Grid item md={12} xs={12} style={{ display: 'flex' }}>
-                  <button
-                    type='button'
-                    className='SignatureNavigationLinks'
-                    onClick={() => history.push('/dashboard')}
-                  >
-                    Dashboard
-                  </button>
-                  <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                  <span className='SignatureNavigationLinks'>Master Management</span>
-                  <ArrowForwardIosIcon className='SignatureUploadNavArrow' />
-                  <span className='SignatureNavigationLinks'>Signature Upload</span>
-                </Grid>
-              </Grid>
-            </Grid>
+            <CommonBreadcrumbs
+              componentName='Master Management' childComponentName='Signature Upload' />
+
             <Grid item md={12} xs={12}>
               <Grid container spacing={5} className='SignatureUploadFilterDiv'>
                 <Grid item md={4} xs={12}>
@@ -165,28 +137,28 @@ const SignatureUpload = ({ history }) => {
                     )}
                   />
                 </Grid>
-                <Grid item md={1} xs={12}>
+                <Grid md={8} />
+                <Grid item md={3} xs={12}>
                   <Button
-                    size='small'
-                    fullWidth
+                    size='medium'
+                    style={{ color: 'white', width: '100%' }}
                     variant='contained'
                     color='primary'
-                    className='signatureUploadFilterButton'
                     onClick={() => getSignatures(selectedBranch)}
                   >
                     Filter
                   </Button>
                 </Grid>
-                <Grid item md={12} xs={12}>
+                <Grid item md={3} xs={12}>
                   <Button
-                    size='small'
+                    size='medium'
+                    startIcon={<AddIcon style={{ fontSize: '30px' }} />}
+                    style={{ color: 'white', width: '100%' }}
                     variant='contained'
                     color='primary'
                     onClick={() => handleOpen()}
-                    className='signatureUploadFilterButton'
                   >
-                    <AddIcon />
-                    &nbsp; Create Signature
+                    Create Signature
                   </Button>
                 </Grid>
               </Grid>

@@ -40,7 +40,7 @@ const useStyles = makeStyles(() => ({
     border: '1px solid #E2E2E2',
     margin: '1rem 0',
   },
-  title: { color: '#014B7E', fontSize: '1.1rem', whiteSpace: 'pre-line' },
+  title: {  fontSize: '1.1rem', whiteSpace: 'pre-line' },
   chartContainer: {
     margin: 1,
     padding: 5,
@@ -97,10 +97,14 @@ const AssessmentAnalysisUI = (props) => {
       ) : null}
 
       <Paper elevation={0}>
+        <CommonBreadcrumbs
+          componentName='Assessment'
+          isAcademicYearVisible={true}
+          childComponentName='Reports'
+        />
         <Box m={{ xs: '1rem', sm: '2rem' }} className={classes.root}>
-          <CommonBreadcrumbs componentName='Assessment' childComponentName='Reports' />
           <hr className={classes.hr} />
-          <Typography variant='h6' className={classes.title}>
+          <Typography variant='h6' color ="secondary" className={classes.title}>
             Analysis
           </Typography>
 
@@ -184,7 +188,7 @@ const AssessmentAnalysisUI = (props) => {
                           />
                         </Grid>
                       </Grid>
-                      <Typography variant='h6' className={classes.title}>
+                      <Typography variant='h6' color="secondary" className={classes.title}>
                         <small>Student</small>
                         {`\nTest comparision`}
                       </Typography>

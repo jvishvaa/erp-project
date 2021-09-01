@@ -119,6 +119,7 @@ const StudentIdCardDetails = ({
             size='small'
             variant='contained'
             color='primary'
+            style={{ color: 'white', width: '100%' }}
             onClick={() => {
               handleSelect(fullData, 'selectedId');
               handleViewMore();

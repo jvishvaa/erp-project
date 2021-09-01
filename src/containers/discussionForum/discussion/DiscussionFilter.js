@@ -173,32 +173,6 @@ export default function DiscussionFilterComponent(props) {
               filter
             </StyledFilterButton>
           </Grid>
-          {/* <Grid item xs={12}>
-                        <Paper>
-                            <div>
-                                <StyledButton
-                                    variant="text"
-                                    size="small"
-                                    endIcon={<FilterIcon/>}
-                                    onClick={handleFilter}
-                                    style={{float: 'right'}}
-                                >
-                                    Hide filters
-                                </StyledButton>
-                            </div>
-                            <Divider/>
-                            <div className={classes.filterCategorySpan}>
-                                <span className={classes.filterCategoryText}>2021</span>
-                                <FiberManualRecordIcon className={classes.dotSeparator}/>
-                                <span className={classes.filterCategoryText}>Subject</span>
-                                <FiberManualRecordIcon className={classes.dotSeparator}/>
-                                <span className={classes.filterCategoryText}>Grade</span>
-                                <FiberManualRecordIcon className={classes.dotSeparator}/>
-                                <span className={classes.filterCategoryText}>Section</span>
-                            </div>
-                        </Paper>
-                    </Grid>
-                    */}
         </Grid>
       </Collapse>
     </div>

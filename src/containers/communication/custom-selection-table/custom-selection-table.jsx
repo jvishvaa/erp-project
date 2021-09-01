@@ -5,8 +5,13 @@
 import * as React from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import './custom-selection-table.css';
+import {makeStyles} from '@material-ui/core';
 
+const useStyles=makeStyles((theme)=>({
+  customSelectionTableWrapper : theme.customSelectionWrapper
+}))
 export default function CustomSelectionTable({ pageSize, ...props }) {
+  const classes = useStyles()
   const {
     header,
     rows,
@@ -62,7 +67,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
 
   return (
     <div
-      className={`custom_selection_table_wrapper ${
+      className={` ${classes.customTableSelectionWrapper} ${
         completeData.length > 5
           ? 'long_height_custom_selection_table_wrapper'
           : 'short_height_custom_selection_table_wrapper'

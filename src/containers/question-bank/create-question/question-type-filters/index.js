@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState, useRef } from 'react';
-import { Grid, Button, useTheme, SvgIcon, IconButton } from '@material-ui/core';
+import { Grid, Button, useTheme, SvgIcon, IconButton ,makeStyles} from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
@@ -19,6 +19,55 @@ import TypeFiltersContainer from './type-filters-container';
 import QuestionBulkCreation from '../question-bulk-upload';
 import axios from 'axios';
 
+
+const useStyles = makeStyles((theme)=>({
+  createManuallyButton:{
+    border: `1px solid ${theme.palette.primary.main}`,
+    background: "white",
+    justifyContent: "center",
+    padding: "10px",
+    color : theme.palette.secondary.main
+  },
+  questionPaperTypeTag:{
+    color: theme.palette.secondary.main,
+  margin: "15px 0 15px 30px",
+  fontSize: "16px",
+  fontWeight: 600,
+  },
+  minMaxText: {
+    color: theme.palette.secondary.main,
+    fontSize: "16px",
+    fontWeight: "600",
+    marginRight: "10px",
+    marginBottom: "5px",
+  },
+  lctBoxes:{
+    flexGrow: 1,
+    display: "flex",
+    fontSize: "16px",
+    color: theme.palette.primary.main,
+    marginLeft: "10px",
+    '@media screen and (max-width: 768px)':{
+      flexDirection: "column",
+      justifyContent: "space-between",
+      margin: "5px",
+      marginLeft: 0,
+      height: "100px",
+    }
+  },
+  addOutlinedIcon:{
+    color : `${theme.palette.primary.main} !important`,
+  },
+  addpasagequebtn:{
+    color : theme.palette.primary.main
+  },
+  draftbtn: {
+    width: '100%',
+    border: `1px solid ${theme.palette.primary.main}`,
+    background: 'white',
+    color : theme.palette.secondary.main
+  },
+}))
 const levels = [
   { id: '1', level: 'Easy' },
   { id: '2', level: 'Average' },
@@ -55,6 +104,7 @@ const QuestionTypeFilters = ({
   filterDataDisplay,
   attributes,
 }) => {
+  const classes = useStyles()
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
   const history = useHistory();
@@ -410,9 +460,9 @@ const QuestionTypeFilters = ({
     <div className='typeFilterParent'>
       <div className='typeFilterContainers'>
         <div className='minMaxContainer'>
-          <div className='questionPaperTypeTag'>Question Set Parameters</div>
+          <div className={classes.questionPaperTypeTag}>Question Set Parameters</div>
           {!isQuestionFilterOpen && (
-            <div className='lctBoxes'>
+            <div className={classes.lctBoxes}>
               <div className='levelBox'>{filterData?.level?.level}</div>
               <div className='categoryBox'>{filterData?.category?.category}</div>
               <div className='typeBox'>{filterData?.type?.question_type}</div>
@@ -426,7 +476,7 @@ const QuestionTypeFilters = ({
               >
                 <div>
                   {!isMobile && (
-                    <div className='minMaxText'>
+                    <div className={classes.minMaxText}>
                       {isQuestionFilterOpen ? 'Minimize' : 'Maximize'}
                     </div>
                   )}
@@ -466,11 +516,9 @@ const QuestionTypeFilters = ({
                   <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                     <Button
                       variant='contained'
-                      style={{ color: 'white', textTransform: 'none' }}
+                      style={{ color: 'white', width: '100%' }}
                       color='primary'
-                      className='custom_button_master modifyDesign'
                       size='medium'
-                      // onClick={()=>{setUploadInBulk(true)}}
                       onClick={() => {
                         handleCreateManually('bulk_creation');
                       }}
@@ -484,9 +532,9 @@ const QuestionTypeFilters = ({
                 <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                   <Button
                     variant='contained'
-                    className='custom_button_master modifyDesign createManuallyButton'
+                    className={classes.createManuallyButton}
                     size='medium'
-                    style={{ textTransform: 'none' }}
+                    style={{ width: '100%' }}
                     onClick={handleCreateManually}
                   >
                     Create Manually
@@ -579,7 +627,7 @@ const QuestionTypeFilters = ({
                     )}
                   />
                 }
-                className='modifyDesign removeVideoButton'
+                className='removeVideoButton'
                 title='Remove Uploaded Video'
                 variant='contained'
                 size='medium'
@@ -587,7 +635,7 @@ const QuestionTypeFilters = ({
                 disableElevation
                 disableFocusRipple
                 disableTouchRipple
-                style={{ textTransform: 'none' }}
+                // style={{ width: '100%' }}
                 onClick={handleRemoveVideo}
               >
                 Remove Uploaded Video
@@ -610,7 +658,7 @@ const QuestionTypeFilters = ({
       {isCreateManuallyOpen && showQuestionType.VideoQuestion && videoURL === '' && (
         <div className='addPassageQuestionButtonContainer'>
           <Button
-            className='modifyDesign addPassageQuestionButton'
+            className={` ${classes.addpasagequebtn}  addPassageQuestionButton`}
             title='Add a video for the above question'
             variant='contained'
             size='medium'
@@ -618,8 +666,8 @@ const QuestionTypeFilters = ({
             disableElevation
             disableFocusRipple
             disableTouchRipple
-            style={{ textTransform: 'none' }}
-            startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+            style={{ width: '100%' }}
+            startIcon={<AddOutlinedIcon className = {classes.addOutlinedIcon} />}
             component='label'
           >
             <input
@@ -674,7 +722,7 @@ const QuestionTypeFilters = ({
           [...comprehensionQuestions]?.filter((obj) => !obj.is_delete)?.length < 10 && (
             <div className='addPassageQuestionButtonContainer'>
               <Button
-                className='modifyDesign addPassageQuestionButton'
+                className='addPassageQuestionButton'
                 title='Add a question for the above passage'
                 variant='contained'
                 size='medium'
@@ -682,7 +730,7 @@ const QuestionTypeFilters = ({
                 disableElevation
                 disableFocusRipple
                 disableTouchRipple
-                style={{ textTransform: 'none' }}
+                style={{ width: '100%' }}
                 startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
                 onClick={handleOpenModal}
               >
@@ -701,8 +749,8 @@ const QuestionTypeFilters = ({
               <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                 <Button
                   variant='contained'
-                  style={{ textTransform: 'none' }}
-                  className='custom_button_master modifyDesign cancelButtonLabel'
+                  style={{ width: '100%' }}
+                  className='cancelButton labelColor'
                   size='medium'
                   onClick={handleCancel}
                 >
@@ -715,9 +763,8 @@ const QuestionTypeFilters = ({
                 <Button
                   variant='contained'
                   color='primary'
-                  className='custom_button_master modifyDesign saveAsDraftButton'
                   size='medium'
-                  style={{ textTransform: 'none' }}
+                  className={classes.draftbtn}
                   onClick={handleSave}
                 >
                   Save as Draft
@@ -728,9 +775,8 @@ const QuestionTypeFilters = ({
               <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                 <Button
                   variant='contained'
-                  style={{ color: 'white', textTransform: 'none' }}
+                  style={{ color: 'white', width: '100%' }}
                   color='primary'
-                  className='custom_button_master modifyDesign'
                   size='medium'
                   onClick={handleSubmit}
                 >

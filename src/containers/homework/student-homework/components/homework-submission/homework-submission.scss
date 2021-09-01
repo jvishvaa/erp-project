@@ -1,26 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
 
-.homework_submit_wrapper .homework-question {
-  border-bottom: 1px solid #ff6b6b;
-}
-.homework_type_item {
-  border: 1px solid #ff6b6b;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  text-align: center;
-  padding: 10% 15%;
-  color: #014b7e;
-  font-size: 1rem;
-  font-weight: 600;
-  text-transform: capitalize;
-  @media screen and (max-width: 768px) {
-    padding: 10px 15px !important;
-    width: 100%;
-  }
+
+.homework_submit_wrapper {
+  position: relative;
+  overflow: hidden;
 }
 .homework_block_questionwise_check {
-  color: #014b7e;
+display: flex;
   font-size: 1rem;
 }
 .homework_submit_questions_wrapper {
@@ -102,7 +89,6 @@
   margin-top: 1%;
   display: flex;
   flex-wrap: wrap;
-  
 }
 .questionWiseAttachmentsContainer {
   margin-top: 1%;
@@ -110,21 +96,6 @@
   flex-wrap: wrap;
 }
 
-.descBox {
-  margin-top: 15px;
-  background-color: #bcf1ff;
-  color: #014b7e;
-  border: 1px solid #ff6b6b;
-  border-radius: 10px;
-  font-size: 16px;
-  width: 70%;
-  padding: 11px 18px;
-}
-
-.descBox::before {
-  content: 'Instruction : ';
-  font-weight: 600;
-}
 
 .commentBoxStyle > .MuiOutlinedInput-root {
   // border: 1px solid #ff6b6b;
@@ -137,7 +108,8 @@
   border-radius: 10px;
   font-size: 18px;
 }
-.file_row_hw,.file_row {
+.file_row_hw,
+.file_row {
   border: 1px solid #dfdfdf;
   display: flex;
   flex-direction: row;
@@ -150,7 +122,8 @@
   font: normal normal normal 16px/18px Raleway;
 }
 
-.file_name_container_hw,.file_name_container {
+.file_name_container_hw,
+.file_name_container {
   color: #014b7e;
   font-weight: 600;
   align-self: center;
@@ -168,7 +141,8 @@
   border-radius: 10px;
   padding: 5px;
 }
-.file_close_hw,.file_close {
+.file_close_hw,
+.file_close {
   align-self: end;
 }
 .overallContainer {
@@ -238,15 +212,15 @@
       margin-top: 2rem;
     }
 
-    .homework-question {
-      // border-bottom: 1px solid #ff6b6b;
-      width: 100%;
-      color: #014b7e;
-      position: relative;
-      padding-bottom: 8px;
-      font-size: 18px;
-      // font: normal normal normal 18px Raleway;
-    }
+    // .homework-question {
+    //   // border-bottom: 1px solid #ff6b6b;
+    //   width: 100%;
+    //   // color: #014b7e;
+    //   position: relative;
+    //   padding-bottom: 8px;
+    //   font-size: 18px;
+    //   // font: normal normal normal 18px Raleway;
+    // }
 
     .attachments-container {
       .header {
@@ -321,12 +295,13 @@
   }
 }
 @media only screen and (max-width: 768px) {
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
     width: 100% !important;
   }
   body {
-    position: relative
+    position: relative;
   }
 
   .homework_type {
@@ -338,23 +313,8 @@
   .homework_block_wrapper_submit {
     display: block;
   }
-  .homework_type_item {
-    width: 100%;
-    border: 1px solid #ff6b6b;
-    // height: 100%;
-    // padding: 0.5rem 1.25rem;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    // height: 55px;
-    margin-left: 20px;
-    @media only screen and (max-width: 768px) {
-      margin-left: 0;
-    }
-  }
-  .file_row_hw,.file_row {
+  .file_row_hw,
+  .file_row {
     border: 1px solid #dfdfdf;
     display: flex;
     flex-direction: row;
@@ -375,7 +335,8 @@
   .file_close span img {
     margin-left: 50px;
   }
-  .file_name_container_hw,.file_name_container {
+  .file_name_container_hw,
+  .file_name_container {
     font-size: 14px;
   }
   .commentBoxStyle {
@@ -397,12 +358,6 @@
       height: 100% !important;
     }
   }
-  .makeStyles-content-22{
-    // max-width: 100%;
-    // flex-basis: 100%;
-    // overflow: hidden;
-    // height: 100vh;
-  }
   .custom_button_master {
     margin-top: 10px !important;
     height: 42px;
@@ -422,15 +377,13 @@
   .homework-question .questionWiseAttachmentsContainer {
     display: block !important;
   }
-
-  // .questionWiseAttachmentsContainer {
-  //   float: right !important;
-  // }
-  .homework-question-container.student-view .homework-question {
-    top: 42px;
-  }
   .homework-question-container.student-view .homework-question {
     width: 92%;
+    top: 42px;
+    @media screen and (max-width: 768px) {
+     top: 0;
+    }
+
   }
   .attachments-container {
     margin-top: 60px !important;

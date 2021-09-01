@@ -62,6 +62,16 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
     },
   },
+  descBox:{
+    marginTop: "15px",
+    backgroundColor: "#bcf1ff",
+    color: theme.palette.secondary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: "10px",
+    fontSize: "16px",
+    width: "70%",
+    padding: "11px 18px",
+  }
 }));
 
 const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
@@ -618,7 +628,7 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
                   handleEditorChange={handleDES}
                   placeholder='Book description...'
                   name='description'
-                  className='descBox'
+                  className={classes.descBox}
                   content={
                     localStorage.getItem('description') === 'undefined'
                       ? ''

@@ -11,11 +11,32 @@ import Button from '@material-ui/core/Button';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import CustomInput from './custom-input/customInput';
+import { makeStyles } from '@material-ui/core';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import ChangePassword from './change-password/change-password';
 import Layout from '../Layout';
 import './profile.css';
+const useStyles = makeStyles((theme) => ({
+  textfields: {
+    display: 'block',
+    padding: '0% 1%',
+    border: 'none',
+    borderBottom: `1px solid ${theme.palette.primary.main}`,
+    color: theme.palette.secondary.main,
+    paddingLeft: '0',
+    width: '85%',
+    outline: 'none',
+    color: theme.palette.secondary.main,
+    margin: '0% 5%',
+  },
+  profileLabelTag: {
+    textTransform: 'capitalize',
+    paddingLeft: '5%',
+    color: theme.palette.secondary.main,
+    fontWeight: '600',
+  },
+}));
 
 const Profile = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -29,6 +50,7 @@ const Profile = (props) => {
   const [userImageData, setUserImageData] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
   const [inputFields, setInputFields] = useState([]);
+  const classes = useStyles();
 
   const getUserDetails = async () => {
     try {
@@ -126,86 +148,102 @@ const Profile = (props) => {
   return (
     <>
       <Layout>
-        <div className='profile_breadcrumb_wrapper'>
-          <CommonBreadcrumbs componentName='Profile' />
-        </div>
-        <div className='dashboard_profile'>
-          {passwordPopUp ? <ChangePassword close={setPasswordPopUp} id={userId} /> : null}
-          <div className='profile_wrapper'>
-            <div className='profile_image_wrapper'>
-              <img
-                src={userImage || profileImage || require('../../assets/images/Male.svg')}
-                alt='Not found'
-                className='profile_avator'
-              />
-              {userImage ? null : (
-                <Button
-                color = "primary"
-                  variant='contained'
-                  className='profile_upload_image_button'
-                  component='label'
-                >
-                  Add Image
-                  <input
-                    type='file'
-                    style={{ display: 'none' }}
-                    id='raised-button-file'
-                    onChange={onImageChange}
-                  />
-                </Button>
-              )}
-            </div>
-            <form key={update} className='profile_details_wrapper'>
-              {inputFields.map((items, index) => (
-                <Fragment key={`profileInput_${index}`}>
-                  <div className='profile_tags' />
-                  <span className='profile_label_tag'>{items.name}</span>
-                  <div
-                    className={
-                      items.name === 'password' ? 'password' : 'textFieldsContainer'
-                    }
+        <div style={{ height: '100%' }}>
+          <div className='profile_breadcrumb_wrapper'>
+            <CommonBreadcrumbs componentName='Profile' />
+          </div>
+          <div className='dashboard_profile'>
+            {passwordPopUp ? (
+              <ChangePassword close={setPasswordPopUp} id={userId} />
+            ) : null}
+            <div className='profile_wrapper'>
+              <div className='profile_image_wrapper'>
+                <img
+                  src={
+                    profileImage
+                      ? profileImage
+                      : userImage
+                      ? userImage
+                      : require('../../assets/images/Male.svg')
+                  }
+                  alt='Not found'
+                  onError={(e) => {
+                    e.target.src = require('../../assets/images/Male.svg');
+                  }}
+                  className='profile_avator'
+                />
+                {userImage ? null : (
+                  <Button
+                    color='primary'
+                    variant='contained'
+                    className='profile_upload_image_button'
+                    component='label'
                   >
-                    <CustomInput
-                      className={
-                        items.type === 'text'
-                          ? 'textFields'
-                          : `${'textFields'} ${'passwordWidth'}`
-                      }
-                      id={items.name}
-                      name={items.name}
-                      readonly
-                      value={items.value}
+                    Add Image
+                    <input
+                      type='file'
+                      style={{ display: 'none' }}
+                      id='raised-button-file'
+                      onChange={onImageChange}
                     />
-                  </div>
-                </Fragment>
-              ))}
-            </form>
+                  </Button>
+                )}
+              </div>
+              <form key={update} className='profile_details_wrapper'>
+                {inputFields.map((items, index) => (
+                  <Fragment key={`profileInput_${index}`}>
+                    <div className='profile_tags' />
+                    <span className={classes.profileLabelTag}>{items.name}</span>
+                    <div
+                      className={
+                        items.name === 'password' ? 'password' : 'textFieldsContainer'
+                      }
+                    >
+                      <CustomInput
+                        className={
+                          items.type === 'text'
+                            ? `${classes.textfields}`
+                            : `${classes.textfields} ${'passwordWidth'}`
+                        }
+                        id={items.name}
+                        name={items.name}
+                        readonly
+                        value={items.value}
+                      />
+                    </div>
+                  </Fragment>
+                ))}
+              </form>
+            </div>
+            <Button
+              color='primary'
+              variant='contained'
+              className='profile_change_password_button'
+              onClick={() => setPasswordPopUp(true)}
+            >
+              Change password
+            </Button>
           </div>
-          <Button
-            color = "primary"
-            variant='contained'
-            className='profile_change_password_button'
-            onClick={() => setPasswordPopUp(true)}
-          >
-            Change password
-          </Button>
+          {userImage ? (
+            <div className='profile_update_button_wrapper'>
+              <input
+                className='profile_update_button cancel_button_profile'
+                type='button'
+                onClick={handleProfileUpdateCancel}
+                value='cancel'
+              />
+              <Button
+                variant='contained'
+                color='primary'
+                className='profile_update_button'
+                onClick={handleProfileUpdate}
+                color='primary'
+              >
+                Update Profile
+              </Button>
+            </div>
+          ) : null}
         </div>
-        {userImage ? (
-          <div className='profile_update_button_wrapper'>
-            <input
-              className='profile_update_button cancel_button_profile'
-              type='button'
-              onClick={handleProfileUpdateCancel}
-              value='cancel'
-            />
-            <input
-              className='profile_update_button'
-              type='button'
-              onClick={handleProfileUpdate}
-              value='Update Profile'
-            />
-          </div>
-        ) : null}
       </Layout>
     </>
   );

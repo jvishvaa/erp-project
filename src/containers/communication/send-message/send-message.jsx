@@ -81,6 +81,35 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto',
     bottom: 0,
   },
+  selectallwrap:{
+    color: theme.palette.secondary.main,
+    fontSize: "1rem",
+    fontWeight: "600",
+    width: "100%",
+    margin: "1px auto 1%",
+  },
+  msgTypeBlock:{
+    width: "10%",
+    height: "30px",
+    textAlign: "center",
+    color: theme.palette.secondary.main,
+    cursor: "pointer",
+  },
+  msgTypeBlockSelected:  {
+    borderBottom: `3px solid ${theme.palette.primary.main}`,
+    fontWeight: 600,
+  },
+  sendmsgType:{
+    margin: "20px auto",
+    width: "95%",
+    color:theme.palette.secondary.main,
+    ['@media screen(min-width:768px)']:{
+      marginLeft: "10%",
+      marginTop: "5%",  
+      color:theme.palette.secondary.main
+
+    }
+  }
 }));
 
 const SendMessage = withRouter(({ history, ...props }) => {
@@ -940,7 +969,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
           />
           {firstStep ? (
             <>
-              <div className='send_message_type_wrapper'>
+              <div className={classes.sendmsgType}>
                 <div className='send_message_group_select_lebel'>Group Select</div>
                 <FormControlLabel
                   control={
@@ -1081,7 +1110,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
             <div className='send_message_table_wrapper'>
               <div className='send_message_user_list_wrapper'>
                 {usersRow.length ? (
-                  <div className='send_message_select_all_wrapper'>
+                  <div className= {classes.selectallwrap}>
                     <input
                       type='checkbox'
                       className='send_message_select_all_checkbox'
@@ -1110,8 +1139,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
             <div className='message_sending_white_wrapper'>
               <div className='message_type_block_wrapper'>
                 <div
-                  className={`message_type_block ${isEmail ? null : 'message_type_block_selected'
-                    }`}
+                className={` ${classes.msgTypeBlock} ${isEmail ? null : `${classes.msgTypeBlockSelected}`
+              }`}
                   onClick={() => {
                     if (isEmail) {
                       setIsEmail(false);
@@ -1123,8 +1152,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   SMS
                 </div>
                 <div
-                  className={`message_type_block ${isEmail ? 'message_type_block_selected' : null
-                    }`}
+                className={`${classes.msgTypeBlock} ${isEmail ? `${classes.msgTypeBlockSelected}` : null
+              }`}
                   onClick={() => {
                     if (!isEmail) {
                       setIsEmail(true);
@@ -1217,13 +1246,6 @@ const SendMessage = withRouter(({ history, ...props }) => {
                           </IconButton>
                         </Grid>
                         <Grid item xs={8}>
-                          {/* <Grid container alignItem='center' spacing={2}>
-                            {files.map(file => (
-                              <Grid item xs={12}>
-
-                              </Grid>
-                            ))}
-                          </Grid> */}
                           {files.map((file, i) => (
                             <FileRow
                               file={file}
@@ -1246,8 +1268,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   <Button
                     variant='contained'
                     onClick={handleback}
-                    className='custom_button_master labelColor'
+                    className='cancelButton labelColor'
                     size='medium'
+                    style={{ width: '100%' }}
                     type='submit'
                   >
                     BACK
@@ -1259,9 +1282,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   <Button
                     variant='contained'
                     onClick={handleSendMessage}
-                    style={{ color: 'white' }}
                     color='primary'
-                    className='custom_button_master'
+                    style={{color:'white', width: '100%' }}
                     size='medium'
                   >
                     {messageSending ? 'Sending Message' : 'Send Message'}
@@ -1272,9 +1294,8 @@ const SendMessage = withRouter(({ history, ...props }) => {
                   <Button
                     variant='contained'
                     onClick={handlenext}
-                    style={{ color: 'white' }}
+                    style={{color:'white', width: '100%' }}
                     color='primary'
-                    className='custom_button_master'
                     size='medium'
                   >
                     NEXT

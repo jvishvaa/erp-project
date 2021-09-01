@@ -17,7 +17,7 @@
 }
 
 .question-view-container {
-  color: $secondary-color;
+  // color: $secondary-color;
   height: max-content;
   .comprehension-question-header-container {
     display: flex;
@@ -33,32 +33,6 @@
     align-items: center;
     border-radius: 10px;
     margin: 10px 0;
-  }
-  .question-header,
-  .answers-header {
-    color: $secondary-color;
-    font-size: 1.1rem;
-    margin: 10px 0;
-  }
-  .answers-container {
-    .options-container {
-      .option {
-        background-color: #f3f3f3;
-        padding: 1rem;
-        margin: 1rem 0;
-        border-radius: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-    }
-  }
-  .question-container {
-    border: 1px solid #dbdbdb;
-    padding: 1rem;
-    font-size: 0.9rem;
-    border-radius: 10px;
-    margin: 1rem 0;
   }
 
   .matrix-container {
@@ -87,13 +61,6 @@
       padding: 0.5rem;
       display: flex;
       justify-content: center;
-    }
-  }
-
-  .comprehension-container {
-    .sub-questions-container {
-      .sub-question-container {
-      }
     }
   }
 }

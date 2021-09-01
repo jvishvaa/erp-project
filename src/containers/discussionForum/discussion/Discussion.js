@@ -24,8 +24,13 @@ import GiveAwardDialog from './GiveAwardDialog';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { Edit } from '@material-ui/icons';
 import { editPostDataAction } from '../../../redux/actions/discussionForumActions';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme)=>({
   discussionContainer: {
     width: '100%',
     marginTop: '10px',
@@ -39,7 +44,7 @@ const useStyles = makeStyles({
     borderRadius: '10px 10px 0px 0px',
   },
   discussionCategoryTitle: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontFamily: 'Open Sans',
     lineHeight: '27px',
@@ -48,7 +53,7 @@ const useStyles = makeStyles({
     padding: '7px 22px 19px',
   },
   discussionTitle: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '24px',
     fontWeight: 'bold',
     fontFamily: 'Open Sans',
@@ -63,24 +68,24 @@ const useStyles = makeStyles({
   dotSeparator: {
     height: '12px',
     width: '12px',
-    fill: '#FF6B6B',
+    fill: theme.palette.primary.main,
     marginRight: '10px',
   },
   postByText: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '18px',
     fontWeight: 'lighter',
     fontFamily: 'Open Sans',
   },
   username: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontFamily: 'Open Sans',
     lineHeight: '27px',
   },
   discussionTime: {
     marginLeft: '6px',
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontWeight: 'bold',
     fontFamily: 'Open Sans',
@@ -95,7 +100,7 @@ const useStyles = makeStyles({
     },
   },
   discussionIcon: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontWeight: 300,
     fontFamily: 'Open Sans',
@@ -104,7 +109,7 @@ const useStyles = makeStyles({
     verticalAlign: 'super',
   },
   noAwardsText: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     lineHeight: '24px',
   },
@@ -112,7 +117,7 @@ const useStyles = makeStyles({
     fill: '#FF6B6B',
   },
   discussionParagraph: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '18px',
     fontFamily: 'Open Sans',
     lineHeight: '24px',
@@ -120,7 +125,7 @@ const useStyles = makeStyles({
     overflow: 'hidden',
   },
   answersText: {
-    color: '#042955',
+    color: theme.palette.secondary.main,
     fontSize: '16px',
     fontFamily: 'Open Sans',
     fontWeight: 'bold',
@@ -128,7 +133,7 @@ const useStyles = makeStyles({
     marginTop: '9px',
   },
   commentReplyBox: {
-    borderLeft: '1px solid #FE6B6B',
+    borderLeft: `1px solid ${theme.palette.primary.main}`,
     minHeight: '60px',
   },
   popover: {
@@ -158,13 +163,13 @@ const useStyles = makeStyles({
     fontSize: '36px',
     fontWeight: 'bold',
   }
-});
+}));
 
-const StyledOutlinedButton = withStyles({
+const StyledOutlinedButton = withStyles((theme) => ({
   root: {
     height: '45px',
-    color: '#FE6B6B',
-    border: '1px solid #FF6B6B',
+    color: theme.palette.primary.main,
+    border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '10px',
     backgroundColor: 'transparent',
     position: 'absolute',
@@ -177,7 +182,7 @@ const StyledOutlinedButton = withStyles({
       width: '170px',
     },
   },
-})(Button);
+}))(Button);
 
 const OutlinedButton = withStyles({
   root: {
@@ -195,15 +200,15 @@ const OutlinedButton = withStyles({
   },
 })(Button);
 
-const StyledButton = withStyles({
+const StyledButton = withStyles((theme) => ({
   root: {
     color: '#FFFFFF',
     height: '42px',
     borderRadius: '10px',
     marginTop: '10px',
-    backgroundColor: '#FF6B6B',
+    backgroundColor: theme.palette.primary.main,
     '&:hover': {
-      backgroundColor: '#FF6B6B',
+      backgroundColor: theme.palette.primary.main,
     },
     '@media (min-width: 600px)': {
       marginTop: '0px!important',
@@ -213,7 +218,7 @@ const StyledButton = withStyles({
     fill: '#FFFFFF',
     stroke: '#FFFFFF',
   },
-})(Button);
+}))(Button);
 
 const StyledInput = withStyles({
   root: {
@@ -244,6 +249,68 @@ export default function DiscussionComponent(props) {
   const [reply, setReply] = React.useState('');
   const [ addComment, setAddComment] = React.useState(props.rowData.comment_count? props.rowData.comment_count: 0);
   const [commentList, setCommentList] = React.useState([]);
+  const [deleteId, setDeleteId] = React.useState(null);
+  const [deleteIndex, setDeleteIndex] = React.useState(null);
+  const [deleteAlert, setDeleteAlert] = React.useState(false);
+
+
+  const handleDelete = async (id) => {
+    setDeleteId(id);
+    setDeleteIndex(id);
+    setDeleteAlert(true);
+  };
+  const handleDeleteCancel = () => {
+    setDeleteId(null);
+    setDeleteIndex(null);
+    setDeleteAlert(false);
+  };
+  const handleDeleteConfirm = async () => {
+    try {
+ 
+      const statusChange = await axiosInstance
+      .delete(`${endpoints.discussionForum.deletePost}${deleteId}/update-post/`)
+      
+        if(statusChange.status === 200){
+          setAlert('success', statusChange.data.message);
+          props.deleteEdit();
+          setDeleteId(null);
+        setDeleteIndex(null);
+        setDeleteAlert(false);
+        handlePopoverActionClose();
+        }
+        else {
+          console.log('error', statusChange.data.message);
+        }
+      }
+      
+      catch (error) {
+        console.log('error', error.message);
+      }
+    }
+    
+  //     const statusChange = await axiosInstance.delete(
+  //       `${endpoints.communication.userStatusChange}${deleteId}/delete-user/`,
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+  //     if (statusChange.status === 200) {
+  //       setAlert('success', statusChange.data.message);
+  //       const tempGroupData = usersData.slice();
+  //       tempGroupData.splice(deleteIndex, 1);
+  //       setUsersData(tempGroupData);
+  //       setDeleteId(null);
+  //       setDeleteIndex(null);
+  //       setDeleteAlert(false);
+  //     } else {
+  //       setAlert('error', statusChange.data.message);
+  //     }
+  //   } catch (error) {
+  //     setAlert('error', error.message);
+  //   }
+  // };
 
   const handleChange = (e) => {
     setReply(e.target.value);
@@ -379,19 +446,19 @@ export default function DiscussionComponent(props) {
   const open2 = Boolean(anchorE2);
   const id2 = open2 ? 'simple-popover1' : undefined;
 
-  const handleDelete = (id) => {
-    console.log(id,"id of user");
-    axiosInstance
-      .delete(`${endpoints.discussionForum.deletePost}${id}/update-post/`)
-      .then((res) => {
-        if(res.data.status_code === 200){
-          setAlert('success', res.data.message);
-          props.deleteEdit();
-          handlePopoverActionClose();
-        }
-      })
-      .catch((error) => console.log(error));
-  }
+  // const handleDelete = (id) => {
+  //   console.log(id,"id of user");
+  //   axiosInstance
+  //     .delete(`${endpoints.discussionForum.deletePost}${id}/update-post/`)
+  //     .then((res) => {
+  //       if(res.data.status_code === 200){
+  //         setAlert('success', res.data.message);
+  //         props.deleteEdit();
+  //         handlePopoverActionClose();
+  //       }
+  //     })
+  //     .catch((error) => console.log(error));
+  // }
 
   const handleEditPost = () => {
     //dispatch(editPostDataAction(props.rowData));
@@ -524,6 +591,30 @@ export default function DiscussionComponent(props) {
             </IconButton>
             : '' }
             {/* <ClickAwayListener onClickAway={handlePopoverActionClose}> */}
+            <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
+          <DialogTitle
+            id='draggable-dialog-title'
+          >
+            Delete User
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete this post ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleDeleteConfirm}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
               <Popover
                 id={id2}
                 open={open2}
@@ -541,6 +632,7 @@ export default function DiscussionComponent(props) {
                 <div style={{padding: '10px', borderRadius: '5px'}}>
                   <Typography onClick={handleEditPost}>Edit</Typography>
                   <Divider style={{marginBottom:'10px', marginTop: '10px'}}/>
+                  
                   <Typography onClick={() => handleDelete(props.rowData.id)}>Delete</Typography>
                 </div>
               </Popover>
@@ -577,7 +669,7 @@ export default function DiscussionComponent(props) {
               <Grid container spacing={2}>
                 <Grid item sm={12} xs={6}>
                   <StyledButton
-                    color="secondary"
+                    color="primary"
                     variant="contained"
                     fullWidth
                     onClick={handleReadPost}

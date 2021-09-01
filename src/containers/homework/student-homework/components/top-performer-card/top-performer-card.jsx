@@ -12,22 +12,23 @@ import Paper from '@material-ui/core/Paper';
 import {
   Grid,
   SvgIcon,
-  Icon,
-  Slide,
-  Card,
-  CardActionArea,
-  CardMedia,
-  CardContent,
+ makeStyles,
   Typography,
 } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import Users from '../../../../../assets/images/users.svg';
 import axiosInstance from '../../../../../config/axios';
 import endpoints from '../../../../../config/endpoints';
 import './top-performer-card.css';
 
+
+const useStyles = makeStyles((theme)=>({
+  tooltiptext:theme.toolTipText,
+}))
+
+
 const TopPerformerCard = withRouter(({ history, ...props }) => {
+  const classes = useStyles()
   const { subjects } = props || {};
   const { setAlert } = useContext(AlertNotificationContext);
   const [topPerformer, setTopPerformer] = useState([]);
@@ -127,7 +128,7 @@ const TopPerformerCard = withRouter(({ history, ...props }) => {
               {(showTopPerformerIndex === index &&
                 showTopPerformer &&
                 topPerformer.length >= 0) ? (
-                <span className='tooltiptext'>
+                <span className={` ${classes.tooltiptext} tooltiptext`}>
                   {topPerformer.map((student, index) => (
                     <div
                       key={`top_performer_student${index}`}

@@ -10,7 +10,7 @@
           &:after {
             content: '';
             width: 2px;
-            background-color: $primary-color;
+            // background-color: $primary-color;
             height: 60%;
             position: absolute;
             border-radius: 5px;
@@ -22,7 +22,7 @@
     }
   }
   .table-pagination {
-    color: $secondary-color;
+    // color: $secondary-color;
     text-align: center;
     font-weight: 600;
   }

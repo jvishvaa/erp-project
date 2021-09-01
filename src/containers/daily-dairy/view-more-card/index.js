@@ -1,15 +1,17 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import Paper from '@material-ui/core/Paper';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme, IconButton, SvgIcon, Divider, withStyles, Button } from '@material-ui/core';
+import {
+  IconButton,
+  SvgIcon,
+  Divider,
+  withStyles,
+  Button,
+  makeStyles,
+} from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import downloadAll from '../../../assets/images/downloadAll.svg';
 import './view-more.css';
 import endpoints from '../../../config/endpoints';
-import axiosInstance from '../../../config/axios';
-import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import { ExpandLessOutlined } from '@material-ui/icons';
-import {Context} from '../context/context'
 
 const DownloadButton = withStyles({
   root: {
@@ -18,77 +20,30 @@ const DownloadButton = withStyles({
     '&:hover': {
       backgroundColor: 'transparent !important',
     },
-  }
+  },
 })(Button);
 
-const ViewMoreDailyDairyCard = ({
-  viewMoreData,
-  setViewMore,
-  periodDataForView,
-  setSelectedIndex,
-  grade,
-  branch,
-  section,
-}) => {
-  const themeContext = useTheme();
-  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const { setAlert } = useContext(AlertNotificationContext);
-  //const sectionId = viewMoreData.section[0].id ?? '';
-  //const gradeId =  viewMoreData.grade.id ?? 0;
+const useStyles = makeStyles((theme) => ({
+  rootViewMore: theme.rootViewMore,
+}));
+
+const ViewMoreDailyDairyCard = ({ viewMoreData, setViewMore, setSelectedIndex }) => {
   const handleBulkDownloads = (files) => {
     for (let i = 0; i < files?.length; i++) {
       window.open(`${endpoints.discussionForum.s3}/${files[i]}`);
     }
   };
-
-  const handleBulkDownload = () => {
-    const formData = new FormData();
-    // formData.append('branch',[5]);
-    // formData.append('grade',[54]);
-    // formData.append('section',[75])
-    // formData.append('academic_year', session_year);
-    // formData.append('volume', volume_name);
-    // formData.append('grade', grade_name);
-    // formData.append('subject', subject_name);
-    // formData.append('chapter', chapter_name);
-    // formData.append('period', periodDataForView?.period_name);
-    axiosInstance
-      .post(`${endpoints.circular.fileUpload}`, formData)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          let a = document.createElement('a');
-          if (result.data.result) {
-            a.href = result.data.result;
-            a.click();
-            a.remove();
-          } else {
-            setAlert('error', 'Nothing to download!');
-          }
-        } else {
-          setAlert('error', result.data.description);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
-  };
-  // const pic=viewMoreData?.media?.map(a=>a)
-  const pic=viewMoreData?.documents?.map(a=>a)
-
+  const classes = useStyles();
   return (
     <>
-      <Paper className='rootViewMore'>
+      <Paper className={classes.rootViewMore}>
         <div className='viewMoreHeader'>
           <div className='leftHeader'>
             <div className='headerTitle'>{viewMoreData.subject.subject_name}</div>
-            <div style={{align:'left'}}>
-              Created On:
+            <div style={{ align: 'left' }}>Created On:</div>
+            <div style={{ align: 'left' }}>
+              {viewMoreData.created_at.substring(0, 10)}
             </div>
-            <div style={{align:'left'}}>
-            {viewMoreData.created_at.substring(0, 10)}
-            </div>
-
-            {/* <div className='headerContent'>{periodDataForView?.section_name}</div> */}
           </div>
           <div className='rightHeader'>
             <div className='headerTitle closeIcon'>
@@ -101,25 +56,6 @@ const ViewMoreDailyDairyCard = ({
                 <CloseIcon color='primary' />
               </IconButton>
             </div>
-            {/* <div className='headerContent'>
-          <IconButton
-           onClick={handleBulkDownload}
-           style={{fontSize:'1.1rem',color:'#ff6b6b'}}
-            className="bulkDownloadIconViewMore">
-              <a  target='_blank' href={`${endpoints.s3}/dev/circular_files/${branch.branch_name}/${pic}`}>
-                            <SvgIcon
-                                component={() => (
-                                    <img
-                                        style={{ height: '21px', width: '21px' }}
-                                        src={downloadAll}
-                                        alt='downloadAll'
-                                    />
-                                )}
-                            />
-                            </a>
-                            Download All Attachments
-                        </IconButton>
-          </div> */}
           </div>
         </div>
         <div>
@@ -139,26 +75,7 @@ const ViewMoreDailyDairyCard = ({
           <Divider className='messageDivider' />
           <div className='bodyContent'>{viewMoreData.teacher_report.homework}</div>
           <div className='bodyTitle'>Media</div>
-          {/* <div className='mediaBody'>xxxxxxxx</div> */}
 
-          {/* <IconButton
-          //  onClick={handleBulkDownload} dev/dairy/ORCHIDS/54/59/2021-02-08 18:21:57.036513_Group 7767.png  || dev/dairy/ORCHIDS/${gradeId}/${sectionId}/${pic}
-            style={{fontSize:'1.1rem',color:'#ff6b6b',paddingLeft:'5%',marginTop:'3%'}}
-            className="bulkDownloadIconViewMore"
-          >
-            <a  target='_blank' href={`${endpoints.s3}/${pic}`}>
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={{ height: '21px', width: '21px' }}
-                    src={downloadAll}
-                    alt='downloadAll'
-                  />
-                )}
-              />
-            </a>
-            Download Attachments
-          </IconButton> */}
           <div className='headerContent'>
             <DownloadButton
               onClick={() => handleBulkDownloads(viewMoreData?.documents)}
@@ -167,14 +84,15 @@ const ViewMoreDailyDairyCard = ({
               startIcon={
                 <SvgIcon
                   component={() => (
-                      <img
-                      style={{ display: 'flex'}}
-                        // style={{ height: '21px', width: '21px', marginLeft: '-343px' }}
-                        src={downloadAll}
-                        alt='downloadAll'
-                      />
-                    )}
-                />}
+                    <img
+                      style={{ display: 'flex' }}
+                      // style={{ height: '21px', width: '21px', marginLeft: '-343px' }}
+                      src={downloadAll}
+                      alt='downloadAll'
+                    />
+                  )}
+                />
+              }
             >
               Download Attachments
             </DownloadButton>

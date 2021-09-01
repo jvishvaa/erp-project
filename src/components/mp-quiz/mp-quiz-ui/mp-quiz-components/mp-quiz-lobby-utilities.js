@@ -230,7 +230,8 @@ export function getDurationCounter(props) {
 function GetAvatar({ url = '', firstName = '' }) {
   const { openSettingsModal } = useQuizUitilityContext || {};
   url =
-    'https://omrsheet.s3.ap-south-1.amazonaws.com/media/user_profile/download_wchd7Wo.png'; // Please handle
+    // 'https://omrsheet.s3.ap-south-1.amazonaws.com/media/user_profile/download_wchd7Wo.png'; // Please handle
+    'https://d2r9gkgplfhsr2.cloudfront.net/media/user_profile/download_wchd7Wo.png';
   if (url) {
     return (
       <Avatar
@@ -307,13 +308,15 @@ export function RenderUtilityContent({ showUtilities }) {
             />
           </span>
           <span className='quiz__topbar--participantcount'>
-            <ParticipantCount participantsCount={leaderboardData.length} />
+            <ParticipantCount
+              participantsCount={leaderboardData.length || participants.length}
+            />
           </span>
           <span className='quiz__topbar--currentrank'>
             {isHost ? (
               <div className='paricipant__attended--count'>
                 {`${leaderboardData.filter((item) => item.has_finished).length} / ${
-                  leaderboardData.length
+                  leaderboardData.length || participants.length
                 } done`}
               </div>
             ) : (
@@ -400,7 +403,6 @@ export function LobbyParticipantsContainer() {
       ) : (
         <GetAvatar avatar={avatar} firstName={firstName} />
       )}
-
       <div className='lobby__participants'>
         {participants.length
           ? participantsArray.map((participant) => {
@@ -429,7 +431,7 @@ export function LobbyParticipantsContainer() {
   );
 }
 
-export function HostQuizContainerContent({params}) {
+export function HostQuizContainerContent({ params }) {
   const {
     // isQuizStarted,
     isQuizEnded,
@@ -501,10 +503,14 @@ export function HostAndQuizEnded(props) {
     // isHost,
     // getCurrentPlayerInfo,
     // [fetchParticipantsLabel]: { data: { data: participants = [] } = {} } = {},
-    [fetchLeaderboardLabel]: {
-      data: { data: leaderboardData = [], quiz_summary: quizSummary = {} } = {},
+    [fetchLeaderboardLabel]: { data: { data: leaderboardData = [] } = {} } = {},
+    quiz_details: {
+      data: {
+        data: { quiz_summary: quizSummary = {} } = {},
+      },
     } = {},
   } = useQuizContext() || {};
+
   return (
     <>
       <RenderUtilityContent showUtilities={false} />
@@ -521,7 +527,7 @@ export function HostAndQuizEnded(props) {
     </>
   );
 }
-export function JoineeAndQuizHasFinishedOrEnded({params}) {
+export function JoineeAndQuizHasFinishedOrEnded({ params }) {
   const {
     // isQuizStarted,
     isQuizEnded,

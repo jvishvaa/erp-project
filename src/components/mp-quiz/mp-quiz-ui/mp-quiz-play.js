@@ -103,7 +103,7 @@ function MpQuizPlay({ params }) {
       <Dialog fullScreen open TransitionComponent={Transition}>
         <img
           className={[
-            'volume__controller',
+            isQuizEnded ? 'volume__controller--ended' : 'volume__controller',
             !isMuted ? 'quiz__volume--mute' : 'quiz__volume--unmute',
           ].join(' ')}
           onClick={toggleMute}

@@ -8,7 +8,6 @@ function MpQuizSocketStatus(props) {
   const { params: { role: roleId } = {} } = props || {}
   const ws = useSocket() || {};
   const { readyState, connect } = ws || {};
-  console.log(ws, 'ws')
   const statusObj = {
     [window.WebSocket.CLOSED]: 'closed',
     [window.WebSocket.OPEN]: 'open',

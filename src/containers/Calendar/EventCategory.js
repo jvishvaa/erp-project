@@ -522,6 +522,7 @@ const Cal1 = () => {
                 )}
               /> */}
               <SearchBar
+              style = {{borderRadius : "10px"}}
                 // value={filterData?.selectedEventType || ''}
                 onCancelSearch={(e) => { handleClears(e) }}
                 value={searchData}
@@ -534,52 +535,17 @@ const Cal1 = () => {
             </Grid>
           </Grid>
           <Grid container spacing={2} direction='row'>
-            {/* <Grid item xs={12} sm={4} md={2} lg={1}>
-              <Button
-                variant='contained'
-                className='custom_button_master '
-                size='medium'
-                onClick={handleClear}
-              >
-                Clear
-              </Button>
-            </Grid> */}
-            {/* <Grid item xs={12} sm={4} md={2} lg={1}>
-              <Button
-                variant='contained'
-                className='custom_button_master '
-                // size='medium'
-                color='primary'
-                onClick={(e) =>
-                  handleFilter(filterData.selectedEventType.event_category_name)
-                }
-              >
-                Filter
-              </Button>
-            </Grid> */}
             <Grid item xs={12} sm={4} md={2} lg={2}>
               <Button
                 variant='contained'
                 color='primary'
-                style={{ color: 'white' }}
-                className='custom_button_master '
+                style={{color:'white', width: '100%' }}
                 // className={classes.buttonCol}
                 onClick={handleClickOpen}
               >
                 ADD EVENT
               </Button>
             </Grid>
-            {/* <Grid item xs={12} sm={4} md={2} lg={4}>
-            
-            </Grid>
-            <Grid item xs={12} sm={4} md={2} lg={5}>
-            <SearchBar 
-              
-              value={this.state.value}
-              onChange={(newValue) => this.setState({ value: newValue })}
-              onRequestSearch={() => doSomethingWith(this.state.value)}
-            />
-            </Grid> */}
           </Grid>
           <br />
           <Divider />
@@ -595,6 +561,7 @@ const Cal1 = () => {
             <DialogContent>
               <TextField
                 autoFocus
+                color="secondary"
                 fullWidth
                 size='small'
                 id='role'
@@ -624,14 +591,16 @@ const Cal1 = () => {
               {/* </Grid> */}
             </DialogContent>
             <DialogActions>
-              <Button autoFocus onClick={handleClose} color='primary'>
+              <Button autoFocus variant="contained" onClick={handleClose} className = "labelColor cancelButton">
                 Close
               </Button>
               <Button
+               variant="contained"
                 autoFocus
                 onClick={editFlag ? handleUpdate : handleSave}
                 // onClick={handleSave}
                 color='primary'
+                style={{color : "white"}}
               >
                 {editFlag ? 'UPDATE' : 'Save'}
               </Button>
@@ -671,9 +640,9 @@ const Cal1 = () => {
                             <Grid item xs={6}>
                               <Typography
                                 variant='subtitle1'
+                                color = "secondary"
                                 style={{
                                   marginTop: 8,
-                                  color: '#01014a',
                                   textAlign: 'center',
                                   fontSize: '20px',
                                   fontweight: 'Bold',
@@ -689,7 +658,7 @@ const Cal1 = () => {
                                 aria-haspopup='true'
                                 onClick={(event) => handleClicknew(event, item.id)}
                               >
-                                <MoreHorizIcon style={{ color: '#F7324D' }} />
+                                <MoreHorizIcon />
                               </IconButton>
                               <Menu
                                 anchorEl={anchorEl}

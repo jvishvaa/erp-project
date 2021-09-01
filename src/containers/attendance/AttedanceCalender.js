@@ -1019,9 +1019,9 @@ const AttedanceCalender = () => {
       }
     };
 
-  const StyledFilterButton = withStyles({
+  const StyledFilterButton = withStyles((theme)=>({
     root: {
-      backgroundColor: '#FF6B6B',
+      backgroundColor: theme.palette.primary.main,
       color: '#FFFFFF',
       height: '42px',
       borderRadius: '10px',
@@ -1029,7 +1029,7 @@ const AttedanceCalender = () => {
       marginLeft: '20px',
       marginTop: 'auto',
       '&:hover': {
-        backgroundColor: '#FF6B6B',
+        backgroundColor: theme.palette.primary.main,
       },
     },
 
@@ -1037,7 +1037,7 @@ const AttedanceCalender = () => {
       fill: '#FFFFFF',
       stroke: '#FFFFFF',
     },
-  })(Button);
+  }))(Button);
   const [value, setValue] = React.useState([null, null]);
 
   const handleAcademicYear = (event, value) => {   
@@ -1345,7 +1345,6 @@ const AttedanceCalender = () => {
             )}
             <StyledFilterButton
               variant='contained'
-              color='secondary'
               startIcon={<FilterFilledIcon className={classes.filterIcon} />}
               className={classes.filterButton}
               onClick={selectModule}
@@ -1368,9 +1367,10 @@ const AttedanceCalender = () => {
                 <Grid item md={6} xs={12} className='mark-btn-grid'>
                   {teacherView === true ? (
                     <Button
-                      size='small'
-                      className='mark-attndance-button'
-                      onClick={handleMarkAttendance}
+                    size="small"
+                    color='primary'
+                    variant='contained'
+                    style={{ color: 'white' }}
                     >
                       <span className={classes.contentData} id='mark-para'>
                         Mark Attendance
@@ -1435,9 +1435,9 @@ const AttedanceCalender = () => {
                   </div>
                   <div className='btnArea'>
                     <Button
-                      variant='outlined'
-                      color='secondary'
-                      className='viewDetails'
+                     color='primary'
+                     variant='contained'
+                     style={{ color: 'white' }}
                       onClick={handleViewDetails}
                     >
                       <p className='btnLabel'>View More</p>
@@ -1511,8 +1511,9 @@ const AttedanceCalender = () => {
                   <Button
                     size='small'
                     onClick={handleCreateEvent}
-                    className='add-event-button'
-                  >
+                    color='primary'
+                    variant='contained'
+                    style={{ color: 'white' }}                  >
                     {/* ADD EVENT */}
                     <span className={classes.contentData} id='event-text'>
                       Add Event

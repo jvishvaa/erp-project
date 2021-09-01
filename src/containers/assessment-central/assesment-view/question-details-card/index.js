@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import {
-  IconButton,
-  Button,
-  Divider,
-  Popover,
-  MenuItem,
   useTheme,
-  Checkbox,
-  TextField,
+  makeStyles
 } from '@material-ui/core';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 import './styles.scss';
 import QuestionView from '../question-view';
 
+const useStyles = makeStyles((theme)=>({
+  headerName: {
+    color: theme.palette.primary.main,
+    fontSize: '1.1rem',
+    padding: '.75rem',
+    border: '1px solid',
+    margin: '0 5px 0 1rem',
+  }
+}))
 const resolveQuestionTypeName = (type) => {
   switch (type) {
     case 1:
@@ -52,6 +53,8 @@ const menuOptions = [
 ];
 
 const QuestionDetailCard = ({ question, expanded }) => {
+  const classes = useStyles()
+
   const themeContext = useTheme();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -68,13 +71,7 @@ const QuestionDetailCard = ({ question, expanded }) => {
       <>
         <div className='expanded-selected-question-card-header'>
           <div
-            className='header-name'
-            style={{
-              color: '#ff6b6b',
-              padding: '.75rem',
-              border: '1px solid',
-              margin: '0 5px 0 1rem',
-            }}
+            className={classes.headerName}
           >
             {resolveQuestionTypeName(question.question_type)}
           </div>

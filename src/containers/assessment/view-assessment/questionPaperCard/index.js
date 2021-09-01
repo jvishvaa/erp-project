@@ -64,6 +64,7 @@ const QuestionPaperCard = ({
             className={classes.cardStartButton}
             variant='contained'
             color='primary'
+            style={{color : "white"}}
             onClick={(e) => {
               handleViewMore(questionPaperId);
               e.stopPropagation();

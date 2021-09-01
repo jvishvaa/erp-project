@@ -21,7 +21,7 @@ import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2'
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import { useLocation } from 'react-router-dom';
 
-const StyledTabs = withStyles({
+const StyledTabs = withStyles((theme)=>({
   indicator: {
     display: 'flex',
     justifyContent: 'center',
@@ -29,15 +29,15 @@ const StyledTabs = withStyles({
     '& > span': {
       maxWidth: 85,
       width: '80%',
-      backgroundColor: '#ff6b6b',
+      backgroundColor: theme.palette.primary.main,
     },
   },
-})((props) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
+}))((props) => <Tabs {...props} TabIndicatorProps={{ children: <span /> }} />);
 
 const StyledTab = withStyles((theme) => ({
   root: {
     textTransform: 'none',
-    color: '#014b7e',
+    color: theme.palette.secondary.main,
     fontWeight: theme.typography.fontWeightRegular,
     fontSize: theme.typography.pxToRem(15),
     marginRight: theme.spacing(0),
@@ -570,39 +570,38 @@ const GeneralDairyFilter = ({
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          className='custom_button_master labelColor'
+          className='cancelButton labelColor'
+          style={{ width: '100%' }}
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          style={{ color: 'white' }}
+          style={{ color: 'white', width: '100%' }}
           color='primary'
-          className='custom_button_master'
           size='medium'
           type='submit'
           // disabled={!filterData?.grade}
           onClick={(event) => handleFilter(event)}
         >
-          FILTER
+          Filter
         </Button>
       </Grid>
       {isTeacher && (
         <Grid item xs={6} sm={4} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            style={{ color: 'white' }}
+            style={{ color: 'white', width: '100%' }}
             color='primary'
-            className='custom_button_master'
             size='medium'
             type='submit'
             onClick={() => history.push('/create/general-diary')}
           >
-            CREATE GENERAL DIARY
+            Create General Diary
           </Button>
         </Grid>
       )}
@@ -610,14 +609,13 @@ const GeneralDairyFilter = ({
         <Grid item xs={6} sm={4} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
-            style={{ color: 'white' }}
+            style={{ color: 'white', width: '100%' }}
             color='primary'
-            className='custom_button_master'
             size='medium'
             type='submit'
             onClick={() => history.push('/create/daily-diary')}
           >
-            CREATE DAILY DIARY
+            Create Daily Diary
           </Button>
         </Grid>
       )}

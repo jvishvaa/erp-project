@@ -20,11 +20,11 @@ const useStyles = makeStyles((theme) => ({
   cardTitleHeading: {
     margin: 0,
     marginTop: 2,
-    color: '#FF6B6B',
+    color: theme.palette.primary.main,
   },
   cardDescription: {
     margin: 0,
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
   },
   cardDate: {
     color: '#168D00',
@@ -33,16 +33,6 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'right',
     marginTop: 20,
   },
-  // cardWrapper: {
-  //   display: 'flex',
-  //   padding: '15px',
-  //   flexDirection: 'column',
-  //   justifyContent: 'space-between',
-  //   '&:hover': {
-  //     background: '#FCEEEE',
-  //     cursor: 'pointer',
-  //   },
-  // },
   analysisWrapper: {
     padding: 5,
     [theme.breakpoints.up('md')]: {
@@ -80,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     margin: 4,
     padding: 0,
-    color: '#004770',
+    color: theme.palette.secondary.main,
     fontSize: '0.9rem',
     fontWeight: 'bold',
     '& > div:first-child': {
@@ -140,17 +130,17 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     // fontSize: '2.5rem',
     fontSize: '2.3rem',
-    color: '#004770',
+    color: theme.palette.secondary.main,
     borderRadius: '10px 10px 0 0',
-    border: '2px solid #004770',
+    border: `2px solid ${theme.palette.secondary.main}`,
     margin: '1.2rem',
     marginBottom: 0,
     borderBottom: 'none',
     textAlign: 'center',
   },
   scoreOutOf: {
-    border: '1px solid #004770',
-    background: '#004770',
+    border: `1px solid ${theme.palette.secondary.main}`,
+    background: theme.palette.secondary.main,
     borderRadius: '4px',
     color: 'white',
     padding: '0.25rem 0.9rem',
@@ -162,12 +152,12 @@ const useStyles = makeStyles((theme) => ({
     // fontWeight: 'bold',
   },
   timeTakenLabel: {
-    color: '#004770',
+    color: theme.palette.secondary.main,
     fontSize: '1rem',
     fontWeight: 'normal',
   },
   timeTaken: {
-    color: '#004770',
+    color: theme.palette.secondary.main,
     fontSize: '1.4rem',
     // border: '1px solid red',
     borderRadius: '5px',

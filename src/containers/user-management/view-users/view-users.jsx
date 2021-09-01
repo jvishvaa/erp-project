@@ -49,11 +49,13 @@ import Layout from '../../Layout';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 // import './view-users.css';
 import ViewUserCard from '../../../components/view-user-card';
-import { CSVLink } from "react-csv";
+import { CSVLink } from 'react-csv';
 import FileSaver from 'file-saver';
+import { connect, useSelector } from 'react-redux';
 import './styles.scss';
 
 const useStyles = makeStyles((theme) => ({
+  root: theme.commonTableRoot,
   container: {
     maxHeight: 440,
   },
@@ -92,9 +94,6 @@ const useStyles = makeStyles((theme) => ({
     width: '95%',
     margin: '0 auto',
   },
-  tablePaginationCaption: {
-    fontWeight: '600 !important',
-  },
   downloadExcel: {
     float: 'right',
     padding: '8px 15px',
@@ -104,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     backgroundColor: '#fe6b6b',
     color: '#ffffff',
-  }
+  },
 }));
 
 // const StyledButton = withStyles({
@@ -124,7 +123,10 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [selectedRoles, setSelectedRoles] = useState(null);
-  const [selectedYear, setSelectedYear] = useState('');
+  // const [selectedYear, setSelectedYear] = useState('');
+  const selectedYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [gradeIds, setGradeIds] = useState([]);
@@ -152,11 +154,11 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [excelData] = useState([]);
 
   const headers = [
-    { label: "ERP ID", key: "erp_id" },
-    { label: "Firstname", key: "first_name" },
-    { label: "Lastname", key: "last_name" },
-    { label: "Username", key: "username" },
-    { label: "Email ID", key: "email" },
+    { label: 'ERP ID', key: 'erp_id' },
+    { label: 'Firstname', key: 'first_name' },
+    { label: 'Lastname', key: 'last_name' },
+    { label: 'Username', key: 'username' },
+    { label: 'Email ID', key: 'email' },
     { label: 'Contact', key: 'contact' },
     { label: 'Gender', key: 'gender' },
     { label: 'Profile', key: 'role_name' },
@@ -199,21 +201,22 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   };
 
-  const getYearApi = async () => {
-    try {
-      const result = await axiosInstance.get(`/erp_user/list-academic_year/?module_id=${moduleId}`);
-      if (result.status === 200) {
-        setAcademicYearList(result.data?.data);
-        const defaultYear = result.data?.data?.[0];
-        setSelectedYear(defaultYear);
-      } else {
-        setAlert('error', result.data.message);
-      }
-    } catch (error) {
-      setAlert('error', error.message);
-    }
-  };
-
+  // const getYearApi = async () => {
+  //   try {
+  //     const result = await axiosInstance.get(
+  //       `/erp_user/list-academic_year/?module_id=${moduleId}`
+  //     );
+  //     if (result.status === 200) {
+  //       setAcademicYearList(result.data?.data);
+  //       const defaultYear = result.data?.data?.[0];
+  //       setSelectedYear(defaultYear);
+  //     } else {
+  //       setAlert('error', result.data.message);
+  //     }
+  //   } catch (error) {
+  //     setAlert('error', error.message);
+  //   }
+  // };
 
   const getBranchApi = async () => {
     try {
@@ -221,7 +224,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         `${endpoints.academics.branches}?session_year=${selectedYear.id}&module_id=${moduleId}`
       );
       if (result.data.status_code === 200) {
-        const transformedResponse = result?.data?.data?.results.map(obj => ((obj && obj.branch) || {}));
+        const transformedResponse = result?.data?.data?.results.map(
+          (obj) => (obj && obj.branch) || {}
+        );
         // setBranchList(result.data.data);
         setBranchList(transformedResponse);
       } else {
@@ -235,7 +240,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const getGradeApi = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}&module_id=${moduleId}`);
+        `${endpoints.communication.grades}?session_year=${selectedYear.id}&branch_id=${selectedBranch.id}&module_id=${moduleId}`
+      );
       if (result.data.status_code === 200) {
         setGradeList(result.data.data);
       } else {
@@ -284,13 +290,16 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       });
       const resultUsers = [];
       excelData.length = 0;
+
       if (result.status === 200) {
         setTotalCount(result.data.count);
+
         result.data.results.map((items) =>
           resultUsers.push({
             userId: items.id,
             userName: `${items.user.first_name} ${items.user.last_name}`,
             erpId: items.erp_id,
+
             emails: items.user.email,
             active: items.is_active,
           })
@@ -310,8 +319,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   const handleResetFilters = () => {
     setSearchText('');
-    setSelectedYear('');
-    setSelectedRoles('')
+    // setSelectedYear('');
+    setSelectedRoles('');
     setSelectedBranch(null);
     setSelectedGrades([]);
     setSelectedRoles(null);
@@ -340,17 +349,18 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     if (searchText) {
       getUserListUrl += `&search=${searchText}`;
     }
-    axiosInstance.get(`${getUserListUrl}`, {
-      responseType: 'arraybuffer',
-    })
+    axiosInstance
+      .get(`${getUserListUrl}`, {
+        responseType: 'arraybuffer',
+      })
       .then((res) => {
         const blob = new Blob([res.data], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         });
-        FileSaver.saveAs(blob, "user_list.xls");
+        FileSaver.saveAs(blob, 'user_list.xls');
       })
       .catch((error) => setAlert('error', 'Something Wrong!'));
-  }
+  };
 
   const handleTextSearch = (e) => {
     setIsNewSearch(true);
@@ -435,8 +445,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   }, []);
 
   useEffect(() => {
-    if (moduleId) getYearApi();
-  }, [moduleId]);
+    if (moduleId && selectedYear) getBranchApi();
+  }, [moduleId, selectedYear]);
 
   useEffect(() => {
     if (moduleId) {
@@ -444,11 +454,11 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   }, [currentPage, moduleId]);
 
-  useEffect(() => {
-    if (selectedYear) {
-      getBranchApi();
-    }
-  }, [selectedYear]);
+  // useEffect(() => {
+  //   if (selectedYear) {
+  //     getBranchApi();
+  //   }
+  // }, [selectedYear]);
 
   useEffect(() => {
     if (selectedBranch) {
@@ -467,13 +477,13 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   }, [isNewSeach, moduleId]);
 
   const handleYear = (event = {}, value = '') => {
-    setSelectedYear('');
+    // setSelectedYear('');
     setSelectedBranch('');
     setBranchList([]);
     setGradeList([]);
     setSelectedGrades([]);
     if (value) {
-      setSelectedYear(value);
+      // setSelectedYear(value);
     }
   };
 
@@ -499,14 +509,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   return (
     <Layout>
+      <CommonBreadcrumbs
+        componentName='User Management'
+        childComponentName='View Users'
+      />
       <div className='view-users-page'>
         <div className='inner-container'>
-          <div className='bread-crumbs-container'>
-            <CommonBreadcrumbs
-              componentName='User Management'
-              childComponentName='View Users'
-            />
-          </div>
           <Grid container spacing={4} className='form-container spacer'>
             <Grid item xs={12} md={3}>
               <FormControl
@@ -549,7 +557,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 )}
               />
             </Grid>
-            <Grid item md={3} xs={12}>
+            {/* <Grid item md={3} xs={12}>
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
@@ -570,7 +578,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   />
                 )}
               />
-            </Grid>
+            </Grid> */}
             <Grid item md={3} xs={12}>
               <Autocomplete
                 style={{ width: '100%' }}
@@ -625,8 +633,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 <Button
                   variant='contained'
                   onClick={handleResetFilters}
-                  className='disabled-btn'
-                  fullWidth
+                  className='cancelButton labelColor'
+                  style={{ width: '100%' }}
+                  size='medium'
                 >
                   CLEAR ALL
                 </Button>
@@ -634,19 +643,16 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             </Grid>
             <Grid item xs={12} md={1}></Grid>
             <Grid item xs={12} md={2}>
-              <Box
-                style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}
-              >
+              <Box style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                 <Button
                   variant='contained'
-                  style={{ color: 'white' }}
+                  style={{ color: 'white', width: '100%' }}
                   color='primary'
-                  className='custom_button_master'
                   size='medium'
                   onClick={handleExcel}
                 >
                   Download Excel
-            </Button>
+                </Button>
                 {/* <CSVLink
                   data={excelData}
                   headers={headers}
@@ -661,7 +667,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         </div>
         <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
           <DialogTitle
-            style={{ cursor: 'move', color: '#014b7e' }}
             id='draggable-dialog-title'
           >
             Delete User
@@ -675,7 +680,11 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
               Cancel
             </Button>
-            <Button color='primary' onClick={handleDeleteConfirm}>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleDeleteConfirm}>
               Confirm
             </Button>
           </DialogActions>
@@ -735,14 +744,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                             />
                           </IconButton>
                         ) : (
-                          // <button
-                          //   type='submit'
-                          //   className='group_view_deactivate_button group_view_button'
-                          //   title='Deactivate'
-                          //   onClick={() => handleStatusChange(items.userId, i, '2')}
-                          // >
-                          //   D
-                          // </button>
                           <button
                             type='submit'
                             title='Activate'
@@ -783,16 +784,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                 </TableBody>
               </Table>
             </TableContainer>
-
-            {/* <div className={`${classes.root} pagenation_view_groups`}>
-              <Pagination
-                page={Number(currentPage)}
-                size='large'
-                className='books__pagination'
-                onChange={handlePagination}
-                count={totalPages}
-              />
-            </div> */}
             <TablePagination
               component='div'
               count={totalCount}

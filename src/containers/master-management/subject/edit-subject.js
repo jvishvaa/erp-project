@@ -6,8 +6,9 @@ import {
   useTheme,
   Switch,
   FormControlLabel,
+  Typography,
+  useMediaQuery
 } from '@material-ui/core';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -58,7 +59,7 @@ const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
         })
         .catch((error) => {
           setLoading(false);
-          setAlert('error', error.response.data.message||error.response.data.msg);
+          setAlert('error', error.response.data.message || error.response.data.msg);
         });
     } else {
       setAlert('error', 'No Fields to Update');
@@ -114,7 +115,11 @@ const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
                   color='primary'
                 />
               }
-              label={optional ? 'Optional' : 'Not-Optional'}
+              label={
+                <Typography color='secondary'>
+                  {optional ? 'Optional' : 'Not-Optional'}
+                </Typography>
+              }
             />
           </Grid>
         </Grid>
@@ -124,7 +129,8 @@ const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            className='custom_button_master labelColor'
+            style={{ width: '100%' }}
+            className='cancelButton labelColor'
             size='medium'
             onClick={handleGoBack}
           >
@@ -134,9 +140,8 @@ const EditSubject = ({ subjectData, handleGoBack, setLoading }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            style={{ color: 'white' }}
+            style={{color:'white', width: '100%' }}
             color='primary'
-            className='custom_button_master'
             size='medium'
             type='submit'
           >

@@ -27,12 +27,14 @@ import {
   fetchThemeApi,
   isFetchThemeRequired,
 } from '../../utility-functions/themeGenerator';
-import { isMsAPI } from "../../utility-functions/index";
-
+// import { isMsAPI } from "../../utility-functions/index";
+import Footer from '../footer/index';
+import AppSearchBarUseStyles from './AppSearchBarUseStyles';
 
 export const ContainerContext = createContext();
 
 const Layout = ({ children, history }) => {
+  const classAppBar = AppSearchBarUseStyles();
   const containerRef = useRef(null);
   const dispatch = useDispatch();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -75,9 +77,8 @@ const Layout = ({ children, history }) => {
     if (isFetchThemeRequired()) {
       fetchThemeApi();
     }
-    if(!localStorage.hasOwnProperty("isMsAPI")){
-      isMsAPI();
-    }
+    // if(!localStorage.hasOwnProperty("isMsAPI")){ }
+    // isMsAPI();
   }, []);
 
   const classes = useStyles();
@@ -857,78 +858,84 @@ const Layout = ({ children, history }) => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   return (
-    <div className={classes.root}>
-      <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}/>
-       <Drawer
-        open={drawerOpen}
-        variant={isMobile ? '' : 'permanent'}
-        // className={clsx(classes.drawer, {
-        //   [classes.drawerPaper]: drawerOpen,
-        //   [classes.drawerPaperClose]: !drawerOpen,
-        // })}
-        className={`${clsx(classes.drawer, {
-          [classes.drawerPaper]: drawerOpen,
-          [classes.drawerPaperClose]: !drawerOpen,
-        })} drawerScrollBar`}
-        classes={{
-          paper: clsx({
-            [classes.drawer]: true,
+    <div className={classes.rootColumn}>
+      <div className={classes.root}>
+        <Drawer
+          open={drawerOpen}
+          variant={isMobile ? '' : 'permanent'}
+          // className={clsx(classes.drawer, {
+          //   [classes.drawerPaper]: drawerOpen,
+          //   [classes.drawerPaperClose]: !drawerOpen,
+          // })}
+          className={`${clsx(classes.drawer, {
             [classes.drawerPaper]: drawerOpen,
             [classes.drawerPaperClose]: !drawerOpen,
-          }),
-        }}
-        onClose={() => setDrawerOpen(false)}
-      >
-        <div className={classes.appBarSpacer} />
-        {isMobile ? <SearchBar /> : null}
-        <List>
-          <ListItem
-            className={classes.menuControlContainer}
-            onClick={() => setDrawerOpen((prevState) => !prevState)}
-          >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {drawerOpen ? (
-                <>
-                  <CloseIcon />
-                </>
-              ) : (
-                <>
-                  <MenuIcon />
-                </>
-              )}
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Menu</ListItemText>
-          </ListItem>
-          {drawerOpen
-            ? navigationData &&
-              navigationData.length > 0 && (
-                <DrawerMenu
-                  superUser={superUser}
-                  drawerOpen={drawerOpen}
-                  navigationItems={navigationData}
-                  onClick={handleRouting}
-                  // flag={flag}
-                />
-              )
-            : navigationData &&
-              navigationData.length > 0 && (
-                <DrawerMenu
-                  superUser={superUser}
-                  navigationItems={navigationData}
-                  onClick={handleOpen}
-                  drawerOpen={drawerOpen}
-                />
-              )}
-        </List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <ContainerContext.Provider value={{ containerRef }}>
-          <div className={classes.container} ref={containerRef}>
-            {children}
-          </div>
-        </ContainerContext.Provider>
-      </main>
+          })} drawerScrollBar`}
+          classes={{
+            paper: clsx({
+              [classes.drawer]: true,
+              [classes.drawerPaper]: drawerOpen,
+              [classes.drawerPaperClose]: !drawerOpen,
+            }),
+          }}
+          onClose={() => setDrawerOpen(false)}
+        >
+          {isMobile ? <div className={classes.appBarSpacer} /> : null}
+          {isMobile ? <SearchBar /> : null}
+          <List>
+            <ListItem
+              className={classes.menuControlContainer}
+              onClick={() => setDrawerOpen((prevState) => !prevState)}
+            >
+              <ListItemIcon className={classes.menuItemIcon}>
+                {drawerOpen ? (
+                  <>
+                    <CloseIcon />
+                  </>
+                ) : (
+                  <>
+                    <MenuIcon />
+                  </>
+                )}
+              </ListItemIcon>
+              <ListItemText className='menu-item-text'>Menu</ListItemText>
+            </ListItem>
+            {drawerOpen
+              ? navigationData &&
+                navigationData.length > 0 && (
+                  <DrawerMenu
+                    superUser={superUser}
+                    drawerOpen={drawerOpen}
+                    navigationItems={navigationData}
+                    onClick={handleRouting}
+                    // flag={flag}
+                  />
+                )
+              : navigationData &&
+                navigationData.length > 0 && (
+                  <DrawerMenu
+                    superUser={superUser}
+                    navigationItems={navigationData}
+                    onClick={handleOpen}
+                    drawerOpen={drawerOpen}
+                  />
+                )}
+          </List>
+        </Drawer>
+
+        <main className={classes.content}>
+          <div className={classes.appBarSpacer} />
+          <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
+          <ContainerContext.Provider value={{ containerRef }}>
+            <div className={classes.container} ref={containerRef}>
+              {children}
+              <div className={classAppBar.footerBar}>
+                <Footer />
+              </div>
+            </div>
+          </ContainerContext.Provider>
+        </main>
+      </div>
     </div>
   );
 };

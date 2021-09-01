@@ -9,10 +9,10 @@ period_card_menu {
   /* display: flex; */
   flex-direction: column;
   background-color: #f9f9f9;
-  color: #ff6b6b;
+  /* color: #ff6b6b; */
   text-align: left;
   border-radius: 10px;
-  border: 1px solid #ff6b6b;
+  /* border: 1px solid #ff6b6b; */
   padding: 10px 10px;
   position: absolute;
   z-index: 1;
@@ -47,7 +47,7 @@ period_card_menu {
   text-align: center !important;
 }
 .tooltiptext > div:hover {
-  background-color: lightpink;
+  /* background-color: lightpink; */
   border-radius: 5px !important;
 }
 .tooltipContainer {

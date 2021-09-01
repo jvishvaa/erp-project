@@ -7,14 +7,43 @@ import EmojiObjectsSharpIcon from '@material-ui/icons/EmojiObjectsSharp';
 import { connect, useSelector } from 'react-redux';
 import Select from '@material-ui/core/Select';
 import LayersClearIcon from '@material-ui/icons/LayersClear';
-import WbIncandescentSharpIcon from '@material-ui/icons/WbIncandescentSharp';
-import { Button, IconButton } from '@material-ui/core';
+import { Button, IconButton ,makeStyles} from '@material-ui/core';
 import { useLocation } from 'react-router-dom';
-import { getModuleInfo } from '../../../utility-functions';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import './upper-grade.scss';
-import { set } from 'lodash';
+
+const useStyles = makeStyles((theme)=>({
+  textFixed:{
+    color: theme.palette.secondary.main,
+    fontSize: "20px",
+    padding: "13px",
+    fontFamily: "roboto"
+  },
+  textFixedLast:{
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
+    color: theme.palette.secondary.main,
+    fontSize: "20px",
+    fontFamily: "roboto",
+    paddingLeft: "16px",
+  },
+  textRotate:{
+    transformOrigin: "0 0",
+    transform: "rotate(270deg)",
+    width: "100%",
+    color: theme.palette.secondary.main,
+    fontSize: "16px",
+    paddingTop: "8px",
+    fontWeight: 600,
+    fontFamily:"roboto",
+  },
+arrowbutton:{
+  color : theme.palette.secondary.main
+}
+}))
 const UpperGrade = (props) => {
+  const classes = useStyles()
   const [dataMap, setDataMap] = useState();
   const [dataMapAcademicYear, setDataMapAcademicYear] = useState();
   const location = useLocation();
@@ -234,7 +263,7 @@ const UpperGrade = (props) => {
           >
             {counter === 2 ? (
               <>
-                <div className='text-fixed'>Branch</div>
+                <div className={classes.textFixed}>Branch</div>
                 <div className='inner-grade-container'>
                   <div className='change-grade-options'>
                     <Select
@@ -256,23 +285,23 @@ const UpperGrade = (props) => {
                         ))}
                     </Select>
                   </div>
-                  <div className='text-fixed-last'>
+                  <div className={classes.textFixedLast}>
                     Expand
                     <IconButton
                       aria-label='delete'
                       onClick={() => setCounter(counter - 1)}
                       size='small'
                     >
-                      <ArrowBackIcon className='arrow-button' />
+                      <ArrowBackIcon className={classes.arrowbutton} />
                     </IconButton>
                     <IconButton onClick={() => setCounter(counter + 1)} size='small'>
-                      <ArrowForwardIcon className='arrow-button' />
+                      <ArrowForwardIcon className = {classes.arrowbutton} />
                     </IconButton>
                   </div>
                 </div>
               </>
             ) : (
-              <label className='text-rotate'>Branch</label>
+              <label className={classes.textRotate}>Branch</label>
             )}
           </div>
           <div
@@ -290,7 +319,7 @@ const UpperGrade = (props) => {
           >
             {counter === 3 ? (
               <>
-                <div className='text-fixed'>Grade</div>
+                <div className={classes.textFixed}>Grade</div>
                 <div className='inner-grade-container'>
                   <div className='change-grade-options'>
                     <Select
@@ -312,27 +341,27 @@ const UpperGrade = (props) => {
                         ))}
                     </Select>
                   </div>
-                  <div className='text-fixed-last'>
+                  <div className={classes.textFixedLast}>
                     Expand
                     <IconButton
                       aria-label='delete'
                       onClick={() => setCounter(counter - 1)}
                       size='small'
                     >
-                      <ArrowBackIcon className='arrow-button' />
+                      <ArrowBackIcon className={classes.arrowbutton} />
                     </IconButton>
                     <IconButton
                       aria-label='delete'
                       onClick={() => setCounter(counter + 1)}
                       size='small'
                     >
-                      <ArrowForwardIcon className='arrow-button' />
+                      <ArrowForwardIcon className={classes.arrowbutton} />
                     </IconButton>
                   </div>
                 </div>
               </>
             ) : (
-              <div className='text-rotate'>Grade</div>
+              <div className={classes.textRotate}>Grade</div>
             )}
           </div>
           <div
@@ -348,7 +377,7 @@ const UpperGrade = (props) => {
           >
             {counter === 4 ? (
               <>
-                <div className='text-fixed'>Section</div>
+                <div className={classes.textFixed}>Section</div>
                 <div className='inner-grade-container'>
                   <div className='change-grade-options'>
                     <Select
@@ -370,14 +399,14 @@ const UpperGrade = (props) => {
                         ))}
                     </Select>
                   </div>
-                  <div className='text-fixed-last'>
+                  <div className={classes.textFixedLast}>
                     Expand
                     <IconButton
                       aria-label='delete'
                       onClick={() => handleCounter('back')}
                       size='small'
                     >
-                      <ArrowBackIcon className='arrow-button' />
+                      <ArrowBackIcon className={classes.arrowbutton} />
                     </IconButton>
                     {/* <IconButton
                       disabled color="primary"
@@ -389,7 +418,7 @@ const UpperGrade = (props) => {
                 </div>
               </>
             ) : (
-              <label className='text-rotate'>Section</label>
+              <label className={classes.textRotate}>Section</label>
             )}
           </div>
         </div>
@@ -418,9 +447,12 @@ const UpperGrade = (props) => {
             </Button>
           </div>
           {props.teacherView && addPeriodButton ? (
-            <div className='add-new-period-button' onClick={() => handleOpenNewPeriod()}>
+            <Button color="primary"
+              variant="contained"
+              style={{ color: "white !important" }}
+              className={classes.addnewperiodbutton} onClick={() => handleOpenNewPeriod()}>
               Add Period
-            </div>
+            </Button>
           ) : (
             <></>
           )}

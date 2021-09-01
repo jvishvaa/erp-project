@@ -6,9 +6,9 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import { useSelector, useDispatch } from 'react-redux';
 import { editCategoryDataAction } from '../../../redux/actions/discussionForumActions';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme)=>({
   categoryTitle: {
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontFamily: 'Raleway',
     fontWeight: 'bold',
@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   },
   subCategoryTitle: {
     marginTop: '10px',
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     fontSize: '20px',
     fontFamily: 'Raleway',
     fontWeight: 400,
@@ -24,7 +24,7 @@ const useStyles = makeStyles({
   },
   subSubCategoryTitle: {
     marginTop: '10px',
-    color: '#FF6B6B',
+    color: theme.palette.primary.main,
     fontSize: '20px',
     fontFamily: 'Raleway',
     fontWeight: 300,
@@ -48,21 +48,21 @@ const useStyles = makeStyles({
     color: '#ff2442',
   },
   selectedCard: {
-    border: '1px solid #FE6B6B !important',
+    border: `1px solid ${theme.palette.secondary.main}`,
     backgroundColor: '#FFF6F6',
   },
-});
+}));
 
-const StyledButton = withStyles({
+const StyledButton = withStyles((theme) => ({
   root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: theme.palette.primary.main,
     color: '#FFFFFF',
     width: '156px',
     height: '36px',
     borderRadius: '10px',
     marginTop: '10px',
   },
-})(Button);
+}))(Button);
 
 const StyledPaper = withStyles({
   root: {

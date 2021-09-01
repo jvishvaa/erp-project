@@ -30,7 +30,6 @@ const QuestionBankCard = ({
   showAddToQuestionPaper,
   periodColor,
 }) => {
-
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -257,14 +256,10 @@ const QuestionBankCard = ({
                 </IconButton>
                 {showPeriodIndex === index && showMenu ? (
                   <div className='tooltipContainer'>
-                    <span className='tooltiptext'>
-                      {/* <div onClick={(e) => handleDelete(period)}>Delete</div> */}
+                    <span className={` ${classes.tooltiptext} tooltiptext`}>
                       <div onClick={handleDelete}>Delete</div>
                       <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
-                        <DialogTitle
-                          style={{ cursor: 'move', color: '#014b7e' }}
-                          id='draggable-dialog-title'
-                        >
+                        <DialogTitle id='draggable-dialog-title'>
                           Delete Question
                         </DialogTitle>
                         <DialogContent>
@@ -281,6 +276,8 @@ const QuestionBankCard = ({
                           </Button>
                           <Button
                             color='primary'
+                            variant='contained'
+                            style={{ color: 'white' }}
                             onClick={(e) => handleDeleteConfirm(period)}
                           >
                             Confirm
@@ -345,9 +342,8 @@ const QuestionBankCard = ({
           {!periodColor ? (
             <Button
               variant='contained'
-              style={{ color: 'white', borderRadius: '10px' }}
+              style={{ color: 'white', width: '100%' }}
               color='primary'
-              className='custom_button_master'
               size='small'
               onClick={handleViewMore}
             >
@@ -356,9 +352,8 @@ const QuestionBankCard = ({
           ) : (
             <Button
               variant='contained'
-              style={{ color: 'white', borderRadius: '10px', visibility: 'hidden' }}
+              style={{ color: 'white', width: '100%', visibility: 'hidden' }}
               color='primary'
-              className='custom_button_master'
               size='small'
               onClick={handleViewMore}
             >
@@ -368,12 +363,10 @@ const QuestionBankCard = ({
           {showAddToQuestionPaper && period?.question_status === '2' ? (
             <Button
               variant='contained'
-              style={{ color: 'white' }}
+              style={{ margin: '15px 0', color: 'white', width: '100%' }}
               color='primary'
-              className='custom_button_master'
               size='small'
               onClick={() => onClick(period)}
-              style={{ margin: '15px 0', borderRadius: '10px' }}
             >
               ADD TO QUESTION PAPER
             </Button>

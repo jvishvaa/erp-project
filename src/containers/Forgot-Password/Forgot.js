@@ -1,9 +1,10 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
+import { Link } from 'react-router-dom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
+// import Link from '@material-ui/core/Link';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
@@ -16,11 +17,33 @@ import { login, aolLogin } from '../../redux/actions';
 import Loader from '../../components/loader/loader';
 import axiosInstance from '../../config/axios';
 
+function TermsAndCondition(props) {
+  return (
+    <Typography variant='body1' color='textSecondary' align='center'>
+      By proceeding, you agree to our{' '}
+      <Link
+        style={{ cursor: 'pointer', textDecoration: 'none' }}
+        onClick={() => (window.location.pathname = '/terms-condition')}
+      >
+        &nbsp;Terms and Conditions&nbsp;
+      </Link>
+      and
+      <Link
+        style={{ cursor: 'pointer', textDecoration: 'none' }}
+        onClick={() => (window.location.pathname = '/privacy-policy')}
+      >
+        &nbsp;Privacy Policy
+      </Link>
+      .
+    </Typography>
+  );
+}
+
 function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
-      {'Copyright © '}
-      {new Date().getFullYear()}, K12 Techno Services Pvt. Ltd.
+      {'Copyright  '}
+      &copy; {new Date().getFullYear()}, K12 Techno Services Pvt. Ltd.
     </Typography>
   );
 }
@@ -143,10 +166,13 @@ function Forgot({ onLogin, history, aolOnLogin }) {
                 }}
                 className='forgot'
               >
-                Sign in
+                <Typography color='secondary'>Sign In</Typography>
               </div>
             </form>
           </div>
+          <Box mt={4}>
+            <TermsAndCondition />
+          </Box>
           <Box mt={8}>
             <Copyright />
           </Box>

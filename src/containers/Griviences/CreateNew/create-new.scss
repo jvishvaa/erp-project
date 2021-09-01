@@ -15,11 +15,6 @@
     margin-left: 1%;
     padding: 2%;
   }
-  .text-color {
-    color: #014b7e;
-    font-weight: 600;
-    margin-bottom: 4px;
-  }
   .field-label-container-type {
     margin-bottom: 4%;
     width: 89%;
@@ -54,40 +49,7 @@
       max-width: 100%;
     }
   }
-  .attach-image-button {
-    display: flex;
-    align-items: flex-end;
-    width: 24%;
-  }
-  .attach-button {
-    border: 1px solid #ff6b6b;
-    color: #ff6b6b;
-    border-radius: 10px;
-    @include button();
-    padding: 4% 1%;
-    font-size: 11px;
-  }
-  .clear-button {
-    @include button();
-    text-decoration: none;
-    border-radius: 10px;
-    background: lightgray;
-    color: black;
-    padding: 10px 40px;
-  }
-  .cancel-button {
-    @include button();
-    text-decoration: none;
-    border-radius: 10px;
-    background: lightgray;
-    color: black;
-    padding: 10px 40px;
-  }
-  .post-button {
-    @include button();
-    border-radius: 10px;
-    background: #ff6b6b;
-    color: white;
-    padding: 10px 40px;
-  }
+
+
+
 }

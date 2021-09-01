@@ -72,18 +72,18 @@ const StyledButton = withStyles({
     iconSize: {}
 })(Button);
 
-const StyledClearButton = withStyles({
-    root: {
+const StyledClearButton = withStyles((theme)=>({
+    // root: {
       backgroundColor: '#E2E2E2',
-      color: '#8C8C8C',
+      color: 'white',
       height: '42px',
-      marginTop: 'auto',
-    }
-})(Button);
+      marginTop: 'auto', 
+    // }
+}))(Button);
 
 const StyledFilterButton = withStyles({
     root: {
-        backgroundColor: '#FF6B6B',
+        // backgroundColor: '#FF6B6B',
         color: '#FFFFFF',
         height: '42px',
         borderRadius: '10px',
@@ -91,7 +91,7 @@ const StyledFilterButton = withStyles({
         marginLeft: '20px',
         marginTop: 'auto',
         "&:hover": {
-            backgroundColor: "#FF6B6B"
+            // backgroundColor: "#FF6B6B"
         },
     },
     startIcon: {
@@ -143,15 +143,15 @@ export default function FilterComponent(props) {
                         
                     </Grid>
                     <Grid item sm={4} xs={12} style={{display: 'flex'}}>
-                        <StyledClearButton
+                        <Button
                             variant='contained'
                             startIcon={<ClearIcon />}
+                            className='labelColor cancelButton'
                         >
                             Clear all
-                        </StyledClearButton>
+                        </Button>
                         <StyledFilterButton
                             variant='contained'
-                            color='secondary'
                             startIcon={<FilterFilledIcon className={classes.filterIcon}/>}
                             className={classes.filterButton}
                         >

@@ -39,6 +39,12 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
+  cardTitleHeading : {
+    marginTop: "0px",
+    marginTottom: "0px",
+    color: theme.palette.primary.main,
+    fontSize: "15px",
+  }
 }));
 const SidebarCounterPanel = (props) => {
   const classes = useStyles();
@@ -124,7 +130,7 @@ const SidebarCounterPanel = (props) => {
     <div className='sidebar-panel'>
       <div className='sidebar-panel-wrapper'>
         <div className='sidebar-content'>
-          <h4 className='cardTitleHeading'>
+          <h4 className={classes.cardTitleHeading}>
             {[assessmentTitle, ...(sectionName ? [`sec-${sectionName}`] : [])].join(
               ', '
             ) || 'NA'}

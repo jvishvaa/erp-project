@@ -508,7 +508,7 @@ const CreateNewForm = (props) => {
           <div className='editor-container'>
             <div className='field-label-container-type'>
               {' '}
-              <div className='text-color'>Title</div>
+              <Typography color = "secondary">Title</Typography>
               <TextField
                 fullWidth
                 size='small'
@@ -586,16 +586,13 @@ const CreateNewForm = (props) => {
            
           </div> */}
           <div className={setMobileView ? classes.flex : classes.flexMobile}>
-            <IconButton size='small' onClick={e => handleBackButton()}>
-              {/* <Link to='/griviences/admin-view' style={{ textDecoration: 'none' }}> */}
-                <div className='cancel-button'>BACK</div>
+            <Button variant = "contained" className='cancelButton labelColor' onClick={e => handleBackButton()}>
+               BACK
               {/* </Link> */}
-            </IconButton>
-            <IconButton color='primary' size='small'>
-              <div className='post-button' onClick={handlePostData}>
+            </Button>
+            <Button color='primary' variant = "contained" style={{color:"white"}} onClick={handlePostData}>
                 POST
-              </div>
-            </IconButton>
+            </Button>
           </div>
         </div>
         {loading && <Loader />}

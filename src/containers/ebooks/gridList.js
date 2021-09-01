@@ -171,10 +171,10 @@ function GridList(props) {
                               <Typography
                                 title={item && item.ebook_name}
                                 className={classes.textEffect}
+                                color = "secondary"
                                 style={{
                                   fontSize: '14px',
                                   fontWeight: 'bold',
-                                  color: '#014B7E',
                                   marginTop: '5px',
                                   marginRight: '2px'
                                 }}
@@ -184,12 +184,13 @@ function GridList(props) {
                             </Grid>
                             <Grid item md={12} xs={12}>
                               <Typography
+                              color = "secondary"
                                 title={
                                   item &&
                                   item.updated_at &&
                                   new Date(item.updated_at).toLocaleDateString()
                                 }
-                                style={{ fontSize: '10px', color: '#042955' }}
+                                style={{ fontSize: '10px' }}
                               >
                                 Publication on&nbsp;
                                 {item &&

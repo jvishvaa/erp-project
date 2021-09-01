@@ -128,9 +128,9 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
               {(showPeriodIndex === index &&
                 showMenu) ? (
                   <div className="tooltip" style={{display:'flex',justifyContent:'space-between'}}>
-                    <span className='tooltiptext' >
-                        <Button className='tooltip' onClick={e=> handleDelete(period)}>Delete</Button>
-                        <Button className='tooltip' onClick={e=> handleEdit(period)}> Edit</Button>
+                    <span className={` ${classes.tooltiptext} tooltiptext`} >
+                        <Button className={classes.tooltip} onClick={e=> handleDelete(period)}>Delete</Button>
+                        <Button className={classes.tooltip} onClick={e=> handleEdit(period)}> Edit</Button>
                     </span>
                   </div>
                 ) : null}
@@ -165,9 +165,8 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
          {!periodColor && 
           <Button
             variant='contained'
-            style={{ color: 'white' }}
+            style={{color:'white', width: '100%' }}
             color="primary"
-            className="custom_button_master"
             size='small'
             onClick={handleViewMore}
           >

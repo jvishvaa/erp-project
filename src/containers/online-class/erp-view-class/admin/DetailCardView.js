@@ -241,10 +241,10 @@ const JoinClass = (props) => {
   };
 
   useEffect(() => {
-    if (window.location.pathname === '/erp-online-class-teacher-view') {
+    if (window.location.pathname === '/erp-online-class-teacher-view' || window.location.pathname === '/erp-online-class') {
       handleHostDisable();
     }
-  }, [new Date().getSeconds()]);
+  }, [new Date().getSeconds(), props]);
 
   const msApihandleHost = (data)=> {
     APIREQUEST("get", `/oncls/v1/zoom-redirect/?id=${data.id}`)
@@ -291,6 +291,16 @@ const JoinClass = (props) => {
 
   const isAcceptDisabled = ()=>{
     return props?.data?.class_status?.toLowerCase() === 'cancelled' || (classStartTime === currDate ? false : true)
+  }
+
+  const isClassStartted = () =>{
+      let disableFlag = false;
+      if (new Date().getTime() >= startTime) {
+        disableFlag = false;
+      } else {
+        disableFlag = true;
+      }
+      return disableFlag;
   }
 
   const open = Boolean(anchorEl);
@@ -370,7 +380,7 @@ const JoinClass = (props) => {
               onClick={() => {
                 setDialogClassWorkBox(true);
               }}
-              disabled={props?.data?.class_status?.toLowerCase() === 'cancelled'}
+              disabled={ isClassStartted() || props?.data?.class_status?.toLowerCase() === 'cancelled'}
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
               Class Work
@@ -400,12 +410,11 @@ const JoinClass = (props) => {
               onClick={() => {
                 const { id = '', online_class = {} } = fullData || {};
                 const { id: onlineClassId = '', start_time = '' } = online_class || {};
-                const startDate = start_time.split('T')[0] || '';
                 history.push({
-                  pathname: `/erp-online-class/class-work/${onlineClassId}/${id}/${startDate}`,
+                  pathname: `/erp-online-class/class-work/${onlineClassId}/${id}/${props.data.date}`,
                 });
               }}
-              disabled={props?.data?.is_cancelled}
+              disabled={ isClassStartted() || props?.data?.is_cancelled}
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
               Class Work
@@ -466,7 +475,7 @@ const JoinClass = (props) => {
                     size='small'
                     color='secondary'
                     fullWidth
-                    disabled={props?.data?.is_cancelled}
+                    disabled={disableHost || props?.data?.is_cancelled}
                     variant='contained'
                     onClick={() => {
                       if (email !== props?.fullData?.online_class?.teacher?.email) {
@@ -873,6 +882,8 @@ const DetailCardView = ({
                   <Button
                     fullWidth
                     size='small'
+                    variant = "contained"
+                    color="primary"
                     className='teacherFullViewFullButtons'
                     onClick={handleAttendance}
                   >

@@ -7,6 +7,7 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
 import { Grid, TextField, Button } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -22,24 +23,24 @@ import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 import { connect, useSelector } from 'react-redux';
 
-
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    boxShadow: 'none',
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '70vh',
   },
   columnHeader: {
-    color: `${theme.palette.secondary.main} !important`,
     fontWeight: 600,
     fontSize: '1rem',
     backgroundColor: `#ffffff !important`,
-  },
-  tableCell: {
     color: theme.palette.secondary.main,
   },
+  hyphenColor: {
+    color: theme.palette.primary.main,
+  },
+  tableCell : {
+    color: theme.palette.secondary.main,
+  }
+
 }));
 
 const columns = [
@@ -101,7 +102,9 @@ const BulkUpload = () => {
   useEffect(() => {
     if (moduleId && searchAcademicYear) {
       axiosInstance
-        .get(`${endpoints.masterManagement.branchList}?session_year=${searchAcademicYear?.id}&module_id=${moduleId}`)
+        .get(
+          `${endpoints.masterManagement.branchList}?session_year=${searchAcademicYear?.id}&module_id=${moduleId}`
+        )
         .then((result) => {
           if (result.data.status_code === 200) {
             // setAcademicYear(result.data?.data);
@@ -116,7 +119,7 @@ const BulkUpload = () => {
           setAlert('error', error.message);
         });
     }
-  }, [moduleId , searchAcademicYear]);
+  }, [moduleId, searchAcademicYear]);
 
   useEffect(() => {
     let request = `${endpoints.userManagement.bulkUpload}?page=${page}&page_size=${limit}`;
@@ -178,16 +181,10 @@ const BulkUpload = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs
-              componentName='User Management'
-              childComponentName='Bulk Upload Status'
-            isAcademicYearVisible={true}
-            />
-          </div>
-        </div>
-
+        <CommonBreadcrumbs
+          componentName='User Management'
+          childComponentName='Bulk Upload Status'
+        />
         <Grid
           container
           spacing={isMobile ? 3 : 5}
@@ -266,7 +263,12 @@ const BulkUpload = () => {
                         <TableCell className={classes.tableCell}>
                           {data.created_at?.substring(0, data.created_at.indexOf('T'))}
                           &nbsp;
-                          <span style={{ color: '#fe6b6b', fontWeight: '600' }}>-</span>
+                          <span
+                            style={{ fontWeight: '600' }}
+                            className={classes.hyphenColor}
+                          >
+                            -
+                          </span>
                           &nbsp;
                           {data.created_at?.substring(
                             data.created_at.indexOf('T') + 1,

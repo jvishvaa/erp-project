@@ -209,7 +209,7 @@ const LessonViewFilters = ({
     if (!subjectIds?.length > 0) {
       return setAlert('warning', 'Select Subject');
     }
-    if (! (dateRangeTechPer[0]&&dateRangeTechPer[1]!==undefined)) {
+    if (!(dateRangeTechPer[0] && dateRangeTechPer[1] !== undefined)) {
       return setAlert('warning', 'Select Date-range');
     }
 
@@ -239,9 +239,9 @@ const LessonViewFilters = ({
       .get(`${endpoints.userManagement.academicYear}?module_id=${getModuleId()}`)
       .then((res) => {
         setAcademicYear(res.data.data);
-        
-        const defaultYear=res?.data?.current_acad_session_data[0]
-        handleAcademicYear({},defaultYear);
+
+        const defaultYear = res?.data?.current_acad_session_data[0];
+        handleAcademicYear({}, defaultYear);
       })
       .catch((error) => {
         setAlert('error ', error.message);
@@ -466,24 +466,24 @@ const LessonViewFilters = ({
       <Grid item xs={12} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          className='custom_button_master labelColor'
+          className='cancelButton labelColor'
+          style={{ width: '100%' }}
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       <Grid item xs={12} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          style={{ color: 'white' }}
+          style={{ color: 'white', width: '100%' }}
           color='primary'
-          className='custom_button_master'
           size='medium'
           type='submit'
           onClick={handleFilter}
         >
-          FILTER
+          Filter
         </Button>
       </Grid>
     </Grid>

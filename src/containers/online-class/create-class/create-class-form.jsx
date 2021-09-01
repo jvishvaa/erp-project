@@ -9,6 +9,7 @@ import {
   CircularProgress,
   Switch,
   FormControlLabel,
+  Typography
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
@@ -19,7 +20,6 @@ import {
 import MomentUtils from '@date-io/moment';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import moment from 'moment';
-
 import { CreateclassContext } from './create-class-context/create-class-state';
 import FilterStudents from './filter-students';
 import {
@@ -104,6 +104,10 @@ const CreateClassForm = (props) => {
         id: obj.id,
         branch_name: obj.branch_name,
       }));
+      transformedData.unshift({
+        branch_name: 'Select All',
+        id: 'all',
+      });
       setBranches(transformedData);
     });
   };
@@ -206,11 +210,13 @@ const CreateClassForm = (props) => {
     dispatch(clearSubjects());
     dispatch(clearCourses());
     if (value?.length > 0) {
+      value = value.filter(({ id }) => id === 'all').length === 1 ? [...branches].filter(({ id }) => id !== 'all') : value;
       const ids = value.map((obj) => obj.id);
       setSelectedBranches(value);
       dispatch(listGradesCreateClass(ids, moduleId, selectedYear.id));
       setOnlineClass((prevState) => ({ ...prevState, branchIds: ids, acadId: selectedYear?.id }));
     } else {
+      setOnlineClass((prevState) => ({ ...prevState, branchIds: [], gradeIds: [], sectionIds: [], subject: [] }));
       dispatch(clearGrades());
     }
   };
@@ -224,7 +230,7 @@ const CreateClassForm = (props) => {
       dispatch(clearTutorEmailValidation());
       if (selectedClassType?.id > 0) dispatch(listCoursesCreateClass(ids));
     } else {
-      setOnlineClass((prevState) => ({ ...prevState, gradeIds: [] }));
+      setOnlineClass((prevState) => ({ ...prevState, gradeIds: [], sectionIds: [], subject: [] }));
       dispatch(clearTutorEmailValidation());
     }
     setSectionSelectorKey(new Date());
@@ -241,12 +247,13 @@ const CreateClassForm = (props) => {
 
   const handleSection = (event, value) => {
     setSelectedSections(value);
+    setSelectedSubject([]);
     if (value?.length) {
       const ids = value.map((el) => el.id);
       const sectionIds = value.map((el) => el.section_id);
       setOnlineClass((prevState) => ({ ...prevState, sectionIds: ids }));
     } else {
-      setOnlineClass((prevState) => ({ ...prevState, sectionIds: [] }));
+      setOnlineClass((prevState) => ({ ...prevState, sectionIds: [], subject: [] }));
     }
     dispatch(clearTutorEmailValidation());
     setOnlineClass((prevState) => ({
@@ -487,7 +494,7 @@ const CreateClassForm = (props) => {
     let request = {};
     request['user_id'] = userId;
     request['title'] = title;
-    request['optionalZoom']=optionalZoom;
+    request['optionalZoom'] = optionalZoom;
     request['duration'] = duration;
     if (selectedClassType?.id === 0) {
       request['subject_id'] = subject.join(',');
@@ -600,7 +607,7 @@ const CreateClassForm = (props) => {
           .map((obj) => obj.send)
           .join(',')}`
         : `?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}&is_zoom=${onlineClass.is_zoom}`;
-      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) ? await APIREQUEST("get", `/oncls/v1/tutor-availability/${url}`) : await axiosInstance.get('/erp_user/check-tutor-time/'+ url);
+      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) ? await APIREQUEST("get", `/oncls/v1/tutor-availability/${url}`) : await axiosInstance.get('/erp_user/check-tutor-time/' + url);
       if (data.status_code === 200) {
         if (data.status === 'success') {
           setTutorNotAvailableMessage('');
@@ -675,9 +682,11 @@ const CreateClassForm = (props) => {
   }, [onlineClass.tutorEmail]);
 
   const createBtnDisabled =
+    onlineClass.title.trim() === "" ||
     !onlineClass.duration ||
-    !onlineClass.subject ||
     !onlineClass.gradeIds?.length ||
+    !onlineClass.sectionIds?.length ||
+    !onlineClass.subject?.length ||
     !onlineClass.selectedDate ||
     !onlineClass.selectedTime ||
     !onlineClass.tutorEmail ||
@@ -689,13 +698,11 @@ const CreateClassForm = (props) => {
   }, []);
   return (
     <div className='create__class' key={formKey}>
-      <div className='breadcrumb-container-create'>
-        <CommonBreadcrumbs
-          componentName='Online Class'
-          childComponentName='Create Class'
-          isAcademicYearVisible={true}
-        />
-      </div>
+      <CommonBreadcrumbs
+        componentName='Online Class'
+        childComponentName='Create Class'
+        isAcademicYearVisible={true}
+      />
       <div className='create-class-form-container'>
         <form
           autoComplete='off'
@@ -1010,7 +1017,10 @@ const CreateClassForm = (props) => {
                     color='primary'
                   />
                 }
-                label={toggle ? 'Recurring' : 'Normal'}
+                label={
+                  <Typography color='secondary'>
+                    {toggle ? 'Recurring' : 'Normal'}
+                  </Typography>}
               />
             </Grid>
             {/* <Grid item md={1} xs={12} sm={2}>
@@ -1024,7 +1034,10 @@ const CreateClassForm = (props) => {
                     color='primary'
                   />
                 }
-                label={toggleZoom ? 'edXstream' : 'zoom'}
+                label={
+                  <Typography color='secondary'>
+                    {toggleZoom ? 'edXstream' : 'Zoom'}
+                  </Typography>}
               />
             </Grid> */}
           </Grid>

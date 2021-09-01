@@ -130,8 +130,7 @@ const EditGroup = withRouter(({ history, ...props }) => {
             sortable: false,
             width: 250,
             valueGetter: (params) =>
-              `${params.getValue('firstName') || ''} ${
-                params.getValue('lastName') || ''
+              `${params.getValue('firstName') || ''} ${params.getValue('lastName') || ''
               }`,
           },
         ]);
@@ -165,8 +164,8 @@ const EditGroup = withRouter(({ history, ...props }) => {
             selected: selectAll
               ? true
               : selectedUsers.length && selectedUsers[pageno - 1].selected.length
-              ? selectedUsers[pageno - 1].selected.includes(items.id)
-              : items.is_assigned,
+                ? selectedUsers[pageno - 1].selected.includes(items.id)
+                : items.is_assigned,
           });
         });
         setPriorSelected([...priorSelected, ...preSelectedId]);
@@ -305,8 +304,8 @@ const EditGroup = withRouter(({ history, ...props }) => {
             changePage={setPageno}
             setSelectedUsers={setSelectedUsers}
           />
-          <Button variant='contained'onClick={editGroup} style={{color:'white'}} color ="primary" className="custom_button_master" size='medium' onClick={handleGoBack}>
-              EDIT GROUP
+          <Button variant='contained' onClick={editGroup} style={{ color: 'white', width: '100%' }} color="primary" size='medium' onClick={handleGoBack}>
+            EDIT GROUP
           </Button>
         </div>
       </div>

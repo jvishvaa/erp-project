@@ -30,7 +30,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchCategoryData, fetchCategory, fetchSubCategory, fetchSubSubCategoryList } from '../../../redux/actions/discussionForumActions';
 // import CategoryCard from '../categoryData';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   root: {
     backgroundColor: '#f9f9f9',
   },
@@ -77,7 +77,7 @@ const useStyles = makeStyles({
   },
   statusText: {
     display: 'inline',
-    color: '#FF6B6B',
+    color: theme.palette.primary.main,
     fontSize: '24px',
     fontWeight: 'bold',
     lineHeight: '29px',
@@ -85,14 +85,14 @@ const useStyles = makeStyles({
   },
   numberofDiscussionText: {
     display: 'inline-block',
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     marginLeft: 'auto',
   },
   selectInputCategory: {},
   pageFooter: {
     textAlign: 'center',
   },
-});
+}));
 
 const SelectInput = withStyles({
   root: {
@@ -113,26 +113,26 @@ const StyledClearButton = withStyles({
   },
 })(Button);
 
-const StyledButton = withStyles({
+const StyledButton = withStyles((theme)=>({
   root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: theme.palette.primary.main,
     color: '#FFFFFF',
     height: '42px',
     borderRadius: '10px',
     paddingLeft: '30px',
     paddingRight: '30px',
   },
-})(Button);
+}))(Button);
 
-const StyledTabs = withStyles({
+const StyledTabs = withStyles((theme)=>({
   root: {
     borderBottom: '1px solid #e8e8e8',
   },
   indicator: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: theme.palette.primary.main,
     height: '6px',
   },
-})(Tabs);
+}))(Tabs);
 
 const StyledTab = withStyles((theme) => ({
   root: {
@@ -140,17 +140,17 @@ const StyledTab = withStyles((theme) => ({
     minWidth: 50,
     fontWeight: 300,
     marginRight: theme.spacing(4),
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     '&:hover': {
-      color: '#ff6a6a',
+      color: theme.palette.secondary.main,
       opacity: 1,
     },
     '&$selected': {
-      color: '#ff6a6a',
+      color: theme.palette.secondary.main,
       fontWeight: 300,
     },
     '&:focus': {
-      color: '#ff6a6a',
+      color: theme.palette.secondary.main,
     },
   },
   selected: {},

@@ -65,6 +65,7 @@ export function PDFViewerApplicationWarp() {
 
     const DEFAULT_URL = "https://omrsheet.s3.ap-south-1.amazonaws.com/dev/lesson_plan_file/2021-22/Volume 1/Grade 3/English/CS_ Ch 1_Sequencing_Rev/Period-1/Student_Reading_Material/2021-03-23 07:43:40.672606_Grade 3_Vol 1_English_CS_Ch 1_Sequencing_Rev_Pd 14_Student Reading Material.pdf";
 
+
     const DEFAULT_SCALE_DELTA = 1.1;
     const MIN_SCALE = 0.25;
     const MAX_SCALE = 10.0;

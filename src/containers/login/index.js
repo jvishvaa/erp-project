@@ -25,11 +25,34 @@ import {
   isFetchThemeRequired,
   themeGenerator,
 } from '../../utility-functions/themeGenerator';
+
+function TermsAndCondition(props) {
+  return (
+    <Typography variant='body1' color='textSecondary' align='center'>
+      By proceeding, you agree to our
+      <Link
+        style={{ cursor: 'pointer', textDecoration: 'none' }}
+        onClick={() => (window.location.pathname = '/terms-condition')}
+      >
+        &nbsp;Terms and Conditions&nbsp;
+      </Link>
+      and
+      <Link
+        style={{ cursor: 'pointer', textDecoration: 'none' }}
+        onClick={() => (window.location.pathname = '/privacy-policy')}
+      >
+        &nbsp;Privacy Policy
+      </Link>
+      .
+    </Typography>
+  );
+}
+
 function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
-      {'Copyright © '}
-      {new Date().getFullYear()}, K12 Techno Services Pvt. Ltd.
+      {'Copyright  '}
+      &copy; {new Date().getFullYear()}, K12 Techno Services Pvt. Ltd.
     </Typography>
   );
 }
@@ -141,7 +164,7 @@ function SignIn({ onLogin, history, aolOnLogin, setTheme }) {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component='h1' variant='h5'>
-              Sign in
+              Sign In
             </Typography>
             <form
               className={classes.form}
@@ -207,6 +230,7 @@ function SignIn({ onLogin, history, aolOnLogin, setTheme }) {
                 type='submit'
                 variant='contained'
                 color='primary'
+                style={{ color: 'white' }}
                 ref={loginButton}
                 className={classes.submit}
                 onClick={() => {
@@ -222,11 +246,14 @@ function SignIn({ onLogin, history, aolOnLogin, setTheme }) {
                 }}
                 className='forgot'
               >
-                Forgot Password ?
+                <Typography color='secondary'>Forgot Password ?</Typography>
               </div>
             </form>
           </div>
-          <Box mt={8}>
+          <Box mt={4}>
+            <TermsAndCondition />
+          </Box>
+          <Box mt={4}>
             <Copyright />
           </Box>
         </Container>

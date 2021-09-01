@@ -30,6 +30,7 @@ import { useStyles } from './useStyles';
 import ImageUpload from '../../components/image-upload';
 import CustomizedSelects from './country-code';
 const UserDetailsForm = ({
+  isEdit,
   details,
   onSubmit,
   handleBack,
@@ -64,6 +65,7 @@ const UserDetailsForm = ({
     },
     validationSchema,
     onSubmit: (values) => {
+      console.log({ details });
       onSubmit(values);
     },
     validateOnChange: false,
@@ -267,17 +269,13 @@ const UserDetailsForm = ({
       </Grid>
 
       <Grid item md={2} xs={4}>
-        <FormControl
-          required
-          fullWidth
-          variant='outlined'
-          size='small'
-        >
+        <FormControl required fullWidth variant='outlined' size='small'>
           <InputLabel htmlFor='component-outlined'>Mobile no.</InputLabel>
           <OutlinedInput
             id='contact'
             name='contact'
-            inputProps={{ maxLength: 11 }}
+            // inputProps={{ maxLength: 11 }}
+            // inputProps={{ pattern: { min: 5, max: 15 } }}
             onChange={formik.handleChange}
             value={formik.values.contact}
             label='Mobile no.'
@@ -294,7 +292,8 @@ const UserDetailsForm = ({
             id='username'
             name='username'
             inputProps={{ maxLength: 20 }}
-            onChange={formik.handleChange}
+            disabled={isEdit}
+            onChange={isEdit ? () => {} : formik.handleChange}
             value={formik.values.username}
             label='Username'
           />
@@ -397,9 +396,10 @@ const UserDetailsForm = ({
         <Grid item md='1'>
           <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
             <Button
-              className={`${classes.formActionButton} disabled-btn`}
+              size='medium'
+              style={{ width: '100%' }}
               variant='contained'
-              color='primary'
+              className='cancelButton labelColor'
               onClick={handleBack}
             >
               Back
@@ -411,7 +411,9 @@ const UserDetailsForm = ({
             <Button
               className={classes.formActionButton}
               variant='contained'
+              style={{ color: 'white', width: '100%' }}
               color='primary'
+              size='medium'
               onClick={() => {
                 formik.handleSubmit();
               }}

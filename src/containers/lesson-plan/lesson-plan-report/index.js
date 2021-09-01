@@ -45,12 +45,12 @@ const LessonReport = () => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [periodColor, setPeriodColor] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [apiParams,setApiParams]=useState({
-      central_gs_mapping_id:'',
-      volume_id:'',
-      acad_year_id:'',
-      completed_by:''
-  })
+  const [apiParams, setApiParams] = useState({
+    central_gs_mapping_id: '',
+    volume_id: '',
+    acad_year_id: '',
+    completed_by: '',
+  });
 
   const handlePagination = (event, page) => {
     setPage(page);
@@ -86,11 +86,7 @@ const LessonReport = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div>
-          <div style={{ width: '95%', margin: '20px auto' }}>
-            <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='Report' />
-          </div>
-        </div>
+        <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='Report' />
         <LessonViewFilters
           handleLessonList={handleLessonList}
           setPeriodData={setPeriodData}

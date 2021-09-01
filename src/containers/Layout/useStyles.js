@@ -7,8 +7,17 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
   },
+  rootColumn: {
+    display: 'flex',
+    flexDirection: 'column',
+  },
   appBar: {
     zIndex: theme.zIndex.drawer + 200,
+    backgroundColor: '#ffffff',
+    color: theme.palette.secondary.main,
+    boxShadow: 'none',
+  },
+  footerBar: {
     backgroundColor: '#ffffff',
     color: theme.palette.secondary.main,
     boxShadow: 'none',
@@ -38,8 +47,8 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
     //borderBottom: '1px solid lightgray',
     height: '40px',
-    marginTop:'5px',
-    marginLeft:'370px',
+    marginTop: '5px',
+    marginLeft: '370px',
   },
   searchInputMobile: {
     // color: 'white',
@@ -54,8 +63,8 @@ const useStyles = makeStyles((theme) => ({
     // color:'#FFCDCD'
   },
   searchIconButton: {
-    "&:hover": {
-      backgroundColor: "transparent"
+    '&:hover': {
+      backgroundColor: 'transparent',
     },
     //background: theme.palette.primary.main,
     borderRadius: 'inherit',
@@ -78,10 +87,12 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.primary.main,
     borderRadius: '26px',
     height: '40px',
-    float:'right',
+    float: 'right',
+    // marginLeft: '150px',
     marginRight: '-1px',
-    marginTop:'-1px',
-    marginBottom:'1px'
+    marginTop: '-1px',
+    marginBottom: '1px',
+    // marginBottom: '1%',
   },
   searchIconButtonMobile: {
     background: '#ffffff',
@@ -106,8 +117,8 @@ const useStyles = makeStyles((theme) => ({
     // height:'70px'
     //float:'left'
     position: 'relative',
-    top:'8px',
-    right:'25px'
+    top: '8px',
+    right: '25px',
   },
   toolbar: {
     // padding: '10px 15px 0px 60px',
@@ -118,7 +129,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('sm')]: {
       minHeight: '64px',
     },
-    justifyContent:'space-between',
+    justifyContent: 'space-between',
   },
   drawer: {
     width: drawerWidth,
@@ -127,6 +138,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
   },
   drawerPaper: {
+    zIndex: theme.zIndex.drawer + 500,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -134,6 +146,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('xs')]: { width: '100vw' },
   },
   drawerPaperClose: {
+    zIndex: theme.zIndex.drawer + 500,
     transition: theme.transitions.create('width', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
@@ -141,7 +154,7 @@ const useStyles = makeStyles((theme) => ({
     overflowX: 'hidden',
     width: theme.spacing(7) + 1,
     [theme.breakpoints.up('sm')]: {
-      width: '70px',  
+      width: '70px',
     },
     [theme.breakpoints.down('xs')]: { display: 'none' },
   },
@@ -149,7 +162,9 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
   },
   menuItemIcon: {
-    color: '#ffffff',
+    '& .MuiSvgIcon-root': {
+      color: '#ffffff',
+    },
   },
   menuItemText: {
     color: '#ffffff',
@@ -211,10 +226,10 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionDesktop: {
     display: 'none',
-    color:'#FF6B6B',
+    color: '#FF6B6B',
     [theme.breakpoints.up('md')]: {
       display: 'flex',
-      color:'#FF6B6B',
+      color: '#FF6B6B',
     },
   },
   sectionMobile: {
@@ -246,9 +261,10 @@ const useStyles = makeStyles((theme) => ({
   },
   container: {
     paddingTop: theme.spacing(1),
-    paddingBottom: theme.spacing(1),
+    // paddingBottom: theme.spacing(1),
     paddingLeft: 0,
     paddingRight: 0,
+    // height: `calc(100% - 0px)`,
     height: `calc(100% - 64px)`,
     overflow: 'auto',
   },
@@ -269,19 +285,19 @@ const useStyles = makeStyles((theme) => ({
     color: '#ffffff',
     padding: '10px',
   },
-  notificationsIcon:{
+  notificationsIcon: {
     alignItems: 'center',
-    color:'#FF6B6B',
-    fontSize:'42px',
-    
+    color: '#FF6B6B',
+    fontSize: '42px',
   },
-  loginAvatar:{
+  loginAvatar: {
+    // margin:'auto',
     position: 'relative',
-    left:'-40px'
+    left: '-40px',
   },
-  hideIcon:{
-    display:'none'
-  }
+  hideIcon: {
+    display: 'none',
+  },
 }));
 
 export default useStyles;

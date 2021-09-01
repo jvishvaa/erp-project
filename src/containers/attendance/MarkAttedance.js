@@ -22,7 +22,6 @@ import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import '../teacherBatchView/style.scss';
-import './markAttendance.css';
 import ClearIcon from '../../components/icon/ClearIcon';
 import Loader from '../../components/loader/loader';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';

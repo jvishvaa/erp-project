@@ -2,16 +2,16 @@ import React from 'react';
 import SvgIcon from '@material-ui/core/SvgIcon';
 import { makeStyles, withStyles } from '@material-ui/core';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme)=>({
   a: {
-    fill: '#014b7e',
+    fill: theme.palette.secondary.main,
     fontSize: '20px',
     width: '166px',
     fontFamily: 'Raleway-SemiBold, Raleway',
     fontWeight: 600,
     letterSpacing: '0.1em',
   },
-});
+}));
 
 const StyledSvgIcon = withStyles({
   root: {

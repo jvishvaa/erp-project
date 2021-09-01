@@ -44,8 +44,8 @@ const ViewClassTableCell = (props) => {
   const [hasClassEnded, setHasClassEnded] = useState(false);
   const [isJoinTime, setIsJoinTime] = useState(false);
   const [isHost, setIsHost] = useState(true);
-  const[cancelId,setCancelId]=useState(null);
-  const [cancelAlert,setCancelAlert]=useState(false);
+  const [cancelId, setCancelId] = useState(null);
+  const [cancelAlert, setCancelAlert] = useState(false);
 
   const history = useHistory();
 
@@ -75,19 +75,19 @@ const ViewClassTableCell = (props) => {
   const handleAudit = () => {
   };
 
-  const handleCancel =  async (classId) => {
+  const handleCancel = async (classId) => {
     setCancelId(classId)
     setCancelAlert(true);
-  
-  //  await dispatch(cancelClass(cancelId));
+
+    //  await dispatch(cancelClass(cancelId));
   };
- const handleClassCancel=()=>{
-   setCancelId(null);
-   setCancelAlert(false);
- }
- const handleCancelConfirm =()=>{
-  dispatch(cancelClass(cancelId));
-  setCancelAlert(false);
+  const handleClassCancel = () => {
+    setCancelId(null);
+    setCancelAlert(false);
+  }
+  const handleCancelConfirm = () => {
+    dispatch(cancelClass(cancelId));
+    setCancelAlert(false);
   }
 
   const handleAttendee = () => {
@@ -100,7 +100,7 @@ const ViewClassTableCell = (props) => {
         {currentPage * 10 - (10 - index - 1)}
       </TableCell>
       <TableCell align='center'>{title}</TableCell>
-      <TableCell align='center'>{subject[0]?.subject_name.substring(subject[0]?.subject_name.lastIndexOf("_")+1)}</TableCell>
+      <TableCell align='center'>{subject[0]?.subject_name.substring(subject[0]?.subject_name.lastIndexOf("_") + 1)}</TableCell>
       <TableCell align='center'>{startTime}</TableCell>
       <TableCell align='center' className={`${isHidden ? 'hide' : 'show'}`}>
         {attendedCount}
@@ -133,26 +133,29 @@ const ViewClassTableCell = (props) => {
       </TableCell>
 
       <Dialog open={cancelAlert} onClick={handleClassCancel} >
-          <DialogTitle
-            style={{ cursor: 'move', color: '#014b7e' }}
-            id='draggable-dialog-title'
-          >
-           Cancel Class
+        <DialogTitle
+          id='draggable-dialog-title'
+        >
+          Cancel Class
           </DialogTitle>
-          <DialogContent>
-            <DialogContentText>
-              Are you sure you want to cancel this class ?
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to cancel this class ?
             </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button className='labelColor cancelButton' onClick={handleClassCancel}>
-              Cancel
+        </DialogContent>
+        <DialogActions>
+          <Button className='labelColor cancelButton' onClick={handleClassCancel}>
+            Cancel
             </Button>
-            <Button color='primary' onClick={handleCancelConfirm}>
-              Confirm
+          <Button
+            color='primary'
+            variant='contained'
+            style={{ color: 'white' }}
+            onClick={handleCancelConfirm}>
+            Confirm
             </Button>
-          </DialogActions>
-        </Dialog>
+        </DialogActions>
+      </Dialog>
 
 
       {currentManagementTab === 0 ? (

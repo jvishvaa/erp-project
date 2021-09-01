@@ -10,18 +10,15 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
-import axios from 'axios';
-// import './lesson.css';
 import Loading from '../../components/loader/loader';
 import CircularCard from './circular-card';
 import CircularFilters from './circular-filterdata';
 import ViewMoreCard from './view-more-card';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
-import hidefilter from '../../assets/images/hidefilter.svg';
-import showfilter from '../../assets/images/showfilter.svg';
-
+import BreadcrumbToggler from '../../components/breadcrumb-toggler';
 import { Context } from './context/CircularStore';
+import { Breadcrumb } from 'semantic-ui-react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -75,7 +72,7 @@ const CircularList = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   const { role_details } = JSON.parse(localStorage.getItem('userDetails') || {});
-  const userId= JSON.parse(localStorage.getItem('userDetails') || {});
+  const userId = JSON.parse(localStorage.getItem('userDetails') || {});
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -85,10 +82,16 @@ const CircularList = () => {
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher Circular' && window.location.pathname === '/teacher-circular') {
+            if (
+              item.child_name === 'Teacher Circular' &&
+              window.location.pathname === '/teacher-circular'
+            ) {
               setModuleId(item.child_id);
             }
-            if (item.child_name === 'Student Circular' && window.location.pathname === '/student-circular') {
+            if (
+              item.child_name === 'Student Circular' &&
+              window.location.pathname === '/student-circular'
+            ) {
               setModuleId(item.child_id);
             }
           });
@@ -141,11 +144,13 @@ const CircularList = () => {
       setFilterDataDown(grade, branch);
       axiosInstance
         .get(
-          `${endpoints.circular.circularList}?user_id=${userId?.user_id}&start_date=${grade.format(
+          `${endpoints.circular.circularList}?user_id=${
+            userId?.user_id
+          }&start_date=${grade.format('YYYY-MM-DD')}&end_date=${branch.format(
             'YYYY-MM-DD'
-          )}&end_date=${branch.format(
-            'YYYY-MM-DD'
-          )}&page=${page}&page_size=${limit}&role_id=${role_details?.role_id}&module_id=${moduleId}&module_name=Student Circular`
+          )}&page=${page}&page_size=${limit}&role_id=${
+            role_details?.role_id
+          }&module_id=${moduleId}&module_name=Student Circular`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -195,47 +200,25 @@ const CircularList = () => {
         );
     }
   }, [page, deleteFlag]);
-  useEffect(()=>{
-    if(window.location.pathname === '/student-circular'){
-      if(startDateFilter && endDateFilter)
-    handlePeriodList(startDateFilter,endDateFilter)
-  }
-  },[page])
+  useEffect(() => {
+    if (window.location.pathname === '/student-circular') {
+      if (startDateFilter && endDateFilter)
+        handlePeriodList(startDateFilter, endDateFilter);
+    }
+  }, [page]);
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <div
-          className={isMobile ? 'breadCrumbFilterRow' : null}
-          style={{ display: 'flex' }}
-        >
-          <div style={{ width: '95%', margin: '20px auto', marginLeft: '30px' }}>
-            <CommonBreadcrumbs
-              componentName={
-                window.location.pathname === '/teacher-circular'
-                  ? 'Teacher Circular'
-                  : 'Student Circular'
-              }
-            />
-          </div>
-          {/* {isMobile ? ( */}
-          <div className='hideShowFilterIcon'>
-            <IconButton
-              onClick={() => setIsFilter(!isFilter)}
-              style={{ marginRight: '36px' }}
-            >
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={{ height: '20px', width: '25px' }}
-                    src={isFilter ? hidefilter : showfilter}
-                  />
-                )}
-              />
-            </IconButton>
-          </div>
-          {/* ) : null} */}
-        </div>
+        <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
+          <CommonBreadcrumbs
+            componentName={
+              window.location.pathname === '/teacher-circular'
+                ? 'Teacher Circular'
+                : 'Student Circular'
+            }
+          />
+        </BreadcrumbToggler>
         <div className={isFilter ? 'showFilters' : 'hideFilters'}>
           <CircularFilters
             handlePeriodList={handlePeriodList}

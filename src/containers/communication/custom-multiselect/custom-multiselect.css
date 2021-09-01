@@ -8,6 +8,6 @@
 .custom_multiselect_wrapper  label + .MuiInput-formControl{
     margin-top: 3px !important;
 }
-.custom_multiselect_wrapper .MuiIconButton-label{
+/* .custom_multiselect_wrapper .MuiIconButton-label{
 	color: #FF6B6B !important;
-}
+} */

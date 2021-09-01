@@ -256,9 +256,9 @@ return(
         >
           <Button
             variant='contained'
-            className='custom_button_master labelColor'
+            className='cancelButton labelColor'
             size='medium'
-          
+            style={{ width: '100%' }}
             // onClick={handleGoBack}
           >
             Back
@@ -274,9 +274,8 @@ return(
         >
           <Button
             variant='contained'
-            style={{ color: 'white' }}
             color='primary'
-            className='custom_button_master'
+            style={{color:'white', width: '100%' }}
             size='medium'
             type='submit'
           >

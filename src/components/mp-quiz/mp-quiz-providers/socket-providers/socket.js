@@ -39,7 +39,9 @@ class Socket {
     }
   };
 
-  timeout = 250;
+  // timeout = 250;
+  timeout = 500;
+
 
   /**
    * @function connect
@@ -54,7 +56,8 @@ class Socket {
       console.log('connected websocket main component');
       this.doNotReConnectOnFailure = false;
       this.dispatch('open', null);
-      that.timeout = 250; // reset timer to 250 on open of websocket connection
+      // that.timeout = 250; // reset timer to 250 on open of websocket connection
+      that.timeout = 500; // reset timer to 500 on open of websocket connection
       clearTimeout(connectInterval); // clear Interval on on open of websocket connection
     };
     this.connection.onmessage = (evt) => {
@@ -65,16 +68,35 @@ class Socket {
     this.connection.onclose = (data) => {
       this.dispatch('close', data);
       const { doNotReConnectOnFailure } = this;
+
+      /* OLD CODE(WORKING) */
+      // if (!doNotReConnectOnFailure) {
+      //   debugger
+      //   console.log(
+      //     `Socket is closed. Reconnect will be attempted in ${Math.min(
+      //       10000 / 1000,
+      //       (that.timeout + that.timeout) / 1000
+      //     )} second.`,
+      //     data.reason
+      //   );
+      //   that.timeout += that.timeout; // increment retry interval
+      //   connectInterval = setTimeout(this.check, Math.min(10000, that.timeout)); // call check function after timeout
+      // }
+
+      /* OLD CODE(WORKING FOR MAX 3 Attempts ) */
+      // const numberOfTimes = Math.min(
+      //   10000 / 1000,
+      //   (that.timeout + that.timeout) / 1000
+      // );       // numberOfTimes < 4 and MAX 3 Attempts when timeout=250
+      // if (!doNotReConnectOnFailure && numberOfTimes < 4) {  
+      //   that.timeout += that.timeout; // increment retry interval
+      //   connectInterval = setTimeout(this.check, Math.min(10000, that.timeout)); // call check function after timeout
+      // }
+
+      /* EXPONENTIAL BACKOFF ALGORITHM */
       if (!doNotReConnectOnFailure) {
-        console.log(
-          `Socket is closed. Reconnect will be attempted in ${Math.min(
-            10000 / 1000,
-            (that.timeout + that.timeout) / 1000
-          )} second.`,
-          data.reason
-        );
-        that.timeout += that.timeout; // increment retry interval
-        connectInterval = setTimeout(this.check, Math.min(10000, that.timeout)); // call check function after timeout
+        that.timeout *= 2; // increment retry interval
+        connectInterval = setTimeout(this.check, that.timeout); // call check function after timeout
       }
     };
     this.connection.onerror = (data) => {

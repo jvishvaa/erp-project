@@ -66,6 +66,31 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto',
     bottom: 0,
   },
+  navCard:{
+    border : `1px solid ${theme.palette.primary.main}`
+  },
+  homeworkblock:{
+    color : theme.palette.secondary.main,
+    fontWeight: 600
+  },
+   headerText: {
+    color: theme.palette.secondary.main,
+    fontWeight: 600,
+    fontSize: "1rem",
+    ['@media screen(min-width:768px)']: {
+      fontSize: "0.85rem",
+    }
+  },
+  homeworkSubmitwrapper:{
+    border: `1px solid ${theme.palette.primary.main}`,  
+    borderRadius: "10px",
+    padding: "20px",
+    ['@media screen(min-width:768px)']: {
+      margin: "10px",
+      width: "90% !important",
+      height: "auto !important",
+    }
+  }
 }));
 
 const ViewHomework = withRouter(
@@ -102,39 +127,24 @@ const ViewHomework = withRouter(
         <Grid container spacing={2} className='message_log_container'>
           <Grid item xs={12} className='add-homework-title-container' md={2}>
             <div className='nav-cards-container'>
-              <div className='nav-card' onClick={onClose}>
-                <div className='header-text text-center non_selected_homework_type_item'>All Homeworks</div>
+             <div className={` ${classes.navCard} nav-card`} onClick={onClose}>
+                <div className={` ${classes.headerText} text-center non_selected_homework_type_item`}>All Homeworks</div>
               </div>
-              <div className='nav-card'>
-                <div className='header-text text-center'>{date}</div>
-                <div className='header-text text-center'>
+              <div className={` ${classes.navCard} nav-card`}>
+                <div className={` ${classes.headerText} text-center`}>{date}</div>
+                <div className={` ${classes.headerText} text-center`}>
                   {subjectName?.split('_')[1]}
                 </div>
-                <div className='header-text text-center'>
+                <div className={` ${classes.headerText} text-center`}>
                   {subjectName?.split('_')[2]}
                 </div>
               </div>
             </div>
           </Grid>
-          {/* <Grid item xs={12} className='homework_type_wrapper'>
-            <div className='homework_type'>
-              <div
-                className='homework_type_item non_selected_homework_type_item'
-                onClick={onClose}
-              >
-                All Homeworks
-              </div>
-              <div className='homework_type_item selected'>
-                <div>{date}</div>
-                <div>{subjectName?.split('_')[1]}</div>
-                <div>{subjectName?.split('_')[2]}</div>
-              </div>
-            </div>
-          </Grid> */}
           <Grid item xs={12} md={10}>
-            <div className='homework_submit_wrapper'>
+            <div className={classes.homeworkSubmitwrapper}>
               <div className='homework_block_wrapper'>
-                <div className='homework_block homework_submit_tag'>
+                <div className={`${classes.homeworkblock} homework_submit_tag`}>
                   Homework - {subjectName}:{' '}{selectedHomeworkDetails?.homework_name}, {date}
                 </div>
               </div>
@@ -223,8 +233,9 @@ const ViewHomework = withRouter(
               <div className='homework_submit_button_wrapper'>
                 <Button
                   variant='contained'
-                  className='custom_button_master labelColor homework_submit_button_cancel'
+                  className='cancelButton labelColor homework_submit_button_cancel'
                   size='medium'
+                  style={{ width: '100%' }}
                   onClick={onClose}
                 >
                   CANCEL

@@ -1,57 +1,26 @@
-.breadCrumbFilterRow {
-    display: flex;
-    margin-left: 20px;
-    margin-right: 20px;
-    justify-content: space-between;
-  }
+.hideShowFilterText {
+  color: #014b7e;
+  font-size: 16px;
+  margin-right: 10px;
+  font-weight: 600;
+  align-self: center;
+}
 
-  .hideShowFilterIcon {
-    align-self: center;
-    margin-bottom: 10px;
-    display: flex;
-    width: 15%;
-  }
+.divfilterData:not(:last-of-type):after {
+  content: '';
+  height: 6px;
+  width: 6px;
+  background-color: #014b7e;
+  border-radius: 50%;
+  display: inline-block;
+  margin: 0 10px;
+  vertical-align: baseline;
+}
 
-  .hideShowFilterText {
-      color: #014b7e;
-      font-size: 16px;
-      margin-right: 10px;
-      font-weight: 600;
-      align-self: center;
-  }
+.showFiltersCreate {
+  display: block;
+}
 
-  .filterDataHeader {
-      color:#014b7e;
-      font-size: 16px;
-      width: 95%;
-      display: flex;
-      margin:0 auto;
-      text-transform: capitalize;
-      padding: 30px 0 15px 5px ;
-  }
-
-  .divfilterData:not(:last-of-type):after{
-      content: "";
-      height: 6px;
-      width: 6px;
-      background-color: #014b7e;
-      border-radius: 50%;
-      display: inline-block;
-      margin: 0 10px;
-      vertical-align: baseline;
-  }
-
-  .showFiltersCreate {
-    display: block;
-  }
-  
-  .hideFiltersCreate {
-    display: none;
-  }
-
-  @media screen and (max-width:768px) {
-      .breadCrumbFilterRow {
-          margin-left: 15px;
-          margin-right: 15px;
-      }
-  }
+.hideFiltersCreate {
+  display: none;
+}

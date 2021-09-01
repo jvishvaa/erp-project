@@ -6,9 +6,9 @@ import {
   useTheme,
   Switch,
   FormControlLabel,
+  Typography,
+  useMediaQuery
 } from '@material-ui/core';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -41,15 +41,15 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
           setLoading(false);
           setOptional(false);
           handleGoBack();
-          setAlert('success', ` ${result.data?.message||result.data?.msg}`);
+          setAlert('success', ` ${result.data?.message || result.data?.msg}`);
         } else {
           setLoading(false);
-          setAlert('error', result.data?.message||result.data?.msg);
+          setAlert('error', result.data?.message || result.data?.msg);
         }
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.response.data.message||error.response.data.msg);
+        setAlert('error', error.response.data.message || error.response.data.msg);
       });
   };
 
@@ -66,7 +66,7 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
               size='small'
               value={subjectName}
               // inputProps={{ pattern: '^[a-zA-Z0-9 ]+', maxLength: 20 }}
-              inputProps={{maxLength: 20 }}
+              inputProps={{ maxLength: 20 }}
               name='subname'
               onChange={(e) => setSubjectName(e.target.value)}
               required
@@ -104,7 +104,11 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
                   color='primary'
                 />
               }
-              label={optional ? 'Optional' : 'Not-Optional'}
+              label={
+                <Typography color='secondary'>
+                  {optional ? 'Optional' : 'Not-Optional'}
+                </Typography>
+              }
             />
           </Grid>
         </Grid>
@@ -113,7 +117,8 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            className='custom_button_master labelColor'
+            style={{ width: '100%' }}
+            className='cancelButton labelColor'
             size='medium'
             onClick={handleGoBack}
           >
@@ -123,9 +128,8 @@ const CreateSubject = ({ setLoading, handleGoBack }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            style={{ color: 'white' }}
+            style={{color:'white', width: '100%' }}
             color='primary'
-            className='custom_button_master'
             size='medium'
             type='submit'
           >

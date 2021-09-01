@@ -35,10 +35,7 @@ import '../master-management.css';
 import SectionCard from './section-card';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    boxShadow:'none'
-  },
+  root: theme.commonTableRoot,
   container: {
     maxHeight: '70vh',
   },
@@ -104,18 +101,17 @@ const SectionTable = () => {
   const [loading, setLoading] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
   const limit = 15;
-  const [goBackFlag,setGoBackFlag]=useState(false)
-
+  const [goBackFlag, setGoBackFlag] = useState(false);
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  const wider= isMobile?'-10px 0px':'-10px 0px 20px 8px'
-  const widerWidth=isMobile?'98%':'95%'
+  const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
+  const widerWidth = isMobile ? '98%' : '95%';
 
   const handleChangePage = (event, newPage) => {
-    setPage(newPage+1)
-  }
+    setPage(newPage + 1);
+  };
 
   const handleAddSection = () => {
     setTableFlag(false);
@@ -148,12 +144,12 @@ const SectionTable = () => {
       .delete(`${endpoints.masterManagement.updateSection}${sectionId}`)
       .then((result) => {
         if (result.data.status_code === 204) {
-            setDelFlag(!delFlag);
-            setLoading(false);
-            setAlert('success', `Section ${result.data?.message||result.data?.msg}`);
+          setDelFlag(!delFlag);
+          setLoading(false);
+          setAlert('success', `Section ${result.data?.message || result.data?.msg}`);
         } else {
           setLoading(false);
-          setAlert('error', result.data?.message||result.data?.msg);
+          setAlert('error', result.data?.message || result.data?.msg);
         }
       })
       .catch((error) => {
@@ -181,7 +177,6 @@ const SectionTable = () => {
   }, [page, delFlag, goBackFlag]);
 
   useEffect(() => {
-
     let url = `${endpoints.masterManagement.sectionsTable}?page=${page}&page_size=${limit}`;
     if (searchSection) url += `&section_name=${searchSection}`;
 
@@ -192,73 +187,83 @@ const SectionTable = () => {
           setTotalCount(result.data?.data?.count);
           setSections(result.data?.data?.results);
         } else {
-          setAlert('error', result.data?.message||result.data?.msg);
+          setAlert('error', result.data?.message || result.data?.msg);
         }
       })
       .catch((error) => {
         setAlert('error', error.message);
       });
-
   }, [delFlag, goBackFlag, page, searchSection]);
 
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-      <div>
-        <div style={{ width: '95%', margin: '20px auto' }}>
-          <CommonBreadcrumbs
-            componentName='Master Management'
-            childComponentName='Section List'
-            childComponentNameNext={(addFlag&&!tableFlag)?'Add Section':(editFlag&&!tableFlag)?'Edit Section':null}
-          />
+        <div>
+          <div style={{ width: '95%', margin: '20px auto' }}>
+            <CommonBreadcrumbs
+              componentName='Master Management'
+              childComponentName='Section List'
+              childComponentNameNext={
+                addFlag && !tableFlag
+                  ? 'Add Section'
+                  : editFlag && !tableFlag
+                  ? 'Edit Section'
+                  : null
+              }
+            />
+          </div>
         </div>
-      </div>
 
-      {!tableFlag && addFlag && !editFlag && (
-        <CreateSection setLoading={setLoading} handleGoBack={handleGoBack}/>
-      )}
+        {!tableFlag && addFlag && !editFlag && (
+          <CreateSection setLoading={setLoading} handleGoBack={handleGoBack} />
+        )}
 
-      {!tableFlag && !addFlag && editFlag && (
-        <EditSection
-          sectionData={sectionData}
-          handleGoBack={handleGoBack}
-          setLoading={setLoading}
-        />
-      )}
+        {!tableFlag && !addFlag && editFlag && (
+          <EditSection
+            sectionData={sectionData}
+            handleGoBack={handleGoBack}
+            setLoading={setLoading}
+          />
+        )}
 
-      {tableFlag && !addFlag && !editFlag && (
-        <Grid container spacing={isMobile?3:5} style={{ width: widerWidth, margin: wider}}>
-          <Grid item xs={12} sm={3} className={isMobile?'':'filterPadding'}>
-            <Box className={classes.centerInMobile}>
-              <TextField
-                id='secname'
-                style={{ width: '100%' }}
-                label='Section Name'
-                variant='outlined'
+        {tableFlag && !addFlag && !editFlag && (
+          <Grid
+            container
+            spacing={isMobile ? 3 : 5}
+            style={{ width: widerWidth, margin: wider }}
+          >
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <Box className={classes.centerInMobile}>
+                <TextField
+                  id='secname'
+                  style={{ width: '100%' }}
+                  label='Section Name'
+                  variant='outlined'
+                  size='small'
+                  autoComplete='off'
+                  name='secname'
+                  onChange={(e) => setSearchSection(e.target.value)}
+                />
+              </Box>
+            </Grid>
+            <Grid item xs sm={9} className={isMobile ? 'hideGridItem' : ''} />
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'addButtonPadding'}>
+              <Button
+                startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                variant='contained'
+                color='primary'
                 size='small'
-                autoComplete='off'
-                name='secname'
-                onChange={(e) => setSearchSection(e.target.value)}
-              />
-            </Box>
-          </Grid>
-          <Grid item xs sm={9} className={isMobile?'hideGridItem':''}/>
-          <Grid item xs={12} sm={3} className={isMobile?'':'addButtonPadding'}>
-             <Button 
-             startIcon={<AddOutlinedIcon style={{fontSize:'30px'}}/>}
-             variant='contained' 
-             color='primary' 
-             size="small" 
-             style={{color:'white'}}  
-             title="Add Section" 
-             onClick={handleAddSection}>
+                style={{ color: 'white' }}
+                title='Add Section'
+                onClick={handleAddSection}
+              >
                 Add Section
-             </Button>
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
-      )}
-      {tableFlag && !addFlag && !editFlag && (
+        )}
+        {tableFlag && !addFlag && !editFlag && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -287,20 +292,18 @@ const SectionTable = () => {
                           {section?.created_by}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                        <IconButton
+                          <IconButton
                             onClick={() => handleOpenDeleteModal(section)}
                             title='Delete Section'
                           >
-                            <DeleteOutlinedIcon style={{color:'#fe6b6b'}} />
+                            <DeleteOutlinedIcon />
                           </IconButton>
 
                           <IconButton
-                            onClick={() =>
-                              handleEditSection(section)
-                            }
+                            onClick={() => handleEditSection(section)}
                             title='Edit Section'
                           >
-                            <EditOutlinedIcon style={{color:'#fe6b6b'}} />
+                            <EditOutlinedIcon />
                           </IconButton>
                         </TableCell>
                       </TableRow>
@@ -309,15 +312,15 @@ const SectionTable = () => {
                 </TableBody>
               </Table>
             </TableContainer>
-            <div className="paginateData">
-            <TablePagination
-              component='div'
-              count={totalCount}
-              rowsPerPage={limit}
-              page={page - 1}
-              onChangePage={handleChangePage}
-              rowsPerPageOptions={false}
-            />
+            <div className='paginateData'>
+              <TablePagination
+                component='div'
+                count={totalCount}
+                rowsPerPage={limit}
+                page={page - 1}
+                onChangePage={handleChangePage}
+                rowsPerPageOptions={false}
+              />
             </div>
           </Paper>
         )}
@@ -354,20 +357,25 @@ const SectionTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle style={{ cursor: 'move',color: '#014b7e'}} id='draggable-dialog-title'>
-            Delete Section
-          </DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Delete Section</DialogTitle>
           <DialogContent>
             <DialogContentText>
               {`Confirm Delete Section ${sectionName}`}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-          <Button  onClick={handleCloseDeleteModal} className="labelColor cancelButton">
-            Cancel
-          </Button>
-          <Button color="primary" onClick={handleDeleteSection}>Confirm</Button>
-        </DialogActions>
+            <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              variant='contained'
+              style={{ color: 'white' }}
+              color='primary'
+              onClick={handleDeleteSection}
+            >
+              Confirm
+            </Button>
+          </DialogActions>
         </Dialog>
       </Layout>
     </>

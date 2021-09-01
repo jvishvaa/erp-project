@@ -430,11 +430,12 @@ const CircularFilters = ({
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          className='custom_button_master labelColor'
+          style={{color:'white', width: '100%' }}
+          className='cancelButton labelColor'
           size='medium'
           onClick={handleClear}
         >
-          CLEAR ALL
+          Clear All
         </Button>
       </Grid>
       {isMobile && <Grid item xs={3} sm={0} />}
@@ -442,13 +443,12 @@ const CircularFilters = ({
       <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
         <Button
           variant='contained'
-          style={{ color: 'white' }}
+          style={{color:'white', width: '100%' }}
           color='primary'
-          className='custom_button_master'
           size='medium'
           onClick={handleFilter}
         >
-          FILTER
+          Filter
         </Button>
       </Grid>
       {window.location.pathname === '/teacher-circular' && (
@@ -475,9 +475,8 @@ const CircularFilters = ({
             <Button
               startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
               variant='contained'
-              style={{ color: 'white' }}
+              style={{color:'white', width: '100%' }}
               color='primary'
-              className='custom_button_master'
               onClick={() => history.push('/create-circular')}
               size='medium'
             >

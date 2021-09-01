@@ -38,7 +38,7 @@
   cursor: pointer;
 }
 .group_name .MuiFormLabel-root{
-	color: #014B7E !important;
+	/* color: #014B7E !important; */
 	font-size: 1rem !important;
     font-weight: 600 !important;
 }

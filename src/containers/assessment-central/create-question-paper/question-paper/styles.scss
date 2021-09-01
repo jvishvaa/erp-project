@@ -44,10 +44,6 @@
         margin: 20px 0;
       }
       .questions-container {
-        .questions-header {
-          color: $primary-color;
-          font-size: 1.2rem;
-        }
         .questions-content {
           .question-container {
             .sections-container {
@@ -136,11 +132,6 @@
                   margin-bottom: 1rem;
                 }
               }
-            }
-
-            .info {
-              color: $secondary-color;
-              font-size: 1.1rem;
             }
 
             .add-new-btn-container {

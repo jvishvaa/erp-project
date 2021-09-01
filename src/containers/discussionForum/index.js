@@ -12,13 +12,13 @@ import FilterIcon from '../../components/icon/FilterIcon';
 import store from '../../redux/store';
 import {useLocation} from 'react-router-dom'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme)=>({
   root: {
     backgroundColor: '#F9F9F9',
     padding: '15px 60px 15px 15px',
   },
   dashboardText: {
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     fontSize: '18px',
     fontWeight: 'lighter',
     fontFamily: '',
@@ -28,7 +28,7 @@ const useStyles = makeStyles({
     marginLeft: '37px',
   },
   filterCategoryText: {
-    color: '#014B7E',
+    color: theme.palette.secondary.main,
     fontSize: '18px',
     fontWeight: 'bold',
     fontFamily: 'Raleway',
@@ -37,17 +37,13 @@ const useStyles = makeStyles({
     lineHeight: '21px',
   },
   dotSeparator: {
-    color: '#FF6B6B',
+    color: theme.palette.primary.main,
     height: '6px',
     width: '6px',
     verticalAlign: 'middle',
   },
   topLeft: {
     float: 'right',
-  },
-  forwardArrowIcon: {
-    fontSize: '16px',
-    color: '#FF6B6B',
   },
   categoryFilterContainer: {
     marginTop: '22px',
@@ -63,7 +59,7 @@ const useStyles = makeStyles({
   filterIcon: {
     fill: '#FFFFFF',
   },
-});
+}));
 
 const StyledButton = withStyles({
   root: {
@@ -135,18 +131,6 @@ const Discussionforum = () => {
     }
     //postURL = `${endpoints.discussionForum.postList}?category=19&grade=54&section=1,2`
   };
-
-  // post list API
-  /*
-    React.useEffect(() => {
-        axiosInstance.get(endpoints.discussionForum.postList)
-        .then((res) => {
-            console.log(res.data.data.results);
-            setPostList(res.data.data.results);
-        })
-        .catch((error) => console.log(error))
-    },[]);
-    */
 
   return (
     <>

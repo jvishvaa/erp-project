@@ -6,34 +6,34 @@ import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Highcharts from 'highcharts';
-import HighchartsReact from 'highcharts-react-official';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme, IconButton, SvgIcon, Button } from '@material-ui/core';
+import { IconButton, Button, makeStyles } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import './view-more-report.css';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-// import Highcharts from 'highcharts';
-import axiosInstance from '../../../../config/axios'
-import endpoints from '../../../../config/endpoints'
+import axiosInstance from '../../../../config/axios';
+import endpoints from '../../../../config/endpoints';
+
+const useStyles = makeStyles((theme) => ({
+  rootViewMore: theme.rootViewMore,
+}));
 
 const ViewMoreCard = ({
   viewMoreData,
   setViewMore,
   periodDataForView,
   setSelectedIndex,
-  apiParams,
 }) => {
-  const themeContext = useTheme();
-  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
 
   const handleDownloadExcel = async () => {
     try {
       const { data } = await axiosInstance.get(
-        `${
-          endpoints.lessonReport.lessonViewMoreData
-        }?central_gs_mapping_id=${periodDataForView?.central_gs_mapping_id}&volume_id=${periodDataForView.volume_id}&academic_year_id=${periodDataForView?.academic_year_id}&completed_by=${periodDataForView?.completed_by}&export=${'excel'}`,
+        `${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${
+          periodDataForView?.central_gs_mapping_id
+        }&volume_id=${periodDataForView.volume_id}&academic_year_id=${
+          periodDataForView?.academic_year_id
+        }&completed_by=${periodDataForView?.completed_by}&export=${'excel'}`,
         {
           responseType: 'arraybuffer',
         }
@@ -54,7 +54,7 @@ const ViewMoreCard = ({
 
   return (
     <>
-      <Paper className='rootViewMoreReport'>
+      <Paper className={classes.rootViewMore}>
         <div className='viewMoreHeader'>
           <div className='leftHeader'>
             <div className='headerTitle'>{periodDataForView?.first_name}</div>
@@ -73,28 +73,10 @@ const ViewMoreCard = ({
             </div>
             <div className='headerContent'>
               <Button onClick={handleDownloadExcel}>Download Excel</Button>
-              {/* <div>Last Session Conducted On</div>
-            <div className='viewUpdatedDate'>03-01-2021</div> */}
             </div>
           </div>
         </div>
         <div className='resourceBulkDownload-'>
-          {/* {viewMoreData?.map(p => (
-                <div className="viewMoreBody">
-                    <div className="bodyTitle">
-                      <div>{p?.chapter_name}</div>  
-                        <div className='totalPeriod'>Total Period - {p?.no_of_periods}</div>
-                    </div>
-                  <div className="scrollableContent">
-                            <div className="bodyContent">    
-                               <div>Period Completed</div>
-                                <div>
-                                    {p.completed_periods}
-                                </div> 
-                            </div>
-                    </div> 
-                </div>
-            ))} */}
           <TableContainer component={Paper}>
             <Table size='small' aria-label='a dense table'>
               <TableHead>

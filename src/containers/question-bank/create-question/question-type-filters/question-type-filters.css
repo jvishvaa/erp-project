@@ -2,39 +2,9 @@
   padding-bottom: 10px;
 }
 
-.dropdownIcon .MuiInputBase-root {
-  border-radius: 10px;
-}
-
 .questionTypeFilter .MuiInputBase-root {
   background-color: #f9f9f9;
 }
-
-.dropdownIcon .MuiFormLabel-root {
-  color: #014b7e;
-}
-
-.dropdownIcon .MuiInputLabel-outlined.MuiInputLabel-shrink {
-  font-weight: 600;
-}
-
-.questionTypeFilter .MuiAutocomplete-input {
-  color: #ff6b6b;
-}
-
-.dropdownIcon .MuiFormLabel-root.Mui-focused {
-  color: #014b7e;
-  font-weight: 600;
-}
-
-.dropdownIcon .MuiButtonBase-root {
-  color: #ff6b6b;
-}
-
-.modifyDesign.MuiButton-root {
-  border-radius: 10px;
-}
-
 .typeFilterContainers {
   border: 1px solid #dbdbdb;
   border-radius: 10px;
@@ -46,33 +16,10 @@
   margin: 10px 30px 20px 30px;
 }
 
-.questionPaperTypeTag {
-  color: #014b7e;
-  margin: 15px 0 15px 30px;
-  font-size: 16px;
-  font-weight: 600;
-}
-
 .minMaxContainer {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
-}
-
-.minMaxText {
-  color: #014b7e;
-  font-size: 16px;
-  font-weight: 600;
-  margin-right: 10px;
-  margin-bottom: 5px;
-}
-
-.lctBoxes {
-  flex-grow: 1;
-  display: flex;
-  font-size: 16px;
-  color: #ff6b6b;
-  margin-left: 10px;
 }
 
 .levelBox {
@@ -124,17 +71,6 @@
   /* padding: 20px; */
 }
 
-.createManuallyButton.MuiButtonBase-root {
-  border: 1px solid #ff6b6b;
-  background: white;
-  justify-content: center;
-  padding: 10px;
-}
-
-.createManuallyButton .MuiButton-label {
-  color: #014b7e;
-}
-
 .addPassageQuestionButtonContainer {
   padding: 20px 30px 0 30px;
 }
@@ -148,7 +84,7 @@
 }
 
 .addPassageQuestionButton .MuiButton-label {
-  color: #014b7e;
+  /* color: #014b7e; */
 }
 
 .comprehensionButtons {
@@ -235,13 +171,5 @@
 
   .comprehensionButtons {
     margin-top: 5px;
-  }
-
-  .lctBoxes {
-    flex-direction: column;
-    justify-content: space-between;
-    margin: 5px;
-    margin-left: 0;
-    height: 100px;
   }
 }

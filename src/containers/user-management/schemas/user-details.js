@@ -1,9 +1,9 @@
 import * as Yup from 'yup';
 
-const phoneRegExp = /^\+?1?\d{10,11}$/;
+const phoneRegExp = /^\+?1?\d{5,14}$/;
 // const erpAlphaNumericRegExp = /^[A-Za-z0-9_]{10,15}$/;
-const lower = /^[0-9]{5,16}_+([A-Z]{3})?$/;
-
+const lower = /^[A-Z0-9]{5,16}[_]{1}[A-Z]{3}$/;
+// [A-Z0-9]{5,16}[_]{1}[A-Z]{3}$"
 const validationSchema = Yup.object({
   first_name: Yup.string().required('Required'),
   last_name: Yup.string().required('Required'),

@@ -221,9 +221,8 @@ const handleGrade = (event, value) => {
           <Grid item xs={6} sm={2}>
             <Button
               variant='contained'
-              style={{ color: 'white' }}
+              style={{color:'white', width: '100%' }}
               color="primary"
-              className="custom_button_master"
               size='medium'
               type='submit'
               onClick={handleFilter}
@@ -255,9 +254,8 @@ const handleGrade = (event, value) => {
           <Grid item xs={6} sm={2}>
             <Button
               variant='contained'
-              style={{ color: 'white' }}
+              style={{color:'white', width: '100%' }}
               color="primary"
-              className="custom_button_master"
               size='medium'
               type='submit'
               onClick={handleSubmit}
@@ -274,9 +272,8 @@ const handleGrade = (event, value) => {
 <Grid item xs={6} sm={2}>
   <Button
     variant='contained'
-    style={{ color: 'white' }}
+    style={{color:'white', width: '100%' }}
     color="primary"
-    className="custom_button_master"
     size='medium'
     type='submit'
     onClick={handleSubmitWhatsapp}
@@ -294,9 +291,8 @@ const handleGrade = (event, value) => {
 <Grid item xs={6} sm={2}>
   <Button
     variant='contained'
-    style={{ color: 'white' }}
     color="primary"
-    className="custom_button_master"
+    style={{color:'white', width: '100%' }}
     size='medium'
     type='submit'
     onClick={handleSubmitTeacherTimingReport}
