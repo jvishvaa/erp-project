@@ -150,13 +150,35 @@ const SidebarCounterPanel = (props) => {
         <h6>Question List</h6>
         <div className='sidebar-box-wrapper'>
           {questionsArray.map((ques, index) => {
+          let classAsPerStatus = "";
+          let classsesObj = { true: 'green', false: 'purple', null: '' }; 
+          if(ques.sub_questions.length>0){
+           let flag="null"
+           ques.sub_questions.map((sub,key)=>{
+             let assessmentKey=localStorage.getItem("assessment")
+            //  console.log(assessmentKey,"ass")
+            //  console.log(localStorage.getItem(assessmentKey),"koll")
+            //  console.log(typeof localStorage.getItem(assessmentKey))
+            //  console.log(JSON.parse(localStorage.getItem(assessmentKey)),"multibrancj")
+             let storageValue=JSON.parse(localStorage.getItem(assessmentKey))
+            //  console.log(storageValue,"==>")
+             if(storageValue?.questions[sub.id].user_response.attemption_status){
+              flag="true"
+            }
+            else{
+              flag="null"
+            }
+          }) 
+          classAsPerStatus = classsesObj[flag];
+          } 
+          else{
             const {
               user_response: { attemption_status: attemptionStatus },
             } = ques || {};
-            const classsesObj = { true: 'green', false: 'purple', null: '' };
-            const classAsPerStatus = classsesObj[attemptionStatus];
-            return (
-              <div
+             classAsPerStatus = classsesObj[attemptionStatus];
+           }
+              return (
+                <div
                 key={ques.id}
                 onClick={() => {
                   selectQues(ques.id);

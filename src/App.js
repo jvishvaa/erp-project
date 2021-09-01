@@ -712,7 +712,7 @@ function App({ alert }) {
                           <Route exact path='/assessment/'>
                             {({ match }) => <ViewAssessments match={match} />}
                           </Route>
-                          <Route exact path='/assessment/:assessmentId/attempt'>
+                          <Route exact path='/assessment/:questionPaperId/:assessmentId/attempt'>
                             {({ match }) => <AssessmentAttemption match={match} />}
                           </Route>
                           <Route exact path='/student-strength'>
