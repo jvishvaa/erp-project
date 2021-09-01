@@ -1,6 +1,5 @@
-
 import axios from '../../config/axios';
-import { isMsAPI } from "../../utility-functions/index"
+import { isMsAPI } from '../../utility-functions/index';
 
 export const authActions = {
   LOGIN_REQUEST: 'LOGIN_REQUEST',
@@ -23,32 +22,54 @@ const {
   FETCH_LOGGED_IN_USER_INFO_FAILURE,
 } = authActions;
 
-
-export const login = (params) => (dispatch) => {
-  dispatch({ type: LOGIN_REQUEST });
+export const handleSendOtp = (params) => {
+  const api = '/erp_user/login-otp/';
   return axios
-    .post('/erp_user/login/', params)
+    .post(api, params)
     .then((response) => {
-      if (response.data.status_code === 200) {
+      return {
+        status: response?.data?.status_code,
+        message: response?.data?.message,
+        attempts: response?.data?.attempts,
+      };
+    })
+    .catch((error) => console.log(error));
+};
+
+export const login = (params, isOtpLogin) => (dispatch) => {
+  dispatch({ type: LOGIN_REQUEST });
+  const api = isOtpLogin ? '/erp_user/verify-otp/' : '/erp_user/login/?mode=default';
+  return axios
+    .post(api, params)
+    .then((response) => {
+      // const data = isOtpLogin ? response.data.login_response : response.data;
+      const data = response.data;
+      if (data.status_code === 200) {
+        const actualData = isOtpLogin ? data.login_response : data;
+        if (isOtpLogin && data.login_response.status_code !== 200) {
+          dispatch({ type: LOGIN_FAILURE });
+          const result = { isLogin: false, message: data.login_response.message };
+          return result;
+        }
         dispatch({
           type: LOGIN_SUCCESS,
-          userDetails: response.data.result.user_details,
-          navigationData: response.data.result.navigation_data,
+          userDetails: actualData.result.user_details,
+          navigationData: actualData.result.navigation_data,
         });
         localStorage.setItem(
           'userDetails',
-          JSON.stringify(response.data.result.user_details)
+          JSON.stringify(actualData.result.user_details)
         );
         localStorage.setItem(
           'navigationData',
-          JSON.stringify(response.data.result.navigation_data)
+          JSON.stringify(actualData.result.navigation_data)
         );
         isMsAPI();
-        const result = { isLogin: true, message: response.data.message };
+        const result = { isLogin: true, message: actualData.message };
         return result;
       }
       dispatch({ type: LOGIN_FAILURE });
-      const result = { isLogin: false, message: response.data.message };
+      const result = { isLogin: false, message: data.message };
       return result;
     })
     .catch(() => {
