@@ -13,7 +13,8 @@ import QuestionHandler from './question-handler/question-handler';
 const AssessmentAttemptionUI = (props) => {
   const {
     match: {
-      params: { assessmentId },
+      // params: { assessmentId },
+      params: { questionPaperId, assessmentId },
     },
   } = props || {};
   const {
@@ -27,7 +28,8 @@ const AssessmentAttemptionUI = (props) => {
     controls: { isStarted, start } = {},
   } = useContext(AssessmentHandlerContext) || {};
   React.useEffect(() => {
-    fetchAssessmentQp({ assessment_id: assessmentId });
+    // fetchAssessmentQp({ assessment_id: assessmentId });
+    fetchAssessmentQp({ question_paper_id : questionPaperId, assessment_id: assessmentId });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

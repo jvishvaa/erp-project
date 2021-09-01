@@ -86,7 +86,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
             margin: 'auto',
           }}
           onClick={() => {
-            restProps.history.push(`/assessment/${questionPaperId}/analysis/`);
+            restProps.history.push(`/assessment/${questionPaperId}/${assessmentId}/analysis/`);
           }}
         >
           Details
@@ -246,7 +246,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
               //     localStorage.removeItem(key);
               //   }
               // });
-              restProps.history.push(`/assessment/${questionPaperId}/attempt/`);
+              restProps.history.push(`/assessment/${questionPaperId}/${assessmentId}/attempt/`);
             }}
           >
             {getTestStatus() ? 'Take Test' : 'Not Started'}
