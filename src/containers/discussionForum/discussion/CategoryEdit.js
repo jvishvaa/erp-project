@@ -16,7 +16,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 const useStyles = makeStyles((theme) => ({
   paperStyles: {
     textAlign: 'center',
-    backgroundColor: '#FFF6F6',
+    backgroundColor: theme.palette.primary.primarylightest,
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '12px',
     marginTop: '10px',

@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
   },
   selectedRoot: {
     border: `1px solid ${theme.palette.primary.main}`,
-    background: '#FCEEEE',
+    background: theme.palette.primary.primarylightest,
     padding: '0.9rem',
     borderRadius: '10px',
     width: '105%',
@@ -25,6 +25,13 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'right',
   },
   rootViewMore: theme.rootViewMore,
+  resourceBulkDownload:{
+    fontSize: '1.1rem',
+    color: theme.palette.primary.main,
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '10px',
+  }
 }));
 
 export default useStyles;

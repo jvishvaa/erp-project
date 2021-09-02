@@ -8,9 +8,12 @@ const useStyles = makeStyles((theme) => ({
     width: '105%',
     boxShadow: 'none',
   },
+  backgroundColor:{
+    backgroundColor : theme.palette.primary.primarylightest
+  },
   selectedRoot: {
     border: `1px solid ${theme.palette.primary.main}`,
-    background: '#FCEEEE',
+    background: theme.palette.primary.primarylightest,
     padding: '0.9rem',
     borderRadius: '10px',
     width: '105%',
@@ -25,6 +28,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'right',
   },
   tooltiptext:theme.toolTipText,
+  verifiedColor:{
+    background : theme.palette.primary.primarylightest
+  },
+  notverified : {
+    background : "#fff"
+  }
 
 }));
 

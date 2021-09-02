@@ -145,7 +145,7 @@ const useStyles = makeStyles((theme) => ({
     // border: '1px solid red',
   },
   selectBg: {
-    backgroundColor: '#fef0f0',
+    backgroundColor: theme.palette.primary.primarylightest,
   },
   unSelectBg: {
     backgroundColor: 'white',

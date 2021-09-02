@@ -75,7 +75,7 @@ const ViewMoreCard = ({
               </Button>
             </div>
           </div>
-          <div className='resourceBulkDownload'>
+          <div className={classes.resourceBulkDownload}>
             <div>Course Wise Details</div>
           </div>
           <div className='viewMoreBody'>

@@ -5,7 +5,7 @@ import ReactHtmlParser from 'react-html-parser';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
-import { IconButton, SvgIcon, Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { AttachmentPreviewerContext } from '../../../../../components/attachment-previewer/attachment-previewer-contexts';
 // import FormLabel from '@material-ui/core/FormLabel';
@@ -13,7 +13,25 @@ import endpoints from '../../../../../config/endpoints';
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
 import '../../assess-attemption.css';
 
+
+
+const useStyles = makeStyles((theme)=>({
+  mcqOptions : {
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: '5px',
+    background: theme.palette.primary.primarylightest,
+    padding: '10px',
+    width: '100%',
+    textAlign: 'center',
+    justifyContent: 'space-between',
+    /* max-width: 400px, */
+    cursor: 'pointer',
+    marginBottom: '10px',
+  }
+}))
+
 const McqQuestionMultiAnswer = (props) => {
+  const classes = makeStyles()
   const {
     controls: { attemptQuestion },
   } = useContext(AssessmentHandlerContext);
@@ -61,11 +79,11 @@ const McqQuestionMultiAnswer = (props) => {
             onChange={handleOptionValue}
           >
             <div
-              className='mcq-options'
+              className={classes.mcqOptions}
               style={{ display: 'flex', alignItems: 'center' }}
             >
               <FormControlLabel
-                // className='mcq-options'
+                // className={classes.mcqOptions}
                 value='option1'
                 checked={existingAnswer.includes('option1')}
                 control={<Checkbox />}
@@ -95,11 +113,11 @@ const McqQuestionMultiAnswer = (props) => {
             </div>
 
             <div
-              className='mcq-options'
+              className={classes.mcqOptions}
               style={{ display: 'flex', alignItems: 'center' }}
             >
               <FormControlLabel
-                // className='mcq-options'
+                // className={classes.mcqOptions}
                 value='option2'
                 checked={existingAnswer.includes('option2')}
                 control={<Checkbox />}
@@ -129,11 +147,11 @@ const McqQuestionMultiAnswer = (props) => {
             </div>
             {options[2]?.option3 ? (
               <div
-                className='mcq-options'
+                className={classes.mcqOptions}
                 style={{ display: 'flex', alignItems: 'center' }}
               >
                 <FormControlLabel
-                  //  className='mcq-options'
+                  //  className={classes.mcqOptions}
                   value='option3'
                   checked={existingAnswer.includes('option3')}
                   control={<Checkbox />}
@@ -166,11 +184,11 @@ const McqQuestionMultiAnswer = (props) => {
 
             {options[3]?.option4 ? (
               <div
-                className='mcq-options'
+                className={classes.mcqOptions}
                 style={{ display: 'flex', alignItems: 'center' }}
               >
                 <FormControlLabel
-                  // className='mcq-options'
+                  // className={classes.mcqOptions}
                   value='option4'
                   checked={existingAnswer.includes('option4')}
                   control={<Checkbox />}
@@ -202,11 +220,11 @@ const McqQuestionMultiAnswer = (props) => {
             ) : null}
             {options[4]?.option5 ? (
               <div
-                className='mcq-options'
+                className={classes.mcqOptions}
                 style={{ display: 'flex', alignItems: 'center' }}
               >
                 <FormControlLabel
-                  className='mcq-options'
+                  className={classes.mcqOptions}
                   value='option5'
                   checked={existingAnswer.includes('option5')}
                   control={<Checkbox />}
