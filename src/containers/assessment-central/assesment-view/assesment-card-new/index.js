@@ -34,7 +34,7 @@ const AssessmentCard = ({
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const classes = useStyles();
+  const classes = useStyles(period);
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
 
@@ -159,10 +159,12 @@ const AssessmentCard = ({
 
   return (
     <Paper
-      className={periodColor ? classes.selectedRoot : classes.root}
+      className={`${periodColor ? classes.selectedRoot : classes.root } ${period.is_verified ? classes.verifiedColor : classes.notverified}`}
+      // || period.is_verified ? classes.verifiedColor : classes.notverified
       style={
-        (isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' },
-        period.is_verified ? { background: '#FCEEEE' } : { background: '#FFF' })
+        (isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }
+        // period.is_verified ? { background: '#FCEEEE' } : { background: '#FFF' }
+        )
       }
     >
       <Grid container spacing={2}>

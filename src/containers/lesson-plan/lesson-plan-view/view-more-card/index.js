@@ -15,6 +15,17 @@ import { AttachmentPreviewerContext } from '../../../../components/attachment-pr
 
 const useStyles = makeStyles((theme) => ({
   rootViewMore: theme.rootViewMore,
+  lessonCompleted:{
+    fontWeight: 600,
+    color: theme.palette.primary.main
+  },
+  resourceBulkDownload:{
+    fontSize: '1.1rem',
+    color: theme.palette.primary.main,
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '10px',
+  }
 }));
 
 const ViewMoreCard = ({
@@ -103,11 +114,11 @@ const ViewMoreCard = ({
             </IconButton>
           </div>
           <div className='headerContent'>
-            {completedStatus && <div className='lessonCompleted'>Lesson Completed</div>}
+            {completedStatus && <div className={classes.lessonCompleted}>Lesson Completed</div>}
           </div>
         </div>
       </div>
-      <div className='resourceBulkDownload'>
+      <div className={classes.resourceBulkDownload}>
         <div>Resources</div>
         {/* <div className="downloadAllContainer">
                     <div className="downloadAllIcon">

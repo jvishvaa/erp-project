@@ -88,7 +88,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: `10px`,
     padding: '20px 20px 20px 20px',
     //  backgroundImage: 'linear-gradient(-45deg, #36d2e4, #69c30e)', 
-    backgroundImage: `linear-gradient(-45deg, ${theme.palette.primary.primarylightest},#69c30e)`,
+    backgroundImage: `linear-gradient(-45deg, ${theme.palette.primary.primarylightest},#fffcfc)`,
   }
 }))
 

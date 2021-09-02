@@ -28,6 +28,12 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'right',
   },
   tooltiptext:theme.toolTipText,
+  verifiedColor:{
+    background : theme.palette.primary.primarylightest
+  },
+  notverified : {
+    background : "#fff"
+  }
 
 }));
 

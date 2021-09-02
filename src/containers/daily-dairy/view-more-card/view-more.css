@@ -12,13 +12,6 @@
   flex-direction: column;
 }
 
-.resourceBulkDownload {
-  font-size: 1.1rem;
-  color: #ff6b6b;
-  display: flex;
-  justify-content: space-between;
-  margin: 15px 15px 10px 15px;
-}
 
 .totalPeriod {
   font-size: 1rem;
