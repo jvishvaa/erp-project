@@ -4,8 +4,27 @@ import React, { useContext } from 'react';
 import { AssessmentHandlerContext } from '../../assess-attemption/assess-attemption-context';
 import QuestionHeader from './question-header';
 import QuestionBody from './question-body';
+import { makeStyles } from '@material-ui/core';
+
+const useStyles = makeStyles((theme)=>({
+  questionsubmitbtn:{
+    border: `1px solid ${theme.palette.secondary.main}`,
+    borderRadius: '5px',
+    background: theme.palette.secondary.main,
+    padding: '10px',
+    width: '100%',
+    textAlign: 'center',
+    maxWidth: '400px',
+    cursor: 'pointer',
+    color: '#fff',
+    marginTop: '20px',
+  }
+}))
+
+
 
 const QuestionHandler = () => {
+  const classes = useStyles()
   const {
     questionsDataObj,
     questionsArray,
@@ -26,16 +45,16 @@ const QuestionHandler = () => {
       <QuestionBody {...propsObj} />
       <div style={{ display: 'flex', margin: 5 }}>
         <div
-          key='question-submit-btn'
-          className='question-submit-btn'
+          key={classes.questionsubmitbtn}
+          className={classes.questionsubmitbtn}
           style={{ margin: 'auto' }}
           onClick={() => prevQues()}
         >
           Prev
         </div>
         <div
-          key='question-submit-btn'
-          className='question-submit-btn'
+          key={classes.questionsubmitbtn}
+          className={classes.questionsubmitbtn}
           style={{ margin: 'auto' }}
           onClick={() => nextQues()}
         >
