@@ -20,7 +20,11 @@ const useStyles = makeStyles((theme) => ({
   footerBar: {
     backgroundColor: '#ffffff',
     color: theme.palette.secondary.main,
-    boxShadow: 'none',
+    // boxShadow: 'none',
+
+    // height: '100px',
+    // backgroundColor: theme.palette.primary.primarylightest,
+    // marginTop: '10%',
   },
   searchInputContainerMobile: {
     display: 'flex',
@@ -267,6 +271,10 @@ const useStyles = makeStyles((theme) => ({
     // height: `calc(100% - 0px)`,
     height: `calc(100% - 64px)`,
     overflow: 'auto',
+
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
   },
   desktopToolbarComponents: {
     [theme.breakpoints.down('sm')]: {

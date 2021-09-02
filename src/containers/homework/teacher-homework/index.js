@@ -1130,7 +1130,7 @@ const TeacherHomework = withRouter(
                             width='250px'
                           />
                           <Typography>
-                            Please select the filter to dislpay data
+                            {/* Please select the filter to dislpay data */}
                           </Typography>
                         </Grid>
                       </Grid>

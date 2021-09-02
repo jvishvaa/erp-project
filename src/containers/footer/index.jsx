@@ -32,7 +32,7 @@ function Copyright() {
 }
 const Footer = () => {
   return (
-    <Box mt={3} p={2} width='auto'>
+    <Box p={2} width='auto'>
       <Copyright />
       <TermsAndCondition />
     </Box>

@@ -644,7 +644,7 @@ const TermsAndCndition = () => {
             </li>
             <br />
           </div>
-          <dt>19.Refund Policy</dt>
+          <dt>19. REFUND POLICY</dt>
           <br />
           <div className={classes.gap}>
             <dd>

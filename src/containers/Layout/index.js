@@ -928,8 +928,8 @@ const Layout = ({ children, history }) => {
           <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
           <ContainerContext.Provider value={{ containerRef }}>
             <div className={classes.container} ref={containerRef}>
-              {children}
-              <div className={classAppBar.footerBar}>
+              <div >{children}</div>
+              <div className={classes.footerBar}>
                 <Footer />
               </div>
             </div>
