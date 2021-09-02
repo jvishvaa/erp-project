@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'space-between',
     alignItems: 'center',
     padding: '10px',
-    backgroundColor: '#fceeee',
+    backgroundColor: theme.palette.primary.primarylightest,
   },
   cardTitleHeading: {
     margin: 0,
