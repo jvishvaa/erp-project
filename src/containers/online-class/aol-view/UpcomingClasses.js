@@ -638,7 +638,7 @@ const UpcomingClasses = () => {
                                     width='250px'
                                 />
                                 <Typography>
-                                    Please select the filter to dislpay classes
+                                    {/* Please select the filter to dislpay classes */}
                                 </Typography>
                             </Grid>
                         )}

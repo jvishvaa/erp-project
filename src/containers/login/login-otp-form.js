@@ -36,7 +36,7 @@ function LoginOTPForm({ onLogin, history }) {
       };
       onLogin(params, true).then((response) => {
         if (response?.isLogin) {
-          history.push('/profile');
+          history.push('/dashboard');
         } else {
           setAlert('error', response?.message);
         }
