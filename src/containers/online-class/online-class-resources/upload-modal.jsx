@@ -249,7 +249,7 @@ const FileRow = ({ file, onClose, className, isExisting, resourceType, uploadTyp
 };
 
 // UploadModal Component
-const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload }) => {
+const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload, historicalData }) => {
   const [files, setFiles] = useState([]);
   const [existingUpload, setExistingUpload] = useState([]);
   const [description, setDescription] = useState('');
@@ -286,7 +286,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
   }
 
   React.useEffect(() => {
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+    if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
       msApionclsResources();
       return;
     }
@@ -337,7 +337,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
     if (type === 'resource') {
       url = endpoints.onlineClass.resourceFile;
 
-      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
         msApionclsResLink();
       }
       else{
@@ -354,7 +354,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
       url = endpoints.onlineClass.resourceFile;
     }
 
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+    if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
       msApiOnclsRes();
       return;
     }
@@ -502,7 +502,7 @@ const UploadModal = ({ id, onClose, isMobile, type, classDate, handleIsUpload })
         description : 'description123'
       }
 
-      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
         msApihandlerUpload(data1)
         return;
       }

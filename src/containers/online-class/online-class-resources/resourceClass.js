@@ -57,6 +57,7 @@ export default function ResourceClassComponent(props) {
         <UploadModalWrapper open={isModalOpen} click={() => setIsModalOpen(false)} large>
             <UploadModal
                 id={props.resourceId}
+                historicalData = {props.historicalData}
                 classDate={moment(props.date).format('DD-MM-YYYY')}
                 onClose={() => setIsModalOpen(false)}
                 handleIsUpload={handleIsUpload}
@@ -106,7 +107,7 @@ export default function ResourceClassComponent(props) {
         };
         setHideButton(false);
 
-        if(JSON.parse(localStorage.getItem('isMsAPI'))){
+        if(JSON.parse(localStorage.getItem('isMsAPI')) && props.historicalData === false ){
             msApiOnclsResource()
             return;
         }

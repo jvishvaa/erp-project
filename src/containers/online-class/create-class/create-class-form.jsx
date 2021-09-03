@@ -592,6 +592,17 @@ const CreateClassForm = (props) => {
     listTutorEmails(data);
   };
 
+  const chkLaunchDateMsApi = (selectedDate)=>{
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      let launchDate = localStorage.getItem('launchDate');
+      if(moment(selectedDate, "YYYY-MM-DD") > moment(launchDate, "YYYY-MM-DD") ){
+        return true
+      }
+      return false
+    }
+    return false
+  }
+
   const checkTutorAvailability = async () => {
     const { selectedDate, selectedTime, duration } = onlineClass;
 
@@ -607,7 +618,7 @@ const CreateClassForm = (props) => {
           .map((obj) => obj.send)
           .join(',')}`
         : `?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}&is_zoom=${onlineClass.is_zoom}`;
-      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) ? await APIREQUEST("get", `/oncls/v1/tutor-availability/${url}`) : await axiosInstance.get('/erp_user/check-tutor-time/' + url);
+      const { data } = chkLaunchDateMsApi(selectedDate) ? await APIREQUEST("get", `/oncls/v1/tutor-availability/${url}`) : await axiosInstance.get('/erp_user/check-tutor-time/' + url);
       if (data.status_code === 200) {
         if (data.status === 'success') {
           setTutorNotAvailableMessage('');
