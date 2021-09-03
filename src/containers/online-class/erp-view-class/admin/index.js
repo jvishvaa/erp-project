@@ -568,7 +568,7 @@ const ErpAdminViewClass = ({ history }) => {
   const handleDownload = async () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     try {
-      const { data } = JSON.parse(localStorage.getItem('isMsAPI'))
+      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false
         ? await APIREQUEST(
             'get',
             `/reports/v1/oncls-report/?start_date=${moment(startDateTechPer).format(
@@ -798,8 +798,8 @@ const ErpAdminViewClass = ({ history }) => {
         label={
           <Box alignItems="center" display="flex">
             <Tooltip title={
-              `Recent data: records from ${launchdate} till date
-               Historical data: records before ${launchdate}`
+              `Recent data: records from ${moment(launchdate).add(1, 'day').format("YYYY-MM-DD")} till date
+               Historical data: records before ${moment(launchdate).add(1, 'day').format("YYYY-MM-DD")}`
             }>
               <InfoIcon fontSize="small" color="disabled"/>
             </Tooltip>
