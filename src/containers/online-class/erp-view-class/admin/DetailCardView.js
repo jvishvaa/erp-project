@@ -31,7 +31,7 @@ import edxtag from '../../../../assets/images/edxtag.jpeg';
 import APIREQUEST from "../../../../config/apiRequest";
 
 const JoinClass = (props) => {
-  const { setLoading, index, cardIndex, getClassName } = props;
+  const { setLoading, index, cardIndex, getClassName, historicalData } = props;
   const fullData = props.fullData;
   const handleClose = props.handleClose;
   const { setAlert } = useContext(AlertNotificationContext);
@@ -104,7 +104,7 @@ const JoinClass = (props) => {
       class_date: props.data && props.data.date,
       is_accepted: true,
     };
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+    if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
       msApiMarkAttandance(params);
       return;
     }
@@ -126,7 +126,7 @@ const JoinClass = (props) => {
       class_date: props.data && props.data.date,
       is_attended: true,
     };
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+    if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
       msApiMarkAttandance(params);
       return;
     }
@@ -195,7 +195,7 @@ const JoinClass = (props) => {
         });
     } else {
       //url = endpoints.teacherViewBatches.cancelBatchApi;
-      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
         msAPIhandleCancel("/oncls/v1/class-cancel/",params1);
         return;
       }
@@ -265,7 +265,7 @@ const JoinClass = (props) => {
   function handleHost(data) {
     if (!handleHostDisable()) {
       setLoading(true);
-      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
         msApihandleHost(data);
         return;
       }
@@ -322,7 +322,10 @@ const JoinClass = (props) => {
             onClick={() =>
               history.push({
                 pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
-                state: { data: fullData.online_class.id },
+                state: { 
+                  data: fullData.online_class.id,
+                  historicalData : historicalData
+                },
               })
             }
           >
@@ -387,6 +390,7 @@ const JoinClass = (props) => {
             </Button>
             {classWorkDialog && (
               <UploadDialogBox
+                historicalData = {historicalData}
                 periodData={props?.data}
                 setLoading={setLoading}
                 fullData={fullData}
@@ -412,7 +416,8 @@ const JoinClass = (props) => {
                 const { id: onlineClassId = '', start_time = '' } = online_class || {};
                 history.push({
                   pathname: `/erp-online-class/class-work/${onlineClassId}/${id}/${props.data.date}`,
-                });
+                  state: { historicalData : historicalData }
+                })
               }}
               disabled={ isClassStartted() || props?.data?.is_cancelled}
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
@@ -637,6 +642,7 @@ const DetailCardView = ({
   loading,
   setLoading,
   index,
+  historicalData
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -686,7 +692,7 @@ const DetailCardView = ({
   }
 
   const handleCallaData = () => {
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+    if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false ){
       msCallData()
       return;
     }
@@ -726,13 +732,19 @@ const DetailCardView = ({
       window.location.pathname === '/erp-online-class' ||
       window.location.pathname === '/erp-online-class-teacher-view'
     ) {
-      history.push(`/erp-attendance-list/${fullData.online_class && fullData.id}`);
+      history.push({
+        pathname: `/erp-attendance-list/${fullData.online_class && fullData.id}`,
+        state: { historicalData : historicalData }
+      })
     }
     if (
       window.location.pathname === '/online-class/view-class' ||
       window.location.pathname === '/online-class/teacher-view-class'
     )
-      history.push(`/aol-attendance-list/${fullData.online_class && fullData.id}`);
+    history.push({
+      pathname: `/aol-attendance-list/${fullData.online_class && fullData.id}`,
+      state: { historicalData : historicalData }
+    })
   };
   const handleCoursePlan = () => {
     if (window.location.pathname === '/erp-online-class-student-view') {
@@ -865,6 +877,7 @@ const DetailCardView = ({
                   noOfPeriods.length > 0 &&
                   noOfPeriods.map((data, i) => (
                     <JoinClass
+                      historicalData ={historicalData}
                       cardIndex={index}
                       getClassName={getClassName}
                       setLoading={setLoading}
@@ -916,6 +929,7 @@ const DetailCardView = ({
       </Grid>
       {openPopup && (
         <ResourceDialog
+          historicalData ={historicalData}
           selectedValue={selectedValue}
           open={openPopup}
           onClose={handleClosePopup}

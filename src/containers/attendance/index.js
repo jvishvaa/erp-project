@@ -95,7 +95,7 @@ const AttendeeListRemake = (props) => {
 
   const getAttendeeList = (date) => {
     setExcelDate(date)
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+    if(JSON.parse(localStorage.getItem('isMsAPI')) && props.location.state.historicalData === false){
       msApigetAttendeeList(date);
       return
     }
@@ -147,7 +147,7 @@ const AttendeeListRemake = (props) => {
     // checked= !checked
     const { match } = props;
     try {
-      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      if(JSON.parse(localStorage.getItem('isMsAPI')) && props.location.state.historicalData === false){
         msApihandleCheck(checked, student);
       }
       else{
@@ -200,7 +200,7 @@ const AttendeeListRemake = (props) => {
   const handleExcelDownload = async () => {
     const { match } = props;
     try {
-      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) ? await APIREQUEST('get',`/oncls/v1/oncls-attendeelist/?zoom_meeting_id=${id}&class_date=${excelDate}&type=excel&page_number=1&page_size=10`, null, "arraybuffer" ) : 
+      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) && props.location.state.historicalData === false  ? await APIREQUEST('get',`/oncls/v1/oncls-attendeelist/?zoom_meeting_id=${id}&class_date=${excelDate}&type=excel&page_number=1&page_size=10`, null, "arraybuffer" ) : 
       await axiosInstance.get(
         `${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${excelDate}&type=excel&page_number=1&page_size=10`,
         {

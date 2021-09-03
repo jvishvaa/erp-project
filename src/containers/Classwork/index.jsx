@@ -33,7 +33,7 @@ const ClassWork = (props) => {
     let paramTwo = props.match.params.param2;
     let paramThree = props.match.params.param3;
     // let dateString = moment().format('YYYY-MM-DD');
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+    if(JSON.parse(localStorage.getItem('isMsAPI')) && props.location.state.historicalData === false){
       msApicallingClassWorkAPI(paramOne, paramTwo, paramThree);
       return;
     }

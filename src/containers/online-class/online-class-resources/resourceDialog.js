@@ -79,7 +79,7 @@ const Resource = (props) => {
 
   React.useEffect(() => {
     setHideButton(false);
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+    if(JSON.parse(localStorage.getItem('isMsAPI')) && props.historicalData === false){
       msApiOnclsResource();
       return;
     }
@@ -174,7 +174,7 @@ export default function ResourceDialogComponent(props) {
   }
 
   React.useEffect(() => {
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+    if(JSON.parse(localStorage.getItem('isMsAPI')) && props.historicalData === false){
       msApiStudentOnclsDetails();
       return;
     }
@@ -201,7 +201,7 @@ export default function ResourceDialogComponent(props) {
         {periodsData &&
           periodsData.length > 0 &&
           periodsData.map((data) => (
-            <Resource date={data.date} onlineClassId={props.onlineClassId} />
+            <Resource date={data.date} onlineClassId={props.onlineClassId} historicalData={props.historicalData}  />
           ))}
       </CardContent>
     </Dialog>
