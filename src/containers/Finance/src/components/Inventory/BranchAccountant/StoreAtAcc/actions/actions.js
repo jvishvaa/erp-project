@@ -228,7 +228,7 @@ export const storePayment = (payload) => {
 export const storeReceiptNumbers = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ReceiprRangeMsg + '?academic_year=' + payload.session + '&erp=' + payload.erp, {
+    axios.get(urls.ReceiprRangeMsg + '?academic_year=' + payload.session + '&erp=' + payload.erp + '&branch_id=' + payload.branch, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }
@@ -412,7 +412,7 @@ export const fetchDeliveryAmount = (payload) => {
 export const fetchShippingTransaction = (payload) => {
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
-    axios.get(urls.ShippingData + '?erp=' + payload.erp, {
+    axios.get(urls.ShippingData + '?erp=' + payload.erp + '&academic_year=' + payload.year, {
       headers: {
         Authorization: 'Bearer ' + payload.user
       }

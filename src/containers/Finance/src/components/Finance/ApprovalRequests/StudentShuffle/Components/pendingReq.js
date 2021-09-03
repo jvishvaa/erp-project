@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import {
   withStyles,
   Table,
@@ -9,16 +9,16 @@ import {
   Button,
   Typography,
   Divider,
-  Grid
-} from '@material-ui/core'
-import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
+  Grid,
+} from '@material-ui/core';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
-import styles from './pendingReq.styles'
-import Modal from '../../../../../ui/Modal/modal'
-import * as actionTypes from '../../../store/actions'
-import CircularProgress from '../../../../../ui/CircularProgress/circularProgress'
+import styles from './pendingReq.styles';
+import Modal from '../../../../../ui/Modal/modal';
+import * as actionTypes from '../../../store/actions';
+import CircularProgress from '../../../../../ui/CircularProgress/circularProgress';
 
 const PendingReq = ({
   classes,
@@ -34,36 +34,36 @@ const PendingReq = ({
   history,
   rejectReq,
   fetchPendingList,
-  rejectRes
+  rejectRes,
 }) => {
-  const [showModal, setShowModal] = useState(false)
-  const [stdErp, setErp] = useState('')
-  const [shuffleId, setShuffleId] = useState('')
-  const [remarks, setRemarks] = useState('')
-  const [stdName, setStdName] = useState('')
+  const [showModal, setShowModal] = useState(false);
+  const [stdErp, setErp] = useState('');
+  const [shuffleId, setShuffleId] = useState('');
+  const [remarks, setRemarks] = useState('');
+  const [stdName, setStdName] = useState('');
 
   useEffect(() => {
     if (rejectRes) {
-      fetchPendingList(currentSession, currentBranch, alert, user)
-      setRemarks('')
+      fetchPendingList(currentSession, currentBranch, alert, user);
+      setRemarks('');
     }
-  }, [rejectRes, fetchPendingList, currentSession, currentBranch, alert, user])
+  }, [rejectRes, fetchPendingList, currentSession, currentBranch, alert, user]);
 
   const remarksChangeHandler = (e) => {
-    setRemarks(e.target.value)
-  }
+    setRemarks(e.target.value);
+  };
 
   const getPendingModal = (id, erp, name) => {
-    setErp(erp)
-    fetchStdFee(id, alert, user)
-    setShuffleId(id)
-    setStdName(name)
-    setShowModal(true)
-  }
+    setErp(erp);
+    fetchStdFee(id, alert, user);
+    setShuffleId(id);
+    setStdName(name);
+    setShowModal(true);
+  };
 
   const hideReqModalHandler = () => {
-    setShowModal(false)
-  }
+    setShowModal(false);
+  };
 
   const approvalRequest = (stdErp) => {
     if (remarks) {
@@ -75,29 +75,29 @@ const PendingReq = ({
           nrmlFeeAmt: totalAmount.normalfee_paid_amount,
           othrFeeAmt: totalAmount.otherfee_paid_amount,
           concessionAmt: totalAmount.concession_amount,
-          Remarks: remarks
-        }
-      })
+          Remarks: remarks,
+        },
+      });
     } else {
-      alert.warning('Enter Remarks')
+      alert.warning('Enter Remarks');
     }
-  }
+  };
 
   const rejectRequests = (id) => {
     if (remarks) {
       const data = {
         remarks: remarks,
-        studentshuffle_id: id
-      }
-      rejectReq(data, alert, user)
-      hideReqModalHandler()
+        studentshuffle_id: id,
+      };
+      rejectReq(data, alert, user);
+      hideReqModalHandler();
     } else {
-      alert.warning('Enter Remarks')
+      alert.warning('Enter Remarks');
     }
-  }
+  };
 
   const getTableDetails = () => {
-    let tableRows = null
+    let tableRows = null;
     if (pendingreq && pendingreq.length > 0) {
       tableRows = pendingreq.map((val, index) => (
         <TableRow key={val.id}>
@@ -105,7 +105,9 @@ const PendingReq = ({
           <TableCell align='left'>{val.erp ? val.erp : ''}</TableCell>
           <TableCell align='left'>{val.student_name ? val.student_name : ''}</TableCell>
           <TableCell align='left'>
-            {val.branch_from && val.branch_from.branch_name ? val.branch_from.branch_name : ''}
+            {val.branch_from && val.branch_from.branch_name
+              ? val.branch_from.branch_name
+              : ''}
             {val.grade_from && val.grade_from.grade ? val.grade_from.grade : ''}
           </TableCell>
           <TableCell align='left'>
@@ -113,15 +115,27 @@ const PendingReq = ({
             {val.grade_to && val.grade_to.grade ? val.grade_to.grade : ''}
           </TableCell>
           <TableCell align='left'>{val.reason ? val.reason : ''}</TableCell>
-          <TableCell align='left'>{val.shuffle_initiated_by && val.shuffle_initiated_by.first_name ? val.shuffle_initiated_by.first_name : ''}</TableCell>
-          <TableCell align='left'>{val.shuffle_initiation_date ? val.shuffle_initiation_date : ''}</TableCell>
-          <TableCell align='left'>{val.to_approve_status ? val.to_approve_status : ''}</TableCell>
-          <TableCell align='left'>{val.to_approve_status_date ? val.to_approve_status_date : ''}</TableCell>
-          <TableCell align='left'>{val.to_approve_status_remarks ? val.to_approve_status_remarks : ''}</TableCell>
+          <TableCell align='left'>
+            {val.shuffle_initiated_by && val.shuffle_initiated_by.first_name
+              ? val.shuffle_initiated_by.first_name
+              : ''}
+          </TableCell>
+          <TableCell align='left'>
+            {val.shuffle_initiation_date ? val.shuffle_initiation_date : ''}
+          </TableCell>
+          <TableCell align='left'>
+            {val.to_approve_status ? val.to_approve_status : ''}
+          </TableCell>
+          <TableCell align='left'>
+            {val.to_approve_status_date ? val.to_approve_status_date : ''}
+          </TableCell>
+          <TableCell align='left'>
+            {val.to_approve_status_remarks ? val.to_approve_status_remarks : ''}
+          </TableCell>
           <TableCell align='left'>
             <Button
               className={classes.addButton}
-              color='primary'
+              color='transparent'
               size='large'
               variant='outlined'
               onClick={() => getPendingModal(val.id, val.erp, val.student_name)}
@@ -130,57 +144,79 @@ const PendingReq = ({
             </Button>
           </TableCell>
         </TableRow>
-      ))
+      ));
     } else if (pendingreq && pendingreq.length === 0) {
-      tableRows = 'No Records Found !!!'
+      tableRows = 'No Records Found !!!';
     }
-    return tableRows
-  }
+    return tableRows;
+  };
 
   const getFeeRows = () => {
-    let tableData = null
+    let tableData = null;
     if (stdFeeDetails.Fees && stdFeeDetails.Fees.length > 0) {
       tableData = stdFeeDetails.Fees.map((val, index) => (
         <TableRow key={val.id}>
           <TableCell>{index + 1}</TableCell>
-          <TableCell>{val.fee_type && val.fee_type.fee_type_name ? val.fee_type.fee_type_name : ''}</TableCell>
-          <TableCell>{val.installments && val.installments.installment_name ? val.installments.installment_name : ''}</TableCell>
-          <TableCell>{val.installments && val.installments.installment_amount ? val.installments.installment_amount : 0}</TableCell>
+          <TableCell>
+            {val.fee_type && val.fee_type.fee_type_name ? val.fee_type.fee_type_name : ''}
+          </TableCell>
+          <TableCell>
+            {val.installments && val.installments.installment_name
+              ? val.installments.installment_name
+              : ''}
+          </TableCell>
+          <TableCell>
+            {val.installments && val.installments.installment_amount
+              ? val.installments.installment_amount
+              : 0}
+          </TableCell>
           <TableCell>{val.discount ? val.discount : 0}</TableCell>
           <TableCell>{val.fine_amount ? val.fine_amount : 0}</TableCell>
           <TableCell>{val.amount_paid ? val.amount_paid : 0}</TableCell>
           <TableCell>{val.balance ? val.balance : 0}</TableCell>
         </TableRow>
-      ))
+      ));
     } else if (stdFeeDetails.Fees && stdFeeDetails.Fees.length === 0) {
-      tableData = 'No records Found !!!'
+      tableData = 'No records Found !!!';
     }
-    return tableData
-  }
+    return tableData;
+  };
 
   const getOthrFeeRows = () => {
-    let othrRows = null
+    let othrRows = null;
     if (stdFeeDetails.OtherFees && stdFeeDetails.OtherFees.length > 0) {
       othrRows = stdFeeDetails.OtherFees.map((val, index) => (
         <TableRow key={val.id}>
           <TableCell>{index + 1}</TableCell>
-          <TableCell>{val.other_fee && val.other_fee.fee_type_name ? val.other_fee.fee_type_name : ''}</TableCell>
-          <TableCell>{val.other_fee_installments && val.other_fee_installments.installment_name ? val.other_fee_installments.installment_name : ''}</TableCell>
-          <TableCell>{val.other_fee_installments && val.other_fee_installments.installment_amount ? val.other_fee_installments.installment_amount : 0}</TableCell>
+          <TableCell>
+            {val.other_fee && val.other_fee.fee_type_name
+              ? val.other_fee.fee_type_name
+              : ''}
+          </TableCell>
+          <TableCell>
+            {val.other_fee_installments && val.other_fee_installments.installment_name
+              ? val.other_fee_installments.installment_name
+              : ''}
+          </TableCell>
+          <TableCell>
+            {val.other_fee_installments && val.other_fee_installments.installment_amount
+              ? val.other_fee_installments.installment_amount
+              : 0}
+          </TableCell>
           <TableCell>{val.discount ? val.discount : 0}</TableCell>
           <TableCell>{val.fine ? val.fine : 0}</TableCell>
           <TableCell>{val.paid_amount ? val.paid_amount : 0}</TableCell>
           <TableCell>{val.balance ? val.balance : 0}</TableCell>
         </TableRow>
-      ))
+      ));
     } else if (stdFeeDetails.OtherFees && stdFeeDetails.OtherFees.length === 0) {
-      othrRows = 'No records Found !!!'
+      othrRows = 'No records Found !!!';
     }
-    return othrRows
-  }
+    return othrRows;
+  };
 
   const getOthrFeeDetails = () => {
-    let othrFee = null
+    let othrFee = null;
     if (stdFeeDetails && stdFeeDetails.OtherFees) {
       othrFee = (
         <div style={{ border: '1px solid black' }}>
@@ -197,18 +233,16 @@ const PendingReq = ({
                 <TableCell>Balance</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {getOthrFeeRows()}
-            </TableBody>
+            <TableBody>{getOthrFeeRows()}</TableBody>
           </Table>
         </div>
-      )
+      );
     }
-    return othrFee
-  }
+    return othrFee;
+  };
 
   const getFeeDetails = () => {
-    let data = null
+    let data = null;
     if (stdFeeDetails && stdFeeDetails.Fees) {
       data = (
         <div style={{ border: '1px solid black' }}>
@@ -225,15 +259,13 @@ const PendingReq = ({
                 <TableCell>Balance</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {getFeeRows()}
-            </TableBody>
+            <TableBody>{getFeeRows()}</TableBody>
           </Table>
         </div>
-      )
-      return data
+      );
+      return data;
     }
-  }
+  };
 
   // const getFeeDetails = useCallback(() => {
   //   let data = null
@@ -262,7 +294,7 @@ const PendingReq = ({
   // }, [stdFeeDetails])
 
   const pendingTable = () => {
-    let data = null
+    let data = null;
     if (currentSession && currentBranch && pendingreq) {
       data = (
         <Table>
@@ -282,14 +314,12 @@ const PendingReq = ({
               <TableCell align='left'>Approve/Reject</TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {getTableDetails()}
-          </TableBody>
+          <TableBody>{getTableDetails()}</TableBody>
         </Table>
-      )
+      );
     }
-    return data
-  }
+    return data;
+  };
 
   // const pendingTable = useCallback(() => {
   //   let data = null
@@ -321,15 +351,28 @@ const PendingReq = ({
   //   return data
   // }, [currentSession, currentBranch, pendingreq])
 
-  let pendingModal = null
+  let pendingModal = null;
   // if (showModal && totalAmount) {
   if (showModal) {
     pendingModal = (
-      <Modal open={showModal} click={hideReqModalHandler} large style={{ padding: '15px' }}>
-        <Typography variant='h5' style={{ marginBottom: '10px' }} align='center'>Student Shuffle Details</Typography>
+      <Modal
+        open={showModal}
+        click={hideReqModalHandler}
+        large
+        style={{ padding: '15px' }}
+      >
+        <Typography variant='h5' style={{ marginBottom: '10px' }} align='center'>
+          Student Shuffle Details
+        </Typography>
         <Divider className={classes.divider} />
         <div style={{ position: 'relative' }}>
-          <Grid container spacing={2} className={classes.root} alignItems='center' justify='center'>
+          <Grid
+            container
+            spacing={2}
+            className={classes.root}
+            alignItems='center'
+            justify='center'
+          >
             <Grid item sm={3} md={3} xs={12}>
               <label>ERP :</label>&nbsp;{stdErp || ''}
             </Grid>
@@ -347,15 +390,23 @@ const PendingReq = ({
             <label style={{ padding: '20px', fontSize: '18px' }}>Normal Fee List</label>
             <Divider />
             {getFeeDetails()}
-            <label style={{ fontSize: '18px' }}>Total Paid Amount :</label>&nbsp;{totalAmount.normalfee_paid_amount || 0}
+            <label style={{ fontSize: '18px' }}>Total Paid Amount :</label>&nbsp;
+            {totalAmount.normalfee_paid_amount || 0}
           </div>
           <div style={{ overflow: 'auto', marginBottom: '20px' }}>
             <label style={{ padding: '20px', fontSize: '18px' }}>Other Fee List</label>
             <Divider />
             {getOthrFeeDetails()}
-            <label style={{ fontSize: '18px' }}>Total Paid Amount :</label>&nbsp;{totalAmount.otherfee_paid_amount || 0}
+            <label style={{ fontSize: '18px' }}>Total Paid Amount :</label>&nbsp;
+            {totalAmount.otherfee_paid_amount || 0}
           </div>
-          <Grid container spacing={2} className={classes.root} alignItems='center' justify='center'>
+          <Grid
+            container
+            spacing={2}
+            className={classes.root}
+            alignItems='center'
+            justify='center'
+          >
             <Grid item sm={10} md={10} xs={12}>
               <label className={classes.modalHeading}>Remarks :</label>
               <div>
@@ -376,6 +427,7 @@ const PendingReq = ({
               color='primary'
               size='large'
               variant='outlined'
+              style={{ backgroundColor: 'transparent' }}
               onClick={() => approvalRequest(stdErp)}
             >
               Approve
@@ -400,40 +452,44 @@ const PendingReq = ({
           </div>
         </div>
       </Modal>
-    )
+    );
   }
 
   return (
     <React.Fragment>
-      <div style={{ overflow: 'auto' }}>
-        {pendingTable()}
-      </div>
+      <div style={{ overflow: 'auto' }}>{pendingTable()}</div>
       {pendingModal}
       {dataLoading ? <CircularProgress open /> : null}
     </React.Fragment>
-  )
-}
+  );
+};
 
 PendingReq.propTypes = {
   classes: PropTypes.instanceOf(Object).isRequired,
   currentSession: PropTypes.instanceOf(Object).isRequired,
   currentBranch: PropTypes.instanceOf(Object).isRequired,
-  history: PropTypes.instanceOf(Object).isRequired
-}
+  history: PropTypes.instanceOf(Object).isRequired,
+};
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.authentication.user,
   pendingreq: state.finance.studentShuffle.pendingLists,
   stdFeeDetails: state.finance.studentShuffle.studFeeDeatils,
   totalAmount: state.finance.studentShuffle.totalPaidAmount,
   rejectRes: state.finance.studentShuffle.rejectReqres,
-  dataLoading: state.finance.common.dataLoader
-})
+  dataLoading: state.finance.common.dataLoader,
+});
 
-const mapDispatchToProps = dispatch => ({
-  fetchPendingList: (session, branch, alert, user) => dispatch(actionTypes.fetchShufflePendingReq({ session, branch, alert, user })),
-  fetchStdFee: (studentId, alert, user) => dispatch(actionTypes.fetchStudentFeeDetails({ studentId, alert, user })),
-  rejectReq: (data, alert, user) => dispatch(actionTypes.rejectShuffleRequest({ data, alert, user }))
-})
+const mapDispatchToProps = (dispatch) => ({
+  fetchPendingList: (session, branch, alert, user) =>
+    dispatch(actionTypes.fetchShufflePendingReq({ session, branch, alert, user })),
+  fetchStdFee: (studentId, alert, user) =>
+    dispatch(actionTypes.fetchStudentFeeDetails({ studentId, alert, user })),
+  rejectReq: (data, alert, user) =>
+    dispatch(actionTypes.rejectShuffleRequest({ data, alert, user })),
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(PendingReq)))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withStyles(styles)(withRouter(PendingReq)));

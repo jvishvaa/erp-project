@@ -96,6 +96,9 @@ class StudentActivateInactiveAcc extends Component {
     };
   }
   componentDidMount() {
+    if(this.props.user === null){
+      window.location.reload()
+    }
     // this.props.fetchGradeList(this.props.alert, this.props.user)
   }
   downloadStu = () => {

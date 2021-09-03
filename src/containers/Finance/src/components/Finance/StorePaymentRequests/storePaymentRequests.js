@@ -64,6 +64,9 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
+    if(user === null){
+      window.location.reload()
+    }
     if (sessionRed) {
       setSession(sessionRed)
     }

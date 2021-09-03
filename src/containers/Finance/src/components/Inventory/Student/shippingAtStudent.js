@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-// import StoreAtAcc from '../BranchAccountant/StoreAtAcc/storeAtAcc'
 import {
   withStyles, Table, TableRow, TableHead, TableBody, TableCell, Button, TextField, Grid
 } from '@material-ui/core/'
-import { urls } from '../../../../urls'
-import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
-import * as actionTypes from '../../store/actions'
-import Modal from '../../../../ui/Modal/modal'
-import ConfigItems from '../StoreAtAcc/configItems'
+import { urls } from '../../../urls'
+import CircularProgress from '../../../ui/CircularProgress/circularProgress'
+import * as actionTypes from '../store/actions'
+import Modal from '../../../ui/Modal/modal'
+import ConfigItems from '../BranchAccountant/StoreAtAcc/configItems'
 import Select from 'react-select';
 import { apiActions } from 'containers/Finance/src/_actions';
+import Layout from 'containers/Layout'
 
 const styles = theme => ({
   button: {
@@ -25,7 +25,7 @@ const styles = theme => ({
   }
 })
 
-const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, sendDeliveryDetails, fetchDeliveryDetails, erpValue, session, dataLoading, alert, user, history, branchId }) => {
+const ShippingAmountAtStudent = ({ fetchShipping, shippingDetails, deliveryList, trnsId, sendDeliveryDetails, fetchDeliveryDetails, erpValue, session, dataLoading, alert, user, history }) => {
   const [erp, setErp] = useState(null)
   const [role, setRole] = useState(null)
   const [showConfigItem, setShowConfigItem] = useState(false)
@@ -39,38 +39,13 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
   const [state, setState] = useState('')
   const [kitId, setKitId] = useState('')
   const [tranId, setTranId] = useState('')
+  const [sessionData, setSessionData] = useState(null);
 
-// console.log("session", session)
 const erpUser = (JSON.parse(localStorage.getItem('userDetails'))).erp
-const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-const roleLogin = userProfile?.personal_info?.role?.toLowerCase()
+const userToken = (JSON.parse(localStorage.getItem('userDetails'))).token
   useEffect(() => {
-    if(user === null){
-      window.location.reload()
-    }
-    setRole(roleLogin)
-    if (roleLogin === 'financeaccountant' || erpUser === 'super_admin_OLV') {
-      fetchShipping(erpValue, alert, user,session)
-      fetchDeliveryDetails(erpValue, alert, user)
-
-    } else {
-      fetchShipping(erpUser, alert, user, session)
-      fetchDeliveryDetails(erpUser, alert, user)
-    }
-    setErp(erp)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [trnsId])
-  // useEffect(() => {
-  //   if (role === 'financeaccountant') {
-  //     fetchShipping(erpValue, alert, user)
-  //     fetchDeliveryDetails(erpValue, alert, user)
-  //   } else {
-  //     fetchShipping(erp, alert, user)
-  //     fetchDeliveryDetails(erp, alert, user)
-  //   }
-  // }, [trnsId, alert, user, fetchShipping, fetchDeliveryDetails, erpValue, erp, role])
-  useEffect(() => {
-  })
+ setErp(erpUser)
+  },[])
 
   const configHandler = (kit, tran) => {
     setKitId(kit)
@@ -214,114 +189,139 @@ const roleLogin = userProfile?.personal_info?.role?.toLowerCase()
       alert.warning('Kit Shipping amount is not assigned, cannot proceed, Sorry!')
       return
     }
-configHandler(kit, tran)
-    // if (role === 'financeaccountant') {
-    //   configHandler(kit, tran)
-    // } else {
-    //   let isStudent = true
-    //   let del = null
-    //   let kitTobePaid = {
-    //     delivery_data_kit_id: kit,
-    //     t_no: tran
-    //   }
-    //   if (shippingDetails.kit_data && shippingDetails.kit_data[0] && shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.kit_price) {
-    //     del = {
-    //       delivery: {
-    //         delivery_id: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.id,
-    //         items: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.item
-    //       }
-    //     }
-    //   }
-      // history.replace({
-      //   pathname: '/airpay/',
-      //   state: {
-      //     session_year: session,
-      //     uniform: {
-      //       uniform_id: null,
-      //       items: []
-      //     },
-      //     stationary: {
-      //       stationary_id: null,
-      //       items: []
-      //     },
-      //     ...shippingDetails.kit_data.length ? del : null,
-      //     total_paid_amount: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.kit_price,
-      //     ...kit ? kitTobePaid : null
-      //   },
-      //   user: user,
-      //   url: isStudent ? urls.AirPayHdfcStore : urls.AirpayStore
-      // })
-    // }
+    if (role === 'financeaccountant') {
+      configHandler(kit, tran)
+    } else {
+      let isStudent = true
+      let del = null
+      let kitTobePaid = {
+        delivery_data_kit_id: kit,
+        t_no: tran
+      }
+      if (shippingDetails.kit_data && shippingDetails.kit_data[0] && shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.kit_price) {
+        del = {
+          delivery: {
+            delivery_id: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.id,
+            items: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.item
+          }
+        }
+      }
+      history.replace({
+        pathname: '/airpay/',
+        state: {
+          session_year: sessionData,
+          uniform: {
+            uniform_id: null,
+            items: []
+          },
+          stationary: {
+            stationary_id: null,
+            items: []
+          },
+          ...shippingDetails.kit_data.length ? del : null,
+          total_paid_amount: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.kit_price,
+          ...kit ? kitTobePaid : null
+        },
+        user: user,
+        url: isStudent ? urls.AirPayHdfcStore : urls.AirpayStore
+      })
+    }
   }
+
+
+ const handleClickSessionYear = (e) => {
+    setSessionData(e);
+      fetchShipping(erpUser, alert, userToken, e.value)
+      fetchDeliveryDetails(erpUser, alert, userToken)
+  };
   return (
-    <div style={{ padding: 20 }}>
-      {showConfigItem
-        ? <React.Fragment>
-          <ConfigItems
-            selectedTotal={0}
-            erpCode={erpValue}
-            session={session}
-            shippingComponent={showConfigItem}
-            checkedKits={[]}
-            branchId={branchId}
-            // isUniformBought={this.props.isUniformBought}
-            // isStationaryBought={this.props.isStationaryBought}
-            // hasSubjectChoosen={this.props.hasSubjectChoosen}
-            // isNewStudent={this.props.isNewStudent}
-            getBack={configHandler}
-            alert={alert}
-            user={user}
-            isStudent={false}
-            isDelivery='home'
-            kitIdToBePaid={kitId}
-            transactionId={tranId}
-            selctedKits={[]}
-          />
-        </React.Fragment>
-        : shippingDetails && shippingDetails.paid_data && shippingDetails.paid_data.length
-          ? <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Kit Name</TableCell>
-                <TableCell>Kit Type</TableCell>
-                <TableCell>Opted for Home Shipping?</TableCell>
-                <TableCell>Shipping Charge</TableCell>
-                <TableCell>Pay Shipping Amount</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {shippingDetails.paid_data.map((kit) => {
-                return (
-                  <TableRow key={kit.kit}>
-                    <TableCell>{kit.kit_name}</TableCell>
-                    <TableCell>{kit.is_uniform_kit ? 'Uniform kit' : 'Stationary Kit'}</TableCell>
-                    <TableCell>{kit.is_delivery_home ? 'Yes' : 'No'}</TableCell>
-                    <TableCell>{kit.is_delivery_home ? kit.amount : shippingDetails.kit_data && shippingDetails.kit_data[0] && shippingDetails.kit_data[0].kit ? shippingDetails.kit_data[0].kit.kit_price : 'NA'}</TableCell>
-                    <TableCell><Button color='primary' style={{color:"white"}} disabled={kit.is_uniform_kit || kit.is_delivery_home} variant='outlined' onClick={() => paymentHandler(kit.kit, kit.t_no)}>Pay Now</Button></TableCell>
-                  </TableRow>
-                )
-              })}
-            </TableBody>
-          </Table>
-          : <p>Hi, You have made no transaction yet, please go to Books and Uniforms section to buy kits!</p>}
-      {!showConfigItem ? <Button color='secondary' style={{ marginTop: 20, color: 'white' }} variant='outlined' onClick={showDeliveryModalHandler}> Enter/Modify Delivery Address</Button> : ''}
-      {deliveryList.length && !showConfigItem
-        ? <div style={{ marginTop: 20 }}>
-          <h3>Shipping Details</h3>
-          <p>Contact Person Name: {deliveryList.length && deliveryList[0].name}</p>
-          <p>Mobile Number: {deliveryList.length && deliveryList[0].phone_number}</p>
-          <p>Address: {deliveryList.length && deliveryList[0].address1} <br />
-            {deliveryList.length && deliveryList[0].address2} <br />
-            {deliveryList.length && deliveryList[0].city} <br />
-            {deliveryList.length && deliveryList[0].zip_code} <br />
-            {deliveryList.length && deliveryList[0].state} <br />
-          </p>
-        </div>
-        : ''}
-      {deliveryModal}
-      {dataLoading ? <CircularProgress open /> : null}
-    </div>
-  )
+    <Layout>
+        <div style={{ padding: 20 }}>
+            <Grid container spacing={3} wrap='wrap' style={{ padding: '15px' }}>
+                <Grid item xs={3}>
+                <label>Academic Year*</label>
+                <Select
+                    placeholder='Select Academic Year'
+                    value={sessionData}
+                    options={
+                    session
+                        ? session.session_year.map((session) => ({
+                            value: session,
+                            label: session,
+                        }))
+                        : []
+                    }
+                    onChange={handleClickSessionYear}
+                />
+                </Grid>
+            </Grid>
+            {showConfigItem
+                ? <React.Fragment>
+                <ConfigItems
+                    selectedTotal={0}
+                    erpCode={erpValue}
+                    session={session}
+                    shippingComponent={showConfigItem}
+                    checkedKits={[]}
+                    // isUniformBought={this.props.isUniformBought}
+                    // isStationaryBought={this.props.isStationaryBought}
+                    // hasSubjectChoosen={this.props.hasSubjectChoosen}
+                    // isNewStudent={this.props.isNewStudent}
+                    getBack={configHandler}
+                    alert={alert}
+                    user={user}
+                    isStudent={false}
+                    isDelivery='home'
+                    kitIdToBePaid={kitId}
+                    transactionId={tranId}
+                    selctedKits={[]}
+                />
+                </React.Fragment>
+                : shippingDetails && shippingDetails.paid_data && shippingDetails.paid_data.length
+                ? <Table>
+                    <TableHead>
+                    <TableRow>
+                        <TableCell>Kit Name</TableCell>
+                        <TableCell>Kit Type</TableCell>
+                        <TableCell>Opted for Home Shipping?</TableCell>
+                        <TableCell>Shipping Charge</TableCell>
+                        <TableCell>Pay Shipping Amount</TableCell>
+                    </TableRow>
+                    </TableHead>
+                    <TableBody>
+                    {shippingDetails.paid_data.map((kit) => {
+                        return (
+                        <TableRow key={kit.kit}>
+                            <TableCell>{kit.kit_name}</TableCell>
+                            <TableCell>{kit.is_uniform_kit ? 'Uniform kit' : 'Stationary Kit'}</TableCell>
+                            <TableCell>{kit.is_delivery_home ? 'Yes' : 'No'}</TableCell>
+                            <TableCell>{kit.is_delivery_home ? kit.amount : shippingDetails.kit_data && shippingDetails.kit_data[0] && shippingDetails.kit_data[0].kit ? shippingDetails.kit_data[0].kit.kit_price : 'NA'}</TableCell>
+                            <TableCell><Button color='primary' style={{color:"white"}} disabled={kit.is_uniform_kit || kit.is_delivery_home} variant='outlined' onClick={() => paymentHandler(kit.kit, kit.t_no)}>Pay Now</Button></TableCell>
+                        </TableRow>
+                        )
+                    })}
+                    </TableBody>
+                </Table>
+                : <p>Hi, You have made no transaction yet, please go to Books and Uniforms section to buy kits!</p>}
+            {!showConfigItem ? <Button color='secondary' style={{ marginTop: 20, color: 'white' }} variant='outlined' onClick={showDeliveryModalHandler}> Enter/Modify Delivery Address</Button> : ''}
+            {deliveryList.length && !showConfigItem
+                ? <div style={{ marginTop: 20 }}>
+                <h3>Shipping Details</h3>
+                <p>Contact Person Name: {deliveryList.length && deliveryList[0].name}</p>
+                <p>Mobile Number: {deliveryList.length && deliveryList[0].phone_number}</p>
+                <p>Address: {deliveryList.length && deliveryList[0].address1} <br />
+                    {deliveryList.length && deliveryList[0].address2} <br />
+                    {deliveryList.length && deliveryList[0].city} <br />
+                    {deliveryList.length && deliveryList[0].zip_code} <br />
+                    {deliveryList.length && deliveryList[0].state} <br />
+                </p>
+                </div>
+                : ''}
+            {deliveryModal}
+            {dataLoading ? <CircularProgress open /> : null}
+            </div>
+        </Layout>
+    )
 }
 
 const mapStateToProps = state => ({
@@ -329,7 +329,8 @@ const mapStateToProps = state => ({
   shippingDetails: state.inventory.branchAcc.storeAtAcc.shippingDetails,
   deliveryList: state.inventory.branchAcc.storeAtAcc.deliveryList,
   dataLoading: state.finance.common.dataLoader,
-  trnsId: state.inventory.branchAcc.storeAtAcc.transactionId
+  trnsId: state.inventory.branchAcc.storeAtAcc.transactionId,
+  session: state.academicSession.items,
 })
 const mapDispatchToProps = dispatch => ({
   fetchShipping: (erp, alert, user, year) => dispatch(actionTypes.fetchShippingTransaction({ erp, alert, user, year })),
@@ -338,4 +339,4 @@ const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions())
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(ShippingAmount)))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(ShippingAmountAtStudent)))

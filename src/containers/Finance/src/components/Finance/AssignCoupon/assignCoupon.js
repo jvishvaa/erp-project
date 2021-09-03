@@ -65,10 +65,10 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-
+  const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
   useEffect(() => {
-    listCoupon(alert, user)
-  }, [alert, listCoupon, user])
+    listCoupon(alert, userToken)
+  }, [alert, listCoupon, userToken])
 
   useEffect(() => {
     setStudentErpList(erpList)

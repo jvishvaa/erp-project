@@ -45,6 +45,9 @@ class FeeCollection extends Component {
     selectedBranches: ''
   }
   componentDidMount () {
+    if(this.props.user === null){
+      window.location.reload()
+    }
     // this.props.fetchBranchData(this.props.alert, this.props.user)
   }
   ButtonHandler = (e) => {

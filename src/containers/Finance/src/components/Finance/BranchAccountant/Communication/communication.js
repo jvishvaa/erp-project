@@ -72,7 +72,11 @@ const CommunicationSMS = ({ classes,
   const [selectedBranch, setSelectedBranch] = useState(null)
 
   useLayoutEffect(() => {
-    const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+    // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+    if(user === null){
+      window.location.reload()
+    }
+    const role = (JSON.parse(localStorage.getItem('userDetails'))).personal_info.role
     if (role === 'FinanceAdmin') {
       setIsAdmin(true)
       // if (branchStored && role === 'FinanceAdmin') {
@@ -85,7 +89,8 @@ const CommunicationSMS = ({ classes,
   }, [alert, sessionYear.value, fetchBranches, user])
 
   useEffect(() => {
-    const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+    // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
+    const role = (JSON.parse(localStorage.getItem('userDetails'))).personal_info.role
     if (branchStored && role === 'FinanceAdmin') {
       setSelectedBranch(branchStored)
     }

@@ -147,6 +147,9 @@ class StudentLedgerTab extends Component {
   }
 
   componentDidMount() {
+    if(this.props.user === null){
+      window.location.reload()
+    }
     if (this.state.session && moduleId) {
       this.props.fetchBranches(
         this.state.session.value,
@@ -427,7 +430,13 @@ class StudentLedgerTab extends Component {
       () => {}
     );
   };
-
+  isStore = () =>{
+    let url = window.location.hostname;
+    if (url === 'dev.olvorchidnaigaon.letseduvate.com' || url === 'revamp.qa.letseduvate.com' || url ==='aolschool.letseduvate.com' || url === 'localhost'){
+      return true
+    }
+    return false
+  }
   render() {
     const { showTabs, value } = this.state;
     const { classes } = this.props;
@@ -457,9 +466,9 @@ class StudentLedgerTab extends Component {
               <Tab value='six' label='Concession Details' />
               {/* <Tab value='seven' label='Fee Management' /> */}
               <Tab value='eight' label='Curr Fee Type' />
-              {/* <Tab value='nine' label='STORE' />
-              <Tab value='ele' label='Shipping Amount' />
-              <Tab value='ten' label='Order Status' /> */}
+              {this.isStore() ?(<Tab value='nine' label='STORE' />) : (<></>)}
+              {this.isStore() ?(<Tab value='ele' label='Shipping Amount' />) : (<></>)}
+              {/* <Tab value='ten' label='Order Status' /> */}
             </Tabs>
           </AppBar>
           {value === 'one' && (

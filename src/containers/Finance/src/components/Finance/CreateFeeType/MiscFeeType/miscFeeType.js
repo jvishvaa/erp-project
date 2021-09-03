@@ -163,6 +163,9 @@ class MiscFeeType extends Component {
   }
 
   componentDidMount () {
+    if(this.props.user === null){
+      window.location.reload();
+    }
     if (feeTypeState) {
       this.setState(feeTypeState)
     }

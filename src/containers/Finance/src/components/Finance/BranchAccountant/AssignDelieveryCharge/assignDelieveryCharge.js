@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import PropTypes from 'prop-types'
+import React, { useState, useEffect , useMemo , Component } from 'react';
+import PropTypes from 'prop-types';
 import {
   Button,
   Typography,
@@ -9,119 +9,210 @@ import {
   TableRow,
   TableCell,
   // TableHead,
-  TextField
-//   withStyles
-} from '@material-ui/core'
+  TextField,
+  //   withStyles
+} from '@material-ui/core';
 // import { Edit } from '@material-ui/icons'
-// import ReactTable from 'react-table'
+// import ReactTable from 'react-table';
+// import { useTable } from "react-table";
+import ReactTable from 'react-table-6';
+import 'react-table-6/react-table.css';
 // import 'react-table/react-table.css'
-import Grid from '@material-ui/core/Grid'
-import Select from 'react-select'
-import { connect } from 'react-redux'
-import * as actionTypes from '../../store/actions'
-import Modal from '../../../../ui/Modal/modal'
-import { apiActions } from '../../../../_actions'
-import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
-import Layout from '../../../../../../Layout'
+import Grid from '@material-ui/core/Grid';
+import Select from 'react-select';
+import { connect } from 'react-redux';
+import * as actionTypes from '../../store/actions';
+import Modal from '../../../../ui/Modal/modal';
+import { apiActions } from '../../../../_actions';
+import CircularProgress from '../../../../ui/CircularProgress/circularProgress';
+import Layout from '../../../../../../Layout';
 
-function TabContainer ({ children, dir }) {
+function TabContainer({ children, dir }) {
   return (
     <Typography component='div' dir={dir} style={{ padding: 8 * 3 }}>
       {children}
     </Typography>
-  )
+  );
 }
 
 TabContainer.propTypes = {
-  children: PropTypes.node.isRequired
+  children: PropTypes.node.isRequired,
+};
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+let moduleId;
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Assign Delivery charge kit books & uniform') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+          moduleId = item.child_id;
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
 }
-const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDelieverycharge, couponList, listCoupon, assignDelieveryChargeStudent, fetchAssignedDelieveryErp, erpList, listDelieveryCharge, alert, user, dataLoading, gradesPerBranch }) => {
-  const [sessionData, setSessionData] = useState(null)
-  const [gradeData, setGradeData] = useState(null)
-  const [isChecked, setisChecked] = useState({})
-  const [checkedAll, setCheckedAll] = useState(false)
-  const [delieveryCharge, setDelieveryCharge] = useState('')
-  const [delieveryChargeDetailModal, setDelieveryChargeDetailModal] = useState(false)
-  const [isDelieveryChargeAssign, setIsDelieveryChargeAssign] = useState(false)
-  const [erpSearchValue, setErpSearchValue] = useState(null)
-  const [studentErpList, setStudentErpList] = useState(null)
-  const [showData, setShowdata] = useState(false)
+
+const AssignDelieveryCharge = ({
+  session,
+  branches,
+  fetchBranches,
+  fetchGradeList,
+  gradeList,
+  fetchAllDelieverycharge,
+  couponList,
+  listCoupon,
+  assignDelieveryChargeStudent,
+  fetchAssignedDelieveryErp,
+  erpList,
+  listDelieveryCharge,
+  alert,
+  user,
+  dataLoading,
+  gradesPerBranch,
+}) => {
+  const [sessionData, setSessionData] = useState(null);
+  const [gradeData, setGradeData] = useState(null);
+  const [isChecked, setisChecked] = useState({});
+  const [checkedAll, setCheckedAll] = useState(false);
+  const [delieveryCharge, setDelieveryCharge] = useState('');
+  const [delieveryChargeDetailModal, setDelieveryChargeDetailModal] = useState(false);
+  const [isDelieveryChargeAssign, setIsDelieveryChargeAssign] = useState(false);
+  const [erpSearchValue, setErpSearchValue] = useState(null);
+  const [studentErpList, setStudentErpList] = useState(null);
+  const [showData, setShowdata] = useState(false);
+  const [selectedBranches, setSelectedBranches] = useState('');
+  const [selectedbranchIds, setSelectedBranchIds] = useState(null);
 
   useEffect(() => {
-    setStudentErpList(erpList)
-  }, [erpList])
+    if(user === null){
+      window.location.reload()
+    }
+    setStudentErpList(erpList);
+  }, [erpList]);
 
   const handleClickSessionYear = (e) => {
-    setSessionData(e)
-    setGradeData(null)
-    fetchGradeList(alert, user)
-    setShowdata(false)
-  }
+    setSessionData(e);
+    setGradeData(null);
+    fetchBranches(e.value, alert, user, moduleId);
+    setShowdata(false);
+  };
+  const changehandlerbranch = (e) => {
+    fetchGradeList(sessionData.value, e && e.value, alert, user, moduleId);
+    setSelectedBranches(e);
+  };
   const gradeHandler = (e) => {
-    setGradeData(e)
-    setShowdata(false)
-    fetchAllDelieverycharge(sessionData.value, e.value, alert, user)
-  }
+    setGradeData(e);
+    setShowdata(false);
+    const payload = {
+      branch: selectedBranches.value,
+      session: sessionData.value,
+      grade: e.value,
+    };
+    // listSubjects(null, null, payload);
+    fetchAllDelieverycharge(
+      sessionData.value,
+      selectedBranches.value,
+      e.value,
+      alert,
+      user
+    );
+  };
 
+  // const subjectHandler = (e) => {
+  //   setSelectedSubject(e);
+  //   fetchAllDelieverycharge(sessionData.value, e.value, alert, user);
+  // };
   // hiting two api to get all delivery charge/to assign delivery charge kit
-  const studentErp = () => {
+  const studentErpget = () => {
+    console.log("api hit");
     if (sessionData && gradeData) {
-      setIsDelieveryChargeAssign(true)
-      fetchAssignedDelieveryErp(sessionData.value, gradeData.value, alert, user)
-      setShowdata(true)
+      setIsDelieveryChargeAssign(true);
+      fetchAssignedDelieveryErp(
+        sessionData.value,
+        selectedBranches.value,
+        gradeData.value,
+        alert,
+        user
+      );
+      setShowdata(true);
     } else {
-      alert.warning('Fill all the Fields!')
+      alert.warning('Fill all the Fields!');
     }
-  }
+  };
 
   const couponListHandler = (e) => {
-    setDelieveryCharge(e)
-  }
+    setDelieveryCharge(e);
+  };
 
   // table data to display a erp with delivery charge kit
   const renderStudentErpTable = () => {
-    let dataToShow = []
-    dataToShow = studentErpList && studentErpList.map((val, i) => {
-      return {
-        id: val.id,
-        check: <input
-          type='checkbox'
-          name='checking'
-          value={i + 1}
-          checked={isChecked[val.id || (val.student && val.student.id)]}
-          onChange={
-            (e) => { checkBoxHandler(e, val.id || (val.student && val.student.id)) }
-          } />,
-        erpCode: val.erp || (val.student && val.student.erp) ? val.erp || val.student.erp : '',
-        delievery: val.kit ? val.kit.kit_name : '',
-        amount: val.kit ? val.kit.kit_price : ''
-      }
-    })
-    return dataToShow
-  }
+    let dataToShow = [];
+    dataToShow =
+      studentErpList &&
+      studentErpList?.map((val, i) => {
+        return {
+          id: val.id,
+          check: (
+            <input
+              type='checkbox'
+              name='checking'
+              value={i + 1}
+              checked={isChecked[val.id || (val.student && val.student.id)]}
+              onChange={(e) => {
+                checkBoxHandler(e, val.id || (val.student && val.student.id));
+              }}
+            />
+          ),
+          erpCode:
+            val.erp || (val.student && val.student.erp) ? val.erp || val.student.erp : '',
+          delievery: val.kit ? val.kit.kit_name : '',
+          amount: val.kit ? val.kit.kit_price : '',
+        };
+      });
+    return dataToShow;
+  };
 
   // handler to select all students
   const checkAllStudentsHandler = (e) => {
-    const checked = {}
+    const checked = {};
     if (erpList && erpList.length > 0) {
-      erpList.forEach(ele => {
+      erpList.forEach((ele) => {
         if (ele.erp || (ele.student && ele.student.erp)) {
-          checked[ele.id || (ele.student && ele.student.id)] = e.target.checked
+          checked[ele.id || (ele.student && ele.student.id)] = e.target.checked;
         }
-      })
-      setisChecked(checked)
-      setCheckedAll(!checkedAll)
+      });
+      setisChecked(checked);
+      setCheckedAll(!checkedAll);
     }
-  }
+  };
 
   // handler to search particular erp in table
   const erpSearchHandler = (e) => {
-    const filteredArr = erpList && erpList.filter(stu => (stu.student && +stu.student.erp.includes(+e.target.value)) || (stu.erp && +stu.erp.includes(+e.target.value)))
-    setErpSearchValue(e.target.value)
-    setStudentErpList(filteredArr)
-  }
-  let studentErpTable = null
-  let checkedAlls = null
+    const filteredArr =
+      erpList &&
+      erpList.filter(
+        (stu) =>
+          (stu.student && +stu.student.erp.includes(+e.target.value)) ||
+          (stu.erp && +stu.erp.includes(+e.target.value))
+      );
+    setErpSearchValue(e.target.value);
+    setStudentErpList(filteredArr);
+  };
+  let studentErpTable = null;
+  let checkedAlls = null;
   if (showData && erpList && erpList.length > 0) {
     checkedAlls = (
       <div style={{ display: 'flex', marginTop: '60px' }}>
@@ -131,7 +222,8 @@ const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDel
             style={{ width: '20px', height: '20px', paddingBottom: '35px' }}
             checked={checkedAll || false}
             onChange={checkAllStudentsHandler}
-          /> &nbsp; <b>Select All Students</b>
+          />{' '}
+          &nbsp; <b>Select All Students</b>
         </div>
         <div>
           <TextField
@@ -145,116 +237,118 @@ const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDel
             InputLabelProps={{ shrink: true }}
             InputProps={{
               style: {
-                height: 35
-              }
+                height: 35,
+              },
             }}
           />
         </div>
       </div>
-    )
-  //   studentErpTable = <ReactTable
-  //     data={renderStudentErpTable()}
-  //     // manual
-  //     columns={[
-  //       {
-  //         Header: 'Select',
-  //         accessor: 'check',
-  //         filterable: false,
-  //         sortable: true
-  //       },
-  //       {
-  //         Header: 'ERP Code',
-  //         accessor: 'erpCode',
-  //         filterable: false,
-  //         sortable: true
-  //       },
-  //       {
-  //         Header: 'Delivery Charge Kit Name',
-  //         accessor: 'delievery',
-  //         filterable: false,
-  //         sortable: true
-  //       },
-  //       {
-  //         Header: 'Amount',
-  //         accessor: 'amount',
-  //         filterable: false,
-  //         sortable: true
-  //       }
-  //     ]}
-  //     filterable
-  //     sortable
-  //     defaultPageSize={20}
-  //     showPageSizeOptions={false}
-  //     className='-striped -highlight'
-  //   />
+    );
+      studentErpTable = <ReactTable
+        data={renderStudentErpTable()}
+        manual
+        columns={[
+          {
+            Header: 'Select',
+            accessor: 'check',
+            filterable: false,
+            sortable: true
+          },
+          {
+            Header: 'ERP Code',
+            accessor: 'erpCode',
+            filterable: false,
+            sortable: true
+          },
+          {
+            Header: 'Delivery Charge Kit Name',
+            accessor: 'delievery',
+            filterable: false,
+            sortable: true
+          },
+          {
+            Header: 'Amount',
+            accessor: 'amount',
+            filterable: false,
+            sortable: true
+          }
+        ]}
+        filterable
+        sortable
+        defaultPageSize={20}
+        showPageSizeOptions={false}
+        className='-striped -highlight'
+      />
   }
 
   const checkBoxHandler = (e, id) => {
     // check if the check box is checked or unchecked
     if (e.target.checked) {
       // add the numerical value of the checkbox to options array
-      setisChecked({ ...isChecked, [id]: true })
+      setisChecked({ ...isChecked, [id]: true });
     } else {
       // or remove the value from the unchecked checkbox from the array
-      setisChecked({ ...isChecked, [id]: false })
-      setCheckedAll(false)
+      setisChecked({ ...isChecked, [id]: false });
+      setCheckedAll(false);
     }
-  }
+  };
   const hideCouponDetailModalHandler = () => {
-    setDelieveryChargeDetailModal(false)
-  }
+    setDelieveryChargeDetailModal(false);
+  };
   // Modal to show details of delivery charge kit
-  let delieverychargeKitDetail = null
+  let delieverychargeKitDetail = null;
   if (delieveryChargeDetailModal) {
     delieverychargeKitDetail = (
       <Modal open={delieveryChargeDetailModal} click={hideCouponDetailModalHandler}>
         <h3 style={{ textAlign: 'center' }}>Delivery Charge Kit Details</h3>
         <hr />
-        {listDelieveryCharge && listDelieveryCharge.map((del) => {
-          if (del.id === delieveryCharge.value) {
-            return (
-              <Table style={{ textAlign: 'center' }}>
-                <TableRow>
-                  <TableCell />
-                  <TableCell style={{ fontSize: 16 }}>Kit Name :</TableCell>
-                  <TableCell style={{ fontSize: 16 }}>{del.kit_name}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell />
-                  <TableCell style={{ fontSize: 16 }}>Kit Price :</TableCell>
-                  <TableCell style={{ fontSize: 16 }}>{del.kit_price}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell />
-                  <TableCell style={{ fontSize: 16 }}>Kit Description :</TableCell>
-                  <TableCell style={{ fontSize: 16 }}>{del.kit_description}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell />
-                  <TableCell style={{ fontSize: 16 }}>Kit Color :</TableCell>
-                  <TableCell style={{ fontSize: 16 }}>{del.kit_colour && del.kit_colour.color_name}</TableCell>
-                </TableRow>
-              </Table>
-            )
-          }
-        })
-        }
+        {listDelieveryCharge &&
+          listDelieveryCharge.map((del) => {
+            if (del.id === delieveryCharge.value) {
+              return (
+                <Table style={{ textAlign: 'center' }}>
+                  <TableRow>
+                    <TableCell />
+                    <TableCell style={{ fontSize: 16 }}>Kit Name :</TableCell>
+                    <TableCell style={{ fontSize: 16 }}>{del.kit_name}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell />
+                    <TableCell style={{ fontSize: 16 }}>Kit Price :</TableCell>
+                    <TableCell style={{ fontSize: 16 }}>{del.kit_price}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell />
+                    <TableCell style={{ fontSize: 16 }}>Kit Description :</TableCell>
+                    <TableCell style={{ fontSize: 16 }}>{del.kit_description}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell />
+                    <TableCell style={{ fontSize: 16 }}>Kit Color :</TableCell>
+                    <TableCell style={{ fontSize: 16 }}>
+                      {del.kit_colour && del.kit_colour.color_name}
+                    </TableCell>
+                  </TableRow>
+                </Table>
+              );
+            }
+          })}
       </Modal>
-    )
+    );
   }
 
   // Getting all the erp which are selected in table to send data
   const saveMultiChangeHandler = (e) => {
-    let rowId = []
+    let rowId = [];
     Object.keys(isChecked).forEach((key) => {
       if (isChecked[key]) {
-        rowId.push(key)
+        rowId.push(key);
       }
-    })
-    let finalitems = []
-    finalitems = erpList.filter(item => rowId.includes(item.id + ''))
+    });
+    let finalitems = [];
+    finalitems = erpList.filter((item) => rowId.includes(item.id + ''));
 
-    let erpArr = []
+    let erpArr = [];
     // finalitems.forEach(ele => {
     //   if (ele.erp && ele.student && ele.student.erp) {
     //     return (
@@ -276,41 +370,38 @@ const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDel
     //   }
     // })
 
-    finalitems.forEach(ele => {
+    finalitems.forEach((ele) => {
       if (ele.id && ele.erp) {
-        return (
-          erpArr.push(ele.id)
-        )
+        return erpArr.push(ele.id);
       } else {
-        return (
-          erpArr.push(ele.student.id)
-        )
+        return erpArr.push(ele.student.id);
       }
-    })
+    });
     if (erpArr && erpArr.length > 0 && delieveryCharge) {
       const data = {
         kit_id: delieveryCharge && delieveryCharge.value,
         // erp: erpArr,
         student_id: erpArr,
         academic_year: sessionData && sessionData.value,
-        grade: gradeData && gradeData.value
+        grade: gradeData && gradeData.value,
+        branch_id: selectedBranches.value
         // applicable_to: applicableTo && applicableTo.value
-      }
-      assignDelieveryChargeStudent(data, alert, user)
-      setCheckedAll(false)
-      setisChecked(false)
+      };
+      assignDelieveryChargeStudent(data, alert, user);
+      setCheckedAll(false);
+      setisChecked(false);
     } else {
-      alert.warning('Select Erp and Delivery Charge to Proceed!')
+      alert.warning('Select Erp and Delivery Charge to Proceed!');
     }
-  }
+  };
   const delieveryDetailHandler = () => {
     if (delieveryCharge) {
-      setDelieveryChargeDetailModal(true)
+      setDelieveryChargeDetailModal(true);
     } else {
-      alert.warning('Select Delivery Charge Kit to View Details!')
+      alert.warning('Select Delivery Charge Kit to View Details!');
     }
-  }
-  let multiChange = null
+  };
+  let multiChange = null;
   if (isDelieveryChargeAssign) {
     multiChange = (
       <Grid container spacing={3} style={{ padding: 15 }}>
@@ -322,10 +413,10 @@ const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDel
             value={delieveryCharge}
             options={
               listDelieveryCharge
-                ? listDelieveryCharge.map(fp => ({
-                  value: fp.id,
-                  label: fp.kit_name
-                }))
+                ? listDelieveryCharge.map((fp) => ({
+                    value: fp.id,
+                    label: fp.kit_name,
+                  }))
                 : []
             }
             onChange={couponListHandler}
@@ -352,75 +443,111 @@ const AssignDelieveryCharge = ({ session, fetchGradeList, gradeList, fetchAllDel
           </Button>
         </Grid>
       </Grid>
-    )
+    );
   }
   return (
-    <Layout>    
+    <Layout>
       <div>
-      <Grid container spacing={3} wrap='wrap'style={{ padding: '15px' }}>
-        <Grid item xs={3}>
-          <label>Academic Year*</label>
-          <Select
-            placeholder='Select Academic Year'
-            value={sessionData}
-            options={
-              session
-                ? session.session_year.map((session) => ({
-                  value: session,
-                  label: session }))
-                : []
-            }
-            onChange={handleClickSessionYear}
-          />
+        <Grid container spacing={3} wrap='wrap' style={{ padding: '15px' }}>
+          <Grid item xs={3}>
+            <label>Academic Year*</label>
+            <Select
+              placeholder='Select Academic Year'
+              value={sessionData}
+              options={
+                session
+                  ? session.session_year.map((session) => ({
+                      value: session,
+                      label: session,
+                    }))
+                  : []
+              }
+              onChange={handleClickSessionYear}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <label>Branch*</label>
+            <Select
+              // isMulti
+              placeholder='Select Branch'
+              value={selectedBranches ? selectedBranches : ''}
+              options={
+                selectedbranchIds !== 'all'
+                  ? branches.length && branches
+                    ? branches.map((branch) => ({
+                        value: branch.branch ? branch.branch.id : '',
+                        label: branch.branch ? branch.branch.branch_name : '',
+                      }))
+                    : []
+                  : []
+              }
+              onChange={changehandlerbranch}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <label>Grades*</label>
+            <Select
+              placeholder='Select Grade'
+              value={gradeData ? gradeData : ''}
+              options={
+                gradeList
+                  ? gradeList.map((grade) => ({
+                      value: grade.grade.id ? grade.grade.id : '',
+                      label: grade.grade.grade ? grade.grade.grade : '',
+                    }))
+                  : []
+              }
+              onChange={gradeHandler}
+            />
+          </Grid>
+          <Grid item xs={3}>
+            <Button
+              variant='contained'
+              color='primary'
+              style={{ marginTop: '20px' }}
+              onClick={studentErpget}
+            >
+              Submit
+            </Button>
+          </Grid>
         </Grid>
-        <Grid item xs={3}>
-          <label>Grades*</label>
-          <Select
-            placeholder='Select Grade'
-            value={gradeData}
-            options={
-              gradeList
-                ? gradeList.map(grades => ({
-                  value: grades.id,
-                  label: grades.grade
-                }))
-                : []
-            }
-            onChange={gradeHandler}
-          />
-        </Grid>
-        <Grid item xs={3}>
-          <Button
-            variant='contained'
-            color='primary'
-            style={{ marginTop: '20px' }}
-            onClick={studentErp}
-          >Submit</Button>
-        </Grid>
-      </Grid>
-      {checkedAlls}
-      {showData ? studentErpTable : []}
-      {showData && erpList && erpList.length > 0 ? multiChange : []}
-      {delieverychargeKitDetail}
-      { dataLoading ? <CircularProgress open /> : null }
-    </div>
+        {checkedAlls}
+        {showData ? studentErpTable : []}
+        {showData && erpList && erpList.length > 0 ? multiChange : []}
+        {delieverychargeKitDetail}
+        {dataLoading ? <CircularProgress open /> : null}
+      </div>
     </Layout>
-  )
-}
-const mapStateToProps = state => ({
+  );
+};
+const mapStateToProps = (state) => ({
   user: state.authentication.user,
   session: state.academicSession.items,
   gradeList: state.finance.common.gradeList,
+  branches: state.finance.common.branchPerSession,
   dataLoading: state.finance.common.dataLoader,
   erpList: state.finance.accountantReducer.assignDelieveryCharge.studentList,
-  listDelieveryCharge: state.finance.accountantReducer.assignDelieveryCharge.listDelieveryCharge
-})
-const mapDispatchToProps = dispatch => ({
+  listDelieveryCharge:
+    state.finance.accountantReducer.assignDelieveryCharge.listDelieveryCharge,
+  // subject: state.subjects.items,
+});
+const mapDispatchToProps = (dispatch) => ({
   loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchGradeList: (alert, user) => dispatch(actionTypes.fetchGradeList({ alert, user })),
-  fetchAllDelieverycharge: (session, grade, alert, user) => dispatch(actionTypes.fetchAllDelieverycharge({ session, grade, alert, user })),
-  fetchAssignedDelieveryErp: (session, grade, alert, user) => dispatch(actionTypes.fetchAssignedDelieveryErp({ session, grade, alert, user })),
-  assignDelieveryChargeStudent: (data, alert, user) => dispatch(actionTypes.assignDelieveryChargeStudent({ data, alert, user }))
-})
+  fetchGradeList: (session, branch, alert, user, moduleId) =>
+    dispatch(actionTypes.fetchGradeList({ session, branch, alert, user, moduleId })),
+  fetchAllDelieverycharge: (session, branch, grade, alert, user) =>
+    dispatch(
+      actionTypes.fetchAllDelieverycharge({ session, branch, grade, alert, user })
+    ),
+  fetchAssignedDelieveryErp: (session, branch, grade, alert, user) =>
+    dispatch(
+      actionTypes.fetchAssignedDelieveryErp({ session, branch, grade, alert, user })
+    ),
+  assignDelieveryChargeStudent: (data, alert, user) =>
+    dispatch(actionTypes.assignDelieveryChargeStudent({ data, alert, user })),
+  fetchBranches: (session, alert, user, moduleId) =>
+    dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
+  // listSubjects: (a, b, payload) => dispatch(apiActions.listSubjects(a, b, payload)),
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)((AssignDelieveryCharge))
+export default connect(mapStateToProps, mapDispatchToProps)(AssignDelieveryCharge);

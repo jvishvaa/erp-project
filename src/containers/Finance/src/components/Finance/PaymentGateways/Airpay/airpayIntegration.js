@@ -12,8 +12,10 @@ class AirpayIntegration extends Component {
     isError: false,
     errRes: null
   }
+
   componentDidMount () {
-    if (!this.props.location.state || !this.props.location.user) {
+    const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
+    if (!this.props.location.state || !userToken) {
       this.props.alert.warning('Transaction cannot Be Proceed')
       this.props.history.goBack()
       return
@@ -23,7 +25,7 @@ class AirpayIntegration extends Component {
 
     axios.post(url, body, {
       headers: {
-        Authorization: 'Bearer ' + this.props.location.user
+        Authorization: 'Bearer ' + userToken
       }
     }).then(response => {
       // let data1 = response.data
