@@ -700,7 +700,7 @@ function App({ alert }) {
                           <Route exact path='/assessment/comparision'>
                             {({ match }) => <AssessmentComparisionUI match={match} />}
                           </Route>
-                          <Route exact path='/assessment/:assessmentId/analysis'>
+                          <Route exact path='/assessment/:questionPaperId/:assessmentId/analysis'>
                             {({ match }) => <AssessmentAnalysis match={match} />}
                           </Route>
                           <Route exact path='/erp-attendance-list/:id?'>
