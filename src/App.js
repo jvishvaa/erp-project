@@ -1253,6 +1253,12 @@ function App({ alert }) {
                           <Route exact path='/finance/BooksAndUniform'>
                             {({ match }) => <BulkUniform match={match} alert={alert} />}
                           </Route>
+                          <Route exact path='/finance/student_store'>
+                            {({ match }) => <StoreAtStudent match={match} alert={alert} />}
+                          </Route>
+                           <Route exact path='/book_uniform_payment/'>
+                            {({ match }) => <Airpay match={match} alert={alert} />}
+                          </Route>
                           <Route exact path='/finance/ShippingPayment'>
                             {({ match }) => (
                               <ShippingAmount match={match} alert={alert} />

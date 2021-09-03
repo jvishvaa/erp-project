@@ -459,7 +459,87 @@ const storePayment = (data, isCancelled) => {
           </div>
           <div style={{ ...style.itemElement, width: '17%', textAlign: 'center' }}>Total</div>
         </div>
-        {uniformKit.map((item, index) => {
+        {uniformKit?.map((item, index) => {
+          totalUniformQuantity = totalUniformQuantity + (+item.quantity)
+          totalCalcAmount = totalCalcAmount + (+item.final_price)
+          totalWithoutGst = totalWithoutGst + (+item.actual_price)
+          totalCgst = totalCgst + (+item.cgst_amount)
+          totalSgst = totalSgst + (+item.sgst_amount)
+          discountUni = (+item.discount)
+          totalUni = totalCalcAmount - discountUni
+          // shippingAmountUni = shippingAmountUni + (+item.delivery_amount)
+          return (
+            <div style={style.itemRow} key={index}>
+              <div style={{ ...style.itemElement, width: '4%', height: '25px', lineHeight: '25px' }}>
+                {index + 1}
+              </div>
+              <div style={{ ...style.itemElement, width: '23%', height: '25px', lineHeight: '25px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {item.name || ''}
+              </div>
+              <div style={{ ...style.itemElement, width: '9%', height: '25px', lineHeight: '25px' }}>
+                {null}
+              </div>
+              <div style={{ ...style.itemElement, width: '10%', height: '25px', lineHeight: '25px' }}>
+                {item.quantity || 0}
+              </div>
+              <div style={{ ...style.itemElement, width: '11%', height: '25px', lineHeight: '25px' }}>
+                {item.actual_price.toFixed(2) || ''}
+              </div>
+              <div style={{ ...style.itemElement, width: '13%', display: 'flex', height: '25px', lineHeight: '25px' }}>
+                <div style={{ width: '45%', borderRight: '0.5px solid black' }}>{item.cgst_per || '0'}</div>
+                <div style={{ width: '55%', borderLeft: '0.5px solid black' }}>{item.cgst_amount.toFixed(2) || '0'}</div>
+              </div>
+              <div style={{ ...style.itemElement, width: '13%', display: 'flex', height: '25px', lineHeight: '25px' }}>
+                <div style={{ width: '45%', borderRight: '0.5px solid black' }}>{item.sgst_per || '0'}</div>
+                <div style={{ width: '55%', borderLeft: '0.5px solid black' }}>{item.sgst_amount.toFixed(2) || '0'}</div>
+              </div>
+              <div style={{ ...style.itemElement, width: '17%', textAlign: 'center', height: '25px', lineHeight: '25px' }}>
+                {item.final_price || ''}
+              </div>
+            </div>
+          )
+        })}
+        {deliveryItem?.map((item, index) => {
+          totalUniformQuantity = totalUniformQuantity + (+item.quantity)
+          totalCalcAmount = totalCalcAmount + (+item.final_price)
+          totalWithoutGst = totalWithoutGst + (+item.actual_price)
+          totalCgst = totalCgst + (+item.cgst_amount)
+          totalSgst = totalSgst + (+item.sgst_amount)
+          discountUni = (+item.discount)
+          totalUni = totalCalcAmount - discountUni
+          // shippingAmountUni = shippingAmountUni + (+item.delivery_amount)
+          return (
+            <div style={style.itemRow} key={index}>
+              <div style={{ ...style.itemElement, width: '4%', height: '25px', lineHeight: '25px' }}>
+                {index + 1}
+              </div>
+              <div style={{ ...style.itemElement, width: '23%', height: '25px', lineHeight: '25px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {item.name || ''}
+              </div>
+              <div style={{ ...style.itemElement, width: '9%', height: '25px', lineHeight: '25px' }}>
+                {null}
+              </div>
+              <div style={{ ...style.itemElement, width: '10%', height: '25px', lineHeight: '25px' }}>
+                {item.quantity || 0}
+              </div>
+              <div style={{ ...style.itemElement, width: '11%', height: '25px', lineHeight: '25px' }}>
+                {item.actual_price.toFixed(2) || ''}
+              </div>
+              <div style={{ ...style.itemElement, width: '13%', display: 'flex', height: '25px', lineHeight: '25px' }}>
+                <div style={{ width: '45%', borderRight: '0.5px solid black' }}>{item.cgst_per || '0'}</div>
+                <div style={{ width: '55%', borderLeft: '0.5px solid black' }}>{item.cgst_amount.toFixed(2) || '0'}</div>
+              </div>
+              <div style={{ ...style.itemElement, width: '13%', display: 'flex', height: '25px', lineHeight: '25px' }}>
+                <div style={{ width: '45%', borderRight: '0.5px solid black' }}>{item.sgst_per || '0'}</div>
+                <div style={{ width: '55%', borderLeft: '0.5px solid black' }}>{item.sgst_amount.toFixed(2) || '0'}</div>
+              </div>
+              <div style={{ ...style.itemElement, width: '17%', textAlign: 'center', height: '25px', lineHeight: '25px' }}>
+                {item.final_price || ''}
+              </div>
+            </div>
+          )
+        })}
+        {stationaryKit?.map((item, index) => {
           totalUniformQuantity = totalUniformQuantity + (+item.quantity)
           totalCalcAmount = totalCalcAmount + (+item.final_price)
           totalWithoutGst = totalWithoutGst + (+item.actual_price)

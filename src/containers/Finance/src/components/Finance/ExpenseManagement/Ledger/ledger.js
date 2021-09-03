@@ -113,6 +113,9 @@ class Ledger extends Component {
     ledgerTypeName: null
   }
   componentDidMount () {
+    if(this.props.user === null){
+      window.location.reload();
+    }
     if (this.props.ledgerList.length === 0) {
       this.props.fetchLedgerList(this.props.user, this.props.alert)
     }

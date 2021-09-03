@@ -63,6 +63,9 @@ const QRCodeGenerator = ({ classes, session, history, alert, user }) => {
   const [dataLoading, setDataLoading] = useState(false)
   // const [fileName, setFileName] = useState(null)
   useEffect(() => {
+    if(user === null){
+      window.location.reload()
+    }
     // hi
   }, [])
 

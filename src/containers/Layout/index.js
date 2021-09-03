@@ -766,7 +766,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Books & Uniform': {
-        history.push('/finance/BooksAndUniform');
+        history.push('/finance/student_store');
         break;
       }
       case 'Shipping Payment': {

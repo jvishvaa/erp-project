@@ -94,16 +94,20 @@ class StoreAtAcc extends Component {
   }
 
   componentDidMount () {
+    if(this.props.user === null){
+      window.location.reload()
+    }
     // TODO: acad year in studentdata
-    const userProfile = JSON.parse(localStorage.getItem('user_profile'))
-    const role = userProfile.personal_info.role.toLowerCase()
+    const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
+    const userProfile = JSON.parse(localStorage.getItem('user_profile'));
+    const role = userProfile?.personal_info?.role?.toLowerCase()
     const { session, getData, erp } = this.props
-    this.props.fetchWalletInfo(session, erp, this.props.alert, this.props.user)
-    this.props.orderPaid(session, erp, this.props.alert, this.props.user)
-    this.props.fetchKitSubjects(session, role, erp, this.props.alert, this.props.user)
+    this.props.fetchWalletInfo(session, erp, this.props.alert, userToken)
+    this.props.orderPaid(session, erp, this.props.alert,  userToken)
+    this.props.fetchKitSubjects(session, role, erp, this.props.alert,  userToken)
     if (session && erp) {
       this.subjectCheckHandler()
-      this.props.fetchDeliveryDetails(erp, this.props.alert, this.props.user)
+      this.props.fetchDeliveryDetails(erp, this.props.alert,  userToken)
     }
     // this.subjectCheckHandler()
     // if (this.state.session) {
@@ -127,7 +131,7 @@ class StoreAtAcc extends Component {
         role: role
       })
     }
-    this.props.fetchStuProfile(session, erp, this.props.alert, this.props.user)
+    this.props.fetchStuProfile(session, erp, this.props.alert, userToken)
     // this.setState({
     //   secondLang: {
     //     id: this.props.language && this.props.language[0] && this.props.language[0].second_lang && this.props.language[0].second_lang.id,
@@ -327,7 +331,8 @@ class StoreAtAcc extends Component {
 
         getData: true
       }, () => {
-        this.props.subjectChoosen(this.props.session, this.state.role, this.props.erp, this.props.user, this.props.alert)
+        const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
+        this.props.subjectChoosen(this.props.session, this.state.role, this.props.erp, userToken, this.props.alert)
         // storeAtAccStore = this.state
       })
     } else {
@@ -363,7 +368,8 @@ class StoreAtAcc extends Component {
     // } else {
     //   erp = this.state.studentErp
     // }
-    this.props.orderPaid(this.props.session, this.props.erp, this.props.alert, this.props.user)
+    const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
+    this.props.orderPaid(this.props.session, this.props.erp, this.props.alert, userToken)
     // this.setState({
     // })
     const {
@@ -371,7 +377,7 @@ class StoreAtAcc extends Component {
       thirdLang,
       role
     } = this.state
-    this.props.submitLanguage((secondLang && secondLang.id === 'none' ? null : (secondLang && secondLang.id) || null), thirdLang && thirdLang.id === 'none' ? null : (thirdLang && thirdLang.id) || null, this.props.erp, role, this.props.session, this.props.user, this.props.alert)
+    this.props.submitLanguage((secondLang && secondLang.id === 'none' ? null : (secondLang && secondLang.id) || null), thirdLang && thirdLang.id === 'none' ? null : (thirdLang && thirdLang.id) || null, this.props.erp, role, this.props.session, userToken, this.props.alert)
     // storeAtAccStore = this.state
 
     let data = {
@@ -384,12 +390,12 @@ class StoreAtAcc extends Component {
       second_lang: secondLang && secondLang.id === 'none' ? 'none' : (secondLang && secondLang.id) || 'none',
       third_lang: thirdLang && thirdLang.id === 'none' ? 'none' : (thirdLang && thirdLang.id) || 'none'
     }
-    this.props.updateStudentProfile(data, this.props.alert, this.props.user)
+    this.props.updateStudentProfile(data, this.props.alert, userToken)
     this.setState({
       erp: this.props.language[0] && this.props.language[0].student_erp,
       editModal: false
     }, () => {
-      this.props.submitLanguage((secondLang && secondLang.id === 'none' ? null : (secondLang && secondLang.id) || null), thirdLang && thirdLang.id === 'none' ? null : (thirdLang && thirdLang.id) || null, this.props.erp, role, this.props.session, this.props.user, this.props.alert)
+      this.props.submitLanguage((secondLang && secondLang.id === 'none' ? null : (secondLang && secondLang.id) || null), thirdLang && thirdLang.id === 'none' ? null : (thirdLang && thirdLang.id) || null, this.props.erp, role, this.props.session, userToken, this.props.alert)
     })
   }
 
@@ -432,7 +438,7 @@ class StoreAtAcc extends Component {
     // const {
     //   erp
     // } = this.state
-
+const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
     const keys = Object.keys(this.state.isChecked)
       .filter(itemKey => this.state.isChecked[itemKey])
       .map(item => +item)
@@ -440,7 +446,7 @@ class StoreAtAcc extends Component {
     let data = {
       kit_ids: keys
     }
-    this.props.fetchStoreItems(data, this.props.user, this.props.alert)
+    this.props.fetchStoreItems(data, userToken, this.props.alert)
     this.setState({
       selectedKits: keys,
       checkedKits: checkedKits,
@@ -535,6 +541,7 @@ class StoreAtAcc extends Component {
             isStudent={this.props.isStudent}
             isDelivery={this.state.deliveryValue}
             selectedKits={this.state.selectedKits}
+            branchId={this.props.branchId}
           /> 
         </React.Fragment>
       )
@@ -820,7 +827,7 @@ class StoreAtAcc extends Component {
                   />
                 </RadioGroup>
               </FormControl>
-              {this.state.deliveryValue === 'home' ? <Button color='secondary' variant='outlined' onClick={this.showDeliveryModalHandler}> Enter/Modify Delivery Address</Button> : ''}
+              {this.state.deliveryValue === 'home' ? <Button color='secondary' style={{color:"white"}} variant='outlined' onClick={this.showDeliveryModalHandler}> Enter/Modify Delivery Address</Button> : ''}
               {this.state.deliveryValue === 'home' && this.props.deliveryList.length
                 ? <div>
                   <h3>Shipping Details</h3>

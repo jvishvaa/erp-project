@@ -67,6 +67,9 @@ class FeeStructure extends Component {
   }
 
   componentDidMount () {
+    if(this.props.user === null){
+      window.location.reload()
+    }
     if (!this.props.feeStructureList.length) {
       this.props.fetchListDefaultView(this.props.alert, this.props.user)
       this.setState({ getList: true })

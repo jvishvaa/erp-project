@@ -1,6 +1,7 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import Select from 'react-select'
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import Select from 'react-select';
+import $ from 'jquery'; 
 import {
   withStyles,
   Grid,
@@ -9,37 +10,41 @@ import {
   TableHead,
   TableBody,
   TableCell,
-  TableRow, 
-  TablePagination
-} from '@material-ui/core/'
-import { AddCircle, DeleteForever } from '@material-ui/icons'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Switch from '@material-ui/core/Switch'
+  TableRow,
+  TablePagination,
+} from '@material-ui/core/';
+import { AddCircle, DeleteForever } from '@material-ui/icons';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 // import ReactTable from 'react-table'
 // import 'react-table/react-table.css'
 
-import { apiActions } from '../../../../_actions'
-import * as actionTypes from '../../store/actions'
-import Modal from '../../../../ui/Modal/modal'
-import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
-import { FilterInnerComponent, filterMethod } from '../../../Finance/FilterInnerComponent/filterInnerComponent'
-import classesCSS from './kit.module.css'
-import Layout from '../../../../../../Layout'
+import { apiActions } from '../../../../_actions';
+import * as actionTypes from '../../store/actions';
+import Modal from '../../../../ui/Modal/modal';
+import CircularProgress from '../../../../ui/CircularProgress/circularProgress';
+import {
+  FilterInnerComponent,
+  filterMethod,
+} from '../../../Finance/FilterInnerComponent/filterInnerComponent';
+import classesCSS from './kit.module.css';
+import Layout from '../../../../../../Layout';
+import { element } from 'prop-types';
 
-let kitState = null
+let kitState = null;
 
-const styles = theme => ({
+const styles = (theme) => ({
   button: {
     margin: theme.spacing.unit,
     color: '#fff',
     backgroundColor: '#2196f3',
     marginTop: '0px',
     '&:hover': {
-      backgroundColor: '#1a8cff'
-    }
+      backgroundColor: '#1a8cff',
+    },
   },
   divIcon: {
-    paddingTop: '30px'
+    paddingTop: '30px',
   },
   icon: {
     color: '#2196f3',
@@ -47,20 +52,20 @@ const styles = theme => ({
     fontSize: 30,
     '&:hover': {
       color: '#1a8cff',
-      cursor: 'pointer'
-    }
+      cursor: 'pointer',
+    },
   },
   rightIcon: {
-    marginLeft: theme.spacing.unit
+    marginLeft: theme.spacing.unit,
   },
   deleteButton: {
     color: '#fff',
-    backgroundColor: 'rgb(225, 0, 80)'
-  }
-})
+    backgroundColor: 'rgb(225, 0, 80)',
+  },
+});
 class Kit extends Component {
-  constructor (props) {
-    super(props)
+  constructor(props) {
+    super(props);
     this.state = {
       entryModal: false,
       color: null,
@@ -89,109 +94,143 @@ class Kit extends Component {
       commonKitArr: [],
       isDelivery: false,
       page: 0,
-      rowsPerPage: 10
-    }
+      rowsPerPage: 10,
+      finalItems: []
+    };
 
-    this.kitNameRef = React.createRef()
-    this.kitDescriptionRef = React.createRef()
-    this.kitPriceRef = React.createRef()
-    this.colorRef = React.createRef()
+    this.kitNameRef = React.createRef();
+    this.kitDescriptionRef = React.createRef();
+    this.kitPriceRef = React.createRef();
+    this.colorRef = React.createRef();
   }
 
-  componentDidMount () {
+
+  componentDidMount() {
+    if(this.props.user === null){
+      window.location.reload()
+    }
     if (kitState) {
       this.setState(kitState, () => {
-        const {
-          currentBranch,
-          currentGrade,
-          currentSession
-        } = this.state
+        const { currentBranch, currentGrade, currentSession } = this.state;
         if (currentBranch && currentGrade && currentSession) {
-          this.props.fetchItems(currentSession, currentBranch, currentGrade, this.props.alert, this.props.user)
+          this.props.fetchItems(
+            currentSession,
+            currentBranch,
+            currentGrade,
+            this.props.alert,
+            this.props.user
+          );
         }
-      })
+      });
     }
   }
 
   sessionChangeHandler = (e) => {
-    this.setState({
-      currentSession: e.value,
-      currentBranch: null,
-      currentGrade: null,
-      page: 0,
-      rowsPerPage: 10
-    }, () => {
-      this.props.fetchBranches(this.state.currentSession, this.props.alert, this.props.user)
-    })
-  }
+    this.setState(
+      {
+        currentSession: e.value,
+        currentBranch: null,
+        currentGrade: null,
+        page: 0,
+        rowsPerPage: 10,
+      },
+      () => {
+        this.props.fetchBranches(
+          this.state.currentSession,
+          this.props.alert,
+          this.props.user
+        );
+      }
+    );
+  };
 
   handleChangePage = (event, newPage) => {
     this.setState({
-      page: newPage
-    })
-  }
+      page: newPage,
+    });
+  };
 
   handleChangeRowsPerPage = (event) => {
     this.setState({
-      rowsPerPage:+event.target.value
-    })
+      rowsPerPage: +event.target.value,
+    });
     this.setState({
-      page: 0
-    })
-  }
+      page: 0,
+    });
+  };
 
   branchChangeHandler = (e) => {
-    this.setState({
-      currentBranch: {
-        id: e.value,
-        branch_name: e.label
+    this.setState(
+      {
+        currentBranch: {
+          id: e.value,
+          branch_name: e.label,
+        },
+        currentGrade: null,
       },
-      currentGrade: null
-    }, () => {
-      this.props.fetchGrades(this.state.currentSession, this.state.currentBranch.id, this.props.user, this.props.alert)
-    })
-  }
+      () => {
+        this.props.fetchGrades(
+          this.state.currentSession,
+          this.state.currentBranch.id,
+          this.props.user,
+          this.props.alert
+        );
+      }
+    );
+  };
 
   gradeChangeHandler = (e) => {
     this.setState({
       currentGrade: {
         id: e.value,
-        grade: e.label
-      }
-    })
-  }
+        grade: e.label,
+      },
+    });
+  };
 
   fetchItemsHandler = () => {
-    const {
-      currentBranch,
-      currentGrade,
-      currentSession
-    } = this.state
+    const { currentBranch, currentGrade, currentSession } = this.state;
 
     if (!currentBranch || !currentGrade || !currentSession) {
-      this.props.alert.warning('Please Fill All Madatory Fields')
-      return
+      this.props.alert.warning('Please Fill All Madatory Fields');
+      return;
     }
-    this.props.fetchItems(currentSession, currentBranch, currentGrade, this.props.alert, this.props.user)
-    this.setState({
-      showAdd: true
-    }, () => {
-      kitState = this.state
-    })
-  }
+    this.props.fetchItems(
+      currentSession,
+      currentBranch,
+      currentGrade,
+      this.props.alert,
+      this.props.user
+    );
+    this.setState(
+      {
+        showAdd: true,
+      },
+      () => {
+        kitState = this.state;
+      }
+    );
+  };
 
   showEntryModal = () => {
-    this.setState({
-      entryModal: true
-    }, () => {
-      const {
-        currentSession,
-        currentBranch,
-        currentGrade
-      } = this.state
-      this.props.listColorItems(currentSession, currentBranch, currentGrade, true, false, this.props.alert, this.props.user)
-    })
-  }
+    this.setState(
+      {
+        entryModal: true,
+      },
+      () => {
+        const { currentSession, currentBranch, currentGrade } = this.state;
+        this.props.listColorItems(
+          currentSession,
+          currentBranch,
+          currentGrade,
+          true,
+          false,
+          this.props.alert,
+          this.props.user
+        );
+      }
+    );
+  };
 
   hideEntryModal = () => {
     this.setState({
@@ -207,55 +246,112 @@ class Kit extends Component {
       itemQuantity: {},
       kitAmount: null,
       commonKitArr: [],
-      isCommon: false
-    })
-  }
+      isCommon: false,
+    });
+  };
 
   viewDetailsModalHandler = (id) => {
-    const data = this.props.kitList.filter(ele => ele.id === id)[0]
-    const existingItemArr = data.item.map((ele) => {
-      return ({ value: ele.id, label: `${ele.item_name} : ${ele.item_description}`, price: ele.final_price_after_gst })
-    })
+    const data = this.props.kitList.filter((ele) => ele.id === id)[0];
+    // const existingItemArr = data.item.map((ele) => {
+    //   console.log(ele , "element");
+    //   return {
+    //     value: ele.id,
+    //     label: `${ele.item_name} : ${ele.item_description}`,
+    //     price: ele.final_price_after_gst,
+    //   };
+    // });
+    let finalItem = [];
+    const quans = [];
+    const quan = data?.quantity;
+    if (quan && quan.length) {
+      quan.forEach((item) => {
+         if(item.id ){
+          quans.push(item.id)
+         }
+      })
+    }
+    const itemsKit = data?.item;
+    if (itemsKit && itemsKit.length) {
+      itemsKit.forEach((item) => {
+         if(item.id){
+           if (quan && quan.length) {
+            quan.forEach((q) => {
+               if(item.id === q.id ){
+                finalItem.push(item)
+                this.setState(prevState => ({
+                  finalItems: [...prevState.finalItems, item]
+                }))
+               }
+            })
+          }
+        }
+      })
+    }
+
+    const existingItemArr = finalItem.map((ele) => {
+      return {
+        value: ele.id,
+        label: `${ele.item_name} : ${ele.item_description}`,
+        price: ele.final_price_after_gst,
+      };
+    });
     const quantity = data.quantity.flat().reduce((acc, curr) => {
-      acc[curr.id] = curr.quantity
-      return acc
-    }, {})
-    this.setState({
-      showViewModal: true,
-      kitdata: data,
-      isCommon: data.is_common_kit,
-      itemArr: existingItemArr,
-      isOldStudent: data.is_applicable_to_old_student,
-      isNewStudent: data.is_applicable_to_new_student,
-      isUniform: data.is_uniform_kit,
-      secondLang: {
-        id: data.second_language && data.second_language.id ? data.second_language.id : null,
-        subject_name: data.second_language && data.second_language.subject_name ? data.second_language.subject_name : null
+      acc[curr.id] = curr.quantity;
+      return acc;
+    }, {});
+    this.setState(
+      {
+        showViewModal: true,
+        kitdata: data,
+        isCommon: data.is_common_kit,
+        itemArr: existingItemArr,
+        isOldStudent: data.is_applicable_to_old_student,
+        isNewStudent: data.is_applicable_to_new_student,
+        isUniform: data.is_uniform_kit,
+        secondLang: {
+          id:
+            data.second_language && data.second_language.id
+              ? data.second_language.id
+              : null,
+          subject_name:
+            data.second_language && data.second_language.subject_name
+              ? data.second_language.subject_name
+              : null,
+        },
+        thirdLang: {
+          id:
+            data.third_language && data.third_language.id ? data.third_language.id : null,
+          subject_name:
+            data.third_language && data.third_language.subject_name
+              ? data.third_language.subject_name
+              : null,
+        },
+        isMandatory: data.is_mandatory,
+        color: data.kit_colour,
+        kitName: data.kit_name,
+        kitDesp: data.kit_description,
+        kitAmount: data.kit_price,
+        kitId: data.id,
+        itemQuantity: quantity,
+        isDelivery: data.is_delivery_kit,
       },
-      thirdLang: {
-        id: data.third_language && data.third_language.id ? data.third_language.id : null,
-        subject_name: data.third_language && data.third_language.subject_name ? data.third_language.subject_name : null
-      },
-      isMandatory: data.is_mandatory,
-      color: data.kit_colour,
-      kitName: data.kit_name,
-      kitDesp: data.kit_description,
-      kitAmount: data.kit_price,
-      kitId: data.id,
-      itemQuantity: quantity,
-      isDelivery: data.is_delivery_kit
-    }, () => {
-      const {
-        currentSession,
-        currentBranch,
-        currentGrade
-      } = this.state
-      this.props.listColorItems(currentSession, currentBranch, currentGrade, data.is_uniform_kit, data.is_delivery_kit, this.props.alert, this.props.user)
-    })
-  }
+      () => {
+        const { currentSession, currentBranch, currentGrade } = this.state;
+        this.props.listColorItems(
+          currentSession,
+          currentBranch,
+          currentGrade,
+          data.is_uniform_kit,
+          data.is_delivery_kit,
+          this.props.alert,
+          this.props.user
+        );
+      }
+    );
+  };
 
   hideViewModalHandler = () => {
-    this.setState({
+   this.setState({
       showViewModal: false,
       isOldStudent: false,
       isNewStudent: false,
@@ -272,218 +368,284 @@ class Kit extends Component {
       kitId: null,
       commonKitArr: [],
       isCommon: false,
-      isDelivery: false
-    })
-  }
+      isDelivery: false,
+    });
+  };
 
   showColorModal = () => {
     this.setState({
-      addColorModal: true
-    })
-  }
+      addColorModal: true,
+    });
+  };
 
   hideColorModal = () => {
     this.setState({
-      addColorModal: false
-    })
-  }
+      addColorModal: false,
+    });
+  };
 
   createColorHandler = () => {
-    const color = this.colorRef.current.value
+    const color = this.colorRef.current.value;
     if (color.length === 0) {
-      this.props.alert.warning('Please Give Some Color Value')
-      return
+      this.props.alert.warning('Please Give Some Color Value');
+      return;
     }
-    this.props.createColor(color, this.props.alert, this.props.user)
-    this.hideColorModal()
-  }
+    this.props.createColor(color, this.props.alert, this.props.user);
+    this.hideColorModal();
+  };
 
   colorChangeHandler = (e) => {
     this.setState({
       color: {
         id: e.value,
-        color_name: e.label
-      }
-    })
-  }
+        color_name: e.label,
+      },
+    });
+  };
 
   calculateKitPrice = () => {
-    let { itemQuantity, itemArr, commonKitArr } = this.state
-    let kitPrice = 0
-    itemArr.forEach(item => {
-      kitPrice += (item.price * (itemQuantity[item.value] || 0))
-    })
-    commonKitArr.forEach(item => {
-      kitPrice += item.price
-    })
+    let { itemQuantity, itemArr, commonKitArr } = this.state;
+    let kitPrice = 0;
+    itemArr.forEach((item) => {
+      kitPrice += item.price * (itemQuantity[item.value] || 0);
+    });
+    commonKitArr.forEach((item) => {
+      kitPrice += item.price;
+    });
     this.setState({
-      kitAmount: kitPrice
-    })
-  }
+      kitAmount: kitPrice,
+    });
+  };
 
   itemChangeHandler = (e) => {
-    const {
-      commonKitArr
-    } = this.state
-    let kitItems = []
-    if (commonKitArr.length) {
-      commonKitArr.forEach(kit => {
-        const ids = kit.quantity.map(ele => ele.id)
-        kitItems = [...kitItems, ...ids]
-      })
+    let Elength = 0
+    if(e == null){
+      Elength = 0
     }
-    const items = e.map(ele => +ele.value)
-    const found = kitItems.some(r => items.indexOf(r) >= 0)
-    if (found) {
-      this.props.alert.warning('Duplicate Item Found')
-      return
+    else{
+      Elength = e.length;
     }
+    let itemRemove = {}
+    if(Elength < this.state.itemArr.length){
+        if(e !== null){
+          e.map((item) => {
+            Object.entries(this.state.itemQuantity).map((ele) =>{
+                if(ele[0] == item.value){
+                  let ele0 = ele[0]
+                  let ele1 = ele[1]
+                itemRemove = {...itemRemove, [ele0] : ele1}
+                }
+            })
+          })
+        }
+        this.setState({
+        itemArr : e,
+        itemQuantity : itemRemove
+        })
+      }
+    setTimeout(()=>{this.calculateKitPrice();},0)
 
-    this.setState({
-      itemArr: e
-    })
-  }
+    const { commonKitArr } = this.state;
+    let kitItems = [];
+    if (commonKitArr.length > -1) {
+      commonKitArr.forEach((kit) => {
+        const ids = kit.quantity.map((ele) => ele.id);
+        kitItems = [...kitItems, ...ids];
+      });
+    }
+    if (e == null) {
+      this.setState({
+        itemArr: [],
+      });
+    } else {
+      const items = e.map((ele) => +ele.value);
+      const found = kitItems.some((r) => items.indexOf(r) >= 0);
+      if (found) {
+        this.props.alert.warning('Duplicate Item Found');
+        return;
+      }
+      this.setState({
+        itemArr: e,
+      });
+    }
+  };
 
   commonKitChangeHandler = (e) => {
-    let kitItems = []
-    let error = false
-    e.forEach(kit => {
-      const ids = kit.quantity.map(ele => +ele.id)
-      const found = kitItems.some(r => ids.indexOf(r) >= 0)
+    let kitItems = [];
+    let error = false;
+    e.forEach((kit) => {
+      const ids = kit.quantity.map((ele) => +ele.id);
+      const found = kitItems.some((r) => ids.indexOf(r) >= 0);
       if (found) {
-        error = true
+        error = true;
       }
-      kitItems = [...kitItems, ...ids]
-    })
+      kitItems = [...kitItems, ...ids];
+    });
     if (error) {
-      this.props.alert.warning('Duplicate Items in Two Kits')
-      return
+      this.props.alert.warning('Duplicate Items in Two Kits');
+      return;
     }
-    const {
-      itemArr
-    } = this.state
-    const items = itemArr.map(ele => +ele.value)
-    const found = kitItems.some(r => items.indexOf(r) >= 0)
+    const { itemArr } = this.state;
+    const items = itemArr.map((ele) => +ele.value);
+    const found = kitItems.some((r) => items.indexOf(r) >= 0);
     if (found) {
-      this.props.alert.warning('Duplicate Item Found')
-      return
+      this.props.alert.warning('Duplicate Item Found');
+      return;
     }
-    this.setState({
-      commonKitArr: e
-    }, () => {
-      this.calculateKitPrice()
-    })
-  }
+    this.setState(
+      {
+        commonKitArr: e,
+      },
+      () => {
+        this.calculateKitPrice();
+      }
+    );
+  };
 
   oldStudentChangeHandler = (e) => {
     this.setState({
-      isOldStudent: e.target.checked
-    })
-  }
+      isOldStudent: e.target.checked,
+    });
+  };
 
   newStudentChangeHandler = (e) => {
     this.setState({
-      isNewStudent: e.target.checked
-    })
-  }
+      isNewStudent: e.target.checked,
+    });
+  };
 
   uniformChangeHandler = (e) => {
-    this.setState({
-      isUniform: e.target.checked,
-      isCommon: false,
-      secondLang: null,
-      thirdLang: null
-    }, () => {
-      const {
-        currentBranch,
-        currentSession,
-        currentGrade,
-        isUniform,
-        isDelivery
-      } = this.state
-      this.props.listColorItems(currentSession, currentBranch, currentGrade, isUniform, isDelivery, this.props.alert, this.props.user)
-    })
-  }
+    this.setState(
+      {
+        isUniform: e.target.checked,
+        isCommon: false,
+        secondLang: null,
+        thirdLang: null,
+      },
+      () => {
+        const { currentBranch, currentSession, currentGrade, isUniform, isDelivery } =
+          this.state;
+        this.props.listColorItems(
+          currentSession,
+          currentBranch,
+          currentGrade,
+          isUniform,
+          isDelivery,
+          this.props.alert,
+          this.props.user
+        );
+      }
+    );
+    if (!e.target.checked) {
+      const { currentBranch, currentSession, currentGrade } = this.state;
+      const payload = {
+        branch: currentBranch.id,
+        session: currentSession,
+        grade: currentGrade.id,
+      };
+      this.props.listSubjects(null, null, payload);
+    }
+  };
 
   commonChangeHandler = (e) => {
     this.setState({
-      isCommon: e.target.checked
-    })
-  }
+      isCommon: e.target.checked,
+    });
+  };
 
   mandatoryChangeHandler = (e) => {
     this.setState({
-      isMandatory: e.target.checked
-    })
-  }
+      isMandatory: e.target.checked,
+    });
+  };
 
   deliveryChangeHandler = (e) => {
     if (e.target.checked) {
-      this.setState({
-        isDelivery: e.target.checked,
-        isUniform: false,
-        isCommon: false
-      }, () => {
-        const {
-          currentBranch,
-          currentSession,
-          currentGrade,
-          isUniform,
-          isDelivery
-        } = this.state
-        this.props.listColorItems(currentSession, currentBranch, currentGrade, isUniform, isDelivery, this.props.alert, this.props.user)
-      })
+      this.setState(
+        {
+          isDelivery: e.target.checked,
+          isUniform: false,
+          isCommon: false,
+        },
+        () => {
+          const { currentBranch, currentSession, currentGrade, isUniform, isDelivery } =
+            this.state;
+          this.props.listColorItems(
+            currentSession,
+            currentBranch,
+            currentGrade,
+            isUniform,
+            isDelivery,
+            this.props.alert,
+            this.props.user
+          );
+        }
+      );
     } else {
-      this.setState({
-        isDelivery: e.target.checked
-      }, () => {
-        const {
-          currentBranch,
-          currentSession,
-          currentGrade,
-          isUniform,
-          isDelivery
-        } = this.state
-        this.props.listColorItems(currentSession, currentBranch, currentGrade, isUniform, isDelivery, this.props.alert, this.props.user)
-      })
+      this.setState(
+        {
+          isDelivery: e.target.checked,
+        },
+        () => {
+          const { currentBranch, currentSession, currentGrade, isUniform, isDelivery } =
+            this.state;
+          this.props.listColorItems(
+            currentSession,
+            currentBranch,
+            currentGrade,
+            isUniform,
+            isDelivery,
+            this.props.alert,
+            this.props.user
+          );
+        }
+      );
     }
-  }
+  };
 
   langSecChangeHandler = (e) => {
     this.setState({
       secondLang: {
         id: e.value,
-        subject_name: e.label
-      }
-    })
-  }
+        subject_name: e.label,
+      },
+    });
+  };
 
   langThirdChangeHandler = (e) => {
-    this.setState({
-      thirdLang: {
-        id: e.value,
-        subject_name: e.label
-      }
-    })
-  }
+    if (e.value == this.state.secondLang.id) {
+      this.props.alert.warning('Select another Langauge');
+    } else {
+      this.setState({
+        thirdLang: {
+          id: e.value,
+          subject_name: e.label,
+        },
+      });
+    }
+  };
 
   deleteModalCloseHandler = () => {
     this.setState({
       showDeleteModal: false,
-      deleteKitId: null
-    })
-  }
+      deleteKitId: null,
+    });
+  };
 
   deleteModalShowHandler = (kitId) => {
     this.setState({
       showDeleteModal: true,
-      deleteKitId: kitId
-    })
-  }
+      deleteKitId: kitId,
+    });
+  };
 
   createGradeKitHandler = () => {
-    const kitName = this.kitNameRef.current.value.length ? this.kitNameRef.current.value : null
-    const kitDesc = this.kitDescriptionRef.current.value ? this.kitDescriptionRef.current.value : null
+    const kitName = this.kitNameRef.current.value.length
+      ? this.kitNameRef.current.value
+      : null;
+    const kitDesc = this.kitDescriptionRef.current.value
+      ? this.kitDescriptionRef.current.value
+      : null;
     const {
       currentBranch,
       currentGrade,
@@ -500,30 +662,27 @@ class Kit extends Component {
       kitAmount,
       isCommon,
       commonKitArr,
-      isDelivery
-    } = this.state
+      isDelivery,
+    } = this.state;
 
-    const {
-      user,
-      alert
-    } = this.props
+    const { user, alert } = this.props;
     // const quantityId = Object.keys(itemQuantity)
-    let isError = false
-    const items = itemArr.map(item => {
+    let isError = false;
+    const items = itemArr.map((item) => {
       if (!itemQuantity[item.value]) {
-        isError = true
-        return
+        isError = true;
+        return;
       }
-      return ({
+      return {
         id: item.value,
-        quantity: itemQuantity[item.value]
-      })
-    })
-    const itemsId = itemArr.map(item => item.value)
-    const commonKitIds = commonKitArr.map(item => item.value)
+        quantity: itemQuantity[item.value],
+      };
+    });
+    const itemsId = itemArr.map((item) => item.value);
+    const commonKitIds = commonKitArr.map((item) => item.value);
     if (isError) {
-      alert.warning('Every Item should have some quantity')
-      return
+      alert.warning('Every Item should have some quantity');
+      return;
     }
 
     const payload = {
@@ -546,52 +705,51 @@ class Kit extends Component {
       thirdLang,
       isDelivery,
       user,
-      alert
-    }
+      alert,
+    };
 
-    if (!kitName || !kitDesc || !kitAmount || (!isNewStudent && !isOldStudent)) {
-      this.props.alert.warning('Please Fill Select all Mandatory Fields')
-      return
+    if (!kitName || !kitDesc || !kitAmount || (!isNewStudent && !isOldStudent) || !secondLang || !thirdLang) {
+      this.props.alert.warning('Please Fill Select all Mandatory Fields');
+      return;
     }
 
     if (!itemsId.length && !commonKitIds.length) {
-      this.props.alert.warning('Please Select at least an item or a kit')
-      return
+      this.props.alert.warning('Please Select at least an item or a kit');
+      return;
     }
 
-    this.props.createKit(payload)
-    this.hideEntryModal()
-  }
+    this.props.createKit(payload);
+    this.hideEntryModal();
+  };
 
   kitValueHandler = (event) => {
     switch (event.target.id) {
       case 'kit_name': {
         this.setState({
-          kitName: event.target.value
-        })
-        break
+          kitName: event.target.value,
+        });
+        break;
       }
       case 'kit_desp': {
         this.setState({
-          kitDesp: event.target.value
-        })
-        break
+          kitDesp: event.target.value,
+        });
+        break;
       }
       case 'kit_amount': {
         if (event.target.value > 0) {
           this.setState({
-            kitAmount: event.target.value
-          })
+            kitAmount: event.target.value,
+          });
         } else {
-          this.props.alert.warning('Amount cant be 0')
+          this.props.alert.warning('Amount cant be 0');
         }
-        break
+        break;
       }
       default: {
-
       }
     }
-  }
+  };
 
   saveKitDetails = () => {
     const {
@@ -613,30 +771,27 @@ class Kit extends Component {
       itemQuantity,
       isCommon,
       commonKitArr,
-      isDelivery
-    } = this.state
+      isDelivery,
+    } = this.state;
 
-    const {
-      user,
-      alert
-    } = this.props
+    const { user, alert } = this.props;
 
-    let isError = false
-    const items = itemArr.map(item => {
+    let isError = false;
+    const items = itemArr.map((item) => {
       if (!itemQuantity[item.value]) {
-        isError = true
-        return
+        isError = true;
+        return;
       }
-      return ({
+      return {
         id: item.value,
-        quantity: itemQuantity[item.value]
-      })
-    })
-    const itemsId = itemArr.map(item => item.value)
-    const commonKitIds = commonKitArr.map(item => item.value)
+        quantity: itemQuantity[item.value],
+      };
+    });
+    const itemsId = itemArr.map((item) => item.value);
+    const commonKitIds = commonKitArr.map((item) => item.value);
     if (isError) {
-      alert.warning('Every Item should have some quantity')
-      return
+      alert.warning('Every Item should have some quantity');
+      return;
     }
 
     const payload = {
@@ -660,40 +815,40 @@ class Kit extends Component {
       alert,
       isCommon,
       commonKitIds,
-      isDelivery
-    }
+      isDelivery,
+    };
 
     if (!kitName || !kitDesp || !kitAmount || (!isNewStudent && !isOldStudent)) {
-      this.props.alert.warning('Please Fill Select all Mandatory Fields')
-      return
+      this.props.alert.warning('Please Fill Select all Mandatory Fields');
+      return;
     }
 
     if (!itemsId.length && !commonKitIds.length) {
-      this.props.alert.warning('Please Select at least an item or a kit')
-      return
+      this.props.alert.warning('Please Select at least an item or a kit');
+      return;
     }
 
-    this.props.updateKits(payload)
-    this.hideViewModalHandler()
-  }
+    this.props.updateKits(payload);
+    this.hideViewModalHandler();
+  };
 
   deleteKitHandler = () => {
-    this.props.deleteKit(this.state.deleteKitId, this.props.user, this.props.alert)
-    this.deleteModalCloseHandler()
-  }
+    this.props.deleteKit(this.state.deleteKitId, this.props.user, this.props.alert);
+    this.deleteModalCloseHandler();
+  };
 
   itemQuantityHandler = (e, id) => {
-    let { itemQuantity } = this.state
+    let { itemQuantity } = this.state;
     if (e.target.value >= 1) {
       this.setState({ itemQuantity: { ...itemQuantity, [id]: e.target.value } }, () => {
-        this.calculateKitPrice()
-      })
+        this.calculateKitPrice();
+      });
     } else {
-      this.props.alert.warning('Quantity Cant be less than 1')
+      this.props.alert.warning('Quantity Cant be less than 1');
     }
-  }
+  };
   createData = () => {
-    return (this.props.kitList.map((item, index) => {
+    return this.props.kitList.map((item, index) => {
       return {
         sNo: index + 1,
         ...item,
@@ -701,22 +856,32 @@ class Kit extends Component {
         is_applicable_to_old_student: item.is_applicable_to_old_student ? 'Yes' : 'No',
         item: item.item && item.item.length,
         is_uniform_kit: item.is_uniform_kit ? 'Yes' : 'No',
-        viewDetails: <Button
-          variant='contained'
-          color='primary'
-          onClick={() => this.viewDetailsModalHandler(item.id)}
-        >View Details</Button>,
-        icon: <DeleteForever onClick={() => { this.deleteModalShowHandler(item.id) }} />
-      }
-    }))
-  }
-  render () {
-    const { classes } = this.props
+        viewDetails: (
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={() => this.viewDetailsModalHandler(item.id)}
+          >
+            View Details
+          </Button>
+        ),
+        icon: (
+          <DeleteForever
+            onClick={() => {
+              this.deleteModalShowHandler(item.id);
+            }}
+          />
+        ),
+      };
+    });
+  };
+  render() {
+    const { classes } = this.props;
     const modalHeadStyle = {
       width: '100%',
       textAlign: 'center',
-      marginTop: '12px'
-    }
+      marginTop: '12px',
+    };
 
     const inputStyle = {
       alignItems: 'center',
@@ -727,8 +892,8 @@ class Kit extends Component {
       borderWidth: '1px',
       cursor: 'default',
       height: '38px',
-      paddingLeft: '12px'
-    }
+      paddingLeft: '12px',
+    };
 
     // let itemTable = null
     // if (this.props.kitList && this.props.kitList.length) {
@@ -826,7 +991,7 @@ class Kit extends Component {
     //   />)
     // }
 
-    let subjectsChoice = null
+    let subjectsChoice = null;
     if (!this.state.isUniform && !this.state.isCommon && !this.state.isDelivery) {
       subjectsChoice = (
         <React.Fragment>
@@ -834,13 +999,22 @@ class Kit extends Component {
             <label style={{ fontWeight: '20' }}>Language II</label>
             <Select
               placeholder='Select II Language'
-              value={this.state.secondLang ? ({
-                value: this.state.secondLang.id,
-                label: this.state.secondLang.subject_name
-              }) : null}
+              value={
+                this.state.secondLang
+                  ? {
+                      value: this.state.secondLang.id,
+                      label: this.state.secondLang.subject_name,
+                    }
+                  : null
+              }
               options={
-                this.props.subject && this.props.subject.length ? (this.props.subject.map(list => ({ value: list.id, label: list.subject_name })
-                )) : []}
+                this.props.subject && this.props.subject.length
+                  ? this.props.subject.map((list) => ({
+                      value: list.id,
+                      label: list.subject_name,
+                    }))
+                  : []
+              }
               onChange={this.langSecChangeHandler}
             />
           </Grid>
@@ -848,21 +1022,30 @@ class Kit extends Component {
             <label style={{ fontWeight: '20' }}>Language III</label>
             <Select
               placeholder='Select III Language'
-              value={this.state.thirdLang ? ({
-                value: this.state.thirdLang.id,
-                label: this.state.thirdLang.subject_name
-              }) : null}
+              value={
+                this.state.thirdLang
+                  ? {
+                      value: this.state.thirdLang.id,
+                      label: this.state.thirdLang.subject_name,
+                    }
+                  : null
+              }
               options={
-                this.props.subject && this.props.subject.length ? (this.props.subject.map(list => ({ value: list.id, label: list.subject_name })
-                )) : []}
+                this.props.subject && this.props.subject.length
+                  ? this.props.subject.map((list) => ({
+                      value: list.id,
+                      label: list.subject_name,
+                    }))
+                  : []
+              }
               onChange={this.langThirdChangeHandler}
             />
           </Grid>
         </React.Fragment>
-      )
+      );
     }
 
-    let itemQuantityField = null
+    let itemQuantityField = null;
     if (this.state.itemArr) {
       itemQuantityField = (
         <div>
@@ -871,24 +1054,33 @@ class Kit extends Component {
               <Grid container spacing={3} style={{ padding: 15 }}>
                 <Grid item xs='6'>
                   {item.label}:
-                  <input type='number'
+                  <input
+                    type='number'
                     value={this.state.itemQuantity[item.value]}
-                    min='1' style={{ ...inputStyle, width: '100%' }}
-                    placeholder='Enter Quantity' ref={this.quantityRef}
-                    onChange={(e) => { this.itemQuantityHandler(e, item.value) }} />
+                    min='1'
+                    style={{ ...inputStyle, width: '100%' }}
+                    placeholder='Enter Quantity'
+                    ref={this.quantityRef}
+                    onChange={(e) => {
+                      this.itemQuantityHandler(e, item.value);
+                    }}
+                  />
                 </Grid>
                 <Grid item xs='3'>
                   <strong>Price : </strong>
-                  <span>{this.state.itemQuantity[item.value] ? this.state.itemQuantity[item.value] * item.price : 0}
+                  <span>
+                    {this.state.itemQuantity[item.value]
+                      ? this.state.itemQuantity[item.value] * item.price
+                      : 0}
                   </span>
                 </Grid>
               </Grid>
-            )
+            );
           })}
         </div>
-      )
+      );
     }
-    let entryModal = null
+    let entryModal = null;
     if (this.state.entryModal) {
       entryModal = (
         <Modal open={this.state.entryModal} click={this.hideEntryModal}>
@@ -898,11 +1090,21 @@ class Kit extends Component {
             <Grid container spacing={3} style={{ padding: 15 }}>
               <Grid item xs='5'>
                 <label style={{ fontWeight: '20', width: '100%' }}>Kit Name*</label>
-                <input type='text' style={{ ...inputStyle, width: '100%' }} placeholder='Enter Kit Name' ref={this.kitNameRef} />
+                <input
+                  type='text'
+                  style={{ ...inputStyle, width: '100%' }}
+                  placeholder='Enter Kit Name'
+                  ref={this.kitNameRef}
+                />
               </Grid>
               <Grid item xs='5'>
                 <label style={{ fontWeight: '20' }}>Kit Description*</label>
-                <input type='text' style={{ ...inputStyle, width: '100%' }} placeholder='Enter Kit Description' ref={this.kitDescriptionRef} />
+                <input
+                  type='text'
+                  style={{ ...inputStyle, width: '100%' }}
+                  placeholder='Enter Kit Description'
+                  ref={this.kitDescriptionRef}
+                />
               </Grid>
               <Grid item xs='5'>
                 <FormControlLabel
@@ -944,25 +1146,22 @@ class Kit extends Component {
                   label='Is Uniform'
                 />
               </Grid>
-              {
-                !this.state.isUniform ? (
-                  <Grid item xs='5'>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={this.state.isCommon}
-                          onChange={this.commonChangeHandler}
-                          value='isCommon'
-                          color='primary'
-                          disabled={this.state.isDelivery}
-                        />
-                      }
-                      label='Is Common'
-                    />
-                  </Grid>
-
-                ) : null
-              }
+              {!this.state.isUniform ? (
+                <Grid item xs='5'>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={this.state.isCommon}
+                        onChange={this.commonChangeHandler}
+                        value='isCommon'
+                        color='primary'
+                        disabled={this.state.isDelivery}
+                      />
+                    }
+                    label='Is Common'
+                  />
+                </Grid>
+              ) : null}
               <Grid item xs='5'>
                 <FormControlLabel
                   control={
@@ -989,34 +1188,38 @@ class Kit extends Component {
                   label='Delivery Charge'
                 />
               </Grid>
-              {!this.state.isUniform && !this.state.isCommon && !this.state.isDelivery ? (<React.Fragment>
-                <Grid item xs='12' >
-                  <label style={{ fontWeight: '20' }}>Select Common Kit</label>
-                  <Select
-                    isMulti
-                    placeholder='Select Kit'
-                    value={this.state.commonKitArr}
-                    options={
-                      this.props.kitList.filter(kit => kit.is_common_kit).map(list => ({
-                        value: list.id,
-                        label: `${list.kit_name} : ${list.kit_description}`,
-                        price: list.kit_price,
-                        quantity: list.quantity
-                      }))
-                    }
-                    onChange={this.commonKitChangeHandler}
-                  />
-                </Grid>
-              </React.Fragment>) : null}
+              {!this.state.isUniform && !this.state.isCommon && !this.state.isDelivery ? (
+                <React.Fragment>
+                  <Grid item xs='12'>
+                    <label style={{ fontWeight: '20' }}>Select Common Kit</label>
+                    <Select
+                      isMulti
+                      placeholder='Select Kit'
+                      value={this.state.commonKitArr}
+                      options={this.props.kitList
+                        .filter((kit) => kit.is_common_kit)
+                        .map((list) => ({
+                          value: list.id,
+                          label: `${list.kit_name} : ${list.kit_description}`,
+                          price: list.kit_price,
+                          quantity: list.quantity,
+                        }))}
+                      onChange={this.commonKitChangeHandler}
+                    />
+                  </Grid>
+                </React.Fragment>
+              ) : null}
               <Grid item xs='12'>
                 <label style={{ fontWeight: '20' }}>Select Kit Items</label>
                 <Select
                   isMulti
                   placeholder='Select Kit Items'
                   value={this.state.itemArr}
-                  options={
-                    this.props.itemsList.map(list => ({ value: list.id, label: `${list.item_name} : ${list.item_description}`, price: list.final_price_after_gst })
-                    )}
+                  options={this.props.itemsList.map((list) => ({
+                    value: list.id,
+                    label: `${list.item_name} : ${list.item_description}`,
+                    price: list.final_price_after_gst,
+                  }))}
                   onChange={this.itemChangeHandler}
                 />
               </Grid>
@@ -1024,24 +1227,41 @@ class Kit extends Component {
               <Grid item xs='5'>
                 <label style={{ fontWeight: '20' }}>Kit Price*</label>
                 <br />
-                <input type='number' style={inputStyle} min='1' placeholder='Kit Price' id='kit_amount' onChange={(e) => { this.kitValueHandler(e) }} value={this.state.kitAmount ? this.state.kitAmount : ''} />
+                <input
+                  type='number'
+                  style={inputStyle}
+                  min='1'
+                  placeholder='Kit Price'
+                  id='kit_amount'
+                  onChange={(e) => {
+                    this.kitValueHandler(e);
+                  }}
+                  value={this.state.kitAmount ? this.state.kitAmount : ''}
+                />
               </Grid>
               <Grid item xs='5'>
                 <label style={{ fontWeight: '20' }}>Color</label>
                 <Select
                   placeholder='Color'
-                  value={this.state.color ? ({
-                    value: this.state.color.id,
-                    label: this.state.color.color_name
-                  }) : null}
-                  options={
-                    this.props.colorsList.map(list => ({ value: list.id, label: list.color_name })
-                    )}
+                  value={
+                    this.state.color
+                      ? {
+                          value: this.state.color.id,
+                          label: this.state.color.color_name,
+                        }
+                      : null
+                  }
+                  options={this.props.colorsList.map((list) => ({
+                    value: list.id,
+                    label: list.color_name,
+                  }))}
                   onChange={this.colorChangeHandler}
                 />
               </Grid>
               <Grid item xs='2'>
-                <div className={classes.divIcon}><AddCircle className={classes.icon} onClick={this.showColorModal} /></div>
+                <div className={classes.divIcon}>
+                  <AddCircle className={classes.icon} onClick={this.showColorModal} />
+                </div>
               </Grid>
               {subjectsChoice}
               <Grid item xs='12'>
@@ -1050,26 +1270,35 @@ class Kit extends Component {
                   color='primary'
                   onClick={this.createGradeKitHandler}
                   className={classes.button}
-                >Assign</Button>
+                >
+                  Assign
+                </Button>
               </Grid>
             </Grid>
           </React.Fragment>
         </Modal>
-      )
+      );
     }
-    let addColorModal = null
+    let addColorModal = null;
     if (this.state.addColorModal) {
       addColorModal = (
-        <Modal open={this.state.addColorModal}
+        <Modal
+          open={this.state.addColorModal}
           style={{ zIndex: '1400', width: '40%', minHeight: '250px' }}
-          click={this.hideColorModal}>
+          click={this.hideColorModal}
+        >
           <React.Fragment>
             <h3 style={modalHeadStyle}>Add New Color</h3>
             <hr />
             <Grid container spacing={3} style={{ padding: 15 }}>
-              <Grid item xs='8' >
+              <Grid item xs='8'>
                 <label style={{ fontWeight: '20' }}>Color*</label>
-                <input type='text' style={inputStyle} placeholder='Enter Color' ref={this.colorRef} />
+                <input
+                  type='text'
+                  style={inputStyle}
+                  placeholder='Enter Color'
+                  ref={this.colorRef}
+                />
               </Grid>
               <Grid item xs='12'>
                 <Button
@@ -1077,32 +1306,42 @@ class Kit extends Component {
                   color='primary'
                   onClick={this.createColorHandler}
                   className={classes.button}
-                >Assign</Button>
+                >
+                  Assign
+                </Button>
               </Grid>
             </Grid>
           </React.Fragment>
         </Modal>
-      )
+      );
     }
 
-    let deleteModal = null
+    let deleteModal = null;
     if (this.state.showDeleteModal) {
       deleteModal = (
-        <Modal open={this.state.showDeleteModal} click={this.deleteModalCloseHandler} small>
+        <Modal
+          open={this.state.showDeleteModal}
+          click={this.deleteModalCloseHandler}
+          small
+        >
           <h3 className={classesCSS.modal__heading}>Are You Sure?</h3>
           <hr />
           <div className={classesCSS.modal__deletebutton}>
-            <Button className={classes.deleteButton} onClick={this.deleteKitHandler}>Delete</Button>
+            <Button className={classes.deleteButton} onClick={this.deleteKitHandler}>
+              Delete
+            </Button>
           </div>
           <div className={classesCSS.modal__remainbutton}>
-            <Button className={classes.button} onClick={this.deleteModalCloseHandler}>Go Back</Button>
+            <Button className={classes.button} onClick={this.deleteModalCloseHandler}>
+              Go Back
+            </Button>
           </div>
         </Modal>
-      )
+      );
     }
 
-    let viewdetModal = null
-    const { showViewModal, kitdata } = this.state
+    let viewdetModal = null;
+    const { showViewModal, kitdata } = this.state;
     if (showViewModal && kitdata) {
       viewdetModal = (
         <Modal open={showViewModal} large click={this.hideViewModalHandler}>
@@ -1111,17 +1350,48 @@ class Kit extends Component {
           <Grid container spacing={3} style={{ padding: 15 }}>
             <Grid item xs='3'>
               <label style={{ fontWeight: '20', width: '100%' }}>Kit Name :</label>&nbsp;
-              <input type='text' style={inputStyle} placeholder='Kit Name' id='kit_name' onChange={(e) => { this.kitValueHandler(e) }} value={this.state.kitName ? this.state.kitName : ''} />
+              <input
+                type='text'
+                style={inputStyle}
+                placeholder='Kit Name'
+                id='kit_name'
+                onChange={(e) => {
+                  this.kitValueHandler(e);
+                }}
+                value={this.state.kitName ? this.state.kitName : ''}
+              />
               {/* <label style={{ fontWeight: '20', width: '100%' }}>Kit Name :</label>&nbsp;{kitdata.kit_name ? kitdata.kit_name : ''} */}
             </Grid>
             <Grid item xs='3'>
-              <label style={{ fontWeight: '20', width: '100%' }}>Kit Description* :</label>&nbsp;
-              <input type='text' style={inputStyle} placeholder='Kit Description' id='kit_desp' onChange={(e) => { this.kitValueHandler(e) }} value={this.state.kitDesp ? this.state.kitDesp : ''} />
+              <label style={{ fontWeight: '20', width: '100%' }}>
+                Kit Description* :
+              </label>
+              &nbsp;
+              <input
+                type='text'
+                style={inputStyle}
+                placeholder='Kit Description'
+                id='kit_desp'
+                onChange={(e) => {
+                  this.kitValueHandler(e);
+                }}
+                value={this.state.kitDesp ? this.state.kitDesp : ''}
+              />
               {/* <label style={{ fontWeight: '20', width: '100%' }}>Kit Description :</label>&nbsp;{kitdata.kit_description ? kitdata.kit_description : ''} */}
             </Grid>
             <Grid item xs='3'>
               <label style={{ fontWeight: '20', width: '100%' }}>Kit Price*:</label>&nbsp;
-              <input type='number' style={inputStyle} min='1' placeholder='Kit Price' id='kit_amount' onChange={(e) => { this.kitValueHandler(e) }} value={this.state.kitAmount ? this.state.kitAmount : ''} />
+              <input
+                type='number'
+                style={inputStyle}
+                min='1'
+                placeholder='Kit Price'
+                id='kit_amount'
+                onChange={(e) => {
+                  this.kitValueHandler(e);
+                }}
+                value={this.state.kitAmount ? this.state.kitAmount : ''}
+              />
               {/* <label style={{ fontWeight: '20', width: '100%' }}>Kit Price :</label>&nbsp;{kitdata.kit_price ? kitdata.kit_price : ''} */}
             </Grid>
             {/* <Grid.Column
@@ -1151,18 +1421,33 @@ class Kit extends Component {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {kitdata && kitdata.item.length > 0
-                    ? kitdata.item.map((ele, index) => (
+                  {kitdata && kitdata.item.length > 0 ? (
+                    kitdata.item.map((ele, index) => (
                       <TableRow>
                         <TableCell align='left'>{index + 1}</TableCell>
-                        <TableCell align='left'>{ele.item_name ? ele.item_name : ''}</TableCell>
-                        <TableCell align='left'>{ele.final_price_after_gst ? ele.final_price_after_gst : ''}</TableCell>
-                        <TableCell align='left'>{ele.sale_price ? ele.sale_price : ''}</TableCell>
-                        <TableCell align='left'>{ele.tax_code ? ele.tax_code : ''}</TableCell>
-                        <TableCell align='left'>{ele.sku_code ? ele.sku_code : ''}</TableCell>
-                        <TableCell align='left'>{ele.sac_code ? ele.sac_code : ''}</TableCell>
+                        <TableCell align='left'>
+                          {ele.item_name ? ele.item_name : ''}
+                        </TableCell>
+                        <TableCell align='left'>
+                          {ele.final_price_after_gst ? ele.final_price_after_gst : ''}
+                        </TableCell>
+                        <TableCell align='left'>
+                          {ele.sale_price ? ele.sale_price : ''}
+                        </TableCell>
+                        <TableCell align='left'>
+                          {ele.tax_code ? ele.tax_code : ''}
+                        </TableCell>
+                        <TableCell align='left'>
+                          {ele.sku_code ? ele.sku_code : ''}
+                        </TableCell>
+                        <TableCell align='left'>
+                          {ele.sac_code ? ele.sac_code : ''}
+                        </TableCell>
                       </TableRow>
-                    )) : <TableRow>No Records Found !!!</TableRow>}
+                    ))
+                  ) : (
+                    <TableRow>No Records Found !!!</TableRow>
+                  )}
                 </TableBody>
               </Table>
             </Grid>
@@ -1171,13 +1456,18 @@ class Kit extends Component {
               <label style={{ fontWeight: '20' }}>Color</label>
               <Select
                 placeholder='Color'
-                value={this.state.color ? ({
-                  value: this.state.color.id,
-                  label: this.state.color.color_name
-                }) : null}
-                options={
-                  this.props.colorsList.map(list => ({ value: list.id, label: list.color_name })
-                  )}
+                value={
+                  this.state.color
+                    ? {
+                        value: this.state.color.id,
+                        label: this.state.color.color_name,
+                      }
+                    : null
+                }
+                options={this.props.colorsList.map((list) => ({
+                  value: list.id,
+                  label: list.color_name,
+                }))}
                 onChange={this.colorChangeHandler}
               />
             </Grid>
@@ -1249,25 +1539,26 @@ class Kit extends Component {
                 />
               </Grid>
               {subjectsChoice}
-              {!this.state.isUniform && !this.state.isCommon && !this.state.isDelivery ? (<React.Fragment>
-                <Grid item xs='12'>
-                  <label style={{ fontWeight: '20' }}>Select Common Kit</label>
-                  <Select
-                    isMulti
-                    placeholder='Select Kit'
-                    value={this.state.commonKitArr}
-                    options={
-                      this.props.kitList.filter(kit => kit.is_common_kit).map(list => ({
-                        value: list.id,
-                        label: `${list.kit_name} : ${list.kit_description}`,
-                        price: list.kit_price,
-                        quantity: list.quantity
-                      }))
-                    }
-                    onChange={this.commonKitChangeHandler}
-                  />
-                </Grid>
-              </React.Fragment>
+              {!this.state.isUniform && !this.state.isCommon && !this.state.isDelivery ? (
+                <React.Fragment>
+                  <Grid item xs='12'>
+                    <label style={{ fontWeight: '20' }}>Select Common Kit</label>
+                    <Select
+                      isMulti
+                      placeholder='Select Kit'
+                      value={this.state.commonKitArr}
+                      options={this.props.kitList
+                        .filter((kit) => kit.is_common_kit)
+                        .map((list) => ({
+                          value: list.id,
+                          label: `${list.kit_name} : ${list.kit_description}`,
+                          price: list.kit_price,
+                          quantity: list.quantity,
+                        }))}
+                      onChange={this.commonKitChangeHandler}
+                    />
+                  </Grid>
+                </React.Fragment>
               ) : null}
             </Grid>
             <Grid item xs='12'>
@@ -1276,9 +1567,11 @@ class Kit extends Component {
                 isMulti
                 placeholder='Select Kit Items'
                 value={this.state.itemArr}
-                options={
-                  this.props.itemsList.map(list => ({ value: list.id, label: `${list.item_name} : ${list.item_description}`, price: list.final_price_after_gst })
-                  )}
+                options={this.props.itemsList.map((list) => ({
+                  value: list.id,
+                  label: `${list.item_name} : ${list.item_description}`,
+                  price: list.final_price_after_gst,
+                }))}
                 onChange={this.itemChangeHandler}
               />
             </Grid>
@@ -1289,147 +1582,205 @@ class Kit extends Component {
                 color='primary'
                 onClick={this.saveKitDetails}
                 className={classes.button}
-              >Save</Button>
+              >
+                Save
+              </Button>
             </Grid>
           </Grid>
         </Modal>
-      )
+      );
     }
 
     return (
       <Layout>
-      <React.Fragment>
-        <Grid container spacing={3} style={{ padding: 15 }}>
-          <Grid item xs='8'>
-            <label className='student-addStudent-segment1-heading' />
-          </Grid>
-          <Grid item xs='4'>
-            {this.state.showAdd ? (<Button variant='contained' color='primary' onClick={this.showEntryModal} disabled={!this.state.currentSession || !this.state.currentBranch || !this.state.currentGrade}>
-                Create New Kit
-            </Button>) : null}
-          </Grid>
-          <Grid item xs='3'>
-            <label style={{ fontWeight: '20' }}>Academic Year*</label>
-            <Select
-              placeholder='Select Session'
-              value={this.state.currentSession ? ({
-                value: this.state.currentSession,
-                label: this.state.currentSession
-              }) : null}
-              options={
-                this.props.session && this.props.session.session_year.length
-                  ? this.props.session.session_year.map(session => ({ value: session, label: session })
-                  ) : []}
-              onChange={this.sessionChangeHandler}
-            />
-          </Grid>
-          <Grid item xs='3'>
-            <label style={{ fontWeight: '20' }}>Branch*</label>
-            <Select
-              placeholder='Select Branch'
-              value={this.state.currentBranch ? ({
-                value: this.state.currentBranch.id,
-                label: this.state.currentBranch.branch_name
-              }) : null}
-              options={
-                this.props.branches.length
-                  ? this.props.branches.map(branch => ({
-                    value: branch.branch.id,
-                    label: branch.branch.branch_name
-                  }))
-                  : []
-              }
-              onChange={this.branchChangeHandler}
-            />
-          </Grid>
-          <Grid item xs='3'>
-            <label style={{ fontWeight: '20' }}>Grade*</label>
-            <Select
-              placeholder='Select Grade'
-              value={this.state.currentGrade ? ({
-                value: this.state.currentGrade.id,
-                label: this.state.currentGrade.grade
-              }) : null}
-              options={
-                this.props.grades && this.props.grades.length
-                  ? this.props.grades.map(gradeEle => ({
-                    value: gradeEle.grade.id,
-                    label: gradeEle.grade.grade
-                  }))
-                  : []
-              }
-              onChange={this.gradeChangeHandler}
-            />
-          </Grid>
-          <Grid item xs='3'>
-            <Button
-              variant='contained'
-              color='primary'
-              style={{ marginTop: 20 }}
-              onClick={this.fetchItemsHandler}
-              className={classes.button}
-            >Get</Button>
-          </Grid>
-        </Grid>
-        {entryModal}
-        {addColorModal}
-        {/* {itemTable}  Rajneesh */}
         <React.Fragment>
-        <Table>
-                  <TableHead>
-                    <TableRow>
-                      <TableCell> Sl No</TableCell>
-                      <TableCell> Kit Name</TableCell>
-                      <TableCell> Kit  Description</TableCell>
-                      <TableCell> Kit Prize</TableCell>
-                      <TableCell>Uniform Kit</TableCell>
-                      <TableCell>For New Student</TableCell>
-                      <TableCell>For Old Student</TableCell>
-                      <TableCell>Items Count</TableCell>
-                      <TableCell>View Details</TableCell>
-                      <TableCell>Delete</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                  {this.props.kitList && this.props.kitList.slice(this.state.page * this.state.rowsPerPage, this.state.page * this.state.rowsPerPage + this.state.rowsPerPage).map((item, i) => { 
-                    return (
-                  <TableRow>
-                     <TableCell> { i + 1 }</TableCell>
-                      {/* <TableCell>{ val.id} </TableCell> */}
-                      <TableCell>{ item.kit_name ? item.kit_name : ''}</TableCell>
-                      <TableCell> {item.kit_description ? item.kit_description : ''}</TableCell>
-                      <TableCell> {item.kit_price ? item.kit_price : '' }</TableCell>
-                      <TableCell>{item.is_uniform_kit ? 'Yes' : 'No'}</TableCell>
-                      <TableCell>{item.is_applicable_to_new_student ? 'Yes' : 'No'}</TableCell>
-                      <TableCell>{item.is_applicable_to_old_student ? 'Yes' : 'No'}</TableCell>
-                      <TableCell>{item.item && item.item.length}</TableCell>
-                      <TableCell>{ <Button
-          variant='contained'
-          color='primary'
-          onClick={() => this.viewDetailsModalHandler(item.id)}
-        >View Details</Button>}</TableCell>
-        <TableCell><DeleteForever onClick={() => { this.deleteModalShowHandler(item.id) }} /></TableCell>
-                  </TableRow>
-                    )
-                  })}
-                </TableBody>
-              </Table>
-              <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={this.props.kitList && this.props.kitList.length}
-                rowsPerPage={this.state.rowsPerPage}
-                page={this.state.page}
-                onChangePage={this.handleChangePage}
-                onChangeRowsPerPage={this.handleChangeRowsPerPage}
+          <Grid container spacing={3} style={{ padding: 15 }}>
+            <Grid item xs='8'>
+              <label className='student-addStudent-segment1-heading' />
+            </Grid>
+            <Grid item xs='4'>
+              {this.state.showAdd ? (
+                <Button
+                  variant='contained'
+                  color='primary'
+                  onClick={this.showEntryModal}
+                  disabled={
+                    !this.state.currentSession ||
+                    !this.state.currentBranch ||
+                    !this.state.currentGrade
+                  }
+                >
+                  Create New Kit
+                </Button>
+              ) : null}
+            </Grid>
+            <Grid item xs='3'>
+              <label style={{ fontWeight: '20' }}>Academic Year*</label>
+              <Select
+                placeholder='Select Session'
+                value={
+                  this.state.currentSession
+                    ? {
+                        value: this.state.currentSession,
+                        label: this.state.currentSession,
+                      }
+                    : null
+                }
+                options={
+                  this.props.session && this.props.session.session_year.length
+                    ? this.props.session.session_year.map((session) => ({
+                        value: session,
+                        label: session,
+                      }))
+                    : []
+                }
+                onChange={this.sessionChangeHandler}
               />
+            </Grid>
+            <Grid item xs='3'>
+              <label style={{ fontWeight: '20' }}>Branch*</label>
+              <Select
+                placeholder='Select Branch'
+                value={
+                  this.state.currentBranch
+                    ? {
+                        value: this.state.currentBranch.id,
+                        label: this.state.currentBranch.branch_name,
+                      }
+                    : null
+                }
+                options={
+                  this.props.branches.length
+                    ? this.props.branches.map((branch) => ({
+                        value: branch.branch.id,
+                        label: branch.branch.branch_name,
+                      }))
+                    : []
+                }
+                onChange={this.branchChangeHandler}
+              />
+            </Grid>
+            <Grid item xs='3'>
+              <label style={{ fontWeight: '20' }}>Grade*</label>
+              <Select
+                placeholder='Select Grade'
+                value={
+                  this.state.currentGrade
+                    ? {
+                        value: this.state.currentGrade.id,
+                        label: this.state.currentGrade.grade,
+                      }
+                    : null
+                }
+                options={
+                  this.props.grades && this.props.grades.length
+                    ? this.props.grades.map((gradeEle) => ({
+                        value: gradeEle.grade.id,
+                        label: gradeEle.grade.grade,
+                      }))
+                    : []
+                }
+                onChange={this.gradeChangeHandler}
+              />
+            </Grid>
+            <Grid item xs='3'>
+              <Button
+                variant='contained'
+                color='primary'
+                style={{ marginTop: 20 }}
+                onClick={this.fetchItemsHandler}
+                className={classes.button}
+              >
+                Get
+              </Button>
+            </Grid>
+          </Grid>
+          {entryModal}
+          {addColorModal}
+          {/* {itemTable}  Rajneesh */}
+          <React.Fragment>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell> Sl No</TableCell>
+                  <TableCell> Kit Name</TableCell>
+                  <TableCell> Kit Description</TableCell>
+                  <TableCell> Kit Price</TableCell>
+                  <TableCell>Uniform Kit</TableCell>
+                  <TableCell>For New Student</TableCell>
+                  <TableCell>For Old Student</TableCell>
+                  <TableCell>Items Count</TableCell>
+                  <TableCell>View Details</TableCell>
+                  <TableCell>Delete</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {this.props.kitList &&
+                  this.props.kitList
+                    .slice(
+                      this.state.page * this.state.rowsPerPage,
+                      this.state.page * this.state.rowsPerPage + this.state.rowsPerPage
+                    )
+                    .map((item, i) => {
+                      return (
+                        <TableRow>
+                          <TableCell> {i + 1}</TableCell>
+                          {/* <TableCell>{ val.id} </TableCell> */}
+                          <TableCell>{item.kit_name ? item.kit_name : ''}</TableCell>
+                          <TableCell>
+                            {' '}
+                            {item.kit_description ? item.kit_description : ''}
+                          </TableCell>
+                          <TableCell> {item.kit_price ? item.kit_price : ''}</TableCell>
+                          <TableCell>{item.is_uniform_kit ? 'Yes' : 'No'}</TableCell>
+                          <TableCell>
+                            {item.is_applicable_to_new_student ? 'Yes' : 'No'}
+                          </TableCell>
+                          <TableCell>
+                            {item.is_applicable_to_old_student ? 'Yes' : 'No'}
+                          </TableCell>
+                          <TableCell>{item.item && item.quantity.length}</TableCell>
+                          <TableCell>
+                            {
+                              <Button
+                                variant='contained'
+                                color='primary'
+                                onClick={() => this.viewDetailsModalHandler(item.id)}
+                              >
+                                View Details
+                              </Button>
+                            }
+                          </TableCell>
+                          <TableCell>
+                            <DeleteForever
+                              onClick={() => {
+                                this.deleteModalShowHandler(item.id);
+                              }}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+              </TableBody>
+            </Table>
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component='div'
+              count={this.props.kitList && this.props.kitList.length}
+              rowsPerPage={this.state.rowsPerPage}
+              page={this.state.page}
+              onChangePage={this.handleChangePage}
+              onChangeRowsPerPage={this.handleChangeRowsPerPage}
+            />
+          </React.Fragment>
+          {deleteModal}
+          {viewdetModal}
+          {this.props.dataLoading || this.props.gradeLoader ? (
+            <CircularProgress open />
+          ) : null}
         </React.Fragment>
-        {deleteModal}
-        {viewdetModal}
-        {this.props.dataLoading || this.props.gradeLoader ? <CircularProgress open /> : null}
-      </React.Fragment>
       </Layout>
-    )
+    );
   }
 }
 
@@ -1443,23 +1794,36 @@ const mapStateToProps = (state) => ({
   itemsList: state.inventory.storeAdmin.kit.itemsListKitWise,
   kitList: state.inventory.storeAdmin.kit.kitList,
   session: state.academicSession.items,
-  subject: state.subjects.items
-})
+  subject: state.subjects.items,
+});
 
 const mapDispatchToProps = (dispatch) => ({
   loadSession: dispatch(apiActions.listAcademicSessions()),
-  fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
-  fetchItems: (session, branch, grade, alert, user) => dispatch(actionTypes.listGradeKit({ session, branch, grade, alert, user })),
-  createColor: (color, alert, user) => dispatch(actionTypes.createColorKit({ color, alert, user })),
-  listColorItems: (session, branch, grade, isUniform = true, isDelivery, alert, user) => dispatch(actionTypes.listColorItems({ session, branch, grade, isUniform, isDelivery, alert, user })),
+  fetchBranches: (session, alert, user) =>
+    dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
+  fetchItems: (session, branch, grade, alert, user) =>
+    dispatch(actionTypes.listGradeKit({ session, branch, grade, alert, user })),
+  createColor: (color, alert, user) =>
+    dispatch(actionTypes.createColorKit({ color, alert, user })),
+  listColorItems: (session, branch, grade, isUniform = true, isDelivery, alert, user) =>
+    dispatch(
+      actionTypes.listColorItems({
+        session,
+        branch,
+        grade,
+        isUniform,
+        isDelivery,
+        alert,
+        user,
+      })
+    ),
   createKit: (payload) => dispatch(actionTypes.createGradeKit(payload)),
   updateKits: (payload) => dispatch(actionTypes.updateKits(payload)),
-  deleteKit: (id, user, alert) => dispatch(actionTypes.deleteGradeKit({ id, user, alert })),
-  fetchGrades: (session, branch, user, alert) => dispatch(actionTypes.fetchGradesPerBranch({ session, branch, user, alert })),
-  listSubjects: dispatch(apiActions.listSubjects())
-})
+  deleteKit: (id, user, alert) =>
+    dispatch(actionTypes.deleteGradeKit({ id, user, alert })),
+  fetchGrades: (session, branch, user, alert) =>
+    dispatch(actionTypes.fetchGradesPerBranch({ session, branch, user, alert })),
+  listSubjects: (a, b, payload) => dispatch(apiActions.listSubjects(a, b, payload)),
+});
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withStyles(styles)(Kit))
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(Kit));

@@ -200,6 +200,7 @@ export const deleteGradeKit = (payload) => {
         type: DELETE_GRADE_KIT,
         id: payload.id
       })
+      payload.alert.success('Kit Deleted Successfully')
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)
@@ -222,6 +223,7 @@ export const bulkItemsUpload = (payload) => {
           data: response.data
         }
       })
+    payload.alert.success('Uploaded Successfully')
       dispatch(actionTypes.dataLoaded())
     }).catch(err => {
       console.log(err)

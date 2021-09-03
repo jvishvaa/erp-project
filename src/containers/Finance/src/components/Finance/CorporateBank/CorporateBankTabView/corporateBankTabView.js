@@ -67,7 +67,11 @@ class TabView extends Component {
     value: 'one',
     currentSession: null
   };
-
+  componentDidMount () {
+    if(this.props.user === null){
+      window.location.reload();
+    }
+  }
   handleChange = (event, value) => {
     this.setState({ value })
   };
@@ -94,7 +98,7 @@ class TabView extends Component {
               <Tab value='three' label='View Fee Accounts' />
               {/* <Tab value='four' label='Fee Accounts To Class' /> */}
               <Tab value='five' label='Fee Accounts To Branch' />
-              {/* <Tab value='six' label='Store Fee Accounts' /> */}
+              <Tab value='six' label='Store Fee Accounts' />
               {/* <Tab value='six' label='AirPay Fee Account' /> */}
             </Tabs>
           </AppBar>

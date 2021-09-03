@@ -63,6 +63,9 @@ class PettyExpenses extends Component {
     selectedSession: null
   }
   componentDidMount () {
+    if(this.props.user === null){
+      window.location.reload();
+    }
     // this.props.fetchPettyCashAcc(this.props.user)
     // this.props.listCashOpeningBalance(this.props.user, this.props.alert)
   }
