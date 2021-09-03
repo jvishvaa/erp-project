@@ -126,7 +126,7 @@ const AssignQP = (props) => {
     requestData = {
       quiz_test_paper: selectedQp,
     };
-    if (JSON.parse(localStorage.getItem('isMsAPI'))) {
+    if (JSON.parse(localStorage.getItem('isMsAPI')) && props.location.state.historicalData === false) {
       msApihandleSubmit(requestData);
       return;
     }

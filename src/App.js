@@ -347,7 +347,7 @@ function App({ alert }) {
                             {({ match }) => <StudentHomeworkReport match={match} />}
                           </Route>
                           <Route path='/erp-online-class/class-work/:param1/:param2/:param3'>
-                            {({ match }) => <ClassWork match={match} />}
+                            {({ match, location }) => <ClassWork match={match} location={location}  />}
                           </Route>
                           <Route path='/communication/messagelog'>
                             {({ match }) => <MessageLog match={match} />}
@@ -704,7 +704,7 @@ function App({ alert }) {
                             {({ match }) => <AssessmentAnalysis match={match} />}
                           </Route>
                           <Route exact path='/erp-attendance-list/:id?'>
-                            {({ match }) => <AttendeeListRemake match={match} />}
+                            {({ match, location }) => <AttendeeListRemake match={match}  location={location} />}
                           </Route>
                           <Route exact path='/aol-attendance-list/:id?'>
                             {({ match }) => <AttendeeListRemake match={match} />}

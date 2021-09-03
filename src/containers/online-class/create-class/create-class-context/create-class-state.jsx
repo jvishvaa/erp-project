@@ -42,6 +42,7 @@ import endpoints from '../../../../config/endpoints';
 import { getFormatedTime } from '../utils';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import APIREQUEST from "../../../../config/apiRequest"
+import moment from 'moment';
 
 export const CreateclassContext = createContext();
 
@@ -261,10 +262,22 @@ const CreateclassProvider = (props) => {
     }
   }
   
+const chkLaunchDateMsApi = (start_time)=>{
+  const selectedDate = start_time.split(' ')[0];
+  if(JSON.parse(localStorage.getItem('isMsAPI'))){
+    let launchDate = localStorage.getItem('launchDate');
+    if(moment(selectedDate, "YYYY-MM-DD") > moment(launchDate, "YYYY-MM-DD")){
+      return true
+    }
+    return false
+  }
+  return false
+}
+
 const createNewOnlineClass = async (formdata) => {
   dispatch(request(CREATE_NEW_CLASS_REQUEST));
   try  {
-    const { data } = JSON.parse(localStorage.getItem('isMsAPI')) ? await APIREQUEST("post", "/oncls/v1/create-online-class/", formdata) :
+    const { data } = chkLaunchDateMsApi(formdata.start_time) ? await APIREQUEST("post", "/oncls/v1/create-online-class/", formdata) :
       await axiosInstance.post(`${endpoints.onlineClass.createClass}`, formdata);
     handleOnlineClassResult(data)
   } catch (error)  {

@@ -8,6 +8,10 @@ import {
   Divider,
   Typography,
   IconButton,
+  FormControlLabel,
+  Switch,
+  Tooltip,
+  Box
 } from '@material-ui/core';
 import CountdownTimer from './CountdownTimer';
 import { withRouter } from 'react-router-dom';
@@ -26,6 +30,7 @@ import CardView from './CardView';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import Layout from '../../../Layout';
 import DateRangeIcon from '@material-ui/icons/DateRange';
+import InfoIcon from '@material-ui/icons/Info';
 import DetailCardView from './DetailCardView';
 import TabPanel from './tab-panel/TabPanel';
 import APIREQUEST from '../../../../config/apiRequest';
@@ -60,10 +65,12 @@ const ErpAdminViewClass = ({ history }) => {
     JSON.parse(localStorage.getItem('filterData'))?.tabValue || 0
   );
 
-  const [dateRangeTechPer, setDateRangeTechPer] = useState([
-    moment().subtract(6, 'days'),
-    moment(),
-  ]);
+  const launchdate = localStorage.getItem('launchDate');
+  const [minStartDate, setMinStartDate]= useState();
+  const [maxStartDate, setMaxStartDate]= useState();
+  const [dateRangeTechPer, setDateRangeTechPer] = useState([]);
+  const [historicalData, setHistoricalData] = useState(false);
+
   const [classTypes, setClassTypes] = useState([
     { id: 0, type: 'Compulsory Class' },
     { id: 1, type: 'Optional Class' },
@@ -139,7 +146,6 @@ const ErpAdminViewClass = ({ history }) => {
           section = [],
           subject = [],
           course = {},
-          date = [moment().subtract(6, 'days'), moment()],
           page: pageNumber = 1,
           tabValue: tabVal = 0,
         } = JSON.parse(localStorage.getItem('filterData')) || {};
@@ -149,9 +155,6 @@ const ErpAdminViewClass = ({ history }) => {
           setSelectedClassType(classtype);
         }
         if (window.location.pathname !== '/erp-online-class-student-view') {
-          if (date?.length) {
-            setDateRangeTechPer([moment(date?.[0]), moment(date?.[1])]);
-          }
           if (academic?.id) {
             // setSelectedAcademicYear(academic);
             const acadId = academic?.id || '';
@@ -239,7 +242,7 @@ const ErpAdminViewClass = ({ history }) => {
 
   function callApi(api, key) {
     setLoading(true);
-    if (key === 'filter' && JSON.parse(localStorage.getItem('isMsAPI'))) {
+    if (key === 'filter' && JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
       msCallFilterApi(api);
       return;
     }
@@ -443,7 +446,8 @@ const ErpAdminViewClass = ({ history }) => {
   function handleClearFilter() {
     localStorage.removeItem('filterData');
     localStorage.removeItem('viewMoreData');
-    setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
+    const getvalues = getminMaxDate();
+    setDateRangeTechPer(getvalues.datearr);
     setSelectedGrade([]);
     setCourseList([]);
     setSelectedCourse('');
@@ -567,11 +571,11 @@ const ErpAdminViewClass = ({ history }) => {
       const { data } = JSON.parse(localStorage.getItem('isMsAPI'))
         ? await APIREQUEST(
             'get',
-            `/oncls/v1/oncls-report/?start_date=${moment(startDateTechPer).format(
+            `/reports/v1/oncls-report/?start_date=${moment(startDateTechPer).format(
               'YYYY-MM-DD'
             )}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
             null,
-            'arraybuffer'
+            'arraybuffer', true
           )
         : await axiosInstance.get(
             `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
@@ -732,6 +736,82 @@ const ErpAdminViewClass = ({ history }) => {
     setTabValue(0);
   };
 
+  const getminMaxDate = ()=>{
+    let mindate = "",
+        maxDate = "";
+    let datearr = [];
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      if(historicalData){
+          mindate = moment(launchdate, "YYYY-MM-DD").subtract(1, 'year').format("YYYY-MM-DD");
+          maxDate = moment(launchdate, "YYYY-MM-DD").format("YYYY-MM-DD");
+          datearr = [moment(maxDate, "YYYY-MM-DD").subtract(6,'days'), moment(maxDate, "YYYY-MM-DD")];
+      }
+      else{
+          mindate = moment(launchdate).add(1, 'day').format('YYYY-MM-DD');
+          maxDate = moment(launchdate, "YYYY-MM-DD").add(1, 'year').format("YYYY-MM-DD");
+          var a = moment(launchdate, "YYYY-MM-DD").add(1, 'day');
+          var b = moment();
+          if(b.diff(a, 'days') > 6){
+            datearr = [moment().subtract(6, 'days'),  moment()];
+          }
+          else{
+            datearr = [moment(mindate, "YYYY-MM-DD"), moment().add(1, 'day')];
+          }
+      }
+    }
+    else{
+        mindate = "";
+        maxDate = "";
+        datearr = [moment().subtract(6, 'days'),  moment()];
+    }
+    return { mindate : mindate, maxDate : maxDate, datearr : datearr }
+  }
+
+  useEffect(()=>{
+    const getvalues = getminMaxDate();
+    setMinStartDate(getvalues.mindate);
+    setMaxStartDate(getvalues.maxDate);
+    setDateRangeTechPer(getvalues.datearr);
+  }, [historicalData]);
+
+  const HistoricalDataEle = ()=>{
+    return (
+      JSON.parse(localStorage.getItem('isMsAPI')) ? 
+      <Grid item md={3} xs={12}>
+        <FormControlLabel
+          style={{minWidth:"90%", margin:"0px"}}
+          control={
+            <>
+            <Switch 
+              checked={historicalData} name="historicalData" color="primary"
+              onChange={(event)=>{ 
+                if(window.location.pathname === '/erp-online-class-student-view'){
+                  setFilterList([]);
+                  setPage(1);
+                  setTabValue(0);
+                }
+                setHistoricalData(event.target.checked )
+              }}
+            />
+          </>
+        }
+        label={
+          <Box alignItems="center" display="flex">
+            <Tooltip title={
+              `Recent data: records from ${launchdate} till date
+               Historical data: records before ${launchdate}`
+            }>
+              <InfoIcon fontSize="small" color="disabled"/>
+            </Tooltip>
+            <Typography style={{paddingLeft:"3px"}} color="secondary">{historicalData ? "Historical Data" : "Recent Data"}</Typography>
+          </Box>
+        }
+        />
+      </Grid>
+      : null
+    )
+  }
+
   return (
     <>
       <Layout>
@@ -775,6 +855,9 @@ const ErpAdminViewClass = ({ history }) => {
                     )}
                   />
                 </Grid>
+                {window.location.pathname === '/erp-online-class-student-view' && (
+                  <HistoricalDataEle />
+                )}
                 {window.location.pathname !== '/erp-online-class-student-view' && (
                   <>
                     <Grid item md={3} xs={12}>
@@ -898,9 +981,12 @@ const ErpAdminViewClass = ({ history }) => {
                         />
                       </Grid>
                     )}
+                    <HistoricalDataEle />
                     <Grid item xs={12} sm={3}>
                       <LocalizationProvider dateAdapter={MomentUtils}>
                         <DateRangePicker
+                          minDate = {minStartDate ? new Date(minStartDate) : undefined}
+                          maxDate = {maxStartDate ? new Date(maxStartDate) : undefined}          
                           startText='Select-date-range'
                           value={dateRangeTechPer}
                           onChange={(newValue) => {
@@ -1055,6 +1141,7 @@ const ErpAdminViewClass = ({ history }) => {
                         {selectedViewMore?.id && (
                           <Grid item md={selectedViewMore ? 4 : 0} xs={12}>
                             <DetailCardView
+                              historicalData={historicalData}
                               tabValue={tabValue}
                               loading={loading}
                               setLoading={setLoading}

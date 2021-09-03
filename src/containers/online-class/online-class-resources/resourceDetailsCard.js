@@ -121,7 +121,7 @@ export default function ResourceDetailsCardComponent(props) {
   React.useEffect(() => {
     if (props.resourceData) {
       setNoOfPeriods([]);
-      if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      if(JSON.parse(localStorage.getItem('isMsAPI')) && props.historicalData === false){
         msApiOnclsDetails();
         return;
       }
@@ -167,6 +167,7 @@ export default function ResourceDetailsCardComponent(props) {
               noOfPeriods.length > 0 &&
               noOfPeriods.map((data) => (
                 <ResourceClass
+                  historicalData ={props.historicalData}
                   key={data.zoom_id}
                   date={data.date}
                   resourceId={props.resourceData.online_class.id}
@@ -177,6 +178,7 @@ export default function ResourceDetailsCardComponent(props) {
         </Grid>
 
         <ResourceDialog
+          historicalData ={props.historicalData}
           selectedValue={selectedValue}
           open={open}
           onClose={handleClose}
