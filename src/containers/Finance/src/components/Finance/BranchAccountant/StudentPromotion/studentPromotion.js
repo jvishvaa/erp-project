@@ -81,6 +81,9 @@ const StudentPromotion = ({ classes, session, branches, fetchAllFeePlans, feePla
   }, [])
 
   useEffect(() => {
+    if(user === null){
+      window.location.reload()
+    }
     let promoted = []
     let notPromoted = []
     if (studentList.length) {

@@ -71,7 +71,9 @@ const AddGst = ({ classes, session, branches, alert, user, fetchBranches, fetchG
   const [stateCode, setStateCode] = useState(null)
 
   useEffect(() => {
-
+    if(user === null){
+      window.location.reload()
+    }
   }, [])
 
   const handleClickSessionYear = (e) => {

@@ -75,7 +75,7 @@ const resolveMenu = (url) => {
   if (url.includes('DepositTab')) return 'Expense Management';
   if (url.includes('ManagePayments')) return 'Finance';
   if (url.includes('finance/FeeStructure')) return 'Finance';
-  if (url.includes('BooksAndUniform')) return 'Finance';
+  if (url.includes('student_store')) return 'Finance';
   if (url.includes('ShippingPayment')) return 'Finance';
   if (url.includes('ManagePayments')) return 'Finance';
 

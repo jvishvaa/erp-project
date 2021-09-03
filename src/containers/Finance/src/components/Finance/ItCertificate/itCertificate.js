@@ -75,7 +75,9 @@ class ItCertificate extends Component {
   }
 
   componentDidMount () {
-
+    if(this.props.user === null){
+      window.location.reload();
+    }
   }
 
   componentDidUpdate () {

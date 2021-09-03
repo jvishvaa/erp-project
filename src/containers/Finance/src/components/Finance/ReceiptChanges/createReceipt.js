@@ -76,6 +76,12 @@ class CreateReceipt extends Component {
     }
   }
 
+  componentDidMount () {
+    if(this.props.user === null){
+      window.location.reload();
+    }
+  }
+
   handleChangePage = (event, newPage) => {
     this.setState({
       page: newPage
@@ -194,20 +200,20 @@ class CreateReceipt extends Component {
     return dataToShow
   }
 
-  componentDidMount () {
-    // axios
-    //   .get(urls.ReceiptType, {
-    //     headers: {
-    //       Authorization: 'Bearer ' + this.props.user
-    //     }
-    //   })
-    //   .then(res => {
-    //     this.setState({ receiptType: res.data.results })
-    //   })
-    //   .catch((error) => {
-    //     this.props.alert.error('Something Went Wrong')
-    //   })
-  }
+  // componentDidMount () {
+  //   axios
+  //     .get(urls.ReceiptType, {
+  //       headers: {
+  //         Authorization: 'Bearer ' + this.props.user
+  //       }
+  //     })
+  //     .then(res => {
+  //       this.setState({ receiptType: res.data.results })
+  //     })
+  //     .catch((error) => {
+  //       this.props.alert.error('Something Went Wrong')
+  //     })
+  // }
 
   render () {
     // let receiptList = null

@@ -73,7 +73,9 @@ class ReceiptSettings extends Component {
   }
 
   componentDidMount () {
-   
+   if(this.props.user === null){
+      window.location.reload();
+    }
   }
 
   handleChangePage = (event, newPage) => {

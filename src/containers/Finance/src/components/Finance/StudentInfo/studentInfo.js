@@ -78,6 +78,9 @@ class StudentInfoAdm extends Component {
     }
   }
   componentDidMount () {
+    if(this.props.user === null){
+      window.location.reload()
+    }
     // this.props.listBranches()
     // this.props.fetchGradeList(this.props.alert, this.props.user)
   }

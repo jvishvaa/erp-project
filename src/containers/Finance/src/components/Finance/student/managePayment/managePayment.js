@@ -79,6 +79,9 @@ class ManagePayment extends Component {
     this.currBrnch = JSON.parse(localStorage.getItem('userDetails')).branch_id;
   }
   componentDidMount() {
+    if(this.props.user === null){
+      window.location.reload()
+    }
     // for disabling the terminal
     document.onkeydown = function (e) {
       if (e.keyCode === 123) {
@@ -107,7 +110,7 @@ class ManagePayment extends Component {
     let sub = arr[2]
     console.log(arr[2] , "domain");
 
-    if (sub === 'revamp.qa.letseduvate.com') {
+    if (sub === 'localhost:3000') {
     if(branch_name === 'BLR'){
       this.checkPayment()
       console.log("match");
@@ -128,14 +131,7 @@ class ManagePayment extends Component {
         }
     }
     if (sub === 'orchids.letseduvate.com') {
-      if(branch_name === 'OIS Kurla'){
-        this.checkPayment()
-        console.log("match");
-        }
-        if(branch_name === 'OIS Mysore rd'){
-          this.checkPayment()
-          console.log("match");
-          }
+      this.checkPayment()
     }
     if (sub === 'aolschool.letseduvate.com') {
       this.checkPayment()

@@ -28,7 +28,7 @@ import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import '../../../css/staff.css'
 import * as actionTypes from '../../store/actions'
 import { urls } from '../../../../urls'
-// import storeReceipts from '../../Receipts/storePaymentReceipt' //rajneesh
+import storeReceipts from '../../Receipts/storePaymentReceipt' //rajneesh
 // import { urls } from '../../../../urls'
 
 const styles = theme => ({
@@ -67,6 +67,7 @@ class ConfigItems extends Component {
       searchByData: null,
       isTrans: false,
       confirm: false,
+      disableNext : true,
       activeStep: 0,
       isCheckAll: true,
       isChecked: {},
@@ -111,18 +112,19 @@ class ConfigItems extends Component {
   }
 
   componentDidMount () {
-    this.props.fetchWalletInfo(this.props.session, this.props.erpCode, this.props.alert, this.props.user)
-    this.props.fetchCouponDiscount(this.props.erpCode, this.props.session, this.props.selectedKits, this.props.alert, this.props.user)
-    this.props.fetchSubCategoryStore(this.props.session, this.props.erpCode, this.props.alert, this.props.user)
+const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
+    this.props.fetchWalletInfo(this.props.session, this.props.erpCode, this.props.alert, userToken)
+    this.props.fetchCouponDiscount(this.props.erpCode, this.props.session, this.props.selectedKits, this.props.alert, userToken)
+    this.props.fetchSubCategoryStore(this.props.session, this.props.erpCode, this.props.alert, userToken)
     if (!this.props.isStudent) {
       // this.props.fetchDeviceId(this.props.session, this.props.alert, this.props.user)
-      this.props.storeReceiptNumbers(this.props.session, this.props.erpCode, this.props.alert, this.props.user)
+      this.props.storeReceiptNumbers(this.props.session, this.props.branchId, this.props.erpCode, this.props.alert,userToken)
       // let grade = JSON.parse(localStorage.getItem('user_profile')).grade_id
       // let branch = JSON.parse(localStorage.getItem('user_profile')).branch_id
       // this.props.fetchSubCategoryStore(this.props.session, grade, branch, this.props.alert, this.props.user)
     }
     if (this.props.isDelivery === 'home') {
-      this.props.fetchDeliveryAmount(this.props.erpCode, this.props.alert, this.props.user)
+      this.props.fetchDeliveryAmount(this.props.erpCode, this.props.alert, userToken)
     }
     // current Date
     let today = new Date()
@@ -331,7 +333,8 @@ class ConfigItems extends Component {
     if (checkedItems.length === 0) {
       this.setState({
         total: 0,
-        isWalletAgree: false
+        isWalletAgree: false,
+        disableNext: true
       })
     } else if (checkedItems.length === this.props.storeItems.length &&
       !this.isQuantitySmall(this.state.quantity, this.props.itemsQuantity)) {
@@ -345,7 +348,8 @@ class ConfigItems extends Component {
       this.setState({
         total: this.props.selectedTotal + extraAmount - disAmt,
         discountAmount: disAmt,
-        isWalletAgree: false
+        isWalletAgree: false,
+        disableNext: false
       })
     } else {
       let stationaryPrice = 0
@@ -413,7 +417,8 @@ class ConfigItems extends Component {
       this.setState({
         total,
         discountAmount: disAmt,
-        isWalletAgree: false
+        isWalletAgree: false,
+        disableNext: false
       })
     }
   }
@@ -426,15 +431,37 @@ class ConfigItems extends Component {
       // hasSubjectChoosen,
       isNewStudent
     } = this.props
-    // for the new Student
-    // if (item.store_sub_category === 3) {
-    //   return false
-    // }
-    const subCat = this.props.subCategoryStore.length && this.props.subCategoryStore.filter(sub => {
-      return sub.is_store_sub_category_applicable && sub.store_sub_category === item.store_sub_category
+    
+    const subCat = []
+    let returnValue = "";
+    let isApplicable = "";
+    this.props.subCategoryStore.length && this.props.subCategoryStore.map(sub => {
+      if(sub.store_sub_category === item.store_sub_category){
+        subCat.push(sub)
+        isApplicable = sub.is_store_sub_category_applicable
+        if(isApplicable){
+          returnValue = false
+        }
+      }
     })
-    if (subCat && subCat.length) {
-      return false
+    // if (subCat && subCat.length) {
+    //   console.log(`subcat_length ${subCat[0].is_store_sub_category_applicable}, id = ${subCat[0].store_sub_category}`);
+    //   return subCat[0].is_store_sub_category_applicable
+    // }
+    if(subCat.length === 0 || isApplicable === false){
+      if (isNewStudent && item.item_compulsory === '1') {
+        return true
+      } else if (!isNewStudent && item.item_compulsory === '1') {
+        return false
+      } else if (isNewStudent && item.item_compulsory === '2') {
+        return false
+      } else if ((!isNewStudent && item.item_compulsory === '2')) {
+        return true
+      } else if (item.item_compulsory === '3') {
+        return false
+      } else if (item.item_compulsory === '4') {
+        return true
+      }
     }
     if (isNewStudent && !isUniformBought && item.is_uniform_item && (item.item_compulsory === '1' || item.item_compulsory === '4')) {
       return true
@@ -456,7 +483,7 @@ class ConfigItems extends Component {
     } else if (!isNewStudent && isMandatory && item.is_uniform_item && !isUniformBought && (item.item_compulsory === '2' || item.item_compulsory === '4')) {
       return true
     }
-    return false
+  return returnValue
   }
 
   checkQuantityDisable = (item) => {
@@ -476,10 +503,11 @@ class ConfigItems extends Component {
 
   checkChangeHandler = (e, row) => {
     let { isChecked } = this.state
+    let returnValue = '';
     // const subCat = this.props.subCategoryStore.length && this.props.subCategoryStore[0].is_store_sub_category_applicable && this.props.subCategoryStore[0].store_sub_category
-    const subCat = this.props.subCategoryStore.length && this.props.subCategoryStore.filter(sub => {
-      return sub.is_store_sub_category_applicable && sub.store_sub_category === row.store_sub_category
-    })
+    const subCat = this.props.subCategoryStore.length && this.props.subCategoryStore.filter(sub =>
+      sub.store_sub_category === row.store_sub_category && sub.is_store_sub_category_applicable
+    )
     // check if the check box is checked or unchecked
     // for sub cat
     const ids = subCat.length && this.props.storeItems.filter(item => item.store_sub_category === subCat[0].store_sub_category && row.store_sub_category === subCat[0].store_sub_category)
@@ -497,6 +525,7 @@ class ConfigItems extends Component {
         this.calculateTotalAmount(row.is_uniform_item)
       })
     }
+return returnValue
   }
 
   checkAllHandler = (e) => {
@@ -552,7 +581,7 @@ class ConfigItems extends Component {
   generatePdf = async () => {
     try {
       const response = await this.getPdfData(this.props.trnsId)
-      // storeReceipts(response.data)
+      storeReceipts(response.data)
     } catch (error) {
       console.error(error.response)
       if (error.response && (error.response.status === 400 || error.response.status === 404)) {
@@ -850,6 +879,15 @@ class ConfigItems extends Component {
       }
     }
 
+    if(this.state.isWalletAgree === undefined && this.state.shippingAmount){
+      if (event.target.checked) {
+        this.setState({ confirm: true, disableNext: false })
+        return
+      } else {
+        this.setState({ confirm: false, disableNext: true })
+        return
+      }
+    }
     if (this.state.selectedPayment === 'e' && !this.state.swipeDevice) {
       this.props.alert.warning('Select device before proceeding..')
       return
@@ -1396,11 +1434,10 @@ class ConfigItems extends Component {
                           type='checkbox'
                           name='checking'
                           checked={this.state.isChecked[row.id]}
-                          onChange={
-                            (e) => this.checkChangeHandler(e, row)
-                          }
+                          onChange={(e)=> this.checkChangeHandler(e, row)}
                           disabled={this.checkDisable(row)}
                         />
+
                       </TableCell>
                       <TableCell>{row.item_name}</TableCell>
                       <TableCell>{row.item_description}</TableCell>
@@ -2070,7 +2107,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   storePayment: (data, alert, user) => dispatch(actionTypes.storePayment({ data, alert, user })),
-  storeReceiptNumbers: (session, erp, alert, user) => dispatch(actionTypes.storeReceiptNumbers({ session, erp, alert, user })),
+  storeReceiptNumbers: (session, branch, erp, alert, user) => dispatch(actionTypes.storeReceiptNumbers({ session, branch, erp, alert, user })),
   fetchIfsc: (ifsc, alert, user) => dispatch(actionTypes.fetchIfsc({ ifsc, alert, user })),
   fetchMicr: (micr, alert, user) => dispatch(actionTypes.fetchMicr({ micr, alert, user })),
   fetchDeliveryAmount: (erp, alert, user) => dispatch(actionTypes.fetchDeliveryAmount({ erp, alert, user })),

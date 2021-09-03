@@ -29,7 +29,6 @@ const MenuItem = withRouter(({ history, ...props }) => {
     navigationItems,
   } = props || {};
   const [selectedIndex, setSelectedIndex] = useState(null);
-
   const [parentModule, setParentModule] = useState(false);
   const [flag, setFlag] = useState(true);
   const [childValue, setChildValue] = useState(!flag);
@@ -490,7 +489,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     },
     {
       name: 'Books & Uniform',
-      Path: '/finance/BooksAndUniform',
+      Path : '/finance/student_store'
     },
     {
       name: 'Shipping Payment',
