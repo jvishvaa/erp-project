@@ -194,7 +194,7 @@ const urls = {
   GetQuizQuestionsWithResponses: BASE + '/academic/online_class/quiz/user/questions/',
   QuizInfo: BASE + '/academic/quiz/details/',
   QuizBgms: BASE + '/academic/quiz/music/',
-  SUBJECT: BASE + '/finance/subject/',
+  SUBJECT: BASE + '/finance/subjects-for-kit/',
   SUBJECTMAPPING: BASE + '/finance/subjectmapping/',
   ERROR_HANDLER: BASE + '/internaltools/error_message/',
   FEEDS: BASE + '/accounts/feeds/',
