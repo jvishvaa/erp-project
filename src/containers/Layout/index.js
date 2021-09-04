@@ -6,30 +6,33 @@
 import React, { useContext, useState, useEffect, useRef, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import Drawer from '@material-ui/core/Drawer';
 import CloseIcon from '@material-ui/icons/Close';
 import MenuIcon from '@material-ui/icons/Menu';
-import { ListItemIcon } from '@material-ui/core';
-import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
+import {
+  ListItemIcon,
+  Box,
+  List,
+  ListItemText,
+  ListItem,
+  Drawer,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
 import clsx from 'clsx';
 import { fetchAcademicYearList } from '../../redux/actions';
 import DrawerMenu from '../../components/drawer-menu';
 import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core/styles';
 import Appbar from './Appbar';
 import SearchBar from './SearchBar';
 import {
   fetchThemeApi,
   isFetchThemeRequired,
 } from '../../utility-functions/themeGenerator';
-// import { isMsAPI } from "../../utility-functions/index";
 import Footer from '../footer/index';
 import AppSearchBarUseStyles from './AppSearchBarUseStyles';
+// import { isMsAPI } from '../../utility-functions/index';
 
 export const ContainerContext = createContext();
 
@@ -924,15 +927,15 @@ const Layout = ({ children, history }) => {
         </Drawer>
 
         <main className={classes.content}>
-          <div className={classes.appBarSpacer} />
+          <Box className={classes.appBarSpacer} />
           <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
           <ContainerContext.Provider value={{ containerRef }}>
-            <div className={classes.container} ref={containerRef}>
-              <div >{children}</div>
-              <div className={classes.footerBar}>
+            <Box className={classes.container} ref={containerRef}>
+              <Box>{children}</Box>
+              <Box mt={3} className={classes.footerBar}>
                 <Footer />
-              </div>
-            </div>
+              </Box>
+            </Box>
           </ContainerContext.Provider>
         </main>
       </div>
