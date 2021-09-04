@@ -1,18 +1,4 @@
 
-.compMultipleChoiceContainer {
-  width: 95%;
-  margin: 20px auto 0 auto;
-  border: 1px solid #014b7e;
-  border-radius: 10px;
-  padding: 20px 20px 20px 20px;
-  /* box-shadow: 0px 0px 5px 1px #ff6b6b; */
-  background-image: linear-gradient(
-    -45deg,
-    rgba(1, 75, 126, 0.1),
-    rgba(255, 107, 107, 0.2)
-  );
-  /* background-image: linear-gradient(45deg, #f6d2ff, #ffd9d9); */
-}
 
 .questionHeaderIcon .MuiIconButton-root {
   padding: 0;

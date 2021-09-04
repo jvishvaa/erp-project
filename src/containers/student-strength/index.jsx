@@ -18,6 +18,8 @@ import filterImage from '../../assets/images/unfiltered.svg';
 import Layout from '../Layout';
 import { makeStyles } from '@material-ui/core';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
+import { getModuleInfo } from '../../utility-functions';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   studentStrenghtDownloadButton: {
@@ -42,13 +44,23 @@ const StudentStrength = ({ history }) => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const classes = useStyles();
+  const location = useLocation();
 
   const handlePagination = (event, page) => {
     setPage(page);
     handleFilter(page);
   };
 
-  const moduleId = 290;
+  // const moduleId = 290;
+  function getModuleId() {
+    const tempObj = {
+      '/student-strength/': 'View School Strength',
+      default: 'View School Strength',
+    };
+    const moduleName = tempObj[location.pathname] || tempObj['default'];
+    return getModuleInfo(moduleName).id;
+  }
+
   useEffect(() => {
     setHRef([
       {
@@ -151,7 +163,7 @@ const StudentStrength = ({ history }) => {
                     setSelectedAcadmeicYear(value);
                     if (value) {
                       callApi(
-                        `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+                        `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${getModuleId()}`,
                         'branchList'
                       );
                     }
@@ -184,7 +196,7 @@ const StudentStrength = ({ history }) => {
                       setSelectedBranch(value);
                       callApi(
                         `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id
-                        }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                        }&branch_id=${selectedId.toString()}&module_id=${getModuleId()}`,
                         'gradeList'
                       );
                     }

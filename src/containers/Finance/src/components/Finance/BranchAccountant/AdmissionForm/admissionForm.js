@@ -71,6 +71,12 @@ class AdmissionFormAcc extends Component {
       }
     }
   }
+
+  componentDidMount () {
+      if(this.props.user === null){
+        window.location.reload();
+      }
+  }
   buttonHandler = (e) => {
     this.props.history.push({
       pathname: '/finance/customizedAdmissionForm'

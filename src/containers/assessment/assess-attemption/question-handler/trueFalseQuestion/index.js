@@ -5,11 +5,27 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 // import FormLabel from '@material-ui/core/FormLabel';
 import ReactHtmlParser from 'react-html-parser';
-
+import { makeStyles } from '@material-ui/styles';
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
 import '../../assess-attemption.css';
 
+
+const useStyles = makeStyles((theme)=>({
+  mcqOptions : {
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: '5px',
+    background: theme.palette.primary.primarylightest,
+    padding: '10px',
+    width: '100%',
+    textAlign: 'center',
+    justifyContent: 'space-between',
+    /* max-width: 400px, */
+    cursor: 'pointer',
+    marginBottom: '10px',
+  }
+}))
 const TrueFalseQuestion = (props) => {
+  const classes = useStyles()
   const {
     controls: { attemptQuestion },
   } = useContext(AssessmentHandlerContext);
@@ -43,7 +59,7 @@ const TrueFalseQuestion = (props) => {
             onChange={handleOptionValue}
           >
             <FormControlLabel
-              className='mcq-options'
+              className={classes.mcqOptions}
               value='option1'
               // control={<Radio />}
               control={<Radio checked={existingAnswer === 'option1'} />}
@@ -51,7 +67,7 @@ const TrueFalseQuestion = (props) => {
               label={'True'}
             />
             <FormControlLabel
-              className='mcq-options'
+              className={classes.mcqOptions}
               value='option2'
               // control={<Radio />}
               control={<Radio checked={existingAnswer === 'option2'} />}

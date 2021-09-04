@@ -466,11 +466,30 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   };
 
   const scrollableContainer = useRef(null);
-  const handleScroll = (dir) => {
+  const handleScroll = (index,dir) => {
+    const ele = document.getElementById(`homework_student_question_container_${index}`)
     if (dir === 'left') {
-      scrollableContainer.current.scrollLeft -= 150;
+      ele.scrollLeft -= 150;
     } else {
-      scrollableContainer.current.scrollLeft += 150;
+      ele.scrollLeft += 150;
+    }
+  };
+
+  const handleScrollAnswer = (index,dir) => {
+    const ele = document.getElementById(`homework_student_answer_attachment_${index}`)
+    if (dir === 'left') {
+      ele.scrollLeft -= 150;
+    } else {
+      ele.scrollLeft += 150;
+    }
+  };
+
+  const scrollableContainerBulk = useRef(null);
+  const handleScrollBulk = (dir) => {
+    if (dir === 'left') {
+      scrollableContainerBulk.current.scrollLeft -= 150;
+    } else {
+      scrollableContainerBulk.current.scrollLeft += 150;
     }
   };
 
@@ -605,7 +624,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     <div className='attachments-list-outer-container'>
                       <div className='prev-btn'>
                         {bulkData.length > 1 && (
-                          <IconButton onClick={() => handleScroll('left')}>
+                          <IconButton onClick={() => handleScrollBulk('left')}>
                             <ArrowBackIosIcon />
                           </IconButton>
                         )}
@@ -613,7 +632,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       <SimpleReactLightbox>
                         <div
                           className='attachments-list'
-                          ref={scrollableContainer}
+                          ref={scrollableContainerBulk}
                           onScroll={(e) => {
                             e.preventDefault();
                           }}
@@ -640,6 +659,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                     e.target.src = placeholder;
                                   }}
                                   alt={`Attachment-${i + 1}`}
+                                  style={{ width: '0', height: '0' }}
                                 />
                               ))}
                             </SRLWrapper>
@@ -648,7 +668,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       </SimpleReactLightbox>
                       <div className='next-btn'>
                         {bulkData.length > 1 && (
-                          <IconButton onClick={() => handleScroll('right')}>
+                          <IconButton onClick={() => handleScrollBulk('right')}>
                             <ArrowForwardIosIcon color='primary' />
                           </IconButton>
                         )}
@@ -711,7 +731,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           <div className='attachments-list-outer-container'>
                             <div className='prev-btn'>
                               {attachmentData[index]?.attachments.length > 1 && (
-                                <IconButton onClick={() => handleScroll('left')}>
+                                <IconButton onClick={() => handleScrollAnswer(index,'left')}>
                                   <ArrowBackIosIcon />
                                 </IconButton>
                               )}
@@ -719,6 +739,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             <SimpleReactLightbox>
                               <div
                                 className='attachments-list'
+                                id={`homework_student_answer_attachment_${index}`}
                                 ref={scrollableContainer}
                                 onScroll={(e) => {
                                   e.preventDefault();
@@ -746,6 +767,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                           e.target.src = placeholder;
                                         }}
                                         alt={`Attachment-${i + 1}`}
+                                        style={{ width: '0', height: '0' }}
                                       />
                                     ))}
                                   </SRLWrapper>
@@ -754,7 +776,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             </SimpleReactLightbox>
                             <div className='next-btn'>
                               {attachmentData[index]?.attachments.length > 1 && (
-                                <IconButton onClick={() => handleScroll('right')}>
+                                <IconButton onClick={() => handleScrollAnswer(index,'right')}>
                                   <ArrowForwardIosIcon color='primary' />
                                 </IconButton>
                               )}
@@ -773,7 +795,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
                           {question.question_files.length > 1 && (
-                            <IconButton onClick={() => handleScroll('left')}>
+                            <IconButton onClick={() => handleScroll(index,'left')}>
                               <ArrowBackIosIcon />
                             </IconButton>
                           )}
@@ -782,6 +804,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           <div
                             className='attachments-list'
                             ref={scrollableContainer}
+                            id={`homework_student_question_container_${index}`}
                             onScroll={(e) => {
                               e.preventDefault();
                             }}
@@ -810,6 +833,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                       e.target.src = placeholder;
                                     }}
                                     alt={`Attachment-${i + 1}`}
+                                    style={{ width: '0', height: '0' }}
                                   />
                                 ))}
                               </SRLWrapper>
@@ -818,7 +842,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         </SimpleReactLightbox>
                         <div className='next-btn'>
                           {question.question_files.length > 1 && (
-                            <IconButton onClick={() => handleScroll('right')}>
+                            <IconButton onClick={() => handleScroll(index,'right')}>
                               <ArrowForwardIosIcon color='primary' />
                             </IconButton>
                           )}

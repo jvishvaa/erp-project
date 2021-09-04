@@ -64,6 +64,9 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
     }
   }, [])
   useEffect(() => {
+    if(user === null){
+      window.location.reload();
+    }
     // if (!isAccountant) {
       if (sessionYear) {
         fetchBranchLists(sessionYear.value, alert, user)

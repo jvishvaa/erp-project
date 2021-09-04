@@ -117,6 +117,9 @@ const StudentShuffle = ({
   const [branch, setBranch] = useState('');
 
   useEffect(() => {
+    if(user === null){
+      window.location.reload()
+    }
     // Update the document title using the browser API
     if (sessionYear && shuffleStatus && branch) {
       fetchStudentShuffle(

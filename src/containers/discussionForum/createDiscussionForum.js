@@ -436,7 +436,7 @@ const CreateDiscussionForum = () => {
   }
   const handleEditorChange = (content, editor) => {
     setDescription(content);
-    setDescriptionDisplay(editor.getContent({ format: 'text' }));
+    setDescriptionDisplay(editor?.getContent({ format: 'text' }));
   };
 
   React.useEffect(() => {
@@ -488,6 +488,7 @@ const CreateDiscussionForum = () => {
 
   React.useEffect(() => {
     if(postsId?.id){
+      setLoading(true);
       axiosInstance.get(`/academic/${postsId?.id}/retrieve-post/`)
       .then((res) => {
         if(res.data.status_code === 200){
@@ -498,9 +499,10 @@ const CreateDiscussionForum = () => {
           setSelectedSubCategory(res.data.result.categories);
           setSelectedSubSubCategory(res.data.result.categories);
           setEditData(res.data.result.section_mapping[0])
+          setLoading(false);
         }
       })
-      .catch((error) => {console.log(error)});
+      .catch((error) => {console.log(error); setLoading(false)});
     }
   },[postsId])
 
@@ -700,6 +702,7 @@ const CreateDiscussionForum = () => {
         </Grid>
         <Grid container spacing={isMobile ? 3 : 5} style={{ width: widerWidth, margin: wider }}>
           <Grid item xs={12} sm={12}  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}>
+            {postsId?.id && description &&(
             <MyTinyEditor
               id="Editor"
               //description={description}
@@ -707,6 +710,15 @@ const CreateDiscussionForum = () => {
               handleEditorChange={handleEditorChange}
               setOpenEditor={setOpenEditor}
             />
+            )}
+            {!postsId?.id &&(
+            <MyTinyEditor
+              id="Editor"
+              content={description}
+              handleEditorChange={handleEditorChange}
+              setOpenEditor={setOpenEditor}
+              placeholder='Description...'
+            />)}
           </Grid>
         </Grid>
         <Grid container spacing={isMobile ? 1 : 5} style={{ width: '95%', margin: '-1.25rem 1.5% 0 1.5%' }}>

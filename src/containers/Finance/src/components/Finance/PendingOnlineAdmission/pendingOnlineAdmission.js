@@ -73,6 +73,11 @@ const OnlineAdmission = ({ dataLoadingStatus, branches, fetchBranches, getPendin
   //   getPendingOnlineAdmission(alert, user)
   // }, [alert, getPendingOnlineAdmission, user])
 
+  useEffect(() => {
+      if(user === null){
+        window.location.reload();
+      }
+  })
   const renderStudentErpTable = () => {
     let dataToShow = []
     dataToShow = onlinePendingAdmissionData && onlinePendingAdmissionData.data && onlinePendingAdmissionData.data.map((val, i) => {

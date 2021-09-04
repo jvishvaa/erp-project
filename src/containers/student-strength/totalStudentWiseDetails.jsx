@@ -18,6 +18,14 @@ const useStyles = makeStyles((theme)=>({
     fontSize: "13px",
     fontWeight: "bold !important",
     fontFamily: "Raleway",
+  },
+  totalStudentSubSubCard1:{
+    boxShadow: '0px 2px 6px #00000029',
+    borderRadius: '9px 9px 0px 0px',
+    opacity: 1,
+    backgroundColor: theme.palette.primary.primarylightest,
+    marginBottom: '10px !important',
+    padding: '8px 10px !important',
   }
 }))
 
@@ -80,7 +88,7 @@ const TotalStudentWiseDetails = ({ year, branch, grade, hadleClearGrade }) => {
       <Grid container spacing={2} className='totalStudentMainCard'>
         <Grid item md={12} xs={12} className='totalStudentSubCard'>
           <Grid container spacing={2}>
-            <Grid item md={12} xs={12} className='totalStudentSubSubCard1'>
+            <Grid item md={12} xs={12} className={classes.totalStudentSubSubCard1}>
               <Grid container spacing={2} className='totalStudentSubcard1Child'>
                 <Grid item md={7} xs={12} style={{ textAlign: 'left', padding: '0px' }}>
                   <Grid container spacing={1} direction='row' alignItems='center'>

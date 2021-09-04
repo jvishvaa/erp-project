@@ -302,7 +302,7 @@ const EditAddItems = ({
 
   return (
     <React.Fragment>
-      <h3 style={modalHeadStyle}>Add Items</h3>
+      <h3 style={modalHeadStyle}>Update Item</h3>
       <hr />
       <Grid container justify='center' alignItems='center' style={{ padding: '5px 15px' }}>
         <Grid item xs={4}>
@@ -532,6 +532,7 @@ const EditAddItems = ({
       <div style={{ margin: '20px 5px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <span>
           <Button
+            style={{color : "white"}}
             variant='outlined'
             color='primary'
             size='large'

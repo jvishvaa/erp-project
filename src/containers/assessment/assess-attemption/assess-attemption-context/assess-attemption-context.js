@@ -69,7 +69,7 @@ export const AssessmentHandlerContextProvider = ({
     const {
       id: testId,
       test_duration: testDuration,
-      question_paper_id: questionPaperId,
+      question_paper_id: qPaperId,
       question_paper__subject_name: questionPaperSubjectNames = [],
       question_paper__grade_name: questionPaperGradeName,
     } = assessmentDetailsObj || {};
@@ -90,8 +90,8 @@ export const AssessmentHandlerContextProvider = ({
       ...assessmentDetailsObj,
       ...userDetails,
       subject_name: questionPaperSubjectNames,
-      paper_id: questionPaperId,
-      question_paper: questionPaperId,
+      paper_id: qPaperId,
+      question_paper: qPaperId,
       test: testId,
       grade_name: questionPaperGradeName,
       start_time: startedAt,
@@ -126,6 +126,7 @@ export const AssessmentHandlerContextProvider = ({
         ...dataObj,
       });
       localStorage.setItem(storageKey, localData);
+      localStorage.setItem("assessment",storageKey)
       return true;
     } catch (e) {
       return false;
@@ -323,18 +324,20 @@ export const AssessmentHandlerContextProvider = ({
   const [assessmentQp, fetchAssessmentQpHook] = useFetcher(assessmentQpHookProps);
   function fetchAssessmentQp(params = {}, callbacks) {
     const { onResolve: onResolveInstacnceOne = () => {} } = callbacks || {};
-    const { assessment_id: assessmentId } = params || {};
-    if (!assessmentId) {
+    const { question_paper_id: quesPaperId, assessment_id: testId } = params || {};
+    if (!quesPaperId) {
       // eslint-disable-next-line no-alert
       window.alert('param not fed');
       return null;
     }
-    const APIEndpointURL = fetchAssessmentQuestionPapersQuestionsAPIEndpoint.replace(
-      '<question-paper-id>',
-      assessmentId
-    );
+    const APIEndpointURL =
+      fetchAssessmentQuestionPapersQuestionsAPIEndpoint.replace(
+        '<question-paper-id>',
+        quesPaperId
+      );
     const dataProp = {
       url: APIEndpointURL,
+      queryParamObj: { test_id: testId },
       // queryParamObj: { assessment_id: assessmentId },
       callbacks: {
         ...callbacks,

@@ -138,12 +138,6 @@ const useStyles = makeStyles((theme) => ({
       background: '#F9F9F9',
     },
   },
-  iconsColorSecondary: {
-    color: 'yellow',
-  },
-  iconsColorPrimary: {
-    color: 'purple',
-  },
   expandComments: {
     maxHeight: '200px',
     overflowY: 'scroll',
@@ -151,7 +145,7 @@ const useStyles = makeStyles((theme) => ({
     // border: '1px solid red',
   },
   selectBg: {
-    backgroundColor: '#fef0f0',
+    backgroundColor: theme.palette.primary.primarylightest,
   },
   unSelectBg: {
     backgroundColor: 'white',
@@ -795,14 +789,8 @@ function ViewOrchadio() {
                             />
                             <Grid item xs={3}>
                               <Tooltip title='Views'>
-                                <IconButton
-                                  className={
-                                    index % 2 === 0
-                                      ? classes.iconsColorPrimary
-                                      : classes.iconsColorSecondary
-                                  }
-                                >
-                                  <Typography variant='body2' style={{ marginRight: 5 }}>
+                                <IconButton>
+                                  <Typography variant='body2' style={{ marginRight: 5, color : "black" }}>
                                     {item.views}
                                   </Typography>
                                   <PersonIcon />
@@ -813,18 +801,13 @@ function ViewOrchadio() {
                               <Tooltip title='Like'>
                                 <IconButton
                                   id={index}
-                                  className={
-                                    index % 2 === 0
-                                      ? classes.iconsColorPrimary
-                                      : classes.iconsColorSecondary
-                                  }
                                   onClick={() => likeHandler(item)}
                                 >
-                                  <Typography variant='body2' style={{ marginRight: 5 }}>
+                                  <Typography variant='body2' style={{ marginRight: 5,color : "black" }}>
                                     {item.likes}
                                   </Typography>
                                   {item.is_like === true ? (
-                                    <LikeIcon color='secondary' />
+                                    <LikeIcon style = {{color : 'red'}} />
                                   ) : (
                                     <UnlikeIcon />
                                   )}
@@ -833,14 +816,8 @@ function ViewOrchadio() {
                             </Grid>
                             <Grid item xs={3}>
                               <Tooltip title='Comment'>
-                                <IconButton
-                                  className={
-                                    index % 2 === 0
-                                      ? classes.iconsColorPrimary
-                                      : classes.iconsColorSecondary
-                                  }
-                                >
-                                  <Typography variant='body2' style={{ marginRight: 5 }}>
+                                <IconButton>
+                                  <Typography variant='body2' style={{ marginRight: 5 , color : "black"}}>
                                     {item.comments_list.length}
                                   </Typography>
                                   <CommentIcon />

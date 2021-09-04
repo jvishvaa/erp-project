@@ -52,7 +52,7 @@ const styles = (theme) => ({
   media: {
     height: 300,
     borderRadius: 16,
-    backgroundSize:380
+    backgroundSize: 380
 
   },
   author: {
@@ -66,98 +66,112 @@ const styles = (theme) => ({
     marginBottom: 20,
     textAlign: 'center',
   },
+  ViewColor: {
+    color: `${theme.palette.primary.main} !important`
+  },
+  likeColor: {
+    color: 'red !important'
+  },
+  likeAndViewbtn: {
+    fontFamily: 'Open Sans',
+    fontSize: '12px',
+    fontWeight: 'lighter',
+    textTransform: 'capitalize',
+    color: theme.palette.primary.main,
+    backgroundColor: 'white',
+  }
 });
-    
+
 class ContentViewPublishStudent extends Component {
   constructor(props) {
     super(props);
     this.state = {
       starsRating: 0,
       data: this.props.location.state.data && this.props.location.state.data,
-      tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
+      tabValue: this.props.location.state.tabValue && this.props.location.state.tabValue,
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
       blogId: this.props.location.state.data && this.props.location.state.data.id,
-      likeStatus:false,
+      likeStatus: false,
       currentLikes: 0,
-      loading:false,
+      loading: false,
       likes: this.props.location.state.data && this.props.location.state.data.likes,
-      loginUserName : JSON.parse(localStorage.getItem('userDetails')).erp_user_id,
-      blogRatings :this.props.location.state.data && this.props.location.state.data.remark_rating,
-      overallRemark:this.props.location.state.data && this.props.location.state.data.overall_remark,
+      loginUserName: JSON.parse(localStorage.getItem('userDetails')).erp_user_id,
+      blogRatings: this.props.location.state.data && this.props.location.state.data.remark_rating,
+      overallRemark: this.props.location.state.data && this.props.location.state.data.overall_remark,
 
     };
 
   }
   componentDidMount() {
-    let {blogId} = this.state
+    let { blogId } = this.state
   }
   getLikeStatus = (isLiked) => {
-    let { likeStatus,likes }=this.state
+    let { likeStatus, likes } = this.state
     if (isLiked === true && likeStatus === false) {
-      this.setState({currentLikes :likes-1,likeStatus:true})
+      this.setState({ currentLikes: likes - 1, likeStatus: true })
     } else if (isLiked === true && likeStatus === true) {
-      this.setState({currentLikes :likes+1,likeStatus:false})
-  
+      this.setState({ currentLikes: likes + 1, likeStatus: false })
+
     } else if (isLiked === false && likeStatus === false) {
-      this.setState({currentLikes :likes+1,likeStatus:true})
-  
+      this.setState({ currentLikes: likes + 1, likeStatus: true })
+
     } else if (isLiked === false && likeStatus === true) {
-      this.setState({currentLikes :likes,likeStatus:false})
-  
+      this.setState({ currentLikes: likes, likeStatus: false })
+
     }
   }
-  handleLike = (isLiked,blogId) => {
+  handleLike = (isLiked, blogId) => {
     this.getLikeStatus(isLiked)
     let requestData = {
-      "blog_id": blogId ,
-  
+      "blog_id": blogId,
+
     }
-  axios.post(`${endpoints.blog.BlogLike}`, requestData)
-  
-  .then(result=>{
-  if (result.data.status_code === 200) {
-    this.setState({loading:false})
-    // setAlert('success', result.data.message);
-  } else {        
-    this.setState({loading:false})
-    // setAlert('error', result.data.message);
+    axios.post(`${endpoints.blog.BlogLike}`, requestData)
+
+      .then(result => {
+        if (result.data.status_code === 200) {
+          this.setState({ loading: false })
+          // setAlert('success', result.data.message);
+        } else {
+          this.setState({ loading: false })
+          // setAlert('error', result.data.message);
+        }
+      }).catch((error) => {
+        this.setState({ loading: false })
+        // setAlert('error', error.message);
+      })
   }
-  }).catch((error)=>{
-    this.setState({loading:false})
-    // setAlert('error', error.message);
-  })
+
+
+
+  getRatings = () => {
+    let { blogRatings } = this.state
+    if (!blogRatings) {
+      return []
     }
-
- 
-
-getRatings = () => {
-  let {blogRatings} =this.state
-  if (!blogRatings) {
-    return []
+    const type = typeof blogRatings
+    const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
+    const allRatingParamters = JSON.parse(parsedRatings)
+    return allRatingParamters
   }
-  const type = typeof blogRatings
-  const parsedRatings = type === 'object' ? blogRatings : JSON.parse(blogRatings)
-  const allRatingParamters = JSON.parse(parsedRatings)
-  return allRatingParamters
-}
 
-getOverAllRemark = () => {
- let {overallRemark} = this.state
- return overallRemark
-}
+  getOverAllRemark = () => {
+    let { overallRemark } = this.state
+    return overallRemark
+  }
 
 
 
-  
+
   render() {
     const { classes } = this.props;
-    const { tabValue, roleDetails,likes,currentLikes,likeStatus,loginUserName,data,feedbackrevisionReq} = this.state;
-    const blogFkLike= data && data.blog_fk_like
-    const likedUserIds=blogFkLike.map(blog => blog.user)
-    const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
-    const loginUser=likedUserIds.includes(roleDetails.user_id)
+    const { tabValue, roleDetails, likes, currentLikes, likeStatus, loginUserName, data, feedbackrevisionReq } = this.state;
+    const blogFkLike = data && data.blog_fk_like
+    const likedUserIds = blogFkLike.map(blog => blog.user)
+    const indexOfLoginUser = likedUserIds.indexOf(roleDetails.user_id)
+    const loginUser = likedUserIds.includes(roleDetails.user_id)
     const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
-    const name =data && data.author && data.author.id
+    const name = data && data.author && data.author.id
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -170,33 +184,36 @@ getOverAllRemark = () => {
               <div className='create_group_filter_container'>
                 <div className={classes.root}>
                   <Grid container spacing={3}>
-                  <Grid item xs={12}>
+                    <Grid item xs={12}>
                       <Button
                         style={{ cursor: 'Pointer' }}
+                        className='cancelButton labelColor'
                         onClick={() => window.history.back()}
                         align='right'
                       >
                         <i>Back</i>
                       </Button>
-                      </Grid>
-                      <Grid item xs={9}>
+                    </Grid>
+                    <Grid item xs={9}>
                       <Card className={classes.cardRoot}>
                         <Typography
                           variant='h5'
                           component='h2'
                           style={{ marginBottom: 10 }}
                         >
-                            {data.title}
+                          {data.title}
                         </Typography>
                         <CardMedia className={classes.media} image={data.thumbnail} />
-                        <CardContent> {tabValue  && data.comment ? 
-                        <CardContent> <Typography
-                        style={{color:'red', fontSize:'12px'}}
-                      >Comment:{data.comment}
-                     
-                      </Typography>
-                      <Typography style={{fontSize:'12px'}}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
-                      </CardContent>  :''}</CardContent>
+                        <CardContent> {tabValue && data.comment ?
+                          <CardContent>
+                            <Typography
+                              color="primary"
+                              style={{ fontSize: '12px' }}
+                            >Comment:{data.comment}
+
+                            </Typography>
+                            <Typography style={{ fontSize: '12px' }}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                          </CardContent> : ''}</CardContent>
                         <CardHeader
                           className={classes.author}
                           avatar={
@@ -204,7 +221,7 @@ getOverAllRemark = () => {
                               R
                             </Avatar>
                           }
-                       
+
                           title={data.author.first_name}
                           subheader=
                           {data && moment(data.created_at).format('MMM DD YYYY')}
@@ -212,43 +229,45 @@ getOverAllRemark = () => {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                          {ReactHtmlParser(data.content)}
+                            {ReactHtmlParser(data.content)}
                           </Typography>
-                          <Typography component='p'  style={{paddingRight: '650px', fontSize:'12px'}}
->
-                          Total Words : {data.word_count}
+                          <Typography component='p' style={{ paddingRight: '650px', fontSize: '12px' }}
+                          >
+                            Total Words : {data.word_count}
                           </Typography>
-                          <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
-                           Genre: {data.genre && data.genre.genre}
+                          <Typography component='p' style={{ paddingRight: '650px', fontSize: '12px' }}>
+                            Genre: {data.genre && data.genre.genre}
                           </Typography>
 
                         </CardContent>
                         <CardActions>
-                        {loginUserName !== name ? <Button
-                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
-                              onClick={()=>this.handleLike(isLiked,data.id)}
-                            > {isLiked || likeStatus ? <Favorite style={{ color: '#ff6b6b' }} />
-                                : <FavoriteBorder style={{ color: '#ff6b6b' }} />} {currentLikes === 0 ? likes
+                          {loginUserName !== name ?
+                            <Button
+                              className={classes.likeAndViewbtn}
+                              onClick={() => this.handleLike(isLiked, data.id)}
+                            > {isLiked || likeStatus ? <Favorite className={classes.likeColor} />
+                              : <FavoriteBorder className={classes.likeColor} />} {currentLikes === 0 ? likes
                                 : currentLikes
                               }Likes
                             </Button> : ''} &nbsp;&nbsp;&nbsp;
-                            <Button
-                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
-
-                            >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
-                            </Button>
+                          <Button
+                            className={classes.likeAndViewbtn}
+                          >   <Visibility className = {classes.ViewColor}/>{data.views}Views
+                          </Button>
                         </CardActions>
                       </Card>
                     </Grid>
                     <Grid item xs={3}>
-                    <Typography
-                        style={{ fontSize:'12px', width: '300px',
-                        paddingLeft: '30px',
-                        color: '#ff6b6b'}}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
-                     
+                      <Typography
+                      color = "primary"
+                        style={{
+                          fontSize: '12px', width: '300px',
+                          paddingLeft: '30px',
+                        }}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
+
                       </Typography>
-                        <ReviewPrincipal  blogId={data.id}  ratingParameters={this.getRatings}  overallRemark={this.getOverAllRemark}
-                        />
+                      <ReviewPrincipal blogId={data.id} ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
+                      />
                     </Grid>
                   </Grid>
                 </div>

@@ -59,6 +59,9 @@ class ReceiptBookAdm extends Component {
     }
     componentDidMount () {
       // this.todayDate()
+      if(this.props.user === null){
+        window.location.reload();
+      }
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile?.personal_info?.role?.toLowerCase()
       this.setState({

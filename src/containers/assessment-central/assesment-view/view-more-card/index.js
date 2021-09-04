@@ -32,6 +32,13 @@ const useStyles = makeStyles((theme) => ({
   expanded: {
     margin: '10px auto',
   },
+  resourceBulkDownload:{
+    fontSize: '1.1rem',
+    color: theme.palette.primary.main,
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '10px',
+  }
 }));
 
 const ViewMoreCard = ({
@@ -106,7 +113,7 @@ const ViewMoreCard = ({
           </div>
         </div>
       </div>
-      <div className='resourceBulkDownload'>
+      <div className={classes.resourceBulkDownload}>
         <div className='downloadAllContainer' style={{ width: '100%' }}>
           <div className='downloadAllIcon' style={{ width: '100%' }}>
             <div className={classes.root}>

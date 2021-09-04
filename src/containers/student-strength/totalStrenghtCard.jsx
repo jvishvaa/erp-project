@@ -10,6 +10,15 @@ const useStyles = makeStyles((theme)=>({
     fontSize: "13px",
     fontWeight: "bold !important",
     fontFamily: "Raleway",
+  },
+  studentStrengthCardMainDivActive:{
+    borderRadius: '10px',
+    padding: '10px 20px !important',
+    border: '1px solid #e2e2e2',
+    backgroundColor: theme.palette.primary.primarylightest,
+    boxShadow: '0px 0px 4px #00000029',
+    width: '100% !important',
+    height: '100% !important',
   }
 }))
 
@@ -21,7 +30,7 @@ const TotalStudentStrengthCard = ({ fullData, selectedId, handleSelectCard }) =>
         container
         className={
           (fullData && fullData.grade) === (selectedId && selectedId.grade)
-            ? 'studentStrengthCardMainDivActive'
+            ? `${classes.studentStrengthCardMainDivActive}`
             : 'studentStrengthCardMainDivInActive'
         }
       >

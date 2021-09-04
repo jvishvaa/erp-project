@@ -293,7 +293,12 @@ import ViewiBook from './containers/intelligent-textbook/ViewiBook';
 import AllBooksPage from 'containers/intelligent-textbook/bookpage/AllBooksPage';
 import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook';
 import { themeGenerator } from '../src/utility-functions/themeGenerator';
-import { isMsAPI } from "./utility-functions/index";
+import { isMsAPI } from './utility-functions/index';
+import StoreAtStudent from 'containers/Finance/src/components/Inventory/Student/storeAtStudent';
+import PolicyPrivacy from 'containers/login/TermsAndCondition/policy';
+import TermsAndCondition from 'containers/login/TermsAndCondition/termsAndCondition';
+import EditStoreTransactionDetails from 'containers/Finance/src/components/Finance/StorePaymentRequests/editStoreTransactionDetails';
+import ShippingAmountAtStudent from 'containers/Finance/src/components/Inventory/Student/shippingAtStudent';
 
 function App({ alert }) {
   isMsAPI();
@@ -343,7 +348,7 @@ function App({ alert }) {
                             {({ match }) => <StudentHomeworkReport match={match} />}
                           </Route>
                           <Route path='/erp-online-class/class-work/:param1/:param2/:param3'>
-                            {({ match }) => <ClassWork match={match} />}
+                            {({ match, location }) => <ClassWork match={match} location={location}  />}
                           </Route>
                           <Route path='/communication/messagelog'>
                             {({ match }) => <MessageLog match={match} />}
@@ -430,6 +435,12 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/blog/admin/contentViewPublishAdmin'>
                             {({ match }) => <ContentViewPublishAdmin match={match} />}
+                          </Route>
+                          <Route exact path='/privacy-policy'>
+                            {({ match }) => <PolicyPrivacy match={match} />}
+                          </Route>
+                          <Route exact path='/terms-condition'>
+                            {({ match }) => <TermsAndCondition match={match} />}
                           </Route>
                           <Route exact path='/blog/teacher/publish/view'>
                             {({ match }) => <TeacherPublishBlogView match={match} />}
@@ -690,11 +701,11 @@ function App({ alert }) {
                           <Route exact path='/assessment/comparision'>
                             {({ match }) => <AssessmentComparisionUI match={match} />}
                           </Route>
-                          <Route exact path='/assessment/:assessmentId/analysis'>
+                          <Route exact path='/assessment/:questionPaperId/:assessmentId/analysis'>
                             {({ match }) => <AssessmentAnalysis match={match} />}
                           </Route>
                           <Route exact path='/erp-attendance-list/:id?'>
-                            {({ match }) => <AttendeeListRemake match={match} />}
+                            {({ match, location }) => <AttendeeListRemake match={match}  location={location} />}
                           </Route>
                           <Route exact path='/aol-attendance-list/:id?'>
                             {({ match }) => <AttendeeListRemake match={match} />}
@@ -702,7 +713,7 @@ function App({ alert }) {
                           <Route exact path='/assessment/'>
                             {({ match }) => <ViewAssessments match={match} />}
                           </Route>
-                          <Route exact path='/assessment/:assessmentId/attempt'>
+                          <Route exact path='/assessment/:questionPaperId/:assessmentId/attempt'>
                             {({ match }) => <AssessmentAttemption match={match} />}
                           </Route>
                           <Route exact path='/student-strength'>
@@ -1243,9 +1254,24 @@ function App({ alert }) {
                           <Route exact path='/finance/BooksAndUniform'>
                             {({ match }) => <BulkUniform match={match} alert={alert} />}
                           </Route>
+                          <Route exact path='/finance/student_store'>
+                            {({ match }) => <StoreAtStudent match={match} alert={alert} />}
+                          </Route>
+                           <Route exact path='/book_uniform_payment/'>
+                            {({ match }) => <Airpay match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/airpay/'>
+                            {({ match }) => <Airpay match={match} alert={alert} />}
+                          </Route>
+
                           <Route exact path='/finance/ShippingPayment'>
                             {({ match }) => (
-                              <ShippingAmount match={match} alert={alert} />
+                              <ShippingAmountAtStudent match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/editStoreTransactionDetails'>
+                            {({ match }) => (
+                              <EditStoreTransactionDetails match={match} alert={alert} />
                             )}
                           </Route>
                           <Route exact path='/Store/AddItems'>
@@ -1253,6 +1279,11 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/Store/CreateKit'>
                             {({ match }) => <Kit match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/storePayRequests'>
+                            {({ match }) => (
+                              <StorePaymentRequests match={match} alert={alert} />
+                            )}
                           </Route>
                           <Route exact path='/Store/SubCategoryAllow'>
                             {({ match }) => (

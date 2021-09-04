@@ -10,6 +10,8 @@ import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import * as actionTypes from '../../store/actions'
 import Modal from '../../../../ui/Modal/modal'
 import ConfigItems from '../StoreAtAcc/configItems'
+import Select from 'react-select';
+import { apiActions } from 'containers/Finance/src/_actions';
 
 const styles = theme => ({
   button: {
@@ -23,7 +25,7 @@ const styles = theme => ({
   }
 })
 
-const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, sendDeliveryDetails, fetchDeliveryDetails, erpValue, session, dataLoading, alert, user, history }) => {
+const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, sendDeliveryDetails, fetchDeliveryDetails, erpValue, session, dataLoading, alert, user, history, branchId }) => {
   const [erp, setErp] = useState(null)
   const [role, setRole] = useState(null)
   const [showConfigItem, setShowConfigItem] = useState(false)
@@ -38,17 +40,22 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
   const [kitId, setKitId] = useState('')
   const [tranId, setTranId] = useState('')
 
+// console.log("session", session)
+const erpUser = (JSON.parse(localStorage.getItem('userDetails'))).erp
+const userProfile = JSON.parse(localStorage.getItem('userDetails'))
+const roleLogin = userProfile?.personal_info?.role?.toLowerCase()
   useEffect(() => {
-    const erp = (JSON.parse(localStorage.getItem('userDetails'))).erp
-    const userProfile = JSON.parse(localStorage.getItem('userDetails'))
-    const roleLogin = userProfile.personal_info.role.toLowerCase()
+    if(user === null){
+      window.location.reload()
+    }
     setRole(roleLogin)
-    if (roleLogin === 'financeaccountant') {
-      fetchShipping(erpValue, alert, user)
+    if (roleLogin === 'financeaccountant' || erpUser === 'super_admin_OLV') {
+      fetchShipping(erpValue, alert, user,session)
       fetchDeliveryDetails(erpValue, alert, user)
+
     } else {
-      fetchShipping(erp, alert, user)
-      fetchDeliveryDetails(erp, alert, user)
+      fetchShipping(erpUser, alert, user, session)
+      fetchDeliveryDetails(erpUser, alert, user)
     }
     setErp(erp)
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -144,7 +151,7 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
       return
     }
     let data = {
-      student: { erp: erp || erpValue },
+      student: { erp: erp == "super_admin_OLV" || role === 'financeaccountant' ? erpValue : erp },
       name: name,
       phone_number: phone,
       address1: address1,
@@ -207,47 +214,47 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
       alert.warning('Kit Shipping amount is not assigned, cannot proceed, Sorry!')
       return
     }
-    if (role === 'financeaccountant') {
-      configHandler(kit, tran)
-    } else {
-      let isStudent = true
-      let del = null
-      let kitTobePaid = {
-        delivery_data_kit_id: kit,
-        t_no: tran
-      }
-      if (shippingDetails.kit_data && shippingDetails.kit_data[0] && shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.kit_price) {
-        del = {
-          delivery: {
-            delivery_id: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.id,
-            items: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.item
-          }
-        }
-      }
-      history.replace({
-        pathname: '/airpay/',
-        state: {
-          session_year: '2020-21',
-          uniform: {
-            uniform_id: null,
-            items: []
-          },
-          stationary: {
-            stationary_id: null,
-            items: []
-          },
-          ...shippingDetails.kit_data.length ? del : null,
-          total_paid_amount: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.kit_price,
-          ...kit ? kitTobePaid : null
-        },
-        user: user,
-        url: isStudent ? urls.AirPayHdfcStore : urls.AirpayStore
-      })
-    }
+configHandler(kit, tran)
+    // if (role === 'financeaccountant') {
+    //   configHandler(kit, tran)
+    // } else {
+    //   let isStudent = true
+    //   let del = null
+    //   let kitTobePaid = {
+    //     delivery_data_kit_id: kit,
+    //     t_no: tran
+    //   }
+    //   if (shippingDetails.kit_data && shippingDetails.kit_data[0] && shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.kit_price) {
+    //     del = {
+    //       delivery: {
+    //         delivery_id: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.id,
+    //         items: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.item
+    //       }
+    //     }
+    //   }
+      // history.replace({
+      //   pathname: '/airpay/',
+      //   state: {
+      //     session_year: session,
+      //     uniform: {
+      //       uniform_id: null,
+      //       items: []
+      //     },
+      //     stationary: {
+      //       stationary_id: null,
+      //       items: []
+      //     },
+      //     ...shippingDetails.kit_data.length ? del : null,
+      //     total_paid_amount: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.kit_price,
+      //     ...kit ? kitTobePaid : null
+      //   },
+      //   user: user,
+      //   url: isStudent ? urls.AirPayHdfcStore : urls.AirpayStore
+      // })
+    // }
   }
   return (
     <div style={{ padding: 20 }}>
-      {/* <h1>hello, {erp}</h1> */}
       {showConfigItem
         ? <React.Fragment>
           <ConfigItems
@@ -256,6 +263,7 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
             session={session}
             shippingComponent={showConfigItem}
             checkedKits={[]}
+            branchId={branchId}
             // isUniformBought={this.props.isUniformBought}
             // isStationaryBought={this.props.isStationaryBought}
             // hasSubjectChoosen={this.props.hasSubjectChoosen}
@@ -289,14 +297,14 @@ const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, 
                     <TableCell>{kit.is_uniform_kit ? 'Uniform kit' : 'Stationary Kit'}</TableCell>
                     <TableCell>{kit.is_delivery_home ? 'Yes' : 'No'}</TableCell>
                     <TableCell>{kit.is_delivery_home ? kit.amount : shippingDetails.kit_data && shippingDetails.kit_data[0] && shippingDetails.kit_data[0].kit ? shippingDetails.kit_data[0].kit.kit_price : 'NA'}</TableCell>
-                    <TableCell><Button color='primary' disabled={kit.is_uniform_kit || kit.is_delivery_home} variant='outlined' onClick={() => paymentHandler(kit.kit, kit.t_no)}>Pay Now</Button></TableCell>
+                    <TableCell><Button color='primary' style={{color:"white"}} disabled={kit.is_uniform_kit || kit.is_delivery_home} variant='outlined' onClick={() => paymentHandler(kit.kit, kit.t_no)}>Pay Now</Button></TableCell>
                   </TableRow>
                 )
               })}
             </TableBody>
           </Table>
           : <p>Hi, You have made no transaction yet, please go to Books and Uniforms section to buy kits!</p>}
-      {!showConfigItem ? <Button color='secondary' style={{ marginTop: 20 }} variant='outlined' onClick={showDeliveryModalHandler}> Enter/Modify Delivery Address</Button> : ''}
+      {!showConfigItem ? <Button color='secondary' style={{ marginTop: 20, color: 'white' }} variant='outlined' onClick={showDeliveryModalHandler}> Enter/Modify Delivery Address</Button> : ''}
       {deliveryList.length && !showConfigItem
         ? <div style={{ marginTop: 20 }}>
           <h3>Shipping Details</h3>
@@ -324,9 +332,10 @@ const mapStateToProps = state => ({
   trnsId: state.inventory.branchAcc.storeAtAcc.transactionId
 })
 const mapDispatchToProps = dispatch => ({
-  fetchShipping: (erp, alert, user) => dispatch(actionTypes.fetchShippingTransaction({ erp, alert, user })),
+  fetchShipping: (erp, alert, user, year) => dispatch(actionTypes.fetchShippingTransaction({ erp, alert, user, year })),
   fetchDeliveryDetails: (erp, alert, user) => dispatch(actionTypes.fetchDeliveryDetails({ erp, alert, user })),
-  sendDeliveryDetails: (data, alert, user) => dispatch(actionTypes.sendDeliveryDetails({ data, alert, user }))
+  sendDeliveryDetails: (data, alert, user) => dispatch(actionTypes.sendDeliveryDetails({ data, alert, user })),
+  loadSession: dispatch(apiActions.listAcademicSessions())
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(withRouter(ShippingAmount)))

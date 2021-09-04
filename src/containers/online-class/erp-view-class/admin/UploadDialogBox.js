@@ -20,6 +20,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Attachment from '../../../homework/teacher-homework/attachment';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import APIREQUEST from "../../../../config/apiRequest";
+import moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
   box: {
@@ -56,6 +57,7 @@ const UploadClassWorkDiaogBox = (props) => {
     classWorkDialog = false,
     OpenDialogBox,
     fullData = {},
+    historicalData
   } = props || {};
   const { online_class = {} } = fullData || {};
   const { id: onlineClassId = '' } = online_class || {};
@@ -97,7 +99,7 @@ const UploadClassWorkDiaogBox = (props) => {
 
   function getPeriodDetails() {
     setLoading(true);
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+    if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
       msapigetPeriodDetails();
       return;
     }
@@ -235,7 +237,7 @@ const UploadClassWorkDiaogBox = (props) => {
       online_class_id: onlineClassId,
       submitted_files: [...uploadFiles],
     };
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+    if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
       msApisubmitClassWorkAPI(obj)
       return;
     }
@@ -248,6 +250,15 @@ const UploadClassWorkDiaogBox = (props) => {
       .catch((error) => {
         setAlert('error', error.message);
       });
+  };
+
+  const isLessthanToday = ()=> {
+    let currt = moment().startOf('day');
+    let perddate = moment(periodDate, "YYYY-MM-DD");
+    if(periodData?.class_status?.toLowerCase() == "completed"  && perddate < currt){
+      return true
+    }
+    return false
   };
 
   const imageRef = useRef(null);
@@ -330,6 +341,7 @@ const UploadClassWorkDiaogBox = (props) => {
                 onChange={(e) => handleUploadFile(e)}
               />
               <label htmlFor='contained-button-file' style={{ color: 'white' }}>
+                { !isLessthanToday() &&
                 <Button
                   startIcon={<CloudUploadIcon />}
                   className={classes.submitButton}
@@ -340,13 +352,14 @@ const UploadClassWorkDiaogBox = (props) => {
                 >
                   Upload
                 </Button>
+                }
               </label>
             </div>
           )}
           <Button className='cancelButton labelColor' onClick={handleClose}>
             {isTeacher ? 'Close' : 'Cancel'}
           </Button>
-          {!isTeacher && (
+          { !isLessthanToday() && !isTeacher && (
             <Button
               onClick={submitClassWorkAPI}
               color='primary'

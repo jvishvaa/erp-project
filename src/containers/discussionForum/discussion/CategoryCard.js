@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme)=>({
   },
   selectedCard: {
     border: `1px solid ${theme.palette.secondary.main}`,
-    backgroundColor: '#FFF6F6',
+    backgroundColor: theme.palette.primary.primarylightest,
   },
 }));
 

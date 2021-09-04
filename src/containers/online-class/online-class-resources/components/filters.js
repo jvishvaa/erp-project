@@ -6,7 +6,12 @@ import {
   Divider,
   Typography,
   TablePagination,
+  FormControlLabel,
+  Switch,
+  Tooltip,
+  Box
 } from '@material-ui/core';
+import InfoIcon from '@material-ui/icons/Info';
 import { withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Loader from '../../../../components/loader/loader';
@@ -21,10 +26,11 @@ import { AlertNotificationContext } from '../../../../context-api/alert-context/
 import APIREQUEST from "../../../../config/apiRequest";
 
 const Filter = (props) => {
-  const [dateRangeTechPer, setDateRangeTechPer] = useState([
-    moment().subtract(6, 'days'),
-    moment(),
-  ]);
+  const launchdate = localStorage.getItem('launchDate');
+  const [minStartDate, setMinStartDate]= useState();
+  const [maxStartDate, setMaxStartDate]= useState();
+  const [dateRangeTechPer, setDateRangeTechPer] = useState([]);
+
   const [startDateTechPer, setStartDateTechPer] = useState(moment().format('YYYY-MM-DD'));
   const [endDateTechPer, setEndDateTechPer] = useState(getDaysAfter(moment(), 7));
 
@@ -118,7 +124,7 @@ const Filter = (props) => {
   }
 
   function callApi(api, key) {
-    if(key === "filter" && JSON.parse(localStorage.getItem('isMsAPI'))){
+    if(key === "filter" && JSON.parse(localStorage.getItem('isMsAPI')) && props.historicalData === false) {
       msAPiCallFilterApi(api);
       return;
     }
@@ -222,7 +228,8 @@ const Filter = (props) => {
   }
 
   function handleClearFilter() {
-    setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
+    const getvalues = getminMaxDate();
+    setDateRangeTechPer(getvalues.datearr);
     setSelectedClassType('');
     setEndDate('');
     setStartDate('');
@@ -348,6 +355,75 @@ const Filter = (props) => {
   // useEffect(() => {
   //   handleFilter();
   // }, [props?.tabValue]);
+
+  const getminMaxDate = ()=>{
+    let mindate = "",
+        maxDate = "";
+    let datearr = [];
+    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+      if(props.historicalData){
+          mindate = moment(launchdate, "YYYY-MM-DD").subtract(1, 'year').format("YYYY-MM-DD");
+          maxDate = moment(launchdate, "YYYY-MM-DD").format("YYYY-MM-DD");
+          datearr = [moment(maxDate, "YYYY-MM-DD").subtract(6,'days'), moment(maxDate, "YYYY-MM-DD")];
+      }
+      else{
+          mindate = moment(launchdate).add(1, 'day').format('YYYY-MM-DD');
+          maxDate = moment(launchdate, "YYYY-MM-DD").add(1, 'year').format("YYYY-MM-DD");
+          var a = moment(launchdate, "YYYY-MM-DD").add(1, 'day');
+          var b = moment();
+          if(b.diff(a, 'days') > 6){
+            datearr = [moment().subtract(6, 'days'),  moment()];
+          }
+          else{
+            datearr = [moment(mindate, "YYYY-MM-DD"), moment().add(1, 'day')];
+          }
+      }
+    }
+    else{
+        mindate = "";
+        maxDate = "";
+        datearr = [moment().subtract(6, 'days'),  moment()];
+    }
+    return { mindate : mindate, maxDate : maxDate, datearr : datearr }
+  }
+
+  useEffect(()=>{
+    const getvalues = getminMaxDate();
+    setMinStartDate(getvalues.mindate);
+    setMaxStartDate(getvalues.maxDate);
+    setDateRangeTechPer(getvalues.datearr);
+  }, [props.historicalData]);
+
+  const HistoricalDataEle = ()=>{
+    return (
+      JSON.parse(localStorage.getItem('isMsAPI')) ? 
+      <Grid item md={3} xs={12}>
+        <FormControlLabel
+          style={{minWidth:"90%", margin:"0px"}}
+          control={
+            <>
+            <Switch 
+              checked={props.historicalData} name="historicalData" color="primary"
+              onChange={(event)=>{ props.setHistoricalData(event.target.checked )}}
+            />
+          </>
+        }
+        label={
+          <Box alignItems="center" display="flex">
+            <Tooltip title={
+              `Recent data: records from ${launchdate} till date
+               Historical data: records before ${launchdate}`
+            }>
+              <InfoIcon fontSize="small" color="disabled"/>
+            </Tooltip>
+            <Typography style={{paddingLeft:"3px"}} color="secondary">{props.historicalData ? "Historical Data" : "Recent Data"}</Typography>
+          </Box>
+        }
+        />
+      </Grid>
+      : null
+    )
+  }
 
   return (
     <>
@@ -682,9 +758,12 @@ const Filter = (props) => {
             />
           </Grid>
         )}
+        <HistoricalDataEle />
         <Grid item xs={12} sm={3}>
           <LocalizationProvider dateAdapter={MomentUtils}>
             <DateRangePicker
+              minDate = {minStartDate ? new Date(minStartDate) : undefined}
+              maxDate = {maxStartDate ? new Date(maxStartDate) : undefined}
               startText='Select-date-range'
               value={dateRangeTechPer}
               onChange={(newValue) => {

@@ -56,6 +56,9 @@ class ConcessionReport extends Component {
     typesId: 2
   }
   componentDidMount () {
+      if(this.props.user === null){
+        window.location.reload();
+      }
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile && userProfile?.personal_info && userProfile?.personal_info?.role?.toLowerCase()
     this.setState({

@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
   },
   selectedRoot: {
     border: `1px solid ${theme.palette.primary.main}`,
-    background: '#FCEEEE',
+    background: theme.palette.primary.primarylightest,
     padding: '0.9rem',
     borderRadius: '10px',
     width: '100%',

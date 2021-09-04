@@ -1,15 +1,16 @@
 import React from 'react'
 import Rating from '@material-ui/lab/Rating'
 import withStyles from '@material-ui/core/styles/withStyles';
+import { theme } from 'highcharts';
 
-const StyledRating = withStyles({
+const StyledRating = withStyles((theme)=>({
   iconFilled: {
-    color: '#ff6b6b',
+    color: theme.palette.primary.main,
   },
   iconHover: {
-    color: '#ff6b6b',
+    color: ` ${theme.palette.primary.main} !important`,
   },
-})(Rating);
+}))(Rating);
 export default function RatingScale (props) {
 
   return (
@@ -19,7 +20,7 @@ export default function RatingScale (props) {
       size='large'
       name={props.type}
       value={props.rating}
-      style={{color:'#ff6b6b !important'}}
+      // style={{color:'#ff6b6b !important'}}
 
       onChange={(event, newValue) => {
         props.editRating(newValue, event.target.name)

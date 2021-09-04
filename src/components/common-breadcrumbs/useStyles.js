@@ -1,4 +1,5 @@
 import { makeStyles } from '@material-ui/core/styles';
+import { capitalize } from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -18,6 +19,7 @@ const useStyles = makeStyles((theme) => ({
       cursor: 'pointer',
       backgroundColor: 'transparent',
     },
+    textTransform: 'capitalize',
     color: theme.palette.secondary.main,
     fontWeight: 'bold',
     fontSize: '18px',
