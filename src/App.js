@@ -1260,6 +1260,10 @@ function App({ alert }) {
                            <Route exact path='/book_uniform_payment/'>
                             {({ match }) => <Airpay match={match} alert={alert} />}
                           </Route>
+                          <Route exact path='/airpay/'>
+                            {({ match }) => <Airpay match={match} alert={alert} />}
+                          </Route>
+
                           <Route exact path='/finance/ShippingPayment'>
                             {({ match }) => (
                               <ShippingAmountAtStudent match={match} alert={alert} />
