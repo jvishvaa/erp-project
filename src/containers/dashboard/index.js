@@ -107,7 +107,7 @@ const Dashboard = () => {
             </Typography>
           </Box>
           <Suspense fallback={<Loading />}>
-            {isMsAPIKey ? renderRoleDashboard() : <Loading />}
+            {isMsAPIKey ? renderRoleDashboard() : <DefaultDashboard />}
           </Suspense>
         </Box>
       </div>
