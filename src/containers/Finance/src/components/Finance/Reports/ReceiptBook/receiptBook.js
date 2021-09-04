@@ -67,6 +67,9 @@ class ReceiptBook extends Component {
       role: ''
     }
     componentDidMount () {
+      if(this.props.user === null){
+        window.location.reload();
+      }
       // this.todayDate()
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile && userProfile?.personal_info && userProfile?.personal_info?.role?.toLowerCase()

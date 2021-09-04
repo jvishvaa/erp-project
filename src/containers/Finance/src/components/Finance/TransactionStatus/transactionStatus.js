@@ -101,6 +101,9 @@ class TransactionStatus extends Component {
     // if (transactionState !== null) {
     //   this.setState(transactionState)
     // }
+    if(this.props.user === null){
+      window.location.reload();
+    }
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const isAccountant = userProfile?.personal_info?.role?.toLowerCase() === 'financeaccountant'
     this.setState({

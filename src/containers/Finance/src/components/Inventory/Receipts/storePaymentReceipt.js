@@ -499,7 +499,7 @@ const storePayment = (data, isCancelled) => {
             </div>
           )
         })}
-        {deliveryItem?.map((item, index) => {
+        {/* {deliveryItem?.map((item, index) => {
           totalUniformQuantity = totalUniformQuantity + (+item.quantity)
           totalCalcAmount = totalCalcAmount + (+item.final_price)
           totalWithoutGst = totalWithoutGst + (+item.actual_price)
@@ -538,8 +538,8 @@ const storePayment = (data, isCancelled) => {
               </div>
             </div>
           )
-        })}
-        {stationaryKit?.map((item, index) => {
+        })} */}
+        {/* {stationaryKit?.map((item, index) => {
           totalUniformQuantity = totalUniformQuantity + (+item.quantity)
           totalCalcAmount = totalCalcAmount + (+item.final_price)
           totalWithoutGst = totalWithoutGst + (+item.actual_price)
@@ -578,7 +578,7 @@ const storePayment = (data, isCancelled) => {
               </div>
             </div>
           )
-        })}
+        })} */}
         <div style={style.itemRow}>
           <div style={{ width: '35%', border: '0.5px solid black', textAlign: 'center' }}><strong>Total</strong></div>
           <div style={{ width: '11%', border: '0.5px solid black', textAlign: 'center' }}><strong>{totalUniformQuantity}</strong></div>
