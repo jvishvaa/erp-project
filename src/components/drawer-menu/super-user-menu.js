@@ -16,6 +16,8 @@ import { useHistory } from 'react-router-dom';
 import useStyles from './useStyles';
 import endpoints from '../../config/endpoints';
 
+
+
 const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
   const history = useHistory();
   const classes = useStyles();
@@ -24,7 +26,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
 
   return (
     <>
-      {/* {window.location.host !== endpoints.aolConfirmURL && (
+      {window.location.host !== endpoints.aolConfirmURL && (
         <ListItem
           button
           className={history.location.pathname === '/dashboard' ? 'menu_selection' : null}
@@ -34,11 +36,11 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
         >
           {' '}
           <ListItemIcon className={classes.menuItemIcon}>
-            <AssignmentIndIcon />
+            <HomeWorkIcon/>
           </ListItemIcon>
           <ListItemText className='menu-item-text'>Dashboard</ListItemText>
         </ListItem>
-      )} */}
+      )}
       {/* <ListItem
         button
         className={
