@@ -47,6 +47,9 @@ const AcceptRejectPayment = ({ classes, session, dataLoading, getPaymentDetails,
   const [imgs, setImg] = useState('')
 
   useEffect(() => {
+    if(user === null){
+      window.location.reload()
+    }
     setFilterWalletErp(paymentDetails)
   }, [paymentDetails])
   const handleSession = (e) => {

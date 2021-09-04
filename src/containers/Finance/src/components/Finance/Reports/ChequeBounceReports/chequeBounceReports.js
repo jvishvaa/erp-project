@@ -85,6 +85,9 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
   // const [accReasonToApprove, setAccReason] = useState({})
 
   useEffect(() => {
+      if(user === null){
+        window.location.reload();
+      }
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile && userProfile?.personal_info && userProfile?.personal_info?.role?.toLowerCase()
     setRole(role)

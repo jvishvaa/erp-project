@@ -6,33 +6,38 @@
 import React, { useContext, useState, useEffect, useRef, createContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import Drawer from '@material-ui/core/Drawer';
 import CloseIcon from '@material-ui/icons/Close';
 import MenuIcon from '@material-ui/icons/Menu';
-import { ListItemIcon } from '@material-ui/core';
-import List from '@material-ui/core/List';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
+import {
+  ListItemIcon,
+  Box,
+  List,
+  ListItemText,
+  ListItem,
+  Drawer,
+  useMediaQuery,
+  useTheme,
+} from '@material-ui/core';
 import clsx from 'clsx';
 import { fetchAcademicYearList } from '../../redux/actions';
 import DrawerMenu from '../../components/drawer-menu';
 import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { useTheme } from '@material-ui/core/styles';
 import Appbar from './Appbar';
 import SearchBar from './SearchBar';
 import {
   fetchThemeApi,
   isFetchThemeRequired,
 } from '../../utility-functions/themeGenerator';
-// import { isMsAPI } from "../../utility-functions/index";
-
+import Footer from '../footer/index';
+import AppSearchBarUseStyles from './AppSearchBarUseStyles';
+// import { isMsAPI } from '../../utility-functions/index';
 
 export const ContainerContext = createContext();
 
 const Layout = ({ children, history }) => {
+  const classAppBar = AppSearchBarUseStyles();
   const containerRef = useRef(null);
   const dispatch = useDispatch();
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -764,7 +769,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Books & Uniform': {
-        history.push('/finance/BooksAndUniform');
+        history.push('/finance/student_store');
         break;
       }
       case 'Shipping Payment': {
@@ -856,74 +861,84 @@ const Layout = ({ children, history }) => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   return (
-    <div className={classes.root}>
-      <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen}/>
-       <Drawer
-        open={drawerOpen}
-        variant={isMobile ? '' : 'permanent'}
-        // className={clsx(classes.drawer, {
-        //   [classes.drawerPaper]: drawerOpen,
-        //   [classes.drawerPaperClose]: !drawerOpen,
-        // })}
-        className={`${clsx(classes.drawer, {
-          [classes.drawerPaper]: drawerOpen,
-          [classes.drawerPaperClose]: !drawerOpen,
-        })} drawerScrollBar`}
-        classes={{
-          paper: clsx({
-            [classes.drawer]: true,
+    <div className={classes.rootColumn}>
+      <div className={classes.root}>
+        <Drawer
+          open={drawerOpen}
+          variant={isMobile ? '' : 'permanent'}
+          // className={clsx(classes.drawer, {
+          //   [classes.drawerPaper]: drawerOpen,
+          //   [classes.drawerPaperClose]: !drawerOpen,
+          // })}
+          className={`${clsx(classes.drawer, {
             [classes.drawerPaper]: drawerOpen,
             [classes.drawerPaperClose]: !drawerOpen,
-          }),
-        }}
-        onClose={() => setDrawerOpen(false)}
-      >
-        <div className={classes.appBarSpacer} />
-        {isMobile ? <SearchBar /> : null}
-        <List>
-          <ListItem
-            className={classes.menuControlContainer}
-            onClick={() => setDrawerOpen((prevState) => !prevState)}
-          >
-            <ListItemIcon>
-              {drawerOpen ? (
-                <CloseIcon className={classes.menuItemIcon} />
-              ) : (
-                <MenuIcon className={classes.menuItemIcon} />
-              )}
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Menu</ListItemText>
-          </ListItem>
-          {drawerOpen
-            ? navigationData &&
-              navigationData.length > 0 && (
-                <DrawerMenu
-                  superUser={superUser}
-                  drawerOpen={drawerOpen}
-                  navigationItems={navigationData}
-                  onClick={handleRouting}
-                  // flag={flag}
-                />
-              )
-            : navigationData &&
-              navigationData.length > 0 && (
-                <DrawerMenu
-                  superUser={superUser}
-                  navigationItems={navigationData}
-                  onClick={handleOpen}
-                  drawerOpen={drawerOpen}
-                />
-              )}
-        </List>
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <ContainerContext.Provider value={{ containerRef }}>
-          <div className={classes.container} ref={containerRef}>
-            {children}
-          </div>
-        </ContainerContext.Provider>
-      </main>
+          })} drawerScrollBar`}
+          classes={{
+            paper: clsx({
+              [classes.drawer]: true,
+              [classes.drawerPaper]: drawerOpen,
+              [classes.drawerPaperClose]: !drawerOpen,
+            }),
+          }}
+          onClose={() => setDrawerOpen(false)}
+        >
+          {isMobile ? <div className={classes.appBarSpacer} /> : null}
+          {isMobile ? <SearchBar /> : null}
+          <List>
+            <ListItem
+              className={classes.menuControlContainer}
+              onClick={() => setDrawerOpen((prevState) => !prevState)}
+            >
+              <ListItemIcon className={classes.menuItemIcon}>
+                {drawerOpen ? (
+                  <>
+                    <CloseIcon />
+                  </>
+                ) : (
+                  <>
+                    <MenuIcon />
+                  </>
+                )}
+              </ListItemIcon>
+              <ListItemText className='menu-item-text'>Menu</ListItemText>
+            </ListItem>
+            {drawerOpen
+              ? navigationData &&
+                navigationData.length > 0 && (
+                  <DrawerMenu
+                    superUser={superUser}
+                    drawerOpen={drawerOpen}
+                    navigationItems={navigationData}
+                    onClick={handleRouting}
+                    // flag={flag}
+                  />
+                )
+              : navigationData &&
+                navigationData.length > 0 && (
+                  <DrawerMenu
+                    superUser={superUser}
+                    navigationItems={navigationData}
+                    onClick={handleOpen}
+                    drawerOpen={drawerOpen}
+                  />
+                )}
+          </List>
+        </Drawer>
+
+        <main className={classes.content}>
+          <Box className={classes.appBarSpacer} />
+          <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
+          <ContainerContext.Provider value={{ containerRef }}>
+            <Box className={classes.container} ref={containerRef}>
+              <Box>{children}</Box>
+              <Box mt={3} className={classes.footerBar}>
+                <Footer />
+              </Box>
+            </Box>
+          </ContainerContext.Provider>
+        </main>
+      </div>
     </div>
   );
 };

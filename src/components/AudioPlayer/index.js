@@ -232,7 +232,7 @@ const AudioPlayer = ({
                     <Typography variant='body2' style={{ color: 'white', padding: 10 }}>
                       {likesCount || 0}
                     </Typography>
-                    {isLiked ? <LikeIcon color='secondary' /> : <UnlikeIcon />}
+                    {isLiked ? <LikeIcon style={{ color: 'red' }} /> : <UnlikeIcon />}
                   </IconButton>
                 </Tooltip>
               </Grid>

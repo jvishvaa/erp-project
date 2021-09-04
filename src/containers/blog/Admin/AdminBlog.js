@@ -478,7 +478,7 @@ class AdminBlog extends Component {
                     disabled={!startDate || !endDate}
                     onClick={this.handleFilter}
                   >
-                    Clear
+                    Filter
                   </Button>
                   {/* <Grid> */}
                   <Button
@@ -494,18 +494,6 @@ class AdminBlog extends Component {
                     Clear
                   </Button>
                   {/* <Grid> */}
-                  <Button
-                    style={{
-                      margin: '20px',
-                      marginTop: '30px',
-                    }}
-                    onClick={this.clearSelection}
-                    variant='contained'
-                    className='cancelButton labelColor'
-                    size='medium'
-                  >
-                    Clear
-                  </Button>
                   {/* </Grid> */}
                   {/* <Grid item> */}
                   <Button

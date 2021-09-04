@@ -35,12 +35,12 @@ const useStyles = makeStyles((theme) => ({
   display: {
     display: 'inline-block',
   },
-  fbutton:{
+  fbutton: {
     marginTop: '22%',
     marginLeft: '10%',
     paddingLeft: '30px',
     paddingRight: '30px',
-  }
+  },
 }));
 
 const ResponderView = () => {
@@ -100,13 +100,12 @@ const ResponderView = () => {
     setTimeout(() => {
       setLoading(false);
     }, 1500);
-    
+
     axiosInstance.get(endpoints.masterManagement.branchList).then((res) => {
       setBranches(res?.data?.data);
       // const defaultYear=res?.data?.data?.[0];
-
     });
-    
+
     getAppointments();
   }, [page]);
 
@@ -221,11 +220,11 @@ const ResponderView = () => {
             // const defaultValue=result?.data?.data?.[0];
             // handleYear({},defaultValue)
             setAcademicYear(result?.data?.data || []);
-            handleYear("",result?.data?.current_acad_session_data[0])
+            handleYear('', result?.data?.current_acad_session_data[0]);
           }
           if (key === 'branchList') {
-            console.log(result?.data?.data|| []);
-            
+            console.log(result?.data?.data || []);
+
             setBranchList(result?.data?.data?.results || []);
           }
           // if (key === 'gradeList') {
@@ -253,19 +252,16 @@ const ResponderView = () => {
   //     'academicYearList'
   //   );
   // });
-  const handleYear=(event, value)=>{
-   
-      console.log('moduleIdDDD', moduleId);
-      setSelectedAcadmeicYear(value);
-      if (value) {
-        callApi(
-          `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-          'branchList'
-        );
-      }
+  const handleYear = (event, value) => {
+    console.log('moduleIdDDD', moduleId);
+    setSelectedAcadmeicYear(value);
+    if (value) {
+      callApi(
+        `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
+        'branchList'
+      );
     }
-  
-
+  };
   const handleFilter = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -286,7 +282,6 @@ const ResponderView = () => {
     //   });
   };
 
-  
   // let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
   // console.log(userName.first_name, 'userName');
   // console.log(userName.erp, 'Erp ID');
@@ -294,96 +289,97 @@ const ResponderView = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <Grid md={12} sm={12} xs={12}>
-          <CommonBreadcrumbs componentName='Responder View' />
-        </Grid>
-        <form>
-          <Grid container direction='row' spacing={2} style={{ width: '100%' }}>
-            <Grid item xs={10} sm={5} md={3} className='responderV' lg={2}>
-              <Autocomplete
-                id='size-small-standard'
-                size='small'
-                // options={branches}
-                className={classes.root}
-                // onChange={handleBranche}
-                style={{ marginTop: '40px', marginLeft: '20px' }}
-                fullWidth
-                // getOptionLabel={(option) => option.branch_name}
-                onChange={handleYear}
-                id='branch_id'
-                className='dropdownIcon'
-                value={selectedAcademicYear || ''}
-                options={academicYear || ''}
-                getOptionLabel={(option) => option?.session_year || ''}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Academic Year'
-                    name='Academic'
-                    placeholder='Academic Year'
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid item xs={10} sm={5} md={3} lg={2}>
-              <Autocomplete
-                id='size-small-standard'
-                size='small'
-                // options={branches}
-                className={classes.root}
-                style={{ marginTop: '40px', marginLeft: '20px' }}
-                fullWidth
-                // onChange={handleBranche}
-                onChange={(event, value) => {
-                  setSelectedBranch([]);
-                  if (value) {
-                    // const ids = value.map((el)=>el)
-                    const selectedId = value.branch.id;
-                    setSelectedBranch(value);
-                    callApi(
-                      `${endpoints.academics.grades}?session_year=${
-                        selectedAcademicYear.id
-                      }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-                      'gradeList'
-                    );
-                  }
-                }}
-                id='branch_id'
-                className='dropdownIcon'
-                value={selectedBranch || ''}
-                options={branchList || ''}
-                getOptionLabel={(option) => option?.branch?.branch_name || ''}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    name='branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
-            </Grid>
-
-            <Grid item xs={4} sm={5} md={3} lg={2}>
-              <Button
-                variant='contained'
-                type='submit'
-                color='primary'
-                style = {{color : "white"}}
-                className={classes.fbutton}
-                onClick={handleFilter}
-              >
-                Filter
-              </Button>
-            </Grid>
+        <div style={{ height: '100%' }}>
+          <Grid md={12} sm={12} xs={12}>
+            <CommonBreadcrumbs componentName='Responder View' />
           </Grid>
-        </form>
-        {/* <div className='paginateData'>
+          <form>
+            <Grid container direction='row' spacing={2} style={{ width: '100%' }}>
+              <Grid item xs={10} sm={5} md={3} className='responderV' lg={2}>
+                <Autocomplete
+                  id='size-small-standard'
+                  size='small'
+                  // options={branches}
+                  className={classes.root}
+                  // onChange={handleBranche}
+                  style={{ marginTop: '40px', marginLeft: '20px' }}
+                  fullWidth
+                  // getOptionLabel={(option) => option.branch_name}
+                  onChange={handleYear}
+                  id='branch_id'
+                  className='dropdownIcon'
+                  value={selectedAcademicYear || ''}
+                  options={academicYear || ''}
+                  getOptionLabel={(option) => option?.session_year || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Academic Year'
+                      name='Academic'
+                      placeholder='Academic Year'
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={10} sm={5} md={3} lg={2}>
+                <Autocomplete
+                  id='size-small-standard'
+                  size='small'
+                  // options={branches}
+                  className={classes.root}
+                  style={{ marginTop: '40px', marginLeft: '20px' }}
+                  fullWidth
+                  // onChange={handleBranche}
+                  onChange={(event, value) => {
+                    setSelectedBranch([]);
+                    if (value) {
+                      // const ids = value.map((el)=>el)
+                      const selectedId = value.branch.id;
+                      setSelectedBranch(value);
+                      callApi(
+                        `${endpoints.academics.grades}?session_year=${
+                          selectedAcademicYear.id
+                        }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                        'gradeList'
+                      );
+                    }
+                  }}
+                  id='branch_id'
+                  className='dropdownIcon'
+                  value={selectedBranch || ''}
+                  options={branchList || ''}
+                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      name='branch'
+                      placeholder='Branch'
+                    />
+                  )}
+                />
+              </Grid>
+
+              <Grid item xs={4} sm={5} md={3} lg={2}>
+                <Button
+                  variant='contained'
+                  type='submit'
+                  color='primary'
+                  style={{ color: 'white' }}
+                  className={classes.fbutton}
+                  onClick={handleFilter}
+                >
+                  Filter
+                </Button>
+              </Grid>
+            </Grid>
+          </form>
+          {/* <div className='paginateData'>
           <TablePagination
             component='div'
             className='customPagination'
@@ -394,110 +390,49 @@ const ResponderView = () => {
             rowsPerPageOptions={false}
           />
         </div> */}
-        {appointmentsList.map((item, index) => {
-          return (
-            <form>
-              <Paper
-                className={classes.paper}
-                elevation={3}
-                // style={{ backgroundColor: 'gray' }}
-              >
-                <Grid container spacing={2}>
-                  <Grid
-                    item
-                    xs={12}
-                    md={4}
-                    container
-                    direction='column'
-                    spacing={2}
-                    style={{ marginTop: 40 }}
-                  >
-                    <Typography gutterBottom variant='subtitle1'>
-                      <Box
-                        fontWeight='fontWeightBold'
-                        m={1}
-                        className={classes.display}
-                        style={{ marginLeft: 15 }}
-                      >
-                        Student ERP:
-                      </Box>{' '}
-                      <Typography color = "secondary" className={classes.display}>
-                        {item.student?.username}
-                      </Typography>
-                    </Typography>
-                    <Typography gutterBottom variant='subtitle1'>
-                      <Box
-                        fontWeight='fontWeightBold'
-                        m={1}
-                        className={classes.display}
-                        style={{ marginLeft: 15 }}
-                      >
-                        Student Name:
-                      </Box>
-                      <Typography color = "secondary" className={classes.display}>
-                        {item.student?.first_name}
-                      </Typography>
-                    </Typography>
-
-                    <Typography variant='subtitle1' gutterBottom>
-                      <Box
-                        fontWeight='fontWeightBold'
-                        m={1}
-                        className={classes.display}
-                        style={{ marginLeft: 15 }}
-                      >
-                        Requested Date:
-                      </Box>{' '}
-                      <Typography color = "secondary" className={classes.display}>
-                        {item.appointment_date}
-                      </Typography>
-                    </Typography>
-                    <Typography variant='subtitle1'>
-                      <Box
-                        fontWeight='fontWeightBold'
-                        m={1}
-                        className={classes.display}
-                        style={{ marginLeft: 15 }}
-                      >
-                        Requested Time:
-                      </Box>
-                      <Typography color = "secondary" className={classes.display}>
-                        {item.appointment_time ? item.appointment_time.slice(0, 5) : ''}
-                      </Typography>
-                    </Typography>
-                  </Grid>
-
-                  <Grid item xs container direction='column' spacing={2}>
-                    <Grid item xs={12} md={12}>
+          {appointmentsList.map((item, index) => {
+            return (
+              <form>
+                <Paper
+                  className={classes.paper}
+                  elevation={3}
+                  // style={{ backgroundColor: 'gray' }}
+                >
+                  <Grid container spacing={2}>
+                    <Grid
+                      item
+                      xs={12}
+                      md={4}
+                      container
+                      direction='column'
+                      spacing={2}
+                      style={{ marginTop: 40 }}
+                    >
                       <Typography gutterBottom variant='subtitle1'>
                         <Box
                           fontWeight='fontWeightBold'
                           m={1}
                           className={classes.display}
-                          style={{ marginTop: 40 }}
+                          style={{ marginLeft: 15 }}
                         >
-                          Schedule Date:
+                          Student ERP:
+                        </Box>{' '}
+                        <Typography color='secondary' className={classes.display}>
+                          {item.student?.username}
+                        </Typography>
+                      </Typography>
+                      <Typography gutterBottom variant='subtitle1'>
+                        <Box
+                          fontWeight='fontWeightBold'
+                          m={1}
+                          className={classes.display}
+                          style={{ marginLeft: 15 }}
+                        >
+                          Student Name:
                         </Box>
-
-                        {item.schedule_date ||
-                        item.appointment_status === 'Accepted' ||
-                        item.appointment_status === 'Declined' ? (
-                          <Typography color = "secondary" className={classes.display}>
-                            {item.schedule_date
-                              ? item.schedule_date
-                              : item.appointment_date}
-                          </Typography>
-                        ) : (
-                          <TextField
-                            name='schedule_date'
-                            InputLabelProps={{ shrink: true, required: true }}
-                            type='date'
-                            variant='standard'
-                            style={{ marginTop: 40 }}
-                            onChange={handleChange}
-                            size='small'
-                          />
-                        )}
+                        <Typography color='secondary' className={classes.display}>
+                          {item.student?.first_name}
+                        </Typography>
                       </Typography>
 
                       <Typography variant='subtitle1' gutterBottom>
@@ -505,27 +440,164 @@ const ResponderView = () => {
                           fontWeight='fontWeightBold'
                           m={1}
                           className={classes.display}
+                          style={{ marginLeft: 15 }}
                         >
-                          Schedule Time:
+                          Requested Date:
+                        </Box>{' '}
+                        <Typography color='secondary' className={classes.display}>
+                          {item.appointment_date}
+                        </Typography>
+                      </Typography>
+                      <Typography variant='subtitle1'>
+                        <Box
+                          fontWeight='fontWeightBold'
+                          m={1}
+                          className={classes.display}
+                          style={{ marginLeft: 15 }}
+                        >
+                          Requested Time:
                         </Box>
-                        {item.schedule_time ||
-                        item.appointment_status === 'Accepted' ||
-                        item.appointment_status === 'Declined' ? (
-                          <Typography color = "secondary" className={classes.display}>
-                            {item.schedule_time
-                              ? item.schedule_time
-                              : item.appointment_time}
+                        <Typography color='secondary' className={classes.display}>
+                          {item.appointment_time ? item.appointment_time.slice(0, 5) : ''}
+                        </Typography>
+                      </Typography>
+                    </Grid>
+
+                    <Grid item xs container direction='column' spacing={2}>
+                      <Grid item xs={12} md={12}>
+                        <Typography gutterBottom variant='subtitle1'>
+                          <Box
+                            fontWeight='fontWeightBold'
+                            m={1}
+                            className={classes.display}
+                            style={{ marginTop: 40 }}
+                          >
+                            Schedule Date:
+                          </Box>
+
+                          {item.schedule_date ||
+                          item.appointment_status === 'Accepted' ||
+                          item.appointment_status === 'Declined' ? (
+                            <Typography color='secondary' className={classes.display}>
+                              {item.schedule_date
+                                ? item.schedule_date
+                                : item.appointment_date}
+                            </Typography>
+                          ) : (
+                            <TextField
+                              name='schedule_date'
+                              InputLabelProps={{ shrink: true, required: true }}
+                              type='date'
+                              variant='standard'
+                              style={{ marginTop: 40 }}
+                              onChange={handleChange}
+                              size='small'
+                            />
+                          )}
+                        </Typography>
+
+                        <Typography variant='subtitle1' gutterBottom>
+                          <Box
+                            fontWeight='fontWeightBold'
+                            m={1}
+                            className={classes.display}
+                          >
+                            Schedule Time:
+                          </Box>
+                          {item.schedule_time ||
+                          item.appointment_status === 'Accepted' ||
+                          item.appointment_status === 'Declined' ? (
+                            <Typography color='secondary' className={classes.display}>
+                              {item.schedule_time
+                                ? item.schedule_time
+                                : item.appointment_time}
+                            </Typography>
+                          ) : (
+                            <TextField
+                              name='schedule_time'
+                              InputLabelProps={{ shrink: true, required: true }}
+                              type='time'
+                              variant='standard'
+                              onChange={handleChange}
+                              size='small'
+                            />
+                          )}
+                        </Typography>
+                        <Typography variant='subtitle1'>
+                          <Box
+                            fontWeight='fontWeightBold'
+                            m={1}
+                            className={classes.display}
+                          >
+                            Status:
+                          </Box>{' '}
+                          <Typography color='secondary' className={classes.display}>
+                            {item.appointment_status}
                           </Typography>
-                        ) : (
-                          <TextField
-                            name='schedule_time'
-                            InputLabelProps={{ shrink: true, required: true }}
-                            type='time'
-                            variant='standard'
-                            onChange={handleChange}
-                            size='small'
-                          />
-                        )}
+                        </Typography>
+                        <Grid container spacing={1} direction='column'>
+                          <Grid md={4} xs={12}>
+                            {(item.response && item.appointment_status === 'Accepted') ||
+                            item.appointment_status === 'Declined' ||
+                            item.schedule_date ? (
+                              <Tooltip
+                                title='Change Schedule Date and Time'
+                                aria-label='add'
+                              >
+                                <Grid xs={12} md={4} sm={4}>
+                                  <Button
+                                    variant='contained'
+                                    color='primary'
+                                    // name='appointment_status'
+                                    // className={classes.button}
+                                    style={{ borderRadius: 70, marginLeft: 10 }}
+                                    type='submit'
+                                    disabled
+                                  >
+                                    <EditRoundedIcon fontSize='small' />
+                                  </Button>
+                                </Grid>
+                              </Tooltip>
+                            ) : (
+                              <Grid md={12} xs={12}>
+                                <Tooltip
+                                  title='Change Schedule Date and Time'
+                                  aria-label='add'
+                                >
+                                  <Button
+                                    variant='contained'
+                                    color='primary'
+                                    // name='appointment_status'
+                                    // className={classes.button}
+                                    style={{ borderRadius: 70, marginLeft: 10 }}
+                                    type='submit'
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      console.log('change time');
+                                      handleDateandTime(item.id);
+                                    }}
+                                  >
+                                    <EditRoundedIcon fontSize='small' />
+                                  </Button>
+                                </Tooltip>
+                              </Grid>
+                            )}
+                          </Grid>
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <Grid item xs={12} md={4} style={{ marginTop: 40 }}>
+                      <Typography variant='subtitle1' gutterBottom>
+                        <Box
+                          fontWeight='fontWeightBold'
+                          m={1}
+                          className={classes.display}
+                        >
+                          Appointment Mode:{' '}
+                        </Box>
+                        <Typography color='secondary' className={classes.display}>
+                          {item.booking_mode}
+                        </Typography>
                       </Typography>
                       <Typography variant='subtitle1'>
                         <Box
@@ -533,92 +605,30 @@ const ResponderView = () => {
                           m={1}
                           className={classes.display}
                         >
-                          Status:
+                          Appointment Host:
                         </Box>{' '}
-                        <Typography color = "secondary" className={classes.display}>
-                          {item.appointment_status}
+                        <Typography color='secondary' className={classes.display}>
+                          {item.role?.role_name}
                         </Typography>
                       </Typography>
-                      <Grid container spacing={1} direction='column'>
-                        <Grid md={4} xs={12}>
-                          {(item.response && item.appointment_status === 'Accepted') ||
-                          item.appointment_status === 'Declined' ||
-                          item.schedule_date ? (
-                            <Tooltip
-                              title='Change Schedule Date and Time'
-                              aria-label='add'
-                            >
-                              <Grid xs={12} md={4} sm={4}>
-                                <Button
-                                  variant='contained'
-                                  color='primary'
-                                  // name='appointment_status'
-                                  // className={classes.button}
-                                  style={{ borderRadius: 70, marginLeft: 10 }}
-                                  type='submit'
-                                  disabled
-                                >
-                                  <EditRoundedIcon fontSize='small' />
-                                </Button>
-                              </Grid>
-                            </Tooltip>
-                          ) : (
-                            <Grid md={12} xs={12}>
-                              <Tooltip
-                                title='Change Schedule Date and Time'
-                                aria-label='add'
-                              >
-                                <Button
-                                  variant='contained'
-                                  color='primary'
-                                  // name='appointment_status'
-                                  // className={classes.button}
-                                  style={{ borderRadius: 70, marginLeft: 10 }}
-                                  type='submit'
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    console.log('change time');
-                                    handleDateandTime(item.id);
-                                  }}
-                                >
-                                  <EditRoundedIcon fontSize='small' />
-                                </Button>
-                              </Tooltip>
-                            </Grid>
-                          )}
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                  <Grid item xs={12} md={4} style={{ marginTop: 40 }}>
-                    <Typography variant='subtitle1' gutterBottom>
-                      <Box fontWeight='fontWeightBold' m={1} className={classes.display}>
-                        Appointment Mode:{' '}
-                      </Box>
-                      <Typography color = "secondary" className={classes.display}>
-                        {item.booking_mode}
+                      <Typography variant='subtitle1'>
+                        <Box
+                          fontWeight='fontWeightBold'
+                          m={1}
+                          className={classes.display}
+                        >
+                          Concern:{' '}
+                        </Box>
+                        <Typography color='secondary' className={classes.display}>
+                          {item.message}
+                        </Typography>
                       </Typography>
-                    </Typography>
-                    <Typography variant='subtitle1'>
-                      <Box fontWeight='fontWeightBold' m={1} className={classes.display}>
-                        Appointment Host:
-                      </Box>{' '}
-                      <Typography color = "secondary" className={classes.display}>
-                        {item.role?.role_name}
-                      </Typography>
-                    </Typography>
-                    <Typography variant='subtitle1'>
-                      <Box fontWeight='fontWeightBold' m={1} className={classes.display}>
-                        Concern:{' '}
-                      </Box>
-                      <Typography color = "secondary" className={classes.display}>{item.message}</Typography>
-                    </Typography>
 
-                    {(item.response && item.appointment_status === 'Accepted') ||
-                    item.appointment_status === 'Declined' ? (
-                      <Grid container spacing={1} direction='column'>
-                        <form>
-                          {/* <Grid md={9} xs={12}>
+                      {(item.response && item.appointment_status === 'Accepted') ||
+                      item.appointment_status === 'Declined' ? (
+                        <Grid container spacing={1} direction='column'>
+                          <form>
+                            {/* <Grid md={9} xs={12}>
                             <TextField
                               id='standard-basic'
                               label='response '
@@ -631,122 +641,123 @@ const ResponderView = () => {
                               disabled
                             />
                           </Grid> */}
-                          <Typography variant='subtitle1'>
-                            <Box
-                              fontWeight='fontWeightBold'
-                              m={1}
-                              className={classes.display}
-                              style={{ marginLeft: 15 }}
-                            >
-                              response:{' '}
-                            </Box>
-                            <Typography color = "secondary" className={classes.display}>
-                              {' '}
-                              {item.response}
+                            <Typography variant='subtitle1'>
+                              <Box
+                                fontWeight='fontWeightBold'
+                                m={1}
+                                className={classes.display}
+                                style={{ marginLeft: 15 }}
+                              >
+                                response:{' '}
+                              </Box>
+                              <Typography color='secondary' className={classes.display}>
+                                {' '}
+                                {item.response}
+                              </Typography>
                             </Typography>
-                          </Typography>
 
-                          <Grid container spacing={1} direction='row'>
-                            <Grid item xs={6} sm={4} md={5} lg={4}>
-                              <Button
-                                variant='contained'
-                                color='primary'
-                                name='appointment_status'
-                                // className={classes.button}
-                                value='2'
-                                type='submit'
-                                style={{color : "white"}}
-                                disabled
-                              >
-                                Accept
-                              </Button>
+                            <Grid container spacing={1} direction='row'>
+                              <Grid item xs={6} sm={4} md={5} lg={4}>
+                                <Button
+                                  variant='contained'
+                                  color='primary'
+                                  name='appointment_status'
+                                  // className={classes.button}
+                                  value='2'
+                                  type='submit'
+                                  style={{ color: 'white' }}
+                                  disabled
+                                >
+                                  Accept
+                                </Button>
+                              </Grid>
+                              <Grid item xs={6} sm={4} md={5} lg={4}>
+                                <Button
+                                  variant='contained'
+                                  color='primary'
+                                  name='appointment_status'
+                                  // className={classes.button}
+                                  // style={{ height: 40, top: 75 }}
+                                  type='submit'
+                                  disabled
+                                  style={{ color: 'white' }}
+                                >
+                                  Decline
+                                </Button>
+                              </Grid>
                             </Grid>
-                            <Grid item xs={6} sm={4} md={5} lg={4}>
-                              <Button
-                                variant='contained'
-                                color='primary'
-                                name='appointment_status'
-                                // className={classes.button}
-                                // style={{ height: 40, top: 75 }}
-                                type='submit'
-                                disabled
-                                style = {{color : "white"}}
-                              >
-                                Decline
-                              </Button>
+                          </form>
+                        </Grid>
+                      ) : (
+                        <Grid container spacing={1} direction='column'>
+                          <form>
+                            <Grid md={9} xs={12}>
+                              <TextField
+                                id='standard-basic'
+                                label='response '
+                                name='response'
+                                helperText='Allowed 20 Charecters only'
+                                onChange={handleChange}
+                                inputProps={{ maxLength: 20 }}
+                                style={{ marginLeft: 15 }}
+                              />
                             </Grid>
-                          </Grid>
-                        </form>
-                      </Grid>
-                    ) : (
-                      <Grid container spacing={1} direction='column'>
-                        <form>
-                          <Grid md={9} xs={12}>
-                            <TextField
-                              id='standard-basic'
-                              label='response '
-                              name='response'
-                              helperText='Allowed 20 Charecters only'
-                              onChange={handleChange}
-                              inputProps={{ maxLength: 20 }}
-                              style={{ marginLeft: 15 }}
-                            />
-                          </Grid>
-                          <Grid container spacing={1} direction='row'>
-                            <Grid item xs={6} sm={4} md={5} lg={4}>
-                              <Button
-                                variant='contained'
-                                color='primary'
-                                name='appointment_status'
-                                // className={classes.button}
-                                value='2'
-                                type='submit'
-                                onClick={(e) => {
-                                  // e.preventDefault();
-                                  handleSubmit(e, item.id);
-                                }}
-                                style={{ display: 'inline' ,color : "white"}}
-                              >
-                                Accept
-                              </Button>
+                            <Grid container spacing={1} direction='row'>
+                              <Grid item xs={6} sm={4} md={5} lg={4}>
+                                <Button
+                                  variant='contained'
+                                  color='primary'
+                                  name='appointment_status'
+                                  // className={classes.button}
+                                  value='2'
+                                  type='submit'
+                                  onClick={(e) => {
+                                    // e.preventDefault();
+                                    handleSubmit(e, item.id);
+                                  }}
+                                  style={{ display: 'inline', color: 'white' }}
+                                >
+                                  Accept
+                                </Button>
+                              </Grid>
+                              <Grid item xs={6} sm={4} md={5} lg={4}>
+                                <Button
+                                  variant='contained'
+                                  color='primary'
+                                  name='appointment_status'
+                                  // className={classes.button}
+                                  // style={{ height: 40, top: 75 }}
+                                  style={{ display: 'inline', color: 'white' }}
+                                  type='submit'
+                                  onClick={(e) => {
+                                    // e.preventDefault();
+                                    handleDeclineSubmit(e, item.id);
+                                  }}
+                                >
+                                  Decline
+                                </Button>
+                              </Grid>
                             </Grid>
-                            <Grid item xs={6} sm={4} md={5} lg={4}>
-                              <Button
-                                variant='contained'
-                                color='primary'
-                                name='appointment_status'
-                                // className={classes.button}
-                                // style={{ height: 40, top: 75 }}
-                                style={{ display: 'inline' ,color : "white"}}
-                                type='submit'
-                                onClick={(e) => {
-                                  // e.preventDefault();
-                                  handleDeclineSubmit(e, item.id);
-                                }}
-                              >
-                                Decline
-                              </Button>
-                            </Grid>
-                          </Grid>
-                        </form>
-                      </Grid>
-                    )}
+                          </form>
+                        </Grid>
+                      )}
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Paper>
-            </form>
-          );
-        })}
-        <div className='paginateData'>
-          <TablePagination
-            component='div'
-            className='customPagination'
-            count={totalCount}
-            rowsPerPage={limit}
-            page={page - 1}
-            onChangePage={handleChangePage}
-            rowsPerPageOptions={false}
-          />
+                </Paper>
+              </form>
+            );
+          })}
+          <div className='paginateData'>
+            <TablePagination
+              component='div'
+              className='customPagination'
+              count={totalCount}
+              rowsPerPage={limit}
+              page={page - 1}
+              onChangePage={handleChangePage}
+              rowsPerPageOptions={false}
+            />
+          </div>
         </div>
       </Layout>
     </>

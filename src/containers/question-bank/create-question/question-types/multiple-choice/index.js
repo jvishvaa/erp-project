@@ -80,6 +80,15 @@ const useStyles = makeStyles((theme) => ({
     padding: '0.5rem',
     width: '100%',
     marginTop: '10px',
+  },
+  compMultipleChoiceContainer:{
+    width: '95%',
+    margin: '20px auto 0 auto',
+    border: `1px solid ${theme.palette.secondary.main}`,
+    borderRadius: `10px`,
+    padding: '20px 20px 20px 20px',
+    //  backgroundImage: 'linear-gradient(-45deg, #36d2e4, #69c30e)', 
+    backgroundImage: `linear-gradient(-45deg, ${theme.palette.primary.primarylightest},#fffcfc)`,
   }
 }))
 
@@ -717,7 +726,7 @@ const MultipleChoice = ({
     <div
       className={
         parentQuestionType?.ComprehensionQuestions || parentQuestionType?.VideoQuestion
-          ? 'compMultipleChoiceContainer'
+          ? `${classes.compMultipleChoiceContainer}`
           : `${classes.multipleChoiceContainer}`
       }
     >

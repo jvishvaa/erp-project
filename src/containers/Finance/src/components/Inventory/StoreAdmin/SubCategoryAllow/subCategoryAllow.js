@@ -35,14 +35,14 @@ const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSu
   //   setSessionData(e)
   //   fetchBranches(e.value, alert, user)
   // }
-
+const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
   const sessionChangeHandler = (e) => {
     setSessionData(e)
-    fetchBranches(e.value, alert, user)
+    fetchBranches(e.value, alert, userToken)
   }
   const changehandlerbranch = (e) => {
     setBranchData(e)
-    fetchGradesPerBranch(alert, user, sessionData && sessionData.value, e.value)
+    fetchGradesPerBranch(alert, userToken, sessionData && sessionData.value, e.value)
     setShowTable(false)
   }
   const gradeHandler = (e) => {
@@ -58,7 +58,7 @@ const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSu
     if (sessionData && branchData && gradeData) {
       setShowTable(true)
       setCreateBackDate(false)
-      fetchSubCategory(sessionData && sessionData.value, branchData && branchData.value, gradeData && gradeData.value, alert, user)
+      fetchSubCategory(sessionData && sessionData.value, branchData && branchData.value, gradeData && gradeData.value, alert, userToken)
     } else {
       alert.warning('Fill all required Fields!')
     }
@@ -83,7 +83,7 @@ const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSu
         store_sub_category: subCat && subCat.value,
         store_sub_category_compulsory: compulsoryValue && compulsoryValue.value
       }
-      createSubCategory(data, alert, user)
+      createSubCategory(data, alert, userToken)
       setShowTable(true)
       setShowActionModal(false)
       // setGradeData(null)
@@ -98,7 +98,7 @@ const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSu
         academic_year: sessionData && sessionData.value,
         branch: branchData && branchData.value
       }
-      createSubCategory(data, alert, user)
+      createSubCategory(data, alert, userToken)
       setShowActionModal(false)
       setCreateBackDate(false)
       // setGradeData(null)
@@ -137,21 +137,21 @@ const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSu
             </Grid>
             : []}
           <Grid item xs='6'>
-            <label style={{ fontWeight: '20' }}>Is Compulsory*</label>
+            <label style={{ fontWeight: '20' }}>Is Applicable*</label>
             <Select
-              placeholder='Is Compulsory'
+              placeholder='Is Applicable'
               value={compulsoryValue}
               options={[
                 {
-                  label: 'Compulsory only for New Students',
+                  label: 'Applicable only for New Students',
                   value: 1
                 },
                 {
-                  label: 'Compulsory only for Old Students',
+                  label: 'Applicable only for Old Students',
                   value: 2
                 },
                 {
-                  label: 'Compulsory for Both',
+                  label: 'Applicable for Both',
                   value: 3
                 }
               ]}
@@ -203,14 +203,14 @@ const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSu
         value: sub.id
       })
     }
-    if (comp === 'Compulsory only for New Students') {
+    if (comp === 'Applicable only for New Students') {
       if (comp) {
         setCompulsoryValue({
           label: comp,
           value: 1
         })
       }
-    } else if (comp === 'Compulsory only for Old Students') {
+    } else if (comp === 'Applicable only for Old Students') {
       if (comp) {
         setCompulsoryValue({
           label: comp,
@@ -225,9 +225,9 @@ const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSu
         })
       }
     }
-    if (app) {
-      setApplicable(app)
-    }
+    
+    
+    setApplicable(app)
     setPartialPaymentGrade(grade)
     setShowActionModal(true)
     setCreateBackDate(false)
@@ -241,10 +241,10 @@ const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSu
       setSubCat(null)
       setShowActionModal(true)
       setCreateBackDate(true)
-      fetchUnitColorSubcat(alert, user)
+      fetchUnitColorSubcat(alert, userToken)
       setApplicable(true)
       setCompulsoryValue({
-        label: 'Compulsory for Both',
+        label: 'Applicable for Both',
         value: 3
       })
     } else {
@@ -264,7 +264,7 @@ const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSu
                   <TableCell style={{ fontSize: 15 }}><b>S.No</b></TableCell>
                   <TableCell style={{ fontSize: 15 }}><b>GRADE</b> </TableCell>
                   <TableCell style={{ fontSize: 15 }}><b>SUB CATEGORY</b></TableCell>
-                  <TableCell style={{ fontSize: 15 }}><b>COMPULSORY</b></TableCell>
+                  <TableCell style={{ fontSize: 15 }}><b>APPLICABILITY</b></TableCell>
                   <TableCell style={{ fontSize: 15 }}><b>APPLICABLE</b></TableCell>
                   <TableCell style={{ fontSize: 15 }}><b>UPDATE</b></TableCell>
                 </TableRow>
@@ -276,9 +276,9 @@ const SubCategoryAllow = ({ classes, session, branches, fetchBranches, mcreateSu
                       <TableCell>{i + 1}</TableCell>
                       <TableCell>{val.grade && val.grade.grade}</TableCell>
                       <TableCell>{val.store_sub_category && val.store_sub_category.sub_category_name} </TableCell>
-                      <TableCell>{+val.store_sub_category_compulsory === 1 ? 'Compulsory only for New Students' : +val.store_sub_category_compulsory === 2 ? 'Compulsory only for Old Students' : +val.store_sub_category_compulsory === 3 ? 'Compulsory for Both' : val.store_sub_category_compulsory }</TableCell>
+                      <TableCell>{+val.store_sub_category_compulsory === 1 ? 'Applicable only for New Students' : +val.store_sub_category_compulsory === 2 ? 'Applicable only for Old Students' : +val.store_sub_category_compulsory === 3 ? 'Applicable for Both' : val.store_sub_category_compulsory }</TableCell>
                       <TableCell>{val.is_store_sub_category_applicable ? 'Yes' : 'No'}</TableCell>
-                      <TableCell>{<Edit style={{ cursor: 'pointer' }} onClick={() => showActionModalHandler(val.id, val.grade && val.grade.id, val.branch, val.store_sub_category && val.store_sub_category, +val.store_sub_category_compulsory === 1 ? 'Compulsory only for New Students' : +val.store_sub_category_compulsory === 2 ? 'Compulsory only for Old Students' : +val.store_sub_category_compulsory === 3 ? 'Compulsory for Both' : '', val.is_store_sub_category_applicable)} />}</TableCell>
+                      <TableCell>{<Edit style={{ cursor: 'pointer' }} onClick={() => showActionModalHandler(val.id, val.grade && val.grade.id, val.branch, val.store_sub_category && val.store_sub_category, +val.store_sub_category_compulsory === 1 ? 'Applicable only for New Students' : +val.store_sub_category_compulsory === 2 ? 'Applicable only for Old Students' : +val.store_sub_category_compulsory === 3 ? 'Applicable for Both' : '', val.is_store_sub_category_applicable)} />}</TableCell>
                     </TableRow>
                   )
                 })}

@@ -15,6 +15,13 @@ import endpoints from '../../../../config/endpoints';
 
 const useStyles = makeStyles((theme) => ({
   rootViewMore: theme.rootViewMore,
+  resourceBulkDownload:{
+    fontSize: '1.1rem',
+    color: theme.palette.primary.main,
+    display: 'flex',
+    justifyContent: 'space-between',
+    padding: '10px',
+  }
 }));
 
 const ViewMoreCard = ({
@@ -76,7 +83,7 @@ const ViewMoreCard = ({
             </div>
           </div>
         </div>
-        <div className='resourceBulkDownload-'>
+        <div className={classes.resourceBulkDownload}>
           <TableContainer component={Paper}>
             <Table size='small' aria-label='a dense table'>
               <TableHead>

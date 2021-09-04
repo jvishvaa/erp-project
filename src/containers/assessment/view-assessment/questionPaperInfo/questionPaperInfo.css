@@ -1,14 +1,6 @@
 .testInfo {
   background-color: '#fff';
 }
-.testInfoHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
-  background-color: #fceeee;
-  border-radius: 10px;
-}
 .closeContainer {
   position: relative;
 }

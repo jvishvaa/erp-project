@@ -2,6 +2,8 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { colorLuminance } from '../utility-functions';
 import axiosInstance from '../config/axios';
 import endpoints from '../config/endpoints';
+const colorsys = require('colorsys')
+
 
 export function fetchThemeApi() {
   return axiosInstance
@@ -21,7 +23,15 @@ export function fetchThemeApi() {
         }
       }
     })
-    .catch(() => {});
+    .catch(() => { });
+}
+const getlightestcolor = (color) => {
+  const hex_RGB = colorsys.parseCss(color);//return rgb 
+  var hsv = colorsys.rgb_to_hsv(hex_RGB)//convert to hsv
+  const hue = hsv['h']
+  hsv = { h: hue, s: 6, v: 100 }
+  const lightRGB = colorsys.hsv_to_rgb(hsv)
+  return (colorsys.rgbToHex(lightRGB))
 }
 
 const getThemeElements = () => {
@@ -50,10 +60,7 @@ const getThemeElements = () => {
       elements.colors.primary_color,
       -0.4
     );
-    elements['colors']['lightestprimary'] = colorLuminance(
-      elements.colors.primary_color,
-      0.9
-    );
+    elements['colors']['lightestprimary'] = getlightestcolor(elements.colors.primary_color)
   }
   return elements;
 };
@@ -79,6 +86,7 @@ export function themeGenerator() {
     second_color: secondarytemp = '#014b7e',
     darkprimary = '#cc5656',
     lightprimary = '#994040',
+    lightestprimary = '#fff6f6  '
   } = colors || {};
 
   return createMuiTheme({
@@ -88,6 +96,7 @@ export function themeGenerator() {
         primarylight: lightprimary,
         main: primarytemp,
         primarydark: darkprimary,
+        primarylightest: lightestprimary,
       },
       secondary: {
         // main: '#014b7e',
@@ -188,7 +197,8 @@ export function themeGenerator() {
         borderBottom: '1px solid #e2e2e2',
       },
       '& .viewMoreHeader': {
-        backgroundColor: '#fceeee',
+        // backgroundColor: '#fceeee',
+        backgroundColor: lightestprimary,
         display: 'flex',
         justifyContent: 'space-between',
         borderRadius: '10px 0px 0px 0px',

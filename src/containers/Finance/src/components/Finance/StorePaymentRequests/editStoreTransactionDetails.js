@@ -16,6 +16,7 @@ import * as actionTypes from '../store/actions'
 // import classes from './feeStructure.module.css'
 // import Modal from '../../../../ui/Modal/modal'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
+import Layout from 'containers/Layout'
 
 const styles = theme => ({
   tableWrapper: {
@@ -143,114 +144,116 @@ const EditStoreTransactionDetails = ({ classes, history, dataLoading, fetchEditD
     let data = null
     if (editDetails) {
       data = (
-        <Paper className={classes.root}>
-          <Grid container spacing={3} style={{ padding: 15 }}>
-            <Grid item xs={6} className={classes.item}>
-              {/* <div style={{ textAlign: 'center', margin: '8px' }}> */}
-              <label>Change Request For TransactionID : </label>
-              {editDetails.transaction_id ? editDetails.transaction_id : ''}
-              {/* </div> */}
+        <Layout>
+          <Paper className={classes.root}>
+            <Grid container spacing={3} style={{ padding: 15 , marginTop: 30, marginLeft: 20}}>
+              <Grid item xs={6} className={classes.item}>
+                {/* <div style={{ textAlign: 'center', margin: '8px' }}> */}
+                <label>Change Request For TransactionID : </label>
+                {editDetails.transaction_id ? editDetails.transaction_id : ''}
+                {/* </div> */}
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                <label>ERP : </label>
+                {editDetails.student && editDetails.student.erp ? editDetails.student.erp : ''}
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                <label>Name : </label>
+                {editDetails.student && editDetails.student.name ? editDetails.student.name : ''}
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                <label>Class : </label>
+                {editDetails.student && editDetails.student.acad_branch_mapping && editDetails.student.acad_branch_mapping.grade && editDetails.student.acad_branch_mapping.grade.grade ? editDetails.student.acad_branch_mapping.grade.grade : 'NA' }
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                <label>Branch : </label>
+                {/* {editDetails.acad_session && editDetails.acad_session.branch && editDetails.acad_session.branch.branch_name ? editDetails.acad_session.branch.branch_name : ''} */}
+                {branchName && branchName ? branchName : 'NA'}
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                <label>Reason : </label>
+                {editDetails.request_reason ? editDetails.request_reason : ''}
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                <label>Receipt No.:</label>
+                {editDetails.old_receipt_number ? editDetails.old_receipt_number : ''}
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                <label>Paid Date : </label>
+                {editDetails.old_date ? editDetails.old_date : ''}
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                {/* <label>Receipt to be Changed : </label> */}
+                <TextField
+                  id='newReceipt'
+                  type='number'
+                  label='Receipt to be Changed'
+                  disabled={!editDetails.change_receipt_number_status}
+                  value={newReceipt || null}
+                  // defaultValue={row.new_amount}
+                  variant='outlined'
+                  onChange={(e) => {
+                    receiptChangeHandler(e)
+                  }}
+                  className={classes.textField}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
+              <Grid item xs={6} className={classes.item}>
+                {/* <label>Date to be Changed : </label> */}
+                <TextField
+                  id='date'
+                  type='date'
+                  disabled={!editDetails.change_date_of_payment_status}
+                  label='Date to be Changed'
+                  value={newPayDate || null}
+                  // defaultValue={row.new_amount}
+                  variant='outlined'
+                  onChange={(e) => {
+                    dateChangeHandler(e)
+                  }}
+                  className={classes.textField}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={6} className={classes.item}>
-              <label>ERP : </label>
-              {editDetails.student && editDetails.student.erp ? editDetails.student.erp : ''}
+            <Grid container spacing={3} style={{marginLeft: 30}}>
+              <Grid item xs={6} className={classes.item}>
+                <TextField
+                  id='remarks'
+                  type='text'
+                  label='Remarks'
+                  // disabled={!editDetails.change_receipt_number_status}
+                  value={remarks || null}
+                  // defaultValue={row.new_amount}
+                  variant='outlined'
+                  onChange={(e) => {
+                    remarksHandler(e)
+                  }}
+                  className={classes.textField}
+                  InputLabelProps={{
+                    shrink: true
+                  }}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={6} className={classes.item}>
-              <label>Name : </label>
-              {editDetails.student && editDetails.student.name ? editDetails.student.name : ''}
+            <Grid container spacing={3} style={{ padding: 15 }}>
+              <Grid item xs={4} className={classes.item}>
+                <Button disabled={!remarks} onClick={() => { updateHandler('update', editDetails.id) }} className={classes.approve}>Update</Button>
+              </Grid>
+              <Grid item xs={4} className={classes.item}>
+                <Button disabled={!remarks} onClick={() => { updateHandler('cancel', editDetails.id) }} className={classes.reject}>Cancel Transaction</Button>
+              </Grid>
+              <Grid item xs={4} className={classes.item}>
+                <Button disabled={!remarks} onClick={() => { updateHandler('reject', editDetails.id) }} className={classes.reject}>Reject</Button>
+              </Grid>
             </Grid>
-            <Grid item xs={6} className={classes.item}>
-              <label>Class : </label>
-              {editDetails.student && editDetails.student.acad_branch_mapping && editDetails.student.acad_branch_mapping.grade && editDetails.student.acad_branch_mapping.grade.grade ? editDetails.student.acad_branch_mapping.grade.grade : 'NA' }
-            </Grid>
-            <Grid item xs={6} className={classes.item}>
-              <label>Branch : </label>
-              {/* {editDetails.acad_session && editDetails.acad_session.branch && editDetails.acad_session.branch.branch_name ? editDetails.acad_session.branch.branch_name : ''} */}
-              {branchName && branchName ? branchName : 'NA'}
-            </Grid>
-            <Grid item xs={6} className={classes.item}>
-              <label>Reason : </label>
-              {editDetails.request_reason ? editDetails.request_reason : ''}
-            </Grid>
-            <Grid item xs={6} className={classes.item}>
-              <label>Receipt No.:</label>
-              {editDetails.old_receipt_number ? editDetails.old_receipt_number : ''}
-            </Grid>
-            <Grid item xs={6} className={classes.item}>
-              <label>Paid Date : </label>
-              {editDetails.old_date ? editDetails.old_date : ''}
-            </Grid>
-            <Grid item xs={6} className={classes.item}>
-              {/* <label>Receipt to be Changed : </label> */}
-              <TextField
-                id='newReceipt'
-                type='number'
-                label='Receipt to be Changed'
-                disabled={!editDetails.change_receipt_number_status}
-                value={newReceipt || null}
-                // defaultValue={row.new_amount}
-                variant='outlined'
-                onChange={(e) => {
-                  receiptChangeHandler(e)
-                }}
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true
-                }}
-              />
-            </Grid>
-            <Grid item xs={6} className={classes.item}>
-              {/* <label>Date to be Changed : </label> */}
-              <TextField
-                id='date'
-                type='date'
-                disabled={!editDetails.change_date_of_payment_status}
-                label='Date to be Changed'
-                value={newPayDate || null}
-                // defaultValue={row.new_amount}
-                variant='outlined'
-                onChange={(e) => {
-                  dateChangeHandler(e)
-                }}
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true
-                }}
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={3}>
-            <Grid item xs={6} className={classes.item}>
-              <TextField
-                id='remarks'
-                type='text'
-                label='Remarks'
-                // disabled={!editDetails.change_receipt_number_status}
-                value={remarks || null}
-                // defaultValue={row.new_amount}
-                variant='outlined'
-                onChange={(e) => {
-                  remarksHandler(e)
-                }}
-                className={classes.textField}
-                InputLabelProps={{
-                  shrink: true
-                }}
-              />
-            </Grid>
-          </Grid>
-          <Grid container spacing={3} style={{ padding: 15 }}>
-            <Grid item xs={4} className={classes.item}>
-              <Button disabled={!remarks} onClick={() => { updateHandler('update', editDetails.id) }} className={classes.approve}>Update</Button>
-            </Grid>
-            <Grid item xs={4} className={classes.item}>
-              <Button disabled={!remarks} onClick={() => { updateHandler('cancel', editDetails.id) }} className={classes.reject}>Cancel Transaction</Button>
-            </Grid>
-            <Grid item xs={4} className={classes.item}>
-              <Button disabled={!remarks} onClick={() => { updateHandler('reject', editDetails.id) }} className={classes.reject}>Reject</Button>
-            </Grid>
-          </Grid>
-        </Paper>
+          </Paper>
+        </Layout>
       )
     }
     return data

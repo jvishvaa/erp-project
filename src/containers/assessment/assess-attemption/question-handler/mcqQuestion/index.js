@@ -6,13 +6,30 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 // import FormLabel from '@material-ui/core/FormLabel';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import { IconButton, SvgIcon, Button } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core';
 import { AttachmentPreviewerContext } from '../../../../../components/attachment-previewer/attachment-previewer-contexts';
 import endpoints from '../../../../../config/endpoints';
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
 import '../../assess-attemption.css';
 
+const useStyles = makeStyles((theme)=>({
+  mcqOptions : {
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: '5px',
+    background: theme.palette.primary.primarylightest,
+    padding: '10px',
+    width: '100%',
+    textAlign: 'center',
+    justifyContent: 'space-between',
+    /* max-width: 400px, */
+    cursor: 'pointer',
+    marginBottom: '10px',
+  }
+}))
+
+
 const McqQuestion = (props) => {
+  const classes = useStyles()
   const {
     controls: { attemptQuestion },
   } = useContext(AssessmentHandlerContext);
@@ -86,7 +103,7 @@ const McqQuestion = (props) => {
             onChange={handleOptionValue}
           >
             <div
-              className='mcq-options'
+              className={classes.mcqOptions}
               style={{ display: 'flex', alignItems: 'center' }}
             >
               <FormControlLabel
@@ -118,11 +135,11 @@ const McqQuestion = (props) => {
               </div>
             </div>
             <div
-              className='mcq-options'
+              className={classes.mcqOptions}
               style={{ display: 'flex', alignItems: 'center' }}
             >
               <FormControlLabel
-                // className='mcq-options'
+                // className={classes.mcqOptions}
                 value='option2'
                 control={<Radio checked={existingAnswer === 'option2'} />}
                 label={options[1]?.option2?.optionValue}
@@ -151,11 +168,11 @@ const McqQuestion = (props) => {
             </div>
             {options[2]?.option3 ? (
               <div
-                className='mcq-options'
+                className={classes.mcqOptions}
                 style={{ display: 'flex', alignItems: 'center' }}
               >
                 <FormControlLabel
-                  // className='mcq-options'
+                  // className={classes.mcqOptions}
                   value='option3'
                   // control={<Radio />}
                   control={<Radio checked={existingAnswer === 'option3'} />}
@@ -188,11 +205,11 @@ const McqQuestion = (props) => {
             ) : null}
             {options[3]?.option4 ? (
               <div
-                className='mcq-options'
+                className={classes.mcqOptions}
                 style={{ display: 'flex', alignItems: 'center' }}
               >
                 <FormControlLabel
-                  // className='mcq-options'
+                  // className={classes.mcqOptions}
                   value='option4'
                   // control={<Radio />}
                   control={<Radio checked={existingAnswer === 'option4'} />}
@@ -224,7 +241,7 @@ const McqQuestion = (props) => {
             ) : null}
             {options[4]?.option5 ? (
               <div
-                className='mcq-options'
+                className={classes.mcqOptions}
                 style={{ display: 'flex', alignItems: 'center' }}
               >
                 <FormControlLabel

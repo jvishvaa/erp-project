@@ -21,9 +21,10 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
   const [validFromHelerTxt, setValidFromHelerTxt] = useState(null)
   const [disableUpdateBut, setDisableUpdateBut] = useState(false)
 
+  const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
   useEffect(() => {
-    listAllCoupon(alert, user)
-  }, [alert, listAllCoupon, user])
+    listAllCoupon(alert, userToken)
+  }, [alert, listAllCoupon, userToken])
 
   useEffect(() => {
     if (validTo) {
@@ -177,7 +178,7 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
       <Modal open={editModal} click={hideEditModalHandler} large>
         <React.Fragment>
           <Grid container spacing={3} style={{ padding: 15 }}>
-            <Grid item xs='3'>
+            <Grid item xs='2'>
               <TextField
                 id='coupon_name'
                 type='text'
@@ -190,7 +191,7 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
                 label='Coupon Name'
               />
             </Grid>
-            <Grid item xs='3'>
+            <Grid item xs='2'>
               <TextField
                 id='discount'
                 type='number'
@@ -203,7 +204,7 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
                 label='Discount Percentage'
               />
             </Grid>
-            <Grid item xs='3'>
+            <Grid item xs='4'>
               <TextField
                 id='valid_from'
                 type='datetime-local'
@@ -217,7 +218,7 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
                 label='Valid From'
               />
             </Grid>
-            <Grid item xs='3'>
+            <Grid item xs='4'>
               <TextField
                 id='valied_to'
                 type='datetime-local'

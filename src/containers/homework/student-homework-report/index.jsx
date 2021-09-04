@@ -62,7 +62,7 @@ const StudentHomeWorkReport = () => {
   const [reportData, setReportData] = useState([]);
   const [selectedOtherLanguages, setSelectedOtherLanguages] = useState();
   const [reportHeaderData, setReportHeaderData] = useState([]);
-   const [dateRangeTechPer, setDateRangeTechPer] = useState([
+  const [dateRangeTechPer, setDateRangeTechPer] = useState([
     moment().subtract(6, 'days'),
     moment(),
   ]);
@@ -76,7 +76,7 @@ const StudentHomeWorkReport = () => {
       )
       .then((res) => {
         console.log(res, 'student-homework');
-        if (res.data.status_code==200) {
+        if (res.data.status_code == 200) {
           setReportData(res?.data?.result?.hw_report);
           setReportHeaderData(res?.data?.result?.hw_report);
           setTableDisplay(true);
@@ -92,8 +92,8 @@ const StudentHomeWorkReport = () => {
         }
       });
   };
-  function checkDate(){
-    console.log(startDate,endDate,'Black Panther')
+  function checkDate() {
+    console.log(startDate, endDate, 'Black Panther');
     //  axiosInstance
     //   .get(
     //     `/academic/student_homework_report/?start_date=${startDate}&end_date=${endDate}`
@@ -126,83 +126,94 @@ const StudentHomeWorkReport = () => {
   return (
     <div>
       <Layout className='layout-container'>
-        <CommonBreadcrumbs componentName='Homework Report' 
-          isAcademicYearVisible={true}
-        />
-        <div className='create_group_filter_container'>
-          <Grid item xs={12} sm={3}>
-            <LocalizationProvider dateAdapter={MomentUtils} className='dropdownIcon'>
-              <DateRangePicker
-                startText='Select-Date-Range'
-                size='small'
-                value={dateRangeTechPer || ''}
-                onChange={(newValue) => {
-                  handleDate(newValue)
-                  // setDateRangeTechPer(newValue);
-                  // setDateRangeTechPer(()=>newValue);
-                }}
-                renderInput={({ inputProps, ...startProps }, endProps) => {
-                  return (
-                    <>
-                      <TextField
-                        {...startProps}
-                        format={(date) => moment(date).format('DD-MM-YYYY')}
-                        inputProps={{
-                          ...inputProps,
-                          value: `${moment(inputProps.value).format(
-                            'DD-MM-YYYY'
-                          )} - ${moment(endProps.inputProps.value).format('DD-MM-YYYY')}`,
-                          readOnly: true,
-                        }}
-                        size='small'
-                        style={{ minWidth: '100%' }}
-                      />
-                    </>
-                  );
-                }}
-              />
-            </LocalizationProvider>
-          </Grid>
-        </div>
-        <div className={classes.table}>
-          {' '}
-          <Paper className={classes.root}>
-            {tableDisplay ? (
-              <>
-                <TableContainer
-                  className={`table table-shadow homework_table ${classes.container}`}
-                >
-                  <Table stickyHeader aria-label='sticky table'>
-                    <TableHead className='view_groups_header tb-header'>
-                      <TableRow>
-                        <TableCell className='homework_header homework_header_dropdown_wrapper'>
-                          S No
-                        </TableCell>
-                        <TableCell>Total HomeWork Got</TableCell>
-                        <TableCell>Total HomeWork Submitted</TableCell>
-                        <TableCell>Total HomeWork Evaluated</TableCell>
-                        <TableCell>Total HomeWork Not Evaluated</TableCell>
-                      </TableRow>
-                    </TableHead>
+        <div style={{ height: '100%' }}>
+          <CommonBreadcrumbs
+            componentName='Homework Report'
+            isAcademicYearVisible={true}
+          />
+          <div className='create_group_filter_container'>
+            <Grid item xs={12} sm={3}>
+              <LocalizationProvider dateAdapter={MomentUtils} className='dropdownIcon'>
+                <DateRangePicker
+                  startText='Select-Date-Range'
+                  size='small'
+                  value={dateRangeTechPer || ''}
+                  onChange={(newValue) => {
+                    handleDate(newValue);
+                    // setDateRangeTechPer(newValue);
+                    // setDateRangeTechPer(()=>newValue);
+                  }}
+                  renderInput={({ inputProps, ...startProps }, endProps) => {
+                    return (
+                      <>
+                        <TextField
+                          {...startProps}
+                          format={(date) => moment(date).format('DD-MM-YYYY')}
+                          inputProps={{
+                            ...inputProps,
+                            value: `${moment(inputProps.value).format(
+                              'DD-MM-YYYY'
+                            )} - ${moment(endProps.inputProps.value).format(
+                              'DD-MM-YYYY'
+                            )}`,
+                            readOnly: true,
+                          }}
+                          size='small'
+                          style={{ minWidth: '100%' }}
+                        />
+                      </>
+                    );
+                  }}
+                />
+              </LocalizationProvider>
+            </Grid>
+          </div>
+          <div className={classes.table}>
+            {' '}
+            <Paper className={classes.root}>
+              {tableDisplay ? (
+                <>
+                  <TableContainer
+                    className={`table table-shadow homework_table ${classes.container}`}
+                  >
+                    <Table stickyHeader aria-label='sticky table'>
+                      <TableHead className='view_groups_header tb-header'>
+                        <TableRow>
+                          <TableCell className='homework_header homework_header_dropdown_wrapper'>
+                            S No
+                          </TableCell>
+                          <TableCell>Total HomeWork Got</TableCell>
+                          <TableCell>Total HomeWork Submitted</TableCell>
+                          <TableCell>Total HomeWork Evaluated</TableCell>
+                          <TableCell>Total HomeWork Not Evaluated</TableCell>
+                        </TableRow>
+                      </TableHead>
 
-                    <TableBody className='table_body'>
-                          <TableRow>
-                            <TableCell className='homework_header'>
-                              1
-                            </TableCell>
-                            <TableCell align='middle'>{reportData.total_hw_given}</TableCell>
-                            <TableCell align='middle'>{reportData.total_hw_submitted}</TableCell>
-                            <TableCell align='middle'>{reportData.total_hw_evaluated}</TableCell>
-                            <TableCell align='middle'>{reportData.total_hw_not_evaluated}</TableCell>
-                          </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </>
-             ) : ( 
-              <></>
-             )} 
-          </Paper>
+                      <TableBody className='table_body'>
+                        <TableRow>
+                          <TableCell className='homework_header'>1</TableCell>
+                          <TableCell align='middle'>
+                            {reportData.total_hw_given}
+                          </TableCell>
+                          <TableCell align='middle'>
+                            {reportData.total_hw_submitted}
+                          </TableCell>
+                          <TableCell align='middle'>
+                            {reportData.total_hw_evaluated}
+                          </TableCell>
+                          <TableCell align='middle'>
+                            {reportData.total_hw_not_evaluated}
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </>
+              ) : (
+                <></>
+              )}
+            </Paper>
+          </div>
         </div>
       </Layout>
     </div>

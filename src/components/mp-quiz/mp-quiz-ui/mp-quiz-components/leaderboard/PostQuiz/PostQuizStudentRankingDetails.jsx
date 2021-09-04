@@ -15,7 +15,7 @@ class PostQuizStudentRankingDetails extends Component {
   render () {
     const { first_name: loginUser } = JSON.parse(localStorage.getItem('userDetails') || {});
     const { first_name: firstName, total_score: totalScore, rank, possibleScore, totalQuestions = 0, attempted_ques_count: totalAttemptedQuestions = 0, isHost, avatar = '', visibility } = this.props
-    const percentage = Math.floor((totalScore / possibleScore) * 100)
+    const percentage = Math.floor((totalScore / possibleScore) * 100) || 0
     return (
       <div className={`postquiz__rank--container`} style={{ visibility: visibility }}>
         <div className='postquiz__rank'>{rank || ''}</div>

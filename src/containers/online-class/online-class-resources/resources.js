@@ -165,6 +165,7 @@ const Resources = () => {
     JSON.parse(localStorage.getItem('filterData'))?.tabValue || 0
   );
   const limit = 12;
+  const [historicalData, setHistoricalData] = React.useState(false);
 
   const handleSelctedClass = (data) => {
     setItemSize(4);
@@ -226,6 +227,8 @@ const Resources = () => {
       <Grid container spacing={4} className='teacherBatchViewMainDiv'>
         <Grid item xs={12}>
           <Filter
+            historicalData ={historicalData}
+            setHistoricalData = {setHistoricalData}
             getResourceData={getResourceData}
             hendleDetails={hendleCloseDetails}
             pages={page}
@@ -278,6 +281,7 @@ const Resources = () => {
         {resourceData && resourceOnlineClasses.length !== 0 && (
           <Grid item sm={4} xs={12}>
             <ResourceDetailsCard
+              historicalData={historicalData}
               tabValue={tabValue} 
               resourceData={resourceData}
               loading={loading}

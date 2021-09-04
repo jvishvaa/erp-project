@@ -15,15 +15,6 @@
   padding: 0;
 }
 
-.resourceBulkDownload {
-  font-size: 1.1rem;
-  color: #ff6b6b;
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  /* margin: 15px 15px -15px 15px; */
-}
-
 .accordian.MuiCollapse-container {
   margin-bottom: 1rem;
 }

@@ -165,6 +165,9 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
   }, [moduleId]);
   const handleAcademicYear = (event = {}, value = '') => {
+    if(state.isEdit){
+      editData.academic_year=value;
+    }
     setSearchAcademicYear('');
     setFilterData({
       ...filterData,
@@ -304,6 +307,9 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleSection = (e, value) => {
+    if(state.isEdit){
+      editData.section[0]=value;
+    }
     setFilterData({ ...filterData, section: '', subject: '', chapter: '' });
     if (value) {
       setFilterData({ ...filterData, section: value, subject: '', chapter: '' });
@@ -344,6 +350,9 @@ const CreateDailyDairy = (details, onSubmit) => {
   //   }
   // };
   const handleSubject = (event, value) => {
+    if(state.isEdit){
+      editData.subject=value;
+    }
     formik.setFieldValue('chapters', '' || []);
     formik.setFieldValue('subjects', '' || []);
     setFilterData({ ...filterData, subject: '', chapter: '' });
@@ -729,6 +738,9 @@ const CreateDailyDairy = (details, onSubmit) => {
               id='branch'
               name='branch'
               onChange={(e, value) => {
+                if(state.isEdit){
+                  editData.branch=value;
+                }
                 setFilterData({
                   ...filterData,
                   branch: value,
@@ -737,7 +749,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                   subject: '',
                   chapter: '',
                 });
-                state.isEdit ? setAlert('error') : formik.setFieldValue('branch', value);
+                state.isEdit ? formik.setFieldValue('branch', value) : formik.setFieldValue('branch', value);
                 formik.setFieldValue('grade', []);
                 formik.setFieldValue('section', []);
                 formik.setFieldValue('subjects', []);
@@ -768,6 +780,9 @@ const CreateDailyDairy = (details, onSubmit) => {
                 id='grade'
                 name='grade'
                 onChange={(e, value) => {
+                  if(state.isEdit){
+                    editData.grade[0]=value;
+                  }
                   setFilterData({
                     ...filterData,
                     grade: value,
@@ -879,6 +894,9 @@ const CreateDailyDairy = (details, onSubmit) => {
                 style={{ width: '100%' }}
                 size='small'
                 onChange={(e, value) => {
+                  if(state.isEdit){
+                    editData.chapter=value;
+                  }
                   formik.setFieldValue('chapters', value);
                   setFilterData({ ...filterData, chapter: value });
                 }}

@@ -75,7 +75,7 @@ const resolveMenu = (url) => {
   if (url.includes('DepositTab')) return 'Expense Management';
   if (url.includes('ManagePayments')) return 'Finance';
   if (url.includes('finance/FeeStructure')) return 'Finance';
-  if (url.includes('BooksAndUniform')) return 'Finance';
+  if (url.includes('student_store')) return 'Finance';
   if (url.includes('ShippingPayment')) return 'Finance';
   if (url.includes('ManagePayments')) return 'Finance';
 
@@ -91,7 +91,7 @@ const DrawerMenu = ({ navigationItems, superUser, onClick ,flag ,drawerOpen}) =>
   }, []);
   return (
     <>
-      {superUser && (
+      {/* {superUser && ( */}
         <SuperUserMenu
           onClickMenuItem={onClick}
           openMenu={openMenu}
@@ -103,7 +103,7 @@ const DrawerMenu = ({ navigationItems, superUser, onClick ,flag ,drawerOpen}) =>
             }
           }}
         />
-      )}
+      {/* )} */}
       {navigationItems &&
         navigationItems
           .filter((item) => item.child_module && item.child_module.length > 0)
