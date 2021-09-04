@@ -91,7 +91,7 @@ const DrawerMenu = ({ navigationItems, superUser, onClick ,flag ,drawerOpen}) =>
   }, []);
   return (
     <>
-      {superUser && (
+      {/* {superUser && ( */}
         <SuperUserMenu
           onClickMenuItem={onClick}
           openMenu={openMenu}
@@ -103,7 +103,7 @@ const DrawerMenu = ({ navigationItems, superUser, onClick ,flag ,drawerOpen}) =>
             }
           }}
         />
-      )}
+      {/* )} */}
       {navigationItems &&
         navigationItems
           .filter((item) => item.child_module && item.child_module.length > 0)
