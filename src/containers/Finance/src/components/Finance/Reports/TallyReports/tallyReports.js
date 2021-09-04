@@ -63,6 +63,9 @@ class TallyReports extends Component {
       branchIdAtAcc: null
     }
     componentDidMount () {
+      if(this.props.user === null){
+        window.location.reload();
+      }
       let today = new Date()
       let dd = today.getDate()
       let mm = today.getMonth() + 1 // January is 0!

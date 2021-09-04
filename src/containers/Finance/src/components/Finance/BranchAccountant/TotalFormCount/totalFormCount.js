@@ -138,6 +138,9 @@ const TotalFormCount = ({ classes,
   }, [alert, sessionYear.value, fetchBranchList, user])
 
   useEffect(() => {
+      if(user === null){
+        window.location.reload();
+      }
     // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile?.personal_info?.role?.toLowerCase()

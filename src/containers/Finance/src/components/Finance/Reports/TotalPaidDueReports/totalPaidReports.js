@@ -70,6 +70,9 @@ class TotalPaidReports extends Component {
     branchType: ''
   }
   componentDidMount () {
+    if(this.props.user === null){
+      window.location.reload();
+    }
     // this.todayDate()
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile?.personal_info?.role?.toLowerCase()

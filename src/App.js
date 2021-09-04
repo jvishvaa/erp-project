@@ -298,6 +298,7 @@ import StoreAtStudent from 'containers/Finance/src/components/Inventory/Student/
 import PolicyPrivacy from 'containers/login/TermsAndCondition/policy';
 import TermsAndCondition from 'containers/login/TermsAndCondition/termsAndCondition';
 import EditStoreTransactionDetails from 'containers/Finance/src/components/Finance/StorePaymentRequests/editStoreTransactionDetails';
+import ShippingAmountAtStudent from 'containers/Finance/src/components/Inventory/Student/shippingAtStudent';
 
 function App({ alert }) {
   isMsAPI();
@@ -1261,7 +1262,12 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/finance/ShippingPayment'>
                             {({ match }) => (
-                              <ShippingAmount match={match} alert={alert} />
+                              <ShippingAmountAtStudent match={match} alert={alert} />
+                            )}
+                          </Route>
+                          <Route exact path='/finance/editStoreTransactionDetails'>
+                            {({ match }) => (
+                              <EditStoreTransactionDetails match={match} alert={alert} />
                             )}
                           </Route>
                           <Route exact path='/Store/AddItems'>
@@ -1269,6 +1275,11 @@ function App({ alert }) {
                           </Route>
                           <Route exact path='/Store/CreateKit'>
                             {({ match }) => <Kit match={match} alert={alert} />}
+                          </Route>
+                          <Route exact path='/finance/storePayRequests'>
+                            {({ match }) => (
+                              <StorePaymentRequests match={match} alert={alert} />
+                            )}
                           </Route>
                           <Route exact path='/Store/SubCategoryAllow'>
                             {({ match }) => (
