@@ -34,8 +34,8 @@ export default {
     markAttendance: '/academic/bulk_create_attendance/',
     students: '/academic/get_student_list/',
   },
-  appBar:{
-    schoolLogo:`${baseURLCentral}/central-admin/school_logo/`
+  appBar: {
+    schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,
   },
   profile: {
     userDetails: '/erp_user/user-data/',
@@ -309,14 +309,14 @@ export default {
     // studentBook: '/academic/student-books-list/',
     studentChapterBook: '/academic/student-books-list/',
     studentBook: '/academic/ibook_school_wise_filter/',
-    createStudentNotes:'academic/create_student_notes/',
-    studentBookmarks:'academic/student-bookmarks/',
-    deleteBookmark:'academic/delete_bookmark/',
-    studentBooksHighlight:'academic/student-books-highlight/',
-    deleteHighlight:'academic/delete_highlight/',
-    listStudentNotes:'academic/list_student_notes/',
-    listBooksBookmarks:'academic/list-books-bookmarks/',
-    listBooksHighlight:'academic/list-books-highlight/',
+    createStudentNotes: 'academic/create_student_notes/',
+    studentBookmarks: 'academic/student-bookmarks/',
+    deleteBookmark: 'academic/delete_bookmark/',
+    studentBooksHighlight: 'academic/student-books-highlight/',
+    deleteHighlight: 'academic/delete_highlight/',
+    listStudentNotes: 'academic/list_student_notes/',
+    listBooksBookmarks: 'academic/list-books-bookmarks/',
+    listBooksHighlight: 'academic/list-books-highlight/',
     ibookMappedGrade: '/academic/ibook_mapped_grades/',
   },
   email: {
@@ -466,12 +466,12 @@ export default {
   attendanceTeacherView: {
     getTeacherAttendanceView: '/academic/teacher-attendance-by-subject/',
   },
-  central_logoupdateAPI :{
-    school_logo : `${baseURLCentral}/central-admin/update_school_logo/`
+  central_logoupdateAPI: {
+    school_logo: `${baseURLCentral}/central-admin/update_school_logo/`,
   },
-  themeAPI : {
-    school_theme : `/schools/school_theme/`,
-    school_theme_fetch : `/schools/school_theme_fetch/`
+  themeAPI: {
+    school_theme: `/schools/school_theme/`,
+    school_theme_fetch: `/schools/school_theme_fetch/`,
   },
   orchadio: {
     audioUpload: '/academic/orchadio-upload/',
@@ -490,6 +490,19 @@ export default {
   },
   classworkReport: {
     tableData: '/academic/teacher_classwork_report/',
+  },
+  dashboard: {
+    teacher: {
+      downloadAttendanceReport: '/api/reports/v1/attendance-download/',
+      downloadClassworkReport: '/api/reports/v1/classwork-download/',
+      downloadHomeworkReport: '/api/reports/v1/homework-download/',
+      listAttendanceReport: '/api/reports/v1/attendance-stats/',
+      listClassworkReport: '/api/reports/v1/classwork-stats/',
+      listHomeworkReport: '/api/reports/v1/homework-stats/',
+    },
+    principal: {
+      fetchOnlineClassReport: '/api/reports/v1/oncls-principal-report/',
+    },
   },
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,

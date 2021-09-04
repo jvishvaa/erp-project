@@ -41,7 +41,8 @@ function LoginForm(props) {
       };
       onLogin(params).then((response) => {
         if (response?.isLogin) {
-          history.push('/profile');
+          // history.push('/profile');
+          history.push('/dashboard');
         } else {
           setAlert('error', response?.message);
         }

@@ -76,8 +76,11 @@ export function getModuleInfo(moduleName) {
   function getModuleId(moduleName) {
     let returnObj = {};
     navData.every((parentModule) => {
-      const { id: parentId, parent_modules: parentName, child_module: childModules } =
-        parentModule || {};
+      const {
+        id: parentId,
+        parent_modules: parentName,
+        child_module: childModules,
+      } = parentModule || {};
       if (parentName === moduleName) {
         returnObj = {
           id: parentId,
@@ -118,16 +121,18 @@ export function getSubDomainName() {
   // if (hostSplitArray.length > 2) {
   //   domain = hostSplitArray.slice(hostSplitArray.length - 2).join('');
   // }
-  if (subDomainLevels === 2) {  //dev.olvorchidnaigaon.letseduvate.com
+  if (subDomainLevels === 2) {
+    //dev.olvorchidnaigaon.letseduvate.com
     subSubDomain = hostSplitArray[0];
     subDomain = hostSplitArray[1];
-  } else if (subDomainLevels === 1) { //olvorchidnaigaon.letseduvate.com
+  } else if (subDomainLevels === 1) {
+    //olvorchidnaigaon.letseduvate.com
     subDomain = hostSplitArray[0];
   }
   return subDomain || '';
 }
 
-export function colorLuminance (hex, lum) {
+export function colorLuminance(hex, lum) {
   // validate hex string
   hex = String(hex).replace(/[^0-9a-f]/gi, '');
   if (hex.length < 6) {
@@ -145,14 +150,17 @@ export function colorLuminance (hex, lum) {
     rgb += ('00' + c).substr(c.length);
   }
   return rgb;
-};
+}
 
 export function isMsAPI() {
   let userDetails = JSON.parse(localStorage.getItem('userDetails'));
-  if(userDetails?.token){
-    axiosInstance.get(`/erp_user/oncls-ms-config/`).then((response)=>{
+  if (userDetails?.token) {
+    return axiosInstance.get(`/erp_user/oncls-ms-config/`).then((response) => {
       localStorage.setItem('isMsAPI', response?.data?.result[0]);
-      response?.data?.result[0] ? localStorage.setItem('launchDate', response?.data?.result[1]) : localStorage.removeItem("launchDate");
+      response?.data?.result[0]
+        ? localStorage.setItem('launchDate', response?.data?.result[1])
+        : localStorage.removeItem('launchDate');
+      return response;
     });
   }
 }

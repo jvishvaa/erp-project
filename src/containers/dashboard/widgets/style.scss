@@ -1,0 +1,14 @@
+.dashboardWidget .MuiCardContent-root::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Handle */
+.dashboardWidget .MuiCardContent-root::-webkit-scrollbar-thumb {
+  background: #eeeeee;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.dashboardWidget .MuiCardContent-root::-webkit-scrollbar-thumb:hover {
+  background: #dddddd;
+}
