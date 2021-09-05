@@ -153,6 +153,13 @@ const handleSubmit = () =>{
   link.remove()
 }
 
+const [isUuid, setIsUuid] = useState(true); 
+useEffect(()=>{
+  if(!isUuid) {
+    handleCreateLobby();
+  }
+},[isUuid]);
+
 const handleCreateLobby = ()=>{
   const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
   const hostSplitArray = host.split('.');
@@ -209,7 +216,7 @@ const handleCreateLobby = ()=>{
     if (event === "join_lobby") {
       const {
         status: { success, message: statusMessage } = {},
-        quiz_details: { lobby_uuid: lobbyUuid = 'uuid-mk-default', 
+        quiz_details: { lobby_uuid: lobbyUuid = false, 
         lobby_identifier: onlineClassId,
         // question_paper: questionPaperId
       }={}
@@ -221,9 +228,13 @@ const handleCreateLobby = ()=>{
         getPreQuizStatus()
         // const url = `/quiz/:onlineClassId/:questionpaperId/:lobbyUuid`
         // history.push(`/quiz/game/${data}/${lobbyUuid}/${lobbyId}/`)
-        const url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`;
-        history.push(url);
-        setCreateLobby(false);
+        if(lobbyUuid) {
+          const url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`;
+          history.push(url);
+          setCreateLobby(false);
+        } else {
+          setIsUuid(false);
+        }
       } 
       else {
         setAlert('error', `${statusMessage}`);

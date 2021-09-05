@@ -46,6 +46,7 @@ export function QuizEventTriggersProvider({ children }) {
     const { endQuiz } = eventLabels;
     const message = { event: endQuiz, ended_at: new Date() };
     sendMessage(message);
+    window.location.reload();
   }
 
   function removeUserTrigger(userId) {

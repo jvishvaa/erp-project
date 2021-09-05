@@ -70,7 +70,7 @@ class PostQuizLeaderboard extends Component {
                 <AppBar>
                   <Toolbar>
                     <IconButton edge='start' color='inherit' onClick={this.handleClose} aria-label='close'>
-                      <CloseIcon />
+                      <CloseIcon style={{color:'#fff'}} />
                     </IconButton>
                   </Toolbar>
                 </AppBar>
