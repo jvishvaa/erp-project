@@ -13,9 +13,10 @@ export const uploadFile = async (file) => {
 
 export const commonActions = {
   ACADEMIC_YEAR_LIST: 'ACADEMIC_YEAR_LIST',
+  MS_API: 'MS_API',
 };
 
-const { ACADEMIC_YEAR_LIST } = commonActions;
+const { ACADEMIC_YEAR_LIST, MS_API } = commonActions;
 
 export const fetchAcademicYearList = (moduleId) => (dispatch) => {
   dispatch({ type: ACADEMIC_YEAR_LIST, payload: [] });
@@ -34,5 +35,25 @@ export const fetchAcademicYearList = (moduleId) => (dispatch) => {
     })
     .catch(() => {
       dispatch({ type: ACADEMIC_YEAR_LIST, payload: [] });
+    });
+};
+
+export const isMsAPI = () => (dispatch) => {
+  let { token = null } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  if (!token) {
+    return;
+  }
+  dispatch({ type: MS_API, payload: false });
+  axiosInstance
+    .get(`/erp_user/oncls-ms-config/`)
+    .then((response) => {
+      localStorage.setItem('isMsAPI', response?.data?.result[0]);
+      response?.data?.result[0]
+        ? localStorage.setItem('launchDate', response?.data?.result[1])
+        : localStorage.removeItem('launchDate');
+      dispatch({ type: MS_API, payload: response?.data?.result[0] });
+    })
+    .catch(() => {
+      dispatch({ type: MS_API, payload: false });
     });
 };

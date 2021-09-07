@@ -1,5 +1,4 @@
 import axios from '../../config/axios';
-import { isMsAPI } from '../../utility-functions/index';
 
 export const authActions = {
   LOGIN_REQUEST: 'LOGIN_REQUEST',
@@ -64,7 +63,6 @@ export const login = (params, isOtpLogin) => (dispatch) => {
           'navigationData',
           JSON.stringify(actualData.result.navigation_data)
         );
-        // isMsAPI();
         const result = { isLogin: true, message: actualData.message };
         return result;
       }
@@ -106,7 +104,6 @@ export const aolLogin = (token) => (dispatch) => {
           'navigationData',
           JSON.stringify(response.data.result.navigation_data)
         );
-        // isMsAPI();
         const result = { isLogin: true, message: response.data.message };
         return result;
       }

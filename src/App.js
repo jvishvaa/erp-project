@@ -293,15 +293,18 @@ import ViewiBook from './containers/intelligent-textbook/ViewiBook';
 import AllBooksPage from 'containers/intelligent-textbook/bookpage/AllBooksPage';
 import ChapterBook from 'containers/intelligent-textbook/chapterpage/ChapterBook';
 import { themeGenerator } from '../src/utility-functions/themeGenerator';
-import { isMsAPI } from './utility-functions/index';
 import StoreAtStudent from 'containers/Finance/src/components/Inventory/Student/storeAtStudent';
 import PolicyPrivacy from 'containers/login/TermsAndCondition/policy';
 import TermsAndCondition from 'containers/login/TermsAndCondition/termsAndCondition';
 import EditStoreTransactionDetails from 'containers/Finance/src/components/Finance/StorePaymentRequests/editStoreTransactionDetails';
 import ShippingAmountAtStudent from 'containers/Finance/src/components/Inventory/Student/shippingAtStudent';
+// import { isMsAPI } from './utility-functions/index';
+import { isMsAPI } from './redux/actions';
 
-function App({ alert }) {
+function App({ alert, isMsAPI }) {
+  // useEffect(() => {
   isMsAPI();
+  // }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
   return (
     // <ErrorBoundary404 HomeButton={false}>
@@ -348,7 +351,9 @@ function App({ alert }) {
                             {({ match }) => <StudentHomeworkReport match={match} />}
                           </Route>
                           <Route path='/erp-online-class/class-work/:param1/:param2/:param3'>
-                            {({ match, location }) => <ClassWork match={match} location={location}  />}
+                            {({ match, location }) => (
+                              <ClassWork match={match} location={location} />
+                            )}
                           </Route>
                           <Route path='/communication/messagelog'>
                             {({ match }) => <MessageLog match={match} />}
@@ -701,11 +706,16 @@ function App({ alert }) {
                           <Route exact path='/assessment/comparision'>
                             {({ match }) => <AssessmentComparisionUI match={match} />}
                           </Route>
-                          <Route exact path='/assessment/:questionPaperId/:assessmentId/analysis'>
+                          <Route
+                            exact
+                            path='/assessment/:questionPaperId/:assessmentId/analysis'
+                          >
                             {({ match }) => <AssessmentAnalysis match={match} />}
                           </Route>
                           <Route exact path='/erp-attendance-list/:id?'>
-                            {({ match, location }) => <AttendeeListRemake match={match}  location={location} />}
+                            {({ match, location }) => (
+                              <AttendeeListRemake match={match} location={location} />
+                            )}
                           </Route>
                           <Route exact path='/aol-attendance-list/:id?'>
                             {({ match }) => <AttendeeListRemake match={match} />}
@@ -713,7 +723,10 @@ function App({ alert }) {
                           <Route exact path='/assessment/'>
                             {({ match }) => <ViewAssessments match={match} />}
                           </Route>
-                          <Route exact path='/assessment/:questionPaperId/:assessmentId/attempt'>
+                          <Route
+                            exact
+                            path='/assessment/:questionPaperId/:assessmentId/attempt'
+                          >
                             {({ match }) => <AssessmentAttemption match={match} />}
                           </Route>
                           <Route exact path='/student-strength'>
@@ -1449,6 +1462,7 @@ const mapDispatchToProps = (dispatch) => ({
     warning: (message) => dispatch(alertActions.warning(message)),
     error: (message) => dispatch(alertActions.error(message)),
   },
+  isMsAPI: () => dispatch(isMsAPI()),
 });
 const mapStateToProps = (state) => {
   return {
