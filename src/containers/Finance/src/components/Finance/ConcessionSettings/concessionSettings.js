@@ -122,6 +122,9 @@ class ConcessionSettings extends Component {
   }
 
   componentDidMount () {
+    if(this.props.user === null){
+      window.location.reload();
+    }
     if (concessionSettingsState) {
       this.setState({
         concessionSettingsState
@@ -349,7 +352,7 @@ class ConcessionSettings extends Component {
                                 size='small'
                                 onClick={() => this.showModalHandler(row.id)}
                               >
-                                <EditIcon />
+                                <EditIcon  style={{ color: "white" }} />
                               </Fab>
                             </TableCell>
                             <TableCell>

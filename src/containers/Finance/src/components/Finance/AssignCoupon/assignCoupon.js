@@ -67,6 +67,9 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
 
   const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
   useEffect(() => {
+    if(user === null){
+      window.location.reload();
+    }
     listCoupon(alert, userToken)
   }, [alert, listCoupon, userToken])
 

@@ -202,6 +202,9 @@ class ApplicationFormAcc extends Component {
   }
 
   componentDidMount () {
+      if(this.props.user === null){
+        window.location.reload();
+      }
     // if (this.state.session) {
     //   // this.props.fetchGrade(this.state.session, this.props.alert, this.props.user, moduleId)
      

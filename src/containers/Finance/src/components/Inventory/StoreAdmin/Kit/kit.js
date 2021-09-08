@@ -708,11 +708,16 @@ class Kit extends Component {
       alert,
     };
 
-    if (!kitName || !kitDesc || !kitAmount || (!isNewStudent && !isOldStudent) || !secondLang || !thirdLang) {
+    if (!kitName || !kitDesc || !kitAmount || (!isNewStudent && !isOldStudent)) {
       this.props.alert.warning('Please Fill Select all Mandatory Fields');
       return;
     }
-
+    if(!isUniform && !isCommon && !isDelivery){
+     if(!secondLang || !thirdLang){
+        this.props.alert.warning('Please Fill Select all Mandatory Fields');
+        return;
+      }
+    }
     if (!itemsId.length && !commonKitIds.length) {
       this.props.alert.warning('Please Select at least an item or a kit');
       return;

@@ -7,6 +7,11 @@ const StyledRating = withStyles((theme)=>({
   iconFilled: {
     color: theme.palette.primary.main,
   },
+  root : {
+    '& .MuiSvgIcon-root':{
+      color : "currentColor"
+    }
+  },
   iconHover: {
     color: ` ${theme.palette.primary.main} !important`,
   },
