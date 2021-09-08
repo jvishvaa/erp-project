@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme)=>({
 }))
 
 const McqQuestionMultiAnswer = (props) => {
-  const classes = makeStyles()
+  const classes = useStyles()
   const {
     controls: { attemptQuestion },
   } = useContext(AssessmentHandlerContext);
