@@ -19,7 +19,7 @@ import AlertNotificationProvider from './context-api/alert-context/alert-state';
 import UserManagement from './containers/user-management';
 import ViewUsers from './containers/user-management/view-users/view-users';
 import Login from './containers/login';
-import Forgot from './containers/Forgot-Password/Forgot';
+import Forgot from './containers/login/forgot-password';
 import Dashboard from './containers/dashboard';
 import { listSubjects } from './redux/actions/academic-mapping-actions';
 import OnlineclassViewProvider from './containers/online-class/online-class-context/online-class-state';
