@@ -4,7 +4,8 @@ import Loading from '../../components/loader/loader';
 import './style.scss';
 import { Box, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { isMsAPI } from '../../utility-functions/index';
+// import { isMsAPI } from '../../utility-functions/index';
+import { useSelector } from 'react-redux';
 
 const TeacherDashboard = React.lazy(() => import('./TeacherDashboard/teacherDashboard'));
 const StudentDashboard = React.lazy(() => import('./StudentDashboard/studentDashboard'));
@@ -50,18 +51,8 @@ const Dashboard = () => {
   const greetings =
     time < 12 ? 'Good Morning' : time < 18 ? 'Good Afternoon' : 'Good Evening';
   const [branchIds, setBranchIds] = useState([]);
-  const [isMsAPIKey, setIsMsAPIKey] = useState(
-    JSON.parse(localStorage.getItem('isMsAPI'))
-  );
-
-  useEffect(() => {
-    isMsAPI()
-      .then((response) => {
-        setIsMsAPIKey(response?.data?.result[0]);
-      })
-      .catch(() => {});
-  }, []);
-
+  const isMsAPIKey = useSelector((state) => state.commonFilterReducer?.isMsAPIKey);
+ 
   const renderRoleDashboard = () => {
     if (!isMsAPIKey) {
       return <DefaultDashboard />;
