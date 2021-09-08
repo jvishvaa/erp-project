@@ -14,7 +14,7 @@ const DefaultDashboard = () => {
         {schoolDetails?.school_name}
       </Typography>
       <Typography variant="h6">
-        An one stop information management system for {schoolDetails?.school_name} to manage all teacher and student activities and resources.
+        A one stop information management system for {schoolDetails?.school_name} to manage all teacher and student activities and resources.
       </Typography>
     </Box>
   );

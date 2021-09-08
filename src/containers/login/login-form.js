@@ -10,10 +10,10 @@ import { IconButton } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { connect } from 'react-redux';
-import { login, aolLogin } from '../../redux/actions';
+import { login, aolLogin, isMsAPI } from '../../redux/actions';
 
 function LoginForm(props) {
-  const { onLogin, aolOnLogin, setLoading, history } = props;
+  const { onLogin, isMsAPI, aolOnLogin, setLoading, history } = props;
   const classes = useStyles();
   const [uname, pass, checked] =
     JSON.parse(localStorage.getItem('rememberDetails')) || [];
@@ -29,6 +29,7 @@ function LoginForm(props) {
     if (erpSearch !== null) {
       aolOnLogin(erpSearch, false).then((response) => {
         if (response?.isLogin) {
+          isMsAPI();
           history.push('/online-class/attend-class');
         } else {
           setAlert('error', response?.message);
@@ -42,6 +43,7 @@ function LoginForm(props) {
       onLogin(params).then((response) => {
         if (response?.isLogin) {
           // history.push('/profile');
+          isMsAPI();
           history.push('/dashboard');
         } else {
           setAlert('error', response?.message);
@@ -170,6 +172,9 @@ const mapDisptachToProps = (dispatch) => ({
   },
   aolOnLogin: (params) => {
     return dispatch(aolLogin(params));
+  },
+  isMsAPI: () => {
+    return dispatch(isMsAPI());
   },
 });
 
