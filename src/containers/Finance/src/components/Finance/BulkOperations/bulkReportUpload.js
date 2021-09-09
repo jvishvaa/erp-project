@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect } from 'react'
+import React, { useState, useLayoutEffect, useEffect } from 'react'
 import {
   TextField,
   Button,
@@ -28,11 +28,16 @@ const BulkReportUpload = ({ classes, session, branches, bulkReportList, reports,
       setIsAdmin(true)
     }
   }, [])
+
+let userToken;
+  useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
+  }, [])
   const handleClickSessionYear = (e) => {
     setSessionData(e)
     setBranchData([])
-    fetchBranches(e.value, alert, user)
-    bulkReportList(user, alert)
+    fetchBranches(e.value, alert, userToken)
+    bulkReportList(userToken, alert)
   }
   const changehandlerbranch = (e) => {
     setBranchData(e)
@@ -123,7 +128,7 @@ const BulkReportUpload = ({ classes, session, branches, bulkReportList, reports,
       return
     }
     if (sessionData && reportId && statusFile) {
-      bulkReportUpload(form, reportId, user, alert)
+      bulkReportUpload(form, reportId, userToken, alert)
     } else {
       alert.warning('Fill all the Fields!')
     }
@@ -222,7 +227,7 @@ const BulkReportUpload = ({ classes, session, branches, bulkReportList, reports,
   )
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.branchPerSession,
   dataLoading: state.finance.common.dataLoader,

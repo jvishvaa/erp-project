@@ -98,6 +98,11 @@ const BulkReportStatus = ({
     }
   }, []);
 
+let userToken;
+  useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
+  }, [])
+
   useEffect(() => {
     if ((page || rowsPerPage) && sessionData && reportType) {
       fetchBulkReportStatus(
@@ -107,7 +112,7 @@ const BulkReportStatus = ({
         isAdmin,
         page + 1,
         rowsPerPage || 10,
-        user,
+        userToken,
         alert
       );
     }
@@ -117,7 +122,7 @@ const BulkReportStatus = ({
     sessionData,
     branchData,
     alert,
-    user,
+    userToken,
     isAdmin,
     fetchBulkReportStatus,
     reportType,
@@ -127,9 +132,9 @@ const BulkReportStatus = ({
     setSessionData(e);
     setBranchData(null);
     if (isAdmin) {
-      fetchBranches(e.value, alert, user);
+      fetchBranches(e.value, alert, userToken);
     }
-    bulkReportList(user, alert);
+    bulkReportList(userToken, alert);
   };
 
   const changehandlerbranch = (e) => {
@@ -152,7 +157,7 @@ const BulkReportStatus = ({
       isAdmin,
       page + 1,
       rowsPerPage || 10,
-      user,
+      userToken,
       alert
     );
   };
@@ -369,7 +374,7 @@ const BulkReportStatus = ({
   );
 };
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.branchPerSession,
   dataLoading: state.finance.common.dataLoader,

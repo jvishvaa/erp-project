@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import {
   TextField,
@@ -29,6 +29,10 @@ const BulkActiveInactive = ({
     value: 4,
     label: 'Others'
   })
+let userToken;
+  useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
+  }, [])
 
   const fileChangeHandler = (event) => {
     const file = event.target.files[0]
@@ -109,7 +113,7 @@ const BulkActiveInactive = ({
     }
 
     if (statusFile && reason) {
-      props.bulkActiveInactive(form, props.user, props.alert)
+      props.bulkActiveInactive(form, userToken, props.alert)
     } else {
       props.alert.warning('Please Select File to Upload!')
     }
@@ -215,7 +219,7 @@ const BulkActiveInactive = ({
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoadingStatus: state.finance.common.dataLoader
 })
 
