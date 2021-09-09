@@ -67,6 +67,7 @@ const styles = (theme) => ({
   },
 });
 
+let userToken='';
 const BulkReportStatus = ({
   classes,
   reports,
@@ -98,7 +99,6 @@ const BulkReportStatus = ({
     }
   }, []);
 
-let userToken;
   useEffect(() => {
     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
   }, [])
