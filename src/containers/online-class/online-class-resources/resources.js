@@ -240,7 +240,7 @@ const Resources = () => {
       </Grid>
       <Divider />
 
-      <Grid container spacing={2} className='teacherBatchViewLCardList'>
+      <Grid spacing={2} className='teacherBatchViewLCardList'>
         <Grid item md={12} xs={12} className='teacherBatchViewLCardList'>
           <TabPanel tabValue={tabValue} setTabValue={setTabValue} />
         </Grid>
@@ -292,7 +292,7 @@ const Resources = () => {
         )}
       </Grid>
 
-      <Grid container spacing={3} className='paginateData paginateMobileMargin'>
+      <Grid spacing={3} className='paginateData paginateMobileMargin'>
         <Grid item md={12}>
           <Pagination
             onChange={handlePagination}

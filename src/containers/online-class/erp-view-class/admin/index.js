@@ -11,7 +11,7 @@ import {
   FormControlLabel,
   Switch,
   Tooltip,
-  Box
+  Box,
 } from '@material-ui/core';
 import CountdownTimer from './CountdownTimer';
 import { withRouter } from 'react-router-dom';
@@ -66,10 +66,12 @@ const ErpAdminViewClass = ({ history }) => {
   );
 
   const launchdate = localStorage.getItem('launchDate');
-  const [minStartDate, setMinStartDate]= useState();
-  const [maxStartDate, setMaxStartDate]= useState();
+  const [minStartDate, setMinStartDate] = useState();
+  const [maxStartDate, setMaxStartDate] = useState();
   const [dateRangeTechPer, setDateRangeTechPer] = useState([]);
-  const [historicalData, setHistoricalData] = useState(false);
+  const [historicalData, setHistoricalData] = useState(
+    JSON.parse(localStorage.getItem('filterData'))?.historicalData || false
+  );
 
   const [classTypes, setClassTypes] = useState([
     { id: 0, type: 'Compulsory Class' },
@@ -149,55 +151,62 @@ const ErpAdminViewClass = ({ history }) => {
           page: pageNumber = 1,
           tabValue: tabVal = 0,
         } = JSON.parse(localStorage.getItem('filterData')) || {};
-        setPage(pageNumber);
-        setTabValue(tabVal);
         if (classtype?.id >= 0) {
           setSelectedClassType(classtype);
-        }
-        if (window.location.pathname !== '/erp-online-class-student-view') {
-          if (academic?.id) {
-            // setSelectedAcademicYear(academic);
-            const acadId = academic?.id || '';
-            callApi(
-              `${endpoints.communication.branches}?session_year=${acadId}&module_id=${moduleId}`,
-              'branchList'
-            );
-            if (branch?.length) {
-              setSelectedBranch(branch);
-              const branchIds = branch.map((el) => el?.branch?.id) || [];
+          if (window.location.pathname !== '/erp-online-class-student-view') {
+            if (academic?.id > 0) {
+              // setSelectedAcademicYear(academic);
+              const acadId = academic?.id || '';
               callApi(
-                `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
-                'gradeList'
+                `${endpoints.communication.branches}?session_year=${acadId}&module_id=${moduleId}`,
+                'branchList'
               );
-              if (grade?.length) {
-                setSelectedGrade(grade);
-                const gradeIds = grade.map((el) => el?.grade_id) || [];
+              if (branch?.length) {
+                setSelectedBranch(branch);
+                const branchIds =
+                  branch.filter((el) => el?.branch?.id > 0).map((el) => el?.branch?.id) ||
+                  [];
                 callApi(
-                  `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}&module_id=${moduleId}`,
-                  'section'
+                  `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
+                  'gradeList'
                 );
-                if (classtype?.id > 0) {
+                if (grade?.length) {
+                  setSelectedGrade(grade);
+                  const gradeIds =
+                    grade.filter((el) => el?.grade_id > 0).map((el) => el?.grade_id) ||
+                    [];
                   callApi(
-                    `${endpoints.teacherViewBatches.courseListApi}?grade=${gradeIds}`,
-                    'course'
+                    `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}&module_id=${moduleId}`,
+                    'section'
                   );
-                }
-                if (section?.length) {
-                  setSelectedSection(section);
-                  const sectionIds = section.map((el) => el?.section_id) || [];
-                  callApi(
-                    `${endpoints.academics.subjects}?branch=${branchIds}&session_year=${acadId}&grade=${gradeIds}&section=${sectionIds}&module_id=${moduleId}`,
-                    'subject'
-                  );
-                  if (classtype?.id === 0) {
-                    if (subject?.length) {
-                      setSelectedSubject(subject);
-                    }
-                  } else if (classtype.id > 0) {
-                    if (course?.id) {
-                      setSelectedCourse(course);
+                  if (classtype?.id > 0) {
+                    callApi(
+                      `${endpoints.teacherViewBatches.courseListApi}?grade=${gradeIds}`,
+                      'course'
+                    );
+                  }
+                  if (section?.length) {
+                    setSelectedSection(section);
+                    const sectionIds =
+                      section
+                        .filter((el) => el?.section_id > 0)
+                        .map((el) => el?.section_id) || [];
+                    callApi(
+                      `${endpoints.academics.subjects}?branch=${branchIds}&session_year=${acadId}&grade=${gradeIds}&section=${sectionIds}&module_id=${moduleId}`,
+                      'subject'
+                    );
+                    if (classtype?.id === 0) {
+                      if (subject?.length) {
+                        setSelectedSubject(subject);
+                      }
+                    } else if (classtype.id > 0) {
+                      if (course?.id) {
+                        setSelectedCourse(course);
+                      }
                     }
                   }
+                  setPage(pageNumber);
+                  setTabValue(tabVal);
                 }
               }
             }
@@ -242,7 +251,11 @@ const ErpAdminViewClass = ({ history }) => {
 
   function callApi(api, key) {
     setLoading(true);
-    if (key === 'filter' && JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
+    if (
+      key === 'filter' &&
+      JSON.parse(localStorage.getItem('isMsAPI')) &&
+      historicalData === false
+    ) {
       msCallFilterApi(api);
       return;
     }
@@ -531,6 +544,7 @@ const ErpAdminViewClass = ({ history }) => {
           date: dateRangeTechPer,
           page,
           tabValue,
+          historicalData,
         })
       );
 
@@ -568,25 +582,27 @@ const ErpAdminViewClass = ({ history }) => {
   const handleDownload = async () => {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     try {
-      const { data } = JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false
-        ? await APIREQUEST(
-            'get',
-            `/reports/v1/oncls-report/?start_date=${moment(startDateTechPer).format(
-              'YYYY-MM-DD'
-            )}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
-            null,
-            'arraybuffer', true
-          )
-        : await axiosInstance.get(
-            `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
-              startDateTechPer
-            ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format(
-              'YYYY-MM-DD'
-            )}`,
-            {
-              responseType: 'arraybuffer',
-            }
-          );
+      const { data } =
+        JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false
+          ? await APIREQUEST(
+              'get',
+              `/reports/v1/oncls-report/?start_date=${moment(startDateTechPer).format(
+                'YYYY-MM-DD'
+              )}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
+              null,
+              'arraybuffer',
+              true
+            )
+          : await axiosInstance.get(
+              `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
+                startDateTechPer
+              ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format(
+                'YYYY-MM-DD'
+              )}`,
+              {
+                responseType: 'arraybuffer',
+              }
+            );
       const blob = new Blob([data], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
@@ -736,81 +752,89 @@ const ErpAdminViewClass = ({ history }) => {
     setTabValue(0);
   };
 
-  const getminMaxDate = ()=>{
-    let mindate = "",
-        maxDate = "";
+  const getminMaxDate = () => {
+    let mindate = '',
+      maxDate = '';
     let datearr = [];
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
-      if(historicalData){
-          mindate = moment(launchdate, "YYYY-MM-DD").subtract(1, 'year').format("YYYY-MM-DD");
-          maxDate = moment(launchdate, "YYYY-MM-DD").format("YYYY-MM-DD");
-          datearr = [moment(maxDate, "YYYY-MM-DD").subtract(6,'days'), moment(maxDate, "YYYY-MM-DD")];
+    if (JSON.parse(localStorage.getItem('isMsAPI'))) {
+      if (historicalData) {
+        mindate = moment(launchdate, 'YYYY-MM-DD')
+          .subtract(1, 'year')
+          .format('YYYY-MM-DD');
+        maxDate = moment(launchdate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+        datearr = [
+          moment(maxDate, 'YYYY-MM-DD').subtract(6, 'days'),
+          moment(maxDate, 'YYYY-MM-DD'),
+        ];
+      } else {
+        mindate = moment(launchdate).add(1, 'day').format('YYYY-MM-DD');
+        maxDate = moment(launchdate, 'YYYY-MM-DD').add(1, 'year').format('YYYY-MM-DD');
+        var a = moment(launchdate, 'YYYY-MM-DD').add(1, 'day');
+        var b = moment();
+        if (b.diff(a, 'days') > 6) {
+          datearr = [moment().subtract(6, 'days'), moment()];
+        } else {
+          datearr = [moment(mindate, 'YYYY-MM-DD'), moment().add(1, 'day')];
+        }
       }
-      else{
-          mindate = moment(launchdate).add(1, 'day').format('YYYY-MM-DD');
-          maxDate = moment(launchdate, "YYYY-MM-DD").add(1, 'year').format("YYYY-MM-DD");
-          var a = moment(launchdate, "YYYY-MM-DD").add(1, 'day');
-          var b = moment();
-          if(b.diff(a, 'days') > 6){
-            datearr = [moment().subtract(6, 'days'),  moment()];
-          }
-          else{
-            datearr = [moment(mindate, "YYYY-MM-DD"), moment().add(1, 'day')];
-          }
-      }
+    } else {
+      mindate = '';
+      maxDate = '';
+      datearr = [moment().subtract(6, 'days'), moment()];
     }
-    else{
-        mindate = "";
-        maxDate = "";
-        datearr = [moment().subtract(6, 'days'),  moment()];
-    }
-    return { mindate : mindate, maxDate : maxDate, datearr : datearr }
-  }
+    return { mindate: mindate, maxDate: maxDate, datearr: datearr };
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     const getvalues = getminMaxDate();
     setMinStartDate(getvalues.mindate);
     setMaxStartDate(getvalues.maxDate);
     setDateRangeTechPer(getvalues.datearr);
   }, [historicalData]);
 
-  const HistoricalDataEle = ()=>{
-    return (
-      JSON.parse(localStorage.getItem('isMsAPI')) ? 
+  const HistoricalDataEle = () => {
+    return JSON.parse(localStorage.getItem('isMsAPI')) ? (
       <Grid item md={3} xs={12}>
         <FormControlLabel
-          style={{minWidth:"90%", margin:"0px"}}
+          style={{ minWidth: '90%', margin: '0px' }}
           control={
             <>
-            <Switch 
-              checked={historicalData} name="historicalData" color="primary"
-              onChange={(event)=>{ 
-                if(window.location.pathname === '/erp-online-class-student-view'){
-                  setFilterList([]);
-                  setPage(1);
-                  setTabValue(0);
-                }
-                setHistoricalData(event.target.checked )
-              }}
-            />
-          </>
-        }
-        label={
-          <Box alignItems="center" display="flex">
-            <Tooltip title={
-              `Recent data: records from ${moment(launchdate).add(1, 'day').format("YYYY-MM-DD")} till date
-               Historical data: records before ${moment(launchdate).add(1, 'day').format("YYYY-MM-DD")}`
-            }>
-              <InfoIcon fontSize="small" color="disabled"/>
-            </Tooltip>
-            <Typography style={{paddingLeft:"3px"}} color="secondary">{historicalData ? "Historical Data" : "Recent Data"}</Typography>
-          </Box>
-        }
+              <Switch
+                checked={historicalData}
+                name='historicalData'
+                color='primary'
+                onChange={(event) => {
+                  if (window.location.pathname === '/erp-online-class-student-view') {
+                    setFilterList([]);
+                    setPage(1);
+                    setTabValue(0);
+                  }
+                  setHistoricalData(event.target.checked);
+                }}
+              />
+            </>
+          }
+          label={
+            <Box alignItems='center' display='flex'>
+              <Tooltip
+                title={`Recent data: records from ${moment(launchdate)
+                  .add(1, 'day')
+                  .format('YYYY-MM-DD')} till date
+               Historical data: records before ${moment(launchdate)
+                 .add(1, 'day')
+                 .format('YYYY-MM-DD')}`}
+              >
+                <InfoIcon fontSize='small' color='disabled' />
+              </Tooltip>
+              <Typography style={{ paddingLeft: '3px' }} color='secondary'>
+                {historicalData ? 'Historical Data' : 'Recent Data'}
+              </Typography>
+            </Box>
+          }
         />
       </Grid>
-      : null
-    )
-  }
+    ) : null;
+  };
 
   return (
     <>
@@ -985,8 +1009,8 @@ const ErpAdminViewClass = ({ history }) => {
                     <Grid item xs={12} sm={3}>
                       <LocalizationProvider dateAdapter={MomentUtils}>
                         <DateRangePicker
-                          minDate = {minStartDate ? new Date(minStartDate) : undefined}
-                          maxDate = {maxStartDate ? new Date(maxStartDate) : undefined}          
+                          minDate={minStartDate ? new Date(minStartDate) : undefined}
+                          maxDate={maxStartDate ? new Date(maxStartDate) : undefined}
                           startText='Select-date-range'
                           value={dateRangeTechPer}
                           onChange={(newValue) => {
