@@ -23,6 +23,7 @@ const styles = theme => ({
   }
 })
 
+let userToken = '';
 const AcceptRejectPayment = ({ classes, session, dataLoading, getPaymentDetails, cancelPayment, acceptPayment, paymentDetails, branches, fetchGradeList, externalshuffleDetail, internalshuffleDetail, fetchInternalShuffle, fetchExternalShuffle, gradeList, fetchBranches, alert, user }) => {
   const [sessionYear, setSession] = useState({ value: '2020-21', label: '2020-21' })
   // const [grade, setGrade] = useState(null)
@@ -47,6 +48,10 @@ const AcceptRejectPayment = ({ classes, session, dataLoading, getPaymentDetails,
   const [imgs, setImg] = useState('')
 
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
+  }, [])
+
+  useEffect(() => {
     setFilterWalletErp(paymentDetails)
   }, [paymentDetails])
   const handleSession = (e) => {
@@ -60,7 +65,7 @@ const AcceptRejectPayment = ({ classes, session, dataLoading, getPaymentDetails,
   //   setGrade(e)
   // }
   const handlePaymentDetails = (e) => {
-    getPaymentDetails(sessionYear && sessionYear.value, alert, user)
+    getPaymentDetails(sessionYear && sessionYear.value, alert, userToken)
     setShowTable(true)
   }
 
@@ -127,7 +132,7 @@ const AcceptRejectPayment = ({ classes, session, dataLoading, getPaymentDetails,
         id: listId,
         transction_id: upiId
       }
-      cancelPayment(data, alert, user)
+      cancelPayment(data, alert, userToken)
       setCancelModal(false)
       setCancelRemark('')
     } else {
@@ -189,7 +194,7 @@ const AcceptRejectPayment = ({ classes, session, dataLoading, getPaymentDetails,
         remarks: acceptRemark,
         transction_id: upiId
       }
-      acceptPayment(data, alert, user)
+      acceptPayment(data, alert, userToken)
       setAcceptModal(false)
       setAcceptRemark('')
     } else {
@@ -481,7 +486,7 @@ const AcceptRejectPayment = ({ classes, session, dataLoading, getPaymentDetails,
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   dataLoading: state.finance.common.dataLoader,
   branches: state.finance.common.branchPerSession,

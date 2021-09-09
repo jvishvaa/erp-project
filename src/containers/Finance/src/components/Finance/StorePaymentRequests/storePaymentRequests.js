@@ -57,13 +57,13 @@ const styles = theme => ({
 })
 
 
+let userToken='';
 const StorePaymentRequests = ({ classes, session, history, dataLoading, requestList, sessionRed, alert, user, fetchStorePayRequests }) => {
   const [sessionYear, setSession] = useState(null)
   // const [shuffleStatus, setShuffleStatus] = useState({ label: 'Pending', value: 1 })
   // const [accReasonToApprove, setAccReason] = useState({})
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-let userToken;
   useEffect(() => {
     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
   }, [])  
