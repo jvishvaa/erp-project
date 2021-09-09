@@ -131,6 +131,7 @@ function AddNewOrchadio() {
   const [albumTitle, setAlbumTitle] = React.useState(0);
   const [branchId, setBranchId] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  
   const [audioLink, setAudioLink] = React.useState('');
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -252,23 +253,25 @@ bytes
     return null;
   };
   const audioUpload = (files) => {
+    
     const formData = new FormData();
     formData.append('branch_name', branchId);
     // for (let i = 0; i < files.length; i++) {
     formData.append('file', files[0]);
     //   }
+    setLoading(true);
     const src = [];
     axios
       .post(`${endpoints.orchadio.audioUpload}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
           setLoading(false);
-
           setAlert('success', result.data.message);
           src.push(result.data.result);
           setAudioLink(src);
         } else {
-          console.log(result.data.message);
+          console.log(result.data.message); 
+          setLoading(false);
         }
       })
       .catch((error) => {});
@@ -366,6 +369,7 @@ bytes
         .then((result) => {
           setLoading(false);
           if (result.data.status_code === 200) {
+            
             setAlert('success', result.data.message);
             history.push({
               pathname: '/orchadio/manage-orchadio',
@@ -563,6 +567,7 @@ bytes
                           <CardContent>
                             <input {...getInputProps()} />
                             <div>
+                           
                               {isDragAccept && 'All files will be accepted'}
                               {isDragReject && 'Some files will be rejected'}
                               {!isDragActive && (
