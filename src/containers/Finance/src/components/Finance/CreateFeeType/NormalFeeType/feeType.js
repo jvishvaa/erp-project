@@ -48,6 +48,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken = "";
 class FeeType extends Component {
   
   constructor (props) {
@@ -67,6 +69,68 @@ class FeeType extends Component {
     // this.deleteHandler = this.deleteHandler.bind(this)
   }
 
+  componentDidMount () {
+     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+    if (feeTypeState) {
+      this.setState(feeTypeState)
+    }
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Fee Type' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Normal Fee Type') {
+              // setModuleId(item.child_id);
+              // setModulePermision(true);
+              this.setState({
+                moduleId: item.child_id
+              })
+            } else {
+              // setModulePermision(false);
+            }
+          });
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  }
+  componentDidMount () {
+     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+    if (feeTypeState) {
+      this.setState(feeTypeState)
+    }
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Fee Type' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Normal Fee Type') {
+              // setModuleId(item.child_id);
+              // setModulePermision(true);
+              this.setState({
+                moduleId: item.child_id
+              })
+            } else {
+              // setModulePermision(false);
+            }
+          });
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  }
   handleChangePage = (event, newPage) => {
     this.setState({
       page: newPage
@@ -117,7 +181,7 @@ class FeeType extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, branchData: [], sessionData: e }, () => {
-      this.props.fetchBranches(this.state.session, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(this.state.session, this.props.alert, userToken, moduleId)
     })
   }
 
@@ -139,14 +203,14 @@ class FeeType extends Component {
     //   this.props.alert.warning('Select Branch')
     //   return
     // }
-    this.props.fetchNormalFeeList(this.state.session, this.state.branch && this.state.branch.id, this.props.alert, this.props.user)
+    this.props.fetchNormalFeeList(this.state.session, this.state.branch && this.state.branch.id, this.props.alert, userToken)
     if (this.state.session && this.state.branch.id) {
       this.setState({ showTable: true, showAddButton: true }, () => { feeTypeState = this.state })
     }
   }
 
   deleteHandler = () => {
-    this.props.deleteNormalFeeList(this.state.deleteId, this.props.alert, this.props.user)
+    this.props.deleteNormalFeeList(this.state.deleteId, this.props.alert, userToken)
     this.deleteModalCloseHandler()
   }
 
@@ -189,36 +253,7 @@ class FeeType extends Component {
     return dataToShow
   }
 
-  componentDidMount () {
-    if (feeTypeState) {
-      this.setState(feeTypeState)
-    }
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Fee Type' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Normal Fee Type') {
-              // setModuleId(item.child_id);
-              // setModulePermision(true);
-              this.setState({
-                moduleId: item.child_id
-              })
-            } else {
-              // setModulePermision(false);
-            }
-          });
-        } else {
-          // setModulePermision(false);
-        }
-      });
-    } else {
-      // setModulePermision(false);
-    }
-  }
+
 
   render () {
     // let viewFeeTable = null
@@ -516,7 +551,7 @@ class FeeType extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.branchPerSession,
   normalFeeList: state.finance.normalFee.normalFeeList,

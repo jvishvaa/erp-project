@@ -60,6 +60,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class AdmissionFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -72,17 +73,20 @@ class AdmissionFormAcc extends Component {
     }
   }
 
+componentDidMount(){
+  userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+}
   buttonHandler = (e) => {
     this.props.history.push({
       pathname: '/finance/customizedAdmissionForm'
     })
   }
   handleGetButton = (e) => {
-    this.props.getAdmissionRecords(this.props.user, this.props.alert, this.state.dropdowns.session, this.state.dropdowns.fromDate, this.state.dropdowns.toDate, this.state.selectedBranches)
+    this.props.getAdmissionRecords(userToken, this.props.alert, this.state.dropdowns.session, this.state.dropdowns.fromDate, this.state.dropdowns.toDate, this.state.selectedBranches)
   }
 
   dropDownHandler= (event, name) => {
-    this.props.fetchBranches(event && event.value, this.props.alert, this.props.user, moduleId)
+    this.props.fetchBranches(event && event.value, this.props.alert, userToken, moduleId)
     const newstate = { ...this.state.dropdowns }
     switch (name) {
       case 'session': {
@@ -130,8 +134,8 @@ class AdmissionFormAcc extends Component {
   }
 
   changehandlerbranch = (e) => {
-    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e && e.value)
-    // this.props.fetchGrade(this.state.session, e && e.value, this.props.alert, this.props.user, moduleId)
+    // this.props.fetchGrades(this.props.alert, userToken, moduleId, e && e.value)
+    // this.props.fetchGrade(this.state.session, e && e.value, this.props.alert, userToken, moduleId)
     this.setState({ selectedBranches: e})
   }
   render () {
@@ -294,7 +298,7 @@ class AdmissionFormAcc extends Component {
   }
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   admissionrecords: state.finance.accountantReducer.admissionForm.admissionrecords,
   branches: state.finance.common.branchPerSession,

@@ -62,12 +62,15 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken ='';
 class TabView extends Component {
   state = {
     value: 'one',
     currentSession: null
   };
-
+componentDidMount(){
+   userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+}
   handleChange = (event, value) => {
     this.setState({ value })
   };
@@ -98,13 +101,13 @@ class TabView extends Component {
               {/* <Tab value='six' label='AirPay Fee Account' /> */}
             </Tabs>
           </AppBar>
-          {this.state.value === 'one' && <TabContainer><Bank alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
-          {this.state.value === 'two' && <TabContainer><ViewBanks alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
-          {this.state.value === 'three' && <TabContainer><ViewFeeAccounts alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
-          {this.state.value === 'four' && <TabContainer><AccToClass alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
-          {this.state.value === 'five' && <TabContainer><AccToBranch alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
-          {this.state.value === 'six' && <TabContainer><AccToStore alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>}
-          {/* {this.state.value === 'six' && <TabContainer><AirPayFeeAccount alert={this.props.alert} user={this.props.user} currentSession={this.state.currentSession} /></TabContainer>} */}
+          {this.state.value === 'one' && <TabContainer><Bank alert={this.props.alert} user={userToken} currentSession={this.state.currentSession} /></TabContainer>}
+          {this.state.value === 'two' && <TabContainer><ViewBanks alert={this.props.alert} user={userToken} currentSession={this.state.currentSession} /></TabContainer>}
+          {this.state.value === 'three' && <TabContainer><ViewFeeAccounts alert={this.props.alert} user={userToken} currentSession={this.state.currentSession} /></TabContainer>}
+          {this.state.value === 'four' && <TabContainer><AccToClass alert={this.props.alert} user={userToken} currentSession={this.state.currentSession} /></TabContainer>}
+          {this.state.value === 'five' && <TabContainer><AccToBranch alert={this.props.alert} user={userToken} currentSession={this.state.currentSession} /></TabContainer>}
+          {this.state.value === 'six' && <TabContainer><AccToStore alert={this.props.alert} user={userToken} currentSession={this.state.currentSession} /></TabContainer>}
+          {/* {this.state.value === 'six' && <TabContainer><AirPayFeeAccount alert={this.props.alert} user={userToken} currentSession={this.state.currentSession} /></TabContainer>} */}
         </React.Fragment>
       )
     }
@@ -136,7 +139,7 @@ class TabView extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items
 })
 

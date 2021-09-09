@@ -66,6 +66,7 @@ if (NavData && NavData.length) {
   // setModulePermision(false);
 }
 
+let userToken = "";
 class RegistrationForm extends Component {
   constructor (props) {
     super(props)
@@ -74,15 +75,17 @@ class RegistrationForm extends Component {
       selectedBranches: null
     }
   }
-
+componentDidMount(){
+  userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+}
   handleAcademicyear = (e) => {
     this.setState({ session: e }, () => {
-      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
     })
   }
 
   changehandlerbranch = (e) => {
-    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    // this.props.fetchGrades(this.props.alert, userToken, moduleId, e.value)
     this.setState({ selectedBranches: e})
   }
 
@@ -124,7 +127,7 @@ class RegistrationForm extends Component {
   fetchRegListHandler = () => {
     // fetch calll
     const { session, fromDate, toDate, selectedBranches } = this.state
-    this.props.fetchRegistrationList(session, fromDate, toDate, this.props.user, this.props.alert, selectedBranches?.value)
+    this.props.fetchRegistrationList(session, fromDate, toDate, userToken, this.props.alert, selectedBranches?.value)
   }
 
   render () {

@@ -54,6 +54,7 @@ if (NavData && NavData.length) {
   // setModulePermision(false);
 }
 
+let userToken = "";
 const OnlineAdmission = ({ dataLoadingStatus, branches, fetchBranches, getPendingOnlineAdmission, onlinePendingAdmissionData, alert, user, session }) => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -154,10 +155,13 @@ const OnlineAdmission = ({ dataLoadingStatus, branches, fetchBranches, getPendin
   // // onPageChange={page => this.pageChangeHandler(page)}
   // />
 
+useEffect(() =>{
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+})
   const handleAcademicyear = (e) => {
     console.log('acad years', session)
       setSession(e)
-      fetchBranches(e.value, alert, user, moduleId)
+      fetchBranches(e.value, alert, userToken, moduleId)
       setDisplay(false)
       setSelectedBranches('')
   }
@@ -166,7 +170,7 @@ const OnlineAdmission = ({ dataLoadingStatus, branches, fetchBranches, getPendin
     // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session)
     setSelectedBranches(e)
     if (e && session) {
-    getPendingOnlineAdmission(sessions?.value, e?.value, alert, user)
+    getPendingOnlineAdmission(sessions?.value, e?.value, alert, userToken)
     setDisplay(true)
     } else {
       alert.warning('Fill all the required Fields!')
@@ -263,7 +267,7 @@ const OnlineAdmission = ({ dataLoadingStatus, branches, fetchBranches, getPendin
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   dataLoadingStatus: state.finance.common.dataLoader,
   todayDetail: state.finance.eMandateReducer.todayDetails,

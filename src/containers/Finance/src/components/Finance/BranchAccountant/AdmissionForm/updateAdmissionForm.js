@@ -79,6 +79,7 @@ if (NavData && NavData.length) {
   // setModulePermision(false);
 }
 
+let userToken = "";
 class UpdateAdmissionFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -104,12 +105,13 @@ class UpdateAdmissionFormAcc extends Component {
   }
 
   componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (this.props.history.location.studentInformationForAdmission) {
       this.setState({
         studentInformationForAdmission: this.props.history.location.studentInformationForAdmission
       }, () => {
         if (this.state.studentInformationForAdmission && this.state.studentInformationForAdmission.student_registered) {
-          this.props.fetchAdmissionRecordByErp(this.state.studentInformationForAdmission.student_registered.erp, this.props.user, this.props.alert)
+          this.props.fetchAdmissionRecordByErp(this.state.studentInformationForAdmission.student_registered.erp, userToken, this.props.alert)
         }
       })
     } else {
@@ -125,17 +127,17 @@ class UpdateAdmissionFormAcc extends Component {
     getStepContent = (stepIndex) => {
       switch (stepIndex) {
         case 0:
-          return <UpdateStudentDetailsFormAcc studentInformationForAdmission={this.state.studentInformationForAdmission} getStudentDetail={this.getStudentDetail} alert={this.props.alert} />
+          return <UpdateStudentDetailsFormAcc studentInformationForAdmission={this.state.studentInformationForAdmission} getStudentDetail={this.getStudentDetail} alert={this.props.alert} user={userToken} />
         case 1:
-          return <UpdateStudentParentDetailsFormAcc studentInformationForAdmission={this.state.studentInformationForAdmission} getStudentParentDetail={this.getStudentParentDetail} />
+          return <UpdateStudentParentDetailsFormAcc studentInformationForAdmission={this.state.studentInformationForAdmission} getStudentParentDetail={this.getStudentParentDetail} user={userToken} />
         case 2:
-          return <UpdateAddressDetailsFormAcc studentInformationForAdmission={this.state.studentInformationForAdmission} getAddressDetail={this.getAddressDetail} />
+          return <UpdateAddressDetailsFormAcc studentInformationForAdmission={this.state.studentInformationForAdmission} getAddressDetail={this.getAddressDetail} user={userToken} />
         case 3:
-          return <UpdateOtherDetailsFormAcc studentInformationForAdmission={this.state.studentInformationForAdmission} alert={this.props.alert} getOtherDetail={this.getOtherDetail} />
+          return <UpdateOtherDetailsFormAcc studentInformationForAdmission={this.state.studentInformationForAdmission} alert={this.props.alert} getOtherDetail={this.getOtherDetail} user={userToken} />
         case 4:
-          return <UpdateStudentSiblingDetailsFormAcc studentInformationForAdmission={this.state.studentInformationForAdmission} alert={this.props.alert} getSiblingDetail={this.getSiblingDetail} />
+          return <UpdateStudentSiblingDetailsFormAcc studentInformationForAdmission={this.state.studentInformationForAdmission} alert={this.props.alert} getSiblingDetail={this.getSiblingDetail} user={userToken} />
         case 5:
-          return <UpdateStudentCertiDetailsAcc studentInformationForAdmission={this.state.studentInformationForAdmission} alert={this.props.alert} getCertificateDetail={this.getCertificateDetail} />
+          return <UpdateStudentCertiDetailsAcc studentInformationForAdmission={this.state.studentInformationForAdmission} alert={this.props.alert} getCertificateDetail={this.getCertificateDetail} user={userToken} />
         default:
           return 'Unknown stepIndex'
       }
@@ -298,7 +300,7 @@ class UpdateAdmissionFormAcc extends Component {
           using_transport: studentdetails.transport,
           zip_code: adressdetails.tempzip
         }
-        this.props.putStudentAdmission(body, this.props.user, this.props.alert)
+        this.props.putStudentAdmission(body, userToken, this.props.alert)
       }
     }
     handleBack = () => {
@@ -358,7 +360,7 @@ class UpdateAdmissionFormAcc extends Component {
     }
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   admissionrecordbyerp: state.finance.accountantReducer.admissionForm.admissionrecordbyerp,
   dataLoading: state.finance.common.dataLoader,

@@ -921,7 +921,7 @@ const ReAssignCoupon = ({ classes, session, branches, sessionData, gradeData, er
   )
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   gradeList: state.finance.common.gradeList,
   dataLoading: state.finance.common.dataLoader,

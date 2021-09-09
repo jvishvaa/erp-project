@@ -25,6 +25,7 @@ const styles = theme => ({
   }
 })
 
+let userToken ="";
 class Receipt extends Component {
   constructor (props) {
     super(props)
@@ -97,6 +98,10 @@ class Receipt extends Component {
   //     this.props.fetchAccountantTransaction(erpNo, session, user, alert)
   //   }
   // }
+
+  componentDidUpdate () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+  }
 
   onAmountChange = (e) => {
     this.setState({
@@ -556,8 +561,7 @@ class Receipt extends Component {
     // this.props.createRegNum(regNum, this.props.user, this.props.alert)
   }
 
-  componentDidUpdate () {
-  }
+
 
   // Generation of PDF Start
   getPdfData = (transactionId) => {
@@ -947,7 +951,7 @@ class Receipt extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   registrationDetails: state.finance.accountantReducer.regForm.registrationDetails,
   regNum: state.finance.accountantReducer.regForm.regNum,
   finalRecords: state.finance.accountantReducer.regForm.finalRecords,
