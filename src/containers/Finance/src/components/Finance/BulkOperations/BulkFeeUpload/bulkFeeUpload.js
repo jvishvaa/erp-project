@@ -41,6 +41,7 @@ if (NavData && NavData.length) {
   // setModulePermision(false);
 }
 
+let userToken='';
 const BulkFeeUpload = ({ classes, session, branches, alert, user, fetchBranches, bulkFeeUpload, dataLoading }) => {
   const [sessionData, setSessionData] = useState(null)
   const [branchData, setBranchData] = useState(null)
@@ -56,7 +57,6 @@ const BulkFeeUpload = ({ classes, session, branches, alert, user, fetchBranches,
     // }
   }, [])
   
-let userToken;
   useEffect(() => {
     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
   }, [])
