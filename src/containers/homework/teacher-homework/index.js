@@ -239,6 +239,11 @@ const TeacherHomework = withRouter(
       handleChangeActiveView('view-received-homework');
     };
 
+    const handleCloseCard = () => {
+      setActiveView('list-homework');
+      setSelectedCol({});
+    }
+
     const handleCloseView = () => {
       setViewHomework({
         subjectId: '',
@@ -446,7 +451,9 @@ const TeacherHomework = withRouter(
     const handleBranch = (event, value) => {
       setGrades([]);
       setSections([]);
-      // setGradeDisplay([]);
+      setGradeDisplay([]);
+      setSectionDisplay([]);
+      handleCloseCard()
       setSearchGrade('');
       setSearchSection([]);
       setSelectedBranch([]);
@@ -467,9 +474,10 @@ const TeacherHomework = withRouter(
     };
 
     const handleGrade = (event, value) => {
-      // setSectionDisplay([]);
+      setSectionDisplay([]);
       setSections([]);
       // setGradeDisplay([]);
+      handleCloseCard()
       setSearchGrade('');
       setSearchSection([]);
       if (value) {
@@ -505,6 +513,7 @@ const TeacherHomework = withRouter(
     const handleSection = (event, value) => {
       //setSearchSection([]);
       // setSectionDisplay([]);
+      handleCloseCard();
       //let sec_id = [];
       if (value) {
         //let id = value.map(({ id }) => sec_id.push(id));
@@ -926,10 +935,11 @@ const TeacherHomework = withRouter(
                         unSubmittedStudents={unSubmittedStudents}
                         loading={fetchingStudentLists}
                         onClick={handleViewReceivedHomework}
-                        onClose={() => {
-                          setActiveView('list-homework');
-                          setSelectedCol({});
-                        }}
+                        // onClose={() => {
+                        //   setActiveView('list-homework');
+                        //   setSelectedCol({});
+                        // }}
+                        onClose={handleCloseCard}
                       />
                     )}
                   {activeView === 'list-homework' && isMobile && (
