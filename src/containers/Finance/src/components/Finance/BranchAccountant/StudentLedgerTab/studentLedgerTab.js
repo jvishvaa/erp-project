@@ -383,7 +383,24 @@ if (NavData && NavData.length) {
     console.log(this.props.studentErp, ' student erp ');
     let user_id = JSON.parse(localStorage.getItem('userDetails')).erp || {};
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
-    axios
+
+    if (!this.state.session || !this.state.selectedBranches ) {
+      this.props.alert.warning('Please Fill All The Fields');
+      return;
+    }
+    if(this.state.searchTypeId === 1){
+      if(!this.state.student){
+        this.props.alert.warning('Please Fill Correct ERP');
+        return;
+      }
+    } 
+    if(this.state.searchTypeId === 2 || this.state.searchTypeId === 3 ||this.state.searchTypeId === 4 || this.state.searchTypeId === 5 || this.state.searchTypeId === 6){
+      if(!this.state.studentName){
+        this.props.alert.warning('Please Fill Correct Name');
+        return;
+      }
+    }
+      axios
       .get(urls.CheckPayment + '?student=' + this.props.studentErp[0].erp, {
         headers: {
           Authorization: 'Bearer ' + token,
