@@ -18,21 +18,24 @@ import * as actionTypes from '../../store/actions'
 import Layout from '../../../../../../Layout'
 // import { CircularProgress } from '../../../../ui'
 
+let userToken = '';
 const BulkActiveInactive = ({
   classes,
   dataLoaded,
   dataLoading,
   ...props }) => {
+
+  useEffect(() => {
+      userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
+    }, [])
+
   const [statusFile, setStatusFile] = useState(null)
   const [status, setStatus] = useState('active')
   const [reason, setReason] = useState({
     value: 4,
     label: 'Others'
   })
-let userToken;
-  useEffect(() => {
-    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
-  }, [])
+
 
   const fileChangeHandler = (event) => {
     const file = event.target.files[0]
