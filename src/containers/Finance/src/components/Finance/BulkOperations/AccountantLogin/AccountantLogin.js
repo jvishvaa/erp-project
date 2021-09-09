@@ -16,6 +16,7 @@ import * as actionTypes from '../../store/actions'
 // import { CircularProgress } from '../../../../ui'
 import Layout from '../../../../../../Layout'
 
+let userToken = '';
 const AccountantLogin = ({
   classes,
   dataLoaded,
@@ -25,13 +26,9 @@ const AccountantLogin = ({
   alert,
   ...props }) => {
   const [statusFile, setStatusFile] = useState(null)
-let userToken;
 
   useEffect(() => {
     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
-  }, [])
-
-  useEffect(() => {
     branchListing(userToken, alert)
   }, [alert, branchListing, userToken])
 
@@ -117,6 +114,7 @@ let userToken;
   }
 
   const readExcelFile = () => {
+    // console.log()
     const schema = {
       'ERPCode': {
         prop: 'ERPCode',

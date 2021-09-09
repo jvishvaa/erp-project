@@ -56,13 +56,7 @@ class ConcessionReport extends Component {
     typesId: 2
   }
   componentDidMount () {
-<<<<<<< HEAD
-      if(this.props.user === null){
-        window.location.reload();
-      }
-=======
     userToken = (JSON.parse(localStorage.getItem('userDetails')))?.token
->>>>>>> 175282f5 (session issue in the reports, finance, student, concession, store,transport fees modules)
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile && userProfile?.personal_info && userProfile?.personal_info?.role?.toLowerCase()
     this.setState({
