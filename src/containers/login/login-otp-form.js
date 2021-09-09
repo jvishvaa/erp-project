@@ -8,9 +8,9 @@ import { IconButton } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { connect } from 'react-redux';
-import { login, handleSendOtp } from '../../redux/actions';
+import { login, handleSendOtp, isMsAPI } from '../../redux/actions';
 
-function LoginOTPForm({ onLogin, history }) {
+function LoginOTPForm({ onLogin, history, isMsAPI }) {
   const classes = useStyles();
   const [attempts, setAttempts] = useState(null);
   const [timer, setTimer] = useState(30);
@@ -36,6 +36,7 @@ function LoginOTPForm({ onLogin, history }) {
       };
       onLogin(params, true).then((response) => {
         if (response?.isLogin) {
+          isMsAPI();
           history.push('/dashboard');
         } else {
           setAlert('error', response?.message);
@@ -184,6 +185,9 @@ function LoginOTPForm({ onLogin, history }) {
 const mapDisptachToProps = (dispatch) => ({
   onLogin: (params, isOtpLogin) => {
     return dispatch(login(params, isOtpLogin));
+  },
+  isMsAPI: () => {
+    return dispatch(isMsAPI());
   },
 });
 
