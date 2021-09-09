@@ -81,6 +81,9 @@ const FillUpsQuestion = (props) => {
                     : ''
                 }
                 onChange={(e) => handleFillups(e, index)}
+                 InputLabelProps={{
+            shrink: true,
+          }}
                 label={`Option ${index + 1}`}
                 variant='outlined'
               />
