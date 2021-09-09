@@ -50,9 +50,6 @@ const UnassignFeeRequests = ({
   // }, [sessionValue])
 
   useEffect(() => {
-    if(user === null){
-      window.location.reload()
-    }
     setSelectedBranch('')
   }, [selectedYear])
 

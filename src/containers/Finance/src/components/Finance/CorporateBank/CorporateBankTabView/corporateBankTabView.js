@@ -67,11 +67,7 @@ class TabView extends Component {
     value: 'one',
     currentSession: null
   };
-  componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload();
-    }
-  }
+
   handleChange = (event, value) => {
     this.setState({ value })
   };

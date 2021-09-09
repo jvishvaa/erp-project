@@ -72,12 +72,6 @@ class ReceiptSettings extends Component {
     rowsPerPage: 10
   }
 
-  componentDidMount () {
-   if(this.props.user === null){
-      window.location.reload();
-    }
-  }
-
   handleChangePage = (event, newPage) => {
     this.setState({
       page: newPage

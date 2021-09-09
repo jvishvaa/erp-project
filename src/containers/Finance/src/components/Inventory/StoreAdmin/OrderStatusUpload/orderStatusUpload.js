@@ -16,6 +16,8 @@ import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import Layout from '../../../../../../Layout'
 
+let userToken ="";
+
 const styles = theme => ({
   button: {
     margin: theme.spacing.unit,
@@ -67,6 +69,7 @@ const OrderStatusUpload = ({ classes, session, alert, user, UploadOrderStatus, d
   const [sessionData, setSessionData] = useState({ label: '2020-21', value: '2020-21' })
   const [bulkFile, setBulkFile] = useState(null)
   useEffect(() => {
+     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
   }, [bulkFile])
   const handleClickSessionYear = (e) => {
     setSessionData(e)
@@ -101,7 +104,7 @@ const OrderStatusUpload = ({ classes, session, alert, user, UploadOrderStatus, d
       alert.warning('select the file')
       return
     }
-    UploadOrderStatus(form, alert, user)
+    UploadOrderStatus(form, alert, userToken)
   }
   return (
     <Layout>

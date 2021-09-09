@@ -66,6 +66,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken = "";
 class MakePayment extends Component {
   constructor (props) {
     super(props)
@@ -118,14 +120,15 @@ class MakePayment extends Component {
   }
 
   componentDidMount () {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (makePayState) {
       this.setState(makePayState)
     }
-    this.props.fetchAllPayment(this.props.session, this.props.erp, this.props.user, this.props.alert, this.props.moduleId, this.props.branchId)
-    this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
-    this.props.fetchNormalWallet(this.props.session, this.props.erp, this.props.alert, this.props.user)
-    this.props.fetchDate(this.props.alert, this.props.user)
-    this.props.fetchStudentDues(this.props.erp, this.props.session, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
+    this.props.fetchAllPayment(this.props.session, this.props.erp, userToken, this.props.alert, this.props.moduleId, this.props.branchId)
+    this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, userToken, this.props.moduleId, this.props.branchId)
+    this.props.fetchNormalWallet(this.props.session, this.props.erp, this.props.alert, userToken)
+    this.props.fetchDate(this.props.alert, userToken)
+    this.props.fetchStudentDues(this.props.erp, this.props.session, this.props.alert, userToken, this.props.moduleId, this.props.branchId)
   }
   // componentWillUnmount () {
   //   this.setState({
@@ -165,11 +168,11 @@ class MakePayment extends Component {
     }
     if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData)) {
       this.props.fetchAllPayment(session, erp, user, alert, this.props.moduleId, this.props.branchId)
-      this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
-      this.props.fetchDate(this.props.alert, this.props.user)
+      this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, userToken, this.props.moduleId, this.props.branchId)
+      this.props.fetchDate(this.props.alert, userToken)
     }
     if (session !== prevProps.session) {
-      this.props.fetchStudentDues(this.props.erp, this.props.session, this.props.alert, this.props.user)
+      this.props.fetchStudentDues(this.props.erp, this.props.session, this.props.alert, userToken)
     }
   }
 
@@ -245,7 +248,7 @@ class MakePayment extends Component {
   getPdfData = (transactionId) => {
     return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${this.props.session}&branch_id=${this.props.branchId}&module_id=${this.props.moduleId}`, {
       headers: {
-        Authorization: 'Bearer ' + this.props.user
+        Authorization: 'Bearer ' + userToken
       }
     }))
   }
@@ -269,7 +272,7 @@ class MakePayment extends Component {
           session={this.props.session}
           getData={this.props.getData}
           erp={this.props.erp}
-          user={this.props.user}
+          user={userToken}
           alert={this.props.alert}
         />
       case 2:
@@ -642,7 +645,7 @@ class MakePayment extends Component {
   }
 
   sendingToServer = (data) => {
-    this.props.sendAllPayment(data, this.props.user, this.props.alert)
+    this.props.sendAllPayment(data, userToken, this.props.alert)
   }
 
   handleNext = () => {
@@ -689,10 +692,10 @@ class MakePayment extends Component {
         }
       }, () => {
         this.props.clearAllProps()
-        this.props.fetchAllPayment(this.props.session, this.props.erp, this.props.user, this.props.alert, this.props.moduleId, this.props.branchId)
-        this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
-        this.props.fetchNormalWallet(this.props.session, this.props.erp, this.props.alert, this.props.user)
-        // this.props.fetchAllPayment(this.props.erpCode, this.props.user, this.props.alert)
+        this.props.fetchAllPayment(this.props.session, this.props.erp, userToken, this.props.alert, this.props.moduleId, this.props.branchId)
+        this.props.listOtherFees(this.props.session, this.props.erp, this.props.alert, userToken, this.props.moduleId, this.props.branchId)
+        this.props.fetchNormalWallet(this.props.session, this.props.erp, this.props.alert, userToken)
+        // this.props.fetchAllPayment(this.props.erpCode, userToken, this.props.alert)
       })
     }
   };
@@ -807,7 +810,7 @@ class MakePayment extends Component {
       <React.Fragment>
         {this.props.erpCode
           ? <div className={classes.root}>
-            {/* <Student erp={this.props.erpCode} user={this.props.user} /> */}
+            {/* <Student erp={this.props.erpCode} user={userToken} /> */}
             <Stepper activeStep={activeStep} alternativeLabel>
               {steps.map(label => (
                 <Step key={label}>
@@ -853,7 +856,7 @@ class MakePayment extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   // session: state.academicSession.items,
   feeDetailsList: state.finance.makePayAcc.feeDetailsList,
   erpCode: state.finance.makePayAcc.erpCode,

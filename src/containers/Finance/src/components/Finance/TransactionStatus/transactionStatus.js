@@ -73,6 +73,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class TransactionStatus extends Component {
   state = {
     currentSession: null,
@@ -101,9 +102,7 @@ class TransactionStatus extends Component {
     // if (transactionState !== null) {
     //   this.setState(transactionState)
     // }
-    if(this.props.user === null){
-      window.location.reload();
-    }
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const isAccountant = userProfile?.personal_info?.role?.toLowerCase() === 'financeaccountant'
     this.setState({
@@ -158,14 +157,14 @@ class TransactionStatus extends Component {
 
   fetchBranchHandler = (e) => {
     // if (!this.state.isAccountant) {
-      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
     // }
     this.setState({
       currentSession: e.value
     }
     // , () => {
     //   if (this.state.isAccountant) {
-    //     this.props.fetchFeePlans(this.state.currentSession, null, this.props.user, this.props.alert)
+    //     this.props.fetchFeePlans(this.state.currentSession, null, userToken, this.props.alert)
     //   }
     // }
     )
@@ -178,7 +177,7 @@ class TransactionStatus extends Component {
         branch_name: e.label
       }
     }, () => {
-      this.props.fetchFeePlans(this.state.currentSession, this.state.currentBranch.id, this.props.user, this.props.alert)
+      this.props.fetchFeePlans(this.state.currentSession, this.state.currentBranch.id, userToken, this.props.alert)
     })
   }
 
@@ -504,7 +503,7 @@ class TransactionStatus extends Component {
       selectedTransactionId,
       currentSession
     } = this.state
-    this.props.updateTransaction(currentSession, selectedTransactionId, currentPaid, currentCollected, currentCancelled, currentBankClearance, this.props.user, this.props.alert)
+    this.props.updateTransaction(currentSession, selectedTransactionId, currentPaid, currentCollected, currentCancelled, currentBankClearance, userToken, this.props.alert)
     this.setState({
       showEditModal: false,
       currentBankClearance: false,

@@ -92,9 +92,6 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
   // const [accReasonToApprove, setAccReason] = useState({})
 
   useEffect(() => {
-    if(user === null){
-      window.location.reload()
-    }
     if (sessionRed) {
       setSession(sessionRed)
     }

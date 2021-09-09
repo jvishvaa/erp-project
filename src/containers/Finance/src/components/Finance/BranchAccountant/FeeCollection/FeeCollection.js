@@ -36,6 +36,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class FeeCollection extends Component {
   state = {
     FeeCollecyionType: '',
@@ -45,14 +46,12 @@ class FeeCollection extends Component {
     selectedBranches: ''
   }
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload()
-    }
-    // this.props.fetchBranchData(this.props.alert, this.props.user)
+     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+    // this.props.fetchBranchData(this.props.alert, userToken)
   }
   ButtonHandler = (e) => {
     if (this.state.sessionData.value) {
-      // this.props.fetchFeeCollection(this.state.sessionData.value, this.props.user, this.props.alert)
+      // this.props.fetchFeeCollection(this.state.sessionData.value, userToken, this.props.alert)
       this.props.history.push({
         pathname: '/finance/feeShowList/',
         state: {
@@ -67,15 +66,15 @@ class FeeCollection extends Component {
 
   selectHandler = (e) => {
     this.setState({ sessionData: e }, () => {
-      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
     })
-    // this.props.fetchReceiptRange(e.value, this.props.branchData && this.props.branchData.id, this.props.alert, this.props.user)
+    // this.props.fetchReceiptRange(e.value, this.props.branchData && this.props.branchData.id, this.props.alert, userToken)
   }
 
   changehandlerbranch = (e) => {
-    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    // this.props.fetchGrades(this.props.alert, userToken, moduleId, e.value)
     this.setState({ selectedBranches: e }, () => {
-      this.props.fetchReceiptRange(this.state.sessionData?.value, e.value, this.props.alert, this.props.user)
+      this.props.fetchReceiptRange(this.state.sessionData?.value, e.value, this.props.alert, userToken)
     })
   }
 

@@ -178,9 +178,6 @@ class CreateFeePlan extends Component {
   }
 
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload();
-    }
     if (feePlanState) {
       this.setState(feePlanState)
       return

@@ -59,6 +59,7 @@ const styles = theme => ({
   }
 })
 
+let userToken = '';
 const AddGst = ({ classes, session, branches, alert, user, fetchBranches, fetchGstList, gstList, addGstList, dataLoading }) => {
   const [sessionData, setSessionData] = useState(null)
   const [branchData, setBranchData] = useState(null)
@@ -71,15 +72,13 @@ const AddGst = ({ classes, session, branches, alert, user, fetchBranches, fetchG
   const [stateCode, setStateCode] = useState(null)
 
   useEffect(() => {
-    if(user === null){
-      window.location.reload()
-    }
+     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
   }, [])
 
   const handleClickSessionYear = (e) => {
     setSessionData(e)
     setBranchData(null)
-    fetchBranches(e.value, alert, user)
+    fetchBranches(e.value, alert, userToken)
   }
   const changehandlerbranch = (e) => {
     setBranchData(e)
@@ -125,7 +124,7 @@ const AddGst = ({ classes, session, branches, alert, user, fetchBranches, fetchG
   const getGstHandler = () => {
     // hit fetch api
     if (!sessionData || !branchData) return alert.warning('Select Session and branch')
-    fetchGstList(sessionData.value, branchData.value, user, alert)
+    fetchGstList(sessionData.value, branchData.value, userToken, alert)
   }
 
   const addGstHandler = () => {
@@ -141,7 +140,7 @@ const AddGst = ({ classes, session, branches, alert, user, fetchBranches, fetchG
       state_name: stateName,
       state_code: stateCode
     }
-    addGstList(body, user, alert)
+    addGstList(body, userToken, alert)
     setShowModal(!showModal)
   }
 
@@ -356,7 +355,7 @@ const AddGst = ({ classes, session, branches, alert, user, fetchBranches, fetchG
   )
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.branchPerSession,
   dataLoading: state.finance.common.dataLoader,

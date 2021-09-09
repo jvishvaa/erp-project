@@ -26,6 +26,7 @@ const styles = theme => ({
   }
 })
 
+let userToken = "";
 class Receipt extends Component {
   constructor (props) {
     super(props)
@@ -87,6 +88,7 @@ class Receipt extends Component {
   }
 
   componentDidMount () {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     // console.log('--------id--', this.props.otherFeeId)
     // this.setState({
     //   currentData: currentData
@@ -116,7 +118,7 @@ class Receipt extends Component {
       // makeAmt: this.props.makePayAmt || 0,
       // otherFees: this.props.otherFeeId || []
     }, () => {
-      this.props.fetchReceiptRange(this.props.session, this.props.alert, this.props.user, this.props.branch)
+      this.props.fetchReceiptRange(this.props.session, this.props.alert, userToken, this.props.branch)
       // let currentData = this.props.otherFeesList.filter(val => this.state.otherFees.includes(val.id.toString()))
       // this.setState({
       //   currentData: currentData
@@ -212,14 +214,14 @@ class Receipt extends Component {
       // }
       case 'ifsc': {
         if (this.state.searchByValue === 1 && event.target.value.length === 11) {
-          this.props.fetchIfsc(event.target.value, this.props.alert, this.props.user)
+          this.props.fetchIfsc(event.target.value, this.props.alert, userToken)
         }
         newCheque['ifsc'] = event.target.value
         break
       }
       case 'micr': {
         if (this.state.searchByValue === 2 && event.target.value.length === 9) {
-          this.props.fetchMicr(event.target.value, this.props.alert, this.props.user)
+          this.props.fetchMicr(event.target.value, this.props.alert, userToken)
         }
         newCheque['micr'] = event.target.value
         break
@@ -475,7 +477,7 @@ class Receipt extends Component {
   getPdfData = (transactionId) => {
     return (axios.get(`${urls.AppRegPdf}?transaction_id=${transactionId}&academic_year=${this.props.acadYear}`, {
       headers: {
-        Authorization: 'Bearer ' + this.props.user
+        Authorization: 'Bearer ' + userToken
       }
     }))
   }

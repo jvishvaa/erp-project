@@ -63,6 +63,7 @@ const styles = (theme) => ({
     backgroundColor: 'rgb(225, 0, 80)',
   },
 });
+let userToken ="";
 class Kit extends Component {
   constructor(props) {
     super(props);
@@ -106,9 +107,7 @@ class Kit extends Component {
 
 
   componentDidMount() {
-    if(this.props.user === null){
-      window.location.reload()
-    }
+     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (kitState) {
       this.setState(kitState, () => {
         const { currentBranch, currentGrade, currentSession } = this.state;
@@ -118,7 +117,7 @@ class Kit extends Component {
             currentBranch,
             currentGrade,
             this.props.alert,
-            this.props.user
+            userToken
           );
         }
       });
@@ -138,7 +137,7 @@ class Kit extends Component {
         this.props.fetchBranches(
           this.state.currentSession,
           this.props.alert,
-          this.props.user
+          userToken
         );
       }
     );
@@ -172,7 +171,7 @@ class Kit extends Component {
         this.props.fetchGrades(
           this.state.currentSession,
           this.state.currentBranch.id,
-          this.props.user,
+          userToken,
           this.props.alert
         );
       }
@@ -200,7 +199,7 @@ class Kit extends Component {
       currentBranch,
       currentGrade,
       this.props.alert,
-      this.props.user
+      userToken
     );
     this.setState(
       {
@@ -226,7 +225,7 @@ class Kit extends Component {
           true,
           false,
           this.props.alert,
-          this.props.user
+          userToken
         );
       }
     );
@@ -344,7 +343,7 @@ class Kit extends Component {
           data.is_uniform_kit,
           data.is_delivery_kit,
           this.props.alert,
-          this.props.user
+          userToken
         );
       }
     );
@@ -390,7 +389,7 @@ class Kit extends Component {
       this.props.alert.warning('Please Give Some Color Value');
       return;
     }
-    this.props.createColor(color, this.props.alert, this.props.user);
+    this.props.createColor(color, this.props.alert, userToken);
     this.hideColorModal();
   };
 
@@ -532,7 +531,7 @@ class Kit extends Component {
           isUniform,
           isDelivery,
           this.props.alert,
-          this.props.user
+          userToken
         );
       }
     );
@@ -577,7 +576,7 @@ class Kit extends Component {
             isUniform,
             isDelivery,
             this.props.alert,
-            this.props.user
+            userToken
           );
         }
       );
@@ -596,7 +595,7 @@ class Kit extends Component {
             isUniform,
             isDelivery,
             this.props.alert,
-            this.props.user
+            userToken
           );
         }
       );
@@ -704,7 +703,7 @@ class Kit extends Component {
       secondLang,
       thirdLang,
       isDelivery,
-      user,
+      userToken,
       alert,
     };
 
@@ -816,7 +815,7 @@ class Kit extends Component {
       secondLang,
       thirdLang,
       kitId,
-      user,
+      userToken,
       alert,
       isCommon,
       commonKitIds,
@@ -838,7 +837,7 @@ class Kit extends Component {
   };
 
   deleteKitHandler = () => {
-    this.props.deleteKit(this.state.deleteKitId, this.props.user, this.props.alert);
+    this.props.deleteKit(this.state.deleteKitId, userToken, this.props.alert);
     this.deleteModalCloseHandler();
   };
 

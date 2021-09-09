@@ -75,11 +75,6 @@ class RegistrationForm extends Component {
     }
   }
 
-  componentDidMount () {
-      if(this.props.user === null){
-        window.location.reload();
-      }
-  }
   handleAcademicyear = (e) => {
     this.setState({ session: e }, () => {
       this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)

@@ -52,6 +52,7 @@ const styles = theme => ({
   }
 })
 
+let userToken = "";
 class Payments extends Component {
   constructor (props) {
     super(props)
@@ -96,6 +97,7 @@ class Payments extends Component {
   }
 
   componentDidMount () {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const erpLength = (this.props.erpNo + '').length
     if (!this.props.erpNo || !this.props.session || !this.props.getData) {
       return
@@ -104,10 +106,9 @@ class Payments extends Component {
       erpNo,
       session,
       alert,
-      user
     } = this.props
-    this.props.fetchReceiptRange(session, erpNo, alert, user, this.props.branchId, this.props.moduleId)
-    this.props.fetchAccountantTransaction(erpNo, session, user, alert, this.props.branchId, this.props.moduleId)
+    this.props.fetchReceiptRange(session, erpNo, alert, userToken, this.props.branchId, this.props.moduleId)
+    this.props.fetchAccountantTransaction(erpNo, session, userToken, alert, this.props.branchId, this.props.moduleId)
   }
 
   componentDidUpdate (prevProps) {
@@ -116,7 +117,6 @@ class Payments extends Component {
       erpNo,
       session,
       alert,
-      user
       // refresh
     } = this.props
     // if (refresh !== prevProps.refresh) {
@@ -129,7 +129,7 @@ class Payments extends Component {
       return
     }
     if (this.props.getData && (erpNo !== prevProps.erpNo || session !== prevProps.session || this.props.getData)) {
-      this.props.fetchAccountantTransaction(erpNo, session, user, alert)
+      this.props.fetchAccountantTransaction(erpNo, session, userToken, alert)
     }
   }
 
@@ -137,7 +137,7 @@ class Payments extends Component {
   getPdfData = (transactionId) => {
     return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${this.props.session}&branch_id=${this.props.branchId}&module_id=${this.props.moduleId}`, {
       headers: {
-        Authorization: 'Bearer ' + this.props.user
+        Authorization: 'Bearer ' + userToken
       }
     }))
   }
@@ -145,7 +145,7 @@ class Payments extends Component {
   getKitPdfData = (transactionId) => {
     return (axios.get(`${urls.StoreReceiptPdfData}?transaction_id=${transactionId}&academic_year=${this.props.session}&branch_id=${this.props.branchId}&module_id=${this.props.moduleId}`, {
       headers: {
-        Authorization: 'Bearer ' + this.props.user
+        Authorization: 'Bearer ' + userToken
       }
     }))
   }
@@ -188,7 +188,7 @@ class Payments extends Component {
       chequeNumber: chequeNumber,
       payMode: mode
     })
-    this.props.editAccountantTransaction(id, this.props.user, this.props.alert, this.props.branchId, this.props.moduleId)
+    this.props.editAccountantTransaction(id, userToken, this.props.alert, this.props.branchId, this.props.moduleId)
   }
 
   hideEditModalHandler = () => {
@@ -324,56 +324,56 @@ class Payments extends Component {
         if (!this.state.receiptNoChange) {
           this.props.alert.warning('Fill the Receipt no and Date!')
         } else {
-          this.props.updateAccountantTransaction(newEditTrans, this.props.user, this.props.alert)
+          this.props.updateAccountantTransaction(newEditTrans, userToken, this.props.alert)
           this.hideEditModalHandler()
         }
       } else if (isReceiptRequest && isDateRequest && isAmountRequest) {
         if (!this.state.receiptNoChange) {
           this.props.alert.warning('Fill the Receipt no , Date and Amount !')
         } else {
-          this.props.updateAccountantTransaction(newEditTrans, this.props.user, this.props.alert)
+          this.props.updateAccountantTransaction(newEditTrans, userToken, this.props.alert)
           this.hideEditModalHandler()
         }
       } else if (isReceiptRequest && isDateRequest && isAmountRequest && isChequeNoRequest) {
         if (!this.state.receiptNoChange) {
           this.props.alert.warning('Fill the Receipt no ,Date, Amount and Cheque no:!')
         } else {
-          this.props.updateAccountantTransaction(newEditTrans, this.props.user, this.props.alert)
+          this.props.updateAccountantTransaction(newEditTrans, userToken, this.props.alert)
           this.hideEditModalHandler()
         }
       } else if (isReceiptRequest) {
         if (!this.state.receiptNoChange) {
           this.props.alert.warning('Fill the Receipt no:!')
         } else {
-          this.props.updateAccountantTransaction(newEditTrans, this.props.user, this.props.alert)
+          this.props.updateAccountantTransaction(newEditTrans, userToken, this.props.alert)
           this.hideEditModalHandler()
         }
       } else if (isChequeNoRequest) {
         if (!this.state.chequeNumber) {
           this.props.alert.warning('Fill the Cheque no:!')
         } else {
-          this.props.updateAccountantTransaction(newEditTrans, this.props.user, this.props.alert)
+          this.props.updateAccountantTransaction(newEditTrans, userToken, this.props.alert)
           this.hideEditModalHandler()
         }
       } else if (isAmountRequest) {
         if (!this.state.amountChange) {
           this.props.alert.warning('Fill the Amount: !')
         } else {
-          this.props.updateAccountantTransaction(newEditTrans, this.props.user, this.props.alert)
+          this.props.updateAccountantTransaction(newEditTrans, userToken, this.props.alert)
           this.hideEditModalHandler()
         }
       } else if (isDateRequest) {
         if (!this.state.dateChange) {
           this.props.alert.warning('Fill the Date: !')
         } else {
-          this.props.updateAccountantTransaction(newEditTrans, this.props.user, this.props.alert)
+          this.props.updateAccountantTransaction(newEditTrans, userToken, this.props.alert)
           this.hideEditModalHandler()
         }
       } else if (isWrongKitPayment) {
-        this.props.updateAccountantTransaction(newEditTrans, this.props.user, this.props.alert)
+        this.props.updateAccountantTransaction(newEditTrans, userToken, this.props.alert)
         this.hideEditModalHandler()
       } else if (isWrongPayment) {
-        this.props.updateAccountantTransaction(newEditTrans, this.props.user, this.props.alert)
+        this.props.updateAccountantTransaction(newEditTrans, userToken, this.props.alert)
         this.hideEditModalHandler()
       }
     } else {

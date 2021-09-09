@@ -146,9 +146,6 @@ const Party = ({ user, alert, fetchPartyList, classes, sessions, fetchBranches, 
   const [session, setSession] = useState('')
   useEffect(() => {
     // fetchPartyList(user, alert)
-    if(user === null){
-      window.location.reload();
-    }
   }, [fetchPartyList, user, alert])
 
   handleAcademicyear = (e) => {

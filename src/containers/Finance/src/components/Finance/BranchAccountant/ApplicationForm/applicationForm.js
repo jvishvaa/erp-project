@@ -101,6 +101,8 @@ if (NavData && NavData.length) {
   // setModulePermision(false);
 }
 
+let userToken = "";
+
 class ApplicationFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -202,11 +204,9 @@ class ApplicationFormAcc extends Component {
   }
 
   componentDidMount () {
-      if(this.props.user === null){
-        window.location.reload();
-      }
+       userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     // if (this.state.session) {
-    //   // this.props.fetchGrade(this.state.session, this.props.alert, this.props.user, moduleId)
+    //   // this.props.fetchGrade(this.state.session, this.props.alert, userToken, moduleId)
      
     // }
   }
@@ -228,8 +228,8 @@ class ApplicationFormAcc extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, sessionData: e }, () => {
-      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
-      // this.props.fetchGrade(this.state.session, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
+      // this.props.fetchGrade(this.state.session, this.props.alert, userToken, moduleId)
     })
   }
 
@@ -246,15 +246,15 @@ class ApplicationFormAcc extends Component {
   }
 
   // for searching
-  // myFunc = debounce(() => { this.props.fetchApplicationDetails(this.state.searchKey, this.props.user, this.props.alert) }, 1000)
-  myFunc = () => { this.props.fetchApplicationDetails(this.state.searchKey, this.props.user, this.props.alert) }
+  // myFunc = debounce(() => { this.props.fetchApplicationDetails(this.state.searchKey, userToken, this.props.alert) }, 1000)
+  myFunc = () => { this.props.fetchApplicationDetails(this.state.searchKey, userToken, this.props.alert) }
 
   searchHandler = (event) => {
     // console.log('just console', event.target.value)
     this.setState({ searchKey: event.target.value }, () => {
       // enable this.myFunc to start searching.
       // this.myFunc()
-      // this.props.fetchApplicationDetails(this.state.searchKey, this.props.user, this.props.alert)
+      // this.props.fetchApplicationDetails(this.state.searchKey, userToken, this.props.alert)
     })
   }
 
@@ -263,7 +263,7 @@ class ApplicationFormAcc extends Component {
       ...prevState,
       formData: this.baseFormState
     }), () => {
-      this.props.fetchApplicationDetails(this.state.session, this.state.searchedValue, this.state.selectedBranches, this.props.user, this.props.alert, moduleId)
+      this.props.fetchApplicationDetails(this.state.session, this.state.searchedValue, this.state.selectedBranches, userToken, this.props.alert, moduleId)
     })
     // this.setState({ showSiblingTable: true })
   }
@@ -302,7 +302,7 @@ class ApplicationFormAcc extends Component {
     getPdfData = (transactionId) => {
       return (axios.get(`${urls.AppRegPdf}?transaction_id=${transactionId}&academic_year=${this.state.session}`, {
         headers: {
-          Authorization: 'Bearer ' + this.props.user
+          Authorization: 'Bearer ' + userToken
         }
       }))
     }
@@ -440,7 +440,7 @@ class ApplicationFormAcc extends Component {
       lead_id: this.props.appDetails.data[0] && this.props.appDetails.data[0].id ? this.props.appDetails.data[0].id : null,
       branch:this.state.selectedBranches && this.state.selectedBranches.value
     }
-    this.props.saveAllFormData(data, this.props.user, this.props.alert)
+    this.props.saveAllFormData(data, userToken, this.props.alert)
   }
 
   showAppHandler = (id) => {
@@ -802,7 +802,7 @@ class ApplicationFormAcc extends Component {
         if (e.target.value.length <= 10) {
           newParentInfo['fatherPhone'] = e.target.value
           if (e.target.value.length >= 8 && e.target.value.length <= 10) {
-            this.props.appMobileChecker(e.target.value, this.props.user, this.props.alert)
+            this.props.appMobileChecker(e.target.value, userToken, this.props.alert)
           }
         } else {
           this.props.alert.warning('Cant exceed 10 digits')
@@ -822,7 +822,7 @@ class ApplicationFormAcc extends Component {
         if (e.target.value.length <= 10) {
           newParentInfo['motherPhone'] = e.target.value
           if (e.target.value.length === 10) {
-            this.props.appMobileChecker(e.target.value, this.props.user, this.props.alert)
+            this.props.appMobileChecker(e.target.value, userToken, this.props.alert)
           }
         } else {
           this.props.alert.warning('Cant exceed 10 digits')
@@ -1055,14 +1055,14 @@ class ApplicationFormAcc extends Component {
       }
       case 'ifsc': {
         if (this.state.searchByCheque.value === 1 && event.target.value.length === 11) {
-          this.props.fetchIfsc(event.target.value, this.props.alert, this.props.user)
+          this.props.fetchIfsc(event.target.value, this.props.alert, userToken)
         }
         newCheque['ifsc'] = event.target.value
         break
       }
       case 'micr': {
         if (this.state.searchByCheque.value === 2 && event.target.value.length === 9) {
-          this.props.fetchMicr(event.target.value, this.props.alert, this.props.user)
+          this.props.fetchMicr(event.target.value, this.props.alert, userToken)
         }
         newCheque['micr'] = event.target.value
         break
@@ -1711,7 +1711,7 @@ class ApplicationFormAcc extends Component {
   }
 
   sendingToServer = (paymentObj) => {
-    this.props.saveAppPayment(paymentObj, this.props.user, this.props.alert)
+    this.props.saveAppPayment(paymentObj, userToken, this.props.alert)
   }
 
   componentDidUpdate () {
@@ -1732,7 +1732,7 @@ class ApplicationFormAcc extends Component {
   //     this.state.session,
   //     this.state.searchTypeData.value,
   //     this.state.searchedValue,
-  //     this.props.user,
+  //     userToken,
   //     this.props.alert
   //   )
   // }, 500)
@@ -1741,7 +1741,7 @@ class ApplicationFormAcc extends Component {
       this.state.session,
       this.state.searchTypeData.value,
       this.state.searchedValue,
-      this.props.user,
+      userToken,
       this.props.alert
     )
   }
@@ -1759,10 +1759,10 @@ class ApplicationFormAcc extends Component {
 
 
   changehandlerbranch = (e) => {
-    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e && e.value, this.state.session)
-    // this.props.fetchGrade(this.state.session, e && e.value, this.props.alert, this.props.user, moduleId)
+    this.props.fetchGrades(this.props.alert, userToken, moduleId, e && e.value, this.state.session)
+    // this.props.fetchGrade(this.state.session, e && e.value, this.props.alert, userToken, moduleId)
     this.setState({ selectedBranches: e})
-    this.props.fetchReceiptRange(this.state.session, this.props.alert, this.props.user, e && e.value)
+    this.props.fetchReceiptRange(this.state.session, this.props.alert, userToken, e && e.value)
   }
 
   render () {
@@ -1997,7 +1997,7 @@ class ApplicationFormAcc extends Component {
             : [] }
         {this.state.showApp || (this.props.appDetails.data && !this.props.appDetails.recordsAvailable)
           ? <div className={classes.root} style={{ margin: '10px' }}>
-            {/* <Student erp={this.props.erpCode} user={this.props.user} /> */}
+            {/* <Student erp={this.props.erpCode} user={userToken} /> */}
             <Stepper activeStep={activeStep} alternativeLabel>
               {steps.map(label => (
                 <Step key={label}>

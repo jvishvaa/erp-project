@@ -62,12 +62,6 @@ const QRCodeGenerator = ({ classes, session, history, alert, user }) => {
   const [bulkFile, setBulkFile] = useState(null)
   const [dataLoading, setDataLoading] = useState(false)
   // const [fileName, setFileName] = useState(null)
-  useEffect(() => {
-    if(user === null){
-      window.location.reload()
-    }
-    // hi
-  }, [])
 
   const fileChangeHandler = (event) => {
     const file = event.target.files[0]

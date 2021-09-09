@@ -28,6 +28,7 @@ const styles = (theme) => ({
   },
 });
 
+let userToken = '';
 class FeeDetailsAccountant extends Component {
   constructor(props) {
     super(props);
@@ -59,12 +60,13 @@ class FeeDetailsAccountant extends Component {
   }
 
   componentDidMount() {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (this.props.getData && this.state.selectFeeWise.value === 1) {
       this.props.fetchFeeStructureList(
         this.props.erp,
         this.props.session,
         this.props.alert,
-        this.props.user,
+        userToken,
         this.props.moduleId,
         this.props.branchId
       );
@@ -73,7 +75,7 @@ class FeeDetailsAccountant extends Component {
       this.props.fetchBackDatConcession(
         this.props.session,
         this.props.alert,
-        this.props.user,
+        userToken,
         this.props.moduleId,
         this.props.branchId
       );
@@ -129,7 +131,7 @@ class FeeDetailsAccountant extends Component {
         this.props.session,
         this.props.erp,
         this.props.alert,
-        this.props.user,
+        userToken,
         this.props.moduleId,
         this.props.branchId
       );
@@ -202,7 +204,7 @@ class FeeDetailsAccountant extends Component {
             this.props.session,
             this.props.erp,
             this.props.alert,
-            this.props.user,
+            userToken,
             this.props.moduleId,
             this.props.branchId
           );
@@ -221,7 +223,7 @@ class FeeDetailsAccountant extends Component {
   };
 
   hideConcesionModalHandler = () => {
-    // this.props.fetchFeeStructureList(this.props.erp, this.props.alert, this.props.user)
+    // this.props.fetchFeeStructureList(this.props.erp, this.props.alert, userToken)
     this.setState(
       {
         showConcessionModal: false,
@@ -229,7 +231,7 @@ class FeeDetailsAccountant extends Component {
         concessionRequestAmount: 0,
       },
       () => {
-        // this.props.fetchFeeStructureList(this.props.erp, this.props.alert, this.props.user)
+        // this.props.fetchFeeStructureList(this.props.erp, this.props.alert, userToken)
       }
     );
   };
@@ -286,7 +288,7 @@ class FeeDetailsAccountant extends Component {
             this.props.erp,
             this.props.session,
             this.props.alert,
-            this.props.user,
+            userToken,
             this.props.moduleId,
             this.props.branchId
           );
@@ -295,7 +297,7 @@ class FeeDetailsAccountant extends Component {
             this.props.session,
             this.props.erp,
             this.props.alert,
-            this.props.user,
+            userToken,
             this.props.moduleId,
             this.props.branchId
           );
@@ -365,13 +367,13 @@ class FeeDetailsAccountant extends Component {
         concession_given_by: this.state.conGivenBy,
         branch_id: this.props.branchId,
       };
-      this.props.saveConcessionRequest(data, this.props.alert, this.props.user);
+      this.props.saveConcessionRequest(data, this.props.alert, userToken);
       // // setTimeout(() => {
       this.props.fetchFeeStructureList(
         this.props.erp,
         this.props.session,
         this.props.alert,
-        this.props.user,
+        userToken,
         this.props.moduleId,
         this.props.branchId
       );
@@ -379,7 +381,7 @@ class FeeDetailsAccountant extends Component {
         this.props.erp,
         this.props.session,
         this.props.alert,
-        this.props.user,
+        userToken,
         this.props.moduleId,
         this.props.branchId
       );
@@ -401,7 +403,7 @@ class FeeDetailsAccountant extends Component {
         this.state.currentFeeData.id,
         data,
         this.props.alert,
-        this.props.user
+        userToken
       );
       this.unassignHideModalHanlder();
     } else {
@@ -420,7 +422,7 @@ class FeeDetailsAccountant extends Component {
         student: this.props.erp,
         branch_id: this.props.branchId,
       };
-      this.props.updateFineAmt(data, this.props.alert, this.props.user);
+      this.props.updateFineAmt(data, this.props.alert, userToken);
       this.hideFineAmtModalHandler();
     } else {
       // this.props.alert.warning('Enter Valid Fine')

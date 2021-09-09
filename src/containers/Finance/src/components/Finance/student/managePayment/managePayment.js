@@ -22,6 +22,7 @@ import Financepeer from '../../../../assets/financepeer.jpg';
 import Financegray from '../../../../assets/GQ_OIS_ERP.png';
 import Layout from '../../../../../../Layout';
 
+let token ="";
 function TabContainer({ children, dir }) {
   return (
     <Typography component='div' dir={dir} style={{ padding: 8 * 3 }}>
@@ -79,9 +80,7 @@ class ManagePayment extends Component {
     this.currBrnch = JSON.parse(localStorage.getItem('userDetails')).branch_id;
   }
   componentDidMount() {
-    if(this.props.user === null){
-      window.location.reload()
-    }
+    token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     // for disabling the terminal
     document.onkeydown = function (e) {
       if (e.keyCode === 123) {
@@ -170,7 +169,6 @@ class ManagePayment extends Component {
 
   checkPayment(sub){
     let user_id = JSON.parse(localStorage.getItem('userDetails')).erp || {};
-    let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     axios
     .get(urls.CheckPayment + '?student=' + user_id ,{
       headers: {
@@ -213,7 +211,7 @@ class ManagePayment extends Component {
     // const panes = [
     //   { menuItem: 'Fee Details', render: () => <FeeDetails sessionYear={this.state.session} /> },
     //   { menuItem: 'Make Payment', render: () => <MakePayment sessionYear={this.state.session} alert={this.props.alert} /> },
-    //   { menuItem: 'Other Fee', render: () => <OtherFee userI={this.props.user} alert={this.props.alert} acadId={this.state.session} /> },
+    //   { menuItem: 'Other Fee', render: () => <OtherFee userI={token} alert={this.props.alert} acadId={this.state.session} /> },
     //   { menuItem: 'Current Transactions', render: () => <CurrentTransactions /> },
     //   { menuItem: 'All Transactions', render: () => <AllTransactions /> }
     // ]
@@ -245,7 +243,7 @@ class ManagePayment extends Component {
             <TabContainer>
               <FeeDetails
                 sessionYear={this.state.session}
-                user={this.props.user}
+                user={token}
                 alert={this.props.alert}
                 getList={this.state.getList}
               />
@@ -255,7 +253,7 @@ class ManagePayment extends Component {
             <TabContainer>
               <MakePayment
                 sessionYear={this.state.session}
-                user={this.props.user}
+                user={token}
                 alert={this.props.alert}
                 getList={this.state.getList}
                 erp={JSON.parse(localStorage.getItem('userDetails')).erp}
@@ -266,7 +264,7 @@ class ManagePayment extends Component {
           {/* {this.state.value === 'three' && <TabContainer>
             <OtherFee
               sessionYear={this.state.session}
-              user={this.props.user}
+              user={token}
               acadId={this.state.session}
               alert={this.props.alert}
               getList={this.state.getList}
@@ -276,7 +274,7 @@ class ManagePayment extends Component {
             <TabContainer>
               <CurrentTransactions
                 sessionYear={this.state.session}
-                user={this.props.user}
+                user={token}
                 alert={this.props.alert}
                 getList={this.state.getList}
               />
@@ -286,7 +284,7 @@ class ManagePayment extends Component {
             <TabContainer>
               <AllTransactions
                 sessionYear={this.state.session}
-                user={this.props.user}
+                user={token}
                 alert={this.props.alert}
                 getList={this.state.getList}
               />

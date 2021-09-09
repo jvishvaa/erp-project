@@ -80,9 +80,7 @@ class ActivateInactivateStudentAdm extends Component {
   }
   componentWillReceiveProps(nextProps) {}
   componentDidMount() {
-    if(this.props.user === null){
-      window.location.reload()
-    }
+   
     this.props.getActiveRequest('2019-20', this.props.user, this.props.alert);
   }
   handleChange = (event, value) => {

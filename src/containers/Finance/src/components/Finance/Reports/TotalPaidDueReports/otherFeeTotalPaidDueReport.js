@@ -39,6 +39,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken ="";
 class OtherFeeTotalPaidReports extends Component {
   state = {
     session: '',
@@ -70,9 +72,7 @@ class OtherFeeTotalPaidReports extends Component {
     branchType: ''
   }
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload();
-    }
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     // this.todayDate()
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile && userProfile?.personal_info && userProfile?.personal_info?.role?.toLowerCase()
@@ -81,7 +81,7 @@ class OtherFeeTotalPaidReports extends Component {
     }
     // , () => {
     //   if (this.state.role === 'financeaccountant') {
-    //     this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
+    //     this.props.fetchBranchAtAcc(this.props.alert, userToken)
     //   }
     // }
     )
@@ -130,9 +130,9 @@ class OtherFeeTotalPaidReports extends Component {
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, selectedBranches: [], sessionData: e }, () => {
       // if (this.state.role === 'financeaccountant') {
-      //   // this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
-      //   this.props.fetchGrades(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user, moduleId)
-      //   // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
+      //   // this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.props.alert, userToken)
+      //   this.props.fetchGrades(this.state.session, this.props.branchAtAcc.branch, this.props.alert, userToken, moduleId)
+      //   // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.props.alert, userToken)
       // }
     })
   }
@@ -140,7 +140,7 @@ class OtherFeeTotalPaidReports extends Component {
     this.setState({
       branchType: e
     })
-    this.props.fetchBranches(this.state.sessionData && this.state.sessionData.value, e.value, this.props.alert, this.props.user, moduleId)
+    this.props.fetchBranches(this.state.sessionData && this.state.sessionData.value, e.value, this.props.alert, userToken, moduleId)
   }
   changehandlerbranch = (e) => {
     if (e.value === 'all') {
@@ -151,8 +151,8 @@ class OtherFeeTotalPaidReports extends Component {
         valueGrade: [],
         selectedFeeTypes: []
       }, () => {
-        this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, this.props.user, moduleId)
-        // this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.props.alert, this.props.user)
+        this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, userToken, moduleId)
+        // this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.props.alert, userToken)
       })
     } else {
       this.setState({
@@ -161,8 +161,8 @@ class OtherFeeTotalPaidReports extends Component {
         valueGrade: [],
         selectedFeeTypes: []
       }, () => {
-        this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, this.props.user, moduleId)
-      // this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.props.alert, this.props.user)
+        this.props.fetchGrades(this.state.session, this.state.branchId, this.props.alert, userToken, moduleId)
+      // this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.props.alert, userToken)
       })
     }
   }
@@ -185,9 +185,9 @@ class OtherFeeTotalPaidReports extends Component {
         selectedOthrInstallments: []
       }, () => {
         // if (this.state.role === 'financeaccountant' && this.state.gradeData.length > 0) {
-        //   this.props.fetchFeePlanNames(this.state.session, this.props.branchAtAcc.branch, this.state.gradeData, this.props.alert, this.props.user)
+        //   this.props.fetchFeePlanNames(this.state.session, this.props.branchAtAcc.branch, this.state.gradeData, this.props.alert, userToken)
         // } else if (this.state.gradeData.length > 0) {
-          this.props.fetchFeePlanNames(this.state.session, this.state.branchId, this.state.gradeData, this.props.alert, this.props.user)
+          this.props.fetchFeePlanNames(this.state.session, this.state.branchId, this.state.gradeData, this.props.alert, userToken)
         // }
       })
     } else {
@@ -202,9 +202,9 @@ class OtherFeeTotalPaidReports extends Component {
         selectedOthrInstallments: []
       }, () => {
         // if (this.state.role === 'financeaccountant' && this.state.gradeData.length > 0) {
-        //   this.props.fetchFeePlanNames(this.state.session, this.props.branchAtAcc.branch, this.state.gradeData, this.props.alert, this.props.user)
+        //   this.props.fetchFeePlanNames(this.state.session, this.props.branchAtAcc.branch, this.state.gradeData, this.props.alert, userToken)
         // } else if (this.state.gradeData.length > 0) {
-          this.props.fetchFeePlanNames(this.state.session, this.state.branchId, this.state.gradeData, this.props.alert, this.props.user)
+          this.props.fetchFeePlanNames(this.state.session, this.state.branchId, this.state.gradeData, this.props.alert, userToken)
         // }
       })
     }
@@ -296,7 +296,7 @@ class OtherFeeTotalPaidReports extends Component {
           }
         // }
         if (this.state.selectedFeeTypes.value === 'all' && this.state.feeTypeIds.length > 0) {
-          this.props.fetchInstallments(data, this.props.alert, this.props.user)
+          this.props.fetchInstallments(data, this.props.alert, userToken)
         }
       })
     } else {
@@ -328,7 +328,7 @@ class OtherFeeTotalPaidReports extends Component {
           }
         // }
         if (this.state.feeTypeIds.length > 0) {
-          this.props.fetchInstallments(data, this.props.alert, this.props.user)
+          this.props.fetchInstallments(data, this.props.alert, userToken)
         }
       })
     }
@@ -369,7 +369,7 @@ class OtherFeeTotalPaidReports extends Component {
           }
         // }
         if (this.state.selectedOthrFeeTypes.value === 'all' && this.state.othrfeeTypeIds.length > 0) {
-          this.props.fetchOthrInstallments(data, this.props.alert, this.props.user)
+          this.props.fetchOthrInstallments(data, this.props.alert, userToken)
         }
       })
     } else {
@@ -401,7 +401,7 @@ class OtherFeeTotalPaidReports extends Component {
           }
         // }
         if (this.state.othrfeeTypeIds.length > 0) {
-          this.props.fetchOthrInstallments(data, this.props.alert, this.props.user)
+          this.props.fetchOthrInstallments(data, this.props.alert, userToken)
         }
       })
     }
@@ -434,7 +434,7 @@ class OtherFeeTotalPaidReports extends Component {
         selectedOthrInstallments: []
       }, () => {
         if (this.state.feePlanId.length > 0) {
-          this.props.fetchFeeTypes(this.state.session, this.state.branchId || this.props.branchAtAcc.branch, this.state.gradeData, this.state.feePlanId, this.props.alert, this.props.user)
+          this.props.fetchFeeTypes(this.state.session, this.state.branchId || this.props.branchAtAcc.branch, this.state.gradeData, this.state.feePlanId, this.props.alert, userToken)
         }
       })
     } else {
@@ -450,7 +450,7 @@ class OtherFeeTotalPaidReports extends Component {
         selectedOthrInstallments: []
       }, () => {
         if (this.state.feePlanId.length > 0) {
-          this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.state.gradeData, this.state.feePlanId, this.props.alert, this.props.user)
+          this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.state.gradeData, this.state.feePlanId, this.props.alert, userToken)
         }
       })
     }
@@ -459,7 +459,7 @@ class OtherFeeTotalPaidReports extends Component {
     // this.setState({
     //   selectedFeePlan: e
     // }, () => {
-    //   this.props.fetchFeeTypes(this.state.selectedFeePlan.value, this.props.alert, this.props.user)
+    //   this.props.fetchFeeTypes(this.state.selectedFeePlan.value, this.props.alert, userToken)
     //   // let data = {}
     //   // if (this.state.role === 'financeaccountant') {
     //   //   data = {
@@ -478,7 +478,7 @@ class OtherFeeTotalPaidReports extends Component {
     //   //     grades: this.state.gradeData
     //   //   }
     //   // }
-    //   // this.props.fetchInstallments(data, this.props.alert, this.props.user)
+    //   // this.props.fetchInstallments(data, this.props.alert, userToken)
     // })
   }
   changedHandler = (name, event) => {
@@ -563,7 +563,7 @@ class OtherFeeTotalPaidReports extends Component {
     // } else if (this.state.allStudents) {
     //   data.allStudents = this.state.allStudents
     // }
-    this.props.downloadReports('Other_fee_total_paid_and_due_reports.csv', urls.DownloadTotalPaidOtherFeeReports, data, this.props.alert, this.props.user)
+    this.props.downloadReports('Other_fee_total_paid_and_due_reports.csv', urls.DownloadTotalPaidOtherFeeReports, data, this.props.alert, userToken)
     this.setState({
       sessionData: [],
       session: '',

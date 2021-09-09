@@ -51,6 +51,7 @@ function getSteps () {
   return ['Config Items', 'Receipt Details', 'Completed']
 }
 
+let userToken = "";
 class ConfigItems extends Component {
   constructor (props) {
     super(props)
@@ -112,16 +113,16 @@ class ConfigItems extends Component {
   }
 
   componentDidMount () {
-const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
+ userToken = JSON.parse(localStorage.getItem('userDetails')).token;
     this.props.fetchWalletInfo(this.props.session, this.props.erpCode, this.props.alert, userToken)
     this.props.fetchCouponDiscount(this.props.erpCode, this.props.session, this.props.selectedKits, this.props.alert, userToken)
     this.props.fetchSubCategoryStore(this.props.session, this.props.erpCode, this.props.alert, userToken)
     if (!this.props.isStudent) {
-      // this.props.fetchDeviceId(this.props.session, this.props.alert, this.props.user)
+      // this.props.fetchDeviceId(this.props.session, this.props.alert, userToken)
       this.props.storeReceiptNumbers(this.props.session, this.props.branchId, this.props.erpCode, this.props.alert,userToken)
       // let grade = JSON.parse(localStorage.getItem('user_profile')).grade_id
       // let branch = JSON.parse(localStorage.getItem('user_profile')).branch_id
-      // this.props.fetchSubCategoryStore(this.props.session, grade, branch, this.props.alert, this.props.user)
+      // this.props.fetchSubCategoryStore(this.props.session, grade, branch, this.props.alert, userToken)
     }
     if (this.props.isDelivery === 'home') {
       this.props.fetchDeliveryAmount(this.props.erpCode, this.props.alert, userToken)
@@ -573,7 +574,7 @@ return returnValue
   getPdfData = (transactionId) => {
     return (axios.get(`${urls.StoreReceiptPdfData}?transaction_id=${transactionId}&academic_year=${this.props.session}`, {
       headers: {
-        Authorization: 'Bearer ' + this.props.user
+        Authorization: 'Bearer ' + userToken
       }
     }))
   }
@@ -690,14 +691,14 @@ return returnValue
       // }
       case 'ifsc': {
         if (this.state.searchByValue === 1 && event.target.value.length === 11) {
-          this.props.fetchIfsc(event.target.value, this.props.alert, this.props.user)
+          this.props.fetchIfsc(event.target.value, this.props.alert, userToken)
         }
         newCheque['ifsc'] = event.target.value
         break
       }
       case 'micr': {
         if (this.state.searchByValue === 2 && event.target.value.length === 9) {
-          this.props.fetchMicr(event.target.value, this.props.alert, this.props.user)
+          this.props.fetchMicr(event.target.value, this.props.alert, userToken)
         }
         newCheque['micr'] = event.target.value
         break
@@ -1682,7 +1683,7 @@ return returnValue
         student: this.props.erpCode,
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null
       },
-      user: this.props.user,
+      user: userToken,
       url: this.props.isStudent && this.props.walletInfo.length && this.state.isWalletAgree && (this.props.walletInfo[0].reaming_amount >= this.state.total + this.state.shippingAmount) ? urls.StorePaymentAcc : urls.AirpayStore
     })
   }
@@ -1939,7 +1940,7 @@ return returnValue
   }
 
   sendingToServer = (paymentObj) => {
-    this.props.storePayment(paymentObj, this.props.alert, this.props.user)
+    this.props.storePayment(paymentObj, this.props.alert, userToken)
   }
 
   handleNext = () => {

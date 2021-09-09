@@ -64,6 +64,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class ChangeFeePlanToStudent extends Component {
   constructor (props) {
     super(props)
@@ -94,9 +95,7 @@ class ChangeFeePlanToStudent extends Component {
   }
 
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload()
-    }
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (feePlanState) {
       this.setState(feePlanState)
     }
@@ -107,13 +106,13 @@ class ChangeFeePlanToStudent extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, gradeData: null, gradeId: null, sessionData: e, showTabs: false }, () => {
-      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
     })
   }
 
   gradeHandler = (e) => {
     this.setState({ gradeId: e.value, gradeData: e, showTabs: false }, () => {
-      this.props.fetchAllSections(this.state.session, this.state.gradeId, this.state.selectedBranches && this.state.selectedBranches.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchAllSections(this.state.session, this.state.gradeId, this.state.selectedBranches && this.state.selectedBranches.value, this.props.alert, userToken, moduleId)
     })
   }
 
@@ -137,8 +136,8 @@ class ChangeFeePlanToStudent extends Component {
       showTabs: true
     }, () => {
       if (this.state.session && this.state.gradeId && this.state.sectionId && this.state.studentType && this.state.selectedBranches) {
-        this.props.fetchAllPlans(this.state.session, this.state.gradeId, this.state.selectedBranches && this.state.selectedBranches.value, this.state.sectionId, this.state.studentType, this.props.alert, this.props.user)
-        this.props.fetchAllFeePlans(this.state.session, this.state.gradeId, this.state.selectedBranches && this.state.selectedBranches.value, this.props.alert, this.props.user)
+        this.props.fetchAllPlans(this.state.session, this.state.gradeId, this.state.selectedBranches && this.state.selectedBranches.value, this.state.sectionId, this.state.studentType, this.props.alert, userToken)
+        this.props.fetchAllFeePlans(this.state.session, this.state.gradeId, this.state.selectedBranches && this.state.selectedBranches.value, this.props.alert, userToken)
         feePlanState = this.state
       } else {
         this.props.alert.warning('Fill all the Fields!')
@@ -163,7 +162,7 @@ class ChangeFeePlanToStudent extends Component {
       showInstaDetails: true
     }, () => {
       if (this.state.changedFeePlanId) {
-        this.props.fetchInstallDetails(this.state.changedFeePlanId, this.props.alert, this.props.user)
+        this.props.fetchInstallDetails(this.state.changedFeePlanId, this.props.alert, userToken)
       }
     })
   }
@@ -180,7 +179,7 @@ class ChangeFeePlanToStudent extends Component {
       erp_code: [this.state.erpCode],
       academic_year: this.state.session
     }
-    this.props.editStudentFeePlan(data, this.state.studentEditId, this.props.alert, this.props.user)
+    this.props.editStudentFeePlan(data, this.state.studentEditId, this.props.alert, userToken)
     this.hideEditModalHandler()
   }
 
@@ -252,7 +251,7 @@ class ChangeFeePlanToStudent extends Component {
   }
 
   assignAutomatic = () => {
-    this.props.assignAtmtStudents(this.state.session, this.state.gradeId, this.state.sectionId, this.state.studentType, this.props.alert, this.props.user, this.state.selectedBranches && this.state.selectedBranches.value, moduleId)
+    this.props.assignAtmtStudents(this.state.session, this.state.gradeId, this.state.sectionId, this.state.studentType, this.props.alert, userToken, this.state.selectedBranches && this.state.selectedBranches.value, moduleId)
   }
 
   showAdjustFeeHandler = () => {
@@ -260,7 +259,7 @@ class ChangeFeePlanToStudent extends Component {
       showFeeModal: !this.state.showFeeModal
     }, () => {
       // fetch call
-      this.props.fetchAdjustFee(320, this.state.changedFeePlanId, this.props.alert, this.props.user)
+      this.props.fetchAdjustFee(320, this.state.changedFeePlanId, this.props.alert, userToken)
     })
   }
 
@@ -293,7 +292,7 @@ class ChangeFeePlanToStudent extends Component {
       erp_code: erpArr,
       academic_year: this.state.session
     }
-    this.props.editStudentFeePlan(data, this.state.studentEditId, this.props.alert, this.props.user)
+    this.props.editStudentFeePlan(data, this.state.studentEditId, this.props.alert, userToken)
   }
 
   feePlanTable = () => {
@@ -391,7 +390,7 @@ class ChangeFeePlanToStudent extends Component {
   }
 
   changehandlerbranch = (e) => {
-    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session)
+    this.props.fetchGrades(this.props.alert, userToken, moduleId, e.value, this.state.session)
     this.setState({ selectedBranches: e})
   }
 
@@ -778,7 +777,7 @@ class ChangeFeePlanToStudent extends Component {
             normalFeePlan={this.props.feePlans}
             // getData={this.state.getData}
             // erp={erpValue}
-            user={this.props.user} />
+            user={userToken} />
         </TabContainer>}
         {this.props.dataLoading ? <CircularProgress open /> : null}
       </React.Fragment>

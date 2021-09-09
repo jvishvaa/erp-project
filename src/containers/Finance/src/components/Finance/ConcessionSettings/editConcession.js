@@ -318,7 +318,7 @@ class EditConcessionSettings extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   listConcessions: state.finance.concessionSettings.listConcessions,
   listConcessionTypes: state.finance.concessionSettings.listConcessionType
 })

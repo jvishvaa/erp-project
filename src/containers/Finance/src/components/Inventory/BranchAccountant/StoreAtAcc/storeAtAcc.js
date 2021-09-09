@@ -46,6 +46,7 @@ if (NavData && NavData.length) {
 
 
 // let storeAtAccStore = null
+let userToken = '';
 
 class StoreAtAcc extends Component {
   constructor (props) {
@@ -94,11 +95,8 @@ class StoreAtAcc extends Component {
   }
 
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload()
-    }
     // TODO: acad year in studentdata
-    const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
+    userToken = JSON.parse(localStorage.getItem('userDetails')).token;
     const userProfile = JSON.parse(localStorage.getItem('user_profile'));
     const role = userProfile?.personal_info?.role?.toLowerCase()
     const { session, getData, erp } = this.props
@@ -111,7 +109,7 @@ class StoreAtAcc extends Component {
     }
     // this.subjectCheckHandler()
     // if (this.state.session) {
-    //   this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user)
+    //   this.props.fetchGrades(this.state.session.value, this.props.alert, userToken)
     // }
     if (this.props.storeList.length === 0) {
       this.setState({
@@ -205,7 +203,7 @@ class StoreAtAcc extends Component {
       }
     }
     // if (nextProps.status !== this.props.status) {
-    //   this.props.orderPaid(this.props.session, this.props.erp, this.props.alert, this.props.user)
+    //   this.props.orderPaid(this.props.session, this.props.erp, this.props.alert, userToken)
     // }
     this.setState({
       secondLang: {
@@ -308,7 +306,7 @@ class StoreAtAcc extends Component {
       city: city,
       state: state
     }
-    this.props.sendDeliveryDetails(data, this.props.alert, this.props.user)
+    this.props.sendDeliveryDetails(data, this.props.alert, userToken)
     this.hideDeliveryHandler()
   }
 
@@ -470,7 +468,7 @@ const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
   }
 
   getBackHandler = (confirm) => {
-    this.props.orderPaid(this.props.session, this.props.erp, this.props.alert, this.props.user)
+    this.props.orderPaid(this.props.session, this.props.erp, this.props.alert, userToken)
     this.setState({
       showConfigItems: confirm
     })
@@ -537,7 +535,7 @@ const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
             isNewStudent={this.props.isNewStudent}
             getBack={this.getBackHandler}
             alert={this.props.alert}
-            user={this.props.user}
+            user={userToken}
             isStudent={this.props.isStudent}
             isDelivery={this.state.deliveryValue}
             selectedKits={this.state.selectedKits}

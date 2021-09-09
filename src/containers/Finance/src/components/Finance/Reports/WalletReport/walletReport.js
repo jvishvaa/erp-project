@@ -9,6 +9,8 @@ import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import Layout from '../../../../../../Layout'
 
+let userToken ="";
+
 const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, branchAtAcc, branches, downloadReports, dataLoading, grades, alert, user }) => {
   const [sessionData, setSessionData] = useState([])
   const [gradeData, setGradeData] = useState([])
@@ -18,26 +20,24 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
   const [role, setRole] = useState(null)
 
   useEffect(() => {
-      if(user === null){
-        window.location.reload();
-      }
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile?.personal_info?.role?.toLowerCase()
     setRole(role)
     // if (role === 'financeaccountant') {
-    //   fetchBranchAtAcc(alert, user)
+    //   fetchBranchAtAcc(alert, userToken)
     // }
-  }, [alert, grades, user])
+  }, [alert, grades, userToken])
 
   const handleAcademicyear = (e) => {
     setSessionData(e)
     setValueGrade([])
     setBranchData(null)
-    // fetchBranches(e.value, alert, user)
+    // fetchBranches(e.value, alert, userToken)
     // if (role === 'financeaccountant') {
-    //   fetchGrades(e.value, branchAtAcc && branchAtAcc.branch, alert, user)
+    //   fetchGrades(e.value, branchAtAcc && branchAtAcc.branch, alert, userToken)
     // } else {
-      fetchBranches(e.value, alert, user)
+      fetchBranches(e.value, alert, userToken)
     // }
   }
   const changehandlerbranch = (e) => {
@@ -46,12 +46,12 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
       setBranchData(e)
       setBranchId(allBranch)
       setValueGrade([])
-      fetchGrades(sessionData && sessionData.value, allBranch, alert, user)
+      fetchGrades(sessionData && sessionData.value, allBranch, alert, userToken)
     } else {
       setBranchData(e)
       setBranchId(e.value)
       setValueGrade([])
-      fetchGrades(sessionData && sessionData.value, e.value, alert, user)
+      fetchGrades(sessionData && sessionData.value, e.value, alert, userToken)
     }
   }
   const handleClickGrade = (event) => {
@@ -79,7 +79,7 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
     // if (role === 'financeadmin') {
       if (sessionData && branchData && gradeData && gradeData.length > 0) {
         let url = `${urls.WalletReport}?session_year=${sessionData && sessionData.value}&branch_id=${branchId}&grade=${gradeData}`
-        downloadReports('walletReport.xlsx', url, alert, user)
+        downloadReports('walletReport.xlsx', url, alert, userToken)
         setSessionData([])
         setGradeData([])
         setBranchData(null)
@@ -91,7 +91,7 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
     //   if (sessionData && gradeData && gradeData.length > 0) {
     //     // let url = `${urls.WalletReport}?session_year=${sessionData && sessionData.value}&grade=${gradeData}`
     //     let url = `${urls.WalletReport}?session_year=${sessionData && sessionData.value}&branch_id=${branchAtAcc && branchAtAcc.branch}&grade=${gradeData}`
-    //     downloadReports('walletReport.xlsx', url, alert, user)
+    //     downloadReports('walletReport.xlsx', url, alert, userToken)
     //     setSessionData([])
     //     setGradeData([])
     //     setBranchData(null)
@@ -177,7 +177,7 @@ const WalletReport = ({ session, fetchGrades, fetchBranchAtAcc, fetchBranches, b
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.multipleBranchPerSession,
   branchAtAcc: state.finance.common.branchAtAcc,

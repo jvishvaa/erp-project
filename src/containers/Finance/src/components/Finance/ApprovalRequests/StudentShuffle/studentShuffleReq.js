@@ -72,9 +72,7 @@ const StudentShuffleReq = ({
   // }, [selectedYear])
 
   useEffect(() => {
-    if(user === null){
-      window.location.reload()
-    }
+
     if (selectedYear) {
       fetchBranches(selectedYear.value, alert, user, moduleId)
     }

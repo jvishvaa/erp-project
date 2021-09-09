@@ -64,7 +64,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
-
+let userToken = "";
 const AssignDelieveryCharge = ({
   session,
   branches,
@@ -97,20 +97,18 @@ const AssignDelieveryCharge = ({
   const [selectedbranchIds, setSelectedBranchIds] = useState(null);
 
   useEffect(() => {
-    if(user === null){
-      window.location.reload()
-    }
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     setStudentErpList(erpList);
   }, [erpList]);
 
   const handleClickSessionYear = (e) => {
     setSessionData(e);
     setGradeData(null);
-    fetchBranches(e.value, alert, user, moduleId);
+    fetchBranches(e.value, alert, userToken, moduleId);
     setShowdata(false);
   };
   const changehandlerbranch = (e) => {
-    fetchGradeList(sessionData.value, e && e.value, alert, user, moduleId);
+    fetchGradeList(sessionData.value, e && e.value, alert, userToken, moduleId);
     setSelectedBranches(e);
   };
   const gradeHandler = (e) => {
@@ -127,7 +125,7 @@ const AssignDelieveryCharge = ({
       selectedBranches.value,
       e.value,
       alert,
-      user
+      userToken
     );
   };
 
@@ -145,7 +143,7 @@ const AssignDelieveryCharge = ({
         selectedBranches.value,
         gradeData.value,
         alert,
-        user
+        userToken
       );
       setShowdata(true);
     } else {
@@ -387,7 +385,7 @@ const AssignDelieveryCharge = ({
         branch_id: selectedBranches.value
         // applicable_to: applicableTo && applicableTo.value
       };
-      assignDelieveryChargeStudent(data, alert, user);
+      assignDelieveryChargeStudent(data, alert, userToken);
       setCheckedAll(false);
       setisChecked(false);
     } else {
@@ -521,7 +519,7 @@ const AssignDelieveryCharge = ({
   );
 };
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   gradeList: state.finance.common.gradeList,
   branches: state.finance.common.branchPerSession,

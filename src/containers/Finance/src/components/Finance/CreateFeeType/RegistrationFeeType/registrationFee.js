@@ -78,11 +78,6 @@ class RegistrationFee extends Component {
     // this.deleteHandler = this.deleteHandler.bind(this)
   }
 
-  componentDidMount () {
-      if(this.props.user === null){
-      window.location.reload();
-    }
-  }
 
   handleChangePage = (event, newPage) => {
     this.setState({

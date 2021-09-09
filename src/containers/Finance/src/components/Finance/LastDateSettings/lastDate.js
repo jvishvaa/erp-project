@@ -77,12 +77,6 @@ class LastDateSettings extends Component {
     }
   }
 
-  componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload();
-    }
-  }
-
   componentDidUpdate () {
   }
 

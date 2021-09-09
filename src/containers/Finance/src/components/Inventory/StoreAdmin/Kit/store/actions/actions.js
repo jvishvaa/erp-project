@@ -68,7 +68,7 @@ export const createGradeKit = (payload) => {
     }
     axios.post(urls.CreateKit, body, {
       headers: {
-        Authorization: 'Bearer ' + payload.user
+        Authorization: 'Bearer ' + payload.userToken
       }
     }).then(response => {
       payload.alert.success('Created Successfully!')
@@ -114,7 +114,7 @@ export const updateKits = (payload) => {
     }
     axios.post(urls.UpdateKitInStore, body, {
       headers: {
-        Authorization: 'Bearer ' + payload.user
+        Authorization: 'Bearer ' + payload.userToken
       }
     }).then(response => {
       payload.alert.success('Saved!')
