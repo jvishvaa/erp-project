@@ -44,6 +44,7 @@ if (NavData && NavData.length) {
   // setModulePermision(false);
 }
 
+let userToken='';
 const StudentShuffleReq = ({
   classes,
   alert,
@@ -72,15 +73,15 @@ const StudentShuffleReq = ({
   // }, [selectedYear])
 
   useEffect(() => {
-
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
     if (selectedYear) {
-      fetchBranches(selectedYear.value, alert, user, moduleId)
+      fetchBranches(selectedYear.value, alert, userToken, moduleId)
     }
-  }, [selectedYear, fetchBranches, alert, user])
+  }, [selectedYear, fetchBranches, alert, userToken])
 
   const academicYearChangeHandler = (e) => {
     setSelectedYear(e)
-    fetchBranches(e && e.value, alert, user, moduleId)
+    fetchBranches(e && e.value, alert, userToken, moduleId)
   }
 
   const branchChangeHandler = (e) => {
@@ -93,13 +94,13 @@ const StudentShuffleReq = ({
 
   useEffect(() => {
     if (selectedYear && selectedBranch && selectedStatus.value === 1) {
-      fetchPendingList(selectedYear, selectedBranch, alert, user)
+      fetchPendingList(selectedYear, selectedBranch, alert, userToken)
     } else if (selectedYear && selectedBranch && selectedStatus.value === 2) {
-      fetchApprovalList(selectedYear, selectedBranch, alert, user)
+      fetchApprovalList(selectedYear, selectedBranch, alert, userToken)
     } else if (selectedYear && selectedBranch && selectedStatus.value === 3) {
-      fetchRejectedList(selectedYear, selectedBranch, alert, user)
+      fetchRejectedList(selectedYear, selectedBranch, alert, userToken)
     }
-  }, [selectedYear, selectedBranch, selectedStatus, fetchPendingList, fetchApprovalList, fetchRejectedList, alert, user])
+  }, [selectedYear, selectedBranch, selectedStatus, fetchPendingList, fetchApprovalList, fetchRejectedList, alert, userToken])
 
   const statusSwitch = useCallback(() => {
     let result = null
@@ -109,7 +110,7 @@ const StudentShuffleReq = ({
           currentSession={selectedYear}
           currentBranch={selectedBranch}
           alert={alert}
-          user={user}
+          user={userToken}
         />
       )
     } else if (selectedYear && selectedBranch && selectedStatus.value === 2) {
@@ -118,7 +119,7 @@ const StudentShuffleReq = ({
           currentSession={selectedYear}
           currentBranch={selectedBranch}
           alert={alert}
-          user={user}
+          user={userToken}
         />
       )
     } else if (selectedYear && selectedBranch && selectedStatus.value === 3) {
@@ -127,12 +128,12 @@ const StudentShuffleReq = ({
           currentSession={selectedYear}
           currentBranch={selectedBranch}
           alert={alert}
-          user={user}
+          user={userToken}
         />
       )
     }
     return result
-  }, [selectedYear, selectedBranch, selectedStatus, alert, user])
+  }, [selectedYear, selectedBranch, selectedStatus, alert, userToken])
 
   return (
     <Layout>
@@ -216,7 +217,7 @@ StudentShuffleReq.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.multipleBranchPerSession,
   pendingreq: state.finance.studentShuffle.pendingLists,

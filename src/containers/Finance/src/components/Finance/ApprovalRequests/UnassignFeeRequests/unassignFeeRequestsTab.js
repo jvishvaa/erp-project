@@ -20,6 +20,7 @@ import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import Layout from '../../../../../../Layout'
 
+let userToken='';
 const UnassignFeeRequests = ({
   classes,
   session,
@@ -54,10 +55,11 @@ const UnassignFeeRequests = ({
   }, [selectedYear])
 
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
     if (selectedYear) {
-      fetchBranches(selectedYear.value, alert, user)
+      fetchBranches(selectedYear.value, alert, userToken)
     }
-  }, [selectedYear, fetchBranches, alert, user])
+  }, [selectedYear, fetchBranches, alert, userToken])
 
   // useEffect(() => {
   //   if (selectedYear && selectedBranch) {
@@ -82,11 +84,11 @@ const UnassignFeeRequests = ({
 
   const getApprovalResults = useCallback(() => {
     if (selectedYear && selectedBranch) {
-      fetchUnassignRequests(selectedYear, selectedBranch, alert, user)
+      fetchUnassignRequests(selectedYear, selectedBranch, alert, userToken)
     } else {
       alert.warning('Select Required Fields')
     }
-  }, [fetchUnassignRequests, selectedYear, selectedBranch, alert, user])
+  }, [fetchUnassignRequests, selectedYear, selectedBranch, alert, userToken])
 
   const approvalRequestHandler = (id) => {
     history.push({
@@ -253,7 +255,7 @@ UnassignFeeRequests.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.multipleBranchPerSession,
   unassignedList: state.finance.unassignFeerequest.feeRequestLists,
