@@ -179,10 +179,10 @@ class AdminOtherFees extends Component {
     } = this.state
     const {
       alert,
-      user
+      // user
     } = this.props
     if (session && branchId && instId) {
-      this.props.deleteInstallments(session, branchId, instId, alert, user)
+      this.props.deleteInstallments(session, branchId, instId, alert, userToken)
       this.deleteModalCloseHandler()
       this.hideInstModalHandler()
     } else {
@@ -473,7 +473,7 @@ class AdminOtherFees extends Component {
 
 const mapStateToProps = (state) => ({
   session: state.academicSession.items,
-  user: state.authentication.user,
+  // user: state.authentication.user,
   otherFees: state.finance.accountantReducer.listOtherFee.adminOtherfees,
   branches: state.finance.common.branchPerSession,
   installmentLists: state.finance.accountantReducer.listOtherFee.listInstallments,

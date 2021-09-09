@@ -263,7 +263,7 @@ class TransactionStatus extends Component {
       feeAccId
     } = this.state
     const {
-      user,
+      // user,
       alert
     } = this.props
     // const modeIds = selectedModes && selectedModes.map(mode => mode.value)
@@ -279,7 +279,7 @@ class TransactionStatus extends Component {
       return
     }
     // this.props.fetchAllTransaction(currentSession, !isAccountant ? currentBranch.id : null, isAccountant, paymentModeId, feeIds, feeAccId, fromDate, toDate, page, user, alert)
-    this.props.fetchAllTransaction(currentSession, currentBranch?.id, isAccountant, paymentModeId, feeIds, feeAccId, fromDate, toDate, page, user, alert)
+    this.props.fetchAllTransaction(currentSession, currentBranch?.id, isAccountant, paymentModeId, feeIds, feeAccId, fromDate, toDate, page, userToken, alert)
 
   }
 
@@ -329,7 +329,7 @@ class TransactionStatus extends Component {
     // }
     const url = urls.FDSReport
     const reportName = 'fee_day_sheet.xlsx'
-    this.props.downloadReport(url, data, reportName, user, alert)
+    this.props.downloadReport(url, data, reportName, userToken, alert)
     this.setState({
       currentSession: null,
       fromDate: new Date().toISOString().substr(0, 10),
@@ -869,7 +869,7 @@ class TransactionStatus extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.branchPerSession,
   dataLoading: state.finance.common.dataLoader,
@@ -880,8 +880,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
   fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
-  fetchAllTransaction: (session, branchId, isAccountant, mode, fees, feePlanIds, fromDate, toDate, page, user, alert) => dispatch(actionTypes.fetchAllTransaction({ session, branchId, isAccountant, mode, fees, feePlanIds, fromDate, toDate, page, user, alert })),
-  updateTransaction: (session, id, currentPaid, currentCollected, currentCancelled, currentBankClearance, user, alert) => dispatch(actionTypes.updateTransactionStatus({ session, id, currentPaid, currentCollected, currentCancelled, currentBankClearance, user, alert })),
+  fetchAllTransaction: (session, branchId, isAccountant, mode, fees, feePlanIds, fromDate, toDate, page, user, alert) => dispatch(actionTypes.fetchAllTransaction({ session, branchId, isAccountant, mode, fees, feePlanIds, fromDate, toDate, page, userToken, alert })),
+  updateTransaction: (session, id, currentPaid, currentCollected, currentCancelled, currentBankClearance, user, alert) => dispatch(actionTypes.updateTransactionStatus({ session, id, currentPaid, currentCollected, currentCancelled, currentBankClearance, userToken, alert })),
   fetchFeePlans: (session, branchId, user, alert) => dispatch(actionTypes.fetchMultiFeeTypeTransaction({ session, branchId, user, alert })),
   downloadReport: (url, data, reportName, user, alert) => dispatch(actionTypes.downloadReports({ url, data, reportName, user, alert })),
   clearProps: () => dispatch(actionTypes.clearTotalPaidProps())

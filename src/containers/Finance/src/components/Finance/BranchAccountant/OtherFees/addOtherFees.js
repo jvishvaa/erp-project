@@ -306,10 +306,10 @@ class AddOtherFees extends Component {
     } = this.state
     const {
       alert,
-      user
+      // user
     } = this.props
     if (session && branchId && feeTypeName) {
-      this.props.deleteInstallments(session, branchId, feeTypeName, alert, user)
+      this.props.deleteInstallments(session, branchId, feeTypeName, alert, userToken)
       this.deleteModalCloseHandler()
       this.setState({
         numberOfRows: ''
@@ -640,7 +640,7 @@ class AddOtherFees extends Component {
       alert
     } = this.props
     if (session && branchId && feeTypeName && dueDate && startDate && endDate && amount && subFeeTypeName) {
-      this.props.checkInstallments(session, branchId, feeTypeName, alert, user)
+      this.props.checkInstallments(session, branchId, feeTypeName, alert, userToken)
       this.setState({
         installmentList: true,
         numberOfRows: ''
@@ -1101,7 +1101,7 @@ class AddOtherFees extends Component {
 
 const mapStateToProps = (state) => ({
   session: state.academicSession.items,
-  user: state.authentication.user,
+  // user: state.authentication.user,
   feeAccounts: state.finance.accountantReducer.listOtherFee.adminFeeAccount,
   confirm: state.finance.accountantReducer.listOtherFee.addOtherConfirm,
   otherFeeInstallments: state.finance.accountantReducer.listOtherFee.otherFeeInstallment,

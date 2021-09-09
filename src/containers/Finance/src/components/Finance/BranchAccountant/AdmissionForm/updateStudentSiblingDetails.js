@@ -413,7 +413,7 @@ class UpdateStudentSiblingDetailsFormAcc extends Component {
   }
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   studentDetailsForAdmission: state.finance.accountantReducer.admissionForm.studentDetailsforAdmisssion,
   admissionrecordbyerp: state.finance.accountantReducer.admissionForm.admissionrecordbyerp
