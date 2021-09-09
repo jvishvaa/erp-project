@@ -28,10 +28,10 @@ const HomeworkCard = ({
   return (
     // <Layout>
 
-    <Grid item xs={12} md={3} className='hwcard-container' style={{ display: 'flex' }}>
+    <Grid item xs={12} md={3} className='hwcard-container' style={{ display: 'flex',height:'100vh',flexWrap:'wrap' }}>	
       <Paper
         className='hwcard'
-        style={{ height, display: 'flex', flexDirection: 'column', position: 'relative', width: '100%' }}
+        style={{ height, flexDirection: 'column', position: 'relative', width: '100%' }}
       >
         <div className='close-icon'>
           <IconButton onClick={onClose}>
@@ -97,7 +97,8 @@ const HomeworkCard = ({
           </div>
         )}
         {view === 'submissionStats' && (unSubmittedStudents && unSubmittedStudents.length !== 0) && (
-          <div className='list' style={{ flexGrow: 1 }}>
+          
+          <div className='list' style={{ flexGrow: 1,height:'45%' }}>
             <div className='cardHeaderSub'>Not submitted students :</div>
             <div className='innerBox'>
               {loading ? (
