@@ -53,6 +53,7 @@ if (NavData && NavData.length) {
   // setModulePermision(false);
 }
 
+let userToken = "";
 class ReceiptSettings extends Component {
   state = {
     sessionData: '',
@@ -71,6 +72,9 @@ class ReceiptSettings extends Component {
     page: 0,
     rowsPerPage: 10
   }
+componentDidMount(){
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+}
 
   handleChangePage = (event, newPage) => {
     this.setState({
@@ -121,7 +125,7 @@ class ReceiptSettings extends Component {
 
   academicYearHandler = (e) => {
     this.setState({ sessionData: e }, () => {
-      this.props.fetchBranches(this.state.sessionData.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(this.state.sessionData.value, this.props.alert, userToken, moduleId)
     })
   }
   branchDataHandler = (e) => {
@@ -129,7 +133,7 @@ class ReceiptSettings extends Component {
   }
   buttonHandler = (e) => {
     if (this.state.sessionData.value && this.state.branchData.value) {
-      this.props.fetchListReceipts(this.state.sessionData.value, this.state.branchData.value, this.props.alert, this.props.user)
+      this.props.fetchListReceipts(this.state.sessionData.value, this.state.branchData.value, this.props.alert, userToken)
     } else {
       this.props.alert.warning('Select All Required fields')
     }
@@ -161,7 +165,7 @@ class ReceiptSettings extends Component {
     })
   }
   deleteHandler = (id) => {
-    this.props.deleteReceiptSettingList(this.state.deleteId, this.props.alert, this.props.user)
+    this.props.deleteReceiptSettingList(this.state.deleteId, this.props.alert, userToken)
     this.deleteModalCloseHandler()
   }
   returnEditHandler = () => {
@@ -316,7 +320,7 @@ class ReceiptSettings extends Component {
             prefix={prefix}
             isActive={isActive}
             alert={this.props.alert}
-            user={this.props.user}
+            user={userToken}
             close={this.hideModalHandler}
             changeHandler={this.modalInputChangeHandler}
             checkHandler={this.checkChangeHandler}
@@ -349,7 +353,7 @@ class ReceiptSettings extends Component {
             subHeader={subHeader}
             prefix={prefix}
             alert={this.props.alert}
-            user={this.props.user}
+            user={userToken}
             close={this.hideModalHandler}
             changeHandler={this.modalInputChangeHandler}
             clearProps={this.clearaddProps}
@@ -527,7 +531,7 @@ class ReceiptSettings extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branchPerSession: state.finance.common.branchPerSession,
   receiptlists: state.finance.receiptSettings.receiptSettingsList,

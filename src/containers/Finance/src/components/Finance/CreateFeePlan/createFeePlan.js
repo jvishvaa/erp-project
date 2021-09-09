@@ -63,6 +63,7 @@ const styles = theme => ({
 })
 
 let feePlanState = null
+let userToken ="";
 
 class CreateFeePlan extends Component {
   constructor (props) {
@@ -83,6 +84,14 @@ class CreateFeePlan extends Component {
       gradeList: [],
       feePlanId: null,
       moduleId: null
+    }
+  }
+
+  componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+    if (feePlanState) {
+      this.setState(feePlanState)
+      return
     }
   }
 
@@ -139,12 +148,12 @@ class CreateFeePlan extends Component {
 
   changehandlerbranch = (e) => {
     this.setState({ branchId: e.value, branchData: e })
-    this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session)
+    this.props.fetchGrades(this.props.alert, userToken, moduleId, e.value, this.state.session)
   }
 
   handleClickSessionYear = (e) => {
     this.setState({ session: e.value, sessionData: e })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+    this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
   }
 
   handlevalue = e => {
@@ -156,20 +165,20 @@ class CreateFeePlan extends Component {
       this.props.alert.warning('Select Branch')
       return
     }
-    this.props.fetchListFeePlan(this.state.session, this.state.branchId, this.props.alert, this.props.user)
+    this.props.fetchListFeePlan(this.state.session, this.state.branchId, this.props.alert, userToken)
     this.setState({ showTable: true }, () => {
       feePlanState = this.state
     })
   }
 
   handlegrade = (typeid) => {
-    this.props.updateGrades(this.state.gradeId, typeid, this.props.alert, this.props.user)
+    this.props.updateGrades(this.state.gradeId, typeid, this.props.alert, userToken)
     this.closeAddGradeHandler()
   };
 
   // to delete the grade
   deleteHandler = () => {
-    this.props.deleteGrades(this.state.gradeid, this.state.typeid, this.props.alert, this.props.user)
+    this.props.deleteGrades(this.state.gradeid, this.state.typeid, this.props.alert, userToken)
     this.deleteModalCloseHandler()
   }
 
@@ -177,12 +186,7 @@ class CreateFeePlan extends Component {
     this.setState({ gradeId: e.value })
   }
 
-  componentDidMount () {
-    if (feePlanState) {
-      this.setState(feePlanState)
-      return
-    }
-  }
+
 
   getBackTheUpdatedDataHandler = (status, data) => {
     if (status === 'success') {
@@ -472,7 +476,7 @@ class CreateFeePlan extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.branchPerSession,
   listFeePlan: state.finance.feePlan.feePlanList,

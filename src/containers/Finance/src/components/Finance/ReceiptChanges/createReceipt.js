@@ -26,6 +26,7 @@ import Layout from '../../../../../Layout'
 // const ReceiptRange = {
 //   namespace: 'Misc Fee'
 // }
+let userToken = "";
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
 let moduleId = null 
 if (NavData && NavData.length) {
@@ -75,7 +76,9 @@ class CreateReceipt extends Component {
       moduleId: null
     }
   }
-
+  componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+  }
   handleChangePage = (event, newPage) => {
     this.setState({
       page: newPage
@@ -129,7 +132,7 @@ class CreateReceipt extends Component {
 
   handleClickSessionYear = (e) => {
     this.setState({ session: e.value, branchData: [], sessionData: e })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+    this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
   }
 
   changeReceiptType = (e) => {
@@ -144,14 +147,14 @@ class CreateReceipt extends Component {
       this.props.alert.warning('Select Receipt Type')
     }
     this.renderTable()
-    this.props.fetchListReceipt(this.state.session, this.state.branchId, this.state.recType, this.props.alert, this.props.user)
+    this.props.fetchListReceipt(this.state.session, this.state.branchId, this.state.recType, this.props.alert, userToken)
     if (this.state.session && this.state.branchId && this.state.recType) {
       this.setState({ showTable: true, showAddButton: true })
     }
   }
 
   deleteHandler = () => {
-    this.props.deleteReceipts(this.state.deleteId, this.props.alert, this.props.user)
+    this.props.deleteReceipts(this.state.deleteId, this.props.alert, userToken)
     this.deleteModalCloseHandler()
   }
 
@@ -501,7 +504,7 @@ class CreateReceipt extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.branchPerSession,
   receiptLists: state.finance.receiptRangesLists.receiptList,

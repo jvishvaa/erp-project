@@ -90,7 +90,7 @@ const EditFeeInstallmentAmount = ({
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   installmentList: state.finance.feePlan.feeInstallments,
   feeAccountListFromAcadId: state.finance.feePlan.feeAccountListFromAcadId
 //   editDataLoading: state.finance.common.dataLoader

@@ -50,6 +50,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class RegistrationFee extends Component {
   constructor (props) {
     super(props)
@@ -78,6 +79,9 @@ class RegistrationFee extends Component {
     // this.deleteHandler = this.deleteHandler.bind(this)
   }
 
+ componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+  }
 
   handleChangePage = (event, newPage) => {
     this.setState({
@@ -128,7 +132,7 @@ class RegistrationFee extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, branchData: [], sessionData: e }, () => {
-      this.props.fetchBranches(this.state.session, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(this.state.session, this.props.alert, userToken, moduleId)
     })
   }
 
@@ -153,14 +157,14 @@ class RegistrationFee extends Component {
       this.props.alert.warning('Select All Fields')
       return
     }
-    this.props.fetchFeeTypes(this.state.session, this.state.branch.id, this.state.currentFeetype.value, this.props.alert, this.props.user)
+    this.props.fetchFeeTypes(this.state.session, this.state.branch.id, this.state.currentFeetype.value, this.props.alert, userToken)
     // if (this.state.session && this.state.branch.id) {
     this.setState({ showTable: true, showAddButton: true })
     // }
   }
 
   deleteHandler = () => {
-    this.props.deleteRegistrationFeeType(this.state.deleteId, this.props.alert, this.props.user)
+    this.props.deleteRegistrationFeeType(this.state.deleteId, this.props.alert, userToken)
     this.deleteModalCloseHandler()
   }
 
@@ -311,7 +315,7 @@ class RegistrationFee extends Component {
             acadId={this.state.session}
             branchId={this.state.branchData.value}
             typeId={this.state.currentFeetype.value}
-            user={this.props.user}
+            user={userToken}
             alert={this.props.alert}
             feeType={this.state.currentFeetype.label}
             close={this.hideModalHandler}

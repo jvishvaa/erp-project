@@ -7,6 +7,7 @@ import { Button } from '@material-ui/core/'
 import * as actionTypes from '../../store/actions'
 import classes from './registrationFee.module.css'
 
+let userToken = "";
 class AddRegistrationFee extends Component {
   constructor (props) {
     super(props)
@@ -17,6 +18,7 @@ class AddRegistrationFee extends Component {
   }
 
   componentDidMount = (e) => {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     if (this.props.feeType === 'Registration Fee Type') {
       this.setState({
         feeTypeName: 'Registration Fee'
@@ -57,7 +59,7 @@ class AddRegistrationFee extends Component {
       amount: +this.state.amount,
       type: this.props.typeId
     }
-    this.props.addFeeTypes(data, this.props.alert, this.props.user)
+    this.props.addFeeTypes(data, this.props.alert, userToken)
     this.props.close()
   }
 

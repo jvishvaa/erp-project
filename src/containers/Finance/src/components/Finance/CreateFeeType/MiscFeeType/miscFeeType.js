@@ -53,6 +53,7 @@ if (NavData && NavData.length) {
   // setModulePermision(false);
 }
 
+let userToken = "";
 class MiscFeeType extends Component {
   constructor (props) {
     super(props)
@@ -79,7 +80,12 @@ class MiscFeeType extends Component {
     // this.deleteHandler = this.deleteHandler.bind(this)
   }
 
-  
+  componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+    if (feeTypeState) {
+      this.setState(feeTypeState)
+    }
+  }
   handleChangePage = (event, newPage) => {
     this.setState({
       page: newPage
@@ -139,7 +145,7 @@ class MiscFeeType extends Component {
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, branchData: [], sessionData: e }, () => {
     })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+    this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
   }
 
   handleClickFeeData = (e) => {
@@ -151,21 +157,18 @@ class MiscFeeType extends Component {
       return
     }
     // this.renderTable()
-    this.props.fetchMiscFeeList(this.state.session, this.state.branchId, this.props.alert, this.props.user)
+    this.props.fetchMiscFeeList(this.state.session, this.state.branchId, this.props.alert, userToken)
     if (this.state.session && this.state.branchId) {
       this.setState({ showTable: true, showAddButton: true }, () => { feeTypeState = this.state })
     }
   }
 
   deleteHandler = () => {
-    this.props.deleteMiscFee(this.state.deleteId, this.props.alert, this.props.user)
+    this.props.deleteMiscFee(this.state.deleteId, this.props.alert, userToken)
     this.deleteModalCloseHandler()
   }
 
-  componentDidMount () {
-    if (feeTypeState) {
-      this.setState(feeTypeState)
-    }
+
     // if (NavData && NavData.length) {
     //   NavData.forEach((item) => {
     //     if (
@@ -191,7 +194,7 @@ class MiscFeeType extends Component {
     // } else {
     //   // setModulePermision(false);
     // }
-  }
+  
 
   // renderTable = () => {
   //   let dataToShow = []
@@ -524,7 +527,7 @@ class MiscFeeType extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.branchPerSession,
   miscFeeList: state.finance.miscFee.miscFeeList,
