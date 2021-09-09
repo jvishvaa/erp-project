@@ -14,6 +14,7 @@ import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import Layout from '../../../../../Layout'
 
+let userToken='';
 const BulkReportUpload = ({ classes, session, branches, bulkReportList, reports, alert, user, fetchBranches, bulkReportUpload, dataLoading }) => {
   const [sessionData, setSessionData] = useState([])
   const [branchData, setBranchData] = useState([])
@@ -29,7 +30,6 @@ const BulkReportUpload = ({ classes, session, branches, bulkReportList, reports,
     }
   }, [])
 
-let userToken;
   useEffect(() => {
     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
   }, [])
