@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Button, withStyles, TextField, Table, TableHead, TableRow, TableCell, TableBody, Grid } from '@material-ui/core/'
-import { Info, RadioButtonUncheckedSharp } from '@material-ui/icons'
+import { Info } from '@material-ui/icons'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Select from 'react-select'
