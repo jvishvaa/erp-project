@@ -17,6 +17,7 @@ import * as actionTypes from '../../store/actions'
 import Layout from '../../../../../../Layout'
 // import { CircularProgress } from '../../../../ui'
 
+let userToken='';
 const BulkActiveInactiveParent = ({
   classes,
   dataLoaded,
@@ -25,7 +26,6 @@ const BulkActiveInactiveParent = ({
   const [statusFile, setStatusFile] = useState(null)
   const [status, setStatus] = useState('active')
 
-let userToken;
   useEffect(() => {
     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
   }, [])
