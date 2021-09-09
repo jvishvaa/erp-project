@@ -28,7 +28,7 @@ import { useHistory, Route, withRouter } from 'react-router-dom';
 import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { AttachFile as AttachFileIcon } from '@material-ui/icons';
 import edxtag from '../../../../assets/images/edxtag.jpeg';
-import APIREQUEST from "../../../../config/apiRequest";
+import APIREQUEST from '../../../../config/apiRequest';
 
 const JoinClass = (props) => {
   const { setLoading, index, cardIndex, getClassName, historicalData } = props;
@@ -39,6 +39,10 @@ const JoinClass = (props) => {
   const [joinAnchor, setJoinAnchor] = useState(null);
   const [classWorkDialog, setDialogClassWorkBox] = useState(false);
   const [isAccept, setIsAccept] = useState(props.data ? props?.data?.is_accepted : false);
+  const [markAttendance, setMarkAttendance] = useState(
+    props.data ? props?.data?.is_attended : false
+  );
+
   const history = useHistory();
   const classStartTime = moment(props && props?.data && props?.data?.date).format(
     'DD-MM-YYYY'
@@ -86,17 +90,32 @@ const JoinClass = (props) => {
     }
   };
 
-  const msApiMarkAttandance = (params)=>{
-    APIREQUEST("put", "/oncls/v1/mark-attendance/", params)
-    .then((res) => {
-      setLoading(false);
-      setIsAccept(true);
-    })
-    .catch((error) => {
-      setLoading(false);
-      setAlert('error', error.message);
-    });
-  }
+  const msApiMarkAttandance = (params) => {
+    APIREQUEST('put', '/oncls/v1/mark-attendance/', params)
+      .then((res) => {
+        setLoading(false);
+        if (params?.is_accepted) setIsAccept(true);
+        if (params?.is_attended) setMarkAttendance(true);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+  };
+
+  const apiMarkAttendance = (params) => {
+    axiosInstance
+      .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
+      .then((res) => {
+        setLoading(false);
+        if (params?.is_accepted) setIsAccept(true);
+        if (params?.is_attended) setMarkAttendance(true);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+  };
 
   const handleIsAccept = () => {
     const params = {
@@ -104,20 +123,11 @@ const JoinClass = (props) => {
       class_date: props.data && props.data.date,
       is_accepted: true,
     };
-    if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
+    if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
       msApiMarkAttandance(params);
       return;
     }
-    axiosInstance
-      .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
-      .then((res) => {
-        setLoading(false);
-        setIsAccept(true);
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
+    apiMarkAttendance(params);
   };
 
   const handleIsAttended = () => {
@@ -126,27 +136,18 @@ const JoinClass = (props) => {
       class_date: props.data && props.data.date,
       is_attended: true,
     };
-    if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
+    if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
       msApiMarkAttandance(params);
       return;
     }
-    axiosInstance
-      .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
-      .then((res) => {
-        setLoading(false);
-        setIsAccept(true);
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
+    apiMarkAttendance(params);
   };
 
   const [classOver, setClassOver] = useState(false);
   const handleJoinButton = (callback) => {
     const currentTime = getCurrentTime();
     if (endTime >= currentTime) {
-      handleIsAttended();
+      if (!markAttendance) handleIsAttended();
       callback();
     } else {
       setClassOver(true);
@@ -154,17 +155,17 @@ const JoinClass = (props) => {
     }
   };
 
-  const msAPIhandleCancel = (url, params)=>{
-    APIREQUEST("put", url, params)
-    .then((res) => {
-      setLoading(false);
-      setAlert('success', res.data.message);
-      handleClose('success');
-    })
-    .catch((error) => {
-      setLoading(false);
-      setAlert('error', error.message);
-    });
+  const msAPIhandleCancel = (url, params) => {
+    APIREQUEST('put', url, params)
+      .then((res) => {
+        setLoading(false);
+        setAlert('success', res.data.message);
+        handleClose('success');
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
   };
 
   function handleCancel() {
@@ -195,8 +196,8 @@ const JoinClass = (props) => {
         });
     } else {
       //url = endpoints.teacherViewBatches.cancelBatchApi;
-      if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
-        msAPIhandleCancel("/oncls/v1/class-cancel/",params1);
+      if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
+        msAPIhandleCancel('/oncls/v1/class-cancel/', params1);
         return;
       }
       axiosInstance
@@ -241,31 +242,34 @@ const JoinClass = (props) => {
   };
 
   useEffect(() => {
-    if (window.location.pathname === '/erp-online-class-teacher-view' || window.location.pathname === '/erp-online-class') {
+    if (
+      window.location.pathname === '/erp-online-class-teacher-view' ||
+      window.location.pathname === '/erp-online-class'
+    ) {
       handleHostDisable();
     }
   }, [new Date().getSeconds(), props]);
 
-  const msApihandleHost = (data)=> {
-    APIREQUEST("get", `/oncls/v1/zoom-redirect/?id=${data.id}`)
-    .then((res) => {
-      setLoading(false);
-      if (res?.data?.url) {
-        window.open(res?.data?.url, '_blank');
-      } else {
-        setAlert('error', res?.data?.message);
-      }
-    })
-    .catch((error) => {
-      setLoading(false);
-      setAlert('error', error.message);
-    });
-  }
+  const msApihandleHost = (data) => {
+    APIREQUEST('get', `/oncls/v1/zoom-redirect/?id=${data.id}`)
+      .then((res) => {
+        setLoading(false);
+        if (res?.data?.url) {
+          window.open(res?.data?.url, '_blank');
+        } else {
+          setAlert('error', res?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.message);
+      });
+  };
 
   function handleHost(data) {
     if (!handleHostDisable()) {
       setLoading(true);
-      if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false){
+      if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
         msApihandleHost(data);
         return;
       }
@@ -289,19 +293,22 @@ const JoinClass = (props) => {
     }
   }
 
-  const isAcceptDisabled = ()=>{
-    return props?.data?.class_status?.toLowerCase() === 'cancelled' || (classStartTime === currDate ? false : true)
-  }
+  const isAcceptDisabled = () => {
+    return (
+      props?.data?.class_status?.toLowerCase() === 'cancelled' ||
+      (classStartTime === currDate ? false : true)
+    );
+  };
 
-  const isClassStartted = () =>{
-      let disableFlag = false;
-      if (new Date().getTime() >= startTime) {
-        disableFlag = false;
-      } else {
-        disableFlag = true;
-      }
-      return disableFlag;
-  }
+  const isClassStartted = () => {
+    let disableFlag = false;
+    if (new Date().getTime() >= startTime) {
+      disableFlag = false;
+    } else {
+      disableFlag = true;
+    }
+    return disableFlag;
+  };
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -314,50 +321,50 @@ const JoinClass = (props) => {
           {moment(props.data ? props.data.date : '').format('DD-MM-YYYY')}
         </span>
       </Grid>
-      {fullData.online_class.question_paper_id==0?
-      <Grid item xs={8}>
-      {window.location.pathname === '/erp-online-class-teacher-view' && (
-        <Tooltip title='Attach Question Paper'>
-          <IconButton
-            onClick={() =>
-              history.push({
-                pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
-                state: { 
-                  data: fullData.online_class.id,
-                  historicalData : historicalData
-                },
-              })
-            }
-          >
-            <AttachFileIcon />
-          </IconButton>
-        </Tooltip>
-      )
-    } 
-    </Grid>:
-    <Grid item xs={8}>
-    {window.location.pathname === '/erp-online-class-teacher-view' &&(
-      <Button
-        size='small'
-        color='secondary'
-        fullWidth
-        variant='contained'
-        onClick={() =>
-          history.push({
-            pathname: `/erp-online-class/${fullData.online_class.id}/${fullData.online_class.question_paper_id}/pre-quiz`,
-            state: { data: fullData.online_class.id},
-          })
-        }
-        disabled={props?.data?.is_cancelled}
-        className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
-        // className='teacherFullViewSmallButtons'
-      >
-        Launch Quiz
-      </Button>
-    )
-}
-    </Grid>}
-      
+      {fullData.online_class.question_paper_id == 0 ? (
+        <Grid item xs={8}>
+          {window.location.pathname === '/erp-online-class-teacher-view' && (
+            <Tooltip title='Attach Question Paper'>
+              <IconButton
+                onClick={() =>
+                  history.push({
+                    pathname: `/erp-online-class/assign/${fullData.online_class.id}/qp`,
+                    state: {
+                      data: fullData.online_class.id,
+                      historicalData: historicalData,
+                    },
+                  })
+                }
+              >
+                <AttachFileIcon />
+              </IconButton>
+            </Tooltip>
+          )}
+        </Grid>
+      ) : (
+        <Grid item xs={8}>
+          {window.location.pathname === '/erp-online-class-teacher-view' && (
+            <Button
+              size='small'
+              color='secondary'
+              fullWidth
+              variant='contained'
+              onClick={() =>
+                history.push({
+                  pathname: `/erp-online-class/${fullData.online_class.id}/${fullData.online_class.question_paper_id}/pre-quiz`,
+                  state: { data: fullData.online_class.id },
+                })
+              }
+              disabled={props?.data?.is_cancelled}
+              className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
+              // className='teacherFullViewSmallButtons'
+            >
+              Launch Quiz
+            </Button>
+          )}
+        </Grid>
+      )}
+
       {window.location.pathname === '/erp-online-class-student-view' ? (
         <>
           <Grid item xs={4}>
@@ -367,7 +374,10 @@ const JoinClass = (props) => {
               fullWidth
               variant='contained'
               onClick={() => handleTakeQuiz(fullData)}
-              disabled={props?.data?.class_status?.toLowerCase() === 'cancelled' || fullData?.online_class?.question_paper_id===0}
+              disabled={
+                props?.data?.class_status?.toLowerCase() === 'cancelled' ||
+                fullData?.online_class?.question_paper_id === 0
+              }
               // className='takeQuizButton'
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
@@ -383,14 +393,17 @@ const JoinClass = (props) => {
               onClick={() => {
                 setDialogClassWorkBox(true);
               }}
-              disabled={ isClassStartted() || props?.data?.class_status?.toLowerCase() === 'cancelled'}
+              disabled={
+                isClassStartted() ||
+                props?.data?.class_status?.toLowerCase() === 'cancelled'
+              }
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
               Class Work
             </Button>
             {classWorkDialog && (
               <UploadDialogBox
-                historicalData = {historicalData}
+                historicalData={historicalData}
                 periodData={props?.data}
                 setLoading={setLoading}
                 fullData={fullData}
@@ -403,7 +416,7 @@ const JoinClass = (props) => {
       ) : (
         ''
       )}
-{window.location.pathname === '/erp-online-class-teacher-view' ? (
+      {window.location.pathname === '/erp-online-class-teacher-view' ? (
         <>
           <Grid item xs={4}>
             <Button
@@ -416,10 +429,10 @@ const JoinClass = (props) => {
                 const { id: onlineClassId = '', start_time = '' } = online_class || {};
                 history.push({
                   pathname: `/erp-online-class/class-work/${onlineClassId}/${id}/${props.data.date}`,
-                  state: { historicalData : historicalData }
-                })
+                  state: { historicalData: historicalData },
+                });
               }}
-              disabled={ isClassStartted() || props?.data?.is_cancelled}
+              disabled={isClassStartted() || props?.data?.is_cancelled}
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
               Class Work
@@ -557,7 +570,7 @@ const JoinClass = (props) => {
                       variant='contained'
                       // onClick={handleIsAccept}
                       onClick={(e) => handleClickAccept(e)}
-                      disabled={ isAcceptDisabled() }
+                      disabled={isAcceptDisabled()}
                       className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
                     >
                       Accept
@@ -642,7 +655,7 @@ const DetailCardView = ({
   loading,
   setLoading,
   index,
-  historicalData
+  historicalData,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -659,23 +672,25 @@ const DetailCardView = ({
   const handleSetData = (response) => {
     const bifuracionArray = ['today', 'upcoming', 'completed', 'cancelled'];
     return (
-      response.filter((element) => element?.class_status?.toLowerCase() === bifuracionArray[tabValue]) ||
-      []
+      response.filter(
+        (element) => element?.class_status?.toLowerCase() === bifuracionArray[tabValue]
+      ) || []
     );
   };
 
-  const msCallData = ()=>{
-    let detailsURL =  window.location.pathname === '/erp-online-class-student-view'
-    ? `/oncls/v1/${fullData?.id}/student-oncls-details/`
-    : `/oncls/v1/${fullData?.id}/oncls-details/`;
-    APIREQUEST("get", detailsURL)
-    .then((res)=>{
-      handleMscallResponse(res);
-    })
-    .catch((error) => setAlert('error', error.message));
-  }
+  const msCallData = () => {
+    let detailsURL =
+      window.location.pathname === '/erp-online-class-student-view'
+        ? `/oncls/v1/${fullData?.id}/student-oncls-details/`
+        : `/oncls/v1/${fullData?.id}/oncls-details/`;
+    APIREQUEST('get', detailsURL)
+      .then((res) => {
+        handleMscallResponse(res);
+      })
+      .catch((error) => setAlert('error', error.message));
+  };
 
-  const handleMscallResponse = (res)=>{
+  const handleMscallResponse = (res) => {
     if (res?.data?.status_code === 200) {
       const response = res?.data?.data;
       let result = [];
@@ -689,11 +704,11 @@ const DetailCardView = ({
     } else {
       setAlert('error', res?.data?.message);
     }
-  }
+  };
 
   const handleCallaData = () => {
-    if(JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false ){
-      msCallData()
+    if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
+      msCallData();
       return;
     }
     let detailsURL =
@@ -724,8 +739,6 @@ const DetailCardView = ({
     return `${hour}:${min} ${part}`;
   };
 
-
-
   const handleAttendance = () => {
     dispatch(attendanceAction(fullData ? fullData.online_class?.start_time : ''));
     if (
@@ -734,17 +747,17 @@ const DetailCardView = ({
     ) {
       history.push({
         pathname: `/erp-attendance-list/${fullData.online_class && fullData.id}`,
-        state: { historicalData : historicalData }
-      })
+        state: { historicalData: historicalData },
+      });
     }
     if (
       window.location.pathname === '/online-class/view-class' ||
       window.location.pathname === '/online-class/teacher-view-class'
     )
-    history.push({
-      pathname: `/aol-attendance-list/${fullData.online_class && fullData.id}`,
-      state: { historicalData : historicalData }
-    })
+      history.push({
+        pathname: `/aol-attendance-list/${fullData.online_class && fullData.id}`,
+        state: { historicalData: historicalData },
+      });
   };
   const handleCoursePlan = () => {
     if (window.location.pathname === '/erp-online-class-student-view') {
@@ -784,7 +797,7 @@ const DetailCardView = ({
 
   const getClassName = () => {
     let classIndex = `${fullData.class_type}`;
-    
+
     return [
       `teacherBatchFullViewMainCard${classIndex}`,
       `teacherBatchFullViewHeader${classIndex}`,
@@ -877,7 +890,7 @@ const DetailCardView = ({
                   noOfPeriods.length > 0 &&
                   noOfPeriods.map((data, i) => (
                     <JoinClass
-                      historicalData ={historicalData}
+                      historicalData={historicalData}
                       cardIndex={index}
                       getClassName={getClassName}
                       setLoading={setLoading}
@@ -895,8 +908,8 @@ const DetailCardView = ({
                   <Button
                     fullWidth
                     size='small'
-                    variant = "contained"
-                    color="primary"
+                    variant='contained'
+                    color='primary'
                     className='teacherFullViewFullButtons'
                     onClick={handleAttendance}
                   >
@@ -929,7 +942,7 @@ const DetailCardView = ({
       </Grid>
       {openPopup && (
         <ResourceDialog
-          historicalData ={historicalData}
+          historicalData={historicalData}
           selectedValue={selectedValue}
           open={openPopup}
           onClose={handleClosePopup}

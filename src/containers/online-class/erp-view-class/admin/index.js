@@ -69,9 +69,7 @@ const ErpAdminViewClass = ({ history }) => {
   const [minStartDate, setMinStartDate] = useState();
   const [maxStartDate, setMaxStartDate] = useState();
   const [dateRangeTechPer, setDateRangeTechPer] = useState([]);
-  const [historicalData, setHistoricalData] = useState(
-    JSON.parse(localStorage.getItem('filterData'))?.historicalData || false
-  );
+  const [historicalData, setHistoricalData] = useState(false);
 
   const [classTypes, setClassTypes] = useState([
     { id: 0, type: 'Compulsory Class' },
@@ -148,10 +146,16 @@ const ErpAdminViewClass = ({ history }) => {
           section = [],
           subject = [],
           course = {},
+          date = getminMaxDate().datearr,
           page: pageNumber = 1,
           tabValue: tabVal = 0,
+          historicalData: historicalDataResponse = false,
         } = JSON.parse(localStorage.getItem('filterData')) || {};
         if (classtype?.id >= 0) {
+          setHistoricalData(historicalDataResponse);
+          if (date?.length) {
+            setDateRangeTechPer([moment(date?.[0]), moment(date?.[1])]);
+          }
           setSelectedClassType(classtype);
           if (window.location.pathname !== '/erp-online-class-student-view') {
             if (academic?.id > 0) {
@@ -474,12 +478,13 @@ const ErpAdminViewClass = ({ history }) => {
     setSelectedClassType('');
     setPage(1);
     setTabValue(0);
+    setHistoricalData(false);
   }
 
   function handleFilter() {
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
     setPage(() => 1);
-    setTabValue(0);
+    // setTabValue(0);
     setSelectedViewMore(() => '');
     localStorage.removeItem('viewMoreData');
     localStorage.removeItem('filterData');
@@ -790,6 +795,10 @@ const ErpAdminViewClass = ({ history }) => {
     setMinStartDate(getvalues.mindate);
     setMaxStartDate(getvalues.maxDate);
     setDateRangeTechPer(getvalues.datearr);
+    if (window.location.pathname === '/erp-online-class-student-view') {
+      let data = JSON.parse(localStorage.getItem('filterData')) || '';
+      localStorage.setItem('filterData', JSON.stringify({ ...data, historicalData }));
+    }
   }, [historicalData]);
 
   const HistoricalDataEle = () => {
@@ -1187,7 +1196,7 @@ const ErpAdminViewClass = ({ history }) => {
                         <Grid item md={12}>
                           <Pagination
                             onChange={handlePagination}
-                            style={{ marginTop: 25, marginLeft: 500 }}
+                            style={{ marginTop: 25 }}
                             count={Math.ceil(totalCount / limit)}
                             color='primary'
                             page={page}
