@@ -90,18 +90,21 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
   const [rowsPerPage, setRowsPerPage] = useState(10);
   // const [shuffleStatus, setShuffleStatus] = useState({ label: 'Pending', value: 1 })
   // const [accReasonToApprove, setAccReason] = useState({})
+let userToken;
+
 
   useEffect(() => {
-    if (sessionRed) {
+    if (sessionRed || moduleId ) {
       setSession(sessionRed)
     }
-  }, [sessionRed, setSession])
+  }, [sessionRed, setSession , moduleId])
 
   useEffect(() => {
+  userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
     if (sessionYear) {
-      fetchEditRequests(sessionYear, alert, user, moduleId)
+      fetchEditRequests(sessionYear, alert, userToken, moduleId)
     }
-  }, [fetchEditRequests, sessionYear, alert, user])
+  }, [fetchEditRequests, sessionYear, alert, userToken])
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -258,7 +261,7 @@ FeePaymentChangeRequests.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   requestList: state.finance.feePayChange.requestList,
   dataLoading: state.finance.common.dataLoader,
