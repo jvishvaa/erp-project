@@ -289,12 +289,14 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       setAlert('warning', `Can\'t upload more than ${maxCount} attachments in total.`);
     } else {
       const fil = e.target.files[0] || null;
-      if (fil.name.lastIndexOf(".pdf") > 0
-        || fil.name.lastIndexOf(".jpeg") > 0
-        || fil.name.lastIndexOf(".jpg") > 0
-        || fil.name.lastIndexOf(".png") > 0
-        || fil.name.lastIndexOf(".mp3") > 0
-        || fil.name.lastIndexOf(".mp4") > 0) {
+      if (
+        fil.name.toLowerCase().lastIndexOf('.pdf') > 0 ||
+          fil.name.toLowerCase().lastIndexOf('.jpeg') > 0 ||
+          fil.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
+          fil.name.toLowerCase().lastIndexOf('.png') > 0 ||
+          fil.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
+          fil.name.toLowerCase().lastIndexOf('.mp4') > 0
+        ) {
         setLoading(true);
         const formData = new FormData()
         formData.append('file', fil);
@@ -364,12 +366,14 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     }
     else {
       const fil = e.target.files[0];
-      if (fil.name.lastIndexOf(".pdf") > 0
-        || fil.name.lastIndexOf(".jpeg") > 0
-        || fil.name.lastIndexOf(".jpg") > 0
-        || fil.name.lastIndexOf(".png") > 0
-        || fil.name.lastIndexOf(".mp3") > 0
-        || fil.name.lastIndexOf(".mp4") > 0) {
+      if (
+        fil.name.toLowerCase().lastIndexOf('.pdf') > 0 ||
+          fil.name.toLowerCase().lastIndexOf('.jpeg') > 0 ||
+          fil.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
+          fil.name.toLowerCase().lastIndexOf('.png') > 0 ||
+          fil.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
+          fil.name.toLowerCase().lastIndexOf('.mp4') > 0
+        ) {
         setLoading(true);
         const formData = new FormData()
         formData.append('file', fil)
@@ -600,7 +604,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   {bulkDataDisplay.length < maxCount ?
                   <input
                       type='file'
-                      accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf"
+                      accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF"
                       style={{ display: 'none' }}
                       id='raised-button-file'
                       onChange={e => handleBulkUpload(e)}
@@ -712,7 +716,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         <AttachmentIcon fontSize='small' />
                         <input
                           type='file'
-                          accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf"
+                          accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF"
                           onChange={(e) => uploadFileHandler(e, index, question.max_attachment)}
                           className={classes.fileInput}
                         />

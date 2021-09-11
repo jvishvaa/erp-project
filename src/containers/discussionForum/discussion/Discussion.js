@@ -659,7 +659,7 @@ export default function DiscussionComponent(props) {
                 </Box>
               )}
               <StyledInput
-                placeholder="Have your say"
+                placeholder="Comment Here"
                 value={reply}
                 onChange={handleChange}
                 fullWidth
@@ -679,7 +679,7 @@ export default function DiscussionComponent(props) {
                 </Grid>
                 <Grid item sm={12} xs={6} className={classes.replyButtons}>
                   <StyledOutlinedButton fullWidth onClick={handleReply}>
-                    Reply
+                  Comment
                   </StyledOutlinedButton>
                 </Grid>
               </Grid>
