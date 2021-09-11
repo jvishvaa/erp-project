@@ -32,6 +32,7 @@ const styles = theme => ({
 })
 
 // let feePlanState = null
+let userToken = "";
 
 class ManageFeeType extends Component {
   constructor (props) {
@@ -90,12 +91,13 @@ class ManageFeeType extends Component {
   }
 
   componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     // if (feePlanState) {
     //   this.setState(feePlanState)
     //   return
     // }
-    // this.props.fetchFeeTypes(this.props.match.params.id, this.props.alert, this.props.user)
-    this.props.fetchFeeTypeAndAccountList(this.props.location.state, this.props.alert, this.props.user)
+    // this.props.fetchFeeTypes(this.props.match.params.id, this.props.alert, userToken)
+    this.props.fetchFeeTypeAndAccountList(this.props.location.state, this.props.alert, userToken)
     // this.feeAccountInfo()
   }
 
@@ -130,7 +132,7 @@ class ManageFeeType extends Component {
     // this.setState({ updatedFeeList: feeplanTypeListNew })
 
     // for populating the installment table
-    this.props.feeInstallments(this.props.location.state, e.value, this.props.alert, this.props.user)
+    this.props.feeInstallments(this.props.location.state, e.value, this.props.alert, userToken)
     this.setState({
       installmentTable: true,
       FeeId: e.value,
@@ -335,7 +337,7 @@ class ManageFeeType extends Component {
             fine_amount: arrCheckbox[i]
           })
         } else {
-          this.props.alert.warning('Start should be less then Due date and Due date should be less then End date!')
+          this.props.alert.warning('Start should be less than Due date and Due date should be less than End date!')
           return false
         }
         // checking for amount
@@ -383,7 +385,7 @@ class ManageFeeType extends Component {
         numberOfInstallments: parseInt(this.state.numberOfRows),
         installments: installData
       }
-      this.props.createInstallments(finaldata, this.props.alert, this.props.user)
+      this.props.createInstallments(finaldata, this.props.alert, userToken)
     }
   }
 
@@ -397,7 +399,7 @@ class ManageFeeType extends Component {
 
   deleteInstallHandler = () => {
     // TODO: delete the installment
-    this.props.deleteInstallments(this.state.feePlanId, this.state.FeeId, this.props.alert, this.props.user)
+    this.props.deleteInstallments(this.state.feePlanId, this.state.FeeId, this.props.alert, userToken)
     this.deleteModalCloseHandler()
   }
 
@@ -413,7 +415,7 @@ class ManageFeeType extends Component {
           <AddFeePlanType
             feeId={this.state.feePlanId}
             alert={this.props.alert}
-            user={this.props.user}
+            user={userToken}
             close={this.hideModalHandler}
           />
         </Modal>
@@ -435,7 +437,7 @@ class ManageFeeType extends Component {
             id={this.state.installmentId}
             acadId={this.state.acadId}
             alert={this.props.alert}
-            user={this.props.user}
+            user={userToken}
             close={this.hideModalHandler}
             feeTypeId={this.state.FeeId}
           />
@@ -740,7 +742,7 @@ class ManageFeeType extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   feeTypes: state.finance.feePlan.feeTypeList,
   feeAccounts: state.finance.feePlan.feeAccountList,
   installmentList: state.finance.feePlan.feeInstallments,

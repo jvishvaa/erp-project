@@ -68,14 +68,16 @@ const styles = theme => ({
   }
 })
 
+let userToken ='';
 const RejectedStoreRequests = ({ classes, history, dataLoading, fetchStoreBranchTransaction, branchPendingList, alert, user }) => {
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
     const { session, branchId, status } = history.location
     // Update the document title using the browser API
     if (session && branchId && status) {
-      fetchStoreBranchTransaction(session.value, branchId, status, alert, user)
+      fetchStoreBranchTransaction(session.value, branchId, status, alert, userToken)
     }
-  }, [alert, fetchStoreBranchTransaction, history.location, user])
+  }, [alert, fetchStoreBranchTransaction, history.location, userToken])
 
   const rejectedTableHandler = () => {
     let table = null
@@ -148,7 +150,7 @@ RejectedStoreRequests.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   branchPendingList: state.finance.storePayChange.branchPendingList
 })

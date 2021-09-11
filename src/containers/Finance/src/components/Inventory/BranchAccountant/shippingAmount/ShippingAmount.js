@@ -24,6 +24,7 @@ const styles = theme => ({
     }
   }
 })
+let userToken = "";
 
 const ShippingAmount = ({ fetchShipping, shippingDetails, deliveryList, trnsId, sendDeliveryDetails, fetchDeliveryDetails, erpValue, session, dataLoading, alert, user, history, branchId }) => {
   const [erp, setErp] = useState(null)
@@ -45,30 +46,28 @@ const erpUser = (JSON.parse(localStorage.getItem('userDetails'))).erp
 const userProfile = JSON.parse(localStorage.getItem('userDetails'))
 const roleLogin = userProfile?.personal_info?.role?.toLowerCase()
   useEffect(() => {
-    if(user === null){
-      window.location.reload()
-    }
+     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     setRole(roleLogin)
     if (roleLogin === 'financeaccountant' || erpUser === 'super_admin_OLV') {
-      fetchShipping(erpValue, alert, user,session)
-      fetchDeliveryDetails(erpValue, alert, user)
+      fetchShipping(erpValue, alert, userToken,session)
+      fetchDeliveryDetails(erpValue, alert, userToken)
 
     } else {
-      fetchShipping(erpUser, alert, user, session)
-      fetchDeliveryDetails(erpUser, alert, user)
+      fetchShipping(erpUser, alert, userToken, session)
+      fetchDeliveryDetails(erpUser, alert, userToken)
     }
     setErp(erp)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trnsId])
   // useEffect(() => {
   //   if (role === 'financeaccountant') {
-  //     fetchShipping(erpValue, alert, user)
-  //     fetchDeliveryDetails(erpValue, alert, user)
+  //     fetchShipping(erpValue, alert, userToken)
+  //     fetchDeliveryDetails(erpValue, alert, userToken)
   //   } else {
-  //     fetchShipping(erp, alert, user)
-  //     fetchDeliveryDetails(erp, alert, user)
+  //     fetchShipping(erp, alert, userToken)
+  //     fetchDeliveryDetails(erp, alert, userToken)
   //   }
-  // }, [trnsId, alert, user, fetchShipping, fetchDeliveryDetails, erpValue, erp, role])
+  // }, [trnsId, alert, userToken, fetchShipping, fetchDeliveryDetails, erpValue, erp, role])
   useEffect(() => {
   })
 
@@ -160,7 +159,7 @@ const roleLogin = userProfile?.personal_info?.role?.toLowerCase()
       city: city,
       state: state
     }
-    sendDeliveryDetails(data, alert, user)
+    sendDeliveryDetails(data, alert, userToken)
     hideDeliveryModalHandler()
   }
 
@@ -248,7 +247,7 @@ configHandler(kit, tran)
       //     total_paid_amount: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.kit_price,
       //     ...kit ? kitTobePaid : null
       //   },
-      //   user: user,
+      //   userToken: userToken,
       //   url: isStudent ? urls.AirPayHdfcStore : urls.AirpayStore
       // })
     // }
@@ -270,7 +269,7 @@ configHandler(kit, tran)
             // isNewStudent={this.props.isNewStudent}
             getBack={configHandler}
             alert={alert}
-            user={user}
+            user={userToken}
             isStudent={false}
             isDelivery='home'
             kitIdToBePaid={kitId}
@@ -325,7 +324,7 @@ configHandler(kit, tran)
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   shippingDetails: state.inventory.branchAcc.storeAtAcc.shippingDetails,
   deliveryList: state.inventory.branchAcc.storeAtAcc.deliveryList,
   dataLoading: state.finance.common.dataLoader,

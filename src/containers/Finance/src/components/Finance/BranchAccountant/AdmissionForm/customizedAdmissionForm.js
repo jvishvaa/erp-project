@@ -26,6 +26,7 @@ const styles = theme => ({
   }
 })
 
+let userToken = "";
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
 let moduleId
 if (NavData && NavData.length) {
@@ -70,13 +71,18 @@ class CustomizedAdmissionFormAcc extends Component {
       selectedBranches: ''
     }
   }
+  componentDidMount(){
+     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+if(moduleId)
+      this.props.fetchBranches("2021-2022", this.props.alert, userToken, moduleId)
+  }
   buttonHandler = (e) => {
     this.props.history.push({
       pathname: '/finance/newAdmissionForm'
     })
   }
   handleAcademicyear = (e) => {
-    this.props.fetchBranches(e && e.value, this.props.alert, this.props.user, moduleId)
+    this.props.fetchBranches(e && e.value, this.props.alert, userToken, moduleId)
     console.log(e)
     this.setState({
       session: e
@@ -85,9 +91,10 @@ class CustomizedAdmissionFormAcc extends Component {
   componentDidUpdate () {
     // console.log('DID UPDATED', this.state.regNo)
   }
+
   rteButtonHandler = (e) => {
     if (this.state.appStatus || this.state.regStatus || this.state.otherStatus) {
-      // this.props.getStudentdetailsbyregNumber(this.state.regNo, this.props.user, this.props.alert)
+      // this.props.getStudentdetailsbyregNumber(this.state.regNo, userToken, this.props.alert)
       if (this.props.studentDetailsForAdmission && this.props.studentDetailsForAdmission.admission_status === true) {
         this.props.alert.warning('Admission Already Completed With # ' + this.props.studentDetailsForAdmission.admission_number)
       } else if (this.props.studentDetailsForAdmission && this.props.studentDetailsForAdmission.admission_status === false) {
@@ -116,11 +123,11 @@ class CustomizedAdmissionFormAcc extends Component {
       this.state.studentTypeData.value,
       this.state.student,
       this.props.alert,
-      this.props.user
+      userToken
     )
   }, 500)
 
-  myFunc = debounce(() => { this.props.searchAdmissionByOthers(this.state.searchByDropdown, this.state.session.value, this.state.otherKey, this.props.user, this.props.alert) }, 500)
+  myFunc = debounce(() => { this.props.searchAdmissionByOthers(this.state.searchByDropdown, this.state.session.value, this.state.otherKey, userToken, this.props.alert) }, 500)
 
   searchByOthers = (event, selected, id) => {
     let regNo = null
@@ -138,7 +145,7 @@ class CustomizedAdmissionFormAcc extends Component {
         this.myFunc()
       }
       if (this.state.otherStatus) {
-        this.props.getStudentdetailsbyregNumber(this.state.session.value, this.state.regNo, this.props.user, this.props.alert)
+        this.props.getStudentdetailsbyregNumber(this.state.session.value, this.state.regNo, userToken, this.props.alert)
       }
     })
   }
@@ -146,10 +153,10 @@ class CustomizedAdmissionFormAcc extends Component {
   searchByRegnoHandler = (e, selected) => {
     this.setState({ regNo: e.target.value, regStatus: selected, appNo: null, appStatus: false, otherStatus: false, regId: null }, () => {
       if (this.state.regNo.length >= 3) {
-        this.props.searchStudentdetailsbyregNumber(this.state.session.value, this.state.regNo, this.props.user, this.props.alert, moduleId, this.state.selectedBranches?.value)
+        this.props.searchStudentdetailsbyregNumber(this.state.session.value, this.state.regNo, userToken, this.props.alert, moduleId, this.state.selectedBranches?.value)
       }
       if (this.state.regStatus) {
-        this.props.getStudentdetailsbyregNumber(this.state.session.value, this.state.regNo, this.props.user, this.props.alert)
+        this.props.getStudentdetailsbyregNumber(this.state.session.value, this.state.regNo, userToken, this.props.alert)
       }
     })
   }
@@ -161,10 +168,10 @@ class CustomizedAdmissionFormAcc extends Component {
         regId: regNo && regNo.registration_number ? regNo.registration_number : null
       })
       if (this.state.appNo.length > 2) {
-        this.props.searchStudentdetailsbyAppNumber(this.state.session.value, this.state.appNo, this.props.user, this.props.alert)
+        this.props.searchStudentdetailsbyAppNumber(this.state.session.value, this.state.appNo, userToken, this.props.alert)
       }
       if (this.state.appStatus) {
-        this.props.getStudentdetailsbyregNumber(this.state.session.value, regNo.registration_number || '', this.props.user, this.props.alert)
+        this.props.getStudentdetailsbyregNumber(this.state.session.value, regNo.registration_number || '', userToken, this.props.alert)
       }
     })
   }
@@ -367,7 +374,7 @@ class CustomizedAdmissionFormAcc extends Component {
   }
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   studentDetailsForAdmission: state.finance.accountantReducer.admissionForm.studentDetailsforAdmisssion,
   regNoSuggestion: state.finance.accountantReducer.admissionForm.regNoSuggestion,

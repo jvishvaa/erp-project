@@ -40,6 +40,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken = "";
 class TallyReports extends Component {
     state ={
       session: [],
@@ -63,9 +65,7 @@ class TallyReports extends Component {
       branchIdAtAcc: null
     }
     componentDidMount () {
-      if(this.props.user === null){
-        window.location.reload();
-      }
+      userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
       let today = new Date()
       let dd = today.getDate()
       let mm = today.getMonth() + 1 // January is 0!
@@ -82,7 +82,7 @@ class TallyReports extends Component {
         role
       }, () => {
         if (this.state.role === 'financeaccountant') {
-          this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
+          this.props.fetchBranchAtAcc(this.props.alert, userToken)
         }
       })
       // role === 'BTM_Admin Venky' || role === 'F_acc'
@@ -110,14 +110,14 @@ class TallyReports extends Component {
       })
       this.setState({ session: sessions, selectedBranches: [], sessionData: e }, () => {
         // if (this.state.role === 'financeaccountant') {
-        //   // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
+        //   // this.props.fetchBranchAtAcc(this.props.alert, userToken)
         //   let data = {
         //     session_year: this.state.session,
         //     branch_id: [this.props.branchAtAcc.branch]
         //   }
-        //   this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
+        //   this.props.fetchFeeAccounts(data, this.props.alert, userToken)
         // } else {
-          this.props.fetchBranches(sessions, this.props.alert, this.props.user, moduleId)
+          this.props.fetchBranches(sessions, this.props.alert, userToken, moduleId)
         // }
       })
     }
@@ -150,7 +150,7 @@ class TallyReports extends Component {
             branch_id: this.state.selectedbranchIds,
             feeAccData: []
           }
-          this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
+          this.props.fetchFeeAccounts(data, this.props.alert, userToken)
         })
       } else {
         e && e.forEach(branch => {
@@ -163,14 +163,14 @@ class TallyReports extends Component {
             session_year: this.state.session,
             branch_id: this.state.selectedbranchIds
           }
-          this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
+          this.props.fetchFeeAccounts(data, this.props.alert, userToken)
         })
       }
       // let data = {
       //   session_year: this.state.session,
       //   branch_id: this.state.selectedBranches
       // }
-      // this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
+      // this.props.fetchFeeAccounts(data, this.props.alert, userToken)
     }
     changeFeeAccount = (e) => {
       const allLabel = e && e.filter(event => {
@@ -274,7 +274,7 @@ class TallyReports extends Component {
         data.from_date = this.state.startDate
         data.to_date = this.state.endDate
       }
-      this.props.downloadReports('TallyReport.xlsx', urls.DownloadTallyReport, data, this.props.alert, this.props.user)
+      this.props.downloadReports('TallyReport.xlsx', urls.DownloadTallyReport, data, this.props.alert, userToken)
     }
     render () {
       let selectBranch = null
@@ -515,7 +515,7 @@ class TallyReports extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.multipleBranchPerSession,
   branchAtAcc: state.finance.common.branchAtAcc,

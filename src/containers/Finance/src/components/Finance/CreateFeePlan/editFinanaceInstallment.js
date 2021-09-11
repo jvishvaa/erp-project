@@ -8,6 +8,7 @@ import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import '../../css/staff.css'
 
+let userToken  = "";
 class EditFeeInstallment extends Component {
   constructor (props) {
     super(props)
@@ -25,6 +26,7 @@ class EditFeeInstallment extends Component {
   }
 
   componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     let currentInstallment = this.props.installmentList.filter(val => val.id === this.props.id)
     currentInstallment.forEach((val) => {
       this.setState((state) => ({
@@ -40,7 +42,7 @@ class EditFeeInstallment extends Component {
       }), () => {
       })
     })
-    this.props.feeAccountList(this.props.acadId, this.props.alert, this.props.user)
+    this.props.feeAccountList(this.props.acadId, this.props.alert, userToken)
   }
 
   // feeAccountInfo = () => {
@@ -108,7 +110,7 @@ class EditFeeInstallment extends Component {
       fine_amount: this.state.fine_amount,
       fee_account: this.state.feeAccount
     }
-    this.props.updateIndividualInstallment(this.props.id, data, this.props.alert, this.props.user)
+    this.props.updateIndividualInstallment(this.props.id, data, this.props.alert, userToken)
     this.props.close()
     // var updatedList = urls.Finance + this.props.id + '/updateinstallmentsrecords/'
     // axios
@@ -242,7 +244,7 @@ class EditFeeInstallment extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   installmentList: state.finance.feePlan.feeInstallments,
   feeAccountListFromAcadId: state.finance.feePlan.feeAccountListFromAcadId
   // editDataLoading: state.finance.common.dataLoader,

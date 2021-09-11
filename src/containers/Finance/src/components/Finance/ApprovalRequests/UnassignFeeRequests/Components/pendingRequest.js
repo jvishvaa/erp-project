@@ -20,6 +20,8 @@ import Modal from '../../../../../ui/Modal/modal'
 import * as actionTypes from '../../../store/actions'
 import CircularProgress from '../../../../../ui/CircularProgress/circularProgress'
 
+let userToken = "";
+
 const PendingRequest = ({
   classes,
   location,
@@ -38,18 +40,19 @@ const PendingRequest = ({
   const [remarks, setRemarks] = useState('')
 
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const {
       branch,
       session
     } = location.state
     if (branch && session) {
-      fetchPendingList(session, branch, alert, user)
+      fetchPendingList(session, branch, alert, userToken)
     } else {
       history.replace({
         pathname: '/finance/unassign_feeRequest'
       })
     }
-  }, [fetchPendingList, history, location, alert, user])
+  }, [fetchPendingList, history, location, alert, userToken])
 
   const getPendingModal = (id) => {
     const currentList = pendingList.filter(val => val.id === id)[0]
@@ -175,7 +178,7 @@ const PendingRequest = ({
       remarks: remarks,
       approved: 1
     }
-    approveRequest(id, data, alert, user)
+    approveRequest(id, data, alert, userToken)
     hidePendingModalHandler()
   }
 
@@ -189,7 +192,7 @@ const PendingRequest = ({
       rejected: 2,
       approved: 0
     }
-    rejectRequest(id, data, alert, user)
+    rejectRequest(id, data, alert, userToken)
     hidePendingModalHandler()
   }
 
@@ -311,7 +314,7 @@ PendingRequest.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   pendingList: state.finance.unassignFeerequest.pendingReqList,
   dataLoading: state.finance.common.dataLoader
 })

@@ -6,6 +6,7 @@ import { apiActions } from '../../../_actions'
 import '../../css/staff.css'
 import * as actionTypes from '../store/actions'
 
+let userToken = "";
 class EditFeePlanName extends Component {
   constructor (props) {
     super(props)
@@ -23,6 +24,7 @@ class EditFeePlanName extends Component {
   }
 
   componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     let currentFeePlan = this.props.listFeePlan.filter(val => val.id === this.props.id)
     currentFeePlan.forEach(arr => {
       this.setState((state) => ({
@@ -84,7 +86,7 @@ class EditFeePlanName extends Component {
       plan_status: this.state.active
 
     }
-    this.props.updateIndividualFeePlan(this.props.id, data, this.props.alert, this.props.user)
+    this.props.updateIndividualFeePlan(this.props.id, data, this.props.alert, userToken)
     this.props.close()
     // var updatedList = urls.Finance + this.props.id  + '/editcreatefeeplan/'
     // axios

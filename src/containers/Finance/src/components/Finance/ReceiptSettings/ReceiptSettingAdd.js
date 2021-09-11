@@ -7,11 +7,14 @@ import * as actionTypes from '../store/actions'
 
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 
+let userToken = "";
 class ReceiptSettingAdd extends Component {
   state = {
     isActive: false
   }
-
+componentDidMount(){
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+}
   checkChangeHandler = e => {
     this.setState({
       isActive: e.target.checked
@@ -28,7 +31,7 @@ class ReceiptSettingAdd extends Component {
       receipt_sub_footer: this.props.subFooter,
       is_active: this.state.isActive
     }
-    this.props.AddReceiptSetting(data, this.props.alert, this.props.user)
+    this.props.AddReceiptSetting(data, this.props.alert, userToken)
     this.props.close()
     this.props.clearProps()
   }

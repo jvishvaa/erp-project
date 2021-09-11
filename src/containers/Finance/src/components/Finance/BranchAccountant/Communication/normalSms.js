@@ -135,7 +135,7 @@ NormalSms.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   dataLoading: state.finance.common.dataLoader,
   branches: state.finance.common.branchPerSession,

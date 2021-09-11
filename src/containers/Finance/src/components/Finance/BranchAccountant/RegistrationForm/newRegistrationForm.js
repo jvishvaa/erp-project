@@ -63,6 +63,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class NewRegistration extends Component {
   constructor (props) {
     super(props)
@@ -87,8 +88,9 @@ class NewRegistration extends Component {
   }
 
   componentDidMount() {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (this.state.academicYearValue) {
-      this.props.fetchBranches(this.state.academicYearValue.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(this.state.academicYearValue.value, this.props.alert, userToken, moduleId)
     }
   }
 
@@ -96,12 +98,12 @@ class NewRegistration extends Component {
     this.setState({
       academicYearValue: e
     }, () => {
-      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
     })
   }
 
   changehandlerbranch = (e) => {
-    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value)
+    // this.props.fetchGrades(this.props.alert, userToken, moduleId, e.value)
     this.setState({ selectedBranches: e})
   }
 
@@ -118,7 +120,7 @@ class NewRegistration extends Component {
   //     this.state.academicYearValue.value,
   //     this.state.searchByValue.value,
   //     this.state.searchedValue,
-  //     this.props.user,
+  //     userToken,
   //     this.props.alert
   //   )
   // }, 500) // rajneesh
@@ -127,7 +129,7 @@ class NewRegistration extends Component {
       this.state.academicYearValue?.value,
       this.state.searchByValue.value,
       this.state.searchedValue,
-      this.props.user,
+      userToken,
       this.props.alert,
       this.state.selectedBranches.value,
       moduleId
@@ -146,7 +148,7 @@ class NewRegistration extends Component {
 
   onSubmit = () => {
     const { searchedValue, academicYearValue } = this.state
-    this.props.getStudentInfo(academicYearValue.value, searchedValue, this.props.user, this.props.alert, this.state.selectedBranches.value, moduleId)
+    this.props.getStudentInfo(academicYearValue.value, searchedValue, userToken, this.props.alert, this.state.selectedBranches.value, moduleId)
     // if (this.props.registrationDetails.error && this.props.registrationDetails.error.length > 0) {
     //   this.setState({ showModal: true })
     // } else {
@@ -441,7 +443,7 @@ class NewRegistration extends Component {
                   acadYear={academicYearValue.value}
                   branchId={selectedBranches.value}
                   alert={this.props.alert}
-                  user={this.props.user}
+                  user={userToken}
                   moduleId={moduleId}
               />
             </Grid>
@@ -459,7 +461,7 @@ class NewRegistration extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   registrationDetails: state.finance.accountantReducer.regForm.registrationDetails,
   appSugg: state.finance.accountantReducer.regForm.appSugg,

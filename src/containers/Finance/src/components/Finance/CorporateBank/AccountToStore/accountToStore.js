@@ -365,7 +365,7 @@ class AccToBranch extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.branchPerSession,
   feeAccToStoreMapping: state.finance.accToStore.feeAccToStoreMapping,

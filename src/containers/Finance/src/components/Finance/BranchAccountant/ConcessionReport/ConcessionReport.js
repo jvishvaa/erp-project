@@ -10,7 +10,7 @@ import * as actionTypes from '../../store/actions'
 import { urls } from '../../../../urls'
 import Layout from '../../../../../../Layout'
 
-
+let userToken = "";
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
 let moduleId
@@ -56,9 +56,7 @@ class ConcessionReport extends Component {
     typesId: 2
   }
   componentDidMount () {
-      if(this.props.user === null){
-        window.location.reload();
-      }
+    userToken = (JSON.parse(localStorage.getItem('userDetails')))?.token
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile && userProfile?.personal_info && userProfile?.personal_info?.role?.toLowerCase()
     this.setState({
@@ -66,7 +64,7 @@ class ConcessionReport extends Component {
     }
     // () => {
     //   if (this.state.role === 'financeaccountant') {
-    //     this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
+    //     this.props.fetchBranchAtAcc(this.props.alert, userToken)
     //   }
     // }
     )
@@ -101,7 +99,7 @@ class ConcessionReport extends Component {
         {
           // params: { session_year: this.state.sessionData[0].value, branch: this.state.selectedbranchIds, is_active: this.state.studentTypeData.value, fee_types: this.state.selectedFeeTypes.value },
           headers: {
-            'Authorization': 'Bearer ' + this.props.user
+            'Authorization': 'Bearer ' + userToken
           },
           'responseType': 'blob'
         }
@@ -146,7 +144,7 @@ class ConcessionReport extends Component {
         selectedBranches: allBranches,
         selectedbranchIds: AllBranchIds
       }, () => {
-        this.props.fetchFeeTypes(this.state.session, this.state.selectedbranchIds, 1, this.props.alert, this.props.user)
+        this.props.fetchFeeTypes(this.state.session, this.state.selectedbranchIds, 1, this.props.alert, userToken)
         // data = {
         //   session_year: this.state.session,
         //   branch_id: this.state.selectedbranchIds,
@@ -159,7 +157,7 @@ class ConcessionReport extends Component {
         selectedBranches: e,
         selectedbranchIds: selectIds
       }, () => {
-        this.props.fetchFeeTypes(this.state.session, this.state.selectedbranchIds, 1, this.props.alert, this.props.user)
+        this.props.fetchFeeTypes(this.state.session, this.state.selectedbranchIds, 1, this.props.alert, userToken)
       })
     }
   }
@@ -171,9 +169,9 @@ class ConcessionReport extends Component {
     })
     this.setState({ session: sessions, selectedBranches: [], sessionData: e }, () => {
       if (this.state.role === 'financeaccountant') {
-        // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, 1, this.props.alert, this.props.user)
+        // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, 1, this.props.alert, userToken)
       } else {
-        this.props.fetchBranches(sessions, this.props.alert, this.props.user, moduleId)
+        this.props.fetchBranches(sessions, this.props.alert, userToken, moduleId)
       }
     })
     // this.setState({
@@ -312,7 +310,7 @@ class ConcessionReport extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.multipleBranchPerSession,
   branchAtAcc: state.finance.common.branchAtAcc,

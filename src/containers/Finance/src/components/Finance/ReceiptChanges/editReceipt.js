@@ -11,6 +11,7 @@ import { apiActions } from '../../../_actions'
 import * as actionTypes from '../store/actions'
 import '../../css/staff.css'
 
+let userToken = "";
 class EditReceipt extends Component {
   constructor (props) {
     super(props)
@@ -23,6 +24,24 @@ class EditReceipt extends Component {
       range_from: '',
       is_active: false
     }
+  }
+ 
+  componentDidMount () {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+    this.props.fetchFeeAccount(this.props.acadId, this.props.branchId, this.props.alert, userToken)
+    let currentData = this.props.receiptLists.filter(val => val.id === this.props.id)
+    currentData.forEach(arr => {
+      this.setState({
+        range_from: arr.range_from ? arr.range_from : '',
+        range_to: arr.range_to ? arr.range_to : '',
+        sequence_no: arr.sequence_no ? arr.sequence_no : '',
+        is_active: arr.is_active ? arr.is_active : false,
+        academic_year: this.props.acadId ? this.props.acadId : '',
+        fee_accountValue: arr.fee_account ? arr.fee_account : '',
+        branchValue: this.props.branchId ? this.props.branchId : ''
+      }, () => {
+      })
+    })
   }
 
   changedHandler = (name, event) => {
@@ -55,7 +74,7 @@ class EditReceipt extends Component {
       sequence_no: this.state.sequence_no,
       is_active: this.state.is_active
     }
-    this.props.updateReceipts(this.props.id, data, this.props.alert, this.props.user)
+    this.props.updateReceipts(this.props.id, data, this.props.alert, userToken)
     this.props.close()
   }
 
@@ -85,22 +104,6 @@ class EditReceipt extends Component {
     this.setState({ sequence_no: e.target.value })
   }
 
-  componentDidMount () {
-    this.props.fetchFeeAccount(this.props.acadId, this.props.branchId, this.props.alert, this.props.user)
-    let currentData = this.props.receiptLists.filter(val => val.id === this.props.id)
-    currentData.forEach(arr => {
-      this.setState({
-        range_from: arr.range_from ? arr.range_from : '',
-        range_to: arr.range_to ? arr.range_to : '',
-        sequence_no: arr.sequence_no ? arr.sequence_no : '',
-        is_active: arr.is_active ? arr.is_active : false,
-        academic_year: this.props.acadId ? this.props.acadId : '',
-        fee_accountValue: arr.fee_account ? arr.fee_account : '',
-        branchValue: this.props.branchId ? this.props.branchId : ''
-      }, () => {
-      })
-    })
-  }
 
   render () {
     return (

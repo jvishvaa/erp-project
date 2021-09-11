@@ -72,6 +72,7 @@ function TabContainer ({ children, dir }) {
 }
 
 // let temp = false
+let userToken = "";
 
 const AdmFormList = ({ session,
   history,
@@ -95,6 +96,7 @@ const AdmFormList = ({ session,
   const [rowsPerPage, setRowsPerPage] = useState(null)
 
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const { session, fromDate, toDate, branch, isAdmin, selectedDates, selectedReport } = history.location.state
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile?.personal_info?.role?.toLowerCase()
@@ -105,14 +107,14 @@ const AdmFormList = ({ session,
     // if (userIndex !== -1) {
     //   setShowDelete(true)
     // }
-    fetchAllAppFormList(session, branch, fromDate, toDate, selectedDates, selectedReport, rowsPerPage || 10, page + 1, 'admission', alert, user)
-  }, [history, fetchAllAppFormList, rowsPerPage, page, alert, user])
+    fetchAllAppFormList(session, branch, fromDate, toDate, selectedDates, selectedReport, rowsPerPage || 10, page + 1, 'admission', alert, userToken)
+  }, [history, fetchAllAppFormList, rowsPerPage, page, alert, userToken])
 
   // Generation of PDF Start
   const getPdfData = (transactionId) => {
     return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${history.location.state.session}`, {
       headers: {
-        Authorization: 'Bearer ' + user
+        Authorization: 'Bearer ' + userToken
       }
     }))
   }
@@ -132,7 +134,7 @@ const AdmFormList = ({ session,
     let admFormListUrl = null
     const { session, fromDate, toDate, selectedDates, selectedReport } = history.location.state
     admFormListUrl = `${urls.ListAllFormReport}?academic_year=${session}&from_date=${fromDate}&select_date=${selectedDates}&select_report=${selectedReport}&to_date=${toDate}&branch=${branch}&type=admission`
-    downloadReports('admission_form_report.xlsx', admFormListUrl, alert, user)
+    downloadReports('admission_form_report.xlsx', admFormListUrl, alert, userToken)
   }
 
   const closeModal = () => {
@@ -180,7 +182,7 @@ const AdmFormList = ({ session,
         {value === 'one' && <TabContainer>
           <EditInfo
             {...info}
-            user={user}
+            user={userToken}
             alert={alert}
             editHandler={updateForm}
             close={closeModal}
@@ -212,7 +214,7 @@ const AdmFormList = ({ session,
       type: 'admission',
       num: deleteForm
     }
-    deleteForms(data, alert, user)
+    deleteForms(data, alert, userToken)
     setDeleteModal(false)
   }
 
@@ -348,7 +350,7 @@ AdmFormList.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   formList: state.finance.accountantReducer.totalFormCount.formList
 })

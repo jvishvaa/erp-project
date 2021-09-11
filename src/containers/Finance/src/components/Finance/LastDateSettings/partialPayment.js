@@ -299,7 +299,7 @@ const PartialPayment = ({ classes, session, branches, fetchBranches, partialPaym
   )
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   // session: state.academicSession.items,
   branches: state.finance.common.branchPerSession,
   gradesPerBranch: state.finance.common.gradesPerBranch,

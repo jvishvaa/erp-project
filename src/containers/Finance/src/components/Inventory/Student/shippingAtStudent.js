@@ -24,7 +24,7 @@ const styles = theme => ({
     }
   }
 })
-
+let userToken = "";
 const ShippingAmountAtStudent = ({ fetchShipping, shippingDetails, deliveryList, trnsId, sendDeliveryDetails, fetchDeliveryDetails, erpValue, session, dataLoading, alert, user, history }) => {
   const [erp, setErp] = useState(null)
   const [role, setRole] = useState(null)
@@ -41,10 +41,10 @@ const ShippingAmountAtStudent = ({ fetchShipping, shippingDetails, deliveryList,
   const [tranId, setTranId] = useState('')
   const [sessionData, setSessionData] = useState(null);
 
-const erpUser = (JSON.parse(localStorage.getItem('userDetails'))).erp
-const userToken = (JSON.parse(localStorage.getItem('userDetails'))).token
+const erpUser = (JSON.parse(localStorage.getItem('userDetails'))).erp 
   useEffect(() => {
- setErp(erpUser)
+    userToken = (JSON.parse(localStorage.getItem('userDetails'))).token
+    setErp(erpUser)
   },[])
 
   const configHandler = (kit, tran) => {
@@ -135,7 +135,7 @@ const userToken = (JSON.parse(localStorage.getItem('userDetails'))).token
       city: city,
       state: state
     }
-    sendDeliveryDetails(data, alert, user)
+    sendDeliveryDetails(data, alert, userToken)
     hideDeliveryModalHandler()
   }
 
@@ -222,7 +222,7 @@ const userToken = (JSON.parse(localStorage.getItem('userDetails'))).token
           total_paid_amount: shippingDetails.kit_data[0].kit && shippingDetails.kit_data[0].kit.kit_price,
           ...kit ? kitTobePaid : null
         },
-        user: user,
+        user: userToken,
         url: isStudent ? urls.AirPayHdfcStore : urls.AirpayStore
       })
     }
@@ -269,7 +269,7 @@ const userToken = (JSON.parse(localStorage.getItem('userDetails'))).token
                     // isNewStudent={this.props.isNewStudent}
                     getBack={configHandler}
                     alert={alert}
-                    user={user}
+                    user={userToken}
                     isStudent={false}
                     isDelivery='home'
                     kitIdToBePaid={kitId}
@@ -325,7 +325,7 @@ const userToken = (JSON.parse(localStorage.getItem('userDetails'))).token
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   shippingDetails: state.inventory.branchAcc.storeAtAcc.shippingDetails,
   deliveryList: state.inventory.branchAcc.storeAtAcc.deliveryList,
   dataLoading: state.finance.common.dataLoader,

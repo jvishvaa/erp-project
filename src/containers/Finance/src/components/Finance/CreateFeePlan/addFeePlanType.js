@@ -10,6 +10,7 @@ import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 // import '../../css/staff.css'
 
+let userToken = "";
 const styles = theme => ({
   tableWrapper: {
     overflowX: 'auto'
@@ -41,7 +42,8 @@ class AddFeePlanType extends Component {
   }
 
   componentDidMount () {
-    this.props.feeplanTypeList(this.props.feeId, this.props.alert, this.props.user)
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+    this.props.feeplanTypeList(this.props.feeId, this.props.alert, userToken)
   }
 
   handleClickFeeType = e => {
@@ -56,7 +58,7 @@ class AddFeePlanType extends Component {
       fee_type_name: this.state.FeeId,
       amount: this.state.amount
     }
-    this.props.feeCreateFeeType(data, this.props.alert, this.props.user)
+    this.props.feeCreateFeeType(data, this.props.alert, userToken)
     this.props.close()
     // axios
     //   .post(urls.CreateFeeTypeMapping, data, {

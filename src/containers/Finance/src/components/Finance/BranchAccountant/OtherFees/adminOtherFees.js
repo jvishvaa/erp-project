@@ -61,6 +61,7 @@ if (NavData && NavData.length) {
   // setModulePermision(false);
 }
 
+let userToken ="";
 class AdminOtherFees extends Component {
   constructor (props) {
     super(props)
@@ -82,15 +83,11 @@ class AdminOtherFees extends Component {
     }
   }
 
-  // componentDidMount () {
-  //   if (feeState) {
-  //     this.setState(feeState)
-  //   }
-  // }
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload();
-    }
+    // if (feeState) {
+    //   this.setState(feeState)
+    // }
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
   }
 
   componentWillUnmount () {
@@ -99,7 +96,7 @@ class AdminOtherFees extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, branchData: [], sessionData: e })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+    this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
   }
 
   changehandlerbranch = (e) => {
@@ -130,7 +127,7 @@ class AdminOtherFees extends Component {
     if (!session || !branchId) {
       this.props.alert.warning('Select Required Fields')
     } else {
-      this.props.fetchOtherFees(session, branchId, this.props.alert, this.props.user)
+      this.props.fetchOtherFees(session, branchId, this.props.alert, userToken)
       // feeState = this.state
     }
   }
@@ -162,7 +159,7 @@ class AdminOtherFees extends Component {
       instId: id,
       otherFee: name
     }, () => {
-      this.props.instLists(this.state.session, this.state.branchData.label, this.state.instId, this.props.alert, this.props.user)
+      this.props.instLists(this.state.session, this.state.branchData.label, this.state.instId, this.props.alert, userToken)
     })
   }
 
@@ -182,10 +179,10 @@ class AdminOtherFees extends Component {
     } = this.state
     const {
       alert,
-      user
+      // user
     } = this.props
     if (session && branchId && instId) {
-      this.props.deleteInstallments(session, branchId, instId, alert, user)
+      this.props.deleteInstallments(session, branchId, instId, alert, userToken)
       this.deleteModalCloseHandler()
       this.hideInstModalHandler()
     } else {
@@ -221,7 +218,7 @@ class AdminOtherFees extends Component {
       id: this.state.instaId,
       installment_name: this.state.instaName
     }
-    this.props.updateOtherFeeInstaName(body, this.props.alert, this.props.user)
+    this.props.updateOtherFeeInstaName(body, this.props.alert, userToken)
     this.hideEditInstaModalHandler()
   }
 
@@ -238,7 +235,7 @@ class AdminOtherFees extends Component {
             otherFeeId={this.state.otherFeeId}
             erpNo={this.props.erp}
             alert={this.props.alert}
-            user={this.props.user}
+            user={userToken}
             close={this.hideEditModalHandler}
           />
         </Modal>
@@ -476,7 +473,7 @@ class AdminOtherFees extends Component {
 
 const mapStateToProps = (state) => ({
   session: state.academicSession.items,
-  user: state.authentication.user,
+  // user: state.authentication.user,
   otherFees: state.finance.accountantReducer.listOtherFee.adminOtherfees,
   branches: state.finance.common.branchPerSession,
   installmentLists: state.finance.accountantReducer.listOtherFee.listInstallments,

@@ -68,14 +68,15 @@ const styles = theme => ({
     }
   }
 })
-
+let userToken = '';
 const PendingStoreRequests = ({ classes, history, dataLoading, fetchStoreBranchTransaction, branchPendingList, alert, user }) => {
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
     const { session, branchId, status } = history.location
     if (session && branchId && status) {
-      fetchStoreBranchTransaction(session.value, branchId, status, alert, user)
+      fetchStoreBranchTransaction(session.value, branchId, status, alert, userToken)
     }
-  }, [alert, fetchStoreBranchTransaction, history.location, user])
+  }, [alert, fetchStoreBranchTransaction, history.location, userToken])
 
   const editRequestHandler = (trans) => {
     const { session, branchId, status, branch } = history.location
@@ -155,7 +156,7 @@ PendingStoreRequests.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   branchPendingList: state.finance.storePayChange.branchPendingList
 })

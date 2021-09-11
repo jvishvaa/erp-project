@@ -627,7 +627,7 @@ DefaulterSms.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   gradesPerBranch: state.finance.common.multGradesPerBranch,
   gradeData: state.finance.accountantReducer.changeFeePlan.gradeData,

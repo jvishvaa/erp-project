@@ -51,6 +51,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class PettyExpenses extends Component {
   state = {
     addMoneyModal: false,
@@ -63,18 +64,16 @@ class PettyExpenses extends Component {
     selectedSession: null
   }
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload();
-    }
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     // this.props.fetchPettyCashAcc(this.props.user)
     // this.props.listCashOpeningBalance(this.props.user, this.props.alert)
   }
 
-  componentDidUpdate (prevProps, prevState) {
-    if (prevProps.user !== this.props.user) {
-      this.props.fetchPettyCashAcc(this.props.user, this.state.session, this.state.selectedBranches?.value)
-    }
-  }
+  // componentDidUpdate (prevProps, prevState) {
+  //   if (prevProps.user !== this.props.user) {
+  //     this.props.fetchPettyCashAcc(this.props.user, this.state.session, this.state.selectedBranches?.value)
+  //   }
+  // }
 
   makeEntryClickHandler = () => {
     // this.props.history.push('/finance/Expanse Management/MakeEntry')
@@ -92,7 +91,7 @@ class PettyExpenses extends Component {
       branch:this.state.selectedBranches && this.state.selectedBranches.value,
       moduleId:moduleId
     }
-    this.props.sendData(data, this.props.alert, this.props.user)
+    this.props.sendData(data, this.props.alert, userToken)
   }
 
   bankAccClickHandler = (id) => {
@@ -116,7 +115,7 @@ class PettyExpenses extends Component {
       branch:this.state.selectedBranches && this.state.selectedBranches.value,
       moduleId:moduleId
     }
-    this.props.sendData(data, this.props.alert, this.props.user)
+    this.props.sendData(data, this.props.alert, userToken)
   } else {
     this.props.alert.warning('Please Select Year and Branch!')
  }
@@ -129,7 +128,7 @@ class PettyExpenses extends Component {
       branch:this.state.selectedBranches && this.state.selectedBranches.value,
       moduleId:moduleId
     }
-    this.props.sendData(data, this.props.alert, this.props.user) 
+    this.props.sendData(data, this.props.alert, userToken) 
   } else {
     this.props.alert.warning('Please Select Year and Branch!')
  }
@@ -224,15 +223,15 @@ class PettyExpenses extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, sessionData: e}, () => {
-      this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
     })
   }
 
   changehandlerbranch = (e) => {
-    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session)
+    // this.props.fetchGrades(this.props.alert, userToken, moduleId, e.value, this.state.session)
     this.setState({ selectedBranches: e})
-    this.props.fetchPettyCashAcc(this.props.user, this.state.session, e.value)
-    this.props.listCashOpeningBalance(this.props.user, this.props.alert, this.state.session, e.value)
+    this.props.fetchPettyCashAcc(userToken, this.state.session, e.value)
+    this.props.listCashOpeningBalance(userToken, this.props.alert, this.state.session, e.value)
   }
 
 
@@ -484,7 +483,7 @@ class PettyExpenses extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   pettyCashAccounts: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.pettyCashAccounts,
   cashInHand: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.cashInHand,
   dataLoading: state.finance.common.dataLoader,

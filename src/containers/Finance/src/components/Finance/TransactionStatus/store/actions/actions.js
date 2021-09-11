@@ -13,6 +13,7 @@ export const CLEAR_FEE_DAY_REPORTS_PROPS = 'CLEAR_FEE_DAY_REPORTS_PROPS'
 
 // action-creators
 export const fetchAllTransaction = (payload) => {
+const  userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
   const {
     session,
     branchId,
@@ -47,7 +48,7 @@ export const fetchAllTransaction = (payload) => {
     dispatch(actionTypes.dataLoading())
     axios.get(url, {
       headers: {
-        Authorization: 'Bearer ' + user
+        Authorization: 'Bearer ' + userToken
       }
 
     }).then(response => {

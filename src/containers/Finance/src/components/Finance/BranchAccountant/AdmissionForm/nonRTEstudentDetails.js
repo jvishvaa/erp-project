@@ -57,6 +57,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class NonRTEStudentDetailsFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -126,10 +127,11 @@ class NonRTEStudentDetailsFormAcc extends Component {
   }
 
   componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     let tempYear = this.props.studentDetailsForAdmission?.academic_year?.session_year;
     console.log(tempYear , "academic session check");
-    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId, this.props.branch , tempYear  )
-    this.props.fetchClassGroup(this.props.alert, this.props.user)
+    this.props.fetchGradeList(this.props.alert, userToken, moduleId, this.props.branch , tempYear  )
+    this.props.fetchClassGroup(this.props.alert, userToken)
   }
 
   handleGender = event => {

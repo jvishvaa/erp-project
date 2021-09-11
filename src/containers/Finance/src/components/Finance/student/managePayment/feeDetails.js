@@ -15,6 +15,7 @@ const styles = theme => ({
   }
 })
 
+let userToken = "";
 class FeeDetails extends Component {
   constructor (props) {
     super(props)
@@ -24,10 +25,11 @@ class FeeDetails extends Component {
   }
 
   componentDidMount () {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (this.props.getList && this.props.sessionYear) {
       let erpValue = JSON.parse(localStorage.getItem('userDetails')).erp
-      this.props.fetchRefundValue(erpValue, this.props.sessionYear, this.props.alert, this.props.user)
-      this.props.fetchListFeeDetails(this.props.sessionYear, this.props.alert, this.props.user)
+      this.props.fetchRefundValue(erpValue, this.props.sessionYear, this.props.alert, userToken)
+      this.props.fetchListFeeDetails(this.props.sessionYear, this.props.alert, userToken)
     } else {
       this.props.alert.warning('Please fill All madatory Filled')
     }
@@ -35,7 +37,7 @@ class FeeDetails extends Component {
 
   componentDidUpdate (prevProps) {
     if (prevProps.sessionYear !== this.props.sessionYear && this.props.getList) {
-      this.props.fetchListFeeDetails(this.props.sessionYear, this.props.alert, this.props.user)
+      this.props.fetchListFeeDetails(this.props.sessionYear, this.props.alert, userToken)
     }
   }
 
@@ -43,7 +45,7 @@ class FeeDetails extends Component {
     axios
       .get(urls.StudentFeeDetails + '?academic_year=' + this.props.sessionYear, {
         headers: {
-          Authorization: 'Bearer ' + this.props.user
+          Authorization: 'Bearer ' + userToken
         }
       })
       .then(res => {
@@ -143,7 +145,7 @@ class FeeDetails extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   listFeeDetails: state.finance.studentManagePayment.feeDetailsList,
   refund: state.finance.feeStructure.refund
 })

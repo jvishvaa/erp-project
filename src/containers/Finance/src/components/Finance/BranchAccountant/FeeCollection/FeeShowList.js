@@ -101,6 +101,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken = "";
 class FeeShowList extends Component {
   state = {
       page: 0,
@@ -317,7 +319,7 @@ class FeeShowList extends Component {
       this.setState({
         showData: true
       })
-      this.props.fetchStudentErpDet(this.state.erp, this.state.session, this.props.user, this.props.alert)
+      this.props.fetchStudentErpDet(this.state.erp, this.state.session, userToken, this.props.alert)
     } else {
       this.props.alert.warning('Enter 10 Digit Valid Erp!')
     }
@@ -376,20 +378,21 @@ class FeeShowList extends Component {
   }
 
   componentDidMount () {
-    this.props.schoolDeatails(this.props.user, this.props.alert)
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+    this.props.schoolDeatails(userToken, this.props.alert)
     this.setState({
       session: this.props.location.state.session,
       branchId: this.props.location.state.branch
     }, () => {
-      this.props.fetchFeeCollection(this.state.session, this.props.user, this.props.alert, this.state.branchId)
-      // this.props.fetchGrades(this.state.session, this.props.alert, this.props.user)
-      this.props.fetchGrades(this.props.alert, this.props.user, moduleId, this.state.branchId, this.state.session)
+      this.props.fetchFeeCollection(this.state.session, userToken, this.props.alert, this.state.branchId)
+      // this.props.fetchGrades(this.state.session, this.props.alert, userToken)
+      this.props.fetchGrades(this.props.alert, userToken, moduleId, this.state.branchId, this.state.session)
     })
     if (this.state.sessions) {
-      // this.props.fetchGrades(this.state.sessions.value, this.props.alert, this.props.user)
+      // this.props.fetchGrades(this.state.sessions.value, this.props.alert, userToken)
     }
-    // this.props.fetchBranchData(this.props.alert, this.props.user)
-    // this.props.fetchReceiptRange(this.state.session, this.props.branchData && this.props.branchData.branch_name, this.props.alert, this.props.user)
+    // this.props.fetchBranchData(this.props.alert, userToken)
+    // this.props.fetchReceiptRange(this.state.session, this.props.branchData && this.props.branchData.branch_name, this.props.alert, userToken)
   }
   componentDidUpdate () {
   }
@@ -749,7 +752,7 @@ class FeeShowList extends Component {
     //   other_fee: amountIds,
     //   student_type: 2
     // }
-    // this.props.saveOutsiders(data, this.props.user, this.props.alert)
+    // this.props.saveOutsiders(data, userToken, this.props.alert)
     }
 
     makeFinalPayment = () => {
@@ -1068,9 +1071,9 @@ class FeeShowList extends Component {
 
   sendingToServer = (paymentObj) => {
     if (this.state.value === 'one') {
-      this.props.orchidsStudentPay(paymentObj, this.props.user, this.props.alert)
+      this.props.orchidsStudentPay(paymentObj, userToken, this.props.alert)
     } else {
-      this.props.paymentAction(paymentObj, this.props.user, this.props.alert)
+      this.props.paymentAction(paymentObj, userToken, this.props.alert)
     }
   }
 
@@ -1119,13 +1122,13 @@ class FeeShowList extends Component {
     if (this.state.value === 'two') {
       return (axios.get(`${urls.FetchPdfData}?transaction_id=${transactionId}&academic_year=${this.state.session}`, {
         headers: {
-          Authorization: 'Bearer ' + this.props.user
+          Authorization: 'Bearer ' + userToken
         }
       }))
     } else {
       return (axios.get(`${urls.FetchNonOrchids}?transaction_id=${transactionId}&academic_year=${this.state.session}`, {
         headers: {
-          Authorization: 'Bearer ' + this.props.user
+          Authorization: 'Bearer ' + userToken
         }
       }))
     }
@@ -1156,7 +1159,7 @@ class FeeShowList extends Component {
       showTabs: false
     }
     // , () => {
-    //   this.props.fetchGrades(this.state.sessions.value, this.props.alert, this.props.user)
+    //   this.props.fetchGrades(this.state.sessions.value, this.props.alert, userToken)
     // }
     )
   }
@@ -1170,7 +1173,7 @@ class FeeShowList extends Component {
           getData: false
         })
       } else {
-        this.props.fetchAllSections(this.state.sessions.value, this.state.gradeId, this.props.alert, this.props.user, moduleId, this.state.branchId)
+        this.props.fetchAllSections(this.state.sessions.value, this.state.gradeId, this.props.alert, userToken, moduleId, this.state.branchId)
         this.setState({
           allSections: false,
           getData: false
@@ -1214,9 +1217,9 @@ class FeeShowList extends Component {
   erpHandler = () => {
     // const erp = document.querySelectorAll('[name=searchBox]')
     if (this.state.searchTypeData.value === 1 && this.state.selectedErpStatus) {
-      this.props.fetchAllPayment(this.state.sessions.value, this.state.studentLabel, this.props.user, this.props.alert)
+      this.props.fetchAllPayment(this.state.sessions.value, this.state.studentLabel, userToken, this.props.alert)
     } else if (this.state.searchTypeData.value === 2 && this.state.selectedNameStatus) {
-      this.props.fetchAllPayment(this.state.sessions.value, this.state.studentErp, this.props.user, this.props.alert)
+      this.props.fetchAllPayment(this.state.sessions.value, this.state.studentErp, userToken, this.props.alert)
     } else {
       this.props.alert.warning('Select Valid Erp')
     }
@@ -1232,7 +1235,7 @@ class FeeShowList extends Component {
       this.state.studentTypeData.value,
       this.state.students,
       this.props.alert,
-      this.props.user,
+      userToken,
       this.state.branchId
     )
   }
@@ -1261,7 +1264,7 @@ class FeeShowList extends Component {
       this.state.studentTypeData.value,
       this.state.studentName,
       this.props.alert,
-      this.props.user,
+      userToken,
       this.state.branchId
     )
   }
@@ -1884,8 +1887,8 @@ class FeeShowList extends Component {
                 </Grid>
               </Grid>
               {this.state.searchTypeData.value === 1
-                ? <Student erp={this.state.studentLabel} session={this.state.sessions.value} user={this.props.user} alert={this.props.alert} />
-                : <Student erp={this.state.studentErp} session={this.state.sessions.value} user={this.props.user} alert={this.props.alert} />}
+                ? <Student erp={this.state.studentLabel} session={this.state.sessions.value} user={userToken} alert={this.props.alert} />
+                : <Student erp={this.state.studentErp} session={this.state.sessions.value} user={userToken} alert={this.props.alert} />}
               {/* {tabBar} */}
               {this.props.dataLoading ? <CircularProgress open /> : null}
             </React.Fragment>
@@ -2337,14 +2340,14 @@ class FeeShowList extends Component {
       }
       case 'ifsc': {
         if (this.state.searchByValue === 1 && event.target.value.length === 11) {
-          this.props.fetchIfsc(event.target.value, this.props.alert, this.props.user)
+          this.props.fetchIfsc(event.target.value, this.props.alert, userToken)
         }
         newCheque['ifsc'] = event.target.value
         break
       }
       case 'micr': {
         if (this.state.searchByValue === 2 && event.target.value.length === 9) {
-          this.props.fetchMicr(event.target.value, this.props.alert, this.props.user)
+          this.props.fetchMicr(event.target.value, this.props.alert, userToken)
         }
         newCheque['micr'] = event.target.value
         break

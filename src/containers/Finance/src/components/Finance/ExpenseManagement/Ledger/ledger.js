@@ -86,6 +86,7 @@ const styles = theme => ({
   }
 })
 
+let userToken = "";
 class Ledger extends Component {
   state = {
     ledgerAddModal: false,
@@ -113,15 +114,10 @@ class Ledger extends Component {
     ledgerTypeName: null
   }
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload();
-    }
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     if (this.props.ledgerList.length === 0) {
-      this.props.fetchLedgerList(this.props.user, this.props.alert)
+      this.props.fetchLedgerList(userToken, this.props.alert)
     }
-  }
-
-  componentDidUpdate() {
   }
 
   showLedgerTypeModal = () => {
@@ -161,7 +157,7 @@ class Ledger extends Component {
       accountHeadModal: true
     })
 
-    this.props.fetchLedgerList(this.props.user, this.props.alert)
+    this.props.fetchLedgerList(userToken, this.props.alert)
   }
 
   hideAccountHeadModal = () => {
@@ -210,12 +206,12 @@ class Ledger extends Component {
   deleteHandler = () => {
     switch (this.state.deleteType) {
       case 'accountHead': {
-        this.props.deleteAccHeader(this.state.deleteId, this.props.user, this.props.alert)
+        this.props.deleteAccHeader(this.state.deleteId, userToken, this.props.alert)
         this.deleteModalCloseHandler()
         break
       }
       case 'ledger': {
-        this.props.deleteLedgerEntry(this.state.deleteId, this.state.ledgerId, this.props.user, this.props.alert)
+        this.props.deleteLedgerEntry(this.state.deleteId, this.state.ledgerId, userToken, this.props.alert)
         this.deleteModalCloseHandler()
         break
       }
@@ -281,7 +277,7 @@ class Ledger extends Component {
       this.props.alert.warning('Please Fill all Data')
       return
     }
-    this.props.addAccHeader(this.state.accHeadName.trim(), this.state.selectedAccType.id, this.props.user, this.props.alert)
+    this.props.addAccHeader(this.state.accHeadName.trim(), this.state.selectedAccType.id, userToken, this.props.alert)
     this.setState({
       accountHeadModal: false,
       accHeadName: null,
@@ -294,7 +290,7 @@ class Ledger extends Component {
       this.props.alert.warning('Please Fill all Data')
       return
     }
-    this.props.editAccHeader(this.state.updatedHeadId, this.state.updatedHeadName.trim(), this.state.updatedHeadType.id, this.props.user, this.props.alert)
+    this.props.editAccHeader(this.state.updatedHeadId, this.state.updatedHeadName.trim(), this.state.updatedHeadType.id, userToken, this.props.alert)
     this.setState({
       updatedHeadId: null,
       updatedHeadName: null,
@@ -313,7 +309,7 @@ class Ledger extends Component {
       ledgerRemark,
       ledgerName
     } = this.state
-    this.props.addLedgerEntry(updatedHeadId, ledgerName, ledgerRemark, this.props.user, this.props.alert)
+    this.props.addLedgerEntry(updatedHeadId, ledgerName, ledgerRemark, userToken, this.props.alert)
     this.setState({
       updatedHeadId: null,
       ledgerName: null,
@@ -334,7 +330,7 @@ class Ledger extends Component {
       ledgerActive,
       headerId
     } = this.state
-    this.props.updateLedgerEntry(headerId, ledgerId, updatedLedgerName, updatedRemarks, ledgerActive, this.props.user, this.props.alert)
+    this.props.updateLedgerEntry(headerId, ledgerId, updatedLedgerName, updatedRemarks, ledgerActive, userToken, this.props.alert)
     this.hideEntryUpdateModalHandler()
   }
 
@@ -346,7 +342,7 @@ class Ledger extends Component {
       this.props.alert.warning('Fill All Fields')
       return
     }
-    this.props.addLedgerType(ledgerTypeName, this.props.user, this.props.alert)
+    this.props.addLedgerType(ledgerTypeName, userToken, this.props.alert)
     this.setState({
       ledgerTypeName: null
     })
@@ -724,7 +720,7 @@ class Ledger extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   ledgerTypeList: state.finance.common.ledgerType,
   ledgerList: state.finance.expenseMngmt.ledger.ledgerList,
   dataLoading: state.finance.common.dataLoader

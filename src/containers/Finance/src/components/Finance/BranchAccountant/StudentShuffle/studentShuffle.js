@@ -98,6 +98,7 @@ if (NavData && NavData.length) {
   // setModulePermision(false);
 }
 
+let userToken = "";
 const StudentShuffle = ({
   classes,
   session,
@@ -117,20 +118,18 @@ const StudentShuffle = ({
   const [branch, setBranch] = useState('');
 
   useEffect(() => {
-    if(user === null){
-      window.location.reload()
-    }
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     // Update the document title using the browser API
     if (sessionYear && shuffleStatus && branch) {
       fetchStudentShuffle(
         sessionYear.value,
         shuffleStatus.label,
         alert,
-        user,
+        userToken,
         branch && branch.value
       );
     }
-  }, [alert, fetchStudentShuffle, sessionYear, shuffleStatus, user]);
+  }, [alert, fetchStudentShuffle, sessionYear, shuffleStatus, userToken]);
 
   const requestHandler = (e) => {
     history.push({
@@ -143,8 +142,8 @@ const StudentShuffle = ({
 
   const handleSession = (e) => {
     setSession(e);
-    // fetchStudentShuffle(alert, user)
-    fetchBranchAtAcc(e && e.value, user, alert, moduleId);
+    // fetchStudentShuffle(alert, userToken)
+    fetchBranchAtAcc(e && e.value, userToken, alert, moduleId);
   };
   const branchChangeHandler = (e) => {
     setBranch(e);
@@ -168,7 +167,7 @@ const StudentShuffle = ({
       to_approve_status_remarks: accReasonToApprove[id],
     };
     // make approve/reject call
-    sendApproveReject(data, alert, user);
+    sendApproveReject(data, alert, userToken);
     // setAccReason({})
   };
 
@@ -181,7 +180,7 @@ const StudentShuffle = ({
       to_approve_status_remarks: accReasonToApprove[id],
     };
     // make approve/reject callsetAccReason
-    sendApproveReject(data, alert, user);
+    sendApproveReject(data, alert, userToken);
     // setAccReason({})
   };
 
@@ -563,7 +562,7 @@ StudentShuffle.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   dataLoading: state.finance.common.dataLoader,
   studentShuffle: state.finance.accountantReducer.studentShuffle.shuffleDetails,

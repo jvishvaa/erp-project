@@ -55,6 +55,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class CurrFeeType extends Component {
   constructor (props) {
     super(props)
@@ -79,10 +80,8 @@ class CurrFeeType extends Component {
     }
   }
 
-  componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload();
-    }
+ componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
   }
   handleChangePage = (event, newPage) => {
     this.setState({
@@ -104,7 +103,7 @@ class CurrFeeType extends Component {
       session: e,
       branch: null
     }, () => {
-      this.props.fetchBranches(this.state.session.value, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(this.state.session.value, this.props.alert, userToken, moduleId)
     })
   }
 
@@ -117,7 +116,7 @@ class CurrFeeType extends Component {
   getHandler = () => {
     const { session, branch } = this.state
     if (session && branch) {
-      this.props.fetchCurrFeeList(session.value, branch.value, this.props.alert, this.props.user)
+      this.props.fetchCurrFeeList(session.value, branch.value, this.props.alert, userToken)
     } else {
       this.props.alert.warning('select session and branch!')
     }
@@ -127,7 +126,7 @@ class CurrFeeType extends Component {
     this.setState({
       showAddmodal: true
     }, () => {
-      this.props.fetchAllFeeAccounts(this.state.session.value, this.state.branch.value, this.props.alert, this.props.user)
+      this.props.fetchAllFeeAccounts(this.state.session.value, this.state.branch.value, this.props.alert, userToken)
     })
   }
 
@@ -168,7 +167,7 @@ class CurrFeeType extends Component {
       // isMisc: data.is_misc,
       isEditable: data.allow_accountant_to_edit
     }, () => {
-      this.props.fetchAllFeeAccounts(this.state.session.value, this.state.branch.value, this.props.alert, this.props.user)
+      this.props.fetchAllFeeAccounts(this.state.session.value, this.state.branch.value, this.props.alert, userToken)
     })
   }
 
@@ -258,10 +257,10 @@ class CurrFeeType extends Component {
       }
       if (feeTypeName && feeAccount) {
         if (isEditModal) {
-          this.props.updateCurrFeeList(data, this.props.alert, this.props.user)
+          this.props.updateCurrFeeList(data, this.props.alert, userToken)
           this.hideAddModalHandler()
         } else {
-          this.props.addCurrFeeList(data, this.props.alert, this.props.user)
+          this.props.addCurrFeeList(data, this.props.alert, userToken)
           this.hideAddModalHandler()
         }
       }
@@ -323,7 +322,7 @@ class CurrFeeType extends Component {
   }
 
   deleteHandler = () => {
-    this.props.deleteCurrFeeList(this.state.id, this.props.alert, this.props.user)
+    this.props.deleteCurrFeeList(this.state.id, this.props.alert, userToken)
     this.hideDeleteModalHandler()
   }
 
@@ -604,7 +603,7 @@ class CurrFeeType extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branchValue: state.finance.common.branchPerSession,
   dataLoading: state.finance.common.dataLoader,

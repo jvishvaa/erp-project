@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 import '../../../css/staff.css'
 import * as actionTypes from '../../store/actions'
 
+let userToken = "";
 class EditMiscFeeType extends Component {
   constructor (props) {
     super(props)
@@ -37,6 +38,7 @@ class EditMiscFeeType extends Component {
   }
 
   componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     let currentData = this.props.miscFeeList.filter(val => val.id === this.props.id)
     currentData.forEach(arr => {
       this.setState({
@@ -109,7 +111,7 @@ class EditMiscFeeType extends Component {
       branch: this.state.branchIds,
       academic_year: this.state.sessionData && this.state.sessionData.value
     }
-    this.props.updateListMiscFee(this.props.id, data, this.props.alert, this.props.user)
+    this.props.updateListMiscFee(this.props.id, data, this.props.alert, userToken)
     this.props.close()
   }
 
@@ -156,8 +158,8 @@ class EditMiscFeeType extends Component {
       session_year: [this.state.sessionData && this.state.sessionData.value],
       branch_id: [e.value]
     }
-    this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
-    // this.props.fetchAllFeeAccounts(this.state.sessionData && this.state.sessionData.value, e.value, this.props.alert, this.props.user)
+    this.props.fetchFeeAccounts(data, this.props.alert, userToken)
+    // this.props.fetchAllFeeAccounts(this.state.sessionData && this.state.sessionData.value, e.value, this.props.alert, userToken)
   }
 
   render () {
@@ -388,7 +390,7 @@ class EditMiscFeeType extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   miscFeeList: state.finance.miscFee.miscFeeList,
   branches: state.finance.common.branchPerSession,
   session: state.academicSession.items,

@@ -30,7 +30,7 @@ const styles = theme => ({
     width: '80%'
   }
 })
-
+let userToken =  '';
 class AddFeeType extends Component {
   constructor (props) {
     super(props)
@@ -44,8 +44,9 @@ class AddFeeType extends Component {
   }
 
   componentDidMount () {
+userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (this.props.concessionTypeId) {
-      this.props.fetchConcessionFeeTypes(this.props.concessionTypeId, this.props.alert, this.props.user)
+      this.props.fetchConcessionFeeTypes(this.props.concessionTypeId, this.props.alert, userToken)
     } else {
       this.props.alert.warning('Something Went Wrong')
     }
@@ -65,13 +66,13 @@ class AddFeeType extends Component {
   }
 
   deleteHandler = () => {
-    // this.props.deleteConcessionFeeType(this.state.deleteId, this.props.alert, this.props.user)
+    // this.props.deleteConcessionFeeType(this.state.deleteId, this.props.alert, userToken)
     this.deleteModalCloseHandler()
   }
 
   feeTypeHandler = (e) => {
     this.setState({ feeTypeId: e.value })
-    this.props.concessionFeeType(e.value, this.props.alert, this.props.user)
+    this.props.concessionFeeType(e.value, this.props.alert, userToken)
   }
 
   concessionFeeTypeHandler = (e) => {
@@ -87,7 +88,7 @@ class AddFeeType extends Component {
       concession_type: this.props.concessionTypeId,
       fee_type: [this.state.concessionFeeTypeId]
     }
-    this.props.addConcessionFeeType(data, this.props.alert, this.props.user)
+    this.props.addConcessionFeeType(data, this.props.alert, userToken)
   }
 
   listFeeSelectHandler = () => {

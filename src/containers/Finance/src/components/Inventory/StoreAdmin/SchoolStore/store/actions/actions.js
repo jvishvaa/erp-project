@@ -153,7 +153,7 @@ export const addItem = (payload) => {
     }
     axios.post(urls.CreateStoreItem, body, {
       headers: {
-        Authorization: 'Bearer ' + payload.user
+        Authorization: 'Bearer ' + payload.userToken
       }
     }).then(response => {
       dispatch({

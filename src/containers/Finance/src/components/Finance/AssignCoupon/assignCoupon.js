@@ -40,6 +40,7 @@ function TabContainer ({ children, dir }) {
 TabContainer.propTypes = {
   children: PropTypes.node.isRequired
 }
+let userToken = '';
 const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, couponList, listCoupon, couponAssignedToStudent, fetchErpList, erpList, fetchGradesPerBranch, fetchAllSectionsPerGradeAsAdmin, alert, user, dataLoading, gradesPerBranch, sections }) => {
   const [sessionData, setSessionData] = useState(null)
   const [branchData, setBranchData] = useState(null)
@@ -65,11 +66,8 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
   useEffect(() => {
-    if(user === null){
-      window.location.reload();
-    }
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     listCoupon(alert, userToken)
   }, [alert, listCoupon, userToken])
 
@@ -81,14 +79,14 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
       if (sectionData.value === 'all') {
         // setShowTab(true)
         // setIsCouponAssign(true)
-        fetchErpList(sessionData.value, gradeData.value, branchData.value, [...allSectionsData], alert, user)
+        fetchErpList(sessionData.value, gradeData.value, branchData.value, [...allSectionsData], alert, userToken)
       } else if (sessionData && gradeData && branchData && sectionData) {
         // setShowTab(true)
         // setIsCouponAssign(true)
-        fetchErpList(sessionData.value, gradeData.value, branchData.value, sectionData.value, alert, user)
+        fetchErpList(sessionData.value, gradeData.value, branchData.value, sectionData.value, alert, userToken)
       }
     }
-  }, [alert, branchData, value, fetchErpList, gradeData, sectionData, sessionData, user, allSectionsData])
+  }, [alert, branchData, value, fetchErpList, gradeData, sectionData, sessionData, userToken, allSectionsData])
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -101,19 +99,19 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
 
   const handleClickSessionYear = (e) => {
     setSessionData(e)
-    fetchBranches(e.value, alert, user)
+    fetchBranches(e.value, alert, userToken)
     setShowTab(false)
   }
   const changehandlerbranch = (e) => {
     setBranchData(e)
-    fetchGradesPerBranch(alert, user, sessionData.value, e.value)
+    fetchGradesPerBranch(alert, userToken, sessionData.value, e.value)
     setShowTab(false)
   }
   const gradeHandler = (e) => {
     setGradeData(e)
     setShowTab(false)
     // setGradeId(e.value)
-    fetchAllSectionsPerGradeAsAdmin(sessionData.value, alert, user, e.value, branchData.value)
+    fetchAllSectionsPerGradeAsAdmin(sessionData.value, alert, userToken, e.value, branchData.value)
   }
   const sectionHandler = (e) => {
     let allsec = []
@@ -137,19 +135,19 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
         setValue('one')
         setShowTab(true)
         setIsCouponAssign(true)
-        fetchErpList(sessionData.value, gradeData.value, branchData.value, [...allSectionsData], alert, user)
+        fetchErpList(sessionData.value, gradeData.value, branchData.value, [...allSectionsData], alert, userToken)
       } else if (sessionData && gradeData && branchData && sectionData) {
         setValue('one')
         setShowTab(true)
         setIsCouponAssign(true)
-        fetchErpList(sessionData.value, gradeData.value, branchData.value, sectionData.value, alert, user)
+        fetchErpList(sessionData.value, gradeData.value, branchData.value, sectionData.value, alert, userToken)
       }
     } else {
       alert.warning('Fill all the Fields!')
     }
   }
   const couponListHandler = (e) => {
-    // listCoupon(alert, user)
+    // listCoupon(alert, userToken)
     setCoupon(e)
   }
   const applicableHandler = (e) => {
@@ -491,18 +489,18 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
         grade_id: gradeData && gradeData.value,
         applicable_to: applicableTo && applicableTo.value
       }
-      couponAssignedToStudent(data, alert, user)
-      listCoupon(alert, user)
+      couponAssignedToStudent(data, alert, userToken)
+      listCoupon(alert, userToken)
       setCheckedAll(false)
       setisChecked(false)
       if (sessionData && gradeData && branchData && sectionData.value === 'all') {
         // setShowTab(true)
         // setIsCouponAssign(true)
-        fetchErpList(sessionData.value, gradeData.value, branchData.value, [...allSectionsData], alert, user)
+        fetchErpList(sessionData.value, gradeData.value, branchData.value, [...allSectionsData], alert, userToken)
       } else if (sessionData && gradeData && branchData && sectionData) {
         // setShowTab(true)
         // setIsCouponAssign(true)
-        fetchErpList(sessionData.value, gradeData.value, branchData.value, sectionData.value, alert, user)
+        fetchErpList(sessionData.value, gradeData.value, branchData.value, sectionData.value, alert, userToken)
       }
     } else {
       alert.warning('Select student Erp, Applicable to and Coupon!')
@@ -755,7 +753,7 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
         {detailsModal}
       </TabContainer>}
       {showTabs && value === 'two' && <TabContainer>
-        <ReAssignCoupon sessionData={sessionData} branchData={branchData} sections={sections} gradeData={gradeData} sectionData={sectionData} alert={alert} user={user} />
+        <ReAssignCoupon sessionData={sessionData} branchData={branchData} sections={sections} gradeData={gradeData} sectionData={sectionData} alert={alert} user={userToken} />
       </TabContainer>}
       { dataLoading ? <CircularProgress open /> : null }
     </div>
@@ -763,7 +761,7 @@ const AssignCoupon = ({ classes, session, branches, fetchBranches, assignErp, co
   )
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   gradeList: state.finance.common.gradeList,
   dataLoading: state.finance.common.dataLoader,

@@ -62,6 +62,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken ="";
 class AssignOtherFees extends Component {
   constructor (props) {
     super(props)
@@ -83,15 +84,13 @@ class AssignOtherFees extends Component {
   }
 
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload();
-    }
-    // this.props.fetchOtherFees(this.props.alert, this.props.user)
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+    // this.props.fetchOtherFees(this.props.alert, userToken)
   }
 
   gradeHandler = (e) => {
     this.setState({ gradeId: e.value, gradeData: e }, () => {
-      this.props.fetchAllSections(this.state.session, this.state.gradeId, this.props.alert, this.props.user, moduleId, this.state.selectedBranches?.value)
+      this.props.fetchAllSections(this.state.session, this.state.gradeId, this.props.alert, userToken, moduleId, this.state.selectedBranches?.value)
     })
   }
 
@@ -109,7 +108,7 @@ class AssignOtherFees extends Component {
       otherFeeData: e
     }, () => {
       if (this.state.session) {
-        this.props.checkIsMisc(this.state.session, this.state.otherFeeId, this.props.alert, this.props.user)
+        this.props.checkIsMisc(this.state.session, this.state.otherFeeId, this.props.alert, userToken)
       } else {
         this.props.alert.warning('Select Session year!')
       }
@@ -139,15 +138,15 @@ class AssignOtherFees extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, branchData: [], sessionData: e })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId) 
-    // this.props.fetchAllGrades(e.value, this.props.alert, this.props.user, moduleId, selectedBranches?.value)
-    // this.props.fetchOtherFees(e.value, this.props.alert, this.props.user)
+    this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId) 
+    // this.props.fetchAllGrades(e.value, this.props.alert, userToken, moduleId, selectedBranches?.value)
+    // this.props.fetchOtherFees(e.value, this.props.alert, userToken)
   }
 
   changehandlerbranch = (e) => {
-    this.props.fetchAllGrades(this.state.session, this.props.alert, this.props.user, moduleId, e.value)
+    this.props.fetchAllGrades(this.state.session, this.props.alert, userToken, moduleId, e.value)
     this.setState({ selectedBranches: e})
-    this.props.fetchOtherFees(this.state.session, this.props.alert, this.props.user, e.value)
+    this.props.fetchOtherFees(this.state.session, this.props.alert, userToken, e.value)
   }
   render () {
     let tabView = null
@@ -169,7 +168,7 @@ class AssignOtherFees extends Component {
               isMisc={this.props.isMisc && this.props.isMisc.key}
               amounts={this.props.isMisc && this.props.isMisc.amount}
               alert={this.props.alert}
-              user={this.props.user}
+              user={userToken}
               getState={this.state.getList}
               branchId={this.state.selectedBranches?.value}
               moduleId={moduleId}
@@ -185,7 +184,7 @@ class AssignOtherFees extends Component {
               amounts={this.props.isMisc && this.props.isMisc.amount}
               alert={this.props.alert}
               getState={this.state.getList}
-              user={this.props.user}
+              user={userToken}
               branchId={this.state.selectedBranches?.value}
               moduleId={moduleId}
             />

@@ -16,6 +16,7 @@ import * as actionTypes from '../../store/actions'
 // import { CircularProgress } from '../../../../ui'
 import Layout from '../../../../../../Layout'
 
+let userToken = '';
 const AccountantLogin = ({
   classes,
   dataLoaded,
@@ -27,8 +28,9 @@ const AccountantLogin = ({
   const [statusFile, setStatusFile] = useState(null)
 
   useEffect(() => {
-    branchListing(user, alert)
-  }, [alert, branchListing, user])
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
+    branchListing(userToken, alert)
+  }, [alert, branchListing, userToken])
 
   const fileChangeHandler = (event) => {
     const file = event.target.files[0]
@@ -112,6 +114,7 @@ const AccountantLogin = ({
   }
 
   const readExcelFile = () => {
+    // console.log()
     const schema = {
       'ERPCode': {
         prop: 'ERPCode',
@@ -169,7 +172,7 @@ const AccountantLogin = ({
       dataLoaded()
       const form = new FormData()
       form.append('file', statusFile)
-      props.bulkAccLogin(form, user, alert)
+      props.bulkAccLogin(form, userToken, alert)
     }).catch(err => {
       console.log(err)
       // alert.warning(err.message || err)
@@ -229,7 +232,7 @@ const AccountantLogin = ({
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoadingStatus: state.finance.common.dataLoader,
   branchList: state.finance.bulkOperation.branchList
 })

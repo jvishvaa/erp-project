@@ -10,6 +10,7 @@ import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 import Layout from '../../../../../Layout'
 import '../../css/staff.css'
 
+let userToken = "";
 const styles = theme => ({
   tableWrapper: {
     overflowX: 'auto'
@@ -71,13 +72,16 @@ class AddFeePlan extends Component {
       sessionData: null
     }
   }
+componentDidMount(){
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+}
 
   changehandlerbranch = (e) => {
     // this.props.gradeMapBranch(e.value)
     this.setState({ branchId: e.value, valueGrade: [], branchData: e })
-    this.props.fetchGrades(this.state.session, e.value, this.props.alert, this.props.user, moduleId)
-    this.props.fetchFeeTypes(this.state.session, e.value, this.props.alert, this.props.user)
-    this.props.fetchFeePlanApplicable(e.value, this.props.alert, this.props.user)
+    this.props.fetchGrades(this.state.session, e.value, this.props.alert, userToken, moduleId)
+    this.props.fetchFeeTypes(this.state.session, e.value, this.props.alert, userToken)
+    this.props.fetchFeePlanApplicable(e.value, this.props.alert, userToken)
   }
 
   handleClickFee = (e) => {
@@ -118,7 +122,7 @@ class AddFeePlan extends Component {
 
   handleClickSessionYear = (e) => {
     this.setState({ session: e.value, branchData: [], sessionData: e })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+    this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
   }
 
   handleEndDate = (e) => {
@@ -164,7 +168,7 @@ class AddFeePlan extends Component {
       is_this_a_limited_plan: this.state.limitedTime,
       years_applicable_to: this.state.yearApplicableId
     }
-    this.props.CreateFee(data, this.props.alert, this.props.user)
+    this.props.CreateFee(data, this.props.alert, userToken)
     this.setState({ showDetail: true })
   }
   handleSubmit = () => {
@@ -183,7 +187,7 @@ class AddFeePlan extends Component {
       is_compulsory: this.state.is_compulsory
     })
     this.setState({ tableData: data2 })
-    this.props.CreateFeeTypeMap(data, this.props.alert, this.props.user)
+    this.props.CreateFeeTypeMap(data, this.props.alert, userToken)
     this.setState({
       showTable: true, FeeData: [], Amount: '', is_compulsory: false
     })

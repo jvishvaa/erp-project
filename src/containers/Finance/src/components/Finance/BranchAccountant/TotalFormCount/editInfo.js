@@ -11,6 +11,8 @@ import {
 import * as actionTypes from '../../store/actions'
 import { apiActions } from '../../../../_actions'
 
+let userToken = "";
+
 const EditInfo = ({
   type,
   user,
@@ -43,8 +45,9 @@ const EditInfo = ({
   const [changedSession, setChangedSession] = useState(selectedSession)
 
   useEffect(() => {
-    fetchGrades(selectedSession, branch, user, alert)
-  }, [fetchGrades, selectedSession, branch, user, alert])
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+    fetchGrades(selectedSession, branch, userToken, alert)
+  }, [fetchGrades, selectedSession, branch, userToken, alert])
 
   const editClickHandler = () => {
     if (type === 'Admission' && regDate && regDate > changedDate) {
@@ -72,7 +75,7 @@ const EditInfo = ({
       'year': changedSession,
       'grade': changedOptClass
     }
-    editHandler(body, user, alert)
+    editHandler(body, userToken, alert)
     close()
   }
 
