@@ -116,7 +116,7 @@ const PeriodCard = ({
               variant='p'
               component='p'
               color='secondary'
-            >
+              style ={{overflow : 'hidden',whiteSpace: 'nowrap',textOverflow: 'ellipsis'}}            >
               Subject Name - {lesson?.subject_name}
             </Typography>
           </Box>
