@@ -69,7 +69,8 @@ class AdmissionFormAcc extends Component {
       dropdowns: { session: null,
       fromDate: null,
       toDate: null
-      }
+      },
+sessionData: null
     }
   }
 
@@ -86,6 +87,9 @@ componentDidMount(){
   }
 
   dropDownHandler= (event, name) => {
+this.setState({
+  sessionData: event.value
+})
     this.props.fetchBranches(event && event.value, this.props.alert, userToken, moduleId)
     const newstate = { ...this.state.dropdowns }
     switch (name) {
@@ -124,7 +128,9 @@ componentDidMount(){
     if (data.student_registered) {
       this.props.history.push({
         pathname: '/admissions/UpdateRegistrationForm/',
-        studentInformationForAdmission: data
+        studentInformationForAdmission: data,
+        session: this.state.sessionData,
+        branch: this.state.selectedBranches
       })
     } else {
       this.props.history.push({
@@ -208,7 +214,7 @@ componentDidMount(){
                 <div style={{ marginTop: '15px' }}>
                   <Select
                     placeholder='Select Year'
-                  // value={this.state.sessionData ? this.state.sessionData : null}
+                    value={this.state.sessionData ? this.state.sessionData : null}
                     name='session'
                     options={
                     this.props.session

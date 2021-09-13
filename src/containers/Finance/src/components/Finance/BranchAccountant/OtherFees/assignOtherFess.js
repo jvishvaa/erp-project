@@ -86,6 +86,33 @@ class AssignOtherFees extends Component {
   componentDidMount () {
  userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     // this.props.fetchOtherFees(this.props.alert, userToken)
+const Nav = JSON.parse(localStorage.getItem('navigationData')) || {};
+if (Nav && Nav.length) {
+  Nav.forEach((item) => {
+    if (
+      item.parent_modules === 'Transport Fees' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Assign Transport Fees') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+            moduleId = item.child_id
+          this.setState({
+            moduleId: item.child_id
+          })
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
+  });
+} else {
+  // setModulePermision(false);
+}
   }
 
   gradeHandler = (e) => {
