@@ -19,6 +19,8 @@ const LessonViewFilters = ({
   setPeriodData,
   setViewMore,
   setViewMoreData,
+  updatedata,
+  data
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
@@ -117,7 +119,7 @@ const LessonViewFilters = ({
 
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
-
+    updatedata(value)
     if (value && filterData.branch) {
       setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
       axiosInstance

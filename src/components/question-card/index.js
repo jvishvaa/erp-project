@@ -96,6 +96,7 @@ const QuestionCard = ({
   const attachmentsRef = useRef(null);
   const { setAlert } = useContext(AlertNotificationContext);
   const [sizeValied, setSizeValied] = useState({});
+  const [showPrev, setshowPrev] = useState(0)
 
   const handleScroll = (dir) => {
     if (dir === 'left') {
@@ -118,9 +119,12 @@ const QuestionCard = ({
   };
 
   const handleFileUpload = async (file) => {
+    if(!file){
+      return null
+    }
     const isValid = FileValidators(file);
     !isValid?.isValid && isValid?.msg && setAlert('error', isValid?.msg);
-
+    
     //setSizeValied(isValid);
     // if(file.name.lastIndexOf('.mp3') || file.name.lastIndexOf('.mp4')){
     //   if(file.size > 5242880){
@@ -146,9 +150,10 @@ const QuestionCard = ({
           fd.append('file', file);
           setFileUploadInProgress(true);
           const filePath = await uploadFile(fd);
+          const final = Object.assign({},filePath)
           if (file.type === 'application/pdf') {
-            setAttachments((prevState) => [...prevState, ...filePath]);
-            setAttachmentPreviews((prevState) => [...prevState, ...filePath]);
+            setAttachments((prevState) => [...prevState, final]);
+            setAttachmentPreviews((prevState) => [...prevState, final]);
           } else {
             setAttachments((prevState) => [...prevState, filePath]);
             setAttachmentPreviews((prevState) => [...prevState, filePath]);
@@ -179,15 +184,48 @@ const QuestionCard = ({
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
-  const removeAttachment = (index) => {
-    setAttachmentPreviews((prevState) => [
-      ...prevState.slice(0, index),
-      ...prevState.slice(index + 1),
-    ]);
-    setAttachments((prevState) => [
-      ...prevState.slice(0, index),
-      ...prevState.slice(index + 1),
-    ]);
+  const removeAttachment = (pageIndex,pdfIndex,deletePdf,item) => {
+    // const extension = item.split('.').pop();
+
+    if(item!== undefined){
+      if(deletePdf){
+        setAttachmentPreviews((prevState) => {
+           prevState.splice(pdfIndex,1)
+          return [...prevState]
+        })
+        setAttachments((prevState) => {
+          prevState.splice(pdfIndex,1)
+         return [...prevState]
+       })
+      }
+     else{
+      setAttachmentPreviews((prevState) => {
+        let newObj=prevState[pdfIndex]
+        delete newObj[pageIndex]
+       prevState[pdfIndex]=newObj
+        return [...prevState]
+      })
+      setAttachments((prevState) => {
+        let newObj=prevState[pdfIndex]
+        delete newObj[pageIndex]
+       prevState[pdfIndex]=newObj
+        return [...prevState]
+      })
+    }
+  
+    }
+    else{
+      setAttachmentPreviews((prevState) => {
+        prevState.splice(pdfIndex,1)
+       return [...prevState]
+     })
+     setAttachments((prevState) => {
+       prevState.splice(pdfIndex,1)
+      return [...prevState]
+    })
+   }
+    
+
   };
 
   useEffect(() => {
@@ -197,6 +235,20 @@ const QuestionCard = ({
     }
     onChange('attachments', attachments);
   }, [attachments]);
+
+useEffect(()=>{
+  let count = 0
+  attachmentPreviews.forEach((e)=>{
+   if(typeof e =='string')
+   count= count+1
+   else{
+    count = Object.keys(e).length + count
+   }
+  }
+  )
+  setshowPrev(count > 2)
+  console.log(count,attachmentPreviews, "@@@counttttttttttttt")
+},[attachmentPreviews])
 
   return (
     <Grid container className='home-question-container'>
@@ -313,11 +365,11 @@ const QuestionCard = ({
                 <Grid item xs={12} className='attachments-grid'>
                   <div className='attachments-list-outer-container'>
                     <div className='prev-btn'>
-                      {attachmentPreviews.length > 2 && (
-                        <IconButton onClick={() => handleScroll('left')}>
-                          <ArrowBackIosIcon />
-                        </IconButton>
-                      )}
+                       { showPrev && (
+                          <IconButton onClick={() => handleScroll('left')}>
+                            <ArrowBackIosIcon />
+                          </IconButton>
+                        )}
                     </div>
                     <SimpleReactLightbox>
                       <div
@@ -327,41 +379,78 @@ const QuestionCard = ({
                           e.preventDefault();
                         }}
                       >
-                        {attachmentPreviews.map((url, i) => (
-                          <>
-                            {Array.from({ length: 1 }, () => (
-                              <div className='attachment'>
+                        {attachmentPreviews.map((url, pdfindex) => {
+                          let cindex = 0
+                          attachmentPreviews.forEach((item,index)=>{
+                            if(index < pdfindex){
+                              if(typeof item == 'string'){
+                                cindex = cindex + 1
+                              }else{
+                                cindex = Object.keys(item).length + cindex
+                              }
+                            }
+                          })
+                          if (typeof url == 'object') {
+                            return Object.values(url).map((item, i) => {
+                              let imageIndex=Object.keys(url)[i]
+                              return <div className='attachment'>
                                 <Attachment
                                   key={`homework_student_question_attachment_${i}`}
-                                  fileUrl={url}
-                                  fileName={`Attachment-${i + 1}`}
+                                  fileUrl={item}
+                                  fileName={`Attachment-${i + 1 + cindex}`}
                                   urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                   index={i}
                                   actions={['preview', 'download', 'delete']}
-                                  onDelete={removeAttachment}
+                                  onDelete={(index, deletePdf) => removeAttachment(imageIndex, pdfindex, deletePdf,{item})}
+                                  ispdf = {true}
                                 />
                               </div>
-                            ))}
-                          </>
-                        ))}
+
+                            })
+                          } else return <div className='attachment'>
+                            <Attachment
+                              key={`homework_student_question_attachment_${pdfindex}`}
+                              fileUrl={url}
+                              fileName={`Attachment-${1 + cindex}`}
+                              urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                              index={pdfindex}
+                              actions={['preview', 'download', 'delete']}
+                              onDelete={(index, deletePdf) => removeAttachment(index, pdfindex, deletePdf)}
+                              ispdf={false}
+                            />
+                          </div>
+                         
+                        
+                        })}
 
                         <div style={{ position: 'absolute', visibility: 'hidden' }}>
                           <SRLWrapper>
-                            {attachmentPreviews.map((url, i) => (
-                              <img
-                                src={`${endpoints.discussionForum.s3}/homework/${url}`}
-                                onError={(e) => {
-                                  e.target.src = placeholder;
-                                }}
-                                alt={`Attachment-${i + 1}`}
-                              />
-                            ))}
+                            {attachmentPreviews.map((url,i) => {
+                              if (typeof url == 'object') {
+                                return Object.values(url).map((item, i) => {
+                                  return <img
+                                    src={`${endpoints.discussionForum.s3}/homework/${item}`}
+                                    onError={(e) => {
+                                      e.target.src = placeholder;
+                                    }}
+                                    alt={`Attachment-${i + 1}`}
+                                  />
+                                })
+                              }else return <img
+                              src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                              onError={(e) => {
+                                e.target.src = placeholder;
+                              }}
+                              alt={`Attachment-${i + 1}`}
+                            />
+                            })}
                           </SRLWrapper>
                         </div>
                       </div>
                     </SimpleReactLightbox>
                     <div className='next-btn'>
-                      {attachmentPreviews.length > 2 && (
+
+                      {showPrev && (
                         <IconButton onClick={() => handleScroll('right')}>
                           <ArrowForwardIosIcon color='primary' />
                         </IconButton>

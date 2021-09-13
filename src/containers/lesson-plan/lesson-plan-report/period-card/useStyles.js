@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     width: '105%',
   },
   title: {
-    fontSize: '1.1rem',
+    fontSize: '0.95rem',
   },
   content: {
     fontSize: '0.9rem',
