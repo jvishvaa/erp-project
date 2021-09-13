@@ -128,7 +128,7 @@ class UpdateStudentDetailsFormAcc extends Component {
 
   componentDidMount () {
     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
-    this.props.fetchGradeList(this.props.alert, userToken, moduleId)
+    this.props.fetchGradeList(this.props.alert, userToken, moduleId, this.props.location.session, this.props.location.branch.value)
     this.props.fetchClassGroup(this.props.alert, userToken)
   }
 
@@ -429,7 +429,7 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchGradeList: (alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId })),
+  fetchGradeList: (alert, user, moduleId, session, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, session, branch })),
   fetchClassGroup: (alert, user) => dispatch(actionTypes.fetchClassGroup({ alert, user })),
   fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId }))
 
