@@ -247,7 +247,6 @@ useEffect(()=>{
   }
   )
   setshowPrev(count > 2)
-  console.log(count,attachmentPreviews, "@@@counttttttttttttt")
 },[attachmentPreviews])
 
   return (

@@ -82,7 +82,6 @@ const LessonReport = () => {
         setAlert('error', error?.message);
       });
   };
-  //yahin lika h
   const [data,setdata] = useState({})
   const updatedata = (item) =>{
     setdata(item)
