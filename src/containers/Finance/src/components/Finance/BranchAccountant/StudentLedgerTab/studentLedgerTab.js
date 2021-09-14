@@ -284,18 +284,25 @@ if (NavData && NavData.length) {
   };
 
   myErpFunc = () => {
-    this.props.studentErpSearch(
-      'erp',
-      this.state.session.value,
-      this.state.gradeId,
-      this.state.sectionId,
-      this.state.studentTypeData.value,
-      this.state.student,
-      this.props.alert,
-      userToken,
-      this.state.selectedBranches?.value,
-      moduleId
-    );
+    if(this.state.selectedBranches?.value == undefined){
+      this.props.alert.warning('Please Select Branch Name');
+      return;
+    }
+    if(this.state.selectedBranches?.value != undefined)
+    {
+      this.props.studentErpSearch(
+        'erp',
+        this.state.session.value,
+        this.state.gradeId,
+        this.state.sectionId,
+        this.state.studentTypeData.value,
+        this.state.student,
+        this.props.alert,
+        userToken,
+        this.state.selectedBranches?.value,
+        moduleId
+      );
+    }
   };
 
   studentErpChangeHandler = (e, selected) => {
@@ -323,28 +330,34 @@ if (NavData && NavData.length) {
 
   myStudentFun = () => {
     const { searchTypeId } = this.state;
-    this.props.studentErpSearch(
-      searchTypeId === 2
-        ? 'student'
-        : searchTypeId === 3
-        ? 'fatherName'
-        : searchTypeId === 4
-        ? 'fatherNo'
-        : searchTypeId === 5
-        ? 'motherName'
-        : searchTypeId === 6
-        ? 'motherNo'
-        : 'na',
-      this.state.session.value,
-      this.state.gradeId,
-      this.state.sectionId,
-      this.state.studentTypeData.value,
-      this.state.studentName,
-      this.props.alert,
-      userToken,
-      this.state.selectedBranches?.value,
-      moduleId
-    );
+    if(this.state.selectedBranches?.value == undefined){
+      this.props.alert.warning('Please Select Branch Name');
+      return;
+    }
+    if(this.state.selectedBranches?.value != undefined){
+        this.props.studentErpSearch(
+          searchTypeId === 2
+            ? 'student'
+            : searchTypeId === 3
+            ? 'fatherName'
+            : searchTypeId === 4
+            ? 'fatherNo'
+            : searchTypeId === 5
+            ? 'motherName'
+            : searchTypeId === 6
+            ? 'motherNo'
+            : 'na',
+          this.state.session.value,
+          this.state.gradeId,
+          this.state.sectionId,
+          this.state.studentTypeData.value,
+          this.state.studentName,
+          this.props.alert,
+          userToken,
+          this.state.selectedBranches?.value,
+          moduleId
+        );
+    }
   };
 
   studentNameChangeHandler = (e, selected) => {
@@ -400,6 +413,7 @@ if (NavData && NavData.length) {
         return;
       }
     }
+
       axios
       .get(urls.CheckPayment + '?student=' + this.props.studentErp[0].erp, {
         headers: {
