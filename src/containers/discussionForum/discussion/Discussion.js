@@ -334,8 +334,7 @@ export default function DiscussionComponent(props) {
         }
       })
       .catch((error) => {
-        console.log(error);
-        setAlert('error', error.message);
+        setAlert('error', error?.response?.data?.description);
       });
   };
   const handleReadPost = () => {

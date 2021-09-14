@@ -125,6 +125,7 @@ class ContentView extends Component {
         }
       })
       .catch((error) => {
+        this.context.setAlert('error', error?.response?.data?.description);
         // setAlert('error', error.message);
         // setSections([]);
         // setSearchSection([]);

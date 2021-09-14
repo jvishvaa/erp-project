@@ -248,7 +248,7 @@ export default function DiscussionPostComponent(props) {
       setAlert('success', res.data.message);
     })
     .catch((error) => {
-      console.log(error);
+      setAlert('error', error?.response?.data?.description);
     });
   };
 
