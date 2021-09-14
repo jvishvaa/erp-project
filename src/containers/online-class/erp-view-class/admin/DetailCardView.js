@@ -355,7 +355,7 @@ const JoinClass = (props) => {
                   state: { data: fullData.online_class.id },
                 })
               }
-              disabled={props?.data?.is_cancelled}
+              disabled={ props?.data?.is_cancelled ? true : isClassStartted() }
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
               // className='teacherFullViewSmallButtons'
             >
@@ -375,7 +375,7 @@ const JoinClass = (props) => {
               variant='contained'
               onClick={() => handleTakeQuiz(fullData)}
               disabled={
-                props?.data?.class_status?.toLowerCase() === 'cancelled' ||
+                props?.data?.class_status?.toLowerCase() === 'cancelled' ? true : isClassStartted() ||
                 fullData?.online_class?.question_paper_id === 0
               }
               // className='takeQuizButton'
