@@ -1,5 +1,6 @@
 stages:
   - deploy
+  - publish 
   
 deploy_dev:
     before_script:
@@ -169,4 +170,31 @@ deploy_finance-integration2:
       - finance-integration2
     only:
       - finance-integration2
+publish_prod:
+  image: docker:latest
+  variables:
+    TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
+    TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
+    GIT_CLONE_PATH: $CI_BUILDS_DIR/$CI_PROJECT_NAME/$CI_COMMIT_BRANCH
+    GIT_STRATEGY: clone
+
+  stage: deploy
+  tags:
+      - docker-build
+  only:
+    - stage
+  
+  script:
+   - grep home package.json || true
+   - npm install
+   - export NODE_OPTIONS=--max_old_space_size=4096
+   - export REACT_APP_UI_ENV="prod" 
+   - export CI=false
+   - CI=false npm run build
+   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+   - whoami
+   - pwd  
+   - docker build -f frontend.Dockerfile -t registry.gitlab.com/k12devs1/erp-revamp-frontend/prod:frontend .
+   - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+   - docker push registry.gitlab.com/k12devs1/erp-revamp-frontend/prod:frontend
 
