@@ -124,9 +124,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [selectedRoles, setSelectedRoles] = useState(null);
   // const [selectedYear, setSelectedYear] = useState('');
-  const selectedYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-  );
+  const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [gradeIds, setGradeIds] = useState([]);
@@ -301,6 +299,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             erpId: items.erp_id,
 
             emails: items.user.email,
+            role: items?.roles?.role_name,
             active: items.is_active,
           })
         );
@@ -666,11 +665,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
           </Grid>
         </div>
         <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
-          <DialogTitle
-            id='draggable-dialog-title'
-          >
-            Delete User
-          </DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Delete User</DialogTitle>
           <DialogContent>
             <DialogContentText>
               Are you sure you want to delete this user ?
@@ -684,7 +679,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
               color='primary'
               variant='contained'
               style={{ color: 'white' }}
-              onClick={handleDeleteConfirm}>
+              onClick={handleDeleteConfirm}
+            >
               Confirm
             </Button>
           </DialogActions>
@@ -700,6 +696,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                     <TableCell className={classes.tableCell}>Name</TableCell>
                     <TableCell className={classes.tableCell}>ERP Id</TableCell>
                     <TableCell className={classes.tableCell}>Email</TableCell>
+                    <TableCell className={classes.tableCell}>Role</TableCell>
                     <TableCell className={classes.tableCell}>Status</TableCell>
                     <TableCell className={classes.tableCell}>Action</TableCell>
                     {/* <TableCell className={classes.tableCell}>Edit</TableCell> */}
@@ -718,6 +715,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                       </TableCell>
                       <TableCell className={classes.tableCell}>{items.erpId}</TableCell>
                       <TableCell className={classes.tableCell}>{items.emails}</TableCell>
+                      <TableCell className={classes.tableCell}>{items?.role}</TableCell>
                       <TableCell className={classes.tableCell}>
                         {items.active ? (
                           <div style={{ color: 'green' }}>Activated</div>

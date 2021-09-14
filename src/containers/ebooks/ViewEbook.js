@@ -85,7 +85,7 @@ class ViewEbook extends Component {
       clearFilter: '',
       acadmicYear: '',
       selectedBranch: '',
-      selectedGrade: [],
+      selectedGrade: '',
       selectedSubject: '',
       selectedVolume: '',
     };
@@ -296,7 +296,7 @@ class ViewEbook extends Component {
         }
       })
       .catch((error) => {
-        console.log(error.message, 'err');
+        this.context.setAlert('error', error?.response?.data?.description);
         if (error.message === 'Request failed with status code 402') {
           this.context.setAlert('error', 'Access Error');
         }
@@ -383,13 +383,15 @@ class ViewEbook extends Component {
                       </div>
                     </Grid>
                     <Grid item xs={12} md={12} style={{ textAlign: 'center' }}>
-                      <Pagination
-                        onChange={this.handlePagination}
-                        count={Math.ceil(totalEbooks / pageSize)}
-                        color='primary'
-                        page={pageNo}
-                        style={{ paddingLeft: '45%' }}
-                      />
+                      {this.state.data.length > 0 && (
+                        <Pagination
+                          onChange={this.handlePagination}
+                          count={Math.ceil(totalEbooks / pageSize)}
+                          color='primary'
+                          page={pageNo}
+                          style={{ paddingLeft: '45%' }}
+                        />
+                      )}
                     </Grid>
                   </Grid>
                 </div>
