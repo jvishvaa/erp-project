@@ -267,7 +267,7 @@ class ConcessionLastDate extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   concessionLastDateList: state.finance.lastDateSettings.concessionLastDateList,
   dataLoading: state.finance.common.dataLoader
 })

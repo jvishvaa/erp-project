@@ -34,6 +34,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class AddMiscFeeType extends Component {
   constructor (props) {
     super(props)
@@ -68,8 +69,9 @@ class AddMiscFeeType extends Component {
   }
 
   componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     if (this.props.acadId) {
-      this.props.fetchBranches(this.props.acadId, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(this.props.acadId, this.props.alert, userToken, moduleId)
     } else {
       this.props.alert.warning('Select Academic Year')
     }
@@ -89,7 +91,7 @@ class AddMiscFeeType extends Component {
       session_year: [this.state.sessionData && this.state.sessionData.value],
       branch_id: branchIds
     }
-    this.props.fetchFeeAccounts(data, this.props.alert, this.props.user)
+    this.props.fetchFeeAccounts(data, this.props.alert, userToken)
   }
 
   feeTypeNameHandler = e => {
@@ -157,7 +159,7 @@ class AddMiscFeeType extends Component {
       is_store_related: this.state.is_store_related,
       amount: this.state.amount
     }
-    this.props.addedMiscFeeList(data, this.props.alert, this.props.user)
+    this.props.addedMiscFeeList(data, this.props.alert, userToken)
     this.props.close()
   }
 
@@ -441,7 +443,7 @@ class AddMiscFeeType extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   branches: state.finance.common.branchPerSession,
   session: state.academicSession.items,
   viewFeeAccList: state.finance.tallyReports.feeAccountPerBranchs

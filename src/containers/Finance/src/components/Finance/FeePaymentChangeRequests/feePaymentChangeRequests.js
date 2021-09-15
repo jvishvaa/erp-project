@@ -84,6 +84,7 @@ const styles = theme => ({
   }
 })
 
+let userToken='';
 const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requestList, sessionRed, alert, user, fetchEditRequests }) => {
   const [sessionYear, setSession] = useState(null)
   const [page, setPage] = React.useState(0);
@@ -91,20 +92,19 @@ const FeePaymentChangeRequests = ({ classes, session, history, dataLoading, requ
   // const [shuffleStatus, setShuffleStatus] = useState({ label: 'Pending', value: 1 })
   // const [accReasonToApprove, setAccReason] = useState({})
 
-  useEffect(() => {
-    if(user === null){
-      window.location.reload()
-    }
-    if (sessionRed) {
-      setSession(sessionRed)
-    }
-  }, [sessionRed, setSession])
 
   useEffect(() => {
-    if (sessionYear) {
-      fetchEditRequests(sessionYear, alert, user, moduleId)
+    if (sessionRed || moduleId ) {
+      setSession(sessionRed)
     }
-  }, [fetchEditRequests, sessionYear, alert, user])
+  }, [sessionRed, setSession , moduleId])
+
+  useEffect(() => {
+  userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
+    if (sessionYear) {
+      fetchEditRequests(sessionYear, alert, userToken, moduleId)
+    }
+  }, [fetchEditRequests, sessionYear, alert, userToken])
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -261,7 +261,7 @@ FeePaymentChangeRequests.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   requestList: state.finance.feePayChange.requestList,
   dataLoading: state.finance.common.dataLoader,

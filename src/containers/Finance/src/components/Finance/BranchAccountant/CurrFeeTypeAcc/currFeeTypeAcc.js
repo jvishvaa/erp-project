@@ -17,6 +17,8 @@ const styles = theme => ({
   }
 })
 
+let userToken = "";
+
 class CurrFeeTypeAcc extends Component {
   constructor (props) {
     super(props)
@@ -31,8 +33,9 @@ class CurrFeeTypeAcc extends Component {
   }
 
   componentDidMount () {
-    this.props.fetchMiscFeeList(this.props.session, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
-    this.props.fetchStudentMiscDetails(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+    this.props.fetchMiscFeeList(this.props.session, this.props.alert, userToken, this.props.moduleId, this.props.branchId)
+    this.props.fetchStudentMiscDetails(this.props.session, this.props.erp, this.props.alert, userToken, this.props.moduleId, this.props.branchId)
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -81,7 +84,7 @@ class CurrFeeTypeAcc extends Component {
     this.setState({
       feeType: e
     }, () => {
-      this.props.fetchMiscDetails(this.props.session, e.value, this.props.alert, this.props.user, this.props.branchId)
+      this.props.fetchMiscDetails(this.props.session, e.value, this.props.alert, userToken, this.props.branchId)
     })
   }
 
@@ -126,8 +129,8 @@ class CurrFeeTypeAcc extends Component {
       update: changeType && changeType.value ? changeType.value : '',
       branch_id: this.props.branchId
     }
-    this.props.saveStudentMiscType(data, this.props.alert, this.props.user)
-    // this.props.fetchStudentMiscDetails(this.props.session, this.props.erp, this.props.alert, this.props.user)
+    this.props.saveStudentMiscType(data, this.props.alert, userToken)
+    // this.props.fetchStudentMiscDetails(this.props.session, this.props.erp, this.props.alert, userToken)
   }
 
   render () {

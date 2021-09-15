@@ -12,6 +12,7 @@ import { apiActions } from '../../../_actions'
 import * as actionTypes from '../store/actions'
 import '../../css/staff.css'
 
+let userToken = "";
 class AddReceipt extends Component {
   constructor (props) {
     super(props)
@@ -26,7 +27,10 @@ class AddReceipt extends Component {
       alertMessage: ''
     }
   }
-
+  componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+    this.props.fetchFeeAccount(this.props.acadId, this.props.branchId, this.props.alert, userToken)
+  }
   changedHandler = name => event => {
     this.setState({ [name]: event.target.checked })
   }
@@ -69,16 +73,12 @@ class AddReceipt extends Component {
       sequence_no: this.state.sequence_no,
       is_active: this.state.is_active
     }
-    this.props.addReceipts(data, this.props.alert, this.props.user)
+    this.props.addReceipts(data, this.props.alert, userToken)
     this.props.close()
   }
 
   changeSequenceNoHandler = e => {
     this.setState({ sequence_no: e.target.value })
-  }
-
-  componentDidMount () {
-    this.props.fetchFeeAccount(this.props.acadId, this.props.branchId, this.props.alert, this.props.user)
   }
 
   render () {
@@ -210,7 +210,7 @@ class AddReceipt extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   feeAccounts: state.finance.receiptRangesLists.feeAccPerBrnch
 })

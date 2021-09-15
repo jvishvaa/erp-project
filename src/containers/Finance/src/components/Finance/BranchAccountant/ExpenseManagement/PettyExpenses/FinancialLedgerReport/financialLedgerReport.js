@@ -50,16 +50,17 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
-
+let userToken = "";
 const FinancialLedgerReport = ({ classes, session, alert, user, recData, ...props }) => {
   const [academicSession, setAcademicSession] = useState(null)
 
   const getLedgerReport = () => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     if (!academicSession) {
       alert.warning('Please Fill All Fields')
       return
     }
-    props.fetchLedgerReport(academicSession, recData && recData.branch, user, alert)
+    props.fetchLedgerReport(academicSession, recData && recData.branch, userToken, alert)
   }
 
   const createExcel = () => {
@@ -188,7 +189,7 @@ const FinancialLedgerReport = ({ classes, session, alert, user, recData, ...prop
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.finance.common.financialYear,
   ledgerReport: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.financialLedgerReport,
   recData: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.sendData

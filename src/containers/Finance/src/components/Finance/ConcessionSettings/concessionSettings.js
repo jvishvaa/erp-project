@@ -65,6 +65,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class ConcessionSettings extends Component {
   constructor (props) {
     super(props)
@@ -122,9 +123,7 @@ class ConcessionSettings extends Component {
   }
 
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload();
-    }
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (concessionSettingsState) {
       this.setState({
         concessionSettingsState
@@ -132,8 +131,8 @@ class ConcessionSettings extends Component {
     }
 
     if (!this.props.listConcessions.length && !this.props.listConcessionTypes) {
-      this.props.fetchConcessions(this.props.alert, this.props.user, moduleId)
-      this.props.fetchConcessionTypes(this.props.alert, this.props.user)
+      this.props.fetchConcessions(this.props.alert, userToken, moduleId)
+      this.props.fetchConcessionTypes(this.props.alert, userToken)
       concessionSettingsState = this.state
     }
   }
@@ -142,7 +141,7 @@ class ConcessionSettings extends Component {
     let data = {
       type_name: this.state.type_name
     }
-    this.props.addedConcessionTypes(data, this.props.alert, this.props.user)
+    this.props.addedConcessionTypes(data, this.props.alert, userToken)
     this.hideModalHandler()
     this.setState({ type_name: '' })
   }
@@ -167,7 +166,7 @@ class ConcessionSettings extends Component {
   }
 
   deleteHandler = () => {
-    // this.props.deleteConcessionFeeType(this.state.deleteId, this.props.alert, this.props.user)
+    // this.props.deleteConcessionFeeType(this.state.deleteId, this.props.alert, userToken)
     this.deleteModalCloseHandler()
   }
 
@@ -177,7 +176,7 @@ class ConcessionSettings extends Component {
     if (this.state.showModal) {
       modal = (
         <Modal open={this.state.showModal} click={this.hideModalHandler}>
-          <EditConcessionSettings id={this.state.id} alert={this.props.alert} close={this.hideModalHandler} />
+          <EditConcessionSettings id={this.state.id} user={userToken} alert={this.props.alert} close={this.hideModalHandler} />
         </Modal>
       )
     }

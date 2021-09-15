@@ -129,6 +129,8 @@ const editReducer = (state, action) => {
   }
 }
 
+let userToken = "";
+
 const Party = ({ user, alert, fetchPartyList, classes, sessions, fetchBranches, handleAcademicyear, changehandlerbranch, branches, selectedbranchIds, ...props }) => {
   const [showAddModal, setShowAddModal] = useState(false)
   const [name, setName] = useState(null)
@@ -145,17 +147,15 @@ const Party = ({ user, alert, fetchPartyList, classes, sessions, fetchBranches, 
   const [selectedBranches, setSelectedBranches] = useState('')
   const [session, setSession] = useState('')
   useEffect(() => {
+userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     // fetchPartyList(user, alert)
-    if(user === null){
-      window.location.reload();
-    }
-  }, [fetchPartyList, user, alert])
+  }, [fetchPartyList, userToken, alert])
 
   handleAcademicyear = (e) => {
     setSessionData(e)
     setSession(e.value)
     // this.setState({ session: e.value, sessionData: e}, () => {
-    fetchBranches(e.value, alert, user, moduleId)
+    fetchBranches(e.value, alert, userToken, moduleId)
     // })
   }
 
@@ -163,7 +163,7 @@ const Party = ({ user, alert, fetchPartyList, classes, sessions, fetchBranches, 
     // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session)
     // this.setState({ selectedBranches: e})
     setSelectedBranches(e)
-   fetchPartyList(user, alert, session, e?.value)
+   fetchPartyList(userToken, alert, session, e?.value)
   }
   let circularProgress = null
   if (props.dataLoading) {
@@ -186,7 +186,7 @@ const Party = ({ user, alert, fetchPartyList, classes, sessions, fetchBranches, 
       alert.warning('Phone Number should be of 10 Digits')
       return
     }
-    props.saveParty(name, phone, gst, pan, address, user, alert, selectedBranches && selectedBranches.value)
+    props.saveParty(name, phone, gst, pan, address, userToken, alert, selectedBranches && selectedBranches.value)
     setShowAddModal(false)
   }
 
@@ -240,12 +240,12 @@ const Party = ({ user, alert, fetchPartyList, classes, sessions, fetchBranches, 
       editAddress
     } = editState
 
-    props.editParty(editId, editName, editPhone, editGst, editPan, editAddress, user, alert)
+    props.editParty(editId, editName, editPhone, editGst, editPan, editAddress, userToken, alert)
     setShowEditModal(false)
   }
 
   const deletePartyHandler = () => {
-    props.deleteParty(deleteId, user, alert)
+    props.deleteParty(deleteId, userToken, alert)
     setShowDeleteModal(false)
   }
 
@@ -583,7 +583,7 @@ const Party = ({ user, alert, fetchPartyList, classes, sessions, fetchBranches, 
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   partyList: state.finance.accountantReducer.expenseMngmtAcc.party.partyList,
   dataLoading: state.finance.common.dataLoader,
   branches: state.finance.common.branchPerSession,

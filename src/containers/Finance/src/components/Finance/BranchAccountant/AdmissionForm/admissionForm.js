@@ -60,6 +60,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class AdmissionFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -68,26 +69,28 @@ class AdmissionFormAcc extends Component {
       dropdowns: { session: null,
       fromDate: null,
       toDate: null
-      }
+      },
+sessionData: null
     }
   }
 
-  componentDidMount () {
-      if(this.props.user === null){
-        window.location.reload();
-      }
-  }
+componentDidMount(){
+  userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+}
   buttonHandler = (e) => {
     this.props.history.push({
       pathname: '/finance/customizedAdmissionForm'
     })
   }
   handleGetButton = (e) => {
-    this.props.getAdmissionRecords(this.props.user, this.props.alert, this.state.dropdowns.session, this.state.dropdowns.fromDate, this.state.dropdowns.toDate, this.state.selectedBranches)
+    this.props.getAdmissionRecords(userToken, this.props.alert, this.state.dropdowns.session, this.state.dropdowns.fromDate, this.state.dropdowns.toDate, this.state.selectedBranches)
   }
 
   dropDownHandler= (event, name) => {
-    this.props.fetchBranches(event && event.value, this.props.alert, this.props.user, moduleId)
+this.setState({
+  sessionData: event.value
+})
+    this.props.fetchBranches(event && event.value, this.props.alert, userToken, moduleId)
     const newstate = { ...this.state.dropdowns }
     switch (name) {
       case 'session': {
@@ -125,7 +128,9 @@ class AdmissionFormAcc extends Component {
     if (data.student_registered) {
       this.props.history.push({
         pathname: '/admissions/UpdateRegistrationForm/',
-        studentInformationForAdmission: data
+        studentInformationForAdmission: data,
+        session: this.state.sessionData,
+        branch: this.state.selectedBranches
       })
     } else {
       this.props.history.push({
@@ -135,8 +140,8 @@ class AdmissionFormAcc extends Component {
   }
 
   changehandlerbranch = (e) => {
-    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e && e.value)
-    // this.props.fetchGrade(this.state.session, e && e.value, this.props.alert, this.props.user, moduleId)
+    // this.props.fetchGrades(this.props.alert, userToken, moduleId, e && e.value)
+    // this.props.fetchGrade(this.state.session, e && e.value, this.props.alert, userToken, moduleId)
     this.setState({ selectedBranches: e})
   }
   render () {
@@ -209,7 +214,7 @@ class AdmissionFormAcc extends Component {
                 <div style={{ marginTop: '15px' }}>
                   <Select
                     placeholder='Select Year'
-                  // value={this.state.sessionData ? this.state.sessionData : null}
+                    value={this.state.sessionData ? this.state.sessionData : null}
                     name='session'
                     options={
                     this.props.session
@@ -299,7 +304,7 @@ class AdmissionFormAcc extends Component {
   }
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   admissionrecords: state.finance.accountantReducer.admissionForm.admissionrecords,
   branches: state.finance.common.branchPerSession,

@@ -190,7 +190,7 @@ BulkSms.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   branches: state.finance.common.branchPerSession,
   formCount: state.finance.accountantReducer.totalFormCount.formCount

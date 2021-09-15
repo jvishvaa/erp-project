@@ -182,7 +182,7 @@ class AllTransactions extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   allTransactionsList: state.finance.accountantReducer.payment.allTransactions
 })
 

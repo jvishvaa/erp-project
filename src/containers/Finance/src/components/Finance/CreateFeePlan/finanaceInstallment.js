@@ -20,12 +20,13 @@ function TabContainer ({ children, dir }) {
     </Typography>
   )
 }
-
+let userToken = "";
 const FinanaceInstallment = ({ ...props }) => {
   // const [modal, setModal] = useState(false)
   const [value, setValue] = useState('one')
   useEffect(() => {
-  }, [props.user])
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+  }, [userToken])
 
   // const closeModal = () => {
   //   setModal(false)
@@ -48,7 +49,7 @@ const FinanaceInstallment = ({ ...props }) => {
           acadId={props.acadId}
           alert={props.alert}
           close={props.close}
-          user={props.user}
+          user={userToken}
         />
       </TabContainer>}
       {value === 'two' && <TabContainer>
@@ -58,7 +59,7 @@ const FinanaceInstallment = ({ ...props }) => {
           alert={props.alert}
           close={props.close}
           feeTypeId={props.feeTypeId}
-          user={props.user}
+          user={userToken}
         />
       </TabContainer>}
     </React.Fragment>

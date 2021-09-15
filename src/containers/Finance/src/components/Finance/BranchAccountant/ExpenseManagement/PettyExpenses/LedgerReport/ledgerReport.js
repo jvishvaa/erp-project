@@ -58,6 +58,7 @@ if (NavData && NavData.length) {
   // setModulePermision(false);
 }
 
+let userToken = "";
 const LedgerReport = ({ classes,
   session,
   user,
@@ -117,29 +118,30 @@ const LedgerReport = ({ classes,
   const [dateChecked, setDateChecked] = useState(false)
 
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     if (academicSession) {
       // for receipt headers and subheader in voucher PDF
-      fetchReceiptHeader(academicSession, recData && recData.branch, user, alert)
+      fetchReceiptHeader(academicSession, recData && recData.branch, userToken, alert)
     }
   }, [academicSession,
     fetchReceiptHeader,
-    user,
+    userToken,
     alert])
 
   useEffect(() => {
     if (ledgerType) {
-      fetchLedgerRecord(ledgerType, user, alert)
+      fetchLedgerRecord(ledgerType, userToken, alert)
     }
   }, [ledgerType,
     fetchLedgerRecord,
-    user,
+    userToken,
     alert])
 
   useEffect(() => {
     if (ledgerHead) {
-      fetchLedgerName(ledgerHead, user, alert)
+      fetchLedgerName(ledgerHead, userToken, alert)
     }
-  }, [ledgerHead, fetchLedgerName, user, alert])
+  }, [ledgerHead, fetchLedgerName, userToken, alert])
 
   useEffect(() => {
     if (page > 1) {
@@ -149,7 +151,7 @@ const LedgerReport = ({ classes,
         ledgerName,
         fromDate,
         toDate,
-        user,
+        userToken,
         alert)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -184,7 +186,7 @@ const LedgerReport = ({ classes,
   }
 
   const handleActiveInactive = (e, id) => {
-    props.setActiveInactive(id, e.target.checked, user, alert)
+    props.setActiveInactive(id, e.target.checked, userToken, alert)
   }
 
   const fetchLedgerHandler = () => {
@@ -202,7 +204,7 @@ const LedgerReport = ({ classes,
       fromDate,
       toDate,
       page,
-      user,
+      userToken,
       alert,
       recData && recData.branch
     )
@@ -308,7 +310,7 @@ const LedgerReport = ({ classes,
         to_date: toDate,
         branch: recData && recData.branch
       }
-      downloadReports('LedgerReport.xlsx', urls.pettyReport, data, alert, user)
+      downloadReports('LedgerReport.xlsx', urls.pettyReport, data, alert, userToken)
     } else {
       alert.warning('Fill all the required Fields!')
     }
@@ -338,7 +340,7 @@ const LedgerReport = ({ classes,
                 narration: item.narration,
                 payslipHeader: receiptHeader[0].payslip_header,
                 payslipSubHeader: receiptHeader[0].receipt_sub_header,
-                user,
+                userToken,
                 alert
               })}
             >
@@ -627,7 +629,7 @@ const LedgerReport = ({ classes,
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.finance.common.financialYear,
   dataLoading: state.finance.common.dataLoader,
   ledgerTypeList: state.finance.common.ledgerType,

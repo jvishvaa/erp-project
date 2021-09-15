@@ -31,11 +31,12 @@ export const FETCH_DEVICE_ID = 'FETCH_DEVICE_ID'
 
 // action-creators
 export const fetchFinancialYear = (moduleId) => {
+const token = JSON.parse(localStorage.getItem('userDetails'))?.token
   return (dispatch, getState) => {
     const { authentication } = getState()
     axios.get(urls.GetFinancialYear + '?module_id=' + moduleId, {
       headers: {
-        'Authorization': 'Bearer ' + authentication.user
+        'Authorization': 'Bearer ' + token
       }
     }).then(response => {
       dispatch({
@@ -786,11 +787,12 @@ export const fetchStudentInfoForAdmin = (payload) => {
 }
 
 export const fetchLedgerType = () => {
+const  userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
   return (dispatch, getState) => {
     const { authentication } = getState()
     axios.get(urls.AddLedgerType, {
       headers: {
-        'Authorization': 'Bearer ' + authentication.user
+        'Authorization': 'Bearer ' + userToken
       }
     }).then(response => {
       dispatch({

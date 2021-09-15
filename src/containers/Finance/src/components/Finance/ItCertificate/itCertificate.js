@@ -19,7 +19,7 @@ import classes from './itCertificate.module.css'
 import Layout from '../../../../../Layout'
 
 // import { urls } from '../../../urls'
-
+let userToken = "";
 const styles = theme => ({
   tableWrapper: {
     overflowX: 'auto'
@@ -73,13 +73,9 @@ class ItCertificate extends Component {
       rowsPerPage: 10
     }
   }
-
-  componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload();
-    }
-  }
-
+componentDidMount(){
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+}
   componentDidUpdate () {
   }
 
@@ -100,7 +96,7 @@ class ItCertificate extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, branchData: [], sessionData: e }, () => {
-      this.props.fetchBranches(this.state.session, this.props.alert, this.props.user, moduleId)
+      this.props.fetchBranches(this.state.session, this.props.alert, userToken, moduleId)
     })
   }
 
@@ -109,7 +105,7 @@ class ItCertificate extends Component {
   }
 
   itcHandler = () => {
-    this.props.fetchItcList(this.state.session, this.state.branchId, this.props.alert, this.props.user)
+    this.props.fetchItcList(this.state.session, this.state.branchId, this.props.alert, userToken)
   }
 
   renderFeeTypeTable = () => {
@@ -130,7 +126,7 @@ class ItCertificate extends Component {
   }
 
   addModalShowHandler = () => {
-    this.props.fetchAllFeeType(this.state.session, this.state.branchId, this.props.alert, this.props.user)
+    this.props.fetchAllFeeType(this.state.session, this.state.branchId, this.props.alert, userToken)
     this.setState({ showAddFeeTypeModal: true })
   }
 
@@ -143,7 +139,7 @@ class ItCertificate extends Component {
   }
 
   deleteFeeTypeHandler = () => {
-    this.props.deleteITCLIst(this.state.session, this.state.branchId, this.state.itcID, this.props.alert, this.props.user)
+    this.props.deleteITCLIst(this.state.session, this.state.branchId, this.state.itcID, this.props.alert, userToken)
     this.deleteModalHandler()
   }
 
@@ -165,7 +161,7 @@ class ItCertificate extends Component {
         branch: this.state.branchId,
         fee_type: feeTypeArr
       }
-      this.props.saveFeeType(data, this.props.alert, this.props.user)
+      this.props.saveFeeType(data, this.props.alert, userToken)
       this.addModalHideHandler()
     } else {
       this.props.alert.warning('Select Fee Type')

@@ -33,6 +33,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class AddFeeType extends Component {
   constructor (props) {
     super(props)
@@ -57,7 +58,8 @@ class AddFeeType extends Component {
   }
 
   componentDidMount () {
-    this.props.fetchBranches(this.props.acadId, this.props.alert, this.props.user, moduleId)
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+    this.props.fetchBranches(this.props.acadId, this.props.alert, userToken, moduleId)
   }
 
   changehandlerbranch = (e) => {
@@ -91,7 +93,7 @@ class AddFeeType extends Component {
         is_refundable_fee: this.state.is_refundable_fee,
         show_transaction_in_parent_login: this.state.show_transaction_in_parent_login
       }
-      this.props.addedNormalFeeList(data, this.props.alert, this.props.user)
+      this.props.addedNormalFeeList(data, this.props.alert, userToken)
       this.props.close()
     } else {
       this.props.alert.warning('Select Required Fields')

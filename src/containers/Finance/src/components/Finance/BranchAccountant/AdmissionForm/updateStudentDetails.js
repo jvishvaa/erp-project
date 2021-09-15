@@ -56,6 +56,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken = '';
 class UpdateStudentDetailsFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -125,8 +127,9 @@ class UpdateStudentDetailsFormAcc extends Component {
   }
 
   componentDidMount () {
-    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId)
-    this.props.fetchClassGroup(this.props.alert, this.props.user)
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+    this.props.fetchGradeList(this.props.alert, userToken, moduleId, this.props.location.session, this.props.location.branch.value)
+    this.props.fetchClassGroup(this.props.alert, userToken)
   }
 
   handleGender = event => {
@@ -186,7 +189,7 @@ class UpdateStudentDetailsFormAcc extends Component {
       studentDetails: newstudentDetails
     }, () => {
       if (name === 'class') {
-        this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value, moduleId)
+        this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, userToken, event.value, moduleId)
       }
     })
   }
@@ -416,7 +419,7 @@ class UpdateStudentDetailsFormAcc extends Component {
   }
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   gradeList: state.finance.common.gradeList,
   sectionList: state.finance.common.sectionsPerGrade,
@@ -426,7 +429,7 @@ const mapStateToProps = state => ({
 })
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
-  fetchGradeList: (alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId })),
+  fetchGradeList: (alert, user, moduleId, session, branch) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId, session, branch })),
   fetchClassGroup: (alert, user) => dispatch(actionTypes.fetchClassGroup({ alert, user })),
   fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId }))
 

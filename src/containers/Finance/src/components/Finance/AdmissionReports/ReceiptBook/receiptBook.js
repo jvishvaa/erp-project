@@ -39,6 +39,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken ="";
 class ReceiptBookAdm extends Component {
     state ={
       session: '',
@@ -58,10 +60,8 @@ class ReceiptBookAdm extends Component {
       role: ''
     }
     componentDidMount () {
+      userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
       // this.todayDate()
-      if(this.props.user === null){
-        window.location.reload();
-      }
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile?.personal_info?.role?.toLowerCase()
       this.setState({
@@ -70,7 +70,7 @@ class ReceiptBookAdm extends Component {
       // , 
       // () => {
       //   if (this.state.role === 'financeaccountant') {
-      //     this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
+      //     this.props.fetchBranchAtAcc(this.props.alert, userToken)
       //   }
       // }
       )
@@ -95,10 +95,10 @@ class ReceiptBookAdm extends Component {
     handleAcademicyear = (e) => {
       this.setState({ session: e.value, selectedBranches: [], sessionData: e }, () => {
         // if (this.state.role === 'financeaccountant') {
-        //   // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
-        //   this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
+        //   // this.props.fetchBranchAtAcc(this.props.alert, userToken)
+        //   this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.props.alert, userToken)
         // } else {
-          this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+          this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
         // }
       })
     }
@@ -120,7 +120,7 @@ class ReceiptBookAdm extends Component {
           branchId: allBranchIds,
           selectedTypes: []
         }, () => {
-          this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.props.alert, this.props.user)
+          this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.props.alert, userToken)
         })
       } else {
         e && e.forEach(payment => {
@@ -132,7 +132,7 @@ class ReceiptBookAdm extends Component {
           selectedTypes: []
         }, () => {
        
-          this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.props.alert, this.props.user)
+          this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.props.alert, userToken)
         })
       }
     }
@@ -224,7 +224,7 @@ class ReceiptBookAdm extends Component {
           to_date: this.state.endDate
         }
       // }
-      this.props.downloadReports('AdmReceiptBook.xlsx', urls.DownloadAdmRecptBook, data, this.props.alert, this.props.user)
+      this.props.downloadReports('AdmReceiptBook.xlsx', urls.DownloadAdmRecptBook, data, this.props.alert, userToken)
     }
     render () {
       return (
@@ -360,7 +360,7 @@ class ReceiptBookAdm extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.multipleBranchPerSession,
   branchAtAcc: state.finance.common.branchAtAcc,

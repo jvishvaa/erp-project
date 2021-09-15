@@ -82,6 +82,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class MakeEntry extends Component {
   state = {
     ledgerCount: 0,
@@ -100,6 +101,7 @@ class MakeEntry extends Component {
   }
   
   componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     const ledgerData = [...this.state.ledgerData]
     const data = {
       ledgerType: null,
@@ -112,8 +114,8 @@ class MakeEntry extends Component {
     this.setState({
       ledgerData
     })
-    this.props.fetchPettyCash(this.props.user, this.props.alert, this.props.recData && this.props.recData.branch)
-    this.props.fetchPartyList(this.props.user, this.props.alert, this.props.recData && this.props.recData.branch )
+    this.props.fetchPettyCash(userToken, this.props.alert, this.props.recData && this.props.recData.branch)
+    this.props.fetchPartyList(userToken, this.props.alert, this.props.recData && this.props.recData.branch )
   }
 
   addLedgerRow = () => {
@@ -140,7 +142,8 @@ class MakeEntry extends Component {
   }
 
   fetchLedgerRecord = (e, i) => {
-    this.props.fetchLedgerRecord(e.value, this.props.user, this.props.alert)
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+    this.props.fetchLedgerRecord(e.value, userToken, this.props.alert)
     const ledgerData = [...this.state.ledgerData]
     const data = { ...ledgerData[i] }
     data.ledgerType = e
@@ -151,7 +154,8 @@ class MakeEntry extends Component {
   }
 
   ledgerHeadChangeHandler = (e, i) => {
-    this.props.fetchLedgerName(e.value, this.props.user, this.props.alert)
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+    this.props.fetchLedgerName(e.value, userToken, this.props.alert)
     const ledgerData = [...this.state.ledgerData]
     const data = { ...ledgerData[i] }
     data.ledgerHead = e
@@ -294,7 +298,7 @@ class MakeEntry extends Component {
       }
       form.append('bank', this.state.selectedBank.value)
     }
-    this.props.savePettyCashExpense(form, this.props.user, this.props.alert)
+    this.props.savePettyCashExpense(form, userToken, this.props.alert)
     const data = {
       ledgerType: null,
       ledgerHead: null,
@@ -717,7 +721,7 @@ class MakeEntry extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   ledgerTypeList: state.finance.common.ledgerType,
   session: state.finance.common.financialYear,
   pettyCashAccounts: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.pettyCashAccounts,

@@ -47,6 +47,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken ="";
 class ReceiptBook extends Component {
     state ={
       session: '',
@@ -67,9 +69,7 @@ class ReceiptBook extends Component {
       role: ''
     }
     componentDidMount () {
-      if(this.props.user === null){
-        window.location.reload();
-      }
+      userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
       // this.todayDate()
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile && userProfile?.personal_info && userProfile?.personal_info?.role?.toLowerCase()
@@ -78,7 +78,7 @@ class ReceiptBook extends Component {
       }
       // , () => {
       //   if (this.state.role === 'financeaccountant') {
-      //     this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
+      //     this.props.fetchBranchAtAcc(this.props.alert, userToken)
       //   }
       // }
       )
@@ -105,9 +105,9 @@ class ReceiptBook extends Component {
       })
       this.setState({ session: session, selectedBranches: [], sessionData: e.target.value }, () => {
         // if (this.state.role === 'financeaccountant') {
-        //   // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.props.alert, this.props.user)
+        //   // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.props.alert, userToken)
         // } else {
-          this.props.fetchBranches(session, this.props.alert, this.props.user, moduleId)
+          this.props.fetchBranches(session, this.props.alert, userToken, moduleId)
         // }
       })
     }
@@ -129,7 +129,7 @@ class ReceiptBook extends Component {
           branchId: 'all',
           selectedTypes: []
         }, () => {
-          // this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.props.alert, this.props.user)
+          // this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.props.alert, userToken)
         })
       } else {
         e.target.value.forEach(payment => {
@@ -140,7 +140,7 @@ class ReceiptBook extends Component {
           branchId: ids,
           selectedTypes: []
         }, () => {
-          // this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.props.alert, this.props.user)
+          // this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.props.alert, userToken)
         })
       }
     }
@@ -150,10 +150,10 @@ class ReceiptBook extends Component {
         typesId: e.target.value
       }, () => {
         // if (this.state.role === 'financeaccountant') {
-          // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
-          // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.state.typesId, this.props.alert, this.props.user)
+          // this.props.fetchBranchAtAcc(this.props.alert, userToken)
+          // this.props.fetchFeeTypes(this.state.session, this.props.branchAtAcc.branch, this.state.typesId, this.props.alert, userToken)
         // } else {
-          this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.state.typesId, this.props.alert, this.props.user)
+          this.props.fetchFeeTypes(this.state.session, this.state.branchId, this.state.typesId, this.props.alert, userToken)
         // }
       })
     }
@@ -171,10 +171,10 @@ class ReceiptBook extends Component {
           feeTypeId: 'all'
         }, () => {
           // if (this.state.role === 'financeaccountant') {
-          //   // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
-          //   this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.state.typesId, this.state.selectedFeeTypes && this.state.selectedFeeTypes.value, this.props.alert, this.props.user)
+          //   // this.props.fetchBranchAtAcc(this.props.alert, userToken)
+          //   this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.state.typesId, this.state.selectedFeeTypes && this.state.selectedFeeTypes.value, this.props.alert, userToken)
           // } else {
-            this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.state.typesId, this.state.selectedFeeTypes && this.state.selectedFeeTypes.value, this.props.alert, this.props.user)
+            this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.state.typesId, this.state.selectedFeeTypes && this.state.selectedFeeTypes.value, this.props.alert, userToken)
           // }
         })
       } else {
@@ -187,10 +187,10 @@ class ReceiptBook extends Component {
           feeTypeId: ids
         }, () => {
           // if (this.state.role === 'financeaccountant') {
-          //   // this.props.fetchBranchAtAcc(this.props.alert, this.props.user)
-          //   this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.state.typesId, this.state.feeTypeId, this.props.alert, this.props.user)
+          //   // this.props.fetchBranchAtAcc(this.props.alert, userToken)
+          //   this.props.fetchFeeAccounts(this.state.session, this.props.branchAtAcc.branch, this.state.typesId, this.state.feeTypeId, this.props.alert, userToken)
           // } else {
-            this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.state.typesId, this.state.feeTypeId, this.props.alert, this.props.user)
+            this.props.fetchFeeAccounts(this.state.session, this.state.branchId, this.state.typesId, this.state.feeTypeId, this.props.alert, userToken)
           // }
         })
       }
@@ -283,7 +283,7 @@ class ReceiptBook extends Component {
           to_date: this.state.endDate
         // }
       }
-      this.props.downloadReports('ReceiptBook.csv', urls.DownloadReceiptBook, data, this.props.alert, this.props.user)
+      this.props.downloadReports('ReceiptBook.csv', urls.DownloadReceiptBook, data, this.props.alert, userToken)
     }
     render () {
       let selectBranch = null
@@ -450,7 +450,7 @@ class ReceiptBook extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.multipleBranchPerSession,
   branchAtAcc: state.finance.common.branchAtAcc,

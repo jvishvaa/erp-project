@@ -62,6 +62,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class StudentInfoAdm extends Component {
   constructor (props) {
     super(props)
@@ -78,11 +79,9 @@ class StudentInfoAdm extends Component {
     }
   }
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload()
-    }
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     // this.props.listBranches()
-    // this.props.fetchGradeList(this.props.alert, this.props.user)
+    // this.props.fetchGradeList(this.props.alert, userToken)
   }
 
   studentInfoDropdonHandler= (event, name) => {
@@ -113,12 +112,12 @@ class StudentInfoAdm extends Component {
     }, () => {
       if (name === 'branch') {
         this.setState({ selectedBranches: event})
-        this.props.fetchGradesPerBranch(this.props.alert, this.props.user, this.state.studentInfo.academicyear, this.state.studentInfo.branch, moduleId)
+        this.props.fetchGradesPerBranch(this.props.alert, userToken, this.state.studentInfo.academicyear, this.state.studentInfo.branch, moduleId)
       } else if (name === 'class') {
-        this.props.fetchAllSectionsPerGradeAsAdmin(this.state.studentInfo.academicyear, this.props.alert, this.props.user, event.value, this.state.studentInfo.branch, moduleId)
+        this.props.fetchAllSectionsPerGradeAsAdmin(this.state.studentInfo.academicyear, this.props.alert, userToken, event.value, this.state.studentInfo.branch, moduleId)
       } if (name === 'academicyear') {
         // this.props.listBranches()
-        this.props.fetchBranches(event && event.value, this.props.alert, this.props.user, moduleId)
+        this.props.fetchBranches(event && event.value, this.props.alert, userToken, moduleId)
       }
     })
   }
@@ -126,13 +125,13 @@ class StudentInfoAdm extends Component {
   searchByStudentnoHandler = (e, selected) => {
     this.setState({ searchBox: e.target.value }, () => {
       if (this.state.searchBox.length >= 3) {
-        this.props.fetchErpSuggestionsStudentName(this.props.alert, this.props.user, this.state.studentInfo.academicyear, this.state.studentInfo.grade, this.state.studentInfo.section, this.state.studentInfo.branch, this.state.searchBox)
+        this.props.fetchErpSuggestionsStudentName(this.props.alert, userToken, this.state.studentInfo.academicyear, this.state.studentInfo.grade, this.state.studentInfo.section, this.state.studentInfo.branch, this.state.searchBox)
       }
     })
   }
 
   handleGetButton = (e) => {
-    this.props.fetchStudentInfoForAdmin(this.props.alert, this.props.user, this.state.studentInfo.academicyear, this.state.studentInfo.grade, this.state.studentInfo.section, this.state.studentInfo.branch)
+    this.props.fetchStudentInfoForAdmin(this.props.alert, userToken, this.state.studentInfo.academicyear, this.state.studentInfo.grade, this.state.studentInfo.section, this.state.studentInfo.branch)
   }
 
   render () {

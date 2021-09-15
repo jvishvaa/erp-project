@@ -16,6 +16,7 @@ import DefaultView from './defaultView'
 import DueDateWise from './dueDateWise'
 import Layout from '../../../../../../Layout'
 
+let token ="";
 function TabContainer ({ children, dir }) {
   return (
     <Typography component='div' dir={dir} style={{ padding: 8 * 3 }}>
@@ -67,11 +68,9 @@ class FeeStructure extends Component {
   }
 
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload()
-    }
+    token = JSON.parse(localStorage.getItem('userDetails'))?.token || {};
     if (!this.props.feeStructureList.length) {
-      this.props.fetchListDefaultView(this.props.alert, this.props.user)
+      this.props.fetchListDefaultView(this.props.alert, token)
       this.setState({ getList: true })
     } else {
       this.setState({ getList: true })
@@ -96,7 +95,7 @@ class FeeStructure extends Component {
 
   // componentWillReceiveProps (nextProps) {
   //   if (nextProps.feeStructureList !== this.props.feeStructureList) {
-  //     this.props.fetchListDefaultView(this.props.alert, this.props.user)
+  //     this.props.fetchListDefaultView(this.props.alert, token)
   //   } else {
   //     return false
   //   }
@@ -120,7 +119,7 @@ class FeeStructure extends Component {
             <DefaultView
               alert={this.props.alert}
               defaultViewList={this.props.feeStructureList}
-              user={this.props.user}
+              user={token}
               getList={this.state.getList}
             />
           </TabContainer>}
@@ -128,7 +127,7 @@ class FeeStructure extends Component {
             <DueDateWise
               alert={this.props.alert}
               dueDateWiseList={this.props.feeStructureList}
-              user={this.props.user}
+              user={token}
               getList={this.state.getList}
             />
           </TabContainer>}

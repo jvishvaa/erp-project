@@ -79,32 +79,9 @@ const styles = (theme) => ({
     minHeight: '75vh',
   },
 });
-const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-let moduleId;
-if (NavData && NavData.length) {
-  NavData.forEach((item) => {
-    if (
-      item.parent_modules === 'student' &&
-      item.child_module &&
-      item.child_module.length > 0
-    ) {
-      item.child_module.forEach((item) => {
-        if (item.child_name === 'Ledger Tab') {
-          // setModuleId(item.child_id);
-          // setModulePermision(true);
-          moduleId = item.child_id;
-        } else {
-          // setModulePermision(false);
-        }
-      });
-    } else {
-      // setModulePermision(false);
-    }
-  });
-} else {
-  // setModulePermision(false);
-}
 
+let userToken ="";
+let moduleId;
 class StudentLedgerTab extends Component {
   constructor(props) {
     super(props);
@@ -147,17 +124,40 @@ class StudentLedgerTab extends Component {
   }
 
   componentDidMount() {
-    if(this.props.user === null){
-      window.location.reload()
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Ledger Tab') {
+          // setModuleId(item.child_id);
+          // setModulePermision(true);
+          moduleId = item.child_id;
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
     }
+  });
+} else {
+  // setModulePermision(false);
+}
+     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (this.state.session && moduleId) {
       this.props.fetchBranches(
         this.state.session.value,
         this.props.alert,
-        this.props.user,
+        userToken,
         moduleId
       );
-      // this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
+      // this.props.fetchGrades(this.state.session.value, this.props.alert, userToken, moduleId)
     }
   }
 
@@ -178,8 +178,8 @@ class StudentLedgerTab extends Component {
         showTabs: false,
       },
       () => {
-        this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId);
-        // this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user, moduleId)
+        this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId);
+        // this.props.fetchGrades(this.state.session.value, this.props.alert, userToken, moduleId)
       }
     );
   };
@@ -189,10 +189,10 @@ class StudentLedgerTab extends Component {
       this.state.session.value,
       e.value,
       this.props.alert,
-      this.props.user,
+      userToken,
       moduleId
     );
-    // this.props.fetchGrades(this.props.alert, this.props.user, moduleId, e.value, this.state.session && this.state.session.value)
+    // this.props.fetchGrades(this.props.alert, userToken, moduleId, e.value, this.state.session && this.state.session.value)
     this.setState({ selectedBranches: e });
   };
 
@@ -210,7 +210,7 @@ class StudentLedgerTab extends Component {
           this.state.gradeId,
           this.state.selectedBranches && this.state.selectedBranches.value,
           this.props.alert,
-          this.props.user,
+          userToken,
           moduleId
         );
         this.setState({
@@ -263,7 +263,7 @@ class StudentLedgerTab extends Component {
       this.props.fetchAllPayment(
         this.state.session.value,
         this.state.studentLabel,
-        this.props.user,
+        userToken,
         this.props.alert,
         this.state.selectedBranches?.value,
         moduleId
@@ -272,7 +272,7 @@ class StudentLedgerTab extends Component {
       this.props.fetchAllPayment(
         this.state.session.value,
         this.state.studentErp,
-        this.props.user,
+        userToken,
         this.props.alert,
         this.state.selectedBranches?.value,
         moduleId
@@ -284,18 +284,25 @@ class StudentLedgerTab extends Component {
   };
 
   myErpFunc = () => {
-    this.props.studentErpSearch(
-      'erp',
-      this.state.session.value,
-      this.state.gradeId,
-      this.state.sectionId,
-      this.state.studentTypeData.value,
-      this.state.student,
-      this.props.alert,
-      this.props.user,
-      this.state.selectedBranches?.value,
-      moduleId
-    );
+    if(this.state.selectedBranches?.value == undefined){
+      this.props.alert.warning('Please Select Branch Name');
+      return;
+    }
+    if(this.state.selectedBranches?.value != undefined)
+    {
+      this.props.studentErpSearch(
+        'erp',
+        this.state.session.value,
+        this.state.gradeId,
+        this.state.sectionId,
+        this.state.studentTypeData.value,
+        this.state.student,
+        this.props.alert,
+        userToken,
+        this.state.selectedBranches?.value,
+        moduleId
+      );
+    }
   };
 
   studentErpChangeHandler = (e, selected) => {
@@ -323,28 +330,34 @@ class StudentLedgerTab extends Component {
 
   myStudentFun = () => {
     const { searchTypeId } = this.state;
-    this.props.studentErpSearch(
-      searchTypeId === 2
-        ? 'student'
-        : searchTypeId === 3
-        ? 'fatherName'
-        : searchTypeId === 4
-        ? 'fatherNo'
-        : searchTypeId === 5
-        ? 'motherName'
-        : searchTypeId === 6
-        ? 'motherNo'
-        : 'na',
-      this.state.session.value,
-      this.state.gradeId,
-      this.state.sectionId,
-      this.state.studentTypeData.value,
-      this.state.studentName,
-      this.props.alert,
-      this.props.user,
-      this.state.selectedBranches?.value,
-      moduleId
-    );
+    if(this.state.selectedBranches?.value == undefined){
+      this.props.alert.warning('Please Select Branch Name');
+      return;
+    }
+    if(this.state.selectedBranches?.value != undefined){
+        this.props.studentErpSearch(
+          searchTypeId === 2
+            ? 'student'
+            : searchTypeId === 3
+            ? 'fatherName'
+            : searchTypeId === 4
+            ? 'fatherNo'
+            : searchTypeId === 5
+            ? 'motherName'
+            : searchTypeId === 6
+            ? 'motherNo'
+            : 'na',
+          this.state.session.value,
+          this.state.gradeId,
+          this.state.sectionId,
+          this.state.studentTypeData.value,
+          this.state.studentName,
+          this.props.alert,
+          userToken,
+          this.state.selectedBranches?.value,
+          moduleId
+        );
+    }
   };
 
   studentNameChangeHandler = (e, selected) => {
@@ -383,7 +396,25 @@ class StudentLedgerTab extends Component {
     console.log(this.props.studentErp, ' student erp ');
     let user_id = JSON.parse(localStorage.getItem('userDetails')).erp || {};
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
-    axios
+
+    if (!this.state.session || !this.state.selectedBranches ) {
+      this.props.alert.warning('Please Fill All The Fields');
+      return;
+    }
+    if(this.state.searchTypeId === 1){
+      if(!this.state.student){
+        this.props.alert.warning('Please Fill Correct ERP');
+        return;
+      }
+    } 
+    if(this.state.searchTypeId === 2 || this.state.searchTypeId === 3 ||this.state.searchTypeId === 4 || this.state.searchTypeId === 5 || this.state.searchTypeId === 6){
+      if(!this.state.studentName){
+        this.props.alert.warning('Please Fill Correct Name');
+        return;
+      }
+    }
+
+      axios
       .get(urls.CheckPayment + '?student=' + this.props.studentErp[0].erp, {
         headers: {
           Authorization: 'Bearer ' + token,
@@ -480,7 +511,7 @@ class StudentLedgerTab extends Component {
                 branchId={this.state.selectedBranches?.value}
                 getData={this.state.getData}
                 erp={erpValue}
-                user={this.props.user}
+                user={userToken}
               />
             </TabContainer>
           )}
@@ -493,7 +524,7 @@ class StudentLedgerTab extends Component {
                 branchId={this.state.selectedBranches?.value}
                 getData={this.state.getData}
                 erp={erpValue}
-                user={this.props.user}
+                user={userToken}
                 parentCallback={this.callbackFunction}
               />
             </TabContainer>
@@ -507,7 +538,7 @@ class StudentLedgerTab extends Component {
                 branchId={this.state.selectedBranches?.value}
                 getData={this.state.getData}
                 erpNo={erpValue}
-                user={this.props.user}
+                user={userToken}
               />
             </TabContainer>
           )}
@@ -520,7 +551,7 @@ class StudentLedgerTab extends Component {
                 branchId={this.state.selectedBranches?.value}
                 getData={this.state.getData}
                 erpNo={erpValue}
-                user={this.props.user}
+                user={userToken}
               />
             </TabContainer>
           )}
@@ -533,7 +564,7 @@ class StudentLedgerTab extends Component {
                 branchId={this.state.selectedBranches?.value}
                 getData={this.state.getData}
                 erp={erpValue}
-                user={this.props.user}
+                user={userToken}
               />
             </TabContainer>
           )}
@@ -546,7 +577,7 @@ class StudentLedgerTab extends Component {
                 branchId={this.state.selectedBranches?.value}
                 getData={this.state.getData}
                 erp={erpValue}
-                user={this.props.user}
+                user={userToken}
               />
             </TabContainer>
           )}
@@ -555,7 +586,7 @@ class StudentLedgerTab extends Component {
               session={this.state.session.value}
               getData={this.state.getData}
               erp={erpValue}
-              user={this.props.user}
+              user={userToken}
               alert={this.props.alert}
             />
           </TabContainer>} */}
@@ -567,7 +598,7 @@ class StudentLedgerTab extends Component {
                 branchId={this.state.selectedBranches?.value}
                 getData={this.state.getData}
                 erp={erpValue}
-                user={this.props.user}
+                user={userToken}
                 alert={this.props.alert}
               />
             </TabContainer>
@@ -580,7 +611,7 @@ class StudentLedgerTab extends Component {
                 branchId={this.state.selectedBranches?.value}
                 getData={this.state.getData}
                 erp={erpValue}
-                user={this.props.user}
+                user={userToken}
                 alert={this.props.alert}
               />
             </TabContainer>
@@ -593,7 +624,7 @@ class StudentLedgerTab extends Component {
                 branchId={this.state.selectedBranches?.value}
                 getData={this.state.getData}
                 erpValue={erpValue}
-                user={this.props.user}
+                user={userToken}
                 alert={this.props.alert}
               />
             </TabContainer>
@@ -606,7 +637,7 @@ class StudentLedgerTab extends Component {
                 branchId={this.state.selectedBranches?.value}
                 getData={this.state.getData}
                 erp={erpValue}
-                user={this.props.user}
+                user={userToken}
                 alert={this.props.alert}
               />
             </TabContainer>
@@ -836,14 +867,14 @@ class StudentLedgerTab extends Component {
               <Student
                 erp={this.state.studentLabel}
                 session={this.state.session.value}
-                user={this.props.user}
+                user={userToken}
                 alert={this.props.alert}
               />
             ) : (
               <Student
                 erp={this.state.studentErp}
                 session={this.state.session.value}
-                user={this.props.user}
+                user={userToken}
                 alert={this.props.alert}
               />
             )}
@@ -857,7 +888,7 @@ class StudentLedgerTab extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   // ErpSuggestions: state.finance.makePayAcc.erpSuggestions,
   gradeData: state.finance.accountantReducer.pdc.gradeData,

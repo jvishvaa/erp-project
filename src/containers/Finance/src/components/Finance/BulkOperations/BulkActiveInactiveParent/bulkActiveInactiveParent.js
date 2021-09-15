@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import {
   TextField,
@@ -17,6 +17,7 @@ import * as actionTypes from '../../store/actions'
 import Layout from '../../../../../../Layout'
 // import { CircularProgress } from '../../../../ui'
 
+let userToken='';
 const BulkActiveInactiveParent = ({
   classes,
   dataLoaded,
@@ -24,6 +25,10 @@ const BulkActiveInactiveParent = ({
   ...props }) => {
   const [statusFile, setStatusFile] = useState(null)
   const [status, setStatus] = useState('active')
+
+  useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
+  }, [])
 
   const fileChangeHandler = (event) => {
     const file = event.target.files[0]
@@ -85,7 +90,7 @@ const BulkActiveInactiveParent = ({
     //   return
     // }
     if (statusFile) {
-      props.bulkActiveInactiveParent(form, props.user, props.alert)
+      props.bulkActiveInactiveParent(form, userToken, props.alert)
     } else {
       props.alert.warning('Please Select File to Upload!')
     }
@@ -158,7 +163,7 @@ const BulkActiveInactiveParent = ({
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoadingStatus: state.finance.common.dataLoader
 })
 

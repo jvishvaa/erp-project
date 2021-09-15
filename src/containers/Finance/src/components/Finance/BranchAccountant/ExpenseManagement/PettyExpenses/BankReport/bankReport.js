@@ -24,15 +24,18 @@ import * as actionTypes from '../../../../store/actions'
 // import { generateExcel } from '../../../../../../utils' // Rajneesh
 import Layout from '../../../../../../../../Layout'
 
+let userToken="";
+
 const BankReport = ({ user, alert, session, location, classes, ...props }) => {
   const [academicSession, setAcademicSession] = useState(null)
   const getBankStatements = () => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     const bankId = location.state
     if (!academicSession || !bankId) {
       alert.warning('Please Provide All Data')
       return
     }
-    props.fetchBankStatement(academicSession, bankId, user, alert)
+    props.fetchBankStatement(academicSession, bankId, userToken, alert)
   }
 
   const createExcel = () => {

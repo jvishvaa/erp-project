@@ -20,7 +20,6 @@ import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import Layout from '../../../../../../Layout'
 
 
-
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
 let moduleId
@@ -47,8 +46,9 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 
-const StudentPromotion = ({ classes, session, branches, fetchAllFeePlans, feePlans, fetchBranches, sendStudentPromotionList, studentList, studentPromotionList, fetchGradesPerBranch, fetchAllSection, alert, user, dataLoading, gradesPerBranch, sections }) => {
+const StudentPromotion = ({ classes, session, branches, fetchAllFeePlans, feePlans, fetchBranches, sendStudentPromotionList, studentList, studentPromotionList, fetchGradesPerBranch, fetchAllSection, alert, dataLoading, gradesPerBranch, sections }) => {
   const [sessionData, setSessionData] = useState([])
   const [branchData, setBranchData] = useState([])
   const [isAdmin, setIsAdmin] = useState(false)
@@ -81,9 +81,7 @@ const StudentPromotion = ({ classes, session, branches, fetchAllFeePlans, feePla
   }, [])
 
   useEffect(() => {
-    if(user === null){
-      window.location.reload()
-    }
+userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     let promoted = []
     let notPromoted = []
     if (studentList.length) {
@@ -119,7 +117,7 @@ const StudentPromotion = ({ classes, session, branches, fetchAllFeePlans, feePla
     //   arr2 = ((Object.keys(notpromotedStudent).filter(key => notpromotedStudent[key] === true)))
     //   setStudentListCanPromoted(arr2)
     // }
-  }, [promotedStudent])
+  }, [promotedStudent, userToken])
 
   const downloadCanBePromotedStu = () => {
     const headers = [
@@ -232,16 +230,17 @@ const StudentPromotion = ({ classes, session, branches, fetchAllFeePlans, feePla
   }
   const handleClickSessionYear = (e) => {
     setSessionData(e)
-    fetchBranches(e.value, alert, user, moduleId)
+console.log("token",userToken)
+    fetchBranches(e.value, alert, userToken, moduleId)
   }
   const changehandlerbranch = (e) => {
     setBranchData(e)
-    fetchGradesPerBranch(alert, user, sessionData.value, e.value, moduleId)
+    fetchGradesPerBranch(alert, userToken, sessionData.value, e.value, moduleId)
   }
   const gradeHandler = (e) => {
     setGradeData(e)
     // setGradeId(e.value)
-    fetchAllSection(sessionData.value, alert, user, e.value, branchData.value)
+    fetchAllSection(sessionData.value, alert, userToken, e.value, branchData.value)
   }
 
   const sectionHandler = (e) => {
@@ -301,11 +300,11 @@ const StudentPromotion = ({ classes, session, branches, fetchAllFeePlans, feePla
         grade: gradeData && gradeData.value,
         section: sectionData && sectionData.value
       }
-      studentPromotionList(data, alert, user)
+      studentPromotionList(data, alert, userToken)
       let year =  sessionData && sessionData.value
       let nextYear = year.split('-')
       let nextFeePlanYear = (+nextYear[0] + 1 )+ '-' + (+nextYear[1] + 1)
-      fetchAllFeePlans(nextFeePlanYear, gradeData && gradeData.value, branchData && branchData.value, alert, user)
+      fetchAllFeePlans(nextFeePlanYear, gradeData && gradeData.value, branchData && branchData.value, alert, userToken)
     }
     setDisplayStudentList(true)
   }
@@ -364,7 +363,7 @@ const StudentPromotion = ({ classes, session, branches, fetchAllFeePlans, feePla
       promoted_student_list: studentListCanPromoted,
       fee_plan: ChangedFeePlanId
     }
-    sendStudentPromotionList(data, alert, user)
+    sendStudentPromotionList(data, alert, userToken)
     setStudentListCanPromoted(null)
     setPromotedStudent(false)
     setAllStuPromoted(false)
@@ -730,7 +729,7 @@ const StudentPromotion = ({ classes, session, branches, fetchAllFeePlans, feePla
   )
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.branchPerSession,
   gradesPerBranch: state.finance.common.gradesPerBranch,

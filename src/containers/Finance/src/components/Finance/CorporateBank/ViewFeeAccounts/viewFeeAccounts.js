@@ -57,6 +57,7 @@ if (NavData && NavData.length) {
 
 let viewFeeAccState = null
 
+let userToken = "";
 class ViewFeeAccounts extends Component {
   constructor (props) {
     super(props)
@@ -82,6 +83,7 @@ class ViewFeeAccounts extends Component {
   }
 
   componentDidMount () {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (viewFeeAccState !== null) {
       this.setState(viewFeeAccState)
     }
@@ -106,7 +108,7 @@ class ViewFeeAccounts extends Component {
     })
   }
   fetchBranchHandler = (e) => {
-    this.props.fetchBranches(this.props.currentSession, this.props.alert, this.props.user, moduleId)
+    this.props.fetchBranches(this.props.currentSession, this.props.alert, userToken, moduleId)
     // this.setState({ branchId: e.value, branchData: e })
   }
 
@@ -147,7 +149,7 @@ class ViewFeeAccounts extends Component {
       }
 
       if (this.props.currentSession && this.state.currentBranch) {
-        this.props.fetchAllFeeAccounts(this.props.currentSession, this.state.currentBranch.id, this.props.alert, this.props.user, moduleId)
+        this.props.fetchAllFeeAccounts(this.props.currentSession, this.state.currentBranch.id, this.props.alert, userToken, moduleId)
         this.setState({ showTable: true, showAddButton: true }, () => { viewFeeAccState = this.state })
       }
       // this.renderTable()
@@ -168,12 +170,12 @@ class ViewFeeAccounts extends Component {
         is_expenses_account: data.is_expense_account === 'Yes',
         is_delete: true
       }
-      this.props.deleteFeeAccounts(deleteData, this.state.deleteId, this.props.alert, this.props.user)
+      this.props.deleteFeeAccounts(deleteData, this.state.deleteId, this.props.alert, userToken)
       this.hideDeleteModalHandler()
       // axios
       //   .put(updatedList, deleteData, {
       //     headers: {
-      //       Authorization: 'Bearer ' + this.props.user
+      //       Authorization: 'Bearer ' + userToken
       //     }
       //   })
       //   .then(res => {
@@ -252,7 +254,7 @@ class ViewFeeAccounts extends Component {
         if (this.state.showEditModal) {
           editModal = (
             <Modal open={this.state.showEditModal} click={this.hideModalHandler}>
-              <EditFeeAccount id={this.state.editFeeAccid} accountDetails={this.props.viewFeeAccList} giveData={this.getBackTheUpdatedDataHandler} alert={this.props.alert} close={this.hideModalHandler} />
+              <EditFeeAccount id={this.state.editFeeAccid} accountDetails={this.props.viewFeeAccList} giveData={this.getBackTheUpdatedDataHandler} alert={this.props.alert} close={this.hideModalHandler} user={userToken} />
             </Modal>
           )
         }
@@ -260,7 +262,7 @@ class ViewFeeAccounts extends Component {
         if (this.state.showAddModal) {
           addModal = (
             <Modal open={this.state.showAddModal} click={this.hideModalHandler}>
-              <AddFeeAccount giveData={this.getBackTheAddedDataHandler} alert={this.props.alert} close={this.hideModalHandler} branch={this.state.currentBranch.id} session={this.props.currentSession} />
+              <AddFeeAccount giveData={this.getBackTheAddedDataHandler} alert={this.props.alert} close={this.hideModalHandler} branch={this.state.currentBranch.id} session={this.props.currentSession}  user={userToken} />
             </Modal>
           )
         }
@@ -513,7 +515,7 @@ class ViewFeeAccounts extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   branches: state.finance.common.branchPerSession,
   viewFeeAccList: state.finance.viewFeeAccounts.viewFeeAccList,
   dataLoading: state.finance.common.dataLoader

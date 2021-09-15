@@ -70,6 +70,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken ="";
 class AddOtherFees extends Component {
   constructor (props) {
     super(props)
@@ -98,6 +99,7 @@ class AddOtherFees extends Component {
   }
 
   componentDidMount () {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (!this.props.location.state.currentYear.value || !this.props.location.state.currentBranch.value) {
       this.props.alert.warning('Select Academic Year & Branch')
       this.props.history.push({
@@ -111,7 +113,7 @@ class AddOtherFees extends Component {
         branchData: this.props.location.state.currentBranch,
         branchId: this.props.location.state.currentBranch.value
       }, () => {
-        this.props.fetchFeeAccount(this.state.sessionData.value, this.state.branchData.value, this.props.alert, this.props.user)
+        this.props.fetchFeeAccount(this.state.sessionData.value, this.state.branchData.value, this.props.alert, userToken)
       })
     }
   }
@@ -228,12 +230,12 @@ class AddOtherFees extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, branchData: [], sessionData: e })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+    this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
   }
 
   changehandlerbranch = (e) => {
     this.setState({ branchId: e.value, branchData: e })
-    this.props.fetchFeeAccount(this.state.session, e.value, this.props.alert, this.props.user)
+    this.props.fetchFeeAccount(this.state.session, e.value, this.props.alert, userToken)
   }
 
   feeAccountChangeHandler = (e) => {
@@ -304,10 +306,10 @@ class AddOtherFees extends Component {
     } = this.state
     const {
       alert,
-      user
+      // user
     } = this.props
     if (session && branchId && feeTypeName) {
-      this.props.deleteInstallments(session, branchId, feeTypeName, alert, user)
+      this.props.deleteInstallments(session, branchId, feeTypeName, alert, userToken)
       this.deleteModalCloseHandler()
       this.setState({
         numberOfRows: ''
@@ -315,7 +317,7 @@ class AddOtherFees extends Component {
     } else {
       alert.warning('Select Required fields')
     }
-    // this.props.deleteInstallments(this.props.alert, this.props.user)
+    // this.props.deleteInstallments(this.props.alert, userToken)
     // this.deleteModalCloseHandler()
   }
 
@@ -493,7 +495,7 @@ class AddOtherFees extends Component {
     form.set('branch', this.state.branchId)
     form.set('fee_account', this.state.currentFeeAccount.value)
     form.append('file', this.state.bulkFile)
-    this.props.uploadBulkFees(form, this.props.alert, this.props.user)
+    this.props.uploadBulkFees(form, this.props.alert, userToken)
   }
 
   handleSubmitOtherFees = () => {
@@ -510,7 +512,7 @@ class AddOtherFees extends Component {
       end_date: this.state.endDate,
       has_installments: this.state.is_installment
     }
-    this.props.saveOtherFeeInstallments(data, this.props.alert, this.props.user)
+    this.props.saveOtherFeeInstallments(data, this.props.alert, userToken)
   }
 
   // sending new installments to backend
@@ -602,7 +604,7 @@ class AddOtherFees extends Component {
         numberOfInstallments: parseInt(this.state.numberOfRows),
         installments: installData
       }
-      this.props.saveOtherFeeInstallments(finaldata, this.props.alert, this.props.user)
+      this.props.saveOtherFeeInstallments(finaldata, this.props.alert, userToken)
       // this.props.clearProps()
       // this.setState({
       //   currentFeeAccount: '',
@@ -638,7 +640,7 @@ class AddOtherFees extends Component {
       alert
     } = this.props
     if (session && branchId && feeTypeName && dueDate && startDate && endDate && amount && subFeeTypeName) {
-      this.props.checkInstallments(session, branchId, feeTypeName, alert, user)
+      this.props.checkInstallments(session, branchId, feeTypeName, alert, userToken)
       this.setState({
         installmentList: true,
         numberOfRows: ''
@@ -1099,7 +1101,7 @@ class AddOtherFees extends Component {
 
 const mapStateToProps = (state) => ({
   session: state.academicSession.items,
-  user: state.authentication.user,
+  // user: state.authentication.user,
   feeAccounts: state.finance.accountantReducer.listOtherFee.adminFeeAccount,
   confirm: state.finance.accountantReducer.listOtherFee.addOtherConfirm,
   otherFeeInstallments: state.finance.accountantReducer.listOtherFee.otherFeeInstallment,

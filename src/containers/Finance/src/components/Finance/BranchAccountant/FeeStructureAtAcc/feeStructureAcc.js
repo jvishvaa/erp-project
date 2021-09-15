@@ -23,6 +23,7 @@ const styles = theme => ({
   }
 })
 
+let userToken = "";
 class FeeStructureAcc extends Component {
   constructor (props) {
     super(props)
@@ -48,16 +49,17 @@ class FeeStructureAcc extends Component {
   }
 
   componentDidMount () {
-    this.props.fetchRefundValue(this.props.erp, this.props.session, this.props.alert, this.props.user, this.props.branchId, this.props.moduleId)
-    this.props.fetchConcessionTypes(this.props.alert, this.props.user, this.props.branchId, this.props.moduleId)
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+    this.props.fetchRefundValue(this.props.erp, this.props.session, this.props.alert, userToken, this.props.branchId, this.props.moduleId)
+    this.props.fetchConcessionTypes(this.props.alert, userToken, this.props.branchId, this.props.moduleId)
     // if (this.props.getData && this.state.selectFeeWise.value === 1 && this.state.alignment === 'one') {
-    //   this.props.fetchFeeStructureList(this.props.erp, this.props.alert, this.props.user)
+    //   this.props.fetchFeeStructureList(this.props.erp, this.props.alert, userToken)
     // }
     // else if (this.props.getData && this.state.selectFeeWise.value === 2) {
-    //   this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
+    //   this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, userToken)
     // }
-    this.props.fetchFeeStructureList(this.props.erp, this.props.session, this.props.alert, this.props.user, this.props.branchId, this.props.moduleId)
-    this.props.fetchStudentDues(this.props.erp, this.props.session, this.props.alert, this.props.user, this.props.branchId, this.props.moduleId)
+    this.props.fetchFeeStructureList(this.props.erp, this.props.session, this.props.alert, userToken, this.props.branchId, this.props.moduleId)
+    this.props.fetchStudentDues(this.props.erp, this.props.session, this.props.alert, userToken, this.props.branchId, this.props.moduleId)
   }
 
   shouldComponentUpdate (nextProps, nextState) {
@@ -92,9 +94,9 @@ class FeeStructureAcc extends Component {
   //   if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData) && this.state.selectFeeWise.value === 1 && this.state.alignment === 'one') {
   //     this.props.fetchFeeStructureList(erp, alert, user)
   //   } else if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData) && this.state.selectFeeWise.value === 2 && this.state.alignment === 'one') {
-  //     this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
+  //     this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, userToken)
   //   } else if (this.props.getData && (erp !== prevProps.erp || session !== prevProps.session || this.props.getData) && this.state.selectFeeWise.value === 2 && this.state.alignment === 'two') {
-  //     this.props.fetchOtherFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
+  //     this.props.fetchOtherFeetypeList(this.props.session, this.props.erp, this.props.alert, userToken)
   //   }
   // }
 
@@ -103,7 +105,7 @@ class FeeStructureAcc extends Component {
   //   const erp = document.querySelectorAll('[name=searchBox]')
   //   // 1908010049
   //   this.setState({ erp: erp[0].value }, () => {
-  //     this.props.fetchFeeStructureList(this.state.erp, this.props.alert, this.props.user)
+  //     this.props.fetchFeeStructureList(this.state.erp, this.props.alert, userToken)
   //   })
   // }
 
@@ -130,9 +132,9 @@ class FeeStructureAcc extends Component {
   }
 
   hideConcesionModalHandler = () => {
-    // this.props.fetchFeeStructureList(this.props.erp, this.props.alert, this.props.user)
+    // this.props.fetchFeeStructureList(this.props.erp, this.props.alert, userToken)
     this.setState({ showConcessionModal: false }, () => {
-      // this.props.fetchFeeStructureList(this.props.erp, this.props.alert, this.props.user)
+      // this.props.fetchFeeStructureList(this.props.erp, this.props.alert, userToken)
     })
   }
 
@@ -149,9 +151,9 @@ class FeeStructureAcc extends Component {
   //     selectFeeWise: e
   //   }, () => {
   //     if (this.state.selectFeeWise.value === 1) {
-  //       this.props.fetchFeeStructureList(this.props.erp, this.props.alert, this.props.user)
+  //       this.props.fetchFeeStructureList(this.props.erp, this.props.alert, userToken)
   //     } else {
-  //       this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, this.props.user)
+  //       this.props.fetchFeetypeList(this.props.session, this.props.erp, this.props.alert, userToken)
   //     }
   //   })
   // }
@@ -193,7 +195,7 @@ class FeeStructureAcc extends Component {
         concession_id: this.state.concessionType,
         concession_type: this.state.currentConcessionStatus.value
       }
-      this.props.saveConcessionRequest(data, this.props.alert, this.props.user)
+      this.props.saveConcessionRequest(data, this.props.alert, userToken)
       this.hideConcesionModalHandler()
     }
   }
@@ -212,7 +214,7 @@ class FeeStructureAcc extends Component {
         fee_type: this.state.currentFeeData.fee_type,
         remarks: this.state.remarksData
       }
-      this.props.unassignFee(this.state.currentFeeData.id, data, this.props.alert, this.props.user)
+      this.props.unassignFee(this.state.currentFeeData.id, data, this.props.alert, userToken)
       this.unassignHideModalHanlder()
     } else {
       this.props.alert.warning('Enter Remarks')
@@ -238,7 +240,7 @@ class FeeStructureAcc extends Component {
           getData={this.props.getData}
           erp={this.props.erp}
           alert={this.props.alert}
-          user={this.props.user}
+          user={userToken}
           branchId={this.props.branchId}
           moduleId={this.props.moduleId}
           // refund={this.props.refund}
@@ -251,7 +253,7 @@ class FeeStructureAcc extends Component {
           getData={this.props.getData}
           erp={this.props.erp}
           alert={this.props.alert}
-          user={this.props.user}
+          user={userToken}
           branchId={this.props.branchId}
           moduleId={this.props.moduleId}
         />

@@ -28,6 +28,7 @@ const styles = theme => ({
   }
 })
 
+let userToken = "";
 class ReceiptDetails extends Component {
   constructor (props) {
     super(props)
@@ -96,6 +97,7 @@ class ReceiptDetails extends Component {
   }
 
   componentDidMount () {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     // this.setState({
     //   currentData: currentData
     // })
@@ -129,7 +131,7 @@ class ReceiptDetails extends Component {
       })
     })
     // this.setState(Object.assign(this.state.payment, { dateOfPayment: today }))
-    this.props.fetchReceiptRange(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.branch)
+    this.props.fetchReceiptRange(this.props.session, this.props.erp, this.props.alert, userToken, this.props.branch)
   }
 
   // componentDidUpdate (prevProps, prevState) {
@@ -246,7 +248,7 @@ class ReceiptDetails extends Component {
           fee: insta,
           other_fee: otherDetails
         }
-        this.props.sendAxisPosPayment(data, this.props.alert, this.props.user)
+        this.props.sendAxisPosPayment(data, this.props.alert, userToken)
       }
     }
 
@@ -283,14 +285,14 @@ class ReceiptDetails extends Component {
         // }
         case 'ifsc': {
           if (this.state.searchByValue === 1 && event.target.value.length === 11) {
-            this.props.fetchIfsc(event.target.value, this.props.alert, this.props.user)
+            this.props.fetchIfsc(event.target.value, this.props.alert, userToken)
           }
           newCheque['ifsc'] = event.target.value
           break
         }
         case 'micr': {
           if (this.state.searchByValue === 2 && event.target.value.length === 9) {
-            this.props.fetchMicr(event.target.value, this.props.alert, this.props.user)
+            this.props.fetchMicr(event.target.value, this.props.alert, userToken)
           }
           newCheque['micr'] = event.target.value
           break
@@ -601,7 +603,7 @@ class ReceiptDetails extends Component {
         let data = {
           ref_id: this.props.axisPosData && this.props.axisPosData.data && this.props.axisPosData.data.PlutusTransactionReferenceID
         }
-        this.props.cardDetailsPayment(data, this.props.alert, this.props.user)
+        this.props.cardDetailsPayment(data, this.props.alert, userToken)
       }
     }
 

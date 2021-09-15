@@ -36,7 +36,7 @@ const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
 
 const BranchIdBangalore = [ 10, 8, 7, 57, 12, 18, 17, 21, 27, 24, 67, 72, 81, 82, 92, 77, 69, 14 ]
 const BranchIdMumbai = [70, 26, 3, 15, 11, 13, 22, 4, 67, 41, 5, 6, 73, 76]
-
+let userToken ="";
 class MakePayment extends Component {
   constructor (props) {
     super(props)
@@ -73,15 +73,16 @@ class MakePayment extends Component {
     this.erp = JSON.parse(localStorage.getItem('userDetails')).erp
   }
   componentDidMount () {
-    this.props.fetchNormalWallet(this.props.sessionYear, this.props.erp, this.props.alert, this.props.user)
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token || {};
+    this.props.fetchNormalWallet(this.props.sessionYear, this.props.erp, this.props.alert, userToken)
     this.todayDate()
     if (this.props.sessionYear || this.props.status) {
-      this.props.statusMakePaymentList(this.props.sessionYear, this.props.erp, this.props.alert, this.props.user)
+      this.props.statusMakePaymentList(this.props.sessionYear, this.props.erp, this.props.alert, userToken)
     }
     if (this.props.getList && this.props.sessionYear) {
-      this.props.fetchListMakePayment(this.props.sessionYear, this.props.alert, this.props.user)
-      // this.props.fetchWalletInfo(this.props.sessionYear, this.props.erp, this.props.alert, this.props.user)
-      this.props.isPartialPay(this.props.sessionYear, this.props.gradeId, this.props.alert, this.props.user)
+      this.props.fetchListMakePayment(this.props.sessionYear, this.props.alert, userToken)
+      // this.props.fetchWalletInfo(this.props.sessionYear, this.props.erp, this.props.alert, userToken)
+      this.props.isPartialPay(this.props.sessionYear, this.props.gradeId, this.props.alert, userToken)
     } else {
       this.props.alert.warning('Please fill All madatory Filled')
     }
@@ -96,7 +97,7 @@ class MakePayment extends Component {
   }
   componentDidUpdate (prevProps) {
     if ((prevProps.sessionYear !== this.props.sessionYear && this.props.getList)) {
-      this.props.fetchListMakePayment(this.props.sessionYear, this.props.alert, this.props.user)
+      this.props.fetchListMakePayment(this.props.sessionYear, this.props.alert, userToken)
     } else if (this.props.paymentStatus && this.props.orderId && this.props.amount) {
 
     }
@@ -194,10 +195,10 @@ class MakePayment extends Component {
         total_paid_amount: this.props.walletInfo.length && this.state.isWalletAgree && (this.props.walletInfo[0].reaming_amount >= this.calculateTotal()) ? +(this.calculateTotal()).toFixed(2) : this.props.walletInfo.length && this.state.isWalletAgree && (this.props.walletInfo[0].reaming_amount < this.calculateTotal()) ? +(this.calculateTotal() - this.props.walletInfo[0].reaming_amount).toFixed(2) : this.calculateTotal(),
         ...this.props.walletInfo.length && this.state.isWalletAgree ? wal : null
       },
-      user: this.props.user,
+      user: userToken,
       url: this.props.walletInfo.length && this.state.isWalletAgree && (this.props.walletInfo[0].reaming_amount >= this.calculateTotal()) ? urls.CreateMakePaymentAcc : urls.AirpayPayment
     })
-    // this.props.makePayment(data, this.props.alert, this.props.user)
+    // this.props.makePayment(data, this.props.alert, userToken)
   }
 
   componentWillUnmount () {
@@ -329,7 +330,7 @@ class MakePayment extends Component {
     return amt
   }
   handleClickViewDetails = (installmentsId) => {
-    // this.props.statusMakePaymentList(this.props.sessionYear, this.props.erp, this.props.alert, this.props.user)
+    // this.props.statusMakePaymentList(this.props.sessionYear, this.props.erp, this.props.alert, userToken)
     this.props.status.map(items => {
       if (items.installments != null) {
         if (items.installments.id === installmentsId) {
@@ -493,8 +494,8 @@ class MakePayment extends Component {
         id: this.state.studentId
       }
 
-      this.props.cancelPaymentStudent(data, this.props.alert, this.props.user)
-      this.props.fetchListMakePayment(this.props.sessionYear, this.props.alert, this.props.user)
+      this.props.cancelPaymentStudent(data, this.props.alert, userToken)
+      this.props.fetchListMakePayment(this.props.sessionYear, this.props.alert, userToken)
 
       this.setState({
         cancelModal: false,

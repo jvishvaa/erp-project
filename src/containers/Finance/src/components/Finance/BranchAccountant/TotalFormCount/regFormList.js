@@ -69,6 +69,8 @@ function TabContainer ({ children, dir }) {
   )
 }
 
+let userToken = "";
+
 const RegFormList = ({ session,
   history,
   classes,
@@ -91,6 +93,7 @@ const RegFormList = ({ session,
   const [rowsPerPage, setRowsPerPage] = useState(null)
 
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const { session, fromDate, toDate, branch, isAdmin, selectedDates, selectedReport } = history.location.state
     setIsAdmin(isAdmin)
     // const userProfile = JSON.parse(localStorage.getItem('user_profile'))
@@ -99,14 +102,14 @@ const RegFormList = ({ session,
     // if (userIndex !== -1) {
     //   setShowDelete(true)
     // }
-    fetchAllAppFormList(session, branch, fromDate, toDate, selectedDates, selectedReport, rowsPerPage || 10, page + 1, 'registration', alert, user)
-  }, [history, fetchAllAppFormList, rowsPerPage, page, alert, user])
+    fetchAllAppFormList(session, branch, fromDate, toDate, selectedDates, selectedReport, rowsPerPage || 10, page + 1, 'registration', alert, userToken)
+  }, [history, fetchAllAppFormList, rowsPerPage, page, alert, userToken])
 
   // Generation of PDF Start
   const getPdfData = (transactionId) => {
     return (axios.get(`${urls.AppRegPdf}?transaction_id=${transactionId}&academic_year=${history.location.state.session}`, {
       headers: {
-        Authorization: 'Bearer ' + user
+        Authorization: 'Bearer ' + userToken
       }
     }))
   }
@@ -126,7 +129,7 @@ const RegFormList = ({ session,
     let regFormListUrl = null
     const { session, fromDate, toDate, selectedDates, selectedReport } = history.location.state
     regFormListUrl = `${urls.ListAllFormReport}?academic_year=${session}&from_date=${fromDate}&to_date=${toDate}&select_date=${selectedDates}&select_report=${selectedReport}&branch=${branch}&type=registration`
-    downloadReports('registration_form_report.xlsx', regFormListUrl, alert, user)
+    downloadReports('registration_form_report.xlsx', regFormListUrl, alert, userToken)
   }
 
   const closeModal = () => {
@@ -175,7 +178,7 @@ const RegFormList = ({ session,
         {value === 'one' && <TabContainer>
           <EditInfo
             {...info}
-            user={user}
+            user={userToken}
             alert={alert}
             editHandler={updateForm}
             close={closeModal}
@@ -184,7 +187,7 @@ const RegFormList = ({ session,
         {value === 'two' && <TabContainer>
           <EditMode
             {...mode}
-            user={user}
+            user={userToken}
             alert={alert}
             close={closeModal}
           />
@@ -208,7 +211,7 @@ const RegFormList = ({ session,
       type: 'registration',
       num: deleteForm
     }
-    deleteForms(data, alert, user)
+    deleteForms(data, alert, userToken)
     setDeleteModal(false)
   }
 
@@ -344,7 +347,7 @@ RegFormList.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   formList: state.finance.accountantReducer.totalFormCount.formList
 })

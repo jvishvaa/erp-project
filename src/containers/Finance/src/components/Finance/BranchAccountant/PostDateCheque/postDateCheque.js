@@ -51,6 +51,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken='';
 class PostDateCheque extends Component {
   constructor (props) {
     super(props)
@@ -70,9 +72,7 @@ class PostDateCheque extends Component {
   }
 
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload()
-    }
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
     let today = new Date()
     let dd = today.getDate()
     let mm = today.getMonth() + 1 // January is 0!
@@ -117,7 +117,7 @@ class PostDateCheque extends Component {
 
   handleAcademicyear = (e) => {
     this.setState({ session: e.value, sessionData: e })
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+    this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
   }
 
   gradeHandler = (e) => {
@@ -155,7 +155,7 @@ class PostDateCheque extends Component {
 
   pdcHandler = () => {
     if (this.state.session && this.state.gradeData && this.state.fromDate && this.state.toDate && this.state.selectedBranches) {
-      this.props.fetchPdc(this.state.session, this.state.gradeId, this.state.fromDate, this.state.toDate, this.state.selectedBranches && this.state.selectedBranches.value, this.props.alert, this.props.user)
+      this.props.fetchPdc(this.state.session, this.state.gradeId, this.state.fromDate, this.state.toDate, this.state.selectedBranches && this.state.selectedBranches.value, this.props.alert, userToken)
     } else {
       this.props.alert.warning('Fill all the Fields!')
     }
@@ -169,7 +169,7 @@ class PostDateCheque extends Component {
     this.setState({ pdcShowModal: false })
   }
   changehandlerbranch = (e) => {
-    this.props.fetchGrades(this.state.session, this.props.alert, this.props.user, moduleId, e.value)
+    this.props.fetchGrades(this.state.session, this.props.alert, userToken, moduleId, e.value)
     // this.props.fetchGrades(this.state.session, this.props.alert, this.props.user, moduleId, e.value)
     this.setState({ selectedBranches: e})
   }
@@ -186,7 +186,7 @@ class PostDateCheque extends Component {
             if (row.id === this.state.studentInfoId) {
               return (
                 <React.Fragment>
-                  <Student erp={row.student.erp} user={this.props.user} alert={this.props.alert} />
+                  <Student erp={row.student.erp} user={userToken} alert={this.props.alert} />
                   <Grid container spacing={3} style={{ padding: '20px' }}>
                     <Grid item xs='3'>
                         Transaction ID : {row.transaction_id}
@@ -366,7 +366,7 @@ class PostDateCheque extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   // gradeData: state.finance.accountantReducer.pdc.gradeData,
   pdcDetails: state.finance.accountantReducer.pdc.pdcList,

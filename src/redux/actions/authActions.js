@@ -30,6 +30,7 @@ export const handleSendOtp = (params) => {
         status: response?.data?.status_code,
         message: response?.data?.message,
         attempts: response?.data?.attempts,
+        expiryTime: +response?.data?.expiration_in_sec,
       };
     })
     .catch((error) => console.log(error));
@@ -37,7 +38,7 @@ export const handleSendOtp = (params) => {
 
 export const login = (params, isOtpLogin) => (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
-  const api = isOtpLogin ? '/erp_user/verify-otp/' : '/erp_user/login/?mode=default';
+  const api = isOtpLogin ? '/erp_user/verify-otp/' : '/erp_user/login/';
   return axios
     .post(api, params)
     .then((response) => {

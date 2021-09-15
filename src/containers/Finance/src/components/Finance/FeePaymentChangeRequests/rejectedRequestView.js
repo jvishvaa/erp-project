@@ -68,14 +68,17 @@ const styles = theme => ({
   }
 })
 
+let userToken = "";
+
 const RejectedRequestView = ({ classes, history, dataLoading, fetchBranchTransaction, branchPendingList, alert, user }) => {
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const { session, branchId, status } = history.location
     // Update the document title using the browser API
     if (session && branchId && status) {
-      fetchBranchTransaction(session.value, branchId, status, alert, user)
+      fetchBranchTransaction(session.value, branchId, status, alert, userToken)
     }
-  }, [alert, fetchBranchTransaction, history.location, user])
+  }, [alert, fetchBranchTransaction, history.location, userToken])
 
   const rejectedTableHandler = () => {
     let table = null
@@ -148,7 +151,7 @@ RejectedRequestView.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   branchPendingList: state.finance.feePayChange.branchPendingList
 })

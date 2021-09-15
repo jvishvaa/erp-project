@@ -70,6 +70,7 @@ const styles = theme => ({
   }
 })
 
+let userToken = "";
 const EditTransactionDetails = ({ classes, history, dataLoading, fetchEditDetails, editDetails, updateEditDetails, redirect, clearAll, alert, user }) => {
   const [newAmount, setNewAmount] = useState({})
   const [newReceipt, setNewReceipt] = useState(null)
@@ -77,11 +78,12 @@ const EditTransactionDetails = ({ classes, history, dataLoading, fetchEditDetail
   const [newPayDate, setNewPayDate] = useState(null)
   const [newChequeNo, setNewChequeNo] = useState(null)
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const { requestId } = history.location
     if (requestId) {
-      fetchEditDetails(requestId, alert, user)
+      fetchEditDetails(requestId, alert, userToken)
     }
-  }, [fetchEditDetails, history.location, alert, user])
+  }, [fetchEditDetails, history.location, alert, userToken])
 
   useEffect(() => {
     // if (editDetails && editDetails.change_receipt_number_status) {
@@ -178,7 +180,7 @@ const EditTransactionDetails = ({ classes, history, dataLoading, fetchEditDetail
 
     newEditDetails['changed_remarks'] = remarks
     // do the call
-    updateEditDetails(newEditDetails, alert, user)
+    updateEditDetails(newEditDetails, alert, userToken)
   }
 
   const editDetailsHandler = () => {
@@ -385,7 +387,7 @@ EditTransactionDetails.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   editDetails: state.finance.feePayChange.editDetails,
   redirect: state.finance.feePayChange.redirect
