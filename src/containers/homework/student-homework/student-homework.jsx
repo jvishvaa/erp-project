@@ -536,7 +536,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                       />
                                     </TableCell>
                                   ) : (
-                                    <TableCell className='homework_header'>
+                                    <TableCell className='homework_header' style={headers.subject_slag === 'date'?{ zIndex:20}:{zIndex:2}}>
                                       {headers.subject_slag === 'date'
                                         ? 'Weekday'
                                         : headers.subject_slag}
@@ -553,7 +553,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                 >
                                   {messageRows.header?.map((headers, i) =>
                                     headers.subject_slag === 'date' ? (
-                                      <TableCell>
+                                      <TableCell style={{position : "sticky", zIndex:20, left: 0,backgroundColor:'white'}}>
                                         <div className='table-date'>
                                           <div
                                             className={classes.dayicon}

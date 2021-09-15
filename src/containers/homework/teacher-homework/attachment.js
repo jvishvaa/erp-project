@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 import React, { useState } from 'react';
 import { useLightbox } from 'simple-react-lightbox';
-
+import ConformDeleteMOdel from './conform-delete-model'
 import { IconButton, Typography } from '@material-ui/core';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -20,9 +20,12 @@ const Attachment = (props) => {
     actions,
     index,
     onDelete,
+    ispdf,
   } = props;
   const [imagePreviewAvailable, setImagePreviewAvailable] = useState(true);
   const { openLightbox } = useLightbox();
+  const [openModal, setOpenModal] = useState(false);
+
 
   let isAudioVideo = false;
   let isAudioFile = false;
@@ -84,7 +87,7 @@ const Attachment = (props) => {
                   )}
 
                   {actions?.includes('delete') && (
-                    <IconButton size='small' onClick={() => onDelete(index)}>
+                    <IconButton size='small' onClick = {(e) => {setOpenModal(true)}}>
                       <DeleteIcon style={{ color: '#ffffff' }} />
                     </IconButton>
                   )}
@@ -103,6 +106,14 @@ const Attachment = (props) => {
             style={{ width: '100%', padding: '0.5rem' }}
           />
         </div>
+        {openModal && (
+          <ConformDeleteMOdel
+            submit={(status) =>onDelete(index,status)}
+            openModal={openModal}
+            setOpenModal={setOpenModal}
+            ispdf = {ispdf}
+          />
+        )}
       </>
     );
   } else {

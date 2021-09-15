@@ -969,7 +969,7 @@ const CoordinatorTeacherHomework = withRouter(
                                           {col.subject_name}
                                         </TableCell>
                                       ) : (
-                                        <TableCell>{col}</TableCell>
+                                        <TableCell style={{zIndex:'20'}}>{col}</TableCell>
                                       );
                                     })}
                                   </TableRow>
