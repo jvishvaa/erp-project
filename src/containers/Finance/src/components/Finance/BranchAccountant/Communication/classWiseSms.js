@@ -411,7 +411,7 @@ ClassWiseSms.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   gradesPerBranch: state.finance.common.gradesPerBranch,
   gradeData: state.finance.accountantReducer.changeFeePlan.gradeData,

@@ -9,6 +9,7 @@ import * as actionTypes from '../../store/actions'
 import CircularProgress from '../../../../ui/CircularProgress/circularProgress'
 import '../../../css/staff.css'
 
+let userToken = '';
 class EditFeeType extends Component {
   constructor (props) {
     super(props)
@@ -16,6 +17,7 @@ class EditFeeType extends Component {
   }
 
   componentDidMount () {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     this.state = {
       fee_type_name: '',
       priority: 0,
@@ -80,7 +82,7 @@ class EditFeeType extends Component {
         is_refundable_fee: is_refundable_fee,
         show_transaction_in_parent_login: show_transaction_in_parent_login
       }
-      this.props.updatedNormalFeeList(this.props.id, data, this.props.alert, this.props.user)
+      this.props.updatedNormalFeeList(this.props.id, data, this.props.alert, userToken)
       this.props.close()
     } else {
       this.props.alert.warning('Select Required Fields')

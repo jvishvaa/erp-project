@@ -24,14 +24,17 @@ import * as actionTypes from '../../../../store/actions'
 // import { generateExcel } from '../../../../../../utils'
 import Layout from '../../../../../../../../Layout'
 
+let userToken = "";
+
 const CashReport = ({ user, alert, session, classes, ...props }) => {
   const [academicSession, setAcademicSession] = useState(null)
   const getCashStatements = () => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
     if (!academicSession) {
       alert.warning('Please Provide All Data')
       return
     }
-    props.fetchCashStatement(academicSession, user, alert)
+    props.fetchCashStatement(academicSession, userToken, alert)
   }
 
   const createExcel = () => {
@@ -156,7 +159,7 @@ const CashReport = ({ user, alert, session, classes, ...props }) => {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.finance.common.financialYear,
   cashStatements: state.finance.accountantReducer.expenseMngmtAcc.pettyExpenses.cashStatements
 })

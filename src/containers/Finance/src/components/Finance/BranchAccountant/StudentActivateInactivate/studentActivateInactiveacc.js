@@ -76,6 +76,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 class StudentActivateInactiveAcc extends Component {
   constructor(props) {
     super(props);
@@ -96,10 +97,8 @@ class StudentActivateInactiveAcc extends Component {
     };
   }
   componentDidMount() {
-    if(this.props.user === null){
-      window.location.reload()
-    }
-    // this.props.fetchGradeList(this.props.alert, this.props.user)
+     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+    // this.props.fetchGradeList(this.props.alert, userToken)
   }
   downloadStu = () => {
     const headers = [
@@ -202,7 +201,7 @@ class StudentActivateInactiveAcc extends Component {
   handleGetButton = (e) => {
     this.props.getActiveStudentDetails(
       this.props.alert,
-      this.props.user,
+      userToken,
       this.state.studentInfo.grade,
       this.state.studentInfo.section,
       this.state.studentInfo.academicyear,
@@ -216,7 +215,7 @@ class StudentActivateInactiveAcc extends Component {
     this.setState({ updaterow: data });
     this.props.fetchAllPayment(
       this.props.alert,
-      this.props.user,
+      userToken,
       data.erp,
       this.state.studentInfo.academicyear,
       this.state.selectedBranches && this.state.selectedBranches.value,
@@ -227,7 +226,7 @@ class StudentActivateInactiveAcc extends Component {
   showInfoModalAcceptHandler = (event, data) => {
     this.setState({ showAcceptModal: true });
     this.setState({ updaterow: data });
-    // this.props.fetchAllPayment(this.props.alert, this.props.user, data.erp, this.state.studentInfo.academicyear)
+    // this.props.fetchAllPayment(this.props.alert, userToken, data.erp, this.state.studentInfo.academicyear)
   };
 
   hideInfoModalHandler = () => {
@@ -246,7 +245,7 @@ class StudentActivateInactiveAcc extends Component {
       request_by_relative: this.state.studentInfo.request_by_relative,
       branch_id: this.state.selectedBranches?.value,
     };
-    this.props.postStudentActivateInactivate(body, this.props.user, this.props.alert);
+    this.props.postStudentActivateInactivate(body, userToken, this.props.alert);
     this.setState({ updaterow: '' });
   };
   rejectRequestHandler = () => {
@@ -260,7 +259,7 @@ class StudentActivateInactiveAcc extends Component {
       remarks: this.state.remark,
       branch_id: this.state.selectedBranches?.value,
     };
-    this.props.postStudentActivateInactivate(body, this.props.user, this.props.alert);
+    this.props.postStudentActivateInactivate(body, userToken, this.props.alert);
     this.setState({ updaterow: '' });
   };
 
@@ -300,7 +299,7 @@ class StudentActivateInactiveAcc extends Component {
           this.props.fetchAllSectionsPerGrade(
             this.state.studentInfo.academicyear,
             this.props.alert,
-            this.props.user,
+            userToken,
             event.value,
             this.state.selectedBranches?.value,
             moduleId
@@ -310,7 +309,7 @@ class StudentActivateInactiveAcc extends Component {
           this.props.fetchBranches(
             event.value,
             this.props.alert,
-            this.props.user,
+            userToken,
             moduleId
           );
         }
@@ -322,7 +321,7 @@ class StudentActivateInactiveAcc extends Component {
       this.state.studentInfo.academicyear,
       e && e.value,
       this.props.alert,
-      this.props.user,
+      userToken,
       moduleId
     );
     this.setState({ selectedBranches: e });

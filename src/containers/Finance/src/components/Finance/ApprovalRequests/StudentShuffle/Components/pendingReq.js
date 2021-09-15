@@ -20,6 +20,8 @@ import Modal from '../../../../../ui/Modal/modal';
 import * as actionTypes from '../../../store/actions';
 import CircularProgress from '../../../../../ui/CircularProgress/circularProgress';
 
+let userToken = "";
+
 const PendingReq = ({
   classes,
   currentSession,
@@ -43,11 +45,12 @@ const PendingReq = ({
   const [stdName, setStdName] = useState('');
 
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (rejectRes) {
-      fetchPendingList(currentSession, currentBranch, alert, user);
+      fetchPendingList(currentSession, currentBranch, alert, userToken);
       setRemarks('');
     }
-  }, [rejectRes, fetchPendingList, currentSession, currentBranch, alert, user]);
+  }, [rejectRes, fetchPendingList, currentSession, currentBranch, alert, userToken]);
 
   const remarksChangeHandler = (e) => {
     setRemarks(e.target.value);
@@ -55,7 +58,7 @@ const PendingReq = ({
 
   const getPendingModal = (id, erp, name) => {
     setErp(erp);
-    fetchStdFee(id, alert, user);
+    fetchStdFee(id, alert, userToken);
     setShuffleId(id);
     setStdName(name);
     setShowModal(true);
@@ -89,7 +92,7 @@ const PendingReq = ({
         remarks: remarks,
         studentshuffle_id: id,
       };
-      rejectReq(data, alert, user);
+      rejectReq(data, alert, userToken);
       hideReqModalHandler();
     } else {
       alert.warning('Enter Remarks');
@@ -472,7 +475,7 @@ PendingReq.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   pendingreq: state.finance.studentShuffle.pendingLists,
   stdFeeDetails: state.finance.studentShuffle.studFeeDeatils,
   totalAmount: state.finance.studentShuffle.totalPaidAmount,

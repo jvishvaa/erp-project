@@ -300,7 +300,7 @@ class AccountToClass extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.branchPerSession,
   feeList: state.finance.accToClass.feeList,

@@ -21,6 +21,8 @@ import styles from './pendingReq.styles'
 import * as actionTypes from '../../../store/actions'
 import CircularProgress from '../../../../../ui/CircularProgress/circularProgress'
 
+let userToken = "";
+
 const ApprovePendingReq = ({
   classes,
   alert,
@@ -52,6 +54,7 @@ const ApprovePendingReq = ({
 
   // for unmount
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     return () => {
       clearProps()
     }
@@ -74,19 +77,19 @@ const ApprovePendingReq = ({
     if (erp && shuffleId && Remarks) {
       setCurrentErp(erp)
       setShuffleId(shuffleId)
-      fetchFeePlans(shuffleId, alert, user)
+      fetchFeePlans(shuffleId, alert, userToken)
     } else {
       history.replace({
         pathname: '/finance/student_shuffle'
       })
     }
-  }, [fetchStdFee, alert, user, fetchFeePlans, history, location.state])
+  }, [fetchStdFee, alert, userToken, fetchFeePlans, history, location.state])
 
   useEffect(() => {
     if (currentFeePlan) {
-      fetchStdFee(currentFeePlan.value, alert, user)
+      fetchStdFee(currentFeePlan.value, alert, userToken)
     }
-  }, [currentFeePlan, alert, user, fetchStdFee])
+  }, [currentFeePlan, alert, userToken, fetchStdFee])
 
   useEffect(() => {
     const calcAmount = instLists.reduce((acc, item) => {
@@ -277,7 +280,7 @@ const ApprovePendingReq = ({
     // console.log('amt stdDetails', data)
     if (totalAmount) {
       if (location.state.nrmlFeeAmt === diffTotalAmtPaidAdjust) {
-        reassignReq(data, alert, user)
+        reassignReq(data, alert, userToken)
         history.push('Approval/Requests/StudentShuffleRequest');
       } else {
         alert.warning('Please Adjust Paid Amount. Total Amount to be Paid :' + ( totalAmount - location.state.concessionAmt ) + ' and Total Amount to be Adjust: ' + location.state.nrmlFeeAmt + ' to adjust the Amount Decrease Total Paid Amount in any Installment')
@@ -466,7 +469,7 @@ ApprovePendingReq.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   instLists: state.finance.studentShuffle.instLists,
   feePlans: state.finance.studentShuffle.feePlans,
   response: state.finance.studentShuffle.reassignRes,

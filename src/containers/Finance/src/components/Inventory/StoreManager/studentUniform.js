@@ -52,6 +52,7 @@ const defaultSportsTshirt = {
   collar: [ 31, 31.5, 31.5, 33, 35, 35, 35, 35, 41, 41, 41, 41, 47 ],
   shoulder: [ 24.8, 27.3, 29.2, 31.8, 34.3, 38.1, 39.4, 41.3, 43.2, 44.5, 47, 47, 49.5 ]
 }
+let userToken = "";
 class StudentUniform extends Component {
   constructor (props) {
     super(props)
@@ -163,13 +164,14 @@ class StudentUniform extends Component {
   }
 
   componentDidMount = () => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
     if (role === 'StoreManager') {
       this.setState({
         isStoreManager: true
       })
     } else {
-      this.props.uniformDetails(this.state.student, this.state.isStoreManager, this.props.alert, this.props.user)
+      this.props.uniformDetails(this.state.student, this.state.isStoreManager, this.props.alert, userToken)
     }
   }
   componentWillReceiveProps (nextProps) {
@@ -249,7 +251,7 @@ class StudentUniform extends Component {
       session: e,
       getData: false
     }, () => {
-      this.props.fetchGrades(this.state.session.value, this.props.alert, this.props.user)
+      this.props.fetchGrades(this.state.session.value, this.props.alert, userToken)
     })
   }
 
@@ -262,7 +264,7 @@ class StudentUniform extends Component {
           getData: false
         })
       } else {
-        this.props.fetchAllSections(this.state.session.value, this.state.gradeId, this.props.alert, this.props.user)
+        this.props.fetchAllSections(this.state.session.value, this.state.gradeId, this.props.alert, userToken)
         this.setState({
           allSections: false,
           getData: false
@@ -483,9 +485,9 @@ class StudentUniform extends Component {
   erpHandler = () => {
     // const erp = document.querySelectorAll('[name=searchBox]')
     if (this.state.searchTypeData.value === 1 && this.state.selectedErpStatus) {
-      this.props.fetchAllPayment(this.state.session.value, this.state.studentLabel, this.props.user, this.props.alert)
+      this.props.fetchAllPayment(this.state.session.value, this.state.studentLabel, userToken, this.props.alert)
     } else if (this.state.searchTypeData.value === 2 && this.state.selectedNameStatus) {
-      this.props.fetchAllPayment(this.state.session.value, this.state.studentErp, this.props.user, this.props.alert)
+      this.props.fetchAllPayment(this.state.session.value, this.state.studentErp, userToken, this.props.alert)
     } else {
       this.props.alert.warning('Select Valid Erp')
     }
@@ -501,7 +503,7 @@ class StudentUniform extends Component {
       this.state.studentTypeData.value,
       this.state.student,
       this.props.alert,
-      this.props.user
+      userToken
     )
   }, 500)
 
@@ -529,7 +531,7 @@ class StudentUniform extends Component {
       this.state.studentTypeData.value,
       this.state.studentName,
       this.props.alert,
-      this.props.user
+      userToken
     )
   }, 500)
 
@@ -557,7 +559,7 @@ class StudentUniform extends Component {
     } else {
       this.props.alert.warning('Select Valid Student')
     }
-    this.props.uniformDetails(this.state.student, this.state.isStoreManager, this.props.alert, this.props.user)
+    this.props.uniformDetails(this.state.student, this.state.isStoreManager, this.props.alert, userToken)
     this.setState({ showUniformDetails: true })
   }
 
@@ -794,7 +796,7 @@ class StudentUniform extends Component {
         sports_tshirt_waist: this.state.sportsTshirtWaist,
         overall_sports_tshirt_size: this.state.overallSportsTshirtSize
       }
-      this.props.uniformDetailsUpdate(data, this.props.alert, this.props.user)
+      this.props.uniformDetailsUpdate(data, this.props.alert, userToken)
     }
     this.setState({ modelOpen: false })
   }
@@ -1049,8 +1051,8 @@ class StudentUniform extends Component {
               </Button>
             </Grid>
             {this.state.searchTypeData.value === 1
-              ? <Student erp={this.state.studentLabel} session={this.state.session.value} user={this.props.user} alert={this.props.alert} />
-              : <Student erp={this.state.studentErp} session={this.state.session.value} user={this.props.user} alert={this.props.alert} />}
+              ? <Student erp={this.state.studentLabel} session={this.state.session.value} user={userToken} alert={this.props.alert} />
+              : <Student erp={this.state.studentErp} session={this.state.session.value} user={userToken} alert={this.props.alert} />}
             {this.props.dataLoading ? <CircularProgress open /> : null}
           </Grid>
           : []}

@@ -297,7 +297,7 @@ class BackDateSelection extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   backDateList: state.finance.lastDateSettings.backDateList,
   dataLoading: state.finance.common.dataLoader
 })

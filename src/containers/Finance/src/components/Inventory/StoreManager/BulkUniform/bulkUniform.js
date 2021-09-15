@@ -99,6 +99,7 @@ const BulkUniform = ({ classes, session, fetchAllSections, alert, user, fetchGra
   const [showShirtChart, setShowShirtChart] = useState(false)
   const [showPantChart, setShowPantChart] = useState(false)
   const [showData, setShowData] = useState(false)
+
   useEffect(() => {
     const newChest = { ...chest }
     const newShoulder = { ...shoulder }

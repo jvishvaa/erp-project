@@ -65,6 +65,8 @@ function TabContainer(props) {
 TabContainer.propTypes = {
   children: PropTypes.node.isRequired,
 };
+
+let userToken='';
 class ActivateInactivateStudentAdm extends Component {
   constructor(props) {
     super(props);
@@ -80,10 +82,8 @@ class ActivateInactivateStudentAdm extends Component {
   }
   componentWillReceiveProps(nextProps) {}
   componentDidMount() {
-    if(this.props.user === null){
-      window.location.reload()
-    }
-    this.props.getActiveRequest('2019-20', this.props.user, this.props.alert);
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+    this.props.getActiveRequest('2019-20', userToken, this.props.alert);
   }
   handleChange = (event, value) => {
     this.setState({ value });
@@ -96,7 +96,7 @@ class ActivateInactivateStudentAdm extends Component {
       status: 'Approved',
       remark: this.state.remark,
     };
-    this.props.approveRequest(body, this.props.user, this.props.alert);
+    this.props.approveRequest(body, userToken, this.props.alert);
     this.setState({ updaterow: '' });
   };
   rejectRequestHandler = () => {
@@ -107,7 +107,7 @@ class ActivateInactivateStudentAdm extends Component {
       status: 'Rejected',
       remark: this.state.remark,
     };
-    this.props.approveRequest(body, this.props.user, this.props.alert);
+    this.props.approveRequest(body, userToken, this.props.alert);
     this.setState({ updaterow: '' });
   };
   handleSwitch = (event, data) => {};
@@ -146,7 +146,7 @@ class ActivateInactivateStudentAdm extends Component {
         if (name === 'academicyear') {
           this.props.getActiveRequest(
             this.state.activeInactive.academicyear,
-            this.props.user,
+            userToken,
             this.props.alert
           );
         }
@@ -438,7 +438,7 @@ class ActivateInactivateStudentAdm extends Component {
   }
 }
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   activeRequstList: state.finance.financeAdminDashBoard.activeRequstList,
   dataLoading: state.finance.common.dataLoader,

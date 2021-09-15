@@ -70,6 +70,8 @@ const styles = theme => ({
   }
 })
 
+let userToken = "";
+
 const EditStoreTransactionDetails = ({ classes, history, dataLoading, fetchEditDetails, updateStoreEditDetails, redirect, clearAll, alert, user }) => {
   const [newReceipt, setNewReceipt] = useState(null)
   const [remarks, setRemarks] = useState(null)
@@ -77,6 +79,7 @@ const EditStoreTransactionDetails = ({ classes, history, dataLoading, fetchEditD
   const [editDetails, setEditDetails] = useState(null)
   const [branchName, setBranchName] = useState(null)
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const { editDetailsRow, branch } = history.location
     setBranchName(branch)
     if (editDetailsRow) {
@@ -84,7 +87,7 @@ const EditStoreTransactionDetails = ({ classes, history, dataLoading, fetchEditD
       setNewPayDate(editDetailsRow.new_date ? editDetailsRow.new_date : null)
       setNewReceipt(editDetailsRow.new_receipt_number ? editDetailsRow.new_receipt_number : null)
     }
-  }, [history.location, alert, user])
+  }, [history.location, alert, userToken])
 
   useEffect(() => {
     if (redirect) {
@@ -137,7 +140,7 @@ const EditStoreTransactionDetails = ({ classes, history, dataLoading, fetchEditD
 
     newEditDetails['changed_remarks'] = remarks
     // do the call
-    updateStoreEditDetails(newEditDetails, alert, user)
+    updateStoreEditDetails(newEditDetails, alert, userToken)
   }
 
   const editDetailsHandler = () => {
@@ -276,7 +279,7 @@ EditStoreTransactionDetails.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   // editDetails: state.finance.feePayChange.editDetails,
   redirect: state.finance.storePayChange.redirect

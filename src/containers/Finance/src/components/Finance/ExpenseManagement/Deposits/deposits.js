@@ -69,6 +69,7 @@ const styles = theme => ({
   }
 })
 
+let userToken = '';
 class DepositTab extends Component {
   state = {
     value: 'one',
@@ -76,11 +77,10 @@ class DepositTab extends Component {
     currentBranch: null,
     moduleId: null
   };
-  componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload();
-    }
-  }
+
+componentDidMount(){
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+}
 
   handleChange = (event, value) => {
     this.setState({ value })
@@ -91,7 +91,7 @@ class DepositTab extends Component {
   };
 
   fetchBranchHandler = (e) => {
-    this.props.fetchBranches(e.value, this.props.alert, this.props.user, moduleId)
+    this.props.fetchBranches(e.value, this.props.alert, userToken, moduleId)
     this.setState({
       currentSession: e.value
     })
@@ -122,26 +122,26 @@ class DepositTab extends Component {
             <BankDeposit alert={this.props.alert}
               branch={this.state.currentBranch}
               session={this.state.currentSession}
-              user={this.props.user} />
+              user={userToken} />
           </TabContainer>}
           {this.state.value === 'two' && <TabContainer>
             <ViewDeposits alert={this.props.alert}
               branch={this.state.currentBranch}
               session={this.state.currentSession}
-              user={this.props.user} />
+              user={userToken} />
           </TabContainer>}
           {this.state.value === 'three' && <TabContainer>
             <ExpenseDeposit alert={this.props.alert}
               branch={this.state.currentBranch}
               session={this.state.currentSession}
-              user={this.props.user} />
+              user={userToken} />
           </TabContainer>}
           {this.state.value === 'four' && <TabContainer>
             <CollectionDeposit alert={this.props.alert}
               branch={this.state.currentBranch}
               session={this.state.currentSession}
               branchSet={this.props.branches}
-              user={this.props.user} />
+              user={userToken} />
           </TabContainer>}
         </React.Fragment>
       )
@@ -195,7 +195,7 @@ class DepositTab extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   branches: state.finance.common.branchPerSession,
   session: state.finance.common.financialYear
 })

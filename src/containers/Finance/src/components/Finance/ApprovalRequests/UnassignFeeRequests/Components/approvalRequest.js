@@ -19,6 +19,8 @@ import Modal from '../../../../../ui/Modal/modal'
 import * as actionTypes from '../../../store/actions'
 import CircularProgress from '../../../../../ui/CircularProgress/circularProgress'
 
+let userToken = "";
+
 const ApprovalRequest = ({
   classes,
   location,
@@ -33,18 +35,19 @@ const ApprovalRequest = ({
   const [currentStudent, setCurrentStudent] = useState({})
 
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const {
       branch,
       session
     } = location.state
     if (branch && session) {
-      fetchApprovalList(session, branch, alert, user)
+      fetchApprovalList(session, branch, alert, userToken)
     } else {
       history.replace({
         pathname: '/finance/unassign_feeRequest'
       })
     }
-  }, [fetchApprovalList, history, location, alert, user])
+  }, [fetchApprovalList, history, location, alert, userToken])
 
   const getStudentModal = (id) => {
     const currentList = approvedList.filter(val => val.id === id)[0]
@@ -187,7 +190,7 @@ ApprovalRequest.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   approvedList: state.finance.unassignFeerequest.approvalReqList,
   dataLoading: state.finance.common.dataLoader
 })

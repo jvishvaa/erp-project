@@ -108,15 +108,15 @@ guideline:{
 const guidelines = [
   {
     name: '',
-    field: "Please don't remove or manipulate any header in the file format",
+    field: "Please Don't Erase or Edit any header in the file format",
   },
   { name: 'Erp Code', field: ' is a mandatory field, Example: 2003970002_OLV' },
   { name: 'Is_lesson_plan', field: ' is a mandatory field' },
   { name: 'Is_online_class', field: ' is a mandatory field' },
   { name: 'Is_ebook', field: ' is a mandatory field' },
   { name: 'Is_ibook', field: ' is a mandatory field' },
-  { field: ' If access is need please mention as “0”' },
-  { field: ' If access has to remove mention as “1”' },
+  { field: 'To Allow Access to the user, Input value as " 0 ".' },
+  { field: 'To Block Access to the user, Input value as " 1 ".' },
 ];
 
 const StyledButton = withStyles((theme) => ({

@@ -102,7 +102,7 @@ class DefaultView extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user
+  // user: state.authentication.user
   // defaultViewList: state.finance.studentFeeStructure.feeStructurelist
   // session: state.academicSession.items
 })

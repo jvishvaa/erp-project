@@ -46,7 +46,7 @@ const styles = theme => ({
     marginBottom: '10px'
   }
 })
-
+let userToken = "";
 const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
 let moduleId
 if (NavData && NavData.length) {
@@ -93,6 +93,9 @@ class NewAdmissionFormAcc extends Component {
     }
   }
 
+componentDidMount(){
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+}
   componentDidUpdate () {
     // console.log('DID UPDATED', this.state.studentdetails)
     // console.log('DID UPDATED', this.state.studentparentdetails)
@@ -107,13 +110,13 @@ class NewAdmissionFormAcc extends Component {
   getStepContent = (stepIndex) => {
     switch (stepIndex) {
       case 0:
-        return <StudentDetailsFormAcc studentdetails={this.state.studentdetails} getStudentDetail={this.getStudentDetail} alert={this.props.alert} />
+        return <StudentDetailsFormAcc studentdetails={this.state.studentdetails} getStudentDetail={this.getStudentDetail} alert={this.props.alert} user={userToken}/>
       case 1:
-        return <StudentParentDetailsFormAcc studentparentdetails={this.state.studentparentdetails} getStudentParentDetail={this.getStudentParentDetail} />
+        return <StudentParentDetailsFormAcc studentparentdetails={this.state.studentparentdetails} getStudentParentDetail={this.getStudentParentDetail}  user={userToken}/>
       case 2:
-        return <AddressDetailsFormAcc adressdetails={this.state.adressdetails} getAddressDetail={this.getAddressDetail} />
+        return <AddressDetailsFormAcc adressdetails={this.state.adressdetails} getAddressDetail={this.getAddressDetail}  user={userToken}/>
       case 3:
-        return <OtherDetailsFormAcc otherdetails={this.state.otherdetails} alert={this.props.alert} getOtherDetail={this.getOtherDetail} />
+        return <OtherDetailsFormAcc otherdetails={this.state.otherdetails} alert={this.props.alert} getOtherDetail={this.getOtherDetail}  user={userToken}/>
       default:
         return 'Unknown stepIndex'
     }
@@ -219,7 +222,7 @@ class NewAdmissionFormAcc extends Component {
         previous_admission_no: otherdetails.prevAdmissionno,
         aadhar_number: otherdetails.adharno
       }
-      this.props.postAdmission(body, this.props.user, this.props.alert)
+      this.props.postAdmission(body, userToken, this.props.alert)
       this.props.history.push({
         pathname: '/finance/customizedAdmissionForm'
       })
@@ -275,7 +278,7 @@ class NewAdmissionFormAcc extends Component {
   }
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   dataLoading: state.finance.common.dataLoader,
   redirect: state.finance.accountantReducer.admissionForm.redirect

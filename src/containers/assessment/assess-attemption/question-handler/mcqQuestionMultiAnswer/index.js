@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme)=>({
 }))
 
 const McqQuestionMultiAnswer = (props) => {
-  const classes = makeStyles()
+  const classes = useStyles()
   const {
     controls: { attemptQuestion },
   } = useContext(AssessmentHandlerContext);
@@ -80,7 +80,7 @@ const McqQuestionMultiAnswer = (props) => {
           >
             <div
               className={classes.mcqOptions}
-              style={{ display: 'flex', alignItems: 'center' }}
+              style={{ display: 'grid', alignItems: 'center' }}
             >
               <FormControlLabel
                 // className={classes.mcqOptions}
@@ -114,7 +114,7 @@ const McqQuestionMultiAnswer = (props) => {
 
             <div
               className={classes.mcqOptions}
-              style={{ display: 'flex', alignItems: 'center' }}
+              style={{ display: 'grid', alignItems: 'center' }}
             >
               <FormControlLabel
                 // className={classes.mcqOptions}
@@ -148,7 +148,7 @@ const McqQuestionMultiAnswer = (props) => {
             {options[2]?.option3 ? (
               <div
                 className={classes.mcqOptions}
-                style={{ display: 'flex', alignItems: 'center' }}
+                style={{ display: 'grid', alignItems: 'center' }}
               >
                 <FormControlLabel
                   //  className={classes.mcqOptions}
@@ -185,7 +185,7 @@ const McqQuestionMultiAnswer = (props) => {
             {options[3]?.option4 ? (
               <div
                 className={classes.mcqOptions}
-                style={{ display: 'flex', alignItems: 'center' }}
+                style={{ display: 'grid', alignItems: 'center' }}
               >
                 <FormControlLabel
                   // className={classes.mcqOptions}
@@ -221,7 +221,7 @@ const McqQuestionMultiAnswer = (props) => {
             {options[4]?.option5 ? (
               <div
                 className={classes.mcqOptions}
-                style={{ display: 'flex', alignItems: 'center' }}
+                style={{ display: 'grid', alignItems: 'center' }}
               >
                 <FormControlLabel
                   className={classes.mcqOptions}

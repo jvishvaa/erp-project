@@ -98,6 +98,9 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken =""; 
+
 const TotalFormCount = ({ classes,
   session,
   history,
@@ -122,6 +125,7 @@ const TotalFormCount = ({ classes,
   const [displayDateRange, setDisplayDateRange] = useState(false)
 
   useLayoutEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     // const role = (JSON.parse(localStorage.getItem('userDetails'))).personal_info.role
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile?.personal_info?.role?.toLowerCase()
@@ -132,15 +136,13 @@ const TotalFormCount = ({ classes,
       //   setFromDate(fromDateStored)
       //   setToDate(toDateStored)
       // }
-      // fetchBranches(sessionYear.value, alert, user)
-      fetchBranchList(sessionYear.value, alert, user, moduleId)
+      // fetchBranches(sessionYear.value, alert, userToken)
+      fetchBranchList(sessionYear.value, alert, userToken, moduleId)
     // }
-  }, [alert, sessionYear.value, fetchBranchList, user])
+  }, [alert, sessionYear.value, fetchBranchList, userToken])
 
   useEffect(() => {
-      if(user === null){
-        window.location.reload();
-      }
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile?.personal_info?.role?.toLowerCase()
@@ -167,19 +169,19 @@ const TotalFormCount = ({ classes,
   // useEffect(() => {
   //   const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
   //   if (sessionYear && fromDate && toDate && role !== 'FinanceAdmin') {
-  //     fetchFormCount(sessionYear.value, null, fromDate, toDate, alert, user)
+  //     fetchFormCount(sessionYear.value, null, fromDate, toDate, alert, userToken)
   //   } else if (sessionYear && fromDate && toDate && (role === 'FinanceAdmin') && selectedBranch) {
-  //     fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, alert, user)
+  //     fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, alert, userToken)
   //   }
-  // }, [sessionYear, fromDate, toDate, alert, user, fetchFormCount, selectedBranch])
+  // }, [sessionYear, fromDate, toDate, alert, userToken, fetchFormCount, selectedBranch])
 
   const handleSession = (e) => {
     acadStored = e
     setSession(e)
     setSelectedBranch(null)
     setShowTable(false)
-    // fetchBranches(e.value, alert, user)
-    fetchBranchList(e.value, alert, user, moduleId)
+    // fetchBranches(e.value, alert, userToken)
+    fetchBranchList(e.value, alert, userToken, moduleId)
   }
 
   const handleBranch = (e) => {
@@ -222,7 +224,7 @@ const TotalFormCount = ({ classes,
     let totalFormCountUrl = null
 
     totalFormCountUrl = `${urls.CountAppRegReport}?academic_year=${sessionYear.value}&from_date=${fromDate}&to_date=${toDate}&select_date=${selectedDates.value}&select_report=${selectedReport.value}&branch=${selectedBranch && selectedBranch.value}`
-    downloadReports('total_form_report.xlsx', totalFormCountUrl, alert, user)
+    downloadReports('total_form_report.xlsx', totalFormCountUrl, alert, userToken)
   }
 
   const getCount = () => {
@@ -232,20 +234,20 @@ const TotalFormCount = ({ classes,
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile?.personal_info?.role?.toLowerCase()
       // if (sessionYear && fromDate && toDate && selectedReport && selectedDates && role !== 'financeadmin') {
-      //   fetchFormCount(sessionYear.value, null, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
+      //   fetchFormCount(sessionYear.value, null, fromDate, toDate, selectedReport.value, selectedDates.value, alert, userToken)
       // } else 
       if (sessionYear && fromDate && toDate && selectedBranch && selectedReport && selectedDates) {
-        fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
+        fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, selectedReport.value, selectedDates.value, alert, userToken)
       }
     } else {
       // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
       const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile?.personal_info?.role?.toLowerCase()
       // if (sessionYear && selectedReport && selectedDates && role !== 'financeadmin') {
-      //   fetchFormCount(sessionYear.value, null, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
+      //   fetchFormCount(sessionYear.value, null, fromDate, toDate, selectedReport.value, selectedDates.value, alert, userToken)
       // } else 
       if (sessionYear && selectedBranch && selectedReport && selectedDates) {
-        fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, selectedReport.value, selectedDates.value, alert, user)
+        fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, selectedReport.value, selectedDates.value, alert, userToken)
       }
     }
   }
@@ -492,7 +494,7 @@ TotalFormCount.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   dataLoading: state.finance.common.dataLoader,
   branches: state.finance.common.branchPerSession,

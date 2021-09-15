@@ -43,7 +43,7 @@
 
 .imageContainer {
   width: 50%;
-  height: 50%;
+  height: auto;
 }
 
 .mcq-options:hover {

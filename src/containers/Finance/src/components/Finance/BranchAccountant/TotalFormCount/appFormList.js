@@ -69,6 +69,7 @@ function TabContainer ({ children, dir }) {
   )
 }
 
+let userToken = "";
 const AppFormList = ({ session,
   history,
   classes,
@@ -91,6 +92,7 @@ const AppFormList = ({ session,
   const [rowsPerPage, setRowsPerPage] = useState(null)
 
   useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const { session, fromDate, toDate, branch, isAdmin, selectedDates, selectedReport } = history.location.state
     setIsAdmin(isAdmin)
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
@@ -101,8 +103,8 @@ const AppFormList = ({ session,
     // if (userIndex !== -1) {
     //   setShowDelete(true)
     // }
-    fetchAllAppFormList(session, branch, fromDate, toDate, selectedDates, selectedReport, rowsPerPage || 10, page + 1, 'application', alert, user)
-  }, [history, fetchAllAppFormList, rowsPerPage, page, alert, user])
+    fetchAllAppFormList(session, branch, fromDate, toDate, selectedDates, selectedReport, rowsPerPage || 10, page + 1, 'application', alert, userToken)
+  }, [history, fetchAllAppFormList, rowsPerPage, page, alert, userToken])
 
   // useEffect(() => {
   //   if (page || rowsPerPage) {
@@ -124,7 +126,7 @@ const AppFormList = ({ session,
   const getPdfData = (transactionId) => {
     return (axios.get(`${urls.AppRegPdf}?transaction_id=${transactionId}&academic_year=${history.location.state.session}`, {
       headers: {
-        Authorization: 'Bearer ' + user
+        Authorization: 'Bearer ' + userToken
       }
     }))
   }
@@ -144,7 +146,7 @@ const AppFormList = ({ session,
     let appFormListUrl = null
     const { session, fromDate, toDate, selectedDates, selectedReport } = history.location.state
     appFormListUrl = `${urls.ListAllFormReport}?academic_year=${session}&from_date=${fromDate}&to_date=${toDate}&select_date=${selectedDates}&select_report=${selectedReport}&branch=${branch}&type=application`
-    downloadReports('application_form_report.xlsx', appFormListUrl, alert, user)
+    downloadReports('application_form_report.xlsx', appFormListUrl, alert, userToken)
   }
 
   const closeModal = () => {
@@ -194,7 +196,7 @@ const AppFormList = ({ session,
         {value === 'one' && <TabContainer>
           <EditInfo
             {...info}
-            user={user}
+            user={userToken}
             alert={alert}
             editHandler={updateForm}
             close={closeModal}
@@ -203,7 +205,7 @@ const AppFormList = ({ session,
         {value === 'two' && <TabContainer>
           <EditMode
             {...mode}
-            user={user}
+            user={userToken}
             alert={alert}
             close={closeModal}
           />
@@ -227,7 +229,7 @@ const AppFormList = ({ session,
       type: 'application',
       num: deleteForm
     }
-    deleteForms(data, alert, user)
+    deleteForms(data, alert, userToken)
     setDeleteModal(false)
   }
 
@@ -364,7 +366,7 @@ AppFormList.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   formList: state.finance.accountantReducer.totalFormCount.formList
   // closeAfterSuccess: state.finance.accountantReducer.totalFormCount.closeModal

@@ -37,6 +37,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken = "";
 class AddConcessionSettings extends Component {
   constructor(props) {
     super(props);
@@ -63,6 +65,10 @@ class AddConcessionSettings extends Component {
       branchIds: [],
     };
   }
+
+componentDidMount(){
+userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+}
 
   concessionTypeHandler = (e) => {
     this.setState({ concessionTypeId: e.value });
@@ -134,7 +140,7 @@ class AddConcessionSettings extends Component {
       this.props.fetchBranches(
         this.state.session,
         this.props.alert,
-        this.props.user,
+        userToken,
         moduleId
       );
     });
@@ -156,6 +162,7 @@ class AddConcessionSettings extends Component {
   };
 
   handleSubmitConcession = () => {
+
     let data = {
       academic_year: this.state.session,
       branch_id: this.state.branchIds,
@@ -176,7 +183,7 @@ class AddConcessionSettings extends Component {
     } else {
       data.fixed_amount = this.state.fixed_amount;
     }
-    this.props.addConcession(data, this.props.alert, this.props.user);
+    this.props.addConcession(data, this.props.alert, userToken);
     this.props.close();
   };
   render() {

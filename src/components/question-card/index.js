@@ -135,12 +135,12 @@ const QuestionCard = ({
     if (isValid?.isValid) {
       try {
         if (
-          file.name.lastIndexOf('.pdf') > 0 ||
-          file.name.lastIndexOf('.jpeg') > 0 ||
-          file.name.lastIndexOf('.jpg') > 0 ||
-          file.name.lastIndexOf('.png') > 0 ||
-          file.name.lastIndexOf('.mp3') > 0 ||
-          file.name.lastIndexOf('.mp4') > 0
+          file.name.toLowerCase().lastIndexOf('.pdf') > 0 ||
+          file.name.toLowerCase().lastIndexOf('.jpeg') > 0 ||
+          file.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
+          file.name.toLowerCase().lastIndexOf('.png') > 0 ||
+          file.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
+          file.name.toLowerCase().lastIndexOf('.mp4') > 0
         ) {
           const fd = new FormData();
           fd.append('file', file);
@@ -256,7 +256,7 @@ const QuestionCard = ({
                       className='file-upload-input'
                       type='file'
                       name='attachments'
-                      accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf'
+                      accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
                       onChange={(e) => {
                         handleFileUpload(e.target.files[0]);
                         // onChange('attachments', Array.from(e.target.files)[]);

@@ -56,17 +56,19 @@ const styles = theme => ({
   }
 })
 
+
+let userToken='';
 const StorePaymentRequests = ({ classes, session, history, dataLoading, requestList, sessionRed, alert, user, fetchStorePayRequests }) => {
   const [sessionYear, setSession] = useState(null)
   // const [shuffleStatus, setShuffleStatus] = useState({ label: 'Pending', value: 1 })
   // const [accReasonToApprove, setAccReason] = useState({})
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
+  }, [])  
 
   useEffect(() => {
-    if(user === null){
-      window.location.reload()
-    }
     if (sessionRed) {
       setSession(sessionRed)
     }
@@ -74,9 +76,9 @@ const StorePaymentRequests = ({ classes, session, history, dataLoading, requestL
 
   useEffect(() => {
     if (sessionYear) {
-      fetchStorePayRequests(sessionYear, alert, user)
+      fetchStorePayRequests(sessionYear, alert, userToken)
     }
-  }, [fetchStorePayRequests, sessionYear, alert, user])
+  }, [fetchStorePayRequests, sessionYear, alert, userToken])
 
   const handleAcademicyear = (e) => {
     setSession(e)
@@ -242,7 +244,7 @@ StorePaymentRequests.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   requestList: state.finance.storePayChange.requestList,
   dataLoading: state.finance.common.dataLoader,

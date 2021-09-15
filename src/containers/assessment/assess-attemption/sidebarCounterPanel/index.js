@@ -206,7 +206,7 @@ const SidebarCounterPanel = (props) => {
         <div className='sidebar-box-wrapper'>
           {questionsArray.map((ques, index) => {
           let classAsPerStatus = "";
-          let classsesObj = { true: 'green', false: 'purple', null: '' }; 
+          let classsesObj = { true: `${classes.green}`, false: `${classes.sidebarOngoing}`, null: '' }; 
           if(ques.sub_questions.length>0){
            let flag="null"
            ques.sub_questions.map((sub,key)=>{
@@ -241,7 +241,7 @@ const SidebarCounterPanel = (props) => {
                 className={[
                   `${classes.box}`,
                   classAsPerStatus,
-                  currentQuesionId == ques.id ? `${classes.ongoing}` : '',
+                  currentQuesionId == ques.id ? `${classes.sidebarOngoing}` : '',
                 ].join(' ')}
               >
                 {` ${index + 1}`}

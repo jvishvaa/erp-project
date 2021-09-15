@@ -19,6 +19,7 @@ const styles = theme => ({
   }
 })
 
+let userToken = "";
 class OtherFeeDetails extends Component {
   constructor (props) {
     super(props)
@@ -51,8 +52,9 @@ class OtherFeeDetails extends Component {
   }
 
   componentDidMount () {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (this.props.getData && this.state.selectFeeWiseOther.value === 1) {
-      this.props.fetchOtherInstallmentTypeList(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
+      this.props.fetchOtherInstallmentTypeList(this.props.session, this.props.erp, this.props.alert, userToken, this.props.moduleId, this.props.branchId)
     }
   }
 
@@ -141,9 +143,9 @@ class OtherFeeDetails extends Component {
   }
 
   hideConcesionModalHandler = () => {
-    // this.props.fetchFeeStructureList(this.props.erp, this.props.alert, this.props.user)
+    // this.props.fetchFeeStructureList(this.props.erp, this.props.alert, userToken)
     this.setState({ showConcessionModal: false }, () => {
-      // this.props.fetchFeeStructureList(this.props.erp, this.props.alert, this.props.user)
+      // this.props.fetchFeeStructureList(this.props.erp, this.props.alert, userToken)
     })
   }
 
@@ -160,9 +162,9 @@ class OtherFeeDetails extends Component {
       selectFeeWiseOther: e
     }, () => {
       if (this.state.selectFeeWiseOther.value === 1) {
-        this.props.fetchOtherInstallmentTypeList(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
+        this.props.fetchOtherInstallmentTypeList(this.props.session, this.props.erp, this.props.alert, userToken, this.props.moduleId, this.props.branchId)
       } else {
-        this.props.fetchOtherFeeTypeList(this.props.session, this.props.erp, this.props.alert, this.props.user, this.props.moduleId, this.props.branchId)
+        this.props.fetchOtherFeeTypeList(this.props.session, this.props.erp, this.props.alert, userToken, this.props.moduleId, this.props.branchId)
       }
     })
   }
@@ -219,7 +221,7 @@ class OtherFeeDetails extends Component {
       concession_given_by: this.state.conGivenBy,
       branch_id: this.props.branchId
     }
-    this.props.saveConcessionRequest(data, this.props.alert, this.props.user)
+    this.props.saveConcessionRequest(data, this.props.alert, userToken)
     this.hideConcesionModalHandler()
   }
 
@@ -231,7 +233,7 @@ class OtherFeeDetails extends Component {
         fee_type: this.state.currentFeeData.fee_type,
         remarks: this.state.remarksData
       }
-      this.props.unassignFee(this.state.currentFeeData.id, data, this.props.alert, this.props.user)
+      this.props.unassignFee(this.state.currentFeeData.id, data, this.props.alert, userToken)
       this.unassignHideModalHanlder()
     } else {
       this.props.alert.warning('Enter Remarks')
@@ -270,7 +272,7 @@ class OtherFeeDetails extends Component {
         student: this.props.erp,
         branch_id: this.props.branchId
       }
-      this.props.updateFineAmt(data, this.props.alert, this.props.user)
+      this.props.updateFineAmt(data, this.props.alert, userToken)
       this.hideFineAmtModalHandler()
     } else {
       this.props.alert.warning('Enter Valid Fine')

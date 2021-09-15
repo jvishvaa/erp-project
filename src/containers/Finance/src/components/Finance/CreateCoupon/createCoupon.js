@@ -7,6 +7,7 @@ import { apiActions } from '../../../_actions'
 import * as actionTypes from '../store/actions'
 import Layout from '../../../../../Layout';
 
+let userToken = "";
 const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList, couponDetailUpdate }) => {
   const [active, setActive] = useState(true)
   const [isActive, setIsActive] = useState(true)
@@ -21,8 +22,8 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
   const [validFromHelerTxt, setValidFromHelerTxt] = useState(null)
   const [disableUpdateBut, setDisableUpdateBut] = useState(false)
 
-  const userToken = JSON.parse(localStorage.getItem('userDetails')).token;
   useEffect(() => {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     listAllCoupon(alert, userToken)
   }, [alert, listAllCoupon, userToken])
 
@@ -106,7 +107,7 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
         discount: discount,
         active: isActive
       }
-      createCoupon(data, alert, user)
+      createCoupon(data, alert, userToken)
       setCouponName('')
       setValidFrom(null)
       setValidTo(null)
@@ -155,7 +156,7 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
         active: active
       }
       console.log('data', data)
-      couponDetailUpdate(id, data, alert, user)
+      couponDetailUpdate(id, data, alert, userToken)
       setEditModal(false)
       setCouponName('')
       setValidTo('')
@@ -378,7 +379,7 @@ const CreateCoupon = ({ alert, user, createCoupon, listAllCoupon, couponAllList,
   )
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   dataLoading: state.finance.common.dataLoader,
   // couponList: state.finance.createCoupon.couponList,

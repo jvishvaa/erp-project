@@ -153,7 +153,7 @@ const CreateDiscussionForum = () => {
       }
     }).catch((error)=>{
       setLoading(false);        
-      setAlert('error', error.message);
+      setAlert('error', error?.response?.data?.description)
     })
   }
   };

@@ -56,6 +56,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken = "";
 class StudentDetailsFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -86,13 +88,14 @@ class StudentDetailsFormAcc extends Component {
   }
 
   componentDidMount () {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (this.props.studentdetails) {
       const newstudentDetails = { ...this.props.studentdetails }
       this.setState({
         studentDetails: newstudentDetails })
     }
-    this.props.fetchGradeList(this.props.alert, this.props.user, moduleId)
-    this.props.fetchClassGroup(this.props.alert, this.props.user)
+    this.props.fetchGradeList(this.props.alert, userToken, moduleId)
+    this.props.fetchClassGroup(this.props.alert, userToken)
   }
 
   handleGender = event => {
@@ -148,7 +151,7 @@ class StudentDetailsFormAcc extends Component {
       studentDetails: newstudentDetails
     }, () => {
       if (name === 'class') {
-        this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, event.value)
+        this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, userToken, event.value)
       }
     })
   }
@@ -428,7 +431,7 @@ class StudentDetailsFormAcc extends Component {
   }
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   gradeList: state.finance.common.gradeList,
   sectionList: state.finance.common.sectionsPerGrade,

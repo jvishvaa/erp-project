@@ -75,7 +75,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
-
+let userToken = "";
 const AdjustFeeType = ({
   history,
   dataLoading,
@@ -101,6 +101,7 @@ const AdjustFeeType = ({
   // let newFeeTypes = []
 
   useEffect(() => {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const currFeePlan = studentList.map((list) => list.fee_plan_name)
     // const filteredFeePlan = currFeePlan.filter((item, index) => )
     const jsonObject = currFeePlan.map(JSON.stringify)
@@ -158,7 +159,7 @@ const AdjustFeeType = ({
 
   const showModalHandler = () => {
     setShowModal(true)
-    fetchAdjustFee(currFeePlanValue.value, normalFeePlan.value, alert, user)
+    fetchAdjustFee(currFeePlanValue.value, normalFeePlan.value, alert, userToken )
   }
 
   const hideModalHandler = () => {
@@ -280,7 +281,7 @@ const AdjustFeeType = ({
         student_list: erpList,
         adjust_fee_type: adjustFeesIds
       }
-      saveAdjustFeeTypes(data, alert, user)
+      saveAdjustFeeTypes(data, alert, userToken )
       hideModalHandler()
     } else {
       alert.warning('select new fee types!')
@@ -449,7 +450,7 @@ AdjustFeeType.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   adjustFeeData: state.finance.accountantReducer.changeFeePlan.adjustFeeData,
   studentList: state.finance.accountantReducer.changeFeePlan.studentList,

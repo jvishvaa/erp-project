@@ -9,6 +9,7 @@ import Select from 'react-select'
 import * as actionTypes from '../../store/actions'
 import classes from './registrationFee.module.css'
 
+let userToken = "";
 class EditRegistrationFee extends Component {
   constructor (props) {
     super(props)
@@ -23,8 +24,9 @@ class EditRegistrationFee extends Component {
   }
 
   componentDidMount () {
-    const { acadId, branchId, alert, user } = this.props
-    this.props.fetchAllFeeAccounts(acadId, branchId, alert, user)
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+    const { acadId, branchId, alert } = this.props
+    this.props.fetchAllFeeAccounts(acadId, branchId, alert, userToken)
     if (!this.props.acadId || !this.props.branchId || !this.props.typeId) {
       this.props.alert.warning('Unable to load')
       this.props.close()
@@ -74,7 +76,7 @@ class EditRegistrationFee extends Component {
         amount: this.state.amount,
         type: this.props.typeId
       }
-      this.props.updateFeeType(this.props.id, data, this.props.alert, this.props.user)
+      this.props.updateFeeType(this.props.id, data, this.props.alert, userToken)
       this.props.close()
     } else {
       this.props.alert.warning('Enter The Required Fields')
@@ -151,7 +153,7 @@ class EditRegistrationFee extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   feeTypes: state.finance.registrationFeeType.feeTypesList,
   viewFeeAccList: state.finance.viewFeeAccounts.viewFeeAccList
 })

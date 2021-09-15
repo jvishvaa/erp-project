@@ -30,7 +30,7 @@ const GENDER = [
   { id: 2, gender: 'Female' },
   { id: 3, gender: 'Both' }
 ]
-
+let userToken='';
 const EditAddItems = ({
   alert,
   user,
@@ -70,7 +70,7 @@ const EditAddItems = ({
   // const sacRef = useRef()
   // const saleRef = useRef()
   // const taxRef = useRef()
-  // const gstRef = useRef()
+  // const gstRef = userTokenef()
 
   // const dispatch = useDispatch()
 
@@ -79,9 +79,10 @@ const EditAddItems = ({
   // )
 
   useEffect(() => {
-    fetchUnitColorSubcat(alert, user)
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+    fetchUnitColorSubcat(alert, userToken)
     // dispatch(actionTypes.listUnitColorSubCat({ alert, user }))
-  }, [alert, user, fetchUnitColorSubcat])
+  }, [alert, userToken, fetchUnitColorSubcat])
 
   useEffect(() => {
     if (itemsList && itemsList.length > 0) {
@@ -296,7 +297,7 @@ const EditAddItems = ({
       item_compulsory: compulsoryValue && compulsoryValue.value
       // is_bundled: isBundled
     }
-    updateItems(data, alert, user)
+    updateItems(data, alert, userToken)
     close()
   }
 
@@ -548,7 +549,7 @@ const EditAddItems = ({
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // userToken: state.authentication.userTokenToken,
   dataLoading: state.finance.common.dataLoader,
   colorsList: state.inventory.storeAdmin.schoolStore.colorsList,
   measurementsList: state.inventory.storeAdmin.schoolStore.measurementsList,
@@ -557,7 +558,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  createMeasurement: (unit, alert, user) => dispatch(actionTypes.createMeasurement({ unit, alert, user })),
+  createMeasurement: (unit, alert, userToken) => dispatch(actionTypes.createMeasurement({ unit, alert, userToken })),
   fetchUnitColorSubcat: (alert, user) => dispatch(actionTypes.listUnitColorSubCat({ alert, user })),
   fetchItems: (session, branch, grade, alert, user) => dispatch(actionTypes.listItems({ session, branch, grade, alert, user })),
   updateItems: (data, alert, user) => dispatch(actionTypes.updateAddItems({ data, alert, user }))

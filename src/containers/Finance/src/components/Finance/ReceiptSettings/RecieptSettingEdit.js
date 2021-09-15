@@ -7,6 +7,7 @@ import { connect } from 'react-redux'
 import * as actionTypes from '../store/actions'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
 
+let userToken = "";
 class ReceiptSettingEdit extends Component {
   // state= {
   //   prefix: '',
@@ -14,10 +15,9 @@ class ReceiptSettingEdit extends Component {
   //   header: '',
   //   footer: ''
   // }
-
-  componentDidMount () {
-    // let currentdata = this.props.receiptlists.filter(row => row.id === this.props.id)
-  }
+componentDidMount(){
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+}
 
   // SrHandler = e => {
   //   this.setState({ Sr: e.target.value })
@@ -59,7 +59,7 @@ class ReceiptSettingEdit extends Component {
       receipt_sub_footer: this.props.subFooter,
       is_active: this.props.isActive
     }
-    this.props.updateReceipt(data, this.props.alert, this.props.user)
+    this.props.updateReceipt(data, this.props.alert, userToken)
     this.props.close()
   }
   // saveEditHandler = () => {

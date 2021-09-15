@@ -44,7 +44,7 @@ const styles = theme => ({
     minWidth: 650
   }
 })
-
+ let userToken = ''
 const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists, branches, alert, user, fetchStoreReport, downloadReports }) => {
   const [sessionYear, setSession] = useState({ value: '2019-20', label: '2019-20' })
   const [branch, setBranch] = useState(null)
@@ -54,9 +54,10 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
   const [wise, setWise] = useState({ label: 'Branch Wise', value: 1 })
   const [dateWise, setDateWise] = useState({ label: 'Consolidate Datewise', value: 1 })
   const [isAccountant, setIsAccountant] = useState(false)
-
+ 
   useLayoutEffect(() => {
     // const role = (JSON.parse(localStorage.getItem('userDetails'))).personal_info.role
+
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
       const role = userProfile && userProfile?.personal_info && userProfile?.personal_info?.role?.toLowerCase()
     if (role === 'FinanceAccountant') {
@@ -64,15 +65,13 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
     }
   }, [])
   useEffect(() => {
-    if(user === null){
-      window.location.reload();
-    }
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     // if (!isAccountant) {
       if (sessionYear) {
-        fetchBranchLists(sessionYear.value, alert, user)
+        fetchBranchLists(sessionYear.value, alert, userToken)
       }
     // }
-  }, [alert, fetchBranchLists, isAccountant, sessionYear, user])
+  }, [alert, fetchBranchLists, isAccountant, sessionYear, userToken])
 
   const handleSession = (e) => {
     setSession(e)
@@ -119,7 +118,7 @@ const StoreReports = ({ classes, session, history, dataLoading, fetchBranchLists
         if (session && branch) {
           if (date.value <= 3 || (startDate && endDate)) {
             // fetchStoreReport(sessionYear, branch, date, startDate, endDate, wise, dateWise, alert, user)
-            downloadReports('StoreReport.xlsx', storeUrl, alert, user)
+            downloadReports('StoreReport.xlsx', storeUrl, alert, userToken)
           } else {
             alert.warning('Select From and To date!')
           }
@@ -303,7 +302,7 @@ StoreReports.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   dataLoading: state.finance.common.dataLoader,
   // branches: state.finance.common.branchPerSession,
@@ -312,7 +311,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-  loadSession: dispatch(apiActions.listAcademicSessions()),
+  loadSession: dispatch(apiActions.listAcademicSessions("",userToken)),
   // fetchBranches: (session, alert, user) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user })),
   fetchBranchLists: (session, alert, user) => dispatch(actionTypes.fetchBranchLists({ session, alert, user })),
   fetchStoreReport: (session, branch, date, startDate, endDate, wise, dateWise, alert, user) => dispatch(actionTypes.fetchStoreReport({ session, branch, date, startDate, endDate, wise, dateWise, alert, user })),

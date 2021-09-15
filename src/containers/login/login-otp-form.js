@@ -13,7 +13,7 @@ import { login, handleSendOtp, isMsAPI } from '../../redux/actions';
 function LoginOTPForm({ onLogin, history, isMsAPI }) {
   const classes = useStyles();
   const [attempts, setAttempts] = useState(null);
-  const [timer, setTimer] = useState(30);
+  const [timer, setTimer] = useState();
   const [uname = ''] = JSON.parse(localStorage.getItem('rememberDetails')) || [];
   const [username, setUsername] = useState('' || uname);
   const [otp, setOtp] = useState('');
@@ -48,9 +48,10 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
   const handleSend = () => {
     const params = { erp_id: username };
     handleSendOtp(params).then((response) => {
+      setTimer(response?.expiryTime);
       if (response?.status === 200) {
         setAttempts(response.attempts);
-        setTimer(response.attempts === 0 ? 0 : 30);
+        // setTimer(response.attempts === 0 ? 0 : +response?.expiration_in_sec);
         setAlert('success', response?.message, 4000);
       } else {
         setAttempts(null);

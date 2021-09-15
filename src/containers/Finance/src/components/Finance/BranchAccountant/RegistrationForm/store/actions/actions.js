@@ -98,6 +98,7 @@ export const fetchRegistrationList = (payload) => {
 }
 
 export const fetchRegistrationSugg = (payload) => {
+console.log(payload.user,"user");
   let url = null
   if (payload.type === 'Application No') {
     url = urls.SearchAppNumber + '?application_no=' + payload.value + '&academic_year=' + payload.session + '&branch_id=' + payload.branchId + '&module_id=' + payload.moduleId

@@ -8,6 +8,7 @@ import Select from 'react-select'
 import '../../../css/staff.css'
 import * as actionTypes from '../../store/actions'
 
+let userToken = "";
 class editOtherFeeType extends Component {
   constructor (props) {
     super(props)
@@ -22,10 +23,11 @@ class editOtherFeeType extends Component {
   }
 
   componentDidMount () {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (!this.props.acadId || !this.props.otherFeeId) {
       this.props.alert.warning('Select the required Fields')
     } else {
-      this.props.fetchFeeAccount(this.props.acadId, this.props.branchId, this.props.alert, this.props.user)
+      this.props.fetchFeeAccount(this.props.acadId, this.props.branchId, this.props.alert, userToken)
       let currentData = this.props.otherFees.filter(val => val.id === this.props.otherFeeId)
       currentData.forEach(arr => {
         this.setState({
@@ -110,7 +112,7 @@ class editOtherFeeType extends Component {
         fee_type_name: this.state.feeTypeName,
         sub_type: this.state.subFeeTypeName
       }
-      this.props.updateListOtherFee(data, this.props.alert, this.props.user)
+      this.props.updateListOtherFee(data, this.props.alert, userToken)
       this.props.close()
     } else {
       this.props.alert.warning('Select All Fields')

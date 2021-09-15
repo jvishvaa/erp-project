@@ -68,7 +68,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
-
+let userToken = "";
 const RequestShuffle = ({
   classes,
   session,
@@ -105,28 +105,29 @@ const RequestShuffle = ({
   useEffect(() => {}, [displayErp]);
 
   useEffect(() => {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (sessionYear) {
       setBranch('');
       setGrade('');
       setSection('');
     }
-  }, [alert, fetchBranchAtAcc, sessionYear, user]);
+  }, [alert, fetchBranchAtAcc, sessionYear, userToken]);
 
   useEffect(() => {
     // Update the document title using the browser API
     if (branch && sessionYear) {
-      fetchGradesPerBranch(sessionYear.value, branch.value, alert, user, moduleId);
+      fetchGradesPerBranch(sessionYear.value, branch.value, alert, userToken, moduleId);
       setGrade('');
       setSection('');
     }
-  }, [alert, branch, fetchGradesPerBranch, sessionYear, user]);
+  }, [alert, branch, fetchGradesPerBranch, sessionYear, userToken]);
 
   useEffect(() => {
     if (branch && sessionYear && grade) {
-      fetchSections(grade.value, sessionYear.value, branch.value, alert, user, moduleId);
+      fetchSections(grade.value, sessionYear.value, branch.value, alert, userToken, moduleId);
       setSection('');
     }
-  }, [sessionYear, branch, grade, fetchSections, alert, user]);
+  }, [sessionYear, branch, grade, fetchSections, alert, userToken]);
 
   useEffect(() => {
     if (redirectPageStatus) {
@@ -166,7 +167,7 @@ const RequestShuffle = ({
   //       3,
   //       studentName,
   //       alert,
-  //       user
+  //       userToken
   //     )
   //   }, 500)
   const nameDebounceFunc = (studentName1) => {
@@ -178,7 +179,7 @@ const RequestShuffle = ({
       3,
       studentName1,
       alert,
-      user,
+      userToken,
       branches && branches.value
     );
   };
@@ -192,7 +193,7 @@ const RequestShuffle = ({
   //       3,
   //       erp,
   //       alert,
-  //       user
+  //       userToken
   //     )
   //   }, 500)
 
@@ -207,7 +208,7 @@ const RequestShuffle = ({
       3,
       erp1,
       alert,
-      user,
+      userToken,
       branches && branches.value
     );
     }
@@ -253,7 +254,7 @@ const RequestShuffle = ({
 
   const academicYearChangeHandler = (e) => {
     setSessionYear(e);
-    fetchBranchAtAcc(e && e.value, user, alert, moduleId);
+    fetchBranchAtAcc(e && e.value, userToken, alert, moduleId);
   };
 
   const branchChangeHandler = (e) => {
@@ -301,7 +302,7 @@ const RequestShuffle = ({
       grade_to: grade.value,
       section_to: section.value,
     };
-    initiateShuffleRequest(data, alert, user);
+    initiateShuffleRequest(data, alert, userToken);
   };
 
   const studentInfoHandler = useMemo(() => {
@@ -311,12 +312,12 @@ const RequestShuffle = ({
           erp={displayErp}
           branch={branches && branches.value}
           session={sessionYear && sessionYear.value}
-          user={user}
+          user={userToken}
           alert={alert}
         />
       );
     }
-  }, [studentName, displayErp, alert, user]);
+  }, [studentName, displayErp, alert, userToken]);
 
   return (
     <Layout>
@@ -373,8 +374,8 @@ const RequestShuffle = ({
           </Grid>
           <Grid item className={classes.item} xs={12}>
             {studentInfoHandler}
-            {/* {displayErp ? <Student erp={displayErp} user={user} alert={alert} /> : null} */}
-            {/* {studentName ? <Student erp={studentName} user={user} alert={alert} /> : erp ? <Student erp={studentName} user={user} alert={alert} /> : null} */}
+            {/* {displayErp ? <Student erp={displayErp} userToken={userToken} alert={alert} /> : null} */}
+            {/* {studentName ? <Student erp={studentName} userToken={userToken} alert={alert} /> : erp ? <Student erp={studentName} userToken={userToken} alert={alert} /> : null} */}
           </Grid>
           <Grid item className={classes.item} xs={3}>
             <label>To Branch* </label>
@@ -465,7 +466,7 @@ RequestShuffle.propTypes = {
 };
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   dataLoading: state.finance.common.dataLoader,
   gradeList: state.finance.common.gradesPerBranch,

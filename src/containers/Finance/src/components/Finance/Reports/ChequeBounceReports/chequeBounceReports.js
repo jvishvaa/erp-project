@@ -76,6 +76,7 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+let userToken = "";
 const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downloadBounceReports, downloadReportsBounce, showBounce, history, dataLoading, bounceReportList, alert, user, chequeBounceList }) => {
   const [sessionYear, setSession] = useState(null)
   const [roleState, setRole] = useState(null)
@@ -85,9 +86,7 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
   // const [accReasonToApprove, setAccReason] = useState({})
 
   useEffect(() => {
-      if(user === null){
-        window.location.reload();
-      }
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     const userProfile = JSON.parse(localStorage.getItem('userDetails'))
     const role = userProfile && userProfile?.personal_info && userProfile?.personal_info?.role?.toLowerCase()
     setRole(role)
@@ -96,7 +95,7 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
   const handleAcademicyear = (e) => {
     setSession(e)
     // if (roleState === 'financeadmin') {
-      fetchBranches(e.value, alert, user, moduleId)
+      fetchBranches(e.value, alert, userToken, moduleId)
       // fetch banks
     // }
   }
@@ -142,13 +141,13 @@ const ChequeBounceReports = ({ classes, session, branches, fetchBranches, downlo
     if (!sessionYear || !fromDate || !toDate) {
       alert.warning('Fill all the Fields!')
     } else {
-      chequeBounceList(roleState, sessionYear && sessionYear.value, branchId && branchId.value, fromDate, toDate, alert, user)
+      chequeBounceList(roleState, sessionYear && sessionYear.value, branchId && branchId.value, fromDate, toDate, alert, userToken)
     }
   }
 
   const downloadReports = () => {
     // do the call
-    downloadBounceReports(roleState, 'ChequeBounceReport.xlsx', sessionYear, branchId, fromDate, toDate, alert, user)
+    downloadBounceReports(roleState, 'ChequeBounceReport.xlsx', sessionYear, branchId, fromDate, toDate, alert, userToken)
     // downloadReportsBounce()
   }
 
@@ -291,7 +290,7 @@ ChequeBounceReports.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   branches: state.finance.common.multipleBranchPerSession,
   bounceReportList: state.finance.bounceReports.chequeBounceReportList,

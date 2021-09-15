@@ -328,7 +328,7 @@ export class ViewBanks extends Component {
         <Modal open={this.state.showAddModal} click={this.addModalHideHandler}>
           <h3 className={classes.modal__heading}>Add Bank</h3>
           <hr />
-          <AddBanks close={this.addModalHideHandler} alert={this.props.alert} session={this.props.currentSession} branch={this.state.currentBranch.id} />
+          <AddBanks close={this.addModalHideHandler} alert={this.props.alert} session={this.props.currentSession} branch={this.state.currentBranch.id}  user={this.props.user}  />
         </Modal>
       )
     }
@@ -337,7 +337,7 @@ export class ViewBanks extends Component {
         <Modal open={this.state.showModal} click={this.modalCloseHandler}>
           <h3 className={classes.modal__heading}>Edit Bank</h3>
           <hr />
-          <EditBanks row={this.state.rowId} close={this.modalCloseHandler} session={this.props.currentSession} branch={this.state.currentBranch.id} accountDetails={this.props.viewBanksList} alert={this.props.alert} getDetails={this.editedValueHandler} />
+          <EditBanks row={this.state.rowId} close={this.modalCloseHandler} session={this.props.currentSession} branch={this.state.currentBranch.id} accountDetails={this.props.viewBanksList} alert={this.props.alert} getDetails={this.editedValueHandler} user={this.props.user} />
         </Modal>
       )
     }
@@ -469,7 +469,7 @@ export class ViewBanks extends Component {
   }
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   branches: state.finance.common.branchPerSession,
   viewBanksList: state.finance.viewBanks.viewBanksList,
   dataLoading: state.finance.common.dataLoader

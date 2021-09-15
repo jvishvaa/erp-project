@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import {
   Grid,
@@ -21,11 +21,16 @@ import { apiActions } from '../../../_actions'
 // import { CircularProgress } from '../../../ui'
 import Layout from '../../../../../Layout'
 
+let userToken='';
 const OnlinePayment = ({ dataLoadingStatus, alert, airpayPayment, todayEMandateDetails, setDomainDetails, todayDetail, fetchBranches, user, domainNames, branches, session }) => {
   // const [selectedDomain, setSelectedDomain] = useState(null)
   const [payMode, setPayMode] = useState(null)
   //   const [showTable, setShowTable] = useState(false)
   const [text, setText] = useState('')
+
+  useEffect(() => {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token 
+  }, [])
 
   const handleClickSessionYear = (e) => {
     setPayMode(e)
@@ -39,7 +44,7 @@ const OnlinePayment = ({ dataLoadingStatus, alert, airpayPayment, todayEMandateD
       const data = {
         TRANSACTIONID: text
       }
-      airpayPayment(data, payMode, alert, user)
+      airpayPayment(data, payMode, alert, userToken)
     //   }
     } else {
       alert.warning('Fill the required Fields!')
@@ -110,7 +115,7 @@ const OnlinePayment = ({ dataLoadingStatus, alert, airpayPayment, todayEMandateD
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   dataLoadingStatus: state.finance.common.dataLoader,
   todayDetail: state.finance.eMandateReducer.todayDetails,

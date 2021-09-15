@@ -21,7 +21,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
-import {Typography} from '@material-ui/core';
+import { Typography } from '@material-ui/core';
 import { connect, useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
@@ -38,20 +38,20 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     color: theme.palette.secondary.main,
   },
-   guidelineval : {
+  guidelineval: {
     color: theme.palette.primary.main,
-     fontWeight: '600'
-},
-guideline:{
+    fontWeight: '600',
+  },
+  guideline: {
     color: theme.palette.secondary.main,
-     fontSize: '16px',
-      padding: '10px'
-},
-guidelinesText: {
-  fontSize: '20px',
-  fontWeight: 'bold',
-  color : theme.palette.secondary.main
-},
+    fontSize: '16px',
+    padding: '10px',
+  },
+  guidelinesText: {
+    fontSize: '20px',
+    fontWeight: 'bold',
+    color: theme.palette.secondary.main,
+  },
 }));
 
 const columnsGrade = [
@@ -229,8 +229,8 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   useEffect(() => {
     if (moduleId && selectedAcademicYear) getBranches();
-    console.log(selectedAcademicYear , "yesr");
-  }, [moduleId , selectedAcademicYear]);
+    console.log(selectedAcademicYear, 'yesr');
+  }, [moduleId, selectedAcademicYear]);
 
   const handleFileChange = (event) => {
     const { files } = event.target;
@@ -299,7 +299,9 @@ const BulkUpload = ({ onUploadSuccess }) => {
 
   const getBranches = (acadId) => {
     axiosInstance
-      .get(`erp_user/branch/?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`)
+      .get(
+        `erp_user/branch/?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
+      )
       .then((result) => {
         if (result.data.status_code === 200) {
           const modifiedResponse = result?.data?.data?.results.map(
@@ -334,10 +336,10 @@ const BulkUpload = ({ onUploadSuccess }) => {
     setBranch(data?.id);
     setBranchCode(data?.branch_code);
     setBranchDisplay(data);
-    if (data?.id > 0 && year > 0) {
+    if (data?.id > 0 && selectedAcademicYear?.id > 0) {
       axiosInstance
         .get(
-          `${endpoints.academics.grades}?session_year=${year}&branch_id=${data?.id}&module_id=${moduleId}`
+          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${data?.id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.status === 200) {
@@ -363,7 +365,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
       setSectionDisp('');
       axiosInstance
         .get(
-          `${endpoints.academics.sections}?session_year=${year}&branch_id=${branch}&grade_id=${value.grade_id}&module_id=${moduleId}`
+          `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branch}&grade_id=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -401,7 +403,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
       setSubjects([]);
       axiosInstance
         .get(
-          `${endpoints.academics.subjects}?session_year=${year}&branch=${branch}&grade=${searchGradeId}&section=${value.section_id}&module_id=${moduleId}`
+          `${endpoints.academics.subjects}?session_year=${selectedAcademicYear?.id}&branch=${branch}&grade=${searchGradeId}&section=${value.section_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -526,7 +528,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
           ) : (
             <Button
               variant='contained'
-              style={{color:'white', width: '100%' }}
+              style={{ color: 'white', width: '100%' }}
               color='primary'
               size='medium'
               onClick={handleFileUpload}
@@ -541,17 +543,15 @@ const BulkUpload = ({ onUploadSuccess }) => {
           <hr style={{ backgroundColor: '#e2e2e2', border: 'none', height: '1px' }} />
           <Grid container spacing={2}>
             <Grid item xs={12}>
-            <Typography className={classes.guidelinesText}>Guidelines:</Typography>
+              <Typography className={classes.guidelinesText}>Guidelines:</Typography>
             </Grid>
             <Grid item xs={12}>
               <Paper className={classes.root}>
                 {guidelines.map((val, i) => {
                   return (
                     <div className={classes.guideline}>
-                                        {i + 1}. 
-                                        <span className = {classes.guidelineval}>
-                                            {val.name}
-                                        </span>
+                      {i + 1}. 
+                      <span className={classes.guidelineval}>{val.name}</span>
                       <span>{val.field}</span>
                     </div>
                   );
@@ -559,7 +559,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
               </Paper>
             </Grid>
             <Grid item xs={12}>
-            <Typography className={classes.guidelinesText}>Suggestions:</Typography>
+              <Typography className={classes.guidelinesText}>Suggestions:</Typography>
             </Grid>
             <Grid item xs={12} sm={4}>
               <Autocomplete

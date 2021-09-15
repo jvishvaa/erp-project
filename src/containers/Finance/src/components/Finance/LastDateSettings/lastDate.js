@@ -18,6 +18,8 @@ import PartialPayment from './partialPayment'
 import Layout from '../../../../../Layout'
 // import { urls } from '../../../urls'
 
+let userToken = "";
+
 const styles = theme => ({
   tableWrapper: {
     overflowX: 'auto'
@@ -76,13 +78,9 @@ class LastDateSettings extends Component {
 
     }
   }
-
-  componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload();
-    }
-  }
-
+componentDidMount(){
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token
+}
   componentDidUpdate () {
   }
 
@@ -115,17 +113,17 @@ class LastDateSettings extends Component {
           {this.state.value === 'one' && <TabContainer>
             <ConcessionLastDate alert={this.props.alert}
               session={this.state.currentSession}
-              user={this.props.user} />
+              user={userToken} />
           </TabContainer>}
           {this.state.value === 'two' && <TabContainer>
             <BackDateSelection alert={this.props.alert}
               session={this.state.currentSession}
-              user={this.props.user} />
+              user={userToken} />
           </TabContainer>}
           {this.state.value === 'three' && <TabContainer>
             <PartialPayment alert={this.props.alert}
               session={this.state.currentSession}
-              user={this.props.user} />
+              user={userToken} />
           </TabContainer>
 
           }

@@ -39,6 +39,7 @@ const cards = [
   }
 ]
 
+let userToken = "";
 const EditMode = ({
   type,
   user,
@@ -86,6 +87,7 @@ const EditMode = ({
   const [receiptNo, setReceiptNo] = useState('')
 
   useEffect(() => {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (ifscDetails && +searchBy === 1) {
       setMicr(ifscDetails.micr || null)
       setBankName(ifscDetails.bank || null)
@@ -102,14 +104,14 @@ const EditMode = ({
   }, [micrDetails, searchBy])
 
   useEffect(() => {
-    fetchReceiptRange(session, branch, alert, user)
-  }, [alert, branch, fetchReceiptRange, session, user])
+    fetchReceiptRange(session, branch, alert, userToken)
+  }, [alert, branch, fetchReceiptRange, session, userToken])
 
   useEffect(() => {
     if (type !== 'Admission' && transactionId) {
-      fetchFormMode(type.toLowerCase(), transactionId, user, alert)
+      fetchFormMode(type.toLowerCase(), transactionId, userToken, alert)
     }
-  }, [type, transactionId, user, alert, fetchFormMode])
+  }, [type, transactionId, userToken, alert, fetchFormMode])
 
   useEffect(() => {
     if (modeDetails) {
@@ -201,14 +203,14 @@ const EditMode = ({
   const changeMicrhandler = (e) => {
     setMicr(e.target.value)
     if (+searchBy === 2 && e.target.value.length === 9) {
-      fetchMicr(e.target.value, alert, user)
+      fetchMicr(e.target.value, alert, userToken)
     }
   }
 
   const changeIfscHandler = (e) => {
     setIfsc(e.target.value)
     if (+searchBy === 1 && e.target.value.length === 11) {
-      fetchIfsc(e.target.value, alert, user)
+      fetchIfsc(e.target.value, alert, userToken)
     }
   }
 
@@ -327,7 +329,7 @@ const EditMode = ({
       }
     }
 
-    updateTransactionMode(body, transactionId, user, alert)
+    updateTransactionMode(body, transactionId, userToken, alert)
     close()
   }
 

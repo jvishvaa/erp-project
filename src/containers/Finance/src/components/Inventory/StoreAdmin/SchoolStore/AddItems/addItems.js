@@ -56,6 +56,7 @@ const GENDER = [
   { id: 2, gender: 'Female' },
   { id: 3, gender: 'Both' }
 ]
+let userToken='';
 class AddItems extends Component {
   constructor (props) {
     super(props)
@@ -105,9 +106,7 @@ class AddItems extends Component {
   }
 
   componentDidMount () {
-    if(this.props.user === null){
-      window.location.reload()
-    }
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (itemState) {
       this.setState(itemState)
     }
@@ -134,7 +133,7 @@ class AddItems extends Component {
       currentBranch: null,
       currentGrade: null
     }, () => {
-      this.props.fetchBranches(this.state.currentSession, this.props.alert, this.props.user)
+      this.props.fetchBranches(this.state.currentSession, this.props.alert, userToken)
     })
   }
 
@@ -146,7 +145,7 @@ class AddItems extends Component {
       },
       currentGrade: null
     }, () => {
-      this.props.fetchGrades(this.state.currentSession, this.state.currentBranch.id, this.props.user, this.props.alert)
+      this.props.fetchGrades(this.state.currentSession, this.state.currentBranch.id, userToken, this.props.alert)
     })
   }
 
@@ -195,7 +194,7 @@ class AddItems extends Component {
     this.setState({
       entryModal: true
     }, () => {
-      this.props.fetchUnitColorSubcat(this.props.alert, this.props.user)
+      this.props.fetchUnitColorSubcat(this.props.alert, userToken)
     })
   }
 
@@ -278,12 +277,12 @@ class AddItems extends Component {
       this.props.alert.warning('Please Give Some Measurement Value')
       return
     }
-    this.props.createMeasurement(unit, this.props.alert, this.props.user)
+    this.props.createMeasurement(unit, this.props.alert, userToken)
     this.hideSubCatModal()
   }
 
   fetchMeasurementsHandler = () => {
-    this.props.fetchMeasurements(this.props.alert, this.props.user)
+    this.props.fetchMeasurements(this.props.alert, userToken)
   }
 
   createSubCatHandler = () => {
@@ -292,7 +291,7 @@ class AddItems extends Component {
       this.props.alert.warning('Please Give Some Sub Category')
       return
     }
-    this.props.createSubCat(subCat, this.props.alert, this.props.user)
+    this.props.createSubCat(subCat, this.props.alert, userToken)
     this.hideSubCatModal()
   }
 
@@ -302,7 +301,7 @@ class AddItems extends Component {
       this.props.alert.warning('Please Give Some Color Value')
       return
     }
-    this.props.createColor(color, this.props.alert, this.props.user)
+    this.props.createColor(color, this.props.alert, userToken)
     this.hideSubCatModal()
   }
 
@@ -383,7 +382,7 @@ class AddItems extends Component {
       return
     }
     const {
-      user,
+      // user,
       alert
     } = this.props
     const color = this.state.color ? { ...this.state.color } : null
@@ -409,7 +408,7 @@ class AddItems extends Component {
       compulsoryValue,
       isDelivery,
       isBundled,
-      user,
+      userToken,
       alert
     }
     this.props.addItem(payload)
@@ -441,7 +440,7 @@ class AddItems extends Component {
       this.props.alert.warning('Please Fill All Madatory Fields')
       return
     }
-    this.props.fetchItems(currentSession, currentBranch, currentGrade, this.props.alert, this.props.user)
+    this.props.fetchItems(currentSession, currentBranch, currentGrade, this.props.alert, userToken)
 
     this.setState({
       showAdd: true
@@ -473,7 +472,7 @@ class AddItems extends Component {
     form.append('file', bulkFile)
     for (var key of form.entries()) {
     }
-    this.props.bulkItemsUpload(form, this.props.alert, this.props.user)
+    this.props.bulkItemsUpload(form, this.props.alert, userToken)
     this.hideEntryModal()
   }
 
@@ -937,7 +936,7 @@ class AddItems extends Component {
     if (this.state.editModal) {
       editModal = (
         <Modal open={this.state.editModal} large click={this.hideEditModalHandler}>
-          <EditItems itemid={this.state.itemsId} user={this.props.user} alert={this.props.alert} close={this.hideEditModalHandler} />
+          <EditItems itemid={this.state.itemsId} user={userToken} alert={this.props.alert} close={this.hideEditModalHandler} />
         </Modal>
       )
     }
@@ -1076,7 +1075,7 @@ class AddItems extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   branches: state.finance.common.branchPerSession,
   grades: state.finance.common.gradesPerBranch,

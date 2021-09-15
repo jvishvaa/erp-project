@@ -21,6 +21,7 @@ import BulkSms from './bulkSmsSender'
 import DefaulterSms from './defaulterSms'
 import Layout from '../../../../../../Layout'
 
+let userToken ="";
 const styles = theme => ({
   tableWrapper: {
     overflowX: 'auto',
@@ -72,10 +73,8 @@ const CommunicationSMS = ({ classes,
   const [selectedBranch, setSelectedBranch] = useState(null)
 
   useLayoutEffect(() => {
+ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
-    if(user === null){
-      window.location.reload()
-    }
     const role = (JSON.parse(localStorage.getItem('userDetails'))).personal_info.role
     if (role === 'FinanceAdmin') {
       setIsAdmin(true)
@@ -84,9 +83,9 @@ const CommunicationSMS = ({ classes,
       //   setFromDate(fromDateStored)
       //   setToDate(toDateStored)
       // }
-      fetchBranches(sessionYear.value, alert, user)
+      fetchBranches(sessionYear.value, alert, userToken)
     }
-  }, [alert, sessionYear.value, fetchBranches, user])
+  }, [alert, sessionYear.value, fetchBranches, userToken])
 
   useEffect(() => {
     // const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
@@ -108,11 +107,11 @@ const CommunicationSMS = ({ classes,
   // useEffect(() => {
   //   const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
   //   if (sessionYear && fromDate && toDate && role !== 'FinanceAdmin') {
-  //     fetchFormCount(sessionYear.value, null, fromDate, toDate, alert, user)
+  //     fetchFormCount(sessionYear.value, null, fromDate, toDate, alert, userToken)
   //   } else if (sessionYear && fromDate && toDate && (role === 'FinanceAdmin') && selectedBranch) {
-  //     fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, alert, user)
+  //     fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, alert, userToken)
   //   }
-  // }, [sessionYear, fromDate, toDate, alert, user, fetchFormCount, selectedBranch])
+  // }, [sessionYear, fromDate, toDate, alert, userToken, fetchFormCount, selectedBranch])
 
   const handleSession = (e) => {
     acadStored = e
@@ -120,7 +119,7 @@ const CommunicationSMS = ({ classes,
     setSelectedBranch(null)
     setSmsType(null)
     // setShowTable(false)
-    fetchBranches(e.value, alert, user)
+    fetchBranches(e.value, alert, userToken)
   }
 
   const handleBranch = (e) => {
@@ -138,9 +137,9 @@ const CommunicationSMS = ({ classes,
   //   setShowTable(true)
   //   const role = (JSON.parse(localStorage.getItem('user_profile'))).personal_info.role
   //   if (sessionYear && fromDate && toDate && role !== 'FinanceAdmin') {
-  //     fetchFormCount(sessionYear.value, null, fromDate, toDate, alert, user)
+  //     fetchFormCount(sessionYear.value, null, fromDate, toDate, alert, userToken)
   //   } else if (sessionYear && fromDate && toDate && (role === 'FinanceAdmin') && selectedBranch) {
-  //     fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, alert, user)
+  //     fetchFormCount(sessionYear.value, selectedBranch.value, fromDate, toDate, alert, userToken)
   //   }
   // }
 
@@ -210,10 +209,10 @@ const CommunicationSMS = ({ classes,
             onChange={handleSmsType}
           />
         </Grid>
-        {smsType && smsType.value === 1 && <NormalSms alert={alert} user={user} />}
-        {smsType && smsType.value === 2 && <ClassWiseSms session={sessionYear.value} branch={selectedBranch && selectedBranch.value} isAdmin={isAdmin} alert={alert} user={user} />}
-        {smsType && smsType.value === 3 && <BulkSms session={sessionYear.value} branch={selectedBranch && selectedBranch.value} alert={alert} user={user} dataLoading={dataLoading} dataLoaded={dataLoaded} />}
-        {smsType && smsType.value === 4 && <DefaulterSms session={sessionYear.value} branch={selectedBranch && selectedBranch.value} isAdmin={isAdmin} alert={alert} user={user} />}
+        {smsType && smsType.value === 1 && <NormalSms alert={alert} user={userToken} />}
+        {smsType && smsType.value === 2 && <ClassWiseSms session={sessionYear.value} branch={selectedBranch && selectedBranch.value} isAdmin={isAdmin} alert={alert} user={userToken} />}
+        {smsType && smsType.value === 3 && <BulkSms session={sessionYear.value} branch={selectedBranch && selectedBranch.value} alert={alert} user={userToken} dataLoading={dataLoading} dataLoaded={dataLoaded} />}
+        {smsType && smsType.value === 4 && <DefaulterSms session={sessionYear.value} branch={selectedBranch && selectedBranch.value} isAdmin={isAdmin} alert={alert} user={userToken} />}
         {/* <Grid item className={classes.item} xs={2}>
           <Button style={{ marginTop: 20 }} variant='contained' disabled={!fromDate || !toDate} onClick={() => { getCount() }} className={classes.btn}>GET</Button>
         </Grid> */}
