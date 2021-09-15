@@ -9,6 +9,7 @@ import axios from 'axios';
 import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import './assessment-report-filters.css';
+import { result } from 'lodash';
 
 let url = '';
 const AssessmentReportFilters = ({
@@ -38,7 +39,6 @@ const AssessmentReportFilters = ({
     chapter: [],
     topic: [],
   });
-
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -162,7 +162,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   function getGrade(acadId, branchId) {
@@ -180,7 +180,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   function getSection(acadId, branchId, gradeId) {
@@ -198,7 +198,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   function getSubject(acadMappingId, gradeId) {
@@ -216,7 +216,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   function getTest(branchId, gradeId, subjectId) {
@@ -234,7 +234,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   function getChapter(subjectId) {
@@ -250,7 +250,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   function getTopic(chapterId, isCentral) {
@@ -270,7 +270,7 @@ const AssessmentReportFilters = ({
             });
           }
         })
-        .catch((error) => {});
+        .catch((error) => { });
     } else {
       axiosInstance
         .get(`${endpoints.assessmentErp.topicList}?chapter=${chapterId}`)
@@ -284,7 +284,7 @@ const AssessmentReportFilters = ({
             });
           }
         })
-        .catch((error) => {});
+        .catch((error) => { });
     }
   }
 
@@ -361,7 +361,6 @@ const AssessmentReportFilters = ({
       chapter: '',
       topic: '',
     });
-    console.log(filterData, 'grade');
     if (value) {
       getSubject(filterData.branch?.id, value?.grade_id);
       if (selectedReportType.id === 3 || selectedReportType.id === 4) {
@@ -429,7 +428,85 @@ const AssessmentReportFilters = ({
       setFilterData({ ...filterData, topic: value });
     }
   };
-
+  const handleDownload = async () => {
+    if (selectedReportType?.id === 1 && isFilter) {
+      try {
+        const { data } = await axiosInstance.get(`${endpoints.assessmentReportTypes.reportDowloadSectionWise}?test=${JSON.stringify(filterData.test?.id)}`, {
+          responseType: 'arraybuffer',
+        })
+        const blob = new Blob([data],
+          {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        // link.download = 'aol_attendance_report.xlsx';
+        link.click();
+        link.remove();
+      }
+      catch (error) {
+        setAlert('error', 'Failed to download attendee list')
+      }
+    }
+    if (selectedReportType?.id === 2 && isFilter) {
+      try {
+        const { data } = await axiosInstance.get(`${endpoints.assessmentReportTypes.reportDownloadTopicWise}?test=${JSON.stringify(filterData.test?.id)}`, {
+          responseType: 'arraybuffer',
+        })
+        const blob = new Blob([data],
+          {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        // link.download = 'aol_attendance_report.xlsx';
+        link.click();
+        link.remove();
+      }
+      catch (error) {
+        setAlert('error', 'Failed to download attendee list')
+      }
+    }
+    if (selectedReportType?.id === 3 && isFilter) {
+      try {
+        const { data } = await axiosInstance.get(`${endpoints.assessmentReportTypes.reportDownloadClassAverage}?test=${JSON.stringify(filterData.test?.id)}`, {
+          responseType: 'arraybuffer',
+        })
+        const blob = new Blob([data],
+          {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        // link.download = 'aol_attendance_report.xlsx';
+        link.click();
+        link.remove();
+      }
+      catch (error) {
+        setAlert('error', 'Failed to download attendee list')
+      }
+    }
+    if (selectedReportType?.id === 4 && isFilter) {
+      try {
+        const { data } = await axiosInstance.get(`${endpoints.assessmentReportTypes.reportDownloadTopicStudentAverage}?test=${JSON.stringify(filterData.test?.id)}&section_mapping=${filterData.section?.id}&topic=${filterData.topic?.id}`,
+          {
+            responseType: 'arraybuffer',
+          })
+        const blob = new Blob([data],
+          {
+            type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          });
+        const link = document.createElement('a');
+        link.href = window.URL.createObjectURL(blob);
+        // link.download = 'aol_attendance_report.xlsx';
+        link.click();
+        link.remove();
+      }
+      catch (error) {
+        setAlert('error', 'Failed to download attendee list')
+      }
+    }
+  }
   const handleClear = () => {
     url = '';
     setPage(1);
@@ -676,6 +753,17 @@ const AssessmentReportFilters = ({
             onClick={handleFilter}
           >
             Filter
+          </Button>
+        </Grid>
+        <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+          <Button
+            variant='contained'
+            size='medium'
+            color='primary'
+            style={{ color: 'white', width: '100%' }}
+            onClick={handleDownload}
+          >
+            Download Report
           </Button>
         </Grid>
       </Grid>
