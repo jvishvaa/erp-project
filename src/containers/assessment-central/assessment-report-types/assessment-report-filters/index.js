@@ -10,6 +10,7 @@ import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import './assessment-report-filters.css';
 import { result } from 'lodash';
+import FileSaver from 'file-saver';
 
 let url = '';
 const AssessmentReportFilters = ({
@@ -438,11 +439,12 @@ const AssessmentReportFilters = ({
           {
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           });
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
+        FileSaver.saveAs(blob, `ClassAverage_Report${new Date()}.xls`);
+        // const link = document.createElement('a');
+        // link.href = window.URL.createObjectURL(blob);
         // link.download = 'aol_attendance_report.xlsx';
-        link.click();
-        link.remove();
+        // link.click();
+        // link.remove();
       }
       catch (error) {
         setAlert('error', 'Failed to download attendee list')
@@ -457,11 +459,12 @@ const AssessmentReportFilters = ({
           {
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           });
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
+        FileSaver.saveAs(blob, `Topic_Report${new Date()}.xls`);
+        // const link = document.createElement('a');
+        // link.href = window.URL.createObjectURL(blob);
         // link.download = 'aol_attendance_report.xlsx';
-        link.click();
-        link.remove();
+        // link.click();
+        // link.remove();
       }
       catch (error) {
         setAlert('error', 'Failed to download attendee list')
@@ -476,11 +479,12 @@ const AssessmentReportFilters = ({
           {
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           });
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
+        FileSaver.saveAs(blob, `StudentMarks_Report${new Date()}.xls`);
+        // const link = document.createElement('a');
+        // link.href = window.URL.createObjectURL(blob);
         // link.download = 'aol_attendance_report.xlsx';
-        link.click();
-        link.remove();
+        // link.click();
+        // link.remove();
       }
       catch (error) {
         setAlert('error', 'Failed to download attendee list')
@@ -496,11 +500,12 @@ const AssessmentReportFilters = ({
           {
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           });
-        const link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
+        FileSaver.saveAs(blob, `IndivisualTopic_Report${new Date()}.xls`);
+        // const link = document.createElement('a');
+        // link.href = window.URL.createObjectURL(blob);
         // link.download = 'aol_attendance_report.xlsx';
-        link.click();
-        link.remove();
+        // link.click();
+        // link.remove();
       }
       catch (error) {
         setAlert('error', 'Failed to download attendee list')
