@@ -7,9 +7,12 @@ const {
       listClassworkReport,
       listHomeworkReport,
       listBlogReport,
+      listDiscussionReport,
       downloadAttendanceReport,
       downloadClassworkReport,
       downloadHomeworkReport,
+      downloadBlogReport,
+      downloadDiscussionReport,
     } = {},
   } = {},
 } = endpoints || {};
@@ -19,6 +22,7 @@ export const reportTypeConstants = {
   classwork: 'classwork',
   homework: 'homework',
   blog: 'blog',
+  discussion: 'discussion',
 };
 
 export const apiConfig = {
@@ -36,6 +40,11 @@ export const apiConfig = {
   },
   blog: {
     report: listBlogReport,
+    download: downloadBlogReport,
+  },
+  discussion: {
+    report: listDiscussionReport,
+    download: downloadDiscussionReport,
   },
 };
 
@@ -59,5 +68,10 @@ export const responseConverters = {
     total_post: 'Total Post',
     total_students: 'Total Students',
     un_submitted: 'Unsubmitted',
+  },
+  discussionResponse: {
+    today_total_posts: "Today's Posts",
+    last_24hrs_posts: 'Last 24 Hours Posts',
+    last_7days_posts: 'Last 7 days Posts',
   },
 };

@@ -7,11 +7,9 @@ const DashboardContext = React.createContext();
 
 export function DashboardContextProvider({ children }) {
   const [branchIds, setBranchIds] = useState([]);
-
   const {
     apiGateway: { msReportsUrl },
   } = ENVCONFIG || {};
-
   const {
     token: TOKEN = '',
     user_level = 0,
@@ -19,9 +17,7 @@ export function DashboardContextProvider({ children }) {
     first_name = 'Buddy',
     personal_info: { role = '' } = {},
   } = JSON.parse(localStorage.getItem('userDetails')) || {};
-
   const time = new Date().getHours();
-
   const welcomeDetails = {
     userLevel: user_level ? user_level : is_superuser ? 1 : '',
     name: first_name.toLowerCase(),
@@ -29,14 +25,14 @@ export function DashboardContextProvider({ children }) {
     greeting: time < 12 ? 'Good Morning' : time < 18 ? 'Good Afternoon' : 'Good Evening',
   };
   const { userLevel } = welcomeDetails || {};
-
+  
   const headers = {
-    //   'X-DTS-HOST': window.location.host,
+      'X-DTS-HOST': window.location.host,
     // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
-    'X-DTS-HOST': 'dev.mit.letseduvate.com',
+    // 'X-DTS-HOST': 'dev.mit.letseduvate.com',
     Authorization: `Bearer ${TOKEN}`,
   };
-
+  
   const getReport = (decisionParam, param) => {
     const params = { ...param, level: userLevel };
     const config = { headers, params };

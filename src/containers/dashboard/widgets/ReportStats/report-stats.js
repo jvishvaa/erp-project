@@ -24,7 +24,7 @@ const ReportStatsWidget = ({ avatar, title, data, ptitle, ntitle }) => {
         <List>
           {data.map((item) => (
             <ListItem>
-              <ListItemText primary={item?.detail} />
+              <ListItemText primary={item?.detail} className={classes.cardText} />
               <ListItemSecondaryAction>
                 {item?.positive >= 0 && (
                   <Chip

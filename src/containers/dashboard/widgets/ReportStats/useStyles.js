@@ -6,7 +6,7 @@ export const useStyles = makeStyles((theme) => ({
     paddingBottom: 15,
   },
   cardHeader: {
-    paddingBottom: 0,
+    padding: 8,
   },
   avatar: {
     backgroundColor: '#ffffff',
@@ -22,6 +22,9 @@ export const useStyles = makeStyles((theme) => ({
     height: 150,
     maxHeight: 150,
     overflowY: 'auto',
+    '&.MuiCardContent-root:last-child': {
+      paddingBottom: 0,
+    },
     '& .MuiChip-root': {
       marginRight: 5,
     },
@@ -31,6 +34,7 @@ export const useStyles = makeStyles((theme) => ({
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
       overflow: 'hidden',
+      fontSize: '1rem',
     },
   },
   positive_count: {
@@ -52,7 +56,8 @@ export const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    color: theme.palette.primary.main,
+    color: theme.palette.text.secondary,
     fontWeight: 600,
+    fontSize: '1rem',
   },
 }));

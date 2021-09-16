@@ -16,7 +16,7 @@ const DefaultDashboard = React.lazy(() => import('./DefaultDashboard/defaultDash
 
 const Dashboard = () => {
   const {
-    welcomeDetails: { userLevel },
+    welcomeDetails: { userLevel = 4 },
   } = useDashboardContext();
 
   const isMsAPIKey = useSelector((state) => state.commonFilterReducer?.isMsAPIKey);

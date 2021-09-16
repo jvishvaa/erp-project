@@ -4,12 +4,7 @@ const local = {
     ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   },
   apiGateway: {
-<<<<<<< HEAD
-    baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
-=======
-    // baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
     baseURL: 'https://dev.mit.letseduvate.com/qbox',
->>>>>>> ce5d1fe4f...  context added in dashboard & blog module
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     // baseURL: 'http://localhost:8000/qbox',
     // baseURL: `${window.location.origin}/qbox`,
@@ -83,7 +78,7 @@ const DEV = 'DEV';
 const QA = 'QA';
 const STAGE = 'STAGE';
 const env = { [PROD]: prod, [DEV]: dev, [QA]: qa, [STAGE]: stage };
-const config = env[process.env.REACT_APP_UI_ENV] || qa;
+const config = env[process.env.REACT_APP_UI_ENV] || local;
 
 export default {
   // Add common config values here

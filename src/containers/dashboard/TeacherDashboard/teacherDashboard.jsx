@@ -3,14 +3,15 @@ import WebAsset from '@material-ui/icons/WebAsset';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import SpellcheckIcon from '@material-ui/icons/Spellcheck';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
+import ForumIcon from '@material-ui/icons/Forum';
 import { Grid } from '@material-ui/core';
 import { DashFilterWidget, ReportStatsWidget } from '../widgets';
 import { reportTypeConstants, responseConverters } from '../dashboard-constants';
 import { useDashboardContext } from '../dashboard-context';
 
 const TeacherDashboard = () => {
-  const { blogResponse } = responseConverters;
-  const { attendance, classwork, homework, blog } = reportTypeConstants;
+  const { blogResponse, discussionResponse } = responseConverters;
+  const { attendance, classwork, homework, blog, discussion } = reportTypeConstants;
   const { branchIds = [], getReport = () => {} } = useDashboardContext();
 
   const [reports, setReports] = useState({
@@ -18,6 +19,7 @@ const TeacherDashboard = () => {
     classworkReport: [],
     homeworkReport: [],
     blogReport: [],
+    discussionReport: [],
   });
 
   const getAttendanceReport = (params) => {
@@ -90,6 +92,20 @@ const TeacherDashboard = () => {
       });
   };
 
+  const getDiscussionReport = (params) => {
+    getReport(discussion, params)
+      .then(([response]) => {
+        const discussionReport = Object.entries(response).map(([key, value]) => ({
+          detail: discussionResponse[key],
+          info: value,
+        }));
+        setReports((prev) => ({ ...prev, discussionReport }));
+      })
+      .catch((error) => {
+        console.log('error', error?.response?.data?.description);
+      });
+  };
+
   useEffect(() => {
     const params = { branch_ids: branchIds.join(',') };
     if (branchIds.length > 0) {
@@ -97,6 +113,7 @@ const TeacherDashboard = () => {
       getClassworkReport(params);
       getHomeworkReport(params);
       getBlogReport(params);
+      getDiscussionReport(params);
     }
   }, [branchIds]);
 
@@ -105,6 +122,7 @@ const TeacherDashboard = () => {
     classworkReport = [],
     homeworkReport = [],
     blogReport = [],
+    discussionReport = [],
   } = reports || {};
 
   return (
@@ -135,6 +153,13 @@ const TeacherDashboard = () => {
       </Grid>
       <Grid item xs={12} md={4}>
         <ReportStatsWidget title='Blog Report' data={blogReport} avatar={WebAsset} />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <ReportStatsWidget
+          title='Discussion Forum Report'
+          data={discussionReport}
+          avatar={ForumIcon}
+        />
       </Grid>
     </Grid>
   );
