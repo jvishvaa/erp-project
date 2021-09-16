@@ -909,7 +909,7 @@ class Receipt extends Component {
 }
 
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   dataLoading: state.finance.common.dataLoader,
   receiptRange: state.finance.makePayAcc.receiptRange,
   ifsc: state.finance.common.ifscDetails,
