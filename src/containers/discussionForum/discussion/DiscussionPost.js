@@ -493,7 +493,7 @@ useEffect(()=>{
                           <Grid container spacing={2}>
                               <Grid item xs={10}>
                                 <StyledInput
-                                      placeholder="Have your say"
+                                      placeholder="Comment Here"
                                       value={reply}
                                       onChange={handleChange}
                                       fullWidth
@@ -504,7 +504,7 @@ useEffect(()=>{
                                       fullWidth
                                       onClick={handleReplie}
                                     >
-                                      Reply
+                                      Comment
                                     </StyledOutlinedButton>
                               </Grid>
                               <Grid item xs={12}>
