@@ -176,7 +176,7 @@ export default function CommentsComponent(props) {
       {!isChildReply && isReply && (
         <Grid item xs={10}>
           <StyledInput
-            placeholder='Have your say'
+            placeholder='Reply Here'
             value={reply}
             onChange={handleChange}
             fullWidth
