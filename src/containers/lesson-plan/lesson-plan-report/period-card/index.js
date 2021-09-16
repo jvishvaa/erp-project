@@ -109,7 +109,7 @@ const PeriodCard = ({
           </Box>
         </Grid>
         <Grid item xs={12} sm={12} />
-        <Grid item xs={6}>
+        <Grid item xs={8}>
         <Box>
             <Typography
               className={classes.title}
@@ -151,7 +151,7 @@ const PeriodCard = ({
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={6} className={classes.textRight}>
+        <Grid item xs={4} className={classes.textRight}>
           {/* {!viewMore && */}
 
           {!periodColor && (
