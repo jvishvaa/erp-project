@@ -11,6 +11,7 @@ import TableRow from '@material-ui/core/TableRow';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
+import Chip from '@material-ui/core/Chip';
 import {
   Grid,
   TextField,
@@ -64,6 +65,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const columns = [
+  { id: 'subject_mapping_id', label: 'ID', minWidth: 100 },
   { id: 'session_year', label: 'Session Year', minWidth: 100 },
   { id: 'branch_name', label: 'Branch', minWidth: 100 },
   { id: 'grade_name', label: 'Grade', minWidth: 100 },
@@ -647,6 +649,9 @@ const SubjectMappingTable = () => {
                         return (
                           <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
                             <TableCell className={classes.tableCell}>
+                              {id || ''}
+                            </TableCell>
+                            <TableCell className={classes.tableCell}>
                               {session_year || ''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
@@ -659,7 +664,24 @@ const SubjectMappingTable = () => {
                               {section_name || ''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
+                              <div className="subjectArea">
+                              <div id="subjectName" >
                               {subject_name || ''}
+                              </div>
+                              <div className="chipContainer" >
+                              {subject?.online_class === 0 ? (
+                              <Chip
+                              size='small'
+                              color='primary'
+                              label='Duplicate'
+                              className={classes.duplicate}
+                              id='duplicateChip'
+                      />
+                    ) : (
+                      <div className='noDuplicate'></div>
+                    )}
+                    </div>
+                    </div>
                             </TableCell>
                             <TableCell className={classes.tableCell}>
                               {created_by || ''}
