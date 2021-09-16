@@ -43,6 +43,7 @@ import {
   uploadFile,
 } from '../../../../../redux/actions';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -133,7 +134,7 @@ const useStyles = makeStyles((theme) => ({
 const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const { homeworkSubmission, setHomeworkSubmission, setLoading, setDisplayRatingBox } = props || {};
-  const { isOpen, subjectId, date, subjectName } = homeworkSubmission || {};
+  const { isOpen, subjectId, date, subjectName, isEvaluated } = homeworkSubmission || {};
   const [isQuestionWise, setIsQuestionWise] = useState(false);
   const [allQuestionAttachment, setAllQuestionAttachment] = useState([]);
   const [attachmentData, setAttachmentData] = useState([]);
@@ -542,6 +543,33 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       setPenToolOpen(false);
     }
   }, [penToolUrl])
+
+  const handleDelete = () => {
+    if(homeworkSubmission.isEvaluated){
+      setAlert('error', "Homework Evaluated, can not be deleted");
+      return;
+    }
+      setLoading(true);
+        axiosInstance
+          .delete(
+            `${endpoints.homework.hwDelete}${homeworkSubmission.homeworkId}/hw-questions/`
+          )
+          .then((result) => {
+            if (result.data.status_code === 200) {
+              handleHomeworkCancel();
+              setAlert('success', result.data?.message);
+              setLoading(false);
+            } else {
+              setAlert('error', result.data?.message);
+              setLoading(false);
+            }
+          })
+          .catch((error) => {
+            setAlert('error', "error1");
+            setLoading(false);
+          });
+    };
+
 
   return (
     <div className='create_group_filter_container'>
@@ -960,6 +988,16 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               )}
                             </div>
                           </div>
+                          <div className="overallContainer">
+                              {question?.comment &&
+                                <div className="scoreBox1">
+                                  Comments : {question.comment}
+                                </div>}
+                              {question?.remark &&
+                                <div className="remarkBox1">
+                                  Remarks : {question.remark}
+                                </div>}
+                            </div>
                         </div>
                       }
                     </>
@@ -1072,29 +1110,39 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
             <div>
               {homeworkSubmission.status === 3 ?
-                <div className="overallContainer">
-                  {overallScore &&
-                    <div className="scoreBox">
-                      Overall Score : {overallScore}
-                    </div>}
-                  {overallRemark &&
-                    <div className="remarkBox">
-                      Overall Remark : {overallRemark}
-                    </div>}
-                </div>
-                : null}
-
-              <div className='homework_submit_button_wrapper'>
+              <>
+              {overallScore &&
+                <div className="scoreBox">
+                  Overall Score  : {overallScore}
+                </div>}
+              {overallRemark &&
+                <div className="remarkBox">
+                  Overall Remark : {overallRemark}
+                </div>}
+              </>:null}
+              <div style={{width:'100%'}}>    
                 <Button
                   variant='contained'
                   className='cancelButton labelColor homework_submit_button_cancel'
                   size='medium'
-                  style={{ width: '100%' }}
+                  style={{ width: '15%'}}
                   onClick={handleHomeworkCancel}
                 >
                   {homeworkSubmission.status === 1 ? 'CANCEL' : 'BACK'}
                 </Button>
-                {homeworkSubmission.status === 1 &&
+                {homeworkSubmission.status === 2 &&
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleDelete}
+                  style={{backgroundColor:'red',width:'15%'}}
+                  startIcon={<DeleteIcon />}
+                >
+                  Delete
+                </Button>}
+              </div>
+              {homeworkSubmission.status === 1 &&
+                <div>
                   <Button
                     variant='contained'
                     style={{ color: 'white', width: '100%' }}
@@ -1104,8 +1152,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   >
                     Submit
               </Button>
+                </div>
                 }
-              </div>
             </div>
           </div>
         </Grid>
