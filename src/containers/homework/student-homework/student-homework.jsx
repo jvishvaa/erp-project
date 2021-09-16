@@ -99,6 +99,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
     date: '',
     subjectName: '',
     status: 1,
+    isEvaluated: false,
   });
   const [loading, setLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -237,13 +238,14 @@ const StudentHomework = withRouter(({ history, ...props }) => {
     setIsSelectedCell({ row, index });
   };
 
-  const handleOpenHomework = (id, classDate, subjectName, status) => {
+  const handleOpenHomework = (id, classDate, subjectName, status, isEvaluated) => {
     setHomeworkSubmission({
       isOpen: true,
       homeworkId: id,
       date: classDate,
       subjectName,
       status,
+      isEvaluated
     });
   };
 
@@ -584,7 +586,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                 row[headers.subject_slag].homeworkId,
                                                 row.date,
                                                 headers.subject_slag,
-                                                2
+                                                2,
+                                                row[headers.subject_slag].isEvaluted
                                               )
                                             }
                                           >
