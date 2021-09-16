@@ -504,6 +504,7 @@ export default {
       listAttendanceReport: '/api/reports/v1/attendance-stats/',
       listClassworkReport: '/api/reports/v1/classwork-stats/',
       listHomeworkReport: '/api/reports/v1/homework-stats/',
+      listBlogReport: '/api/reports/v1/blogs-stats/',
     },
     principal: {
       fetchOnlineClassReport: '/api/reports/v1/oncls-principal-report/',

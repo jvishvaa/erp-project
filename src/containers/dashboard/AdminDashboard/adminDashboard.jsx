@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { DashFilterWidget, ReportStatsWidget } from '../widgets';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import SpellcheckIcon from '@material-ui/icons/Spellcheck';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
 import { Grid } from '@material-ui/core';
-import { getReport, reportTypeConstants } from '../apis';
+import { DashFilterWidget, ReportStatsWidget } from '../widgets';
+import { reportTypeConstants } from '../dashboard-constants';
+import { useDashboardContext } from '../dashboard-context';
 
-const AdminDashboard = ({ branchIds, setBranchIds }) => {
-  const { attendance, classwork, homework } = reportTypeConstants || {};
+const AdminDashboard = () => {
+  const { attendance, classwork, homework } = reportTypeConstants;
+  const { branchIds = [], getReport = () => {} } = useDashboardContext();
+
   const [reports, setReports] = useState({
     attendanceReport: [],
     classworkReport: [],
@@ -82,11 +85,10 @@ const AdminDashboard = ({ branchIds, setBranchIds }) => {
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={4}>
-        <DashFilterWidget setBranchIds={setBranchIds} />
+        <DashFilterWidget />
       </Grid>
       <Grid item xs={12} md={4}>
         <ReportStatsWidget
-          branchIds={branchIds}
           title='Attendance Report'
           data={attendanceReport}
           avatar={SpellcheckIcon}
@@ -94,7 +96,6 @@ const AdminDashboard = ({ branchIds, setBranchIds }) => {
       </Grid>
       <Grid item xs={12} md={4}>
         <ReportStatsWidget
-          branchIds={branchIds}
           title='Classwork Report'
           data={classworkReport}
           avatar={OndemandVideoIcon}
@@ -102,7 +103,6 @@ const AdminDashboard = ({ branchIds, setBranchIds }) => {
       </Grid>
       <Grid item xs={12} md={4}>
         <ReportStatsWidget
-          branchIds={branchIds}
           title='Homework Report'
           data={homeworkReport}
           avatar={MenuBookIcon}
