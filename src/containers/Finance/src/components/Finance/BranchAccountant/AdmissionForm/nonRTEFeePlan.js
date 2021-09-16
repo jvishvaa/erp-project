@@ -64,6 +64,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken = "";
 class NonRTEFeeDetailsFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -77,9 +79,10 @@ class NonRTEFeeDetailsFormAcc extends Component {
   }
 
   componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     // this.props.fetchGradeList(this.props.alert, this.props.user)
     if (this.props.session && this.props.stuGrade) {
-      this.props.fetchFeePlan(this.props.alert, this.props.user, this.props.session, this.props.stuGrade.value, this.props.branch)
+      this.props.fetchFeePlan(this.props.alert, userToken, this.props.session, this.props.stuGrade.value, this.props.branch)
     }
   }
 
@@ -157,7 +160,7 @@ class NonRTEFeeDetailsFormAcc extends Component {
       partialAmount: ''
     }, () => {
       // fetchInstallment: (alert, user, feePlanId) => dispatch(actionTypes.fetchInstallment({ alert, user, feePlanId }))
-      this.props.fetchInstallment(this.props.alert, this.props.user, this.state.feePlan.value)
+      this.props.fetchInstallment(this.props.alert, userToken, this.state.feePlan.value)
     })
   }
 
