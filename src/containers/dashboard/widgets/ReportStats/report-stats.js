@@ -10,6 +10,7 @@ import {
   ListItemText,
   Chip,
   Avatar,
+  Box,
 } from '@material-ui/core';
 import '../style.scss';
 import ReportAction from './report-actions';
@@ -55,28 +56,23 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: '#FF2E2E',
     color: '#ffffff',
   },
+  noDataTag: {
+    height: 150,
+    maxHeight: 150,
+    textAlign: 'center',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    color: theme.palette.primary.main,
+    fontWeight: 600,
+  },
 }));
 
 const ReportStatsWidget = ({ avatar, title, data, ptitle, ntitle, branchIds }) => {
   const classes = useStyles();
-  return (
-    <Card className={`dashboardWidget ${classes.root}`} variant='outlined'>
-      <CardHeader
-        className={classes.cardHeader}
-        titleTypographyProps={{
-          className: classes.title,
-          variant: 'h6',
-          color: 'secondary',
-        }}
-        title={title}
-        action={<ReportAction title={title} branchIds={branchIds} />}
-        avatar={
-          <Avatar aria-label='report-title' className={classes.avatar}>
-            {avatar ? React.createElement(avatar, { fontSize: 'small' }) : null}
-          </Avatar>
-        }
-      />
-      <CardContent className={classes.cardBody}>
+  const renderReportData = () => {
+    if (data.length) {
+      return (
         <List>
           {data.map((item) => (
             <ListItem>
@@ -98,7 +94,30 @@ const ReportStatsWidget = ({ avatar, title, data, ptitle, ntitle, branchIds }) =
             </ListItem>
           ))}
         </List>
-      </CardContent>
+      );
+    } else {
+      return <Box className={classes.noDataTag}>No Data Available</Box>;
+    }
+  };
+
+  return (
+    <Card className={`dashboardWidget ${classes.root}`} variant='outlined'>
+      <CardHeader
+        className={classes.cardHeader}
+        titleTypographyProps={{
+          className: classes.title,
+          variant: 'h6',
+          color: 'secondary',
+        }}
+        title={title}
+        action={<ReportAction title={title} branchIds={branchIds} />}
+        avatar={
+          <Avatar aria-label='report-title' className={classes.avatar}>
+            {avatar ? React.createElement(avatar, { fontSize: 'small' }) : null}
+          </Avatar>
+        }
+      />
+      <CardContent className={classes.cardBody}>{renderReportData()}</CardContent>
     </Card>
   );
 };

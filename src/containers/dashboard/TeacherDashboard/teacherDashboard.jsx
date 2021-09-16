@@ -79,59 +79,35 @@ const TeacherDashboard = ({ branchIds, setBranchIds }) => {
     homeworkReport = [],
   } = reports || {};
 
-  const renderAttendanceReport = () => {
-    if (attendanceReport.length > 0) {
-      return (
-        <Grid item xs={12} md={4}>
-          <ReportStatsWidget
-            branchIds={branchIds}
-            title='Attendance Report'
-            data={attendanceReport}
-            avatar={SpellcheckIcon}
-          />
-        </Grid>
-      );
-    }
-  };
-
-  const renderClassworkReport = () => {
-    if (classworkReport.length > 0) {
-      return (
-        <Grid item xs={12} md={4}>
-          <ReportStatsWidget
-            branchIds={branchIds}
-            title='Classwork Report'
-            data={classworkReport}
-            avatar={OndemandVideoIcon}
-          />
-        </Grid>
-      );
-    }
-  };
-
-  const renderHomeworkReport = () => {
-    if (homeworkReport.length > 0) {
-      return (
-        <Grid item xs={12} md={4}>
-          <ReportStatsWidget
-            branchIds={branchIds}
-            title='Homework Report'
-            data={homeworkReport}
-            avatar={MenuBookIcon}
-          />
-        </Grid>
-      );
-    }
-  };
-
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={4}>
         <DashFilterWidget setBranchIds={setBranchIds} />
       </Grid>
-      {renderAttendanceReport()}
-      {renderClassworkReport()}
-      {renderHomeworkReport()}
+      <Grid item xs={12} md={4}>
+        <ReportStatsWidget
+          branchIds={branchIds}
+          title='Attendance Report'
+          data={attendanceReport}
+          avatar={SpellcheckIcon}
+        />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <ReportStatsWidget
+          branchIds={branchIds}
+          title='Classwork Report'
+          data={classworkReport}
+          avatar={OndemandVideoIcon}
+        />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <ReportStatsWidget
+          branchIds={branchIds}
+          title='Homework Report'
+          data={homeworkReport}
+          avatar={MenuBookIcon}
+        />
+      </Grid>
     </Grid>
   );
 };
