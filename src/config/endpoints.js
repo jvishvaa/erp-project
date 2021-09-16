@@ -139,6 +139,7 @@ export default {
   homework: {
     completeData: '/academic/list_admin_homework/',
     createConfig: '/academic/homework-admin-configuration/',
+    hwDelete: '/academic/',
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',
