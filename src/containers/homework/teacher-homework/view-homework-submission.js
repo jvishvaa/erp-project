@@ -205,7 +205,7 @@ const ViewHomework = withRouter(
       const { id, ...reqData } = currentQuestion;
       try {
         await evaluateHomework(id, reqData);
-        setAlert('success', 'Evaluation Successfull');
+        setAlert('success', 'Saved Successfully');
       } catch (e) {
         setAlert('error', 'Evaluation failed');
       }
