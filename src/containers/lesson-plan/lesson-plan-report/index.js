@@ -44,6 +44,7 @@ const LessonReport = () => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [periodColor, setPeriodColor] = useState(false);
+  const [ subjectMap , setSubjectMap ] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [apiParams, setApiParams] = useState({
     central_gs_mapping_id: '',
@@ -56,14 +57,15 @@ const LessonReport = () => {
     setPage(page);
   };
 
-  const handleLessonList = (gradeId, subjectIds, volumeId, startDate, endDate) => {
+  const handleLessonList = (gradeId, subjectIds,subjectMapping, volumeId, startDate, endDate) => {
     setLoading(true);
     setPeriodData([]);
+    setSubjectMap(subjectMapping);
     axiosInstance
       .get(
         `${
           endpoints.lessonReport.lessonList
-        }?grade=${gradeId}&page=${page}&subjects=${subjectIds}&volume_id=${volumeId}&start_date=${startDate.format(
+        }?grade=${gradeId}&page=${page}&subjects=${subjectIds}&subject_mapping=${subjectMapping}&volume_id=${volumeId}&start_date=${startDate.format(
           'YYYY-MM-DD'
         )}&end_date=${endDate.format('YYYY-MM-DD')}`
       )
@@ -82,6 +84,7 @@ const LessonReport = () => {
         setAlert('error', error?.message);
       });
   };
+  //yahin lika h
   const [data,setdata] = useState({})
   const updatedata = (item) =>{
     setdata(item)
@@ -148,6 +151,7 @@ const LessonReport = () => {
                     setSelectedIndex={setSelectedIndex}
                     setSelectedIndex={setSelectedIndex}
                     apiParams={apiParams}
+                    subjectMap={subjectMap}
                   />
                 </Grid>
               )}
