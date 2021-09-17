@@ -39,3 +39,7 @@
   max-height:60vh;
 }
 }
+
+.onclsPagination .MuiPagination-ul{
+  justify-content: center;
+}
