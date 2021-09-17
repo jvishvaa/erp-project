@@ -139,6 +139,7 @@ export default {
   homework: {
     completeData: '/academic/list_admin_homework/',
     createConfig: '/academic/homework-admin-configuration/',
+    hwDelete: '/academic/',
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',
@@ -410,6 +411,10 @@ export default {
     reportTopicWise: `/assessment/report-topic-wise/`,
     reportClassAverage: `/assessment/report-class-average/`,
     reportTopicStudentAverage: `/assessment/report-topic-student-average/`,
+    reportDowloadSectionWise:`/assessment/download-report-section-wise/`,
+    reportDownloadTopicWise:`/assessment/download-report-topic-wise/`,
+    reportDownloadClassAverage:`/assessment/download-report-class-average/`,
+    reportDownloadTopicStudentAverage:`/assessment/download-report-topic-student-average/`,
   },
   publish: {
     ebook: `erp_user/publication/`,

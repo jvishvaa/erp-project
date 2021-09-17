@@ -31,6 +31,7 @@ import {
   Typography,
   Divider,
 } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 import {
   Attachment as AttachmentIcon,
   HighlightOffOutlined as CloseIcon,
@@ -43,6 +44,7 @@ import placeholder from '../../../assets/images/placeholder_small.jpg';
 import Attachment from './attachment';
 import './styles.scss';
 import ViewHomeworkQuestion from './view-homework-question';
+import Loading from '../../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -110,6 +112,8 @@ const ViewHomework = withRouter(
     console.log(viewHomework,'ViewHomework1')
     const { isOpen, subjectId, date, subjectName, homeworkId } = viewHomework || {};
     const [isQuestionWise, setIsQuestionWise] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const { setAlert } = useContext(AlertNotificationContext);
 
     const handleScroll = (dir) => {
       if (dir === 'left') {
@@ -117,6 +121,28 @@ const ViewHomework = withRouter(
       } else {
         scrollableContainer.current.scrollLeft += 150;
       }
+    };
+
+    const handleDelete = () => {
+      setLoading(true);
+        axiosInstance
+          .delete(
+            `${endpoints.homework.hwDelete}${viewHomework.homeworkId}/hw-questions/`
+          )
+          .then((result) => {
+            if (result.data.status_code === 200) {
+              onClose();
+              setAlert('success', result.data?.message);
+              setLoading(false);
+            } else {
+              setAlert('error', result.data?.message);
+              setLoading(false);
+            }
+          })
+          .catch((error) => {
+            setAlert('error', "error1");
+            setLoading(false);
+          });
     };
 
     useEffect(() => {
@@ -184,6 +210,15 @@ const ViewHomework = withRouter(
                   style={{ borderRadius: '10px' }}
                 >
                   Back
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleDelete}
+                  style={{backgroundColor:'red'}}
+                  startIcon={<DeleteIcon />}
+                >
+                  Delete
                 </Button>
               </div>
             </div>

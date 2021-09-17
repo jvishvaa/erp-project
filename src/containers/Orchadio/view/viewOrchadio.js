@@ -329,7 +329,8 @@ function ViewOrchadio() {
         }
       })
       .catch((error) => {
-        setAlert('error', 'Something went wrong.. Try again later');
+        setAlert('error', error?.response?.data?.description)
+        // setAlert('error', 'Something went wrong.. Try again later');
       });
   };
   const completionCallback = (id) => {

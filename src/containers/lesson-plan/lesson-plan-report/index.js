@@ -82,6 +82,10 @@ const LessonReport = () => {
         setAlert('error', error?.message);
       });
   };
+  const [data,setdata] = useState({})
+  const updatedata = (item) =>{
+    setdata(item)
+  }
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -92,6 +96,8 @@ const LessonReport = () => {
           setPeriodData={setPeriodData}
           setViewMore={setViewMore}
           setViewMoreData={setViewMoreData}
+          data = {data}
+          updatedata = {updatedata}
         />
 
         <Paper className={classes.root}>
@@ -117,6 +123,7 @@ const LessonReport = () => {
                       <PeriodCard
                         index={i}
                         lesson={period}
+                        data = {data}
                         viewMore={viewMore}
                         setLoading={setLoading}
                         setViewMore={setViewMore}

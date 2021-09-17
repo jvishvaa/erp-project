@@ -82,6 +82,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken = "";
 class NonRTEFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -99,6 +101,7 @@ class NonRTEFormAcc extends Component {
   }
 
   componentDidMount () {
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     this.setState({
       regNo: this.props.history.location.regNo
     })
@@ -397,7 +400,7 @@ class NonRTEFormAcc extends Component {
           fee_plan_name: feeDetails.feePlanId,
           ...payData
         }
-        this.props.postAdmission(body, this.props.user, this.props.alert)
+        this.props.postAdmission(body, userToken, this.props.alert)
       }
     }
     handleBack = () => {
@@ -417,7 +420,7 @@ class NonRTEFormAcc extends Component {
   getPdfData = (transactionId) => {
     return (axios.get(`${urls.FeeTransactionReceipt}?transaction_id=${transactionId}&academic_year=${this.state.studentdetails.academicyear}`, {
       headers: {
-        Authorization: 'Bearer ' + this.props.user
+        Authorization: 'Bearer ' + userToken
       }
     }))
   }
@@ -480,7 +483,7 @@ class NonRTEFormAcc extends Component {
   }
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   dataLoading: state.finance.common.dataLoader,
   redirect: state.finance.accountantReducer.admissionForm.redirect,

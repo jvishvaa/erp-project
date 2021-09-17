@@ -23,6 +23,7 @@ import {
   Typography,
   FormControlLabel,
   Checkbox,
+  lighten,
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -46,9 +47,39 @@ import selectfilter from '../../../assets/images/selectfilter.svg';
 
 // import CustomSelectionTable from '../../communication/custom-selection-table/custom-selection-table';
 import DiaryCustomSelectionTable from '../../communication/diary-curstom-selection-table/diary-custom-selection-table';
+import PropTypes from 'prop-types';
+import clsx from 'clsx';
+
+import TableSortLabel from '@material-ui/core/TableSortLabel';
+import Toolbar from '@material-ui/core/Toolbar';
+
 
 // import CustomSelectionTable from '../../../containers/communication/custom-selection-table';
+function descendingComparator(a, b, orderBy) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
+}
 
+function getComparator(order, orderBy) {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+function stableSort(array, comparator) {
+  const stabilizedThis = array.map((el, index) => [el, index]);
+  stabilizedThis.sort((a, b) => {
+    const order = comparator(a[0], b[0]);
+    if (order !== 0) return order;
+    return a[1] - b[1];
+  });
+  return stabilizedThis.map((el) => el[0]);
+}
 const StyledTabs = withStyles({
   indicator: {
     display: 'flex',
@@ -76,6 +107,27 @@ const StyledTab = withStyles((theme) => ({
 }))((props) => <Tab disableRipple {...props} />);
 
 const useStyles = makeStyles((theme) => ({
+
+  
+  paper: {
+    width: '100%',
+    marginBottom: theme.spacing(2),
+    padding: 20,
+  },
+  table: {
+    minWidth: 500,
+  },
+  visuallyHidden: {
+    border: 0,
+    clip: 'rect(0 0 0 0)',
+    height: 1,
+    margin: -1,
+    overflow: 'hidden',
+    padding: 0,
+    position: 'absolute',
+    top: 20,
+    width: 1,
+  },
   root: {
     width: '100%',
     margin: '0 auto',
@@ -122,6 +174,128 @@ const useStyles = makeStyles((theme) => ({
   }
 
 }));
+const headCells = [
+  { id: 'si_no', label: 'SI no.' },
+{ id: 'erp_id', label: 'ERP id'},
+{ id: 'Student name', label: 'Name' },
+];
+function EnhancedTableHead(props) {
+  const {
+    classes,
+    onSelectAllClick,
+    order,
+    orderBy,
+    numSelected,
+    rowCount,
+    onRequestSort,
+  } = props;
+  const createSortHandler = (property) => (event) => {
+    onRequestSort(event, property);
+  };
+console.log("props.data",props)
+  return (
+    <TableHead className='styled__table-head'>
+      <TableRow>
+        {headCells.map((headCell) => (
+          <TableCell
+            key={headCell.id}
+            // style={{position:"relative",left:"10px"}}
+            align='center'
+            padding='none'
+            sortDirection={orderBy === headCell.id ? order : false}
+          >
+            <TableSortLabel
+              active={orderBy === headCell.id}
+              direction={orderBy === headCell.id ? order : 'asc'}
+              onClick={createSortHandler(headCell.id)}
+            >
+              {headCell.label}
+              {orderBy === headCell.id ? (
+                <span className={classes.visuallyHidden}>
+                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                </span>
+              ) : null}
+            </TableSortLabel>
+          </TableCell>
+        ))}
+        <TableCell padding='checkbox'>
+          <Checkbox
+            indeterminate={numSelected > 0 && numSelected < rowCount}
+            checked={rowCount > 0 && numSelected === rowCount}
+            onChange={onSelectAllClick}
+            inputProps={{ 'aria-label': 'select all desserts' }}
+          /> 
+        </TableCell>
+      </TableRow>
+    </TableHead>
+  );
+}
+
+EnhancedTableHead.propTypes = {
+  classes: PropTypes.object.isRequired,
+  numSelected: PropTypes.number.isRequired,
+  onRequestSort: PropTypes.func.isRequired,
+  onSelectAllClick: PropTypes.func.isRequired,
+  order: PropTypes.oneOf(['asc', 'desc']).isRequired,
+  orderBy: PropTypes.string.isRequired,
+  rowCount: PropTypes.number.isRequired,
+};
+const useToolbarStyles = makeStyles((theme) => ({
+  root: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(1),
+  },
+  highlight:
+    theme.palette.type === 'light'
+      ? {
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
+      : {
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
+  title: {
+    flex: '1 1 100%',
+  },
+}));  
+const EnhancedTableToolbar = (props) => {
+  const classes = useToolbarStyles();
+  const { numSelected } = props;
+
+  return (
+    <Toolbar
+      className={clsx(classes.root, {
+        [classes.highlight]: numSelected > 0,
+      })}
+    >
+      {numSelected > 0 ? (
+        <Typography
+          className={classes.title}
+          color='inherit'
+          variant='subtitle1'
+          component='div'
+        >
+          {`${numSelected} selected`}
+        </Typography>
+      ) : (
+        <Typography
+          className={classes.title}
+          variant='h6'
+          id='tableTitle'
+          component='div'
+        >
+          Filter student
+        </Typography>
+      )}
+    </Toolbar>
+  );
+};
+
+EnhancedTableToolbar.propTypes = {
+  numSelected: PropTypes.number.isRequired,
+};
+
 
 const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const {
@@ -135,6 +309,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     editClose,
   } = props || {};
   const classes = useStyles();
+  // const classes = usedStyles();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const { setAlert } = useContext(AlertNotificationContext);
@@ -151,7 +326,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [academicYear, setAcademicYear] = useState([]);
   const [totalCount, setTotalCount] = useState(0);
   const limit = 15;
-  const [page, setPage] = React.useState(1);
+  // const [page, setPage] = React.useState(1);
   const [currentTab, setCurrentTab] = useState(0);
   const [isEmail, setIsEmail] = useState(false);
   const [bulkData, setBulkData] = useState([]);
@@ -170,7 +345,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
 
   const [selectedSections, setSelectedSections] = useState([]);
   const [headers, setHeaders] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
+  // const [selectAll, setSelectAll] = useState(false);
   const [totalPage, setTotalPage] = useState(0);
   const [selectectUserError, setSelectectUserError] = useState('');
   const [selectedGrades, setSelectedGrades] = useState([]);
@@ -191,6 +366,15 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [state, setState] = useContext(Context);
   const { isEdit, editData } = state;
   const { setIsEdit, setEditData } = setState;
+
+
+
+  const [order, setOrder] = useState('');
+  const [orderBy, setOrderBy] = useState('');
+  const [selected, setSelected] = useState([]);
+  const [page, setPage] = useState(0);
+  const [selectAll, setSelectAll] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
   const [doc, setDoc] = useState(null);
@@ -218,12 +402,73 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     setSectionDropdown([]);
   };
 
-  const handleChangePage = (event, newPage) => {
-    setFlag(true);
-    setPageno(newPage + 1);
-    // displayUsersList();
-    // console.log(newPage, 'newpage')
+
+  const handleRequestSort = (event, property) => {
+    const isAsc = orderBy === property && order === 'asc';
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(property);
   };
+
+  
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+     
+      const newSelecteds = completeData.map((n) => n.id);
+    
+      setSelected(newSelecteds);
+    //   dispatch(listFilteredStudents(newSelecteds));
+      return;
+    }
+    // dispatch(listFilteredStudents([]));
+    setSelected([]);
+  };
+
+  const handleClick = (event, name) => {
+    const selectedIndex = selected.indexOf(name);
+    let newSelected = [];
+
+    if (selectedIndex === -1) {
+      newSelected = newSelected.concat(selected, name);
+    } else if (selectedIndex === 0) {
+      newSelected = newSelected.concat(selected.slice(1));
+    } else if (selectedIndex === selected?.length - 1) {
+      newSelected = newSelected.concat(selected.slice(0, -1));
+    } else if (selectedIndex > 0) {
+      newSelected = newSelected.concat(
+        selected.slice(0, selectedIndex),
+        selected.slice(selectedIndex + 1)
+      );
+    }
+    // dispatch(listFilteredStudents(newSelected));
+    setSelected(newSelected);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const isSelected = (name) =>
+    selected.indexOf(name) !== -1 
+
+  const emptyRows =
+    rowsPerPage - Math.min(rowsPerPage, props.rows?.length - page * rowsPerPage);
+
+  const addIndex = () => {
+     
+    return usersRow.map((student, index) => ({ ...student, sl: index + 1 }));
+  };
+
+  // const handleChangePage = (event, newPage) => {
+  //   setFlag(true);
+  //   setPageno(newPage + 1);
+  //   // displayUsersList();
+  //   // console.log(newPage, 'newpage')
+  // };
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: '',
@@ -504,7 +749,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     let getUserListUrl;
     getUserListUrl = `${endpoints.generalDairy.studentList}?academic_year=${searchAcademicYear?.id
       }&active=${!isEmail ? '0' : '1'
-      }&page=${pageno}&page_size=15&bgs_mapping=${filterData?.section?.map(
+      }&bgs_mapping=${filterData?.section?.map(
         (s) => s.id
       )}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
       }`;
@@ -746,7 +991,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
             grade: filterData.grade.map((g) => g.grade_id),
             section_mapping: filterData.section.map((s) => s.id),
             section: filterData.section.map((g) => g.section_id),
-            user_id: selectionArray,
+            user_id: selected,
             dairy_type: 1,
           }
           : {
@@ -756,7 +1001,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
             grade: filterData.grade.map((g) => g.grade_id),
             section_mapping: filterData.section.map((s) => s.id),
             section: filterData.section.map((g) => g.section_id),
-            user_id: selectionArray,
+            user_id: selected,
             dairy_type: 1,
           },
         {
@@ -988,7 +1233,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
             </Grid>
           </Grid>
 
-          <Grid container className='studentview-tab-container'>
+          {/* <Grid container className='studentview-tab-container'>
             <Grid item xs={12} sm={6}>
               <StyledTabs
                 variant='standard'
@@ -1000,9 +1245,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                   label={<Typography variant='h8'>Active Students</Typography>}
                   onClick={(e) => handleActiveTab(0)}
                 />
-                {/* <StyledTab label={<Typography variant='h8'>Inactive Students</Typography>} onClick={(e) => handleActiveTab(1)}/> */}
+                 <StyledTab label={<Typography variant='h8'>Inactive Students</Typography>} onClick={(e) => handleActiveTab(1)}/> 
 
-                {/* <StyledTab label={<Typography variant='h8'>In-Active Students</Typography>} /> */}
+                <StyledTab label={<Typography variant='h8'>In-Active Students</Typography>} />
               </StyledTabs>
             </Grid>
             <input
@@ -1027,8 +1272,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               Select All
             </span>
 
-            {/* <span style={{ marginLeft: '1%', marginTop: '14px', fontSize: '16px'}}>Select All</span> */}
-          </Grid>
+            <span style={{ marginLeft: '1%', marginTop: '14px', fontSize: '16px'}}>Select All</span> 
+          </Grid> */}
 
           {/* <div className='create_group_select_all_wrapper'>
                 
@@ -1036,7 +1281,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
           {totalPage ? (
             <div>
               <span className='create_group_error_span'>{selectectUserError}</span>
-              <DiaryCustomSelectionTable
+              {/* <DiaryCustomSelectionTable
                 // header={headers}
                 // rows={usersRow}
                 // checkAll={checkAll}
@@ -1062,7 +1307,76 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 setSelectedUsers={(data) => {
                   setSelectedUsers(data);
                 }}
-              />
+              /> */}
+              <Paper className={classes.paper}>
+        <EnhancedTableToolbar numSelected={selected?.length} />
+       
+        <TableContainer>
+          <Table
+            // className={`${classes.table} styled__table`}
+            aria-labelledby='tableTitle'
+            aria-label='enhanced table'
+          >
+            <EnhancedTableHead
+              // classes={classes}
+              numSelected={selected?.length}
+              order={order}
+              orderBy={orderBy}
+              onSelectAllClick={handleSelectAllClick}
+              onRequestSort={handleRequestSort}
+              rowCount={usersRow?.length}
+            />
+            <TableBody className='styled__table-body'>
+              {stableSort(addIndex(usersRow), getComparator(order, orderBy))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, index) => {
+                  const isItemSelected = isSelected(row.id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
+
+                  return (
+                    <TableRow
+                      hover
+                      onClick={(event) => handleClick(event, row.id)}
+                      role='checkbox'
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.id}
+                      selected={isItemSelected}
+                    >
+                        
+                  <TableCell align='center'>{row.sl}</TableCell>
+                     <TableCell align='center'>{row.erp_id}</TableCell>
+                    
+                      <TableCell >{row.name}</TableCell>
+                       <TableCell padding='checkbox'>
+                    <Checkbox
+                      checked={isItemSelected}
+                      inputProps={{ 'aria-labelledby': labelId }}
+                    />
+                  </TableCell>
+                      
+                    </TableRow>
+                  );
+                })}
+              {emptyRows > 0 && (
+                <TableRow>
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[]}
+          component='div'
+          count={usersRow.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
+      </Paper>
+              
             </div>
           ) : (
             <div className='periodDataUnavailable'>

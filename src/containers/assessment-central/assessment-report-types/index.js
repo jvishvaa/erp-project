@@ -260,33 +260,33 @@ const AssessmentReportTypes = ({
                         )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                          <TableCell className={classes.tableCell}>
-                            {rowData?.erp_no}
-                          </TableCell>
-                        )}
+                            <TableCell className={classes.tableCell}>
+                              {rowData?.erp_no}
+                            </TableCell>
+                          )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                          <TableCell className={classes.tableCell}>
-                            {rowData?.user_name}
-                          </TableCell>
-                        )}
+                            <TableCell className={classes.tableCell}>
+                              {rowData?.user_name}
+                            </TableCell>
+                          )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                          <TableCell className={classes.tableCell}>
-                            {selectedReportType?.id === 3
-                              ? rowData?.total_mark
-                              : rowData?.marks_obtained}
-                          </TableCell>
-                        )}
+                            <TableCell className={classes.tableCell}>
+                              {selectedReportType?.id === 3
+                                ? rowData?.total_mark
+                                : rowData?.marks_obtained}
+                            </TableCell>
+                          )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                          <TableCell className={classes.tableCell}>
-                            {selectedReportType?.id === 3
-                              ? rowData?.comparsion
-                              : +rowData?.marks_obtained -
+                            <TableCell className={classes.tableCell}>
+                              {selectedReportType?.id === 3
+                                ? rowData?.comparsion
+                                : +rowData?.marks_obtained -
                                 +assessmentReportListData?.comparison}
-                          </TableCell>
-                        )}
+                            </TableCell>
+                          )}
                       </TableRow>
                     );
                   })}

@@ -524,7 +524,7 @@ class OtherFeeTotalPaidReports extends Component {
     if (this.state.role === 'financeaccountant') {
       data = {
         academic_year: this.state.session,
-        branches: [this.props.branchAtAcc.branch],
+        branches: [this.state.selectedBranches.value],
         grades: this.state.gradeData,
         // fee_types: this.state.feeTypeIds.length > 0 ? this.state.feeTypeIds : null,
         // fee_plan: this.state.feePlanId.length > 0 ? this.state.feePlanId : null,
@@ -541,7 +541,7 @@ class OtherFeeTotalPaidReports extends Component {
     } else {
       data = {
         academic_year: this.state.session,
-        branches: [this.state.branchId],
+        branches: [this.state.selectedBranches.value],
         grades: this.state.gradeData,
         // fee_types: this.state.feeTypeIds.length > 0 ? this.state.feeTypeIds : null,
         // fee_plan: this.state.feePlanId.length > 0 ? this.state.feePlanId : null,
