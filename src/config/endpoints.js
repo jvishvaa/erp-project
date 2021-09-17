@@ -139,6 +139,7 @@ export default {
   homework: {
     completeData: '/academic/list_admin_homework/',
     createConfig: '/academic/homework-admin-configuration/',
+    hwDelete: '/academic/',
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',
@@ -410,6 +411,10 @@ export default {
     reportTopicWise: `/assessment/report-topic-wise/`,
     reportClassAverage: `/assessment/report-class-average/`,
     reportTopicStudentAverage: `/assessment/report-topic-student-average/`,
+    reportDowloadSectionWise:`/assessment/download-report-section-wise/`,
+    reportDownloadTopicWise:`/assessment/download-report-topic-wise/`,
+    reportDownloadClassAverage:`/assessment/download-report-class-average/`,
+    reportDownloadTopicStudentAverage:`/assessment/download-report-topic-student-average/`,
   },
   publish: {
     ebook: `erp_user/publication/`,
@@ -496,9 +501,13 @@ export default {
       downloadAttendanceReport: '/api/reports/v1/attendance-download/',
       downloadClassworkReport: '/api/reports/v1/classwork-download/',
       downloadHomeworkReport: '/api/reports/v1/homework-download/',
+      downloadBlogReport: '/api/reports/v1/blogs-download/',
+      downloadDiscussionReport: '/api/reports/v1/discussion-forum-download/',
       listAttendanceReport: '/api/reports/v1/attendance-stats/',
       listClassworkReport: '/api/reports/v1/classwork-stats/',
       listHomeworkReport: '/api/reports/v1/homework-stats/',
+      listBlogReport: '/api/reports/v1/blogs-stats/',
+      listDiscussionReport: '/api/reports/v1/discussion-forum-stats/',
     },
     principal: {
       fetchOnlineClassReport: '/api/reports/v1/oncls-principal-report/',

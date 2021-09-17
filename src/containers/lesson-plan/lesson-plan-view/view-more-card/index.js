@@ -72,6 +72,7 @@ const ViewMoreCard = ({
       subject_id: subjectId,
       chapter_id: chapterId,
       chapter_name: chapter_name,
+      grade_subject: filterDataDown?.subject?.id,
       central_gs_mapping_id: viewMoreData[0]?.mapping_id,
       period_id: periodDataForView?.id,
     };

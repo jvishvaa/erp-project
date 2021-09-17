@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { DashFilterWidget, ReportStatsWidget } from '../widgets';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import SpellcheckIcon from '@material-ui/icons/Spellcheck';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
 import { Grid } from '@material-ui/core';
-import { getReport, reportTypeConstants } from '../apis';
+import { DashFilterWidget, ReportStatsWidget } from '../widgets';
+import { reportTypeConstants } from '../dashboard-constants';
+import { useDashboardContext } from '../dashboard-context';
 
-const AdminDashboard = ({ branchIds, setBranchIds }) => {
-  const { attendance, classwork, homework } = reportTypeConstants || {};
+const AdminDashboard = () => {
+  const { attendance, classwork, homework } = reportTypeConstants;
+  const { branchIds = [], getReport = () => {} } = useDashboardContext();
+
   const [reports, setReports] = useState({
     attendanceReport: [],
     classworkReport: [],
@@ -79,59 +82,32 @@ const AdminDashboard = ({ branchIds, setBranchIds }) => {
     homeworkReport = [],
   } = reports || {};
 
-  const renderAttendanceReport = () => {
-    if (attendanceReport.length > 0) {
-      return (
-        <Grid item xs={12} md={4}>
-          <ReportStatsWidget
-            branchIds={branchIds}
-            title='Attendance Report'
-            data={attendanceReport}
-            avatar={SpellcheckIcon}
-          />
-        </Grid>
-      );
-    }
-  };
-
-  const renderClassworkReport = () => {
-    if (classworkReport.length > 0) {
-      return (
-        <Grid item xs={12} md={4}>
-          <ReportStatsWidget
-            branchIds={branchIds}
-            title='Classwork Report'
-            data={classworkReport}
-            avatar={OndemandVideoIcon}
-          />
-        </Grid>
-      );
-    }
-  };
-
-  const renderHomeworkReport = () => {
-    if (homeworkReport.length > 0) {
-      return (
-        <Grid item xs={12} md={4}>
-          <ReportStatsWidget
-            branchIds={branchIds}
-            title='Homework Report'
-            data={homeworkReport}
-            avatar={MenuBookIcon}
-          />
-        </Grid>
-      );
-    }
-  };
-
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={4}>
-        <DashFilterWidget setBranchIds={setBranchIds} />
+        <DashFilterWidget />
       </Grid>
-      {renderAttendanceReport()}
-      {renderClassworkReport()}
-      {renderHomeworkReport()}
+      <Grid item xs={12} md={4}>
+        <ReportStatsWidget
+          title='Attendance Report'
+          data={attendanceReport}
+          avatar={SpellcheckIcon}
+        />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <ReportStatsWidget
+          title='Classwork Report'
+          data={classworkReport}
+          avatar={OndemandVideoIcon}
+        />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <ReportStatsWidget
+          title='Homework Report'
+          data={homeworkReport}
+          avatar={MenuBookIcon}
+        />
+      </Grid>
     </Grid>
   );
 };
