@@ -186,6 +186,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                   isSubmited: subjects.hw_status.is_submitted,
                   isEvaluted: subjects.hw_status.is_evaluated,
                   isOpened: subjects.hw_status.is_opened,
+                  submitted_at: subjects.submitted_at
                 };
             });
             if (!tempobj[header.subject_slag]) {
@@ -579,6 +580,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                             : 'not_selected'
                                         }
                                       >
+                                        <div>
                                         {row[headers.subject_slag].isSubmited ? (
                                           <span
                                             onClick={() =>
@@ -709,6 +711,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                             />
                                           </span>
                                         ) : null}
+                                        </div>
+                                        {row[headers?.subject_slag]?.submitted_at}
                                       </TableCell>
                                     ) : (
                                       <TableCell />
