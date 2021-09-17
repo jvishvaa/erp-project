@@ -56,7 +56,12 @@ const ReportStatsWidget = ({ avatar, title, data, ptitle, ntitle }) => {
         </List>
       );
     } else {
-      return <Box className={classes.noDataTag}>No Data Available</Box>;
+      return (
+        <Box className={classes.noDataTag}>
+          <Box style={{ fontSize: '1.2rem' }}>☹️</Box>
+          <Box>No Records</Box>
+        </Box>
+      );
     }
   };
 
