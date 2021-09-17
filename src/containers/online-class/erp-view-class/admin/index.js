@@ -1193,7 +1193,7 @@ const ErpAdminViewClass = ({ history }) => {
                         spacing={3}
                         className='paginateData paginateMobileMargin'
                       >
-                        <Grid item md={12}>
+                        <Grid item md={12} className="onclsPagination">
                           <Pagination
                             onChange={handlePagination}
                             style={{ marginTop: 25 }}
