@@ -10,55 +10,61 @@ import {
   ListItemText,
   Chip,
   Avatar,
+  Box,
 } from '@material-ui/core';
 import '../style.scss';
 import ReportAction from './report-actions';
+import { useStyles } from './useStyles';
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    width: '100%',
-    paddingBottom: 15,
-  },
-  cardHeader: {
-    paddingBottom: 0,
-  },
-  avatar: {
-    backgroundColor: '#ffffff',
-  },
-  title: {
-    fontSize: 13,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-  },
-  cardBody: {
-    padding: 0,
-    height: 150,
-    maxHeight: 150,
-    overflowY: 'auto',
-    '& .MuiChip-root': {
-      marginRight: 5,
-    },
-    '& .MuiListItemText-primary': {
-      display: 'block',
-      width: '75%',
-      whiteSpace: 'nowrap',
-      textOverflow: 'ellipsis',
-      overflow: 'hidden',
-    },
-  },
-  positive_count: {
-    backgroundColor: '#228B22',
-    color: '#ffffff',
-  },
-  negative_count: {
-    backgroundColor: '#FF2E2E',
-    color: '#ffffff',
-  },
-}));
-
-const ReportStatsWidget = ({ avatar, title, data, ptitle, ntitle, branchIds }) => {
+const ReportStatsWidget = ({ avatar, title, data, ptitle, ntitle }) => {
   const classes = useStyles();
+  const renderReportData = () => {
+    if (data.length) {
+      return (
+        <List>
+          {data.map((item) => (
+            <ListItem>
+              <ListItemText primary={item?.detail} className={classes.cardText} />
+              <ListItemSecondaryAction>
+                {item?.positive >= 0 && (
+                  <Chip
+                    className={classes.positive_count}
+                    size='small'
+                    label={item?.positive}
+                    title={ptitle || ''}
+                  />
+                )}
+                {item?.negative >= 0 && (
+                  <Chip
+                    className={classes.negative_count}
+                    size='small'
+                    label={item?.negative}
+                    title={ntitle || ''}
+                  />
+                )}
+                {item?.info >= 0 && (
+                  <Chip
+                    className={classes.info_count}
+                    size='small'
+                    label={item?.info}
+                    title={ntitle || ''}
+                  />
+                )}
+              </ListItemSecondaryAction>
+            </ListItem>
+          ))}
+        </List>
+      );
+    } else {
+      return (
+        <Box className={classes.noDataTag}>
+          <Box style={{ fontSize: '1.2rem' }}>☹️</Box>
+          <Box>No Records</Box>
+        </Box>
+      );
+    }
+  };
+
   return (
     <Card className={`dashboardWidget ${classes.root}`} variant='outlined'>
       <CardHeader
@@ -69,36 +75,14 @@ const ReportStatsWidget = ({ avatar, title, data, ptitle, ntitle, branchIds }) =
           color: 'secondary',
         }}
         title={title}
-        action={<ReportAction title={title} branchIds={branchIds} />}
+        action={<ReportAction title={title} />}
         avatar={
           <Avatar aria-label='report-title' className={classes.avatar}>
             {avatar ? React.createElement(avatar, { fontSize: 'small' }) : null}
           </Avatar>
         }
       />
-      <CardContent className={classes.cardBody}>
-        <List>
-          {data.map((item) => (
-            <ListItem>
-              <ListItemText primary={item?.detail} />
-              <ListItemSecondaryAction>
-                <Chip
-                  className={classes.positive_count}
-                  size='small'
-                  label={item?.positive}
-                  title={ptitle || ''}
-                />
-                <Chip
-                  className={classes.negative_count}
-                  size='small'
-                  label={item?.negative}
-                  title={ntitle || ''}
-                />
-              </ListItemSecondaryAction>
-            </ListItem>
-          ))}
-        </List>
-      </CardContent>
+      <CardContent className={classes.cardBody}>{renderReportData()}</CardContent>
     </Card>
   );
 };

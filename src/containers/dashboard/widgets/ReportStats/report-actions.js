@@ -4,8 +4,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVert from '@material-ui/icons/MoreVert';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import { downloadReport } from '../../apis';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+import { useDashboardContext } from '../../dashboard-context';
 
 const reportTypes = [
   { type: 'Daily Report', days: '1' },
@@ -13,7 +13,8 @@ const reportTypes = [
   { type: 'Monthly Report', days: '30' },
 ];
 
-const ReportAction = ({ title, branchIds }) => {
+const ReportAction = ({ title }) => {
+  const { branchIds = [], downloadReport = () => {} } = useDashboardContext();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const { setAlert } = useContext(AlertNotificationContext);
