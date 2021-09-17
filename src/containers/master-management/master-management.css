@@ -53,18 +53,3 @@
 .switchLabel .MuiTypography-body1 {
   font-weight: 600 !important;
 }
-
-#duplicateChip{
-  font-size: 12px;
-  margin-top: 5%;
-}
-
-#subjectName{
-  margin-top: 5%;
-}
-.chipContainer{
-  min-height: 35px;
-}
-.noDuplicate{
-  min-height: 35px;
-}
