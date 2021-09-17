@@ -99,6 +99,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
     date: '',
     subjectName: '',
     status: 1,
+    isEvaluated: false,
   });
   const [loading, setLoading] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -185,6 +186,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                   isSubmited: subjects.hw_status.is_submitted,
                   isEvaluted: subjects.hw_status.is_evaluated,
                   isOpened: subjects.hw_status.is_opened,
+                  submitted_at: subjects.submitted_at
                 };
             });
             if (!tempobj[header.subject_slag]) {
@@ -237,13 +239,14 @@ const StudentHomework = withRouter(({ history, ...props }) => {
     setIsSelectedCell({ row, index });
   };
 
-  const handleOpenHomework = (id, classDate, subjectName, status) => {
+  const handleOpenHomework = (id, classDate, subjectName, status, isEvaluated) => {
     setHomeworkSubmission({
       isOpen: true,
       homeworkId: id,
       date: classDate,
       subjectName,
       status,
+      isEvaluated
     });
   };
 
@@ -536,7 +539,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                       />
                                     </TableCell>
                                   ) : (
-                                    <TableCell className='homework_header'>
+                                    <TableCell className='homework_header' style={headers.subject_slag === 'date'?{ zIndex:20}:{zIndex:2}}>
                                       {headers.subject_slag === 'date'
                                         ? 'Weekday'
                                         : headers.subject_slag}
@@ -553,7 +556,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                 >
                                   {messageRows.header?.map((headers, i) =>
                                     headers.subject_slag === 'date' ? (
-                                      <TableCell>
+                                      <TableCell style={{position : "sticky", zIndex:20, left: 0,backgroundColor:'white'}}>
                                         <div className='table-date'>
                                           <div
                                             className={classes.dayicon}
@@ -577,6 +580,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                             : 'not_selected'
                                         }
                                       >
+                                        <div>
                                         {row[headers.subject_slag].isSubmited ? (
                                           <span
                                             onClick={() =>
@@ -584,7 +588,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                 row[headers.subject_slag].homeworkId,
                                                 row.date,
                                                 headers.subject_slag,
-                                                2
+                                                2,
+                                                row[headers.subject_slag].isEvaluted
                                               )
                                             }
                                           >
@@ -706,6 +711,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                             />
                                           </span>
                                         ) : null}
+                                        </div>
+                                        {row[headers?.subject_slag]?.submitted_at}
                                       </TableCell>
                                     ) : (
                                       <TableCell />

@@ -32,32 +32,9 @@ const styles = theme => ({
   }
 })
 
-const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
-let moduleId
-if (NavData && NavData.length) {
-  NavData.forEach((item) => {
-    if (
-      item.parent_modules === 'Admissions' &&
-      item.child_module &&
-      item.child_module.length > 0
-    ) {
-      item.child_module.forEach((item) => {
-        if (item.child_name === 'Admission Form') {
-          // setModuleId(item.child_id);
-          // setModulePermision(true);
-            moduleId = item.child_id
-        } else {
-          // setModulePermision(false);
-        }
-      });
-    } else {
-      // setModulePermision(false);
-    }
-  });
-} else {
-  // setModulePermision(false);
-}
+
 let userToken = "";
+let moduleId = "";
 class NonRTEStudentDetailsFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -128,6 +105,30 @@ class NonRTEStudentDetailsFormAcc extends Component {
 
   componentDidMount () {
     userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+    const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Admissions' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Admission Form') {
+              // setModuleId(item.child_id);
+              // setModulePermision(true);
+                moduleId = item.child_id
+            } else {
+              // setModulePermision(false);
+            }
+          });
+        } else {
+          // setModulePermision(false);
+        }
+      });
+    } else {
+      // setModulePermision(false);
+    }
     let tempYear = this.props.studentDetailsForAdmission?.academic_year?.session_year;
     console.log(tempYear , "academic session check");
     this.props.fetchGradeList(this.props.alert, userToken, moduleId, this.props.branch , tempYear  )
@@ -211,7 +212,7 @@ class NonRTEStudentDetailsFormAcc extends Component {
       case 'lastName': {
         newstudentDetails['lastName'] = event.target.value
         if (event.target.value && event.target.value.length < 2) {
-        this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, this.props.user, this.state.studentDetails.class.value, moduleId, this.props.branch)
+        this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, userToken, this.state.studentDetails.class.value, moduleId, this.props.branch)
         }
         break
       }

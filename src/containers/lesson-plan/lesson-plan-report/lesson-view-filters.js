@@ -19,6 +19,8 @@ const LessonViewFilters = ({
   setPeriodData,
   setViewMore,
   setViewMoreData,
+  updatedata,
+  data
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
@@ -34,6 +36,7 @@ const LessonViewFilters = ({
   const [branchId, setBranchId] = useState('');
   const location = useLocation();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const [ subjectMapping , setSubjectMapping ] = useState('');
   const [selectedCol, setSelectedCol] = useState({});
   const [loading, setLoading] = useState(false);
   const [erpYear, setErpYear] = useState({});
@@ -117,7 +120,7 @@ const LessonViewFilters = ({
 
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '', subject: '', chapter: '' });
-
+    updatedata(value)
     if (value && filterData.branch) {
       setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
       axiosInstance
@@ -152,6 +155,8 @@ const LessonViewFilters = ({
       setSubjectIds(ids);
       const subjs = value.map((el) => el) || [];
       setSelectedSubjects(subjs);
+      const subjsMapping = value.map((el) => el.id) || [];
+      setSubjectMapping(subjsMapping);
     }
   };
   const handleBranch = (event, value) => {
@@ -212,10 +217,11 @@ const LessonViewFilters = ({
     if (!(dateRangeTechPer[0] && dateRangeTechPer[1] !== undefined)) {
       return setAlert('warning', 'Select Date-range');
     }
-
+    console.log(subjectMapping , "subject");
     handleLessonList(
       filterData.grade.grade_id,
       subjectIds,
+      subjectMapping,
       filterData.volume.id,
       startDateTechPer,
       endDateTechPer

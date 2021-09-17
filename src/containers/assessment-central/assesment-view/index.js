@@ -59,16 +59,36 @@ const AssessmentView = () => {
   const handlePagination = (event, page) => {
     setPage(page);
   };
+  useEffect(() => {
+    if (
+      tabAcademic ||
+      !tabBranch?.length === 0 ||
+      tabGradeId ||
+      tabSubjectId ||
+      tabQpValue
+    ) {
+      handlePeriodList(
+        tabAcademic,
+        tabBranch,
+        tabGradeId,
+        tabSubjectId,
+        tabQpValue,
+        tabValue
+      );
+    }
+  }, [tabValue]);
 
-  const handleGetQuestionPapers = (newValue = 0, requestURL) => {
-    setTabValue(newValue);
-    if (newValue == 1) {
+  const handleGetQuestionPapers = (newValue, requestURL) => {
+    if (newValue != undefined) {
+      setTabValue(newValue);
+    }
+    if (tabValue == 1 || newValue == 1) {
       requestURL += `&is_draft=True`;
     }
-    if (newValue == 2) {
+    if (tabValue == 2 || newValue == 2) {
       requestURL += `&is_review=True`;
     }
-    if (newValue == 3) {
+    if (tabValue == 3 || newValue == 3) {
       requestURL += `&is_verified=True`;
     }
     axiosInstance
@@ -97,7 +117,7 @@ const AssessmentView = () => {
     grade = '',
     subject = '',
     qpValue,
-    newValue = 0
+    newValue
   ) => {
     if (!academic || branch?.length === 0 || !grade || !subject || !qpValue) {
       setAlert('error', 'Select all the fields!');

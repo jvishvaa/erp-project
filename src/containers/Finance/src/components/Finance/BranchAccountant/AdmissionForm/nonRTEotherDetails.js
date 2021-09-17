@@ -56,6 +56,8 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
+
+let userToken = "";
 class NonRTEOtherDetailsFormAcc extends Component {
   constructor (props) {
     super(props)
@@ -81,7 +83,8 @@ class NonRTEOtherDetailsFormAcc extends Component {
   }
 
   componentDidMount () {
-    this.props.fetchSubjects(this.props.alert, this.props.user)
+    userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+    this.props.fetchSubjects(this.props.alert, userToken)
   }
 
   addressDetailsInputHandler= (event) => {
@@ -311,7 +314,7 @@ class NonRTEOtherDetailsFormAcc extends Component {
   }
 }
 const mapStateToProps = state => ({
-  user: state.authentication.user,
+  // user: state.authentication.user,
   session: state.academicSession.items,
   subjectList: state.finance.common.subjects
 })
