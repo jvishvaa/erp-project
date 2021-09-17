@@ -664,24 +664,7 @@ const SubjectMappingTable = () => {
                               {section_name || ''}
                             </TableCell>
                             <TableCell className={classes.tableCell}>
-                              <div className="subjectArea">
-                              <div id="subjectName" >
                               {subject_name || ''}
-                              </div>
-                              <div className="chipContainer" >
-                              {subject?.online_class === 0 ? (
-                              <Chip
-                              size='small'
-                              color='primary'
-                              label='Duplicate'
-                              className={classes.duplicate}
-                              id='duplicateChip'
-                      />
-                    ) : (
-                      <div className='noDuplicate'></div>
-                    )}
-                    </div>
-                    </div>
                             </TableCell>
                             <TableCell className={classes.tableCell}>
                               {created_by || ''}
