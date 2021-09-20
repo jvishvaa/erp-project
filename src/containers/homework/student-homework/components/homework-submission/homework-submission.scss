@@ -294,6 +294,21 @@ display: flex;
     }
   }
 }
+
+.overallContainer1 {
+  display: flex;
+  // justify-content: space-between;
+  justify-content: space-between;
+  // margin: 20px;
+  margin-bottom: 20px;
+  // border: solid black;
+  margin-left: 2.2%;
+  margin-right: 2.2%;
+  @media screen and (max-width: 768px) {
+    margin-bottom: 0;
+  }
+}
+
 @media only screen and (max-width: 768px) {
   html,
   body {
