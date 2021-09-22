@@ -496,7 +496,7 @@ const ErpAdminViewClass = ({ history }) => {
           studentDetails.role_details.erp_user_id
         }&page_number=${1}&page_size=${limit}&class_type=${
           selectedClassType?.id
-        }&class_status=${1}&module_id=${moduleId}`,
+        }&class_status=${tabValue + 1}&module_id=${moduleId}`,
         'filter'
       );
     } else {
@@ -563,7 +563,7 @@ const ErpAdminViewClass = ({ history }) => {
             endDateTechPer
           ).format('YYYY-MM-DD')}&course_id=${
             selectedCourse?.id
-          }&page_number=${1}&page_size=${limit}&class_status=${1}&module_id=${moduleId}`,
+          }&page_number=${1}&page_size=${limit}&class_status=${tabValue + 1}&module_id=${moduleId}`,
           'filter'
         );
       } else {
@@ -578,7 +578,7 @@ const ErpAdminViewClass = ({ history }) => {
             endDateTechPer
           ).format(
             'YYYY-MM-DD'
-          )}&class_status=${1}&module_id=${moduleId}&page_number=${1}&page_size=${limit}`,
+          )}&class_status=${tabValue + 1}&module_id=${moduleId}&page_number=${1}&page_size=${limit}`,
           'filter'
         );
       }
