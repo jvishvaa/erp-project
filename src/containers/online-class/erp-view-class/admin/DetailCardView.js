@@ -43,6 +43,10 @@ const JoinClass = (props) => {
     props.data ? props?.data?.is_attended : false
   );
 
+  useEffect(()=>{
+    setIsAccept(props?.data?.is_accepted)
+  },[props])
+
   const history = useHistory();
   const classStartTime = moment(props && props?.data && props?.data?.date).format(
     'DD-MM-YYYY'
