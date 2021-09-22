@@ -43,6 +43,10 @@ const JoinClass = (props) => {
     props.data ? props?.data?.is_attended : false
   );
 
+  useEffect(()=>{
+    setIsAccept(props?.data?.is_accepted)
+  },[props])
+
   const history = useHistory();
   const classStartTime = moment(props && props?.data && props?.data?.date).format(
     'DD-MM-YYYY'
@@ -94,8 +98,13 @@ const JoinClass = (props) => {
     APIREQUEST('put', '/oncls/v1/mark-attendance/', params)
       .then((res) => {
         setLoading(false);
-        if (params?.is_accepted) setIsAccept(true);
-        if (params?.is_attended) setMarkAttendance(true);
+        if(res.data.status_code == 200){
+          if (params?.is_accepted) setIsAccept(true);
+          if (params?.is_attended) {
+            // setMarkAttendance(true);
+            openZoomClass();
+          }
+        }
       })
       .catch((error) => {
         setLoading(false);
@@ -108,8 +117,13 @@ const JoinClass = (props) => {
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
       .then((res) => {
         setLoading(false);
-        if (params?.is_accepted) setIsAccept(true);
-        if (params?.is_attended) setMarkAttendance(true);
+        if(res.data.status_code == 200){
+          if (params?.is_accepted) setIsAccept(true);
+          if (params?.is_attended) {
+            // setMarkAttendance(true);
+            openZoomClass();
+          }
+        }
       })
       .catch((error) => {
         setLoading(false);
@@ -144,11 +158,20 @@ const JoinClass = (props) => {
   };
 
   const [classOver, setClassOver] = useState(false);
-  const handleJoinButton = (callback) => {
+
+  const openZoomClass = ()=>{
+    window.open(fullData && fullData.join_url)
+  }
+
+  const handleJoinButton = () => {
     const currentTime = getCurrentTime();
     if (endTime >= currentTime) {
-      if (!markAttendance) handleIsAttended();
-      callback();
+      handleIsAttended();
+      /* if (!markAttendance) {
+        handleIsAttended();
+      }else{
+        openZoomClass();
+      } */
     } else {
       setClassOver(true);
       setAlert('error', 'Class has ended!');
@@ -452,9 +475,7 @@ const JoinClass = (props) => {
               fullWidth
               variant='contained'
               disabled={props?.data?.class_status?.toLowerCase() === 'cancelled'}
-              onClick={() =>
-                handleJoinButton(() => window.open(fullData && fullData.join_url))
-              }
+              onClick={ handleJoinButton }
               className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
             >
               Join
