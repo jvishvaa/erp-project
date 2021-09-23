@@ -15,7 +15,7 @@ import {
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import cuid from 'cuid';
 import { connect } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams,useLocation } from 'react-router-dom';
 import { useTheme } from '@material-ui/core/styles';
 import Layout from '../../Layout';
 import QuestionCard from '../../../components/question-card';
@@ -64,6 +64,8 @@ const StyledOutlinedButton = withStyles((theme) => ({
 }))(Button);
 
 const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
+  const location = useLocation();
+  const [hwId, sethwId] = useState(location?.state?.viewHomework?.homeworkId)
   const classes = useStyles();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
@@ -72,6 +74,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [teacherModuleId, setTeacherModuleId] = useState(null);
   const [errors, setErrors] = useState({ name: '', description: '' });
+  const [isEdit, setisEdit] = useState(location?.state?.isEdit)
   const [questions, setQuestions] = useState([
     {
       id: cuid(),
@@ -90,6 +93,29 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const sessionYear = params.session_year;
   const branch = params.branch;
   const grade = params.grade;
+
+
+  useEffect(() => {   
+if(location?.state?.isEdit){
+  // setisEdit(location.state.isEdit)
+  // sethwId(location.state.viewHomework.homeworkId)
+  setName(location.state.selectedHomeworkDetails.homework_name)
+  setSectionDisplay(Object.keys(location.state.viewHomework.sectiondata).length > 0 ? [location.state.viewHomework.sectiondata] : [])
+  setDescription(location.state.selectedHomeworkDetails.description)
+  const que = location.state.selectedHomeworkDetails.hw_questions.map((data)=>(
+    {
+      id: cuid(),
+      is_attachment_enable: false,
+      max_attachment: 2,
+      penTool: false,
+      question:data.question,
+      attachments:data.question_files
+    }
+  )
+)
+setQuestions(que)
+}
+  },[])
 
   const validateHomework = () => {
     let isFormValid = true;
@@ -143,7 +169,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
         }),
       };
       try {
-        const response = await onAddHomework(reqObj);
+        const response = await onAddHomework(reqObj,isEdit,hwId);
         setAlert('success', 'Homework added');
         history.push('/homework/teacher');
       } catch (error) {
@@ -193,7 +219,9 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const handleBackButton = () => {
     history.push('/homework/teacher');
   };
-
+// const descriptionChange = (e) => {
+//   setDescription(e.target.value);
+// }
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -246,7 +274,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
     <Layout>
       <CommonBreadcrumbs
           componentName='Homework'
-          childComponentName='Add Homework'
+          childComponentName={location?.state?.isEdit ? 'Edit Homework' : 'Add Homework'} 
           isAcademicYearVisible={true}
         />
       <div className='add-homework-container'>
@@ -327,6 +355,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                     onChange={(e) => {
                       setName(e.target.value);
                     }}
+                    value = {name}
                     //error={errors.name ? true : false}
                     //helperText="Title is required"
                   />
@@ -339,6 +368,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                   <OutlinedInput
                     id='description'
                     name='Instruction'
+                    // onChange = {descriptionChange}
                     onChange={(e) => {
                       setDescription(e.target.value);
                     }}
@@ -347,6 +377,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                     rows={4}
                     rowsMax={6}
                     label='Instruction'
+                    value = {description}
                     //error={true}
                     //helperText="Description required"
                   />
@@ -359,6 +390,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                 <QuestionCard
                   key={question.id}
                   question={question}
+                  isEdit = {location?.state?.isEdit}
                   index={index}
                   addNewQuestion={addNewQuestion}
                   handleChange={handleChange}
@@ -420,8 +452,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onAddHomework: (reqObj) => {
-    return dispatch(addHomeWork(reqObj));
+  onAddHomework: (reqObj,isEdit,hwId) => {
+    return dispatch(addHomeWork(reqObj,isEdit,hwId));
   },
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
