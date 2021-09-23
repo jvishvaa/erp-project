@@ -14,6 +14,11 @@ import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import {Context} from '../context/CircularStore'
 import moment from 'moment';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 
 const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex,   setEditData,deleteFlag,setDeleteFlag}) => {
 
@@ -24,9 +29,57 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
 
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
+  const [deleteAlert, setDeleteAlert] = React.useState(false);
+  const [deleteId, setDeleteId] = React.useState(null);
+  const [deleteIndex, setDeleteIndex] = React.useState(null);
   //context
   const [state,setState] = useContext(Context)
   const history =useHistory()
+
+  const handleDeleteCancel = () => {
+    setDeleteId(null);
+    setDeleteIndex(null);
+    setDeleteAlert(false);
+  };
+  const handleDeleteConfirm = async () => {
+
+    try {
+ 
+      const statusChange = await axiosInstance.put(`${endpoints.circular.deleteCircular}`,
+     {
+      'circular_id': deleteId,
+      'id_delete':true
+
+     })
+    
+
+     if(statusChange.status === 200){
+        
+          setAlert('success',statusChange.data.message)
+        setDeleteAlert(false);
+        
+        setDeleteFlag(!deleteFlag)
+        
+        }
+        else {
+          console.log('error', statusChange.data.message);
+        }
+      }
+      
+      catch (error) {
+        console.log('error', error.message);
+      }
+    }
+
+
+    const handleDelete = (e) => {
+      
+      setDeleteId(e.id);
+      setDeleteIndex(e);
+      setDeleteAlert(true);
+    };
+
+   
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -70,26 +123,26 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
       })
   }
 
-  const handleDelete=(e,index)=>{
-    // console.log(e,index,'event')
-    axiosInstance.put(`${endpoints.circular.deleteCircular}`,
-    {
-     'circular_id': e.id,
-     'id_delete':true
+  // const handleDelete=(e,index)=>{
+  //   // console.log(e,index,'event')
+  //   axiosInstance.put(`${endpoints.circular.deleteCircular}`,
+  //   {
+  //    'circular_id': e.id,
+  //    'id_delete':true
 
-    }).then((result)=>{
+  //   }).then((result)=>{
 
-      if(result.data.status_code===200){
-        setAlert('success',result.data.message)
-        setDeleteFlag(!deleteFlag)
-      }else{
-        setAlert('errpr', 'ERROR!')
-      }
+  //     if(result.data.status_code===200){
+  //       setAlert('success',result.data.message)
+  //       setDeleteFlag(!deleteFlag)
+  //     }else{
+  //       setAlert('errpr', 'ERROR!')
+  //     }
 
-    })
+  //   })
 
 
-  }
+  // }
   const handleEdit=(data)=>{
     // console.log(data,'PPP')
     // setEditData(e)
@@ -112,6 +165,31 @@ const CircularCard = ({ lesson,period, setPeriodDataForView, setViewMoreData, se
             </Typography>
           </Box>
         </Grid>
+
+        <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
+          <DialogTitle
+            id='draggable-dialog-title'
+          >
+            Delete Circular
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete this circular ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleDeleteConfirm}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
         {window.location.pathname === '/teacher-circular' &&<Grid item xs={4} className={classes.textRight}>
           <Box>
             <span

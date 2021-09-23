@@ -72,11 +72,17 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0,
   },
   navCard:{
-    border : `1px solid ${theme.palette.primary.main}`
-  }, homeworkblock:{
+    border : `1px solid ${theme.palette.primary.main}`,
+    color : theme.palette.secondary.main,
+  }, 
+  navCard1:{
+    color : theme.palette.secondary.main,
+  },
+  homeworkblock:{
     color : theme.palette.secondary.main,
     fontWeight: 600
-  }, headerText: {
+  },
+   headerText: {
     color: theme.palette.secondary.main,
     fontWeight: 600,
     fontSize: "1rem",
@@ -155,10 +161,11 @@ const ViewHomework = withRouter(
           <Grid item xs={12} className='add-homework-title-container' md={2}>
             <div className='nav-cards-container'>
               <div className={` ${classes.navCard} nav-card`} onClick={onClose}>
-                <div className={` ${classes.headerText} text-center`}>
+                <div className={` ${classes.headerText} text-center`} >
                   <Button 
-                  style={{ background : 'white' , padding : '0', fontSize: '14px' }}
+                  style={{ background : 'white'  }}
                   className="allHomeWorkButton"
+                  className={classes.navCard1}
                   >
                   All Homeworks
                   </Button>
