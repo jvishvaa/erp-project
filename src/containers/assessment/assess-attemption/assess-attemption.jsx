@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme)=>({
   mainquestionpanel:{
     border: `1px solid ${theme.palette.primary.main}`,
     padding: '10px',
+    overflow:"scroll",
     borderRadius: '5px',
     color: theme.palette.secondary.main,
   },

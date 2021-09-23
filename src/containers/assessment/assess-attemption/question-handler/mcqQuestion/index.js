@@ -12,14 +12,14 @@ import endpoints from '../../../../../config/endpoints';
 import { AssessmentHandlerContext } from '../../../assess-attemption/assess-attemption-context';
 import '../../assess-attemption.css';
 
-const useStyles = makeStyles((theme)=>({
-  mcqOptions : {
+const useStyles = makeStyles((theme) => ({
+  mcqOptions: {
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '5px',
     background: theme.palette.primary.primarylightest,
     padding: '10px',
     width: '100%',
-    textAlign: 'center',
+    textAlign: 'justify',
     justifyContent: 'space-between',
     /* max-width: 400px, */
     cursor: 'pointer',
@@ -68,7 +68,7 @@ const McqQuestion = (props) => {
         </div>
       </div> */}
       <div className='mcq-question-wrapper'>
-        <div style={{ fontWeight: 'bold', textAlign: 'center' }}>
+        <div style={{ fontWeight: '900', textAlign: 'justify' }}>
           {ReactHtmlParser(question)}
         </div>
         {/* <img src='https://via.placeholder.com/150' alt='question image' /> */}
@@ -110,7 +110,7 @@ const McqQuestion = (props) => {
                 value='option1'
                 control={<Radio checked={existingAnswer === 'option1'} />}
                 label={options[0]?.option1?.optionValue}
-                />
+              />
               <div className='imageContainer'>
                 {options[0]?.option1?.images?.length !== 0 ? (
                   <img
