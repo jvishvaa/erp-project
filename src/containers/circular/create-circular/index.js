@@ -352,6 +352,7 @@ const CraeteCircular = () => {
     axiosInstance
       .post(`${endpoints.circular.deleteFile}`, {
         file_name: `dev/circular_files/${filterData?.branch?.branch?.branch_name}/${file}`,
+        circular_id:`${circularKey}`,
       })
       .then((result) => {
         if (result.data.status_code === 204) {
