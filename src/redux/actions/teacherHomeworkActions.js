@@ -84,8 +84,19 @@ export const resetSelectedCoFilters = () => {
   }
 }
 
-export const addHomeWork = (data) => async (dispatch) => {
+export const addHomeWork = (data,isEdit,id) => async (dispatch) => {
   dispatch({ type: ADD_HOMEWORK_REQUEST });
+  if(isEdit){
+      try {
+        const response = await axios.put(`/academic/${id}/update-hw/`, data);
+        dispatch({ type: ADD_HOMEWORK_SUCCESS });
+    
+        return 'success';
+      } catch (e) {
+        dispatch({ type: ADD_HOMEWORK_FAILURE });
+        throw new Error(e);
+      }
+  }else{
   try {
     const response = await axios.post('/academic/upload-homework/', data);
     dispatch({ type: ADD_HOMEWORK_SUCCESS });
@@ -95,6 +106,7 @@ export const addHomeWork = (data) => async (dispatch) => {
     dispatch({ type: ADD_HOMEWORK_FAILURE });
     throw new Error(e);
   }
+}
 };
 
 export const fetchTeacherHomeworkDetailsById = (id) => async (dispatch) => {
