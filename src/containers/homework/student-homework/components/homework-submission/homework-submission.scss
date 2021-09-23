@@ -1,6 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Raleway&display=swap');
 
+body {
+  overflow: hidden;
+}
 
 .homework_submit_wrapper {
   position: relative;
@@ -498,3 +501,23 @@ display: flex;
   //   font-size: 12px;
   // }
 }
+
+.comments-remarks-container {
+      display: flex;
+      flex-wrap: wrap;
+      .item {
+        width: calc(50% - 0.5rem);
+
+        @media screen and (max-width: 768px) {
+          width: 100%;
+          margin-bottom: 1rem;
+        }
+
+        &.comment {
+          margin-right: 1rem;
+          @media screen and (max-width: 768px) {
+            margin-right: 0;
+          }
+        }
+      }
+    }

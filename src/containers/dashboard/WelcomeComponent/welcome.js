@@ -32,7 +32,7 @@ const WelcomeComponent = () => {
         {greeting},
       </Typography>
       <Typography variant='h6' color='secondary' className={classes.greeting_user}>
-        {name}
+        {name || 'Buddy'}
       </Typography>
       <Typography
         variant='caption'
