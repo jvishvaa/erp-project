@@ -729,7 +729,8 @@ const ViewHomework = withRouter(
                     className='comments-remarks-container'
                     style={{ display: 'flex', width: '95%', margin: '0 auto' }}
                   >
-                    <div className='item comment'>
+                    {/* ----------------This is working_comments for teacher -------------------*/}
+                    {/* <div className='item comment'>
                       <FormControl variant='outlined' fullWidth size='small'>
                         <InputLabel htmlFor='component-outlined'>Comments</InputLabel>
                         <OutlinedInput
@@ -747,7 +748,7 @@ const ViewHomework = withRouter(
                           autoFocus
                         />
                       </FormControl>
-                    </div>
+                    </div> */}
                     <div className='item'>
                       <FormControl variant='outlined' fullWidth size='small'>
                         <InputLabel htmlFor='component-outlined'>Remarks</InputLabel>
