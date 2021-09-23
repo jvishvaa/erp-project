@@ -9,7 +9,7 @@ const AssessmentAttemption = (props) => {
   const { match: { params: { assessmentId } = {} } = {} } = props || {};
   const testContainerRef = useRef(null);
   function openFullscreen() {
-    const elem = document.getElementById('testContainer');
+    const elem = document.getElementsByTagName('body')[0];
     elem.requestFullscreen({ navigationUI: "show" }).then(function () {
       window.addEventListener("keydown", function (e) {
 
@@ -69,7 +69,7 @@ const AssessmentAttemption = (props) => {
   return (
     <>
       {/* <Layout> */}
-      <div style={{ background: 'white', overflow: 'auto ' }} id="testContainer" ref={testContainerRef}>
+      <div style={{ background: 'white' }} id="testContainer" ref={testContainerRef}>
         {/* <button onClick={openFullscreen}>Toggle</button> */}
         <AssessmentHandlerContextProvider assessmentId={assessmentId}>
           <AssessmentAttemptionUI />
