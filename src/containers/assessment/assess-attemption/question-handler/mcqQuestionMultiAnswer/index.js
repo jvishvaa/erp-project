@@ -15,14 +15,14 @@ import '../../assess-attemption.css';
 
 
 
-const useStyles = makeStyles((theme)=>({
-  mcqOptions : {
+const useStyles = makeStyles((theme) => ({
+  mcqOptions: {
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '5px',
     background: theme.palette.primary.primarylightest,
     padding: '10px',
     width: '100%',
-    textAlign: 'center',
+    textAlign: 'justify',
     justifyContent: 'space-between',
     /* max-width: 400px, */
     cursor: 'pointer',

@@ -344,7 +344,6 @@ const ViewHomework = withRouter(
 
     const fetchHomeworkDetails = async () => {
       const data = await getSubmittedHomeworkDetails(studentHomeworkId);
-
       const {
         hw_questions: hwQuestions,
         is_question_wise: isQuestionwise,
@@ -361,9 +360,10 @@ const ViewHomework = withRouter(
         const initialQuestionsState = hwQuestions.map((q) => ({
           id: q.id,
           remarks: q.remark,
-          comments: q.comment,
+          // comments: q.comment,
           corrected_submission: q.corrected_files,
           evaluated_files: q.evaluated_files,
+          teacher_comment: q.teacher_comment,
         }));
         setQuestionsState(initialQuestionsState);
       } else {
@@ -372,11 +372,12 @@ const ViewHomework = withRouter(
           corrected_submission: hwQuestions.corrected_files,
           evaluated_files: hwQuestions.evaluated_files,
           remarks: hwQuestions.remark,
-          comments: hwQuestions.comment,
+          comments: hwQuestions.teacher_comment,
+          student_comment: hwQuestions.student_comment
         });
       }
     };
-
+    
     const handleCollatedQuestionState = (field, value) => {
       setCollatedQuestionState((prev) => ({ ...prev, [field]: value }));
     };
@@ -440,7 +441,7 @@ const ViewHomework = withRouter(
             <div className={classes.homeworkSubmitwrapper}>
               <div className='homework_block_wrapper no-border'>
                 <div className={` ${classes.homeworkblock} homework_submit_tag`}>
-                  Homework - {subject?.split('_')[2]}, {date}
+                  Homework - {subject && subject}, {date}
                 </div>
               </div>
 
@@ -464,7 +465,7 @@ const ViewHomework = withRouter(
                   }
                   comment={
                     questionsState.length
-                      ? questionsState[activeQuestion - 1].comments
+                      ? questionsState[activeQuestion - 1].teacher_comment
                       : []
                   }
                   activeQuestion={activeQuestion}
@@ -487,7 +488,8 @@ const ViewHomework = withRouter(
 
               {!isQuestionwise &&
                 submittedHomeworkDetails?.length &&
-                submittedHomeworkDetails.map((question) => (
+                submittedHomeworkDetails.map((question,i) => (
+                  <>
                   <div
                     className='homework-question-container'
                     key={`homework_student_question_${1}`}
@@ -496,6 +498,13 @@ const ViewHomework = withRouter(
                       <div className='question'>{question.question}</div>
                     </div>
                   </div>
+                  <div className="overallContainer">
+                  {collatedQuestionState?.student_comment && collatedQuestionState.student_comment[i] &&
+                    <div className="scoreBox1" style={{width:'49%',margin:'1%',marginLeft:'2%'}}>
+                      Student Comment : {collatedQuestionState.student_comment[i]}
+                    </div>}
+                </div>
+                </>
                 ))}
               {!isQuestionwise && (
                 <>

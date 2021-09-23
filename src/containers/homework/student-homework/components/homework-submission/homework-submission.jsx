@@ -23,6 +23,11 @@ import {
   Divider,
 } from '@material-ui/core';
 import {
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+} from '@material-ui/core';
+import {
   Attachment as AttachmentIcon,
   HighlightOffOutlined as CloseIcon,
   ListAltOutlined,
@@ -159,6 +164,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [attachmentCount, setAttachmentCount] = useState([]);
   const [maxCount, setMaxCount] = useState(0);
   const [calssNameWise, setClassName] = useState('');
+  const [studentBulkComment, setStudentBulkComment] = useState('');
+  // const [quesComments, setQuesComments] = useState([]);
   const handleHomeworkSubmit = () => {
 
     let count = 0;
@@ -176,7 +183,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     let requestData = {
       "homework": homeworkSubmission.homeworkId,
       "is_question_wise": isQuestionWise,
-      "questions": isQuestionWise ? attachmentData : [{ 'attachments': bulkData }],
+      "questions": isQuestionWise ? attachmentData : ([{ 'attachments': bulkData,attachmentData }]),
       "comment": comment
     }
 
@@ -240,7 +247,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               attachmentData.push(
                 {
                   "homework_question": result.data.data.hw_questions[i].id,
-                  "attachments": []
+                  "attachments": [],
+                  "comments":''
                 }
               );
               maxVal += result.data.data.hw_questions[i].max_attachment;
@@ -265,8 +273,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 setOverallRemark(result.data.data.overall_remark);
                 setOverallScore(result.data.data.score);
                 setSubmittedEvaluatedFilesBulk(result.data.data.hw_questions.evaluated_files);
-                setQuestionwiseComment(result.data.data.hw_questions?.comment);
+                setQuestionwiseComment(result.data.data.hw_questions?.teacher_comment);
                 setQuestionwiseRemark(result.data.data.hw_questions?.remark);
+                setStudentBulkComment(result.data.data.hw_questions?.student_comment);
               }
             }
           }
@@ -569,6 +578,16 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
             setLoading(false);
           });
     };
+
+  const handleQuesComments = (index, value) =>{
+    // if(quesComments[index])
+    //   setQuesComments(...quesComments,quesComments[index]=value)
+    // else{
+    //   // setQuesComments(...quesComments,quesComments.push(value))
+    //   attachmentData[index]=value
+    // }
+    attachmentData[index].comments=value
+  }
 
 
   return (
@@ -880,6 +899,51 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           )}
                         </div>
                       </div>
+                      {homeworkSubmission.status===1 &&
+                      <div
+                        className='comments-remarks-container'
+                        style={{ display: 'flex', width: '95%', margin: '0 auto'}}
+                      >
+                        <div className='item comment'>
+                          <FormControl variant='outlined' fullWidth size='small'>
+                            {/* <InputLabel htmlFor='component-outlined'>Comments</InputLabel> */}
+                            <OutlinedInput
+                              id='comments'
+                              name='comments'
+                              inputProps={{ maxLength: 150 }}
+                              multiline
+                              rows={3}
+                              rowsMax={4}
+                              // label='Comments'
+                              placeholder='Add comments about question (optional)'
+                              // value={quesComments[index] || ''}
+                              onChange={(e) => {
+                                handleQuesComments(index, e.target.value);
+                              }}
+                            />
+                          </FormControl>
+                        </div>
+                      </div>
+                      }
+                      {console.log({subjectQuestions})}
+                      {/* for bulk:- student comments for student evaluated homework*/}
+                      <div className="overallContainer">
+                        {studentBulkComment[index] &&
+                          <div className="scoreBox1" style={{marginBottom:'1%'}}>
+                            Comment : {studentBulkComment[index]}
+                          </div>}
+                      </div>
+
+                      <div className="overallContainer">
+                        {question?.teacher_comment &&
+                          <div className="scoreBox1">
+                            Teacher's comment : {question?.teacher_comment}
+                          </div>}
+                        {question?.remark &&
+                          <div className="remarkBox1">
+                            Teacher's Remark : {question?.remark}
+                          </div>}
+                      </div>
                     </div>
                   }
                   {!isBulk &&
@@ -888,7 +952,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         (homeworkSubmission.status === 3 && question.evaluated_files?.length > 0))
                         &&
                         <div className='attachments-container'>
-                          {document.body.style.overflow = "hidden"}
+                          {/* {document.body.style.overflow = "hidden"} */}
                           <Typography component='h4' color='primary' className='header'>
                             {homeworkSubmission.status === 2 ? 'Submitted Files' : 'Evaluated Files'}
                           </Typography>
@@ -988,16 +1052,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               )}
                             </div>
                           </div>
-                          <div className="overallContainer">
-                              {question?.comment &&
-                                <div className="scoreBox1">
-                                  Comments : {question.comment}
-                                </div>}
-                              {question?.remark &&
-                                <div className="remarkBox1">
-                                  Remarks : {question.remark}
-                                </div>}
-                            </div>
                         </div>
                       }
                     </>
@@ -1072,11 +1126,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       <div className="overallContainer">
                         {questionwiseComment &&
                           <div className="scoreBox1">
-                            Overall Score : {questionwiseComment}
+                            Teacher's comment : {questionwiseComment}
                           </div>}
                         {questionwiseRemark &&
                           <div className="remarkBox1">
-                            Overall Remark : {questionwiseRemark}
+                            Teacher's Remark : {questionwiseRemark}
                           </div>}
                       </div>
                       : null}
@@ -1085,7 +1139,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               </>
             }
 
-            {homeworkSubmission.status === 1 ?
+            {/* {homeworkSubmission.status === 1 ?
               <div style={{ margin: '15px' }}>
                 <TextField
                   className='commentBoxStyle'
@@ -1106,7 +1160,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   </div>
                 }
               </div>: null
-            }
+            } */}
 
             <div className="overallContainer1">
               {homeworkSubmission.status === 3 ?

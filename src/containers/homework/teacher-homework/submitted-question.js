@@ -327,6 +327,12 @@ const SubmittedQuestion = ({
           </div>
         </div>
       )}
+      <div className="overallContainer">
+        {question?.student_comment &&
+          <div className="scoreBox1" style={{width:'49%',marginBottom:'1%'}}>
+            Student Comment : {question?.student_comment}
+          </div>}
+      </div>
       <div className='comments-remarks-container' style={{ display: 'flex' }}>
         <div className='item comment'>
           <FormControl variant='outlined' fullWidth size='small'>
@@ -340,7 +346,7 @@ const SubmittedQuestion = ({
               rowsMax={4}
               label='Comments'
               value={comment}
-              onChange={(e) => onChangeQuestionsState('comments', e.target.value)}
+              onChange={(e) => onChangeQuestionsState('teacher_comment', e.target.value)}
             />
           </FormControl>
         </div>
