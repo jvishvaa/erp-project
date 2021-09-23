@@ -48,7 +48,8 @@ const useStyles = makeStyles((theme) => ({
   sidebarPanel: {
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '5px',
-    height: 'auto',
+    // overflowY: 'scroll',
+    // height: 'auto',
     padding: '10px',
   },
   box: {
