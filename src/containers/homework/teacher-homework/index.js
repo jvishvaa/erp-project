@@ -191,12 +191,20 @@ const TeacherHomework = withRouter(
       subject: subjectName,
       subjectId,
       homeworkId,
+      sectiondata,
+      sessionYear,
+      branch,
+      grade,
     }) => {
       setViewHomework({
         subjectId: subjectId,
         date: date,
         subjectName: subjectName,
+        sectiondata,
         homeworkId,
+        sessionYear,
+        branch,
+        grade,
       });
       setActiveView('view-homework');
     };
@@ -909,7 +917,7 @@ const TeacherHomework = withRouter(
                                       data={row}
                                       cols={homeworkCols}
                                       selectedCol={selectedCol}
-                                      sectionId={sectionDisplay?.id}
+                                      sectionData={sectionDisplay}
                                       setSelectedCol={handleSelectCol}
                                       handleViewHomework={handleViewHomework}
                                     />
@@ -1004,6 +1012,10 @@ const TeacherHomework = withRouter(
                                                     subject: col.subject_name,
                                                     subjectId: col.subject_id,
                                                     homeworkId: data.hw_id,
+                                                    sectiondata : sectionDisplay,
+                                                    sessionYear: row.sessionYear,
+                                                    branch: row.branch,
+                                                    grade: row.grade,
                                                   });
                                                 }}
                                               >

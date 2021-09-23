@@ -80,6 +80,7 @@ const CancelButton = withStyles({
 
 const QuestionCard = ({
   addNewQuestion,
+  isEdit,
   question,
   index,
   handleChange,
@@ -98,6 +99,11 @@ const QuestionCard = ({
   const [sizeValied, setSizeValied] = useState({});
   const [showPrev, setshowPrev] = useState(0)
 
+
+  const [questionData,setquestionData] = useState()
+  const [edit,setisEdit] = useState(isEdit)
+
+
   const handleScroll = (dir) => {
     if (dir === 'left') {
       attachmentsRef.current.scrollLeft -= 150;
@@ -105,6 +111,16 @@ const QuestionCard = ({
       attachmentsRef.current.scrollLeft += 150;
     }
   };
+
+
+useEffect(() => {
+  if(edit){
+    setisEdit(false)
+  setquestionData(question.question)
+  setAttachmentPreviews(question.attachments)
+  setAttachments(question.attachments)
+  }
+},[question.question,question.attachments])
 
   const openAttchmentsModal = () => {
     setOpenAttachmentModal(true);
@@ -228,6 +244,10 @@ const QuestionCard = ({
 
   };
 
+  useEffect(()=> {
+    onChange('question', questionData);
+  },[questionData])
+
   useEffect(() => {
     if (firstUpdate.current) {
       firstUpdate.current = false;
@@ -287,14 +307,16 @@ useEffect(()=>{
                     <TextField
                       id='question'
                       name='question'
-                      onChange={(e) => {
-                        onChange('question', e.target.value);
+                      onChange={(e) => { 
+                            setquestionData(e.target.value)
+                            // onChange('question', questionData);
                       }}
                       label='Question'
                       autoFocus
                       multiline
                       rows={4}
                       rowsMax={6}
+                      value = {questionData}
                     />
                     <FormHelperText style={{ color: 'red' }}>
                       {question.errors?.question}
@@ -310,6 +332,7 @@ useEffect(()=>{
                       accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
                       onChange={(e) => {
                         handleFileUpload(e.target.files[0]);
+                        e.target.value = null
                         // onChange('attachments', Array.from(e.target.files)[]);
                       }}
                       ref={fileUploadInput}
