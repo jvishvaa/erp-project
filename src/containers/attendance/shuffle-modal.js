@@ -12,21 +12,6 @@ import { result } from 'lodash';
 
 const ShuffleModal = ({ openShuffleModal, setOpenShuffleModal }) => {
   const [batchList, setBatchList] = useState([]);
-  useEffect(() => {
-    axiosInstance
-      .get(`${endpoints.onlineClass.batchList}?batch_id=57`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          // setBatchList(result.data.)
-        } else {
-          setBatchList([]);
-        }
-      })
-      .catch((error) => {
-        setBatchList([]);
-      });
-  }, []);
-
   const [list, setList] = useState([]);
 
   return (
