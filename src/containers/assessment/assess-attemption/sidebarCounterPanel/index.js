@@ -3,7 +3,7 @@
 import React, { useContext, useState } from 'react';
 import { Button } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
-import { makeStyles , Typography} from '@material-ui/core';
+import { makeStyles, Typography } from '@material-ui/core';
 import Modal from '@material-ui/core/Modal';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import GeneralGuide from '../generalGuide';
@@ -39,18 +39,19 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
-  cardTitleHeading : {
+  cardTitleHeading: {
     marginTop: "0px",
     marginTottom: "0px",
     color: theme.palette.primary.main,
     fontSize: "15px",
   },
-  sidebarPanel:{
+  sidebarPanel: {
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '5px',
+    height: 'auto',
     padding: '10px',
   },
-  box:{
+  box: {
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '5px',
     background: '#fff',
@@ -62,42 +63,42 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  ongoing:{
+  ongoing: {
     outline: `1px solid ${theme.palette.primary.main}`,
     outlineOffset: '3px',
     background: '#d277ff',
     color: 'white',
   },
-  outlined:{
+  outlined: {
     border: `1px solid ${theme.palette.primary.main}`,
     background: '#fff',
     color: theme.palette.secondary.main,
     fontSize: '16px',
     letterSpacing: '0px',
   },
-  demobox:{
+  demobox: {
     width: '20px',
     height: '20px',
-    borderRadius:'2px',
+    borderRadius: '2px',
     border: ` 1px solid ${theme.palette.primary.main}`,
   },
-  green:{
+  green: {
     background: '#7fd400',
     color: '#fff',
     border: '0px',
   },
-  sidebarOngoing:{
+  sidebarOngoing: {
     outline: `1px solid ${theme.palette.secondary.main}`,
-  outlineOffset: '3px',
-  background: '#d277ff',
-  color: 'white',
+    outlineOffset: '3px',
+    background: '#d277ff',
+    color: 'white',
   },
-  h6text:{
+  h6text: {
     borderBottom: '1px solid #c4c4c4',
-  color: theme.palette.secondary.main,
-  marginTop: '0px',
-  fontSize: '14px',
-  marginBottom: '15px',
+    color: theme.palette.secondary.main,
+    marginTop: '0px',
+    fontSize: '14px',
+    marginBottom: '15px',
   }
 
 }));
@@ -202,38 +203,38 @@ const SidebarCounterPanel = (props) => {
         ) : null}
       </div>
       <div className='sidebar-question-list'>
-        <h6 className = {classes.h6text}>Question List</h6>
+        <h6 className={classes.h6text}>Question List</h6>
         <div className='sidebar-box-wrapper'>
           {questionsArray.map((ques, index) => {
-          let classAsPerStatus = "";
-          let classsesObj = { true: `${classes.green}`, false: `${classes.sidebarOngoing}`, null: '' }; 
-          if(ques.sub_questions.length>0){
-           let flag="null"
-           ques.sub_questions.map((sub,key)=>{
-             let assessmentKey=localStorage.getItem("assessment")
-            //  console.log(assessmentKey,"ass")
-            //  console.log(localStorage.getItem(assessmentKey),"koll")
-            //  console.log(typeof localStorage.getItem(assessmentKey))
-            //  console.log(JSON.parse(localStorage.getItem(assessmentKey)),"multibrancj")
-             let storageValue=JSON.parse(localStorage.getItem(assessmentKey))
-            //  console.log(storageValue,"==>")
-             if(storageValue?.questions[sub.id].user_response.attemption_status){
-              flag="true"
+            let classAsPerStatus = "";
+            let classsesObj = { true: `${classes.green}`, false: `${classes.sidebarOngoing}`, null: '' };
+            if (ques.sub_questions.length > 0) {
+              let flag = "null"
+              ques.sub_questions.map((sub, key) => {
+                let assessmentKey = localStorage.getItem("assessment")
+                //  console.log(assessmentKey,"ass")
+                //  console.log(localStorage.getItem(assessmentKey),"koll")
+                //  console.log(typeof localStorage.getItem(assessmentKey))
+                //  console.log(JSON.parse(localStorage.getItem(assessmentKey)),"multibrancj")
+                let storageValue = JSON.parse(localStorage.getItem(assessmentKey))
+                //  console.log(storageValue,"==>")
+                if (storageValue?.questions[sub.id].user_response.attemption_status) {
+                  flag = "true"
+                }
+                else {
+                  flag = "null"
+                }
+              })
+              classAsPerStatus = classsesObj[flag];
             }
-            else{
-              flag="null"
+            else {
+              const {
+                user_response: { attemption_status: attemptionStatus },
+              } = ques || {};
+              classAsPerStatus = classsesObj[attemptionStatus];
             }
-          }) 
-          classAsPerStatus = classsesObj[flag];
-          } 
-          else{
-            const {
-              user_response: { attemption_status: attemptionStatus },
-            } = ques || {};
-             classAsPerStatus = classsesObj[attemptionStatus];
-           }
-              return (
-                <div
+            return (
+              <div
                 key={ques.id}
                 onClick={() => {
                   selectQues(ques.id);
@@ -251,7 +252,7 @@ const SidebarCounterPanel = (props) => {
         </div>
       </div>
       <div className='sidebar-legend'>
-        <h6 className =  {classes.h6text}>Legends</h6>
+        <h6 className={classes.h6text}>Legends</h6>
         <div className='sidebar-box-wrapper'>
           <div className='box'>
             <div className={`${classes.demobox} ${classes.green}`} /> Attempted
@@ -266,7 +267,7 @@ const SidebarCounterPanel = (props) => {
             <div className={`${classes.demobox} ${classes.sidebarOngoing}`} /> Ongoing.&nbsp;&nbsp;&nbsp;.
           </div>
         </div>
-        <Typography color = "secondary">Note: Only attempted questions will be considered for review.</Typography>
+        <Typography color="secondary">Note: Only attempted questions will be considered for review.</Typography>
       </div>
       <div className='sidebar-button-wrapper'>
         <Button
@@ -280,7 +281,7 @@ const SidebarCounterPanel = (props) => {
           className='contained'
           variant='contained'
           color='primary'
-          style = {{color : 'white'}}
+          style={{ color: 'white' }}
           // disabled={!isReadyToSubmit}
           onClick={() => {
             setOpenModal(true);
