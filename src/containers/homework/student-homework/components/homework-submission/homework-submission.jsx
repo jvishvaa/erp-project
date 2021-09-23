@@ -1105,10 +1105,10 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     {desc}
                   </div>
                 }
-              </div>
-              : null}
+              </div>: null
+            }
 
-            <div>
+            <div className="overallContainer1">
               {homeworkSubmission.status === 3 ?
               <>
               {overallScore &&
@@ -1151,9 +1151,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     size='medium'
                   >
                     Submit
-              </Button>
+                  </Button>
                 </div>
-                }
+              }
             </div>
           </div>
         </Grid>
