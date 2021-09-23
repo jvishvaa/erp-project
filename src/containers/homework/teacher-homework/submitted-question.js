@@ -327,6 +327,12 @@ const SubmittedQuestion = ({
           </div>
         </div>
       )}
+      <div className="overallContainer">
+        {question?.student_comment &&
+          <div className="scoreBox1" style={{width:'49%',marginBottom:'1%'}}>
+            Student Comment : {question?.student_comment}
+          </div>}
+      </div>
       <div className='comments-remarks-container' style={{ display: 'flex' }}>
         <div className='item comment'>
           <FormControl variant='outlined' fullWidth size='small'>
