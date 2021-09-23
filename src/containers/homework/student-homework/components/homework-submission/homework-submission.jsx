@@ -899,14 +899,15 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           )}
                         </div>
                       </div>
-                      {homeworkSubmission.status===1 &&
+                      {/* ---------- This is student working_comment field -----------*/}
+
+                      {/* {homeworkSubmission.status===1 &&
                       <div
                         className='comments-remarks-container'
                         style={{ display: 'flex', width: '95%', margin: '0 auto'}}
                       >
                         <div className='item comment'>
                           <FormControl variant='outlined' fullWidth size='small'>
-                            {/* <InputLabel htmlFor='component-outlined'>Comments</InputLabel> */}
                             <OutlinedInput
                               id='comments'
                               name='comments'
@@ -924,8 +925,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           </FormControl>
                         </div>
                       </div>
-                      }
-                      {console.log({subjectQuestions})}
+                      } */}
+
                       {/* for bulk:- student comments for student evaluated homework*/}
                       <div className="overallContainer">
                         {studentBulkComment[index] &&
