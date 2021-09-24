@@ -95,6 +95,7 @@ const JoinClass = (props) => {
     if(params?.is_attended){
       windowReference = window.open();
     }
+
     APIREQUEST('put', '/oncls/v1/mark-attendance/', params)
       .then((res) => {
         setLoading(false);
@@ -117,6 +118,7 @@ const JoinClass = (props) => {
     if(params?.is_attended){
       windowReference = window.open();
     }
+    
     axiosInstance
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
       .then((res) => {
