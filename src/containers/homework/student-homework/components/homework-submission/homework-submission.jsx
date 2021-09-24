@@ -23,6 +23,11 @@ import {
   Divider,
 } from '@material-ui/core';
 import {
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+} from '@material-ui/core';
+import {
   Attachment as AttachmentIcon,
   HighlightOffOutlined as CloseIcon,
   ListAltOutlined,
@@ -159,6 +164,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [attachmentCount, setAttachmentCount] = useState([]);
   const [maxCount, setMaxCount] = useState(0);
   const [calssNameWise, setClassName] = useState('');
+  const [studentBulkComment, setStudentBulkComment] = useState('');
+  // const [quesComments, setQuesComments] = useState([]);
   const handleHomeworkSubmit = () => {
 
     let count = 0;
@@ -176,7 +183,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     let requestData = {
       "homework": homeworkSubmission.homeworkId,
       "is_question_wise": isQuestionWise,
-      "questions": isQuestionWise ? attachmentData : [{ 'attachments': bulkData }],
+      "questions": isQuestionWise ? attachmentData : ([{ 'attachments': bulkData,attachmentData }]),
       "comment": comment
     }
 
@@ -240,7 +247,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               attachmentData.push(
                 {
                   "homework_question": result.data.data.hw_questions[i].id,
-                  "attachments": []
+                  "attachments": [],
+                  "comments":''
                 }
               );
               maxVal += result.data.data.hw_questions[i].max_attachment;
@@ -265,8 +273,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 setOverallRemark(result.data.data.overall_remark);
                 setOverallScore(result.data.data.score);
                 setSubmittedEvaluatedFilesBulk(result.data.data.hw_questions.evaluated_files);
-                setQuestionwiseComment(result.data.data.hw_questions?.comment);
+                setQuestionwiseComment(result.data.data.hw_questions?.teacher_comment);
                 setQuestionwiseRemark(result.data.data.hw_questions?.remark);
+                setStudentBulkComment(result.data.data.hw_questions?.student_comment);
               }
             }
           }
@@ -570,6 +579,16 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
           });
     };
 
+  const handleQuesComments = (index, value) =>{
+    // if(quesComments[index])
+    //   setQuesComments(...quesComments,quesComments[index]=value)
+    // else{
+    //   // setQuesComments(...quesComments,quesComments.push(value))
+    //   attachmentData[index]=value
+    // }
+    attachmentData[index].comments=value
+  }
+
 
   return (
     <div className='create_group_filter_container'>
@@ -826,7 +845,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
-                          {question.question_files.length > 1 && (
+                          {question.question_files.length > 0 && (
                             <IconButton onClick={() => handleScroll(index,'left')}>
                               <ArrowBackIosIcon />
                             </IconButton>
@@ -841,25 +860,49 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               e.preventDefault();
                             }}
                           >
-                            {question.question_files.map((url, i) => (
-                              <>
-                                <div className='attachment'>
+                            {question.question_files.map((url, i) => {
+                               if (typeof url == 'object') {
+                                return Object.values(url).map((item, i) => {
+                                return <div className='attachment'>
                                   <Attachment
                                     key={`homework_student_question_attachment_${i}`}
-                                    fileUrl={url}
+                                    fileUrl={item}
                                     fileName={`Attachment-${i + 1}`}
                                     urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                     index={i}
-                                    onOpenInPenTool={(url) => openInPenTool(url, index)}
+                                    onOpenInPenTool={(item) => openInPenTool(item, index)}
                                     actions={['preview', 'download', homeworkSubmission.status === 1 && question.is_pen_editor_enable && 'pentool']}
                                   />
                                 </div>
-                              </>
-                            ))}
+                                })}
+                                else return <div className='attachment'>
+                                <Attachment
+                                  key={`homework_student_question_attachment_${i}`}
+                                  fileUrl={url}
+                                  fileName={`Attachment-${i + 1}`}
+                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                  index={i}
+                                  onOpenInPenTool={(url) => openInPenTool(url, index)}
+                                  actions={['preview', 'download', homeworkSubmission.status === 1 && question.is_pen_editor_enable && 'pentool']}
+                                />
+                              </div>
+                              
+                  })}
                             <div style={{ position: 'absolute', visibility: 'hidden' }}>
                               <SRLWrapper>
-                                {question.question_files.map((url, i) => (
-                                  <img
+                                {question.question_files.map((url, i) => {
+                                  if (typeof url == 'object') {
+                                    return Object.values(url).map((item, i) => {
+                                  return<img
+                                    src={`${endpoints.discussionForum.s3}/homework/${item}`}
+                                    onError={(e) => {
+                                      e.target.src = placeholder;
+                                    }}
+                                    alt={`Attachment-${i + 1}`}
+                                    style={{ width: '0', height: '0' }}
+                                  />
+                                    })}
+                                    else return <img
                                     src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                     onError={(e) => {
                                       e.target.src = placeholder;
@@ -867,18 +910,64 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                     alt={`Attachment-${i + 1}`}
                                     style={{ width: '0', height: '0' }}
                                   />
-                                ))}
+                                  })}
                               </SRLWrapper>
                             </div>
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
-                          {question.question_files.length > 1 && (
+                          {question.question_files.length > 0 && (
                             <IconButton onClick={() => handleScroll(index,'right')}>
                               <ArrowForwardIosIcon color='primary' />
                             </IconButton>
                           )}
                         </div>
+                      </div>
+                      {/* ---------- This is student working_comment field -----------*/}
+
+                      {/* {homeworkSubmission.status===1 &&
+                      <div
+                        className='comments-remarks-container'
+                        style={{ display: 'flex', width: '95%', margin: '0 auto'}}
+                      >
+                        <div className='item comment'>
+                          <FormControl variant='outlined' fullWidth size='small'>
+                            <OutlinedInput
+                              id='comments'
+                              name='comments'
+                              inputProps={{ maxLength: 150 }}
+                              multiline
+                              rows={3}
+                              rowsMax={4}
+                              // label='Comments'
+                              placeholder='Add comments about question (optional)'
+                              // value={quesComments[index] || ''}
+                              onChange={(e) => {
+                                handleQuesComments(index, e.target.value);
+                              }}
+                            />
+                          </FormControl>
+                        </div>
+                      </div>
+                      } */}
+
+                      {/* for bulk:- student comments for student evaluated homework*/}
+                      <div className="overallContainer">
+                        {studentBulkComment[index] &&
+                          <div className="scoreBox1" style={{marginBottom:'1%'}}>
+                            Comment : {studentBulkComment[index]}
+                          </div>}
+                      </div>
+
+                      <div className="overallContainer">
+                        {question?.teacher_comment &&
+                          <div className="scoreBox1">
+                            Teacher's comment : {question?.teacher_comment}
+                          </div>}
+                        {question?.remark &&
+                          <div className="remarkBox1">
+                            Teacher's Remark : {question?.remark}
+                          </div>}
                       </div>
                     </div>
                   }
@@ -988,16 +1077,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               )}
                             </div>
                           </div>
-                          <div className="overallContainer">
-                              {question?.comment &&
-                                <div className="scoreBox1">
-                                  Comments : {question.comment}
-                                </div>}
-                              {question?.remark &&
-                                <div className="remarkBox1">
-                                  Remarks : {question.remark}
-                                </div>}
-                            </div>
                         </div>
                       }
                     </>
@@ -1072,11 +1151,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       <div className="overallContainer">
                         {questionwiseComment &&
                           <div className="scoreBox1">
-                            Overall Score : {questionwiseComment}
+                            Teacher's comment : {questionwiseComment}
                           </div>}
                         {questionwiseRemark &&
                           <div className="remarkBox1">
-                            Overall Remark : {questionwiseRemark}
+                            Teacher's Remark : {questionwiseRemark}
                           </div>}
                       </div>
                       : null}
@@ -1085,7 +1164,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
               </>
             }
 
-            {homeworkSubmission.status === 1 ?
+            {/* {homeworkSubmission.status === 1 ?
               <div style={{ margin: '15px' }}>
                 <TextField
                   className='commentBoxStyle'
@@ -1105,10 +1184,10 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     {desc}
                   </div>
                 }
-              </div>
-              : null}
+              </div>: null
+            } */}
 
-            <div>
+            <div className="overallContainer1">
               {homeworkSubmission.status === 3 ?
               <>
               {overallScore &&
@@ -1151,9 +1230,9 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     size='medium'
                   >
                     Submit
-              </Button>
+                  </Button>
                 </div>
-                }
+              }
             </div>
           </div>
         </Grid>

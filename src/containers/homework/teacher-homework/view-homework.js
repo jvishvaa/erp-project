@@ -72,11 +72,17 @@ const useStyles = makeStyles((theme) => ({
     bottom: 0,
   },
   navCard:{
-    border : `1px solid ${theme.palette.primary.main}`
-  }, homeworkblock:{
+    border : `1px solid ${theme.palette.primary.main}`,
+    color : theme.palette.secondary.main,
+  }, 
+  navCard1:{
+    color : theme.palette.secondary.main,
+  },
+  homeworkblock:{
     color : theme.palette.secondary.main,
     fontWeight: 600
-  }, headerText: {
+  },
+   headerText: {
     color: theme.palette.secondary.main,
     fontWeight: 600,
     fontSize: "1rem",
@@ -110,7 +116,8 @@ const ViewHomework = withRouter(
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const classes = useStyles();
     console.log(viewHomework,'ViewHomework1')
-    const { isOpen, subjectId, date, subjectName, homeworkId } = viewHomework || {};
+
+    const {subjectId, date, subjectName, homeworkId,sessionYear,grade,branch } = viewHomework || {};
     const [isQuestionWise, setIsQuestionWise] = useState(false);
     const [loading, setLoading] = useState(false);
     const { setAlert } = useContext(AlertNotificationContext);
@@ -122,6 +129,14 @@ const ViewHomework = withRouter(
         scrollableContainer.current.scrollLeft += 150;
       }
     };
+    const [isEdit,setisEdit] = useState(false)
+    const onEdit = () => {
+      setisEdit(true)
+      history.push({
+        pathname: `/homework/add/${date}/${sessionYear}/${branch}/${grade}/${subjectName}/${subjectId}`,
+        state:{isEdit : true,viewHomework: viewHomework,selectedHomeworkDetails: selectedHomeworkDetails} ,
+      });
+    }
 
     const handleDelete = () => {
       setLoading(true);
@@ -155,10 +170,11 @@ const ViewHomework = withRouter(
           <Grid item xs={12} className='add-homework-title-container' md={2}>
             <div className='nav-cards-container'>
               <div className={` ${classes.navCard} nav-card`} onClick={onClose}>
-                <div className={` ${classes.headerText} text-center`}>
+                <div className={` ${classes.headerText} text-center`} >
                   <Button 
-                  style={{ background : 'white' , padding : '0', fontSize: '14px' }}
+                  style={{ background : 'white'  }}
                   className="allHomeWorkButton"
+                  className={classes.navCard1}
                   >
                   All Homeworks
                   </Button>
@@ -214,8 +230,16 @@ const ViewHomework = withRouter(
                 <Button
                   variant="contained"
                   color="secondary"
+                  onClick={onEdit}
+                  style={{color : 'white',marginRight : '20px'}}
+                >
+                  Edit
+                </Button>
+                <Button
+                  variant="contained"
+                  color="secondary"
                   onClick={handleDelete}
-                  style={{backgroundColor:'red'}}
+                  style={{backgroundColor:'red',color : 'white'}}
                   startIcon={<DeleteIcon />}
                 >
                   Delete

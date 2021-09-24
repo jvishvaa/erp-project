@@ -712,7 +712,11 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                           </span>
                                         ) : null}
                                         </div>
-                                        {row[headers?.subject_slag]?.submitted_at}
+                                          <small>{row[headers?.subject_slag]?.submitted_at?.split('/')[0]}</small>
+                                        <div>
+                                          <small>{row[headers?.subject_slag]?.submitted_at?.split('/')[1]}</small>
+                                        </div>
+                                  
                                       </TableCell>
                                     ) : (
                                       <TableCell />
