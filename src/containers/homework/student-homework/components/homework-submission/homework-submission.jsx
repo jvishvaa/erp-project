@@ -860,25 +860,49 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               e.preventDefault();
                             }}
                           >
-                            {question.question_files.map((url, i) => (
-                              <>
-                                <div className='attachment'>
+                            {question.question_files.map((url, i) => {
+                               if (typeof url == 'object') {
+                                return Object.values(url).map((item, i) => {
+                                return <div className='attachment'>
                                   <Attachment
                                     key={`homework_student_question_attachment_${i}`}
-                                    fileUrl={url}
+                                    fileUrl={item}
                                     fileName={`Attachment-${i + 1}`}
                                     urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                     index={i}
-                                    onOpenInPenTool={(url) => openInPenTool(url, index)}
+                                    onOpenInPenTool={(item) => openInPenTool(item, index)}
                                     actions={['preview', 'download', homeworkSubmission.status === 1 && question.is_pen_editor_enable && 'pentool']}
                                   />
                                 </div>
-                              </>
-                            ))}
+                                })}
+                                else return <div className='attachment'>
+                                <Attachment
+                                  key={`homework_student_question_attachment_${i}`}
+                                  fileUrl={url}
+                                  fileName={`Attachment-${i + 1}`}
+                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                  index={i}
+                                  onOpenInPenTool={(url) => openInPenTool(url, index)}
+                                  actions={['preview', 'download', homeworkSubmission.status === 1 && question.is_pen_editor_enable && 'pentool']}
+                                />
+                              </div>
+                              
+                  })}
                             <div style={{ position: 'absolute', visibility: 'hidden' }}>
                               <SRLWrapper>
-                                {question.question_files.map((url, i) => (
-                                  <img
+                                {question.question_files.map((url, i) => {
+                                  if (typeof url == 'object') {
+                                    return Object.values(url).map((item, i) => {
+                                  return<img
+                                    src={`${endpoints.discussionForum.s3}/homework/${item}`}
+                                    onError={(e) => {
+                                      e.target.src = placeholder;
+                                    }}
+                                    alt={`Attachment-${i + 1}`}
+                                    style={{ width: '0', height: '0' }}
+                                  />
+                                    })}
+                                    else return <img
                                     src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                     onError={(e) => {
                                       e.target.src = placeholder;
@@ -886,7 +910,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                     alt={`Attachment-${i + 1}`}
                                     style={{ width: '0', height: '0' }}
                                   />
-                                ))}
+                                  })}
                               </SRLWrapper>
                             </div>
                           </div>
