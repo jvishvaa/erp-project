@@ -245,6 +245,10 @@ useEffect(() => {
   };
 
   useEffect(()=> {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
     onChange('question', questionData);
   },[questionData])
 
