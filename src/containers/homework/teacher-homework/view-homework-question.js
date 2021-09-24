@@ -10,8 +10,6 @@ import endpoints from '../../../config/endpoints';
 import placeholder from '../../../assets/images/placeholder_small.jpg';
 
 const ViewHomeworkQuestion = ({ question, index }) => {
-  debugger
-  console.log(question,"@@@question")
 
   const [showAttachmentArrows, setShowAttachmentArrows] = useState(false);
   const scrollableContainer = useRef(null);
