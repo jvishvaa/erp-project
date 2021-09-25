@@ -191,12 +191,20 @@ const TeacherHomework = withRouter(
       subject: subjectName,
       subjectId,
       homeworkId,
+      sectiondata,
+      sessionYear,
+      branch,
+      grade,
     }) => {
       setViewHomework({
         subjectId: subjectId,
         date: date,
         subjectName: subjectName,
+        sectiondata,
         homeworkId,
+        sessionYear,
+        branch,
+        grade,
       });
       setActiveView('view-homework');
     };
@@ -285,14 +293,14 @@ const TeacherHomework = withRouter(
         if (selectedFilters.branch !== '') {
           setSelectedBranch(selectedFilters.branch);
           handleBranch('', selectedFilters.branch);
+        }  
+        if (selectedFilters.grade !== '') {
+          setGradeDisplay(selectedFilters.grade);
+          handleGrade('', selectedFilters.grade);
         }
         if (selectedFilters.section !== '') {
           setSectionDisplay(selectedFilters.section);
           handleSection('', selectedFilters.section);
-        }
-        if (selectedFilters.grade !== '') {
-          setGradeDisplay(selectedFilters.grade);
-          handleGrade('', selectedFilters.grade);
         }
       }
     }, [teacherModuleId]);
@@ -379,7 +387,7 @@ const TeacherHomework = withRouter(
             //   }
             // }
             if (key === 'branchList') {
-              handleGrade();
+              // handleGrade();
               //setBranchList(result?.data?.data || []);
               setBranchList(
                 result?.data?.data?.results.map((obj) => (obj && obj.branch) || {}) || []
@@ -909,7 +917,7 @@ const TeacherHomework = withRouter(
                                       data={row}
                                       cols={homeworkCols}
                                       selectedCol={selectedCol}
-                                      sectionId={sectionDisplay?.id}
+                                      sectionData={sectionDisplay}
                                       setSelectedCol={handleSelectCol}
                                       handleViewHomework={handleViewHomework}
                                     />
@@ -1004,6 +1012,10 @@ const TeacherHomework = withRouter(
                                                     subject: col.subject_name,
                                                     subjectId: col.subject_id,
                                                     homeworkId: data.hw_id,
+                                                    sectiondata : sectionDisplay,
+                                                    sessionYear: row.sessionYear,
+                                                    branch: row.branch,
+                                                    grade: row.grade,
                                                   });
                                                 }}
                                               >

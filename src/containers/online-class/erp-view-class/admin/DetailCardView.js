@@ -102,7 +102,8 @@ const JoinClass = (props) => {
           if (params?.is_accepted) setIsAccept(true);
           if (params?.is_attended) {
             // setMarkAttendance(true);
-            openZoomClass();
+            // openZoomClass();
+            windowReference.location = fullData && fullData.join_url;
           }
         }
       })
@@ -121,7 +122,8 @@ const JoinClass = (props) => {
           if (params?.is_accepted) setIsAccept(true);
           if (params?.is_attended) {
             // setMarkAttendance(true);
-            openZoomClass();
+            // openZoomClass();
+            windowReference.location = fullData && fullData.join_url;
           }
         }
       })
