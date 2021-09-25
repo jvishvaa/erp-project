@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) => ({
   dayicon : theme.dayIcon
 }))
 
-const HomeworkRow = ({ data, cols, selectedCol, sectionId, setSelectedCol, handleViewHomework }) => {
+const HomeworkRow = ({ data, cols, selectedCol, sectionData, setSelectedCol, handleViewHomework }) => {
   const history = useHistory();
   const classes = useStyles()
   const navigateToAddScreen = ({ date, sessionYear, branch, grade, subject, subjectId }) => {
@@ -32,7 +32,7 @@ const HomeworkRow = ({ data, cols, selectedCol, sectionId, setSelectedCol, handl
                 date: data.date,
                 subject: col.subject_name,
                 subjectId: col.subject_id,
-                sectionId: sectionId,
+                sectionId: sectionData?.id,
                 homeworkId: data[col.subject_name].hw_id,
                 view,
               });
@@ -53,7 +53,11 @@ const HomeworkRow = ({ data, cols, selectedCol, sectionId, setSelectedCol, handl
                 date: data.date,
                 subject: col.subject_name,
                 subjectId: col.subject_id,
+                sectiondata : sectionData,
                 homeworkId: data[col.subject_name].hw_id,
+                sessionYear: data.sessionYear,
+                branch: data.branch,
+                grade: data.grade,
               });
             }}
           />

@@ -186,9 +186,9 @@ const HomeworkTimeline = ({ setHomeworkTimelineDisplay, moduleId }) => {
                       key={`ratiting_subject_row${index}`}
                     >
                       <span className="nameContainer">
-                        <span className='subject_rating_first_letter'>{subject.subject_name.substring(0, 1)}</span>{' '}
+                        <span className='subject_rating_first_letter'>{subject?.subject_name?.substring(0, 1)}</span>{' '}
                         <span className='subject_rating_subject_name'>
-                          {subject.subject_name}
+                          {subject?.subject_name}
                         </span>
                       </span>
                       <span className="starContainer" style={{ marginRight: '10px' }}>

@@ -95,6 +95,10 @@ const JoinClass = (props) => {
   };
 
   const msApiMarkAttandance = (params) => {
+    var windowReference = "";
+    if(params?.is_attended){
+      windowReference = window.open();
+    }
     APIREQUEST('put', '/oncls/v1/mark-attendance/', params)
       .then((res) => {
         setLoading(false);
@@ -102,7 +106,8 @@ const JoinClass = (props) => {
           if (params?.is_accepted) setIsAccept(true);
           if (params?.is_attended) {
             // setMarkAttendance(true);
-            openZoomClass();
+            // openZoomClass();
+            windowReference.location = fullData && fullData.join_url;
           }
         }
       })
@@ -113,6 +118,10 @@ const JoinClass = (props) => {
   };
 
   const apiMarkAttendance = (params) => {
+    var windowReference = "";
+    if(params?.is_attended){
+      windowReference = window.open();
+    }
     axiosInstance
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
       .then((res) => {
@@ -121,7 +130,8 @@ const JoinClass = (props) => {
           if (params?.is_accepted) setIsAccept(true);
           if (params?.is_attended) {
             // setMarkAttendance(true);
-            openZoomClass();
+            // openZoomClass();
+            windowReference.location = fullData && fullData.join_url;
           }
         }
       })
