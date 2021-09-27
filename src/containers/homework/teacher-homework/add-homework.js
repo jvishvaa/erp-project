@@ -102,7 +102,7 @@ if(location?.state?.isEdit){
   setName(location.state.selectedHomeworkDetails.homework_name)
   setSectionDisplay(Object.keys(location.state.viewHomework.sectiondata).length > 0 ? [location.state.viewHomework.sectiondata] : [])
   setDescription(location.state.selectedHomeworkDetails.description)
-  const que = location.state.selectedHomeworkDetails.hw_questions.map((data)=>(
+  const que = location?.state?.selectedHomeworkDetails?.hw_questions?.map((data)=>(
     {
       id: cuid(),
       is_attachment_enable: false,
@@ -386,7 +386,7 @@ setQuestions(que)
                   </FormHelperText>
                 </FormControl>
               </Grid>
-              {questions.map((question, index) => (
+              {questions?.map((question, index) => (
                 <QuestionCard
                   key={question.id}
                   question={question}

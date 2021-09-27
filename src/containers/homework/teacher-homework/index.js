@@ -293,14 +293,14 @@ const TeacherHomework = withRouter(
         if (selectedFilters.branch !== '') {
           setSelectedBranch(selectedFilters.branch);
           handleBranch('', selectedFilters.branch);
+        }  
+        if (selectedFilters.grade !== '') {
+          setGradeDisplay(selectedFilters.grade);
+          handleGrade('', selectedFilters.grade);
         }
         if (selectedFilters.section !== '') {
           setSectionDisplay(selectedFilters.section);
           handleSection('', selectedFilters.section);
-        }
-        if (selectedFilters.grade !== '') {
-          setGradeDisplay(selectedFilters.grade);
-          handleGrade('', selectedFilters.grade);
         }
       }
     }, [teacherModuleId]);
@@ -387,7 +387,7 @@ const TeacherHomework = withRouter(
             //   }
             // }
             if (key === 'branchList') {
-              handleGrade();
+              // handleGrade();
               //setBranchList(result?.data?.data || []);
               setBranchList(
                 result?.data?.data?.results.map((obj) => (obj && obj.branch) || {}) || []
