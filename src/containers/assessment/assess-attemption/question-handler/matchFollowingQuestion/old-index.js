@@ -74,7 +74,7 @@ const MatchFollowingQuestion = (props) => {
         </div>
       </div> */}
       <div className='mcq-question-wrapper'>
-        <h3>{ReactHtmlParser(question)}</h3>
+        <div>{ReactHtmlParser(question)}</div>
         <div className='match-question-wrapper'>
           <div className='match-options'>
             {options.map((option, index) => {
