@@ -68,7 +68,7 @@ const FillUpsQuestion = (props) => {
         </div>
       </div> */}
       <div className='mcq-question-wrapper'>
-        <h3>{ReactHtmlParser(question)}</h3>
+        <div>{ReactHtmlParser(question)}</div>
 
         {options.length &&
           options.map((option, index) => {
@@ -81,9 +81,9 @@ const FillUpsQuestion = (props) => {
                     : ''
                 }
                 onChange={(e) => handleFillups(e, index)}
-                 InputLabelProps={{
-            shrink: true,
-          }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
                 label={`Option ${index + 1}`}
                 variant='outlined'
               />

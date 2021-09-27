@@ -10,8 +10,8 @@ import { AssessmentHandlerContext } from '../../../assess-attemption/assess-atte
 import '../../assess-attemption.css';
 
 
-const useStyles = makeStyles((theme)=>({
-  mcqOptions : {
+const useStyles = makeStyles((theme) => ({
+  mcqOptions: {
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '5px',
     background: theme.palette.primary.primarylightest,
@@ -47,7 +47,7 @@ const TrueFalseQuestion = (props) => {
   return (
     <div>
       <div className='mcq-question-wrapper'>
-        <h3>{ReactHtmlParser(question)}</h3>
+        <div>{ReactHtmlParser(question)}</div>
         {/* <img src='https://via.placeholder.com/150' alt='question image' /> */}
         <FormControl component='fieldset'>
           {/* <FormLabel component='legend'>Options</FormLabel> */}
