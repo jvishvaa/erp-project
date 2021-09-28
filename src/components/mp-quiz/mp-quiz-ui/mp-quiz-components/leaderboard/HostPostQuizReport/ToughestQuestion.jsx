@@ -69,6 +69,9 @@ export class ToughestQuestion extends Component {
           <div>
             <div className='view__question--modal'>
               <CloseIcon
+                onClick={() => {
+                  this.setState({ open: false });
+                }}
                 style={{ color: '#fff' }}
                 className='view__question--close_icon'
               />
