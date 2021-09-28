@@ -3,7 +3,7 @@ import { Modal, Typography } from '@material-ui/core'
 import ReactHtmlParser from 'react-html-parser'
 import LinkTag from '@material-ui/core/Link'
 // import { InternalPageStatus } from '../../../../../ui'
-
+import CloseIcon from '@material-ui/icons/Close';
 export class ToughestQuestion extends Component {
   constructor () {
     super()
@@ -37,34 +37,47 @@ export class ToughestQuestion extends Component {
     let questionSequence = questions.length ? questions.map(item => String(item.id)).indexOf(String(questionId)) : undefined
     questionSequence = questionSequence >= 0 ? (questionSequence + 1) : undefined
     return (
-      <div className='toughest__question--container'
-        style={{ position: 'relative' }}>
+      <div className='toughest__question--container' style={{ position: 'relative' }}>
         <h2 className='session__highlights--title' style={{ whiteSpace: 'pre-line' }}>
           {questionSequence
-            ? `${Number.ordinalSuffixOf(questionSequence)} question \n is the Toughest Question`
-            : isFetching ? 'Loading...' : isFetchFailed ? 'Failed to load' : 'Toughest question\n not found'
-          }
+            ? `${Number.ordinalSuffixOf(
+                questionSequence
+              )} question \n is the Toughest Question`
+            : isFetching
+            ? 'Loading...'
+            : isFetchFailed
+            ? 'Failed to load'
+            : 'Toughest question\n not found'}
         </h2>
-        {questionSequence ? <LinkTag
-          component='button'
-          onClick={() => { this.setState({ open: true }) }}
-          style={{ marginLeft: '50%', transform: 'translateX(-50%)' }}
-        >
-          <b style={{ textTransform: 'uppercase', color: 'yellow' }}>view question</b>
-        </LinkTag> : null}
+        {questionSequence ? (
+          <LinkTag
+            component='button'
+            onClick={() => {
+              this.setState({ open: true });
+            }}
+            style={{ marginLeft: '50%', transform: 'translateX(-50%)' }}
+          >
+            <b style={{ textTransform: 'uppercase', color: 'yellow' }}>view question</b>
+          </LinkTag>
+        ) : null}
         <Modal
           onClose={() => {
-            this.setState({ open: false })
+            this.setState({ open: false });
           }}
-          open={this.state.open}>
+          open={this.state.open}
+        >
           <div>
             <div className='view__question--modal'>
+              <CloseIcon
+                style={{ color: '#fff' }}
+                className='view__question--close_icon'
+              />
               {this.getToughestQuestion()}
             </div>
           </div>
         </Modal>
       </div>
-    )
+    );
   }
 }
 

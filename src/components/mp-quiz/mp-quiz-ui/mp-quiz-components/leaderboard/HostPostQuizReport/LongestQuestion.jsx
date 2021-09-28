@@ -4,7 +4,7 @@ import ReactHtmlParser from 'react-html-parser'
 import LinkTag from '@material-ui/core/Link'
 // import { InternalPageStatus } from '../../../../../ui'
 import './HostPostQuiz.css'
-
+import CloseIcon from '@material-ui/icons/Close';
 export class LongestQuestion extends Component {
   constructor () {
     super()
@@ -39,36 +39,48 @@ export class LongestQuestion extends Component {
     let questionSequence = questions.length ? questions.map(item => String(item.id)).indexOf(String(questionId)) : undefined
     questionSequence = questionSequence >= 0 ? (questionSequence + 1) : undefined
     return (
-      <div className='longest__question--container'
-        style={{ position: 'relative' }}>
+      <div className='longest__question--container' style={{ position: 'relative' }}>
         <h2 className='session__highlights--title' style={{ whiteSpace: 'pre-line' }}>
           {/* Longest Question */}
           {questionSequence
-            ? `${Number.ordinalSuffixOf(questionSequence)} question \n is the Longest Question`
-            : isFetching ? 'Loading...' : isFetchFailed ? 'Failed to load' : 'Longest question\n not found'
-          }
+            ? `${Number.ordinalSuffixOf(
+                questionSequence
+              )} question \n is the Longest Question`
+            : isFetching
+            ? 'Loading...'
+            : isFetchFailed
+            ? 'Failed to load'
+            : 'Longest question\n not found'}
         </h2>
-        {questionSequence ? <LinkTag
-          component='button'
-          onClick={() => { this.setState({ open: true }) }}
-          style={{ marginLeft: '50%', transform: 'translateX(-50%)' }}
-        >
-          <b style={{ textTransform: 'uppercase', color: 'yellow' }}>view question</b>
-        </LinkTag> : null}
+        {questionSequence ? (
+          <LinkTag
+            component='button'
+            onClick={() => {
+              this.setState({ open: true });
+            }}
+            style={{ marginLeft: '50%', transform: 'translateX(-50%)' }}
+          >
+            <b style={{ textTransform: 'uppercase', color: 'yellow' }}>view question</b>
+          </LinkTag>
+        ) : null}
         <Modal
-          style={{ }}
           onClose={() => {
-            this.setState({ open: false })
+            this.setState({ open: false });
           }}
-          open={this.state.open}>
+          open={this.state.open}
+        >
           <div>
             <div className='view__question--modal'>
+              <CloseIcon
+                style={{ color: '#fff' }}
+                className='view__question--close_icon'
+              />
               {this.getLongestQuestion()}
             </div>
           </div>
         </Modal>
       </div>
-    )
+    );
   }
 }
 
