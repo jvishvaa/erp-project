@@ -224,6 +224,7 @@ export default {
     createCoursePrice: '/aol/course-details/',
     updateCoursePrice: '/aol/course_details_update/',
     updateTeacher: '/aol/update-batch-teacher/',
+    onlineClassNoFilter :'/erp_user/teacher_online_class_no_filter/v3/'
   },
 
   attendanceList: {

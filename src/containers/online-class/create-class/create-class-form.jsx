@@ -33,6 +33,7 @@ import './create-class.scss';
 import axiosInstance from '../../../config/axios';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { fetchBranchesForCreateUser } from '../../../redux/actions';
+import Loader from '../../../components/loader/loader';
 import ReminderDialog from './reminderDialog';
 import APIREQUEST from "../../../config/apiRequest";
 
@@ -89,6 +90,8 @@ const CreateClassForm = (props) => {
     clearCourses,
     classTypeId,
     setClassTypeId,
+    setLoading,
+    loading,
   } = useContext(CreateclassContext);
 
   const [toggle, setToggle] = useState(false);
@@ -524,6 +527,7 @@ const CreateClassForm = (props) => {
         request['join_limit'] = joinLimit;
         dispatch(createNewOnlineClass(request));
       } else {
+        setLoading(false);
         setAlert('warning', 'Join limit should be atleast 1.');
       }
     } else if (selectedClassType?.id > 0) {
@@ -534,6 +538,7 @@ const CreateClassForm = (props) => {
         request['join_limit'] = joinLimit;
         dispatch(createSpecialOnlineClass(request));
       } else {
+        setLoading(false);
         if (joinLimit <= 0) setAlert('warning', 'Batch size should be atleast 1.');
         if (filteredStudents?.length <= 0)
           setAlert('warning', 'No. of students should be atleast 1.');
@@ -541,7 +546,14 @@ const CreateClassForm = (props) => {
     }
   };
 
+  useEffect(()=>{
+    if(!creatingOnlineClass){
+      setLoading(false);
+    } 
+  },[creatingOnlineClass])
+
   const validateForm = (e) => {
+    setLoading(true)
     callGrades();
     e.preventDefault();
     if (!validateClassTime(onlineClass?.selectedTime)) {
@@ -709,6 +721,7 @@ const CreateClassForm = (props) => {
   }, []);
   return (
     <div className='create__class' key={formKey}>
+      {loading && <Loader />}
       <CommonBreadcrumbs
         componentName='Online Class'
         childComponentName='Create Class'
@@ -940,6 +953,14 @@ const CreateClassForm = (props) => {
             <MuiPickersUtilsProvider utils={MomentUtils}>
               <Grid item xs={12} sm={2}>
                 <KeyboardDatePicker
+                  onOpen={()=>{
+                    setTimeout(()=>{
+                      document.querySelectorAll(".MuiPickersModal-dialogRoot .MuiDialogActions-root button").forEach((elem)=>{
+                        elem.classList.remove("MuiButton-textPrimary")
+                        elem.classList.add("MuiButton-containedPrimary")
+                      })
+                    },1000)
+                  }}
                   size='small'
                   // disableToolbar
                   variant='dialog'
@@ -958,6 +979,14 @@ const CreateClassForm = (props) => {
               </Grid>
               <Grid item xs={12} sm={2}>
                 <KeyboardTimePicker
+                  onOpen={()=>{
+                    setTimeout(()=>{
+                      document.querySelectorAll(".MuiPickersModal-dialogRoot .MuiDialogActions-root button").forEach((elem)=>{
+                        elem.classList.remove("MuiButton-textPrimary")
+                        elem.classList.add("MuiButton-containedPrimary")
+                      })
+                    },1000)
+                  }}
                   size='small'
                   margin='none'
                   id='time-picker'
