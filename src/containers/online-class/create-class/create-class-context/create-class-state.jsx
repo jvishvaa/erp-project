@@ -1,4 +1,4 @@
-import React, { useReducer, createContext, useContext, useEffect } from 'react';
+import React, { useReducer, createContext, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import createClassReducer from './create-class-reducer';
 import {
@@ -70,6 +70,7 @@ const CreateclassProvider = (props) => {
   };
 
   const [state, dispatch] = useReducer(createClassReducer, initalState);
+  const [loading, setLoading] = useState(false);
 
   // const { role_details: roleDetails } =
   //   JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -280,12 +281,14 @@ const createNewOnlineClass = async (formdata) => {
     const { data } = chkLaunchDateMsApi(formdata.start_time) ? await APIREQUEST("post", "/oncls/v1/create-online-class/", formdata) :
       await axiosInstance.post(`${endpoints.onlineClass.createClass}`, formdata);
     handleOnlineClassResult(data)
+    setLoading(false);
   } catch (error)  {
     const { response } = error || {};
     if (response?.data)
-      setAlert('error', response.data.message || response.data.description);
+    setAlert('error', response.data.message || response.data.description);
     else setAlert('error', response.data.message || response.data.description);
     dispatch(failure(error, CREATE_NEW_CLASS_FAILURE));
+    setLoading(false);
   }
 };
 
@@ -297,12 +300,14 @@ const createSpecialOnlineClass = async (formdata) => {
       formdata
     );
     handleOnlineClassResult(data);
+    setLoading(false);
   } catch (error) {
     const { response } = error || {};
     if (response?.data)
       setAlert('error', response.data.message || response.data.description);
     else setAlert('error', response.data.message || response.data.description);
     dispatch(failure(error, CREATE_NEW_CLASS_FAILURE));
+    setLoading(false);
   }
 };
 
@@ -350,6 +355,8 @@ const createSpecialOnlineClass = async (formdata) => {
     <CreateclassContext.Provider
       value={{
         ...state,
+        loading, 
+        setLoading,
         dispatch,
         listStudents,
         listGradesCreateClass,
