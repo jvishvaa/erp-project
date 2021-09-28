@@ -221,7 +221,7 @@ const ErpAdminViewClass = ({ history }) => {
   }, [moduleId, window.location.pathname]);
 
   useEffect(() => {
-    noFilterGetClasses();
+    /* noFilterGetClasses(); */
   }, [tabValue, page, dateRangeTechPer]);
 
   const handleApiRes = (result) => {
