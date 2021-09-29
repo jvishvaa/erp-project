@@ -977,7 +977,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         (homeworkSubmission.status === 3 && question.evaluated_files?.length > 0))
                         &&
                         <div className='attachments-container'>
-                          {document.body.style.overflow = "hidden"}
+                          {(()=>{document.body.style.overflow = "hidden"})()}
                           <Typography component='h4' color='primary' className='header'>
                             {homeworkSubmission.status === 2 ? 'Submitted Files' : 'Evaluated Files'}
                           </Typography>
