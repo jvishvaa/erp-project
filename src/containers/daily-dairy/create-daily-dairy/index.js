@@ -63,6 +63,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [errors, setErrors] = useState({ branches: '', grades: '' });
   const [loading, setLoading] = useState(false);
   const history = useHistory();
+  const [files,setFiles]=useState([]);
 
   // context
   const [state, setState] = useContext(Context);
@@ -90,7 +91,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   console.log('details:', details);
-  console.log("filterdata checking",filterData)
+  console.log("filterdata checking", filterData)
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -290,7 +291,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       getSubjects(searchAcademicYear?.id, branch, grade, section, moduleId).then(
         (data) => {
           const transformedData = data.map((obj) => ({
-            ids:obj.id,
+            ids: obj.id,
             id: obj.subject__id,
             subject_name: obj.subject__subject_name,
           }));
@@ -605,13 +606,15 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const FileRow = (props) => {
     const { file, onClose, index } = props;
+    setFiles(file);
     return (
-      <div className='file_row_image_new'>
+      <>
+    <div className='file_row_image_new'>
         <div className='file_name_container_new'>
-          {file}
-          {/* {index + 1} */}
+          {index+1}
         </div>
-        {/* <Divider orientation="vertical"  className='divider_color' flexItem /> */}
+       <Divider orientation="vertical"  className='divider_color' flexItem />
+        
         <div>
           <span onClick={onClose}>
             <SvgIcon
@@ -640,15 +643,47 @@ const CreateDailyDairy = (details, onSubmit) => {
             />
           </span>
         </div>
+        
       </div>
-    );
+      
+      </>
+)
+             
   };
 
-  const removeFileHandler = (i) => {
-    // const list = [...filePath];
-    filePath.splice(i, 1);
-    setAlert('success', 'File successfully deleted');
+  // const removeFileHandler = (i,file) => {
+  //   // const list = [...filePath];
+  //   filePath.splice(i, 1);
+  //   setAlert('success', 'File successfully deleted');
+  // };
+  const removeFileHandler = (i, file) => {
+    delete editData.documents
+    const list = [files];
+    setLoading(true);
+    axiosInstance
+    .post(`${endpoints.circular.deleteFile}`, {
+      file_name: `${file}`,
+      daily_diary_id:`${editData.id}`,
+    })
+      .then((result) => {
+        if (result.data.status_code === 204) {
+          list.splice(i, 1);
+          setFilePath(list);
+          setAlert('success', result.data.message);
+          setLoading(false);
+        } else {
+          setAlert('error', result.data.message);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+        setLoading(false);
+      });
   };
+  useEffect(() => {
+    // removeFileHandler()
+  }, [editData])
   useEffect(() => {
     // fetchAcademicYears();
     // fetchBranches();
@@ -894,8 +929,8 @@ const CreateDailyDairy = (details, onSubmit) => {
                 style={{ width: '100%' }}
                 size='small'
                 onChange={(e, value) => {
-                  if(state.isEdit){
-                    editData.chapter=value;
+                  if (state.isEdit) {
+                    editData.chapter = value;
                   }
                   formik.setFieldValue('chapters', value);
                   setFilterData({ ...filterData, chapter: value });
@@ -1012,21 +1047,23 @@ const CreateDailyDairy = (details, onSubmit) => {
               <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                   {state.isEdit
-                    ? editData.documents.map((file, i) => (
+                    ? (editData?.documents?.length>0 &&
+                    editData.documents.map((file, i) => (
                       <FileRow
                         key={`homework_student_question_attachment_${i}`}
                         file={file}
                         index={i}
-                        onClose={() => removeFileHandler(i)}
+                        onClose={() => removeFileHandler(i, file)}
                       />
-                    ))
+                    )))
+
                     : filePath?.length > 0
                       ? filePath?.map((file, i) => (
                         <FileRow
                           key={`homework_student_question_attachment_${i}`}
                           file={file}
                           index={i}
-                          onClose={() => removeFileHandler(i)}
+                          onClose={() => removeFileHandler(i, file)}
                         />
                       ))
                       : null}
@@ -1067,7 +1104,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                   </Button>
                   <br />
                   <small
-                  className = {classes.acceptedfiles}
+                    className={classes.acceptedfiles}
                   >
                     {' '}
                     Accepted files: [ jpeg,jpg,png,pdf ]
@@ -1077,23 +1114,23 @@ const CreateDailyDairy = (details, onSubmit) => {
             </Grid>
           </div>
           <div>
-          <Button
-                variant="contained"
-                style={{ marginLeft: '37px' , marginTop: "20px"}}
-                onClick={() => history.goBack()}
-                className='labelColor cancelButton'
-              >
-                BACK
-              </Button>
-              <Button
+            <Button
               variant="contained"
-              color = "primary"
-                style={{ marginLeft: '20px', marginTop: "20px",color : "white" }}
-                onClick={state.isEdit ? handleEdited : handleSubmit}
-              
-              >
-                SUBMIT
-              </Button>
+              style={{ marginLeft: '37px', marginTop: "20px" }}
+              onClick={() => history.goBack()}
+              className='labelColor cancelButton'
+            >
+              BACK
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              style={{ marginLeft: '20px', marginTop: "20px", color: "white" }}
+              onClick={state.isEdit ? handleEdited : handleSubmit}
+
+            >
+              SUBMIT
+            </Button>
           </div>
         </div>
       </Layout>
