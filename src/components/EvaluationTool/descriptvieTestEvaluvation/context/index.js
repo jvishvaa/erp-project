@@ -364,6 +364,7 @@ export function DescriptiveTestContextProvider({
       useCORS: true,
       scrollX: 0,
       scrollY: 0,
+      backgroundColor: "null",
       // scrollY: -window.scrollY
     })
       .then((canvas) => {
