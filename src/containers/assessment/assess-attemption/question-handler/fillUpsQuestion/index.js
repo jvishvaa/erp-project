@@ -84,6 +84,9 @@ const FillUpsQuestion = (props) => {
                 InputLabelProps={{
                   shrink: true,
                 }}
+                inputProps={{
+                  autoComplete: 'off'
+                }}
                 label={`Option ${index + 1}`}
                 variant='outlined'
               />
