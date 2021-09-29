@@ -76,12 +76,12 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto',
     bottom: 0,
   },
-  homeworkblock:{
-    color : theme.palette.secondary.main,
+  homeworkblock: {
+    color: theme.palette.secondary.main,
     fontWeight: 600
   },
-  homeworkSubmitwrapper:{
-    border: `1px solid ${theme.palette.primary.main}`,  
+  homeworkSubmitwrapper: {
+    border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: "10px",
     padding: "20px",
     ['@media screen(min-width:768px)']: {
@@ -90,7 +90,7 @@ const useStyles = makeStyles((theme) => ({
       height: "auto !important",
     }
   },
-  homeworkTypeItem:{
+  homeworkTypeItem: {
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: "10px",
     marginBottom: "20px",
@@ -100,11 +100,11 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "1rem",
     fontWeight: 600,
     textTransform: "capitalize",
-    '@media screen and (max-width:768px)' : {
+    '@media screen and (max-width:768px)': {
       padding: "10px 15px !important",
       width: "100%",
     }
-  },descBox:{
+  }, descBox: {
     marginTop: "15px",
     backgroundColor: "#bcf1ff",
     color: theme.palette.secondary.main,
@@ -113,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "16px",
     width: "70%",
     padding: "11px 18px",
-    '@media screen and (max-width:768px)' : {
+    '@media screen and (max-width:768px)': {
       width: "100%",
     },
     '&::before': {
@@ -121,13 +121,13 @@ const useStyles = makeStyles((theme) => ({
       fontWeight: 600,
     }
   },
-  acceptedfiles:{
-    color : theme.palette.secondary.main,
-    width:"100%"
+  acceptedfiles: {
+    color: theme.palette.secondary.main,
+    width: "100%"
   },
-  homeworkQuestion:{
+  homeworkQuestion: {
     width: "100%",
-    color:theme.palette.secondary.main,
+    color: theme.palette.secondary.main,
     position: "relative",
     paddingBottom: "8px",
     fontSize: "18px",
@@ -165,8 +165,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [maxCount, setMaxCount] = useState(0);
   const [calssNameWise, setClassName] = useState('');
   const [studentBulkComment, setStudentBulkComment] = useState('');
+  const [resultdata, setresultdata] = useState();
   // const [quesComments, setQuesComments] = useState([]);
   const handleHomeworkSubmit = () => {
+
+
 
     let count = 0;
     if (isQuestionWise)
@@ -183,23 +186,39 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     let requestData = {
       "homework": homeworkSubmission.homeworkId,
       "is_question_wise": isQuestionWise,
-      "questions": isQuestionWise ? attachmentData : ([{ 'attachments': bulkData,attachmentData }]),
+      "questions": isQuestionWise ? attachmentData : ([{ 'attachments': bulkData, attachmentData }]),
       "comment": comment
     }
-
     if (count !== 0) {
-      axiosInstance.post(`${endpoints.homeworkStudent.submitHomework}`, requestData)
-        .then(result => {
-          if (result.data.status_code === 201) {
-            setAlert('success', result.data.message);
-            handleHomeworkCancel();
-          }
-          else
-            setAlert('error', result.data.message);
-        })
-        .catch(error => {
-          setAlert('error', error.message);
-        })
+      if (isupdate) {
+        setisupdate(false)
+        axiosInstance.put(`${endpoints.homeworkStudent.hwupdate}${homeworkSubmission.homeworkId}/update-hw/`, requestData)
+          .then(result => {
+            if (result.data.status_code === 200) {
+              setAlert('success', result.data.message);
+              handleHomeworkCancel();
+            }
+            else
+              setAlert('error', result.data.message);
+          })
+          .catch(error => {
+            setAlert('error', error.message);
+          })
+
+      } else {
+        axiosInstance.post(`${endpoints.homeworkStudent.submitHomework}`, requestData)
+          .then(result => {
+            if (result.data.status_code === 201) {
+              setAlert('success', result.data.message);
+              handleHomeworkCancel();
+            }
+            else
+              setAlert('error', result.data.message);
+          })
+          .catch(error => {
+            setAlert('error', error.message);
+          })
+      }
     }
     else
       setAlert('error', 'No file attached!')
@@ -209,6 +228,28 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     setDisplayRatingBox(false);
     setHomeworkSubmission(prev => ({ ...prev, isOpen: false, subjectId: '', subjectName: '' }));
   };
+
+  const handlequestionwiseclick = () => {
+    if (resultdata.hw_questions.questions) {
+      let maxVal = 0;
+
+      for (let i = 0; i < resultdata.hw_questions.questions.length; i++) {
+        attachmentCount.push(0);
+        attachmentDataDisplay.push([]);
+        attachmentData.push(
+          {
+            "homework_question": resultdata.hw_questions.questions[i].id,
+            "attachments": [],
+            "comments": ''
+          }
+        );
+        maxVal += resultdata.hw_questions.questions[i].max_attachment;
+      }
+
+      setMaxCount(maxVal);
+    }
+
+  }
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -237,7 +278,17 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       .get(`/academic/${homeworkSubmission.homeworkId}/hw-questions/?hw_status=${homeworkSubmission.status}&module_id=1`)
       .then((result) => {
         if (result.data.status_code === 200) {
+          setresultdata(result.data.data)
+          if (result?.data?.data?.is_question_wise) {
+            setIsQuestionWise(result.data.data.is_question_wise)
+            setIsBulk(!result.data.data.is_question_wise)
+          }
+
+          // setBulkData(result.data.data.hw_questions[0].submitted_files)z
+          console.log("@@@@@@result,", result.data.data)
           if (homeworkSubmission.status === 1) {
+            // setBulkData(result.data.data.hw_questions.submitted_files || [])
+            // setBulkDataDisplay(result.data.data.hw_questions.submitted_files || [])
             setSubjectQuestions(result.data.data.hw_questions);
             setHomeworkTitle(result.data.data.homework_name);
             setDesc(result.data.data.description);
@@ -248,15 +299,35 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 {
                   "homework_question": result.data.data.hw_questions[i].id,
                   "attachments": [],
-                  "comments":''
+                  "comments": ''
                 }
               );
               maxVal += result.data.data.hw_questions[i].max_attachment;
             }
+
             setMaxCount(maxVal);
+
           } else if (homeworkSubmission.status === 2 || homeworkSubmission.status === 3) {
             if (result.data.data.is_question_wise) {
               setIsBulk(false);
+
+
+
+              for (let i = 0; i < result.data.data.hw_questions.length; i++) {
+                attachmentCount.push(i + 1);
+                attachmentDataDisplay.push(result.data.data.hw_questions[i].submitted_files);
+                attachmentData.push(
+                  {
+                    "homework_question": result.data.data.hw_questions[i].question_id,
+                    "attachments": result.data.data.hw_questions[i].submitted_files
+                  }
+                );
+                // maxVal += result.data.data.hw_questions[i].max_attachment;
+              }
+
+              setMaxCount(10);
+
+
               setSubjectQuestions(result.data.data.hw_questions);
               if (homeworkSubmission.status === 3) {
                 setOverallRemark(result.data.data.overall_remark);
@@ -265,6 +336,15 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 setQuestionwiseRemark(result.data.data.hw_questions?.remark);
               }
             } else {
+
+              for (let i = 0; i < result.data.data.hw_questions.questions.length; i++) {
+                maxVal += result.data.data.hw_questions.questions[i].max_attachment;
+              }
+              setMaxCount(maxVal);
+
+              setBulkDataDisplay(result.data.data.hw_questions.submitted_files)
+
+              setBulkData(result.data.data.hw_questions.submitted_files)
               setIsBulk(true);
               setSubjectQuestions(result.data.data.hw_questions.questions);
               if (homeworkSubmission.status === 2) {
@@ -289,31 +369,31 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   }, []);
 
   const handleBulkNotification = () => {
-    if (bulkDataDisplay.length >= maxCount) {
+    if (bulkDataDisplay?.length >= maxCount) {
       setAlert('warning', `Can\'t upload more than ${maxCount} attachments in total.`);
     }
   }
   const handleBulkUpload = (e) => {
     e.persist()
-    if (bulkDataDisplay.length >= maxCount) {
+    if (bulkDataDisplay?.length >= maxCount) {
       setAlert('warning', `Can\'t upload more than ${maxCount} attachments in total.`);
     } else {
       const fil = e.target.files[0] || null;
       if (
         fil.name.toLowerCase().lastIndexOf('.pdf') > 0 ||
-          fil.name.toLowerCase().lastIndexOf('.jpeg') > 0 ||
-          fil.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
-          fil.name.toLowerCase().lastIndexOf('.png') > 0 ||
-          fil.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
-          fil.name.toLowerCase().lastIndexOf('.mp4') > 0
-        ) {
+        fil.name.toLowerCase().lastIndexOf('.jpeg') > 0 ||
+        fil.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
+        fil.name.toLowerCase().lastIndexOf('.png') > 0 ||
+        fil.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
+        fil.name.toLowerCase().lastIndexOf('.mp4') > 0
+      ) {
         setLoading(true);
         const formData = new FormData()
         formData.append('file', fil);
         axiosInstance.post(`${endpoints.homeworkStudent.fileUpload}`, formData)
           .then(result => {
             if (result.data.status_code === 200) {
-              const list = bulkDataDisplay.slice()
+              const list = bulkDataDisplay?.slice()
               if (fil.name.lastIndexOf(".pdf") > 0) {
                 const arr = [...result.data.data];
                 for (let k = 0; k < arr.length; k++) {
@@ -378,12 +458,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       const fil = e.target.files[0];
       if (
         fil.name.toLowerCase().lastIndexOf('.pdf') > 0 ||
-          fil.name.toLowerCase().lastIndexOf('.jpeg') > 0 ||
-          fil.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
-          fil.name.toLowerCase().lastIndexOf('.png') > 0 ||
-          fil.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
-          fil.name.toLowerCase().lastIndexOf('.mp4') > 0
-        ) {
+        fil.name.toLowerCase().lastIndexOf('.jpeg') > 0 ||
+        fil.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
+        fil.name.toLowerCase().lastIndexOf('.png') > 0 ||
+        fil.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
+        fil.name.toLowerCase().lastIndexOf('.mp4') > 0
+      ) {
         setLoading(true);
         const formData = new FormData()
         formData.append('file', fil)
@@ -480,7 +560,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   };
 
   const scrollableContainer = useRef(null);
-  const handleScroll = (index,dir) => {
+  const handleScroll = (index, dir) => {
     const ele = document.getElementById(`homework_student_question_container_${index}`)
     if (dir === 'left') {
       ele.scrollLeft -= 150;
@@ -489,7 +569,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     }
   };
 
-  const handleScrollAnswer = (index,dir) => {
+  const handleScrollAnswer = (index, dir) => {
     const ele = document.getElementById(`homework_student_answer_attachment_${index}`)
     if (dir === 'left') {
       ele.scrollLeft -= 150;
@@ -554,41 +634,64 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   }, [penToolUrl])
 
   const handleDelete = () => {
-    if(homeworkSubmission.isEvaluated){
+    if (homeworkSubmission.isEvaluated) {
       setAlert('error', "Homework Evaluated, can not be deleted");
       return;
     }
-      setLoading(true);
-        axiosInstance
-          .delete(
-            `${endpoints.homework.hwDelete}${homeworkSubmission.homeworkId}/hw-questions/`
-          )
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              handleHomeworkCancel();
-              setAlert('success', result.data?.message);
-              setLoading(false);
-            } else {
-              setAlert('error', result.data?.message);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            setAlert('error', "error1");
-            setLoading(false);
-          });
-    };
+    setLoading(true);
+    axiosInstance
+      .delete(
+        `${endpoints.homework.hwDelete}${homeworkSubmission.homeworkId}/hw-questions/`
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          handleHomeworkCancel();
+          setAlert('success', result.data?.message);
+          setLoading(false);
+        } else {
+          setAlert('error', result.data?.message);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', "error1");
+        setLoading(false);
+      });
+  };
+  const [isupdate, setisupdate] = useState(false)
 
-  const handleQuesComments = (index, value) =>{
+  const onEdit = () => {
+    if (homeworkSubmission.isEvaluated) {
+      setAlert('error', "Homework Evaluated, can not be Updated");
+      return;
+    } else
+      setisupdate(true)
+    setHomeworkSubmission({ ...homeworkSubmission, status: 1 })
+
+  }
+
+  const handleQuesComments = (index, value) => {
     // if(quesComments[index])
     //   setQuesComments(...quesComments,quesComments[index]=value)
     // else{
     //   // setQuesComments(...quesComments,quesComments.push(value))
     //   attachmentData[index]=value
     // }
-    attachmentData[index].comments=value
+    attachmentData[index].comments = value
   }
 
+
+
+  const handleUpdate = () => {
+    setisupdate(false)
+    setLoading(true);
+    axiosInstance
+      .put(
+        `${endpoints.homework.hwupdate}${homeworkSubmission.homeworkId}/update-hw/`
+      ).then((result) => {
+
+      })
+  }
 
   return (
     <div className='create_group_filter_container'>
@@ -628,10 +731,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
                         }
                       }}
+                      onClick={handlequestionwiseclick}
                       color='primary'
                       checked={isQuestionWise}
                     />
-                    <Typography color = "secondary" style={{marginTop : "10px"}}>Upload Question Wise</Typography>
+                    <Typography color="secondary" style={{ marginTop: "10px" }}>Upload Question Wise</Typography>
                   </div>
                 </div>
               }
@@ -648,20 +752,24 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     onClick={handleBulkNotification}
                   >
                     Bulk Upload
-                  {bulkDataDisplay.length < maxCount ?
-                  <input
-                      type='file'
-                      accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF"
-                      style={{ display: 'none' }}
-                      id='raised-button-file'
-                      onChange={e => handleBulkUpload(e)}
-                    />:null}
+                    {bulkDataDisplay?.length < maxCount || bulkDataDisplay === undefined ?
+                      <input
+                        type='file'
+                        accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF"
+                        style={{ display: 'none' }}
+                        id='raised-button-file'
+                        onChange={(e) => {
+                          handleBulkUpload(e)
+                          e.target.value = null
+                        }
+                        }
+                      /> : null}
                   </Button>
 
                 </div>
                 <small className={classes.acceptedfiles} >{" "}Accepted files: jpeg,jpg,mp3,mp4,pdf,png</small>
                 <div className="bulk_upload_attachments">
-                  {bulkDataDisplay.map((file, i) => (
+                  {bulkDataDisplay?.map((file, i) => (
                     <FileRow
                       key={`homework_student_question_attachment_bulk_${i}`}
                       file={file}
@@ -674,7 +782,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   <div className='attachments-container'>
                     <div className='attachments-list-outer-container'>
                       <div className='prev-btn'>
-                        {bulkData.length > 1 && (
+                        {bulkData?.length > 1 && (
                           <IconButton onClick={() => handleScrollBulk('left')}>
                             <ArrowBackIosIcon />
                           </IconButton>
@@ -688,7 +796,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             e.preventDefault();
                           }}
                         >
-                          {bulkData.length > 0 && bulkData.map((file, i) => (
+                          {console.log("@@@@@@bulkData", bulkData)}
+                          {bulkData?.length > 0 && bulkData?.map((file, i) => (
                             <div className='attachment'>
                               <Attachment
                                 key={`homework_student_question_attachment_${i}`}
@@ -703,7 +812,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           ))}
                           <div style={{ position: 'absolute', visibility: 'hidden' }}>
                             <SRLWrapper>
-                              {bulkData.map((url, i) => (
+                              {bulkData?.map((url, i) => (
                                 <img
                                   src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                   onError={(e) => {
@@ -718,7 +827,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         </div>
                       </SimpleReactLightbox>
                       <div className='next-btn'>
-                        {bulkData.length > 1 && (
+                        {bulkData?.length > 1 && (
                           <IconButton onClick={() => handleScrollBulk('right')}>
                             <ArrowForwardIosIcon color='primary' />
                           </IconButton>
@@ -727,8 +836,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     </div>
                   </div>
                 </div>
-              </div>)}
-
+              </div>)
+            }
 
             {penToolOpen && (
               <DescriptiveTestcorrectionModule
@@ -743,6 +852,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
             )}
 
             {subjectQuestions?.map((question, index) => (
+
               <>
                 <div
                   className={`homework-question-container student-view ${calssNameWise}`}
@@ -751,7 +861,8 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   <div className={` ${classes.homeworkQuestion} ${calssNameWise}`} >
                     <span className='question'>Q{index + 1}: {question.question}</span>
                   </div>
-                  {isQuestionWise &&
+
+                  {isQuestionWise && homeworkSubmission.status == 1 &&
                     <div className="questionWiseAttachmentsContainer ">
                       <IconButton
                         fontSize='small'
@@ -764,7 +875,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         <input
                           type='file'
                           accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF"
-                          onChange={(e) => uploadFileHandler(e, index, question.max_attachment)}
+                          onChange={(e) => {
+                            uploadFileHandler(e, index, question.max_attachment)
+                            e.target.value = null
+                          }
+                          }
                           className={classes.fileInput}
                         />
                       </IconButton>
@@ -782,7 +897,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                           <div className='attachments-list-outer-container'>
                             <div className='prev-btn'>
                               {attachmentData[index]?.attachments.length > 1 && (
-                                <IconButton onClick={() => handleScrollAnswer(index,'left')}>
+                                <IconButton onClick={() => handleScrollAnswer(index, 'left')}>
                                   <ArrowBackIosIcon />
                                 </IconButton>
                               )}
@@ -811,7 +926,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                 ))}
                                 <div style={{ position: 'absolute', visibility: 'hidden' }}>
                                   <SRLWrapper>
-                                    {bulkData.map((url, i) => (
+                                    {attachmentData[index]?.attachments?.map((url, i) => (
                                       <img
                                         src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                         onError={(e) => {
@@ -827,7 +942,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             </SimpleReactLightbox>
                             <div className='next-btn'>
                               {attachmentData[index]?.attachments.length > 1 && (
-                                <IconButton onClick={() => handleScrollAnswer(index,'right')}>
+                                <IconButton onClick={() => handleScrollAnswer(index, 'right')}>
                                   <ArrowForwardIosIcon color='primary' />
                                 </IconButton>
                               )}
@@ -842,11 +957,11 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                     <div className='attachments-container'>
                       <Typography component='h4' color='primary' className='header'>
                         Attachments
-                    </Typography>
+                      </Typography>
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
                           {question.question_files.length > 0 && (
-                            <IconButton onClick={() => handleScroll(index,'left')}>
+                            <IconButton onClick={() => handleScroll(index, 'left')}>
                               <ArrowBackIosIcon />
                             </IconButton>
                           )}
@@ -861,21 +976,22 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             }}
                           >
                             {question.question_files.map((url, i) => {
-                               if (typeof url == 'object') {
+                              if (typeof url == 'object') {
                                 return Object.values(url).map((item, i) => {
-                                return <div className='attachment'>
-                                  <Attachment
-                                    key={`homework_student_question_attachment_${i}`}
-                                    fileUrl={item}
-                                    fileName={`Attachment-${i + 1}`}
-                                    urlPrefix={`${endpoints.discussionForum.s3}/homework`}
-                                    index={i}
-                                    onOpenInPenTool={(item) => openInPenTool(item, index)}
-                                    actions={['preview', 'download', homeworkSubmission.status === 1 && question.is_pen_editor_enable && 'pentool']}
-                                  />
-                                </div>
-                                })}
-                                else return <div className='attachment'>
+                                  return <div className='attachment'>
+                                    <Attachment
+                                      key={`homework_student_question_attachment_${i}`}
+                                      fileUrl={item}
+                                      fileName={`Attachment-${i + 1}`}
+                                      urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                      index={i}
+                                      onOpenInPenTool={(item) => openInPenTool(item, index)}
+                                      actions={['preview', 'download', homeworkSubmission.status === 1 && question.is_pen_editor_enable && 'pentool']}
+                                    />
+                                  </div>
+                                })
+                              }
+                              else return <div className='attachment'>
                                 <Attachment
                                   key={`homework_student_question_attachment_${i}`}
                                   fileUrl={url}
@@ -886,23 +1002,24 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                   actions={['preview', 'download', homeworkSubmission.status === 1 && question.is_pen_editor_enable && 'pentool']}
                                 />
                               </div>
-                              
-                  })}
+
+                            })}
                             <div style={{ position: 'absolute', visibility: 'hidden' }}>
                               <SRLWrapper>
                                 {question.question_files.map((url, i) => {
                                   if (typeof url == 'object') {
                                     return Object.values(url).map((item, i) => {
-                                  return<img
-                                    src={`${endpoints.discussionForum.s3}/homework/${item}`}
-                                    onError={(e) => {
-                                      e.target.src = placeholder;
-                                    }}
-                                    alt={`Attachment-${i + 1}`}
-                                    style={{ width: '0', height: '0' }}
-                                  />
-                                    })}
-                                    else return <img
+                                      return <img
+                                        src={`${endpoints.discussionForum.s3}/homework/${item}`}
+                                        onError={(e) => {
+                                          e.target.src = placeholder;
+                                        }}
+                                        alt={`Attachment-${i + 1}`}
+                                        style={{ width: '0', height: '0' }}
+                                      />
+                                    })
+                                  }
+                                  else return <img
                                     src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                     onError={(e) => {
                                       e.target.src = placeholder;
@@ -910,14 +1027,14 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                     alt={`Attachment-${i + 1}`}
                                     style={{ width: '0', height: '0' }}
                                   />
-                                  })}
+                                })}
                               </SRLWrapper>
                             </div>
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
                           {question.question_files.length > 0 && (
-                            <IconButton onClick={() => handleScroll(index,'right')}>
+                            <IconButton onClick={() => handleScroll(index, 'right')}>
                               <ArrowForwardIosIcon color='primary' />
                             </IconButton>
                           )}
@@ -954,7 +1071,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       {/* for bulk:- student comments for student evaluated homework*/}
                       <div className="overallContainer">
                         {studentBulkComment[index] &&
-                          <div className="scoreBox1" style={{marginBottom:'1%'}}>
+                          <div className="scoreBox1" style={{ marginBottom: '1%' }}>
                             Comment : {studentBulkComment[index]}
                           </div>}
                       </div>
@@ -1094,7 +1211,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         {homeworkSubmission.status === 2 ? 'All Submitted Files' : 'All Evaluated Files'}
                       </Typography>
                       <div className='attachments-list-outer-container'>
-                        {}
+                        { }
                         <div className='prev-btn'>
                           {submittedEvaluatedFilesBulk.length > 5 &&
                             <IconButton onClick={() => handleScroll('left')}>
@@ -1178,6 +1295,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   placeholder='Add comments about assignment here'
                   variant='outlined'
                   style={{ width: '70%' }}
+                  value = {comment}
                 />
                 {desc &&
                   <div className={classes.descBox}>
@@ -1189,36 +1307,52 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
             <div className="overallContainer1">
               {homeworkSubmission.status === 3 ?
-              <>
-              {overallScore &&
-                <div className="scoreBox">
-                  Overall Score  : {overallScore}
-                </div>}
-              {overallRemark &&
-                <div className="remarkBox">
-                  Overall Remark : {overallRemark}
-                </div>}
-              </>:null}
-              <div style={{width:'100%'}}>    
-                <Button
+                <>
+                  {overallScore &&
+                    <div className="scoreBox">
+                      Overall Score  : {overallScore}
+                    </div>}
+                  {overallRemark &&
+                    <div className="remarkBox">
+                      Overall Remark : {overallRemark}
+                    </div>}
+                </> : null}
+              <div style={{ width: '100%' }}>
+                {< Button
                   variant='contained'
                   className='cancelButton labelColor homework_submit_button_cancel'
                   size='medium'
-                  style={{ width: '15%'}}
+                  style={{ width: '15%' }}
                   onClick={handleHomeworkCancel}
                 >
                   {homeworkSubmission.status === 1 ? 'CANCEL' : 'BACK'}
-                </Button>
-                {homeworkSubmission.status === 2 &&
-                <Button
+                </Button>}
+                {!isupdate && homeworkSubmission.status === 2 && <Button
                   variant="contained"
                   color="secondary"
-                  onClick={handleDelete}
-                  style={{backgroundColor:'red',width:'15%'}}
-                  startIcon={<DeleteIcon />}
+                  onClick={onEdit}
+                  style={{ color: 'white', width: '15%' }}
                 >
-                  Delete
+                  Edit
                 </Button>}
+                {/* {isupdate && homeworkSubmission.status === 2 && <Button
+                  variant="contained"
+                  color="secondary"
+                  onClick={handleUpdate}
+                  style={{ color: 'white', width: '15%', marginLeft: '20px' }}
+                >
+                  Update
+                </Button>} */}
+                {homeworkSubmission.status === 2 && !isupdate &&
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleDelete}
+                    style={{ backgroundColor: 'red', width: '15%', color: 'white', marginLeft: '20px' }}
+                    startIcon={<DeleteIcon />}
+                  >
+                    Delete
+                  </Button>}
               </div>
               {homeworkSubmission.status === 1 &&
                 <div>
