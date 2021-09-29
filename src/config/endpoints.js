@@ -138,7 +138,7 @@ export default {
   },
   homework: {
     completeData: '/academic/list_admin_homework/',
-    createConfig: '/academic/homework-admin-configuration/',
+    createConfig: '/academic/homework-admin-configuration/',    
     hwDelete: '/academic/',
   },
   homeworkStudent: {
@@ -147,6 +147,7 @@ export default {
     getRating: '/academic/student_subject_rating/',
     fileUpload: '/academic/upload-question-file/',
     submitHomework: '/academic/homework-submission/',
+    hwupdate : '/academic/',
   },
   lessonReport: {
     volumes: '/lesson_plan/list-volume/',

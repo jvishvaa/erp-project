@@ -165,6 +165,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   const [maxCount, setMaxCount] = useState(0);
   const [calssNameWise, setClassName] = useState('');
   const [studentBulkComment, setStudentBulkComment] = useState('');
+  const [resultdata, setresultdata] = useState();
   // const [quesComments, setQuesComments] = useState([]);
   const handleHomeworkSubmit = () => {
 
@@ -188,13 +189,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       "questions": isQuestionWise ? attachmentData : ([{ 'attachments': bulkData, attachmentData }]),
       "comment": comment
     }
-    debugger
     if (count !== 0) {
       if (isupdate) {
         setisupdate(false)
-        axiosInstance.put(`${endpoints.homework.hwupdate}${homeworkSubmission.homeworkId}/update-hw/`, requestData)
+        axiosInstance.put(`${endpoints.homeworkStudent.hwupdate}${homeworkSubmission.homeworkId}/update-hw/`, requestData)
           .then(result => {
-            if (result.data.status_code === 201) {
+            if (result.data.status_code === 200) {
               setAlert('success', result.data.message);
               handleHomeworkCancel();
             }
@@ -229,6 +229,28 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     setHomeworkSubmission(prev => ({ ...prev, isOpen: false, subjectId: '', subjectName: '' }));
   };
 
+  const handlequestionwiseclick = () => {
+    if (resultdata.hw_questions.questions) {
+      let maxVal = 0;
+
+      for (let i = 0; i < resultdata.hw_questions.questions.length; i++) {
+        attachmentCount.push(0);
+        attachmentDataDisplay.push([]);
+        attachmentData.push(
+          {
+            "homework_question": resultdata.hw_questions.questions[i].id,
+            "attachments": [],
+            "comments": ''
+          }
+        );
+        maxVal += resultdata.hw_questions.questions[i].max_attachment;
+      }
+
+      setMaxCount(maxVal);
+    }
+
+  }
+
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
@@ -256,12 +278,15 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       .get(`/academic/${homeworkSubmission.homeworkId}/hw-questions/?hw_status=${homeworkSubmission.status}&module_id=1`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setIsQuestionWise(result.data.data.is_question_wise)
-          setIsBulk(!result.data.data.is_question_wise)
+          setresultdata(result.data.data)
+          if (result?.data?.data?.is_question_wise) {
+            setIsQuestionWise(result.data.data.is_question_wise)
+            setIsBulk(!result.data.data.is_question_wise)
+          }
+
           // setBulkData(result.data.data.hw_questions[0].submitted_files)z
           console.log("@@@@@@result,", result.data.data)
           if (homeworkSubmission.status === 1) {
-            debugger
             // setBulkData(result.data.data.hw_questions.submitted_files || [])
             // setBulkDataDisplay(result.data.data.hw_questions.submitted_files || [])
             setSubjectQuestions(result.data.data.hw_questions);
@@ -284,7 +309,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
           } else if (homeworkSubmission.status === 2 || homeworkSubmission.status === 3) {
             if (result.data.data.is_question_wise) {
-              debugger
               setIsBulk(false);
 
 
@@ -301,7 +325,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                 // maxVal += result.data.data.hw_questions[i].max_attachment;
               }
 
-              setMaxCount(maxVal);
+              setMaxCount(10);
 
 
               setSubjectQuestions(result.data.data.hw_questions);
@@ -368,7 +392,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         formData.append('file', fil);
         axiosInstance.post(`${endpoints.homeworkStudent.fileUpload}`, formData)
           .then(result => {
-            debugger
             if (result.data.status_code === 200) {
               const list = bulkDataDisplay?.slice()
               if (fil.name.lastIndexOf(".pdf") > 0) {
@@ -443,7 +466,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       ) {
         setLoading(true);
         const formData = new FormData()
-        debugger
         formData.append('file', fil)
         axiosInstance.post(`${endpoints.homeworkStudent.fileUpload}`, formData)
           .then(result => {
@@ -645,6 +667,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     } else
       setisupdate(true)
     setHomeworkSubmission({ ...homeworkSubmission, status: 1 })
+
   }
 
   const handleQuesComments = (index, value) => {
@@ -708,6 +731,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
 
                         }
                       }}
+                      onClick={handlequestionwiseclick}
                       color='primary'
                       checked={isQuestionWise}
                     />
@@ -851,11 +875,10 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                         <input
                           type='file'
                           accept=".png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF"
-                          onChange={(e) => 
-                            {
-                          uploadFileHandler(e, index, question.max_attachment)
-                          e.target.value = null
-                            }
+                          onChange={(e) => {
+                            uploadFileHandler(e, index, question.max_attachment)
+                            e.target.value = null
+                          }
                           }
                           className={classes.fileInput}
                         />
@@ -938,7 +961,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                       <div className='attachments-list-outer-container'>
                         <div className='prev-btn'>
                           {question.question_files.length > 0 && (
-                            <IconButton onClick={() => handleScroll(index,'left')}>
+                            <IconButton onClick={() => handleScroll(index, 'left')}>
                               <ArrowBackIosIcon />
                             </IconButton>
                           )}
@@ -953,21 +976,22 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             }}
                           >
                             {question.question_files.map((url, i) => {
-                               if (typeof url == 'object') {
+                              if (typeof url == 'object') {
                                 return Object.values(url).map((item, i) => {
-                                return <div className='attachment'>
-                                  <Attachment
-                                    key={`homework_student_question_attachment_${i}`}
-                                    fileUrl={item}
-                                    fileName={`Attachment-${i + 1}`}
-                                    urlPrefix={`${endpoints.discussionForum.s3}/homework`}
-                                    index={i}
-                                    onOpenInPenTool={(item) => openInPenTool(item, index)}
-                                    actions={['preview', 'download', homeworkSubmission.status === 1 && question.is_pen_editor_enable && 'pentool']}
-                                  />
-                                </div>
-                                })}
-                                else return <div className='attachment'>
+                                  return <div className='attachment'>
+                                    <Attachment
+                                      key={`homework_student_question_attachment_${i}`}
+                                      fileUrl={item}
+                                      fileName={`Attachment-${i + 1}`}
+                                      urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                      index={i}
+                                      onOpenInPenTool={(item) => openInPenTool(item, index)}
+                                      actions={['preview', 'download', homeworkSubmission.status === 1 && question.is_pen_editor_enable && 'pentool']}
+                                    />
+                                  </div>
+                                })
+                              }
+                              else return <div className='attachment'>
                                 <Attachment
                                   key={`homework_student_question_attachment_${i}`}
                                   fileUrl={url}
@@ -978,23 +1002,24 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                   actions={['preview', 'download', homeworkSubmission.status === 1 && question.is_pen_editor_enable && 'pentool']}
                                 />
                               </div>
-                              
-                  })}
+
+                            })}
                             <div style={{ position: 'absolute', visibility: 'hidden' }}>
                               <SRLWrapper>
                                 {question.question_files.map((url, i) => {
                                   if (typeof url == 'object') {
                                     return Object.values(url).map((item, i) => {
-                                  return<img
-                                    src={`${endpoints.discussionForum.s3}/homework/${item}`}
-                                    onError={(e) => {
-                                      e.target.src = placeholder;
-                                    }}
-                                    alt={`Attachment-${i + 1}`}
-                                    style={{ width: '0', height: '0' }}
-                                  />
-                                    })}
-                                    else return <img
+                                      return <img
+                                        src={`${endpoints.discussionForum.s3}/homework/${item}`}
+                                        onError={(e) => {
+                                          e.target.src = placeholder;
+                                        }}
+                                        alt={`Attachment-${i + 1}`}
+                                        style={{ width: '0', height: '0' }}
+                                      />
+                                    })
+                                  }
+                                  else return <img
                                     src={`${endpoints.discussionForum.s3}/homework/${url}`}
                                     onError={(e) => {
                                       e.target.src = placeholder;
@@ -1002,14 +1027,14 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                     alt={`Attachment-${i + 1}`}
                                     style={{ width: '0', height: '0' }}
                                   />
-                                  })}
+                                })}
                               </SRLWrapper>
                             </div>
                           </div>
                         </SimpleReactLightbox>
                         <div className='next-btn'>
                           {question.question_files.length > 0 && (
-                            <IconButton onClick={() => handleScroll(index,'right')}>
+                            <IconButton onClick={() => handleScroll(index, 'right')}>
                               <ArrowForwardIosIcon color='primary' />
                             </IconButton>
                           )}
