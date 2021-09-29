@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginTop: '10px',
   },
-  compMultipleChoiceContainer:{
+  compMultipleChoiceContainer: {
     width: '95%',
     margin: '20px auto 0 auto',
     border: `1px solid ${theme.palette.secondary.main}`,
@@ -131,16 +131,16 @@ const MultipleChoice = ({
           { optionValue: '', images: [] },
           { optionValue: '', images: [] },
         ]
-      : showQuestionType?.MultipleChoiceMultipleSelect ||
-        showQuestionType?.MultipleChoiceSingleSelect
-      ? [
-          { isChecked: false, optionValue: '', images: [] },
-          { isChecked: false, optionValue: '', images: [] },
-          { isChecked: false, optionValue: '', images: [] },
-        ]
-      : showQuestionType?.TrueFalse
-      ? [{ isChecked: false ,optionValue:true}, { isChecked: false ,optionValue:false}]
-      : []
+        : showQuestionType?.MultipleChoiceMultipleSelect ||
+          showQuestionType?.MultipleChoiceSingleSelect
+          ? [
+            { isChecked: false, optionValue: '', images: [] },
+            { isChecked: false, optionValue: '', images: [] },
+            { isChecked: false, optionValue: '', images: [] },
+          ]
+          : showQuestionType?.TrueFalse
+            ? [{ isChecked: false, optionValue: true }, { isChecked: false, optionValue: false }]
+            : []
   );
 
   const [matchingOptionsList, setMatchingOptionsList] = useState(
@@ -270,7 +270,7 @@ const MultipleChoice = ({
         answerList.splice(answerList.indexOf(`option${index + 1}`), 1);
       }
       setAnswers(answerList);
-    }  
+    }
     if (showQuestionType?.MultipleChoiceMultipleSelect) {
       let answerList = [...answers];
       if (value) {
@@ -663,10 +663,11 @@ const MultipleChoice = ({
       handleSetDefault();
     }
     if (showQuestionType.Descriptive) {
-      if (descriptiveAnswer.length > 0) {
+      if (descriptiveAnswer.length >= 0) {
         handleSendData(true);
         handleSetDefault();
-      } else {
+      }
+      else {
         setAlert('error', 'Answer is required!');
       }
     }
