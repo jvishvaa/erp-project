@@ -221,7 +221,9 @@ const ErpAdminViewClass = ({ history }) => {
   }, [moduleId, window.location.pathname]);
 
   useEffect(() => {
-    /* noFilterGetClasses(); */
+    if (window.location.pathname !== '/erp-online-class-student-view') {
+      noFilterGetClasses();
+    }
   }, [tabValue, page, dateRangeTechPer]);
 
   const handleApiRes = (result) => {
