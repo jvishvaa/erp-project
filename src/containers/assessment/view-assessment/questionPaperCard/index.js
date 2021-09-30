@@ -43,7 +43,7 @@ const QuestionPaperCard = ({
             {/* Some test name, (This includes module) */}
             {/* {testDescription} */}
           </h4>
-          <div style={{ float: 'right' }}>
+          {/* <div style={{ float: 'right' }}>
             {isTestAttempted && (
               <IconButton
                 style={{ padding: 0 }}
@@ -53,7 +53,7 @@ const QuestionPaperCard = ({
                 <GetAppIcon />
               </IconButton>
             )}
-          </div>
+          </div> */}
         </div>
         <div className={classes.cardEasyWrapper}>
           <div>
