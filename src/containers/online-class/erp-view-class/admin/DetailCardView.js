@@ -95,19 +95,20 @@ const JoinClass = (props) => {
   };
 
   const msApiMarkAttandance = (params) => {
-    var windowReference = "";
-    if(params?.is_attended){
-      windowReference = window.open();
-    }
+    // var windowReference = '';
+    // if (params?.is_attended) {
+    //   windowReference = window.open();
+    // }
     APIREQUEST('put', '/oncls/v1/mark-attendance/', params)
       .then((res) => {
         setLoading(false);
-        if(res.data.status_code == 200){
+        if (res.data.status_code == 200) {
           if (params?.is_accepted) setIsAccept(true);
           if (params?.is_attended) {
             // setMarkAttendance(true);
             // openZoomClass();
-            windowReference.location = fullData && fullData.join_url;
+            // windowReference.location = fullData && fullData.join_url;
+            document.getElementById("joinclass").click();
           }
         }
       })
@@ -118,10 +119,10 @@ const JoinClass = (props) => {
   };
 
   const apiMarkAttendance = (params) => {
-    var windowReference = "";
-    if(params?.is_attended){
-      windowReference = window.open();
-    }
+    // var windowReference = "";
+    // if(params?.is_attended){
+    //   windowReference = window.open();
+    // }
     axiosInstance
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
       .then((res) => {
@@ -131,7 +132,8 @@ const JoinClass = (props) => {
           if (params?.is_attended) {
             // setMarkAttendance(true);
             // openZoomClass();
-            windowReference.location = fullData && fullData.join_url;
+            // windowReference.location = fullData && fullData.join_url;
+            document.getElementById("joinclass").click();
           }
         }
       })
@@ -169,9 +171,9 @@ const JoinClass = (props) => {
 
   const [classOver, setClassOver] = useState(false);
 
-  const openZoomClass = ()=>{
-    window.open(fullData && fullData.join_url)
-  }
+  const openZoomClass = (url) => {
+    window.open(url);
+  };
 
   const handleJoinButton = () => {
     const currentTime = getCurrentTime();
@@ -479,17 +481,34 @@ const JoinClass = (props) => {
       {isAccept ? (
         <Grid item xs={4}>
           {endTime >= getCurrentTime() && !classOver ? (
-            <Button
-              size='small'
-              color='secondary'
-              fullWidth
-              variant='contained'
-              disabled={props?.data?.class_status?.toLowerCase() === 'cancelled'}
-              onClick={ handleJoinButton }
-              className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
-            >
-              Join
-            </Button>
+            <>
+              <Button
+                size='small'
+                color='secondary'
+                fullWidth
+                variant='contained'
+                disabled={props?.data?.class_status?.toLowerCase() === 'cancelled'}
+                onClick={handleJoinButton}
+                className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
+              >
+                Join
+              </Button>
+              <p>
+                <a
+                  id="joinclass"
+                  style={{display:"none"}}
+                  href={fullData?.join_url}
+                  target='SingleSecondaryWindowName'
+                  onclick={() => {
+                    openZoomClass(fullData?.join_url);
+                    return false;
+                  }}
+                  title='Join Class'
+                >
+                  join class
+                </a>
+              </p>
+            </>
           ) : (
             <Button
               size='small'
