@@ -126,7 +126,6 @@ const ViewAssessments = ({ history, ...restProps }) => {
           }
         })
         .catch((error) => {
-          debugger
           setAlert(error?.message);
         });
     },
