@@ -216,6 +216,7 @@ const DrawingLayer = ({
     <canvas
       key={page}
       style={{ position: 'absolute', left: 0, top: 0 }}
+      // style={{ position: 'absolute'}}
       ref={canvasDrawingElement}
       onMouseDown={onMouseDown}
       onMouseLeave={endPaintEvent}

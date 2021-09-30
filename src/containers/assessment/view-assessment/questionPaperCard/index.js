@@ -1,18 +1,21 @@
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Button, useTheme } from '@material-ui/core';
+import { Button, useTheme, IconButton } from '@material-ui/core';
 import { ContainerContext } from '../../../Layout';
 import useStyles from './useStyles';
+import GetAppIcon from '@material-ui/icons/GetApp';
 
 const QuestionPaperCard = ({
   // testTitle,
   descriptions: testDescription,
+  id: testId,
   is_test_completed: {
     is_completed: isTestAttempted,
     completed_date: testAttemptedDate,
   } = {},
   handleViewMore,
+  downloadAssessment,
   test_date: testDate,
   test_name: testTitle,
   question_paper: questionPaperObj = {},
@@ -32,12 +35,25 @@ const QuestionPaperCard = ({
   return (
     <Paper elevation={2} className={classes.paper}>
       <div className={classes.cardWrapper}>
-        <div>
-          <h3 className={classes.cardTitleHeading}>{testTitle}</h3>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div>
+            <h3 className={classes.cardTitleHeading}>{testTitle}</h3>
+          </div>
           <h4 className={classes.cardDescription}>
             {/* Some test name, (This includes module) */}
             {/* {testDescription} */}
           </h4>
+          {/* <div style={{ float: 'right' }}>
+            {isTestAttempted && (
+              <IconButton
+                style={{ padding: 0 }}
+                onClick={() => downloadAssessment()}
+                title='Download Assessment'
+              >
+                <GetAppIcon />
+              </IconButton>
+            )}
+          </div> */}
         </div>
         <div className={classes.cardEasyWrapper}>
           <div>
@@ -64,7 +80,7 @@ const QuestionPaperCard = ({
             className={classes.cardStartButton}
             variant='contained'
             color='primary'
-            style={{color : "white"}}
+            style={{ color: 'white' }}
             onClick={(e) => {
               handleViewMore(questionPaperId);
               e.stopPropagation();

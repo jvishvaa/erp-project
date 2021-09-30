@@ -123,7 +123,7 @@ const MatchFollowingQuestion = (props) => {
   return (
     <div>
       <div className='mcq-question-wrapper'>
-        <h3>{ReactHtmlParser(question)}</h3>
+        <div>{ReactHtmlParser(question)}</div>
         <div className='match-question-wrapper'>
           <MatchAndDraw
             points={generatePoints()}

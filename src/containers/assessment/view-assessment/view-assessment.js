@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { withRouter } from 'react-router-dom';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -16,26 +16,6 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import axiosInstance from '../../../config/axios';
 import './view-assessment.css';
 
-function getSubDomainName() {
-  const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
-  const hostSplitArray = host.split('.');
-  const subDomainLevels = hostSplitArray.length - 2;
-  let domain = '';
-  let subDomain = '';
-  let subSubDomain = '';
-  if (hostSplitArray.length > 2) {
-    // domain = hostSplitArray.slice(0, hostSplitArray.length-2)
-    domain = hostSplitArray.slice(hostSplitArray.length - 2).join('');
-  }
-  if (subDomainLevels === 2) {
-    subSubDomain = hostSplitArray[0];
-    subDomain = hostSplitArray[1];
-  } else if (subDomainLevels === 1) {
-    subDomain = hostSplitArray[0];
-  }
-  const domainTobeSent = subDomain;
-  return domainTobeSent;
-}
 function a11yProps(index) {
   return {
     id: `simple-tab-${index}`,
@@ -50,6 +30,19 @@ const getSearchParams = (propsObj) => {
   const searchParamsObj = Object.fromEntries(urlParams); // {open: "true", def: "[asf]", xyz: "5"}
   return searchParamsObj;
 };
+
+const handleDownloadPdf = (blob, title) => {
+  let link = document.createElement('a');
+  link.setAttribute(
+    'href',
+    URL.createObjectURL(new Blob([blob], { type: 'application/pdf' }))
+  );
+  link.download = `${title}.pdf`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+};
+
 const ViewAssessments = ({ history, ...restProps }) => {
   const { user_id: user } = JSON.parse(localStorage.getItem('userDetails') || {});
   const [loading, setLoading] = useState(false);
@@ -67,7 +60,6 @@ const ViewAssessments = ({ history, ...restProps }) => {
   };
   const [showInfo, setShowInfo] = useState(getInfoDefaultVal());
   const { setAlert } = useContext(AlertNotificationContext);
-  // ?domain=${getSubDomainName()}
   const fetchQuestionPapers = () => {
     setLoading(true);
     axiosInstance
@@ -110,6 +102,36 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const handleShowInfo = (paperInfoObj) => {
     setShowInfo(paperInfoObj.id);
   };
+
+  const [downloadTestId, setDownloadTestId] = useState(null);
+
+  const downloadAssessment = useCallback(
+    ({ id: testId, test_name: testName = 'Assessment' }) => {
+      setDownloadTestId(testId);
+      axiosInstance
+        .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${testId}`, {
+          responseType: 'blob',
+        })
+        .then((response) => {
+          const {
+            headers = {},
+            message = 'Question paper not available',
+            data = '',
+          } = response || {};
+          const contentType = headers['content-type'] || '';
+          if (contentType === 'application/pdf') {
+            handleDownloadPdf(data, testName);
+          } else {
+            setAlert('info', message);
+          }
+        })
+        .catch((error) => {
+          setAlert(error?.message);
+        });
+    },
+    [downloadTestId]
+  );
+
   useEffect(
     () =>
       history.push(
@@ -160,7 +182,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
           container
           spacing={2}
           direction={isMobile ? 'column' : 'row'}
-          style={{ marginTop: '20px', marginBottom: '20px', width:'99%' }}
+          style={{ marginTop: '20px', marginBottom: '20px', width: '99%' }}
         >
           <Grid item md={showInfo ? 6 : 12} xs={12}>
             <Grid container spacing={2}>
@@ -170,11 +192,12 @@ const ViewAssessments = ({ history, ...restProps }) => {
                   md={showInfo ? 6 : 4}
                   xs={12}
                   key={index}
-                  onClick={() => handleShowInfo(qp)}
+                  // onClick={() => handleShowInfo(qp)}
                 >
                   <QuestionPaperCard
                     {...(qp || {})}
                     handleViewMore={() => handleShowInfo(qp)}
+                    downloadAssessment={() => downloadAssessment(qp)}
                   />
                 </Grid>
               ))}
@@ -190,19 +213,19 @@ const ViewAssessments = ({ history, ...restProps }) => {
               />
             </Grid>
           )}
-              <Grid item xs={12}>
-                {questionPaperList?.length > 0 && (
-                  <div className='paginateData paginateMobileMargin'>
-                    <Pagination
-                      onChange={handlePagination}
-                      style={{ marginTop: 25 }}
-                      count={Math.ceil(totalCount / 10)}
-                      color='primary'
-                      page={page}
-                    />
-                  </div>
-                )}
-              </Grid>
+          <Grid item xs={12}>
+            {questionPaperList?.length > 0 && (
+              <div className='paginateData paginateMobileMargin'>
+                <Pagination
+                  onChange={handlePagination}
+                  style={{ marginTop: 25 }}
+                  count={Math.ceil(totalCount / 10)}
+                  color='primary'
+                  page={page}
+                />
+              </div>
+            )}
+          </Grid>
         </Grid>
       </Layout>
     </>

@@ -220,6 +220,12 @@ const ErpAdminViewClass = ({ history }) => {
     }
   }, [moduleId, window.location.pathname]);
 
+  useEffect(() => {
+    if (window.location.pathname !== '/erp-online-class-student-view') {
+      noFilterGetClasses();
+    }
+  }, [tabValue, page, dateRangeTechPer]);
+
   const handleApiRes = (result) => {
     setTotalCount(result?.data?.count);
     const response = result?.data?.data || [];
@@ -233,6 +239,45 @@ const ErpAdminViewClass = ({ history }) => {
     }
     setLoading(false);
   };
+
+  function noFilterGetClasses() {
+    const filterdata = JSON.parse(localStorage.getItem('filterData'));
+    if (!filterdata?.branch) {
+      var [startDateTechPer, endDateTechPer] =
+        dateRangeTechPer.length > 0 ? dateRangeTechPer : getminMaxDate().datearr;
+      if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
+        APIREQUEST(
+          'get',
+          `/oncls/v1/retrieve-online-class_no_filter/?&class_status=${
+            tabValue + 1
+          }&start_date=${startDateTechPer?.format(
+            'YYYY-MM-DD'
+          )}&end_date=${endDateTechPer?.format(
+            'YYYY-MM-DD'
+          )}&page_number=${page}&page_size=${limit}`
+        )
+          .then((result) => {
+            handleApiRes(result);
+          })
+          .catch((error) => {
+            setAlert('error', error?.message);
+            setLoading(false);
+            setFilterList([]);
+          });
+      } else {
+        callApi(
+          `${endpoints.aol.onlineClassNoFilter}?class_status=${
+            tabValue + 1
+          }&start_date=${startDateTechPer?.format(
+            'YYYY-MM-DD'
+          )}&end_date=${endDateTechPer?.format(
+            'YYYY-MM-DD'
+          )}&page_number=${page}&page_size=${limit}`,
+          'filter'
+        );
+      }
+    }
+  }
 
   function msCallFilterApi(api) {
     var url = api.split('?');
@@ -563,7 +608,9 @@ const ErpAdminViewClass = ({ history }) => {
             endDateTechPer
           ).format('YYYY-MM-DD')}&course_id=${
             selectedCourse?.id
-          }&page_number=${1}&page_size=${limit}&class_status=${tabValue + 1}&module_id=${moduleId}`,
+          }&page_number=${1}&page_size=${limit}&class_status=${
+            tabValue + 1
+          }&module_id=${moduleId}`,
           'filter'
         );
       } else {
@@ -576,9 +623,9 @@ const ErpAdminViewClass = ({ history }) => {
             selectedClassType?.id
           }&start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(
             endDateTechPer
-          ).format(
-            'YYYY-MM-DD'
-          )}&class_status=${tabValue + 1}&module_id=${moduleId}&page_number=${1}&page_size=${limit}`,
+          ).format('YYYY-MM-DD')}&class_status=${
+            tabValue + 1
+          }&module_id=${moduleId}&page_number=${1}&page_size=${limit}`,
           'filter'
         );
       }
@@ -1193,7 +1240,7 @@ const ErpAdminViewClass = ({ history }) => {
                         spacing={3}
                         className='paginateData paginateMobileMargin'
                       >
-                        <Grid item md={12} className="onclsPagination">
+                        <Grid item md={12} className='onclsPagination'>
                           <Pagination
                             onChange={handlePagination}
                             style={{ marginTop: 25 }}

@@ -4,7 +4,7 @@ const local = {
     ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   },
   apiGateway: {
-    baseURL: 'https://dev.mit.letseduvate.com/qbox',
+    baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     // baseURL: 'http://localhost:8000/qbox',
     // baseURL: `${window.location.origin}/qbox`,

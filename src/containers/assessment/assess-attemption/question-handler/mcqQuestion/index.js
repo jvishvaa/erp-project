@@ -68,7 +68,7 @@ const McqQuestion = (props) => {
         </div>
       </div> */}
       <div className='mcq-question-wrapper'>
-        <div style={{ fontWeight: '900', textAlign: 'justify' }}>
+        <div style={{ textAlign: 'justify' }}>
           {ReactHtmlParser(question)}
         </div>
         {/* <img src='https://via.placeholder.com/150' alt='question image' /> */}
