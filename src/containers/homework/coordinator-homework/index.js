@@ -207,7 +207,9 @@ const CoordinatorTeacherHomework = withRouter(
 
     const [datePopperOpen, setDatePopperOpen] = useState(false);
 
-    const [teacherModuleId, setTeacherModuleId] = useState(null);
+    const [teacherModuleId, setTeacherModuleId] = useState("");
+ 
+    
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('md'));
 
@@ -221,13 +223,23 @@ const CoordinatorTeacherHomework = withRouter(
           ) {
             item.child_module.forEach((item) => {
               if (item.child_name === 'Management View') {
-                setTeacherModuleId(item.child_id);
+                setTeacherModuleId(item?.child_id);
               }
             });
           }
         });
       }
     }, []);
+
+    useEffect(()=>{
+     
+      const managementTeacher= JSON.parse(localStorage.getItem('managementTeacher'));
+          handleBranch("",managementTeacher?.selectedBranch);
+          handleSection("",managementTeacher?.selectedSection);
+          handleGrade("",managementTeacher?.selectedGrade);
+          handleCoordinateTeacher("",managementTeacher?.selectedTeacher);
+         
+    },[]);
 
     const handleViewHomework = ({
       date,
@@ -360,6 +372,7 @@ const CoordinatorTeacherHomework = withRouter(
         setAlert('error', error.message);
         setLoading(false);
       }
+    
     };
 
     const handleCoordinateTeacher = (e, value) => {
@@ -378,7 +391,9 @@ const CoordinatorTeacherHomework = withRouter(
           endDate,
           value.user_id
         );
+        setData(value);
       }
+    
     };
 
     const downloadGetTeacherPerformanceListApi = async () => {
@@ -540,7 +555,7 @@ const CoordinatorTeacherHomework = withRouter(
         // endpoints.masterManagement.gradesDrop
         axiosInstance.get(`${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${value.branch.id}&module_id=${teacherModuleId}`)
           .then((result) => {
-            if (result.status === 200) {
+            if (result.status === 200) {        
               setGrades(result.data.data || []);
               setLoading(false);
             } else {
@@ -556,11 +571,12 @@ const CoordinatorTeacherHomework = withRouter(
     };
 
     const handleGrade = (event, value) => {
-      setSectionDisplay([]);
+      const managementTeacher= JSON.parse(localStorage.getItem('managementTeacher'));
+      // setSectionDisplay([]);
       setSections([]);
-      setGradeDisplay([]);
+      // setGradeDisplay([]);
       setSelectedCoTeacherOpt([]);
-      setselectedCoTeacherOptValue([]);
+      // setselectedCoTeacherOptValue([]);
       setSelectedTeacherUser_id('');
       //setSearchGrade('');
       //setSearchSection([]);
@@ -576,7 +592,7 @@ const CoordinatorTeacherHomework = withRouter(
         });
         axiosInstance
           .get(
-            `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${selectedBranch.branch.id}&grade_id=${value.grade_id}&module_id=${teacherModuleId}`
+            `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id || managementTeacher?.selectedBranch?.id}&grade_id=${value?.grade_id}&module_id=${ managementTeacher?.teacherModuleId ||teacherModuleId}`
           )
           .then((result) => {
             if (result.data.status_code === 200) {
@@ -595,10 +611,12 @@ const CoordinatorTeacherHomework = withRouter(
     };
 
     const handleSection = (event, value) => {
+     
       //setSearchSection([]);
-      setSectionDisplay([]);
-      setSelectedCoTeacherOpt([]);
-      setselectedCoTeacherOptValue([]);
+      
+      // setSectionDisplay([]);
+      // setSelectedCoTeacherOpt([]);
+      // setselectedCoTeacherOptValue([]);
       setSelectedTeacherUser_id('');
       //let sec_id = [];
       if (value) {
@@ -613,9 +631,12 @@ const CoordinatorTeacherHomework = withRouter(
         });
         //getTeacherListApi();
       }
+      
     };
 
     const handleCrearFilter = () => {
+      localStorage.removeItem('managementTeacher');
+
       // setSelectedAcadmeicYear('');
       setSelectedBranch([]);
       setGradeDisplay([]);
@@ -626,6 +647,21 @@ const CoordinatorTeacherHomework = withRouter(
       onResetSelectedFilters();
       setSelectedCol({});
     }
+
+    const setData = (teacher) => {
+      
+      localStorage.setItem('managementTeacher',JSON.stringify({
+        // selectedYear: selectedYear,
+        selectedBranch: selectedBranch,
+        selectedGrade: gradeDisplay,
+        selectedSection: sectionDisplay ,
+        selectedTeacher: teacher,
+        selectedDate: dateRange,
+        teacherModuleId:teacherModuleId,
+      
+      }))
+      
+    };
 
     return (
       <>

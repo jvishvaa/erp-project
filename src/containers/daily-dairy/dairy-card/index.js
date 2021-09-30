@@ -105,7 +105,7 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
               color='primary'
               noWrap
             >
-              {lesson.subject.subject_name}
+              {lesson?.subject?.subject_name}
             </Typography>
           </Box>
           <Box mt={2}>

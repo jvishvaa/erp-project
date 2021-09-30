@@ -77,7 +77,7 @@ const VideoQuestion = (props) => {
         </div>
       </div> */}
       <div className='mcq-question-wrapper'>
-        <h3>{ReactHtmlParser(question)}</h3>
+        <div>{ReactHtmlParser(question)}</div>
         <video width='100%' height='500' controls>
           <source src={video} type='video/mp4' />
         </video>

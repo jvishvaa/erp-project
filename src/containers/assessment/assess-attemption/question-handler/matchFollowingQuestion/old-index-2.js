@@ -206,7 +206,7 @@ const MatchFollowingQuestion = (props) => {
   return (
     <div>
       <div className='mcq-question-wrapper'>
-        <h3>{ReactHtmlParser(question)}</h3>
+        <div>{ReactHtmlParser(question)}</div>
         <div className='match-question-wrapper-'>
           <table
             className='match-t-f-table'
@@ -308,7 +308,7 @@ export default MatchFollowingQuestion;
 // }, []);
 
 // const updateCoordinates = (event) => {
-/* 
+/*
   const coordinates = {
     p00: { name:"p00", x: 1, y: 1, distance: { p00: 0, ...all points distance }, angle: { p00: 0, ...all points angles } },
     p01: { x: 1, y: 1, distance: { p00: 0 }, angle: { p00: 0 } },

@@ -138,7 +138,7 @@ export default {
   },
   homework: {
     completeData: '/academic/list_admin_homework/',
-    createConfig: '/academic/homework-admin-configuration/',
+    createConfig: '/academic/homework-admin-configuration/',    
     hwDelete: '/academic/',
   },
   homeworkStudent: {
@@ -147,6 +147,7 @@ export default {
     getRating: '/academic/student_subject_rating/',
     fileUpload: '/academic/upload-question-file/',
     submitHomework: '/academic/homework-submission/',
+    hwupdate : '/academic/',
   },
   lessonReport: {
     volumes: '/lesson_plan/list-volume/',
@@ -224,6 +225,7 @@ export default {
     createCoursePrice: '/aol/course-details/',
     updateCoursePrice: '/aol/course_details_update/',
     updateTeacher: '/aol/update-batch-teacher/',
+    onlineClassNoFilter :'/erp_user/teacher_online_class_no_filter/v3/'
   },
 
   attendanceList: {
@@ -390,6 +392,7 @@ export default {
     deleteAssessmentTest: '/assessment/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
     examTypeList: '/assessment/exam-type-list/',
+    downloadAssessmentPdf: '/assessment/test1/'
   },
 
   assessment: {

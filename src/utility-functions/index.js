@@ -164,3 +164,15 @@ export function isMsAPI() {
     });
   }
 }
+
+export function handleDownloadPdf(data, title) {
+  let link = document.createElement('a');
+  link.setAttribute(
+    'href',
+    URL.createObjectURL(new Blob([data], { type: 'application/pdf' }))
+  );
+  link.download = `${title}.pdf`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}

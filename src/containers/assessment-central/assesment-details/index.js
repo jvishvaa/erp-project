@@ -1,28 +1,64 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Grid, IconButton, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
 import './styles.scss';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
+import { handleDownloadPdf } from '../../../../src/utility-functions';
 
 const AssesmentDetails = ({ test, onClick, onClose }) => {
   const {
     test_id: id,
+    id: assessmentId,
     testType,
     grade,
     subjects,
-    test_name: testName,
+    test_name: testName = 'Assessment',
     test_date: testDate,
     test_duration: testDuration,
     total_mark: totalMark,
     created_at: createdDate,
     updated_at: updatedDate,
   } = test;
-  // console.log('the test:---', test);
+
+  const { setAlert } = useContext(AlertNotificationContext);
+
+  const downloadAssessment = () => {
+    axiosInstance
+      .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${assessmentId}`, {
+        responseType: 'blob',
+      })
+      .then((response) => {
+        const {
+          headers = {},
+          message = 'Cannot download question paper',
+          data = '',
+        } = response || {};
+        const contentType = headers['content-type'] || '';
+        if (contentType === 'application/pdf') {
+          handleDownloadPdf(data, testName);
+        } else {
+          setAlert('info', message);
+        }
+      })
+      .catch((error) => {
+        setAlert(error?.message);
+      });
+  };
 
   return (
     <div className='assesment-details-container'>
       <div className='header-container'>
-        <div className='primary-header-container'>
+        <div
+          className='primary-header-container'
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+          }}
+        >
           <div className='primary-header-text-container'>
             <span className='primary-text font-lg'>{testType}</span>
             <br />
@@ -31,8 +67,17 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
               //  ${subjects.join(', ')}`
             }</span>
           </div>
-          <div className='close-icon'>
-            <IconButton onClick={onClose}>
+          <div>
+            <IconButton
+              style={{ padding: 0 }}
+              onClick={() => downloadAssessment()}
+              title='Download Question Paper'
+            >
+              <GetAppIcon />
+            </IconButton>
+          </div>
+          <div>
+            <IconButton style={{ padding: 0 }} onClick={onClose} title='Close'>
               <CloseIcon color='primary' />
             </IconButton>
           </div>
@@ -72,9 +117,14 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
                 <p className='cell-header left-align'>{testType}</p>
               </div>
             </Grid>
-            <Grid item md={4} className='parameter-cell-grid' style={{backgroundColor:'#f6f6f6'}}>
+            <Grid
+              item
+              md={4}
+              className='parameter-cell-grid'
+              style={{ backgroundColor: '#f6f6f6' }}
+            >
               <div className='parameter-cell'>
-                <p className='cell-header' style={{ color: '#ff6b6b'}}>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
                   Test ID
                 </p>
                 <p className='cell-header left-align'>{id}</p>
@@ -97,9 +147,14 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
                 <p className='cell-header left-align'>{totalMark}</p>
               </div>
             </Grid>
-            <Grid item md={4} className='parameter-cell-grid' style={{backgroundColor:'#f6f6f6'}}>
+            <Grid
+              item
+              md={4}
+              className='parameter-cell-grid'
+              style={{ backgroundColor: '#f6f6f6' }}
+            >
               <div className='parameter-cell'>
-                <p className='cell-header' style={{ color: '#ff6b6b'}}>
+                <p className='cell-header' style={{ color: '#ff6b6b' }}>
                   Created
                 </p>
                 <p className='cell-header left-align'>

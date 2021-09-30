@@ -48,7 +48,7 @@ const MatrixQuestion = (props) => {
   return (
     <div>
       <div className='mcq-question-wrapper'>
-        <h3>{ReactHtmlParser(question)}</h3>
+        <div>{ReactHtmlParser(question)}</div>
         <div className='matrix-table-container'>
           <form onChange={handleOptionValue}>
             <table className='matrix-table'>
