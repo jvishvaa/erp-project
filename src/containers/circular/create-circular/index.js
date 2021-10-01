@@ -378,8 +378,8 @@ const CraeteCircular = () => {
         .then((result) => {
           if (result.data.status_code === 200) {
             setAcademicYearDropdown(result?.data?.data);
-            const defaultValue = result.data?.data?.[0];
-            handleAcademicYear({}, defaultValue);
+            // const defaultValue = result.data?.data?.[0];
+            // handleAcademicYear({}, defaultValue);
           } else {
             setAlert('error', result.data.message);
           }
@@ -431,21 +431,21 @@ const CraeteCircular = () => {
   };
 
   const handleEdited = () => {
-    if (!filterData.year) {
-      return setAlert('warning', 'Select Academic Year');
-    }
-    if (!filterData.branch) {
-      return setAlert('warning', 'Select Branch');
-    }
-    if (!filterData.role) {
-      return setAlert('warning', 'Select Role');
-    }
-    if (!filterData.grade) {
-      return setAlert('warning', 'Select Grade');
-    }
-    if (!filterData.section) {
-      return setAlert('warning', 'Select Section');
-    }
+    // if (!filterData.year) {
+    //   return setAlert('warning', 'Select Academic Year');
+    // }
+    // if (!filterData.branch) {
+    //   return setAlert('warning', 'Select Branch');
+    // }
+    // if (!filterData.role) {
+    //   return setAlert('warning', 'Select Role');
+    // }
+    // if (!filterData.grade) {
+    //   return setAlert('warning', 'Select Grade');
+    // }
+    // if (!filterData.section) {
+    //   return setAlert('warning', 'Select Section');
+    // }
     if (filePath.length > 0) {
       axiosInstance
         .put(`${endpoints.circular.updateCircular}`, {
@@ -455,8 +455,10 @@ const CraeteCircular = () => {
           module_name: filterData.role.value,
           media: filePath,
           Branch: [filterData?.branch?.id],
-          grades: [filterData?.grade?.id],
-          sections: [filterData?.section?.section_id || filterData?.section?.id],
+          // grades: [filterData?.grade?.id],
+          // sections: [filterData?.section?.section_id || filterData?.section?.id],
+          grades: [filterData?.grade[0]?.id],
+          sections: [filterData?.section[0]?.id],
           academic_year: filterData?.year?.id,
         })
         .then((result) => {
@@ -489,8 +491,8 @@ const CraeteCircular = () => {
           description: description,
           module_name: filterData.role.value,
           Branch: [filterData?.branch?.id],
-          grades: [filterData?.grade?.id],
-          sections: [filterData?.section?.section_id || filterData?.section?.id],
+          grades: [filterData?.grade[0]?.id],
+          sections: [filterData?.section[0]?.id],
           academic_year: filterData?.year?.id,
         })
         .then((result) => {
@@ -528,8 +530,8 @@ const CraeteCircular = () => {
               ...filterData,
               year: result?.data?.result?.academic_year,
               branch: result?.data?.result?.branches[0],
-              grade: result?.data?.result?.grades[0],
-              section: result?.data?.result?.sections[0],
+              grade: result?.data?.result?.grades,
+              section: result?.data?.result?.sections,
               role: circularRole[0],
             });
             setTitle(result?.data?.result?.circular_name);
