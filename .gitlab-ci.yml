@@ -162,8 +162,7 @@ deploy_prod:
       - erp_revamp_frontend-prod
     only:
       - master
-    when:
-      - manual
+    when: manual
  
 stages:
   - deploy
