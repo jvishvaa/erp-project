@@ -473,6 +473,7 @@ const CreateClassForm = (props) => {
   const handleCreateClass = () => {
     const {
       title,
+      branchIds,
       subject,
       duration,
       optionalZoom,
@@ -499,6 +500,13 @@ const CreateClassForm = (props) => {
     request['title'] = title;
     request['optionalZoom'] = optionalZoom;
     request['duration'] = duration;
+    
+    var unique = (value, index, self)=>{
+      return self.indexOf(value) === index;
+    }
+    request['grade'] = gradeIds.filter(unique);
+    request['branch'] = branchIds;
+
     if (selectedClassType?.id === 0) {
       request['subject_id'] = subject.join(',');
     } else if (selectedClassType?.id > 0) {
