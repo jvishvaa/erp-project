@@ -381,6 +381,7 @@ const ErpAdminViewClass = ({ history }) => {
     if (data === 'success') {
       setPage(1);
       if (window.location.pathname === '/erp-online-class-student-view') {
+        setLoading(true);
         axiosInstance
           .get(endpoints.studentViewBatchesApi.onclsAcessCheck)
           .then((result) => {
@@ -395,7 +396,14 @@ const ErpAdminViewClass = ({ history }) => {
                 }&class_status=${tabValue + 1}&module_id=${moduleId}`,
                 'filter'
               );
+            } else {
+              setAlert('warning', 'Access Denied');
+              setLoading(false);
             }
+          })
+          .catch((err) => {
+            setLoading(false);
+            setAlert('warning', 'Access Denied');
           });
       }
       if (
@@ -497,6 +505,7 @@ const ErpAdminViewClass = ({ history }) => {
         selectedClassType?.id >= 0 &&
         moduleId
       ) {
+        setLoading(true);
         axiosInstance
           .get(endpoints.studentViewBatchesApi.onclsAcessCheck)
           .then((result) => {
@@ -511,7 +520,14 @@ const ErpAdminViewClass = ({ history }) => {
                 }&class_status=${tabValue + 1}&module_id=${moduleId}`,
                 'filter'
               );
+            } else {
+              setLoading(false);
+              setAlert('warning', 'Access Denied');
             }
+          })
+          .catch((err) => {
+            setLoading(false);
+            setAlert('warning', 'Access Denied');
           });
       }
     }
@@ -546,6 +562,7 @@ const ErpAdminViewClass = ({ history }) => {
     localStorage.removeItem('viewMoreData');
     localStorage.removeItem('filterData');
     if (window.location.pathname === '/erp-online-class-student-view') {
+      setLoading(true);
       axiosInstance
         .get(endpoints.studentViewBatchesApi.onclsAcessCheck)
         .then((result) => {
@@ -560,7 +577,14 @@ const ErpAdminViewClass = ({ history }) => {
               }&class_status=${tabValue + 1}&module_id=${moduleId}`,
               'filter'
             );
+          } else {
+            setLoading(false);
+            setAlert('warning', 'Access Denied');
           }
+        })
+        .catch((err) => {
+          setLoading(false);
+          setAlert('warning', 'Access Denied');
         });
     } else {
       if (!selectedClassType) {
