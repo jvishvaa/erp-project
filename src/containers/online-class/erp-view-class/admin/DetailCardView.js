@@ -29,6 +29,7 @@ import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import { AttachFile as AttachFileIcon } from '@material-ui/icons';
 import edxtag from '../../../../assets/images/edxtag.jpeg';
 import APIREQUEST from '../../../../config/apiRequest';
+import ZOOMICON from "../../../../assets/images/zoom.png"
 
 const JoinClass = (props) => {
   const { setLoading, index, cardIndex, getClassName, historicalData } = props;
@@ -872,12 +873,9 @@ const DetailCardView = ({
               className={`teacherBatchFullViewHeader ${getClassName()[1]}`}
             >
               <Grid item xs={10}>
-                {(fullData?.join_url?.includes('present-staging') ||
-                  fullData?.presenter_url?.includes('present-staging')) && (
                   <div className='edxTag'>
-                    <SvgIcon component={() => <img src={edxtag} />} />
+                    <SvgIcon component={() => <img style={{maxHeight:"50px", background:"white"}} src={ fullData?.join_url?.includes('edxstream') ? edxtag : ZOOMICON } />} />
                   </div>
-                )}
               </Grid>
               <Grid item xs={2} style={{ textAlign: 'right' }}>
                 <CloseIcon style={{ color: 'white' }} onClick={() => handleClose()} />

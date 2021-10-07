@@ -473,6 +473,7 @@ const CreateClassForm = (props) => {
   const handleCreateClass = () => {
     const {
       title,
+      branchIds,
       subject,
       duration,
       optionalZoom,
@@ -499,6 +500,13 @@ const CreateClassForm = (props) => {
     request['title'] = title;
     request['optionalZoom'] = optionalZoom;
     request['duration'] = duration;
+    
+    var unique = (value, index, self)=>{
+      return self.indexOf(value) === index;
+    }
+    request['grade'] = gradeIds.filter(unique);
+    request['branch'] = branchIds;
+
     if (selectedClassType?.id === 0) {
       request['subject_id'] = subject.join(',');
     } else if (selectedClassType?.id > 0) {
@@ -506,6 +514,7 @@ const CreateClassForm = (props) => {
     }
     request['tutor_id'] = tutorEmail.tutor_id;
     request['auth_user_id'] = tutorEmail.user__id;
+    request['tutor_erp'] = tutorEmail.name;
     request['tutor_emails'] = tutorEmails.join(',');
     request['role'] = 'Student';
     request['start_time'] = startTime;
@@ -513,6 +522,12 @@ const CreateClassForm = (props) => {
     request['is_recurring'] = toggle ? 1 : 0;
     request['class_type'] = selectedClassType?.id;
     request['section_mapping_ids'] = sectionIds.join(',');
+
+    if(duration > 240){
+      setAlert('warning', 'Duration MAX Limit 240mins');
+      setLoading(false);
+      return;
+    }
 
     if (selectedClassType?.id === 0) {
       request['week_days'] = days;
