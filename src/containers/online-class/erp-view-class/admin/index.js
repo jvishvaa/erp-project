@@ -381,16 +381,22 @@ const ErpAdminViewClass = ({ history }) => {
     if (data === 'success') {
       setPage(1);
       if (window.location.pathname === '/erp-online-class-student-view') {
-        callApi(
-          `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-            studentDetails &&
-            studentDetails.role_details &&
-            studentDetails.role_details.erp_user_id
-          }&page_number=${page}&page_size=${limit}&class_type=${
-            selectedClassType?.id
-          }&class_status=${tabValue + 1}&module_id=${moduleId}`,
-          'filter'
-        );
+        axiosInstance
+          .get(endpoints.studentViewBatchesApi.onclsAcessCheck)
+          .then((result) => {
+            if (result?.data?.status_code === 200) {
+              callApi(
+                `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+                  studentDetails &&
+                  studentDetails.role_details &&
+                  studentDetails.role_details.erp_user_id
+                }&page_number=${page}&page_size=${limit}&class_type=${
+                  selectedClassType?.id
+                }&class_status=${tabValue + 1}&module_id=${moduleId}`,
+                'filter'
+              );
+            }
+          });
       }
       if (
         window.location.pathname === '/erp-online-class' ||
@@ -491,16 +497,22 @@ const ErpAdminViewClass = ({ history }) => {
         selectedClassType?.id >= 0 &&
         moduleId
       ) {
-        callApi(
-          `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-            studentDetails &&
-            studentDetails.role_details &&
-            studentDetails.role_details.erp_user_id
-          }&page_number=${page}&page_size=${limit}&class_type=${
-            selectedClassType?.id
-          }&class_status=${tabValue + 1}&module_id=${moduleId}`,
-          'filter'
-        );
+        axiosInstance
+          .get(endpoints.studentViewBatchesApi.onclsAcessCheck)
+          .then((result) => {
+            if (result?.data?.status_code === 200) {
+              callApi(
+                `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+                  studentDetails &&
+                  studentDetails.role_details &&
+                  studentDetails.role_details.erp_user_id
+                }&page_number=${page}&page_size=${limit}&class_type=${
+                  selectedClassType?.id
+                }&class_status=${tabValue + 1}&module_id=${moduleId}`,
+                'filter'
+              );
+            }
+          });
       }
     }
   }, [page, selectedClassType, tabValue]);
@@ -534,16 +546,22 @@ const ErpAdminViewClass = ({ history }) => {
     localStorage.removeItem('viewMoreData');
     localStorage.removeItem('filterData');
     if (window.location.pathname === '/erp-online-class-student-view') {
-      callApi(
-        `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-          studentDetails &&
-          studentDetails.role_details &&
-          studentDetails.role_details.erp_user_id
-        }&page_number=${1}&page_size=${limit}&class_type=${
-          selectedClassType?.id
-        }&class_status=${tabValue + 1}&module_id=${moduleId}`,
-        'filter'
-      );
+      axiosInstance
+        .get(endpoints.studentViewBatchesApi.onclsAcessCheck)
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            callApi(
+              `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+                studentDetails &&
+                studentDetails.role_details &&
+                studentDetails.role_details.erp_user_id
+              }&page_number=${1}&page_size=${limit}&class_type=${
+                selectedClassType?.id
+              }&class_status=${tabValue + 1}&module_id=${moduleId}`,
+              'filter'
+            );
+          }
+        });
     } else {
       if (!selectedClassType) {
         setAlert('warning', 'Select Classtype');
