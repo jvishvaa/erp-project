@@ -45,6 +45,11 @@ const Layout = ({ children, history }) => {
   const [navigationData, setNavigationData] = useState(false);
   const [superUser, setSuperUser] = useState(false);
 
+  let userId = JSON.stringify(localStorage.getItem('userDetails')) || {};
+  var CryptoJS = require("crypto-js");
+
+  var erp_details = CryptoJS.AES.encrypt(JSON.stringify(userId), 'erp-details').toString();
+
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
     if (navigationData) {
@@ -846,6 +851,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Teacher Classwork Report': {
         history.push('/classwork-report-teacher-view');
+        break;
+      }
+      case 'Event Tracker': {
+        window.location.href = `http://events.letseduvate.com/?${erp_details}`;
         break;
       }
       default:
