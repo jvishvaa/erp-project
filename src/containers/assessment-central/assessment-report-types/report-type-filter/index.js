@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, TextField, Divider } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import { connect } from 'react-redux';
-import { fetchAssessmentReportList, setReportType } from '../../../../redux/actions';
+import { setReportType } from '../../../../redux/actions';
 
 const reportTypes = [
   { id: 1, type: 'Class Average marks Subject wise with Teacher name' },
@@ -11,6 +11,10 @@ const reportTypes = [
   {
     id: 4,
     type: 'Individual Student Topic wise Marks Comparison with Class Topic Average',
+  },
+  {
+    id: 5,
+    type: 'Report Card',
   },
 ];
 
@@ -23,9 +27,18 @@ const ReportTypeFilter = ({
 }) => {
   const handleReportType = (event, value) => {
     setIsFilter(false);
-    if (value) setReportType(value);
-    else setReportType({});
+    if (value) {
+      setReportType(value);
+    } else setReportType({});
   };
+
+  const query = new URLSearchParams(window.location.search);
+  const isReportView = Boolean(query.get('report-card'));
+  useEffect(() => {
+    if (isReportView) {
+      handleReportType({}, { ...reportTypes[4] });
+    }
+  }, [isReportView]);
 
   return (
     <Grid
@@ -33,7 +46,7 @@ const ReportTypeFilter = ({
       spacing={isMobile ? 3 : 5}
       style={{
         width: widerWidth,
-        margin: isMobile ? '-20px 0px -10px 0px' : '-10px 0px 20px 8px',
+        margin: isMobile ? '0px 0px -10px 0px' : '-10px 0px 20px 8px',
       }}
     >
       <Grid item xs={12} sm={6} className={isMobile ? '' : 'filterPadding'}>
@@ -46,7 +59,7 @@ const ReportTypeFilter = ({
           value={selectedReportType || {}}
           options={reportTypes || []}
           getOptionLabel={(option) => option?.type || ''}
-          filterSelectedOptions
+          getOptionSelected={(option, value) => option?.id === value?.id}
           renderInput={(params) => (
             <TextField
               {...params}

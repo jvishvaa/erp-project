@@ -458,14 +458,18 @@ const Layout = ({ children, history }) => {
         history.push('/assessment-reports');
         break;
       }
-      //   { name: 'Question Bank', Path: '/question-bank' },
-      // { name: 'Question Paper', Path: '/assessment-question' },
-      // { name: 'Create Test', Path: '/assesment' },
-      // { name: 'Take Test', Path: '/assessment' }
-      // case 'ID Cards': {
-      //   history.push('/student-id-card');
-      //   break;
-      // }
+      case 'Report Card': {
+        history.push('/assessment/report-card');
+        break;
+      }
+      case 'Marks Upload': {
+        history.push('/assessment/marks-upload');
+        break;
+      }
+      case 'Report Card Pipeline': {
+        history.push('/assessment/report-card-pipeline');
+        break;
+      }
       case 'ID Card View': {
         history.push('/student-id-card');
         break;

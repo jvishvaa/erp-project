@@ -16,7 +16,7 @@ import {
   isFetchThemeRequired,
   themeGenerator,
 } from '../../utility-functions/themeGenerator';
-import LoginTab from './login-tab';
+import TabPanel from '../../components/tab-panel';
 import SwipeableViews from 'react-swipeable-views';
 
 function TermsAndCondition() {
@@ -68,6 +68,12 @@ function SignIn({ history, setTheme }) {
         .catch(() => {});
   }, []);
 
+  const tabStyle = {
+    width: '100%',
+    margin: '3% auto',
+    borderRadius: '10px 10px 0 0',
+  };
+
   return (
     <>
       {!loading && (
@@ -80,7 +86,13 @@ function SignIn({ history, setTheme }) {
             <Typography component='h1' variant='h5'>
               Sign In
             </Typography>
-            <LoginTab tabValue={tabValue} setTabValue={setTabValue} />
+            <TabPanel
+              tabValue={tabValue}
+              setTabValue={setTabValue}
+              tabValues={['Password', 'OTP']}
+              fullWidth={true}
+              style={tabStyle}
+            />
             <SwipeableViews
               axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
               index={tabValue}
