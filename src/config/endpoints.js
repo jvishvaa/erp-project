@@ -60,6 +60,7 @@ export default {
     sections: '/erp_user/sectionmapping/',
     userList: '/communication/erp-user-info/',
     communicationUserList: '/communication/communication-user-list/',
+    studentUserList: '/communication/student-user-list/',
     createGroup: '/communication/communication-group/',
     editGroup: '/communication/',
     getGroups: '/communication/communication-group/',

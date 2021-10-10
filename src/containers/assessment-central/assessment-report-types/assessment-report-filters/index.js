@@ -313,7 +313,7 @@ const AssessmentReportFilters = ({
     let params = `?branch=${branchId}&grade=${gradeId}&section=${sectionId}`;
     if (role) params += `&role=${role}`;
     axiosInstance
-      .get(`${endpoints.communication.communicationUserList}${params}`)
+      .get(`${endpoints.communication.studentUserList}${params}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setDropdownData((prev) => {
@@ -424,7 +424,7 @@ const AssessmentReportFilters = ({
     setFilterData({ ...filterData, section: '' });
     if (value) {
       if (selectedReportType.id === 5) {
-        getERP(filterData.branch?.id, filterData.grade?.grade_id, value?.section_id);
+        getERP(filterData.branch?.branch?.id, filterData.grade?.grade_id, value?.section_id);
       }
       setFilterData({ ...filterData, section: value });
     }
