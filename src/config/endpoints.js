@@ -388,6 +388,7 @@ export default {
     questionPaperViewMore: `/assessment/<question-paper-id>/qp-questions-list/`,
     publishQuestionPaper: `/assessment/<question-paper-id>/update-status-question-paper/`,
     createQuestionPaper: `/assessment/question-paper/`,
+    editQuestionPaper: '/update-question-paper/',
     createAssessment: '/assessment/test/',
     deleteAssessmentTest: '/assessment/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
@@ -414,10 +415,11 @@ export default {
     reportTopicWise: `/assessment/report-topic-wise/`,
     reportClassAverage: `/assessment/report-class-average/`,
     reportTopicStudentAverage: `/assessment/report-topic-student-average/`,
-    reportDowloadSectionWise:`/assessment/download-report-section-wise/`,
-    reportDownloadTopicWise:`/assessment/download-report-topic-wise/`,
-    reportDownloadClassAverage:`/assessment/download-report-class-average/`,
-    reportDownloadTopicStudentAverage:`/assessment/download-report-topic-student-average/`,
+    reportDowloadSectionWise: `/assessment/download-report-section-wise/`,
+    reportDownloadTopicWise: `/assessment/download-report-topic-wise/`,
+    reportDownloadClassAverage: `/assessment/download-report-class-average/`,
+    reportDownloadTopicStudentAverage: `/assessment/download-report-topic-student-average/`,
+    reportCardData: '/assessment/generate-report/',
   },
   publish: {
     ebook: `erp_user/publication/`,
@@ -498,6 +500,15 @@ export default {
   },
   classworkReport: {
     tableData: '/academic/teacher_classwork_report/',
+  },
+  reportCard: {
+    listCategory: '/assessment/get-category-mapping/',
+    categoryAssessmentMapping: '/assessment/add_report_category_assessment_mapping/',
+    createAssessmentMarkMapping: '/assessment/create-assessment-mark-mapping/',
+    marksUpload: '/assessment/upload-marks/',
+    getReportCardPipelineList: '/assessment/get-pipeline-status/',
+    getReportCardStatusList: '/assessment/get-report-publish-status/',
+    updateReportCardStatus: '/assessment/update-report-publish-status/',
   },
   dashboard: {
     teacher: {

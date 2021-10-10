@@ -11,13 +11,17 @@ const baseStyle = {
   alignItems: 'center',
   padding: '20px',
   borderWidth: 2,
-  borderRadius: 2,
+  borderRadius: 10,
   borderColor: '#014b7e',
   borderStyle: 'dashed',
   backgroundColor: '#fafafa',
   color: '#014b7e',
   outline: 'none',
   transition: 'border .24s ease-in-out',
+  whiteSpace: 'nowrap',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+  cursor: 'pointer',
 };
 
 const textEllipsis = {
@@ -45,7 +49,6 @@ const DNDFileUpload = ({ value, handleChange, fileType, typeNames }) => {
   const onDrop = (acceptedFiles) => {
     handleChange(acceptedFiles[0]);
   };
-
 
   const onDropRejected = (files) => {
     setAlert('error', `Upload only ${typeNames} format`);
@@ -81,8 +84,8 @@ const DNDFileUpload = ({ value, handleChange, fileType, typeNames }) => {
           <p style={textEllipsis} style={{ marginBottom: 1 }}>
             Drag 'n' drop some files here, or click to select files
           </p>
-          {typeNames ? <p>files: {typeNames}</p>:null}
-       </>
+          {typeNames ? <p>files: {typeNames}</p> : null}
+        </>
       )}
     </div>
   );
