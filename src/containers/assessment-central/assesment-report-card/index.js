@@ -6,7 +6,11 @@ import PersonalityTraitTable from './report-table-personality-trait';
 import ReportCardFooter from './report-card-footer';
 import ReportCardHeader from './report-card-header';
 import TableTypeFooter from './tableTypeFooter';
-import { generateGradeScale, generateCategoryMap } from './transform-report-card-data';
+import {
+  generateGradeScale,
+  generateCategoryMap,
+  getOverallRemark,
+} from './transform-report-card-data';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,6 +41,7 @@ const AssesmentReport = ({ reportCardData }) => {
   const {
     grade_scale: scholasticGradeScale = {},
     category_map: scholasticCategoryMap = {},
+    term_details: termDetails = {},
   } = scholastic || {};
   const {
     grade_scale: coScholasticGradeScale = {},
@@ -67,9 +72,9 @@ const AssesmentReport = ({ reportCardData }) => {
             gradeScale={CO_SCHOLASTIC_GRADE_SCALE}
             categoryAssessment={CO_SCHOLASTIC_CATEGORY_ASSESSMENT}
           />
-          <PersonalityTraitTable />
-          <TableTypeFooter gradeScale={CO_SCHOLASTIC_GRADE_SCALE} />
-          <ReportCardFooter />
+          {/* <PersonalityTraitTable /> */}
+          {/* <TableTypeFooter gradeScale={CO_SCHOLASTIC_GRADE_SCALE} /> */}
+          <ReportCardFooter {...getOverallRemark(termDetails)} />
         </Paper>
       ) : (
         'REPORT CARD NOT AVAILABLE'
