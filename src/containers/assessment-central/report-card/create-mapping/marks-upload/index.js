@@ -26,6 +26,8 @@ const fileConf = {
   types: 'xls, xlsx',
 };
 
+const isSuccess = (status) => status > 199 && status < 299;
+
 const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState();
@@ -145,6 +147,25 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
     });
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!filterData?.file) {
+  //     setAlert('error', 'File is required');
+  //     return;
+  //   }
+  //   const requestBody = generatePayload();
+  //   const response = await marksUpload(requestBody);
+  //   const { data = {}, headers = {} } = response || {};
+  //   const contentType = headers['content-type'];
+  //   if (contentType !== 'application/vnd.ms-excel') {
+  //     const { status, message, msg } = data || {};
+  //     setAlert('error', msg || message || 'Unable to upload marks');
+  //   } else {
+  //     handleDownloadExcel(data, 'Report-Card');
+  //     history.push('/assessment/report-card-pipeline');
+  //   }
+  // };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!filterData?.file) {
@@ -153,15 +174,13 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
     }
     const requestBody = generatePayload();
     const response = await marksUpload(requestBody);
-    const { data = {}, headers = {} } = response || {};
-    const contentType = headers['content-type'];
-    if (contentType !== 'application/vnd.ms-excel') {
-      const { status, message, msg } = data || {};
-      setAlert('error', msg || message || 'Unable to upload marks');
-    } else {
-      handleDownloadExcel(data, 'Report-Card');
-      history.push('/assessment/report-card-pipeline');
-    }
+    const { status = 400, message, msg } = response || {};
+    const isSuccesful = isSuccess(status);
+    setAlert(
+      isSuccesful ? 'success' : 'error',
+      msg || message || 'Unable to upload marks'
+    );
+    if (isSuccesful) history.push('/assessment/report-card-pipeline');
   };
 
   const fetchBranches = async () => {
