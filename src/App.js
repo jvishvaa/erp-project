@@ -209,6 +209,7 @@ import AcceptRejectPayment from './containers/Finance/src/components/Finance/Bra
 import PostDateCheque from './containers/Finance/src/components/Finance/BranchAccountant/PostDateCheque/postDateCheque';
 import StudentInfoAdm from './containers/Finance/src/components/Finance/StudentInfo/studentInfo.js';
 import BillingDetails from './containers/Finance/src/components/Finance/E-mandate/billingDetails';
+import AssesmentReport from './containers/assessment-central/assesment-report-card/index';
 import CustomerDeatils from './containers/Finance/src/components/Finance/E-mandate/addCustomerDeatils';
 // import CustomerDeatils from './containers/Finance/src/components/Finance/E-mandate/addCustomerDeatils.js'
 import OrderDetails from './containers/Finance/src/components/Finance/E-mandate/orderDetails';
@@ -265,12 +266,15 @@ import Publications from './containers/publications/Publications';
 import ActivateInactivateStudentAdm from './containers/Finance/src/components/Finance/Dashboard/FinanceAdmin/activateInactivateStudent.js';
 import QuestionBankList from './containers/question-bank/question-bank-list';
 import CreateQuestion from './containers/question-bank/create-question';
-import CreateQuestionPaper from './containers/assessment-central/create-question-paper';
+import CreateQuestionPaper from './containers/assessment-central/create-question-paper/index';
 // import Assesmentquestion from './containers/assesment/assesment';
 import Assesment from './containers/assessment-central';
 import AssessmentView from './containers/assessment-central/assesment-view';
 import CreateAssesment from './containers/assessment-central/create-assesment';
 import AssessmentReportTypes from './containers/assessment-central/assessment-report-types';
+import ReportCard from './containers/assessment-central/report-card';
+import StudentReportCard from './containers/assessment-central/report-card/student-report-card';
+import ReportCardPipeline from './containers/assessment-central/report-card/create-mapping/report-card-pipeline';
 import ContactUs from 'containers/contact-us';
 import PreQuiz from './containers/online-class/erp-view-class/admin/PreQuiz';
 import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
@@ -300,6 +304,7 @@ import EditStoreTransactionDetails from 'containers/Finance/src/components/Finan
 import ShippingAmountAtStudent from 'containers/Finance/src/components/Inventory/Student/shippingAtStudent';
 // import { isMsAPI } from './utility-functions/index';
 import { isMsAPI } from './redux/actions';
+import AssessmentReportTable from 'containers/assessment-central/assesment-report-card/index';
 
 function App({ alert, isMsAPI }) {
   // useEffect(() => {
@@ -378,15 +383,26 @@ function App({ alert, isMsAPI }) {
                           <Route path='/assesment'>
                             {({ match }) => <Assesment match={match} />}
                           </Route>
+                          <Route path='/report-test'>
+                            {({ match }) => <AssesmentReport match={match} />}
+                          </Route>
+                          {/*
+                        <Route exact path='/assignrole'>
+                          {({ match }) => <AssignRole match={match} />}
+                        </Route>
+                        */}
                           <Route exact path='/question-bank'>
                             {({ match }) => <QuestionBankList match={match} />}
                           </Route>
                           <Route exact path='/create-question/:qId?'>
                             {({ match }) => <CreateQuestion match={match} />}
                           </Route>
-                          <Route exact path='/create-question-paper'>
+                          <Route exact path='/create-question-paper/:id?'>
                             {({ match }) => <CreateQuestionPaper match={match} />}
                           </Route>
+                          {/* <Route exact path='/edit-question-paper/:id'>
+                            {({ match }) => <EditQuestionPaper match={match} />}
+                          </Route> */}
                           <Route exact path='/assessment-question'>
                             {({ match }) => <AssessmentView match={match} />}
                           </Route>
@@ -395,6 +411,15 @@ function App({ alert, isMsAPI }) {
                           </Route>
                           <Route exact path='/assessment-reports'>
                             {({ match }) => <AssessmentReportTypes match={match} />}
+                          </Route>
+                          <Route exact path='/assessment/marks-upload'>
+                            {({ match }) => <ReportCard match={match} />}
+                          </Route>
+                          <Route exact path='/assessment/report-card'>
+                            {({ match }) => <StudentReportCard match={match} />}
+                          </Route>
+                          <Route exact path='/assessment/report-card-pipeline'>
+                            {({ match }) => <ReportCardPipeline match={match} />}
                           </Route>
                           <Route exact path='/attendance-hw-cw/send-email'>
                             {({ match }) => <SendEmailAttCwHw match={match} />}
@@ -568,7 +593,6 @@ function App({ alert, isMsAPI }) {
                           <Route exact path='/homework/homework-card'>
                             {({ match }) => <HomeworkCard match={match} />}
                           </Route>
-
                           <Route exact path='/homework/teacher-report'>
                             {({ match }) => <TeacherHomeWorkReport match={match} />}
                           </Route>
@@ -580,6 +604,10 @@ function App({ alert, isMsAPI }) {
                           </Route>
                           <Route exact path='/homework/teacher'>
                             {({ match }) => <TeacherHomework match={match} />}
+                          </Route>
+                          AssessmentReportTable
+                          <Route exact path='/report-table-test'>
+                            {({ match }) => <AssessmentReportTable match={match} />}
                           </Route>
                           <Route exact path='/classwork/student-report'>
                             {({ match }) => <StudentClassWorkReport match={match} />}
@@ -593,7 +621,6 @@ function App({ alert, isMsAPI }) {
                           <Route exact path='/homework/admin'>
                             {({ match }) => <HomeworkAdmin match={match} />}
                           </Route>
-
                           <Route exact path='/homework/coordinator'>
                             {/* added by Vijay to display particular teacher details */}
                             {({ match }) => <CoordinatorHomework match={match} />}
@@ -762,7 +789,6 @@ function App({ alert, isMsAPI }) {
                           <Route exact path='/online-class/attendance-teacher-view'>
                             {({ match }) => <OnlineAttendanceTeacherView match={match} />}
                           </Route>
-
                           <Route exact path='/homework/student'>
                             {({ match }) => <StudentHomework match={match} />}
                           </Route>
@@ -1268,15 +1294,16 @@ function App({ alert, isMsAPI }) {
                             {({ match }) => <BulkUniform match={match} alert={alert} />}
                           </Route>
                           <Route exact path='/finance/student_store'>
-                            {({ match }) => <StoreAtStudent match={match} alert={alert} />}
+                            {({ match }) => (
+                              <StoreAtStudent match={match} alert={alert} />
+                            )}
                           </Route>
-                           <Route exact path='/book_uniform_payment/'>
+                          <Route exact path='/book_uniform_payment/'>
                             {({ match }) => <Airpay match={match} alert={alert} />}
                           </Route>
                           <Route exact path='/airpay/'>
                             {({ match }) => <Airpay match={match} alert={alert} />}
                           </Route>
-
                           <Route exact path='/finance/ShippingPayment'>
                             {({ match }) => (
                               <ShippingAmountAtStudent match={match} alert={alert} />
