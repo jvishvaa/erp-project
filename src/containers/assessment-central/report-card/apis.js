@@ -130,9 +130,9 @@ export const marksUpload = async (payload) => {
     const response = await axiosInstance.post(
       endpoints.reportCard.marksUpload,
       payload,
-      {
-        responseType: 'blob',
-      }
+      // {
+      //   responseType: 'blob',
+      // }
     );
     return response;
   } catch (error) {
