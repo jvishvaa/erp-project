@@ -26,11 +26,11 @@ const PersonalityTraitTable = () => {
         </tr>
         <tr>
           <td>
-            Regularity, Punctuality, Sincereity, Caring Ethical Conduct and Behaviours
+            Regularity, Punctuality, Sincerity, Caring Ethical Conduct and Behaviours
           </td>
           <td></td>
           <td>
-            Regularity, Punctuality, Sincereity, Caring Ethical Conduct and Behaviours
+            Regularity, Punctuality, Sincerity, Caring Ethical Conduct and Behaviours
           </td>
           <td></td>
           <td></td>

@@ -81,7 +81,7 @@ const ReportPipelineTable = ({ setLoading }) => {
           index === statusIndex ? reportCardClasses[`status-card--${status}`] : ''
         )}
       >
-        <Box style={{ width: '25%', alignSelf: 'end' }}>
+        <Box style={{ width: '25%' }}>
           <Icon style={{ color, fontSize: '1.3rem' }} />
         </Box>
         <Box

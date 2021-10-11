@@ -50,7 +50,7 @@ const ReportCardHeader = ({ schoolData }) => {
             component='div'
             style={{ textAlign: 'center' }}
           >
-            CBSE AFFLIATION NO: 0000001211213
+            CBSE AFFILIATION NO: 0000001211213
           </Typography>
           {address}
           <br />
