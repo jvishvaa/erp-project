@@ -20,6 +20,7 @@ import '../../../containers/master-management/master-management.css';
 import Loading from '../../../components/loader/loader';
 import ReportTypeFilter from '../assessment-report-types/report-type-filter';
 import AssessmentReportFilters from '../assessment-report-types/assessment-report-filters';
+import AssesmentReportTable from '../assesment-report-card/index';
 import { connect } from 'react-redux';
 import { setClearFilters } from 'redux/actions';
 import unfiltered from '../../../assets/images/unfiltered.svg';
@@ -45,9 +46,12 @@ const AssessmentReportTypes = ({
   const [reportData, setReportData] = useState([]);
   const [columns, setColumns] = useState([]);
 
-  useEffect(() => {
-    setClearFilters();
-  }, []);
+  const [reportCardData, setReportCardData] = useState([]);
+  const [isPreview, setIsPreview] = useState(false);
+
+  // useEffect(() => {
+  //   setClearFilters();
+  // }, []);
 
   useEffect(() => {
     if (isFilter) {
@@ -187,8 +191,10 @@ const AssessmentReportTypes = ({
         {selectedReportType?.id && (
           <AssessmentReportFilters
             page={page}
+            setIsPreview={setIsPreview}
             setPage={setPage}
             pageSize={limit}
+            setReportCardData={setReportCardData}
             classTopicAverage={
               selectedReportType?.id === 3
                 ? reportData?.[0]?.class_average
@@ -201,8 +207,11 @@ const AssessmentReportTypes = ({
             isMobile={isMobile}
           />
         )}
+        {selectedReportType?.id === 5 && isPreview && (
+          <AssesmentReportTable reportCardData={reportCardData} />
+        )}
 
-        {isFilter ? (
+        {isFilter && (
           <Paper className={`${classes.root} common-table`}>
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
@@ -260,33 +269,33 @@ const AssessmentReportTypes = ({
                         )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                            <TableCell className={classes.tableCell}>
-                              {rowData?.erp_no}
-                            </TableCell>
-                          )}
+                          <TableCell className={classes.tableCell}>
+                            {rowData?.erp_no}
+                          </TableCell>
+                        )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                            <TableCell className={classes.tableCell}>
-                              {rowData?.user_name}
-                            </TableCell>
-                          )}
+                          <TableCell className={classes.tableCell}>
+                            {rowData?.user_name}
+                          </TableCell>
+                        )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                            <TableCell className={classes.tableCell}>
-                              {selectedReportType?.id === 3
-                                ? rowData?.total_mark
-                                : rowData?.marks_obtained}
-                            </TableCell>
-                          )}
+                          <TableCell className={classes.tableCell}>
+                            {selectedReportType?.id === 3
+                              ? rowData?.total_mark
+                              : rowData?.marks_obtained}
+                          </TableCell>
+                        )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                            <TableCell className={classes.tableCell}>
-                              {selectedReportType?.id === 3
-                                ? rowData?.comparsion
-                                : +rowData?.marks_obtained -
+                          <TableCell className={classes.tableCell}>
+                            {selectedReportType?.id === 3
+                              ? rowData?.comparsion
+                              : +rowData?.marks_obtained -
                                 +assessmentReportListData?.comparison}
-                            </TableCell>
-                          )}
+                          </TableCell>
+                        )}
                       </TableRow>
                     );
                   })}
@@ -304,7 +313,8 @@ const AssessmentReportTypes = ({
               />
             </div>
           </Paper>
-        ) : (
+        )}
+        {!isFilter && !isPreview && (
           <div className='periodDataUnavailable'>
             <SvgIcon
               component={() => (
