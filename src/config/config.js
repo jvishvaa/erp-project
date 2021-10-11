@@ -6,6 +6,7 @@ const local = {
   apiGateway: {
     baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
+    baseEvent : 'http://dev-et.letseduvate.com/',
     // baseURL: 'http://localhost:8000/qbox',
     // baseURL: `${window.location.origin}/qbox`,
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
@@ -22,6 +23,7 @@ const dev = {
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
+    baseEvent : 'http://dev-et.letseduvate.com/',
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl : 'https://dev.classes.letseduvate.com',
@@ -38,6 +40,7 @@ const qa = {
     // baseURL: `${window.location.origin}/qbox`,
     baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
+    baseEvent : 'http://dev-et.letseduvate.com/',
     baseURLCentral: 'https://qa.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://qa.classes.letseduvate.com',
@@ -53,6 +56,7 @@ const stage = {
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
     baseURLMPQ: 'https://stage.mpquiz.letseduvate.com',
+    baseEvent : 'http://events.letseduvate.com/',
     baseURLCentral: 'https://stage.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
   },
@@ -66,6 +70,7 @@ const prod = {
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
     baseURLMPQ: 'https://mpquiz.letseduvate.com',
+    baseEvent : 'http://events.letseduvate.com/',
     baseURLCentral: 'https://mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://classes.letseduvate.com',
