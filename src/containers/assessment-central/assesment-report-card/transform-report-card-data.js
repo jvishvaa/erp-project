@@ -23,12 +23,14 @@ const generateSemesterOneTwo = (termDetails) => {
       subject_marks: subjectMarks = {},
       out_of_total: outOfTotal = '',
       total_obtained: totalObtained = '',
+      overall_remark: overallRemark = '',
     }) => ({
       finalGrade,
       semester,
       outOfTotal,
       totalObtained,
       subjectMarks,
+      overallRemark,
     })
   );
   const [semesterOne = {}, semesterTwo = {}] = transformedTermDetails || [];
@@ -170,10 +172,18 @@ const generateTermDetailsSummaryRow = (termDetails) => {
   ];
 };
 
+const getOverallRemark = (termDetails) => {
+  const { semesterOne = {}, semesterTwo = {} } = generateSemesterOneTwo(termDetails);
+  const { overallRemark: overallRemarkSemOne = '' } = semesterOne || {};
+  const { overallRemark: overallRemarkSemTwo = '' } = semesterTwo || {};
+  return { overallRemarkSemOne, overallRemarkSemTwo };
+};
+
 export {
   generateCategoryMap,
   generateTermDetails,
   getTableHeaderRow,
   generateGradeScale,
   generateTermDetailsSummaryRow,
+  getOverallRemark,
 };

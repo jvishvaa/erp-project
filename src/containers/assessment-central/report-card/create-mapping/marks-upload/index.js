@@ -10,7 +10,9 @@ import { handleDownloadExcel } from '../../../../../utility-functions';
 
 const termsList = [
   { id: '1', semester: 'Semester I' },
-  { id: '2', semester: 'Semester II' },
+  // { id: '2', semester: 'Semester II' },
+  // { id: '3', semester: 'Semester III' },
+  // { id: '4', semester: 'Semester IV' },
 ];
 
 const scholasticData = [
