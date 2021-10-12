@@ -38,14 +38,17 @@ const DescriptiveTestCorrectionModule = ({
     <Modal open onClose={handleClose} disablePortal className={classes.modal}>
       <Card
         style={{
-          width: '100%',
+          width: '96%',
           // height: '100%',
           overflow: 'auto',
           background: 'grey',
-          margin:'auto',
-          // border:'solid red',
-          height:'115vh',
-          marginTop:'7%'
+          margin:'7% auto auto 4.5vw',
+          border:'solid red',
+          height:'82vh',
+          // marginTop:'7%'
+          display: "flex",
+          alignItems : 'center',
+          justifyContent : 'center'
         }}
       >
         <React.Fragment>

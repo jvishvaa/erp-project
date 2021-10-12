@@ -105,27 +105,34 @@ export function DescriptiveTestContextProvider({
           y = 0.1;
           x = sX + x;
           y = sY + y;
-        } else {
-          x += sX;
-          y += sY;
+        } else if(sX == 1.5 ) {
+          x = 3;
+          y = 3;
+        }else {
+          x= sX
+          y = sY
         }
       } else {
         if (sX === 1.5) {
           x = sX - 0.5;
           y = sY - 0.5;
         } else if (sX < 1.5) {
-          x = 0.1;
-          y = 0.1;
+          // x = 0.1;
+          // y = 0.1;
           if (sX === 1) {
-            x = 0.5;
-            y = 0.5;
+            x = 1;
+            y = 1;
           } else {
-            x = sX - x;
-            y = sY - y;
+            x = sX ;
+            y = sY ;
           }
-        } else {
-          x = sX - x;
-          y = sY - y;
+        } else if(sX === 3){
+          x = sX - 1.5;
+          y = sY - 1.5;
+        }
+        else{
+          x = sX ;
+          y = sY;
         }
       }
     } else {
@@ -136,8 +143,18 @@ export function DescriptiveTestContextProvider({
     return { x, y };
   };
 
+  const checkTransformOrigin = (isRotated) =>{
+    let element = document.getElementById("editor-evaluvation-container")
+    if(!isRotated && (angleInDegrees === 0 ||angleInDegrees === 360 || angleInDegrees=== -360)){
+      element.style.transformOrigin='0px 0px'
+    }else{
+      element.style.transformOrigin='center'
+    }
+  }
+
   const enableZoom = (event, updateTool) => {
     let { x, y, mg } = handleZoomINOut(updateTool);
+    checkTransformOrigin(false);
 
     setZoom({
       zoomAction: updateTool,
@@ -150,8 +167,10 @@ export function DescriptiveTestContextProvider({
     if (updateRotation !== rotation) {
       if (updateRotation === 'rRight') {
         rotateClockWise();
+        checkTransformOrigin(true);
       } else {
         rotateCounterClockWise();
+        checkTransformOrigin(true);
       }
       // rotateClockWise()
     } else {
