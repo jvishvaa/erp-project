@@ -263,10 +263,10 @@ const CraeteCircular = () => {
   };
 
   function handleTitle(e) {
-    if (e.target.value.split(' ').length <= 20) {
+    if (e.target.value.split(' ').length <= 30) {
       setTitle(e.target.value);
     } else {
-      setAlert('warning', 'Max Word Limit Is 20');
+      setAlert('warning', 'Max Word Limit Is 30');
     }
   }
   const handleImageChange = (event) => {
