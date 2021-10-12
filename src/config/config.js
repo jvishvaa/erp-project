@@ -13,6 +13,7 @@ const local = {
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://dev.classes.letseduvate.com',
     msReportsUrl: 'https://dev.reports.letseduvate.com',
+    baseEvent: 'http://dev-et.letseduvate.com/',
   },
 };
 const dev = {
@@ -28,6 +29,7 @@ const dev = {
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://dev.classes.letseduvate.com',
     msReportsUrl: 'https://dev.reports.letseduvate.com',
+    baseEvent: 'http://dev-et.letseduvate.com/',
   },
 };
 
@@ -45,6 +47,7 @@ const qa = {
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://qa.classes.letseduvate.com',
     msReportsUrl: 'https://qa.reports.letseduvate.com',
+    baseEvent: 'http://dev-et.letseduvate.com/',
   },
 };
 
@@ -59,6 +62,7 @@ const stage = {
     baseEvent: 'http://events.letseduvate.com/',
     baseURLCentral: 'https://stage.mgmt.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
+    baseEvent: 'http://events.letseduvate.com/',
   },
 };
 
@@ -75,6 +79,7 @@ const prod = {
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://classes.letseduvate.com',
     msReportsUrl: 'https://reports.letseduvate.com',
+    baseEvent: 'http://events.letseduvate.com/',
   },
 };
 

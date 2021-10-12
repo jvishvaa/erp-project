@@ -51,6 +51,7 @@ const AssessmentReportFilters = ({
     topic: [],
     erp: [],
   });
+  const [isLoading, setIsLoading] = useState(null);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -307,6 +308,7 @@ const AssessmentReportFilters = ({
   }
 
   const getERP = (branchId, gradeId, sectionId) => {
+    setIsLoading(true);
     const {
       personal_info: { role = '' },
     } = userDetails || {};
@@ -323,8 +325,11 @@ const AssessmentReportFilters = ({
             };
           });
         }
+        setIsLoading(null);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setIsLoading(null);
+      });
   };
 
   const handleAcademicYear = (event, value) => {
@@ -424,7 +429,11 @@ const AssessmentReportFilters = ({
     setFilterData({ ...filterData, section: '' });
     if (value) {
       if (selectedReportType.id === 5) {
-        getERP(filterData.branch?.branch?.id, filterData.grade?.grade_id, value?.section_id);
+        getERP(
+          filterData.branch?.branch?.id,
+          filterData.grade?.grade_id,
+          value?.section_id
+        );
       }
       setFilterData({ ...filterData, section: value });
     }
@@ -830,7 +839,7 @@ const AssessmentReportFilters = ({
           filterData.branch &&
           filterData.grade &&
           filterData.section &&
-          dropdownData.erp?.length === 0 && (
+          isLoading && (
             <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
               <Box style={{ display: 'flex', justifyContent: 'space-around' }}>
                 <CircularProgress size={26} thickness={4} />
