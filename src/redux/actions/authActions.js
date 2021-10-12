@@ -21,10 +21,12 @@ const {
   FETCH_LOGGED_IN_USER_INFO_FAILURE,
 } = authActions;
 
-export const handleSendOtp = (params) => {
-  const api = '/erp_user/login-otp/';
+const LOGIN_TIMEOUT = 60000;
+
+export const handleSendOtp = (payload) => {
+  const url = '/erp_user/login-otp/';
   return axios
-    .post(api, params)
+    .post(url, payload)
     .then((response) => {
       return {
         status: response?.data?.status_code,
@@ -36,11 +38,12 @@ export const handleSendOtp = (params) => {
     .catch((error) => console.log(error));
 };
 
-export const login = (params, isOtpLogin) => (dispatch) => {
+export const login = (payload, isOtpLogin) => (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
-  const api = isOtpLogin ? '/erp_user/verify-otp/' : '/erp_user/login/';
+  const url = isOtpLogin ? '/erp_user/verify-otp/' : '/erp_user/login/';
+  const config = { timeout: LOGIN_TIMEOUT };
   return axios
-    .post(api, params)
+    .post(url, payload, config)
     .then((response) => {
       // const data = isOtpLogin ? response.data.login_response : response.data;
       const data = response.data;
@@ -78,6 +81,7 @@ export const login = (params, isOtpLogin) => (dispatch) => {
 
 export const aolLogin = (token) => (dispatch) => {
   dispatch({ type: LOGIN_REQUEST });
+  const config = { timeout: LOGIN_TIMEOUT };
   return axios
     .post(
       '/erp_user/login/',
@@ -88,6 +92,7 @@ export const aolLogin = (token) => (dispatch) => {
         headers: {
           Authorization: `Bearer ${token}`,
         },
+        ...config,
       }
     )
     .then((response) => {

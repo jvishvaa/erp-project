@@ -221,10 +221,18 @@ const ErpAdminViewClass = ({ history }) => {
   }, [moduleId, window.location.pathname]);
 
   useEffect(() => {
-    if (window.location.pathname !== '/erp-online-class-student-view') {
+    if (window.location.pathname === '/erp-online-class-teacher-view') {
       noFilterGetClasses();
     }
-  }, [tabValue, page, dateRangeTechPer]);
+  }, [tabValue, page]);
+
+  useEffect(() => {
+    if (window.location.pathname === '/erp-online-class-teacher-view') {
+      if(dateRangeTechPer[0] && dateRangeTechPer[1]){
+        noFilterGetClasses();
+      }
+    }
+  }, [dateRangeTechPer]);
 
   const handleApiRes = (result) => {
     setTotalCount(result?.data?.count);

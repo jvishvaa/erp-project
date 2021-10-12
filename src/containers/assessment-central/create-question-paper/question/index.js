@@ -4,6 +4,7 @@ import { Divider } from '@material-ui/core';
 import Section from '../section';
 
 const Question = ({ question, onDeleteSection, onDeleteQuestion }) => {
+  console.log(question.sections, 'data section');
   return (
     <>
       <div className='question-container'>
@@ -11,13 +12,13 @@ const Question = ({ question, onDeleteSection, onDeleteQuestion }) => {
           {question.sections?.map((section) => {
             return (
               <Section
-              question={question}
-              section={section}
-              questionId={question.id}
-              onDelete={onDeleteSection}
-              onDeleteQuestion={onDeleteQuestion}
-            />
-            )
+                question={question}
+                section={section}
+                questionId={question.id}
+                onDelete={onDeleteSection}
+                onDeleteQuestion={onDeleteQuestion}
+              />
+            );
           })}
         </div>
       </div>
