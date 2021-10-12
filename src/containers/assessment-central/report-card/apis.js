@@ -127,11 +127,14 @@ export const createCategoryAssessmentMapping = async (payload) => {
 
 export const marksUpload = async (payload) => {
   try {
-    const { data = {} } = await axiosInstance.post(
+    const response = await axiosInstance.post(
       endpoints.reportCard.marksUpload,
-      payload
+      payload,
+      // {
+      //   responseType: 'blob',
+      // }
     );
-    return data;
+    return response;
   } catch (error) {
     const { response = {} } = error || {};
     const { data = {} } = response || {};

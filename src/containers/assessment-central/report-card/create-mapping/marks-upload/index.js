@@ -6,12 +6,13 @@ import { useSelector } from 'react-redux';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import { getBranch, getGrade, getSubject, getSection, marksUpload } from '../../apis';
 import DNDFileUpload from '../../../../../components/dnd-file-upload';
+import { handleDownloadExcel } from '../../../../../utility-functions';
 
 const termsList = [
   { id: '1', semester: 'Semester I' },
-  { id: '2', semester: 'Semester II' },
-  { id: '3', semester: 'Semester III' },
-  { id: '4', semester: 'Semester IV' },
+  // { id: '2', semester: 'Semester II' },
+  // { id: '3', semester: 'Semester III' },
+  // { id: '4', semester: 'Semester IV' },
 ];
 
 const scholasticData = [
@@ -145,6 +146,25 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
       file: null,
     });
   };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!filterData?.file) {
+  //     setAlert('error', 'File is required');
+  //     return;
+  //   }
+  //   const requestBody = generatePayload();
+  //   const response = await marksUpload(requestBody);
+  //   const { data = {}, headers = {} } = response || {};
+  //   const contentType = headers['content-type'];
+  //   if (contentType !== 'application/vnd.ms-excel') {
+  //     const { status, message, msg } = data || {};
+  //     setAlert('error', msg || message || 'Unable to upload marks');
+  //   } else {
+  //     handleDownloadExcel(data, 'Report-Card');
+  //     history.push('/assessment/report-card-pipeline');
+  //   }
+  // };
 
   const handleSubmit = async (e) => {
     e.preventDefault();

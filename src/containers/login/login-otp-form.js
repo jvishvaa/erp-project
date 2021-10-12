@@ -10,6 +10,8 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import { connect } from 'react-redux';
 import { login, handleSendOtp, isMsAPI } from '../../redux/actions';
 
+const OTP_REGEX = /^[0-9]{0,6}$/;
+
 function LoginOTPForm({ onLogin, history, isMsAPI }) {
   const classes = useStyles();
   const [attempts, setAttempts] = useState(null);
@@ -19,9 +21,9 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
   const [otp, setOtp] = useState('');
   const [passwordFlag, setPasswordFlag] = useState(true);
   const { setAlert } = useContext(AlertNotificationContext);
+  const [disableLogin, setDisableLogin] = useState(false);
 
   const handleOtp = (event) => {
-    const OTP_REGEX = /^[0-9]{0,6}$/;
     const otpValue = event.target.value;
     if (otpValue.match(OTP_REGEX)) {
       setOtp(otpValue);
@@ -34,12 +36,14 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
         erp_id: username,
         otp,
       };
+      setDisableLogin(true);
       onLogin(params, true).then((response) => {
         if (response?.isLogin) {
           isMsAPI();
           history.push('/dashboard');
         } else {
           setAlert('error', response?.message);
+          setDisableLogin(false);
         }
       });
     }
@@ -131,6 +135,7 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
               color='primary'
               style={{ color: 'white' }}
               className={classes.otpButton}
+              disabled={disableLogin}
               onClick={() => {
                 handleOTPLogin();
               }}

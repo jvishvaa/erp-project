@@ -24,8 +24,10 @@ function LoginForm(props) {
   const { setAlert } = useContext(AlertNotificationContext);
   const urlParams = new URLSearchParams(window.location.search);
   const erpSearch = urlParams.get('erp');
+  const [disableLogin, setDisableLogin] = useState(false);
 
   const handleLogin = () => {
+    setDisableLogin(true);
     if (erpSearch !== null) {
       aolOnLogin(erpSearch, false).then((response) => {
         if (response?.isLogin) {
@@ -33,6 +35,7 @@ function LoginForm(props) {
           history.push('/online-class/attend-class');
         } else {
           setAlert('error', response?.message);
+          setDisableLogin(false);
         }
       });
     } else if (username && password) {
@@ -47,6 +50,7 @@ function LoginForm(props) {
           history.push('/dashboard');
         } else {
           setAlert('error', response?.message);
+          setDisableLogin(false);
         }
       });
     }
@@ -142,6 +146,7 @@ function LoginForm(props) {
           color='primary'
           style={{ color: 'white' }}
           className={classes.submit}
+          disabled={disableLogin}
           onClick={() => {
             handleLogin();
           }}
