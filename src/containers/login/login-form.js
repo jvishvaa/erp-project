@@ -27,8 +27,8 @@ function LoginForm(props) {
   const [disableLogin, setDisableLogin] = useState(false);
 
   const handleLogin = () => {
-    setDisableLogin(true);
     if (erpSearch !== null) {
+      setDisableLogin(true);
       aolOnLogin(erpSearch, false).then((response) => {
         if (response?.isLogin) {
           isMsAPI();
@@ -43,6 +43,7 @@ function LoginForm(props) {
         username,
         password,
       };
+      setDisableLogin(true);
       onLogin(params).then((response) => {
         if (response?.isLogin) {
           // history.push('/profile');
