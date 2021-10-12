@@ -32,6 +32,7 @@ import {
 } from '../../utility-functions/themeGenerator';
 import Footer from '../footer/index';
 import AppSearchBarUseStyles from './AppSearchBarUseStyles';
+import ENVCONFIG from 'config/config';
 // import { isMsAPI } from '../../utility-functions/index';
 
 export const ContainerContext = createContext();
@@ -44,6 +45,16 @@ const Layout = ({ children, history }) => {
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
   const [superUser, setSuperUser] = useState(false);
+
+  const {
+    apiGateway: { baseURLCentral, baseUdaan , baseEvent },
+    s3: { BUCKET: s3BUCKET, ERP_BUCKET },
+  } = ENVCONFIG;
+
+  let userId = JSON.stringify(localStorage.getItem('userDetails')) || {};
+  var CryptoJS = require("crypto-js");
+
+  var erp_details = CryptoJS.AES.encrypt(JSON.stringify(userId), 'erp-details').toString();
 
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
@@ -458,14 +469,18 @@ const Layout = ({ children, history }) => {
         history.push('/assessment-reports');
         break;
       }
-      //   { name: 'Question Bank', Path: '/question-bank' },
-      // { name: 'Question Paper', Path: '/assessment-question' },
-      // { name: 'Create Test', Path: '/assesment' },
-      // { name: 'Take Test', Path: '/assessment' }
-      // case 'ID Cards': {
-      //   history.push('/student-id-card');
-      //   break;
-      // }
+      case 'Report Card': {
+        history.push('/assessment/report-card');
+        break;
+      }
+      case 'Marks Upload': {
+        history.push('/assessment/marks-upload');
+        break;
+      }
+      case 'Report Card Pipeline': {
+        history.push('/assessment/report-card-pipeline');
+        break;
+      }
       case 'ID Card View': {
         history.push('/student-id-card');
         break;
@@ -846,6 +861,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Teacher Classwork Report': {
         history.push('/classwork-report-teacher-view');
+        break;
+      }
+      case 'Event Tracker': {
+        window.location.href = `${baseEvent}?${erp_details}`;
         break;
       }
       default:

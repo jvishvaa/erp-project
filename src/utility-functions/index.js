@@ -176,3 +176,19 @@ export function handleDownloadPdf(data, title) {
   link.click();
   link.remove();
 }
+
+export function handleDownloadExcel(data, title) {
+  let link = document.createElement('a');
+  link.setAttribute(
+    'href',
+    URL.createObjectURL(
+      new Blob([data], {
+        type: 'application/vnd.ms-excel',
+      })
+    )
+  );
+  // link.download = `${title}`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+}
