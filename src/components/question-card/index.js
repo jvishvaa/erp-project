@@ -98,6 +98,8 @@ const QuestionCard = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const [sizeValied, setSizeValied] = useState({});
   const [showPrev, setshowPrev] = useState(0)
+  const [pentool,setpentool] = useState(false)
+
 
 
   const [questionData,setquestionData] = useState()
@@ -115,10 +117,12 @@ const QuestionCard = ({
 
 useEffect(() => {
   if(edit){
+    debugger
     setisEdit(false)
   setquestionData(question.question)
   setAttachmentPreviews(question.attachments)
   setAttachments(question.attachments)
+  setpentool(question.penTool)
   }
 },[question.question,question.attachments])
 
@@ -244,6 +248,15 @@ useEffect(() => {
 
   };
 
+  useEffect(()=> {
+    debugger
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+    onChange('penTool',pentool );
+  },[pentool])
+  
   useEffect(()=> {
     if (firstUpdate.current) {
       firstUpdate.current = false;
@@ -538,9 +551,11 @@ useEffect(()=>{
                       <Switch
                         name='penTool'
                         onChange={(e) => {
-                          onChange('penTool', e.target.checked);
+                          setpentool(e.target.checked)
                         }}
                         color='primary'
+                        checked = {pentool}
+                        value = {pentool}
                       />
                     }
                     label='Pen tool'
