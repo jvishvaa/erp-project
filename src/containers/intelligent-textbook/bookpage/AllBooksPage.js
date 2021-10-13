@@ -12,6 +12,8 @@ import {
   MenuItem,
   Button,
   Typography,
+  Dialog,
+  AppBar,
 } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
@@ -27,6 +29,8 @@ import noimg from '../../../assets/images/book-icon.jpg';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import moment from 'moment';
 import Filter from '../filter.jsx';
+import { Close } from '@material-ui/icons';
+import ViewBook from '../chapterpage/ViewBook';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -63,8 +67,20 @@ const AllBooksPage = () => {
   const [grade, setGrade] = useState('');
   const [subject, setSubject] = useState('');
   const [volume, setVolume] = useState('');
-  const bookImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/';
 
+  const [open, setOpen] = useState(false);
+  const [bookImage, setBookImage] = useState(
+    // 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/ibooks/'
+    // 'https://d3ka3pry54wyko.cloudfront.net/dev/ibooks/'
+    'https://erp-revamp.s3.ap-south-1.amazonaws.com/'
+  );
+  const [bookId, setbookId] = useState('');
+  const [chapterId, setchapterId] = useState('');
+  const [bookUid, setbookUid] = useState('');
+  const [localStorageName, setlocalStorageName] = useState('');
+  const [environment, setenvironment] = useState('');
+  const [type, settype] = useState('');
+  const [bookName, setbookName] = useState('')
 
   const getDomainName = () => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
@@ -100,6 +116,10 @@ const AllBooksPage = () => {
           setTotalPages(Math.ceil(result.data.result.count / limit));
 
           console.log(Math.ceil(result.data.result.count / limit), 'pagination');
+          if (result?.data.result?.result[0]?.path === 'prod/ibooks/') {
+            // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/prod/ibooks/');
+            setBookImage('https://d3ka3pry54wyko.cloudfront.net/prod/ibooks/');
+          }
           setLoading(false);
         } else {
           setLoading(false);
@@ -113,17 +133,29 @@ const AllBooksPage = () => {
   }, [pageNo]);
   const handlePagination = (event, page) => {
     setPageNo(page);
-    // console.log(page, 'Page');
   };
 
   const handleBookOpen = (item) => {
-    history.push(
-      `/intelligent-book/${item?.id}/${item?.book_uid}/${item?.local_storage_id}/${item?.path}`
-    );
+    // history.push(
+    //   `/intelligent-book/${item?.id}/${item?.book_uid}/${item?.local_storage_id}/${item?.path}`
+    // );
+   
+    console.log('item111',item)
+
+    const path = item?.path.split("/")
+
+    setbookId(item?.id);
+    setchapterId();
+    setbookName(item.book_name);
+    setbookUid(item?.book_uid);
+    setlocalStorageName(item?.local_storage_id);
+    setenvironment(path[0]);
+    settype(path[1]);
+    setOpen(true);
+
   };
 
   const handleFilter = (acad, branch, grade, sub, vol) => {
-    console.log('datatesting', acad, branch, grade, sub, vol);
     setAcadmicYear(acad);
     setBranch(branch);
     setGrade(grade);
@@ -160,6 +192,10 @@ const AllBooksPage = () => {
         setLoading(false);
         setAlert('error', error.message);
       });
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
@@ -279,6 +315,51 @@ const AllBooksPage = () => {
               })}
           </Grid>
         </Paper>
+
+        <Dialog
+          fullScreen
+          open={open}
+          // onClose={handleClose}
+          style={{ zIndex: '10000' }}
+          // TransitionComponent={Transition}
+        >
+          <Grid container>
+            <Grid item sm={12}>
+              <AppBar>
+                <div className={classes.root}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={4} sm={4} md={4} style={{ paddingLeft: 30 }}>
+                      <IconButton
+                        color='inherit'
+                        aria-label='Close'
+                        style={{ color: 'white' }}
+                      >
+                        <Close style={{ color: 'white' }} onClick={handleClose} /> &nbsp;{' '}
+                        <span onClick={handleClose} style={{ fontSize: '17px' }}>
+                          Close
+                        </span>
+                      </IconButton>
+                    </Grid>
+                    <Grid item xs={4} sm={4} md={4}>
+                      <div className='subject-name'>
+                        <h2 style={{ 'text-transform': 'capitalize' }}>{bookName}</h2>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </div>
+              </AppBar>
+
+              <ViewBook
+                bookId={bookId}
+                chapterId={chapterId}
+                bookUid={bookUid}
+                localStorageName={localStorageName}
+                environment={environment}
+                type={type}
+              />
+            </Grid>
+          </Grid>
+        </Dialog>
 
         {booksData && (
           <Grid item xs={12} md={12} style={{ textAlign: 'center' }}>
