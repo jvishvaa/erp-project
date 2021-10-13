@@ -1,41 +1,42 @@
 import React, { useState } from 'react';
-import { Button, Divider,makeStyles } from '@material-ui/core';
+import { Button, Divider, makeStyles } from '@material-ui/core';
 import ReactPlayer from 'react-player';
+import ReactHtmlParser from 'react-html-parser';
 import endpoints from '../../../../config/endpoints';
 import './styles-style.scss';
 
-const useStyles = makeStyles((theme)=>({
-  questionHeader : {
+const useStyles = makeStyles((theme) => ({
+  questionHeader: {
     color: theme.palette.secondary.main,
     fontSize: '1.1rem',
     margin: '10px 0',
   },
-  answersHeader : {
+  answersHeader: {
     color: theme.palette.secondary.main,
     fontSize: '1.1rem',
     margin: '10px 0',
   },
-  questionContainer:{
+  questionContainer: {
     border: '1px solid #dbdbdb',
     padding: '1rem',
     fontSize: '0.9rem',
     borderRadius: '10px',
     margin: '1rem 0',
-    color : `${theme.palette.secondary.main} !important`
+    color: `${theme.palette.secondary.main} !important`,
   },
-  answersContainer:{
-    color : theme.palette.secondary.main
+  answersContainer: {
+    color: theme.palette.secondary.main,
   },
-  option:{
+  option: {
     backgroundColor: '#f3f3f3',
-        padding: "1rem",
-        margin: '1rem 0',
-        borderRadius: '10px',
-        display: 'flex',
-        justifyContent:'space-between',
-        alignItems: 'center',
-  }
-}))
+    padding: '1rem',
+    margin: '1rem 0',
+    borderRadius: '10px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+}));
 
 const menuOptions = [
   'Assign marks',
@@ -80,7 +81,7 @@ function extractContent(s) {
 }
 
 const QuestionView = ({ question, showHeader, index }) => {
-  const classes = useStyles()
+  const classes = useStyles();
   const { question_type: questionType } = question;
   const [expand, setExpand] = useState(true);
   const toggleExpand = () => {
@@ -103,7 +104,7 @@ const QuestionView = ({ question, showHeader, index }) => {
           {questionType == 1 && (
             <div className='mcq-container'>
               <div className={classes.questionContainer}>
-                {extractContent(question.question_answer[0].question)}
+                {ReactHtmlParser(question.question_answer[0].question)}
               </div>
               <div className={classes.answersContainer}>
                 <div className={classes.answersHeader}>Answers</div>
@@ -111,7 +112,7 @@ const QuestionView = ({ question, showHeader, index }) => {
                 <div className='options-container'>
                   {question?.question_answer[0]?.options?.map((optionObj, subIndex) => (
                     <div className={classes.option} key={`option-item-${index}`}>
-                      {extractContent(optionObj[`option${subIndex + 1}`]?.optionValue)}
+                      {ReactHtmlParser(optionObj[`option${subIndex + 1}`]?.optionValue)}
                     </div>
                   ))}
                 </div>
@@ -122,7 +123,7 @@ const QuestionView = ({ question, showHeader, index }) => {
             {questionType == 2 && (
               <div className='mcq-container'>
                 <div className='question-container'>
-                  {extractContent(question.question_answer[0].question)}
+                  {ReactHtmlParser(question.question_answer[0].question)}
                 </div>
                 <div className='answers-container'>
                   <div className={classes.answersHeader}>Answers</div>
@@ -130,7 +131,7 @@ const QuestionView = ({ question, showHeader, index }) => {
                   <div className='options-container'>
                     {question.question_answer[0]?.options.map((optionObj, subIndex) => (
                       <div className='option' key={`option-item-${index}`}>
-                        {extractContent(optionObj[`option${subIndex + 1}`].optionValue)}
+                        {ReactHtmlParser(optionObj[`option${subIndex + 1}`].optionValue)}
                       </div>
                     ))}
                   </div>
@@ -142,7 +143,7 @@ const QuestionView = ({ question, showHeader, index }) => {
           {questionType === 3 && (
             <div className='match-container'>
               <div className='question-container'>
-                {extractContent(question.question_answer[0].question)}
+                {ReactHtmlParser(question.question_answer[0].question)}
               </div>
               <div className='answers-container'>
                 <div className={classes.answersHeader}>Answers Question</div>
@@ -174,7 +175,7 @@ const QuestionView = ({ question, showHeader, index }) => {
           {questionType === 6 && (
             <div className='matrix-container'>
               <div className='question-container'>
-                {extractContent(question.question_answer[0].question)}
+                {ReactHtmlParser(question.question_answer[0].question)}
               </div>
               <div className='answers-container'>
                 <div className={classes.answersHeader}>Answers</div>
@@ -200,7 +201,7 @@ const QuestionView = ({ question, showHeader, index }) => {
           {questionType === 8 && (
             <div className='true-false-container'>
               <div className='question-container'>
-                {extractContent(question.question_answer[0]?.question)}
+                {ReactHtmlParser(question.question_answer[0]?.question)}
               </div>
               <div className='answers-container'>
                 <div className={classes.answersHeader}>Answers</div>
@@ -232,7 +233,7 @@ const QuestionView = ({ question, showHeader, index }) => {
           {questionType === 9 && (
             <div className='fill-in-the-blanks-container'>
               <div className='question-container'>
-                {extractContent(question.question_answer[0]?.question)}
+                {ReactHtmlParser(question.question_answer[0]?.question)}
               </div>
               <div className='answers-container'>
                 <div className={classes.answersHeader}>Answers</div>
@@ -259,7 +260,7 @@ const QuestionView = ({ question, showHeader, index }) => {
           {questionType === 7 && (
             <div className='comprehension-container'>
               <div className='question-container'>
-                {extractContent(question.question_answer[0]?.question)}
+                {ReactHtmlParser(question.question_answer[0]?.question)}
               </div>
               <div className='sub-questions-container'>
                 {question.sub_questions?.map((question, index) => (
@@ -273,14 +274,14 @@ const QuestionView = ({ question, showHeader, index }) => {
           {questionType === 10 && (
             <div className='descriptive-container'>
               <div className='question-container'>
-                {extractContent(question.question_answer[0]?.question)}
+                {ReactHtmlParser(question.question_answer[0]?.question)}
               </div>
               <div className='answers-container'>
                 <div className={classes.answersHeader}>Answers</div>
                 <Divider className='secondary-divider' />
                 <div className='options-container'>
                   <div className='option'>
-                    {extractContent(question.question_answer[0]?.answer)}
+                    {ReactHtmlParser(question.question_answer[0]?.answer)}
                   </div>
                 </div>
               </div>
@@ -289,7 +290,7 @@ const QuestionView = ({ question, showHeader, index }) => {
           {questionType === 4 && (
             <div className='video-container'>
               <div className='question-container'>
-                {extractContent(question?.question_answer[0]?.question)}
+                {ReactHtmlParser(question?.question_answer[0]?.question)}
                 <ReactPlayer
                   playing={false}
                   controls={true}

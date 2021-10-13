@@ -6,6 +6,7 @@ import { IconButton, SvgIcon, Button, Paper, makeStyles } from '@material-ui/cor
 import CloseIcon from '@material-ui/icons/Close';
 import axiosInstance from '../../../../config/axios';
 import './view-more.css';
+import ReactHtmlParser from 'react-html-parser';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import endpoints from '../../../../config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
@@ -14,26 +15,26 @@ import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   rootViewMore: theme.rootViewMore,
-  assesmentQuestions:{
-    fontSize: "1.1rem",
+  assesmentQuestions: {
+    fontSize: '1.1rem',
     color: `${theme.palette.secondary.main} !important`,
-    display: "flex",
+    display: 'flex',
     justifyContent: 'space-between',
     marginLeft: '15px !important',
   },
-  assesmentAnswers:{
-    fontSize: "1.1rem",
+  assesmentAnswers: {
+    fontSize: '1.1rem',
     color: `${theme.palette.secondary.main} !important`,
-    display: "flex",
+    display: 'flex',
     justifyContent: 'space-between',
   },
-  resourceBulkDownload:{
-    fontSize: "1.1rem",
+  resourceBulkDownload: {
+    fontSize: '1.1rem',
     color: `${theme.palette.secondary.main} !important`,
-    display: "flex",
+    display: 'flex',
     justifyContent: 'space-between',
   },
-  questionContainer:{
+  questionContainer: {
     border: '1px solid #dbdbdb',
     padding: '1rem',
     fontSize: '0.9rem',
@@ -41,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     margin: '1rem 0',
     color: theme.palette.secondary.main,
     wordWrap: 'break-word',
-  }
+  },
 }));
 
 const ViewMoreCard = ({
@@ -196,7 +197,7 @@ const ViewMoreCard = ({
           {/* { 
                     Data?.map(p=> (
                     <div className="headerTitle">
-                       {extractContent(p.question )}
+                       {ReactHtmlParser(p.question )}
                     </div> )
                     
                     )}  */}
@@ -232,7 +233,7 @@ const ViewMoreCard = ({
             <div className={classes.questionContainer}>
               {Data?.map((p) => (
                 <div>
-                  {extractContent(p?.question)}
+                  {ReactHtmlParser(p?.question)}
                   <div>
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
                       ?.length > 0 && (
@@ -315,7 +316,7 @@ const ViewMoreCard = ({
             <div className={classes.questionContainer}>
               {Data?.map((p) => (
                 <div>
-                  {extractContent(p.question)}
+                  {ReactHtmlParser(p.question)}
                   {p?.question?.split('"').filter((str) => str.startsWith('https'))
                     ?.length > 0 && (
                     <div>
@@ -440,7 +441,7 @@ const ViewMoreCard = ({
         {periodDataForView?.question_type === 4 && (
           <div>
             <div className={classes.questionContainer}>
-              {extractContent(Data?.[0]?.question)}
+              {ReactHtmlParser(Data?.[0]?.question)}
             </div>
             <ReactPlayer
               playing={false}
@@ -459,7 +460,9 @@ const ViewMoreCard = ({
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>
-                            {extractContent(childQuestions?.question_answer[0]?.question)}
+                            {ReactHtmlParser(
+                              childQuestions?.question_answer[0]?.question
+                            )}
                           </div>
                         </div>
 
@@ -467,7 +470,7 @@ const ViewMoreCard = ({
 
                         <div className={classes.questionContainer}>
                           <div>
-                            {extractContent(childQuestions?.question_answer[0]?.answer)}
+                            {ReactHtmlParser(childQuestions?.question_answer[0]?.answer)}
                           </div>
                         </div>
                       </div>
@@ -483,7 +486,9 @@ const ViewMoreCard = ({
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>
-                            {extractContent(childQuestions?.question_answer[0]?.question)}
+                            {ReactHtmlParser(
+                              childQuestions?.question_answer[0]?.question
+                            )}
                           </div>
                         </div>
                         {/* <div className={classes.resourceBulkDownload}>Answers</div>
@@ -547,7 +552,9 @@ const ViewMoreCard = ({
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>
-                            {extractContent(childQuestions?.question_answer[0]?.question)}
+                            {ReactHtmlParser(
+                              childQuestions?.question_answer[0]?.question
+                            )}
                           </div>
                         </div>
                         <div className={classes.assesmentAnswers}>Answers</div>
@@ -580,7 +587,9 @@ const ViewMoreCard = ({
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
-                            {extractContent(childQuestions?.question_answer[0]?.question)}
+                            {ReactHtmlParser(
+                              childQuestions?.question_answer[0]?.question
+                            )}
                           </div>
                         </div>
                         <div className={classes.assesmentAnswers}>Answers</div>
@@ -664,7 +673,9 @@ const ViewMoreCard = ({
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
-                            {extractContent(childQuestions?.question_answer[0]?.question)}
+                            {ReactHtmlParser(
+                              childQuestions?.question_answer[0]?.question
+                            )}
                           </div>
                         </div>
                         <div className={classes.assesmentAnswers}>Answers</div>
@@ -786,7 +797,9 @@ const ViewMoreCard = ({
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
-                            {extractContent(childQuestions?.question_answer[0]?.question)}
+                            {ReactHtmlParser(
+                              childQuestions?.question_answer[0]?.question
+                            )}
                           </div>
                         </div>
                         <div className={classes.assesmentAnswers}>Answers</div>
@@ -850,7 +863,7 @@ const ViewMoreCard = ({
             <div className={classes.questionContainer}>
               {Data?.map((p) => (
                 <div>
-                  {extractContent(p.question)}
+                  {ReactHtmlParser(p.question)}
                   {p?.question?.split('"').filter((str) => str.startsWith('https'))
                     .length > 0 && (
                     <div>
@@ -951,7 +964,7 @@ const ViewMoreCard = ({
             <div className={classes.questionContainer}>
               {Data?.map((p) => (
                 <div>
-                  {extractContent(p?.question)}
+                  {ReactHtmlParser(p?.question)}
                   {p?.question?.split('"').filter((str) => str.startsWith('https'))
                     ?.length > 0 && (
                     <div>
@@ -997,7 +1010,9 @@ const ViewMoreCard = ({
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
-                            {extractContent(childQuestions?.question_answer[0]?.question)}
+                            {ReactHtmlParser(
+                              childQuestions?.question_answer[0]?.question
+                            )}
                           </div>
                         </div>
 
@@ -1005,7 +1020,7 @@ const ViewMoreCard = ({
 
                         <div className={classes.questionContainer}>
                           <div>
-                            {extractContent(childQuestions?.question_answer[0]?.answer)}
+                            {ReactHtmlParser(childQuestions?.question_answer[0]?.answer)}
                           </div>
                         </div>
                       </div>
@@ -1021,7 +1036,9 @@ const ViewMoreCard = ({
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
-                            {extractContent(childQuestions?.question_answer[0]?.question)}
+                            {ReactHtmlParser(
+                              childQuestions?.question_answer[0]?.question
+                            )}
                           </div>
                         </div>
                         {/* <div className={classes.resourceBulkDownload}>Answers</div>
@@ -1085,7 +1102,9 @@ const ViewMoreCard = ({
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
-                            {extractContent(childQuestions?.question_answer[0]?.question)}
+                            {ReactHtmlParser(
+                              childQuestions?.question_answer[0]?.question
+                            )}
                           </div>
                         </div>
                         <div className={classes.assesmentAnswers}>Answers</div>
@@ -1118,7 +1137,9 @@ const ViewMoreCard = ({
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
-                            {extractContent(childQuestions?.question_answer[0]?.question)}
+                            {ReactHtmlParser(
+                              childQuestions?.question_answer[0]?.question
+                            )}
                           </div>
                         </div>
                         <div className={classes.assesmentAnswers}>Answers</div>
@@ -1202,7 +1223,9 @@ const ViewMoreCard = ({
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
-                            {extractContent(childQuestions?.question_answer[0]?.question)}
+                            {ReactHtmlParser(
+                              childQuestions?.question_answer[0]?.question
+                            )}
                           </div>
                         </div>
                         <div className={classes.assesmentAnswers}>Answers</div>
@@ -1324,7 +1347,9 @@ const ViewMoreCard = ({
                             <span style={{ color: 'red', fontSize: 16 }}>
                               {`Q${indexQue + 1}`}:{' '}
                             </span>{' '}
-                            {extractContent(childQuestions?.question_answer[0]?.question)}
+                            {ReactHtmlParser(
+                              childQuestions?.question_answer[0]?.question
+                            )}
                           </div>
                         </div>
                         <div className={classes.assesmentAnswers}>Answers</div>
@@ -1389,7 +1414,7 @@ const ViewMoreCard = ({
               {Data &&
                 Data?.map((p) => (
                   <div>
-                    {extractContent(p.question)}
+                    {ReactHtmlParser(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
                       ?.length > 0 && (
                       <div>
@@ -1449,7 +1474,7 @@ const ViewMoreCard = ({
               {Data &&
                 Data?.map((p) => (
                   <div>
-                    {extractContent(p.question)}
+                    {ReactHtmlParser(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
                       ?.length > 0 && (
                       <div>
@@ -1528,7 +1553,7 @@ const ViewMoreCard = ({
               {Data &&
                 Data?.map((p) => (
                   <div>
-                    {extractContent(p.question)}
+                    {ReactHtmlParser(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
                       ?.length > 0 && (
                       <div>
@@ -1567,10 +1592,7 @@ const ViewMoreCard = ({
             <div className={classes.assesmentAnswers}>Answers</div>
 
             <div className={classes.questionContainer}>
-              {Data &&
-                Data?.map((p) => (
-                  <div>{extractContent(p?.answer)}</div>
-                ))}
+              {Data && Data?.map((p) => <div>{ReactHtmlParser(p?.answer)}</div>)}
             </div>
           </div>
         )}
