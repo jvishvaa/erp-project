@@ -60,10 +60,15 @@ export default function AssesmentReport(props) {
     grade_scale: gradeScale = {},
   } = Data || {};
 
-  const { categoryRow, constantHeaders, weightRow, categoryAssessmentType } =
-    generateCategoryMap(categoryMap) || {};
+  const {
+    categoryKeys,
+    categoryRow,
+    constantHeaders,
+    weightRow,
+    categoryAssessmentType,
+  } = generateCategoryMap(categoryMap) || {};
 
-  const semesterMarks = generateTermDetails(termDetails, categoryRow?.length) || [];
+  const semesterMarks = generateTermDetails(termDetails, categoryKeys) || [];
 
   const termDetailsSummary =
     generateTermDetailsSummaryRow(termDetails, categoryRow?.length) || [];
