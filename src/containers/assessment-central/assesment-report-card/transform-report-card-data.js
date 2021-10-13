@@ -132,14 +132,22 @@ const generateGradeScale = (gradeScale = {}) => {
   return `${gradeScaleList?.length} Point Grading Scale: ${gradeScaleToDisplay}`;
 };
 
-const getTableHeaderRow = (tableType) => [
+const getTableHeaderRow = (tableType, categoryRowLength) => [
   { backgroundColor: '#7abbbb', value: tableType, colspan: 1 },
-  { backgroundColor: 'rgb(252 179 120)', value: 'SEMESTER 1', colspan: 10 },
-  { backgroundColor: 'rgb(252 179 120)', value: 'SEMESTER 2', colspan: 10 },
+  {
+    backgroundColor: 'rgb(252 179 120)',
+    value: 'SEMESTER 1',
+    colspan: 4 + categoryRowLength,
+  },
+  {
+    backgroundColor: 'rgb(252 179 120)',
+    value: 'SEMESTER 2',
+    colspan: 4 + categoryRowLength,
+  },
   { backgroundColor: 'rgb(170 226 226)', value: 'ANNUAL SCORE/GRADE', colspan: 4 },
 ];
 
-const generateTermDetailsSummaryRow = (termDetails) => {
+const generateTermDetailsSummaryRow = (termDetails, categoryRowLength) => {
   const { semesterOne = {}, semesterTwo = {} } = generateSemesterOneTwo(termDetails);
 
   const {
@@ -155,20 +163,26 @@ const generateTermDetailsSummaryRow = (termDetails) => {
 
   return [
     { value: 'Total' },
-    { value: outOfTotalSemOne ? `Out of ${outOfTotalSemOne}` : '', colSpan: 6 },
+    {
+      value: outOfTotalSemOne ? `Out of ${outOfTotalSemOne}` : '',
+      colSpan: categoryRowLength,
+    },
     { value: totalMarksSemOne },
     { value: finalGradeSemOne },
     { value: '' }, //total sem-1 marks
     { value: '' }, //total sem-1 grade
-    { value: outOfTotalSemTwo ? `Out of ${outOfTotalSemTwo}` : '', colSpan: 6 },
+    {
+      value: outOfTotalSemTwo ? `Out of ${outOfTotalSemTwo}` : '',
+      colSpan: categoryRowLength,
+    },
     { value: totalMarksSemTwo },
     { value: finalGradeSemTwo },
     { value: '' }, //total sem-2 marks
     { value: '' }, //total sem-2 grade
-    { value: '534' },
-    { value: 'B1' },
-    { value: '3' },
-    { value: '9' },
+    { value: '' },
+    { value: '' },
+    { value: '' },
+    { value: '' },
   ];
 };
 
