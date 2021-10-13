@@ -132,38 +132,196 @@ function CorrectionComponent({
     viewWidth,
   ]);
 
+  // const drawRotated = useCallback(() => {
+  //   // let coX = '10px'
+  //   // let ratio = '300'
+  //   const { sX, sY, zoomAction, m } = zoom;
+
+  //   let margin = '5% 0% 0% 3%';
+
+  //   if (hRef && hRef.current && wRef && wRef.current) {
+  //     if (wRef.current > 1300) {
+  //       margin = '5% 0% 0% 0%';
+  //     }
+  //     // ratio = (wRef.current - hRef.current) / 2 + 20
+  //   }
+  //   if (
+  //     angleInDegrees === 270 ||
+  //     angleInDegrees === -270 ||
+  //     angleInDegrees === 90 ||
+  //     angleInDegrees === -90
+  //   ) {
+  //     // coX = `-${ratio}px`
+  //     margin = '32% 0% 0% 0%';
+  //     let v = marginStyleAngle[String(sX)];
+  //     if (sX <= 1) {
+  //       margin = '0%';
+  //     } else {
+  //       margin = sX <= 1.5 ? `${v}` : margin;
+  //     }
+  //   } else {
+  //     let v = marginStyleAngleReverse[String(sX)];
+
+  //     margin = sX <= 1.5 ? `${v}` : margin;
+  //   }
+
+  //   let style = {
+  //     width: containerWidth,
+  //     height: fullscreen ? 'calc(100vh - 46px)' : 'calc(100vh - 46px)',
+  //     overflow: 'auto',
+  //     // transform: `rotate(${angleInDegrees}deg)`,
+  //     margin: margin,
+  //      };
+
+  //   if (extenstion === 'pdf') {
+  //     let v = marginPDFStyle[String(sX)];
+  //     margin = '5% auto';
+  //     margin = sX >= 1.5 ? `${v}` : margin;
+
+  //     style.margin = margin;
+  //   }
+
+  //   if (hRef && hRef.current && wRef && wRef.current && extenstion !== 'pdf') {
+  //     if (hRef && hRef.current && wRef && wRef.current < window.innerWidth) {
+  //       if (
+  //         angleInDegrees === 270 ||
+  //         angleInDegrees === -270 ||
+  //         angleInDegrees === 90 ||
+  //         angleInDegrees === -90
+  //       ) {
+  //         let v = marginStyleAngle[String(sX)];
+  //         margin = '32% auto';
+  //         margin = sX >= 1.5 ? `${v}` : margin;
+  //         style.margin = margin;
+  //       } else {
+  //         let v = marginStyleBelowWindowSize[String(sX)];
+  //         margin = '10% auto';
+  //         margin = sX >= 1.5 ? `${v}` : margin;
+  //         style.margin = margin;
+  //       }
+  //     }
+  //   }
+
+  //   let x = sX || 1;
+
+  //   let y = sY || 1;
+
+  //   style.transform =
+  //     zoomAction === 'zoom in'
+  //       ? `rotate(${angleInDegrees}deg) scale(${x},${y})`
+  //       : `rotate(${angleInDegrees}deg)scale(${x},${y})`;
+
+
+  //   setStyle(style);
+  // }, [angleInDegrees, containerHeight, containerWidth, extenstion, fullscreen, zoom]);
+
   const drawRotated = useCallback(() => {
     // let coX = '10px'
     // let ratio = '300'
-    const { sX, sY, zoomAction, m } = zoom;
+    var { sX, sY, zoomAction, m } = zoom;
 
     let margin = '5% 0% 0% 3%';
 
     if (hRef && hRef.current && wRef && wRef.current) {
-      if (wRef.current > 1300) {
-        margin = '5% 0% 0% 0%';
+      if (hRef.current < 1000) {
+        if (sX < 1) {
+          sX = 1.5
+          sY = 1.5
+          margin = '7% 0% 0% 0%'
+        } else if (sX == 1) {
+          margin = '7% 0% 0% 0%'
+        } else if (sX == 1.5) {
+          margin = '20% auto'
+        } else if (sX == 3) {
+          sX = 1.7
+          sY = 1.7
+          margin = '25% auto'
+        }
+        
+      } else if (hRef.current > 1000) {
+        if (sX < 1) {
+          sX = 1
+          sY = 1
+          margin = '7% 0% 0% 0%'
+        } else if (sX == 1) {
+          margin = '7% 0% 0% 0%'
+        } else if (sX == 1.5) {
+          if(angleInDegrees === 0)  margin = '0% 40% auto'
+          else margin = '8% auto'
+        } else if (sX == 3) {
+          if(angleInDegrees === 0)  margin = '0% 42% 0 40%'
+          else margin = '36% 33% 0 40%'
+        }
+        if (
+          (angleInDegrees === 270 ||
+          angleInDegrees === -270 ||
+          angleInDegrees === 90 ||
+          angleInDegrees === -90) && sX == 1
+        ) {
+          margin = '0% 0% 0% 0%';
+        }else  if (
+          (angleInDegrees === 270 ||
+          angleInDegrees === -270 ||
+          angleInDegrees === 90 ||
+          angleInDegrees === -90) && sX == 1.5
+        ){
+          margin = '5% 0% 0% 10%';
+        }
+        else  if (
+          (
+          angleInDegrees === -270 ||
+          angleInDegrees === 90 ) && sX == 3
+        ){
+          margin = '18% 15% 0% 0%';
+        }
+        else if (
+          (angleInDegrees === 270 ||
+          angleInDegrees === -90) && sX == 3
+        ){
+          margin = '18% 0% 0% 45%';
+        }
+        else if (
+          (angleInDegrees === 180 ||
+          angleInDegrees === -180) &&sX == 1
+        ){
+          margin = '0% 0% 0% 0%';
+        }else if (
+          (angleInDegrees === 180 ||
+          angleInDegrees === -180) && sX == 1.5
+        ){
+          margin = '0%';
+        }else if (
+          (angleInDegrees === 180 ||
+          angleInDegrees === -180) && sX == 3
+        ){
+          margin = '5% 0% 0% 0%';
+        }
+    
+
       }
       // ratio = (wRef.current - hRef.current) / 2 + 20
     }
-    if (
-      angleInDegrees === 270 ||
-      angleInDegrees === -270 ||
-      angleInDegrees === 90 ||
-      angleInDegrees === -90
-    ) {
-      // coX = `-${ratio}px`
-      margin = '32% 0% 0% 0%';
-      let v = marginStyleAngle[String(sX)];
-      if (sX <= 1) {
-        margin = '0%';
-      } else {
-        margin = sX <= 1.5 ? `${v}` : margin;
-      }
-    } else {
-      let v = marginStyleAngleReverse[String(sX)];
+    // if (
+    //   (angleInDegrees === 270 ||
+    //   angleInDegrees === -270 ||
+    //   angleInDegrees === 90 ||
+    //   angleInDegrees === -90) && sX == 1
+    // ) {
+    //   // coX = `-${ratio}px`
+    //   margin = '26% 0% 0% 0%';
+    //   //   let v = marginStyleAngle[String(sX)];
+    //   //   if (sX <= 1) {
+    //   //     margin = '0%';
+    //   //   } else {
+    //   //     margin = sX <= 1.5 ? `${v}` : margin;
+    //   //   }
+    //   // } else {
+    //   //   let v = marginStyleAngleReverse[String(sX)];
 
-      margin = sX <= 1.5 ? `${v}` : margin;
-    }
+    //   //   margin = sX <= 1.5 ? `${v}` : margin;
+    // }
+
+
 
     let style = {
       width: containerWidth,
@@ -176,31 +334,32 @@ function CorrectionComponent({
     if (extenstion === 'pdf') {
       let v = marginPDFStyle[String(sX)];
       margin = '5% auto';
-      margin = sX >= 1.5 ? `${v}` : margin;
+      // margin = sX >= 1.5 ? `${v}` : '7% auto';
+      // margin = sX >= 3 ? `${v}` : '10% auto';
 
       style.margin = margin;
     }
 
-    if (hRef && hRef.current && wRef && wRef.current && extenstion !== 'pdf') {
-      if (hRef && hRef.current && wRef && wRef.current < window.innerWidth) {
-        if (
-          angleInDegrees === 270 ||
-          angleInDegrees === -270 ||
-          angleInDegrees === 90 ||
-          angleInDegrees === -90
-        ) {
-          let v = marginStyleAngle[String(sX)];
-          margin = '32% auto';
-          margin = sX >= 1.5 ? `${v}` : margin;
-          style.margin = margin;
-        } else {
-          let v = marginStyleBelowWindowSize[String(sX)];
-          margin = '10% auto';
-          margin = sX >= 1.5 ? `${v}` : margin;
-          style.margin = margin;
-        }
-      }
-    }
+    // if (hRef && hRef.current && wRef && wRef.current && extenstion !== 'pdf') {
+    //   if (hRef && hRef.current && wRef && wRef.current < window.innerWidth) {
+    //     if (
+    //       angleInDegrees === 270 ||
+    //       angleInDegrees === -270 ||
+    //       angleInDegrees === 90 ||
+    //       angleInDegrees === -90
+    //     ) {
+    //       let v = marginStyleAngle[String(sX)];
+    //       margin = '32% auto';
+    //       margin = sX >= 1.5 ? `${v}` : margin;
+    //       style.margin = margin;
+    //     } else {
+    //       let v = marginStyleBelowWindowSize[String(sX)];
+    //       margin = '10% auto';
+    //       margin = sX >= 1.5 ? `${v}` : margin;
+    //       style.margin = margin;
+    //     }
+    //   }
+    // }
 
     let x = sX || 1;
 
@@ -218,6 +377,7 @@ function CorrectionComponent({
   useEffect(() => {
     drawRotated();
   }, [angleInDegrees, drawRotated]);
+
 
   useEffect(() => {
     if (pageRef && pageRef.current) {

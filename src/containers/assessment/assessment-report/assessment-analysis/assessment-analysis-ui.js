@@ -40,7 +40,7 @@ const useStyles = makeStyles(() => ({
     border: '1px solid #E2E2E2',
     margin: '1rem 0',
   },
-  title: {  fontSize: '1.1rem', whiteSpace: 'pre-line' },
+  title: { fontSize: '1.1rem', whiteSpace: 'pre-line' },
   chartContainer: {
     margin: 1,
     padding: 5,
@@ -104,7 +104,7 @@ const AssessmentAnalysisUI = (props) => {
         />
         <Box m={{ xs: '1rem', sm: '2rem' }} className={classes.root}>
           <hr className={classes.hr} />
-          <Typography variant='h6' color ="secondary" className={classes.title}>
+          <Typography variant='h6' color="secondary" className={classes.title}>
             Analysis
           </Typography>
 
@@ -194,6 +194,13 @@ const AssessmentAnalysisUI = (props) => {
                       </Typography>
                     </div>
                   </Box>
+                </Grid>
+                <Grid container style={{ marginTop: "5%" }}>
+                  <Grid item sm={6} md={3}>
+                    <Button variant='contained' onClick={() => (window.history.back())}>
+                      Back
+                    </Button>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>

@@ -95,7 +95,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const grade = params.grade;
 
 
-  useEffect(() => {   
+  useEffect(() => { 
 if(location?.state?.isEdit){
   // setisEdit(location.state.isEdit)
   // sethwId(location.state.viewHomework.homeworkId)
@@ -107,7 +107,7 @@ if(location?.state?.isEdit){
       id: cuid(),
       is_attachment_enable: false,
       max_attachment: 2,
-      penTool: false,
+      penTool: data.is_pen_editor_enable,
       question:data.question,
       attachments:data.question_files
     }

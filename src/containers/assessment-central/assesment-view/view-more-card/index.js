@@ -32,13 +32,13 @@ const useStyles = makeStyles((theme) => ({
   expanded: {
     margin: '10px auto',
   },
-  resourceBulkDownload:{
+  resourceBulkDownload: {
     fontSize: '1.1rem',
     color: theme.palette.primary.main,
     display: 'flex',
     justifyContent: 'space-between',
     padding: '10px',
-  }
+  },
 }));
 
 const ViewMoreCard = ({

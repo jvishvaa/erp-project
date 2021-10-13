@@ -37,6 +37,11 @@
 #editor-evaluvation-container {
   position: relative;
   top: 0px;
+  transform-origin: initial;
+  display: "flex";
+  align-items : 'center';
+  justify-content : 'center';
+  border: 'black';
 }
 .img-magnifier-glass {
   position: absolute;
@@ -49,7 +54,7 @@
 }
 .evaluvation_parent_container {
   height: calc(100% - 64px);
-  margin-top: -56px;
+  /* margin-top: -56px; */
   border: black;
 }
 
