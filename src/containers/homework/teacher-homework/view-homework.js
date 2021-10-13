@@ -71,18 +71,18 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto',
     bottom: 0,
   },
-  navCard:{
-    border : `1px solid ${theme.palette.primary.main}`,
-    color : theme.palette.secondary.main,
-  }, 
-  navCard1:{
-    color : theme.palette.secondary.main,
+  navCard: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    color: theme.palette.secondary.main,
   },
-  homeworkblock:{
-    color : theme.palette.secondary.main,
+  navCard1: {
+    color: theme.palette.secondary.main,
+  },
+  homeworkblock: {
+    color: theme.palette.secondary.main,
     fontWeight: 600
   },
-   headerText: {
+  headerText: {
     color: theme.palette.secondary.main,
     fontWeight: 600,
     fontSize: "1rem",
@@ -90,8 +90,8 @@ const useStyles = makeStyles((theme) => ({
       fontSize: "0.85rem",
     }
   },
-  homeworkSubmitwrapper:{
-    border: `1px solid ${theme.palette.primary.main}`,  
+  homeworkSubmitwrapper: {
+    border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: "10px",
     padding: "20px",
     ['@media screen(min-width:780px)']: {
@@ -115,9 +115,8 @@ const ViewHomework = withRouter(
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
     const classes = useStyles();
-    console.log(viewHomework,'ViewHomework1')
-
-    const {subjectId, date, subjectName, homeworkId,sessionYear,grade,branch } = viewHomework || {};
+    console.log(viewHomework, 'ViewHomework1')
+    const { subjectId, date, subjectName, homeworkId, sessionYear, grade, branch } = viewHomework || {};
     const [isQuestionWise, setIsQuestionWise] = useState(false);
     const [loading, setLoading] = useState(false);
     const { setAlert } = useContext(AlertNotificationContext);
@@ -129,35 +128,40 @@ const ViewHomework = withRouter(
         scrollableContainer.current.scrollLeft += 150;
       }
     };
-    const [isEdit,setisEdit] = useState(false)
+    const [isEdit, setisEdit] = useState(false)
     const onEdit = () => {
       setisEdit(true)
       history.push({
         pathname: `/homework/add/${date}/${sessionYear}/${branch}/${grade}/${subjectName}/${subjectId}`,
-        state:{isEdit : true,viewHomework: viewHomework,selectedHomeworkDetails: selectedHomeworkDetails} ,
+        state: { isEdit: true, viewHomework: viewHomework, selectedHomeworkDetails: selectedHomeworkDetails },
       });
     }
 
     const handleDelete = () => {
+      let current_user = localStorage.getItem("userDetails")
+      if (JSON.parse(current_user).user_id !== selectedHomeworkDetails?.uploaded_by) {
+        setAlert('error', "Not Authorized");
+        return;
+      }
       setLoading(true);
-        axiosInstance
-          .delete(
-            `${endpoints.homework.hwDelete}${viewHomework.homeworkId}/hw-questions/`
-          )
-          .then((result) => {
-            if (result.data.status_code === 200) {
-              onClose();
-              setAlert('success', result.data?.message);
-              setLoading(false);
-            } else {
-              setAlert('error', result.data?.message);
-              setLoading(false);
-            }
-          })
-          .catch((error) => {
-            setAlert('error', "error1");
+      axiosInstance
+        .delete(
+          `${endpoints.homework.hwDelete}${viewHomework.homeworkId}/hw-questions/`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            onClose();
+            setAlert('success', result.data?.message);
             setLoading(false);
-          });
+          } else {
+            setAlert('error', result.data?.message);
+            setLoading(false);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', "error1");
+          setLoading(false);
+        });
     };
 
     useEffect(() => {
@@ -171,14 +175,14 @@ const ViewHomework = withRouter(
             <div className='nav-cards-container'>
               <div className={` ${classes.navCard} nav-card`} onClick={onClose}>
                 <div className={` ${classes.headerText} text-center`} >
-                  <Button 
-                  style={{ background : 'white'  }}
-                  className="allHomeWorkButton"
-                  className={classes.navCard1}
+                  <Button
+                    style={{ background: 'white' }}
+                    className="allHomeWorkButton"
+                    className={classes.navCard1}
                   >
-                  All Homeworks
+                    All Homeworks
                   </Button>
-                  </div>
+                </div>
               </div>
               <div className={` ${classes.navCard} nav-card`}>
                 <div className={` ${classes.headerText} text-center`}>
@@ -231,7 +235,7 @@ const ViewHomework = withRouter(
                   variant="contained"
                   color="secondary"
                   onClick={onEdit}
-                  style={{color : 'white',marginRight : '20px'}}
+                  style={{ color: 'white', marginRight: '20px' }}
                 >
                   Edit
                 </Button>
@@ -239,7 +243,7 @@ const ViewHomework = withRouter(
                   variant="contained"
                   color="secondary"
                   onClick={handleDelete}
-                  style={{backgroundColor:'red',color : 'white'}}
+                  style={{ backgroundColor: 'red', color: 'white' }}
                   startIcon={<DeleteIcon />}
                 >
                   Delete
