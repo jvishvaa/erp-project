@@ -493,7 +493,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     },
     {
       name: 'Books & Uniform',
-      Path : '/finance/student_store'
+      Path: '/finance/student_store'
     },
     {
       name: 'Shipping Payment',
@@ -522,6 +522,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
     {
       name: 'Order Status Upload',
       Path: '/Store/OrderStatusUpload',
+    },
+    {
+      name: 'Connection pod',
+      Path: '/online-class/connection-pod'
     },
   ];
 
@@ -653,7 +657,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
                 style={{ background: 'none' }}
                 className={
                   selectedIndex &&
-                  child.child_name === menuSelectionArray[selectedIndex].name
+                    child.child_name === menuSelectionArray[selectedIndex].name
                     ? classes.menuSelectionText
                     : classes.menuItemhover
                 }
