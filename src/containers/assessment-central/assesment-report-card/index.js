@@ -5,12 +5,7 @@ import { Paper, makeStyles } from '@material-ui/core';
 import PersonalityTraitTable from './report-table-personality-trait';
 import ReportCardFooter from './report-card-footer';
 import ReportCardHeader from './report-card-header';
-import TableTypeFooter from './tableTypeFooter';
-import {
-  generateGradeScale,
-  generateCategoryMap,
-  getOverallRemark,
-} from './transform-report-card-data';
+import { getOverallRemark } from './transform-report-card-data';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,23 +33,7 @@ const AssesmentReport = ({ reportCardData }) => {
     user_info: userInfo = {},
   } = reportCardData || {};
 
-  const {
-    grade_scale: scholasticGradeScale = {},
-    category_map: scholasticCategoryMap = {},
-    term_details: termDetails = {},
-  } = scholastic || {};
-  const {
-    grade_scale: coScholasticGradeScale = {},
-    category_map: coScholasticCategoryMap = {},
-  } = coScholastic || {};
-
-  const SCHOLASTIC_GRADE_SCALE = generateGradeScale(scholasticGradeScale);
-  const CO_SCHOLASTIC_GRADE_SCALE = generateGradeScale(coScholasticGradeScale);
-
-  const { categoryAssessmentType: SCHOLASTIC_CATEGORY_ASSESSMENT } =
-    generateCategoryMap(scholasticCategoryMap);
-  const { categoryAssessmentType: CO_SCHOLASTIC_CATEGORY_ASSESSMENT } =
-    generateCategoryMap(coScholasticCategoryMap);
+  const { term_details: termDetails = {} } = scholastic || {};
 
   return (
     <>
@@ -63,15 +42,7 @@ const AssesmentReport = ({ reportCardData }) => {
           <ReportCardHeader schoolData={schoolInfo} />
           <StudentDetails userInfo={userInfo} />
           <ReportTable TableType={'SCHOLASTIC'} Data={scholastic} />
-          <TableTypeFooter
-            gradeScale={SCHOLASTIC_GRADE_SCALE}
-            categoryAssessment={SCHOLASTIC_CATEGORY_ASSESSMENT}
-          />
           <ReportTable TableType={'CO-SCHOLASTIC'} Data={coScholastic} />
-          <TableTypeFooter
-            gradeScale={CO_SCHOLASTIC_GRADE_SCALE}
-            categoryAssessment={CO_SCHOLASTIC_CATEGORY_ASSESSMENT}
-          />
           {/* <PersonalityTraitTable /> */}
           {/* <TableTypeFooter gradeScale={CO_SCHOLASTIC_GRADE_SCALE} /> */}
           <ReportCardFooter {...getOverallRemark(termDetails)} />

@@ -18,6 +18,7 @@ import { AlertNotificationContext } from '../../../../context-api/alert-context/
 import './assessment-report-filters.css';
 import { result } from 'lodash';
 import FileSaver from 'file-saver';
+import { getReportCardStatus } from '../../report-card/apis';
 
 let url = '';
 const AssessmentReportFilters = ({
@@ -51,6 +52,8 @@ const AssessmentReportFilters = ({
     topic: [],
     erp: [],
   });
+  const [isLoading, setIsLoading] = useState(null);
+  const [mappingList, setMappingList] = useState([]);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -68,7 +71,27 @@ const AssessmentReportFilters = ({
         }
       });
     }
+    fetchReportCardStatus();
   }, []);
+
+  const checkReportAvailable = (branchId, gradeId) => {
+    return mappingList.some(({ branch_details = {}, grade_details = {}, status }) => {
+      const { branch_id = '' } = branch_details || {};
+      const { grade_id = '' } = grade_details || {};
+      return branch_id === branchId && grade_id === gradeId && status === '2';
+    });
+  };
+
+  const fetchReportCardStatus = async () => {
+    try {
+      const {
+        result = [],
+        message = 'Error',
+        status_code: status = 400,
+      } = await getReportCardStatus();
+      setMappingList(result);
+    } catch (err) {}
+  };
 
   const [filterData, setFilterData] = useState({
     branch: '',
@@ -307,6 +330,7 @@ const AssessmentReportFilters = ({
   }
 
   const getERP = (branchId, gradeId, sectionId) => {
+    setIsLoading(true);
     const {
       personal_info: { role = '' },
     } = userDetails || {};
@@ -323,8 +347,11 @@ const AssessmentReportFilters = ({
             };
           });
         }
+        setIsLoading(null);
       })
-      .catch((error) => {});
+      .catch((error) => {
+        setIsLoading(null);
+      });
   };
 
   const handleAcademicYear = (event, value) => {
@@ -405,18 +432,26 @@ const AssessmentReportFilters = ({
     });
     if (value) {
       setFilterData({ ...filterData, grade: value });
-      if (
-        selectedReportType.id === 3 ||
-        selectedReportType.id === 4 ||
-        selectedReportType.id === 5
-      ) {
+      if (selectedReportType.id === 3 || selectedReportType.id === 4) {
         getSection(
           selectedAcademicYear?.id,
           filterData.branch?.branch?.id,
           value?.grade_id
         );
       }
-      getSubject(filterData.branch?.id, value?.grade_id);
+      if (selectedReportType.id !== 5) {
+        getSubject(filterData.branch?.id, value?.grade_id);
+      } else {
+        if (checkReportAvailable(filterData.branch?.branch?.id, value?.grade_id)) {
+          getSection(
+            selectedAcademicYear?.id,
+            filterData.branch?.branch?.id,
+            value?.grade_id
+          );
+        } else {
+          setAlert('error', 'Report Card not published yet');
+        }
+      }
     }
   };
 
@@ -424,7 +459,11 @@ const AssessmentReportFilters = ({
     setFilterData({ ...filterData, section: '' });
     if (value) {
       if (selectedReportType.id === 5) {
-        getERP(filterData.branch?.branch?.id, filterData.grade?.grade_id, value?.section_id);
+        getERP(
+          filterData.branch?.branch?.id,
+          filterData.grade?.grade_id,
+          value?.section_id
+        );
       }
       setFilterData({ ...filterData, section: value });
     }
@@ -830,7 +869,7 @@ const AssessmentReportFilters = ({
           filterData.branch &&
           filterData.grade &&
           filterData.section &&
-          dropdownData.erp?.length === 0 && (
+          isLoading && (
             <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
               <Box style={{ display: 'flex', justifyContent: 'space-around' }}>
                 <CircularProgress size={26} thickness={4} />

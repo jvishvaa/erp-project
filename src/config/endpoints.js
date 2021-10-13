@@ -344,6 +344,7 @@ export default {
     getGrievenceErpList: '/academic/greivance-reply-list/',
   },
   studentViewBatchesApi: {
+    onclsAcessCheck: "/academic/onine_class_access_blocker_check/",
     getBatchesApi: '/erp_user/student_online_class/v3/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },

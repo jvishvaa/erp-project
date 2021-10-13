@@ -453,7 +453,7 @@ const ViewBook = (props) => {
         }}
       >
         <iframe
-          src={`https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}${chapterId}?vi=0`}
+          src={`https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}?vi=0`}
           // src={`https://dev.olvorchidnaigaon.letseduvate.com/ibook-static/${bookPath}${bookUrl}${chapterId}?vi=0`}
           id='bookReader'
           className='bookReader'

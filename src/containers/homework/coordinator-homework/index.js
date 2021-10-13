@@ -232,14 +232,22 @@ const CoordinatorTeacherHomework = withRouter(
     }, []);
 
     useEffect(()=>{
-     
+      if(teacherModuleId){
       const managementTeacher= JSON.parse(localStorage.getItem('managementTeacher'));
           handleBranch("",managementTeacher?.selectedBranch);
           handleSection("",managementTeacher?.selectedSection);
           handleGrade("",managementTeacher?.selectedGrade);
-          handleCoordinateTeacher("",managementTeacher?.selectedTeacher);
-         
-    },[]);
+          // handleCoordinateTeacher("",managementTeacher?.selectedTeacher);
+          // let teacherModuleId=managementTeacher?.teacherModuleId;
+      }
+    },[teacherModuleId]);
+    useEffect(() => {
+      if(selectedBranch && gradeDisplay && sectionDisplay){
+        const managementTeacher= JSON.parse(localStorage.getItem('managementTeacher'));
+        handleCoordinateTeacher("",managementTeacher?.selectedTeacher);
+      }
+    }, [selectedBranch,gradeDisplay,sectionDisplay])
+
 
     const handleViewHomework = ({
       date,
@@ -322,7 +330,7 @@ const CoordinatorTeacherHomework = withRouter(
       try {
         setLoading(true);
         // alert(2, startDate, endDate);
-        const result = await axiosInstance.get(`${endpoints.coordinatorTeacherHomeworkApi.getAllTeacherList}?section_mapping=${sectionDisplay?.id}`,
+        const result = await axiosInstance.get(`${endpoints.coordinatorTeacherHomeworkApi.getAllTeacherList}?section_mapping=${sectionDisplay?.id}&module_id=${teacherModuleId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -332,17 +340,17 @@ const CoordinatorTeacherHomework = withRouter(
         // const resultOptions = [];
         if (result.status === 200) {
           setSelectedCoTeacherOpt(result.data.result);
-          setselectedCoTeacherOptValue(result.data.result[0]);
-          let newCoorTechID = result.data.result[0].user_id;
-          setSelectedTeacherUser_id(result.data.result[0].user_id);
+          // setselectedCoTeacherOptValue(result.data.result[0]);
+          let newCoorTechID = result?.data?.result[0]?.user_id;
+          setSelectedTeacherUser_id(result.data.result[0]?.user_id);
           setFirstTeacherUserIdOnloadCordinatorHomewok(result.data.result[0]);
 
           if (selectedTeacherByCoordinatorToCreateHw !== false) {
             let myResult = result.data.result.filter(
-              (item) => item.user_id == selectedTeacherByCoordinatorToCreateHw
+              (item) => item?.user_id == selectedTeacherByCoordinatorToCreateHw
             );
 
-            newCoorTechID = myResult[0].user_id;
+            newCoorTechID = myResult[0]?.user_id;
             setselectedCoTeacherOptValue(myResult[0]);
             setSelectedTeacherUser_id(newCoorTechID);
             setFirstTeacherUserIdOnloadCordinatorHomewok(myResult[0]);
@@ -376,6 +384,9 @@ const CoordinatorTeacherHomework = withRouter(
     };
 
     const handleCoordinateTeacher = (e, value) => {
+      // console.log("value123",value,teacherModuleId);
+      // console.log("value1234",teacherModuleId)
+      // const managementTeacher= JSON.parse(localStorage.getItem('managementTeacher'));
       if (value?.user_id > 0 && selectedAcademicYear?.id && selectedBranch?.id && gradeDisplay?.id, sectionDisplay?.id) {
         setFirstTeacherUserIdOnloadCordinatorHomewok(value);
         setSelectedTeacherUser_id(value?.user_id);
@@ -389,11 +400,10 @@ const CoordinatorTeacherHomework = withRouter(
           sectionDisplay.section_id,
           startDate,
           endDate,
-          value.user_id
+          value?.user_id
         );
-        setData(value);
       }
-    
+      setData(value);
     };
 
     const downloadGetTeacherPerformanceListApi = async () => {
@@ -552,6 +562,7 @@ const CoordinatorTeacherHomework = withRouter(
           grade: '',
           section: '',
         });
+        // const managementTeacher= JSON.parse(localStorage.getItem('managementTeacher'));
         // endpoints.masterManagement.gradesDrop
         axiosInstance.get(`${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${value.branch.id}&module_id=${teacherModuleId}`)
           .then((result) => {

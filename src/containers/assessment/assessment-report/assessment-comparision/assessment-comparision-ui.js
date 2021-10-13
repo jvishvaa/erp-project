@@ -21,6 +21,7 @@ const useStyles = makeStyles(() => ({
     // boxShadow: 'none',
   },
   comparenowBtn: {
+    marginLeft: '0.3rem',
     padding: '0.3rem 1rem',
     borderRadius: '0.6rem',
     fontSize: '0.9rem',
@@ -157,6 +158,14 @@ const TestComparisionUI = () => {
             </Grid>
           </Grid>
           <br />
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={() => window.history.back()}
+            className={classes.comparenowBtn}
+          >
+            Back
+          </Button>
           <Button
             variant='contained'
             color='primary'

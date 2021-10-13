@@ -1,19 +1,31 @@
-const getSubjectWiseMarks = (length, marks) => {
-  const subjectWiseMarks = Array.from({ length }, () => '');
-  Object.entries(marks).forEach(([key, value]) => (subjectWiseMarks[key - 1] = value));
-  return subjectWiseMarks;
+const getSubjectWiseMarks = (marks, categoryKeys) => {
+  const length = categoryKeys?.length || 0;
+  const subjectWiseMarks = Array.from({ length }, (element, index) => ({
+    id: categoryKeys[index],
+    value: '',
+  }));
+  categoryKeys.forEach((key) => {
+    subjectWiseMarks.forEach(({ id }, index, arr) =>
+      key === id ? (arr[index]['value'] = marks[+key]) : null
+    );
+  });
+  const marksList = subjectWiseMarks.map(({ value = '' }) => value);
+  // const subjectWiseMarks = Array.from({ length }, () => '');
+  // Object.entries(marks).forEach(([key, value]) => (subjectWiseMarks[key - 1] = value));
+  return marksList;
 };
 
-const generateSemesterMarks = (subjectWiseMarks, categoryRowLength) =>
-  Object.values(subjectWiseMarks).map(
+const generateSemesterMarks = (subjectWiseMarks, categoryKeys) => {
+  return Object.values(subjectWiseMarks).map(
     ({ air = '', grade = '', osr = '', total = '', marks = {} }) => [
-      ...getSubjectWiseMarks(categoryRowLength, marks),
+      ...getSubjectWiseMarks(marks, categoryKeys),
       total,
       grade,
       osr,
       air,
     ]
   );
+};
 
 const generateSemesterOneTwo = (termDetails) => {
   const transformedTermDetails = Object.values(termDetails).map(
@@ -45,11 +57,14 @@ const generateCategoryMap = (categoryMap) => {
       key,
       { assessment_type: assessmentType = '', name: category = '', weight = '' },
     ]) => ({
+      key,
       assessmentType,
       category,
       weight,
     })
   );
+
+  const categoryKeys = [...transformedCategoryType.map(({ key }) => key)];
 
   //category headers
   const categoryRow = [...transformedCategoryType.map(({ category }) => category)];
@@ -67,14 +82,21 @@ const generateCategoryMap = (categoryMap) => {
   //category-assessmentType data
   const categoryAssessmentType = [
     ...transformedCategoryType.map(
-      ({ category, assessmentType }) => `${category}-${assessmentType}`
+      ({ category = '', assessmentType = [] }) =>
+        `${category}-${assessmentType.join('/')}`
     ),
   ].join(', ');
-  return { categoryRow, constantHeaders, weightRow, categoryAssessmentType };
+  return {
+    categoryKeys,
+    categoryRow,
+    constantHeaders,
+    weightRow,
+    categoryAssessmentType,
+  };
 };
 
 /*transforming termDetails as per usage*/
-const generateTermDetails = (termDetails, categoryRowLength) => {
+const generateTermDetails = (termDetails, categoryKeys) => {
   const { semesterOne = {}, semesterTwo = {} } = generateSemesterOneTwo(termDetails);
   const { subjectMarks: subjectMarksSemesterOne = {} } = semesterOne || {};
   const { subjectMarks: subjectMarksSemesterTwo = {} } = semesterTwo || {};
@@ -83,15 +105,15 @@ const generateTermDetails = (termDetails, categoryRowLength) => {
 
   let semesterOneSubjectWiseMarks = generateSemesterMarks(
     subjectMarksSemesterOne,
-    categoryRowLength
+    categoryKeys
   );
   let semesterTwoSubjectWiseMarks = generateSemesterMarks(
     subjectMarksSemesterTwo,
-    categoryRowLength
+    categoryKeys
   );
 
-  const semOneLength = semesterOneSubjectWiseMarks?.length;
-  const semTwoLength = semesterTwoSubjectWiseMarks?.length;
+  const semOneLength = semesterOneSubjectWiseMarks?.length || 0;
+  const semTwoLength = semesterTwoSubjectWiseMarks?.length || 0;
 
   //To check if semester 2 is not present and if present the number of subjects are not equal
   if (semOneLength !== semTwoLength) {
@@ -132,14 +154,22 @@ const generateGradeScale = (gradeScale = {}) => {
   return `${gradeScaleList?.length} Point Grading Scale: ${gradeScaleToDisplay}`;
 };
 
-const getTableHeaderRow = (tableType) => [
+const getTableHeaderRow = (tableType, categoryRowLength) => [
   { backgroundColor: '#7abbbb', value: tableType, colspan: 1 },
-  { backgroundColor: 'rgb(252 179 120)', value: 'SEMESTER 1', colspan: 10 },
-  { backgroundColor: 'rgb(252 179 120)', value: 'SEMESTER 2', colspan: 10 },
+  {
+    backgroundColor: 'rgb(252 179 120)',
+    value: 'SEMESTER 1',
+    colspan: 4 + categoryRowLength,
+  },
+  {
+    backgroundColor: 'rgb(252 179 120)',
+    value: 'SEMESTER 2',
+    colspan: 4 + categoryRowLength,
+  },
   { backgroundColor: 'rgb(170 226 226)', value: 'ANNUAL SCORE/GRADE', colspan: 4 },
 ];
 
-const generateTermDetailsSummaryRow = (termDetails) => {
+const generateTermDetailsSummaryRow = (termDetails, categoryRowLength) => {
   const { semesterOne = {}, semesterTwo = {} } = generateSemesterOneTwo(termDetails);
 
   const {
@@ -155,20 +185,26 @@ const generateTermDetailsSummaryRow = (termDetails) => {
 
   return [
     { value: 'Total' },
-    { value: outOfTotalSemOne ? `Out of ${outOfTotalSemOne}` : '', colSpan: 6 },
+    {
+      value: outOfTotalSemOne ? `Out of ${outOfTotalSemOne}` : '',
+      colSpan: categoryRowLength,
+    },
     { value: totalMarksSemOne },
     { value: finalGradeSemOne },
     { value: '' }, //total sem-1 marks
     { value: '' }, //total sem-1 grade
-    { value: outOfTotalSemTwo ? `Out of ${outOfTotalSemTwo}` : '', colSpan: 6 },
+    {
+      value: outOfTotalSemTwo ? `Out of ${outOfTotalSemTwo}` : '',
+      colSpan: categoryRowLength,
+    },
     { value: totalMarksSemTwo },
     { value: finalGradeSemTwo },
     { value: '' }, //total sem-2 marks
     { value: '' }, //total sem-2 grade
-    { value: '534' },
-    { value: 'B1' },
-    { value: '3' },
-    { value: '9' },
+    { value: '' },
+    { value: '' },
+    { value: '' },
+    { value: '' },
   ];
 };
 
