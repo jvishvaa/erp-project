@@ -3,7 +3,7 @@ import { apiConfig, responseConverters } from '../dashboard-constants';
 import ENVCONFIG from '../../../config/config';
 import axios from 'axios';
 
-const DashboardContext = React.createContext();
+export const DashboardContext = React.createContext();
 
 export function DashboardContextProvider({ children }) {
   const [branchIds, setBranchIds] = useState([]);
@@ -25,14 +25,14 @@ export function DashboardContextProvider({ children }) {
     greeting: time < 12 ? 'Good Morning' : time < 18 ? 'Good Afternoon' : 'Good Evening',
   };
   const { userLevel } = welcomeDetails || {};
-  
+
   const headers = {
-      'X-DTS-HOST': window.location.host,
+    'X-DTS-HOST': window.location.host,
     // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
     // 'X-DTS-HOST': 'dev.mit.letseduvate.com',
     Authorization: `Bearer ${TOKEN}`,
   };
-  
+
   const getReport = (decisionParam, param) => {
     const params = { ...param, level: userLevel };
     const config = { headers, params };
@@ -43,7 +43,7 @@ export function DashboardContextProvider({ children }) {
         const { data: { status_code: status, result } = {} } = response || {};
         return result || [];
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   const downloadReport = (decisionParam, param) => {
@@ -55,7 +55,7 @@ export function DashboardContextProvider({ children }) {
       .then((response) => {
         return response || {};
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   return (

@@ -1,0 +1,94 @@
+.connection-pod-container {
+  width: 95%;
+  margin: 20px auto;
+  .add-container {
+    position: fixed;
+
+    z-index: 9999;
+    bottom: 50px;
+    right: 50px;
+    .add-button {
+      background-color: #ef676a;
+      &:hover {
+        background-color: #b24a4a;
+      }
+    }
+  }
+  .filter-container {
+    margin: 20px 0;
+    display: flex;
+    flex-wrap: wrap;
+    .filter-student {
+      // @media (max-width: 600px) {
+      //   width: 100%;
+      // }
+    }
+    .filter-button {
+      text-transform: none;
+      &:hover {
+        background-color: #b24a4a;
+      }
+    }
+    .create-meeting-button {
+      text-transform: capitalize;
+      white-space: nowrap;
+      // margin-bottom: 30px;
+      background-color: #ef676a;
+      &:hover {
+        background-color: #b24a4a;
+      }
+    }
+  }
+  .table-container {
+    margin: 20px 0;
+    .host-meeting-button {
+      text-transform: capitalize;
+      white-space: nowrap;
+      &:hover {
+        background-color: #b24a4a;
+      }
+    }
+  }
+  .data-pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    .total-meeting-count {
+      margin: 0px 10px 0px 0px;
+    }
+  }
+}
+
+.create-meetinng-dialog {
+  // z-index: 1400 !important;
+  div {
+    div.MuiDialog-paper {
+      min-width: 30%;
+      @media (min-width: 1280px) and (max-width: 1919px) {
+        min-width: 40%;
+      }
+      @media (min-width: 960px) and (max-width: 1279px) {
+        min-width: 50%;
+      }
+      @media (max-width: 600px) {
+        min-width: 80%;
+      }
+
+      .meeting-form {
+        padding: 0 24px 16px;
+        .meeting-form-input {
+          margin: 10px 0;
+        }
+        .meeting-form-actions {
+          .meeting-form-actions-butons {
+            text-transform: none;
+            margin-right: 15px;
+            &:hover {
+              background-color: #b24a4a;
+            }
+          }
+        }
+      }
+    }
+  }
+}
