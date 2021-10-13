@@ -725,6 +725,13 @@ const CraeteCircular = () => {
 
         {filterEvent ? (
           <div>
+            <Grid
+              container
+              // spacing={5}
+              style={{ width: widerWidth, margin: wider }}
+            >
+              <Grid item xs={12} sm={12} >
+           
             <div className={classes.descriptionBorder}>
               <Grid
                 container
@@ -758,83 +765,96 @@ const CraeteCircular = () => {
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </Grid>
-              </Grid>
-              <div className='attchmentContainer'>
-                <div style={{ display: 'flex' }} className='scrollable'>
-                  {filePath?.length > 0
-                    ? filePath?.map((file, i) => (
-                        <FileRow
-                          key={`create_circular_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i, file)}
-                        />
-                      ))
-                    : null}
-                </div>
+                <Grid item xs={12}>
+                    <div className='attchmentContainer'>
+                      <div style={{ display: 'flex' }}>
+                        {filePath?.length > 0
+                          ? filePath?.map((file, i) => (
+                            <FileRow
+                              key={`create_circular_${i}`}
+                              file={file}
+                              index={i}
+                              onClose={() => removeFileHandler(i, file)}
+                            />
+                          ))
+                          : null}
+                      </div>
 
-                <div className='attachmentButton_circular'>
-                  <Button
-                    startIcon={
-                      <SvgIcon
-                        component={() => (
-                          <img
-                            style={{ height: '20px', width: '20px' }}
-                            src={attachmenticon}
+                      <div className='attachmentButton_circular'>
+                        <Button
+                          startIcon={
+                            <SvgIcon
+                              component={() => (
+                                <img
+                                  style={{ height: '20px', width: '20px' }}
+                                  src={attachmenticon}
+                                />
+                              )}
+                            />
+                          }
+                          className={classes.attchmentbutton}
+                          title='Attach Supporting File'
+                          variant='contained'
+                          size='medium'
+                          disableRipple
+                          disableElevation
+                          disableFocusRipple
+                          disableTouchRipple
+                          component='label'
+                          style={{ textTransform: 'none' }}
+                        >
+                          <input
+                            type='file'
+                            accept='.png, .jpg, .jpeg,.mp3,.mp4,.pdf'
+                            style={{ display: 'none' }}
+                            id='raised-button-file'
+                            accept='image/*'
+                            onChange={handleImageChange}
                           />
-                        )}
-                      />
-                    }
-                    className={classes.attchmentbutton}
-                    title='Attach Supporting File'
-                    variant='contained'
-                    size='medium'
-                    disableRipple
-                    disableElevation
-                    disableFocusRipple
-                    disableTouchRipple
-                    component='label'
-                    style={{ textTransform: 'none' }}
-                  >
-                    <input
-                      type='file'
-                      accept='.png, .jpg, .jpeg,.mp3,.mp4,.pdf'
-                      style={{ display: 'none' }}
-                      id='raised-button-file'
-                      accept='image/*'
-                      onChange={handleImageChange}
-                    />
-                    Add Document
-                  </Button>
-                  <small
-                    style={{
-                      color: '#014b7e',
-                      fontSize: '16px',
-                      marginLeft: '28px',
-                      marginTop: '8px',
-                    }}
-                  >
-                    {' '}
-                    Accepted files: [jpeg,jpg,png,mp3,mp4,pdf]
-                  </small>
-                </div>
-                <div></div>
+                          Add Document
+                        </Button>
+                        <small
+                          style={{
+                            color: '#014b7e',
+                            fontSize: '16px',
+                            marginLeft: '28px',
+                            marginTop: '8px',
+                          }}
+                        >
+                          {' '}
+                          Accepted files: [jpeg,jpg,png,mp3,mp4,pdf]
+                        </small>
+                      </div>
+
+                    </div>
+                  </Grid>
+              </Grid>
               </div>
-            </div>
-            <div>
-              {circularKey && (
-                <Button className='submit_button' onClick={() => history.goBack()}>
-                  BACK
-                </Button>
-              )}
-              <Button
-                onClick={circularKey ? handleEdited : handleSubmit}
-                className='submit_button'
-                style={{ background: '#ff6b6b' }}
-              >
-                SUBMIT
-              </Button>
-            </div>
+                  <Grid
+                    container
+                    spacing={isMobile ? 3 : 5}
+                    style={{ width: widerWidth, margin: wider }}
+                  >
+                
+                    <Grid item xs={12}>
+                      {circularKey && (
+                        <Button className='submit_button' onClick={() => history.goBack()}>
+                          BACK
+                        </Button>
+                      )}
+                      <Button
+                        onClick={circularKey ? handleEdited : handleSubmit}
+                        className='submit_button'
+                        style={{ background: '#ff6b6b' }}
+                      >
+                        SUBMIT
+                      </Button>
+
+                    </Grid>
+                  </Grid>
+
+            </Grid>
+            </Grid>
           </div>
         ) : null}
       </Layout>
