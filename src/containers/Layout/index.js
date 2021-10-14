@@ -47,7 +47,7 @@ const Layout = ({ children, history }) => {
   const [superUser, setSuperUser] = useState(false);
 
   const {
-    apiGateway: { baseURLCentral, baseUdaan , baseEvent },
+    apiGateway: { baseURLCentral, baseUdaan, baseEvent },
     s3: { BUCKET: s3BUCKET, ERP_BUCKET },
   } = ENVCONFIG;
 
@@ -867,6 +867,10 @@ const Layout = ({ children, history }) => {
         window.location.href = `${baseEvent}?${erp_details}`;
         break;
       }
+      case 'Connection pod': {
+        history.push('/online-class/connection-pod');
+        break;
+      }
       default:
         break;
     }
@@ -924,24 +928,24 @@ const Layout = ({ children, history }) => {
             </ListItem>
             {drawerOpen
               ? navigationData &&
-                navigationData.length > 0 && (
-                  <DrawerMenu
-                    superUser={superUser}
-                    drawerOpen={drawerOpen}
-                    navigationItems={navigationData}
-                    onClick={handleRouting}
-                    // flag={flag}
-                  />
-                )
+              navigationData.length > 0 && (
+                <DrawerMenu
+                  superUser={superUser}
+                  drawerOpen={drawerOpen}
+                  navigationItems={navigationData}
+                  onClick={handleRouting}
+                // flag={flag}
+                />
+              )
               : navigationData &&
-                navigationData.length > 0 && (
-                  <DrawerMenu
-                    superUser={superUser}
-                    navigationItems={navigationData}
-                    onClick={handleOpen}
-                    drawerOpen={drawerOpen}
-                  />
-                )}
+              navigationData.length > 0 && (
+                <DrawerMenu
+                  superUser={superUser}
+                  navigationItems={navigationData}
+                  onClick={handleOpen}
+                  drawerOpen={drawerOpen}
+                />
+              )}
           </List>
         </Drawer>
 

@@ -446,10 +446,10 @@ const ViewBook = (props) => {
       )}
       <div
         style={{
-          position: 'relative',
-          overflow: 'hidden',
-          width: '100%',
-          paddingTop: '56.25%',
+          // position: 'relative',
+          // overflow: 'hidden',
+          // width: '100%',
+          // paddingTop: '56.25%',
         }}
       >
         <iframe
@@ -464,8 +464,9 @@ const ViewBook = (props) => {
             bottom: '0',
             right: '0',
             width: '100%',
-            height: '100%',
+            height: '100vh',
             border: 'none',
+            paddingTop:'35px',
           }}
           title='Tutorials'
         ></iframe>

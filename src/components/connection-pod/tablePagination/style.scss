@@ -1,0 +1,14 @@
+.table-pagination-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  .data-count-formcontrol {
+    margin: 0 10px;
+    .data-count-select {
+      background-color: #fff;
+      fieldset {
+        border: none;
+      }
+    }
+  }
+}

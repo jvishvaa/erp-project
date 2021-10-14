@@ -305,6 +305,7 @@ import ShippingAmountAtStudent from 'containers/Finance/src/components/Inventory
 // import { isMsAPI } from './utility-functions/index';
 import { isMsAPI } from './redux/actions';
 import AssessmentReportTable from 'containers/assessment-central/assesment-report-card/index';
+import ConnectionPod from 'components/connection-pod/index.jsx';
 
 function App({ alert, isMsAPI }) {
   // useEffect(() => {
@@ -1463,6 +1464,12 @@ function App({ alert, isMsAPI }) {
                           </Route>
                           <Route exact path='/setting'>
                             {({ match }) => <Setting match={match} />}
+                          </Route>
+                          <Route exact path='/connection-pod'>
+                            {({ match }) => <ConnectionPod match={match} />}
+                          </Route>
+                          <Route exact path='/online-class/connection-pod'>
+                            {({ match }) => <ConnectionPod match={match} />}
                           </Route>
                           <Route path='*'>
                             <ErrorBoundary404 HomeButton={true} />
