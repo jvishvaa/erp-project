@@ -446,14 +446,14 @@ const ViewBook = (props) => {
       )}
       <div
         style={{
-          position: 'relative',
-          overflow: 'hidden',
-          width: '100%',
-          paddingTop: '56.25%',
+          // position: 'relative',
+          // overflow: 'hidden',
+          // width: '100%',
+          // paddingTop: '56.25%',
         }}
       >
         <iframe
-          src={`https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}${chapterId}?vi=0`}
+          src={`https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}?vi=0`}
           // src={`https://dev.olvorchidnaigaon.letseduvate.com/ibook-static/${bookPath}${bookUrl}${chapterId}?vi=0`}
           id='bookReader'
           className='bookReader'
@@ -464,8 +464,9 @@ const ViewBook = (props) => {
             bottom: '0',
             right: '0',
             width: '100%',
-            height: '100%',
+            height: '100vh',
             border: 'none',
+            paddingTop:'35px',
           }}
           title='Tutorials'
         ></iframe>

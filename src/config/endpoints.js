@@ -139,7 +139,7 @@ export default {
   },
   homework: {
     completeData: '/academic/list_admin_homework/',
-    createConfig: '/academic/homework-admin-configuration/',    
+    createConfig: '/academic/homework-admin-configuration/',
     hwDelete: '/academic/',
   },
   homeworkStudent: {
@@ -148,7 +148,7 @@ export default {
     getRating: '/academic/student_subject_rating/',
     fileUpload: '/academic/upload-question-file/',
     submitHomework: '/academic/homework-submission/',
-    hwupdate : '/academic/',
+    hwupdate: '/academic/',
   },
   lessonReport: {
     volumes: '/lesson_plan/list-volume/',
@@ -226,7 +226,7 @@ export default {
     createCoursePrice: '/aol/course-details/',
     updateCoursePrice: '/aol/course_details_update/',
     updateTeacher: '/aol/update-batch-teacher/',
-    onlineClassNoFilter :'/erp_user/teacher_online_class_no_filter/v3/'
+    onlineClassNoFilter: '/erp_user/teacher_online_class_no_filter/v3/'
   },
 
   attendanceList: {
@@ -344,6 +344,7 @@ export default {
     getGrievenceErpList: '/academic/greivance-reply-list/',
   },
   studentViewBatchesApi: {
+    onclsAcessCheck: "/academic/onine_class_access_blocker_check/",
     getBatchesApi: '/erp_user/student_online_class/v3/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
@@ -528,6 +529,17 @@ export default {
       fetchOnlineClassReport: '/api/reports/v1/oncls-principal-report/',
     },
   },
+
+  connectionPod: {
+    getStudentList: '/course_extend/students_list/',
+    getTeacherList: '/course_extend/teachers_list/',
+    getTeacherMeeting: '/course_extend/get_teacher_meetings/',
+    getStudentMeeting: '/course_extend/get_students_meeting/',
+    availableSlot: '/course_extend/get_slots/',
+    createMeeting: '/course_extend/create_meeting/',
+    markAttendence: '/course_extend/meeting_attendence/',
+  },
+
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',

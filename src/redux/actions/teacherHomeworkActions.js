@@ -246,7 +246,7 @@ export const addHomeWorkCoord = (data) => async (dispatch) => {
   dispatch({ type: ADD_HOMEWORK_REQUEST });
   try {
     const response = await axios.post('/academic/upload-homework/', data);
-    dispatch({ type: ADD_HOMEWORK_SUCCESS_COORD, data: data.user_id });
+    dispatch({ type: ADD_HOMEWORK_SUCCESS_COORD, data: data?.user_id });
 
     return 'success';
   } catch (e) {
@@ -308,7 +308,7 @@ export const fetchCoordinateTeacherHomeworkDetails = (
 export const setTeacherUserIDCoord = (data) => async (dispatch) => {
   dispatch({ type: SET_TEACHER_HOMEWORK_ID_FROM_CORD });
   try {
-    dispatch({ type: SET_TEACHER_HOMEWORK_ID_FROM_CORD_SUCCESS, data: data.user_id });
+    dispatch({ type: SET_TEACHER_HOMEWORK_ID_FROM_CORD_SUCCESS, data: data?.user_id });
 
     return 'success';
   } catch (e) {
