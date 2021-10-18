@@ -99,6 +99,8 @@ const QuestionCard = ({
   const [sizeValied, setSizeValied] = useState({});
   const [showPrev, setshowPrev] = useState(0)
   const [pentool,setpentool] = useState(false)
+  const [maxattachment, setmaxAttachment] = useState(2)
+  // const [isAttachmentenable,setisAttachmentenable] = useState(false)
 
 
 
@@ -123,6 +125,8 @@ useEffect(() => {
   setAttachmentPreviews(question.attachments)
   setAttachments(question.attachments)
   setpentool(question.penTool)
+  setmaxAttachment(question.max_attachment)
+  setEnableAttachments(question.is_attachment_enable)
   }
 },[question.question,question.attachments])
 
@@ -256,6 +260,21 @@ useEffect(() => {
     }
     onChange('penTool',pentool );
   },[pentool])
+
+  useEffect(()=> {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+    onChange('max_attachment',maxattachment );
+  },[maxattachment])
+  useEffect(()=> {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+    onChange('is_attachment_enable',enableAttachments );
+  },[enableAttachments])
   
   useEffect(()=> {
     if (firstUpdate.current) {
@@ -511,10 +530,12 @@ useEffect(()=>{
                       <Switch
                         onChange={(e) => {
                           setEnableAttachments(e.target.checked);
-                          onChange('is_attachment_enable', e.target.checked);
+                          // onChange('is_attachment_enable', e.target.checked);
                         }}
                         name='checkedA'
                         color='primary'
+                        checked = {enableAttachments}
+                        // value = {enableAttachments}
                       />
                     }
                     label='File Upload'
@@ -531,7 +552,10 @@ useEffect(()=>{
                       labelId='demo-customized-select-label'
                       id='demo-customized-select'
                       defaultValue={2}
-                      onChange={(e) => onChange('max_attachment', e.target.value)}
+                      onChange={(e) => 
+                        setmaxAttachment(e.target.value)}
+                        // onChange('max_attachment', e.target.value)}   
+                      value = {maxattachment}
                     >
                       {Array.from({ length: 10 }, (_, index) => (
                         <option value={index + 1}>{index + 1}</option>
