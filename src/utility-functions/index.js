@@ -192,3 +192,11 @@ export function handleDownloadExcel(data, title) {
   link.click();
   link.remove();
 }
+
+export const parseJwt = (token) => {
+  try {
+    return JSON.parse(window.atob(token.split('.')[1]));
+  } catch (e) {
+    return null;
+  }
+};
