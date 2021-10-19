@@ -118,7 +118,7 @@ const AllBooksPage = () => {
           console.log(Math.ceil(result.data.result.count / limit), 'pagination');
           if (result?.data.result?.result[0]?.path === 'prod/ibooks/') {
             // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/prod/ibooks/');
-            setBookImage('https://d3ka3pry54wyko.cloudfront.net/prod/ibooks/');
+            setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/');
           }
           setLoading(false);
         } else {
