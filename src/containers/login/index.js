@@ -63,7 +63,7 @@ function SignIn({ history, setTheme }) {
   const redirectionToken = searchParams.get('redirect_key'); //token
   const redirectionView = +searchParams.get('wb_view'); // 1-android , 2-ios
   const pathIdentifier = +searchParams.get('path_value'); // 1-view-orchadio , 2-manage-orchadio
-  debugger
+  
   useEffect(() => {
     if (isFetchThemeRequired())
       fetchThemeApi()
