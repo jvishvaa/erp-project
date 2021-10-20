@@ -62,7 +62,8 @@ function SignIn({ history, setTheme }) {
   const searchParams = new URLSearchParams(window.location.search);
   const redirectionToken = searchParams.get('redirect_key'); //token
   const redirectionView = +searchParams.get('wb_view'); // 1-android , 2-ios
-
+  const pathIdentifier = +searchParams.get('path_value'); // 1-view-orchadio , 2-manage-orchadio
+  debugger
   useEffect(() => {
     if (isFetchThemeRequired())
       fetchThemeApi()
@@ -83,7 +84,11 @@ function SignIn({ history, setTheme }) {
           token: redirectionToken,
         })
       );
-      history.push(`/orchadio/view-orchadio/?wb_view=${redirectionView}`);
+      if (pathIdentifier === 1) {
+        history.push(`/orchadio/view-orchadio/?wb_view=${redirectionView}`);
+      } else if (pathIdentifier === 2) {
+        history.push(`/orchadio/manage-orchadio/?wb_view=${redirectionView}`);
+      }
     }
   }, [redirectionToken]);
 
