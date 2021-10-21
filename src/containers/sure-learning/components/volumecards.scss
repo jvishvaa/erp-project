@@ -1,0 +1,47 @@
+.allCardsContain{
+    flex-wrap: wrap;
+}
+
+#volumeCard{
+    margin: 20px;
+   max-width: 250px;
+.volumeName{
+    display: flex;
+    justify-content: center;
+}
+.hoursArea{
+    display: flex;
+    .totalHour{
+        font-size: 13px;
+    margin: auto 0;
+    }
+    .alarmicon{
+        width: 15px;
+    }
+}
+
+.startButton{
+    display: flex;
+    justify-content: center;
+}
+}
+.timearea{
+    display: flex;
+    width: 90%;
+    margin: auto;
+    justify-content: space-around;
+}
+.cardGrid{
+    padding: 20px;
+}
+#subTrain{
+    width: 20%;
+}
+#pending-area{
+    display: flex;
+    justify-content: center;
+}
+#course-area{
+    display: flex;
+    justify-content: center;
+}

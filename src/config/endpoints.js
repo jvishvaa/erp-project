@@ -1,7 +1,7 @@
 import ENVCONFIG from './config';
 
 const {
-  apiGateway: { baseURLCentral },
+  apiGateway: { baseURLCentral , baseUdaan },
   s3: { BUCKET: s3BUCKET, ERP_BUCKET },
 } = ENVCONFIG;
 
@@ -502,6 +502,36 @@ export default {
   },
   classworkReport: {
     tableData: '/academic/teacher_classwork_report/',
+  },
+  sureLearning: {
+    login: `${baseUdaan}/authenticate/erp_login/`,
+    branch: `${baseUdaan}/courses/user_logged_in_details/`,
+    volume: `${baseUdaan}/courses/get_volumes/`,
+    filterSubject: `${baseUdaan}/courses/retrieve_in_house_user_courses_role_wise/`,
+    applicantQuizDetails: `${baseUdaan}/courses/applicant_quiz_details/`,
+    subjectMap: `${baseUdaan}/courses/list_grade_subject_mapping/`,
+    EnrolledSelfCources: `${baseUdaan}/courses/list_teacher_self_enrolled_courses/?is_training_course=true`,
+    EnrollForSelfCources: `${baseUdaan}/courses/create_list_teacher_training_courses/`,
+    AsignedSelfDrivenCourses: `${baseUdaan}/courses/retrieve_in_house_user_courses_role_wise/?self_driven=true`,
+    TressureBox: `${baseUdaan}/courses/treasure_box_module/`,
+    TressureBoxVedioCount: `${baseUdaan}/courses/treasure_box_video_count/?is_active=active`,
+    TressureBoxVedio: `${baseUdaan}/courses/treasure_box_video/?module=`,
+    Feedback: `${baseUdaan}/courses/add_course_rating/`,
+    getCourseCertificateUrl: `${baseUdaan}/courses/course_completion_cert/`,
+    FinishChapterApi: `${baseUdaan}/courses/create_user_course_completion/`,
+    CreateBlogs: `${baseUdaan}/courses/list_create_blogs/`,
+    CategoryBlogs: `${baseUdaan}/courses/list_blog_category/`,
+    MyNotes: `${baseUdaan}/instructors/learning_notes/`,
+    ListOfBlogs: `${baseUdaan}/courses/list_blogs/`,
+    getPermissons: `${baseUdaan}/user_management/check_access/ `,
+    inHouseModules: `${baseUdaan}/courses/retrieve_in_house_user_courses_role_wise/`,
+    onLineClassJoinApi: `${baseUdaan}/instructors/join_class/`,
+    onlineMeetingApi: `${baseUdaan}/instructors/`,
+    getAllWibenarScheduledContentWritterApi: `${baseUdaan}/instructors/create_webinar/`,
+    sendNotificationAPI: `${baseUdaan}/courses/send_notification/`,
+    LearningVideos: `${baseUdaan}/courses/create_learning_module/`,
+    SaveNotes: `${baseUdaan}/instructors/learning_notes/`,
+    getDetailedVisualReport: `${baseUdaan}/assessment/detailed_visual_report/`,
   },
   reportCard: {
     listCategory: '/assessment/get-category-mapping/',
