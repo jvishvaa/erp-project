@@ -390,7 +390,7 @@ export default {
     questionPaperViewMore: `/assessment/<question-paper-id>/qp-questions-list/`,
     publishQuestionPaper: `/assessment/<question-paper-id>/update-status-question-paper/`,
     createQuestionPaper: `/assessment/question-paper/`,
-    editQuestionPaper: '/update-question-paper/',
+    editQuestionPaper: '/assessment/<question-paper-id>/update-question-paper/',
     createAssessment: '/assessment/test/',
     deleteAssessmentTest: '/assessment/',
     s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

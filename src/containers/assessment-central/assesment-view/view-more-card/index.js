@@ -5,6 +5,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import './view-more-card.css';
 import { makeStyles } from '@material-ui/core/styles';
 import Accordion from '@material-ui/core/Accordion';
+import { useHistory } from 'react-router-dom';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -32,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
   expanded: {
     margin: '10px auto',
   },
+  margin: {
+    margin: theme.spacing(1),
+  },
   resourceBulkDownload: {
     fontSize: '1.1rem',
     color: theme.palette.primary.main,
@@ -42,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ViewMoreCard = ({
+  period,
   viewMoreData,
   setViewMore,
   filterDataDown,
@@ -51,9 +56,14 @@ const ViewMoreCard = ({
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const classes = useStyles();
+  const history = useHistory();
   const [expanded, setExpanded] = React.useState(false);
   const handleChange = (index) => (event, isExpanded) => {
     setExpanded(isExpanded ? index : false);
+  };
+
+  const handleOpenEdit = () => {
+    history.push(`/create-question-paper/${periodDataForView?.id}`);
   };
 
   const handlePublish = (isPublish = true) => {
@@ -111,6 +121,13 @@ const ViewMoreCard = ({
               {periodDataForView?.created_at?.substring(0, 10)}
             </div>
           </div>
+          <Button
+            size='small'
+            className={classes.margin}
+            onClick={() => handleOpenEdit()}
+          >
+            Edit
+          </Button>
         </div>
       </div>
       <div className={classes.resourceBulkDownload}>

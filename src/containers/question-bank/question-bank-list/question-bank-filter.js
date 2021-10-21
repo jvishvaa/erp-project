@@ -25,6 +25,7 @@ const QuestionBankFilters = ({
   setFilterDataDown,
   setSelectedIndex,
   setClearFlag,
+  isEdit,
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
@@ -321,7 +322,6 @@ const QuestionBankFilters = ({
     setChapterDropdown([]);
     setLoading(true);
     if (value) {
-      console.log(value, 'test');
       setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
       axiosInstance
         .get(
@@ -723,11 +723,13 @@ const QuestionBankFilters = ({
               className='cancelButton labelColor'
               style={{ width: '100%' }}
               size='medium'
-              onClick={() =>
-                history.push(`/create-question-paper?show-question-paper=true`)
+              onClick={
+                isEdit
+                  ? () => history.push(`/create-question-paper/${isEdit}`)
+                  : () => history.push(`/create-question-paper?show-question-paper=true`)
               }
             >
-              BACK
+              Back
             </Button>
           </Grid>
         )}
