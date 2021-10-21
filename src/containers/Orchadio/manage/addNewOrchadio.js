@@ -338,6 +338,16 @@ bytes
   //   return true
   // }
 
+  const handleRedirect = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const isMobileView = +searchParams.get('wb_view') || 1;
+    if (isMobileView === 2) {
+      history.push('/orchadio/manage-orchadio/?wb_view=2');
+    } else {
+      history.push('/orchadio/manage-orchadio');
+    }
+  };
+
   const handleSubmit = () => {
     // console.log(duration,'duration')
     if (branchId && albumTitle && files.length && selectedTime && selectedDate && duration && duration !== '0') {
@@ -371,9 +381,10 @@ bytes
           if (result.data.status_code === 200) {
             
             setAlert('success', result.data.message);
-            history.push({
-              pathname: '/orchadio/manage-orchadio',
-            });
+            // history.push({
+            //   pathname: '/orchadio/manage-orchadio',
+            // });
+            handleRedirect();
           } else {
             console.log(result.data.message);
           }
