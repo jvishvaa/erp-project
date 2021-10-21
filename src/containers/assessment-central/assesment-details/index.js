@@ -67,7 +67,7 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
               //  ${subjects.join(', ')}`
             }</span>
           </div>
-          <div>
+          {/* <div>
             <IconButton
               style={{ padding: 0 }}
               onClick={() => downloadAssessment()}
@@ -75,7 +75,7 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
             >
               <GetAppIcon />
             </IconButton>
-          </div>
+          </div> */}
           <div>
             <IconButton style={{ padding: 0 }} onClick={onClose} title='Close'>
               <CloseIcon color='primary' />
@@ -174,16 +174,12 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
             </Grid>
           </Grid>
           <div style={{ margin: '1rem' }}>
-            <Grid container spacing={4}>
-              <Grid item xs={12} md={6}>
-                {/* <Button variant='contained' color='primary' fullWidth>
-                  Results
-                </Button> */}
-              </Grid>
-              <Grid item xs={12} md={6}>
-                {/* <Button variant='contained' color='primary' fullWidth>
-                  Question Paper
-                </Button> */}
+            <Grid container >
+              <Grid item xs={12} >
+                <Button variant='contained' color='primary' onClick={() => downloadAssessment()}>
+                  <GetAppIcon fontSize="small" />
+                  Download Question Paper
+                </Button>
               </Grid>
             </Grid>
           </div>

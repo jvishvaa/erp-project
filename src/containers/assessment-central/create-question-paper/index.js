@@ -271,8 +271,9 @@ const CreateQuestionPaper = ({
         paper_level: formik.values.question_paper_level?.id,
         section: sectionData,
         sections: sectionData,
-        is_review: 'False',
+        is_review: 'True',
         is_draft: 'False',
+        is_verified: 'False',
       };
 
       if (questionData?.length) {
@@ -707,6 +708,18 @@ const CreateQuestionPaper = ({
             <Divider />
           </div>
           <div className='form-actions-container mv-20'>
+            <div className='btn-container' style={{ marginRight: "1%" }} >
+              <Button
+                variant='contained'
+                className='cancelButton labelColor'
+                style={{ width: '100%' }}
+                onClick={() => {
+                  window.history.back()
+                }}
+              >
+                Back
+              </Button>
+            </div>
             <div className='btn-container'>
               <Button
                 variant='contained'
