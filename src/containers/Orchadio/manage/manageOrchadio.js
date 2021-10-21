@@ -522,9 +522,9 @@ function ManageOrchadio() {
 
   const handleAddNew = () => {
     const searchParams = new URLSearchParams(window.location.search);
-    const isMobileView = +searchParams.get('wb_view') || 1;
-    if (isMobileView === 2) {
-      history.push('/orchadio/add-orchadio/?wb_view=2');
+    const redirectionView = +searchParams.get('wb_view');
+    if (redirectionView) {
+      history.push(`/orchadio/add-orchadio/?wb_view=${redirectionView}`);
     } else {
       history.push('/orchadio/add-orchadio');
     }
