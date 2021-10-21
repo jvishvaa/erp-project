@@ -1,34 +1,5 @@
 import { createQuestionPaperActions } from '../actions';
 
-const mockQuestions = [
-  {
-    id: 1,
-    sections: [
-      {
-        name: 'SEC A',
-        questions: [{ name: 'Question Type A', created: '30.12.2020' }],
-      },
-      {
-        name: 'SEC B',
-        questions: [{ name: 'Question Type A', created: '30.12.2020' }],
-      },
-    ],
-  },
-  {
-    id: 1,
-    sections: [
-      {
-        name: 'SEC A',
-        questions: [{ name: 'Question Type A', created: '30.12.2020' }],
-      },
-      {
-        name: 'SEC B',
-        questions: [{ name: 'Question Type A', created: '30.12.2020' }],
-      },
-    ],
-  },
-];
-
 const INITIAL_STATE = {
   questions: [],
   selectedAcademic: '',
@@ -37,6 +8,7 @@ const INITIAL_STATE = {
   selectedSubject: [],
   selectedLevel: '',
   questionPaperName: '',
+  isFetched: false,
 };
 
 export default function reducer(state = INITIAL_STATE, action) {
@@ -100,6 +72,11 @@ export default function reducer(state = INITIAL_STATE, action) {
     case createQuestionPaperActions.RESET_STATE: {
       return { ...INITIAL_STATE, questionPaperName: '' };
     }
+
+    case createQuestionPaperActions.SET_IS_FETCH: {
+      return { ...INITIAL_STATE, isFetched: action.isFetched };
+    }
+
     default:
       return state;
   }
