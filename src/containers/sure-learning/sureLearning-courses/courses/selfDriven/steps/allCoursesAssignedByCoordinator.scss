@@ -1,0 +1,12 @@
+#cardChapter{
+    padding: 10px;
+    .MuiButtonBase-root{
+        color: black !important ;
+        background: white !important;
+    }
+}
+.pdfView{
+    .react-pdf__Page__textContent{
+        height: -webkit-fill-available !important ;
+    }
+}

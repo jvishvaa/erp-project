@@ -1,0 +1,16 @@
+@media only screen and (min-width: 768px) {
+    .LearningModule{
+        width: 100%;
+        height: fit-content;
+        background-Color: #bada55;
+        padding: 1px 2px 1px;
+    }
+  }
+  @media only screen and (max-width: 767px) {
+    .LearningModule{
+        width: fit-content;
+        height: fit-content;
+        background-Color: #bada55;
+        padding: 1px 2px 1px;
+    }
+  }
