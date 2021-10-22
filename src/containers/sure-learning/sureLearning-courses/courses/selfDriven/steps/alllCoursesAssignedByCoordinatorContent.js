@@ -177,15 +177,11 @@ const AllCoursesAssignedByCordinatorContent = () => {
 
   const history = useHistory();
 
-  const handleDocument = (item, id) => {
+  const handleDocument = (item, ind) => {
     const course = 'self_driven';
     const courseType = 'is_self_driven';
-    if (item.length === item[item.length - 1]) {
-      console.log('is_finish', true);
-    } else {
-      console.log('is_finish', false);
-    }
-    console.log('complete',complete);
+
+    console.log('complete',ind);
     if (content && content.length) {
       content.forEach((con, index) => {
         if (con.id === item.id && index > 0) {
@@ -200,7 +196,8 @@ const AllCoursesAssignedByCordinatorContent = () => {
               state: item,
               courseType: courseType,
               course: course,
-              itemId: item.id,
+              itemId: item.id
+              ,content:content
             });
             console.log(item.id, 'Assessmentidd');
             sessionStorage.setItem('Doc', JSON.stringify(item.course_wise_videos));
@@ -218,13 +215,20 @@ const AllCoursesAssignedByCordinatorContent = () => {
             state: item,
             courseType: courseType,
             course: course,
-            itemId: item.id,
+            itemId: item.id,content:content
           });
           console.log(item.id, 'Assessmentidd');
           sessionStorage.setItem('Doc', JSON.stringify(item.course_wise_videos));
           sessionStorage.setItem('induction_training', 'self_driven');
           sessionStorage.setItem('is_induction_training', 'is_self_driven');
           sessionStorage.setItem('chapter-content-type', 'Assessment');
+        }
+        if(ind === content.length - 1 ){
+          console.log(con , "last");
+          sessionStorage.setItem('is_finish','true');
+        }
+        if(content.length === 0) {
+          sessionStorage.setItem('is_finish','true');
         }
       });
     }
@@ -244,9 +248,9 @@ const AllCoursesAssignedByCordinatorContent = () => {
   };
   const handleQuiz = (item) => {
     if (item.length === item[item.length - 1]) {
-      console.log('is_finish', true);
+      console.log('is_finis1', true);
     } else {
-      console.log('is_finish', false);
+      console.log('is_finis1', false);
     }
     if (content && content.length) {
       content.forEach((con, index) => {
@@ -289,11 +293,11 @@ const AllCoursesAssignedByCordinatorContent = () => {
   };
 
   const courseType = 'self_driven';
-  const handleVedio = (item) => {
+  const handleVedio = (item , ind) => {
     if (item.length === item[item.length - 1]) {
-      console.log('is_finish', true);
+      console.log('is_finis1', true);
     } else {
-      console.log('is_finish', false);
+      console.log('is_finis1', false);
     }
     if (content && content.length) {
       content.forEach((con, index) => {
@@ -309,7 +313,7 @@ const AllCoursesAssignedByCordinatorContent = () => {
               state: item,
               courseType: courseType,
               course: course,
-              itemId: item.id,
+              itemId: item.id,content:content
             });
             console.log(item.id, 'Assessmentidd');
             sessionStorage.setItem('induction_training', 'self_driven');
@@ -327,13 +331,20 @@ const AllCoursesAssignedByCordinatorContent = () => {
             state: item,
             courseType: courseType,
             course: course,
-            itemId: item.id,
+            itemId: item.id,content:content
           });
           console.log(item.id, 'Assessmentidd');
           sessionStorage.setItem('induction_training', 'self_driven');
           sessionStorage.setItem('is_induction_training', 'is_induction_training');
           sessionStorage.setItem('Vid', JSON.stringify(item.course_wise_videos));
           sessionStorage.setItem('chapter-content-type', 'Video');
+        }
+        if(ind === content.length - 1 ){
+          console.log(con , "last");
+          sessionStorage.setItem('is_finish','true');
+        }
+        if(content.length === 0) {
+          sessionStorage.setItem('is_finish','true');
         }
       });
     }
@@ -443,7 +454,7 @@ const AllCoursesAssignedByCordinatorContent = () => {
                         }}
                         className={classes.cards}
                         id='iconCard'
-                        onClick={() => handleDocument(item)}
+                        onClick={() => handleDocument(item , index)}
                       >
                         <CardMedia component='img' image={item.file} id='imageIcon' />
                         <div style={{ flexDirection: 'column' }}>
@@ -577,7 +588,7 @@ const AllCoursesAssignedByCordinatorContent = () => {
                         }}
                         className={classes.cards}
                         id='iconCard'
-                        onClick={() => handleVedio(item)}
+                        onClick={() => handleVedio(item , index)}
                       >
                         <CardMedia component='img' image={item.file} />
                         <div style={{ flexDirection: 'column' }}>

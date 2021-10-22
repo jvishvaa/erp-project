@@ -193,10 +193,11 @@ const AllchapterContent = () => {
   const history = useHistory();
 const course ="induction_training";
 const courseType ="is_induction_training";
-  const handleDocument = (item, id) => {
+  const handleDocument = (item, ind) => {
     if (content && content.length) {
       content.forEach((con , index) => {
         if(con.id === item.id && index > 0){
+          console.log(item.id,'is_finish')
           console.log(index - 1 , "index");
           let int = index-1;
           console.log(content[int] , "prev typ");
@@ -204,15 +205,16 @@ const courseType ="is_induction_training";
           if(content[index-1].is_completed){
             if(item?.course_wise_videos[0]?.is_download === true){
             console.log(item ,"open")
-            history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id});
+            history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id,content:content});
             console.log(item.id, 'Assessmentidd');
             sessionStorage.setItem('Download', JSON.stringify(item.course_wise_videos));
             sessionStorage.setItem('induction_training', 'induction_training');
             sessionStorage.setItem('is_induction_training', 'is_induction_training');
             sessionStorage.setItem('chapter-content-type', 'Download');
             } else {
-            history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id});
-            console.log(item.id, 'Assessmentidd');
+            history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id,content:content});
+            console.log(item.id, 'Assessmentidd')
+            console.log(item.id,'is_finish');
             sessionStorage.setItem('Doc', JSON.stringify(item.course_wise_videos));
             sessionStorage.setItem('induction_training', 'induction_training');
             sessionStorage.setItem('is_induction_training', 'is_induction_training');
@@ -224,12 +226,20 @@ const courseType ="is_induction_training";
         } 
         if(con.id === item.id && index < 1 ) {
           console.log('first');
-          history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id});
+          console.log(item.id,'is_finish')
+          history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id,content:content});
             console.log(item.id, 'Assessmentidd');
             sessionStorage.setItem('Doc', JSON.stringify(item.course_wise_videos));
             sessionStorage.setItem('induction_training', 'induction_training');
             sessionStorage.setItem('is_induction_training', 'is_induction_training');
             sessionStorage.setItem('chapter-content-type', 'Assessment');
+        }
+        if(ind === content.length - 1 ){
+          console.log(con , "last");
+          sessionStorage.setItem('is_finish','true');
+        }
+        if(content.length === 0) {
+          sessionStorage.setItem('is_finish','true');
         }
        
       })}
@@ -290,7 +300,7 @@ console.log(
       })}
  
   };
-  const handleVedio = (item) => {
+  const handleVedio = (item , ind) => {
     if (content && content.length) {
       content.forEach((con , index) => {
         if(con.id === item.id && index > 0){
@@ -301,7 +311,7 @@ console.log(
           if(content[index-1].is_completed){
             console.log("open")
                // history.push('/allchapterContentUnit');
-    history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id});
+    history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id,content:content});
     console.log(item.id, 'Assessmentidd');
     sessionStorage.setItem('induction_training', 'induction_training');
     sessionStorage.setItem('is_induction_training', 'is_induction_training');
@@ -313,12 +323,19 @@ console.log(
         } 
         if (con.id === item.id && index < 1) {
              // history.push('/allchapterContentUnit');
-    history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id});
+    history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id,content:content});
     console.log(item.id, 'Assessmentidd');
     sessionStorage.setItem('induction_training', 'induction_training');
     sessionStorage.setItem('is_induction_training', 'is_induction_training');
     sessionStorage.setItem('Vid', JSON.stringify(item.course_wise_videos));
     sessionStorage.setItem('chapter-content-type', 'Video');
+        }
+        if(ind === content.length - 1 ){
+          console.log(con , "last");
+          sessionStorage.setItem('is_finish','true');
+        }
+        if(content.length === 0) {
+          sessionStorage.setItem('is_finish','true');
         }
       })}
  
@@ -432,7 +449,7 @@ const BreadCrumb= sessionStorage.getItem('BreadCrumb')
             </Button>
           </Grid>
           {/* <Grid item md={9} xs={12} /> */}
-          {/* <Grid container spacing={4}> */}
+          {/* <Grid container spacing={4}> */} 
           <div style={{ display: 'flex' }} id='contentCard'>
             {content[0]?.course_wise_videos ?
             <>
@@ -481,7 +498,7 @@ const BreadCrumb= sessionStorage.getItem('BreadCrumb')
                         </Typography>
                       </div>
                       <Typography
-                        onClick={() => handleDocument(item)}
+                        onClick={() => handleDocument(item , index)}
                         color='primary'
                         style={{
                           fontWeight: 'bold',
@@ -633,7 +650,7 @@ const BreadCrumb= sessionStorage.getItem('BreadCrumb')
                       </div>
 
                       <Typography
-                        onClick={() => handleVedio(item)}
+                        onClick={() => handleVedio(item , index)}
                         color='primary'
                         style={{
                           fontWeight: 'bold',

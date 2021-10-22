@@ -196,7 +196,7 @@ const AllchapterSubjectContent = () => {
               state: item,
               courseType: courseType,
               course: course,
-              itemId: item.id,
+              itemId: item.id,content:content
             });
             console.log(item.id, 'Assessmentidd');
             sessionStorage.setItem('Doc', JSON.stringify(item.course_wise_videos));
@@ -213,13 +213,20 @@ const AllchapterSubjectContent = () => {
             state: item,
             courseType: courseType,
             course: course,
-            itemId: item.id,
+            itemId: item.id
+            ,content:content
           });
           console.log(item.id, 'Assessmentidd');
           sessionStorage.setItem('Doc', JSON.stringify(item.course_wise_videos));
           sessionStorage.setItem('induction_training', 'subject_training');
           sessionStorage.setItem('is_induction_training', 'is_induction_training');
           sessionStorage.setItem('chapter-content-type', 'Assessment');
+          sessionStorage.setItem('is_finish','true');
+
+        }
+        if(index === content.length -1 ){
+          console.log(con , "last");
+          sessionStorage.setItem('is_finish','true');
         }
       });
     }
@@ -300,7 +307,8 @@ const AllchapterSubjectContent = () => {
               state: item,
               courseType: courseType,
               course: course,
-              itemId: item.id,
+              itemId: item.id
+              ,content:content
             });
             console.log(item.id, 'Assessmentidd');
             sessionStorage.setItem('induction_training', 'subject_training');
@@ -317,13 +325,19 @@ const AllchapterSubjectContent = () => {
             state: item,
             courseType: courseType,
             course: course,
-            itemId: item.id,
+            itemId: item.id,content:content
           });
           console.log(item.id, 'Assessmentidd');
           sessionStorage.setItem('induction_training', 'subject_training');
           sessionStorage.setItem('is_induction_training', 'is_induction_training');
           sessionStorage.setItem('Vid', JSON.stringify(item.course_wise_videos));
           sessionStorage.setItem('chapter-content-type', 'Video');
+          sessionStorage.setItem('is_finish','true');
+
+        }
+        if(index === content.length -1 ){
+          console.log(con , "last");
+          sessionStorage.setItem('is_finish','true');
         }
       });
     }
