@@ -190,6 +190,12 @@ function MyNotes() {
     setOpen(false);
   };
   const handleClickOpen = (item) => {
+    let vedio=item.learning_module.video
+    let text=item.learning_module.text
+    console.log('item',vedio)
+    console.log('item',text)
+    sessionStorage.setItem('itemVedio',vedio)
+    sessionStorage.setItem('itemText',text)
     setUpdatedDate(item);
     setOpen(true);
   };
@@ -221,7 +227,7 @@ function MyNotes() {
 
   const DialogContent = withStyles((theme) => ({
     root: {
-      padding: theme.spacing(2),
+      padding: theme.spacing(1),
     },
   }))(MuiDialogContent);
 
@@ -315,11 +321,12 @@ function MyNotes() {
                   onClose={handleClose}
                   aria-labelledby='customized-dialog-title'
                   open={open}
+                  style={{ height:'90%',marginTop: '65px'}}
                   fullWidth
-                  maxWidth='md'
+                  maxWidth='lg'
                 >
                   <DialogTitle
-                    DialogTitle={item.learning_module.title}
+                    DialogTitle={updatedDate?.learning_module?.title}
                     id='customized-dialog-title'
                     onClose={handleClose}
                     handleClose={handleClose}
@@ -386,20 +393,20 @@ function MyNotes() {
                         style={{ border: '1px solid lightgray' }}
                       >
                         <video
-                          src={vedio}
+                          src={sessionStorage.getItem('itemVedio')}
                           width='100%'
                           height='400'
                           controls
                           controlsList='nodownload'
                         >
                           <source
-                            src={vedio}
+                            src={sessionStorage.getItem('itemVedio')}
                             type='video/mp4'
                             height='300'
                             width='100%'
                           />
                           <track
-                            src={vedio}
+                            src={sessionStorage.getItem('itemVedio')}
                             kind='captions'
                             srcLang='en'
                             label='english_captions'
@@ -419,7 +426,7 @@ function MyNotes() {
                         >
                           <Typography variant='h5'>About Video :</Typography>
                           <Divider className={classes.divider} />
-                          &nbsp;&nbsp; <b>{ReactHtmlParser(text)}</b>
+                          &nbsp;&nbsp; <b>{ReactHtmlParser(sessionStorage.getItem('itemText'))}</b>
                         </Paper>
                       </Grid>
                     </Grid>

@@ -132,7 +132,7 @@ const InductionUnit = () => {
   const [loading, setLoading] = useState(false);
 
   const history = useHistory();
- 
+
   const udaanDetails = JSON.parse(localStorage.getItem('udaanDetails')) || [];
   const udaanToken = udaanDetails?.personal_info?.token;
   const moduleData = udaanDetails?.role_permission?.modules;
@@ -162,7 +162,7 @@ const InductionUnit = () => {
 
   const handleDownload = (download) => {
     window.open(download.file);
-  }
+  };
   console.log(course, 'history?.location?');
   const handleComplete = (item=history?.location?.state) => {
     // if(item.length===item[item.length-1]){
@@ -170,29 +170,23 @@ const InductionUnit = () => {
     // }else{
     //   console.log('is_finish', false)
     // }
+    let finish = JSON.parse(sessionStorage.getItem('is_finish'));
+    
     if (courseType === 'is_self_driven') {
       let courseFinish;
-      console.log(history?.location?.state?.course_content, 'courseFinish1');
       if (history.location.courseType === 'self_driven') {
-        if(item.length===item[item.length-1]){
-          console.log('is_finish', true)
-        }
+       console.log(finish , "is-finish");
         courseFinish = {
           content_id: history?.location?.state?.id,
           course_content_id: history?.location?.state?.course_content,
-          is_finish:item.length===item[item.length-1]?true:false,
+          is_finish: finish === true ? true : false,
           is_self_driven: true,
         };
       } else {
-        if(item.length===item[item.length-1]){
-          console.log('is_finish', true)
-        }else{
-          console.log('is_finish', false)
-        }
         courseFinish = {
           content_id: history?.location?.state?.id,
           course_content_id: history?.location?.state?.course_content,
-          is_finish:item.length===item[item.length-1]?true:false,
+          is_finish:finish === true ? true : false,
           is_induction_training: true,
         };
       }
@@ -213,7 +207,7 @@ const InductionUnit = () => {
         .then((res) => {
           if (res.status === 404) {
             setLoading(false);
-            setAlert('warning', 'please complete mcq test');
+            setAlert('warning', 'something went wrong');
           }
           if (res.status === 500) {
             setLoading(false);
@@ -237,13 +231,16 @@ const InductionUnit = () => {
         courseFinish = {
           content_id: history?.location?.state?.id,
           course_content_id: history?.location?.state?.course_content,
+
           is_self_driven: true,
+          is_finish:finish === true ? true : false,
         };
       } else if (history.location.courseType === 'is_induction_training') {
         courseFinish = {
           content_id: history?.location?.state?.id,
           course_content_id: history?.location?.state?.course_content,
           is_induction_training: true,
+          is_finish:finish === true ? true : false,
         };
       }
       console.log(course, 'history?.location?');
@@ -263,7 +260,7 @@ const InductionUnit = () => {
         .then((res) => {
           if (res.status === 404) {
             setLoading(false);
-            setAlert('warning', 'please complete mcq test');
+            setAlert('warning', 'something went wrong');
           }
           if (res.status === 500) {
             setLoading(false);
@@ -271,7 +268,7 @@ const InductionUnit = () => {
           }
           if (res.status === 200) {
             setLoading(false);
-            setAlert('warning', 'cut off not cleared');
+            setAlert('warning', 'data fetched successfully');
           }
           if (res.status === 201) {
             setLoading(false);
@@ -284,11 +281,14 @@ const InductionUnit = () => {
           return 0;
         });
     }
-    sessionStorage.setItem('complete','true');
+    sessionStorage.setItem('complete', 'true');
     history.goBack();
+    if(finish === true) {
+    sessionStorage.setItem('is_finish','false')
+    }
    sessionStorage.setItem('reload','true')
   };
-const BreadCrumb =sessionStorage.getItem('BreadCrumb');
+  const BreadCrumb = sessionStorage.getItem('BreadCrumb');
   return (
     <Layout className='contentContainer'>
       <div className={classes.parentDiv}>
@@ -300,20 +300,22 @@ const BreadCrumb =sessionStorage.getItem('BreadCrumb');
         <div id='docContainer'>
           <div id='buttonArea'>
             <Button
-          variant='contained'
-          className='canceButton labelColor'
-          size='medium'
-          style={{margin: '0 10px' , width: '10%'}}
+              variant='contained'
+              className='canceButton labelColor'
+              size='medium'
+              style={{ margin: '0 10px', width: '10%' }}
               onClick={handleBack}
             >
               Back
             </Button>
             <Button
-          color = "primary" variant = "contained" style ={{color : "white"}}
-           onClick={handleComplete}
-        >
-          Complete
-        </Button>
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleComplete}
+            >
+              Complete
+            </Button>
           </div>
           <Grid item md={1} xs={12}></Grid>
           <Box>
@@ -343,7 +345,6 @@ const BreadCrumb =sessionStorage.getItem('BreadCrumb');
                       <DocumentViewer pdfUrl={document.file} />
                     </Grid>
                   ))}
-               
               </Grid>
             ) : null}
 
@@ -357,22 +358,18 @@ const BreadCrumb =sessionStorage.getItem('BreadCrumb');
               >
                 {Download &&
                   Download.map((Download, index) => (
-                    <Grid item md={12} xs={12} key={index} id="each-download" >
-                      <div className="download-section">
-                        <p> {index+1} . </p>
-                        <p>{ Download.title }</p>
-                        <Button onClick={() => handleDownload(Download)}  >Download</Button>
+                    <Grid item md={12} xs={12} key={index} id='each-download'>
+                      <div className='download-section'>
+                        <p> {index + 1} . </p>
+                        <p>{Download.title}</p>
+                        <Button onClick={() => handleDownload(Download)}>Download</Button>
                       </div>
-
                     </Grid>
                   ))}
-               
               </Grid>
             ) : null}
           </Box>
         </div>
-
-      
       </div>
     </Layout>
   );
