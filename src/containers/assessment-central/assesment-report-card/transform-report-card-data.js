@@ -132,7 +132,7 @@ const generateTermDetails = (termDetails, categoryKeys) => {
       //Logic need to be written if required
     }
   }
-
+  //
   //Joining rows of both sems
   const semesterMarks = semesterOneSubjectWiseMarks.map((semesterOneSubject, index) => [
     subjectsList[index],
