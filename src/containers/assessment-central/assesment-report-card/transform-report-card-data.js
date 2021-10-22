@@ -83,7 +83,9 @@ const generateCategoryMap = (categoryMap) => {
   const categoryAssessmentType = [
     ...transformedCategoryType.map(
       ({ category = '', assessmentType = [] }) =>
-        `${category}-${assessmentType.join('/')}`
+        `${category}-${
+          Array.isArray(assessmentType) ? assessmentType.join('/') : assessmentType
+        }`
     ),
   ].join(', ');
   return {
@@ -215,6 +217,21 @@ const getOverallRemark = (termDetails) => {
   return { overallRemarkSemOne, overallRemarkSemTwo };
 };
 
+const generateObservationTableHeaders = (
+  performanceAnalysis,
+  achievementGoal,
+  support,
+  expectation
+) => {
+  return [
+    { label: 'Performance Analysis:', value: performanceAnalysis },
+    { label: 'Achievement Goal:', value: achievementGoal },
+    { label: 'Support, I Will Offer:', value: support },
+    { label: 'Expectation from You:', value: expectation },
+    { label: 'Parent / Student Signature:', value: '' },
+  ];
+};
+
 export {
   generateCategoryMap,
   generateTermDetails,
@@ -222,4 +239,5 @@ export {
   generateGradeScale,
   generateTermDetailsSummaryRow,
   getOverallRemark,
+  generateObservationTableHeaders,
 };

@@ -1,139 +1,144 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+import {
+  Box,
+  Table,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@material-ui/core';
+import { generateObservationTableHeaders } from '../transform-report-card-data';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    // color: theme.palette.common.white,
-    fontSize: 15,
+    fontSize: 14,
   },
   body: {
-    fontSize: 15,
+    fontSize: 14,
   },
 }))(TableCell);
-const StyledTableRow = withStyles((theme) => ({
-  root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
 
-    padding: '0px 16px',
-    whiteSpace: 'nowrap',
-  },
-}))(TableRow);
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
     '& .MuiTableCell-root': {
-      borderLeft: '1px solid rgba(224, 224, 224, 1)',
-      padding: '0px 16px',
+      padding: '0px 4px',
       whiteSpace: 'nowrap',
-    },
-    tr: {
-      padding: '2px',
-      border: '1px solid #dddddd',
+      border: '1px solid black',
+      textAlign: 'left !important',
     },
   },
 });
-const FeedbackSignature = () => {
+
+export default function AssesmentObservatioAndFeedbackReport({
+  observationFeedback = [],
+}) {
   const classes = useStyles();
 
   return (
-    <table className={classes.table}>
-      <tr className={classes.tr}>
-        <td className={classes.tr} style={{ width: '15%' }}>
-          TEACHER NAME:
-        </td>
-        <td className={classes.tr}></td>
-        <td className={classes.tr} style={{ width: '15%' }}>
-          SIGNATURE:
-        </td>
-        <td className={classes.tr}></td>
-        <td className={classes.tr} style={{ width: '15%' }}>
-          STUDENT/PARENT SIGNATURE:
-        </td>
-        <td className={classes.tr}></td>
-      </tr>
-    </table>
-  );
-};
-export default function AssesmentObservatioAndFeedbackReport(props) {
-  const classes = useStyles();
-  // const [tableData, setTableData] = useState([1, 2, 3, 4]);props.Data?.subject_marks
+    <TableContainer>
+      <Table className={classes.table} aria-label='customized table'>
+        <TableHead>
+          <TableRow>
+            <StyledTableCell colSpan={7} style={{ backgroundColor: '#E46C07' }}>
+              <Box style={{ fontWeight: 'bolder', textAlign: 'center' }}>
+                OBSERVATION, FEEDBACK AND ADVISE
+              </Box>
+            </StyledTableCell>
+          </TableRow>
+        </TableHead>
+        {observationFeedback.map(
+          ({
+            subject_name: subjectName = '',
+            performance_analysis: performanceAnalysis = '',
+            achievement_goal: achievementGoal = '',
+            support = '',
+            expectation = '',
+            marks = '',
+            grade = '',
+            osr = '',
+            air = '',
+          }) => (
+            <TableHead>
+              <TableRow>
+                <StyledTableCell
+                  align='right'
+                  style={{ backgroundColor: '#FABF90', width: '0%' }}
+                  rowSpan={6}
+                  colSpan={1}
+                >
+                  <Box style={{ transform: 'rotate(270deg)' }}>{subjectName}</Box>
+                </StyledTableCell>
+                <StyledTableCell
+                  align='right'
+                  colSpan={5}
+                  style={{ backgroundColor: '#FABF90' }}
+                >
+                  <Box
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      width: '90%',
+                    }}
+                  >
+                    <Box>MARKS - {marks}</Box>
+                    <Box>Grade - {grade}</Box>
+                    <Box>O.S.R - {osr}</Box>
+                    <Box>A.I.R - {air}</Box>
+                  </Box>
+                </StyledTableCell>
+                <StyledTableCell
+                  align='right'
+                  style={{
+                    backgroundColor: '#FABF90',
+                    width: '0%',
+                  }}
+                  rowSpan={6}
+                  colSpan={1}
+                >
+                  <Box style={{ transform: 'rotate(90deg)' }}>
+                    Teacher's Name <br />
+                    and Signature
+                  </Box>
+                </StyledTableCell>
+              </TableRow>
 
-  return (
-    <>
-      <TableContainer style={{ margin: '1% 0%' }}>
-        <Table className={classes.table} aria-label='customized table'>
-          <TableHead>
-            <TableRow>
-              <StyledTableCell colSpan={6} style={{ backgroundColor: '#7abbbb' }}>
-                OBSERVATION, FEEDBACK AND ADISE
-              </StyledTableCell>
-            </TableRow>
-          </TableHead>
-          {[1, 2, 3, 4, 5].map(() => (
-            <>
-              <TableHead>
+              {[
+                ...generateObservationTableHeaders(
+                  performanceAnalysis,
+                  achievementGoal,
+                  support,
+                  expectation
+                ),
+              ].map(({ label = '', value = '' }) => (
                 <TableRow>
                   <StyledTableCell
-                    align='right'
-                    style={{ backgroundColor: 'rgb(251 222 198)' }}
+                    colSpan={2}
+                    style={{
+                      width: '25%',
+                    }}
                   >
-                    ENGLISH Marks
+                    {label}
                   </StyledTableCell>
-                  <StyledTableCell
-                    align='right'
-                    style={{ backgroundColor: 'rgb(251 222 198)' }}
-                  >
-                    98
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align='right'
-                    style={{ backgroundColor: 'rgb(251 222 198)' }}
-                  >
-                    Grade
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align='right'
-                    style={{ backgroundColor: 'rgb(251 222 198)' }}
-                  >
-                    A1
-                  </StyledTableCell>
-                  <StyledTableCell
-                    align='right'
-                    style={{ backgroundColor: 'rgb(251 222 198)' }}
-                  >
-                    Rank
-                  </StyledTableCell>
-                  <StyledTableCell align='right' rowSpan={2}>
-                    2
+                  <StyledTableCell colSpan={3} style={{ width: '75%' }}>
+                    {value}
                   </StyledTableCell>
                 </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {[1, 2, 3, 4].map(() => (
-                  <>
-                    <TableRow>
-                      <StyledTableCell scope='center'>data data</StyledTableCell>
-                    </TableRow>
-                  </>
-                ))}
-
-                {/* <TableRow>
-                </TableRow> */}
-              </TableBody>
-            </>
-          ))}
-        </Table>
-      </TableContainer>
-      <FeedbackSignature />
-    </>
+              ))}
+              <TableRow>
+                <StyledTableCell
+                  scope='center'
+                  style={{ backgroundColor: '#E46C07', padding: '5px' }}
+                  colSpan={7}
+                >
+                  {' '}
+                </StyledTableCell>
+              </TableRow>
+            </TableHead>
+          )
+        )}
+      </Table>
+    </TableContainer>
   );
 }
