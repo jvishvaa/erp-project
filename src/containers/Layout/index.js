@@ -53,6 +53,8 @@ const Layout = ({ children, history }) => {
     s3: { BUCKET: s3BUCKET, ERP_BUCKET },
   } = ENVCONFIG;
 
+  let token = JSON.parse(localStorage.getItem('userDetails'))?.token || '';
+
   let userId = JSON.stringify(localStorage.getItem('userDetails')) || {};
   var CryptoJS = require('crypto-js');
 
@@ -869,7 +871,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Event Tracker': {
-        window.location.href = `${baseEvent}?${erp_details}`;
+        window.location.href = `${baseEvent}?${token}`;
         break;
       }
       case 'Subject Training': {
