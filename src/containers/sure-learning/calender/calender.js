@@ -314,7 +314,7 @@ const Calendar = ({ meetingData, wibenarData, onlineClassData, allMeetingsFuncti
                 <Grid item md={6} xs={12}>
                   {/* {auth && auth.personal_info && auth.personal_info.role === 'ContentWriter' */}
                   {permission && permission.can_add ?
-                <div className="overlay">
+                <div className="overlaySure">
                   <button title="Schedule Webinar" disabled={functionAddValidation(day)} type="submit" className="buttonstyle" onClick={() => AddMeetingAndWibenar(parse(cloneDay))}>
                     <AddIcon />
                   </button>

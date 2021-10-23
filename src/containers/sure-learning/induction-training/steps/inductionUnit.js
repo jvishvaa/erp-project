@@ -176,19 +176,35 @@ const InductionUnit = () => {
       let courseFinish;
       if (history.location.courseType === 'self_driven') {
        console.log(finish , "is-finish");
+       if(finish === true) {
         courseFinish = {
           content_id: history?.location?.state?.id,
           course_content_id: history?.location?.state?.course_content,
-          is_finish: finish === true ? true : false,
+          is_finish: true ,
           is_self_driven: true,
         };
       } else {
         courseFinish = {
           content_id: history?.location?.state?.id,
           course_content_id: history?.location?.state?.course_content,
-          is_finish:finish === true ? true : false,
+          is_self_driven: true,
+        };
+      }
+      } else {
+       if(finish === true) {
+        courseFinish = {
+          content_id: history?.location?.state?.id,
+          course_content_id: history?.location?.state?.course_content,
+          is_induction_training: true,
+          is_finish: true ,
+        };
+      } else {
+        courseFinish = {
+          content_id: history?.location?.state?.id,
+          course_content_id: history?.location?.state?.course_content,
           is_induction_training: true,
         };
+      }
       }
 
       setLoading(true);
@@ -228,21 +244,38 @@ const InductionUnit = () => {
       let courseFinish;
       console.log(history?.location?.state?.course_content, 'courseFinish1');
       if (history.location.courseType === 'self_driven') {
+        if(finish === true ){
         courseFinish = {
           content_id: history?.location?.state?.id,
           course_content_id: history?.location?.state?.course_content,
 
           is_self_driven: true,
-          is_finish:finish === true ? true : false,
+          is_finish: true ,
         };
+      } else {
+        courseFinish = {
+          content_id: history?.location?.state?.id,
+          course_content_id: history?.location?.state?.course_content,
+
+          is_self_driven: true,
+        };
+      }
       } else if (history.location.courseType === 'is_induction_training') {
+        if(finish === true ){
         courseFinish = {
           content_id: history?.location?.state?.id,
           course_content_id: history?.location?.state?.course_content,
           is_induction_training: true,
-          is_finish:finish === true ? true : false,
+          is_finish: true ,
         };
+      } else {
+        courseFinish = {
+          content_id: history?.location?.state?.id,
+          course_content_id: history?.location?.state?.course_content,
+          is_induction_training: true,
       }
+      }
+    }
       console.log(course, 'history?.location?');
       setLoading(true);
       axios
