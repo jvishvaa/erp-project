@@ -105,8 +105,8 @@ if(location?.state?.isEdit){
   const que = location?.state?.selectedHomeworkDetails?.hw_questions?.map((data)=>(
     {
       id: cuid(),
-      is_attachment_enable: false,
-      max_attachment: 2,
+      is_attachment_enable: data.is_attachment_enable,
+      max_attachment: data.max_attachment,
       penTool: data.is_pen_editor_enable,
       question:data.question,
       attachments:data.question_files

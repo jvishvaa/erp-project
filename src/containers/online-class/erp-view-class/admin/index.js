@@ -36,6 +36,7 @@ import TabPanel from './tab-panel/TabPanel';
 import APIREQUEST from '../../../../config/apiRequest';
 
 const ErpAdminViewClass = ({ history }) => {
+  JSON.parse(localStorage.getItem('filterData'))?.classtype?.id > 0 && localStorage.removeItem('filterData');
   const [branchList, setBranchList] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
@@ -73,9 +74,9 @@ const ErpAdminViewClass = ({ history }) => {
 
   const [classTypes, setClassTypes] = useState([
     { id: 0, type: 'Compulsory Class' },
-    { id: 1, type: 'Optional Class' },
+    /* { id: 1, type: 'Optional Class' },
     { id: 2, type: 'Special Class' },
-    { id: 3, type: 'Parent Class' },
+    { id: 3, type: 'Parent Class' }, */
   ]);
   const [selectedClassType, setSelectedClassType] = useState('');
   const [moduleId, setModuleId] = useState();
@@ -251,8 +252,11 @@ const ErpAdminViewClass = ({ history }) => {
   function noFilterGetClasses() {
     const filterdata = JSON.parse(localStorage.getItem('filterData'));
     if (!filterdata?.branch) {
-      var [startDateTechPer, endDateTechPer] =
-        dateRangeTechPer.length > 0 ? dateRangeTechPer : getminMaxDate().datearr;
+      var [startDateTechPer, endDateTechPer] =getminMaxDate().datearr;
+      if(dateRangeTechPer[0] && dateRangeTechPer[1]){
+        startDateTechPer = dateRangeTechPer[0];
+        endDateTechPer = dateRangeTechPer[0];
+      }
       if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
         APIREQUEST(
           'get',

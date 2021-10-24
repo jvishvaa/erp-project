@@ -45,16 +45,23 @@ const Layout = ({ children, history }) => {
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
   const [superUser, setSuperUser] = useState(false);
+  const searchParams = new URLSearchParams(window.location.search);
+  const isLayoutHidden = searchParams.get('wb_view');
 
   const {
     apiGateway: { baseURLCentral, baseUdaan, baseEvent },
     s3: { BUCKET: s3BUCKET, ERP_BUCKET },
   } = ENVCONFIG;
 
-  let userId = JSON.stringify(localStorage.getItem('userDetails')) || {};
-  var CryptoJS = require("crypto-js");
+  let token = JSON.parse(localStorage.getItem('userDetails'))?.token || '';
 
-  var erp_details = CryptoJS.AES.encrypt(JSON.stringify(userId), 'erp-details').toString();
+  let userId = JSON.stringify(localStorage.getItem('userDetails')) || {};
+  var CryptoJS = require('crypto-js');
+
+  var erp_details = CryptoJS.AES.encrypt(
+    JSON.stringify(userId),
+    'erp-details'
+  ).toString();
 
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
@@ -864,7 +871,61 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Event Tracker': {
-        window.location.href = `${baseEvent}?${erp_details}`;
+        window.location.href = `${baseEvent}?${token}`;
+        break;
+      }
+      case 'Subject Training': {
+        history.push('/subjectTrain');
+        break;
+      }
+      case 'Enroll Courses': {
+        history.push('/enrollTrainingfCourses');
+        break;
+      }
+      case 'Enrolled Courses': {
+        history.push('/enrolledSelfCourses');
+        break;
+      }
+      case 'Induction Training': {
+        history.push('/inductionTrain');
+        break;
+      }
+      case 'Treasure Box': {
+        history.push('/tressurebox');
+        break;
+      }
+
+      case 'My Notes': {
+        history.push('/learning-notes');
+        break;
+      }
+      case 'Calender': {
+        history.push('/inhouse_calendar');
+        break;
+      }
+      case 'Learning': {
+        history.push('/learningVideos');
+        break;
+      }
+      case 'Notification': {
+        history.push('/View_notification');
+        break;
+      }
+      case 'Report': {
+        history.push('/Teacher-report');
+        break;
+      }
+      case 'Blogs': {
+        history.push('/blogSureLearning');
+        break;
+      }
+      case 'Trainer Driven Courses': {
+        history.push('/trainerDriven');
+        break;
+      }
+
+      case 'Self Driven Courses': {
+        history.push('/assignedCoursesByCordinator');
         break;
       }
       case 'Connection pod': {
@@ -883,61 +944,60 @@ const Layout = ({ children, history }) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  return (
-    <div className={classes.rootColumn}>
-      <div className={classes.root}>
-        <Drawer
-          open={drawerOpen}
-          variant={isMobile ? '' : 'permanent'}
-          // className={clsx(classes.drawer, {
-          //   [classes.drawerPaper]: drawerOpen,
-          //   [classes.drawerPaperClose]: !drawerOpen,
-          // })}
-          className={`${clsx(classes.drawer, {
+  const handleDrawer = () => {
+    return (
+      <Drawer
+        open={drawerOpen}
+        variant={isMobile ? '' : 'permanent'}
+        // className={clsx(classes.drawer, {
+        //   [classes.drawerPaper]: drawerOpen,
+        //   [classes.drawerPaperClose]: !drawerOpen,
+        // })}
+        className={`${clsx(classes.drawer, {
+          [classes.drawerPaper]: drawerOpen,
+          [classes.drawerPaperClose]: !drawerOpen,
+        })} drawerScrollBar`}
+        classes={{
+          paper: clsx({
+            [classes.drawer]: true,
             [classes.drawerPaper]: drawerOpen,
             [classes.drawerPaperClose]: !drawerOpen,
-          })} drawerScrollBar`}
-          classes={{
-            paper: clsx({
-              [classes.drawer]: true,
-              [classes.drawerPaper]: drawerOpen,
-              [classes.drawerPaperClose]: !drawerOpen,
-            }),
-          }}
-          onClose={() => setDrawerOpen(false)}
-        >
-          {isMobile ? <div className={classes.appBarSpacer} /> : null}
-          {isMobile ? <SearchBar /> : null}
-          <List>
-            <ListItem
-              className={classes.menuControlContainer}
-              onClick={() => setDrawerOpen((prevState) => !prevState)}
-            >
-              <ListItemIcon className={classes.menuItemIcon}>
-                {drawerOpen ? (
-                  <>
-                    <CloseIcon />
-                  </>
-                ) : (
-                  <>
-                    <MenuIcon />
-                  </>
-                )}
-              </ListItemIcon>
-              <ListItemText className='menu-item-text'>Menu</ListItemText>
-            </ListItem>
-            {drawerOpen
-              ? navigationData &&
+          }),
+        }}
+        onClose={() => setDrawerOpen(false)}
+      >
+        {isMobile ? <div className={classes.appBarSpacer} /> : null}
+        {isMobile ? <SearchBar /> : null}
+        <List>
+          <ListItem
+            className={classes.menuControlContainer}
+            onClick={() => setDrawerOpen((prevState) => !prevState)}
+          >
+            <ListItemIcon className={classes.menuItemIcon}>
+              {drawerOpen ? (
+                <>
+                  <CloseIcon />
+                </>
+              ) : (
+                <>
+                  <MenuIcon />
+                </>
+              )}
+            </ListItemIcon>
+            <ListItemText className='menu-item-text'>Menu</ListItemText>
+          </ListItem>
+          {drawerOpen
+            ? navigationData &&
               navigationData.length > 0 && (
                 <DrawerMenu
                   superUser={superUser}
                   drawerOpen={drawerOpen}
                   navigationItems={navigationData}
                   onClick={handleRouting}
-                // flag={flag}
+                  // flag={flag}
                 />
               )
-              : navigationData &&
+            : navigationData &&
               navigationData.length > 0 && (
                 <DrawerMenu
                   superUser={superUser}
@@ -946,12 +1006,17 @@ const Layout = ({ children, history }) => {
                   drawerOpen={drawerOpen}
                 />
               )}
-          </List>
-        </Drawer>
-
+        </List>
+      </Drawer>
+    );
+  };
+  return (
+    <div className={classes.rootColumn}>
+      <div className={classes.root}>
+        {!isLayoutHidden && handleDrawer()}
         <main className={classes.content}>
           <Box className={classes.appBarSpacer} />
-          <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
+          {!isLayoutHidden && <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />}
           <ContainerContext.Provider value={{ containerRef }}>
             <Box className={classes.container} ref={containerRef}>
               <Box>{children}</Box>

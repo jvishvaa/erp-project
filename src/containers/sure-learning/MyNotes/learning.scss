@@ -1,0 +1,19 @@
+    .video-area{
+        .desc-area{
+            margin: auto 0;
+            width: 50%;
+            padding: 10px;
+        }
+    }
+#eachLear{
+    .titleLearn{
+        display: flex;
+        justify-content: center;
+        font-size: 40px;
+        font-weight: 800;
+    }
+    .video-box{
+        min-width: 45%;
+        width: 45%;
+    }
+}

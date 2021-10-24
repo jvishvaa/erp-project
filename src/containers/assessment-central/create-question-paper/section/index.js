@@ -29,6 +29,7 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
+import { useLocation } from 'react-router-dom';
 import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
@@ -125,6 +126,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
   const themeContext = useTheme();
   const [Diaopen, setdiaOpen] = React.useState(false);
   const [deleteAlert, setDeleteAlert] = useState(false);
+  const location = useLocation();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
@@ -150,7 +152,8 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
     setDeleteAlert(false);
     onDelete(questionId, section.id);
   };
-  const handleDeleteQuestion = (q) => {
+  const handleDeleteQuestion = (q, v) => {
+    console.log(q, v, 'data');
     handleMenuClose();
     onDeleteQuestion(q?.id, section);
   };
@@ -165,7 +168,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
           <div className='checkbox'>
             <Checkbox
               checked={true}
-              onChange={() => {}}
+              onChange={() => { }}
               inputProps={{ 'aria-label': 'primary checkbox' }}
               color='primary'
             />
@@ -180,7 +183,8 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
             variant='contained'
             onClick={() => {
               history.push(
-                `/question-bank?question=${questionId}&section=${section.name}`
+                `/question-bank?question=${questionId}&section=${section.name
+                }&isedit=${Number(location.pathname.slice(23))}`
               );
             }}
           >
@@ -265,8 +269,8 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
         </div>
       </div>
       <div className='section-content'>
-        {section?.questions.map((q) => (
-          <div className='selected-question-card'>
+        {section?.questions.map((q, index) => (
+          <div className='selected-question-card' key={index}>
             <div className='selected-question-card-header'>
               <div className='header-name'>
                 {resolveQuestionTypeName(q.question_type)}
@@ -317,7 +321,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
                       className='assesment-card-popup-menu-item'
                       key={option}
                       selected={option === 'Pyxis'}
-                      onClick={() => handleDeleteQuestion(q)}
+                      onClick={(e) => handleDeleteQuestion(q, index)}
                       style={{
                         color: themeContext.palette.primary.main,
                       }}

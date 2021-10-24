@@ -1,10 +1,13 @@
 const local = {
   s3: {
-    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
-    ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+    // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   apiGateway: {
-    baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
+    baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
+    baseUdaan : 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     // baseURL: 'http://localhost:8000/qbox',
@@ -18,11 +21,14 @@ const local = {
 };
 const dev = {
   s3: {
-    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
-    ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+    // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
+    baseUdaan : 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
@@ -35,12 +41,15 @@ const dev = {
 
 const qa = {
   s3: {
-    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
-    ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+    // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   apiGateway: {
     // baseURL: `${window.location.origin}/qbox`,
     baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
+    baseUdaan : 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     baseURLCentral: 'https://qa.mgmt.letseduvate.com/qbox',
@@ -53,11 +62,14 @@ const qa = {
 
 const stage = {
   s3: {
-    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
-    ERP_BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+    // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+    // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
+    baseUdaan : 'https://udaansurelearning.com/qbox',
     baseURLMPQ: 'https://stage.mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     baseURLCentral: 'https://stage.mgmt.letseduvate.com/qbox',
@@ -68,11 +80,14 @@ const stage = {
 
 const prod = {
   s3: {
-    BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
-    ERP_BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+    // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
+    // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
+    baseUdaan : 'https://udaansurelearning.com/qbox',
     baseURLMPQ: 'https://mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     baseURLCentral: 'https://mgmt.letseduvate.com/qbox',

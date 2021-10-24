@@ -32,22 +32,22 @@ const QuestionPaper = ({
   grade,
   subject,
   level,
-  questions,
-  handleAddQuestion,
+  sections,
+  handleAddSection,
   onCreateQuestionPaper,
   onChangePaperName,
   questionPaperName,
   onDeleteSection,
   onDeleteQuestion,
+  updateQuesionPaper,
 }) => {
   const classes = useStyles();
   const [minimize, setMinimize] = useState(false);
   const [noOfSections, setNoOfSections] = useState(1);
-  const [showPopup, setShowPopup] = useState(false);
   const addNewContainerRef = useRef(null);
-  const handleAddSection = () => {
+  const handleAddNewSection = () => {
     setNoOfSections((noOfSections) => noOfSections + 1);
-    handleAddQuestion(noOfSections);
+    handleAddSection(noOfSections);
   };
 
   return (
@@ -108,7 +108,7 @@ const QuestionPaper = ({
                 <Divider color='secondary' />
               </div>
               <div className='questions-content'>
-                {questions?.map((question) => (
+                {sections?.map((question) => (
                   <Question
                     question={question}
                     onDeleteSection={onDeleteSection}
@@ -117,40 +117,6 @@ const QuestionPaper = ({
                 ))}
 
                 <div className='add-new' ref={addNewContainerRef}>
-                  {showPopup && (
-                    <div
-                      className='add-section-popup'
-                      style={{
-                        bottom: addNewContainerRef.current.clientHeight + 1,
-                      }}
-                    >
-                      <div>
-                        <TextField
-                          id='outlined-search'
-                          label='No of sections'
-                          variant='outlined'
-                          size='small'
-                          fullWidth
-                          value={noOfSections}
-                          type='number'
-                          onChange={(e) => {
-                            setNoOfSections(e.target.value < 1 ? 1 : e.target.value);
-                          }}
-                        />
-                      </div>
-                      <div>
-                        <Button
-                          className={classes.draftbtn}
-                          onClick={() => {
-                            handleAddQuestion(noOfSections);
-                            setShowPopup(false);
-                          }}
-                        >
-                          Select
-                        </Button>
-                      </div>
-                    </div>
-                  )}
                   <div className={classes.addSectionInfo}>
                     Add Sections For This Question Paper
                   </div>
@@ -163,7 +129,7 @@ const QuestionPaper = ({
                       variant='contained'
                       color='primary'
                       style={{ color: 'white', width: '100%' }}
-                      onClick={handleAddSection}
+                      onClick={handleAddNewSection}
                     >
                       Add New
                     </Button>
@@ -194,7 +160,7 @@ const QuestionPaper = ({
               onCreateQuestionPaper(false);
             }}
           >
-            Submit
+            {updateQuesionPaper ? 'Update' : 'Submit'}
           </Button>
         </div>
       </div>

@@ -1,0 +1,27 @@
+#enrollContainer{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+#cardContainer{
+    width: 20%;
+    margin: 14px;
+}
+#nameArea{
+    display: flex;
+    justify-content: center;
+}
+
+@media screen and (max-width: 768px) { 
+    #enrollContainer{
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    #cardContainer{
+        width: 58%;
+    }
+    #courseImg{
+        height: 250px;
+    }
+}

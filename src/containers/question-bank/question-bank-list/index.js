@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-no-duplicate-props */
 import React, { useContext, useRef, useEffect, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import { Grid, useTheme, SvgIcon, IconButton } from '@material-ui/core';
@@ -37,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
+const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const [page, setPage] = useState(1);
@@ -67,6 +66,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
   const query = new URLSearchParams(location.search);
   const questionId = query.get('question');
   const section = query.get('section');
+  const isEdit = query.get('isedit');
   const filterRef = useRef(null);
   const [clearFlag, setClearFlag] = useState(false);
   const [callFlag, setCallFlag] = useState(false);
@@ -84,7 +84,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
   const handleAddQuestionToQuestionPaper = (question) => {
     const questionIds = [];
     const centralQuestionIds = [];
-    questions.forEach((q) => {
+    sections.forEach((q) => {
       q.sections[0].questions.forEach(({ id = '', is_central = false }) => {
         if (is_central) {
           centralQuestionIds.push(id);
@@ -198,7 +198,6 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
     setTabQueTypeId('');
     setTabQueCatId('');
     setTabTopicId('');
-    setTabYearId('');
     setTabGradeId('');
     setTabChapterId('');
     setTabIsErpCentral(false);
@@ -221,6 +220,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
             setClearFlag={setClearFlag}
             questionId={questionId}
             section={section}
+            isEdit={isEdit}
             handlePeriodList={handlePeriodList}
             setPeriodData={setPeriodData}
             setViewMore={setViewMore}
@@ -352,7 +352,7 @@ const QuestionBankList = ({ questions, initAddQuestionToSection }) => {
 };
 
 const mapStateToProps = (state) => ({
-  questions: state.createQuestionPaper.questions,
+  sections: state.createQuestionPaper.questions,
 });
 
 const mapDispatchToProps = (dispatch) => ({
