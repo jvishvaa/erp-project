@@ -20,6 +20,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 // import { connect } from 'react-redux';
 import { useFormik } from 'formik';
+import endpoints from '../../../config/endpoints';
+import axiosInstance from '../../../config/axios';
 import * as Yup from 'yup';
 import cuid from 'cuid';
 import { useLocation } from 'react-router-dom';
@@ -27,7 +29,6 @@ import Layout from '../../Layout';
 import { connect, useSelector } from 'react-redux';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import {
-  fetchAcademicYears,
   fetchBranches,
   fetchGrades,
   fetchSubjects,
@@ -36,12 +37,15 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import './styles.scss';
 import QuestionPaper from './question-paper';
 import {
-  addQuestion,
+  addSection,
+  setIsFetched,
   createQuestionPaper,
+  editQuestionPaper,
   setFilter,
   resetState,
   deleteSection,
   deleteQuestionSection,
+  addQuestionToSection,
 } from '../../../redux/actions';
 
 const levels = [
@@ -50,9 +54,12 @@ const levels = [
   { id: 3, name: 'Difficult' },
 ];
 const CreateQuestionPaper = ({
-  questions,
-  initAddQuestion,
+  sections,
+  isFetched,
+  initAddSection,
+  setIsFetched,
   initCreateQuestionPaper,
+  initEditQuestionPaper,
   initSetFilter,
   selectedAcademic,
   selectedBranch,
@@ -62,12 +69,12 @@ const CreateQuestionPaper = ({
   questionPaperName,
   initResetState,
   initDeleteSection,
+  initAddQuestionToSection,
   deleteQuestionSection,
 }) => {
   const location = useLocation();
   const history = useHistory();
   const query = new URLSearchParams(location.search);
-  const [academicDropdown, setAcademicDropdown] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [grades, setGrades] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -87,10 +94,18 @@ const CreateQuestionPaper = ({
   const { refresh = false } = history.location?.state || {};
 
   useEffect(() => {
+    console.log(sections, '=========');
     if (refresh) {
       handleResetQuestionPaper();
+      setIsFetched(false);
     }
   }, [refresh]);
+
+  useEffect(() => {
+    if (Number(location.pathname.slice(23)) && !isFetched) {
+      handleFetch();
+    }
+  }, []);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -135,13 +150,6 @@ const CreateQuestionPaper = ({
     }
   }, [moduleId]);
 
-  const validationSchema = Yup.object({
-    academic: Yup.object('').required('Required').nullable(),
-    branch: Yup.object('').required('Required').nullable(),
-    grade: Yup.object('').required('Required').nullable(),
-    subject: Yup.object('').required('Required').nullable(),
-  });
-
   const formik = useFormik({
     initialValues: {
       academic: selectedAcademic,
@@ -158,13 +166,7 @@ const CreateQuestionPaper = ({
   });
 
   const getAcademic = () => {
-    // try {
-    //   const data = await fetchAcademicYears(moduleId);
-    //   setAcademicDropdown(data);
     handleAcademicYear({}, selectedAcademicYear);
-    // } catch (e) {
-    //   setAlert('error', 'Failed to fetch academic');
-    // }
   };
 
   const getBranch = async (acadId) => {
@@ -200,38 +202,26 @@ const CreateQuestionPaper = ({
     }
   };
 
-  // const handleAddQuestion = (noOfSections) => {
-  //   const sections = Array.from({ length: noOfSections }, (_, index) => ({
-  //     id: cuid(),
-  //     // name: `Section-${String.fromCharCode(65 + index)}`,
-  //     name: `${String.fromCharCode(65 + index)}`,
-  //     questions: [],
-  //   }));
-  //   const question = { id: cuid(), sections };
-  //   initAddQuestion(question);
-  // };
-
-  const handleAddQuestion = (noOfSections) => {
-    let len = questions?.length || 0;
-    const sections = [
+  const handleAddSection = () => {
+    let len = sections?.length || 0;
+    const sectionArray = [
       {
         id: cuid(),
         name: `${String.fromCharCode(65 + len)}`,
         questions: [],
       },
     ];
-    const question = { id: cuid(), sections };
-    initAddQuestion(question);
+    const question = { id: cuid(), sections: sectionArray };
+    initAddSection(question);
   };
+
   const handleClearAll = () => {
-    // initSetFilter('selectedAcademic', '');
     initSetFilter('selectedBranch', []);
     initSetFilter('selectedGrade', '');
     initSetFilter('selectedSubject', []);
     initSetFilter('selectedLevel', '');
   };
   const handleClearFilters = () => {
-    // formik.setFieldValue('academic', {});
     formik.setFieldValue('branch', []);
     formik.setFieldValue('grade', {});
     formik.setFieldValue('subject', []);
@@ -247,14 +237,108 @@ const CreateQuestionPaper = ({
   const handleDeleteSection = (questionId, section) => {
     initDeleteSection(questionId, section);
   };
+  const handleEditQuestionPaper = async (isDraft) => {
+    try {
+      const questionData = [],
+        centralQuestionData = [];
+      const sectionData = [];
+      sections.forEach((q) => {
+        q.sections.forEach((sec) => {
+          const sectionObj = { [sec.name]: [], discription: sec.name };
+          sec.questions.forEach((question) => {
+            sectionObj[sec.name].push(question?.identifier);
+            if (question?.is_central) {
+              if (!centralQuestionData.includes(question.id)) {
+                centralQuestionData.push(question.id, question.child_id);
+              }
+            } else {
+              if (!questionData.includes(question.id)) {
+                questionData.push(question.id, question.child_id);
+              }
+            }
+          });
+          sectionData.push(sectionObj);
+        });
+      });
 
+      let reqObj = {
+        academic_year: formik.values.academic?.id,
+        paper_name: questionPaperName,
+        grade: formik.values.grade?.grade_id,
+        // academic_session: formik.values.branch.id,
+        academic_session: formik.values.branch?.map((branch) => branch?.id),
+        subjects: formik.values.subject?.map((obj) => obj?.subject_id),
+        paper_level: formik.values.question_paper_level?.id,
+        section: sectionData,
+        sections: sectionData,
+        is_review: 'True',
+        is_draft: 'False',
+        is_verified: 'False',
+      };
+
+      if (questionData?.length) {
+        reqObj = { ...reqObj, question: questionData.flat() };
+      }
+
+      if (centralQuestionData?.length) {
+        reqObj = { ...reqObj, central_question: centralQuestionData.flat() };
+      }
+
+      if (isDraft) {
+        reqObj.is_draft = 'True';
+        reqObj.is_review = 'False';
+      }
+
+      let sectionFlag = true,
+        sectionName = '';
+
+      for (let k = 0; k < sectionData.length; k++) {
+        const sectionObj = sectionData[k];
+        if (sectionObj[String.fromCharCode(65 + k)].length === 0) {
+          sectionName = String.fromCharCode(65 + k);
+          sectionFlag = false;
+          break;
+        }
+      }
+      let submitArray = {
+        Section: sectionFlag,
+        'Question Paper Name': questionPaperName,
+        'Question Level': formik.values.question_paper_level.id,
+        Subject: formik.values.subject.length,
+        Grade: formik.values.grade.grade_id,
+      };
+      let finalSubmitFlag =
+        Object.entries(submitArray).every(([key, value]) => value) && sectionData.length;
+      if (finalSubmitFlag) {
+        await initEditQuestionPaper(reqObj, location.pathname.slice(23));
+        // await initEditQuestionPaper(reqObj);
+        history.push('/assessment-question');
+        setAlert('success', 'Question Paper Updated successfully');
+        handleResetQuestionPaper();
+      } else {
+        // const checkSectionLength = isDraft ? true : sectionData.length;
+        const checkSectionLength = sectionData.length;
+        if (checkSectionLength) {
+          for (const [key, value] of Object.entries(submitArray)) {
+            if (key === 'Section' && !Boolean(value))
+              setAlert('error', `Please add questions for Section-${sectionName}`);
+            else if (!Boolean(value)) setAlert('error', `${key} can't be empty!`);
+          }
+        } else {
+          setAlert('error', 'At least one section is compulsory!');
+        }
+      }
+    } catch (e) {
+      setAlert('error', 'Failed to create Question Paper');
+    }
+  };
   const handleCreateQuestionPaper = async (isDraft) => {
     try {
       const questionData = [],
         centralQuestionData = [];
 
       const sectionData = [];
-      questions.forEach((q) => {
+      sections.forEach((q) => {
         q.sections.forEach((sec) => {
           const sectionObj = { [sec.name]: [], discription: sec.name };
           sec.questions.forEach((question) => {
@@ -355,6 +439,50 @@ const CreateQuestionPaper = ({
     }
   };
 
+  const handleTransformResponse = (responseQuestions, responseSections) => {
+    responseSections.forEach((section, index) => {
+      const sectionId = cuid();
+      const key = String.fromCharCode(65 + index);
+      const questionList = [];
+      section[key].forEach((sectionIdentifier) =>
+        responseQuestions.forEach((question) => {
+          if (sectionIdentifier === question?.identifier) questionList.push(question);
+        })
+      );
+      const sectionArray = [
+        {
+          id: cuid(),
+          name: key,
+          questions: questionList,
+        },
+      ];
+      const sectionObject = { id: sectionId, sections: sectionArray };
+      initAddSection(sectionObject);
+    });
+  };
+
+  const handleFetch = () => {
+    setIsFetched(true);
+    let data = Number(location.pathname.slice(23));
+    const url = endpoints.assessmentErp?.questionPaperViewMore.replace(
+      '<question-paper-id>',
+      data
+    );
+    axiosInstance
+      .get(url)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          initSetFilter('questionPaperName', result.data.result.paper_name);
+          const { questions: responseQuestions = [], sections: responseSections = [] } =
+            result.data.result || {};
+          handleTransformResponse(responseQuestions, responseSections); //for edit question-paper
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+  };
+
   const handleBranch = (event, value) => {
     formik.setFieldValue('branch', []);
     formik.setFieldValue('grade', {});
@@ -375,7 +503,11 @@ const CreateQuestionPaper = ({
       initSetFilter('selectedBranch', value);
     }
   };
-
+  const handleSubmitPaper = () => {
+    if (Number(location.pathname.slice(23))) {
+      handleEditQuestionPaper();
+    } else handleCreateQuestionPaper();
+  };
   const handleGrade = (event, value) => {
     formik.setFieldValue('grade', {});
     formik.setFieldValue('subject', []);
@@ -413,7 +545,7 @@ const CreateQuestionPaper = ({
             className='collapsible-section'
             square
             expanded={expandFilter}
-            onChange={() => {}}
+            onChange={() => { }}
           >
             <AccordionSummary>
               <div className='header mv-20'>
@@ -455,37 +587,7 @@ const CreateQuestionPaper = ({
               </div>
             </AccordionSummary>
             <AccordionDetails>
-              {/* <div className='form-grid-container mv-20'> */}
               <Grid container spacing={2}>
-                {/* <Grid item xs={12} md={3}>
-                  <FormControl fullWidth variant='outlined'>
-                    <Autocomplete
-                      id='academic'
-                      name='academic'
-                      className='dropdownIcon'
-                      onChange={handleAcademicYear}
-                      // onChange={(e, value) => {
-                      //   formik.setFieldValue('academic', value);
-                      //   initSetFilter('selectedAcademic', value);
-                      // }}
-                      value={selectedAcademic || {}}
-                      options={academicDropdown || []}
-                      getOptionLabel={(option) => option.session_year || ''}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          variant='outlined'
-                          label='Academic Year'
-                          placeholder='Academic Year'
-                        />
-                      )}
-                      size='small'
-                    />
-                    <FormHelperText style={{ color: 'red' }}>
-                      {formik.errors.academic ? formik.errors.academic : ''}
-                    </FormHelperText>
-                  </FormControl>
-                </Grid> */}
                 <Grid item xs={12} md={3}>
                   <FormControl fullWidth variant='outlined'>
                     <Autocomplete
@@ -606,6 +708,18 @@ const CreateQuestionPaper = ({
             <Divider />
           </div>
           <div className='form-actions-container mv-20'>
+            <div className='btn-container' style={{ marginRight: "1%" }} >
+              <Button
+                variant='contained'
+                className='cancelButton labelColor'
+                style={{ width: '100%' }}
+                onClick={() => {
+                  window.history.back()
+                }}
+              >
+                Back
+              </Button>
+            </div>
             <div className='btn-container'>
               <Button
                 variant='contained'
@@ -627,9 +741,10 @@ const CreateQuestionPaper = ({
                 .map(({ subject_name }) => subject_name)
                 .join(', ')}
               level={formik.values.question_paper_level?.name}
-              questions={questions}
-              handleAddQuestion={handleAddQuestion}
-              onCreateQuestionPaper={handleCreateQuestionPaper}
+              sections={sections}
+              handleAddSection={handleAddSection}
+              onCreateQuestionPaper={handleSubmitPaper}
+              updateQuesionPaper={Number(location.pathname.slice(23))}
               onChangePaperName={(e) =>
                 initSetFilter(
                   'questionPaperName',
@@ -648,7 +763,8 @@ const CreateQuestionPaper = ({
 };
 
 const mapStateToProps = (state) => ({
-  questions: state.createQuestionPaper.questions,
+  sections: state.createQuestionPaper.questions,
+  isFetched: state.createQuestionPaper.isFetched,
   selectedAcademic: state.createQuestionPaper.selectedAcademic,
   selectedBranch: state.createQuestionPaper.selectedBranch,
   selectedGrade: state.createQuestionPaper.selectedGrade,
@@ -658,16 +774,23 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  initAddQuestion: (question) => {
-    dispatch(addQuestion(question));
+  initAddSection: (section) => {
+    dispatch(addSection(section));
+  },
+  setIsFetched: (isFetched) => {
+    dispatch(setIsFetched(isFetched));
   },
   initCreateQuestionPaper: (data) => dispatch(createQuestionPaper(data)),
+  initEditQuestionPaper: (data, url) => dispatch(editQuestionPaper(data, url)),
   initSetFilter: (filter, data) => dispatch(setFilter(filter, data)),
   initResetState: () => dispatch(resetState()),
   initDeleteSection: (questionId, sectionId) =>
     dispatch(deleteSection(questionId, sectionId)),
   deleteQuestionSection: (questionId, sectionId) =>
     dispatch(deleteQuestionSection(questionId, sectionId)),
+  initAddQuestionToSection: (question, questionId, section) => {
+    dispatch(addQuestionToSection(question, questionId, section));
+  },
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateQuestionPaper);

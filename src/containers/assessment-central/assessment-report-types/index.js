@@ -10,9 +10,10 @@ import {
   TableCell,
   Paper,
   TablePagination,
+  Box,
+  useTheme,
+  useMediaQuery,
 } from '@material-ui/core';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../../Layout';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
@@ -21,17 +22,15 @@ import Loading from '../../../components/loader/loader';
 import ReportTypeFilter from '../assessment-report-types/report-type-filter';
 import AssessmentReportFilters from '../assessment-report-types/assessment-report-filters';
 import AssesmentReportTable from '../assesment-report-card/index';
+import AssessmentReportBack from '../assesment-report-card/report-table-observation-and-feedback';
 import { connect } from 'react-redux';
 import { setClearFilters } from 'redux/actions';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import useStyles from './useStyles';
+import TabPanel from '../../../components/tab-panel';
 
-const AssessmentReportTypes = ({
-  setClearFilters,
-  assessmentReportListData,
-  selectedReportType,
-}) => {
+const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType }) => {
   const limit = 15;
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -48,6 +47,20 @@ const AssessmentReportTypes = ({
 
   const [reportCardData, setReportCardData] = useState([]);
   const [isPreview, setIsPreview] = useState(false);
+  const [tabValue, setTabValue] = useState(0);
+
+  const renderReportCard = () => {
+    switch (tabValue) {
+      case 0:
+        return <AssesmentReportTable reportCardData={reportCardData} />;
+      case 1:
+        return (
+          <AssessmentReportBack
+            observationFeedback={reportCardData['observation_feedback']}
+          />
+        );
+    }
+  };
 
   // useEffect(() => {
   //   setClearFilters();
@@ -208,7 +221,16 @@ const AssessmentReportTypes = ({
           />
         )}
         {selectedReportType?.id === 5 && isPreview && (
-          <AssesmentReportTable reportCardData={reportCardData} />
+          <>
+            <Box style={{ margin: '20px auto', width: '95%' }}>
+              <TabPanel
+                tabValue={tabValue}
+                setTabValue={setTabValue}
+                tabValues={['Front', 'Back']}
+              />
+            </Box>
+            {renderReportCard()}
+          </>
         )}
 
         {isFilter && (

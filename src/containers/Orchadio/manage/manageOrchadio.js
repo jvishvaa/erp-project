@@ -519,6 +519,17 @@ function ManageOrchadio() {
       });
     handleClose();
   };
+
+  const handleAddNew = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const redirectionView = +searchParams.get('wb_view');
+    if (redirectionView) {
+      history.push(`/orchadio/add-orchadio/?wb_view=${redirectionView}`);
+    } else {
+      history.push('/orchadio/add-orchadio');
+    }
+  };
+
   return (
     <div className='layout-container-div' id="manageorchidoContainer" >
       <Layout className='layout-container'>
@@ -576,7 +587,7 @@ function ManageOrchadio() {
                         </Button>
                         <Button
                           style={{ fontSize: 'small', margin: '20px', width: 150 ,color:"white"}}
-                          onClick={() => history.push('/orchadio/add-orchadio')}
+                          onClick={() => handleAddNew()}
                           color='primary'
                           size='small'
                           variant='contained'

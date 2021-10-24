@@ -307,6 +307,40 @@ import { isMsAPI } from './redux/actions';
 import AssessmentReportTable from 'containers/assessment-central/assesment-report-card/index';
 import ConnectionPod from 'components/connection-pod/index.jsx';
 
+import SubjectTraining from './containers/sure-learning/subject-training/subjectTraining';
+import InductionUnit from './containers/sure-learning/induction-training/steps/inductionUnit';
+import AllChapters from './containers/sure-learning/induction-training/steps/allChapters';
+import AllSubjectChapters from 'containers/sure-learning/subject-training/allSubjectChapters';
+import InductionTraining from './containers/sure-learning/induction-training/inductionFilter';
+import TressureBox from './containers/sure-learning/tressureBox/tressurBox';
+import SureNotification from './containers/sure-learning/sure-Notification/notification'
+import EnrollForSelfCourses from './containers/sure-learning/sureLearning-courses/courses/selfDriven/enrollForSelfCourses';
+import EnrolledSelfCourses from './containers/sure-learning/sureLearning-courses/courses/selfDriven/enrolledSelfCourses';
+import AssignedCoursesByCordinator from './containers/sure-learning/sureLearning-courses/courses/selfDriven/assignedCoursesByCordinator';
+import AllCoursesAssignedByCoordinator from './containers/sure-learning/sureLearning-courses/courses/selfDriven/steps/allCoursesAssignedByCoordinator';
+import AllCoursesAssignedByCoordinatorContent from './containers/sure-learning/sureLearning-courses/courses/selfDriven/steps/alllCoursesAssignedByCoordinatorContent';
+import Vedio from './containers/sure-learning/tressureBox/tressureBoxVideo/tressreVideoViewer';
+import AllchapterContent from 'containers/sure-learning/induction-training/steps/allChapterContent';
+import AllchapterSubjectContent from 'containers/sure-learning/subject-training/allChapterSubject';
+import CustomizedSteppers from 'containers/sure-learning/subject-training/surequiz';
+import InductionQuiz from 'containers/sure-learning/induction-training/steps/quiz';
+import Unit from 'containers/sure-learning/subject-training/unit';
+import AllCoursesAssignedByCoordinatorContentUnit from 'containers/sure-learning/sureLearning-courses/courses/selfDriven/steps/assignedSelfCoursesUnit';
+import Quiz from 'containers/sure-learning/sureLearning-courses/courses/selfDriven/steps/quiz';
+import One from 'containers/sure-learning/sureLearning-courses/courses/trainerDriven/one';
+import InductionFilter from 'containers/sure-learning/induction-training/inductionFilter';
+import Blog from 'containers/sure-learning/Blogs-sureLearning/Blogs'
+import LearningNotes from 'containers/sure-learning/MyNotes/MyNotes'
+import ModuleOrOnlineTraining from 'containers/sure-learning/trainer-driven-courses/moduleOrOnline'
+import TrainingModules from 'containers/sure-learning/trainer-driven-courses/TrainingModule'
+import OnlineClassStart from 'containers/sure-learning/trainer-driven-courses/onClassStart'
+import TeacherReport from 'containers/sure-learning/sureLearning-courses/courses/selfDriven/teacher-report/TeacherReport';
+import InhouseCalendar from 'containers/sure-learning/calender/inHouseViewWebinar/inhouseWibenarCalender'
+import EachBlog from 'containers/sure-learning/Blogs-sureLearning/dialog-Blog';
+import LearningVideos from 'containers/sure-learning/MyNotes/learningAll';
+import EachLearn from 'containers/sure-learning/MyNotes/eachLearn';
+
+
 function App({ alert, isMsAPI }) {
   // useEffect(() => {
   isMsAPI();
@@ -1468,6 +1502,120 @@ function App({ alert, isMsAPI }) {
                           <Route exact path='/connection-pod'>
                             {({ match }) => <ConnectionPod match={match} />}
                           </Route>
+
+                          <Route exact path='/subjectTrain'>
+                            {({ match }) => <SubjectTraining match={match} />}
+                          </Route>
+                          <Route exact path='/allchaptersInduction'>
+                            {({ match }) => <AllChapters match={match} />}
+                          </Route>
+                          <Route exact path='/allsubjectchapters'>
+                            {({ match }) => <AllSubjectChapters match={match} />}
+                          </Route>
+                          <Route exact path='/inductionTraining'>
+                            {({ match }) => <InductionTraining match={match} />}
+                          </Route>
+                          <Route exact path='/tressureBox'>
+                            {({ match }) => <TressureBox match={match} />}
+                          </Route>
+                          <Route exact path='/view_notification'>
+                            {({ match }) => <SureNotification match={match} />}
+                          </Route>
+                          <Route exact path='/learning-notes'>
+                            {({ match }) => <LearningNotes match={match} />}
+                          </Route>
+                          <Route exact path='/enrollTrainingfCourses'>
+                            {({ match }) => <EnrollForSelfCourses match={match} />}
+                          </Route>
+                          <Route exact path='/enrolledSelfCourses'>
+                            {({ match }) => <EnrolledSelfCourses match={match} />}
+                          </Route>
+                          <Route exact path='/assignedCoursesByCordinator'>
+                            {({ match }) => <AssignedCoursesByCordinator match={match} />}
+                          </Route>
+                          <Route exact path='/allCoursesAssignedByCoordinator'>
+                            {({ match }) => (
+                              <AllCoursesAssignedByCoordinator match={match} />
+                            )}
+                          </Route>
+                          <Route exact path='/allCoursesAssignedByCoordinatorContent'>
+                            {({ match }) => (
+                              <AllCoursesAssignedByCoordinatorContent match={match} />
+                            )}
+                          </Route>
+                          <Route exact path='/allchapterContentInduction'>
+                            {({ match }) => <AllchapterContent match={match} />}
+                          </Route>
+                          <Route exact path='/allchapterContentSubject'>
+                            {({ match }) => <AllchapterSubjectContent match={match} />}
+                          </Route>
+                          <Route exact path='/tressureVedios'>
+                            {({ match }) => <Vedio match={match} />}
+                          </Route>
+                          <Route exact path='/teacherquiz'>
+                            {({ match }) => <CustomizedSteppers match={match} />}
+                          </Route>
+                          <Route exact path='/inductionquiz'>
+                            {({ match }) => <InductionQuiz match={match} />}
+                          </Route>
+                          <Route exact path='/quiz'>
+                            {({ match }) => <Quiz match={match} />}
+                          </Route>
+                          <Route exact path='/inductionTrain'>
+                            {({ match }) => <InductionFilter match={match} />}
+                          </Route>
+                          <Route exact path='/blogSureLearning'>
+                            {({ match }) => <Blog match={match} />}
+                          </Route>
+                          <Route exact path='/trainerDriven'>
+                            {({ match }) => <ModuleOrOnlineTraining match={match} />}
+                          </Route>
+                          <Route exact path='/modules'>
+                            {({ match }) => <TrainingModules match={match} />}
+                          </Route>
+                          <Route exact path='/online_Class_Start'>
+                            {({ match }) => <OnlineClassStart match={match} />}
+                          </Route>
+                          <Route exact path='/eachblog'>
+                            {({ match }) => <EachBlog match={match} />}
+                          </Route>
+                          <Route exact path='/inhouse_calendar'>
+                            {({ match }) => <InhouseCalendar match={match} />}
+                          </Route>
+                          <Route exact path='/oneee'>
+                            {({ match }) => <One match={match} />}
+                          </Route>
+
+                          
+
+                          <Route exact path='/allchapterContentUnit'>
+                            {({ match }) => <Unit match={match} />}
+                          </Route>
+                          <Route exact path='/inductionUnit'>
+                            {({ match }) => <InductionUnit match={match} />}
+                          </Route>
+                          <Route exact path='/allCoursesAssignedByCoordinatorContentUnit'>
+                            {({ match }) => (
+                              <AllCoursesAssignedByCoordinatorContentUnit match={match} />
+                            )}
+                          </Route>
+
+                          <Route exact path='/learningVideos'>
+                            {({ match }) => (
+                              <LearningVideos match={match} />
+                            )}
+                          </Route>
+                          <Route exact path='/eachLearn'>
+                            {({ match }) => (
+                              <EachLearn match={match} />
+                            )}
+                          </Route>
+                          <Route exact path='/Teacher-report'>
+                            {({ match }) => <TeacherReport match={match} />}
+                          </Route>
+
+
+
                           <Route exact path='/online-class/connection-pod'>
                             {({ match }) => <ConnectionPod match={match} />}
                           </Route>

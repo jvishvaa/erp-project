@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React from 'react';
 import Dialog from '@material-ui/core/Dialog';
-import { Slide } from '@material-ui/core';
+import { Slide, useMediaQuery, useTheme } from '@material-ui/core';
 
 import { useQuizContext, constants, useQuizUitilityContext } from '../mp-quiz-providers';
 
@@ -42,6 +42,10 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 function MpQuizPlay({ params }) {
   const { isMuted, toggleMute, defaultBgmUrl, pickRandomBgm } =
     useQuizUitilityContext() || {};
+  
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+
   const {
     isHost,
     isQuizStarted,
@@ -84,7 +88,7 @@ function MpQuizPlay({ params }) {
       JOINEE_QUIZ: JoineeQuizContainerContent,
     };
     // return DECIDE[userQuizStatus]();
-    const JsxElement = DECIDE[userQuizStatus]
+    const JsxElement = DECIDE[userQuizStatus];
     return <JsxElement params={params} />;
   };
   return (
@@ -92,7 +96,7 @@ function MpQuizPlay({ params }) {
       {isMuted ? null : (
         <audio
           // ref={this.myRef}
-          // style={{ visibility: 'hidden' }}
+          style={{ visibility: 'hidden' }}
           id={bgmUrl}
           autoPlay
           loop
@@ -100,7 +104,12 @@ function MpQuizPlay({ params }) {
           controls
         />
       )}
-      <Dialog fullScreen open TransitionComponent={Transition}>
+      <Dialog
+        fullScreen
+        open
+        TransitionComponent={Transition}
+        style={{ marginTop: isMobile ? '-28px' : 0 }}
+      >
         <img
           className={[
             isQuizEnded ? 'volume__controller--ended' : 'volume__controller',

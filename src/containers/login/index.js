@@ -18,6 +18,7 @@ import {
 } from '../../utility-functions/themeGenerator';
 import TabPanel from '../../components/tab-panel';
 import SwipeableViews from 'react-swipeable-views';
+import { parseJwt } from '../../utility-functions';
 
 function TermsAndCondition() {
   return (
@@ -58,6 +59,11 @@ function SignIn({ history, setTheme }) {
   const [loading, setLoading] = useState(false);
   const [tabValue, setTabValue] = useState(0);
 
+  const searchParams = new URLSearchParams(window.location.search);
+  const redirectionToken = searchParams.get('redirect_key'); //token
+  const redirectionView = +searchParams.get('wb_view'); // 1-android , 2-ios
+  const pathIdentifier = +searchParams.get('path_value'); // 1-view-orchadio , 2-manage-orchadio
+  
   useEffect(() => {
     if (isFetchThemeRequired())
       fetchThemeApi()
@@ -67,6 +73,24 @@ function SignIn({ history, setTheme }) {
         })
         .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    if (redirectionToken) {
+      const redirectionDetails = parseJwt(redirectionToken);
+      localStorage.setItem(
+        'userDetails',
+        JSON.stringify({
+          ...redirectionDetails,
+          token: redirectionToken,
+        })
+      );
+      if (pathIdentifier === 1) {
+        history.push(`/orchadio/view-orchadio/?wb_view=${redirectionView}`);
+      } else if (pathIdentifier === 2) {
+        history.push(`/orchadio/manage-orchadio/?wb_view=${redirectionView}`);
+      }
+    }
+  }, [redirectionToken]);
 
   const tabStyle = {
     width: '100%',

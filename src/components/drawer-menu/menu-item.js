@@ -527,6 +527,58 @@ const MenuItem = withRouter(({ history, ...props }) => {
       name: 'Connection pod',
       Path: '/online-class/connection-pod'
     },
+    {
+      name: 'Subject Training',
+      Path: '/subjectTrain',
+    },
+    {
+      name: 'Induction Training',
+      Path: '/inductionTrain',
+    },
+    {
+      name: 'Enroll Courses',
+      Path: '/enrollTrainingfCourses',
+    },
+    {
+      name: 'Enrolled Courses',
+      Path: '/enrolledSelfCourses',
+    },
+    {
+      name: 'My Notes',
+      Path: '/learning-notes',
+    },
+    {
+      name: 'Calender',
+      Path: '/inhouse_calendar',
+    },
+    {
+      name: 'Notification',
+      Path: '/View_notification',
+    },
+    {
+      name: 'Report',
+      Path: '/Teacher-report',
+    },
+    {
+      name: 'Blogs',
+      Path: '/blogSureLearning',
+    },
+    {
+      name: 'Learning',
+      Path: '/learningVideos',
+    },
+    {
+      name: 'Treasure Box',
+      Path: '/tressurebox',
+    },
+    {
+      name: 'Trainer Driven Courses',
+      Path: '/trainerDriven',
+      },
+    {
+      name: 'Self Driven Courses',
+      Path: '/assignedCoursesByCordinator',
+    },
   ];
 
   // const [menuOpen, setMenuOpen] = useState(false);
