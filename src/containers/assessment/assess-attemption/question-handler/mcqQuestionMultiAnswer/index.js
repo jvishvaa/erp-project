@@ -69,7 +69,7 @@ const McqQuestionMultiAnswer = (props) => {
   return (
     <div>
       <div className='mcq-question-wrapper'>
-        <div>{ReactHtmlParser(question)}</div>
+        <div style={{ fontSize: "30px" }}>{ReactHtmlParser(question)}</div>
         <FormControl component='fieldset' onChange={handleOptionValue}>
           {/* <FormLabel component='legend'>Options</FormLabel> */}
           <RadioGroup
