@@ -96,7 +96,7 @@ const CreateClassForm = (props) => {
 
   const [toggle, setToggle] = useState(false);
   const [toggleZoom, setToggleZoom] = useState(false);
-
+  
   const { setAlert } = useContext(AlertNotificationContext);
   const { user_id: userId, is_superuser: isSuperUser } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -127,9 +127,9 @@ const CreateClassForm = (props) => {
 
   const [classTypes, setClassTypes] = useState([
     { id: 0, type: 'Compulsory Class' },
-    { id: 1, type: 'Optional Class' },
+    /* { id: 1, type: 'Optional Class' },
     { id: 2, type: 'Special Class' },
-    { id: 3, type: 'Parent Class' },
+    { id: 3, type: 'Parent Class' }, */
   ]);
 
   useEffect(() => {

@@ -72,7 +72,9 @@ const AllBooksPage = () => {
   const [bookImage, setBookImage] = useState(
     // 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/ibooks/'
     // 'https://d3ka3pry54wyko.cloudfront.net/dev/ibooks/'
-    'https://erp-revamp.s3.ap-south-1.amazonaws.com/'
+    // 'https://erp-revamp.s3.ap-south-1.amazonaws.com/'
+    'https://d3ka3pry54wyko.cloudfront.net/'
+
   );
   const [bookId, setbookId] = useState('');
   const [chapterId, setchapterId] = useState('');
@@ -118,7 +120,9 @@ const AllBooksPage = () => {
           console.log(Math.ceil(result.data.result.count / limit), 'pagination');
           if (result?.data.result?.result[0]?.path === 'prod/ibooks/') {
             // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/prod/ibooks/');
-            setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/');
+            // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/');
+            setBookImage('https://d3ka3pry54wyko.cloudfront.net/');
+
           }
           setLoading(false);
         } else {

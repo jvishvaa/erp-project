@@ -53,6 +53,8 @@ const Layout = ({ children, history }) => {
     s3: { BUCKET: s3BUCKET, ERP_BUCKET },
   } = ENVCONFIG;
 
+  let token = JSON.parse(localStorage.getItem('userDetails'))?.token || '';
+
   let userId = JSON.stringify(localStorage.getItem('userDetails')) || {};
   var CryptoJS = require('crypto-js');
 
@@ -869,7 +871,61 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Event Tracker': {
-        window.location.href = `${baseEvent}?${erp_details}`;
+        window.location.href = `${baseEvent}?${token}`;
+        break;
+      }
+      case 'Subject Training': {
+        history.push('/subjectTrain');
+        break;
+      }
+      case 'Enroll Courses': {
+        history.push('/enrollTrainingfCourses');
+        break;
+      }
+      case 'Enrolled Courses': {
+        history.push('/enrolledSelfCourses');
+        break;
+      }
+      case 'Induction Training': {
+        history.push('/inductionTrain');
+        break;
+      }
+      case 'Treasure Box': {
+        history.push('/tressurebox');
+        break;
+      }
+
+      case 'My Notes': {
+        history.push('/learning-notes');
+        break;
+      }
+      case 'Calender': {
+        history.push('/inhouse_calendar');
+        break;
+      }
+      case 'Learning': {
+        history.push('/learningVideos');
+        break;
+      }
+      case 'Notification': {
+        history.push('/View_notification');
+        break;
+      }
+      case 'Report': {
+        history.push('/Teacher-report');
+        break;
+      }
+      case 'Blogs': {
+        history.push('/blogSureLearning');
+        break;
+      }
+      case 'Trainer Driven Courses': {
+        history.push('/trainerDriven');
+        break;
+      }
+
+      case 'Self Driven Courses': {
+        history.push('/assignedCoursesByCordinator');
         break;
       }
       case 'Connection pod': {

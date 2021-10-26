@@ -69,9 +69,9 @@ const Filter = (props) => {
 
   const [classTypes, setClassTypes] = useState([
     { id: 0, type: 'Compulsory Class' },
-    { id: 1, type: 'Optional Class' },
+    /* { id: 1, type: 'Optional Class' },
     { id: 2, type: 'Special Class' },
-    { id: 3, type: 'Parent Class' },
+    { id: 3, type: 'Parent Class' }, */
   ]);
   const [selectedClassType, setSelectedClassType] = useState('');
   const [moduleId, setModuleId] = useState();

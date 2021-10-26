@@ -1,0 +1,87 @@
+#container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+#videobox{
+    width: 25%;
+    margin: 3%;
+}
+#blogContainer{
+    #image-blog{
+        width: 100%;
+        height: 300px;
+    }
+    #image-area-blog{
+        position: relative;
+
+    }
+    #sure-learning{
+        position: absolute;
+        top: 50%;
+        left: 25%;
+        transform: translate(-50%, -50%);
+        font-size: 50px;
+        color: white;
+    }
+    #blogs{
+        position: absolute;
+        top: 65%;
+        left: 25%;
+        transform: translate(-50%, -50%);
+        font-size: 30px;
+        color: white;
+    }
+    .cards-area{  display: flex;
+    justify-content:flex-start;
+    flex-wrap: wrap;
+    }
+    .card-container{
+        padding: 10px;
+        margin: 20px;
+        max-width: 45%;
+        max-height: 415px;
+        min-width: 45%;
+    }
+    .tabs{
+        display: flex;
+        width: 100%;
+        justify-content: space-around;
+    }
+    .card-image{
+        width: 100%;
+        height: 300px;
+    }
+    .tab-category{
+        .MuiTabs-flexContainer{
+            justify-content: space-around;
+
+        }
+        .MuiButtonBase-root{
+            border-bottom: 5px solid grey;
+        }
+    }
+}
+.blog-container{
+    .image-area{
+        margin: 1%;
+        position: relative;
+    }
+    .blog-img{
+        max-height: 500px;
+        width: 100%;
+    }
+    .btn-area{
+        margin: 0 1%;
+    }
+    .title-blog{
+        position: absolute;
+    top: 70%;
+    left: 35%;
+    transform: translate(-50%, -50%);
+    font-size: 35px;
+    color: white;
+    font-weight: 600;
+    min-width: 60%;
+    }
+}

@@ -1,0 +1,37 @@
+@media only screen and (min-width: 768px) {
+    .responsive{
+        height: 100%;
+    }
+  }
+  @media only screen and (max-width: 767px) {
+    .responsive{
+        height: 50%;
+    }
+  }
+  @media only screen and (min-width: 768px) {
+    .arcButton{
+        top: 35%;
+    }
+  }
+  @media only screen and (max-width: 767px) {
+    .arcButton{
+        top: 15%;
+    }
+  }
+  .arcBtn {
+    background-image: url("../../../assets/images/button.svg");
+    padding: 30px;
+    height : auto;
+    background-position : center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* position: absolute; */
+}
+.arcButtonback{
+    background-image: url("../../../assets/images/arc.svg");
+    padding: 25px;
+    height : auto;
+    background-position : center;
+    background-size: cover;
+    background-repeat: no-repeat; 
+  }
