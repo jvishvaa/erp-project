@@ -43,9 +43,13 @@ const AssesmentReport = ({ reportCardData }) => {
           <StudentDetails userInfo={userInfo} />
           <ReportTable TableType={'SCHOLASTIC'} Data={scholastic} />
           <ReportTable TableType={'CO-SCHOLASTIC'} Data={coScholastic} />
-          {/* <PersonalityTraitTable /> */}
+          <PersonalityTraitTable scholastic={scholastic} coScholastic={coScholastic} />
           {/* <TableTypeFooter gradeScale={CO_SCHOLASTIC_GRADE_SCALE} /> */}
-          <ReportCardFooter {...getOverallRemark(termDetails)} />
+          <ReportCardFooter
+            scholastic={scholastic}
+            coScholastic={coScholastic}
+            {...getOverallRemark(termDetails)}
+          />
         </Paper>
       ) : (
         'REPORT CARD NOT AVAILABLE'

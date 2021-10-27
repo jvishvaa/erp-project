@@ -1,10 +1,17 @@
 import React, { useContext, useState, useEffect, useRef } from 'react';
-import { Grid, TextField, Button, Input } from '@material-ui/core';
+import { Grid, TextField, Button, Input, Box } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { useSelector } from 'react-redux';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
-import { getBranch, getGrade, getSubject, getSection, marksUpload } from '../../apis';
+import {
+  getBranch,
+  getGrade,
+  getSubject,
+  getPersonalityTraits,
+  getSection,
+  marksUpload,
+} from '../../apis';
 import DNDFileUpload from '../../../../../components/dnd-file-upload';
 import { handleDownloadExcel } from '../../../../../utility-functions';
 
@@ -18,6 +25,7 @@ const termsList = [
 const scholasticData = [
   { id: 1, value: 'Scholastic' },
   { id: 2, value: 'Co-Scholastic' },
+  { id: 3, value: 'Personality Traits' },
 ];
 
 const fileConf = {
@@ -26,11 +34,12 @@ const fileConf = {
   types: 'xls, xlsx',
 };
 
-const isSuccess = (status) => status > 199 && status < 299;
+const isSuccess = (status) => status > 199 && status < 300;
 
 const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
-  const { setAlert } = useContext(AlertNotificationContext);
+  const { setAlert, isShown } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState();
+  const [submitFlag, setSubmitFlag] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const history = useHistory();
   const { id: academicYearId = 1 } = useSelector(
@@ -41,6 +50,7 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
     branch: [],
     grade: [],
     subject: [],
+    traits: [],
     section: [],
   });
 
@@ -48,6 +58,7 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
     branch: '',
     grade: '',
     subject: '',
+    trait: '',
     section: '',
     term: '',
     scholastic: '',
@@ -59,6 +70,7 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
       branch = {},
       grade = {},
       subject = {},
+      trait = {},
       section = {},
       term = {},
       scholastic = {},
@@ -69,6 +81,7 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
     const { grade_id: gradeId } = grade || {};
     const { section_id: sectionId } = section || {};
     const { subject_id: subjectId } = subject || {};
+    const { trait_id: traitId } = trait || {};
     const { id: termId } = term || {};
     const { id: scholasticId } = scholastic || {};
     return [
@@ -77,11 +90,18 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
       gradeId,
       sectionId,
       subjectId,
+      traitId,
       termId,
       scholasticId,
       file,
     ];
   };
+
+  useEffect(() => {
+    if (!isShown && submitFlag) {
+      history.push('/assessment/report-card-pipeline');
+    }
+  }, [isShown, submitFlag]);
 
   useEffect(() => {
     if (moduleId && academicYearId) {
@@ -107,6 +127,37 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
     }
   }, []);
 
+  const AlertComponent = ({ logs, headerText, status }) => {
+    return (
+      <Box style={{ display: 'flex', flexDirection: 'column' }}>
+        {status === 409 ? <h3>{headerText}</h3> : <div>{headerText}</div>}
+        <Box>
+          {Object.entries(logs).map(([key, value]) => (
+            <Box
+              style={{ display: 'flex', flexDirection: 'column', margin: '20px auto' }}
+            >
+              <Box>
+                <h3>{key}</h3>
+              </Box>
+              {value.map(({ msg: innerMessage = '', reason = '' }, index) => (
+                <Box style={{ margin: '10px 0' }}>
+                  <Box>
+                    <Box style={{ fontWeight: '800' }}>Message:</Box>
+                    {innerMessage}
+                  </Box>
+                  <Box>
+                    <Box style={{ fontWeight: '800' }}>Reason:</Box>
+                    {reason}
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          ))}
+        </Box>
+      </Box>
+    );
+  };
+
   const generatePayload = () => {
     const [
       acadSessionId,
@@ -114,6 +165,7 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
       gradeId,
       sectionId,
       subjectId,
+      traitId,
       termId,
       scholasticId,
       file,
@@ -130,6 +182,10 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
       scholastic: scholasticId,
       file,
     };
+    if (scholasticId === 3) {
+      payload['trait_id'] = traitId;
+      delete payload['subject'];
+    }
     const formData = new FormData();
     Object.entries(payload).forEach(([key, value]) => formData.append(key, value));
     return formData;
@@ -147,25 +203,6 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
     });
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   if (!filterData?.file) {
-  //     setAlert('error', 'File is required');
-  //     return;
-  //   }
-  //   const requestBody = generatePayload();
-  //   const response = await marksUpload(requestBody);
-  //   const { data = {}, headers = {} } = response || {};
-  //   const contentType = headers['content-type'];
-  //   if (contentType !== 'application/vnd.ms-excel') {
-  //     const { status, message, msg } = data || {};
-  //     setAlert('error', msg || message || 'Unable to upload marks');
-  //   } else {
-  //     handleDownloadExcel(data, 'Report-Card');
-  //     history.push('/assessment/report-card-pipeline');
-  //   }
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!filterData?.file) {
@@ -174,13 +211,23 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
     }
     const requestBody = generatePayload();
     const response = await marksUpload(requestBody);
-    const { status = 400, message, msg } = response || {};
-    const isSuccesful = isSuccess(status);
-    setAlert(
-      isSuccesful ? 'success' : 'error',
-      msg || message || 'Unable to upload marks'
+    const { status = 400, message, msg, logs = {} } = response || {};
+    const isSuccesful = isSuccess(+status);
+    let displayMessage = (
+      <AlertComponent
+        headerText={msg || message || 'Unable to upload marks'}
+        logs={logs}
+        status={+status}
+      />
     );
-    if (isSuccesful) history.push('/assessment/report-card-pipeline');
+
+    setAlert(
+      status === '409' ? 'warning' : isSuccesful ? 'success' : 'error',
+      displayMessage,
+      status === '409' ? 1000000 : 3000,
+      status === '409' // to display close icon
+    );
+    setSubmitFlag(true);
   };
 
   const fetchBranches = async () => {
@@ -219,6 +266,13 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
     try {
       const subject = await getSubject(moduleId, academicYearId, branchId, gradeId);
       setDropdownData((prev) => ({ ...prev, subject }));
+    } catch (err) {}
+  };
+
+  const fetchPersonalityTraits = async () => {
+    try {
+      const traits = await getPersonalityTraits();
+      setDropdownData((prev) => ({ ...prev, traits }));
     } catch (err) {}
   };
 
@@ -263,6 +317,14 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
     setFilterData((prev) => ({ ...prev, ...filterObject }));
   };
 
+  const handlePersonalityTrait = (event, trait) => {
+    let filterObject = { trait: '' };
+    if (trait) {
+      filterObject = { ...filterObject, trait };
+    }
+    setFilterData((prev) => ({ ...prev, ...filterObject }));
+  };
+
   const handleTerm = (event, term) => {
     let filterObject = { term: '' };
     if (term) {
@@ -275,6 +337,9 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
     let filterObject = { scholastic: '' };
     if (scholastic) {
       filterObject = { ...filterObject, scholastic };
+      if (scholastic?.id === 3) {
+        fetchPersonalityTraits();
+      }
     }
     setFilterData((prev) => ({ ...prev, ...filterObject }));
   };
@@ -346,8 +411,8 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
               <TextField
                 {...params}
                 variant='outlined'
-                label='Scholastic / Co-Scholastic'
-                placeholder='Scholastic / Co-Scholastic'
+                label='Scholastic / Co-Scholastic / Traits'
+                placeholder='Scholastic / Co-Scholastic / Traits'
                 inputProps={{
                   ...params.inputProps,
                 }}
@@ -432,29 +497,55 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
           />
         </Grid>
         <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-          <Autocomplete
-            size='small'
-            onChange={handleSubject}
-            style={{ width: '100%' }}
-            id='subject'
-            name='subject'
-            options={dropdownData?.subject || []}
-            value={filterData?.subject || ''}
-            getOptionLabel={(option) => option?.subject_name || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Subject'
-                placeholder='Subject'
-                inputProps={{
-                  ...params.inputProps,
-                }}
-                required
-              />
-            )}
-          />
+          {filterData?.scholastic.id !== 3 ? (
+            <Autocomplete
+              size='small'
+              onChange={handleSubject}
+              style={{ width: '100%' }}
+              id='subject'
+              name='subject'
+              options={dropdownData?.subject || []}
+              value={filterData?.subject || ''}
+              getOptionLabel={(option) => option?.subject_name || ''}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Subject'
+                  placeholder='Subject'
+                  inputProps={{
+                    ...params.inputProps,
+                  }}
+                  required
+                />
+              )}
+            />
+          ) : (
+            <Autocomplete
+              size='small'
+              onChange={handlePersonalityTrait}
+              style={{ width: '100%' }}
+              id='personality_traits'
+              name='personality_traits'
+              options={dropdownData?.traits || []}
+              value={filterData?.trait || ''}
+              getOptionLabel={(option) => option?.trait_description || ''}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Personality Traits'
+                  placeholder='Personality Traits'
+                  inputProps={{
+                    ...params.inputProps,
+                  }}
+                  required
+                />
+              )}
+            />
+          )}
         </Grid>
         <Grid item xs={12} sm={4}>
           {/* <Input
@@ -492,6 +583,7 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
             color='primary'
             size='medium'
             type='submit'
+            disabled={submitFlag}
           >
             Submit
           </Button>

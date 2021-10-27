@@ -8,6 +8,7 @@ const alertReducer = (state, action) => {
         message: action.payload.message,
         type: action.payload.type,
         isShown: true,
+        showCloseIcon: action.payload.showCloseIcon,
       };
 
     case HIDE_ALERT:
@@ -16,6 +17,7 @@ const alertReducer = (state, action) => {
         message: '',
         type: 'success',
         isShown: false,
+        showCloseIcon: false,
       };
 
     default:
