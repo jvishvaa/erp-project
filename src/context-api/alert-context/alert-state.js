@@ -14,6 +14,7 @@ const AlertNotificationProvider = (props) => {
     isShown: false,
     type: 'success',
     message: '',
+    showCloseIcon: false,
   };
 
   const [state, dispatch] = useReducer(alertReducer, iniatialState);
@@ -24,10 +25,10 @@ const AlertNotificationProvider = (props) => {
     };
   };
 
-  const show = (type, message) => {
+  const show = (type, message, showCloseIcon) => {
     return {
       type: SHOW_ALERT,
-      payload: { type, message },
+      payload: { type, message, showCloseIcon },
     };
   };
 
@@ -35,8 +36,8 @@ const AlertNotificationProvider = (props) => {
     dispatch(hide());
   };
 
-  const setAlert = (type, message, duration = 3000) => {
-    dispatch(show(type, message));
+  const setAlert = (type, message, duration = 3000, showCloseIcon = false) => {
+    dispatch(show(type, message, showCloseIcon));
 
     setTimeout(() => {
       dispatch(hide());
