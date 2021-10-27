@@ -10,6 +10,8 @@ import {
 } from '@material-ui/core';
 import { generateObservationTableHeaders } from '../transform-report-card-data';
 
+const mappingList = ['CLASS TEACHER', 'SECTION COORDINATOR', 'PARENT', 'PRINCIPAL'];
+
 const StyledTableCell = withStyles((theme) => ({
   head: {
     fontSize: 14,
@@ -51,10 +53,7 @@ export default function AssesmentObservatioAndFeedbackReport({
         {observationFeedback.map(
           ({
             subject_name: subjectName = '',
-            performance_analysis: performanceAnalysis = '',
-            achievement_goal: achievementGoal = '',
-            support = '',
-            expectation = '',
+            traits = {},
             marks = '',
             grade = '',
             osr = '',
@@ -104,28 +103,24 @@ export default function AssesmentObservatioAndFeedbackReport({
                 </StyledTableCell>
               </TableRow>
 
-              {[
-                ...generateObservationTableHeaders(
-                  performanceAnalysis,
-                  achievementGoal,
-                  support,
-                  expectation
-                ),
-              ].map(({ label = '', value = '' }) => (
-                <TableRow>
-                  <StyledTableCell
-                    colSpan={2}
-                    style={{
-                      width: '25%',
-                    }}
-                  >
-                    {label}
-                  </StyledTableCell>
-                  <StyledTableCell colSpan={3} style={{ width: '75%' }}>
-                    {value}
-                  </StyledTableCell>
-                </TableRow>
-              ))}
+              {[...generateObservationTableHeaders(traits)].map(
+                ({ label = '', value = '' }) => (
+                  <TableRow>
+                    <StyledTableCell
+                      colSpan={2}
+                      style={{
+                        width: '25%',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {label}
+                    </StyledTableCell>
+                    <StyledTableCell colSpan={3} style={{ width: '75%' }}>
+                      {value}
+                    </StyledTableCell>
+                  </TableRow>
+                )
+              )}
               <TableRow>
                 <StyledTableCell
                   scope='center'
@@ -138,6 +133,28 @@ export default function AssesmentObservatioAndFeedbackReport({
             </TableHead>
           )
         )}
+        <TableRow>
+          <StyledTableCell
+            scope='center'
+            style={{ backgroundColor: '#FABF90', padding: '5px', height: '20px' }}
+            colSpan={7}
+          >
+            <Box
+              style={{
+                display: 'flex',
+                justifyContent: 'space-evenly',
+                alignItems: 'flex-end',
+                height: '80px',
+                fontSize: '14px',
+                fontWeight: 'bold',
+              }}
+            >
+              {mappingList.map((label) => (
+                <Box>{label}</Box>
+              ))}
+            </Box>
+          </StyledTableCell>
+        </TableRow>
       </Table>
     </TableContainer>
   );

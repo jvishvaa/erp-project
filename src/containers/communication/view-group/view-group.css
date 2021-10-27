@@ -21,7 +21,7 @@
 	font-weight: 600;
 }
 .MuiTableCell-head {
-	background-color: white !important;
+	/* background-color: white !important; */
   font-weight: 600 !important;
   text-align: center !important;
 }

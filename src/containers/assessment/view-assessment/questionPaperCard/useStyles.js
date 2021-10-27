@@ -7,6 +7,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     width: '105%',
     boxShadow: 'none',
+    fontFamily: 'Andika New Basic, sans- serif',
   },
   selectedRoot: {
     border: `1px solid ${theme.palette.primary.main}`,
@@ -40,6 +41,7 @@ const useStyles = makeStyles((theme) => ({
   cardTitleHeading: {
     margin: 2,
     color: theme.palette.primary.main,
+    fontFamily: 'Andika New Basic, sans- serif',
   },
   cardDescription: {
     margin: 2,
@@ -52,9 +54,11 @@ const useStyles = makeStyles((theme) => ({
   },
   cardAttemptedTextRed: {
     color: theme.palette.primary.main,
+    fontFamily: 'Andika New Basic, sans- serif',
   },
   cardAttemptedTextGreen: {
     color: '#168D00',
+    fontFamily: 'Andika New Basic, sans- serif',
   },
   cardEasyWrapper: {
     fontWeight: 'bold',
@@ -70,6 +74,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '0.3rem 1.1rem',
     borderRadius: '0.6rem',
     fontSize: '0.8rem',
+    fontFamily: 'Andika New Basic, sans- serif',
   },
 }));
 
