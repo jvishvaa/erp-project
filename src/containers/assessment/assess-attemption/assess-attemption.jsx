@@ -10,16 +10,17 @@ import './assess-attemption.css';
 import { makeStyles } from '@material-ui/core';
 import QuestionHandler from './question-handler/question-handler';
 
-const useStyles = makeStyles((theme)=>({
-  mainquestionpanel:{
+const useStyles = makeStyles((theme) => ({
+  mainquestionpanel: {
     border: `1px solid ${theme.palette.primary.main}`,
     padding: '10px',
-    overflowY:"scroll",
-    height:'42rem',
+    overflowY: 'scroll',
+    height: '42rem',
     borderRadius: '5px',
+    fontFamily: 'Andika New Basic, sans- serif',
     color: theme.palette.secondary.main,
   },
-  questionsubmitbtn:{
+  questionsubmitbtn: {
     border: `1px solid ${theme.palette.secondary.main}`,
     borderRadius: '5px',
     background: theme.palette.secondary.main,
@@ -30,10 +31,10 @@ const useStyles = makeStyles((theme)=>({
     cursor: 'pointer',
     color: '#fff',
     marginTop: '20px',
-  }
-}))
+  },
+}));
 const AssessmentAttemptionUI = (props) => {
-  const classes = useStyles()
+  const classes = useStyles();
   const {
     match: {
       // params: { assessmentId },
@@ -52,7 +53,10 @@ const AssessmentAttemptionUI = (props) => {
   } = useContext(AssessmentHandlerContext) || {};
   React.useEffect(() => {
     // fetchAssessmentQp({ assessment_id: assessmentId });
-    fetchAssessmentQp({ question_paper_id : questionPaperId, assessment_id: assessmentId });
+    fetchAssessmentQp({
+      question_paper_id: questionPaperId,
+      assessment_id: assessmentId,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

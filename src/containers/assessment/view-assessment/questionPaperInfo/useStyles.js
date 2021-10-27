@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme) => ({
   },
   testInfo: {
     borderRadius: '15px',
+    fontFamily: 'Andika New Basic, sans-serif',
   },
   testInfoHeader: {
     borderRadius: '15px 15px 0 0',
@@ -16,11 +17,13 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     padding: '10px',
     backgroundColor: theme.palette.primary.primarylightest,
+    fontFamily: 'Andika New Basic, sans-serif',
   },
   cardTitleHeading: {
     margin: 0,
     marginTop: 2,
     color: theme.palette.primary.main,
+    fontFamily: 'Andika New Basic, sans-serif',
   },
   cardDescription: {
     margin: 0,
@@ -71,6 +74,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 4,
     padding: 0,
     color: theme.palette.secondary.main,
+    fontFamily: 'Andika New Basic, sans-serif',
     fontSize: '0.9rem',
     fontWeight: 'bold',
     '& > div:first-child': {
