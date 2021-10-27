@@ -235,8 +235,8 @@ const CoordinatorTeacherHomework = withRouter(
       if(teacherModuleId){
       const managementTeacher= JSON.parse(localStorage.getItem('managementTeacher'));
           handleBranch("",managementTeacher?.selectedBranch);
-          handleSection("",managementTeacher?.selectedSection);
           handleGrade("",managementTeacher?.selectedGrade);
+          handleSection("",managementTeacher?.selectedSection);
           // handleCoordinateTeacher("",managementTeacher?.selectedTeacher);
           // let teacherModuleId=managementTeacher?.teacherModuleId;
       }
@@ -393,11 +393,11 @@ const CoordinatorTeacherHomework = withRouter(
         setselectedCoTeacherOptValue(value);
         getCoordinateTeacherHomeworkDetails(
           teacherModuleId,
-          selectedAcademicYear.id,
-          selectedBranch.branch.id,
-          gradeDisplay.grade_id,
-          sectionDisplay.id,
-          sectionDisplay.section_id,
+          selectedAcademicYear?.id,
+          selectedBranch?.branch?.id,
+          gradeDisplay?.grade_id,
+          sectionDisplay?.id,
+          sectionDisplay?.section_id,
           startDate,
           endDate,
           value?.user_id
@@ -494,7 +494,7 @@ const CoordinatorTeacherHomework = withRouter(
           )
           .then((result) => {
             if (result.status === 200) {
-              handleGrade();
+              // handleGrade();
               setBranchList(result?.data?.data?.results || []);
               setLoading(false);
             } else {
@@ -550,10 +550,11 @@ const CoordinatorTeacherHomework = withRouter(
       setGrades([]);
       setSections([]);
       setGradeDisplay([]);
+      setSectionDisplay([]);
       //setSearchGrade('');
       //setSearchSection([]);
       setSelectedBranch([]);
-      if (value) {
+      if (value && value.length!==0) {
         setSelectedBranch(value);
         setLoading(true);
         onSetSelectedFilters({
@@ -564,7 +565,7 @@ const CoordinatorTeacherHomework = withRouter(
         });
         // const managementTeacher= JSON.parse(localStorage.getItem('managementTeacher'));
         // endpoints.masterManagement.gradesDrop
-        axiosInstance.get(`${endpoints.academics.grades}?session_year=${selectedAcademicYear.id}&branch_id=${value.branch.id}&module_id=${teacherModuleId}`)
+        axiosInstance.get(`${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value?.branch?.id}&module_id=${teacherModuleId}`)
           .then((result) => {
             if (result.status === 200) {        
               setGrades(result.data.data || []);
@@ -583,15 +584,15 @@ const CoordinatorTeacherHomework = withRouter(
 
     const handleGrade = (event, value) => {
       const managementTeacher= JSON.parse(localStorage.getItem('managementTeacher'));
-      // setSectionDisplay([]);
+      setSectionDisplay([]);
       setSections([]);
-      // setGradeDisplay([]);
+      setGradeDisplay([]);
       setSelectedCoTeacherOpt([]);
       // setselectedCoTeacherOptValue([]);
       setSelectedTeacherUser_id('');
       //setSearchGrade('');
       //setSearchSection([]);
-      if (value) {
+      if (value && value.length!==0) {
         //setSearchGrade(value?.grade_id);
         setGradeDisplay(value);
         setLoading(true);

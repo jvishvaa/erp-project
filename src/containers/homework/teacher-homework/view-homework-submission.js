@@ -181,7 +181,7 @@ const ViewHomework = withRouter(
 
       try {
         await finalEvaluationForHomework(homeworkId, reqData);
-        setAlert('success', 'Homework Evaluated');
+        setAlert('success', 'Homework Evaluated ');
         onClose();
       } catch (e) {
         setAlert('error', 'Homework Evaluation Failed');
