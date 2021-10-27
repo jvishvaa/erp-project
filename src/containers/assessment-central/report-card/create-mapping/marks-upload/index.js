@@ -40,6 +40,7 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
   const { setAlert, isShown } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState();
   const [submitFlag, setSubmitFlag] = useState(false);
+  const [statusCode, setStatusCode] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const history = useHistory();
   const { id: academicYearId = 1 } = useSelector(
@@ -98,10 +99,13 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
   };
 
   useEffect(() => {
-    if (!isShown && submitFlag) {
-      history.push('/assessment/report-card-pipeline');
+    if (!isShown && (statusCode === 409 || isSuccess(statusCode))) {
+      if (filterData.scholastic?.id !== 3) {
+        history.push('/assessment/report-card-pipeline');
+      }
+      handleClear();
     }
-  }, [isShown, submitFlag]);
+  }, [isShown]);
 
   useEffect(() => {
     if (moduleId && academicYearId) {
@@ -197,16 +201,22 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
       grade: '',
       section: '',
       subject: '',
+      trait: '',
       term: '',
       scholastic: '',
       file: null,
     });
+    setSubmitFlag(false);
+    setStatusCode();
   };
 
   const handleSubmit = async (e) => {
+    setSubmitFlag(true);
     e.preventDefault();
+    setLoading(true);
     if (!filterData?.file) {
       setAlert('error', 'File is required');
+      setLoading(false);
       return;
     }
     const requestBody = generatePayload();
@@ -220,14 +230,15 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
         status={+status}
       />
     );
-
+    setStatusCode(+status);
     setAlert(
       status === '409' ? 'warning' : isSuccesful ? 'success' : 'error',
       displayMessage,
       status === '409' ? 1000000 : 3000,
       status === '409' // to display close icon
     );
-    setSubmitFlag(true);
+    setLoading(false);
+    setSubmitFlag(false);
   };
 
   const fetchBranches = async () => {
@@ -343,23 +354,6 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
     }
     setFilterData((prev) => ({ ...prev, ...filterObject }));
   };
-
-  // const fileRef = useRef(null);
-
-  // const handleFileChange = (event) => {
-  //   const file = event.target.files[0] || null;
-  //   const { name = 'filename' } = file || {};
-  //   const extensions = ['xls', 'xlsx'];
-  //   const fileExtension = name.trim().split(/\./).slice(-1)[0];
-  //   if (!extensions.includes(fileExtension)) {
-  //     fileRef.current.value = null;
-  //     setAlert(
-  //       'error',
-  //       'Only excel file is acceptable either with .xls or .xlsx extension'
-  //     );
-  //   }
-  //   setFilterData((prev) => ({ ...prev, file }));
-  // };
 
   return (
     <form autoComplete='off' onSubmit={handleSubmit}>
