@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '10px',
     width: '100%',
     textAlign: 'center',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     /* max-width: 400px, */
     cursor: 'pointer',
     marginBottom: '10px',
@@ -47,7 +47,7 @@ const TrueFalseQuestion = (props) => {
   return (
     <div>
       <div className='mcq-question-wrapper'>
-        <div>{ReactHtmlParser(question)}</div>
+        <div style={{ fontSize: "30px" }}>{ReactHtmlParser(question)}</div>
         {/* <img src='https://via.placeholder.com/150' alt='question image' /> */}
         <FormControl component='fieldset'>
           {/* <FormLabel component='legend'>Options</FormLabel> */}

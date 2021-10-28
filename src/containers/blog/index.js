@@ -12,6 +12,11 @@ export {default as TeacherPublishBlogView} from './Teacher/TeacherPublishBlogVie
 export {default as CreateGenre} from './Teacher/CreateGenre'
 export {default as EditGenre} from './Teacher/EditGenre'
 
+
+export { default as EditBlogTeacher } from './Teacher/editblogteacher';
+export { default as PreviewEditBlogTeacher } from './Teacher/previewblog';
+
+
 export { default as ContentViewPublish } from './Teacher/ContentViewPublish';
 export { default as AdminBlog } from './Admin/AdminBlog';
 export { default as PrincipalBlog } from './Principal/PrincipalBlog';

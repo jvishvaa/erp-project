@@ -1,11 +1,12 @@
-
 .question-header {
   margin-bottom: 15px;
+  font-family: Andika New Basic, sans- serif;
 }
 
 .descriptive_question_header {
   font-size: 18px;
   font-weight: 600;
+  font-family: Andika New Basic, sans- serif;
 }
 
 .question-numbers {
@@ -15,6 +16,7 @@
   background-color: #ececec;
   padding: 10px;
   font-weight: bold;
+  font-family: Andika New Basic, sans- serif;
 }
 
 .mcq-question-wrapper {
@@ -23,12 +25,13 @@
   align-items: center;
   flex-flow: column;
   gap: 10px;
-
+  font-family: Andika New Basic, sans- serif;
   margin: 0 auto;
 }
 
 .mcq-options label {
   width: 60%;
+  font-family: Andika New Basic, sans- serif;
 }
 
 .mcq-question-wrapper img {
@@ -38,6 +41,7 @@
   border-radius: 5px;
   max-height: auto;
   object-fit: contain;
+  font-family: Andika New Basic, sans- serif;
   /* float: left; */
 }
 
@@ -48,6 +52,7 @@
 
 .mcq-options:hover {
   background: #ffdddd;
+  font-family: Andika New Basic, sans- serif;
 }
 
 .MuiFormControlLabel-root {
@@ -82,6 +87,7 @@
   justify-content: space-between;
   align-items: center;
   gap: 20px;
+  font-family: Andika New Basic, sans- serif;
 }
 
 /* .instruction-screen p {

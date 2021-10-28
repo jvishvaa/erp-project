@@ -88,12 +88,13 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
 
   const testAnalysisRouteBtn = (
     <>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: 'flex', fontFamily: 'Andika New Basic, sans-serif' }}>
         <Button
           //  className={classes.customHover}
           variant='contained'
           color='primary'
           style={{
+            fontFamily: 'Andika New Basic, sans-serif',
             padding: '0.3rem 1rem',
             borderRadius: '0.6rem',
             fontSize: '0.9rem',
@@ -232,6 +233,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
         {testEndTime < new Date().getTime() ? (
           <Button
             style={{
+
               padding: '0.3rem 1rem',
               borderRadius: '0.6rem',
               fontSize: '0.9rem',
@@ -249,6 +251,7 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
             variant='contained'
             color='primary'
             style={{
+              fontFamily: 'Andika New Basic, sans-serif',
               padding: '0.3rem 1rem',
               borderRadius: '0.6rem',
               fontSize: '0.9rem',
