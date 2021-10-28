@@ -323,7 +323,7 @@ function MyNotes() {
                   open={open}
                   style={{ height:'90%',marginTop: '65px'}}
                   fullWidth
-                  maxWidth='lg'
+                  maxWidth='md'
                 >
                   <DialogTitle
                     DialogTitle={updatedDate?.learning_module?.title}
