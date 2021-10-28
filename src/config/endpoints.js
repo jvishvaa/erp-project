@@ -553,6 +553,7 @@ export default {
     getReportCardPipelineList: '/assessment/get-pipeline-status/',
     getReportCardStatusList: '/assessment/get-report-publish-status/',
     updateReportCardStatus: '/assessment/update-report-publish-status/',
+    personalityTraits: '/assessment/get-traits/',
   },
   dashboard: {
     teacher: {

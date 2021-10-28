@@ -10,8 +10,6 @@ const getSubjectWiseMarks = (marks, categoryKeys) => {
     );
   });
   const marksList = subjectWiseMarks.map(({ value = '' }) => value);
-  // const subjectWiseMarks = Array.from({ length }, () => '');
-  // Object.entries(marks).forEach(([key, value]) => (subjectWiseMarks[key - 1] = value));
   return marksList;
 };
 
@@ -36,6 +34,7 @@ const generateSemesterOneTwo = (termDetails) => {
       out_of_total: outOfTotal = '',
       total_obtained: totalObtained = '',
       overall_remark: overallRemark = '',
+      trait_data: traitData = [],
     }) => ({
       finalGrade,
       semester,
@@ -43,6 +42,7 @@ const generateSemesterOneTwo = (termDetails) => {
       totalObtained,
       subjectMarks,
       overallRemark,
+      traitData,
     })
   );
   const [semesterOne = {}, semesterTwo = {}] = transformedTermDetails || [];
@@ -217,19 +217,54 @@ const getOverallRemark = (termDetails) => {
   return { overallRemarkSemOne, overallRemarkSemTwo };
 };
 
-const generateObservationTableHeaders = (
-  performanceAnalysis,
-  achievementGoal,
-  support,
-  expectation
-) => {
-  return [
-    { label: 'Performance Analysis:', value: performanceAnalysis },
-    { label: 'Achievement Goal:', value: achievementGoal },
-    { label: 'Support, I Will Offer:', value: support },
-    { label: 'Expectation from You:', value: expectation },
-    { label: 'Parent / Student Signature:', value: '' },
-  ];
+const generateObservationTableHeaders = (traits = {}) => {
+  return Object.entries(traits).map(([key, value]) => ({
+    label: key.split('_').join(' '),
+    value,
+  }));
+};
+
+const generatePersonalityTraits = (scholastic, coScholastic) => {
+  const scholasticTermDetails = scholastic['term_details'] || [];
+  const coScholasticTermDetails = coScholastic['term_details'] || [];
+  const { semesterOne: scholasticSemOne = {}, semesterTwo: scholasticSemTwo = {} } =
+    generateSemesterOneTwo(scholasticTermDetails);
+  const { semesterOne: coScholasticSemOne = {}, semesterTwo: coScholasticSemTwo = {} } =
+    generateSemesterOneTwo(coScholasticTermDetails);
+
+  const { traitData: scholasticSemOneTraitData = [] } = scholasticSemOne || {};
+  const { traitData: scholasticSemTwoTraitData = [] } = scholasticSemTwo || {};
+  const { traitData: coScholasticSemOneTraitData = [] } = coScholasticSemOne || {};
+  const { traitData: coScholasticSemTwoTraitData = [] } = coScholasticSemTwo || {};
+
+  const semOneTrait =
+    scholasticSemOneTraitData.length >= coScholasticSemOneTraitData.length
+      ? scholasticSemOneTraitData
+      : coScholasticSemOneTraitData;
+
+  const semTwoTrait =
+    scholasticSemTwoTraitData.length >= coScholasticSemTwoTraitData.length
+      ? scholasticSemTwoTraitData
+      : coScholasticSemTwoTraitData;
+
+  const maxLength =
+    semOneTrait.length >= semTwoTrait.length ? semOneTrait.length : semTwoTrait.length;
+
+  const personalityTraits = Array.from({ length: maxLength }, (element, index) => [
+    semOneTrait?.[index]?.['trait_name'] || '',
+    semOneTrait?.[index]?.['trait_grade'] || '',
+    semTwoTrait?.[index]?.['trait_name'] || '',
+    semTwoTrait?.[index]?.['trait_grade'] || '',
+    '',
+  ]);
+  personalityTraits.unshift([
+    'PERSONALITY TRAIT AND SELF DISCIPLINE(SEMESTER 1)',
+    'GRADE',
+    'PERSONALITY TRAIT AND SELF DISCIPLINE(SEMESTER 2)',
+    'GRADE',
+    'ANNUAL GRADE',
+  ]);
+  return personalityTraits;
 };
 
 export {
@@ -240,4 +275,5 @@ export {
   generateTermDetailsSummaryRow,
   getOverallRemark,
   generateObservationTableHeaders,
+  generatePersonalityTraits,
 };
