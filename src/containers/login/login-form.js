@@ -28,22 +28,22 @@ function LoginForm(props) {
   const erpSearch = urlParams.get('erp');
   const [disableLogin, setDisableLogin] = useState(false);
 
-  const UdaanLogin = () => {
-    axiosInstance
-      .post(endpoints.sureLearning.login, {
-        username: username,
-      })
-      .then((result) => {
-        console.log(result);
-        localStorage.setItem('udaanDetails', JSON.stringify(result.data));
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
+  // const UdaanLogin = () => {
+  //   axiosInstance
+  //     .post(endpoints.sureLearning.login, {
+  //       username: username,
+  //     })
+  //     .then((result) => {
+  //       console.log(result);
+  //       localStorage.setItem('udaanDetails', JSON.stringify(result.data));
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // };
 
   const handleLogin = () => {
-    UdaanLogin();
+    // UdaanLogin();
     if (erpSearch !== null) {
       setDisableLogin(true);
       aolOnLogin(erpSearch, false).then((response) => {
