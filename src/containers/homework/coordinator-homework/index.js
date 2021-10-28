@@ -326,6 +326,7 @@ const CoordinatorTeacherHomework = withRouter(
 
     const getTeacherListApi = async () => {
       const [startDate, endDate] = dateRange;
+      setselectedCoTeacherOptValue([])
 
       try {
         setLoading(true);
@@ -551,6 +552,7 @@ const CoordinatorTeacherHomework = withRouter(
       setSections([]);
       setGradeDisplay([]);
       setSectionDisplay([]);
+      setselectedCoTeacherOptValue([])
       //setSearchGrade('');
       //setSearchSection([]);
       setSelectedBranch([]);
@@ -588,7 +590,7 @@ const CoordinatorTeacherHomework = withRouter(
       setSections([]);
       setGradeDisplay([]);
       setSelectedCoTeacherOpt([]);
-      // setselectedCoTeacherOptValue([]);
+      setselectedCoTeacherOptValue([]);
       setSelectedTeacherUser_id('');
       //setSearchGrade('');
       //setSearchSection([]);
@@ -626,9 +628,9 @@ const CoordinatorTeacherHomework = withRouter(
      
       //setSearchSection([]);
       
-      // setSectionDisplay([]);
+      setSectionDisplay([]);
       // setSelectedCoTeacherOpt([]);
-      // setselectedCoTeacherOptValue([]);
+      setselectedCoTeacherOptValue([]);
       setSelectedTeacherUser_id('');
       //let sec_id = [];
       if (value) {
