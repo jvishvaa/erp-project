@@ -29,7 +29,7 @@ const QuestionBody = ({ children, ...restProps }) => {
       const [{ question: comprehensionText }] = questionAnswer;
       return (
         <>
-          <div>{ReactHtmlParser(comprehensionText)}</div>
+          <div style={{ fontSize: '30px' }}>{ReactHtmlParser(comprehensionText)}</div>
           {propObj.questionObj.sub_questions.map((subQuesItem, index) => {
             const { id: subQuesId } = subQuesItem || {};
             const { [subQuesId]: subQuesObj } = restProps.questionsDataObj || {};

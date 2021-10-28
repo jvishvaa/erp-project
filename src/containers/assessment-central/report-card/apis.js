@@ -47,6 +47,17 @@ export const getSubject = async (module_id, session_year, branch, grade) => {
   }
 };
 
+export const getPersonalityTraits = async () => {
+  try {
+    const { data = {} } = await axiosInstance.get(
+      `${endpoints.reportCard.personalityTraits}`
+    );
+    return data?.data || [];
+  } catch (e) {
+    return [];
+  }
+};
+
 export const getSection = async (module_id, session_year, branch_id, grade_id) => {
   if (!module_id || !session_year || !branch_id || !grade_id) return;
   const params = createParams({ module_id, session_year, branch_id, grade_id });
@@ -127,14 +138,11 @@ export const createCategoryAssessmentMapping = async (payload) => {
 
 export const marksUpload = async (payload) => {
   try {
-    const response = await axiosInstance.post(
+    const { data = {} } = await axiosInstance.post(
       endpoints.reportCard.marksUpload,
-      payload,
-      // {
-      //   responseType: 'blob',
-      // }
+      payload
     );
-    return response;
+    return data || {};
   } catch (error) {
     const { response = {} } = error || {};
     const { data = {} } = response || {};

@@ -7,7 +7,7 @@ function GeneralInstruction({ text, handleClose }) {
   const defaultText = "<ol type='i'><li>All questions are compulsory. </li></ol>";
   return (
     <>
-      <div style={{ zIndex: 20, paddingTop: 30, maxHeight: '80vh', overflowY: 'auto' }}>
+      <div style={{ zIndex: 20, paddingTop: 30, maxHeight: '80vh', overflowY: 'auto', fontFamily: 'Andika New Basic, sans-serif' }}>
         <h2>
           Instructions:
           {handleClose ? (

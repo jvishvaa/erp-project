@@ -1,3 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Andika+New+Basic&display=swap');
+body {
+  font-family: 'Andika New Basic', sans-serif;
+}
 .testInfo {
   background-color: '#fff';
 }
@@ -31,4 +35,3 @@
 .spanClose:after {
   transform: rotate(-45deg);
 }
-

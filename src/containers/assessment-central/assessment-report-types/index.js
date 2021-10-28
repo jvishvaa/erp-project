@@ -62,10 +62,6 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
     }
   };
 
-  // useEffect(() => {
-  //   setClearFilters();
-  // }, []);
-
   useEffect(() => {
     if (isFilter) {
       setReportData(assessmentReportListData?.results);

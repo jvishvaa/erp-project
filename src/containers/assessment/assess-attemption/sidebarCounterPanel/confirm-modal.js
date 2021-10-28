@@ -17,16 +17,16 @@ const ConfirmModal = ({ openModal, setOpenModal, submit }) => {
         style={{ cursor: 'move', color: '#014b7e' }}
         id='draggable-dialog-title'
       >
-        <div>Are you sure you want to submit ?</div>
+        <div style={{ fontFamily: 'Andika New Basic, sans-serif' }}>Are you sure you want to submit ?</div>
       </DialogTitle>
       <DialogActions>
-        <Button onClick={handleCloseModal} className='labelColor cancelButton'>
+        <Button onClick={handleCloseModal} className='labelColor cancelButton' style={{ fontFamily: 'Andika New Basic, sans-serif' }}>
           Cancel
         </Button>
         <Button
           color='primary'
           variant='contained'
-          style={{ color: 'white' }}
+          style={{ color: 'white', fontFamily: 'Andika New Basic, sans-serif' }}
           onClick={() => {
             submit();
             handleCloseModal();

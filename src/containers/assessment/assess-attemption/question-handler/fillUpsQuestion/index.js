@@ -68,7 +68,7 @@ const FillUpsQuestion = (props) => {
         </div>
       </div> */}
       <div className='mcq-question-wrapper'>
-        <div>{ReactHtmlParser(question)}</div>
+        <div style={{ fontSize: "30px" }}>{ReactHtmlParser(question)}</div>
 
         {options.length &&
           options.map((option, index) => {

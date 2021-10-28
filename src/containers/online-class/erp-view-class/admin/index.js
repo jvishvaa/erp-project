@@ -36,7 +36,8 @@ import TabPanel from './tab-panel/TabPanel';
 import APIREQUEST from '../../../../config/apiRequest';
 
 const ErpAdminViewClass = ({ history }) => {
-  JSON.parse(localStorage.getItem('filterData'))?.classtype?.id > 0 && localStorage.removeItem('filterData');
+  JSON.parse(localStorage.getItem('filterData'))?.classtype?.id > 0 &&
+    localStorage.removeItem('filterData');
   const [branchList, setBranchList] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
@@ -229,7 +230,7 @@ const ErpAdminViewClass = ({ history }) => {
 
   useEffect(() => {
     if (window.location.pathname === '/erp-online-class-teacher-view') {
-      if(dateRangeTechPer[0] && dateRangeTechPer[1]){
+      if (dateRangeTechPer[0] && dateRangeTechPer[1]) {
         noFilterGetClasses();
       }
     }
@@ -252,8 +253,8 @@ const ErpAdminViewClass = ({ history }) => {
   function noFilterGetClasses() {
     const filterdata = JSON.parse(localStorage.getItem('filterData'));
     if (!filterdata?.branch) {
-      var [startDateTechPer, endDateTechPer] =getminMaxDate().datearr;
-      if(dateRangeTechPer[0] && dateRangeTechPer[1]){
+      var [startDateTechPer, endDateTechPer] = getminMaxDate().datearr;
+      if (dateRangeTechPer[0] && dateRangeTechPer[1]) {
         startDateTechPer = dateRangeTechPer[0];
         endDateTechPer = dateRangeTechPer[0];
       }
@@ -405,7 +406,7 @@ const ErpAdminViewClass = ({ history }) => {
                   studentDetails.role_details.erp_user_id
                 }&page_number=${page}&page_size=${limit}&class_type=${
                   selectedClassType?.id
-                }&class_status=${tabValue + 1}&module_id=${moduleId}`,
+                }&module_id=${moduleId}&class_status=${tabValue + 1}`,
                 'filter'
               );
             } else {
@@ -580,13 +581,15 @@ const ErpAdminViewClass = ({ history }) => {
         .then((result) => {
           if (result?.data?.status_code === 200) {
             callApi(
-              `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
+              `${
+                endpoints.studentViewBatchesApi.getBatchesApi
+              }?module_id=${moduleId}&user_id=${
                 studentDetails &&
                 studentDetails.role_details &&
                 studentDetails.role_details.erp_user_id
               }&page_number=${1}&page_size=${limit}&class_type=${
                 selectedClassType?.id
-              }&class_status=${tabValue + 1}&module_id=${moduleId}`,
+              }&class_status=${tabValue + 1}`,
               'filter'
             );
           } else {
