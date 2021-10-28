@@ -594,7 +594,7 @@ export default function DiscussionComponent(props) {
           <DialogTitle
             id='draggable-dialog-title'
           >
-            Delete User
+            Delete Post
           </DialogTitle>
           <DialogContent>
             <DialogContentText>
