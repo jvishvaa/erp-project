@@ -42,12 +42,14 @@ export const sendValidRequest = (payload) => {
 }
 
 export const fetchWalletAmount = (payload) => {
+const userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.WalletAmount + '?academic_year=' + payload.session + '&branch=' + payload.branch + '&grade=' + payload.grade, {
         headers: {
-          Authorization: 'Bearer ' + payload.user
+          Authorization: 'Bearer ' + userToken
         }
       }).then(response => {
         dispatch({
@@ -73,12 +75,13 @@ export const fetchWalletAmount = (payload) => {
 }
 
 export const fetchTransDetails = (payload) => {
+  const token = JSON.parse(localStorage.getItem('userDetails')).token || {};
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.TransactionDetails + '?academic_year=' + payload.session + '&branch=' + payload.branch + '&grade=' + payload.grade + '&student=' + payload.student, {
         headers: {
-          Authorization: 'Bearer ' + payload.user
+          Authorization: 'Bearer ' + token
         }
       }).then(response => {
         dispatch({
@@ -134,12 +137,13 @@ export const addWalletAmount = (payload) => {
 }
 
 export const fetchFeeStructureListErp = (payload) => {
+  const token = JSON.parse(localStorage.getItem('userDetails')).token || {};
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.FeeStructure + '?erp_code=' + payload.erp + '&academic_year=' + payload.session, {
         headers: {
-          Authorization: 'Bearer ' + payload.user
+          Authorization: 'Bearer ' + token
         }
       }).then(response => {
         dispatch({
@@ -157,12 +161,13 @@ export const fetchFeeStructureListErp = (payload) => {
   }
 }
 export const fetchWalletAmtNotUsed = (payload) => {
+  const token = JSON.parse(localStorage.getItem('userDetails')).token || {};
   return (dispatch) => {
     dispatch(actionTypes.dataLoading())
     axios
       .get(urls.WalletAmtNotUsed + '?erp_code=' + payload.erp + '&academic_year=' + payload.session, {
         headers: {
-          Authorization: 'Bearer ' + payload.user
+          Authorization: 'Bearer ' + token
         }
       }).then(response => {
         dispatch({

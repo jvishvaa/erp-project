@@ -123,12 +123,14 @@ export const fetchBankDetails = (payload) => {
 }
 
 export const fetchGradesPerBranch = (payload) => {
+const userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+
   return (dispatch) => {
     dispatch(dataLoading())
     axios
       .get(urls.GradesPerBranch + '?session_year=' + payload.session + '&branch_id=' + payload.branch + '&module_id=' + payload.moduleId, {
         headers: {
-          Authorization: 'Bearer ' + payload.user
+          Authorization: 'Bearer ' + userToken
         }
       }).then(response => {
         dispatch({
@@ -388,12 +390,14 @@ export const fetchGradeList = (payload) => {
 }
 
 export const fetchAllSectionsPerGrade = (payload) => {
+const userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+
   return (dispatch) => {
     dispatch(dataLoading())
     axios
       .get(urls.StudentGradeSectionAcc + '?grade=' + payload.gradeId + '&academic_year=' + payload.session + '&module_id=' + payload.moduleId + '&branch_id=' + payload.branch, {
         headers: {
-          Authorization: 'Bearer ' + payload.user
+          Authorization: 'Bearer ' + userToken
         }
       }).then(response => {
         dispatch({
@@ -458,6 +462,7 @@ export const feeTransactionReceipt = (payload) => {
 }
 
 export const downloadReports = (payload) => {
+  const token = JSON.parse(localStorage.getItem('userDetails')).token || {};
   return (dispatch) => {
     dispatch(dataLoading())
     let url = ''
@@ -535,7 +540,7 @@ export const downloadReports = (payload) => {
     axios
       .get(url, {
         headers: {
-          Authorization: 'Bearer ' + payload.user
+          Authorization: 'Bearer ' + token
         },
         responseType: 'blob'
       }).then(response => {

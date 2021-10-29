@@ -339,6 +339,8 @@ import InhouseCalendar from 'containers/sure-learning/calender/inHouseViewWebina
 import EachBlog from 'containers/sure-learning/Blogs-sureLearning/dialog-Blog';
 import LearningVideos from 'containers/sure-learning/MyNotes/learningAll';
 import EachLearn from 'containers/sure-learning/MyNotes/eachLearn';
+import WalletBulk from 'containers/Finance/src/components/Finance/NegativeBalanceAdjust/walletbulkupload';
+import  ExtraAmtAdjust  from 'containers/Finance/src/components/Finance/NegativeBalanceAdjust/negativeBalanceAdjust';
 
 
 function App({ alert, isMsAPI }) {
@@ -1063,7 +1065,7 @@ function App({ alert, isMsAPI }) {
                             {({ match }) => <BulkFeeUpload match={match} alert={alert} />}
                           </Route>
                           <Route exact path='/finance/StudentWallet'>
-                            {({ match }) => <StudentWallet match={match} alert={alert} />}
+                            {({ match }) => <ExtraAmtAdjust match={match} alert={alert} />}
                           </Route>
                           <Route exact path='/finance/student/FeeCollection'>
                             {({ match }) => <FeeCollection match={match} alert={alert} />}
@@ -1614,6 +1616,9 @@ function App({ alert, isMsAPI }) {
                             {({ match }) => <TeacherReport match={match} />}
                           </Route>
 
+                          <Route path='/walletbulkupload'>
+                            {({ match }) => <WalletBulk match={match} />}
+                          </Route> 
 
 
                           <Route exact path='/online-class/connection-pod'>
