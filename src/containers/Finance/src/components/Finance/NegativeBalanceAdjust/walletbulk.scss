@@ -1,0 +1,14 @@
+.wallet-container{
+    .yearGrid , .brandGrid {
+        width: 20%;
+        margin: 0 35px;
+    }
+    .dropGrid{
+        display: flex;
+    }
+    .button-area{
+        display: flex;
+    justify-content: space-around;
+    width: 20%;
+    }
+}
