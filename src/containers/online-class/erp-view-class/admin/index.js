@@ -292,13 +292,25 @@ const ErpAdminViewClass = ({ history }) => {
     }
   }
 
+  const getEndpoint = () => {
+    if (window.location.pathname === '/erp-online-class-student-view') {
+      return '/oncls/v1/student-oncls/';
+    } else if (
+      window.location.pathname === '/erp-online-class' ||
+      window.location.pathname === '/erp-online-class-teacher-view'
+    ) {
+      return `/oncls/v1/retrieve-online-class/`;
+    }
+  };
+
   function msCallFilterApi(api) {
     var url = api.split('?');
     url.shift();
     var path = url.join('?');
-    let endpoint1 = `/oncls/v1/retrieve-online-class/`;
-    if (window.location.pathname === '/erp-online-class-student-view') {
-      endpoint1 = '/oncls/v1/student-oncls/';
+    let endpoint1 = getEndpoint();
+    if (!endpoint1) {
+      setLoading(false);
+      return;
     }
     APIREQUEST('get', `${endpoint1}?${path}`)
       .then((result) => {
