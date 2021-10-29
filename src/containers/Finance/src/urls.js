@@ -103,8 +103,7 @@ if (process.env.REACT_APP_UI_ENV === 'dev_aol') {
 } else {
   HOSTNAME = 'localhost'
   PORT = '8000'
-    //  BASE =`${window.location.origin}/qbox`
-  BASE = 'https://dev.olvorchidnaigaon.letseduvate.com/qbox';
+     BASE =`${window.location.origin}/qbox`
 
     //  BASE='https://marketing.letseduvate.com' +'/qbox'
   // BASE = 'http://erp.finance.letseduvate.com' + '/qbox'
