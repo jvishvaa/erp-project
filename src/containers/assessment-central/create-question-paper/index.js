@@ -94,7 +94,6 @@ const CreateQuestionPaper = ({
   const { refresh = false } = history.location?.state || {};
 
   useEffect(() => {
-    console.log(sections, '=========');
     if (refresh) {
       handleResetQuestionPaper();
       setIsFetched(false);
@@ -104,6 +103,7 @@ const CreateQuestionPaper = ({
   useEffect(() => {
     if (Number(location.pathname.slice(23)) && !isFetched) {
       handleFetch();
+      handleResetQuestionPaper();
     }
   }, []);
 
@@ -149,7 +149,7 @@ const CreateQuestionPaper = ({
       }
     }
   }, [moduleId]);
-
+//
   const formik = useFormik({
     initialValues: {
       academic: selectedAcademic,
