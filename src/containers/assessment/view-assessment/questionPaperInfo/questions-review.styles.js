@@ -6,6 +6,7 @@ const useStyles = makeStyles((theme) => ({
     background: '#ECECEC',
     color: theme.palette.secondary.main,
     margin: 4,
+    fontFamily: 'Andika New Basic, sans-serif',
   },
   closeBtn: {
     padding: '0.3rem 1.1rem',
@@ -27,13 +28,15 @@ const useStyles = makeStyles((theme) => ({
     padding: 4,
     display: 'flex',
     alignItems: 'top',
-    marginTop:'5px',
+    marginTop: '5px',
+    fontFamily: 'Andika New Basic, sans-serif',
 
   },
   answersContainer: {
     padding: 2,
     width: '90%',
     margin: 'auto',
+    fontFamily: 'Andika New Basic, sans-serif',
   },
 }));
 export default useStyles;

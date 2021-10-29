@@ -88,6 +88,8 @@ import {
   ContentViewPublishPrincipal,
   EditWordCountConfig,
   SendEmailAttCwHw,
+  EditBlogTeacher,
+  PreviewEditBlogTeacher
 } from './containers/blog';
 import { CreateEbook, ViewEbook } from './containers/ebooks';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
@@ -472,6 +474,12 @@ function App({ alert, isMsAPI }) {
                           </Route>
                           <Route exact path='/blog/wordcount-config/edit'>
                             {({ match }) => <EditWordCountConfig match={match} />}
+                          </Route>
+                          <Route exact path='/blog/teacher/edit-blog'>
+                            {({ match }) => <EditBlogTeacher match={match} />}
+                          </Route>
+                          <Route exact path='/blog/teacher/preview-edit-blog'>
+                            {({ match }) => <PreviewEditBlogTeacher match={match} />}
                           </Route>
                           <Route exact path='/blog/teacher'>
                             {({ match }) => <TeacherBlog match={match} />}

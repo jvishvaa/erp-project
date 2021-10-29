@@ -69,6 +69,7 @@ const useStyles = makeStyles((theme) => ({
     outlineOffset: '3px',
     background: '#d277ff',
     color: 'white',
+    fontFamily: 'Andika New Basic, sans- serif',
   },
   outlined: {
     border: `1px solid ${theme.palette.primary.main}`,
@@ -76,12 +77,14 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.main,
     fontSize: '16px',
     letterSpacing: '0px',
+    fontFamily: 'Andika New Basic, sans- serif',
   },
   demobox: {
     width: '20px',
     height: '20px',
     borderRadius: '2px',
     border: ` 1px solid ${theme.palette.primary.main}`,
+    fontFamily: 'Andika New Basic, sans- serif',
   },
   green: {
     background: '#7fd400',
@@ -96,6 +99,7 @@ const useStyles = makeStyles((theme) => ({
   },
   h6text: {
     borderBottom: '1px solid #c4c4c4',
+    fontFamily: 'Andika New Basic, sans- serif',
     color: theme.palette.secondary.main,
     marginTop: '0px',
     fontSize: '14px',
@@ -268,7 +272,7 @@ const SidebarCounterPanel = (props) => {
             <div className={`${classes.demobox} ${classes.sidebarOngoing}`} /> Ongoing.&nbsp;&nbsp;&nbsp;.
           </div>
         </div>
-        <Typography color="secondary">Note: Only attempted questions will be considered for review.</Typography>
+        <Typography color="secondary" style={{ fontFamily: 'Andika New Basic, sans- serif', }}>Note: Only attempted questions will be considered for review.</Typography>
       </div>
       <div className='sidebar-button-wrapper'>
         <Button
@@ -282,7 +286,7 @@ const SidebarCounterPanel = (props) => {
           className='contained'
           variant='contained'
           color='primary'
-          style={{ color: 'white' }}
+          style={{ color: 'white', fontFamily: 'Andika New Basic, sans- serif' }}
           // disabled={!isReadyToSubmit}
           onClick={() => {
             setOpenModal(true);
