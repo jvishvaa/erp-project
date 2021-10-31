@@ -79,13 +79,6 @@ const reportStatusTableColumns = [
     labelAlign: 'center',
   },
   {
-    id: 'last-upadted',
-    label: 'Last Updated',
-    minWidth: 170,
-    align: 'center',
-    labelAlign: 'center',
-  },
-  {
     id: 'action',
     label: 'Actions',
     minWidth: 170,
