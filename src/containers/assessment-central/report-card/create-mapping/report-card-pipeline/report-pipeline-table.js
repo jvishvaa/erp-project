@@ -26,7 +26,7 @@ import { reportCardStyles } from './reportCardStyles';
 import { getReportCardPipeline } from '../../apis';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import { reportPipelineTableColumns as columns } from './report-card-constants';
-import { isSuccess, getPipelineConfig, getTimeDiff } from '../../report-card-utils';
+import { isSuccess, getPipelineConfig } from '../../report-card-utils';
 
 const ReportPipelineTable = ({ setLoading }) => {
   const classes = useStyles();
@@ -100,17 +100,19 @@ const ReportPipelineTable = ({ setLoading }) => {
   const getDuration = (createdAt, updatedAt) => {
     const durationData = [
       {
-        duration: moment(new Date(new Date(updatedAt) - new Date(createdAt))).format(
-          'hh:mm:ss'
-        ),
+        duration: moment(new Date(createdAt)).format('hh:mm:ss'),
         Icon: TimerIcon,
-        title: 'Duration',
+        title: `Created on  ${moment(createdAt).format('DD-MM-YYYY')} at ${moment(
+          createdAt
+        ).format('hh:mm A')}`,
         placement: 'top',
       },
       {
-        duration: getTimeDiff(updatedAt),
+        duration: moment(updatedAt).fromNow(),
         Icon: CalendarTodayIcon,
-        title: `Last Updated at ${moment(updatedAt).format('hh:mm:ss')}`,
+        title: `Last Updated on ${moment(updatedAt).format('DD-MM-YYYY')} at ${moment(
+          updatedAt
+        ).format('hh:mm A')}`,
         placement: 'bottom',
       },
     ];

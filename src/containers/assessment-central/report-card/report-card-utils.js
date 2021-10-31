@@ -26,13 +26,3 @@ export const getStatusLabel = (status) => {
       return 'Published';
   }
 };
-
-export const getTimeDiff = (updatedAt) => {
-  const timeDiff = new Date(new Date() - new Date(updatedAt));
-  const hours = timeDiff.getHours();
-  const minutes = timeDiff.getMinutes();
-  const exactHours = hours > 0 ? `${hours}h ` : '';
-  const exactMinutes = minutes > 0 ? `${minutes}m ` : '';
-  const timeDiffString = exactHours + exactMinutes + 'ago';
-  return timeDiffString;
-};
