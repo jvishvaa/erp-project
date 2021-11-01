@@ -269,6 +269,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     if (rolesId.length && selectedRoles !== 'All') {
       getUserListUrl += `&role=${rolesId.toString()}`;
     }
+    if (selectedBranch!==null) {
+      getUserListUrl += `&branch_id=${selectedBranch?.id.toString()}`;
+    }
     /*
     if (gradesId.length && !selectedGrades.includes('All')) {
       getUserListUrl += `&grade=${gradesId.toString()}`;

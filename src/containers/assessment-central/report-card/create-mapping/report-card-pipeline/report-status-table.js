@@ -178,7 +178,7 @@ const ReportStatusTable = ({ setLoading }) => {
                     <TableCell className={classes.tableCell}>
                       {getStatusLabel(status)}
                     </TableCell>
-                    <TableCell className={classes.tableCell}></TableCell>
+                    {/* <TableCell className={classes.tableCell}></TableCell> */}
                     <TableCell className={classes.tableCell}>
                       {renderButtons(id, status)}
                     </TableCell>
