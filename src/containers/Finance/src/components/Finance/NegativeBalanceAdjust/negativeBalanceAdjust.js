@@ -6,7 +6,7 @@ import {
   Table, TableBody, TableRow, TableCell, TableHead, TextField
 } from '@material-ui/core'
 import { Info } from '@material-ui/icons'
-import 'react-table/react-table.css'
+// import 'react-table/react-table.css'
 import Grid from '@material-ui/core/Grid'
 import Select from 'react-select'
 import { connect } from 'react-redux'
@@ -16,6 +16,8 @@ import Modal from '../../../ui/Modal/modal'
 import { apiActions } from '../../../_actions'
 import { urls } from '../../../urls'
 import CircularProgress from '../../../ui/CircularProgress/circularProgress'
+import { Link, useHistory } from 'react-router-dom';
+import Layout from 'containers/Layout'
 
 const ExtraAmtAdjust = ({ classes, session, branches, fetchBranches, feeStructure, deleteWalletUnusedAmount, notUsedWalletAmtList, fetchWalletAmtNotUsed, addWalletAmount, fetchFeeStructureListErp, fetchTransDetails, unassignStudent, downloadReports, transactionDetails, fetchWalletAmount, WalletAmtDetails, sendValidRequest, fetchGradesPerBranch, fetchAllSectionsPerGradeAsAdmin, alert, user, dataLoading, gradesPerBranch, sections }) => {
   const [sessionData, setSessionData] = useState(null)
@@ -43,6 +45,10 @@ const ExtraAmtAdjust = ({ classes, session, branches, fetchBranches, feeStructur
   const [deleteRemark, setDeleteRemark] = useState('')
   const [deleteInstId, setDeleteInstId] = useState(null)
   const [walletUnusedAmt, setWalletUnusedAmt] = useState(null)
+
+  const history = useHistory();
+  const userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+
   // const [show, setShow] = useState(true)
   useEffect(() => {
     setFilterWalletErp(WalletAmtDetails)
@@ -67,14 +73,17 @@ const ExtraAmtAdjust = ({ classes, session, branches, fetchBranches, feeStructur
   // }, [transactionDetails])
   const handleClickSessionYear = (e) => {
     setSessionData(e)
-    fetchBranches(e.value, alert, user)
+    fetchBranches(e.value, alert, userToken)
     setBranchData(null)
     setGradeData(null)
     setShowWalletDeatilTable(false)
   }
+  const bulkUpload = () => {
+    history.push('/walletbulkupload')
+  }
   const changehandlerbranch = (e) => {
     setBranchData(e)
-    fetchGradesPerBranch(alert, user, sessionData.value, e.value)
+    fetchGradesPerBranch(alert, userToken, sessionData.value, e.value)
     setGradeData(null)
     setShowWalletDeatilTable(false)
   }
@@ -835,7 +844,16 @@ const ExtraAmtAdjust = ({ classes, session, branches, fetchBranches, feeStructur
   }
   return (
     <div>
-      <Grid container spacing={3} style={{ display: 'flex', justifyContent: 'flex-end', padding: '15px' }}>
+      <Layout>
+<Grid container spacing={3} style={{ display: 'flex', justifyContent: 'flex-end', padding: '15px' }}>
+<Grid item xs={3}>
+          <Button
+            variant='contained'
+            color='primary'
+            style={{ marginTop: '20px' }}
+            onClick={bulkUpload}
+          >Wallet Bulk Upload</Button>
+        </Grid>
         <Grid item xs={3}>
           <Button
             variant='contained'
@@ -917,6 +935,7 @@ const ExtraAmtAdjust = ({ classes, session, branches, fetchBranches, feeStructur
       {deleteModal}
       {changeCancelModal}
       { dataLoading ? <CircularProgress open /> : null }
+      </Layout>
     </div>
   )
 }

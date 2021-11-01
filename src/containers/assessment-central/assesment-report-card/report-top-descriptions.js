@@ -29,8 +29,8 @@ const TopDetailsHeader = (props) => {
     {
       header1: 'ATTENDANCE',
       value1: '',
-      header2: 'SECTION',
-      value2: section,
+      header2: '% ATTENDANCE',
+      value2: '',
     },
   ];
 

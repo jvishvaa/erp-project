@@ -104,6 +104,7 @@ if (process.env.REACT_APP_UI_ENV === 'dev_aol') {
   HOSTNAME = 'localhost'
   PORT = '8000'
      BASE =`${window.location.origin}/qbox`
+
     //  BASE='https://marketing.letseduvate.com' +'/qbox'
   // BASE = 'http://erp.finance.letseduvate.com' + '/qbox'
   // BASE = 'http://localhost:8000' + '/qbox'
@@ -940,7 +941,7 @@ const urls = {
   HomeworkDashboard: BASE + '/academic/homework/getDashboardDetails/',
   HomeworkDashboardSubjects: BASE + '/academic/homework/get_subjects/',
   EditQuestionPaper: BASE + '/academic/questbox/qbquestionpaper/',
-
+  WalletBulk : BASE + '/store/bulk-wallet-amount-upload/',
   showBadges: BASE + '/accounts/badges/view/',
   Base64Img: BASE + '/accounts/base64_img/',
   addStudentGroupApi: BASE + '/accounts/student/guest/filter/',

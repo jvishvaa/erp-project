@@ -13,6 +13,7 @@ import { urls } from '../../../../urls'
 
 function AllStudentTransection (props) {
   let currBrnch = JSON.parse(localStorage.getItem('user_profile'))
+  const token = JSON.parse(localStorage.getItem('userDetails')).token || {};
   const [ allTransactions, setallTransactions ] = useState()
   const [ moreDetails, setMoreDetails ] = useState(false)
   const [ modelData, setModelData ] = useState()
@@ -88,7 +89,7 @@ function AllStudentTransection (props) {
       axios
         .get(url, {
           headers: {
-            'Authorization': 'Bearer ' + props.user
+            'Authorization': 'Bearer ' + token
           }
         })
         .then(res => {

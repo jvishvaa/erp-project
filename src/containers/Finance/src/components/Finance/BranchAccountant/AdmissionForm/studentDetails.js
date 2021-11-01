@@ -31,8 +31,43 @@ const styles = theme => ({
   }
 })
 
-const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
 let moduleId
+let userToken = "";
+class StudentDetailsFormAcc extends Component {
+  constructor (props) {
+    super(props)
+    this.state = {
+      session: null,
+      studentDetails: {
+        firstName: null,
+        middleName: null,
+        lastName: null,
+        class: null,
+        gender: 'male',
+        academicyear: null,
+        selectedBranches: null,
+        sectionData: null,
+        classId: null,
+        studentsegment: null,
+        section: null,
+        dateOfBir: null,
+        dateofAdm: null,
+        refadmNum: null,
+        residentialphone: null,
+        transport: 'false',
+        howdidYouKnow: null,
+        classGroup: null
+      }
+    }
+  }
+
+  componentDidUpdate () {
+    this.props.getStudentDetail(this.state.studentDetails)
+  }
+
+  componentDidMount () {
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {}
+
 if (NavData && NavData.length) {
   NavData.forEach((item) => {
     if (
@@ -56,38 +91,6 @@ if (NavData && NavData.length) {
 } else {
   // setModulePermision(false);
 }
-
-let userToken = "";
-class StudentDetailsFormAcc extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      seesion: null,
-      studentDetails: {
-        firstName: null,
-        middleName: null,
-        lastName: null,
-        class: null,
-        gender: 'male',
-        academicyear: null,
-        studentsegment: null,
-        section: null,
-        dateOfBir: null,
-        dateofAdm: null,
-        refadmNum: null,
-        residentialphone: null,
-        transport: 'false',
-        howdidYouKnow: null,
-        classGroup: null
-      }
-    }
-  }
-
-  componentDidUpdate () {
-    this.props.getStudentDetail(this.state.studentDetails)
-  }
-
-  componentDidMount () {
  userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
     if (this.props.studentdetails) {
       const newstudentDetails = { ...this.props.studentdetails }
@@ -97,6 +100,34 @@ class StudentDetailsFormAcc extends Component {
     this.props.fetchGradeList(this.props.alert, userToken, moduleId)
     this.props.fetchClassGroup(this.props.alert, userToken)
   }
+
+  handleAcademicyear = (e) => {
+    this.props.fetchBranches(e && e.value, this.props.alert, userToken, moduleId)
+    console.log(e)
+    this.setState({
+      session: e
+    })
+  }
+
+  changehandlerbranch = (e) => {
+    this.props.fetchGrades(
+      this.state.session.value,
+      e.value,
+      this.props.alert,
+      userToken,
+      moduleId
+    );
+console.log("branch",e)
+const newstudentDetails = { ...this.state.studentDetails }
+newstudentDetails['selectedBranches'] = e.value
+    this.setState({
+      studentDetails: newstudentDetails })
+    // this.props.fetchGrades(this.props.alert, userToken, moduleId, e.value, this.state.session && this.state.session.value)
+  };
+
+  sectionHandler = (e) => {
+    this.setState({ sectionData: e});
+  };
 
   handleGender = event => {
     const newstudentDetails = { ...this.state.studentDetails }
@@ -127,8 +158,17 @@ class StudentDetailsFormAcc extends Component {
         newstudentDetails['academicyear'] = event.value
         break
       }
+      case 'selectedbranches': {
+        newstudentDetails['selectedbranches'] = event.value
+        break
+      }
       case 'studentsegment': {
-        newstudentDetails['studentsegment'] = event.value
+        console.log(event.value , "seg");
+        if(event.value === 'Regular'){
+        newstudentDetails['studentsegment'] = false
+        } else {
+        newstudentDetails['studentsegment'] = true
+        }
         break
       }
       case 'class': {
@@ -151,7 +191,17 @@ class StudentDetailsFormAcc extends Component {
       studentDetails: newstudentDetails
     }, () => {
       if (name === 'class') {
-        this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, userToken, event.value)
+
+        this.setState({ classId: event.value,  section: [] })
+        // this.props.fetchAllSectionsPerGrade(this.state.studentDetails.academicyear, this.props.alert, userToken, event.value)
+          this.props.fetchAllSections(
+          this.state.session.value,
+          event.value,
+          this.state.studentDetails.selectedBranches,
+          this.props.alert,
+          userToken,
+          moduleId
+        );
       }
     })
   }
@@ -220,7 +270,23 @@ class StudentDetailsFormAcc extends Component {
                     }))
                     : []
                 }
-                onChange={(e) => { this.studentDetailsDropdonHandler(e, 'academicyear') }}
+                onChange={(e) => { this.studentDetailsDropdonHandler(e, 'academicyear'); this.handleAcademicyear(e)}}
+              />
+            </Grid>
+            <Grid item xs={3} className={classes.spacing}>
+              <label>Branch*</label>
+              <Select
+                placeholder='Select Branch'
+                // value={this.state.studentDetails.selectedBranches ? this.state.studentDetails.selectedBranches : ''}
+                options={
+                  this.state.selectedbranchIds !== 'all' ? this.props.branches.length && this.props.branches
+                    ? this.props.branches.map(branch => ({
+                      value: branch.branch ? branch.branch.id : '',
+                      label: branch.branch ? branch.branch.branch_name : ''
+                    }))
+                    : [] : []
+                }
+                onChange={ (e) => {this.studentDetailsDropdonHandler(e, 'selectedBranches');this.changehandlerbranch(e)}}
               />
             </Grid>
             <Grid item xs={3} className={classes.spacing}>
@@ -231,7 +297,8 @@ class StudentDetailsFormAcc extends Component {
                 // value={this.state.studentsegment ? this.state.studentsegment : null}
                 onChange={(e) => { this.studentDetailsDropdonHandler(e, 'studentsegment') }}
                 options={[
-                  { value: 'RTE', label: 'RTE' }
+                  { value: 'RTE', label: 'RTE' },
+                  {value: 'Regular', label: 'Regular'}
                 ]}
               />
             </Grid>
@@ -281,14 +348,15 @@ class StudentDetailsFormAcc extends Component {
               <Select
                 placeholder='Select'
                 // value={this.state.class ? this.state.class : null}
-                options={this.props.gradeList ? this.props.gradeList.map(grades => ({
-                  value: grades.id,
-                  label: grades.grade
-                }))
-                  : []
+                options={ this.props.gradeData
+                      ? this.props.gradeData.map((grades) => ({
+                          value: grades.grade.id,
+                          label: grades.grade.grade,
+                        }))
+                      : []
                 }
                 name='class'
-                onChange={(e) => { this.studentDetailsDropdonHandler(e, 'class') }}
+                onChange={(e) => { this.studentDetailsDropdonHandler(e, 'class');  }}
               />
             </Grid>
             <Grid item xs={3} className={classes.spacing}>
@@ -296,13 +364,16 @@ class StudentDetailsFormAcc extends Component {
               <Select
                 placeholder='Select'
                 name='section'
-                // value={this.state.section ? this.state.section : null}
-                options={this.props.sectionList ? this.props.sectionList.map(sec => ({
-                  value: sec.section.id,
-                  label: sec.section.section_name
-                })) : []
+                value={this.state.sectionData ? this.state.sectionData : ''}
+                options={
+                  this.props.sectionData
+                    ? this.props.sectionData.map((sec) => ({
+                        value: sec.section.id,
+                        label: sec.section.section_name,
+                      }))
+                    : []
                 }
-                onChange={(e) => { this.studentDetailsDropdonHandler(e, 'section') }}
+                onChange={(e) => { this.studentDetailsDropdonHandler(e, 'section'); this.sectionHandler(e) }}
               />
 
             </Grid>
@@ -434,14 +505,24 @@ const mapStateToProps = state => ({
   // user: state.authentication.user,
   session: state.academicSession.items,
   gradeList: state.finance.common.gradeList,
-  sectionList: state.finance.common.sectionsPerGrade,
-  classGroupList: state.finance.common.groups
+  // sectionList: state.finance.common.sectionsPerGrade,
+  classGroupList: state.finance.common.groups,
+  branches: state.finance.common.branchPerSession,
+  gradeData: state.finance.accountantReducer.pdc.gradeData,
+  sectionData: state.finance.accountantReducer.changeFeePlan.sectionData,
 })
 const mapDispatchToProps = dispatch => ({
   loadSession: dispatch(apiActions.listAcademicSessions(moduleId)),
+  fetchBranches: (session, alert, user, moduleId) => dispatch(actionTypes.fetchBranchPerSession({ session, alert, user, moduleId })),
+  fetchGrades: (session, branch, alert, user, moduleId) =>
+    dispatch(actionTypes.fetchGrades({ session, branch, alert, user, moduleId })),
   fetchGradeList: (alert, user, moduleId) => dispatch(actionTypes.fetchGradeList({ alert, user, moduleId })),
   fetchClassGroup: (alert, user) => dispatch(actionTypes.fetchClassGroup({ alert, user })),
-  fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId}))
+  fetchAllSections: (session, gradeId, branch, alert, user, moduleId) =>
+    dispatch(
+      actionTypes.fetchAllSections({ session, gradeId, branch, alert, user, moduleId })
+    ),
+  // fetchAllSectionsPerGrade: (session, alert, user, gradeId, moduleId) => dispatch(actionTypes.fetchAllSectionsPerGrade({ session, alert, user, gradeId, moduleId}))
 
 })
 export default connect(
