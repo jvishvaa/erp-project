@@ -197,12 +197,12 @@ function TressurBox() {
           <Grid item md={3} xs={12}></Grid>
           <Grid item md={3} xs={12}>
             <Typography style={{ color: 'blue', paddingLeft: '40px' }}>
-              <strong>Total Videos : {totalViewsCount}</strong>
+              <strong>Total Videos : {totalVediosCount}</strong>
             </Typography>
           </Grid>
           <Grid item md={3} xs={12}>
             <Typography style={{ color: 'blue', paddingLeft: '15px' }}>
-              <strong>Total views : {totalVediosCount}</strong>
+              <strong>Total views : {totalViewsCount}</strong>
             </Typography>
           </Grid>
           <Grid item md={3} xs={12}></Grid>
