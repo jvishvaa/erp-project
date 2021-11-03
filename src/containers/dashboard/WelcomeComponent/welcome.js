@@ -32,20 +32,27 @@ const WelcomeComponent = () => {
   const history = useHistory();
   const [ checkOrigin , setCheckOrigin ] = useState(false);
 
+  // useEffect(() => {
+  //   if(window.location.origin === 'http://localhost:3000'){
+  //     setCheckOrigin(true)
+  //   }
+  //   if(window.location.origin === 'https://qa.olvorchidnaigaon.letseduvate.com'){
+  //     setCheckOrigin(true)
+  //   }
+  //   if(window.location.origin === 'https://dev.olvorchidnaigaon.letseduvate.com'){
+  //     setCheckOrigin(true)
+  //   }
+  //   if(window.location.origin === 'https://orchids.letseduvate.com'){
+  //     setCheckOrigin(true)
+  //   }
+  // },[])
+
   useEffect(() => {
-    if(window.location.origin === 'http://localhost:3000'){
+    const origin = window.location.origin;
+    if(origin.indexOf("orchids.")>-1 || origin.indexOf("dev.")>-1 || origin.indexOf("qa.")>-1 || origin.indexOf("localhost")>-1){
       setCheckOrigin(true)
     }
-    if(window.location.origin === 'https://qa.olvorchidnaigaon.letseduvate.com'){
-      setCheckOrigin(true)
-    }
-    if(window.location.origin === 'https://dev.olvorchidnaigaon.letseduvate.com'){
-      setCheckOrigin(true)
-    }
-    if(window.location.origin === 'https://orchids.letseduvate.com'){
-      setCheckOrigin(true)
-    }
-  },[])
+},[]);
 
   const studentrefer = () => {
     history.push('/studentrefer')
