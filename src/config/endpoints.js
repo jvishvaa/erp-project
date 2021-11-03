@@ -573,6 +573,10 @@ export default {
     },
   },
 
+  referral: {
+    studentRefer:  '/erp_user/student_refferal/',
+  },
+
   connectionPod: {
     getStudentList: '/course_extend/students_list/',
     getTeacherList: '/course_extend/teachers_list/',
