@@ -1,4 +1,5 @@
-import React from 'react';
+import React , {useState , useEffect } from 'react';
+
 // import './style.scss';
 import { Box, Typography , Button  } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -29,6 +30,22 @@ const WelcomeComponent = () => {
   const { welcomeDetails = {} } = useDashboardContext();
   const { greeting, name, userRole } = welcomeDetails;
   const history = useHistory();
+  const [ checkOrigin , setCheckOrigin ] = useState(false);
+
+  useEffect(() => {
+    if(window.location.origin === 'http://localhost:3000'){
+      setCheckOrigin(true)
+    }
+    if(window.location.origin === 'https://qa.olvorchidnaigaon.letseduvate.com'){
+      setCheckOrigin(true)
+    }
+    if(window.location.origin === 'https://dev.olvorchidnaigaon.letseduvate.com'){
+      setCheckOrigin(true)
+    }
+    if(window.location.origin === 'https://orchids.letseduvate.com'){
+      setCheckOrigin(true)
+    }
+  },[])
 
   const studentrefer = () => {
     history.push('/studentrefer')
@@ -51,11 +68,14 @@ const WelcomeComponent = () => {
         ({userRole})
       </Typography>
       </div>
+      {checkOrigin ? <>
       {welcomeDetails.userLevel === 4 ? 
       <Button onClick={studentrefer}  >
         <GroupAddIcon style={{marginRight: '5px'}} />
         Orchids Ambassador Program
       </Button>
+      : '' }
+          </>
       : '' }
     </Box>
   );
