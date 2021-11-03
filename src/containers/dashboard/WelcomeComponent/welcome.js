@@ -32,20 +32,6 @@ const WelcomeComponent = () => {
   const history = useHistory();
   const [ checkOrigin , setCheckOrigin ] = useState(false);
 
-  // useEffect(() => {
-  //   if(window.location.origin === 'http://localhost:3000'){
-  //     setCheckOrigin(true)
-  //   }
-  //   if(window.location.origin === 'https://qa.olvorchidnaigaon.letseduvate.com'){
-  //     setCheckOrigin(true)
-  //   }
-  //   if(window.location.origin === 'https://dev.olvorchidnaigaon.letseduvate.com'){
-  //     setCheckOrigin(true)
-  //   }
-  //   if(window.location.origin === 'https://orchids.letseduvate.com'){
-  //     setCheckOrigin(true)
-  //   }
-  // },[])
 
   useEffect(() => {
     const origin = window.location.origin;
