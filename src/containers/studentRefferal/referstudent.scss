@@ -1,0 +1,60 @@
+.student-refer-container{
+.header-refer-container {
+  .referHeader {
+    padding: 30px;
+    text-align: center;
+    font-size: 35px;
+    font-weight: 600;
+  }
+}
+  .form-area{
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    justify-content: space-evenly;
+    align-items: center;
+  }
+.input-boxes{
+    width: 60%;
+    margin: 20px 0;
+}
+.submit-btn-area{
+  margin-bottom: 20px;
+}
+.logo-orchids{
+  width: 45%;
+}
+.image-class{
+  display: flex;
+  justify-content: space-evenly;
+}
+.leftimage{
+  width: 50%;
+}
+.orchidslogo{
+  text-align: center;
+}
+.form-div{
+  width: 50%;
+}
+.small-header{
+  font-size: 20px;
+  text-align: center;
+}
+.main-img{
+  display: flex;
+  justify-content: center;
+}
+}
+
+@media screen and (max-width: 600px){
+  .image-class{
+    flex-direction: column;
+  }
+  .form-div{
+    margin: auto;
+  }
+  .leftimage{
+    margin: auto;
+  }
+}

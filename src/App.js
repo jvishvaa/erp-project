@@ -345,6 +345,8 @@ import WalletBulk from 'containers/Finance/src/components/Finance/NegativeBalanc
 import  ExtraAmtAdjust  from 'containers/Finance/src/components/Finance/NegativeBalanceAdjust/negativeBalanceAdjust';
 
 
+import StudentRefer from 'containers/studentRefferal/referForm';
+
 function App({ alert, isMsAPI }) {
   // useEffect(() => {
   isMsAPI();
@@ -1626,6 +1628,10 @@ function App({ alert, isMsAPI }) {
 
                           <Route path='/walletbulkupload'>
                             {({ match }) => <WalletBulk match={match} />}
+                          </Route> 
+
+                          <Route path='/studentrefer'>
+                            {({ match }) => <StudentRefer match={match} />}
                           </Route> 
 
 
