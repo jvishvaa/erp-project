@@ -298,11 +298,11 @@ const StudentRefer = () => {
         .then((res) => {
 
           console.log(res, 'pagination');
-          setAlert('sucess', 'Data Added');
+          setAlert('success', 'Successfully Added');
           history.push('/dashboard');
         })
         .catch((error) => {
-          setAlert('error', 'Something Wrong!');
+          setAlert('error', 'Already Registered!');
         });
     } else {
       setAlert('error', 'All Fields are Mandatory');
