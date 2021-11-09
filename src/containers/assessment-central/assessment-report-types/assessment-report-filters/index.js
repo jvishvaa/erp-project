@@ -142,6 +142,7 @@ const AssessmentReportFilters = ({
       acad_session: filterData.branch?.id,
       erp: filterData.erp?.erp_id,
       grade: filterData.grade?.grade_id,
+      section: filterData.section?.section_id,
       // acad_session: 17,
       // erp: '2105670829_OLV',
       // grade: 3,

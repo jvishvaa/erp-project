@@ -150,10 +150,12 @@ export const marksUpload = async (payload) => {
   }
 };
 
-export const getReportCardPipeline = async () => {
+export const getReportCardPipeline = async (page, page_size) => {
+  if (!page || !page_size) return;
+  const params = createParams({ page, page_size });
   try {
     const { data = {} } = await axiosInstance.get(
-      endpoints.reportCard.getReportCardPipelineList
+      `${endpoints.reportCard.getReportCardPipelineList}${params}`
     );
     return data || [];
   } catch (e) {
@@ -161,10 +163,12 @@ export const getReportCardPipeline = async () => {
   }
 };
 
-export const getReportCardStatus = async (payload) => {
+export const getReportCardStatus = async (page, page_size) => {
+  if (!page || !page_size) return;
+  const params = createParams({ page, page_size });
   try {
     const { data = {} } = await axiosInstance.get(
-      endpoints.reportCard.getReportCardStatusList
+      `${endpoints.reportCard.getReportCardStatusList}${params}`
     );
     return data || [];
   } catch (e) {
