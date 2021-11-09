@@ -18,13 +18,17 @@ import { getReportCardStatus, updateReportCardStatus } from '../../apis';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import { isSuccess, getStatusLabel } from '../../report-card-utils';
 import { reportStatusTableColumns as columns } from './report-card-constants';
+import Pagination from '../../../../../components/PaginationComponent';
 
+const pageSize = 10;
 const ReportStatusTable = ({ setLoading }) => {
   const classes = useStyles();
   const [updateFlag, setUpdateFlag] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
   const [mappingList, setMappingList] = useState();
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handlePublish = async (id) => {
     setLoading(true);
@@ -128,8 +132,10 @@ const ReportStatusTable = ({ setLoading }) => {
         result = [],
         message = 'Error',
         status_code: status = 400,
-      } = await getReportCardStatus();
+        total_pages: totalPages = 0,
+      } = await getReportCardStatus(currentPage, pageSize);
       setMappingList(result);
+      setTotalPages(totalPages);
       const isSuccesful = isSuccess(status);
       setAlert(isSuccesful ? 'success' : 'error', message);
     } catch (err) {}
@@ -137,58 +143,70 @@ const ReportStatusTable = ({ setLoading }) => {
   };
 
   useEffect(() => {
-    fetchReportCardStatus();
-  }, [updateFlag]);
+    if (currentPage) {
+      fetchReportCardStatus();
+    }
+  }, [updateFlag, currentPage]);
 
   return (
     <Paper className={`${classes.root} common-table`}>
-      <TableContainer className={classes.containerGenerated}>
-        <Table stickyHeader aria-label='sticky table'>
-          <TableHead className='table-header-row'>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column?.minWidth }}
-                  className={classes.columnHeader}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {mappingList?.map(
-              (
-                {
-                  id,
-                  status,
-                  grade_details: gradeDetails = {},
-                  branch_details: branchDetails = {},
-                },
-                index
-              ) => {
-                const { grade_name: gradeName } = gradeDetails;
-                const { branch_name: branchName } = branchDetails;
-                return (
-                  <TableRow hover academicyear='checkbox' tabIndex={-1} key={index}>
-                    <TableCell className={classes.tableCell}>{branchName}</TableCell>
-                    <TableCell className={classes.tableCell}>{gradeName}</TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {getStatusLabel(status)}
+      <Grid container>
+        <Grid item xs={12}>
+          <TableContainer className={classes.containerGenerated}>
+            <Table stickyHeader aria-label='sticky table'>
+              <TableHead className='table-header-row'>
+                <TableRow>
+                  {columns.map((column) => (
+                    <TableCell
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column?.minWidth }}
+                      className={classes.columnHeader}
+                    >
+                      {column.label}
                     </TableCell>
-                    {/* <TableCell className={classes.tableCell}></TableCell> */}
-                    <TableCell className={classes.tableCell}>
-                      {renderButtons(id, status)}
-                    </TableCell>
-                  </TableRow>
-                );
-              }
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {mappingList?.map(
+                  (
+                    {
+                      id,
+                      status,
+                      grade_details: gradeDetails = {},
+                      branch_details: branchDetails = {},
+                    },
+                    index
+                  ) => {
+                    const { grade_name: gradeName } = gradeDetails;
+                    const { branch_name: branchName } = branchDetails;
+                    return (
+                      <TableRow hover academicyear='checkbox' tabIndex={-1} key={index}>
+                        <TableCell className={classes.tableCell}>{branchName}</TableCell>
+                        <TableCell className={classes.tableCell}>{gradeName}</TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {getStatusLabel(status)}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {renderButtons(id, status)}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+        <Grid item xs={12}>
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        </Grid>
+      </Grid>
     </Paper>
   );
 };
