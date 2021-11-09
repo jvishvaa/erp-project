@@ -27,7 +27,9 @@ import { getReportCardPipeline } from '../../apis';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import { reportPipelineTableColumns as columns } from './report-card-constants';
 import { isSuccess, getPipelineConfig } from '../../report-card-utils';
+import Pagination from '../../../../../components/PaginationComponent';
 
+const pageSize = 10;
 const ReportPipelineTable = ({ setLoading }) => {
   const classes = useStyles();
   const themeContext = useTheme();
@@ -37,6 +39,8 @@ const ReportPipelineTable = ({ setLoading }) => {
   const history = useHistory();
   const [mappingList, setMappingList] = useState();
   const [statusIndex, setStatusIndex] = useState(null);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const renderButtons = (status) => {
     return (
@@ -167,8 +171,10 @@ const ReportPipelineTable = ({ setLoading }) => {
         status = 400,
         message = 'Error',
         data = [],
-      } = await getReportCardPipeline();
+        total_pages: totalPages = 0,
+      } = await getReportCardPipeline(currentPage, pageSize);
       setMappingList(data);
+      setTotalPages(totalPages);
       const isSuccesful = isSuccess(status);
       setAlert(isSuccesful ? 'success' : 'error', message);
     } catch (err) {}
@@ -176,79 +182,92 @@ const ReportPipelineTable = ({ setLoading }) => {
   };
 
   useEffect(() => {
-    fetchReportCardPipeline();
-  }, []);
+    if (currentPage) {
+      fetchReportCardPipeline();
+    }
+  }, [currentPage]);
 
   return (
     <Paper className={`${classes.root} common-table`}>
-      <TableContainer className={classes.containerGenerated}>
-        <Table stickyHeader aria-label='sticky table'>
-          <TableHead className='table-header-row'>
-            <TableRow>
-              {columns.map((column) => (
-                <TableCell
-                  key={column.id}
-                  align={column.align}
-                  style={{ minWidth: column?.minWidth }}
-                  className={classes.columnHeader}
-                >
-                  {column.label}
-                </TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {mappingList?.map(
-              (
-                {
-                  status,
-                  id: pipelineId,
-                  transaction_id: transactionId,
-                  branch,
-                  grade,
-                  subject,
-                  section,
-                  updated_at: updatedAt,
-                  created_at: createdAt,
-                },
-                index
-              ) => {
-                const [branchDetails] = branch || [];
-                const [gradeDetails] = grade || [];
-                const [subjectDetails] = subject || [];
-                const [sectionDetails] = section || [];
-                const { branch_name: branchName } = branchDetails || {};
-                const { grade_name: gradeName } = gradeDetails || {};
-                const { subject_name: subjectName } = subjectDetails || {};
-                const { section_name: sectionName } = sectionDetails || {};
-                return (
-                  <TableRow hover academicyear='checkbox' tabIndex={-1} key={index}>
-                    <TableCell className={classes.tableCell}>
-                      {getStatusCard(status, index)}
-                    </TableCell>
+      <Grid container>
+        <Grid item xs={12}>
+          <TableContainer className={classes.containerGenerated}>
+            <Table stickyHeader aria-label='sticky table'>
+              <TableHead className='table-header-row'>
+                <TableRow>
+                  {columns.map((column) => (
                     <TableCell
-                      className={classes.tableCell}
-                    >{`#${pipelineId}`}</TableCell>
-                    <TableCell
-                      className={classes.tableCell}
-                    >{`#${transactionId}`}</TableCell>
-                    <TableCell className={classes.tableCell}>{branchName}</TableCell>
-                    <TableCell className={classes.tableCell}>{gradeName}</TableCell>
-                    <TableCell className={classes.tableCell}>{sectionName}</TableCell>
-                    <TableCell className={classes.tableCell}>{subjectName}</TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {getDuration(createdAt, updatedAt)}
+                      key={column.id}
+                      align={column.align}
+                      style={{ minWidth: column?.minWidth }}
+                      className={classes.columnHeader}
+                    >
+                      {column.label}
                     </TableCell>
-                    <TableCell className={classes.tableCell}>
-                      {renderButtons(status)}
-                    </TableCell>
-                  </TableRow>
-                );
-              }
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                  ))}
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {mappingList?.map(
+                  (
+                    {
+                      status,
+                      id: pipelineId,
+                      transaction_id: transactionId,
+                      branch,
+                      grade,
+                      subject,
+                      section,
+                      updated_at: updatedAt,
+                      created_at: createdAt,
+                    },
+                    index
+                  ) => {
+                    const [branchDetails] = branch || [];
+                    const [gradeDetails] = grade || [];
+                    const [subjectDetails] = subject || [];
+                    const [sectionDetails] = section || [];
+                    const { branch_name: branchName } = branchDetails || {};
+                    const { grade_name: gradeName } = gradeDetails || {};
+                    const { subject_name: subjectName } = subjectDetails || {};
+                    const { section_name: sectionName } = sectionDetails || {};
+                    return (
+                      <TableRow hover academicyear='checkbox' tabIndex={-1} key={index}>
+                        <TableCell className={classes.tableCell}>
+                          {getStatusCard(status, index)}
+                        </TableCell>
+                        <TableCell
+                          className={classes.tableCell}
+                        >{`#${pipelineId}`}</TableCell>
+                        <TableCell
+                          className={classes.tableCell}
+                        >{`#${transactionId}`}</TableCell>
+                        <TableCell className={classes.tableCell}>{branchName}</TableCell>
+                        <TableCell className={classes.tableCell}>{gradeName}</TableCell>
+                        <TableCell className={classes.tableCell}>{sectionName}</TableCell>
+                        <TableCell className={classes.tableCell}>{subjectName}</TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {getDuration(createdAt, updatedAt)}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {renderButtons(status)}
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+                )}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Grid>
+        <Grid item xs={12}>
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        </Grid>
+      </Grid>
     </Paper>
   );
 };
