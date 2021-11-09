@@ -21,6 +21,7 @@ const ReportCardHeader = ({ schoolData }) => {
         alignItems: 'center',
         overflowX: 'auto',
         flexWrap: 'wrap',
+        textTransform: 'capitalize',
       }}
     >
       <Box>

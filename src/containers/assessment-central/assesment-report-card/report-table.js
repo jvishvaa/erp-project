@@ -34,6 +34,7 @@ const StyledTableRow = withStyles((theme) => ({
     },
 
     padding: '0px 16px',
+    textTransform: 'capitalize',
     whiteSpace: 'nowrap',
   },
 }))(TableRow);
@@ -45,6 +46,7 @@ const useStyles = makeStyles({
       borderLeft: '1px solid rgba(224, 224, 224, 1)',
       padding: '0px 16px',
       whiteSpace: 'nowrap',
+      textTransform: 'capitalize',
     },
   },
 });
