@@ -1,6 +1,8 @@
 import React, { useContext, useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import Loading from '../../../../../../components/loader/loader';
@@ -63,59 +65,28 @@ const QontoConnector = withStyles({
   },
 })(StepConnector);
 
-const useQontoStepIconStyles = makeStyles({
-  root: {
-    color: '#eaeaf0',
-    display: 'flex',
-    height: 22,
-    alignItems: 'center',
-  },
-  active: {
-    color: '#784af4',
-  },
-  circle: {
-    width: 8,
-    height: 8,
-    borderRadius: '50%',
-    backgroundColor: 'currentColor',
-  },
-  completed: {
-    color: '#784af4',
-    zIndex: 1,
-    fontSize: 18,
-  },
-});
 
-function QontoStepIcon(props) {
-  const classes = useQontoStepIconStyles();
+// function QontoStepIcon(props) {
+//   const classes = useQontoStepIconStyles();
 
-  const { active, completed } = props;
+//   const { active, completed } = props;
 
-  return (
-    <div
-      className={clsx(classes.root, {
-        [classes.active]: active,
-      })}
-    >
-      {completed ? (
-        <Check className={classes.completed} />
-      ) : (
-        <div className={classes.circle} />
-      )}
-    </div>
-  );
-}
+//   return (
+//     <div
+//       className={clsx(classes.root, {
+//         [classes.active]: active,
+//       })}
+//     >
+//       {completed ? (
+//         <Check className={classes.completed} />
+//       ) : (
+//         <div className={classes.circle} />
+//       )}
+//     </div>
+//   );
+// }
 
-QontoStepIcon.propTypes = {
-  /**
-   * Whether this step is active.
-   */
-  active: PropTypes.bool,
-  /**
-   * Mark the step as completed. Is passed to child components.
-   */
-  completed: PropTypes.bool,
-};
+
 
 const ColorlibConnector = withStyles({
   alternativeLabel: {
@@ -226,6 +197,7 @@ export default function CustomizedSteppers() {
     questions[indexQuestion].done = true;
     this.setState({ questions });
   };
+  
   function multichoiceCompareFunction(a, b) {
     let value = 0;
     for (let i = 0; i < a.length; i += 1) {
@@ -399,6 +371,35 @@ export default function CustomizedSteppers() {
       setSelectedOption(awa);
     }
   };
+  
+  function QontoStepIcon(props, i) {
+    // eslint-disable-next-line react/prop-types
+    
+    const { active, completed ,rootS} = props;
+    return (
+      <div className={clsx(classes.rootS, { [classes.active]: active })}>
+        {(completed && choosenAnswerStatus[i] && selectedValue[i] && (
+          <CheckCircleOutlineIcon style={{ fontSize: 35,zIndex: 1,color :'green'}} />
+        )) ||
+          (completed && !choosenAnswerStatus[i] && selectedValue[i] && (
+            <HighlightOffIcon style={{ zIndex: 1,fontSize: 35,color :'red'}} />
+          )) || (completed && !choosenAnswerStatus[i] && selectedValue[i]==null && (
+            <div style={{ width :20, height:20,borderRadius :'50%',backgroundColor :'lightgray'}} />
+     
+          )) || ''}
+      </div>
+    );
+  }
+  QontoStepIcon.propTypes = {
+  /**
+   * Whether this step is active.
+   */
+  active: PropTypes.bool,
+  /**
+   * Mark the step as completed. Is passed to child components.
+   */
+  completed: PropTypes.bool,
+};
   const handleMatrixMcq = (e, optInd, key, ql, index) => {
     setChoiceMatrixAns((Info) => {
       const newData = [...Info];
@@ -852,119 +853,113 @@ export default function CustomizedSteppers() {
 
   const mcqSubmitResponse = () => {};
 
-  const handleCloseMcqTest = () => {
-   
-  };
+  const handleCloseMcqTest = () => {};
   useEffect(() => {
-    
-      if (qualifiedExam=== true) {
-        let courseFinish;
-        console.log('hlkjhgfdsdfghjklkjhgf');
-        console.log('hlkjhgfdsdfghjklkjhgf', history.location.courseType);
-        if (history.location.courseType === 'self_driven') {
-          courseFinish = {
-            is_finish: true,
-            content_id: history?.location?.state?.id,
-            course_content_id: history?.location?.state?.course_content,
-            is_self_driven: true,
-          };
-        } else if (history.location.courseType === 'is_induction_training') {
-          courseFinish = {
-            is_finish: true,
-            content_id: history?.location?.state?.id,
-            course_content_id: history?.location?.state?.course_content,
-            is_induction_training: true,
-          };
-        }
-
-        setLoading(true);
-        axios
-          .post(
-            `${endpoints.sureLearning.FinishChapterApi}?${history?.location?.course}=true`,
-            JSON.stringify(courseFinish),
-            {
-              headers: {
-                Authorization: `Bearer ${udaanToken}`,
-                module: moduleId,
-                'Content-Type': 'application/json',
-              },
-            }
-          )
-          .then((res) => {
-            if (res.status === 404) {
-              setLoading(false);
-              setAlert('warning', 'please complete mcq test');
-            }
-            if (res.status === 200) {
-              setLoading(false);
-              setAlert('warning', 'cut off not cleared');
-            }
-            if (res.status === 201) {
-              setLoading(false);
-              setAlert('success', 'You have successfully completed this lesson');
-              history.goBack();
-            }
-            if (res.status !== 201 && res.status !== 404 && res.status !== 200) {
-              setLoading(false);
-              setAlert('error', 'somthing went wrong please try again ');
-            }
-            return 0;
-          });
+    if (qualifiedExam === true) {
+      let courseFinish;
+      console.log('hlkjhgfdsdfghjklkjhgf');
+      console.log('hlkjhgfdsdfghjklkjhgf', history.location.courseType);
+      if (history.location.courseType === 'self_driven') {
+        courseFinish = {
+          is_finish: true,
+          content_id: history?.location?.state?.id,
+          course_content_id: history?.location?.state?.course_content,
+          is_self_driven: true,
+        };
+      } else if (history.location.courseType === 'is_induction_training') {
+        courseFinish = {
+          is_finish: true,
+          content_id: history?.location?.state?.id,
+          course_content_id: history?.location?.state?.course_content,
+          is_induction_training: true,
+        };
       }
-      // if (mcqQueList.length !== activeStep + 1) {
-      //   let courseFinish;
-      //   console.log('hlkjhgfdsdfghjklkjhgf');
-      //   console.log('hlkjhgfdsdfghjklkjhgf', history.location.courseType);
-      //   console.log('hlkjhgfdsdfghjklkjhgf', history?.location?.course);
-      //   console.log('hlkjhgfdsdfghjklkjh', history?.location?.state?.course_content);
-      //   if (history.location.courseType === 'self_driven') {
-      //     courseFinish = {
-      //       content_id: history?.location?.state?.id,
-      //       course_content_id: history?.location?.state?.course_content,
-      //       is_self_driven: true,
-      //     };
-      //   } else {
-      //     courseFinish = {
-      //       content_id: history?.location?.state?.id,
-      //       course_content_id: history?.location?.state?.course_content,
-      //       is_induction_training: true,
-      //     };
-      //   }
 
-      //   setLoading(true);
-      //   axios
-      //     .post(
-      //       `${endpoints.sureLearning.FinishChapterApi}?${history?.location?.course}=true`,
-      //       JSON.stringify(courseFinish),
-      //       {
-      //         headers: {
-      //           Authorization: `Bearer ${udaanToken}`,
-      //           module: moduleId,
-      //           'Content-Type': 'application/json',
-      //         },
-      //       }
-      //     )
-      //     .then((res) => {
-      //       if (res.status === 404) {
-      //         setLoading(false);
-      //         setAlert('warning', 'please complete mcq test');
-      //       }
-      //       if (res.status === 201) {
-      //         setLoading(false);
-      //         setAlert('success', 'You have successfully completed this lesson');
-      //         history.goBack();
-      //       }
-      //       if (res.status !== 201 && res.status !== 404) {
-      //         setLoading(false);
-      //         setAlert('warning', 'somthing went wrong please try again ');
-      //       }
-      //       return 0;
-      //     });
-      // }
-       
-    
-    
-  },[qualifiedExam]) 
+      setLoading(true);
+      axios
+        .post(
+          `${endpoints.sureLearning.FinishChapterApi}?${history?.location?.course}=true`,
+          JSON.stringify(courseFinish),
+          {
+            headers: {
+              Authorization: `Bearer ${udaanToken}`,
+              module: moduleId,
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        .then((res) => {
+          if (res.status === 404) {
+            setLoading(false);
+            setAlert('warning', 'please complete mcq test');
+          }
+          if (res.status === 200) {
+            setLoading(false);
+            setAlert('warning', 'cut off not cleared');
+          }
+          if (res.status === 201) {
+            setLoading(false);
+            setAlert('success', 'You have successfully completed this lesson');
+            history.goBack();
+          }
+          if (res.status !== 201 && res.status !== 404 && res.status !== 200) {
+            setLoading(false);
+            setAlert('error', 'somthing went wrong please try again ');
+          }
+          return 0;
+        });
+    }
+    // if (mcqQueList.length !== activeStep + 1) {
+    //   let courseFinish;
+    //   console.log('hlkjhgfdsdfghjklkjhgf');
+    //   console.log('hlkjhgfdsdfghjklkjhgf', history.location.courseType);
+    //   console.log('hlkjhgfdsdfghjklkjhgf', history?.location?.course);
+    //   console.log('hlkjhgfdsdfghjklkjh', history?.location?.state?.course_content);
+    //   if (history.location.courseType === 'self_driven') {
+    //     courseFinish = {
+    //       content_id: history?.location?.state?.id,
+    //       course_content_id: history?.location?.state?.course_content,
+    //       is_self_driven: true,
+    //     };
+    //   } else {
+    //     courseFinish = {
+    //       content_id: history?.location?.state?.id,
+    //       course_content_id: history?.location?.state?.course_content,
+    //       is_induction_training: true,
+    //     };
+    //   }
+
+    //   setLoading(true);
+    //   axios
+    //     .post(
+    //       `${endpoints.sureLearning.FinishChapterApi}?${history?.location?.course}=true`,
+    //       JSON.stringify(courseFinish),
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${udaanToken}`,
+    //           module: moduleId,
+    //           'Content-Type': 'application/json',
+    //         },
+    //       }
+    //     )
+    //     .then((res) => {
+    //       if (res.status === 404) {
+    //         setLoading(false);
+    //         setAlert('warning', 'please complete mcq test');
+    //       }
+    //       if (res.status === 201) {
+    //         setLoading(false);
+    //         setAlert('success', 'You have successfully completed this lesson');
+    //         history.goBack();
+    //       }
+    //       if (res.status !== 201 && res.status !== 404) {
+    //         setLoading(false);
+    //         setAlert('warning', 'somthing went wrong please try again ');
+    //       }
+    //       return 0;
+    //     });
+    // }
+  }, [qualifiedExam]);
   const handleSubmit = (quesLen, stepLen, ql, marks, index, attempted) => {
     console.log('clicked finish');
     if (
@@ -1105,10 +1100,9 @@ export default function CustomizedSteppers() {
           setToggle(true);
           if (res.status === 201) {
             setAlert('success', 'Test Successfully Submitted');
-            setQualifiedExam(true)
+            setQualifiedExam(true);
           }
           if (res.status !== 201 && res.status !== 409) {
-            
             setAlert('error', 'somthing went wrong please try again');
             // setAlert('somthing went wrong please try again');
             // alert.error('somthing went wrong please try again ');
@@ -1120,12 +1114,11 @@ export default function CustomizedSteppers() {
           setToggle(true);
           console.log('hit catch', error.response);
           if (error.response.status === 409) {
-           
             setAlert('warning', 'Test Already Submitted');
           }
           if (error.response.status === 400) {
             console.log('hit');
-            
+
             setAlert('warning', 'You have not cleared MCQ test please try again');
             // alert.warning('You have not cleared MCQ test please try again');
             mcqSubmitResponse();
@@ -1134,10 +1127,8 @@ export default function CustomizedSteppers() {
           } else {
             setAlert('error', error.response.statusText);
           }
-          history.goBack()
+          history.goBack();
         });
-      
-      
     }
   };
   const handleNext = (quesLen, stepLen, ql, marks, index, attempted) => {
@@ -1286,7 +1277,7 @@ export default function CustomizedSteppers() {
     // history.push('allCoursesAssignedByCoordinatorContent');
     history.goBack();
   };
-const BreadCrumb= sessionStorage.getItem('BreadCrumb')
+  const BreadCrumb = sessionStorage.getItem('BreadCrumb');
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}

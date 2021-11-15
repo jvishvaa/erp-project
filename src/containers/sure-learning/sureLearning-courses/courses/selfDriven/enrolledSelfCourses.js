@@ -36,9 +36,8 @@ const useStyles = makeStyles({
     height: 140,
   },
   content: {
-    marginTop: '5px'
+    marginTop: '5px',
   },
-  
 });
 function EnrolledSelfCourses() {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -61,7 +60,6 @@ function EnrolledSelfCourses() {
     sessionStorage.setItem('course_id', id);
     sessionStorage.setItem('course', 'is_training_course');
     sessionStorage.setItem('BreadCrumb', 'Enrolled Courses');
-
   };
 
   const udaanDetails = JSON.parse(localStorage.getItem('udaanDetails')) || [];
@@ -112,7 +110,16 @@ function EnrolledSelfCourses() {
     const diffColors = index % 4;
     return colors[diffColors];
   };
-
+  const StyledButton = withStyles((theme) => ({
+    root: {
+      backgroundColor: 'transparent',
+      color: '#FFFFFF',
+      padding: '8px 15px',
+      '&:hover': {
+        backgroundColor: 'transparent',
+      },
+    },
+  }))(Button);
   return (
     <Layout>
       <div>
@@ -122,11 +129,11 @@ function EnrolledSelfCourses() {
           isAcademicYearVisible={true}
         />
 
-        <div id="enrollContainer">
+        <div id='enrollContainer'>
           {data.map((item, index) => {
             return (
               <div id='cardContainer'>
-                <div id="mainGrid" >
+                <div id='mainGrid'>
                   <Card
                     sx={{ maxWidth: 345 }}
                     style={{ backgroundColor: getCardColor(index) }}
@@ -160,14 +167,14 @@ function EnrolledSelfCourses() {
                       )}
                     </div>
                     <CardContent justify='center' className={classes.content1}>
-                      <div id="titleArea"  >
-                        <div id='nameArea' >
-                          <Typography style={{ color: 'white' , fontWeight: 600 }}>
+                      <div id='titleArea'>
+                        <div id='nameArea'>
+                          <Typography style={{ color: 'white', fontWeight: 600 }}>
                             {item.course_name}
                           </Typography>
                         </div>
                         <div id='nameArea'>
-                          <Typography style={{ color: 'white' , fontSize: '15px' }}>
+                          <Typography style={{ color: 'white', fontSize: '15px' }}>
                             {item.category}
                           </Typography>
                         </div>
@@ -307,30 +314,35 @@ function EnrolledSelfCourses() {
                         </div>
                       </div>
                     </CardContent>
-                    <CardActions justify='center' style={{justifyContent : 'center'}} >
-                      <div
-                        style={{
-                          height: '40px',
-                          display: 'flex',
-                          width: '80%',
-                          justifyContent: 'center',
-                          backgroundImage: `url(${ButtonBackgroundImage})`,
-                          backgroundPosition: 'center',
-                          backgroundSize: '60%',
-                          backgroundRepeat: 'no-repeat',
-                        }}
+                    <CardActions justify='center' style={{ justifyContent: 'center' }}>
+                      <StyledButton
+                        style={{ fontSize: '20px' }}
+                        // variant='none'
+                        onClick={() => handleViewMore(item.id)}
                       >
-                        <Typography
-                          onClick={() => handleViewMore(item.id)}
+                        <div
                           style={{
-                            fontWeight: 'bold',
-                            color: 'black',
+                            width: '100%',
                             cursor: 'pointer',
+                            backgroundImage: `url(${ButtonBackgroundImage})`,
+                            paddingLeft: '25px',
+                            height: 'auto',
+                            backgroundPosition: 'center',
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
                           }}
                         >
-                          Start
-                        </Typography>
-                      </div>
+                          <Typography
+                            style={{
+                              color: 'black',
+                              paddingRight: '25px',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            Start
+                          </Typography>
+                        </div>
+                      </StyledButton>
                     </CardActions>
                   </Card>
                 </div>

@@ -306,6 +306,7 @@ const InductionFilter = (props) => {
         }
       )
       .then((response) => {
+        console.log(response.data, 'EnrolledSelfCources');
         setVolumeList(response.data);
       })
       .catch((error) => {
@@ -313,14 +314,40 @@ const InductionFilter = (props) => {
       });
   };
 
-  const handleStartButton = (volume) => {
-    sessionStorage.setItem('selected_volume', volume.id);
-    // history.push('/allchapters');
-    history.push({
-      pathname: '/allchaptersInduction',
-      state: volume,
-      module: 'inductionTraining',
-    });
+  const startTrain = (volume) => {
+    console.log(volume.id, 'volume');
+    if (volumeList && volumeList.length) {
+      volumeList.forEach((con, index) => {
+        if (con.id === volume.id && index > 0) {
+          console.log(index - 1, 'index');
+          let int = index - 1;
+          console.log(volumeList[int], 'prev typ');
+          console.log(int, 'prev');
+          if (volumeList[index - 1].is_completed) {
+            sessionStorage.setItem('selected_volume', volume.id);
+            // history.push('/allchapters');
+            history.push({
+              pathname: '/allchaptersInduction',
+              state: volume,
+              module: 'inductionTraining',
+            });
+            
+          } else {
+            setAlert('warning', 'please complete previous chapter');
+          }
+        }
+        if (con.id === volume.id && index < 1) {
+          sessionStorage.setItem('selected_volume', volume.id);
+          // history.push('/allchapters');
+          history.push({
+            pathname: '/allchaptersInduction',
+            state: volume,
+            module: 'inductionTraining',
+          });
+          
+        }
+      });
+    }
   };
 
   return (
@@ -432,10 +459,7 @@ const InductionFilter = (props) => {
                 <StyledClearButton onClick={handleClearAllList}>
                   Clear All
                 </StyledClearButton>
-                <StyledButton
-                  className={classes.filters}
-                  onClick={handleFilter}
-                >
+                <StyledButton className={classes.filters} onClick={handleFilter}>
                   Filter
                 </StyledButton>
               </Grid>
@@ -451,7 +475,7 @@ const InductionFilter = (props) => {
           <Paper className={`${classes.root} common-table`} id='singleStudent'>
             {volumeList !== null ? (
               <Grid item md={12} xs={12} style={{ margin: '20px 20px' }}>
-                <MediaCard startTrain={handleStartButton} allVolumes={volumeList} />
+                <MediaCard startTrain={startTrain} allVolumes={volumeList} />
               </Grid>
             ) : (
               <div className={classes.periodDataUnavailable}>

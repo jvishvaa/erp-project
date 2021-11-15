@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { withStyles, Button, Grid, Typography, Box } from '@material-ui/core';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../../containers/Layout';
@@ -23,7 +23,7 @@ function TrainingModule() {
   const image = 'https://dev.udaansurelearning.com/static/media/course.63579270.jpg';
 
   const courseType = 'is_training_course';
- const course='trainer_driven'
+  const course = 'trainer_driven';
   const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState('');
   const udaanDetails = JSON.parse(localStorage.getItem('udaanDetails')) || [];
@@ -53,7 +53,7 @@ function TrainingModule() {
         })
         .then((res) => {
           console.log(res, 'academicss');
-        //   setGradeList(res.data.course_type);
+          //   setGradeList(res.data.course_type);
           // setSubjectList(res.data.course_sub_type)
         })
         .catch((error) => {
@@ -73,7 +73,16 @@ function TrainingModule() {
     const diffColors = index % 4;
     return colors[diffColors];
   };
-
+  const StyledButton = withStyles((theme) => ({
+    root: {
+      backgroundColor: 'transparent',
+      color: '#FFFFFF',
+      padding: '8px 15px',
+      '&:hover': {
+        backgroundColor: 'transparent',
+      },
+    },
+  }))(Button);
   const moduleClick = () => {};
 
   return (
@@ -253,29 +262,34 @@ function TrainingModule() {
                     </Grid>
                   </CardContent>
                   <CardActions justify='center' className={classes.action}>
-                    <div
-                      style={{
-                        height: '40px',
-                        display: 'flex',
-                        width: '80%',
-                        justifyContent: 'center',
-                        backgroundImage: `url(${ButtonBackgroundImage})`,
-                        backgroundPosition: 'center',
-                        backgroundSize: '60%',
-                        backgroundRepeat: 'no-repeat',
-                      }}
+                    <StyledButton
+                      style={{ fontSize: '20px' }}
+                      // variant='none'
+                      onClick={() => moduleClick()}
                     >
-                      <Typography
-                        onClick={() => moduleClick()}
+                      <div
                         style={{
-                          fontWeight: 'bold',
-                          color: 'black',
+                          width: '100%',
                           cursor: 'pointer',
+                          backgroundImage: `url(${ButtonBackgroundImage})`,
+                          paddingLeft: '25px',
+                          height: 'auto',
+                          backgroundPosition: 'center',
+                          backgroundSize: 'cover',
+                          backgroundRepeat: 'no-repeat',
                         }}
                       >
-                        Start
-                      </Typography>
-                    </div>
+                        <Typography
+                          style={{
+                            color: 'black',
+                            paddingRight: '25px',
+                            fontWeight: 'bold',
+                          }}
+                        >
+                          Start
+                        </Typography>
+                      </div>
+                    </StyledButton>
                   </CardActions>
                 </Card>
               </Grid>
