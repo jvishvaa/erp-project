@@ -1,9 +1,7 @@
 import React, { useRef } from 'react';
 import ReportTable from './report-table.js';
 import { Paper, makeStyles } from '@material-ui/core';
-import ReportCardFooter from './report-card-footer';
 import ReportCardHeader from './report-card-header';
-import { getOverallRemark } from './transform-report-card-data';
 import ReactToPrint from 'react-to-print';
 
 const useStyles = makeStyles((theme) => ({
@@ -13,10 +11,6 @@ const useStyles = makeStyles((theme) => ({
   table: {
     width: '100%',
     borderCollapse: 'collapse',
-  },
-  tr: {
-    padding: '2px',
-    border: '1px solid #dddddd',
   },
 }));
 
@@ -29,8 +23,6 @@ const AssesmentReport = ({ reportCardData }) => {
     school_info: schoolInfo = {},
     user_info: userInfo = {},
   } = reportCardData || {};
-
-  const { term_details: termDetails = {} } = scholastic || {};
 
   return (
     <>
@@ -47,11 +39,10 @@ const AssesmentReport = ({ reportCardData }) => {
             className={classes.root}
           >
             <ReportCardHeader schoolData={schoolInfo} />
-            <ReportTable scholastic={scholastic} coScholastic={coScholastic} userInfo={userInfo} />
-            <ReportCardFooter
+            <ReportTable
               scholastic={scholastic}
               coScholastic={coScholastic}
-              {...getOverallRemark(termDetails)}
+              userInfo={userInfo}
             />
           </Paper>
         </>

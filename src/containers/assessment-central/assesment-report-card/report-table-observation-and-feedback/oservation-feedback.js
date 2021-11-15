@@ -14,19 +14,17 @@ const mappingList = ['CLASS TEACHER', 'SECTION COORDINATOR', 'PARENT', 'PRINCIPA
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    fontSize: 14,
+    fontSize: 11,
   },
   body: {
-    fontSize: 14,
+    fontSize: 11,
   },
 }))(TableCell);
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 700,
     '& .MuiTableCell-root': {
-      padding: '0px 4px',
-      whiteSpace: 'nowrap',
+      padding: '5px 2px',
       border: '1px solid black',
       textAlign: 'left !important',
     },
@@ -78,7 +76,6 @@ export default function AssesmentObservatioAndFeedbackReport({
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      width: '90%',
                     }}
                   >
                     <Box>MARKS - {marks}</Box>
@@ -91,15 +88,11 @@ export default function AssesmentObservatioAndFeedbackReport({
                   align='right'
                   style={{
                     backgroundColor: '#FABF90',
-                    width: '0%',
                   }}
                   rowSpan={6}
                   colSpan={1}
                 >
-                  <Box style={{ transform: 'rotate(90deg)' }}>
-                    Teacher's Name <br />
-                    and Signature
-                  </Box>
+                  <Box style={{ transform: 'rotate(90deg)', padding: '10px' }}></Box>
                 </StyledTableCell>
               </TableRow>
 
@@ -109,7 +102,6 @@ export default function AssesmentObservatioAndFeedbackReport({
                     <StyledTableCell
                       colSpan={2}
                       style={{
-                        width: '25%',
                         textTransform: 'capitalize',
                       }}
                     >

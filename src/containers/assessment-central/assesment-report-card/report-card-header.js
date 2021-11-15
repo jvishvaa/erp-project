@@ -1,6 +1,5 @@
 import React from 'react';
 import { Typography, Box } from '@material-ui/core';
-import OrchidsLogo from '../../../assets/images/orchidsPlaceholderLogo2x.png';
 
 const ReportCardHeader = ({ schoolData }) => {
   const {
@@ -16,11 +15,11 @@ const ReportCardHeader = ({ schoolData }) => {
       style={{
         display: 'flex',
         flexDirection: 'row',
-        width: '100%',
-        justifyContent: 'space-evenly',
+        width: '99%',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        overflowX: 'auto',
-        flexWrap: 'wrap',
+        margin:'0 auto',
+        // flexWrap: 'wrap',
         textTransform: 'capitalize',
       }}
     >
@@ -40,11 +39,12 @@ const ReportCardHeader = ({ schoolData }) => {
             textAlign: 'center',
             fontWeight: '600',
             textTransform: 'uppercase',
+            marginTop: '24px',
           }}
         >
           {schoolName}
         </Typography>
-        <Box style={{ textAlign: 'center' }} mt={2}>
+        <Box style={{ textAlign: 'center', marginTop: '20px' }}>
           <Typography
             variant='h6'
             Calibri
@@ -59,7 +59,7 @@ const ReportCardHeader = ({ schoolData }) => {
           <br />
           EmailID: {schoolEmail}
         </Box>
-        <Box mt={2} mb={2}>
+        <Box style={{ margin: '30px 0 20px 0' }}>
           <Typography
             variant='h5'
             Calibri
@@ -68,7 +68,7 @@ const ReportCardHeader = ({ schoolData }) => {
           >
             ANNUAL REPORT CARD
           </Typography>
-          <Typography Calibri component='div' style={{ textAlign: 'center' }}>
+          <Typography Calibri component='h4' style={{ textAlign: 'center' }}>
             ACADEMIC YEAR {acadSession}
           </Typography>
         </Box>

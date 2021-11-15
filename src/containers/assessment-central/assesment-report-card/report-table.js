@@ -1,17 +1,16 @@
 import React from 'react';
-import { makeStyles, withStyles } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import { Table, TableContainer } from '@material-ui/core';
-import SchoolDetails from './report-card-header';
 import StudentDetails from './report-top-descriptions';
 import ReportTableContent from './report-table-content';
 import PersonalityTraitTable from './report-table-personality-trait';
+import ReportCardFooter from './report-card-footer';
 
 const useStyles = makeStyles({
   table: {
     '& .MuiTableCell-root': {
-      border: '1px solid rgba(224, 224, 224, 1)',
+      border: '1px solid black',
       padding: '0px',
-      whiteSpace: 'nowrap',
       textTransform: 'capitalize',
     },
   },
@@ -25,14 +24,14 @@ export default function AssesmentReport({ scholastic, coScholastic, userInfo }) 
   ];
 
   return (
-    <TableContainer style={{ marginTop: '20px' }}>
-      <Table className={classes.table} aria-label='customized table'>
-        {/* <SchoolDetails /> */}
+    <TableContainer>
+      <Table className={classes.table}>
         <StudentDetails {...{ userInfo, scholastic, coScholastic }} />
         {tableData.map((data) => (
           <ReportTableContent {...data} />
         ))}
         <PersonalityTraitTable {...{ scholastic, coScholastic }} />
+        <ReportCardFooter {...{ scholastic, coScholastic }} />
       </Table>
     </TableContainer>
   );

@@ -1,16 +1,14 @@
 import React from 'react';
-import { TableBody, TableCell, TableRow } from '@material-ui/core';
+import { TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { generatePersonalityTraits } from './transform-report-card-data';
-import './style.scss';
 
 const useStyles = makeStyles({
   table: {
     '& .MuiTableCell-root': {
       border: '1px solid rgba(224, 224, 224, 1)',
       padding: '0px',
-      whiteSpace: 'nowrap',
     },
   },
   tableFooter: {
@@ -47,6 +45,11 @@ const PersonalityTraitTable = ({ scholastic, coScholastic }) => {
 
   const personalityTraits = generatePersonalityTraits(scholastic, coScholastic) || [];
 
+  const totalColspan = personalityTraits[0].reduce(
+    (total, { colspan = 1 }) => total + colspan,
+    0
+  );
+
   function rowType(index, value, colspan, subIndex) {
     return index === 0 ? (
       <StyledTableCell colSpan={colspan} className={classes.tableHead}>
@@ -67,15 +70,21 @@ const PersonalityTraitTable = ({ scholastic, coScholastic }) => {
   }
 
   return (
-    <TableBody className='report-Personality-traits'>
-      {personalityTraits.map((traitArray, index) => (
+    <>
+      <TableHead />
+      <TableBody className='report-Personality-traits'>
+        {personalityTraits.map((traitArray, index) => (
+          <TableRow>
+            {traitArray.map(({ value, colspan }, subIndex) =>
+              rowType(index, value, colspan, subIndex)
+            )}
+          </TableRow>
+        ))}
         <TableRow>
-          {traitArray.map(({ value, colspan }, subIndex) =>
-            rowType(index, value, colspan, subIndex)
-          )}
+          <StyledTableCell colSpan={totalColspan} style={{ padding: '12px' }} />
         </TableRow>
-      ))}
-    </TableBody>
+      </TableBody>
+    </>
   );
 };
 

@@ -3,7 +3,6 @@ import { TableHead, TableBody, TableCell, TableRow } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { generateReportTopDescription } from './transform-report-card-data';
-import './style.scss';
 
 const placeholderImage =
   'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
@@ -32,8 +31,7 @@ const useStyles = makeStyles({
   },
 });
 
-const TopDetailsHeader = (props) => {
-  const { userInfo = {}, scholastic = {}, coScholastic = {} } = props || {};
+const TopDetailsHeader = ({ userInfo = {}, scholastic = {}, coScholastic = {} }) => {
   const { profile_img = placeholderImage } = userInfo || {};
   const classes = useStyles();
   const userData = generateReportTopDescription(userInfo || {}, scholastic, coScholastic);
@@ -48,7 +46,7 @@ const TopDetailsHeader = (props) => {
               <StyledTableCell
                 colspan={colspan}
                 className={clsx(
-                  { [classes.tableHead]: index % 2 === 0 },
+                  index % 2 === 0 ? classes.tableHead : classes.tableBodyCell,
                   classes.tableCellLeft
                 )}
               >

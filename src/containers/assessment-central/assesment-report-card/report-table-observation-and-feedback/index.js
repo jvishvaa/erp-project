@@ -1,10 +1,10 @@
 import React from 'react';
-import { makeStyles, Box, Paper } from '@material-ui/core';
+import { makeStyles, Paper } from '@material-ui/core';
 import ObservationReport from './oservation-feedback';
+
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: '37px',
-    fontSize: 14,
+    fontSize: 11,
   },
 }));
 

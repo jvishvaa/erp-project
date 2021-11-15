@@ -8,6 +8,7 @@ import {
   generateTermDetailsSummaryRow,
   generateGradeScale,
 } from './transform-report-card-data';
+import clsx from 'clsx';
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -21,10 +22,14 @@ const StyledTableCell = withStyles((theme) => ({
 const useStyles = makeStyles({
   tableFooter: {
     textAlign: 'left !important',
-    padding: '5px 1px !important',
+    padding: '5px 2px !important',
+    fontStyle: 'italic',
   },
   tableBodyCell: {
-    padding: '5px 1px !important',
+    padding: '5px 2px !important',
+  },
+  tableBoldCell: {
+    fontWeight: '600 !important',
   },
 });
 
@@ -126,8 +131,13 @@ const ReportTableContent = (props) => {
       <TableBody>
         {semesterMarks.map((subjectRow) => (
           <TableRow>
-            {subjectRow.map((marks) => (
-              <StyledTableCell className={classes.tableBodyCell} scope='center'>
+            {subjectRow.map((marks, index) => (
+              <StyledTableCell
+                className={clsx(classes.tableBodyCell, {
+                  [classes.tableBoldCell]: index === 0,
+                })}
+                scope='center'
+              >
                 {marks}
               </StyledTableCell>
             ))}
@@ -140,9 +150,9 @@ const ReportTableContent = (props) => {
           ></StyledTableCell>
         </TableRow>
         <TableRow style={{ backgroundColor: 'rgb(247 199 160)' }}>
-          {termDetailsSummary.map(({ value = '', colSpan = 1 }) => (
+          {termDetailsSummary.map(({ value = '', colSpan = 1 }, index) => (
             <StyledTableCell
-              className={classes.tableBodyCell}
+              className={clsx(classes.tableBodyCell, classes.tableBoldCell)}
               scope='center'
               colSpan={colSpan}
             >

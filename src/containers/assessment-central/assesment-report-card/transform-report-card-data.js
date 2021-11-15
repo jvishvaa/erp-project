@@ -334,6 +334,33 @@ const generatePersonalityTraits = (scholastic, coScholastic) => {
   return personalityTraits;
 };
 
+const generateFooterData = (scholastic, coScholastic) => {
+  const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
+  const { term_details: termDetails = {} } = scholastic || {};
+  const { overallRemarkSemOne = '', overallRemarkSemTwo = '' } =
+    getOverallRemark(termDetails);
+  const categoryRowLengthHalf = Math.round(categoryRowLength / 2);
+  return [
+    [{ value: "CLASS TEACHER'S REMARK:-", colspan: categoryRowLength * 2 + 13 }],
+    [
+      { value: 'SEMESTER 1', colspan: 3 },
+      { value: overallRemarkSemOne, colspan: categoryRowLength + 4 },
+      { value: 'SEMESTER 2', colspan: 3 },
+      { value: overallRemarkSemTwo, colspan: categoryRowLength + 3 },
+    ],
+    [
+      { value: 'SIGNATURE: CLASS TEACHER', colspan: categoryRowLengthHalf },
+      { value: '', colspan: categoryRowLengthHalf },
+      { value: 'SIGNATURE: COORDINATOR', colspan: categoryRowLengthHalf },
+      { value: '', colspan: categoryRowLengthHalf },
+      { value: 'SIGNATURE: PARENT', colspan: categoryRowLengthHalf },
+      { value: '', colspan: categoryRowLengthHalf },
+      { value: 'SIGNATURE: PRINCIPAL', colspan: categoryRowLengthHalf },
+      { value: '', colspan: categoryRowLengthHalf + 1 },
+    ],
+  ];
+};
+
 export {
   generateCategoryMap,
   generateTermDetails,
@@ -344,4 +371,5 @@ export {
   getOverallRemark,
   generateObservationTableHeaders,
   generatePersonalityTraits,
+  generateFooterData,
 };
