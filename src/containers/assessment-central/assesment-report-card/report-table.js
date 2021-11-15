@@ -26,11 +26,11 @@ export default function AssesmentReport({ scholastic, coScholastic, userInfo }) 
   return (
     <TableContainer style={{ marginTop: '20px' }}>
       <Table className={classes.table} aria-label='customized table'>
-        {/* <StudentDetails userInfo={userInfo} /> */}
+        <StudentDetails {...{ userInfo, scholastic, coScholastic }} />
         {tableData.map((data) => (
           <ReportTableContent {...data} />
         ))}
-        <PersonalityTraitTable scholastic={scholastic} coScholastic={coScholastic} />
+        <PersonalityTraitTable {...{ scholastic, coScholastic }} />
       </Table>
     </TableContainer>
   );

@@ -23,7 +23,6 @@ const useStyles = makeStyles({
   tableHead: {
     fontWeight: '600 !important',
     padding: '5px 2px !important',
-    backgroundColor: '#7abbbb',
   },
   tableCellCenter: {
     textAlign: 'center !important',
@@ -34,17 +33,18 @@ const useStyles = makeStyles({
 });
 
 const TopDetailsHeader = (props) => {
-  const { userInfo = {} } = props || {};
+  const { userInfo = {}, scholastic = {}, coScholastic = {} } = props || {};
+  const { profile_img = placeholderImage } = userInfo || {};
   const classes = useStyles();
-  const userData = generateReportTopDescription(userInfo || {});
+  const userData = generateReportTopDescription(userInfo || {}, scholastic, coScholastic);
 
   return (
     <TableBody className='report-top-header-description'>
-      {userData.map((responseRow) => (
+      {userData.map((responseRow, index) => (
         <TableRow>
-          {Object.values(responseRow).map((value, index) => (
+          {Object.values(responseRow).map(({ value, colspan }, index) => (
             <StyledTableCell
-              colspan={5}
+              colspan={colspan}
               className={clsx(
                 { [classes.tableHead]: index % 2 === 0 },
                 classes.tableCellLeft
@@ -53,16 +53,18 @@ const TopDetailsHeader = (props) => {
               {value}
             </StyledTableCell>
           ))}
+          {index === 0 && (
+            <StyledTableCell colspan={2} rowSpan={4}>
+              <img
+                onError={(e) => (e.target.src = placeholderImage)}
+                src={profile_img ? profile_img : placeholderImage}
+                alt=''
+                style={{ width: '100px', height: '100px', borderRadius: '0px' }}
+              />
+            </StyledTableCell>
+          )}
         </TableRow>
       ))}
-      {/* <div className='report-type-details'>
-        <img
-          onError={(e) => (e.target.src = placeholderImage)}
-          src={profile_img ? profile_img : placeholderImage}
-          alt=''
-          // style={{ width: '100px', height: '100px', borderRadius: '0px' }}
-        />
-      </div> */}
     </TableBody>
   );
 };

@@ -25,33 +25,59 @@ const generateSemesterMarks = (subjectWiseMarks, categoryKeys) => {
   );
 };
 
-const generateReportTopDescription = (userInfo = {}) => {
+const generateCategoryRowLength = (scholastic, coScholastic) => {
+  const scholasticCategoryMapLength = Object.entries(
+    scholastic['category_map'] || {}
+  ).length;
+  const coScholasticCategoryMapLength = Object.entries(
+    coScholastic['category_map'] || {}
+  ).length;
+  const categoryRowLength =
+    scholasticCategoryMapLength === coScholasticCategoryMapLength
+      ? scholasticCategoryMapLength
+      : scholasticCategoryMapLength > coScholasticCategoryMapLength
+      ? scholasticCategoryMapLength - coScholasticCategoryMapLength
+      : coScholasticCategoryMapLength - scholasticCategoryMapLength;
+
+  return categoryRowLength;
+};
+
+const generateReportTopDescription = (
+  userInfo = {},
+  scholastic = {},
+  coScholastic = {}
+) => {
   const { name, erp_id, mothers_name, grade, fathers_name, dob, section, profile_img } =
     userInfo || {};
+  const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
   return [
     {
-      header1: "STUDENT'S NAME",
-      value1: name,
-      header2: 'ERP CODE',
-      value2: erp_id,
+      header1: { value: "STUDENT'S NAME", colspan: 1 },
+      value1: { value: name, colspan: categoryRowLength + 4 },
+      header2: { value: 'ERP CODE', colspan: 2 },
+      value2: { value: erp_id, colspan: 3 },
+      emptyCells: { value: '', colspan: categoryRowLength + 1 },
     },
     {
-      header1: "MOTHER'S NAME",
-      value1: mothers_name,
-      header2: 'GRADE / DIV.',
-      value2: grade,
+      header1: { value: "MOTHER'S NAME", colspan: 1 },
+      value1: { value: mothers_name, colspan: categoryRowLength + 4 },
+      header2: { value: 'GRADE / DIV.', colspan: 2 },
+      value2: { value: grade, colspan: 3 },
+      emptyCells: { value: '', colspan: categoryRowLength + 1 },
     },
     {
-      header1: "FATHER'S NAME",
-      value1: fathers_name,
-      header2: 'DATE OF BIRTH',
-      value2: dob,
+      header1: { value: "FATHER'S NAME", colspan: 1 },
+      value1: { value: fathers_name, colspan: categoryRowLength + 4 },
+      header2: { value: 'DATE OF BIRTH', colspan: 2 },
+      value2: { value: dob, colspan: 3 },
+      emptyCells: { value: '', colspan: categoryRowLength + 1 },
     },
     {
-      header1: 'ATTENDANCE',
-      value1: '',
-      header2: '% ATTENDANCE',
-      value2: '',
+      header1: { value: 'ATTENDANCE', colspan: 1 },
+      value1: { value: '', colspan: categoryRowLength + 4 },
+      header2: { value: '% ATTENDANCE', colspan: 2 },
+      value2: { value: '', colspan: 3 },
+      emptyCells: { value: '', colspan: categoryRowLength + 1 },
     },
   ];
 };
@@ -259,18 +285,7 @@ const generatePersonalityTraits = (scholastic, coScholastic) => {
   const scholasticTermDetails = scholastic['term_details'] || [];
   const coScholasticTermDetails = coScholastic['term_details'] || [];
 
-  const scholasticCategoryMapLength = Object.entries(
-    scholastic['category_map'] || {}
-  ).length;
-  const coScholasticCategoryMapLength = Object.entries(
-    coScholastic['category_map'] || {}
-  ).length;
-  const categoryRowLength =
-    scholasticCategoryMapLength === coScholasticCategoryMapLength
-      ? scholasticCategoryMapLength
-      : scholasticCategoryMapLength > coScholasticCategoryMapLength
-      ? scholasticCategoryMapLength - coScholasticCategoryMapLength
-      : coScholasticCategoryMapLength - scholasticCategoryMapLength;
+  const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
 
   const { semesterOne: scholasticSemOne = {}, semesterTwo: scholasticSemTwo = {} } =
     generateSemesterOneTwo(scholasticTermDetails);
