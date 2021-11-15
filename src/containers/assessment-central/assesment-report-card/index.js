@@ -1,6 +1,5 @@
 import React, { useRef } from 'react';
 import ReportTable from './report-table.js';
-import StudentDetails from './report-top-descriptions.js';
 import { Paper, makeStyles } from '@material-ui/core';
 import ReportCardFooter from './report-card-footer';
 import ReportCardHeader from './report-card-header';
@@ -50,7 +49,6 @@ const AssesmentReport = ({ reportCardData }) => {
             className={classes.root}
           >
             {/* <ReportCardHeader schoolData={schoolInfo} /> */}
-            {/* <StudentDetails userInfo={userInfo} /> */}
             <ReportTable scholastic={scholastic} coScholastic={coScholastic} userInfo={userInfo} />
             <ReportCardFooter
               scholastic={scholastic}

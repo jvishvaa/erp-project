@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableBody, TableCell, TableRow } from '@material-ui/core';
+import { TableHead, TableBody, TableCell, TableRow } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
 import { generateReportTopDescription } from './transform-report-card-data';
@@ -39,33 +39,36 @@ const TopDetailsHeader = (props) => {
   const userData = generateReportTopDescription(userInfo || {}, scholastic, coScholastic);
 
   return (
-    <TableBody className='report-top-header-description'>
-      {userData.map((responseRow, index) => (
-        <TableRow>
-          {Object.values(responseRow).map(({ value, colspan }, index) => (
-            <StyledTableCell
-              colspan={colspan}
-              className={clsx(
-                { [classes.tableHead]: index % 2 === 0 },
-                classes.tableCellLeft
-              )}
-            >
-              {value}
-            </StyledTableCell>
-          ))}
-          {index === 0 && (
-            <StyledTableCell colspan={2} rowSpan={4}>
-              <img
-                onError={(e) => (e.target.src = placeholderImage)}
-                src={profile_img ? profile_img : placeholderImage}
-                alt=''
-                style={{ width: '100px', height: '100px', borderRadius: '0px' }}
-              />
-            </StyledTableCell>
-          )}
-        </TableRow>
-      ))}
-    </TableBody>
+    <>
+      <TableHead />
+      <TableBody className='report-top-header-description'>
+        {userData.map((responseRow, index) => (
+          <TableRow>
+            {Object.values(responseRow).map(({ value, colspan }, index) => (
+              <StyledTableCell
+                colspan={colspan}
+                className={clsx(
+                  { [classes.tableHead]: index % 2 === 0 },
+                  classes.tableCellLeft
+                )}
+              >
+                {value}
+              </StyledTableCell>
+            ))}
+            {index === 0 && (
+              <StyledTableCell colspan={2} rowSpan={4}>
+                <img
+                  onError={(e) => (e.target.src = placeholderImage)}
+                  src={profile_img ? profile_img : placeholderImage}
+                  alt=''
+                  style={{ width: '100px', height: '100px', borderRadius: '0px' }}
+                />
+              </StyledTableCell>
+            )}
+          </TableRow>
+        ))}
+      </TableBody>
+    </>
   );
 };
 
