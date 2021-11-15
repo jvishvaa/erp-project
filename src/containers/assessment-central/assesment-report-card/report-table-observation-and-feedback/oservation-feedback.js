@@ -24,9 +24,13 @@ const StyledTableCell = withStyles((theme) => ({
 const useStyles = makeStyles({
   table: {
     '& .MuiTableCell-root': {
-      padding: '5px 2px',
+      padding: '2px',
       border: '1px solid black',
       textAlign: 'left !important',
+    },
+    '&.MuiTable-root': {
+      width: '99.5%',
+      margin: '0.25% auto',
     },
   },
 });
@@ -38,10 +42,13 @@ export default function AssesmentObservatioAndFeedbackReport({
 
   return (
     <TableContainer>
-      <Table className={classes.table} aria-label='customized table'>
+      <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <StyledTableCell colSpan={7} style={{ backgroundColor: '#E46C07' }}>
+            <StyledTableCell
+              colSpan={7}
+              // style={{ backgroundColor: '#E46C07' }}
+            >
               <Box style={{ fontWeight: 'bolder', textAlign: 'center' }}>
                 OBSERVATION, FEEDBACK AND ADVISE
               </Box>
@@ -61,7 +68,10 @@ export default function AssesmentObservatioAndFeedbackReport({
               <TableRow>
                 <StyledTableCell
                   align='right'
-                  style={{ backgroundColor: '#FABF90', width: '0%' }}
+                  style={{
+                    // backgroundColor: '#FABF90',
+                    width: '0%',
+                  }}
                   rowSpan={6}
                   colSpan={1}
                 >
@@ -70,7 +80,7 @@ export default function AssesmentObservatioAndFeedbackReport({
                 <StyledTableCell
                   align='right'
                   colSpan={5}
-                  style={{ backgroundColor: '#FABF90' }}
+                  // style={{ backgroundColor: '#FABF90' }}
                 >
                   <Box
                     style={{
@@ -86,9 +96,7 @@ export default function AssesmentObservatioAndFeedbackReport({
                 </StyledTableCell>
                 <StyledTableCell
                   align='right'
-                  style={{
-                    backgroundColor: '#FABF90',
-                  }}
+                  // style={{backgroundColor: '#FABF90',}}
                   rowSpan={6}
                   colSpan={1}
                 >
@@ -116,7 +124,10 @@ export default function AssesmentObservatioAndFeedbackReport({
               <TableRow>
                 <StyledTableCell
                   scope='center'
-                  style={{ backgroundColor: '#E46C07', padding: '5px' }}
+                  style={{
+                    // backgroundColor: '#E46C07',
+                    padding: '5px',
+                  }}
                   colSpan={7}
                 >
                   {' '}
@@ -128,7 +139,11 @@ export default function AssesmentObservatioAndFeedbackReport({
         <TableRow>
           <StyledTableCell
             scope='center'
-            style={{ backgroundColor: '#FABF90', padding: '5px', height: '20px' }}
+            style={{
+              // backgroundColor: '#FABF90',
+              padding: '5px',
+              height: '20px',
+            }}
             colSpan={7}
           >
             <Box

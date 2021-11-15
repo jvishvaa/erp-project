@@ -7,7 +7,7 @@ import { generatePersonalityTraits } from './transform-report-card-data';
 const useStyles = makeStyles({
   table: {
     '& .MuiTableCell-root': {
-      border: '1px solid rgba(224, 224, 224, 1)',
+      // border: '1px solid rgba(224, 224, 224, 1)',
       padding: '0px',
     },
   },
@@ -21,7 +21,7 @@ const useStyles = makeStyles({
   tableHead: {
     fontWeight: '600 !important',
     padding: '5px 2px !important',
-    backgroundColor: '#7abbbb',
+    // backgroundColor: '#7abbbb',
   },
   tableCellCenter: {
     textAlign: 'center !important',
@@ -33,10 +33,10 @@ const useStyles = makeStyles({
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    fontSize: 12,
+    fontSize: 11,
   },
   body: {
-    fontSize: 12,
+    fontSize: 11,
   },
 }))(TableCell);
 

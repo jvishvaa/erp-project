@@ -42,13 +42,16 @@ const TopDetailsHeader = ({ userInfo = {}, scholastic = {}, coScholastic = {} })
       <TableBody className='report-top-header-description'>
         {userData.map((responseRow, index) => (
           <TableRow>
-            {Object.values(responseRow).map(({ value, colspan }, index) => (
+            {Object.values(responseRow).map(({ value, colspan }, subIndex) => (
               <StyledTableCell
                 colspan={colspan}
                 className={clsx(
-                  index % 2 === 0 ? classes.tableHead : classes.tableBodyCell,
+                  subIndex % 2 === 0 ? classes.tableHead : classes.tableBodyCell,
                   classes.tableCellLeft
                 )}
+                style={{
+                  whiteSpace: index === 3 && subIndex === 2 ? 'nowrap' : 'normal',
+                }}
               >
                 {value}
               </StyledTableCell>

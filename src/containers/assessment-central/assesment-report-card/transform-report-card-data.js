@@ -42,13 +42,28 @@ const generateCategoryRowLength = (scholastic, coScholastic) => {
   return categoryRowLength;
 };
 
+const generateHeaderColspan = (scholastic, coScholastic) => {
+  const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
+  const colspan = [3, categoryRowLength * 3, 4];
+  return colspan;
+};
+
 const generateReportTopDescription = (
   userInfo = {},
   scholastic = {},
   coScholastic = {}
 ) => {
-  const { name, erp_id, mothers_name, grade, fathers_name, dob, section, profile_img } =
-    userInfo || {};
+  const {
+    name = '',
+    erp_id = '',
+    mothers_name = '',
+    grade = '',
+    fathers_name = '',
+    dob = '',
+    section = '',
+    profile_img,
+    attendance = '',
+  } = userInfo || {};
   const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
   return [
     {
@@ -76,7 +91,7 @@ const generateReportTopDescription = (
       header1: { value: 'ATTENDANCE', colspan: 1 },
       value1: { value: '', colspan: categoryRowLength + 4 },
       header2: { value: '% ATTENDANCE', colspan: 2 },
-      value2: { value: '', colspan: 3 },
+      value2: { value: attendance, colspan: 3 },
       emptyCells: { value: '', colspan: categoryRowLength + 1 },
     },
   ];
@@ -214,18 +229,30 @@ const generateGradeScale = (gradeScale = {}) => {
 };
 
 const getTableHeaderRow = (tableType, categoryRowLength) => [
-  { backgroundColor: '#7abbbb', value: tableType, colspan: 1 },
   {
-    backgroundColor: 'rgb(252 179 120)',
+    backgroundColor: '#fff',
+    // backgroundColor: '#7abbbb',
+    value: tableType,
+    colspan: 1,
+  },
+  {
+    backgroundColor: '#fff',
+    // backgroundColor: 'rgb(252 179 120)',
     value: 'SEMESTER 1',
     colspan: 4 + categoryRowLength,
   },
   {
-    backgroundColor: 'rgb(252 179 120)',
+    backgroundColor: '#fff',
+    // backgroundColor: 'rgb(252 179 120)',
     value: 'SEMESTER 2',
     colspan: 4 + categoryRowLength,
   },
-  { backgroundColor: 'rgb(170 226 226)', value: 'ANNUAL SCORE / GRADE', colspan: 4 },
+  {
+    backgroundColor: '#fff',
+    // backgroundColor: 'rgb(170 226 226)',
+    value: 'ANNUAL SCORE / GRADE',
+    colspan: 4,
+  },
 ];
 
 const generateTermDetailsSummaryRow = (termDetails, categoryRowLength) => {
@@ -341,12 +368,9 @@ const generateFooterData = (scholastic, coScholastic) => {
     getOverallRemark(termDetails);
   const categoryRowLengthHalf = Math.round(categoryRowLength / 2);
   return [
-    [{ value: "CLASS TEACHER'S REMARK:-", colspan: categoryRowLength * 2 + 13 }],
     [
-      { value: 'SEMESTER 1', colspan: 3 },
-      { value: overallRemarkSemOne, colspan: categoryRowLength + 4 },
-      { value: 'SEMESTER 2', colspan: 3 },
-      { value: overallRemarkSemTwo, colspan: categoryRowLength + 3 },
+      { value: "CLASS TEACHER'S REMARK", colspan: 3 },
+      { value: overallRemarkSemOne, colspan: categoryRowLength * 2 + 10 },
     ],
     [
       { value: 'SIGNATURE: CLASS TEACHER', colspan: categoryRowLengthHalf },
@@ -367,6 +391,7 @@ export {
   getTableHeaderRow,
   generateGradeScale,
   generateTermDetailsSummaryRow,
+  generateHeaderColspan,
   generateReportTopDescription,
   getOverallRemark,
   generateObservationTableHeaders,

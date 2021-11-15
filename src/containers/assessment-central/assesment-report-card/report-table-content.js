@@ -85,7 +85,10 @@ const ReportTableContent = (props) => {
           ))}
           <StyledTableCell
             align='right'
-            style={{ backgroundColor: 'rgb(251 222 198)', width: '46px' }}
+            style={{
+              // backgroundColor: 'rgb(251 222 198)',
+              width: '46px',
+            }}
           >
             Tot.
           </StyledTableCell>
@@ -102,7 +105,10 @@ const ReportTableContent = (props) => {
           ))}
           <StyledTableCell
             align='right'
-            style={{ backgroundColor: 'rgb(251 222 198)', width: '46px' }}
+            style={{
+              // backgroundColor: 'rgb(251 222 198)',
+              width: '46px',
+            }}
           >
             Tot.
           </StyledTableCell>
@@ -120,7 +126,7 @@ const ReportTableContent = (props) => {
           {['WEIGHTAGE(%) / MAX.MARKS', ...weightRow, ...weightRow].map((weight) => (
             <StyledTableCell
               align='right'
-              style={{ backgroundColor: 'rgb(247 199 160)' }}
+              // style={{ backgroundColor: 'rgb(247 199 160)' }}
             >
               {weight}
             </StyledTableCell>
@@ -143,13 +149,15 @@ const ReportTableContent = (props) => {
             ))}
           </TableRow>
         ))}
-        <TableRow>
+        {/* <TableRow>
           <StyledTableCell
             colSpan={totalColspan}
             style={{ padding: '12px' }}
           ></StyledTableCell>
-        </TableRow>
-        <TableRow style={{ backgroundColor: 'rgb(247 199 160)' }}>
+        </TableRow> */}
+        <TableRow
+        // style={{ backgroundColor: 'rgb(247 199 160)' }}
+        >
           {termDetailsSummary.map(({ value = '', colSpan = 1 }, index) => (
             <StyledTableCell
               className={clsx(classes.tableBodyCell, classes.tableBoldCell)}

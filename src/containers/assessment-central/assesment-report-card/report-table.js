@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Table, TableContainer } from '@material-ui/core';
+import ReportCardHeader from './report-card-header';
 import StudentDetails from './report-top-descriptions';
 import ReportTableContent from './report-table-content';
 import PersonalityTraitTable from './report-table-personality-trait';
@@ -13,10 +14,19 @@ const useStyles = makeStyles({
       padding: '0px',
       textTransform: 'capitalize',
     },
+    '&.MuiTable-root': {
+      width: '99.5%',
+      margin: '0.25% auto',
+    },
   },
 });
 
-export default function AssesmentReport({ scholastic, coScholastic, userInfo }) {
+export default function AssesmentReport({
+  scholastic,
+  coScholastic,
+  userInfo,
+  schoolData,
+}) {
   const classes = useStyles();
   const tableData = [
     { Data: scholastic, TableType: 'SCHOLASTIC' },
@@ -26,6 +36,7 @@ export default function AssesmentReport({ scholastic, coScholastic, userInfo }) 
   return (
     <TableContainer>
       <Table className={classes.table}>
+        <ReportCardHeader {...{ schoolData, scholastic, coScholastic }} />
         <StudentDetails {...{ userInfo, scholastic, coScholastic }} />
         {tableData.map((data) => (
           <ReportTableContent {...data} />

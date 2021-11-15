@@ -1,16 +1,23 @@
 import React, { useRef } from 'react';
 import ReportTable from './report-table.js';
-import { Paper, makeStyles } from '@material-ui/core';
-import ReportCardHeader from './report-card-header';
+import { Paper, makeStyles, Box, IconButton } from '@material-ui/core';
 import ReactToPrint from 'react-to-print';
+import PrintIcon from '@material-ui/icons/Print';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    padding: '1px',
+  root:{
+    '&.MuiPaper-rounded':{
+      borderRadius:'0px',
+    }
   },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
+  printButton: {
+    position: 'absolute',
+    top: '-24px',
+    right: '-24px',
+    background: theme.palette.primary.main,
+    '& .MuiSvgIcon-root': {
+      color: '#fff',
+    },
   },
 }));
 
@@ -27,25 +34,24 @@ const AssesmentReport = ({ reportCardData }) => {
   return (
     <>
       {reportCardData ? (
-        <>
-          <ReactToPrint
-            trigger={() => <button>Print this out!</button>}
-            content={() => componentRef.current}
-          />
-          <Paper
-            component={'div'}
-            ref={componentRef}
-            elevation={2}
-            className={classes.root}
-          >
-            <ReportCardHeader schoolData={schoolInfo} />
+        <Box style={{ position: 'relative' }}>
+          <Paper component={'div'} ref={componentRef} elevation={2} className={classes.root}>
             <ReportTable
               scholastic={scholastic}
               coScholastic={coScholastic}
               userInfo={userInfo}
+              schoolData={schoolInfo}
             />
           </Paper>
-        </>
+          <ReactToPrint
+            trigger={() => (
+              <IconButton className={classes.printButton} variant='contained'>
+                <PrintIcon />
+              </IconButton>
+            )}
+            content={() => componentRef.current}
+          />
+        </Box>
       ) : (
         'REPORT CARD NOT AVAILABLE'
       )}
