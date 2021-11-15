@@ -225,7 +225,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
                 tabValues={['Front', 'Back']}
               />
             </Box>
-            {renderReportCard()}
+            <Box style={{ margin: '20px auto', width: '95%' }}>{renderReportCard()}</Box>
           </>
         )}
 

@@ -9,10 +9,10 @@ const placeholderImage =
   'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    fontSize: 12,
+    fontSize: 11,
   },
   body: {
-    fontSize: 12,
+    fontSize: 11,
   },
 }))(TableCell);
 

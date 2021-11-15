@@ -11,10 +11,10 @@ import {
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    fontSize: 12,
+    fontSize: 11,
   },
   body: {
-    fontSize: 12,
+    fontSize: 11,
   },
 }))(TableCell);
 
@@ -70,26 +70,43 @@ const ReportTableContent = (props) => {
           ))}
         </TableRow>
         <TableRow>
-          {['Subject', ...categoryRow].map((subject) => (
-            <StyledTableCell align='right'>{subject}</StyledTableCell>
+          {['Subject', ...categoryRow].map((subject, index) => (
+            <StyledTableCell
+              align='right'
+              style={{ width: index === 0 ? '156px' : '46px', height: '46px' }}
+            >
+              {subject}
+            </StyledTableCell>
           ))}
-          <StyledTableCell align='right' style={{ backgroundColor: 'rgb(251 222 198)' }}>
+          <StyledTableCell
+            align='right'
+            style={{ backgroundColor: 'rgb(251 222 198)', width: '46px' }}
+          >
             Tot.
           </StyledTableCell>
 
           {constantHeaders.map((item) => (
-            <StyledTableCell align='right' rowSpan={2}>
+            <StyledTableCell align='right' rowSpan={2} style={{ width: '46px' }}>
               {item}
             </StyledTableCell>
           ))}
           {categoryRow.map((subject) => (
-            <StyledTableCell align='right'>{subject}</StyledTableCell>
+            <StyledTableCell align='right' style={{ width: '46px' }}>
+              {subject}
+            </StyledTableCell>
           ))}
-          <StyledTableCell align='right' style={{ backgroundColor: 'rgb(251 222 198)' }}>
+          <StyledTableCell
+            align='right'
+            style={{ backgroundColor: 'rgb(251 222 198)', width: '46px' }}
+          >
             Tot.
           </StyledTableCell>
-          {[...constantHeaders, '(T1 + T2)/2', ...constantHeaders].map((item) => (
-            <StyledTableCell align='right' rowSpan={2}>
+          {[...constantHeaders, '(T1 + T2)/2', ...constantHeaders].map((item, index) => (
+            <StyledTableCell
+              align='right'
+              rowSpan={2}
+              style={{ width: index === 3 ? '74px' : '46px' }}
+            >
               {item}
             </StyledTableCell>
           ))}

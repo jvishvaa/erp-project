@@ -1,7 +1,8 @@
 import React from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import { Table, TableContainer } from '@material-ui/core';
-import StudentDetails from './report-top-descriptions.js';
+import SchoolDetails from './report-card-header';
+import StudentDetails from './report-top-descriptions';
 import ReportTableContent from './report-table-content';
 import PersonalityTraitTable from './report-table-personality-trait';
 
@@ -26,6 +27,7 @@ export default function AssesmentReport({ scholastic, coScholastic, userInfo }) 
   return (
     <TableContainer style={{ marginTop: '20px' }}>
       <Table className={classes.table} aria-label='customized table'>
+        {/* <SchoolDetails /> */}
         <StudentDetails {...{ userInfo, scholastic, coScholastic }} />
         {tableData.map((data) => (
           <ReportTableContent {...data} />

@@ -8,9 +8,7 @@ import ReactToPrint from 'react-to-print';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: '20px auto',
-    padding: '5px',
-    width: '95%',
+    padding: '1px',
   },
   table: {
     width: '100%',
@@ -48,7 +46,7 @@ const AssesmentReport = ({ reportCardData }) => {
             elevation={2}
             className={classes.root}
           >
-            {/* <ReportCardHeader schoolData={schoolInfo} /> */}
+            <ReportCardHeader schoolData={schoolInfo} />
             <ReportTable scholastic={scholastic} coScholastic={coScholastic} userInfo={userInfo} />
             <ReportCardFooter
               scholastic={scholastic}
