@@ -128,36 +128,35 @@ const AllCoursesAssignedByCoordinator = () => {
 
   const [openFeedback, setOpenFeedback] = useState(false);
   const [moduleId, setModuleId] = useState('');
-  const [ chapters , setChapters ] = useState('');
+  const [chapters, setChapters] = useState('');
   const udaanDetails = JSON.parse(localStorage.getItem('udaanDetails')) || [];
   const udaanToken = udaanDetails?.personal_info?.token;
   const moduleData = udaanDetails?.role_permission?.modules;
-  console.log(moduleData , "module");
+  console.log(moduleData, 'module');
   const [certificateBtn, setCertificateBtn] = useState(true);
   const [bottomHRef, setBottomHRef] = useState('');
   const ratingStatus = sessionStorage.getItem('ratingStatus');
   const [opendialogue, setOpendialogue] = useState(false);
-  const [ courseId , setCourseId ] = useState('');
+  const [courseId, setCourseId] = useState('');
   const userId = udaanDetails.personal_info.user_id;
-
-
-
-
 
   useEffect(() => {
     setBottomHRef([
       {
-        pdf: `${endpoints.sureLearning.getCourseCertificateUrl}?course_id=${sessionStorage.getItem('course_id')}&user_id=${userId}&Authorization=${`Bearer ${udaanToken}`}&module=${moduleId}`,
+        pdf: `${
+          endpoints.sureLearning.getCourseCertificateUrl
+        }?course_id=${sessionStorage.getItem(
+          'course_id'
+        )}&user_id=${userId}&Authorization=${`Bearer ${udaanToken}`}&module=${moduleId}`,
       },
     ]);
-  }, [setBottomHRef, moduleId,courseId, userId]);
-
+  }, [setBottomHRef, moduleId, courseId, userId]);
 
   useEffect(() => {
     const isAllComplete = chapters
       ? !chapters.some((element) => element.is_completed === false)
       : false;
-      console .log(isAllComplete,'isAllComplete')
+    console.log(isAllComplete, 'isAllComplete');
     if (isAllComplete === true) {
       setCertificateBtn(false);
 
@@ -168,68 +167,85 @@ const AllCoursesAssignedByCoordinator = () => {
       }
     }
   }, [chapters, ratingStatus]);
-   
 
-
-    
   useEffect(() => {
     if (moduleData && moduleData.length) {
       moduleData.forEach((item) => {
-        console.log(item.module, "module Ids");
-        if (
-          item.module_name === 'Subject_Training'
-        ) 
-        {
-          setModuleId(item.module)
+        console.log(item.module, 'module Ids');
+        if (item.module_name === 'Subject_Training') {
+          setModuleId(item.module);
         }
-      
-    })
-  }
-
+      });
+    }
   }, []);
 
   const history = useHistory();
-const course = sessionStorage.getItem('course')
-  useEffect(()=>{
-    setCourseId(sessionStorage.getItem('course_id'))
-    console.log(history , "history");
-    if(moduleId && udaanToken){
+  const course = sessionStorage.getItem('course');
+  useEffect(() => {
+    setCourseId(sessionStorage.getItem('course_id'));
+    console.log(history, 'history');
+    if (moduleId && udaanToken) {
       axios
         .get(
-          `${endpoints.sureLearning.filterSubject}?course_id=${sessionStorage.getItem('course_id')}&${course}=true`,{
-              headers: {
-                Authorization: `Bearer ${udaanToken}`,
-                module:moduleId
-              },
-            }
+          `${endpoints.sureLearning.filterSubject}?course_id=${sessionStorage.getItem(
+            'course_id'
+          )}&${course}=true`,
+          {
+            headers: {
+              Authorization: `Bearer ${udaanToken}`,
+              module: moduleId,
+            },
+          }
         )
         .then((res) => {
           console.log(res, 'course details');
           // setSubjectList(res.data.course_sub_type)
-          setChapters(res.data)
+          setChapters(res.data);
         })
         .catch((error) => {
           setAlert('error', 'Something Wrong!');
         });
     }
-  },[moduleId])
+  }, [moduleId]);
 
   const handleBack = () => {
-      // history.push('/assignedCoursesByCordinator');
-      history.goBack();
-
-    
-  };  
-
+    // history.push('/assignedCoursesByCordinator');
+    history.goBack();
+  };
 
   const handleChaplerDetails = (eachChapter) => {
+    if (chapters && chapters.length) {
+      chapters.forEach((con, index) => {
+        if (con.id === eachChapter.id && index > 0) {
+          console.log(index - 1, 'index');
+          let int = index - 1;
+          console.log(chapters[int], 'prev typ');
+          console.log(int, 'prev');
+          if (chapters[index - 1].is_completed) {
+            history.push({
+              pathname: '/allCoursesAssignedByCoordinatorContent',
+              state: eachChapter,
+              type: 'subject',
+            });
+            sessionStorage.setItem('course', course);
+            sessionStorage.setItem('content_id', eachChapter.id);
+          } else {
+            setAlert('warning', 'please complete previous chapter');
+          }
+        }
+        if (con.id === eachChapter.id && index < 1) {
+          history.push({
+            pathname: '/allCoursesAssignedByCoordinatorContent',
+            state: eachChapter,
+            type: 'subject',
+          });
+          sessionStorage.setItem('course', course);
+          sessionStorage.setItem('content_id', eachChapter.id);
+        }
+      });
+    }
+
     // history.push('/allchapterContent');
-    history.push({pathname: '/allCoursesAssignedByCoordinatorContent',
-      state: eachChapter,
-      type: 'subject',
-    })
-    sessionStorage.setItem('course',course );
-    sessionStorage.setItem('content_id', eachChapter.id);
   };
 
   const getCardColor = (index) => {
@@ -241,16 +257,15 @@ const course = sessionStorage.getItem('course')
       // "#f2bf5e"
     ];
     const diffColors = index % 4;
-    return colors[diffColors]
-  }
-const BreadCrumb=sessionStorage.getItem('BreadCrumb');
+    return colors[diffColors];
+  };
+  const BreadCrumb = sessionStorage.getItem('BreadCrumb');
   return (
     <Layout className='accessBlockerContainer'>
       <div className={classes.parentDiv}>
         <CommonBreadcrumbs
           componentName='Sure Learning'
           childComponentName={BreadCrumb}
-          
           isAcademicYearVisible={true}
         />
         <Grid container spacing={2} style={{ marginTop: '5px', marginLeft: '15px' }}>
@@ -268,45 +283,55 @@ const BreadCrumb=sessionStorage.getItem('BreadCrumb');
           </Grid>
           <Grid item md={3} xs={12}>
             <Button
-               disabled={certificateBtn}
-               color="primary"
-               variant="contained"
-               style={{ marginLeft: '10px' }}
-               // onClick={() => handleDownloadCertificate()}
-               href={bottomHRef && bottomHRef[0].pdf}
+              disabled={certificateBtn}
+              color='primary'
+              variant='contained'
+              style={{ marginLeft: '10px' }}
+              // onClick={() => handleDownloadCertificate()}
+              href={bottomHRef && bottomHRef[0].pdf}
             >
               Download Certificate
             </Button>
           </Grid>
         </Grid>
-        <div style = {{display:'flex', flexDirection : 'row', flexWrap:'wrap'}}>
-        {chapters && chapters.map((eachChapter, index) => { return(
-          
-            <Card style={{backgroundColor: getCardColor(index), marginLeft : '20px', marginTop : '20px'}} className={classes.cards}>
-              <CardContent style={{ display: 'flex', justifyContent: 'center' }}>
-                <div style={{ flexDirection: 'column' }}>
-              {  (console.log('sdfg', eachChapter))}
-                  <Typography> {eachChapter.title} </Typography>
-                </div>
-              </CardContent>
-
-              <CardActions style={{ display: 'flex', justifyContent: 'center' }}>
-                <Typography
-                  onClick={() => handleChaplerDetails(eachChapter)}
-                  color='primary'
-                  style = {{fontWeight:'bold', color:'white', cursor: 'pointer'}}
+        <div style={{ display: 'flex', flexDirection: 'row', flexWrap: 'wrap' }}>
+          {chapters &&
+            chapters.map((eachChapter, index) => {
+              return (
+                <Card
+                  style={{
+                    backgroundColor: getCardColor(index),
+                    marginLeft: '20px',
+                    marginTop: '20px',
+                  }}
+                  className={classes.cards}
                 >
-                  Click me
-                </Typography>
-                {/* <StyledButton  size='small'>Click here</StyledButton> */}
-              </CardActions>
-              <CardContent style={{ display: 'flex', justifyContent: 'center' }}>
-                <Typography>{eachChapter.is_completed === true ? 'Completed' : 'Not Completed'}</Typography>
-              </CardContent>
-            </Card>
-        )})}
+                  <CardContent style={{ display: 'flex', justifyContent: 'center' }}>
+                    <div style={{ flexDirection: 'column' }}>
+                      {console.log('sdfg', eachChapter)}
+                      <Typography> {eachChapter.title} </Typography>
+                    </div>
+                  </CardContent>
+
+                  <CardActions style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Typography
+                      onClick={() => handleChaplerDetails(eachChapter)}
+                      color='primary'
+                      style={{ fontWeight: 'bold', color: 'white', cursor: 'pointer' }}
+                    >
+                      Click me
+                    </Typography>
+                    {/* <StyledButton  size='small'>Click here</StyledButton> */}
+                  </CardActions>
+                  <CardContent style={{ display: 'flex', justifyContent: 'center' }}>
+                    <Typography>
+                      {eachChapter.is_completed === true ? 'Completed' : 'Not Completed'}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              );
+            })}
         </div>
-        
       </div>
       {openFeedback && <Feedback open={openFeedback} onDialogClose={setOpenFeedback} />}
     </Layout>
