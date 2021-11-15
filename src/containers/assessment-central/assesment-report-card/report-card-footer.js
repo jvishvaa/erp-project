@@ -26,13 +26,13 @@ const ReportCardFooter = ({ overallRemarkSemOne = '', overallRemarkSemTwo = '' }
         </tr>
         <tr className={classes.tr} style={{ background: '#FDF29B' }}>
           <td className={classes.tr} colspan='1' style={{ padding: '10px' }}>
-            SEMESTER-1
+            SEMESTER 1
           </td>
           <td className={classes.tr} colspan='3' style={{ padding: '10px' }}>
             {overallRemarkSemOne}
           </td>
           <td className={classes.tr} colspan='1' style={{ padding: '10px' }}>
-            SEMESTER-2
+            SEMESTER 2
           </td>
           <td className={classes.tr} colspan='3' style={{ padding: '10px' }}>
             {overallRemarkSemTwo}

@@ -25,6 +25,37 @@ const generateSemesterMarks = (subjectWiseMarks, categoryKeys) => {
   );
 };
 
+const generateReportTopDescription = (userInfo = {}) => {
+  const { name, erp_id, mothers_name, grade, fathers_name, dob, section, profile_img } =
+    userInfo || {};
+  return [
+    {
+      header1: "STUDENT'S NAME",
+      value1: name,
+      header2: 'ERP CODE',
+      value2: erp_id,
+    },
+    {
+      header1: "MOTHER'S NAME",
+      value1: mothers_name,
+      header2: 'GRADE / DIV.',
+      value2: grade,
+    },
+    {
+      header1: "FATHER'S NAME",
+      value1: fathers_name,
+      header2: 'DATE OF BIRTH',
+      value2: dob,
+    },
+    {
+      header1: 'ATTENDANCE',
+      value1: '',
+      header2: '% ATTENDANCE',
+      value2: '',
+    },
+  ];
+};
+
 const generateSemesterOneTwo = (termDetails) => {
   const transformedTermDetails = Object.values(termDetails).map(
     ({
@@ -51,7 +82,7 @@ const generateSemesterOneTwo = (termDetails) => {
 };
 
 /*transforming categoryMap as per usage*/
-const generateCategoryMap = (categoryMap) => {
+const generateCategoryMap = (categoryMap = {}) => {
   const transformedCategoryType = Object.entries(categoryMap).map(
     ([
       key,
@@ -168,7 +199,7 @@ const getTableHeaderRow = (tableType, categoryRowLength) => [
     value: 'SEMESTER 2',
     colspan: 4 + categoryRowLength,
   },
-  { backgroundColor: 'rgb(170 226 226)', value: 'ANNUAL SCORE/GRADE', colspan: 4 },
+  { backgroundColor: 'rgb(170 226 226)', value: 'ANNUAL SCORE / GRADE', colspan: 4 },
 ];
 
 const generateTermDetailsSummaryRow = (termDetails, categoryRowLength) => {
@@ -227,6 +258,20 @@ const generateObservationTableHeaders = (traits = {}) => {
 const generatePersonalityTraits = (scholastic, coScholastic) => {
   const scholasticTermDetails = scholastic['term_details'] || [];
   const coScholasticTermDetails = coScholastic['term_details'] || [];
+
+  const scholasticCategoryMapLength = Object.entries(
+    scholastic['category_map'] || {}
+  ).length;
+  const coScholasticCategoryMapLength = Object.entries(
+    coScholastic['category_map'] || {}
+  ).length;
+  const categoryRowLength =
+    scholasticCategoryMapLength === coScholasticCategoryMapLength
+      ? scholasticCategoryMapLength
+      : scholasticCategoryMapLength > coScholasticCategoryMapLength
+      ? scholasticCategoryMapLength - coScholasticCategoryMapLength
+      : coScholasticCategoryMapLength - scholasticCategoryMapLength;
+
   const { semesterOne: scholasticSemOne = {}, semesterTwo: scholasticSemTwo = {} } =
     generateSemesterOneTwo(scholasticTermDetails);
   const { semesterOne: coScholasticSemOne = {}, semesterTwo: coScholasticSemTwo = {} } =
@@ -251,18 +296,25 @@ const generatePersonalityTraits = (scholastic, coScholastic) => {
     semOneTrait.length >= semTwoTrait.length ? semOneTrait.length : semTwoTrait.length;
 
   const personalityTraits = Array.from({ length: maxLength }, (element, index) => [
-    semOneTrait?.[index]?.['trait_name'] || '',
-    semOneTrait?.[index]?.['trait_grade'] || '',
-    semTwoTrait?.[index]?.['trait_name'] || '',
-    semTwoTrait?.[index]?.['trait_grade'] || '',
-    '',
+    { value: semOneTrait?.[index]?.['trait_name'] || '', colspan: 4 + categoryRowLength },
+    { value: semOneTrait?.[index]?.['trait_grade'] || '', colspan: 1 },
+    { value: semTwoTrait?.[index]?.['trait_name'] || '', colspan: 4 + categoryRowLength },
+    { value: semTwoTrait?.[index]?.['trait_grade'] || '', colspan: 1 },
+    { value: '', colspan: 3 },
   ]);
+
   personalityTraits.unshift([
-    'PERSONALITY TRAIT AND SELF DISCIPLINE(SEMESTER 1)',
-    'GRADE',
-    'PERSONALITY TRAIT AND SELF DISCIPLINE(SEMESTER 2)',
-    'GRADE',
-    'ANNUAL GRADE',
+    {
+      value: 'PERSONALITY TRAIT AND SELF DISCIPLINE (SEMESTER 1)',
+      colspan: 4 + categoryRowLength,
+    },
+    { value: 'GRADE', colspan: 1 },
+    {
+      value: 'PERSONALITY TRAIT AND SELF DISCIPLINE (SEMESTER 2)',
+      colspan: 4 + categoryRowLength,
+    },
+    { value: 'GRADE', colspan: 1 },
+    { value: 'ANNUAL GRADE', colspan: 3 },
   ]);
   return personalityTraits;
 };
@@ -273,6 +325,7 @@ export {
   getTableHeaderRow,
   generateGradeScale,
   generateTermDetailsSummaryRow,
+  generateReportTopDescription,
   getOverallRemark,
   generateObservationTableHeaders,
   generatePersonalityTraits,
