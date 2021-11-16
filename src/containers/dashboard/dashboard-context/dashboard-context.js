@@ -27,8 +27,8 @@ export function DashboardContextProvider({ children }) {
   const { userLevel } = welcomeDetails || {};
 
   const headers = {
-    // 'X-DTS-HOST': window.location.host,
-    'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+    'X-DTS-HOST': window.location.host,
+    // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
     // 'X-DTS-HOST': 'dev.mit.letseduvate.com',
     Authorization: `Bearer ${TOKEN}`,
   };
