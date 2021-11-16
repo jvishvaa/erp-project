@@ -2,19 +2,24 @@ import React, { useState, useEffect } from 'react';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import SpellcheckIcon from '@material-ui/icons/Spellcheck';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import { Grid } from '@material-ui/core';
 import { DashFilterWidget, ReportStatsWidget } from '../widgets';
 import { reportTypeConstants } from '../dashboard-constants';
 import { useDashboardContext } from '../dashboard-context';
 
 const AdminDashboard = () => {
-  const { attendance, classwork, homework } = reportTypeConstants;
+  const { attendance, classwork, homework, login, role, referral } = reportTypeConstants;
   const { branchIds = [], getReport = () => {} } = useDashboardContext();
 
   const [reports, setReports] = useState({
     attendanceReport: [],
     classworkReport: [],
     homeworkReport: [],
+    loginReport: [],
+    roleReport: [],
+    referralReport: [],
   });
 
   const getAttendanceReport = (params) => {
@@ -67,6 +72,52 @@ const AdminDashboard = () => {
       .catch(() => {});
   };
 
+  const getLoginReport = (params) => {
+    getReport(login, params)
+      .then((response) => {
+        const loginReport = response.map(
+          ({
+            grade = '',
+            subject_name: subject = '',
+            submitted = 0,
+            total_students = 0,
+          }) => ({
+            detail: `${grade} - ${subject}`,
+            positive: submitted,
+            negative: total_students - submitted,
+          })
+        );
+        setReports((prev) => ({ ...prev, loginReport }));
+      })
+      .catch(() => {});
+  };
+
+  const getRoleReport = (params) => {
+    getReport(role, params)
+      .then((response) => {
+        const roleReport = response.map(({ count = 0, role_name = ' ' }) => ({
+          detail: role_name,
+          info: count,
+        }));
+        setReports((prev) => ({ ...prev, roleReport }));
+      })
+      .catch(() => {});
+  };
+
+  const getReferralReport = (params) => {
+    getReport(referral, params)
+      .then((response) => {
+        const referralReport = response.map(
+          ({ branch_name = ' ', total_referals = '' }) => ({
+            detail: branch_name,
+            info: total_referals,
+          })
+        );
+        setReports((prev) => ({ ...prev, referralReport }));
+      })
+      .catch(() => {});
+  };
+
   useEffect(() => {
     const params = { branch_ids: branchIds.join(',') };
     if (branchIds.length > 0) {
@@ -76,16 +127,39 @@ const AdminDashboard = () => {
     }
   }, [branchIds]);
 
+  useEffect(() => {
+    getLoginReport();
+    getRoleReport();
+    getReferralReport();
+  }, []);
+
   const {
     attendanceReport = [],
     classworkReport = [],
     homeworkReport = [],
+    loginReport = [],
+    roleReport = [],
+    referralReport = [],
   } = reports || {};
 
   return (
     <Grid container spacing={2}>
       <Grid item xs={12} md={4}>
         <DashFilterWidget />
+      </Grid>
+      {/* <Grid item xs={12} md={4}>
+        <ReportStatsWidget
+          title='Login Report'
+          data={loginReport}
+          avatar={LockOutlinedIcon}
+        />
+      </Grid> */}
+      <Grid item xs={12} md={4}>
+        <ReportStatsWidget
+          title='Role Report'
+          data={roleReport}
+          avatar={AssignmentIndIcon}
+        />
       </Grid>
       <Grid item xs={12} md={4}>
         <ReportStatsWidget
@@ -105,6 +179,13 @@ const AdminDashboard = () => {
         <ReportStatsWidget
           title='Homework Report'
           data={homeworkReport}
+          avatar={MenuBookIcon}
+        />
+      </Grid>
+      <Grid item xs={12} md={4}>
+        <ReportStatsWidget
+          title='Referral Report'
+          data={referralReport}
           avatar={MenuBookIcon}
         />
       </Grid>
