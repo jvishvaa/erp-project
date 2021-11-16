@@ -3,16 +3,20 @@ import endpoints from '../../config/endpoints';
 const {
   dashboard: {
     teacher: {
-      listAttendanceReport,
-      listClassworkReport,
-      listHomeworkReport,
-      listBlogReport,
-      listDiscussionReport,
       downloadAttendanceReport,
       downloadClassworkReport,
       downloadHomeworkReport,
       downloadBlogReport,
       downloadDiscussionReport,
+      downloadRefferalReport,
+      listAttendanceReport,
+      listClassworkReport,
+      listHomeworkReport,
+      listBlogReport,
+      listDiscussionReport,
+      listLoginReport,
+      listRoleReport,
+      listRefferalReport,
     } = {},
   } = {},
 } = endpoints || {};
@@ -23,6 +27,9 @@ export const reportTypeConstants = {
   homework: 'homework',
   blog: 'blog',
   discussion: 'discussion',
+  login: 'login',
+  role: 'role',
+  referral: 'referral',
 };
 
 export const apiConfig = {
@@ -45,6 +52,18 @@ export const apiConfig = {
   discussion: {
     report: listDiscussionReport,
     download: downloadDiscussionReport,
+  },
+  login: {
+    report: listLoginReport,
+    download: downloadDiscussionReport,
+  },
+  role: {
+    report: listRoleReport,
+    download: downloadDiscussionReport,
+  },
+  referral: {
+    report: listRefferalReport,
+    download: downloadRefferalReport,
   },
 };
 
