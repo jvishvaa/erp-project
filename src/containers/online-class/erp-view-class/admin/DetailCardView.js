@@ -44,9 +44,13 @@ const JoinClass = (props) => {
     props.data ? props?.data?.is_attended : false
   );
 
-  useEffect(()=>{
+  const [isClassWork, setIsClassWork] = useState(props.data.is_no_classwork);
+
+
+  useEffect(() => {
     setIsAccept(props?.data?.is_accepted)
-  },[props])
+    setIsClassWork(props.data.is_no_classwork)
+  }, [props])
 
   const history = useHistory();
   const classStartTime = moment(props && props?.data && props?.data?.date).format(
@@ -128,7 +132,7 @@ const JoinClass = (props) => {
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
       .then((res) => {
         setLoading(false);
-        if(res.data.status_code == 200){
+        if (res.data.status_code == 200) {
           if (params?.is_accepted) setIsAccept(true);
           if (params?.is_attended) {
             // setMarkAttendance(true);
@@ -391,9 +395,9 @@ const JoinClass = (props) => {
                   state: { data: fullData.online_class.id },
                 })
               }
-              disabled={ props?.data?.is_cancelled ? true : isClassStartted() }
+              disabled={props?.data?.is_cancelled ? true : isClassStartted()}
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
-              // className='teacherFullViewSmallButtons'
+            // className='teacherFullViewSmallButtons'
             >
               Launch Quiz
             </Button>
@@ -412,7 +416,7 @@ const JoinClass = (props) => {
               onClick={() => handleTakeQuiz(fullData)}
               disabled={
                 props?.data?.class_status?.toLowerCase() === 'cancelled' ? true : isClassStartted() ||
-                fullData?.online_class?.question_paper_id === 0
+                  fullData?.online_class?.question_paper_id === 0
               }
               // className='takeQuizButton'
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
@@ -422,7 +426,7 @@ const JoinClass = (props) => {
           </Grid>
 
           <Grid item xs={4}>
-            <Button
+            {isClassWork && <Button
               size='small'
               fullWidth
               variant='contained'
@@ -436,7 +440,7 @@ const JoinClass = (props) => {
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
               Class Work
-            </Button>
+            </Button>}
             {classWorkDialog && (
               <UploadDialogBox
                 historicalData={historicalData}
@@ -455,7 +459,7 @@ const JoinClass = (props) => {
       {window.location.pathname === '/erp-online-class-teacher-view' ? (
         <>
           <Grid item xs={4}>
-            <Button
+            {isClassWork && <Button
               size='small'
               color='#344ADE'
               fullWidth
@@ -472,7 +476,7 @@ const JoinClass = (props) => {
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
             >
               Class Work
-            </Button>
+            </Button>}
           </Grid>
         </>
       ) : (
@@ -497,7 +501,7 @@ const JoinClass = (props) => {
               <p>
                 <a
                   id="joinclass"
-                  style={{display:"none"}}
+                  style={{ display: "none" }}
                   href={fullData?.join_url}
                   target='SingleSecondaryWindowName'
                   onclick={() => {
@@ -820,16 +824,16 @@ const DetailCardView = ({
       sessionStorage.setItem('isErpClass', 3);
       history.push(
         `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
-          // selectedGrade.map((el)=>el.id)
-          1
+        // selectedGrade.map((el)=>el.id)
+        1
         }`
       );
     } else if (window.location.pathname === '/erp-online-class') {
       sessionStorage.setItem('isErpClass', 1);
       history.push(
         `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
-          // selectedGrade.map((el)=>el.id)
-          1
+        // selectedGrade.map((el)=>el.id)
+        1
         }`
       );
     }
@@ -873,9 +877,9 @@ const DetailCardView = ({
               className={`teacherBatchFullViewHeader ${getClassName()[1]}`}
             >
               <Grid item xs={10}>
-                  <div className='edxTag'>
-                    <SvgIcon component={() => <img style={{maxHeight:"50px", background:"white"}} src={ fullData?.join_url?.includes('edxstream') ? edxtag : ZOOMICON } />} />
-                  </div>
+                <div className='edxTag'>
+                  <SvgIcon component={() => <img style={{ maxHeight: "50px", background: "white" }} src={fullData?.join_url?.includes('edxstream') ? edxtag : ZOOMICON} />} />
+                </div>
               </Grid>
               <Grid item xs={2} style={{ textAlign: 'right' }}>
                 <CloseIcon style={{ color: 'white' }} onClick={() => handleClose()} />
