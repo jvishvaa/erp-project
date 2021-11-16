@@ -25,6 +25,78 @@ const generateSemesterMarks = (subjectWiseMarks, categoryKeys) => {
   );
 };
 
+const generateCategoryRowLength = (scholastic, coScholastic) => {
+  const scholasticCategoryMapLength = Object.entries(
+    scholastic['category_map'] || {}
+  ).length;
+  const coScholasticCategoryMapLength = Object.entries(
+    coScholastic['category_map'] || {}
+  ).length;
+  const categoryRowLength =
+    scholasticCategoryMapLength === coScholasticCategoryMapLength
+      ? scholasticCategoryMapLength
+      : scholasticCategoryMapLength > coScholasticCategoryMapLength
+      ? scholasticCategoryMapLength - coScholasticCategoryMapLength
+      : coScholasticCategoryMapLength - scholasticCategoryMapLength;
+
+  return categoryRowLength;
+};
+
+const generateHeaderColspan = (scholastic, coScholastic) => {
+  const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
+  const colspan = [3, categoryRowLength * 3, 4];
+  return colspan;
+};
+
+const generateReportTopDescription = (
+  userInfo = {},
+  scholastic = {},
+  coScholastic = {}
+) => {
+  const {
+    name = '',
+    erp_id = '',
+    mothers_name = '',
+    grade = '',
+    fathers_name = '',
+    dob = '',
+    section = '',
+    profile_img,
+    attendance = '',
+  } = userInfo || {};
+  const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
+  return [
+    {
+      header1: { value: "STUDENT'S NAME", colspan: 1 },
+      value1: { value: name, colspan: categoryRowLength + 4 },
+      header2: { value: 'ERP CODE', colspan: 2 },
+      value2: { value: erp_id, colspan: 3 },
+      emptyCells: { value: '', colspan: categoryRowLength + 1 },
+    },
+    {
+      header1: { value: "MOTHER'S NAME", colspan: 1 },
+      value1: { value: mothers_name, colspan: categoryRowLength + 4 },
+      header2: { value: 'GRADE / DIV.', colspan: 2 },
+      value2: { value: grade, colspan: 3 },
+      emptyCells: { value: '', colspan: categoryRowLength + 1 },
+    },
+    {
+      header1: { value: "FATHER'S NAME", colspan: 1 },
+      value1: { value: fathers_name, colspan: categoryRowLength + 4 },
+      header2: { value: 'DATE OF BIRTH', colspan: 2 },
+      value2: { value: dob, colspan: 3 },
+      emptyCells: { value: '', colspan: categoryRowLength + 1 },
+    },
+    {
+      header1: { value: 'ATTENDANCE', colspan: 1 },
+      value1: { value: '', colspan: categoryRowLength + 4 },
+      header2: { value: '% ATTENDANCE', colspan: 2 },
+      value2: { value: attendance, colspan: 3 },
+      emptyCells: { value: '', colspan: categoryRowLength + 1 },
+    },
+  ];
+};
+
 const generateSemesterOneTwo = (termDetails) => {
   const transformedTermDetails = Object.values(termDetails).map(
     ({
@@ -51,7 +123,7 @@ const generateSemesterOneTwo = (termDetails) => {
 };
 
 /*transforming categoryMap as per usage*/
-const generateCategoryMap = (categoryMap) => {
+const generateCategoryMap = (categoryMap = {}) => {
   const transformedCategoryType = Object.entries(categoryMap).map(
     ([
       key,
@@ -157,18 +229,34 @@ const generateGradeScale = (gradeScale = {}) => {
 };
 
 const getTableHeaderRow = (tableType, categoryRowLength) => [
-  { backgroundColor: '#7abbbb', value: tableType, colspan: 1 },
   {
-    backgroundColor: 'rgb(252 179 120)',
+    backgroundColor: '#fff',
+    // backgroundColor: '#7abbbb',
+    backgroundColor:'#FDBF8E',
+    value: tableType,
+    colspan: 1,
+  },
+  {
+    backgroundColor: '#fff',
+    // backgroundColor: 'rgb(252 179 120)',
+    backgroundColor:'#FDBF8E',
     value: 'SEMESTER 1',
     colspan: 4 + categoryRowLength,
   },
   {
-    backgroundColor: 'rgb(252 179 120)',
+    backgroundColor: '#fff',
+    // backgroundColor: 'rgb(252 179 120)',
+    backgroundColor:'#FDBF8E',
     value: 'SEMESTER 2',
     colspan: 4 + categoryRowLength,
   },
-  { backgroundColor: 'rgb(170 226 226)', value: 'ANNUAL SCORE/GRADE', colspan: 4 },
+  {
+    backgroundColor: '#fff',
+    // backgroundColor: 'rgb(170 226 226)',
+    backgroundColor:'#FDBF8E',
+    value: 'ANNUAL SCORE / GRADE',
+    colspan: 4,
+  },
 ];
 
 const generateTermDetailsSummaryRow = (termDetails, categoryRowLength) => {
@@ -227,6 +315,9 @@ const generateObservationTableHeaders = (traits = {}) => {
 const generatePersonalityTraits = (scholastic, coScholastic) => {
   const scholasticTermDetails = scholastic['term_details'] || [];
   const coScholasticTermDetails = coScholastic['term_details'] || [];
+
+  const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
+
   const { semesterOne: scholasticSemOne = {}, semesterTwo: scholasticSemTwo = {} } =
     generateSemesterOneTwo(scholasticTermDetails);
   const { semesterOne: coScholasticSemOne = {}, semesterTwo: coScholasticSemTwo = {} } =
@@ -251,20 +342,51 @@ const generatePersonalityTraits = (scholastic, coScholastic) => {
     semOneTrait.length >= semTwoTrait.length ? semOneTrait.length : semTwoTrait.length;
 
   const personalityTraits = Array.from({ length: maxLength }, (element, index) => [
-    semOneTrait?.[index]?.['trait_name'] || '',
-    semOneTrait?.[index]?.['trait_grade'] || '',
-    semTwoTrait?.[index]?.['trait_name'] || '',
-    semTwoTrait?.[index]?.['trait_grade'] || '',
-    '',
+    { value: semOneTrait?.[index]?.['trait_name'] || '', colspan: 4 + categoryRowLength },
+    { value: semOneTrait?.[index]?.['trait_grade'] || '', colspan: 1 },
+    { value: semTwoTrait?.[index]?.['trait_name'] || '', colspan: 4 + categoryRowLength },
+    { value: semTwoTrait?.[index]?.['trait_grade'] || '', colspan: 1 },
+    { value: '', colspan: 3 },
   ]);
+
   personalityTraits.unshift([
-    'PERSONALITY TRAIT AND SELF DISCIPLINE(SEMESTER 1)',
-    'GRADE',
-    'PERSONALITY TRAIT AND SELF DISCIPLINE(SEMESTER 2)',
-    'GRADE',
-    'ANNUAL GRADE',
+    {
+      value: 'PERSONALITY TRAIT AND SELF DISCIPLINE (SEMESTER 1)',
+      colspan: 4 + categoryRowLength,
+    },
+    { value: 'GRADE', colspan: 1 },
+    {
+      value: 'PERSONALITY TRAIT AND SELF DISCIPLINE (SEMESTER 2)',
+      colspan: 4 + categoryRowLength,
+    },
+    { value: 'GRADE', colspan: 1 },
+    { value: 'ANNUAL GRADE', colspan: 3 },
   ]);
   return personalityTraits;
+};
+
+const generateFooterData = (scholastic, coScholastic) => {
+  const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
+  const { term_details: termDetails = {} } = scholastic || {};
+  const { overallRemarkSemOne = '', overallRemarkSemTwo = '' } =
+    getOverallRemark(termDetails);
+  const categoryRowLengthHalf = Math.round(categoryRowLength / 2);
+  return [
+    [
+      { value: "CLASS TEACHER'S REMARK", colspan: 3 },
+      { value: overallRemarkSemOne, colspan: categoryRowLength * 2 + 10 },
+    ],
+    [
+      { value: 'SIGNATURE: CLASS TEACHER', colspan: categoryRowLengthHalf },
+      { value: '', colspan: categoryRowLengthHalf },
+      { value: 'SIGNATURE: COORDINATOR', colspan: categoryRowLengthHalf },
+      { value: '', colspan: categoryRowLengthHalf },
+      { value: 'SIGNATURE: PARENT', colspan: categoryRowLengthHalf },
+      { value: '', colspan: categoryRowLengthHalf },
+      { value: 'SIGNATURE: PRINCIPAL', colspan: categoryRowLengthHalf },
+      { value: '', colspan: categoryRowLengthHalf + 1 },
+    ],
+  ];
 };
 
 export {
@@ -273,7 +395,10 @@ export {
   getTableHeaderRow,
   generateGradeScale,
   generateTermDetailsSummaryRow,
+  generateHeaderColspan,
+  generateReportTopDescription,
   getOverallRemark,
   generateObservationTableHeaders,
   generatePersonalityTraits,
+  generateFooterData,
 };
