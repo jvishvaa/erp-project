@@ -55,6 +55,7 @@ const CreateClassForm = (props) => {
   const [selectedClassType, setSelectedClassType] = useState('');
   const [branches, setBranches] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [classWork, setToggleClasswork] = useState(true);
   const {
     listGradesCreateClass,
     listCoursesCreateClass,
