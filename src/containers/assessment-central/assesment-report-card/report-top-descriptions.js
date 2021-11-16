@@ -1,59 +1,76 @@
 import React from 'react';
-import './style.scss';
+import { TableHead, TableBody, TableCell, TableRow } from '@material-ui/core';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import { generateReportTopDescription } from './transform-report-card-data';
+
 const placeholderImage =
   'https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png';
-const TopDetailsHeader = (props) => {
-  const { userInfo = {} } = props || {};
-  const { name, erp_id, mothers_name, grade, fathers_name, dob, section, profile_img } =
-    userInfo || {};
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    fontSize: 11,
+  },
+  body: {
+    fontSize: 11,
+  },
+}))(TableCell);
 
-  const userData = [
-    {
-      header1: "STUDENT'S NAME",
-      value1: name,
-      header2: 'ERP CODE',
-      value2: erp_id,
-    },
-    {
-      header1: "MOTHER'S NAME",
-      value1: mothers_name,
-      header2: 'GRADE / DIV.',
-      value2: grade,
-    },
-    {
-      header1: "FATHER'S NAME",
-      value1: fathers_name,
-      header2: 'DATE OF BIRTH',
-      value2: dob,
-    },
-    {
-      header1: 'ATTENDANCE',
-      value1: '',
-      header2: '% ATTENDANCE',
-      value2: '',
-    },
-  ];
+const useStyles = makeStyles({
+  tableBodyCell: {
+    padding: '5px 2px !important',
+  },
+  tableHead: {
+    fontWeight: '600 !important',
+    padding: '5px 2px !important',
+  },
+  tableCellCenter: {
+    textAlign: 'center !important',
+  },
+  tableCellLeft: {
+    textAlign: 'left !important',
+  },
+});
+
+const TopDetailsHeader = ({ userInfo = {}, scholastic = {}, coScholastic = {} }) => {
+  const { profile_img = placeholderImage } = userInfo || {};
+  const classes = useStyles();
+  const userData = generateReportTopDescription(userInfo || {}, scholastic, coScholastic);
 
   return (
-    <div className='report-top-header-description'>
-      <table>
-        {userData.map((responseRow) => (
-          <tr>
-            {Object.values(responseRow).map((value, index) => (
-              <>{index % 2 === 0 ? <th>{value}</th> : <td>{value}</td>}</>
+    <>
+      <TableHead />
+      <TableBody>
+        {userData.map((responseRow, index) => (
+          <TableRow>
+            {Object.values(responseRow).map(({ value, colspan }, subIndex) => (
+              <StyledTableCell
+                colspan={colspan}
+                className={clsx(
+                  subIndex % 2 === 0 ? classes.tableHead : classes.tableBodyCell,
+                  classes.tableCellLeft
+                )}
+                style={{
+                  background: '#FDD6B3',
+                  whiteSpace: index === 3 && subIndex === 2 ? 'nowrap' : 'normal',
+                }}
+              >
+                {value}
+              </StyledTableCell>
             ))}
-          </tr>
+            {index === 0 && (
+              <StyledTableCell colspan={2} rowSpan={4}>
+                <img
+                  onError={(e) => (e.target.src = placeholderImage)}
+                  src={profile_img ? profile_img : placeholderImage}
+                  alt=''
+                  style={{ width: '100px', height: '100px', borderRadius: '0px' }}
+                />
+              </StyledTableCell>
+            )}
+          </TableRow>
         ))}
-      </table>
-      <div className='report-type-details'>
-        <img
-          onError={(e) => (e.target.src = placeholderImage)}
-          src={profile_img ? profile_img : placeholderImage}
-          alt=''
-          style={{ width: '100px', height: '100px', borderRadius: '50px' }}
-        />
-      </div>
-    </div>
+      </TableBody>
+    </>
   );
 };
 

@@ -7,7 +7,7 @@ const local = {
   },
   apiGateway: {
     baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
-    baseUdaan : 'https://dev.udaansurelearning.com/qbox',
+    baseUdaan : 'https://dev.udaansurelearning.com/qbox',  
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     // baseURL: 'http://localhost:8000/qbox',
