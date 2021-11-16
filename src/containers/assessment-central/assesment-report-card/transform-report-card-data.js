@@ -232,24 +232,28 @@ const getTableHeaderRow = (tableType, categoryRowLength) => [
   {
     backgroundColor: '#fff',
     // backgroundColor: '#7abbbb',
+    backgroundColor:'#FDBF8E',
     value: tableType,
     colspan: 1,
   },
   {
     backgroundColor: '#fff',
     // backgroundColor: 'rgb(252 179 120)',
+    backgroundColor:'#FDBF8E',
     value: 'SEMESTER 1',
     colspan: 4 + categoryRowLength,
   },
   {
     backgroundColor: '#fff',
     // backgroundColor: 'rgb(252 179 120)',
+    backgroundColor:'#FDBF8E',
     value: 'SEMESTER 2',
     colspan: 4 + categoryRowLength,
   },
   {
     backgroundColor: '#fff',
     // backgroundColor: 'rgb(170 226 226)',
+    backgroundColor:'#FDBF8E',
     value: 'ANNUAL SCORE / GRADE',
     colspan: 4,
   },

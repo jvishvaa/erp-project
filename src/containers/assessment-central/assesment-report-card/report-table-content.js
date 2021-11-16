@@ -31,6 +31,9 @@ const useStyles = makeStyles({
   tableBoldCell: {
     fontWeight: '600 !important',
   },
+  textAlign: {
+    textAlign: 'left !important',
+  },
 });
 
 const ReportTableContent = (props) => {
@@ -74,7 +77,7 @@ const ReportTableContent = (props) => {
             </StyledTableCell>
           ))}
         </TableRow>
-        <TableRow>
+        <TableRow style={{ backgroundColor: '#FDD6B3' }}>
           {['Subject', ...categoryRow].map((subject, index) => (
             <StyledTableCell
               align='right'
@@ -122,15 +125,20 @@ const ReportTableContent = (props) => {
             </StyledTableCell>
           ))}
         </TableRow>
-        <TableRow>
-          {['WEIGHTAGE(%) / MAX.MARKS', ...weightRow, ...weightRow].map((weight) => (
-            <StyledTableCell
-              align='right'
-              // style={{ backgroundColor: 'rgb(247 199 160)' }}
-            >
-              {weight}
-            </StyledTableCell>
-          ))}
+        <TableRow style={{ backgroundColor: '#FDD6B3' }}>
+          {['WEIGHTAGE(%) / MAX.MARKS', ...weightRow, ...weightRow].map(
+            (weight, index) => (
+              <StyledTableCell
+                align='right'
+                style={{
+                  whiteSpace: index === 0 ? 'nowrap' : 'normal',
+                  padding: index === 0 ? '0px 2px' : '0px',
+                }}
+              >
+                {weight}
+              </StyledTableCell>
+            )
+          )}
         </TableRow>
       </TableHead>
 
@@ -141,6 +149,7 @@ const ReportTableContent = (props) => {
               <StyledTableCell
                 className={clsx(classes.tableBodyCell, {
                   [classes.tableBoldCell]: index === 0,
+                  [classes.textAlign]: index === 0,
                 })}
                 scope='center'
               >
@@ -149,18 +158,12 @@ const ReportTableContent = (props) => {
             ))}
           </TableRow>
         ))}
-        {/* <TableRow>
-          <StyledTableCell
-            colSpan={totalColspan}
-            style={{ padding: '12px' }}
-          ></StyledTableCell>
-        </TableRow> */}
-        <TableRow
-        // style={{ backgroundColor: 'rgb(247 199 160)' }}
-        >
+        <TableRow style={{ backgroundColor: '#FDD6B3' }}>
           {termDetailsSummary.map(({ value = '', colSpan = 1 }, index) => (
             <StyledTableCell
-              className={clsx(classes.tableBodyCell, classes.tableBoldCell)}
+              className={clsx(classes.tableBodyCell, classes.tableBoldCell, {
+                [classes.textAlign]: index === 0,
+              })}
               scope='center'
               colSpan={colSpan}
             >

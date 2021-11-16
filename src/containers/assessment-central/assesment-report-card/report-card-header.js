@@ -41,7 +41,7 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
           <StyledTableCell colspan={firstRowColspan} scope='center'>
             <Box>
               <img
-                src={`https://seeklogo.com/images/C/cbse-logo-46D5A6B556-seeklogo.com.png`}
+                src={`https://d3ka3pry54wyko.cloudfront.net/homework/Revamp%20RRS/None/2021-11-16%2020:46:19.276422/cbse_logo.png?1637075782512`}
                 alt=''
                 style={{ width: '160px', height: '160px', borderRadius: '50px' }}
               />

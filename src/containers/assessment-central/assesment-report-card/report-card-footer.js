@@ -64,9 +64,7 @@ const ReportCardFooter = ({ scholastic, coScholastic }) => {
     <>
       <TableHead />
       <TableBody>
-        <TableRow
-        // style={{ background: '#FDF29B' }}
-        >
+        <TableRow style={{ backgroundColor: '#FDD6B3' }}>
           {footerRowOne.map(({ value = '', colspan = '' }, index) => (
             <StyledTableCell
               className={
@@ -80,7 +78,7 @@ const ReportCardFooter = ({ scholastic, coScholastic }) => {
             </StyledTableCell>
           ))}
         </TableRow>
-        <TableRow>
+        <TableRow style={{ backgroundColor: '#FDBF8E' }}>
           {footerRowTwo.map(({ value = '', colspan = '' }) => (
             <StyledTableCell className={classes.footerRowThreeCell} colspan={colspan}>
               {value}

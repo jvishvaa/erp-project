@@ -12,9 +12,10 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   printButton: {
-    position: 'absolute',
-    top: '-24px',
-    right: '-24px',
+    position: 'sticky',
+    left: '93%',
+    bottom: '4%',
+    marginTop: '1%',
     background: theme.palette.primary.main,
     '& .MuiSvgIcon-root': {
       color: '#fff',
@@ -33,7 +34,10 @@ const ObservationAndFeedBackReport = ({ observationFeedback = [] }) => {
       </Paper>
       <ReactToPrint
         trigger={() => (
-          <IconButton className={classes.printButton} variant='contained'>
+          <IconButton
+            className={classes.printButton}
+            title='Print back side of the report card'
+          >
             <PrintIcon />
           </IconButton>
         )}

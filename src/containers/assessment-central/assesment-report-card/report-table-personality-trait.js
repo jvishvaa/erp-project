@@ -72,9 +72,9 @@ const PersonalityTraitTable = ({ scholastic, coScholastic }) => {
   return (
     <>
       <TableHead />
-      <TableBody className='report-Personality-traits'>
+      <TableBody>
         {personalityTraits.map((traitArray, index) => (
-          <TableRow>
+          <TableRow style={{ backgroundColor: index === 0 ? '#FDBF8E' : '#fff' }}>
             {traitArray.map(({ value, colspan }, subIndex) =>
               rowType(index, value, colspan, subIndex)
             )}

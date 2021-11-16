@@ -5,15 +5,17 @@ import ReactToPrint from 'react-to-print';
 import PrintIcon from '@material-ui/icons/Print';
 
 const useStyles = makeStyles((theme) => ({
-  root:{
-    '&.MuiPaper-rounded':{
-      borderRadius:'0px',
-    }
+  root: {
+    '&.MuiPaper-rounded': {
+      borderRadius: '0px',
+    },
+    fontFamily: '"Inter", sans-serif !important',
   },
   printButton: {
-    position: 'absolute',
-    top: '-24px',
-    right: '-24px',
+    position: 'sticky',
+    left: '93%',
+    bottom: '4%',
+    marginTop: '1%',
     background: theme.palette.primary.main,
     '& .MuiSvgIcon-root': {
       color: '#fff',
@@ -35,7 +37,12 @@ const AssesmentReport = ({ reportCardData }) => {
     <>
       {reportCardData ? (
         <Box style={{ position: 'relative' }}>
-          <Paper component={'div'} ref={componentRef} elevation={2} className={classes.root}>
+          <Paper
+            component={'div'}
+            ref={componentRef}
+            elevation={2}
+            className={classes.root}
+          >
             <ReportTable
               scholastic={scholastic}
               coScholastic={coScholastic}
@@ -45,7 +52,10 @@ const AssesmentReport = ({ reportCardData }) => {
           </Paper>
           <ReactToPrint
             trigger={() => (
-              <IconButton className={classes.printButton} variant='contained'>
+              <IconButton
+                className={classes.printButton}
+                title='Print front side of the report card'
+              >
                 <PrintIcon />
               </IconButton>
             )}

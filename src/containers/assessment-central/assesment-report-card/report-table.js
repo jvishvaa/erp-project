@@ -13,6 +13,7 @@ const useStyles = makeStyles({
       border: '1px solid black',
       padding: '0px',
       textTransform: 'capitalize',
+      fontFamily: '"Inter", sans-serif',
     },
     '&.MuiTable-root': {
       width: '99.5%',
