@@ -12,6 +12,7 @@ import { AlertNotificationContext } from '../../../../context-api/alert-context/
 import DialogTitle from '@material-ui/core/DialogTitle';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import DeleteIcon from '@material-ui/icons/Delete';
+import PhotoCamera from '@material-ui/icons/PhotoCamera';
 import './uploadBox.scss';
 import endpoints from '../../../../config/endpoints';
 import SimpleReactLightbox, { SRLWrapper, useLightbox } from 'simple-react-lightbox';
@@ -70,7 +71,7 @@ const UploadClassWorkDiaogBox = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const { openLightbox } = useLightbox();
   const [originalFiles, setOriginalFiles] = useState([]);
-  const [webOpen , setwebOpen] = useState(false)
+  const [webOpen, setwebOpen] = useState(false)
 
   useEffect(() => {
     if (isTeacher) {
@@ -197,7 +198,7 @@ const UploadClassWorkDiaogBox = (props) => {
       setAlert('error', 'Image can be of .jpg / .jpeg / .png format');
     }
     // e.target.value = '';
-    
+
   };
 
   const handleClose = () => {
@@ -360,9 +361,9 @@ const UploadClassWorkDiaogBox = (props) => {
             submitImage={submitImage}
           />} */}
           {webOpen && <WebCamDialog
-          webOpen = {webOpen}
-          handleUploadFile = {handleUploadFile}
-          handleWebcam = {handleWebcam}
+            webOpen={webOpen}
+            handleUploadFile={handleUploadFile}
+            handleWebcam={handleWebcam}
           />}
           {/* {
             webcam == 'submitImage' &&
@@ -404,7 +405,7 @@ const UploadClassWorkDiaogBox = (props) => {
             </div>
           )}
           {!isTeacher && (
-            <div className='cam'>
+            <div className='cam' style = {{marginRight: "43%"}}>
               {/* <input
                 accept='image/*'
                 className={classes.input}
@@ -413,7 +414,7 @@ const UploadClassWorkDiaogBox = (props) => {
                 onChange={(e) => handleWebcam(e)}
               /> */}
               {/* <label htmlFor='contained-button-file' style={{ color: 'white' }}> */}
-              {!isLessthanToday() &&
+              {/* {!isLessthanToday() &&
                 <Button
                   // startIcon={<CloudUploadIcon />}
                   className={classes.submitButton}
@@ -425,7 +426,24 @@ const UploadClassWorkDiaogBox = (props) => {
                 >
                   Upload via Camera
                 </Button>
-              }
+              } */}
+
+
+              {!isLessthanToday() && 
+              <IconButton
+                color='primary'
+                onClick={handleWebcam}
+              >
+                <PhotoCamera />
+              </IconButton>}
+
+              {/* {!isLessthanToday() && <PhotoCamera
+                // className={classes.submitButton}
+                variant='contained'
+                color='primary'
+                // component='span'
+                onClick={handleWebcam}
+              />} */}
               {/* </label> */}
             </div>
           )}

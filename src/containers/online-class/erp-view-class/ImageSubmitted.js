@@ -71,15 +71,22 @@ const ImageSubmitted = (props) => {
         height={height}
         alt="homework"
       />
-      <div className="webcambtn">
+      <div className="webcambtn" style = {{marginLeft:"40%"}}
+>
         <Button
+          color="primary"
           variant="contained"
-          onClick={postImage}>
+          onClick={postImage}
+          style = {{color: "white"}}
+          >
           Submit
         </Button>
         <Button
+          color="primary"
           variant="contained"
-          onClick={reclickImage}>
+          onClick={reclickImage}
+          style = {{color: "white",marginLeft:"10%"}}
+          >
           Retake</Button>
       </div>
     </div>

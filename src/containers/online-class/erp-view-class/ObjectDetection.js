@@ -6,7 +6,7 @@ import Loader from "components/loader/loader";
 
 const ObjectDetection = (props) => {
   const videoRef = useRef(null);
-  const [Loading,setLoading] = useState(false)
+  const [Loading,setLoading] = useState(true)
   const image = useRef(null);
   const objectDetector = useRef(null);
   const detectionInterval = useRef(null);
@@ -26,6 +26,7 @@ const ObjectDetection = (props) => {
     console.log("hereeee");
     const modelLoaded = () => {
       console.log("Model loaded");
+      setLoading(true)
     };
 
     videoElement.current = document.getElementById("videoElement");
@@ -44,6 +45,7 @@ const ObjectDetection = (props) => {
       }
 
       objectDetector.current.detect(videoRef.current.video, (err, results) => {
+        setLoading(false)
         console.log(results,'@@')
         if (results && results.length) {
           results.forEach((detection) => {

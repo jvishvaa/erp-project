@@ -38,13 +38,14 @@ setwebcam('detectImage')
         // fullScreen
         open={props.webOpen}
         onClose={handleClose}
+        style = {{marginTop : '3%'}}
+
       >
             <IconButton
               edge="start"
               color="inherit"
               onClick={handleClose}
               aria-label="close"
-              style = {{marginTop : '5%'}}
             >
               <CloseIcon />
             </IconButton>
