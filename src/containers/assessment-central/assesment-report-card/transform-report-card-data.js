@@ -1,15 +1,18 @@
+const getNAString = (value) => (value !== '' ? value : 'NA');
+
 const getSubjectWiseMarks = (marks, categoryKeys) => {
   const length = categoryKeys?.length || 0;
   const subjectWiseMarks = Array.from({ length }, (element, index) => ({
     id: categoryKeys[index],
-    value: '',
+    value: null,
   }));
   categoryKeys.forEach((key) => {
-    subjectWiseMarks.forEach(({ id }, index, arr) =>
-      key === id ? (arr[index]['value'] = marks[+key]) : null
-    );
+    subjectWiseMarks.forEach(({ id }, index, arr) => {
+      let subjectMark = marks[+key];
+      return key === id ? (arr[index]['value'] = subjectMark) : null;
+    });
   });
-  const marksList = subjectWiseMarks.map(({ value = '' }) => value || 'NA');
+  const marksList = subjectWiseMarks.map(({ value }) => getNAString(value));
   return marksList;
 };
 
@@ -54,42 +57,42 @@ const generateReportTopDescription = (
   coScholastic = {}
 ) => {
   const {
-    name = 'NA',
-    erp_id = 'NA',
-    mothers_name = 'NA',
-    grade = 'NA',
-    fathers_name = 'NA',
-    dob = 'NA',
-    section = 'NA',
+    name,
+    erp_id,
+    mothers_name,
+    grade,
+    fathers_name,
+    dob,
+    section,
     profile_img,
-    attendance = 'NA',
-    attendance_percentage = 'NA',
+    attendance,
+    attendance_percentage,
   } = userInfo || {};
   const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
   return [
     {
       header1: { value: "STUDENT'S NAME", colspan: 1 },
-      value1: { value: name, colspan: categoryRowLength + 4 },
+      value1: { value: name || 'NA', colspan: categoryRowLength + 4 },
       header2: { value: 'ERP CODE', colspan: 2 },
-      value2: { value: erp_id, colspan: categoryRowLength + 4 },
+      value2: { value: erp_id || 'NA', colspan: categoryRowLength + 4 },
     },
     {
       header1: { value: "MOTHER'S NAME", colspan: 1 },
-      value1: { value: mothers_name, colspan: categoryRowLength + 4 },
+      value1: { value: mothers_name || 'NA', colspan: categoryRowLength + 4 },
       header2: { value: 'GRADE / DIV.', colspan: 2 },
-      value2: { value: grade, colspan: categoryRowLength + 4 },
+      value2: { value: grade || 'NA', colspan: categoryRowLength + 4 },
     },
     {
       header1: { value: "FATHER'S NAME", colspan: 1 },
-      value1: { value: fathers_name, colspan: categoryRowLength + 4 },
+      value1: { value: fathers_name || 'NA', colspan: categoryRowLength + 4 },
       header2: { value: 'DATE OF BIRTH', colspan: 2 },
-      value2: { value: dob, colspan: categoryRowLength + 4 },
+      value2: { value: dob || 'NA', colspan: categoryRowLength + 4 },
     },
     {
       header1: { value: 'ATTENDANCE', colspan: 1 },
-      value1: { value: attendance, colspan: categoryRowLength + 4 },
+      value1: { value: attendance || 'NA', colspan: categoryRowLength + 4 },
       header2: { value: '% ATTENDANCE', colspan: 2 },
-      value2: { value: attendance_percentage, colspan: categoryRowLength + 4 },
+      value2: { value: attendance_percentage || 'NA', colspan: categoryRowLength + 4 },
     },
   ];
 };
@@ -124,7 +127,7 @@ const generateCategoryMap = (categoryMap = {}) => {
   const transformedCategoryType = Object.entries(categoryMap).map(
     ([
       key,
-      { assessment_type: assessmentType = '', name: category = '', weight = '' },
+      { assessment_type: assessmentType = null, name: category = null, weight = null },
     ]) => ({
       key,
       assessmentType,
@@ -132,11 +135,12 @@ const generateCategoryMap = (categoryMap = {}) => {
       weight,
     })
   );
-
-  const categoryKeys = [...transformedCategoryType.map(({ key }) => key)];
+  const categoryKeys = [...transformedCategoryType.map(({ key }) => getNAString(key))];
 
   //category headers
-  const categoryRow = [...transformedCategoryType.map(({ category }) => category)];
+  const categoryRow = [
+    ...transformedCategoryType.map(({ category }) => getNAString(category)),
+  ];
 
   const constantHeaders = ['Grade', 'OSR', 'AIR'];
 
@@ -147,19 +151,19 @@ const generateCategoryMap = (categoryMap = {}) => {
   );
   //weight row data
   const weightRow = [
-    ...transformedCategoryType.map(({ weight }) => weight || 'NA'),
+    ...transformedCategoryType.map(({ weight }) => weight ?? 'NA'),
     totalWeight,
   ];
 
   //category-assessmentType data
   const categoryAssessmentType = [
-    ...transformedCategoryType.map(
-      ({ category = '', assessmentType = [] }) =>
-        `${category}-${
-          (Array.isArray(assessmentType) ? assessmentType.join('/') : assessmentType) ||
-          'NA'
-        }`
-    ),
+    ...transformedCategoryType.map(({ category = null, assessmentType = null }) => {
+      const assessmentTypeString = Array.isArray(assessmentType)
+        ? assessmentType.join('/')
+        : assessmentType;
+      const displayString = getNAString(assessmentTypeString);
+      return `${category}${' '} -${' '}${displayString}`;
+    }),
   ].join(', ');
   return {
     categoryKeys,
@@ -194,7 +198,7 @@ const generateTermDetails = (termDetails, categoryKeys) => {
     if (semOneLength > semTwoLength) {
       const diff = semOneLength - semTwoLength;
       let transformedSemTwo = Array.from({ length: diff }, () =>
-        Array.from({ length: semesterOneSubjectWiseMarks[0].length }, () => '')
+        Array.from({ length: semesterOneSubjectWiseMarks[0].length }, () => null)
       );
       semesterTwoSubjectWiseMarks = [
         ...semesterTwoSubjectWiseMarks,
@@ -223,36 +227,32 @@ const generateTermDetails = (termDetails, categoryKeys) => {
 const generateGradeScale = (gradeScale = {}) => {
   const gradeScaleList = Object.entries(gradeScale);
   const gradeScaleToDisplay = gradeScaleList
-    .map(([key, value = 'NA']) => `${key} - ${value || 'NA'}`)
-    .join(', ');
+    .map(([key, value]) => `${key} - ${value ?? 'NA'}`)
+    .join(`, `);
   return `${gradeScaleList?.length} Point Grading Scale: ${gradeScaleToDisplay}`;
 };
 
 const getTableHeaderRow = (tableType, categoryRowLength) => [
   {
     backgroundColor: '#fff',
-    // backgroundColor: '#7abbbb',
     backgroundColor: '#FDBF8E',
     value: tableType,
     colspan: 1,
   },
   {
     backgroundColor: '#fff',
-    // backgroundColor: 'rgb(252 179 120)',
     backgroundColor: '#FDBF8E',
     value: 'SEMESTER 1',
     colspan: 4 + categoryRowLength,
   },
   {
     backgroundColor: '#fff',
-    // backgroundColor: 'rgb(252 179 120)',
     backgroundColor: '#FDBF8E',
     value: 'SEMESTER 2',
     colspan: 4 + categoryRowLength,
   },
   {
     backgroundColor: '#fff',
-    // backgroundColor: 'rgb(170 226 226)',
     backgroundColor: '#FDBF8E',
     value: 'ANNUAL SCORE / GRADE',
     colspan: 4,
@@ -374,17 +374,24 @@ const generateFooterData = (scholastic, coScholastic) => {
   return [
     [
       { value: "CLASS TEACHER'S REMARK", colspan: 3 },
-      { value: overallRemarkSemOne, colspan: categoryRowLength * 2 + 10 },
+      { value: overallRemarkSemOne, colspan: categoryRowLength * 3 + 4 },
     ],
     [
-      { value: 'SIGNATURE: CLASS TEACHER', colspan: categoryRowLengthHalf },
+      { value: 'CLASS TEACHER', colspan: categoryRowLengthHalf },
       { value: '', colspan: categoryRowLengthHalf },
-      { value: 'SIGNATURE: COORDINATOR', colspan: categoryRowLengthHalf },
+      { value: 'COORDINATOR', colspan: categoryRowLengthHalf },
       { value: '', colspan: categoryRowLengthHalf },
-      { value: 'SIGNATURE: PARENT', colspan: categoryRowLengthHalf },
+      { value: 'PARENT', colspan: categoryRowLengthHalf },
       { value: '', colspan: categoryRowLengthHalf },
-      { value: 'SIGNATURE: PRINCIPAL', colspan: categoryRowLengthHalf },
+      { value: 'PRINCIPAL', colspan: categoryRowLengthHalf },
       { value: '', colspan: categoryRowLengthHalf + 1 },
+    ],
+    [
+      {
+        value:
+          '**This is an electronically generated report card, hence does not require a signature or school seal / stamp.**',
+        colspan: categoryRowLength * 4 + 1,
+      },
     ],
   ];
 };

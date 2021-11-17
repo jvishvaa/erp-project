@@ -48,12 +48,25 @@ const useStyles = makeStyles({
   value: {
     padding: '8px 5px !important',
   },
+  footerRowThree: {
+    padding: '5px 2px !important',
+    fontWeight: '600 !important',
+    textTransform: 'none !important',
+    fontSize: '11px !important',
+  },
 });
 
 export default function AssesmentObservatioAndFeedbackReport({
   observationFeedback = [],
 }) {
   const classes = useStyles();
+  const footerDetails = [
+    {
+      value:
+        '**This is an electronically generated report card, hence does not require a signature or school seal / stamp.**',
+      colspan: 7,
+    },
+  ];
 
   return (
     <TableContainer>
@@ -174,6 +187,13 @@ export default function AssesmentObservatioAndFeedbackReport({
               ))}
             </Box>
           </StyledTableCell>
+        </TableRow>
+        <TableRow style={{ backgroundColor: '#FDD6B3' }}>
+          {footerDetails.map(({ value = '', colspan = '' }) => (
+            <StyledTableCell className={classes.footerRowThree} colspan={colspan}>
+              <Box style={{ textAlign: 'center' }}>{value}</Box>
+            </StyledTableCell>
+          ))}
         </TableRow>
       </Table>
     </TableContainer>
