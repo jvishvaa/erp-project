@@ -211,14 +211,14 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
   };
 
   const handleSubmit = async (e) => {
-    setSubmitFlag(true);
     e.preventDefault();
-    setLoading(true);
     if (!filterData?.file) {
       setAlert('error', 'File is required');
       setLoading(false);
       return;
     }
+    setSubmitFlag(true);
+    setLoading(true);
     const requestBody = generatePayload();
     const response = await marksUpload(requestBody);
     const { status = 400, message, msg, logs = {} } = response || {};

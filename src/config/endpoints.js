@@ -560,6 +560,7 @@ export default {
     getReportCardStatusList: '/assessment/get-report-publish-status/',
     updateReportCardStatus: '/assessment/update-report-publish-status/',
     personalityTraits: '/assessment/get-traits/',
+    studentReportGrade: '/assessment/get-student-grades/',
   },
   dashboard: {
     teacher: {

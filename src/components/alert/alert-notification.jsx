@@ -6,29 +6,30 @@ import './alert-notification.scss';
 import clsx from 'clsx';
 import { makeStyles, Box } from '@material-ui/core';
 
-const useStyles = makeStyles((theme) => ({
-  menuItemIcon: {
-    '& .MuiSvgIcon-root': {
-      color: '#fff',
-    },
-  },
-  alertBox: {
-    '& .MuiAlert-root': {
-      height: 'auto',
-      maxHeight: '100%',
-      overflowY: 'scroll',
-      '& .MuiAlert-action': {
-        alignItems: 'flex-start',
-      },
-    },
-  },
-}));
-
 const AlertNotification = () => {
-  const classes = useStyles();
   const { message, type, isShown, hideAlert, showCloseIcon } = useContext(
     AlertNotificationContext
   );
+
+  const useStyles = makeStyles((theme) => ({
+    menuItemIcon: {
+      '& .MuiSvgIcon-root': {
+        color: '#fff',
+      },
+    },
+    alertBox: {
+      '& .MuiAlert-root': {
+        height: 'auto',
+        maxHeight: '100%',
+        overflowY: 'scroll',
+        '& .MuiAlert-action': {
+          alignItems: 'flex-start',
+        },
+      },
+    },
+  }));
+  const classes = useStyles();
+
   return (
     <>
       {isShown && (

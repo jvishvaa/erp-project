@@ -39,6 +39,7 @@ const AssessmentReportFilters = ({
   page,
   setPage,
   pageSize,
+  setLoading,
   setIsPreview,
   setReportCardData,
 }) => {
@@ -148,8 +149,11 @@ const AssessmentReportFilters = ({
           setReportCardData(result?.data?.result);
           setIsPreview(true);
         }
+        setLoading(false);
       })
-      .catch((error) => { });
+      .catch((error) => {
+        setLoading(false);
+      });
   };
 
   const handleDateChange = (name, date) => {
@@ -161,6 +165,7 @@ const AssessmentReportFilters = ({
   }
 
   const handlePreview = () => {
+    setLoading(true);
     let paramObj = {
       acad_session: filterData.branch?.id,
       erp: filterData.erp?.erp_id,
