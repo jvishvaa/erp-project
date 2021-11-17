@@ -200,6 +200,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
         {selectedReportType?.id && (
           <AssessmentReportFilters
             page={page}
+            setLoading={setLoading}
             setIsPreview={setIsPreview}
             setPage={setPage}
             pageSize={limit}
