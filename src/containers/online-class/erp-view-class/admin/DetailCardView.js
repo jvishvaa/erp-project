@@ -44,12 +44,12 @@ const JoinClass = (props) => {
     props.data ? props?.data?.is_attended : false
   );
 
-  const [isClassWork, setIsClassWork] = useState(props?.data?.is_no_classwork);
+  const [isClassWork, setIsClassWork] = useState(props?.data?.is_classwork);
 
 
   useEffect(() => {
     setIsAccept(props?.data?.is_accepted)
-    setIsClassWork(props?.data?.is_no_classwork)
+    setIsClassWork(props?.data?.is_classwork)
   }, [props])
 
   const history = useHistory();
