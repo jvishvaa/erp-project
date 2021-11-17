@@ -1,31 +1,31 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ReportTable from './report-table.js';
-import StudentDetails from './report-top-descriptions.js';
-import { Paper, makeStyles } from '@material-ui/core';
-import PersonalityTraitTable from './report-table-personality-trait';
-import ReportCardFooter from './report-card-footer';
-import ReportCardHeader from './report-card-header';
-import { getOverallRemark } from './transform-report-card-data';
+import { Paper, makeStyles, Box, IconButton } from '@material-ui/core';
+import ReactToPrint from 'react-to-print';
+import PrintIcon from '@material-ui/icons/Print';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    margin: '20px auto',
-    padding: '15px',
-    width: '95%',
+    '&.MuiPaper-rounded': {
+      borderRadius: '0px',
+    },
+    fontFamily: '"Inter", sans-serif !important',
   },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-  },
-  tr: {
-    padding: '2px',
-    border: '1px solid #dddddd',
+  printButton: {
+    position: 'sticky',
+    left: '93%',
+    bottom: '4%',
+    marginTop: '1%',
+    background: theme.palette.primary.main,
+    '& .MuiSvgIcon-root': {
+      color: '#fff',
+    },
   },
 }));
 
 const AssesmentReport = ({ reportCardData }) => {
   const classes = useStyles();
-
+  const componentRef = useRef();
   const {
     scholastic = {},
     co_scholastic: coScholastic = {},
@@ -33,24 +33,35 @@ const AssesmentReport = ({ reportCardData }) => {
     user_info: userInfo = {},
   } = reportCardData || {};
 
-  const { term_details: termDetails = {} } = scholastic || {};
-
   return (
     <>
       {reportCardData ? (
-        <Paper component={'div'} elevation={2} className={classes.root}>
-          <ReportCardHeader schoolData={schoolInfo} />
-          <StudentDetails userInfo={userInfo} />
-          <ReportTable TableType={'SCHOLASTIC'} Data={scholastic} />
-          <ReportTable TableType={'CO-SCHOLASTIC'} Data={coScholastic} />
-          <PersonalityTraitTable scholastic={scholastic} coScholastic={coScholastic} />
-          {/* <TableTypeFooter gradeScale={CO_SCHOLASTIC_GRADE_SCALE} /> */}
-          <ReportCardFooter
-            scholastic={scholastic}
-            coScholastic={coScholastic}
-            {...getOverallRemark(termDetails)}
+        <Box style={{ position: 'relative' }}>
+          <Paper
+            component={'div'}
+            ref={componentRef}
+            elevation={2}
+            className={classes.root}
+          >
+            <ReportTable
+              scholastic={scholastic}
+              coScholastic={coScholastic}
+              userInfo={userInfo}
+              schoolData={schoolInfo}
+            />
+          </Paper>
+          <ReactToPrint
+            trigger={() => (
+              <IconButton
+                className={classes.printButton}
+                title='Print front side of the report card'
+              >
+                <PrintIcon />
+              </IconButton>
+            )}
+            content={() => componentRef.current}
           />
-        </Paper>
+        </Box>
       ) : (
         'REPORT CARD NOT AVAILABLE'
       )}

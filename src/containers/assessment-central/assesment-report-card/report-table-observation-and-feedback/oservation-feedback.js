@@ -6,6 +6,7 @@ import {
   TableCell,
   TableContainer,
   TableHead,
+  TableBody,
   TableRow,
 } from '@material-ui/core';
 import { generateObservationTableHeaders } from '../transform-report-card-data';
@@ -14,22 +15,38 @@ const mappingList = ['CLASS TEACHER', 'SECTION COORDINATOR', 'PARENT', 'PRINCIPA
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    fontSize: 14,
+    fontSize: 11,
   },
   body: {
-    fontSize: 14,
+    fontSize: 11,
   },
 }))(TableCell);
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 700,
     '& .MuiTableCell-root': {
-      padding: '0px 4px',
-      whiteSpace: 'nowrap',
       border: '1px solid black',
       textAlign: 'left !important',
+      fontFamily: '"Inter", sans-serif',
+      padding:'5px',
     },
+    '&.MuiTable-root': {
+      width: '99.5%',
+      margin: '0.25% auto',
+    },
+  },
+  subjectName: {
+    padding: '10px',
+    fontWeight: 'bold !important',
+    backgroundColor: '#FDD6B3',
+  },
+  label: {
+    fontWeight: 'bold !important',
+    padding: '5px !important',
+    whiteSpace: 'nowrap',
+  },
+  value: {
+    padding: '8px 5px !important',
   },
 });
 
@@ -40,10 +57,14 @@ export default function AssesmentObservatioAndFeedbackReport({
 
   return (
     <TableContainer>
-      <Table className={classes.table} aria-label='customized table'>
+      <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <StyledTableCell colSpan={7} style={{ backgroundColor: '#E46C07' }}>
+            <StyledTableCell
+              colSpan={7}
+              // style={{ backgroundColor: '#E46C07' }}
+              style={{ backgroundColor: '#FDBF8E' }}
+            >
               <Box style={{ fontWeight: 'bolder', textAlign: 'center' }}>
                 OBSERVATION, FEEDBACK AND ADVISE
               </Box>
@@ -59,26 +80,28 @@ export default function AssesmentObservatioAndFeedbackReport({
             osr = '',
             air = '',
           }) => (
-            <TableHead>
+            <TableBody>
               <TableRow>
                 <StyledTableCell
                   align='right'
-                  style={{ backgroundColor: '#FABF90', width: '0%' }}
+                  className={classes.subjectName}
                   rowSpan={6}
                   colSpan={1}
                 >
-                  <Box style={{ transform: 'rotate(270deg)' }}>{subjectName}</Box>
+                  <Box style={{ padding: '10px', transform: 'rotate(270deg)' }}>
+                    {subjectName}
+                  </Box>
                 </StyledTableCell>
                 <StyledTableCell
                   align='right'
                   colSpan={5}
-                  style={{ backgroundColor: '#FABF90' }}
+                  style={{ backgroundColor: '#FDD6B3' }}
                 >
                   <Box
                     style={{
                       display: 'flex',
                       justifyContent: 'space-between',
-                      width: '90%',
+                      fontWeight: 'bold',
                     }}
                   >
                     <Box>MARKS - {marks}</Box>
@@ -89,17 +112,11 @@ export default function AssesmentObservatioAndFeedbackReport({
                 </StyledTableCell>
                 <StyledTableCell
                   align='right'
-                  style={{
-                    backgroundColor: '#FABF90',
-                    width: '0%',
-                  }}
+                  style={{ backgroundColor: '#FDD6B3', padding: '20px' }}
                   rowSpan={6}
                   colSpan={1}
                 >
-                  <Box style={{ transform: 'rotate(90deg)' }}>
-                    Teacher's Name <br />
-                    and Signature
-                  </Box>
+                  <Box style={{ transform: 'rotate(90deg)' }}></Box>
                 </StyledTableCell>
               </TableRow>
 
@@ -109,13 +126,13 @@ export default function AssesmentObservatioAndFeedbackReport({
                     <StyledTableCell
                       colSpan={2}
                       style={{
-                        width: '25%',
                         textTransform: 'capitalize',
                       }}
+                      className={classes.label}
                     >
                       {label}
                     </StyledTableCell>
-                    <StyledTableCell colSpan={3} style={{ width: '75%' }}>
+                    <StyledTableCell className={classes.value} colSpan={3}>
                       {value}
                     </StyledTableCell>
                   </TableRow>
@@ -124,19 +141,21 @@ export default function AssesmentObservatioAndFeedbackReport({
               <TableRow>
                 <StyledTableCell
                   scope='center'
-                  style={{ backgroundColor: '#E46C07', padding: '5px' }}
+                  style={{ backgroundColor: '#FDBF8E', padding: '5px' }}
                   colSpan={7}
-                >
-                  {' '}
-                </StyledTableCell>
+                />
               </TableRow>
-            </TableHead>
+            </TableBody>
           )
         )}
         <TableRow>
           <StyledTableCell
             scope='center'
-            style={{ backgroundColor: '#FABF90', padding: '5px', height: '20px' }}
+            style={{
+              backgroundColor: '#FABF90',
+              padding: '5px',
+              height: '20px',
+            }}
             colSpan={7}
           >
             <Box
@@ -145,7 +164,7 @@ export default function AssesmentObservatioAndFeedbackReport({
                 justifyContent: 'space-evenly',
                 alignItems: 'flex-end',
                 height: '80px',
-                fontSize: '14px',
+                fontSize: 11,
                 fontWeight: 'bold',
               }}
             >

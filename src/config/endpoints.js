@@ -431,6 +431,12 @@ export default {
     reportDownloadClassAverage: `/assessment/download-report-class-average/`,
     reportDownloadTopicStudentAverage: `/assessment/download-report-topic-student-average/`,
     reportCardData: '/assessment/generate-report/',
+    reportPdf:'/assessment/download-report-pdf/',
+    weeklyStudentReport:'/assessment/download-report-student-report/',
+    reportConsolidated: '/assessment/download-report-consolidate/',
+    individualQuizTeacherReport:'/assessment/download-report-individual-teacher/',
+    weeklyTeacherReportEachGrade:'/assessment/download-report-teacher-grade-section-wise/',
+
   },
   publish: {
     ebook: `erp_user/publication/`,
@@ -555,6 +561,7 @@ export default {
     getReportCardStatusList: '/assessment/get-report-publish-status/',
     updateReportCardStatus: '/assessment/update-report-publish-status/',
     personalityTraits: '/assessment/get-traits/',
+    studentReportGrade: '/assessment/get-student-grades/',
   },
   dashboard: {
     teacher: {

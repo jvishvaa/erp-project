@@ -16,6 +16,26 @@ const reportTypes = [
     id: 5,
     type: 'Report Card',
   },
+  {
+   id:6,
+   type:'Assessment Report', 
+  },
+  {
+    id:7,
+    type:'Weekly Student Report',
+  },
+  {
+    id:8,
+    type:'Consolidated Sample Report', 
+   },
+   {
+     id:9,
+     type:'Individual Quiz Report Teacher',
+   },
+   {
+     id:10,
+     type:'Weekly Teacher Report Each Grade',
+   }
 ];
 
 const ReportTypeFilter = ({

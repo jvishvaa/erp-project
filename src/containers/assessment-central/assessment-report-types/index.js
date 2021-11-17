@@ -200,6 +200,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
         {selectedReportType?.id && (
           <AssessmentReportFilters
             page={page}
+            setLoading={setLoading}
             setIsPreview={setIsPreview}
             setPage={setPage}
             pageSize={limit}
@@ -225,7 +226,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
                 tabValues={['Front', 'Back']}
               />
             </Box>
-            {renderReportCard()}
+            <Box style={{ margin: '20px auto', width: '95%' }}>{renderReportCard()}</Box>
           </>
         )}
 
