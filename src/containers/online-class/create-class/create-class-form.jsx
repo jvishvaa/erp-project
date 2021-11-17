@@ -544,7 +544,7 @@ const CreateClassForm = (props) => {
     request['is_zoom'] = toggleZoom ? '0' : '1';
     request['class_type'] = selectedClassType?.id;
     request['section_mapping_ids'] = sectionIds.join(',');
-    request['is_no_classwork'] = classWork ? 'True' : 'False';
+    request['is_no_classwork'] = classWork ? true : false;
 
     if (duration > 240) {
       setAlert('warning', 'Duration MAX Limit 240mins');
