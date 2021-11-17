@@ -27,7 +27,6 @@ const StudentReportCard = () => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-  const widerWidth = isMobile ? '98%' : '95%';
   const [loading, setLoading] = useState(false);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState('');
@@ -126,8 +125,7 @@ const StudentReportCard = () => {
           container
           spacing={isMobile ? 3 : 5}
           style={{
-            width: widerWidth,
-            margin: isMobile ? '0px 0px -10px 0px' : '-10px 0px 20px 8px',
+            width: '99%',
           }}
         >
           <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>

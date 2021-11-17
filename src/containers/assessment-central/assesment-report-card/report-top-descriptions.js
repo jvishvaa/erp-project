@@ -17,7 +17,7 @@ const StyledTableCell = withStyles((theme) => ({
 
 const useStyles = makeStyles({
   tableBodyCell: {
-    padding: '5px 2px !important',
+    padding: '5px 4px !important',
   },
   tableHead: {
     fontWeight: '600 !important',
