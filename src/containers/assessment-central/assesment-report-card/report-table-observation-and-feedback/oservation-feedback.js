@@ -28,7 +28,7 @@ const useStyles = makeStyles({
       border: '1px solid black',
       textAlign: 'left !important',
       fontFamily: '"Inter", sans-serif',
-      padding:'5px',
+      padding: '5px',
     },
     '&.MuiTable-root': {
       width: '99.5%',
@@ -102,6 +102,7 @@ export default function AssesmentObservatioAndFeedbackReport({
                       display: 'flex',
                       justifyContent: 'space-between',
                       fontWeight: 'bold',
+                      width: '95%',
                     }}
                   >
                     <Box>MARKS - {marks}</Box>

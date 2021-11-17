@@ -30,7 +30,7 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
     acad_session: acadSession = '2021-22',
     branch_cbse_affiliation_number: affiliationCode = '0000001211213',
   } = schoolData || {};
-  const [firstRowColspan = 1, secondRowColspan = 21, thirdRowColspan = 3] =
+  const [firstRowColspan = 2, secondRowColspan = 20, thirdRowColspan = 3] =
     generateHeaderColspan(scholastic, coScholastic);
 
   return (

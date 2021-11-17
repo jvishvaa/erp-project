@@ -9,7 +9,7 @@ const getSubjectWiseMarks = (marks, categoryKeys) => {
       key === id ? (arr[index]['value'] = marks[+key]) : null
     );
   });
-  const marksList = subjectWiseMarks.map(({ value = '' }) => value);
+  const marksList = subjectWiseMarks.map(({ value = '' }) => value || 'NA');
   return marksList;
 };
 
@@ -39,12 +39,12 @@ const generateCategoryRowLength = (scholastic, coScholastic) => {
       ? scholasticCategoryMapLength - coScholasticCategoryMapLength
       : coScholasticCategoryMapLength - scholasticCategoryMapLength;
 
-  return categoryRowLength;
+  return categoryRowLength || 1;
 };
 
 const generateHeaderColspan = (scholastic, coScholastic) => {
   const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
-  const colspan = [3, categoryRowLength * 3, 4];
+  const colspan = [2, categoryRowLength * 3 + 2, 3];
   return colspan;
 };
 
@@ -54,15 +54,16 @@ const generateReportTopDescription = (
   coScholastic = {}
 ) => {
   const {
-    name = '',
-    erp_id = '',
-    mothers_name = '',
-    grade = '',
-    fathers_name = '',
-    dob = '',
-    section = '',
+    name = 'NA',
+    erp_id = 'NA',
+    mothers_name = 'NA',
+    grade = 'NA',
+    fathers_name = 'NA',
+    dob = 'NA',
+    section = 'NA',
     profile_img,
-    attendance = '',
+    attendance = 'NA',
+    attendance_percentage = 'NA',
   } = userInfo || {};
   const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
   return [
@@ -70,29 +71,25 @@ const generateReportTopDescription = (
       header1: { value: "STUDENT'S NAME", colspan: 1 },
       value1: { value: name, colspan: categoryRowLength + 4 },
       header2: { value: 'ERP CODE', colspan: 2 },
-      value2: { value: erp_id, colspan: 3 },
-      emptyCells: { value: '', colspan: categoryRowLength + 1 },
+      value2: { value: erp_id, colspan: categoryRowLength + 4 },
     },
     {
       header1: { value: "MOTHER'S NAME", colspan: 1 },
       value1: { value: mothers_name, colspan: categoryRowLength + 4 },
       header2: { value: 'GRADE / DIV.', colspan: 2 },
-      value2: { value: grade, colspan: 3 },
-      emptyCells: { value: '', colspan: categoryRowLength + 1 },
+      value2: { value: grade, colspan: categoryRowLength + 4 },
     },
     {
       header1: { value: "FATHER'S NAME", colspan: 1 },
       value1: { value: fathers_name, colspan: categoryRowLength + 4 },
       header2: { value: 'DATE OF BIRTH', colspan: 2 },
-      value2: { value: dob, colspan: 3 },
-      emptyCells: { value: '', colspan: categoryRowLength + 1 },
+      value2: { value: dob, colspan: categoryRowLength + 4 },
     },
     {
       header1: { value: 'ATTENDANCE', colspan: 1 },
-      value1: { value: '', colspan: categoryRowLength + 4 },
+      value1: { value: attendance, colspan: categoryRowLength + 4 },
       header2: { value: '% ATTENDANCE', colspan: 2 },
-      value2: { value: attendance, colspan: 3 },
-      emptyCells: { value: '', colspan: categoryRowLength + 1 },
+      value2: { value: attendance_percentage, colspan: categoryRowLength + 4 },
     },
   ];
 };
@@ -149,14 +146,18 @@ const generateCategoryMap = (categoryMap = {}) => {
     0
   );
   //weight row data
-  const weightRow = [...transformedCategoryType.map(({ weight }) => weight), totalWeight];
+  const weightRow = [
+    ...transformedCategoryType.map(({ weight }) => weight || 'NA'),
+    totalWeight,
+  ];
 
   //category-assessmentType data
   const categoryAssessmentType = [
     ...transformedCategoryType.map(
       ({ category = '', assessmentType = [] }) =>
         `${category}-${
-          Array.isArray(assessmentType) ? assessmentType.join('/') : assessmentType
+          (Array.isArray(assessmentType) ? assessmentType.join('/') : assessmentType) ||
+          'NA'
         }`
     ),
   ].join(', ');
@@ -188,7 +189,6 @@ const generateTermDetails = (termDetails, categoryKeys) => {
 
   const semOneLength = semesterOneSubjectWiseMarks?.length || 0;
   const semTwoLength = semesterTwoSubjectWiseMarks?.length || 0;
-
   //To check if semester 2 is not present and if present the number of subjects are not equal
   if (semOneLength !== semTwoLength) {
     if (semOneLength > semTwoLength) {
@@ -223,7 +223,7 @@ const generateTermDetails = (termDetails, categoryKeys) => {
 const generateGradeScale = (gradeScale = {}) => {
   const gradeScaleList = Object.entries(gradeScale);
   const gradeScaleToDisplay = gradeScaleList
-    .map(([key, value]) => `${key} - ${value}`)
+    .map(([key, value = 'NA']) => `${key} - ${value || 'NA'}`)
     .join(', ');
   return `${gradeScaleList?.length} Point Grading Scale: ${gradeScaleToDisplay}`;
 };
@@ -232,28 +232,28 @@ const getTableHeaderRow = (tableType, categoryRowLength) => [
   {
     backgroundColor: '#fff',
     // backgroundColor: '#7abbbb',
-    backgroundColor:'#FDBF8E',
+    backgroundColor: '#FDBF8E',
     value: tableType,
     colspan: 1,
   },
   {
     backgroundColor: '#fff',
     // backgroundColor: 'rgb(252 179 120)',
-    backgroundColor:'#FDBF8E',
+    backgroundColor: '#FDBF8E',
     value: 'SEMESTER 1',
     colspan: 4 + categoryRowLength,
   },
   {
     backgroundColor: '#fff',
     // backgroundColor: 'rgb(252 179 120)',
-    backgroundColor:'#FDBF8E',
+    backgroundColor: '#FDBF8E',
     value: 'SEMESTER 2',
     colspan: 4 + categoryRowLength,
   },
   {
     backgroundColor: '#fff',
     // backgroundColor: 'rgb(170 226 226)',
-    backgroundColor:'#FDBF8E',
+    backgroundColor: '#FDBF8E',
     value: 'ANNUAL SCORE / GRADE',
     colspan: 4,
   },
