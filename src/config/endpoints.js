@@ -33,6 +33,7 @@ export default {
     singleStudentAttendance: '/academic/single_student_attendance_between_days/',
     markAttendance: '/academic/bulk_create_attendance/',
     students: '/academic/get_student_list/',
+    getHoliday: '/academic/holiday/'
   },
   appBar: {
     schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,
