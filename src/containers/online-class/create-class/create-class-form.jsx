@@ -56,6 +56,7 @@ const CreateClassForm = (props) => {
   const [branches, setBranches] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [classWork, setToggleClasswork] = useState(true);
+
   const {
     listGradesCreateClass,
     listCoursesCreateClass,
@@ -177,6 +178,7 @@ const CreateClassForm = (props) => {
       setSelectedCourse('');
       setTutorNotAvailableMessage(null);
       setToggle(false);
+      setToggleZoom(false);
       setSelectedDays([]);
       setOnlineClass((prevState) => ({
         ...prevState,
@@ -495,7 +497,7 @@ const CreateClassForm = (props) => {
       branchIds,
       subject,
       duration,
-      optionalZoom,
+      is_zoom,
       joinLimit,
       tutorEmail,
       gradeIds,
@@ -518,7 +520,6 @@ const CreateClassForm = (props) => {
     let request = {};
     request['user_id'] = userId;
     request['title'] = title;
-    request['optionalZoom'] = optionalZoom;
     request['duration'] = duration;
 
     var unique = (value, index, self) => {
@@ -543,7 +544,7 @@ const CreateClassForm = (props) => {
     request['is_zoom'] = toggleZoom ? '0' : '1';
     request['class_type'] = selectedClassType?.id;
     request['section_mapping_ids'] = sectionIds.join(',');
-    request['is_no_classwork'] = classWork ? 1 : 0;
+    request['is_no_classwork'] = classWork ? 'True' : 'False';
 
     if (duration > 240) {
       setAlert('warning', 'Duration MAX Limit 240mins');
@@ -616,6 +617,7 @@ const CreateClassForm = (props) => {
     setSelectedCourse('');
     setTutorNotAvailableMessage(null);
     setToggle(false);
+    setToggleZoom(false);
     setSelectedDays([]);
     setOnlineClass((prevState) => ({
       ...prevState,
@@ -653,7 +655,7 @@ const CreateClassForm = (props) => {
   };
 
   const checkTutorAvailability = async () => {
-    const { selectedDate, selectedTime, duration } = onlineClass;
+    const { selectedDate, selectedTime, duration, is_zoom } = onlineClass;
 
     const startTime = `${
       selectedDate.toString().includes(' ')
@@ -1128,14 +1130,14 @@ const CreateClassForm = (props) => {
                 }
               />
             </Grid>
-            {/* <Grid item md={1} xs={12} sm={2}>
+            <Grid item md={1} xs={12} sm={2}>
               <FormControlLabel
                 className='switchLabel'
                 control={
                   <Switch
-                    checked={toggleZoom}
+                    checked={toggleZoom == true ? 1 : 0}
                     onChange={() => setToggleZoom((toggleZoom) => !toggleZoom)}
-                    name='optionalZoom'
+                    name='is_zoom'
                     color='primary'
                   />
                 }
@@ -1145,7 +1147,7 @@ const CreateClassForm = (props) => {
                   </Typography>
                 }
               />
-            </Grid> */}
+            </Grid>
           </Grid>
           <hr className='horizontal-line' />
           <Grid
