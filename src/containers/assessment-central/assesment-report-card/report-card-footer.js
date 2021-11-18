@@ -14,7 +14,6 @@ const useStyles = makeStyles({
   tableHead: {
     fontWeight: '600 !important',
     padding: '5px 2px !important',
-    // backgroundColor: '#7abbbb',
   },
   tableCellCenter: {
     textAlign: 'center !important',
@@ -31,6 +30,7 @@ const useStyles = makeStyles({
     fontWeight: '600 !important',
     padding: '5px 2px !important',
     height: '30px',
+    textTransform: 'none !important',
   },
   footerRowTwoCellTwo: {
     textAlign: 'left !important',
@@ -41,6 +41,11 @@ const useStyles = makeStyles({
     padding: '5px 2px !important',
     fontWeight: '600 !important',
     height: '30px',
+  },
+  footerRowThree: {
+    padding: '5px 2px !important',
+    fontWeight: '600 !important',
+    textTransform: 'none !important',
   },
 });
 
@@ -55,7 +60,7 @@ const StyledTableCell = withStyles((theme) => ({
 
 const ReportCardFooter = ({ scholastic, coScholastic }) => {
   const classes = useStyles();
-  const [footerRowOne = [], footerRowTwo = []] = generateFooterData(
+  const [footerRowOne = [], footerRowTwo = [], footerRowThree = []] = generateFooterData(
     scholastic,
     coScholastic
   );
@@ -81,6 +86,13 @@ const ReportCardFooter = ({ scholastic, coScholastic }) => {
         <TableRow style={{ backgroundColor: '#FDBF8E' }}>
           {footerRowTwo.map(({ value = '', colspan = '' }) => (
             <StyledTableCell className={classes.footerRowThreeCell} colspan={colspan}>
+              {value}
+            </StyledTableCell>
+          ))}
+        </TableRow>
+        <TableRow style={{ backgroundColor: '#FDD6B3' }}>
+          {footerRowThree.map(({ value = '', colspan = '' }) => (
+            <StyledTableCell className={classes.footerRowThree} colspan={colspan}>
               {value}
             </StyledTableCell>
           ))}

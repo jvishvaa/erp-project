@@ -339,6 +339,7 @@ import OnlineClassStart from 'containers/sure-learning/trainer-driven-courses/on
 import TeacherReport from 'containers/sure-learning/sureLearning-courses/courses/selfDriven/teacher-report/TeacherReport';
 import InhouseCalendar from 'containers/sure-learning/calender/inHouseViewWebinar/inhouseWibenarCalender'
 import EachBlog from 'containers/sure-learning/Blogs-sureLearning/dialog-Blog';
+import Workshop from './components/Workshop';
 import LearningVideos from 'containers/sure-learning/MyNotes/learningAll';
 import EachLearn from 'containers/sure-learning/MyNotes/eachLearn';
 import WalletBulk from 'containers/Finance/src/components/Finance/NegativeBalanceAdjust/walletbulkupload';
@@ -819,6 +820,9 @@ function App({ alert, isMsAPI }) {
                           </Route>
                           <Route exact path='/online-class/teacher-view-class'>
                             {({ match }) => <TeacherBatchView match={match} />}
+                          </Route>
+                          <Route exact path='/online-class/workshop'>
+                            {({ match }) => <Workshop match={match} />}
                           </Route>
                           <Route exact path='/aol-reshuffle/:id?'>
                             {({ match }) => <Reshuffle match={match} />}
