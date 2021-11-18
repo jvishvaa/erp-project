@@ -269,9 +269,18 @@ const StudentRefer = () => {
       setAlert('warning', 'Please select branch');
       console.log(selectedBranch.length);
     } else {
-      // setAlert('warning', 'mil gya');
     }
   };
+
+  const handleRedirect = (res) => {
+    setAlert('success', 'Successfully Added');
+    history.push({
+      pathname: '/successrefer',
+      state: {
+      data: res.data.data
+      }
+    })
+  }
 
   const handleSubmit = () => {
     phonevalidate(phone);
@@ -295,14 +304,13 @@ const StudentRefer = () => {
             Authorization: `Bearer ${userDetails?.token}`,
           },
         })
-        .then((res) => {
-
-          console.log(res, 'pagination');
-          setAlert('success', 'Successfully Added');
-          history.push('/dashboard');
+        .then((results) => {
+          // setAlert('success', 'Successfully Added');
+          // history.push('/dashboard');
+          handleRedirect(results)
         })
         .catch((error) => {
-          setAlert('error', 'Already Registered!');
+          setAlert('error', 'Already Registered !');
         });
     } else {
       setAlert('error', 'All Fields are Mandatory');
