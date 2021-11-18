@@ -1,0 +1,102 @@
+#carasol-grid {
+  .leftPointer .MuiButton-label {
+    color: #349ceb;
+    font-weight: 800;
+    position: relative;
+    // top: 50px;
+    // left: -10px;
+  }
+  .rightPointer .MuiButton-label {
+    color: #349ceb;
+    font-weight: 800;
+    position: relative;
+    // top: 50px;
+    // right: 50px;
+  }
+  .leftPointer {
+    // background-color: red;
+    background-color: #fafafa;
+    //@at-root: relative;
+    // left: 70px;
+    max-height: 20px;
+    border-radius: 31px;
+    top: 110px;
+    left: 75px;
+    // z-index: 10000000 !important;
+  }
+  .rightPointer {
+    //background-color: red;
+    right: 70px;
+    position: relative;
+    // background-color: red;
+    max-height: 20px;
+    border-radius: 30px;
+    top: 110px;
+    background-color: #fafafa;
+
+    //position: relative;
+    // right: 50px;
+    // z-index:-1;
+  }
+  .rec-carousel {
+    width: 130%;
+  }
+  .rec-pagination {
+    display: none;
+  }
+}
+// @media (max-width: 960px) {
+//   #carasol-gridone {
+//     .leftPointer .MuiButton-label {
+//       color: #349ceb;
+//       font-weight: 800;
+//       position: relative;
+//       top: 80px;
+//       left: 90px;
+//     }
+//     .rightPointer .MuiButton-label {
+//       color: #349ceb;
+//       font-weight: 800;
+//       position: relative;
+//       top: 80px;
+//       right: 90px;
+//     }
+//     .leftPointer {
+//       background-color: #fafafa;
+//     }
+//     .rightPointer {
+//       background-color: #fafafa; //side pard gets hide
+//     }
+//   }
+// }
+@media (max-width: 600px) {
+  #carasol-gridone {
+    .leftPointer .MuiButton-label {
+      color: #349ceb;
+      font-weight: 800;
+      position: relative;
+      top: 80px;
+      left: 90px;
+    }
+    .rightPointer .MuiButton-label {
+      color: #349ceb;
+      font-weight: 800;
+      position: relative;
+      top: 80px;
+      right: 90px;
+    }
+  }
+  #carasol-grid {
+    .leftPointer {
+      background-color: #fafafa;
+      display: none;
+    }
+    .rightPointer {
+      background-color: #fafafa;
+      display: none;
+    }
+    .rec-carousel {
+      width: 110%;
+    }
+  }
+}

@@ -8,7 +8,7 @@ import { Grid } from '@material-ui/core';
 import { DashFilterWidget, ReportStatsWidget } from '../widgets';
 import { reportTypeConstants } from '../dashboard-constants';
 import { useDashboardContext } from '../dashboard-context';
-// import StudentRightDashboard from './../StudentDashboard/StudentRightDashboard/StudentRightDashboard';
+import StudentRightDashboard from './../StudentDashboard/StudentRightDashboard/StudentRightDashboard';
 
 const AdminDashboard = () => {
   const { attendance, classwork, homework, login, role, referral } = reportTypeConstants;
@@ -201,45 +201,48 @@ const AdminDashboard = () => {
 
   return (
     <Grid container spacing={2}>
-      {/* <Grid container xs={12} sm={7} md={7} spacing={2}> */}
-        <Grid item xs={12} md={4}>
-          <DashFilterWidget />
+      <Grid item xs={12} md={8}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <DashFilterWidget />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ReportStatsWidget
+              title='Attendance Report'
+              data={attendanceReport}
+              avatar={SpellcheckIcon}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ReportStatsWidget
+              title='Classwork Report'
+              data={classworkReport}
+              avatar={OndemandVideoIcon}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ReportStatsWidget
+              title='Homework Report'
+              data={homeworkReport}
+              avatar={MenuBookIcon}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ReportStatsWidget
+              title='Referral Report'
+              data={referralReport}
+              avatar={MenuBookIcon}
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={4}>
-          <ReportStatsWidget
-            title='Attendance Report'
-            data={attendanceReport}
-            avatar={SpellcheckIcon}
-          />
+      </Grid>
+      <Grid item xs={0} md={4}>
+        <Grid container spacing={2}>
+          <Grid item xs={0} sm={12} md={12}>
+            <StudentRightDashboard />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={4}>
-          <ReportStatsWidget
-            title='Classwork Report'
-            data={classworkReport}
-            avatar={OndemandVideoIcon}
-          />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <ReportStatsWidget
-            title='Homework Report'
-            data={homeworkReport}
-            avatar={MenuBookIcon}
-          />
-        </Grid>
-        <Grid item xs={12} md={4}>
-          <ReportStatsWidget
-            title='Referral Report'
-            data={referralReport}
-            avatar={MenuBookIcon}
-          />
-        </Grid>
-      {/* </Grid> */}
-      {/* <Grid container xs={0} md={4}>
-        <Grid item xs={0} sm={12} md={12}>
-          <StudentRightDashboard />
-        </Grid>
-      </Grid> */}
-
+      </Grid>
     </Grid>
   );
 };

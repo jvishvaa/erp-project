@@ -1,42 +1,20 @@
-import React, { useContext, useState, useEffect, Suspense } from 'react';
+import React from 'react';
+import Grid from '@material-ui/core/Grid';
+import StudentLeftDashboard from './StudentLeftDashboard/StudentLeftDashboard';
+import StudentRightDashboard from './StudentRightDashboard/StudentRightDashboard';
+import Quote from './StudentLeftDashboard/Quote';
 
-import {ReportStatsWidget} from "../widgets";
-import MenuBookIcon from '@material-ui/icons/MenuBook';
-import SpellcheckIcon from '@material-ui/icons/Spellcheck';
-import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
-import { Grid } from '@material-ui/core';
-
-const data = [
-  {
-    "detail": "sample single item-1",
-    "count" : 734
-  },
-  {
-    "detail": "sample single item-2",
-    "count" : 34
-  },
-  {
-    "detail": "sample single item-3",
-    "count" : 345
-  },
-  {
-    "detail": "sample single item-4",
-    "count" : 674
-  },
-  {
-    "detail": "sample single item-5",
-    "count" : 3
-  }
-]
-
-const StudentDashboard = () => {
+export default function studentDashboard() {
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} md={4} >
-          Student
+    <React.Fragment>
+      <Grid container spacing={1} >
+        <Grid item xs={12} sm={8} md={8}>
+          <StudentLeftDashboard />
+        </Grid>
+        <Grid item sm={4} md={4}>
+          <StudentRightDashboard />
+        </Grid>
       </Grid>
-    </Grid>
+    </React.Fragment >
   );
-};
-
-export default StudentDashboard;
+}

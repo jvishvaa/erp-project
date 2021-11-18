@@ -58,6 +58,7 @@ const Dashboard = () => {
     if (!isMsAPIKey) {
       return <DefaultDashboard />;
     }
+
     switch (userLevel) {
       case 1:
         return <AdminDashboard />;
