@@ -10,6 +10,7 @@ import { DashboardContext } from '../../containers/dashboard/dashboard-context/i
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import DateRangeIcon from '@material-ui/icons/DateRange';
+import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import {
   Accordion,
   AccordionDetails,
@@ -36,18 +37,29 @@ import {
   DialogContent,
   DialogActions,
 } from '@material-ui/core';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import moment from 'moment';
 import Pagination from '@material-ui/lab/Pagination';
 import CreateWorkshop from './CreateWorkshop';
 import WSAPI from './WSconfig/WSapi';
 import WSENDPOINT from './WSconfig/WSendpoint';
-// 'Sl No.'
-const column = ['Course', 'Workshop Date', 'Tutor', 'Actions'];
+import { handleDownloadExcel } from 'utility-functions';
+
+const column = [
+  'Title',
+  'Course',
+  'Workshop Date',
+  'Tutor',
+  'Attendance Count',
+  'Actions',
+  'Attendance Sheet',
+];
 const ConnectionPodFn = (props) => {
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   const {
     welcomeDetails: { userLevel = 1 },
   } = useContext(DashboardContext);
+  const { setAlert } = useContext(AlertNotificationContext);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState();
   const [loading, setLoading] = useState(false);
@@ -158,6 +170,21 @@ const ConnectionPodFn = (props) => {
       .catch(() => {});
   };
 
+  const fetchDownloadExcel = async (wsid) => {
+    WSAPI(
+      'get',
+      `${WSENDPOINT.WORKSHOP.downloadExcel}?workshop_id=${wsid}`,
+      null,
+      'arraybuffer'
+    )
+      .then((data) => {
+        handleDownloadExcel(data.data);
+      })
+      .catch(() => {
+        setAlert('error', 'File Not Found');
+      });
+  };
+
   const handleCourse = (e, value) => {
     if (value) {
       setSelectedCourse(value);
@@ -170,10 +197,7 @@ const ConnectionPodFn = (props) => {
   };
 
   const filterWorkShop = () => {
-    var paramPath = `?page_size=${limit}&page=${page}&class_status=${classStatus}`;
-    if (userLevel === 3) {
-      paramPath += `&role_differ=${userLevel}`;
-    }
+    var paramPath = `?page_size=${limit}&page=${page}&class_status=${classStatus}&role_differ=${userLevel}`;
     if (dateRangeTechPer[0] && dateRangeTechPer[1]) {
       const sd = dateRangeTechPer[0].format('YYYY-MM-DD');
       const ed = dateRangeTechPer[1].format('YYYY-MM-DD');
@@ -378,7 +402,7 @@ const ConnectionPodFn = (props) => {
                     </Typography>
                   </AccordionSummary>
                   <AccordionDetails>
-                    <Grid container spacing={3} alignItems='center'>
+                    <Grid container spacing={3}>
                       {userLevel !== 4 && (
                         <>
                           <Grid item md={3} sm={4} xs={12}>
@@ -544,9 +568,11 @@ const ConnectionPodFn = (props) => {
                           </Select>
                         </FormControl>
                       </Grid>
-                      <Grid item sm={3} xs={3}>
+                      <Grid item md={3} sm={3} xs={3}>
                         <Button
-                          className='filter-button'
+                          style={{ marginTop: '5px' }}
+                          variant='contained'
+                          color='primary'
                           onClick={() => filterWorkShop()}
                         >
                           Filter
@@ -563,8 +589,17 @@ const ConnectionPodFn = (props) => {
               <Table>
                 <TableHead>
                   <TableRow>
-                    {column &&
-                      column.map((eachColumn, index) => {
+                    {column
+                      .filter((val) => {
+                        if (
+                          userLevel === 4 &&
+                          (val === 'Attendance Count' || val === 'Attendance Sheet')
+                        ) {
+                          return false;
+                        }
+                        return true;
+                      })
+                      .map((eachColumn, index) => {
                         return <TableCell key={index}>{eachColumn}</TableCell>;
                       })}
                   </TableRow>
@@ -573,10 +608,11 @@ const ConnectionPodFn = (props) => {
                   {workShopData.map((wsdata, index) => {
                     return (
                       <TableRow key={wsdata.id}>
-                        {/* <TableCell></TableCell> */}
+                        <TableCell>{wsdata?.topic}</TableCell>
                         <TableCell>{wsdata?.course_name}</TableCell>
                         <TableCell>{getDatenTime(wsdata?.start_time)}</TableCell>
                         <TableCell>{wsdata?.tutor_id_name}</TableCell>
+                        {userLevel !== 4 && <TableCell>{wsdata?.attended}</TableCell>}
                         {wsdata?.is_cancel ? (
                           <TableCell>{wsdata?.cancel_remarks}</TableCell>
                         ) : (
@@ -615,6 +651,15 @@ const ConnectionPodFn = (props) => {
                                 Cancel
                               </Button>
                             )}
+                          </TableCell>
+                        )}
+                        {userLevel !== 4 && (
+                          <TableCell>
+                            <GetAppIcon
+                              color={'primary'}
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => fetchDownloadExcel(wsdata.id)}
+                            />
                           </TableCell>
                         )}
                       </TableRow>
