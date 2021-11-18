@@ -198,7 +198,7 @@ export default function CreateWorkshop(props) {
       .then((res) => {
         setLoading(false);
         if (res.data.status_code === 200) {
-          setAlert('success', 'Work Shop Created');
+          setAlert('success', 'Workshop created successfully');
           closeDialog();
         } else {
           setAlert('error', res?.data?.message);
