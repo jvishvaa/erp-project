@@ -24,5 +24,6 @@ export default {
     retrieveworkshop: `${getBaseUrl(1)}/workshop/retrieve-workshop-class/`,
     userWorkShop: `${getBaseUrl(1)}/workshop/create-user-workshop/`,
     cancleworkShop: `${getBaseUrl(1)}/workshop/workshop-cancel/`,
+    downloadExcel: `${getBaseUrl(1)}/workshop/attendence-excel/`,
   },
 };
