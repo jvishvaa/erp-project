@@ -18,6 +18,7 @@ import WSENDPOINT from './WSconfig/WSendpoint';
 export default function CreateWorkshop(props) {
   const { selectedYear, moduleId, setDialogOpen, setLoading } = props;
   const { setAlert } = useContext(AlertNotificationContext);
+  const [title, setTitle] = useState();
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -155,7 +156,10 @@ export default function CreateWorkshop(props) {
   };
 
   const createWorkshop = () => {
-    if (selectedBranch.length <= 0) {
+    if (!title) {
+      setAlert('error', 'Please Add Title');
+      return false;
+    } else if (selectedBranch.length <= 0) {
       setAlert('error', 'Please Select Branch');
       return false;
     } else if (selectedGrade.length <= 0) {
@@ -248,6 +252,18 @@ export default function CreateWorkshop(props) {
     <>
       <DialogTitle className='dialog-title'>Create Meeting</DialogTitle>
       <div className='meeting-form'>
+        <TextField
+          style={{ width: '100%' }}
+          size='small'
+          label='Title'
+          variant='outlined'
+          type='text'
+          value={title}
+          name='title'
+          onChange={(eve) => {
+            setTitle(eve.target.value);
+          }}
+        />
         <Autocomplete
           multiple
           fullWidth
@@ -332,7 +348,7 @@ export default function CreateWorkshop(props) {
             </Grid>
             <Grid item xs={4} sm={4} md={4}>
               <TextField
-                style={{ width: '100%' }}
+                style={{ width: '100%', marginTop: '3px' }}
                 size='small'
                 label='Duration (mins)'
                 variant='outlined'
