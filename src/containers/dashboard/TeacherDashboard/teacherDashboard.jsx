@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import WebAsset from '@material-ui/icons/WebAsset';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import SpellcheckIcon from '@material-ui/icons/Spellcheck';
@@ -13,15 +13,13 @@ import { useDashboardContext } from '../dashboard-context';
 const TeacherDashboard = () => {
   const { blogResponse, discussionResponse } = responseConverters;
   const { attendance, classwork, homework, blog, discussion } = reportTypeConstants;
-  const { branchIds = [], getReport = () => { }, reports, setReports, card } = useDashboardContext();
-
-  // const [reports, setReports] = useState({
-  //   attendanceReport: [],
-  //   classworkReport: [],
-  //   homeworkReport: [],
-  //   blogReport: [],
-  //   discussionReport: [],
-  // });
+  const {
+    branchIds = [],
+    getReport = () => {},
+    reports,
+    setReports,
+    card,
+  } = useDashboardContext();
 
   const dashboardData = {
     attendanceReport: [],
@@ -29,7 +27,7 @@ const TeacherDashboard = () => {
     homeworkReport: [],
     blogReport: [],
     discussionReport: [],
-  }
+  };
 
   const getAttendanceReport = (params) => {
     getReport(attendance, params)
@@ -42,7 +40,7 @@ const TeacherDashboard = () => {
           })
         );
         setReports((prev) => ({ ...prev, attendanceReport }));
-        dashboardData.attendanceReport = attendanceReport
+        dashboardData.attendanceReport = attendanceReport;
         sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
       .catch((error) => {
@@ -101,7 +99,7 @@ const TeacherDashboard = () => {
           info: value,
         }));
         setReports((prev) => ({ ...prev, blogReport }));
-        dashboardData.blogReport = blogReport
+        dashboardData.blogReport = blogReport;
         sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
       .catch((error) => {
@@ -136,16 +134,15 @@ const TeacherDashboard = () => {
     if (reports.refreshAll) {
       setReports((prev) => ({ ...prev, refreshAll: false }));
     }
-  }
+  };
 
   useEffect(() => {
     let data = sessionStorage.getItem('dashboardData');
     if (branchIds.length > 0) {
       if (data) {
-        setReports(JSON.parse(data))
-      }
-      else {
-        getAllReports()
+        setReports(JSON.parse(data));
+      } else {
+        getAllReports();
       }
     }
   }, [branchIds]);
@@ -166,13 +163,12 @@ const TeacherDashboard = () => {
           return getDiscussionReport(params);
       }
     }
-  }, [card])
+  }, [card]);
 
   useEffect(() => {
     const params = { branch_ids: branchIds.join(',') };
-    if (reports.refreshAll)
-      getAllReports(params)
-  }, [reports.refreshAll])
+    if (reports.refreshAll) getAllReports(params);
+  }, [reports.refreshAll]);
 
   const {
     attendanceReport = [],
@@ -188,31 +184,31 @@ const TeacherDashboard = () => {
         <Grid item xs={12} md={4}>
           <DashFilterWidget />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6}>
           <ReportStatsWidget
             title='Attendance Report'
             data={attendanceReport}
             avatar={SpellcheckIcon}
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6}>
           <ReportStatsWidget
             title='Classwork Report'
             data={classworkReport}
             avatar={OndemandVideoIcon}
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6}>
           <ReportStatsWidget
             title='Homework Report'
             data={homeworkReport}
             avatar={MenuBookIcon}
           />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6}>
           <ReportStatsWidget title='Blog Report' data={blogReport} avatar={WebAsset} />
         </Grid>
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6}>
           <ReportStatsWidget
             title='Discussion Forum Report'
             data={discussionReport}
