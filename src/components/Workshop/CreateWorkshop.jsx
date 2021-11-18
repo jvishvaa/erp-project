@@ -181,7 +181,7 @@ export default function CreateWorkshop(props) {
       grade: selectedGrade.map((obj) => obj.id),
       course: selectedCourse.id,
       course_name: selectedCourse.course_name,
-      topic: selectedCourse.course_name,
+      topic: title,
       start_time: `${moment(selectedDate).format('YYYY-MM-DD')} ${moment(
         selectedTime
       ).format('HH:mm:00')}`,
