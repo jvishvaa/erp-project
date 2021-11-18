@@ -8,19 +8,28 @@ import { Grid } from '@material-ui/core';
 import { DashFilterWidget, ReportStatsWidget } from '../widgets';
 import { reportTypeConstants, responseConverters } from '../dashboard-constants';
 import { useDashboardContext } from '../dashboard-context';
+// import StudentRightDashboard from './../StudentDashboard/StudentRightDashboard/StudentRightDashboard';
 
 const TeacherDashboard = () => {
   const { blogResponse, discussionResponse } = responseConverters;
   const { attendance, classwork, homework, blog, discussion } = reportTypeConstants;
-  const { branchIds = [], getReport = () => {} } = useDashboardContext();
+  const { branchIds = [], getReport = () => { }, reports, setReports, card } = useDashboardContext();
 
-  const [reports, setReports] = useState({
+  // const [reports, setReports] = useState({
+  //   attendanceReport: [],
+  //   classworkReport: [],
+  //   homeworkReport: [],
+  //   blogReport: [],
+  //   discussionReport: [],
+  // });
+
+  const dashboardData = {
     attendanceReport: [],
     classworkReport: [],
     homeworkReport: [],
     blogReport: [],
     discussionReport: [],
-  });
+  }
 
   const getAttendanceReport = (params) => {
     getReport(attendance, params)
@@ -33,6 +42,8 @@ const TeacherDashboard = () => {
           })
         );
         setReports((prev) => ({ ...prev, attendanceReport }));
+        dashboardData.attendanceReport = attendanceReport
+        sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
       .catch((error) => {
         console.log('error', error?.response?.data?.description);
@@ -50,6 +61,8 @@ const TeacherDashboard = () => {
           })
         );
         setReports((prev) => ({ ...prev, classworkReport }));
+        dashboardData.classworkReport = classworkReport;
+        sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
       .catch((error) => {
         console.log('error', error?.response?.data?.description);
@@ -72,6 +85,8 @@ const TeacherDashboard = () => {
           })
         );
         setReports((prev) => ({ ...prev, homeworkReport }));
+        dashboardData.homeworkReport = homeworkReport;
+        sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
       .catch((error) => {
         console.log('error', error?.response?.data?.description);
@@ -86,6 +101,8 @@ const TeacherDashboard = () => {
           info: value,
         }));
         setReports((prev) => ({ ...prev, blogReport }));
+        dashboardData.blogReport = blogReport
+        sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
       .catch((error) => {
         console.log('error', error?.response?.data?.description);
@@ -100,22 +117,62 @@ const TeacherDashboard = () => {
           info: value,
         }));
         setReports((prev) => ({ ...prev, discussionReport }));
+        dashboardData.discussionReport = discussionReport;
+        sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
       .catch((error) => {
         console.log('error', error?.response?.data?.description);
       });
   };
 
-  useEffect(() => {
+  const getAllReports = () => {
     const params = { branch_ids: branchIds.join(',') };
+    getAttendanceReport(params);
+    getClassworkReport(params);
+    getHomeworkReport(params);
+    getBlogReport(params);
+    getDiscussionReport(params);
+
+    if (reports.refreshAll) {
+      setReports((prev) => ({ ...prev, refreshAll: false }));
+    }
+  }
+
+  useEffect(() => {
+    let data = sessionStorage.getItem('dashboardData');
     if (branchIds.length > 0) {
-      getAttendanceReport(params);
-      getClassworkReport(params);
-      getHomeworkReport(params);
-      getBlogReport(params);
-      getDiscussionReport(params);
+      if (data) {
+        setReports(JSON.parse(data))
+      }
+      else {
+        getAllReports()
+      }
     }
   }, [branchIds]);
+
+  useEffect(() => {
+    const params = { branch_ids: branchIds.join(',') };
+    if (card) {
+      switch (card) {
+        case 'attendance':
+          return getAttendanceReport(params);
+        case 'classwork':
+          return getClassworkReport(params);
+        case 'homework':
+          return getHomeworkReport(params);
+        case 'blog':
+          return getBlogReport(params);
+        case 'discussion':
+          return getDiscussionReport(params);
+      }
+    }
+  }, [card])
+
+  useEffect(() => {
+    const params = { branch_ids: branchIds.join(',') };
+    if (reports.refreshAll)
+      getAllReports(params)
+  }, [reports.refreshAll])
 
   const {
     attendanceReport = [],
@@ -127,40 +184,49 @@ const TeacherDashboard = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={4}>
-        <DashFilterWidget />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <ReportStatsWidget
-          title='Attendance Report'
-          data={attendanceReport}
-          avatar={SpellcheckIcon}
-        />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <ReportStatsWidget
-          title='Classwork Report'
-          data={classworkReport}
-          avatar={OndemandVideoIcon}
-        />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <ReportStatsWidget
-          title='Homework Report'
-          data={homeworkReport}
-          avatar={MenuBookIcon}
-        />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <ReportStatsWidget title='Blog Report' data={blogReport} avatar={WebAsset} />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <ReportStatsWidget
-          title='Discussion Forum Report'
-          data={discussionReport}
-          avatar={ForumIcon}
-        />
-      </Grid>
+      {/* <Grid container xs={12} md={4}> */}
+        <Grid item xs={12} md={4}>
+          <DashFilterWidget />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <ReportStatsWidget
+            title='Attendance Report'
+            data={attendanceReport}
+            avatar={SpellcheckIcon}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <ReportStatsWidget
+            title='Classwork Report'
+            data={classworkReport}
+            avatar={OndemandVideoIcon}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <ReportStatsWidget
+            title='Homework Report'
+            data={homeworkReport}
+            avatar={MenuBookIcon}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <ReportStatsWidget title='Blog Report' data={blogReport} avatar={WebAsset} />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <ReportStatsWidget
+            title='Discussion Forum Report'
+            data={discussionReport}
+            avatar={ForumIcon}
+          />
+        </Grid>
+      {/* </Grid> */}
+
+      {/* <Grid container md={4}>
+        <Grid item xs={0} sm={12} md={12}>
+          <StudentRightDashboard />
+        </Grid>
+      </Grid> */}
+
     </Grid>
   );
 };
