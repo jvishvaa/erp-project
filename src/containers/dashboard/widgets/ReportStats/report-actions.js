@@ -7,7 +7,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { useDashboardContext } from '../../dashboard-context';
 // import SyncIcon from '@mui/icons-material/Sync';  
-import SyncIcon from '@mui/icons-material/Refresh';  
+import SyncIcon from '@material-ui/icons/Refresh';
 import '../../WelcomeComponent/Styles.css'
 
 const reportTypes = [
