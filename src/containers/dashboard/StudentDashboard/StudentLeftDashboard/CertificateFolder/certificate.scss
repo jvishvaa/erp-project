@@ -1,0 +1,112 @@
+#carasol-gridone {
+  .leftPointer .MuiButton-label {
+    color: #349ceb;
+    font-weight: 800;
+    position: relative;
+    // top: 64px;
+    // left: 50px;
+  }
+  .rightPointer .MuiButton-label {
+    color: #349ceb;
+    font-weight: 800;
+    position: relative;
+    // top: 64px;
+    // right: 50px;
+  }
+  .leftPointer {
+    // background-color: #fafafa; //side pard gets hide
+    // width: 2px;
+    // background-color: orange;
+    // background-color: red;
+    background-color: #fafafa;
+    //@at-root: relative;
+    // left: 70px;
+    max-height: 21px;
+    border-radius: 31px;
+    top: 135px;
+    left: 75px;
+    // z-index: 10000000 !important;
+  }
+  .rightPointer {
+    // background-color: #fafafa; //side pard gets hide
+    // background-color: orange;
+    right: 70px;
+    position: relative;
+    // background-color: red;
+    background-color: #fafafa;
+    max-height: 21px;
+    border-radius: 30px;
+    top: 135px;
+  }
+
+  .rec-carousel {
+    width: 130%;
+  }
+  .sc-eCImPb jMNKZk rec rec-carousel {
+    position: 'relative';
+    right: 20px;
+  }
+  .rec-pagination {
+    display: none;
+  }
+}
+// @media (max-width: 960px) {
+//   #carasol-gridone {
+//     .leftPointer .MuiButton-label{
+//       color: #349CEB;
+//       font-weight:800;
+//       position: relative;
+//       top:80px;
+//       left: 80px;
+//     }
+//     .rightPointer .MuiButton-label{
+//       color: #349CEB;
+//       font-weight:800;
+
+//       position: relative;
+//       top:80px;
+//       right: 80px;
+//     }
+//     .leftPointer {
+//       background-color: #fafafa;//side pard gets hide
+//       width:2px;
+//       // position:absolute;
+//       // z-index: -100;
+//     }
+//     .rightPointer {
+//       background-color: #fafafa;//side pard gets hide
+
+//     }
+//   }
+// }
+@media (max-width: 600px) {
+  #carasol-gridone {
+    .leftPointer .MuiButton-label {
+      color: #349ceb;
+      font-weight: 800;
+      position: relative;
+      top: 80px;
+      left: 80px;
+    }
+    .rightPointer .MuiButton-label {
+      color: #349ceb;
+      font-weight: 800;
+
+      position: relative;
+      top: 80px;
+      right: 80px;
+    }
+    .leftPointer {
+      background-color: #fafafa;
+      width: 2px;
+      display: none;
+    }
+    .rightPointer {
+      background-color: #fafafa;
+      display: none;
+    }
+    .rec-carousel {
+      width: 110%;
+    }
+  }
+}
