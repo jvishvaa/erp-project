@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import SpellcheckIcon from '@material-ui/icons/Spellcheck';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import { Grid } from '@material-ui/core';
 import { DashFilterWidget, ReportStatsWidget } from '../widgets';
@@ -12,16 +12,13 @@ import StudentRightDashboard from './../StudentDashboard/StudentRightDashboard/S
 
 const AdminDashboard = () => {
   const { attendance, classwork, homework, login, role, referral } = reportTypeConstants;
-  const { branchIds = [], getReport = () => { }, reports, setReports, card } = useDashboardContext();
-
-  // const [reports, setReports] = useState({
-  //   attendanceReport: [],
-  //   classworkReport: [],
-  //   homeworkReport: [],
-  //   loginReport: [],
-  //   roleReport: [],
-  //   referralReport: [],
-  // });
+  const {
+    branchIds = [],
+    getReport = () => { },
+    reports,
+    setReports,
+    card,
+  } = useDashboardContext();
 
   const dashboardData = {
     attendanceReport: [],
@@ -29,8 +26,8 @@ const AdminDashboard = () => {
     homeworkReport: [],
     loginReport: [],
     roleReport: [],
-    referralReport: []
-  }
+    referralReport: [],
+  };
   const getAttendanceReport = (params) => {
     getReport(attendance, params)
       .then((response) => {
@@ -42,7 +39,7 @@ const AdminDashboard = () => {
           })
         );
         setReports((prev) => ({ ...prev, attendanceReport }));
-        dashboardData.attendanceReport = attendanceReport
+        dashboardData.attendanceReport = attendanceReport;
         sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
       .catch(() => { });
@@ -126,9 +123,11 @@ const AdminDashboard = () => {
   const getReferralReport = (params) => {
     getReport(referral, params)
       .then((response) => {
-        const referralReport = response.map(
-          ({ branch_name = ' ', total_referals = '' }) => ({
-            detail: branch_name,
+        const totalReferral = response.pop();
+        const remainingResponse = response;
+        const referralReport = [totalReferral, ...remainingResponse].map(
+          ({ branch_name = '', total_referals = '' }) => ({
+            detail: branch_name === 'total_referals' ? 'Total Referrals' : branch_name,
             info: total_referals,
           })
         );
@@ -150,15 +149,14 @@ const AdminDashboard = () => {
     if (reports.refreshAll) {
       setReports((prev) => ({ ...prev, refreshAll: false }));
     }
-  }
+  };
 
   useEffect(() => {
     let data = sessionStorage.getItem('dashboardData');
     if (branchIds.length > 0) {
       if (data) {
-        setReports(JSON.parse(data))
-      }
-      else {
+        setReports(JSON.parse(data));
+      } else {
         getAllReports();
       }
     }
@@ -179,16 +177,15 @@ const AdminDashboard = () => {
         case 'role':
           return getRoleReport(params);
         case 'referral':
-          return getReferralReport(params)
+          return getReferralReport(params);
       }
     }
-  }, [card])
+  }, [card]);
 
   useEffect(() => {
     const params = { branch_ids: branchIds.join(',') };
-    if (reports.refreshAll)
-      getAllReports(params)
-  }, [reports.refreshAll])
+    if (reports.refreshAll) getAllReports(params);
+  }, [reports.refreshAll]);
 
   const {
     attendanceReport = [],
@@ -225,6 +222,13 @@ const AdminDashboard = () => {
               title='Homework Report'
               data={homeworkReport}
               avatar={MenuBookIcon}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ReportStatsWidget
+              title='Role Report'
+              data={roleReport}
+              avatar={AssignmentIndIcon}
             />
           </Grid>
           <Grid item xs={12} md={6}>
