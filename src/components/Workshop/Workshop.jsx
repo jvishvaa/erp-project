@@ -248,15 +248,15 @@ const ConnectionPodFn = (props) => {
     if (joinStatus !== 'Host' && joinStatus !== 'Join') {
       return false;
     }
-    const result = await WSAPI('post', WSENDPOINT.WORKSHOP.userWorkShop, {
-      workshop_id: id,
-    });
-    if (result.data.status_code === 200) {
-      if (joinStatus == 'Host') {
-        hostUrl && window.open(hostUrl);
-      } else {
+    if (userLevel === 4) {
+      const result = await WSAPI('post', WSENDPOINT.WORKSHOP.userWorkShop, {
+        workshop_id: id,
+      });
+      if (result.data.status_code === 200) {
         joinUrl && window.open(joinUrl);
       }
+    } else {
+      hostUrl && window.open(hostUrl);
     }
   };
 
