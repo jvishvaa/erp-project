@@ -329,7 +329,7 @@ const ConnectionPodFn = (props) => {
       const ids = grades.map((obj) => obj.grade_id);
       setSelGradeId(ids);
     }
-  }, []);
+  }, [moduleId]);
 
   useEffect(() => {
     if (selGradeId.length) {
