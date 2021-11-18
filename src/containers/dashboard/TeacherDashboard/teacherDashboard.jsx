@@ -8,14 +8,14 @@ import { Grid } from '@material-ui/core';
 import { DashFilterWidget, ReportStatsWidget } from '../widgets';
 import { reportTypeConstants, responseConverters } from '../dashboard-constants';
 import { useDashboardContext } from '../dashboard-context';
-// import StudentRightDashboard from './../StudentDashboard/StudentRightDashboard/StudentRightDashboard';
+import StudentRightDashboard from './../StudentDashboard/StudentRightDashboard/StudentRightDashboard';
 
 const TeacherDashboard = () => {
   const { blogResponse, discussionResponse } = responseConverters;
   const { attendance, classwork, homework, blog, discussion } = reportTypeConstants;
   const {
     branchIds = [],
-    getReport = () => {},
+    getReport = () => { },
     reports,
     setReports,
     card,
@@ -179,52 +179,57 @@ const TeacherDashboard = () => {
   } = reports || {};
 
   return (
-    <Grid container spacing={2}>
-      {/* <Grid container xs={12} md={4}> */}
-        <Grid item xs={12} md={4}>
-          <DashFilterWidget />
+    <Grid container spacing={1}>
+      <Grid item xs={12} sm={8} md={8}>
+        <Grid container spacing={1} >
+          <Grid item xs={12} md={6}>
+            <DashFilterWidget />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ReportStatsWidget
+              title='Attendance Report'
+              data={attendanceReport}
+              avatar={SpellcheckIcon}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ReportStatsWidget
+              title='Classwork Report'
+              data={classworkReport}
+              avatar={OndemandVideoIcon}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ReportStatsWidget
+              title='Homework Report'
+              data={homeworkReport}
+              avatar={MenuBookIcon}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ReportStatsWidget
+              title='Blog Report'
+              data={blogReport}
+              avatar={WebAsset} />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <ReportStatsWidget
+              title='Discussion Forum Report'
+              data={discussionReport}
+              avatar={ForumIcon}
+            />
+          </Grid>
         </Grid>
-        <Grid item xs={12} md={6}>
-          <ReportStatsWidget
-            title='Attendance Report'
-            data={attendanceReport}
-            avatar={SpellcheckIcon}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <ReportStatsWidget
-            title='Classwork Report'
-            data={classworkReport}
-            avatar={OndemandVideoIcon}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <ReportStatsWidget
-            title='Homework Report'
-            data={homeworkReport}
-            avatar={MenuBookIcon}
-          />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <ReportStatsWidget title='Blog Report' data={blogReport} avatar={WebAsset} />
-        </Grid>
-        <Grid item xs={12} md={6}>
-          <ReportStatsWidget
-            title='Discussion Forum Report'
-            data={discussionReport}
-            avatar={ForumIcon}
-          />
-        </Grid>
-      {/* </Grid> */}
+      </Grid>
 
-      {/* <Grid container md={4}>
-        <Grid item xs={0} sm={12} md={12}>
-          <StudentRightDashboard />
+      <Grid item xs={0} md={4}>
+        <Grid container>
+          <Grid item xs={0} sm={8} md={8}>
+            <StudentRightDashboard />
+          </Grid>
         </Grid>
-      </Grid> */}
-
+      </Grid>
     </Grid>
   );
 };
-
 export default TeacherDashboard;
