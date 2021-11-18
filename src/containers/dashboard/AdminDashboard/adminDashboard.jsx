@@ -202,24 +202,24 @@ const AdminDashboard = () => {
   return (
     <Grid container spacing={2}>
       {/* <Grid container xs={12} sm={7} md={7} spacing={2}> */}
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <DashFilterWidget />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <ReportStatsWidget
             title='Attendance Report'
             data={attendanceReport}
             avatar={SpellcheckIcon}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <ReportStatsWidget
             title='Classwork Report'
             data={classworkReport}
             avatar={OndemandVideoIcon}
           />
         </Grid>
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={4}>
           <ReportStatsWidget
             title='Homework Report'
             data={homeworkReport}
