@@ -345,6 +345,7 @@ import WalletBulk from 'containers/Finance/src/components/Finance/NegativeBalanc
 import  ExtraAmtAdjust  from 'containers/Finance/src/components/Finance/NegativeBalanceAdjust/negativeBalanceAdjust';
 
 import HolidayMark from 'containers/attendance/holidaymark';
+import ReferSuccess from 'containers/studentRefferal/referSuccess';
 
 import StudentRefer from 'containers/studentRefferal/referForm';
 
@@ -1633,6 +1634,10 @@ function App({ alert, isMsAPI }) {
 
                           <Route path='/studentrefer'>
                             {({ match }) => <StudentRefer match={match} />}
+                          </Route> 
+
+                          <Route path='/successrefer'>
+                            {({ match }) => <ReferSuccess match={match} />}
                           </Route> 
 
                           <Route path='/holidaymarking'>
