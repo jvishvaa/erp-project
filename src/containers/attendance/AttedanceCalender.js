@@ -1643,7 +1643,7 @@ const AttedanceCalender = () => {
         {/* </Grid> */}
         {/* <Grid item md={1} className="hello" ></Grid> */}
         {/* <Grid item md={2} className='topGrid'> */}
-        <div className='eventWhole'>
+        {/* <div className='eventWhole'>
           <div className='startDate'> To {moment(endDate).format('DD-MM-YYYY')}</div>
           <Paper
             elevation={3}
@@ -1665,7 +1665,6 @@ const AttedanceCalender = () => {
                     variant='contained'
                     style={{ color: 'white' }}
                   >
-                    {/* ADD EVENT */}
                     <span className={classes.contentData} id='event-text'>
                       Add Event
                     </span>
@@ -1697,16 +1696,13 @@ const AttedanceCalender = () => {
                         className={[classes.contentsmall, classes.root]}
                         id='eventData'
                       >
-                        {/* {data.start_time.slice(0, 10)} */}
                         {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
                         <br />
                         <Grid container direction='row' className='eventDetailsfirst'>
                           <div className='flagBg'>
                             <img src={flag} className='flagImg' />
                           </div>
-                          {/* <OutlinedFlagRoundedIcon
-                          style={{ background: '#78B5F3', borderRadius: '30px' }}
-                        /> */}
+                     
                           <Typography className='eventNameData'>
                             {' '}
                             {data.event_name}{' '}
@@ -1738,12 +1734,12 @@ const AttedanceCalender = () => {
               </div>
             )}
           </Paper>
-        </div>
+        </div> */}
 
         {/* holiday marking  */}
 
         <div className='eventWhole'>
-          <div className='startDate' style={{minHeight: '15px'}} > </div>
+        <div className='startDate'> To {moment(endDate).format('DD-MM-YYYY')}</div>
           <Paper
             elevation={3}
             className={[classes.root, classes.paperSize]}

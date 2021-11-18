@@ -612,16 +612,18 @@ class Kit extends Component {
   };
 
   langThirdChangeHandler = (e) => {
+    if(this.state.secondLang?.id){
     if (e.value == this.state.secondLang.id) {
       this.props.alert.warning('Select another Langauge');
-    } else {
-      this.setState({
-        thirdLang: {
-          id: e.value,
-          subject_name: e.label,
-        },
-      });
-    }
+    } 
+  } else {
+    this.setState({
+      thirdLang: {
+        id: e.value,
+        subject_name: e.label,
+      },
+    });
+  }
   };
 
   deleteModalCloseHandler = () => {
@@ -711,12 +713,12 @@ class Kit extends Component {
       this.props.alert.warning('Please Fill Select all Mandatory Fields');
       return;
     }
-    if(!isUniform && !isCommon && !isDelivery){
-     if(!secondLang || !thirdLang){
-        this.props.alert.warning('Please Fill Select all Mandatory Fields');
-        return;
-      }
-    }
+    // if(!isUniform && !isCommon && !isDelivery){
+    //  if(!secondLang || !thirdLang){
+    //     this.props.alert.warning('Please Fill Select all Mandatory Fields');
+    //     return;
+    //   }
+    // }
     if (!itemsId.length && !commonKitIds.length) {
       this.props.alert.warning('Please Select at least an item or a kit');
       return;
