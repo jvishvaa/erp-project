@@ -7,6 +7,19 @@ export const DashboardContext = React.createContext();
 
 export function DashboardContextProvider({ children }) {
   const [branchIds, setBranchIds] = useState([]);
+  const [reports, setReports] = useState({
+    attendanceReport: [],
+    classworkReport: [],
+    homeworkReport: [],
+    blogReport: [],
+    discussionReport: [],
+
+    loginReport: [],
+    roleReport: [],
+    referralReport: [],
+    refreshAll: false,
+  });
+  const [card, setCard] = useState();
   const {
     apiGateway: { msReportsUrl },
   } = ENVCONFIG || {};
@@ -29,6 +42,7 @@ export function DashboardContextProvider({ children }) {
   const headers = {
     'X-DTS-HOST': window.location.host,
     // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+    // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
     // 'X-DTS-HOST': 'dev.mit.letseduvate.com',
     Authorization: `Bearer ${TOKEN}`,
   };
@@ -66,6 +80,10 @@ export function DashboardContextProvider({ children }) {
         getReport,
         downloadReport,
         welcomeDetails,
+        reports,
+        setReports,
+        card,
+        setCard,
       }}
     >
       {children}

@@ -8,20 +8,29 @@ import { Grid } from '@material-ui/core';
 import { DashFilterWidget, ReportStatsWidget } from '../widgets';
 import { reportTypeConstants } from '../dashboard-constants';
 import { useDashboardContext } from '../dashboard-context';
+// import StudentRightDashboard from './../StudentDashboard/StudentRightDashboard/StudentRightDashboard';
 
 const AdminDashboard = () => {
   const { attendance, classwork, homework, login, role, referral } = reportTypeConstants;
-  const { branchIds = [], getReport = () => {} } = useDashboardContext();
+  const { branchIds = [], getReport = () => { }, reports, setReports, card } = useDashboardContext();
 
-  const [reports, setReports] = useState({
+  // const [reports, setReports] = useState({
+  //   attendanceReport: [],
+  //   classworkReport: [],
+  //   homeworkReport: [],
+  //   loginReport: [],
+  //   roleReport: [],
+  //   referralReport: [],
+  // });
+
+  const dashboardData = {
     attendanceReport: [],
     classworkReport: [],
     homeworkReport: [],
     loginReport: [],
     roleReport: [],
-    referralReport: [],
-  });
-
+    referralReport: []
+  }
   const getAttendanceReport = (params) => {
     getReport(attendance, params)
       .then((response) => {
@@ -33,8 +42,10 @@ const AdminDashboard = () => {
           })
         );
         setReports((prev) => ({ ...prev, attendanceReport }));
+        dashboardData.attendanceReport = attendanceReport
+        sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   const getClassworkReport = (params) => {
@@ -48,8 +59,10 @@ const AdminDashboard = () => {
           })
         );
         setReports((prev) => ({ ...prev, classworkReport }));
+        dashboardData.classworkReport = classworkReport;
+        sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   const getHomeworkReport = (params) => {
@@ -68,8 +81,10 @@ const AdminDashboard = () => {
           })
         );
         setReports((prev) => ({ ...prev, homeworkReport }));
+        dashboardData.homeworkReport = homeworkReport;
+        sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   const getLoginReport = (params) => {
@@ -88,8 +103,10 @@ const AdminDashboard = () => {
           })
         );
         setReports((prev) => ({ ...prev, loginReport }));
+        dashboardData.loginReport = loginReport;
+        sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   const getRoleReport = (params) => {
@@ -100,8 +117,10 @@ const AdminDashboard = () => {
           info: count,
         }));
         setReports((prev) => ({ ...prev, roleReport }));
+        dashboardData.roleReport = roleReport;
+        sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   const getReferralReport = (params) => {
@@ -114,24 +133,62 @@ const AdminDashboard = () => {
           })
         );
         setReports((prev) => ({ ...prev, referralReport }));
+        dashboardData.referralReport = referralReport;
+        sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
-  useEffect(() => {
+  const getAllReports = () => {
     const params = { branch_ids: branchIds.join(',') };
+    getAttendanceReport(params);
+    getClassworkReport(params);
+    getHomeworkReport(params);
+    getLoginReport(params);
+    getRoleReport(params);
+    getReferralReport(params);
+    if (reports.refreshAll) {
+      setReports((prev) => ({ ...prev, refreshAll: false }));
+    }
+  }
+
+  useEffect(() => {
+    let data = sessionStorage.getItem('dashboardData');
     if (branchIds.length > 0) {
-      getAttendanceReport(params);
-      getClassworkReport(params);
-      getHomeworkReport(params);
+      if (data) {
+        setReports(JSON.parse(data))
+      }
+      else {
+        getAllReports();
+      }
     }
   }, [branchIds]);
 
   useEffect(() => {
-    getLoginReport();
-    getRoleReport();
-    getReferralReport();
-  }, []);
+    const params = { branch_ids: branchIds.join(',') };
+    if (card) {
+      switch (card) {
+        case 'attendance':
+          return getAttendanceReport(params);
+        case 'classwork':
+          return getClassworkReport(params);
+        case 'homework':
+          return getHomeworkReport(params);
+        case 'login':
+          return getLoginReport(params);
+        case 'role':
+          return getRoleReport(params);
+        case 'referral':
+          return getReferralReport(params)
+      }
+    }
+  }, [card])
+
+  useEffect(() => {
+    const params = { branch_ids: branchIds.join(',') };
+    if (reports.refreshAll)
+      getAllReports(params)
+  }, [reports.refreshAll])
 
   const {
     attendanceReport = [],
@@ -144,51 +201,45 @@ const AdminDashboard = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid item xs={12} md={4}>
-        <DashFilterWidget />
-      </Grid>
-      {/* <Grid item xs={12} md={4}>
-        <ReportStatsWidget
-          title='Login Report'
-          data={loginReport}
-          avatar={LockOutlinedIcon}
-        />
+      {/* <Grid container xs={12} sm={7} md={7} spacing={2}> */}
+        <Grid item xs={12} md={6}>
+          <DashFilterWidget />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <ReportStatsWidget
+            title='Attendance Report'
+            data={attendanceReport}
+            avatar={SpellcheckIcon}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <ReportStatsWidget
+            title='Classwork Report'
+            data={classworkReport}
+            avatar={OndemandVideoIcon}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <ReportStatsWidget
+            title='Homework Report'
+            data={homeworkReport}
+            avatar={MenuBookIcon}
+          />
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <ReportStatsWidget
+            title='Referral Report'
+            data={referralReport}
+            avatar={MenuBookIcon}
+          />
+        </Grid>
+      {/* </Grid> */}
+      {/* <Grid container xs={0} md={4}>
+        <Grid item xs={0} sm={12} md={12}>
+          <StudentRightDashboard />
+        </Grid>
       </Grid> */}
-      <Grid item xs={12} md={4}>
-        <ReportStatsWidget
-          title='Role Report'
-          data={roleReport}
-          avatar={AssignmentIndIcon}
-        />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <ReportStatsWidget
-          title='Attendance Report'
-          data={attendanceReport}
-          avatar={SpellcheckIcon}
-        />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <ReportStatsWidget
-          title='Classwork Report'
-          data={classworkReport}
-          avatar={OndemandVideoIcon}
-        />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <ReportStatsWidget
-          title='Homework Report'
-          data={homeworkReport}
-          avatar={MenuBookIcon}
-        />
-      </Grid>
-      <Grid item xs={12} md={4}>
-        <ReportStatsWidget
-          title='Referral Report'
-          data={referralReport}
-          avatar={MenuBookIcon}
-        />
-      </Grid>
+
     </Grid>
   );
 };

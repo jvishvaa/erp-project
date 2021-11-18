@@ -6,6 +6,9 @@ import MoreVert from '@material-ui/icons/MoreVert';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { useDashboardContext } from '../../dashboard-context';
+// import SyncIcon from '@mui/icons-material/Sync';  
+import SyncIcon from '@mui/icons-material/Refresh';  
+import '../../WelcomeComponent/Styles.css'
 
 const reportTypes = [
   { type: 'Daily Report', days: '1' },
@@ -14,7 +17,7 @@ const reportTypes = [
 ];
 
 const ReportAction = ({ title }) => {
-  const { branchIds = [], downloadReport = () => {} } = useDashboardContext();
+  const { branchIds = [], downloadReport = () => {}, getReport = () => {}, setCard, setReports } = useDashboardContext();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -25,6 +28,11 @@ const ReportAction = ({ title }) => {
 
   const handleClose = (event) => {
     setAnchorEl(null);
+  };
+
+  const getAttendanceReport = () => {    
+  const decisonParam = title.toLowerCase().split(' ')[0];
+  setCard(decisonParam);
   };
 
   const downloadExcelFile = (excelData) => {
@@ -64,7 +72,8 @@ const ReportAction = ({ title }) => {
   };
 
   return (
-    <div>
+    <div style={{display:'flex',justifyContent:'center',alignItems:'center'}}>
+      <SyncIcon id="refreshButton1"  style={{cursor:'pointer'}}  onClick={getAttendanceReport}/>
       <IconButton
         aria-label='download'
         ref={anchorEl}

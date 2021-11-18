@@ -39,7 +39,7 @@ const Dashboard = () => {
                   .then((result) => {
                     localStorage.setItem('udaanDetails', JSON.stringify(result.data));
                   })
-                  .catch((error) => {});
+                  .catch((error) => { });
               }
             }
           });
@@ -66,7 +66,7 @@ const Dashboard = () => {
       case 3:
         return <TeacherDashboard />;
       case 4:
-        return <DefaultDashboard />; // to be replaced with student dashboard
+        return <StudentDashboard />; // to be replaced with student dashboard
       case 5:
         return <DefaultDashboard />;
       default:
@@ -75,10 +75,11 @@ const Dashboard = () => {
   };
 
   return (
-    <Box px={3} mt={3}>
+    <Box px={3} mt={1}>
       <WelcomeComponent />
       <Suspense fallback={<Loading />}>
         {isMsAPIKey ? renderRoleDashboard() : <DefaultDashboard />}
+        {/* {true ? renderRoleDashboard() : <DefaultDashboard />} */}
       </Suspense>
     </Box>
   );
