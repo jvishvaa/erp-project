@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 const WelcomeComponent = () => {
   const classes = useStyles();
   const { welcomeDetails = {}, setReports } = useDashboardContext();
-  const { greeting, name, userRole } = welcomeDetails;
+  const { greeting, name, userRole, userLevel } = welcomeDetails;
   // const { attendance, classwork, homework, blog, discussion } = reportTypeConstants || {};
 
   const getAllReport = () => {
@@ -88,13 +88,15 @@ const WelcomeComponent = () => {
           ({userRole})
         </Typography>
       </div>
-      <div>
-        <SyncIcon
-          id="refreshButton"
-          className={classes.refreshIcon}
-          onClick={getAllReport}
-        />
-      </div>
+      {userLevel === 4 ? '' : (
+        <div>
+          <SyncIcon
+            id="refreshButton"
+            className={classes.refreshIcon}
+            onClick={getAllReport}
+          />
+        </div>
+      )}
       {checkOrigin ? <>
         {welcomeDetails.userLevel === 4 ?
           <Button onClick={studentrefer} style={{ marginLeft: '20px' }}>
