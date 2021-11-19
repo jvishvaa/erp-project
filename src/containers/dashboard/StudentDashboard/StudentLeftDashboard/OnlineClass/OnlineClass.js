@@ -17,6 +17,7 @@ import Carousel, { consts } from 'react-elastic-carousel';
 import axiosInstance from 'config/axios';
 import moment from 'moment';
 import clsx from 'clsx';
+import { useHistory } from 'react-router';
 // import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 
 // import { Carousel } from 'react-responsive-carousel';
@@ -180,7 +181,7 @@ const style = {
 
 const OnlineClass = (props) => {
   const classes = useStyles();
-
+  const history = useHistory();
   const matches960 = useMediaQuery('(max-width: 960px)');
   const [onlineclassar, setOnlineclassar] = useState([]);
   const [open, setOpen] = useState(false);
@@ -355,7 +356,7 @@ const OnlineClass = (props) => {
                         <h3>{moment().endOf(`{online_class__start_time}`).fromNow()}</h3>
                       </div>
 
-                      <Button
+                      {/* <Button
                         style={{
                           backgroundColor: '#349ceb',
                           margin: '10px auto',
@@ -365,7 +366,7 @@ const OnlineClass = (props) => {
                         }}
                       >
                         Join
-                      </Button>
+                      </Button> */}
                       <Button
                         style={{
                           backgroundColor: '#349ceb',
@@ -373,8 +374,9 @@ const OnlineClass = (props) => {
                           width: '200px',
                           borderRadius: '50px',
                         }}
+                        onClick={()=>history.push('/erp-online-class-student-view')}
                       >
-                        Go to classList
+                        Go to Class List
                       </Button>
                       <Button
                         onClick={handleClose}
@@ -386,7 +388,7 @@ const OnlineClass = (props) => {
 
                         }}
                       >
-                        close
+                        Close
                       </Button>
                     </div>
                   </div>

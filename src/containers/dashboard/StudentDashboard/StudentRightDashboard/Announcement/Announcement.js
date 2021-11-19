@@ -36,7 +36,7 @@ const style = {
 };
 const styletwo = {
   position: 'absolute',
-  backgroundColor: '#349ceb',
+  backgroundColor: '#ededed',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
@@ -369,7 +369,7 @@ export default function Announcement(props) {
                 <ul>
                   {announcementArr.map(
                     (d, i) =>
-                      i <= 1 && (
+                      i <= 9 && (
                         <div key={`Annoucement${i}`}>
                           <li className={classes.listitem}>
                             <p>
@@ -381,7 +381,7 @@ export default function Announcement(props) {
                             </p>
                             <p>
                               <span className={classes.time}>
-                                {moment(d.created_at).calendar()};
+                                {moment(d.created_at).calendar()}
                               </span>
                             </p>
                           </li>

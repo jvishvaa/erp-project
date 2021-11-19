@@ -78,9 +78,9 @@ const Certificate = (props) => {
       });
   };
 
-  useEffect(() => {
-    getCertificateData();
-  }, []);
+  // useEffect(() => {
+  //   getCertificateData();
+  // }, []);
 
   //arrow carousal
   const myArrow = ({ type, onClick, isEdge }) => {
