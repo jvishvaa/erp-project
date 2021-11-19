@@ -476,6 +476,10 @@ const Layout = ({ children, history }) => {
         history.push('/assessment');
         break;
       }
+      case 'Individual Student Report':{
+        history.push('/assessment-student-report');
+        break;
+      }
       case 'Assessment Report': {
         history.push('/assessment-reports');
         break;

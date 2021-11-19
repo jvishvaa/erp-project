@@ -23,6 +23,9 @@ import { handleDownloadPdf } from '../../../../../src/utility-functions';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
+import Weeklyassesmentreport from '../student-report/weekly-quiz-performnace';
+
+
 
 
 
@@ -681,7 +684,7 @@ const AssessmentReportFilters = ({
         const { data } = await axiosInstance.get(
           `${endpoints.assessmentReportTypes.reportConsolidated
           }?section_mapping=${filterData.section?.id
-          }&exam_date=${examDate}`,
+          }&test=${JSON.stringify(filterData.test?.id)}&subject_id=${filterData?.subject?.subject_id}`,
           {
             responseType: 'arraybuffer',
           }
@@ -774,6 +777,7 @@ const AssessmentReportFilters = ({
           margin: isMobile ? '10px 0px -10px 0px' : '-20px 0px 20px 8px',
         }}
       >
+        {selectedReportType?.id !==11 &&(
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -794,6 +798,8 @@ const AssessmentReportFilters = ({
             )}
           />
         </Grid>
+        )}
+        {selectedReportType?.id !==11 &&(
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -814,6 +820,7 @@ const AssessmentReportFilters = ({
             )}
           />
         </Grid>
+        )}
         {(selectedReportType?.id === 3 ||
           selectedReportType?.id === 4 ||
           selectedReportType?.id === 5 ||
@@ -842,7 +849,7 @@ const AssessmentReportFilters = ({
               />
             </Grid>
           )}
-        {selectedReportType?.id !== 5  && (
+        {selectedReportType?.id !== 5  && selectedReportType?.id !==11 &&(
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
             <Autocomplete
               style={{ width: '100%' }}
@@ -864,7 +871,7 @@ const AssessmentReportFilters = ({
             />
           </Grid>
         )}
-        {selectedReportType?.id !== 5 && selectedReportType?.id !== 7 && selectedReportType?.id!==8 && selectedReportType?.id!==9 && selectedReportType?.id !== 10 && (
+        {selectedReportType?.id !== 5 && selectedReportType?.id !== 7 && selectedReportType?.id!==9 && selectedReportType?.id !== 10 && selectedReportType?.id !==11 &&(
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
             <Autocomplete
               style={{ width: '100%' }}
@@ -929,6 +936,10 @@ const AssessmentReportFilters = ({
               )}
             />
           </Grid>
+        )}
+
+        {selectedReportType?.id === 11 && (
+          <Weeklyassesmentreport/>
         )}
 
          {/* {selectedReportType?.id === 7 && (
@@ -1041,7 +1052,7 @@ const AssessmentReportFilters = ({
           </Grid>
         </MuiPickersUtilsProvider>
 )}
-
+{/* 
 {selectedReportType?.id === 8 && (
 <MuiPickersUtilsProvider utils={MomentUtils}>
 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
@@ -1064,7 +1075,7 @@ const AssessmentReportFilters = ({
             />
           </Grid>
           </MuiPickersUtilsProvider>
-)}
+)} */}
         {isFilter &&
           classTopicAverage &&
           (selectedReportType?.id === 3 || selectedReportType?.id === 4) && (
@@ -1106,6 +1117,7 @@ const AssessmentReportFilters = ({
           margin: isMobile ? '10px 0px -10px 0px' : '-20px 0px 20px 8px',
         }}
       >
+         {selectedReportType?.id !==11 &&(
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
@@ -1116,8 +1128,8 @@ const AssessmentReportFilters = ({
           >
             Clear All
           </Button>
-        </Grid>
-        {selectedReportType?.id===6 || selectedReportType?.id===7 || selectedReportType?.id===8 || selectedReportType?.id===9 || selectedReportType?.id===10 ?null:<Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+        </Grid>)}
+        {selectedReportType?.id===6 || selectedReportType?.id===7 || selectedReportType?.id===8 || selectedReportType?.id===9 || selectedReportType?.id===10 || selectedReportType?.id===11 ?null:<Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
           <Button
             variant='contained'
             size='medium'
@@ -1129,7 +1141,7 @@ const AssessmentReportFilters = ({
           </Button>
         </Grid>
 }
-        {selectedReportType?.id !== 5 && (
+        {selectedReportType?.id !== 5 && (selectedReportType?.id !== 11) && (
           <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
             <Button
               variant='contained'

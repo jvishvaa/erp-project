@@ -30,12 +30,16 @@ const reportTypes = [
    },
    {
      id:9,
-     type:'Individual Quiz Report Teacher',
+     type:'Individual Assessment Report Teacher',
    },
    {
      id:10,
      type:'Weekly Teacher Report Each Grade',
-   }
+   },
+   {
+    id:11,
+    type:'Weekly Assessment Performance',
+  }
 ];
 
 const ReportTypeFilter = ({
