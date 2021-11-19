@@ -17,9 +17,9 @@ const useStyles = makeStyles((theme) => ({
 export default function StudentRightDashboard(props) {
   const classes = useStyles();
   return (
-    <Grid container spacing={2} className={classes.fixed}>
+    <Grid container spacing={3} className={classes.fixed}>
       <Grid item>
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
           <Grid item xs={11}>
             <Hidden xsDown>
               <Announcement />
