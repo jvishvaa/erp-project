@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
   },
   calcss: {
     margin: '0px !important',
-  }
+  },
 }));
 
 export default function RangeCalender(props) {
@@ -26,7 +26,7 @@ export default function RangeCalender(props) {
   const gradeIds = role_details.grades
     ? role_details.grades.map((obj) => obj.grade_id)
     : [];
-  const [selectedType, setSelectedType] = useState();
+  const [selectedType, setSelectedType] = useState('today');
   const [state, setState] = useState([
     {
       startDate: new Date(),
@@ -107,9 +107,30 @@ export default function RangeCalender(props) {
     !selectedType && setSelectedType('today');
   }, [state]);
 
+  useEffect(() => {
+    if (selectedType === 'today') {
+      setState([
+        {
+          startDate: new Date(),
+          endDate: new Date(),
+          key: 'selection',
+        },
+      ]);
+    } else if (selectedType === 'weekly') {
+      setState([
+        {
+          startDate: new Date(moment().subtract(3, 'days')),
+          endDate: new Date(moment().add(2, 'days')),
+          key: 'selection',
+        },
+      ]);
+    }
+  }, [selectedType]);
+
   const handleChange = (item) => {
     if (selectedType == 'today' || selectedType === undefined) {
-      item.selection.endDate = { ...item.selection.startDate };
+      item.selection.startDate = new Date(moment(item.selection.startDate));
+      item.selection.endDate = new Date(moment(item.selection.startDate));
     } else if (selectedType === 'weekly') {
       item.selection.endDate = addDays(new Date(item.selection.startDate), 6);
     }
@@ -158,7 +179,7 @@ export default function RangeCalender(props) {
         direction='row'
         justifyContent='space-evenly'
         alignItems='center'
-        style={{ padding: '0.5rem', margin: "0px !important" }}
+        style={{ padding: '0.5rem', margin: '0px !important' }}
       >
         <Grid item>
           <Button
