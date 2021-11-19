@@ -223,14 +223,14 @@ const Homework = (props) => {
               <div className={classes.cardhomework} key={`homework_${i}`}>
                 <div className={classes.layertop}>
                   <div className={classes.layertopone}>
-                    <div className={clsx(classes.headindsubject, classes.ellipsisText)}>{item.homework__subject__subject_name}</div>
+                    <div className={clsx(classes.headindsubject, classes.ellipsisText)}>{item?.subject__subject_name}</div>
                   </div>
                   <div className={classes.submission}>
-                    <span className={classes.submissionData}>{item.pending} </span>
-                    {item.pending === 1 ? 'submission' : 'submissions'}
+                    <span className={classes.submissionData}>{item?.homework_name} </span>
+                    {/* {item.status === 1 ? 'submission' : 'submissions'} */}
                   </div>
                 </div>
-                <div className={classes.layermiddle}>{item.max_class_Date}</div>
+                <div className={classes.layermiddle}>{item?.class_date__date}</div>
               </div>
 
             ))}
