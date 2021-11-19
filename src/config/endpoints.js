@@ -565,6 +565,7 @@ export default {
     updateReportCardStatus: '/assessment/update-report-publish-status/',
     personalityTraits: '/assessment/get-traits/',
     studentReportGrade: '/assessment/get-student-grades/',
+    statusList: '/assessment/get-pipeline-statuses/',
   },
   dashboard: {
     teacher: {
