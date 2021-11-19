@@ -369,7 +369,7 @@ const ConnectionPodFn = (props) => {
           <div className='connection-pod-breadcrumb-wrapper'>
             <CommonBreadcrumbs
               componentName='Online Class'
-              childComponentName='Work Shop'
+              childComponentName='Workshop'
               isAcademicYearVisible={true}
             />
           </div>
