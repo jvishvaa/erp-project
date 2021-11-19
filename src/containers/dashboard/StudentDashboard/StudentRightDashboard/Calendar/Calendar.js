@@ -21,9 +21,9 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #d3d1d1',
     borderRadius: '5px',
     overflow: 'hidden',
-    marginTop: "2px",
+    marginTop: '2px',
     // height: "250px",
-    fontSize: "1em",
+    fontSize: '1em',
   },
 }));
 
@@ -34,29 +34,37 @@ export default function Calendar() {
 
   const getDisplayDate = (item) => {
     return item.holiday_start_date === item.holiday_end_date
-      ? moment(item.holiday_start_date, 'YYYY-MM-DD').format("DD-MM-YYYY")
-      : `${moment(item.holiday_start_date, 'YYYY-MM-DD').format("DD-MM-YYYY")} - ${moment(item.holiday_end_date, 'YYYY-MM-DD').format("DD-MM-YYYY")}`;
+      ? moment(item.holiday_start_date, 'YYYY-MM-DD').format('DD-MM-YYYY')
+      : `${moment(item.holiday_start_date, 'YYYY-MM-DD').format('DD-MM-YYYY')} - ${moment(
+          item.holiday_end_date,
+          'YYYY-MM-DD'
+        ).format('DD-MM-YYYY')}`;
   };
 
   return (
-    <div style={{ position: "relative", }}>
+    <div style={{ position: 'relative' }}>
       <Grid container className={classes.parentContainer}>
         <Grid item xs={10}>
           {eveType ? (
-            <Grid style={{ display: eveType ? "block" : "none" }}>
+            <Grid style={{ display: eveType ? 'block' : 'none' }}>
               <Card>
                 <CardContent>
                   <Box className={classes.themeColor}>
                     {eventList.map((item) => {
                       return (
-                        <Box>
-                          <FiberManualRecordIcon
-                            style={{ fontSize: '1rem', marginRight: '5px' }}
-                          />
-                          {/* maxWidth: '100px', overflow: 'hidden', textOverflow: "ellipsis", whiteSpace: "nowrap" */}
-                          <span style={{}}>{item.description.slice(0, 15)}</span>
-                          <span style={{ float: 'right' }}>{getDisplayDate(item)}</span>
-                        </Box>
+                        <Grid container spacing={2}>
+                          <Grid item xs={1}>
+                            <FiberManualRecordIcon
+                              style={{ fontSize: '1rem', marginRight: '5px' }}
+                            />
+                          </Grid>
+                          <Grid item xs={5}>
+                            {item.title}
+                          </Grid>
+                          <Grid item xs={6}>
+                            {getDisplayDate(item)}
+                          </Grid>
+                        </Grid>
                       );
                     })}
                   </Box>
