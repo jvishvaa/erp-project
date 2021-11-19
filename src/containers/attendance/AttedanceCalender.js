@@ -1814,7 +1814,7 @@ const AttedanceCalender = () => {
 
                             <Typography
                               className='eventNameData'
-                              style={{ fontSize: '15px' }}
+                              style={{ fontSize: '15px' , width: '100%' }}
                             >
                               {' '}
                               {data.title}{' '}

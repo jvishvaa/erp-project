@@ -447,6 +447,14 @@
     margin-left: 23px;
   }
 }
+.date-range-holiday{
+  .MuiFormLabel-root{
+    color: #b4a07e !important;
+  }
+  .MuiFormHelperText-root{
+    display: none;
+  }
+}
 @media only screen and (max-width: 600px) {
   .calenderGrid {
     width: 88%;

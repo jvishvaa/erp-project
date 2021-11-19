@@ -44,6 +44,7 @@ import { useHistory } from 'react-router';
 import { connect, useSelector } from 'react-redux';
 import { size } from 'lodash';
 import { id } from 'date-fns/locale';
+import './AttendanceCalender.scss';
 function getDaysAfter(date, amount) {
   return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
 }
@@ -556,7 +557,7 @@ const HolidayMark = () => {
 
               </Grid> */}
 
-<Grid item xs={12} sm={3}>
+<Grid item xs={12} sm={3} className='date-range-holiday' >
                       <LocalizationProvider dateAdapter={MomentUtils}>
                         <DateRangePicker
                           minDate={minStartDate ? new Date(minStartDate) : undefined}
@@ -600,7 +601,7 @@ const HolidayMark = () => {
 
               
 
-              <Grid item md={4} lg={2} sm={6} xs={12} style={{marginBottom: '30px'}} >
+              <Grid item md={4} lg={2} sm={6} xs={12}  >
                 <TextField
                   variant='outlined'
                   size='small'
