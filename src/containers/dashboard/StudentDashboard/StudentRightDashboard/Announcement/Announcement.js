@@ -14,7 +14,6 @@ import AddCommentIcon from '@material-ui/icons/AddComment';
 import endpoints from '../../config/Endpoint';
 import apiRequest from '../../config/apiRequest';
 import moment from 'moment';
-// import backgroundimage from './backgroundimage.png';
 import bullet from "./bullet.svg";
 import axiosInstance from 'config/axios';
 import Card from '@material-ui/core/Card';
@@ -106,7 +105,8 @@ const useStyles = makeStyles((theme) => ({
     padding: 10,
     transform: "translateX(4px)",
     overflow: 'hidden',
-    // backgroundImage: `url(${ backgroundimage })`,
+    overflow: 'auto',
+    scrollX: 'none',
     backgroundColor: 'white',
     color: 'theme.palette.secondary',
   },
@@ -428,7 +428,7 @@ export default function Announcement(props) {
                             })}
                             <div style={{ margin: "20px 200px" }}>
                               <span>
-                                <Button style={{ margin: "10px" }} onClick={nextpagehandler} >Old</Button>
+                                <Button style={{ margin: "10px" }} onClick={nextpagehandler} >More</Button>
                               </span>
                               <span>
                                 <Button style={{ margin: "10px" }} onClick={handleClosetwo} >Close</Button>

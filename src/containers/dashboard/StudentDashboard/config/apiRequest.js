@@ -18,7 +18,9 @@ const apiRequest = async (method, path, payload, responseType, isReportsURL) => 
         const headers = {
             'Authorization': `Bearer ${JSON.parse(user).token}`,
         };
-        isReportsURL ? headers['X-DTS-HOST'] = window.location.host : headers['X-DTS-SCHEMA'] = window.location.host;
+        if (isReportsURL) {
+            headers['X-DTS-HOST'] = 'qa.olvorchidnaigaon.letseduvate.com'
+        }
         axios({
             method: method,
             url: `${isReportsURL ? msReportsUrl : baseURL}${path}`,

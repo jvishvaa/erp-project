@@ -221,40 +221,14 @@ const OnlineClass = (props) => {
   }
 
   const getOnlineData = () => {
-    // const getBlogData = () => {
-    // console.log("onhai2", endpoints.dashboard.student.blogdata)
     apiRequest('get', endpoints.dashboard.student.onlineclasstimestats, null, null, true)
       .then((result) => {
-        // console.log('tree', result.data.data.results);
         console.log("resultdata", result.data);
         setOnlineclassar(result.data);
-        // if (result.data.status_code === 200) {
-        // setBlogdata(result?.data?.data?.results);
-        // setNext(result?.data?.data?.next);
-        // setAlert('success', result.data.message)
-
-        // }
       })
       .catch((error) => {
         console.log('error');
-        // setAlert('error', 'Failed to mark attendance');
       });
-    // };
-    // axiosInstance
-    //   .get(`https://dev.reports.letseduvate.com/api/reports/v1/online-class-time-stats/`, {
-    //     headers: {
-    //       "X-DTS-HOST": "dev.olvorchidnaigaon.letseduvate.com",
-    //     }
-    //   })
-    //   .then((result) => {
-    //     // if (result.data.status_code === 200) {
-    //     setOnlineclassar(result.data);
-    //     console.log("result");
-    //     // }
-    //   })
-    //   .catch((error) => {
-    //     console.log('error');
-    //   });
   };
   useEffect(() => {
     getOnlineData();
