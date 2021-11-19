@@ -2,18 +2,21 @@ import React from 'react';
 import { TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import clsx from 'clsx';
-import { generatePersonalityTraits } from './transform-report-card-data';
+import {
+  generatePersonalityTraits,
+  generateGradeScale,
+} from './transform-report-card-data';
 
 const useStyles = makeStyles({
   table: {
     '& .MuiTableCell-root': {
-      // border: '1px solid rgba(224, 224, 224, 1)',
       padding: '0px',
     },
   },
   tableFooter: {
     textAlign: 'left !important',
     padding: '5px 2px !important',
+    fontStyle: 'italic',
   },
   tableBodyCell: {
     padding: '5px 2px !important',
@@ -21,7 +24,6 @@ const useStyles = makeStyles({
   tableHead: {
     fontWeight: '600 !important',
     padding: '5px 2px !important',
-    // backgroundColor: '#7abbbb',
   },
   tableCellCenter: {
     textAlign: 'center !important',
@@ -40,9 +42,9 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
-const PersonalityTraitTable = ({ scholastic, coScholastic }) => {
+const PersonalityTraitTable = ({ scholastic, coScholastic, traitGradeScale }) => {
   const classes = useStyles();
-
+  const gradeScaleRow = generateGradeScale(traitGradeScale);
   const personalityTraits = generatePersonalityTraits(scholastic, coScholastic) || [];
 
   const totalColspan = personalityTraits[0].reduce(
@@ -80,9 +82,13 @@ const PersonalityTraitTable = ({ scholastic, coScholastic }) => {
             )}
           </TableRow>
         ))}
-        <TableRow>
-          <StyledTableCell colSpan={totalColspan} style={{ padding: '12px' }} />
-        </TableRow>
+        {gradeScaleRow && (
+          <TableRow>
+            <StyledTableCell className={classes.tableFooter} colSpan={totalColspan}>
+              {gradeScaleRow}
+            </StyledTableCell>
+          </TableRow>
+        )}
       </TableBody>
     </>
   );

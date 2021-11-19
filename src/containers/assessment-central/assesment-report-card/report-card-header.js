@@ -69,13 +69,13 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
                   component='div'
                   style={{ textAlign: 'center' }}
                 >
-                  CBSE AFFILIATION NO: {affiliationCode}
+                  {affiliationCode && `CBSE AFFILIATION NO: ${affiliationCode}`}
                 </Typography>
                 {address}
                 <br />
-                Contact Number: {schoolContact}
+                {schoolContact && `Contact Number: ${schoolContact}`}
                 <br />
-                EmailID: {schoolEmail}
+                {schoolEmail && `EmailID: ${schoolEmail}`}
               </Box>
               <Box style={{ margin: '15px auto' }}>
                 <Typography

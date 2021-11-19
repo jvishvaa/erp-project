@@ -153,6 +153,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Student Homework Report', Path: '/homework/student-report' },
     // { name: 'Student Homework Report', Path: '/classwork-report-teacher-view' },
     { name: 'Assessment', Path: '/assessment' },
+    {name:' Individual Student Report',Path:'/assessment-student-report'},
     { name: 'Communication', Path: '/communication' },
     { name: 'Add Group', Path: '/communication/addgroup' },
     { name: 'View&Edit Group', Path: '/communication/viewgroup' },
@@ -190,6 +191,9 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Teacher Forum', Path: '/teacher-forum' },
     { name: 'Student Forum', Path: '/student-forum' },
     { name: 'Assessment Report', Path: '/assessment-reports' },
+    { name:'Student Report',path:'/assessment-student-report'},
+
+    { name:'Weekly Quiz Performance',path:'/assessment-weekly-quiz-performance-report'},
     // { name: 'Report Card Settings', Path: '/assessment/report-card-settings' },
     { name: 'Marks Upload', Path: '/assessment/marks-upload' },
     { name: 'Report Card', Path: '/assessment/report-card' },

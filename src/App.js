@@ -344,10 +344,10 @@ import LearningVideos from 'containers/sure-learning/MyNotes/learningAll';
 import EachLearn from 'containers/sure-learning/MyNotes/eachLearn';
 import WalletBulk from 'containers/Finance/src/components/Finance/NegativeBalanceAdjust/walletbulkupload';
 import  ExtraAmtAdjust  from 'containers/Finance/src/components/Finance/NegativeBalanceAdjust/negativeBalanceAdjust';
-
+import StudentReport from 'containers/assessment-central/assessment-report-types/student-report/student-report';
+import WeeklyQuizPerformance from 'containers/assessment-central/assessment-report-types/student-report/weekly-quiz-performnace';
 import HolidayMark from 'containers/attendance/holidaymark';
 import ReferSuccess from 'containers/studentRefferal/referSuccess';
-
 import StudentRefer from 'containers/studentRefferal/referForm';
 
 function App({ alert, isMsAPI }) {
@@ -808,6 +808,12 @@ function App({ alert, isMsAPI }) {
                           </Route>
                           <Route exact path='/student-strength'>
                             {({ match }) => <StudentStrength match={match} />}
+                          </Route>
+                          <Route exact path='/assessment-student-report'>
+                            {({ match }) => <StudentReport match={match} />}
+                          </Route>
+                          <Route exact path='/assessment-weekly-quiz-performance-report'>
+                            {({ match }) => <WeeklyQuizPerformance match={match} />}
                           </Route>
                           <Route exact path='/student-id-card'>
                             {({ match }) => <StudentIdCard match={match} />}
