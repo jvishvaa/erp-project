@@ -22,13 +22,17 @@ const useStyles = makeStyles({
   },
 });
 
-export default function AssesmentReport({
-  scholastic,
-  coScholastic,
-  userInfo,
-  schoolData,
-}) {
+export default function AssesmentReport({ reportCardData }) {
   const classes = useStyles();
+
+  const {
+    scholastic = {},
+    co_scholastic: coScholastic = {},
+    school_info: schoolData = {},
+    user_info: userInfo = {},
+    trait_grade_scale: traitGradeScale = {},
+  } = reportCardData || {};
+
   const tableData = [
     { Data: scholastic, TableType: 'SCHOLASTIC' },
     { Data: coScholastic, TableType: 'CO-SCHOLASTIC' },
@@ -42,7 +46,7 @@ export default function AssesmentReport({
         {tableData.map((data) => (
           <ReportTableContent {...data} />
         ))}
-        <PersonalityTraitTable {...{ scholastic, coScholastic }} />
+        <PersonalityTraitTable {...{ scholastic, coScholastic, traitGradeScale }} />
         <ReportCardFooter {...{ scholastic, coScholastic }} />
       </Table>
     </TableContainer>

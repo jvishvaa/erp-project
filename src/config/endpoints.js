@@ -436,6 +436,9 @@ export default {
     reportConsolidated: '/assessment/download-report-consolidate/',
     individualQuizTeacherReport:'/assessment/download-report-individual-teacher/',
     weeklyTeacherReportEachGrade:'/assessment/download-report-teacher-grade-section-wise/',
+    weeklyStudentReport:'/assessment/download-report-student-report/',
+    individualStudentReport:'/assessment/individual-student-report/',
+    weeklyQuizPerformance:'/assessment/weekly-quiz-performance-report/',
 
   },
   publish: {

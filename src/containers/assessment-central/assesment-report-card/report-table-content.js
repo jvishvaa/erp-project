@@ -178,12 +178,6 @@ const ReportTableContent = (props) => {
             </StyledTableCell>
           </TableRow>
         ))}
-        <TableRow>
-          <StyledTableCell
-            colSpan={totalColspan}
-            style={{ padding: '12px' }}
-          ></StyledTableCell>
-        </TableRow>
       </TableBody>
     </>
   );
