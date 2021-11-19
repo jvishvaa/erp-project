@@ -703,7 +703,7 @@ const AssessmentReportFilters = ({
         const { data } = await axiosInstance.get(
           `${endpoints.assessmentReportTypes.individualQuizTeacherReport
           }?academic_year=${selectedAcademicYear?.id
-          }&branch_id=${filterData.branch?.id}&grade_id=${filterData.grade?.grade_id}&subject_id=${filterData?.subject?.id}&start_date=${startDate}&end_date=${endDate}`,
+          }&branch_id=${filterData.branch?.branch?.id}&grade_id=${filterData.grade?.grade_id}&subject_id=${filterData?.subject?.subject_id}&start_date=${startDate}&end_date=${endDate}`,
           {
             responseType: 'arraybuffer',
           }
@@ -723,7 +723,7 @@ const AssessmentReportFilters = ({
         const { data } = await axiosInstance.get(
           `${endpoints.assessmentReportTypes.weeklyTeacherReportEachGrade
           }?academic_year=${selectedAcademicYear?.id
-          }&branch_id=${filterData.branch?.id}&grade_id=${filterData.grade?.grade_id}&subject_id=${filterData?.subject?.id}&start_date=${startDate}&end_date=${endDate}`,
+          }&branch_id=${filterData.branch?.branch?.id}&grade_id=${filterData.grade?.grade_id}&subject_id=${filterData?.subject?.subject_id}&start_date=${startDate}&end_date=${endDate}`,
           {
             responseType: 'arraybuffer',
           }

@@ -170,7 +170,7 @@ const ConnectionPodFn = (props) => {
       .catch(() => {});
   };
 
-  const fetchDownloadExcel = async (wsid) => {
+  const fetchDownloadExcel = async (wsid, title) => {
     WSAPI(
       'get',
       `${WSENDPOINT.WORKSHOP.downloadExcel}?workshop_id=${wsid}`,
@@ -178,7 +178,7 @@ const ConnectionPodFn = (props) => {
       'arraybuffer'
     )
       .then((data) => {
-        handleDownloadExcel(data.data);
+        handleDownloadExcel(data.data, `attendence ${title}`);
       })
       .catch(() => {
         setAlert('error', 'File Not Found');
@@ -329,7 +329,7 @@ const ConnectionPodFn = (props) => {
       const ids = grades.map((obj) => obj.grade_id);
       setSelGradeId(ids);
     }
-  }, []);
+  }, [moduleId]);
 
   useEffect(() => {
     if (selGradeId.length) {
@@ -369,7 +369,7 @@ const ConnectionPodFn = (props) => {
           <div className='connection-pod-breadcrumb-wrapper'>
             <CommonBreadcrumbs
               componentName='Online Class'
-              childComponentName='Work Shop'
+              childComponentName='Workshop'
               isAcademicYearVisible={true}
             />
           </div>
@@ -564,7 +564,7 @@ const ConnectionPodFn = (props) => {
                             <MenuItem value={'1'}>Today</MenuItem>
                             <MenuItem value={'2'}>Upcoming</MenuItem>
                             <MenuItem value={'3'}>Completed</MenuItem>
-                            <MenuItem value={'4'}>Canceled</MenuItem>
+                            <MenuItem value={'4'}>Cancelled</MenuItem>
                           </Select>
                         </FormControl>
                       </Grid>
@@ -658,7 +658,7 @@ const ConnectionPodFn = (props) => {
                             <GetAppIcon
                               color={'primary'}
                               style={{ cursor: 'pointer' }}
-                              onClick={() => fetchDownloadExcel(wsdata.id)}
+                              onClick={() => fetchDownloadExcel(wsdata.id, wsdata.topic)}
                             />
                           </TableCell>
                         )}

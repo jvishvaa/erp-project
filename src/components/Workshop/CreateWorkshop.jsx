@@ -181,7 +181,7 @@ export default function CreateWorkshop(props) {
       grade: selectedGrade.map((obj) => obj.id),
       course: selectedCourse.id,
       course_name: selectedCourse.course_name,
-      topic: selectedCourse.course_name,
+      topic: title,
       start_time: `${moment(selectedDate).format('YYYY-MM-DD')} ${moment(
         selectedTime
       ).format('HH:mm:00')}`,
@@ -198,7 +198,7 @@ export default function CreateWorkshop(props) {
       .then((res) => {
         setLoading(false);
         if (res.data.status_code === 200) {
-          setAlert('success', 'Work Shop Created');
+          setAlert('success', 'Workshop created successfully');
           closeDialog();
         } else {
           setAlert('error', res?.data?.message);

@@ -3,11 +3,9 @@ import '../style.scss';
 import { Box, Typography, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { useDashboardContext } from '../dashboard-context';
-import { reportTypeConstants, responseConverters } from '../dashboard-constants';
-import SyncIcon from '@mui/icons-material/Refresh';
+import SyncIcon from '@material-ui/icons/Refresh';
 import { useHistory } from 'react-router';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
-import { Pointer } from 'highcharts';
 import './Styles.css'
 
 const useStyles = makeStyles((theme) => ({
@@ -42,7 +40,6 @@ const WelcomeComponent = () => {
   const classes = useStyles();
   const { welcomeDetails = {}, setReports } = useDashboardContext();
   const { greeting, name, userRole, userLevel } = welcomeDetails;
-  // const { attendance, classwork, homework, blog, discussion } = reportTypeConstants || {};
 
   const getAllReport = () => {
 
