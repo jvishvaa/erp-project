@@ -26,12 +26,6 @@ const useStyles = makeStyles((theme) => ({
 const AssesmentReport = ({ reportCardData }) => {
   const classes = useStyles();
   const componentRef = useRef();
-  const {
-    scholastic = {},
-    co_scholastic: coScholastic = {},
-    school_info: schoolInfo = {},
-    user_info: userInfo = {},
-  } = reportCardData || {};
 
   return (
     <>
@@ -43,12 +37,7 @@ const AssesmentReport = ({ reportCardData }) => {
             elevation={2}
             className={classes.root}
           >
-            <ReportTable
-              scholastic={scholastic}
-              coScholastic={coScholastic}
-              userInfo={userInfo}
-              schoolData={schoolInfo}
-            />
+            <ReportTable {...{ reportCardData }} />
           </Paper>
           <ReactToPrint
             trigger={() => (
