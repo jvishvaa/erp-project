@@ -85,7 +85,7 @@ const WelcomeComponent = () => {
           ({userRole})
         </Typography>
       </div>
-      {userLevel === 4 ? '' : (
+      {/* {userLevel === 4 ? '' : (
         <div>
           <SyncIcon
             id="refreshButton"
@@ -93,7 +93,7 @@ const WelcomeComponent = () => {
             onClick={getAllReport}
           />
         </div>
-      )}
+      )} */}
       {checkOrigin ? <>
         {welcomeDetails.userLevel === 4 ?
           <Button onClick={studentrefer} style={{ marginLeft: '20px' }}>
