@@ -104,10 +104,6 @@ const PipelineFilters = ({ moduleId, filterData, setFilterData, setCurrentPage }
   const handleSection = (event, section) => {
     setCurrentPage(1);
     let filterObject = { section: '' };
-    setDropDownData((prev) => ({
-      ...prev,
-      subject: [],
-    }));
     if (section) {
       filterObject = { ...filterObject, section };
     }
