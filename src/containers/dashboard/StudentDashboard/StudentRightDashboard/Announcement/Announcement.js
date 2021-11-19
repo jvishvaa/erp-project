@@ -14,7 +14,7 @@ import AddCommentIcon from '@material-ui/icons/AddComment';
 import endpoints from '../../config/Endpoint';
 import apiRequest from '../../config/apiRequest';
 import moment from 'moment';
-import bullet from "./bullet.svg";
+import bullet from './bullet.svg';
 import axiosInstance from 'config/axios';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -32,7 +32,7 @@ const style = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-  borderRadius: "5px",
+  borderRadius: '5px',
 };
 const styletwo = {
   position: 'absolute',
@@ -44,23 +44,23 @@ const styletwo = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-  borderRadius: "5px",
+  borderRadius: '5px',
   height: '450px',
   overflow: 'auto',
   color: 'white',
   padding: '20px 0px',
-  "&::-webkit-scrollbar": {
-    width: "5px",
-    marginRight: "20px",
+  '&::-webkit-scrollbar': {
+    width: '5px',
+    marginRight: '20px',
   },
-  "&::-webkit-scrollbar-track": {
-    background: "#f1f1f1"
+  '&::-webkit-scrollbar-track': {
+    background: '#f1f1f1',
   },
-  "&::-webkit-scrollbar-thumb": {
-    background: "#888",
+  '&::-webkit-scrollbar-thumb': {
+    background: '#888',
   },
-  "&::-webkit-scrollbar-thumb:hover": {
-    background: "#555",
+  '&::-webkit-scrollbar-thumb:hover': {
+    background: '#555',
   },
 };
 const useStyles = makeStyles((theme) => ({
@@ -81,7 +81,7 @@ const useStyles = makeStyles((theme) => ({
   announcementhead: {
     color: theme.palette.secondary.main,
     fontWeight: 800,
-    fontSize: "1.2em",
+    fontSize: '1.2em',
   },
   announcementheadtwo: {
     color: 'black',
@@ -95,15 +95,15 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   box: {
-    height: "135px",
+    height: '135px',
     overflow: 'hidden',
     border: '1px solid #d3d1d1',
-    borderRadius: "5px",
+    borderRadius: '5px',
     position: 'relative',
     top: 10,
     paddingBottom: 10,
     padding: 10,
-    transform: "translateX(4px)",
+    transform: 'translateX(4px)',
     overflow: 'hidden',
     overflow: 'auto',
     scrollX: 'none',
@@ -120,7 +120,7 @@ const useStyles = makeStyles((theme) => ({
     right: '0.7em',
     zIndex: '100',
     // backgroundColor: '#349ceb',
-    fontSize: "1em",
+    fontSize: '1em',
     fontWeight: 800,
     color: theme.palette.secondary.main,
   },
@@ -129,21 +129,21 @@ const useStyles = makeStyles((theme) => ({
     bottom: 30,
     right: '1.5em',
     zIndex: '110',
-    width: "10%",
+    width: '10%',
     marginBottom: '10px',
   },
   add: {
-    fontSize: "small",
+    fontSize: 'small',
   },
   details: {
     color: 'white',
     fontWeight: 600,
-    fontSize: "1em",
+    fontSize: '1em',
     padding: 10,
     paddingTop: 10,
     '&::marker': {
       color: 'yellow',
-      fontWeight: "bolder",
+      fontWeight: 'bolder',
     },
   },
   listitem: {
@@ -172,7 +172,7 @@ const useStyles = makeStyles((theme) => ({
       right: '3em',
       zIndex: '100',
       backgroundColor: '#349ceb',
-      fontSize: "0.9em",
+      fontSize: '0.9em',
     },
     icon: {
       position: 'absolute',
@@ -184,13 +184,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 export default function Announcement(props) {
   const classes = useStyles();
-  const [nextPage, setNextPage] = React.useState("");
+  const [nextPage, setNextPage] = React.useState('');
   const [announcementArr, setAnnouncementArr] = React.useState([]); //we will store all the announcements in this array
   const [add, setAdd] = React.useState(''); //to add the announcement and role
   const [isShort, setIsShort] = React.useState(true); //just 35 characters must be shown if true
   const [isShortArray, setIsShortArray] = React.useState(true); //how many announcements should be visible(2 or all)
   //for modal
   const [open, setOpen] = React.useState(false);
+  const [selectedRole, setSelectedRole] = useState('');
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [opentwo, setOpentwo] = React.useState(false);
@@ -240,41 +241,39 @@ export default function Announcement(props) {
       .catch((error) => {
         console.log('error');
       });
-
   };
+
   useEffect(() => {
     getRoleData();
     updateAnnouncement();
   }, []);
-  const handleChange = (event) => {
-    setrole(event.target.value);
+
+  const handleRole = (event, value) => {
+    setSelectedRole('');
+    if (value) {
+      setSelectedRole(value);
+    }
   };
-  const selectClose = () => {
-    setSelect(false);
-  };
-  const selectOpen = () => {
-    setSelect(true);
-  };
+
   const addbtnhandler = () => {
     if (add.length === 0) {
-      // checking if user has entered anything or not. we dont want an empty announcement to be shown
       return;
     }
     setAdd('');
-    const payload = { role_id: role, content: add }
+    const payload = { role_id: selectedRole?.id, content: add };
     apiRequest('post', endpoints.dashboard.student.create, payload)
       .then((result) => {
         if (result.data.status_code === 200) {
           updateAnnouncement();
           setrole('');
+          setSelectedRole('');
           setAdd('');
-          setOpen(false)
+          setOpen(false);
         }
       })
       .catch((error) => {
         console.log('error');
       });
-
   };
   return (
     <Grid container direction='column' spacing={1} className={classes.box} xs={12}>
@@ -282,10 +281,17 @@ export default function Announcement(props) {
         <Grid item>
           <Grid container item>
             <Grid item xs={12}>
-              <span className={classes.announcementhead}>Announcements
+              <span className={classes.announcementhead}>
+                Announcements
                 <span style={{ marginLeft: '10px' }}>
-                  {welcomeDetails?.userLevel == '4' ? '' :
-                    <AddCommentIcon onClick={handleOpen} style={{ fontSize: "1.3rem", cursor: 'pointer' }} />}
+                  {welcomeDetails?.userLevel == '4' ? (
+                    ''
+                  ) : (
+                    <AddCommentIcon
+                      onClick={handleOpen}
+                      style={{ fontSize: '1.3rem', cursor: 'pointer' }}
+                    />
+                  )}
                 </span>
               </span>
               <hr />
@@ -298,21 +304,22 @@ export default function Announcement(props) {
                 >
                   <Box sx={style}>
                     <div>
-                      <div style={{ width: "100%" }}>
+                      <div style={{ width: '100%' }}>
                         <Autocomplete
                           freeSolo
-                          id="free-solo-2-demo"
+                          id='free-solo-2-demo'
                           disableClearable
                           options={roledata}
+                          value={selectedRole}
                           getOptionLabel={(option) => option?.role_name}
                           filterSelectedOptions
-
+                          onChange={handleRole}
                           renderInput={(params) => (
                             <TextField
                               {...params}
-                              label="Search role"
-                              margin="normal"
-                              variant="outlined"
+                              label='Search role'
+                              margin='normal'
+                              variant='outlined'
                               fullWidth
                               InputProps={{ ...params.InputProps, type: 'search' }}
                             />
@@ -373,11 +380,14 @@ export default function Announcement(props) {
                         <div key={`Annoucement${i}`}>
                           <li className={classes.listitem}>
                             <p>
-                              <span style={{ marginRight: "7px", }}><img src={bullet} alt="bulet" style={{ width: '8px' }}></img></span>
-                              <span>
-                                {d.content}
-
+                              <span style={{ marginRight: '7px' }}>
+                                <img
+                                  src={bullet}
+                                  alt='bulet'
+                                  style={{ width: '8px' }}
+                                ></img>
                               </span>
+                              <span>{d.content}</span>
                             </p>
                             <p>
                               <span className={classes.time}>
@@ -395,10 +405,10 @@ export default function Announcement(props) {
                     </div>
                     <div>
                       <Button
-                        size="small"
+                        size='small'
                         onClick={handleOpentwo}
                         className={classes.iconmore}
-                        style={{ color: "white", fontSize: "1em" }}
+                        style={{ color: 'white', fontSize: '1em' }}
                         varient='contained'
                         color='primary'
                       >
@@ -417,21 +427,35 @@ export default function Announcement(props) {
                             {announcementArr.map((item, index) => {
                               return (
                                 <div key={`Ann_${index}`}>
-                                  <Card style={{ margin: "10px" }}>
+                                  <Card style={{ margin: '10px' }}>
                                     <CardContent>
-                                      <Typography>{moment(item.created_at).calendar()}</Typography>
-                                      <Typography color="textSecondary">{item.content}</Typography>
+                                      <Typography>
+                                        {moment(item.created_at).calendar()}
+                                      </Typography>
+                                      <Typography color='textSecondary'>
+                                        {item.content}
+                                      </Typography>
                                     </CardContent>
                                   </Card>
                                 </div>
                               );
                             })}
-                            <div style={{ margin: "20px 200px" }}>
+                            <div style={{ margin: '20px 200px' }}>
                               <span>
-                                <Button style={{ margin: "10px" }} onClick={nextpagehandler} >More</Button>
+                                <Button
+                                  style={{ margin: '10px' }}
+                                  onClick={nextpagehandler}
+                                >
+                                  More
+                                </Button>
                               </span>
                               <span>
-                                <Button style={{ margin: "10px" }} onClick={handleClosetwo} >Close</Button>
+                                <Button
+                                  style={{ margin: '10px' }}
+                                  onClick={handleClosetwo}
+                                >
+                                  Close
+                                </Button>
                               </span>
                             </div>
                           </ul>
