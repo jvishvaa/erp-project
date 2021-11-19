@@ -14,7 +14,7 @@ import AddCommentIcon from '@material-ui/icons/AddComment';
 import endpoints from '../../config/Endpoint';
 import apiRequest from '../../config/apiRequest';
 import moment from 'moment';
-import backgroundimage from './backgroundimage.png';
+// import backgroundimage from './backgroundimage.png';
 import bullet from "./bullet.svg";
 import axiosInstance from 'config/axios';
 import Card from '@material-ui/core/Card';
@@ -22,6 +22,8 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { useDashboardContext } from '../../../dashboard-context';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -31,7 +33,7 @@ const style = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-  borderRadius: 10,
+  borderRadius: "5px",
 };
 const styletwo = {
   position: 'absolute',
@@ -43,7 +45,7 @@ const styletwo = {
   bgcolor: 'background.paper',
   boxShadow: 24,
   p: 4,
-  borderRadius: 10,
+  borderRadius: "5px",
   height: '450px',
   overflow: 'auto',
   color: 'white',
@@ -71,13 +73,14 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 120,
   },
   textfieldgap: {
-    marginTop: 20,
+    marginTop: 6,
+    height: '100px',
   },
   addbtntextfield: {
     marginTop: 20,
   },
   announcementhead: {
-    color: 'white',
+    color: theme.palette.secondary.main,
     fontWeight: 800,
     fontSize: "1.2em",
   },
@@ -95,14 +98,17 @@ const useStyles = makeStyles((theme) => ({
   box: {
     height: "135px",
     overflow: 'hidden',
-    border: `1px solid ${theme.palette.secondary.main}`,
-    borderRadius: "10px",
+    border: '1px solid #d3d1d1',
+    borderRadius: "5px",
     position: 'relative',
     top: 10,
     paddingBottom: 10,
     padding: 10,
+    transform: "translateX(4px)",
     overflow: 'hidden',
-    backgroundImage: `url(${backgroundimage} )`,
+    // backgroundImage: `url(${ backgroundimage })`,
+    backgroundColor: 'white',
+    color: 'theme.palette.secondary',
   },
   buttonmodalicon: {
     position: 'absolute',
@@ -113,10 +119,10 @@ const useStyles = makeStyles((theme) => ({
     bottom: 5,
     right: '0.7em',
     zIndex: '100',
-    backgroundColor: '#349ceb',
+    // backgroundColor: '#349ceb',
     fontSize: "1em",
     fontWeight: 800,
-    color: "white",
+    color: theme.palette.secondary.main,
   },
   icon: {
     position: 'absolute',
@@ -124,6 +130,7 @@ const useStyles = makeStyles((theme) => ({
     right: '1.5em',
     zIndex: '110',
     width: "10%",
+    marginBottom: '10px',
   },
   add: {
     fontSize: "small",
@@ -131,7 +138,7 @@ const useStyles = makeStyles((theme) => ({
   details: {
     color: 'white',
     fontWeight: 600,
-    fontSize: "0.8em",
+    fontSize: "1em",
     padding: 10,
     paddingTop: 10,
     '&::marker': {
@@ -140,9 +147,11 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   listitem: {
-    color: 'white',
+    color: theme.palette.secondary.main,
     marginBottom: '3px',
     listStyle: "none",
+    fontsize: "2em",
+    textTransform: 'Capitalize',
     // '&::marker': {
     //   color: 'yellow',
     // },
@@ -231,6 +240,7 @@ export default function Announcement(props) {
       .catch((error) => {
         console.log('error');
       });
+
   };
   useEffect(() => {
     getRoleData();
@@ -258,11 +268,13 @@ export default function Announcement(props) {
           updateAnnouncement();
           setrole('');
           setAdd('');
+          setOpen(false)
         }
       })
       .catch((error) => {
         console.log('error');
       });
+
   };
   return (
     <Grid container direction='column' spacing={1} className={classes.box} xs={12}>
@@ -272,9 +284,8 @@ export default function Announcement(props) {
             <Grid item xs={12}>
               <span className={classes.announcementhead}>Announcements
                 <span style={{ marginLeft: '10px' }}>
-                  {welcomeDetails?.userLevel == '4' ? '' : <Button onClick={handleOpen} className={classes.add}>
-                    <AddCommentIcon style={{ fontSize: "small" }} />
-                  </Button>}
+                  {welcomeDetails?.userLevel == '4' ? '' :
+                    <AddCommentIcon onClick={handleOpen} style={{ fontSize: "1.3rem", cursor: 'pointer' }} />}
                 </span>
               </span>
               <hr />
@@ -287,47 +298,37 @@ export default function Announcement(props) {
                 >
                   <Box sx={style}>
                     <div>
-                      <FormControl
-                        className={classes.formControl}
-                        variant='outlined'
-                        margin='dense'
-                        fullWidth
-                      >
-                        <InputLabel
-                          id='demo-controlled-open-select-label'
-                          style={{ backgroundColor: 'white', padding: '0 5px' }}
-                        >
-                          role
-                        </InputLabel>
-                        <Select
-                          labelId='demo-controlled-open-select-label'
-                          id='demo-controlled-open-select'
-                          open={select}
-                          onClose={selectClose}
-                          onOpen={selectOpen}
-                          value={role}
-                          onChange={handleChange}
-                        >
-                          <MenuItem value=''>
-                            <em>None</em>
-                          </MenuItem>
-                          {roledata &&
-                            roledata.map((role) => {
-                              return (
-                                <MenuItem value={role.id} key={role.id}>
-                                  {role.role_name}
-                                </MenuItem>
-                              );
-                            })}
-                        </Select>
-                      </FormControl>
+                      <div style={{ width: "100%" }}>
+                        <Autocomplete
+                          freeSolo
+                          id="free-solo-2-demo"
+                          disableClearable
+                          options={roledata}
+                          getOptionLabel={(option) => option?.role_name}
+                          filterSelectedOptions
+
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              label="Search role"
+                              margin="normal"
+                              variant="outlined"
+                              fullWidth
+                              InputProps={{ ...params.InputProps, type: 'search' }}
+                            />
+                          )}
+                        />
+                      </div>
+
                       <div className={classes.textfieldgap}>
                         <TextField
-                          label='Required*'
+                          label='Enter the Announcement:*'
                           variant='outlined'
                           margin='dense'
+                          // style={{ height: '50px' }}
                           multiline
-                          rowsMax='3'
+                          // rowsMax='3'
+                          rows={4}
                           value={add}
                           onChange={(e) => setAdd(e.target.value)}
                           inputProps={{
@@ -340,9 +341,17 @@ export default function Announcement(props) {
                       <div className={classes.addbtntextfield}>
                         <Button
                           style={{ backgroundColor: '#349ceb' }}
+                          // onClick={handleClose}
                           onClick={addbtnhandler}
                         >
                           Add
+                        </Button>
+                        <Button
+                          style={{ backgroundColor: '#349ceb', marginLeft: '50px' }}
+                          // onClick={handleClose}
+                          onClick={handleClose}
+                        >
+                          Close
                         </Button>
                       </div>
                     </div>
@@ -390,7 +399,8 @@ export default function Announcement(props) {
                         onClick={handleOpentwo}
                         className={classes.iconmore}
                         style={{ color: "white", fontSize: "1em" }}
-
+                        varient='contained'
+                        color='primary'
                       >
                         {isShortArray ? 'more' : 'less'}
                       </Button>
@@ -416,7 +426,14 @@ export default function Announcement(props) {
                                 </div>
                               );
                             })}
-                            <Button onClick={nextpagehandler} style={{ margin: "20px 250px" }}>Old</Button>
+                            <div style={{ margin: "20px 200px" }}>
+                              <span>
+                                <Button style={{ margin: "10px" }} onClick={nextpagehandler} >Old</Button>
+                              </span>
+                              <span>
+                                <Button style={{ margin: "10px" }} onClick={handleClosetwo} >Close</Button>
+                              </span>
+                            </div>
                           </ul>
                         </Box>
                       </Modal>

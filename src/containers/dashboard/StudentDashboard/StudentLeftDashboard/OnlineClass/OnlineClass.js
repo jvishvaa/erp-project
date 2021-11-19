@@ -5,6 +5,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Modal from '@material-ui/core/Modal';
 import Box from '@material-ui/core/Box';
+import endpoints from '../../config/Endpoint';
+import apiRequest from '../../config/apiRequest';
 import './onlineclass.scss';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 // import onlineclassbck from './onlineclassbck.svg';
@@ -34,7 +36,7 @@ const useStyles = makeStyles(() => ({
   card: {
     width: '180px',
     height: '100px',
-    borderRadius: '10px',
+    borderRadius: '5px',
     background: 'white',
     margin: '10px',
     display: 'inline-block',
@@ -219,21 +221,40 @@ const OnlineClass = (props) => {
   }
 
   const getOnlineData = () => {
-    axiosInstance
-      .get(`https://dev.reports.letseduvate.com/api/reports/v1/online-class-time-stats/`, {
-        headers: {
-          "X-DTS-HOST": "dev.olvorchidnaigaon.letseduvate.com",
-        }
-      })
+    // const getBlogData = () => {
+    // console.log("onhai2", endpoints.dashboard.student.blogdata)
+    apiRequest('get', endpoints.dashboard.student.onlineclasstimestats, null, null, true)
       .then((result) => {
-        // if (result.data.status_code === 200) {
+        // console.log('tree', result.data.data.results);
+        console.log("resultdata", result.data);
         setOnlineclassar(result.data);
-        console.log("result");
+        // if (result.data.status_code === 200) {
+        // setBlogdata(result?.data?.data?.results);
+        // setNext(result?.data?.data?.next);
+        // setAlert('success', result.data.message)
+
         // }
       })
       .catch((error) => {
         console.log('error');
+        // setAlert('error', 'Failed to mark attendance');
       });
+    // };
+    // axiosInstance
+    //   .get(`https://dev.reports.letseduvate.com/api/reports/v1/online-class-time-stats/`, {
+    //     headers: {
+    //       "X-DTS-HOST": "dev.olvorchidnaigaon.letseduvate.com",
+    //     }
+    //   })
+    //   .then((result) => {
+    //     // if (result.data.status_code === 200) {
+    //     setOnlineclassar(result.data);
+    //     console.log("result");
+    //     // }
+    //   })
+    //   .catch((error) => {
+    //     console.log('error');
+    //   });
   };
   useEffect(() => {
     getOnlineData();
@@ -279,7 +300,7 @@ const OnlineClass = (props) => {
                 <div className={classes.layertop}>
                   <div className={classes.layerupper}>
                     <div>
-                      <p className={clsx(classes.white, classes.ellipsisText)}>{item.online_class__title}</p>
+                      <p className={clsx(classes.white, classes.ellipsisText)}>{item.title}</p>
                       <p>{item.online_class__start_time}</p>
                     </div>
 
@@ -382,11 +403,13 @@ const OnlineClass = (props) => {
                         Go to classList
                       </Button>
                       <Button
+                        onClick={handleClose}
                         style={{
                           backgroundColor: '#349ceb',
                           margin: '10px auto',
                           width: '100px',
                           borderRadius: '50px',
+
                         }}
                       >
                         close

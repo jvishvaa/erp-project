@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     height: '100px',
     width: '180px',
-    borderRadius: '10px',
+    borderRadius: '5px',
     background: 'white',
     margin: '10px',
     display: 'inline-block',
@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     color: 'white',
-    borderRadius: '10px',
+    borderRadius: '5px',
     fontWeight: "800",
     fontSize: "1.2em",
   },

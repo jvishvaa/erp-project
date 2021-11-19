@@ -104,7 +104,7 @@ const useStyles = makeStyles(() => ({
     background: '#349ceb',
     margin: '10px',
     display: 'inline-block',
-    borderRadius: '10px',
+    borderRadius: '5px',
     alignContent: 'center',
     fontSize: '0.7em',
     fontWeight: "1000",

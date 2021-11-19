@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme) => ({
     height: '130px',
     width: '180px',
     margin: '5px',
-    borderRadius: '10px',
+    borderRadius: '5x',
     backgroundColor: 'white',
     border: '1px solid gray',
   },
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
       height: '120px',
       width: '200px',
       margin: '5px',
-      borderRadius: '10px',
+      borderRadius: '5px',
       // position: "absolute",
     },
   },
@@ -136,21 +136,21 @@ const Certificate = (props) => {
               </div>
             ))} */}
             <div className={classes.certi}>
-              <div style={{ margin: '50px auto' }}>
-                <h4 style={{ color: "#349CEB", textAlign: "center" }}> CERTIFICATE </h4>
-                <p style={{ color: "black", textAlign: "center" }}>Coming soon</p>
+              <div style={{ margin: '50px auto', borderRadius: '5px' }}>
+                <h5 style={{ color: "#349CEB", textAlign: "center" }}> CERTIFICATE </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon</h5>
               </div>
             </div>
             <div className={classes.certi}>
-              <div style={{ margin: '50px auto' }}>
-                <h4 style={{ color: "#349CEB", textAlign: "center" }}> CERTIFICATE </h4>
-                <p style={{ color: "black", textAlign: "center" }}>Coming soon</p>
+              <div style={{ margin: '50px auto', borderRadius: '5px' }}>
+                <h5 style={{ color: "#349CEB", textAlign: "center" }}> CERTIFICATE </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon</h5>
               </div>
             </div>
             <div className={classes.certi}>
-              <div style={{ margin: '50px auto' }}>
-                <h4 style={{ color: "#349CEB", textAlign: "center" }}> CERTIFICATE </h4>
-                <p style={{ color: "black", textAlign: "center" }}>Coming soon</p>
+              <div style={{ margin: '50px auto', borderRadius: '5px' }}>
+                <h5 style={{ color: "#349CEB", textAlign: "center" }}> CERTIFICATE </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon</h5>
               </div>
             </div>
           </Carousel>

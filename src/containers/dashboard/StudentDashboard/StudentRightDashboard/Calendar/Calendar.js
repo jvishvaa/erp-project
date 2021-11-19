@@ -14,12 +14,12 @@ const useStyles = makeStyles((theme) => ({
     height: '90%',
     top: '5%',
     position: 'absolute',
-    border: `1px dotted ${theme.palette.secondary.main}`,
+    // border: `1px dotted ${theme.palette.secondary.main}`,
     // marginLeft: '5px',
   },
   parentContainer: {
-    border: `1px solid ${theme.palette.secondary.main}`,
-    borderRadius: '10px',
+    border: '1px solid #d3d1d1',
+    borderRadius: '5px',
     overflow: 'hidden',
     marginTop: "2px",
     // height: "250px",
@@ -86,6 +86,7 @@ export default function Calendar() {
           )}
         </Grid>
         <Grid item xs={2} style={{ display: 'flex', position: 'relative', backgroundColor: 'white' }}>
+          <hr />
           <div className={classes.divider}></div>
           <Grid container direction='row' justifyContent='center' alignItems='center'>
             <Grid className={classes.themeColor}>
