@@ -19,7 +19,8 @@ export function DashboardContextProvider({ children }) {
     referralReport: [],
     refreshAll: false,
   });
-  const [card, setCard] = useState();
+  const [card, setCard] = useState('');
+  const [loading, setLoading] = useState(false);
   const {
     apiGateway: { msReportsUrl },
   } = ENVCONFIG || {};
@@ -51,13 +52,19 @@ export function DashboardContextProvider({ children }) {
     const params = { ...param, level: userLevel };
     const config = { headers, params };
     const url = msReportsUrl + apiConfig[decisionParam]['report'];
+    setLoading(true)
     return axios
       .get(url, config)
       .then((response) => {
         const { data: { status_code: status, result } = {} } = response || {};
+        setLoading(false)
+        setCard('');
         return result || [];
       })
-      .catch(() => { });
+      .catch(() => { 
+        setLoading(false)
+        setCard('');
+      });
   };
 
   const downloadReport = (decisionParam, param) => {
@@ -84,6 +91,7 @@ export function DashboardContextProvider({ children }) {
         setReports,
         card,
         setCard,
+        loading,
       }}
     >
       {children}
