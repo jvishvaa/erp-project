@@ -50,6 +50,8 @@ export const useStyles = makeStyles((theme) => ({
     color: '#ffffff',
   },
   noDataTag: {
+    display: 'flex',
+    flexDirection: 'column',
     height: 150,
     maxHeight: 150,
     textAlign: 'center',
@@ -58,6 +60,6 @@ export const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     color: theme.palette.text.secondary,
     fontWeight: 600,
-    fontSize: '1rem',
+    fontSize: '0.9rem',
   },
 }));

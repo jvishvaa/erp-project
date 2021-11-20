@@ -123,6 +123,7 @@ const StyledClearButton = withStyles((theme) => ({
 }))(Button);
 
 const AllSubjectChapters = () => {
+  const { setAlert } = useContext(AlertNotificationContext);
   const classes = useStyles({});
   const [openFeedback, setOpenFeedback] = useState(false);
   const [moduleId, setModuleId] = useState(null);
@@ -203,6 +204,7 @@ const AllSubjectChapters = () => {
         )
         .then((response) => {
           setChapterList(response.data);
+          console.log(response.data, 'Click Here');
         })
         .catch((error) => {
           console.log(error);
@@ -211,13 +213,36 @@ const AllSubjectChapters = () => {
   };
 
   const handleChaplerDetails = (eachChapter) => {
-    history.push({
-      pathname: '/allchapterContentSubject',
-      state: eachChapter,
-      type: 'subject',
-    });
-    sessionStorage.setItem('content_id', eachChapter.id);
-    sessionStorage.setItem('BreadCrumb', 'Subject Training');
+    if (chapterList && chapterList.length) {
+      chapterList.forEach((con, index) => {
+        if (con.id === eachChapter.id && index > 0) {
+          console.log(index - 1, 'index');
+          let int = index - 1;
+          console.log(chapterList[int], 'prev typ');
+          console.log(int, 'prev');
+          if (chapterList[index - 1].is_completed) {
+            history.push({
+              pathname: '/allchapterContentSubject',
+              state: eachChapter,
+              type: 'subject',
+            });
+            sessionStorage.setItem('content_id', eachChapter.id);
+            sessionStorage.setItem('BreadCrumb', 'Subject Training');
+          } else {
+            setAlert('warning', 'please complete previous chapter');
+          }
+        }
+        if (con.id === eachChapter.id && index < 1) {
+          history.push({
+            pathname: '/allchapterContentSubject',
+            state: eachChapter,
+            type: 'subject',
+          });
+          sessionStorage.setItem('content_id', eachChapter.id);
+          sessionStorage.setItem('BreadCrumb', 'Subject Training');
+        }
+      });
+    }
   };
 
   const getCardColor = (index) => {
@@ -294,6 +319,7 @@ const AllSubjectChapters = () => {
 
                   <CardActions style={{ display: 'flex', justifyContent: 'center' }}>
                     <Typography
+                      // dissable={eachChapter[index-1].is_completed ? true : false}
                       onClick={() => handleChaplerDetails(eachChapter)}
                       color='primary'
                       style={{ fontWeight: 'bold', color: 'Black', cursor: 'pointer' }}

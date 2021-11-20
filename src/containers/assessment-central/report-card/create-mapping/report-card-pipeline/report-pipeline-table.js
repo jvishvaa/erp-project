@@ -19,6 +19,7 @@ import moment from 'moment';
 import TimerIcon from '@material-ui/icons/Timer';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import clsx from 'clsx';
+import PipelineFilters from './report-pipeline-filters';
 import { useHistory } from 'react-router-dom';
 import '../../../../master-management/master-management.css';
 import useStyles from '../../useStyles';
@@ -30,7 +31,7 @@ import { isSuccess, getPipelineConfig } from '../../report-card-utils';
 import Pagination from '../../../../../components/PaginationComponent';
 
 const pageSize = 10;
-const ReportPipelineTable = ({ setLoading }) => {
+const ReportPipelineTable = ({ setLoading, moduleId }) => {
   const classes = useStyles();
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -41,6 +42,14 @@ const ReportPipelineTable = ({ setLoading }) => {
   const [statusIndex, setStatusIndex] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [filterData, setFilterData] = useState({
+    branch: '',
+    grade: '',
+    section: '',
+    subject: '',
+    status: '',
+  });
 
   const renderButtons = (status) => {
     return (
@@ -167,12 +176,13 @@ const ReportPipelineTable = ({ setLoading }) => {
   const fetchReportCardPipeline = async () => {
     setLoading(true);
     try {
+      const searchParams = generateSearchParamObject() || {};
       const {
         status = 400,
         message = 'Error',
         data = [],
         total_pages: totalPages = 0,
-      } = await getReportCardPipeline(currentPage, pageSize);
+      } = await getReportCardPipeline(currentPage, pageSize, searchParams);
       setMappingList(data);
       setTotalPages(totalPages);
       const isSuccesful = isSuccess(status);
@@ -181,16 +191,49 @@ const ReportPipelineTable = ({ setLoading }) => {
     setLoading(false);
   };
 
+  const generateSearchParamObject = () => {
+    const {
+      branch = {},
+      grade = {},
+      section = {},
+      subject = {},
+      status = {},
+    } = filterData || {};
+
+    const { branch: branchObject = {} } = branch || {};
+    const { id: branchId = '' } = branchObject || {};
+    const { grade_id: gradeId = '' } = grade || {};
+    const { section_id: sectionId = '' } = section || {};
+    const { subject_id: subjectId = '' } = subject || {};
+    const { id: statusId = '' } = status || {};
+
+    const filterEntries = {
+      branch: branchId,
+      grade: gradeId,
+      section: sectionId,
+      subject: subjectId,
+      status: statusId,
+    };
+    const searchParams = Object.entries(filterEntries).filter(
+      ([key, value]) => !!value && { key: value }
+    );
+    const searchObject = Object.fromEntries(searchParams);
+    return searchObject;
+  };
+
   useEffect(() => {
     if (currentPage) {
       fetchReportCardPipeline();
     }
-  }, [currentPage]);
+  }, [currentPage, filterData]);
 
   return (
-    <Paper className={`${classes.root} common-table`}>
-      <Grid container>
-        <Grid item xs={12}>
+    <Grid container spacing={3}>
+      <Grid item xs={12}>
+        <PipelineFilters {...{ moduleId, filterData, setFilterData, setCurrentPage }} />
+      </Grid>
+      <Grid item xs={12}>
+        <Paper className={`${classes.root} common-table`}>
           <TableContainer className={classes.containerGenerated}>
             <Table stickyHeader aria-label='sticky table'>
               <TableHead className='table-header-row'>
@@ -259,16 +302,16 @@ const ReportPipelineTable = ({ setLoading }) => {
               </TableBody>
             </Table>
           </TableContainer>
-        </Grid>
-        <Grid item xs={12}>
-          <Pagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-          />
-        </Grid>
+        </Paper>
       </Grid>
-    </Paper>
+      <Grid item xs={12}>
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
+      </Grid>
+    </Grid>
   );
 };
 

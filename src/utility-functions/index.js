@@ -187,7 +187,7 @@ export function handleDownloadExcel(data, title) {
       })
     )
   );
-  // link.download = `${title}`;
+  title && (link.download = `${title}`);
   document.body.appendChild(link);
   link.click();
   link.remove();

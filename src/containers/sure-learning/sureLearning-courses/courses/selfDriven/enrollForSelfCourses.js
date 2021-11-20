@@ -53,7 +53,7 @@ function EnrollForSelfCourses() {
   const [page, setPage] = useState(2);
   const [totalCount, setTotalCount] = useState(5);
   const [loading, setLoading] = useState(false);
-  const [refresh, setRefresh] = useState(false)
+  const [refresh, setRefresh] = useState(false);
   const classes = useStyles();
   const handlePagination = (event, page) => {
     // localStorage.removeItem('viewMoreData');
@@ -98,7 +98,7 @@ function EnrollForSelfCourses() {
         if (res.status === 201) {
           setLoading(false);
           setAlert('success', 'Course Successfully Enrolled');
-          setRefresh(!refresh)
+          setRefresh(!refresh);
           getStatusInformation()
             .then((info) => {
               setData(info);
@@ -131,7 +131,16 @@ function EnrollForSelfCourses() {
     const diffColors = index % 4;
     return colors[diffColors];
   };
-
+  const StyledButton = withStyles((theme) => ({
+    root: {
+      backgroundColor: 'transparent',
+      color: '#FFFFFF',
+      padding: '8px 15px',
+      '&:hover': {
+        backgroundColor: 'transparent',
+      },
+    },
+  }))(Button);
   const udaanDetails = JSON.parse(localStorage.getItem('udaanDetails')) || [];
   const udaanToken = udaanDetails?.personal_info?.token;
   const moduleData = udaanDetails?.role_permission?.modules;
@@ -172,7 +181,7 @@ function EnrollForSelfCourses() {
           setAlert('error', 'Something Wrong!');
         });
     }
-  }, [moduleId, pageNumber,refresh]);
+  }, [moduleId, pageNumber, refresh]);
 
   return (
     <Layout>
@@ -210,7 +219,7 @@ function EnrollForSelfCourses() {
                         />
                       ) : (
                         <CardMedia
-                        className={classes.media}
+                          className={classes.media}
                           component='img'
                           alt={item.course_name}
                           title={item.course_name}
@@ -277,8 +286,14 @@ function EnrollForSelfCourses() {
                       </Grid>
                     </CardContent>
                     <CardContent>
-                    <Grid container direction='row'>
-                    <Grid item md={12} xs={12} style={{ marginTop: '10px' }} className={classes.content1}>
+                      <Grid container direction='row'>
+                        <Grid
+                          item
+                          md={12}
+                          xs={12}
+                          style={{ marginTop: '10px' }}
+                          className={classes.content1}
+                        >
                           <div
                             style={{ display: 'flex', justifyContent: 'space-around' }}
                           >
@@ -297,32 +312,37 @@ function EnrollForSelfCourses() {
                             </Typography>
                           </div>
                         </Grid>
-                        </Grid>
+                      </Grid>
                     </CardContent>
-                    <CardActions justify='center'className={classes.action}>
-                      <div
-                        style={{
-                          height: '40px',
-                          display: 'flex',
-                          width: '80%',
-                          justifyContent: 'center',
-                          backgroundImage: `url(${ButtonBackgroundImage})`,
-                          backgroundPosition: 'center',
-                          backgroundSize: '60%',
-                          backgroundRepeat: 'no-repeat',
-                        }}
+                    <CardActions justify='center' className={classes.action}>
+                      <StyledButton
+                        style={{ fontSize: '20px' }}
+                        // variant='none'
+                        onClick={() => handleViewMore(item)}
                       >
-                        <Typography
-                          onClick={() => handleViewMore(item)}
+                        <div
                           style={{
-                            fontWeight: 'bold',
-                            color: 'black',
+                            width: '100%',
                             cursor: 'pointer',
+                            backgroundImage: `url(${ButtonBackgroundImage})`,
+                            paddingLeft: '25px',
+                            height: 'auto',
+                            backgroundPosition: 'center',
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
                           }}
                         >
-                          Enroll
-                        </Typography>
-                      </div>
+                          <Typography
+                            style={{
+                              color: 'black',
+                              paddingRight: '25px',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            Start
+                          </Typography>
+                        </div>
+                      </StyledButton>
                     </CardActions>
                   </Card>
                 </Grid>

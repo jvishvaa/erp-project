@@ -9,7 +9,7 @@ import {
   CircularProgress,
   Switch,
   FormControlLabel,
-  Typography
+  Typography,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import {
@@ -35,7 +35,7 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import { fetchBranchesForCreateUser } from '../../../redux/actions';
 import Loader from '../../../components/loader/loader';
 import ReminderDialog from './reminderDialog';
-import APIREQUEST from "../../../config/apiRequest";
+import APIREQUEST from '../../../config/apiRequest';
 
 const CreateClassForm = (props) => {
   const tutorEmailRef = useRef(null);
@@ -55,6 +55,8 @@ const CreateClassForm = (props) => {
   const [selectedClassType, setSelectedClassType] = useState('');
   const [branches, setBranches] = useState([]);
   const [openModal, setOpenModal] = useState(false);
+  const [classWork, setToggleClasswork] = useState(true);
+
   const {
     listGradesCreateClass,
     listCoursesCreateClass,
@@ -96,7 +98,7 @@ const CreateClassForm = (props) => {
 
   const [toggle, setToggle] = useState(false);
   const [toggleZoom, setToggleZoom] = useState(false);
-  
+
   const { setAlert } = useContext(AlertNotificationContext);
   const { user_id: userId, is_superuser: isSuperUser } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -176,6 +178,7 @@ const CreateClassForm = (props) => {
       setSelectedCourse('');
       setTutorNotAvailableMessage(null);
       setToggle(false);
+      setToggleZoom(false);
       setSelectedDays([]);
       setOnlineClass((prevState) => ({
         ...prevState,
@@ -213,13 +216,26 @@ const CreateClassForm = (props) => {
     dispatch(clearSubjects());
     dispatch(clearCourses());
     if (value?.length > 0) {
-      value = value.filter(({ id }) => id === 'all').length === 1 ? [...branches].filter(({ id }) => id !== 'all') : value;
+      value =
+        value.filter(({ id }) => id === 'all').length === 1
+          ? [...branches].filter(({ id }) => id !== 'all')
+          : value;
       const ids = value.map((obj) => obj.id);
       setSelectedBranches(value);
       dispatch(listGradesCreateClass(ids, moduleId, selectedYear.id));
-      setOnlineClass((prevState) => ({ ...prevState, branchIds: ids, acadId: selectedYear?.id }));
+      setOnlineClass((prevState) => ({
+        ...prevState,
+        branchIds: ids,
+        acadId: selectedYear?.id,
+      }));
     } else {
-      setOnlineClass((prevState) => ({ ...prevState, branchIds: [], gradeIds: [], sectionIds: [], subject: [] }));
+      setOnlineClass((prevState) => ({
+        ...prevState,
+        branchIds: [],
+        gradeIds: [],
+        sectionIds: [],
+        subject: [],
+      }));
       dispatch(clearGrades());
     }
   };
@@ -233,7 +249,12 @@ const CreateClassForm = (props) => {
       dispatch(clearTutorEmailValidation());
       if (selectedClassType?.id > 0) dispatch(listCoursesCreateClass(ids));
     } else {
-      setOnlineClass((prevState) => ({ ...prevState, gradeIds: [], sectionIds: [], subject: [] }));
+      setOnlineClass((prevState) => ({
+        ...prevState,
+        gradeIds: [],
+        sectionIds: [],
+        subject: [],
+      }));
       dispatch(clearTutorEmailValidation());
     }
     setSectionSelectorKey(new Date());
@@ -476,7 +497,7 @@ const CreateClassForm = (props) => {
       branchIds,
       subject,
       duration,
-      optionalZoom,
+      is_zoom,
       joinLimit,
       tutorEmail,
       gradeIds,
@@ -489,21 +510,21 @@ const CreateClassForm = (props) => {
       courseId,
     } = onlineClass;
 
-    const startTime = `${selectedDate.toString().includes(' ')
-      ? selectedDate.toISOString().split('T')[0]
-      : moment(selectedDate).format('YYYY-MM-DD')
-      } ${getFormatedTime(selectedTime)}`;
+    const startTime = `${
+      selectedDate.toString().includes(' ')
+        ? selectedDate.toISOString().split('T')[0]
+        : moment(selectedDate).format('YYYY-MM-DD')
+    } ${getFormatedTime(selectedTime)}`;
     const coHostEmails = coHosts.map((coHost) => coHost?.email);
     const tutorEmails = [tutorEmail.email, ...coHostEmails];
     let request = {};
     request['user_id'] = userId;
     request['title'] = title;
-    request['optionalZoom'] = optionalZoom;
     request['duration'] = duration;
-    
-    var unique = (value, index, self)=>{
+
+    var unique = (value, index, self) => {
       return self.indexOf(value) === index;
-    }
+    };
     request['grade'] = gradeIds.filter(unique);
     request['branch'] = branchIds;
 
@@ -520,10 +541,12 @@ const CreateClassForm = (props) => {
     request['start_time'] = startTime;
     if (weeks > 0) request['no_of_week'] = Number(weeks);
     request['is_recurring'] = toggle ? 1 : 0;
+    request['is_zoom'] = toggleZoom ? '0' : '1';
     request['class_type'] = selectedClassType?.id;
     request['section_mapping_ids'] = sectionIds.join(',');
+    request['is_classwork'] = classWork ? true : false;
 
-    if(duration > 240){
+    if (duration > 240) {
       setAlert('warning', 'Duration MAX Limit 240mins');
       setLoading(false);
       return;
@@ -561,14 +584,14 @@ const CreateClassForm = (props) => {
     }
   };
 
-  useEffect(()=>{
-    if(!creatingOnlineClass){
+  useEffect(() => {
+    if (!creatingOnlineClass) {
       setLoading(false);
-    } 
-  },[creatingOnlineClass])
+    }
+  }, [creatingOnlineClass]);
 
   const validateForm = (e) => {
-    setLoading(true)
+    setLoading(true);
     callGrades();
     e.preventDefault();
     if (!validateClassTime(onlineClass?.selectedTime)) {
@@ -594,6 +617,7 @@ const CreateClassForm = (props) => {
     setSelectedCourse('');
     setTutorNotAvailableMessage(null);
     setToggle(false);
+    setToggleZoom(false);
     setSelectedDays([]);
     setOnlineClass((prevState) => ({
       ...prevState,
@@ -619,33 +643,38 @@ const CreateClassForm = (props) => {
     listTutorEmails(data);
   };
 
-  const chkLaunchDateMsApi = (selectedDate)=>{
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
+  const chkLaunchDateMsApi = (selectedDate) => {
+    if (JSON.parse(localStorage.getItem('isMsAPI'))) {
       let launchDate = localStorage.getItem('launchDate');
-      if(moment(selectedDate, "YYYY-MM-DD") > moment(launchDate, "YYYY-MM-DD") ){
-        return true
+      if (moment(selectedDate, 'YYYY-MM-DD') > moment(launchDate, 'YYYY-MM-DD')) {
+        return true;
       }
-      return false
+      return false;
     }
-    return false
-  }
+    return false;
+  };
 
   const checkTutorAvailability = async () => {
-    const { selectedDate, selectedTime, duration } = onlineClass;
+    const { selectedDate, selectedTime, duration, is_zoom } = onlineClass;
 
-    const startTime = `${selectedDate.toString().includes(' ')
-      ? selectedDate.toISOString().split('T')[0]
-      : moment(selectedDate).format('YYYY-MM-DD')
-      } ${getFormatedTime(selectedTime)}`;
+    const startTime = `${
+      selectedDate.toString().includes(' ')
+        ? selectedDate.toISOString().split('T')[0]
+        : moment(selectedDate).format('YYYY-MM-DD')
+    } ${getFormatedTime(selectedTime)}`;
     try {
       let url = toggle
-        ? `?tutor_email=${onlineClass.tutorEmail.email
-        }&start_time=${startTime}&duration=${duration}&no_of_week=${onlineClass.weeks
-        }&is_recurring=1&week_days=${[...selectedDays]
-          .map((obj) => obj.send)
-          .join(',')}`
+        ? `?tutor_email=${
+            onlineClass.tutorEmail.email
+          }&start_time=${startTime}&duration=${duration}&no_of_week=${
+            onlineClass.weeks
+          }&is_recurring=1&week_days=${[...selectedDays]
+            .map((obj) => obj.send)
+            .join(',')}`
         : `?tutor_email=${onlineClass.tutorEmail.email}&start_time=${startTime}&duration=${duration}&is_zoom=${onlineClass.is_zoom}`;
-      const { data } = chkLaunchDateMsApi(selectedDate) ? await APIREQUEST("get", `/oncls/v1/tutor-availability/${url}`) : await axiosInstance.get('/erp_user/check-tutor-time/' + url);
+      const { data } = chkLaunchDateMsApi(selectedDate)
+        ? await APIREQUEST('get', `/oncls/v1/tutor-availability/${url}`)
+        : await axiosInstance.get('/erp_user/check-tutor-time/' + url);
       if (data.status_code === 200) {
         if (data.status === 'success') {
           setTutorNotAvailableMessage('');
@@ -672,19 +701,19 @@ const CreateClassForm = (props) => {
 
   const checkTutorFlag = toggle
     ? onlineClass.duration &&
-    onlineClass.subject &&
-    onlineClass.gradeIds?.length &&
-    onlineClass.selectedDate &&
-    onlineClass.selectedTime &&
-    onlineClass.tutorEmail &&
-    onlineClass.weeks &&
-    daysLength
+      onlineClass.subject &&
+      onlineClass.gradeIds?.length &&
+      onlineClass.selectedDate &&
+      onlineClass.selectedTime &&
+      onlineClass.tutorEmail &&
+      onlineClass.weeks &&
+      daysLength
     : onlineClass.duration &&
-    onlineClass.subject &&
-    onlineClass.gradeIds?.length &&
-    onlineClass.selectedDate &&
-    onlineClass.selectedTime &&
-    onlineClass.tutorEmail;
+      onlineClass.subject &&
+      onlineClass.gradeIds?.length &&
+      onlineClass.selectedDate &&
+      onlineClass.selectedTime &&
+      onlineClass.tutorEmail;
 
   useEffect(() => {
     if (checkTutorFlag) {
@@ -720,7 +749,7 @@ const CreateClassForm = (props) => {
   }, [onlineClass.tutorEmail]);
 
   const createBtnDisabled =
-    onlineClass.title.trim() === "" ||
+    onlineClass.title.trim() === '' ||
     !onlineClass.duration ||
     !onlineClass.gradeIds?.length ||
     !onlineClass.sectionIds?.length ||
@@ -968,13 +997,17 @@ const CreateClassForm = (props) => {
             <MuiPickersUtilsProvider utils={MomentUtils}>
               <Grid item xs={12} sm={2}>
                 <KeyboardDatePicker
-                  onOpen={()=>{
-                    setTimeout(()=>{
-                      document.querySelectorAll(".MuiPickersModal-dialogRoot .MuiDialogActions-root button").forEach((elem)=>{
-                        elem.classList.remove("MuiButton-textPrimary")
-                        elem.classList.add("MuiButton-containedPrimary")
-                      })
-                    },1000)
+                  onOpen={() => {
+                    setTimeout(() => {
+                      document
+                        .querySelectorAll(
+                          '.MuiPickersModal-dialogRoot .MuiDialogActions-root button'
+                        )
+                        .forEach((elem) => {
+                          elem.classList.remove('MuiButton-textPrimary');
+                          elem.classList.add('MuiButton-containedPrimary');
+                        });
+                    }, 1000);
                   }}
                   size='small'
                   // disableToolbar
@@ -994,13 +1027,17 @@ const CreateClassForm = (props) => {
               </Grid>
               <Grid item xs={12} sm={2}>
                 <KeyboardTimePicker
-                  onOpen={()=>{
-                    setTimeout(()=>{
-                      document.querySelectorAll(".MuiPickersModal-dialogRoot .MuiDialogActions-root button").forEach((elem)=>{
-                        elem.classList.remove("MuiButton-textPrimary")
-                        elem.classList.add("MuiButton-containedPrimary")
-                      })
-                    },1000)
+                  onOpen={() => {
+                    setTimeout(() => {
+                      document
+                        .querySelectorAll(
+                          '.MuiPickersModal-dialogRoot .MuiDialogActions-root button'
+                        )
+                        .forEach((elem) => {
+                          elem.classList.remove('MuiButton-textPrimary');
+                          elem.classList.add('MuiButton-containedPrimary');
+                        });
+                    }, 1000);
                   }}
                   size='small'
                   margin='none'
@@ -1018,6 +1055,20 @@ const CreateClassForm = (props) => {
             </MuiPickersUtilsProvider>
           </Grid>
           <Grid container className='create-class-container' spacing={3}>
+            <Grid item md={2} xs={12} sm={3}>
+              <FormControlLabel
+                className='switchLabel'
+                control={
+                  <Switch
+                    checked={classWork == true ? 1 : 0}
+                    onChange={() => setToggleClasswork((classWork) => !classWork)}
+                    name='is_classwork'
+                    color='primary'
+                  />
+                }
+                label={<Typography color='secondary'>ClassWork</Typography>}
+              />
+            </Grid>
             {toggle ? (
               <>
                 <Grid item xs={12} sm={2}>
@@ -1075,26 +1126,28 @@ const CreateClassForm = (props) => {
                 label={
                   <Typography color='secondary'>
                     {toggle ? 'Recurring' : 'Normal'}
-                  </Typography>}
+                  </Typography>
+                }
               />
             </Grid>
-            {/* <Grid item md={1} xs={12} sm={2}>
+            <Grid item md={1} xs={12} sm={2}>
               <FormControlLabel
                 className='switchLabel'
                 control={
                   <Switch
-                    checked={toggleZoom}
+                    checked={toggleZoom == true ? 1 : 0}
                     onChange={() => setToggleZoom((toggleZoom) => !toggleZoom)}
-                    name='optionalZoom'
+                    name='is_zoom'
                     color='primary'
                   />
                 }
                 label={
                   <Typography color='secondary'>
                     {toggleZoom ? 'edXstream' : 'Zoom'}
-                  </Typography>}
+                  </Typography>
+                }
               />
-            </Grid> */}
+            </Grid>
           </Grid>
           <hr className='horizontal-line' />
           <Grid

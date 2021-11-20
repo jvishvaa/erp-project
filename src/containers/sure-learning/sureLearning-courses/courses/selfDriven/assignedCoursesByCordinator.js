@@ -25,12 +25,12 @@ import { Pagination } from '@material-ui/lab';
 import endpoints from 'config/endpoints';
 import axios from 'axios';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
-import AllCoursesAssignedByCoordinator from '../selfDriven/steps/allCoursesAssignedByCoordinator'
+import AllCoursesAssignedByCoordinator from '../selfDriven/steps/allCoursesAssignedByCoordinator';
 
 function AssignedCoursesByCordinator() {
-  const [state, setstate] = useState([])
+  const [state, setstate] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
-  const [data, setData] = useState([])
+  const [data, setData] = useState([]);
   const [moduleId, setModuleId] = useState('');
   const [page, setPage] = useState(2);
   const [totalCount, setTotalCount] = useState(100);
@@ -42,11 +42,38 @@ function AssignedCoursesByCordinator() {
   };
   const limit = 4;
   const history = useHistory();
-  const allCoursesAssignedByCoordinator = (id) => {
+  const allCoursesAssignedByCoordinator = (item, id) => {
+    console.log('volume', item.id, id);
     history.push('/allCoursesAssignedByCoordinator');
     sessionStorage.setItem('course_id', id);
-    sessionStorage.setItem('course', "self_driven");
+    sessionStorage.setItem('course', 'self_driven');
     sessionStorage.setItem('BreadCrumb', 'Self Driven Courses');
+    // if (data && data.length) {
+    //   data.forEach((con, index) => {
+    //     if (con.id === item.id && index > 0) {
+    //       console.log(index - 1, 'index');
+    //       let int = index - 1;
+    //       console.log(data[int], 'prev typ');
+    //       console.log(int, 'prev');
+    //       if (data[index - 1].is_completed) {
+    //         console.log('volume', item.id, id);
+    //         history.push('/allCoursesAssignedByCoordinator');
+    //         sessionStorage.setItem('course_id', id);
+    //         sessionStorage.setItem('course', 'self_driven');
+    //         sessionStorage.setItem('BreadCrumb', 'Self Driven Courses');
+    //       } else {
+    //         setAlert('warning', 'please complete previous chapter');
+    //       }
+    //     }
+    //     if (con.id === item.id && index < 1) {
+    //       console.log('volume', item.id, id);
+    //       history.push('/allCoursesAssignedByCoordinator');
+    //       sessionStorage.setItem('course_id', id);
+    //       sessionStorage.setItem('course', 'self_driven');
+    //       sessionStorage.setItem('BreadCrumb', 'Self Driven Courses');
+    //     }
+    //   });
+    // }
   };
 
   const useStyles = makeStyles({
@@ -64,7 +91,6 @@ function AssignedCoursesByCordinator() {
     content: {
       height: 155,
     },
-    
   });
   const classes = useStyles();
   const getCardColor = (index) => {
@@ -78,9 +104,6 @@ function AssignedCoursesByCordinator() {
     const diffColors = index % 4;
     return colors[diffColors];
   };
-
-
-
 
   const udaanDetails = JSON.parse(localStorage.getItem('udaanDetails')) || [];
   const udaanToken = udaanDetails?.personal_info?.token;
@@ -114,12 +137,19 @@ function AssignedCoursesByCordinator() {
         .catch((error) => {
           setAlert('error', 'Something Wrong!');
         });
-      }
+    }
   }, [moduleId]);
-
-
-  
-
+  const StyledButton = withStyles((theme) => ({
+    root: {
+      marginLeft:'50px',
+      backgroundColor: 'transparent',
+      color: '#FFFFFF',
+      padding: '8px 15px',
+      '&:hover': {
+        backgroundColor: 'transparent',
+      },
+    },
+  }))(Button);
   return (
     <Layout>
       <div>
@@ -129,11 +159,7 @@ function AssignedCoursesByCordinator() {
           isAcademicYearVisible={true}
         />
 
-        <Grid
-          container
-          direction='row'
-          style={{ paddingTop: '20px' }}
-        >
+        <Grid container direction='row' style={{ paddingTop: '20px' }}>
           {data.map((item, index) => {
             return (
               <Grid item xs={12} sm={6} md={3}>
@@ -150,31 +176,43 @@ function AssignedCoursesByCordinator() {
                         justifyContent: 'center',
                       }}
                     >
-                      <CardMedia
-                        className={classes.media}
-                        component='img'
-                        alt='Contemplative Reptile'
-                        title='Contemplative Reptile'
-                        image='https://udaansurelearning.com/static/media/course.63579270.jpg'
-                      />
+                      {item.course_image === null ? (
+                        <CardMedia
+                          className={classes.media}
+                          component='img'
+                          alt={''}
+                          title={item.course_name}
+                          image={
+                            'https://udaansurelearning.com/static/media/course.63579270.jpg'
+                          }
+                        />
+                      ) : (
+                        <CardMedia
+                          className={classes.media}
+                          component='img'
+                          alt={''}
+                          title={item.course_name}
+                          image={item.course_image}
+                        />
+                      )}
                     </div>
                     <CardContent justify='center' className={classes.content1}>
-                    <Grid container direction='row'>
+                      <Grid container direction='row'>
                         <Grid item md={12} xs={12} style={{ paddingLeft: '10px' }}>
-                          <Typography style = {{color : 'white'}}>
+                          <Typography style={{ color: 'white' }}>
                             {' '}
                             <strong>{item.course_name}</strong>{' '}
                           </Typography>
                         </Grid>
-                        <Grid item md={10} xs={12} >
-                          <Typography style = {{color : 'white'}}>
+                        <Grid item md={10} xs={12}>
+                          <Typography style={{ color: 'white' }}>
                             {' '}
                             <strong>{item.category}</strong>{' '}
                           </Typography>
                         </Grid>
-</Grid>
+                      </Grid>
                     </CardContent>
-                    <CardContent justify='center'className={classes.content} >
+                    <CardContent justify='center' className={classes.content}>
                       <Grid container direction='row'>
                         {/* <Grid item md={12} xs={12} style={{ paddingLeft: '10px' }}>
                           <Typography style = {{color : 'white'}}>
@@ -189,82 +227,171 @@ function AssignedCoursesByCordinator() {
                           </Typography>
                         </Grid> */}
 
-                        <Grid item md={12} xs={12} style = {{marginTop : '15px'}}>
-                         <div style = {{display : 'flex', justifyContent : 'space-around'}}>
-                          <Typography  style={{ verticalAlign: 'middle', display: 'inline-flex', fontSize: '16px', color: 'white'  }}>
-                            <strong>Start Date </strong> <CalendarTodayIcon  style = {{ marginLeft: '9px', fontSize : '18px', color : 'white'}}/>
-                          </Typography>
-                          <Typography
-                            style={{ verticalAlign: 'middle', display: 'inline-flex', fontSize: '16px', color: 'white'  }}
+                        <Grid item md={12} xs={12} style={{ marginTop: '15px' }}>
+                          <div
+                            style={{ display: 'flex', justifyContent: 'space-around' }}
                           >
-                            <strong>End Date</strong> <CalendarTodayIcon  style={{ marginLeft: '9px', fontSize : '18px', color : 'white' }} />
-                         
-                          </Typography>
+                            <Typography
+                              style={{
+                                verticalAlign: 'middle',
+                                display: 'inline-flex',
+                                fontSize: '16px',
+                                color: 'white',
+                              }}
+                            >
+                              <strong>Start Date </strong>{' '}
+                              <CalendarTodayIcon
+                                style={{
+                                  marginLeft: '9px',
+                                  fontSize: '18px',
+                                  color: 'white',
+                                }}
+                              />
+                            </Typography>
+                            <Typography
+                              style={{
+                                verticalAlign: 'middle',
+                                display: 'inline-flex',
+                                fontSize: '16px',
+                                color: 'white',
+                              }}
+                            >
+                              <strong>End Date</strong>{' '}
+                              <CalendarTodayIcon
+                                style={{
+                                  marginLeft: '9px',
+                                  fontSize: '18px',
+                                  color: 'white',
+                                }}
+                              />
+                            </Typography>
                           </div>
                         </Grid>
-                        <Grid item md={12} xs={12} style = {{ marginBottom : '5px'}}>
-                        <div style = {{display : 'flex', justifyContent : 'space-between'}}>
-                          <Typography
-                            style={{ verticalAlign: 'middle', display: 'inline-flex', fontSize: '16px', color: 'white' }}
+                        <Grid item md={12} xs={12} style={{ marginBottom: '5px' }}>
+                          <div
+                            style={{ display: 'flex', justifyContent: 'space-between' }}
                           >
-                            {item.start_date}
-                          </Typography>
+                            <Typography
+                              style={{
+                                verticalAlign: 'middle',
+                                display: 'inline-flex',
+                                fontSize: '16px',
+                                color: 'white',
+                              }}
+                            >
+                              {item.start_date}
+                            </Typography>
 
-                          <Typography
-                            style={{ verticalAlign: 'middle', display: 'inline-flex', fontSize: '16px', color: 'white' }}
-                          >
-                            {item.end_date}
-                          </Typography>
+                            <Typography
+                              style={{
+                                verticalAlign: 'middle',
+                                display: 'inline-flex',
+                                fontSize: '16px',
+                                color: 'white',
+                              }}
+                            >
+                              {item.end_date}
+                            </Typography>
                           </div>
                         </Grid>
-                        <Grid item md={12} xs={12} style = {{marginTop : '5px'}}>
-                        <div style = {{display : 'flex', justifyContent : 'space-between'}}>
-                          <Typography style={{ verticalAlign: 'middle', display: 'inline-flex', fontSize : '16px', color : 'white' }}>
-                            {' '}
-                            <strong>Total Hours{' '} </strong>
-                            <AccessAlarmsIcon style={{ marginLeft: '9px', fontSize : '18px', color : 'white' }} />
-                          </Typography>
-                          <Typography style={{ verticalAlign: 'middle', display: 'inline-flex', fontSize : '16px', color : 'white' }}>
-                            <strong>Pending Hours </strong> <AccessAlarmsIcon style={{ marginLeft: '9px', fontSize : '18px', color : 'white' }}/>
-                          </Typography>
-                        </div>
+                        <Grid item md={12} xs={12} style={{ marginTop: '5px' }}>
+                          <div
+                            style={{ display: 'flex', justifyContent: 'space-between' }}
+                          >
+                            <Typography
+                              style={{
+                                verticalAlign: 'middle',
+                                display: 'inline-flex',
+                                fontSize: '16px',
+                                color: 'white',
+                              }}
+                            >
+                              {' '}
+                              <strong>Total Hours </strong>
+                              <AccessAlarmsIcon
+                                style={{
+                                  marginLeft: '9px',
+                                  fontSize: '18px',
+                                  color: 'white',
+                                }}
+                              />
+                            </Typography>
+                            <Typography
+                              style={{
+                                verticalAlign: 'middle',
+                                display: 'inline-flex',
+                                fontSize: '16px',
+                                color: 'white',
+                              }}
+                            >
+                              <strong>Pending Hours </strong>{' '}
+                              <AccessAlarmsIcon
+                                style={{
+                                  marginLeft: '9px',
+                                  fontSize: '18px',
+                                  color: 'white',
+                                }}
+                              />
+                            </Typography>
+                          </div>
                         </Grid>
-                        <Grid item md={12} xs={12} style = {{ marginBottom : '5px'}}>
-                        <div style = {{display : 'flex', justifyContent : 'space-around'}}>
-                          <Typography style={{ verticalAlign: 'middle', display: 'inline-flex', fontSize : '16px', color : 'white' }}>
-                          {item.total_duration}
-                          </Typography>
-                          <Typography style={{ verticalAlign: 'middle', display: 'inline-flex', fontSize : '16px', color : 'white' }}>
-                            {item.pending_hours}
-                          </Typography>
-                        </div>
+                        <Grid item md={12} xs={12} style={{ marginBottom: '5px' }}>
+                          <div
+                            style={{ display: 'flex', justifyContent: 'space-around' }}
+                          >
+                            <Typography
+                              style={{
+                                verticalAlign: 'middle',
+                                display: 'inline-flex',
+                                fontSize: '16px',
+                                color: 'white',
+                              }}
+                            >
+                              {item.total_duration}
+                            </Typography>
+                            <Typography
+                              style={{
+                                verticalAlign: 'middle',
+                                display: 'inline-flex',
+                                fontSize: '16px',
+                                color: 'white',
+                              }}
+                            >
+                              {item.pending_hours}
+                            </Typography>
+                          </div>
                         </Grid>
                       </Grid>
                     </CardContent>
                     <CardActions justify='center' className={classes.action}>
-                      <div
-                        style={{
-                          height : '40px',
-                          display: 'flex',
-                          width: '80%',
-                          justifyContent: 'center',
-                          backgroundImage: `url(${ButtonBackgroundImage})`,
-                          backgroundPosition: 'center',
-                          backgroundSize: '60%',
-                          backgroundRepeat: 'no-repeat',
-                        }}
+                      <StyledButton
+                        style={{ fontSize: '20px' ,paddingLeft:30}}
+                        // variant='none'
+                        onClick={() => allCoursesAssignedByCoordinator(item, item.id)}
                       >
-                        <Typography
-                          onClick={() => allCoursesAssignedByCoordinator(item.id)}
+                        <div
                           style={{
-                            fontWeight: 'bold',
-                            color: 'black',
+                            width: '100%',
                             cursor: 'pointer',
+                            backgroundImage: `url(${ButtonBackgroundImage})`,
+                            paddingLeft: '25px',
+                            height: 'auto',
+                            backgroundPosition: 'center',
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
                           }}
                         >
-                          Start
-                        </Typography>
-                      </div>
+                          <Typography
+                            style={{
+                              color: 'black',
+                              paddingRight: '25px',
+                              fontWeight: 'bold',
+                            }}
+                          >
+                            Start
+                          </Typography>
+                        </div>
+                      </StyledButton>
                     </CardActions>
                   </Card>
                 </Grid>

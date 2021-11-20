@@ -283,12 +283,35 @@ const SubjectTraining = () => {
   };
 
   const startTrain = (id) => {
-    history.push({
-      pathname: '/allsubjectchapters',
-      state: id,
-      module: 'subjectTraining',
-    });
-    console.log(id, 'hit');
+    console.log('volume',id.id,id,id.to_show);
+    if (allVolumes && allVolumes.length) {
+      allVolumes.forEach((con, index) => {
+        if (con.id === id.id && index > 0) {
+          console.log(index - 1, 'index');
+          let int = index - 1;
+          console.log(allVolumes[int], 'prev typ');
+          console.log(allVolumes[index - 1].is_completed, 'allVolumes[index - 1].is_completed');
+          if (allVolumes[index - 1].is_completed) {
+            history.push({
+              pathname: '/allsubjectchapters',
+              state: id,
+              module: 'subjectTraining',
+            });
+            // console.log(id, 'hit');
+          } else {
+            setAlert('warning', 'please complete previous chapter');
+          }
+        }
+        if (con.id === id.id && index < 1) {
+          history.push({
+            pathname: '/allsubjectchapters',
+            state: id,
+            module: 'subjectTraining',
+          });
+          console.log(id, 'hit');
+        }
+      });
+    }
   };
 
   const handleVolume = (e, value) => {
@@ -312,7 +335,7 @@ const SubjectTraining = () => {
           }
         )
         .then((res) => {
-          console.log(res, 'volume');
+          console.log(res?.data, 'EnrolledSelfCources');
           setAllVolumes(res?.data);
           console.log(res?.data, 'allvolume');
           // setVolumeList(res?.data?.data);
@@ -322,7 +345,7 @@ const SubjectTraining = () => {
         });
     }
   };
-  
+
   return (
     <Layout className='accessBlockerContainer'>
       <div className={classes.parentDiv}>
@@ -424,10 +447,7 @@ const SubjectTraining = () => {
                 <StyledClearButton onClick={handleClearAllList}>
                   Clear All
                 </StyledClearButton>
-                <StyledButton
-                  className={classes.filters}
-                  onClick={handleSubjectTrain}
-                >
+                <StyledButton className={classes.filters} onClick={handleSubjectTrain}>
                   Filter
                 </StyledButton>
               </Grid>
@@ -443,11 +463,7 @@ const SubjectTraining = () => {
           <Paper className={`${classes.root} common-table`} id='singleStudent'>
             {allVolumes !== null ? (
               <Grid id='cardAreaSubject' style={{ margin: '20px 20px' }}>
-                <MediaCard
-                  allVolumes={allVolumes}
-                  startTrain={startTrain}
-                  
-                />
+                <MediaCard allVolumes={allVolumes} startTrain={startTrain} />
               </Grid>
             ) : (
               <div className={classes.periodDataUnavailable}>

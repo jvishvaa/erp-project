@@ -1,6 +1,6 @@
 import React from 'react';
 import Timer from 'react-compound-timer';
-import { makeStyles } from '@material-ui/styles';
+import { makeStyles } from '@material-ui/core/styles';
 
 /* <Timer.Days />
 days,
@@ -10,14 +10,14 @@ h:
 m:
 <Timer.Seconds />
 s */
-const useStyles = makeStyles((theme)=>({
-  sidebarTimecounterTitle:{
+const useStyles = makeStyles((theme) => ({
+  sidebarTimecounterTitle: {
     marginTop: '0px',
     color: theme.palette.secondary.main,
     fontSize: '15px',
     marginBottom: '0px',
   },
-  counterTimer:{
+  counterTimer: {
     marginTop: '0px',
     color: theme.palette.secondary.main,
     fontSize: '16px',
@@ -42,7 +42,7 @@ const TimerComponent = (props) => {
         durationInMin * 60 * 1000 - new Date().getTime() + new Date(startedAt).getTime();
       if (durationLeft <= 0) {
         // submit();
-        setIsAutoSubmit(prev=>!prev);
+        setIsAutoSubmit(prev => !prev);
       }
     },1000);
     return () => {
@@ -84,7 +84,7 @@ const TimerComponent = (props) => {
       {() => (
         <>
           <div>
-            <h4 className = {classes.sidebarTimecounterTitle}>Time Remaining</h4>
+            <h4 className={classes.sidebarTimecounterTitle}>Time Remaining</h4>
             <h5 className={classes.counterTimer}>
               <Timer.Minutes />
               :

@@ -20,38 +20,33 @@ const DefaultDashboard = React.lazy(() => import('./DefaultDashboard/defaultDash
 const Dashboard = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
   const username = JSON.parse(localStorage.getItem('userDetails')) || [];
-  console.log(username.erp , "us");
 
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Sure Learning'  &&
+          item.parent_modules === 'Sure Learning' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Induction Training') { 
-            if(username.erp !== 'super_admin_OLV'){
-            axios
-            .post(endpoints.sureLearning.login, {
-              username: username?.erp,
-            })
-            .then((result) => {
-              console.log(result);
-              localStorage.setItem('udaanDetails', JSON.stringify(result.data));
-            })
-            .catch((error) => {
-              console.log(error);
-            });
-          }
-            console.log("matcheddddd");
-          }
-        })
-      }
-    })
-  }
-  },[])
+            if (item.child_name === 'Induction Training') {
+              if (username.erp !== 'super_admin_OLV') {
+                axios
+                  .post(endpoints.sureLearning.login, {
+                    username: username?.erp,
+                  })
+                  .then((result) => {
+                    localStorage.setItem('udaanDetails', JSON.stringify(result.data));
+                  })
+                  .catch((error) => { });
+              }
+            }
+          });
+        }
+      });
+    }
+  }, []);
 
   const {
     welcomeDetails: { userLevel = 4 },
@@ -71,7 +66,7 @@ const Dashboard = () => {
       case 3:
         return <TeacherDashboard />;
       case 4:
-        return <DefaultDashboard />; // to be replaced with student dashboard
+        return <StudentDashboard />; // to be replaced with student dashboard
       case 5:
         return <DefaultDashboard />;
       default:
@@ -80,10 +75,11 @@ const Dashboard = () => {
   };
 
   return (
-    <Box px={3} mt={3}>
+    <Box px={3} mt={1}>
       <WelcomeComponent />
       <Suspense fallback={<Loading />}>
         {isMsAPIKey ? renderRoleDashboard() : <DefaultDashboard />}
+        {/* {true ? renderRoleDashboard() : <DefaultDashboard />} */}
       </Suspense>
     </Box>
   );
