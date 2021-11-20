@@ -363,6 +363,19 @@
       height: 15px;
     }
   }
+  .flagBgHoliday {
+    background: #dd2525;
+    height: 20px;
+    align-items: center;
+    width: 20px;
+    display: flex;
+    justify-content: center;
+    border-radius: 10px;
+    .flagImg {
+      width: 15px;
+      height: 15px;
+    }
+  }
   .event-btn {
     display: flex;
     justify-content: flex-end;
@@ -432,6 +445,14 @@
   }
   #updated {
     margin-left: 23px;
+  }
+}
+.date-range-holiday{
+  .MuiFormLabel-root{
+    color: #b4a07e !important;
+  }
+  .MuiFormHelperText-root{
+    display: none;
   }
 }
 @media only screen and (max-width: 600px) {

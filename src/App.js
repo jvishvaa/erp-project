@@ -339,12 +339,15 @@ import OnlineClassStart from 'containers/sure-learning/trainer-driven-courses/on
 import TeacherReport from 'containers/sure-learning/sureLearning-courses/courses/selfDriven/teacher-report/TeacherReport';
 import InhouseCalendar from 'containers/sure-learning/calender/inHouseViewWebinar/inhouseWibenarCalender'
 import EachBlog from 'containers/sure-learning/Blogs-sureLearning/dialog-Blog';
+import Workshop from './components/Workshop';
 import LearningVideos from 'containers/sure-learning/MyNotes/learningAll';
 import EachLearn from 'containers/sure-learning/MyNotes/eachLearn';
 import WalletBulk from 'containers/Finance/src/components/Finance/NegativeBalanceAdjust/walletbulkupload';
 import  ExtraAmtAdjust  from 'containers/Finance/src/components/Finance/NegativeBalanceAdjust/negativeBalanceAdjust';
-
-
+import StudentReport from 'containers/assessment-central/assessment-report-types/student-report/student-report';
+import WeeklyQuizPerformance from 'containers/assessment-central/assessment-report-types/student-report/weekly-quiz-performnace';
+import HolidayMark from 'containers/attendance/holidaymark';
+import ReferSuccess from 'containers/studentRefferal/referSuccess';
 import StudentRefer from 'containers/studentRefferal/referForm';
 
 function App({ alert, isMsAPI }) {
@@ -806,6 +809,12 @@ function App({ alert, isMsAPI }) {
                           <Route exact path='/student-strength'>
                             {({ match }) => <StudentStrength match={match} />}
                           </Route>
+                          <Route exact path='/assessment-student-report'>
+                            {({ match }) => <StudentReport match={match} />}
+                          </Route>
+                          <Route exact path='/assessment-weekly-quiz-performance-report'>
+                            {({ match }) => <WeeklyQuizPerformance match={match} />}
+                          </Route>
                           <Route exact path='/student-id-card'>
                             {({ match }) => <StudentIdCard match={match} />}
                           </Route>
@@ -817,6 +826,9 @@ function App({ alert, isMsAPI }) {
                           </Route>
                           <Route exact path='/online-class/teacher-view-class'>
                             {({ match }) => <TeacherBatchView match={match} />}
+                          </Route>
+                          <Route exact path='/online-class/workshop'>
+                            {({ match }) => <Workshop match={match} />}
                           </Route>
                           <Route exact path='/aol-reshuffle/:id?'>
                             {({ match }) => <Reshuffle match={match} />}
@@ -1632,6 +1644,14 @@ function App({ alert, isMsAPI }) {
 
                           <Route path='/studentrefer'>
                             {({ match }) => <StudentRefer match={match} />}
+                          </Route> 
+
+                          <Route path='/successrefer'>
+                            {({ match }) => <ReferSuccess match={match} />}
+                          </Route> 
+
+                          <Route path='/holidaymarking'>
+                            {({ match }) => <HolidayMark match={match} />}
                           </Route> 
 
 

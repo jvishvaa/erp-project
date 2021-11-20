@@ -228,13 +228,45 @@ console .log(isAllComplete,'isAllComplete')
   const chapters = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
 
   const handleChaplerDetails = (eachChapter) => {
-    history.push({
-      pathname: '/allchapterContentInduction',
-      state: eachChapter,
-      type: 'subject',
-    });
-    sessionStorage.setItem('content_id', eachChapter.id);
-    sessionStorage.setItem('BreadCrumb', 'Induction Training');
+
+    if (chapterList && chapterList.length) {
+      chapterList.forEach((con, index) => {
+        if (con.id === eachChapter.id && index > 0) {
+          console.log(index - 1, 'index');
+          let int = index - 1;
+          console.log(chapterList[int], 'prev typ');
+          console.log(int, 'prev');
+          if (chapterList[index - 1].is_completed) {
+            history.push({
+              pathname: '/allchapterContentInduction',
+              state: eachChapter,
+              type: 'subject',
+            });
+            sessionStorage.setItem('content_id', eachChapter.id);
+            sessionStorage.setItem('BreadCrumb', 'Induction Training');
+          } else {
+            setAlert('warning', 'please complete previous chapter');
+          }
+        }
+        if (con.id === eachChapter.id && index < 1) {
+          history.push({
+            pathname: '/allchapterContentInduction',
+            state: eachChapter,
+            type: 'subject',
+          });
+          sessionStorage.setItem('content_id', eachChapter.id);
+          sessionStorage.setItem('BreadCrumb', 'Induction Training');
+
+        }
+      });
+    }
+
+
+
+
+
+
+    
   };
 
   const getCardColor = (index) => {

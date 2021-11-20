@@ -25,18 +25,18 @@ const useStyles = makeStyles({
     height: 140,
   },
   action: {
-  display: 'flex',
-  justifyContent: 'center'    
+    display: 'flex',
+    justifyContent: 'center',
   },
 });
 
 const StyledButton = withStyles((theme) => ({
   root: {
-    backgroundColor: theme.palette.primary.main,
+    backgroundColor: 'transparent',
     color: '#FFFFFF',
     padding: '8px 15px',
     '&:hover': {
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: 'transparent',
     },
   },
 }))(Button);
@@ -72,23 +72,56 @@ export default function MediaCard(props) {
                 sx={{ maxWidth: 345 }}
                 style={{ backgroundColor: getCardColor(index) }}
               >
-                <div
-                  style={{
-                    display: 'flex',
-                    display: 'flex',
-                    alignItem: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <CardMedia
-                    className={classes.media}
-                    component='img'
-                    alt='Contemplative Reptile'
-                    title='Contemplative Reptile'
-                    image='https://udaansurelearning.com/static/media/course.63579270.jpg'
-                  />
-                </div>
-                
+                {vol.course_image ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      display: 'flex',
+                      alignItem: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    {vol.course_image === null ? (
+                      <CardMedia
+                        className={classes.media}
+                        component='img'
+                        alt={''}
+                        title={vol.course_name}
+                        image={
+                          'https://udaansurelearning.com/static/media/course.63579270.jpg'
+                        }
+                      />
+                    ) : (
+                      <CardMedia
+                        className={classes.media}
+                        component='img'
+                        alt={''}
+                        title={vol.course_name}
+                        image={vol.course_image}
+                      />
+                    )}
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      display: 'flex',
+                      display: 'flex',
+                      alignItem: 'center',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <CardMedia
+                      className={classes.media}
+                      component='img'
+                      alt={''}
+                      title={vol.course_name}
+                      image={
+                        'https://udaansurelearning.com/static/media/course.63579270.jpg'
+                      }
+                    />
+                  </div>
+                )}
+
                 <CardContent justify='center' className={classes.content1}>
                   <div id='time-area'>
                     <div id='pending-area'>
@@ -97,7 +130,7 @@ export default function MediaCard(props) {
                       </Typography>
                     </div>
                     <div id='course-area'>
-                      <Typography style={{ color: 'white' , fontSize: '15px' }}>
+                      <Typography style={{ color: 'white', fontSize: '15px' }}>
                         {vol.course_name}
                       </Typography>
                     </div>
@@ -168,19 +201,9 @@ export default function MediaCard(props) {
                   </Grid>
                 </CardContent>
                 <CardActions className={classes.action}>
-                  <div
-                    style={{
-                      height: '40px',
-                      display: 'flex',
-                      width: '80%',
-                      justifyContent: 'center',
-                      backgroundImage: `url(${ButtonBackgroundImage})`,
-                      backgroundPosition: 'center',
-                      backgroundSize: '60%',
-                      backgroundRepeat: 'no-repeat',
-                    }}
-                  >
-                    <Typography
+                  {/* <div> */}
+                  {/* <Typography
+                      
                       onClick={() => props.startTrain(vol)}
                       style={{
                         fontWeight: 'bold',
@@ -189,8 +212,37 @@ export default function MediaCard(props) {
                       }}
                     >
                       Start
-                    </Typography>
-                  </div>
+                    </Typography> */}
+                  <StyledButton
+                    style={{ fontSize: '20px' }}
+                    disabled={vol.to_show === false}
+                    // variant='none'
+                    onClick={() => props.startTrain(vol)}
+                  >
+                    <div
+                      style={{
+                        width: '100%',
+                        cursor: 'pointer',
+                        backgroundImage: `url(${ButtonBackgroundImage})`,
+                        paddingLeft: '25px',
+                        height: 'auto',
+                        backgroundPosition: 'center',
+                        backgroundSize: 'cover',
+                        backgroundRepeat: 'no-repeat',
+                      }}
+                    >
+                      <Typography
+                        style={{
+                          color: 'black',
+                          paddingRight: '25px',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        Start
+                      </Typography>
+                    </div>
+                  </StyledButton>
+                  {/* </div> */}
                 </CardActions>
               </Card>
             </div>

@@ -33,6 +33,7 @@ export default {
     singleStudentAttendance: '/academic/single_student_attendance_between_days/',
     markAttendance: '/academic/bulk_create_attendance/',
     students: '/academic/get_student_list/',
+    getHoliday: '/academic/holiday/'
   },
   appBar: {
     schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,
@@ -430,6 +431,15 @@ export default {
     reportDownloadClassAverage: `/assessment/download-report-class-average/`,
     reportDownloadTopicStudentAverage: `/assessment/download-report-topic-student-average/`,
     reportCardData: '/assessment/generate-report/',
+    reportPdf:'/assessment/download-report-pdf/',
+    weeklyStudentReport:'/assessment/download-report-student-report/',
+    reportConsolidated: '/assessment/download-report-consolidate/',
+    individualQuizTeacherReport:'/assessment/download-report-individual-teacher/',
+    weeklyTeacherReportEachGrade:'/assessment/download-report-teacher-grade-section-wise/',
+    weeklyStudentReport:'/assessment/download-report-student-report/',
+    individualStudentReport:'/assessment/individual-student-report/',
+    weeklyQuizPerformance:'/assessment/weekly-quiz-performance-report/',
+
   },
   publish: {
     ebook: `erp_user/publication/`,
@@ -554,6 +564,8 @@ export default {
     getReportCardStatusList: '/assessment/get-report-publish-status/',
     updateReportCardStatus: '/assessment/update-report-publish-status/',
     personalityTraits: '/assessment/get-traits/',
+    studentReportGrade: '/assessment/get-student-grades/',
+    statusList: '/assessment/get-pipeline-statuses/',
   },
   dashboard: {
     teacher: {
@@ -562,11 +574,15 @@ export default {
       downloadHomeworkReport: '/api/reports/v1/homework-download/',
       downloadBlogReport: '/api/reports/v1/blogs-download/',
       downloadDiscussionReport: '/api/reports/v1/discussion-forum-download/',
+      downloadRefferalReport:'/api/reports/v1/referral-download-stats/',
       listAttendanceReport: '/api/reports/v1/attendance-stats/',
       listClassworkReport: '/api/reports/v1/classwork-stats/',
       listHomeworkReport: '/api/reports/v1/homework-stats/',
       listBlogReport: '/api/reports/v1/blogs-stats/',
       listDiscussionReport: '/api/reports/v1/discussion-forum-stats/',
+      listLoginReport: '/api/reports/v1/login-stats-list/',
+      listRoleReport: '/api/reports/v1/role-stats-list/',
+      listRefferalReport: '/api/reports/v1/dash-referral-stat/',
     },
     principal: {
       fetchOnlineClassReport: '/api/reports/v1/oncls-principal-report/',

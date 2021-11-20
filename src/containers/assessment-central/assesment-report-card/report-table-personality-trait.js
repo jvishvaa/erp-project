@@ -1,27 +1,96 @@
 import React from 'react';
-import './style.scss';
-import { generatePersonalityTraits } from './transform-report-card-data';
+import { TableBody, TableCell, TableHead, TableRow } from '@material-ui/core';
+import { makeStyles, withStyles } from '@material-ui/core/styles';
+import clsx from 'clsx';
+import {
+  generatePersonalityTraits,
+  generateGradeScale,
+} from './transform-report-card-data';
 
-const PersonalityTraitTable = ({ scholastic, coScholastic }) => {
+const useStyles = makeStyles({
+  table: {
+    '& .MuiTableCell-root': {
+      padding: '0px',
+    },
+  },
+  tableFooter: {
+    textAlign: 'left !important',
+    padding: '5px 2px !important',
+    fontStyle: 'italic',
+  },
+  tableBodyCell: {
+    padding: '5px 2px !important',
+  },
+  tableHead: {
+    fontWeight: '600 !important',
+    padding: '5px 2px !important',
+  },
+  tableCellCenter: {
+    textAlign: 'center !important',
+  },
+  tableCellLeft: {
+    textAlign: 'left !important',
+  },
+});
+
+const StyledTableCell = withStyles((theme) => ({
+  head: {
+    fontSize: 11,
+  },
+  body: {
+    fontSize: 11,
+  },
+}))(TableCell);
+
+const PersonalityTraitTable = ({ scholastic, coScholastic, traitGradeScale }) => {
+  const classes = useStyles();
+  const gradeScaleRow = generateGradeScale(traitGradeScale);
   const personalityTraits = generatePersonalityTraits(scholastic, coScholastic) || [];
-  function rowType(index, trait, subIndex) {
+
+  const totalColspan = personalityTraits[0].reduce(
+    (total, { colspan = 1 }) => total + colspan,
+    0
+  );
+
+  function rowType(index, value, colspan, subIndex) {
     return index === 0 ? (
-      <th>{trait}</th>
+      <StyledTableCell colSpan={colspan} className={classes.tableHead}>
+        {value}
+      </StyledTableCell>
     ) : (
-      <td style={{ textAlign: [1, 3, 4].includes(subIndex) ? 'center' : 'left' }}>
-        {trait}
-      </td>
+      <StyledTableCell
+        colSpan={colspan}
+        className={
+          [1, 3, 4].includes(subIndex)
+            ? clsx(classes.tableCellCenter, classes.tableBodyCell)
+            : clsx(classes.tableCellLeft, classes.tableBodyCell)
+        }
+      >
+        {value}
+      </StyledTableCell>
     );
   }
 
   return (
-    <div className='report-Personality-traits'>
-      <table>
+    <>
+      <TableHead />
+      <TableBody>
         {personalityTraits.map((traitArray, index) => (
-          <tr>{traitArray.map((trait, subIndex) => rowType(index, trait, subIndex))}</tr>
+          <TableRow style={{ backgroundColor: index === 0 ? '#FDBF8E' : '#fff' }}>
+            {traitArray.map(({ value, colspan }, subIndex) =>
+              rowType(index, value, colspan, subIndex)
+            )}
+          </TableRow>
         ))}
-      </table>
-    </div>
+        {gradeScaleRow && (
+          <TableRow>
+            <StyledTableCell className={classes.tableFooter} colSpan={totalColspan}>
+              {gradeScaleRow}
+            </StyledTableCell>
+          </TableRow>
+        )}
+      </TableBody>
+    </>
   );
 };
 

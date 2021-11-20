@@ -7,6 +7,20 @@ export const DashboardContext = React.createContext();
 
 export function DashboardContextProvider({ children }) {
   const [branchIds, setBranchIds] = useState([]);
+  const [reports, setReports] = useState({
+    attendanceReport: [],
+    classworkReport: [],
+    homeworkReport: [],
+    blogReport: [],
+    discussionReport: [],
+
+    loginReport: [],
+    roleReport: [],
+    referralReport: [],
+    refreshAll: false,
+  });
+  const [card, setCard] = useState('');
+  const [loading, setLoading] = useState(false);
   const {
     apiGateway: { msReportsUrl },
   } = ENVCONFIG || {};
@@ -29,6 +43,7 @@ export function DashboardContextProvider({ children }) {
   const headers = {
     'X-DTS-HOST': window.location.host,
     // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+    // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
     // 'X-DTS-HOST': 'dev.mit.letseduvate.com',
     Authorization: `Bearer ${TOKEN}`,
   };
@@ -37,13 +52,19 @@ export function DashboardContextProvider({ children }) {
     const params = { ...param, level: userLevel };
     const config = { headers, params };
     const url = msReportsUrl + apiConfig[decisionParam]['report'];
+    setLoading(true)
     return axios
       .get(url, config)
       .then((response) => {
         const { data: { status_code: status, result } = {} } = response || {};
+        setLoading(false)
+        setCard('');
         return result || [];
       })
-      .catch(() => { });
+      .catch(() => { 
+        setLoading(false)
+        setCard('');
+      });
   };
 
   const downloadReport = (decisionParam, param) => {
@@ -66,6 +87,11 @@ export function DashboardContextProvider({ children }) {
         getReport,
         downloadReport,
         welcomeDetails,
+        reports,
+        setReports,
+        card,
+        setCard,
+        loading,
       }}
     >
       {children}

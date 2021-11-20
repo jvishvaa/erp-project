@@ -122,6 +122,10 @@ const Layout = ({ children, history }) => {
         history.push('/online-class/resource');
         break;
       }
+      case 'Workshop': {
+        history.push('/online-class/workshop');
+        break;
+      }
       case 'Attend Online Class': {
         if (window.location.host === endpoints?.aolConfirmURL) {
           history.push('/online-class/attend-class');
@@ -470,6 +474,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Take Test': {
         history.push('/assessment');
+        break;
+      }
+      case 'Individual Student Report':{
+        history.push('/assessment-student-report');
         break;
       }
       case 'Assessment Report': {
