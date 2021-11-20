@@ -138,15 +138,15 @@ export default function Assessment(item) {
   const [assessmentArr, setAssessmentArr] = React.useState([]);
 
   //carousel
-  const addItem = () => {
-    const nextItem = Math.max(1, assessmentArr.length + 1);
-    setAssessmentArr([...assessmentArr, nextItem]);
-  };
+  // const addItem = () => {
+  //   const nextItem = Math.max(1, assessmentArr.length + 1);
+  //   setAssessmentArr([...assessmentArr, nextItem]);
+  // };
 
-  const removeItem = () => {
-    const endRange = Math.max(0, assessmentArr.length - 1);
-    setAssessmentArr(assessmentArr.slice(0, endRange));
-  };
+  // const removeItem = () => {
+  //   const endRange = Math.max(0, assessmentArr.length - 1);
+  //   setAssessmentArr(assessmentArr.slice(0, endRange));
+  // };
 
   const getAssessmentData = () => {
     apiRequest('get', endpoints.dashboard.student.assessment)
