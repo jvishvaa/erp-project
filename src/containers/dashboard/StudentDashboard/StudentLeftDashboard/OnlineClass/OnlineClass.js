@@ -8,20 +8,19 @@ import Box from '@material-ui/core/Box';
 import endpoints from '../../config/Endpoint';
 import apiRequest from '../../config/apiRequest';
 import './onlineclass.scss';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+// import useMediaQuery from '@material-ui/core/useMediaQuery';
 // import onlineclassbck from './onlineclassbck.svg';
 // import backgroundimage from './backgroundimage.png';
 import Carousel, { consts } from 'react-elastic-carousel';
 // import endpoints from '../../config/Endpoint';
 // import apiRequest from '../../config/apiRequest';
-import axiosInstance from 'config/axios';
+// import axiosInstance from 'config/axios';
 import moment from 'moment';
 import clsx from 'clsx';
 import { useHistory } from 'react-router';
 // import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 
 // import { Carousel } from 'react-responsive-carousel';
-
 
 const breakPoints = [
   { width: 1, itemsToShow: 2, itemsToScroll: 2 },
@@ -112,15 +111,15 @@ const useStyles = makeStyles(() => ({
     color: '#014B7E',
     fontWeight: 800,
     margin: '10px',
-    fontSize: "0.9em",
-    position: "relative",
+    fontSize: '0.9em',
+    position: 'relative',
   },
   upcomingbtn: {
     background: '#349ceb',
     color: 'white',
     borderRadius: '50px',
     // padding: '5px 10px',
-    fontSize: "0.7em",
+    fontSize: '0.7em',
   },
   // '@media (max-width: 960px)': {
   //   card: {
@@ -182,7 +181,7 @@ const style = {
 const OnlineClass = (props) => {
   const classes = useStyles();
   const history = useHistory();
-  const matches960 = useMediaQuery('(max-width: 960px)');
+  // const matches960 = useMediaQuery('(max-width: 960px)');
   const [onlineclassar, setOnlineclassar] = useState([]);
   const [open, setOpen] = useState(false);
   const handleOpen = (item) => {
@@ -196,44 +195,44 @@ const OnlineClass = (props) => {
   const [selectedData, setSelectedData] = useState('');
 
   //carousel
-  const addItem = () => {
-    const nextItem = Math.max(1, onlineclassar.length + 1);
-    setOnlineclassar([...onlineclassar, nextItem]);
-  };
+  // const addItem = () => {
+  //   const nextItem = Math.max(1, onlineclassar.length + 1);
+  //   setOnlineclassar([...onlineclassar, nextItem]);
+  // };
 
-  const removeItem = () => {
-    const endRange = Math.max(0, onlineclassar.length - 1);
-    setOnlineclassar(onlineclassar.slice(0, endRange));
-  };
+  // const removeItem = () => {
+  //   const endRange = Math.max(0, onlineclassar.length - 1);
+  //   setOnlineclassar(onlineclassar.slice(0, endRange));
+  // };
 
   const myArrow = ({ type, onClick, isEdge }) => {
     // const pointer = type === consts.PREV ? '<' : '>'
     const leftPointer = '<';
     const rightPointer = '>';
 
-    const arrows = type === consts.PREV ?
-      <Button onClick={onClick} disabled={isEdge} className="leftPointer">
-        {leftPointer}
-      </Button> :
-      <Button onClick={onClick} disabled={isEdge} className="rightPointer">
-        {rightPointer}
-      </Button>
-    return arrows
-  }
+    const arrows =
+      type === consts.PREV ? (
+        <Button onClick={onClick} disabled={isEdge} className='leftPointer'>
+          {leftPointer}
+        </Button>
+      ) : (
+        <Button onClick={onClick} disabled={isEdge} className='rightPointer'>
+          {rightPointer}
+        </Button>
+      );
+    return arrows;
+  };
 
   const getOnlineData = () => {
     apiRequest('get', endpoints.dashboard.student.onlineclasstimestats, null, null, true)
       .then((result) => {
-        console.log("resultdata", result.data);
-        setOnlineclassar(result.data);
+        setOnlineclassar(Array.isArray(result?.data) ? result?.data : []);
       })
       .catch((error) => {
-        console.log('error');
       });
   };
   useEffect(() => {
     getOnlineData();
-    console.log("online")
   }, []);
 
   return (
@@ -251,10 +250,9 @@ const OnlineClass = (props) => {
           id='carasol-gridthree'
           style={{
             justifyContent: 'flex-start',
-            width: "100%",
+            width: '100%',
           }}
         >
-
           <div>
             <span style={{ fontWeight: 800 }} className={classes.onlineclass}>
               ONLINE CLASS
@@ -267,16 +265,16 @@ const OnlineClass = (props) => {
               Upcoming
             </Button>
           </div>
-          <Carousel
-            renderArrow={myArrow}
-            breakPoints={breakPoints}>
-            {onlineclassar.map((item, i) => (
+          <Carousel renderArrow={myArrow} breakPoints={breakPoints}>
+            {onlineclassar.map((item = {}, i) => (
               <div className={classes.card} key={`Ocls${i}`}>
                 <div className={classes.layertop}>
                   <div className={classes.layerupper}>
                     <div>
-                      <p className={clsx(classes.white, classes.ellipsisText)}>{item.title}</p>
-                      <p>{item.online_class__start_time}</p>
+                      <p className={clsx(classes.white, classes.ellipsisText)}>
+                        {item?.title}
+                      </p>
+                      <p>{item?.online_class__start_time}</p>
                     </div>
 
                     <img
@@ -288,7 +286,9 @@ const OnlineClass = (props) => {
                   </div>
                 </div>
 
-                <div className={classes.layermiddle}>{item.online_class__start_time}</div>
+                <div className={classes.layermiddle}>
+                  {item?.online_class__start_time}
+                </div>
                 <div>
                   <div className={classes.layerbottom}>
                     <div className={classes.columnlayer}>
@@ -325,7 +325,6 @@ const OnlineClass = (props) => {
                       </p>
                       <p style={{ color: 'red', fontWeight: 600 }}>
                         ENDS <span>{moment().format('DD-MM-YYYY')}</span>
-                        {console.log(selectedData)}
                       </p>
                     </div>
                     <div
@@ -374,7 +373,7 @@ const OnlineClass = (props) => {
                           width: '200px',
                           borderRadius: '50px',
                         }}
-                        onClick={()=>history.push('/erp-online-class-student-view')}
+                        onClick={() => history.push('/erp-online-class-student-view')}
                       >
                         Go to Class List
                       </Button>
@@ -385,7 +384,6 @@ const OnlineClass = (props) => {
                           margin: '10px auto',
                           width: '100px',
                           borderRadius: '50px',
-
                         }}
                       >
                         Close
