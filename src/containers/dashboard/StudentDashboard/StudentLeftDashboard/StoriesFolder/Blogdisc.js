@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Blog from './Blog';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Masonry from 'react-masonry-css'
+import Masonry from 'react-masonry-css';
 import endpoints from '../../config/Endpoint';
 import apiRequest from '../../config/apiRequest';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -14,41 +14,33 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     marginLeft: '-10px',
     width: 'auto',
-
   },
   my_masonry_grid_column: {
-    paddingLeft: '10px', /* gutter size */
+    paddingLeft: '10px' /* gutter size */,
     backgroundClip: 'paddingBox',
   },
 
   /* Style your items */
-  'my_masonry_grid_column > div': { /* change div to reference your elements you put in <Masonry> */
-    background: 'grey',
+  'my_masonry_grid_column > div': {
+    /* change div to reference your elements you put in <Masonry> */ background: 'grey',
     marginBottom: '30px',
-  }
+  },
 }));
 
-const Blogdisc = (props) => {
+const Blogdisc = () => {
   const classes = useStyles();
   const [Blogdata, setBlogdata] = React.useState([]);
   const [next, setNext] = React.useState('');
-  // const [prev, setPrev] = React.useState();
 
   const getBlogData = () => {
-    console.log("onhai2", endpoints.dashboard.student.blogdata)
     apiRequest('get', endpoints.dashboard.student.blogdata)
       .then((result) => {
-        console.log('tree', result.data.data.results);
         if (result.data.status_code === 200) {
           setBlogdata(result?.data?.data?.results);
           setNext(result?.data?.data?.next);
-          // setAlert('success', result.data.message)
         }
       })
-      .catch((error) => {
-        console.log('error');
-        // setAlert('error', 'Failed to mark attendance');
-      });
+      .catch((error) => {});
   };
 
   useEffect(() => {
@@ -64,10 +56,9 @@ const Blogdisc = (props) => {
   const breakpoints = {
     default: 2,
     1024: 1,
-  }
+  };
 
-  console.log("nextD: ", next);
-
+  console.log('nextD: ', next);
 
   const fetchData = () => {
     apiRequest('get', `${endpoints.dashboard.student.nextBlogdata}${next.split('=')[1]}`)
@@ -85,32 +76,30 @@ const Blogdisc = (props) => {
   };
 
   const likes = (postId, type) => {
-
     let url, method, params;
     if (type === 'Blog') {
       url = endpoints.dashboard.student.blogLike;
-      method = 'post'
+      method = 'post';
       params = {
-        blog_id: postId
+        blog_id: postId,
       };
-    }
-    else {
+    } else {
       url = `${endpoints.dashboard.student.dicussionLike}${postId}/post-like/`;
-      method = 'put'
+      method = 'put';
     }
 
     apiRequest(method, url, params)
       .then((result) => {
         console.log('tree', result.data.data.results);
         if (result.data.status_code === 200) {
-          console.log("post like")
+          console.log('post like');
         }
       })
       .catch((error) => {
         console.log('error');
         // setAlert('error', 'Failed to mark attendance');
       });
-  }
+  };
 
   return (
     <div className={classes.box}>
@@ -127,15 +116,14 @@ const Blogdisc = (props) => {
         }
         height={500}
       >
-
         <Masonry
           breakpointCols={breakpoints}
           className={classes.my_masonry_grid}
-          columnClassName={classes.my_masonry_grid_column}>
+          columnClassName={classes.my_masonry_grid_column}
+        >
           {Blogdata &&
             Blogdata.map((blogandd) => {
               return (
-
                 <Blog
                   postId={blogandd.post_id}
                   key={blogandd.post_id}
@@ -156,7 +144,7 @@ const Blogdisc = (props) => {
             })}
         </Masonry>
       </InfiniteScroll>
-    </div >
+    </div>
   );
 };
 
