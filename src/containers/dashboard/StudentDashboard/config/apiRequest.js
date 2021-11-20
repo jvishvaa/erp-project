@@ -19,7 +19,7 @@ const apiRequest = async (method, path, payload, responseType, isReportsURL) => 
             'Authorization': `Bearer ${JSON.parse(user).token}`,
         };
         if (isReportsURL) {
-            headers['X-DTS-HOST'] = 'qa.olvorchidnaigaon.letseduvate.com'
+            headers['X-DTS-HOST'] = window.location.host;
         }
         axios({
             method: method,
