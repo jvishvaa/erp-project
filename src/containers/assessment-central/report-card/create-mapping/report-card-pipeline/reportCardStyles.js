@@ -25,6 +25,12 @@ export const reportCardStyles = makeStyles((theme) => ({
       transition: '250ms',
     },
   },
+  'status-card--reverted': {
+    '&:hover': {
+      background: '#d3d3d3',
+      transition: '250ms',
+    },
+  },
   'status-card': {
     display: 'flex',
     justifyContent: 'space-around',

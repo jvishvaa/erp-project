@@ -97,7 +97,7 @@ const CreateClassForm = (props) => {
   } = useContext(CreateclassContext);
 
   const [toggle, setToggle] = useState(false);
-  const [toggleZoom, setToggleZoom] = useState(false);
+  // const [toggleZoom, setToggleZoom] = useState(false);
 
   const { setAlert } = useContext(AlertNotificationContext);
   const { user_id: userId, is_superuser: isSuperUser } =
@@ -178,7 +178,7 @@ const CreateClassForm = (props) => {
       setSelectedCourse('');
       setTutorNotAvailableMessage(null);
       setToggle(false);
-      setToggleZoom(false);
+      // setToggleZoom(false);
       setSelectedDays([]);
       setOnlineClass((prevState) => ({
         ...prevState,
@@ -541,7 +541,7 @@ const CreateClassForm = (props) => {
     request['start_time'] = startTime;
     if (weeks > 0) request['no_of_week'] = Number(weeks);
     request['is_recurring'] = toggle ? 1 : 0;
-    request['is_zoom'] = toggleZoom ? '0' : '1';
+    // request['is_zoom'] = toggleZoom ? '0' : '1';
     request['class_type'] = selectedClassType?.id;
     request['section_mapping_ids'] = sectionIds.join(',');
     request['is_classwork'] = classWork ? true : false;
@@ -617,7 +617,7 @@ const CreateClassForm = (props) => {
     setSelectedCourse('');
     setTutorNotAvailableMessage(null);
     setToggle(false);
-    setToggleZoom(false);
+    // setToggleZoom(false);
     setSelectedDays([]);
     setOnlineClass((prevState) => ({
       ...prevState,
@@ -1130,7 +1130,7 @@ const CreateClassForm = (props) => {
                 }
               />
             </Grid>
-            <Grid item md={1} xs={12} sm={2}>
+            {/* <Grid item md={1} xs={12} sm={2}>
               <FormControlLabel
                 className='switchLabel'
                 control={
@@ -1147,7 +1147,7 @@ const CreateClassForm = (props) => {
                   </Typography>
                 }
               />
-            </Grid>
+            </Grid> */}
           </Grid>
           <hr className='horizontal-line' />
           <Grid

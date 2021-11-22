@@ -196,3 +196,16 @@ export const updateReportCardStatus = async (payload) => {
     return [];
   }
 };
+
+export const revertReportPipeline = async (pipelineId) => {
+  try {
+    const url = endpoints.reportCard.revertReportPipeline.replace(
+      '<pipeline_id>',
+      pipelineId
+    );
+    const { data = {} } = await axiosInstance.put(url);
+    return data || [];
+  } catch (e) {
+    return [];
+  }
+};
