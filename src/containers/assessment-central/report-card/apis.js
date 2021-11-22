@@ -80,6 +80,15 @@ export const getCategory = async () => {
   }
 };
 
+export const getStatus = async () => {
+  try {
+    const { data = {} } = await axiosInstance.get(`${endpoints.reportCard.statusList}`);
+    return data?.data || [];
+  } catch (e) {
+    return [];
+  }
+};
+
 export const getAssessmentType = async () => {
   try {
     const { data = {} } = await axiosInstance.get(
@@ -150,9 +159,9 @@ export const marksUpload = async (payload) => {
   }
 };
 
-export const getReportCardPipeline = async (page, page_size) => {
+export const getReportCardPipeline = async (page, page_size, searchParams) => {
   if (!page || !page_size) return;
-  const params = createParams({ page, page_size });
+  const params = createParams({ page, page_size, ...searchParams });
   try {
     const { data = {} } = await axiosInstance.get(
       `${endpoints.reportCard.getReportCardPipelineList}${params}`

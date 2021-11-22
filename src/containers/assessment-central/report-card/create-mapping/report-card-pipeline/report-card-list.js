@@ -4,13 +4,13 @@ import TabPanel from '../../../../../components/tab-panel';
 import ReportPipelineTable from './report-pipeline-table';
 import ReportStatusTable from './report-status-table';
 
-const ReportCardList = ({ setLoading, isMobile, widerWidth }) => {
+const ReportCardList = ({ setLoading, isMobile, widerWidth, moduleId }) => {
   const [tabValue, setTabValue] = useState(0);
 
   const renderFormOrTable = () => {
     switch (tabValue) {
       case 0:
-        return <ReportPipelineTable setLoading={setLoading} />;
+        return <ReportPipelineTable setLoading={setLoading} moduleId={moduleId} />;
       case 1:
         return <ReportStatusTable setLoading={setLoading} />;
     }

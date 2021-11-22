@@ -361,6 +361,22 @@ const ConnectionPodFn = (props) => {
     }
   }, []);
 
+  useEffect(() => {
+    var paramPath = `?page_size=${10}&page=${1}&class_status=${1}&role_differ=${userLevel}`;
+    setLoading(true);
+    WSAPI('get', `${WSENDPOINT.WORKSHOP.retrieveworkshop}${paramPath}`)
+      .then((res) => {
+        setLoading(false);
+        if (res.status === 200) {
+          setWorkShopData(res?.data?.results || []);
+          setTotalCount(res.data.count);
+        }
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+  }, []);
+
   return (
     <>
       <div className='connection-pod-container'>

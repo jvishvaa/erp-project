@@ -849,7 +849,7 @@ const AssessmentReportFilters = ({
               />
             </Grid>
           )}
-        {selectedReportType?.id !== 5  && selectedReportType?.id !==11 &&(
+        {selectedReportType?.id !== 5  && selectedReportType?.id !==11 && selectedReportType?.id !==7 &&(
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
             <Autocomplete
               style={{ width: '100%' }}
@@ -964,6 +964,52 @@ const AssessmentReportFilters = ({
             />
           </Grid>
         )} */}
+
+
+{selectedReportType?.id === 7 && (
+<MuiPickersUtilsProvider utils={MomentUtils}>
+<Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+            <KeyboardDatePicker
+              size='small'
+              color='primary'
+              // disableToolbar
+              variant='dialog'
+              format='YYYY-MM-DD'
+              margin='none'
+              id='date-picker-start-date'
+              label='Start date'
+              value={startDate}
+              onChange={(event, date) => {
+                handleDateChange('startDate', date);
+              }}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+              style={{ marginTop: -6 }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+            <KeyboardDatePicker
+              size='small'
+              // disableToolbar
+              variant='dialog'
+              format='YYYY-MM-DD'
+              margin='none'
+              id='date-picker-end-date'
+              name='endDate'
+              label='End date'
+              value={endDate}
+              onChange={(event, date) => {
+                handleDateChange('endDate', date);
+              }}
+              KeyboardButtonProps={{
+                'aria-label': 'change date',
+              }}
+              // style={{ marginTop: -6 }}
+            />
+          </Grid>
+        </MuiPickersUtilsProvider>
+)}
 {selectedReportType?.id === 9 && (
 <MuiPickersUtilsProvider utils={MomentUtils}>
 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>

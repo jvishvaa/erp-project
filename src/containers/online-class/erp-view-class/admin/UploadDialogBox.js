@@ -22,6 +22,7 @@ import Attachment from '../../../homework/teacher-homework/attachment';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import APIREQUEST from "../../../../config/apiRequest";
 import moment from 'moment';
+import { Box } from '@material-ui/core';
 
 import WebCamDialog from '../webCamDialog';
 
@@ -376,6 +377,7 @@ const UploadClassWorkDiaogBox = (props) => {
 
         </DialogContent>
         <DialogActions>
+          
           {!isTeacher && (
             <div className='box-size-dialog'>
               <input
@@ -405,46 +407,26 @@ const UploadClassWorkDiaogBox = (props) => {
             </div>
           )}
           {!isTeacher && (
-            <div className='cam' style = {{marginRight: "43%"}}>
-              {/* <input
-                accept='image/*'
-                className={classes.input}
-                id='contained-button-file'
-                type='file'
-                onChange={(e) => handleWebcam(e)}
-              /> */}
-              {/* <label htmlFor='contained-button-file' style={{ color: 'white' }}> */}
-              {/* {!isLessthanToday() &&
-                <Button
-                  // startIcon={<CloudUploadIcon />}
-                  className={classes.submitButton}
-                  variant='contained'
-                  color='primary'
-                  // component='span'
-                  onClick={handleWebcam}
-                  style={{ color: 'white' }}
-                >
-                  Upload via Camera
-                </Button>
-              } */}
-
-
+            <div className='cam' style = {{marginRight: "31%"}}>
+            
+            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
               {!isLessthanToday() && 
-              <IconButton
+              <Button
+                startIcon={<PhotoCamera />}
                 color='primary'
+                variant = "contained"
                 onClick={handleWebcam}
-              >
-                <PhotoCamera />
-              </IconButton>}
-
-              {/* {!isLessthanToday() && <PhotoCamera
-                // className={classes.submitButton}
-                variant='contained'
-                color='primary'
-                // component='span'
-                onClick={handleWebcam}
-              />} */}
-              {/* </label> */}
+                >
+                  Capture
+              </Button>
+              // <IconButton
+              //   color='primary'
+              //   onClick={handleWebcam}
+              // >
+              //   < />
+              // </IconButton>
+            }
+              </Box>
             </div>
           )}
           <Button className='cancelButton labelColor' onClick={handleClose}>

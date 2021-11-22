@@ -179,40 +179,40 @@ const TeacherDashboard = () => {
   } = reports || {};
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={2}>
       <Grid item xs={12} sm={8} md={8}>
         <Grid container spacing={1} >
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={6} sm={6}>
             <DashFilterWidget />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={6} sm={6}>
             <ReportStatsWidget
               title='Attendance Report'
               data={attendanceReport}
               avatar={SpellcheckIcon}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={6} sm={6}>
             <ReportStatsWidget
               title='Classwork Report'
               data={classworkReport}
               avatar={OndemandVideoIcon}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={6} sm={6}>
             <ReportStatsWidget
               title='Homework Report'
               data={homeworkReport}
               avatar={MenuBookIcon}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={6} sm={6}>
             <ReportStatsWidget
               title='Blog Report'
               data={blogReport}
               avatar={WebAsset} />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={6} sm={6}>
             <ReportStatsWidget
               title='Discussion Forum Report'
               data={discussionReport}
@@ -223,11 +223,9 @@ const TeacherDashboard = () => {
       </Grid>
 
       <Grid item xs={0} md={4}>
-        <Grid container>
-          <Grid item xs={0} sm={8} md={8}>
-            <StudentRightDashboard />
-          </Grid>
-        </Grid>
+
+        <StudentRightDashboard />
+
       </Grid>
     </Grid>
   );

@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     height: '100px',
     width: '180px',
-    borderRadius: '10px',
+    borderRadius: '5px',
     background: 'white',
     margin: '10px',
     display: 'inline-block',
@@ -71,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
     color: 'white',
-    borderRadius: '10px',
+    borderRadius: '5px',
     fontWeight: "800",
     fontSize: "1.2em",
   },
@@ -138,15 +138,15 @@ export default function Assessment(item) {
   const [assessmentArr, setAssessmentArr] = React.useState([]);
 
   //carousel
-  const addItem = () => {
-    const nextItem = Math.max(1, assessmentArr.length + 1);
-    setAssessmentArr([...assessmentArr, nextItem]);
-  };
+  // const addItem = () => {
+  //   const nextItem = Math.max(1, assessmentArr.length + 1);
+  //   setAssessmentArr([...assessmentArr, nextItem]);
+  // };
 
-  const removeItem = () => {
-    const endRange = Math.max(0, assessmentArr.length - 1);
-    setAssessmentArr(assessmentArr.slice(0, endRange));
-  };
+  // const removeItem = () => {
+  //   const endRange = Math.max(0, assessmentArr.length - 1);
+  //   setAssessmentArr(assessmentArr.slice(0, endRange));
+  // };
 
   const getAssessmentData = () => {
     apiRequest('get', endpoints.dashboard.student.assessment)

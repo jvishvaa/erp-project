@@ -3,30 +3,32 @@ import axios from "axios";
 import Button from '@material-ui/core/Button';
 
 const ImageSubmitted = (props) => {
-  const width = window.innerWidth * 0.5,
-    height = window.innerHeight * 0.75;
-  const canvas = useRef(null);
+  const width = window.innerWidth * 0.5 ,
+    height = window.innerHeight * 0.65;
+  const canvas = useRef(null);  
   const ctx = useRef(null);
 
   useEffect(() => {
-    // postImage();
+  //   postImage();
+  debugger
     canvas.current = document.getElementById("canvas");
     ctx.current = canvas.current.getContext("2d");
     const image = document.getElementById("source");
-    canvas.current.width = width;
+    canvas.current.width = 500//width;
     canvas.current.height = height;
     image.style.display = "none";
     debugger
     ctx.current.drawImage(
       image,
-      props.dimensions.x,
-      props.dimensions.y,
-      props.dimensions.width,
-      props.dimensions.height,
-      (canvas.current.width - props.dimensions.width) * 0.5,
-      (canvas.current.height - props.dimensions.height) * 0.5,
-      props.dimensions.width + 100,
-      props.dimensions.height + 100
+      // props.dimensions.x,
+      // props.dimensions.y,
+      // props.dimensions.width,
+      // props.dimensions.height,
+      20,20
+      // (canvas.current.width - props.dimensions.width) * 0.8,
+      // (canvas.current.height - props.dimensions.height) * 0.8,
+      // props.dimensions.width ,
+      // props.dimensions.height
     );
   }, []);
 
@@ -63,15 +65,15 @@ const ImageSubmitted = (props) => {
 
   return (
     <div>
-      <canvas id="canvas" width="-webkit-fill-available"></canvas>
+      <canvas id="canvas" style={{marginRight:"20px"}}></canvas>
       <img
         id="source"
         src={props.image}
-        width={width}
-        height={height}
+        // width={width}
+        // height={height}
         alt="homework"
       />
-      <div className="webcambtn" style = {{marginLeft:"40%"}}
+      <div className="webcambtn" style = {{marginLeft:"33%",marginBottom : "3%"}}
 >
         <Button
           color="primary"

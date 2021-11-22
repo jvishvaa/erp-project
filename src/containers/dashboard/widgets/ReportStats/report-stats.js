@@ -15,10 +15,17 @@ import {
 import '../style.scss';
 import ReportAction from './report-actions';
 import { useStyles } from './useStyles';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import { useDashboardContext } from '../../dashboard-context';
 
 const ReportStatsWidget = ({ avatar, title, data, ptitle, ntitle }) => {
+  const { loading, card } = useDashboardContext();
   const classes = useStyles();
   const renderReportData = () => {
+    const decisionParam = title.toLowerCase().split(' ')[0];
+    if (card === decisionParam && loading) {
+      return <Box style={{height:'150px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CircularProgress /></Box>
+    }
     if (data.length) {
       return (
         <List>
