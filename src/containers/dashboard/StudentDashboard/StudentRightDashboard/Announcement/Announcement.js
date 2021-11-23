@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import moreicon from './announcement.svg';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
@@ -22,6 +22,10 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import { useDashboardContext } from '../../../dashboard-context';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { IconButton } from '@material-ui/core';
+import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
+import Loading from '../../../../../components/loader/loader';
 
 const style = {
   position: 'absolute',
@@ -105,9 +109,9 @@ const useStyles = makeStyles((theme) => ({
     padding: 10,
     transform: 'translateX(4px)',
     overflow: 'hidden',
+    backgroundColor: 'white',
     overflow: 'auto',
     scrollX: 'none',
-    backgroundColor: 'white',
     color: 'theme.palette.secondary',
   },
   buttonmodalicon: {
@@ -140,6 +144,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 600,
     fontSize: '1em',
     padding: 10,
+    maxWidth: '250px',
     paddingTop: 10,
     '&::marker': {
       color: 'yellow',
@@ -149,8 +154,8 @@ const useStyles = makeStyles((theme) => ({
   listitem: {
     color: theme.palette.secondary.main,
     marginBottom: '3px',
-    listStyle: "none",
-    fontsize: "2em",
+    listStyle: 'none',
+    fontsize: '1em',
     textTransform: 'Capitalize',
     // '&::marker': {
     //   color: 'yellow',
@@ -203,6 +208,8 @@ export default function Announcement(props) {
   const [role, setrole] = React.useState(''); //which one? teacher, principal, none//which one have you selected
   const [select, setSelect] = React.useState(false);
   const [roledata, setRoledata] = React.useState(); //roles coming from API
+  const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false);
   //we are making request to show roles in modal
   const getRoleData = () => {
     apiRequest('get', endpoints.dashboard.student.roles)
@@ -228,6 +235,7 @@ export default function Announcement(props) {
         console.log('error');
       });
   };
+
   const nextpagehandler = () => {
     // apiRequest('get', endpoints.dashboard.student.update)
     axiosInstance
@@ -275,6 +283,34 @@ export default function Announcement(props) {
         console.log('error');
       });
   };
+  function extractContent(s) {
+    const span = document.createElement('span');
+    span.innerHTML = s;
+    return span.textContent || span.innerText;
+  }
+
+  const deleteHandler = (item, index) => {
+    console.log("delete1", item.id, " ", index)
+    setLoading(true);
+    // announcementArr.splice(index, 1);
+    apiRequest('delete', `${endpoints.dashboard.student.deleteAnnouncement}${item.id}/`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setAlert('success', "Deleted");
+          announcementArr.splice(index, 1);
+          setLoading(false);
+        } else {
+          setAlert('error', "Not Authorized");
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', "Network Error");
+        setLoading(false);
+      });
+    // updateAnnouncement()
+  }
+
   return (
     <Grid container direction='column' spacing={1} className={classes.box} xs={12}>
       <Grid>
@@ -377,17 +413,13 @@ export default function Announcement(props) {
                   {announcementArr.map(
                     (d, i) =>
                       i <= 9 && (
-                        <div key={`Annoucement${i}`}>
+                        <div key={`Annoucement${i}`} >
                           <li className={classes.listitem}>
                             <p>
-                              <span style={{ marginRight: '7px' }}>
-                                <img
-                                  src={bullet}
-                                  alt='bulet'
-                                  style={{ width: '8px' }}
-                                ></img>
+                              <span style={{ marginRight: "7px", }}><img src={bullet} alt="bulet" style={{ width: '8px' }}></img></span>
+                              <span style={{ maxWidth: "350px", wordWrap: "break-word", overflowX: 'clip' }}>
+                                {d.content}
                               </span>
-                              <span>{d.content}</span>
                             </p>
                             <p>
                               <span className={classes.time}>
@@ -429,12 +461,20 @@ export default function Announcement(props) {
                                 <div key={`Ann_${index}`}>
                                   <Card style={{ margin: '10px' }}>
                                     <CardContent>
-                                      <Typography>
-                                        {moment(item.created_at).calendar()}
-                                      </Typography>
-                                      <Typography color='textSecondary'>
-                                        {item.content}
-                                      </Typography>
+                                      <div style={{ display: "flex", justifyContent: "space-between" }}>
+                                        <div>
+                                          <Typography>
+                                            {moment(item.created_at).calendar()}
+                                          </Typography>
+                                          <Typography color='textSecondary' style={{ maxWidth: "350px", wordWrap: "break-word", }}>
+                                            {item.content}
+                                          </Typography>
+                                        </div>
+                                        {welcomeDetails?.userLevel == '4' ? '' : (
+                                          <IconButton onClick={() => deleteHandler(item, index)} >
+                                            <DeleteIcon />
+                                          </IconButton>)}
+                                      </div>
                                     </CardContent>
                                   </Card>
                                 </div>
