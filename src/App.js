@@ -349,6 +349,7 @@ import WeeklyQuizPerformance from 'containers/assessment-central/assessment-repo
 import HolidayMark from 'containers/attendance/holidaymark';
 import ReferSuccess from 'containers/studentRefferal/referSuccess';
 import StudentRefer from 'containers/studentRefferal/referForm';
+import StudentCountReport from 'containers/online-class/studentCountReport/index.jsx';
 
 function App({ alert, isMsAPI }) {
   // useEffect(() => {
@@ -1653,6 +1654,11 @@ function App({ alert, isMsAPI }) {
                           <Route path='/holidaymarking'>
                             {({ match }) => <HolidayMark match={match} />}
                           </Route> 
+
+                          <Route path='/student_count_report'>
+                            {({ match }) => <StudentCountReport match={match} />}
+                          </Route>
+
 
 
                           <Route exact path='/online-class/connection-pod'>
