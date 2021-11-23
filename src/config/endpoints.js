@@ -34,7 +34,11 @@ export default {
     markAttendance: '/academic/bulk_create_attendance/',
     students: '/academic/get_student_list/',
     getHoliday: '/academic/holiday/',
-    getStudentCountReportData:'/erp_user/grade-section-wise-student-count/'
+    getStudentCountReportData:'/erp_user/grade-section-wise-student-count/',
+    teacherAttendanceData:'/erp_user/erpuser-attendance-erp/',
+    teacherAttendanceSent:'/erp_user/erpuser-attendance/',
+    getTeacherAttendanceData:'/erp_user/erpuser-attendance-monthly-reports/',
+
   },
   appBar: {
     schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,

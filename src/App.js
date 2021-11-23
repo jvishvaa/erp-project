@@ -350,6 +350,8 @@ import HolidayMark from 'containers/attendance/holidaymark';
 import ReferSuccess from 'containers/studentRefferal/referSuccess';
 import StudentRefer from 'containers/studentRefferal/referForm';
 import StudentCountReport from 'containers/online-class/studentCountReport/index.jsx';
+import TeacherAttendance from 'containers/teacherattendance/teacher';
+import TeacherAttendanceVerify from 'containers/teacherattendance/teacherattendanceverify';
 
 function App({ alert, isMsAPI }) {
   // useEffect(() => {
@@ -1305,6 +1307,13 @@ function App({ alert, isMsAPI }) {
                               <DailyBillingDetails match={match} alert={alert} />
                             )}
                           </Route>
+                          <Route exact path='/teacher-attendance'>
+                            {({ match }) => <TeacherAttendance match={match}  />}
+                          </Route>
+                          <Route exact path='/teacher-attendance-verify'>
+                            {({ match }) => <TeacherAttendanceVerify match={match}  />}
+                          </Route>
+                          
                           <Route exact path='/finance/student_shuffle'>
                             {({ match }) => (
                               <StudentShuffleReq match={match} alert={alert} />

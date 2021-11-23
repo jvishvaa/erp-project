@@ -583,6 +583,14 @@ const MenuItem = withRouter(({ history, ...props }) => {
       name: 'Self Driven Courses',
       Path: '/assignedCoursesByCordinator',
     },
+    {
+      name: 'Mark Attendance',
+      Path: '/teacher-attendance',
+    },
+    {
+      name:'View Attendance',
+      Path:'/teacher-attendance-verify',
+    },
   ];
 
   // const [menuOpen, setMenuOpen] = useState(false);
