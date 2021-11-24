@@ -3,6 +3,7 @@ import WebAsset from '@material-ui/icons/WebAsset';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import SpellcheckIcon from '@material-ui/icons/Spellcheck';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
+import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import ForumIcon from '@material-ui/icons/Forum';
 import { Grid } from '@material-ui/core';
 import { DashFilterWidget, ReportStatsWidget } from '../widgets';
@@ -29,13 +30,15 @@ const PrincipalDashboard = () => {
     discussionResponse,
   } = responseConverters;
 
-  const { attendance, classwork, homework, blog, discussion } = reportTypeConstants || {};
+  const { attendance, classwork, homework, blog, role, discussion } =
+    reportTypeConstants || {};
 
   const dashboardData = {
     attendanceReport: [],
     classworkReport: [],
     homeworkReport: [],
     blogReport: [],
+    roleReport: [],
     discussionReport: [],
   };
 
@@ -119,13 +122,27 @@ const PrincipalDashboard = () => {
       });
   };
 
+  const getRoleReport = (params) => {
+    getReport(role, params)
+      .then((response) => {
+        const roleReport = response.map(({ count = 0, role_name = ' ' }) => ({
+          detail: role_name,
+          info: count,
+        }));
+        setReports((prev) => ({ ...prev, roleReport }));
+        dashboardData.roleReport = roleReport;
+        sessionStorage.setItem('dashboardData', JSON.stringify(dashboardData));
+      })
+      .catch(() => {});
+  };
+
   const getAllReports = (params) => {
     getAttendanceReport(params);
     getClassworkReport(params);
     getHomeworkReport(params);
     getBlogReport(params);
     getDiscussionReport(params);
-
+    getRoleReport(params);
     if (reports.refreshAll) {
       setReports((prev) => ({ ...prev, refreshAll: false }));
     }
@@ -145,6 +162,8 @@ const PrincipalDashboard = () => {
           return getBlogReport(params);
         case 'discussion':
           return getDiscussionReport(params);
+        case 'role':
+          return getRoleReport(params);
       }
     }
   }, [card]);
@@ -172,6 +191,7 @@ const PrincipalDashboard = () => {
     homeworkReport = [],
     blogReport = [],
     discussionReport = [],
+    roleReport = [],
   } = reports || {};
 
   return (
@@ -212,6 +232,13 @@ const PrincipalDashboard = () => {
               avatar={ForumIcon}
             />
           </Grid>
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <ReportStatsWidget
+            title='Role Report'
+            data={roleReport}
+            avatar={AssignmentIndIcon}
+          />
         </Grid>
       </Grid>
 
