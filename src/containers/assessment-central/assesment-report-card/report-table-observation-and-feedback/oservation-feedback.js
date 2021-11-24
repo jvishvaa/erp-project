@@ -67,7 +67,10 @@ export default function AssesmentObservatioAndFeedbackReport({
     },
   ];
 
-  const mappingList = ['PRINCIPAL', `${principalName}-DIGITAL SIGNATURE`];
+  const mappingList = [
+    'PRINCIPAL',
+    principalName && `${principalName}-DIGITAL SIGNATURE`,
+  ];
 
   return (
     <TableContainer>
@@ -184,7 +187,9 @@ export default function AssesmentObservatioAndFeedbackReport({
                 fontWeight: 'bold',
               }}
             >
-              {principalName && mappingList.map((label) => <Box>{label}</Box>)}
+              {mappingList.map((label) => (
+                <Box>{label}</Box>
+              ))}
             </Box>
           </StyledTableCell>
         </TableRow>
