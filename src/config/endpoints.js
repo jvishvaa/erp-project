@@ -34,6 +34,7 @@ export default {
     markAttendance: '/academic/bulk_create_attendance/',
     students: '/academic/get_student_list/',
     getHoliday: '/academic/holiday/',
+    getStudentCountReportData:'/erp_user/grade-section-wise-student-count/',
     teacherAttendanceData:'/erp_user/erpuser-attendance-erp/',
     teacherAttendanceSent:'/erp_user/erpuser-attendance/',
     getTeacherAttendanceData:'/erp_user/erpuser-attendance-monthly-reports/',
@@ -570,6 +571,7 @@ export default {
     personalityTraits: '/assessment/get-traits/',
     studentReportGrade: '/assessment/get-student-grades/',
     statusList: '/assessment/get-pipeline-statuses/',
+    revertReportPipeline: '/assessment/<pipeline_id>/revert-pipeline/',
   },
   dashboard: {
     teacher: {
