@@ -11,8 +11,6 @@ import {
 } from '@material-ui/core';
 import { generateObservationTableHeaders } from '../transform-report-card-data';
 
-const mappingList = ['CLASS TEACHER', 'SECTION COORDINATOR', 'PARENT', 'PRINCIPAL'];
-
 const StyledTableCell = withStyles((theme) => ({
   head: {
     fontSize: 11,
@@ -57,6 +55,7 @@ const useStyles = makeStyles({
 });
 
 export default function AssesmentObservatioAndFeedbackReport({
+  principalName,
   observationFeedback = [],
 }) {
   const classes = useStyles();
@@ -67,6 +66,8 @@ export default function AssesmentObservatioAndFeedbackReport({
       colspan: 7,
     },
   ];
+
+  const mappingList = ['PRINCIPAL', `${principalName}-DIGITAL SIGNATURE`];
 
   return (
     <TableContainer>
@@ -175,16 +176,15 @@ export default function AssesmentObservatioAndFeedbackReport({
             <Box
               style={{
                 display: 'flex',
-                justifyContent: 'space-evenly',
-                alignItems: 'flex-end',
-                height: '80px',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '25px',
                 fontSize: 11,
+                padding: '5px 2px',
                 fontWeight: 'bold',
               }}
             >
-              {mappingList.map((label) => (
-                <Box>{label}</Box>
-              ))}
+              {principalName && mappingList.map((label) => <Box>{label}</Box>)}
             </Box>
           </StyledTableCell>
         </TableRow>
