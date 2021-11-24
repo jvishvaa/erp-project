@@ -31,11 +31,14 @@ const Blogdisc = () => {
   const classes = useStyles();
   const [Blogdata, setBlogdata] = React.useState([]);
   const [next, setNext] = React.useState('');
+  const [isEnabled, setIsEnabled] = React.useState(false);
+  // const [prev, setPrev] = React.useState();
 
   const getBlogData = () => {
     apiRequest('get', endpoints.dashboard.student.blogdata)
       .then((result) => {
         if (result.data.status_code === 200) {
+          setIsEnabled(result?.data?.data?.is_enabled);
           setBlogdata(result?.data?.data?.results);
           setNext(result?.data?.data?.next);
         }
@@ -56,14 +59,11 @@ const Blogdisc = () => {
   const breakpoints = {
     default: 2,
     1024: 1,
-  };
-
-  console.log('nextD: ', next);
+  }
 
   const fetchData = () => {
     apiRequest('get', `${endpoints.dashboard.student.nextBlogdata}${next.split('=')[1]}`)
       .then((result) => {
-        console.log('tree', result.data.data.results);
         if (result.data.status_code === 200) {
           setBlogdata([...Blogdata, ...result?.data?.data?.results]);
           setNext(result?.data?.data?.next);
@@ -111,7 +111,7 @@ const Blogdisc = () => {
         loader={<h4>Loading...</h4>}
         endMessage={
           <p style={{ textAlign: 'center' }}>
-            <b>Yay! You have seen it all</b>
+            <b>{isEnabled ? 'Yay! You have seen it all':'Coming Soon...'}</b>
           </p>
         }
         height={500}

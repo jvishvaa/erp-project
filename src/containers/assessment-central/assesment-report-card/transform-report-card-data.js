@@ -374,7 +374,7 @@ const generateFooterData = (scholastic, coScholastic, schoolData) => {
   const { principal_name: principalName = '' } = schoolData || {};
   return [
     [
-      { value: "CLASS TEACHER'S REMARK", colspan: 3 },
+      { value: "CLASS TEACHER'S REMARK", colspan: categoryRowLengthHalf },
       { value: overallRemarkSemOne, colspan: categoryRowLength * 3 + 4 },
     ],
     [
