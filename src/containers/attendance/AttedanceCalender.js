@@ -165,11 +165,11 @@ const AttedanceCalender = () => {
       setStartDate(history?.location?.state?.payload?.startDate);
       setEndDate(history?.location?.state?.payload?.endDate);
     }
-    history.push({
-      state:{
-        backButtonStatus : false
-      }
-    })
+    // history.push({
+    //   state:{
+    //     backButtonStatus : false
+    //   }
+    // })
   }, []);
   useEffect(() => {
     if (path === '/attendance-calendar/teacher-view') {
@@ -181,7 +181,7 @@ const AttedanceCalender = () => {
         setSelectedGrade(history?.location?.state?.payload?.grade_id);
         setSelectedSection(history?.location?.state?.payload?.section_id);
         setCounter(history?.location?.state?.payload?.counter);
-        // setStartDate(history?.location?.state?.payload?.startDate);
+        setStartDate(history?.location?.state?.payload?.startDate);
         // setEndDate(history?.location?.state?.payload?.endDate);
         if (history?.location?.state?.payload?.counter == 1) {
           var dateToday = new Date();
@@ -209,6 +209,17 @@ const AttedanceCalender = () => {
             .catch((error) => {
               setLoading(false);
               console.log(error);
+            });
+            axiosInstance
+            .get(
+              `${endpoints.academics.getHoliday}?start_date=${formatDateToday}&end_date=${formatDateToday}&branch=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
+            )
+            .then((res) => {
+              console.log(res, 'holiday');
+              setHolidayDetails(res.data.holiday_detail);
+            })
+            .catch((error) => {
+              console.log(error, 'err');
             });
         } else {
           console.log(history , "his");
@@ -245,22 +256,33 @@ const AttedanceCalender = () => {
                 console.log(date, 'Date====');
                 // setUpdatedDays(datedata);
               }
-              if (res?.data?.last_update_events[0]) {
-                let options = {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                };
-                let date = new Date(res?.data?.last_update_attendance);
-                // let datedata = moment(date).format('25 Mar 2015');
-                setUpdatedEventDays(date.toLocaleDateString());
-                // setUpdatedDays(datedata);
-              }
+              // if (res?.data?.last_update_events[0]) {
+              //   let options = {
+              //     weekday: 'long',
+              //     year: 'numeric',
+              //     month: 'long',
+              //     day: 'numeric',
+              //   };
+              //   let date = new Date(res?.data?.last_update_attendance);
+              //   // let datedata = moment(date).format('25 Mar 2015');
+              //   setUpdatedEventDays(date.toLocaleDateString());
+              //   // setUpdatedDays(datedata);
+              // }
             })
             .catch((error) => {
               setLoading(false);
               console.log(error);
+            });
+            axiosInstance
+            .get(
+              `${endpoints.academics.getHoliday}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&branch=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
+            )
+            .then((res) => {
+              console.log(res, 'holiday');
+              setHolidayDetails(res.data.holiday_detail);
+            })
+            .catch((error) => {
+              console.log(error, 'err');
             });
         }
       } else {
@@ -306,18 +328,18 @@ const AttedanceCalender = () => {
                 console.log(date, 'Date====');
                 // setUpdatedDays(datedata);
               }
-              if (res?.data?.last_update_events[0]) {
-                let options = {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                };
-                let date = new Date(res?.data?.last_update_attendance);
-                // let datedata = moment(date).format('25 Mar 2015');
-                setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-                // setUpdatedDays(datedata);
-              }
+              // if (res?.data?.last_update_events[0]) {
+              //   let options = {
+              //     weekday: 'long',
+              //     year: 'numeric',
+              //     month: 'long',
+              //     day: 'numeric',
+              //   };
+              //   let date = new Date(res?.data?.last_update_attendance);
+              //   // let datedata = moment(date).format('25 Mar 2015');
+              //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+              //   // setUpdatedDays(datedata);
+              // }
             })
             .catch((error) => {
               setLoading(false);
@@ -364,18 +386,18 @@ const AttedanceCalender = () => {
                 setUpdatedDays(date.toLocaleDateString('en-US', options));
                 // setUpdatedDays(datedata);
               }
-              if (res?.data?.last_update_events[0]) {
-                let options = {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                };
-                let date = new Date(res?.data?.last_update_attendance);
-                // let datedata = moment(date).format('25 Mar 2015');
-                setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-                // setUpdatedDays(datedata);
-              }
+              // if (res?.data?.last_update_events[0]) {
+              //   let options = {
+              //     weekday: 'long',
+              //     year: 'numeric',
+              //     month: 'long',
+              //     day: 'numeric',
+              //   };
+              //   let date = new Date(res?.data?.last_update_attendance);
+              //   // let datedata = moment(date).format('25 Mar 2015');
+              //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+              //   // setUpdatedDays(datedata);
+              // }
             })
             .catch((error) => {
               setLoading(false);
@@ -691,6 +713,7 @@ const AttedanceCalender = () => {
           },
         })
         .then((res) => {
+          console.log(res, "qa calender")
           setLoading(false);
           setStudentDataAll(res.data);
           let temp = [...res.data.present_list, ...res.data.absent_list];
@@ -709,18 +732,16 @@ const AttedanceCalender = () => {
             console.log(date, 'Date====');
             // setUpdatedDays(datedata);
           }
-          if (res?.data?.last_update_events[0]) {
-            let options = {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            };
-            let date = new Date(res?.data?.last_update_events);
-            // let datedata = moment(date).format('25 Mar 2015');
-            setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-            // setUpdatedDays(datedata);
-          }
+          // if (res?.data?.last_update_events[0]) {
+          //   let options = {
+          //     weekday: 'long',
+          //     year: 'numeric',
+          //     month: 'long',
+          //     day: 'numeric',
+          //   };
+          //   let date = new Date(res?.data?.last_update_events);
+          //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+          // }
         })
         .catch((error) => {
           setLoading(false);
@@ -779,18 +800,18 @@ const AttedanceCalender = () => {
             console.log(date, 'Date====');
             // setUpdatedDays(datedata);
           }
-          if (res?.data?.last_update_events[0]) {
-            let options = {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            };
-            let date = new Date(res?.data?.last_update_events);
-            // let datedata = moment(date).format('25 Mar 2015');
-            setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-            // setUpdatedDays(datedata);
-          }
+          // if (res?.data?.last_update_events[0]) {
+          //   let options = {
+          //     weekday: 'long',
+          //     year: 'numeric',
+          //     month: 'long',
+          //     day: 'numeric',
+          //   };
+          //   let date = new Date(res?.data?.last_update_events);
+          //   // let datedata = moment(date).format('25 Mar 2015');
+          //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+          //   // setUpdatedDays(datedata);
+          // }
         })
         .catch((error) => {
           setLoading(false);
@@ -842,18 +863,18 @@ const AttedanceCalender = () => {
           console.log(date, 'Date====');
           // setUpdatedDays(datedata);
         }
-        if (res?.data?.last_update_events[0]) {
-          let options = {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          };
-          let date = new Date(res?.data?.last_update_events);
-          // let datedata = moment(date).format('25 Mar 2015');
-          setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-          // setUpdatedDays(datedata);
-        }
+        // if (res?.data?.last_update_events[0]) {
+        //   let options = {
+        //     weekday: 'long',
+        //     year: 'numeric',
+        //     month: 'long',
+        //     day: 'numeric',
+        //   };
+        //   let date = new Date(res?.data?.last_update_events);
+        //   // let datedata = moment(date).format('25 Mar 2015');
+        //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+        //   // setUpdatedDays(datedata);
+        // }
       })
       .catch((error) => {
         setLoading(false);
@@ -907,18 +928,18 @@ const AttedanceCalender = () => {
             console.log(date, 'Date====');
             // setUpdatedDays(datedata);
           }
-          if (res?.data?.last_update_events[0]) {
-            let options = {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            };
-            let date = new Date(res?.data?.last_update_events);
-            // let datedata = moment(date).format('25 Mar 2015');
-            setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-            // setUpdatedDays(datedata);
-          }
+          // if (res?.data?.last_update_events[0]) {
+          //   let options = {
+          //     weekday: 'long',
+          //     year: 'numeric',
+          //     month: 'long',
+          //     day: 'numeric',
+          //   };
+          //   let date = new Date(res?.data?.last_update_events);
+          //   // let datedata = moment(date).format('25 Mar 2015');
+          //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+          //   // setUpdatedDays(datedata);
+          // }
         })
         .catch((error) => {
           setLoading(false);
@@ -971,18 +992,18 @@ const AttedanceCalender = () => {
             console.log(date, 'Date====');
             // setUpdatedDays(datedata);
           }
-          if (res?.data?.last_update_events[0]) {
-            let options = {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            };
-            let date = new Date(res?.data?.last_update_events);
-            // let datedata = moment(date).format('25 Mar 2015');
-            setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-            // setUpdatedDays(datedata);
-          }
+          // if (res?.data?.last_update_events[0]) {
+          //   let options = {
+          //     weekday: 'long',
+          //     year: 'numeric',
+          //     month: 'long',
+          //     day: 'numeric',
+          //   };
+          //   let date = new Date(res?.data?.last_update_events);
+          //   // let datedata = moment(date).format('25 Mar 2015');
+          //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
+          //   // setUpdatedDays(datedata);
+          // }
         })
         .catch((error) => {
           setLoading(false);
@@ -1072,8 +1093,17 @@ const AttedanceCalender = () => {
 
   const handleMarkHoliday = () => {
     const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: moment(startDate).format('YYYY-MM-DD'),
+      endDate: moment(endDate).format('YYYY-MM-DD'),
       counter: counter,
     };
+    // const payload = {
+    //   counter: counter,
+    // };
     history.push({
       pathname: '/holidaymarking',
       state: {
@@ -1117,8 +1147,17 @@ const AttedanceCalender = () => {
 
   const handleEditHoliday = (e) => {
     const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: moment(startDate).format('YYYY-MM-DD'),
+      endDate: moment(endDate).format('YYYY-MM-DD'),
       counter: counter,
     };
+    // const payload = {
+    //   counter: counter,
+    // };
     history.push({
       pathname: '/holidaymarking',
       state: {

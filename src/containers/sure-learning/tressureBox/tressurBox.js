@@ -227,7 +227,7 @@ function TressurBox() {
                         <strong>{item.title}</strong>
                       </Typography>
                       <Typography style={{ color: 'white', paddingLeft: '40px' }}>
-                        <strong>{item.viewed_users}Views</strong>
+                        <strong>{item.viewed_users}Videos</strong>
                       </Typography>{' '}
                     </CardContent>
                     <CardActions style={{ justify: 'center', paddingBottom: '20px' }}>

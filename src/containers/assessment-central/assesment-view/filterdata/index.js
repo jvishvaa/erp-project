@@ -97,7 +97,6 @@ const AssessmentFilters = ({
       subject: '',
     });
     setPeriodData([]);
-    setBranchDropdown([]);
     setGradeDropdown([]);
     setSubjectDropdown([]);
     setViewMoreData({});
@@ -224,10 +223,6 @@ const AssessmentFilters = ({
   };
 
   const handleFilter = () => {
-    if (!filterData.academic) {
-      setAlert('error', 'Select Academic Year!');
-      return;
-    }
     if (filterData.branch.length === 0) {
       setAlert('error', 'Select Branch!');
       return;
@@ -386,7 +381,7 @@ const AssessmentFilters = ({
         <Button
           variant='contained'
           color='primary'
-          style={{color:'white', width: '100%' }}
+          style={{ color: 'white', width: '100%' }}
           size='medium'
           onClick={handleFilter}
         >
@@ -404,7 +399,7 @@ const AssessmentFilters = ({
         <Button
           startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
           variant='contained'
-          style={{color:'white', width: '100%' }}
+          style={{ color: 'white', width: '100%' }}
           color='primary'
           onClick={() =>
             history.push({
