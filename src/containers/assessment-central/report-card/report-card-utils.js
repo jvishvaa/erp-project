@@ -2,6 +2,7 @@ import PauseCircleOutlineIcon from '@material-ui/icons/PauseCircleOutline';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
+import RestoreIcon from '@material-ui/icons/Restore';
 
 export const getPipelineConfig = (pipelineStatusId) => {
   switch (pipelineStatusId) {
@@ -13,6 +14,8 @@ export const getPipelineConfig = (pipelineStatusId) => {
       return { status: 'complete', color: '#108548', Icon: CheckCircleOutlineIcon };
     case '3':
       return { status: 'failed', color: '#dd2b0e', Icon: HighlightOffIcon };
+    case '4':
+      return { status: 'reverted', color: '#383838', Icon: RestoreIcon };
   }
 };
 
