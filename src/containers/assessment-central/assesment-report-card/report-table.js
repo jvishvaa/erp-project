@@ -47,7 +47,7 @@ export default function AssesmentReport({ reportCardData }) {
           <ReportTableContent {...data} />
         ))}
         <PersonalityTraitTable {...{ scholastic, coScholastic, traitGradeScale }} />
-        <ReportCardFooter {...{ scholastic, coScholastic }} />
+        <ReportCardFooter {...{ scholastic, coScholastic, schoolData }} />
       </Table>
     </TableContainer>
   );
