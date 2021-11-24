@@ -18,6 +18,24 @@
     left: 100px;
   }
 
+  .third-col {
+    width: 200px;
+    min-width: 200px;
+    max-width: 200px;
+    left: 250px;
+  }
+
+  .sticky-col-head {
+    position: -webkit-sticky;
+    position: sticky;
+    background-color: lightgrey;
+
+  }
+  .fourth-col{
+   
+    left: 0px;
+  }
+
   
 
 

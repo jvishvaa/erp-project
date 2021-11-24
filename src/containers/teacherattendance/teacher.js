@@ -45,22 +45,6 @@ import MomentUtils from '@date-io/moment';
 
 
 
-// function createData(Erp_id,  Name, Designation, Contact_Number, Attendance) {
-//   return { Erp_id,  Name, Designation, Contact_Number, Attendance };
-// }
-
-// const rows = [
-//   createData(1, 'sandeep', 'teacher', 1234567890, 'Present', 'Absent', 'Half Day', 'Late'),
-//   createData(2, 'sandeep', 'teacher', 1234567890, 'Present', 'Absent', 'Half Day', 'Late' ),
-//   createData(3, 'sandeep', 'teacher', 1234567890, 'Present', 'Absent', 'Half Day', 'Late' ),
-//   createData(4, 'sandeep', 'teacher', 1234567890, 'Present', 'Absent', 'Half Day', 'Late'),
-//   createData(5, 'sandeep', 'teacher', 1234567890, 'Present', 'Absent', 'Half Day', 'Late'),
-
-
-
-
-// ];
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -88,9 +72,7 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'Erp id', numeric: true, disablePadding: true, label: 'Erp id' },
-  // { id: 'id', numeric: true, disablePadding: true, label: 'id' },
-
+  { id: 'ERP ID', numeric: true, disablePadding: true, label: 'ERP ID' },
   { id: 'Name', numeric: false, disablePadding: false, label: 'Name' },
   { id: 'Designation', numeric: false, disablePadding: false, label: 'Designation' },
   { id: 'Contact Number', numeric: false, disablePadding: false, label: 'Contact Number' },
@@ -118,19 +100,9 @@ function EnhancedTableHead(props) {
             sortDirection={orderBy === headCell.id ? order : false}
             stickyHeader
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-              className={classes.fontColorHeadCell}
-            >
+          
               {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </span>
-              ) : null}
-            </TableSortLabel>
+              
           </TableCell>
         ))}
       </TableRow>
@@ -284,16 +256,16 @@ export default function TeacherAttendance(props) {
     getRoleApi();
   }, []);
 
-  const handleMultipleRoles = (event, value) => {
-    if (value?.length) {
-      const ids = value.map((el) => el) || [];
-      console.log("idofrole1", ids?.[ids.length - 1]?.id);
-      setRolesId(ids?.[ids.length - 1]?.id);
-      setSelectedMultipleRoles(ids);
-    } else {
-      setSelectedMultipleRoles([]);
-    }
-  };
+  // const handleMultipleRoles = (event, value) => {
+  //   if (value?.length) {
+  //     const ids = value.map((el) => el) || [];
+  //     console.log("idofrole1", ids?.[ids.length - 1]?.id);
+  //     setRolesId(ids?.[ids.length - 1]?.id);
+  //     setSelectedMultipleRoles(ids);
+  //   } else {
+  //     setSelectedMultipleRoles([]);
+  //   }
+  // };
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -317,6 +289,7 @@ export default function TeacherAttendance(props) {
 
 
   const getTeacherData = () => {
+    setData([]);
     const result = axiosInstance.get(`${endpoints.academics.teacherAttendanceData}?roles=${rolesId}&date=${startDate}`)
       .then((result) => {
         if (result.status === 200) {
@@ -344,7 +317,9 @@ export default function TeacherAttendance(props) {
   };
 
 
-
+  const handleMultipleRoles = (event, value) => {
+     setRolesId(value.id);
+   };
 
 
   const handleChangePage = (event, newPage) => {
@@ -398,27 +373,30 @@ export default function TeacherAttendance(props) {
             </Grid>
           </MuiPickersUtilsProvider>
 
-          <Grid item xs={12} md={2} style={{maxHeight:"5px"}}>
-            <Autocomplete
-                size='small'
-                multiple
-                onChange={handleMultipleRoles}
-                value={selectedMultipleRoles}
-                className='dropdownIcon'
-                id='message_log-smsType'
-                options={roles}
-                getOptionLabel={(option) => option?.role_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Role'
-                    placeholder='Role'
-                  />
-                )}
-              />
+          <Grid item xs={12} md={2}>
+          <Autocomplete
+              // multiple
+              size='small'
+              onChange={handleMultipleRoles}
+              value={rolesId}
+              disableClearable
+              className='dropdownIcon'
+              style={{ marginTop: '4px' }}
+
+              id='message_log-smsType'
+              options={roles}
+              getOptionLabel={(option) => option?.role_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  className='message_log-textfield'
+                  {...params}
+                  variant='outlined'
+                  label='Role'
+                  placeholder='Role'
+                />
+              )}
+            />
            
           </Grid>
           <Grid item md={2} xs={12} sm={12} >
