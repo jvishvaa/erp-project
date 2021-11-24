@@ -24,6 +24,8 @@ import CardComments from './CardComments';
 import LazyLoad from 'react-lazy-load';
 import { repeat } from "lodash";
 import { display } from '@material-ui/system';
+import endpoints from '../../config/Endpoint';
+import apiRequest from '../../config/apiRequest';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -164,7 +166,7 @@ export default function Blog(props) {
           component="img"
           height="194"
           width="300"
-          image={props.img}
+          image={`${endpoints.s3.Userstories}${props.img}`}
           alt="BANGALORE"
         />
       }
