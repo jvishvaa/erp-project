@@ -575,7 +575,7 @@ export default {
     personalityTraits: '/assessment/get-traits/',
     studentReportGrade: '/assessment/get-student-grades/',
     statusList: '/assessment/get-pipeline-statuses/',
-    revertReportPipeline: '/assessment/<pipeline_id>/revert-pipeline/',
+    deleteReportPipeline: '/assessment/<pipeline_id>/revert-pipeline/',
   },
   dashboard: {
     teacher: {
