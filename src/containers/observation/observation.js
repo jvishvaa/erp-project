@@ -532,9 +532,9 @@ export default function Observation() {
             alignItems='flex-start'
             style={{ marginLeft: '15px' }}
           >
-            <text>Observation Name</text>
+            <text>Observation Area</text>
             <TextField
-              placeholder='observation name'
+              placeholder='observation area'
               value={name}
               onChange={handleName}
               id='outlined-size-normal'
