@@ -160,14 +160,13 @@ export default function Blog(props) {
           <h6>{props.data}</h6>
         </Typography>
       </CardContent>
-      {
-        props.type === 'Blog' &&
+      {props.type === 'Blog' &&
         <CardMedia
           component="img"
           height="194"
           width="300"
           image={`${endpoints.s3.Userstories}${props.img}`}
-          alt="BANGALORE"
+          alt="Somthing went wrong while loading the image."
         />
       }
       <Typography variant="body2" color="text.secondary" className={classes.blogtitlesty}>
@@ -212,7 +211,7 @@ export default function Blog(props) {
           <CardComments postId={props.postId} />
         </CardContent>
       </Collapse>
-    </Card >
+    </Card>
     //   </Masonry>
     // </LazyLoad>
   );
