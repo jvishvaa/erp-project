@@ -98,6 +98,9 @@
   opacity: 1;
   padding-left: 0.5rem;
   cursor: pointer;
+  white-space : nowrap ;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .studentMarks {
