@@ -10,7 +10,7 @@ import CloseIcon from '@material-ui/icons/Close';
 import ObjectDetection from './ObjectDetection';
 import ImageSubmitted from './ImageSubmitted';
 
- const WebCamDialog = (props) => {
+const WebCamDialog = (props) => {
   const [webcam, setwebcam] = useState('')
   const [image, setImage] = useState(null);
   const [dimensions, setDimensions] = useState(null);
@@ -20,15 +20,14 @@ import ImageSubmitted from './ImageSubmitted';
     setwebcam('submitImage')
   };
 
-  useEffect(()=>{
-setwebcam('detectImage')
-  },[])
+  useEffect(() => {
+    setwebcam('detectImage')
+  }, [])
   const reclickImage = () => {
     setwebcam('detectImage')
   }
 
   const handleClose = () => {
-    debugger
     props.handleWebcam()
   };
 
@@ -38,32 +37,32 @@ setwebcam('detectImage')
         // fullScreen
         open={props.webOpen}
         onClose={handleClose}
-        style = {{marginTop : '3%'}}
+        style={{ marginTop: '3%' }}
 
       >
-            <IconButton
-              edge="start"
-              color="inherit"
-              onClick={handleClose}
-              aria-label="close"
-            >
-              <CloseIcon />
-            </IconButton>
-         {webcam == 'detectImage' &&
+        <IconButton
+          edge="start"
+          color="inherit"
+          onClick={handleClose}
+          aria-label="close"
+        >
+          <CloseIcon />
+        </IconButton>
+        {webcam == 'detectImage' &&
           <ObjectDetection
             submitImage={submitImage}
           />}
-          {
-            webcam == 'submitImage' &&
-            <ImageSubmitted
-              image={image}
-              dimensions={dimensions}
-              reclickImage={reclickImage}
-              handleUploadFile = {props.handleUploadFile}
-              handleClose = {handleClose}
-              handlewebcam ={props.handleWebcam}
-            />
-          }
+        {
+          webcam == 'submitImage' &&
+          <ImageSubmitted
+            image={image}
+            dimensions={dimensions}
+            reclickImage={reclickImage}
+            handleUploadFile={props.handleUploadFile}
+            handleClose={handleClose}
+            handlewebcam={props.handleWebcam}
+          />
+        }
       </Dialog>
     </div>
   );

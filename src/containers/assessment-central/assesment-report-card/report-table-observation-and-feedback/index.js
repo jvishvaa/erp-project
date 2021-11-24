@@ -23,14 +23,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ObservationAndFeedBackReport = ({ observationFeedback = [] }) => {
+const ObservationAndFeedBackReport = ({ schoolInfo, observationFeedback = [] }) => {
   const classes = useStyles();
   const componentRef = useRef();
-
+  const { principal_name: principalName = '' } = schoolInfo || {};
   return (
     <Box style={{ position: 'relative' }}>
       <Paper component={'div'} elevation={2} className={classes.root} ref={componentRef}>
-        <ObservationReport observationFeedback={observationFeedback} />
+        <ObservationReport
+          principalName={principalName}
+          observationFeedback={observationFeedback}
+        />
       </Paper>
       <ReactToPrint
         trigger={() => (

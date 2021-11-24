@@ -224,7 +224,7 @@ const InhouseCalendar = ({ classes }) => {
       <div className={classes.parentDiv} id='blogContainer'>
         <CommonBreadcrumbs
           componentName='Sure Learning'
-          childComponentName='Calender'
+          childComponentName='Calendar'
           isAcademicYearVisible={true}
         />
         <div>

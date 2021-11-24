@@ -365,26 +365,24 @@ const generatePersonalityTraits = (scholastic, coScholastic) => {
   return personalityTraits;
 };
 
-const generateFooterData = (scholastic, coScholastic) => {
+const generateFooterData = (scholastic, coScholastic, schoolData) => {
   const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
   const { term_details: termDetails = {} } = scholastic || {};
   const { overallRemarkSemOne = '', overallRemarkSemTwo = '' } =
     getOverallRemark(termDetails);
   const categoryRowLengthHalf = Math.round(categoryRowLength / 2);
+  const { principal_name: principalName = '' } = schoolData || {};
   return [
     [
       { value: "CLASS TEACHER'S REMARK", colspan: 3 },
       { value: overallRemarkSemOne, colspan: categoryRowLength * 3 + 4 },
     ],
     [
-      { value: 'CLASS TEACHER', colspan: categoryRowLengthHalf },
-      { value: '', colspan: categoryRowLengthHalf },
-      { value: 'COORDINATOR', colspan: categoryRowLengthHalf },
-      { value: '', colspan: categoryRowLengthHalf },
-      { value: 'PARENT', colspan: categoryRowLengthHalf },
-      { value: '', colspan: categoryRowLengthHalf },
       { value: 'PRINCIPAL', colspan: categoryRowLengthHalf },
-      { value: '', colspan: categoryRowLengthHalf + 1 },
+      {
+        value: principalName && `${principalName} - DIGITAL SIGNATURE`,
+        colspan: categoryRowLength * 3 + 4,
+      },
     ],
     [
       {

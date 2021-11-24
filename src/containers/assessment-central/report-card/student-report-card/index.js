@@ -46,6 +46,7 @@ const StudentReportCard = () => {
       case 1:
         return (
           <AssessmentReportBack
+            schoolInfo={reportCardData['school_info']}
             observationFeedback={reportCardData['observation_feedback']}
           />
         );

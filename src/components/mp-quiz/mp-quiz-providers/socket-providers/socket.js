@@ -34,7 +34,6 @@ class Socket {
     if (!this.connection || this.connection.readyState === window.WebSocket.CLOSED) {
       this.connect(); // check if websocket instance is closed, if so call `connect` function.
     } else {
-      // debugger;
       console.log('mk');
     }
   };
@@ -71,7 +70,6 @@ class Socket {
 
       /* OLD CODE(WORKING) */
       // if (!doNotReConnectOnFailure) {
-      //   debugger
       //   console.log(
       //     `Socket is closed. Reconnect will be attempted in ${Math.min(
       //       10000 / 1000,

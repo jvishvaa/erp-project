@@ -165,7 +165,6 @@ const UploadClassWorkDiaogBox = (props) => {
 
   }
   const handleUploadFile = (value) => {
-    debugger
     // let value = value
     // let value = e.target.files[0];
     if (uploadFiles?.length === 20) {
@@ -377,7 +376,7 @@ const UploadClassWorkDiaogBox = (props) => {
 
         </DialogContent>
         <DialogActions>
-          
+
           {!isTeacher && (
             <div className='box-size-dialog'>
               <input
@@ -407,25 +406,25 @@ const UploadClassWorkDiaogBox = (props) => {
             </div>
           )}
           {!isTeacher && (
-            <div className='cam' style = {{marginRight: "31%"}}>
-            
-            <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-              {!isLessthanToday() && 
-              <Button
-                startIcon={<PhotoCamera />}
-                color='primary'
-                variant = "contained"
-                onClick={handleWebcam}
-                >
-                  Capture
-              </Button>
-              // <IconButton
-              //   color='primary'
-              //   onClick={handleWebcam}
-              // >
-              //   < />
-              // </IconButton>
-            }
+            <div className='cam' style={{ marginRight: "31%" }}>
+
+              <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
+                {!isLessthanToday() &&
+                  <Button
+                    startIcon={<PhotoCamera />}
+                    color='primary'
+                    variant="contained"
+                    onClick={handleWebcam}
+                  >
+                    Capture
+                  </Button>
+                  // <IconButton
+                  //   color='primary'
+                  //   onClick={handleWebcam}
+                  // >
+                  //   < />
+                  // </IconButton>
+                }
               </Box>
             </div>
           )}

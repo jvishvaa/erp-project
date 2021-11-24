@@ -33,7 +33,8 @@ export default {
             homework: 'academic/homework_status/',
             blogLike: '/academic/like_blog/',
             dicussionLike: '/academic/',
-            onlineclasstimestats: '/api/reports/v1/online-class-time-stats/'
+            onlineclasstimestats: '/api/reports/v1/online-class-time-stats/',
+            deleteAnnouncement: '/announcement/',
         },
 
         // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
