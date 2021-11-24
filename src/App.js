@@ -349,7 +349,7 @@ import WeeklyQuizPerformance from 'containers/assessment-central/assessment-repo
 import HolidayMark from 'containers/attendance/holidaymark';
 import ReferSuccess from 'containers/studentRefferal/referSuccess';
 import StudentRefer from 'containers/studentRefferal/referForm';
-import StudentCountReport from 'containers/online-class/studentCountReport/index.jsx';
+import StudentCountReport from 'containers/student-strength/studentCountReport/index.jsx';
 import TeacherAttendance from 'containers/teacherattendance/teacher';
 import TeacherAttendanceVerify from 'containers/teacherattendance/teacherattendanceverify';
 

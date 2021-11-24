@@ -944,6 +944,10 @@ const Layout = ({ children, history }) => {
         history.push('/assignedCoursesByCordinator');
         break;
       }
+      case 'Class Section Wise Strength': {
+        history.push('/student_count_report');
+        break;
+      }
       case 'Connection pod': {
         history.push('/online-class/connection-pod');
         break;
