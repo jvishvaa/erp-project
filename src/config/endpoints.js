@@ -523,6 +523,10 @@ export default {
     s3: 'https://d3ka3pry54wyko.cloudfront.net',
 
   },
+  observation: {  
+    observationGet:'/teacher_observation/observation-area/',
+  },
+
   homeworkReport: {
     branchWiseData: '/academic/teacher_homework_report/',
     subjectList: '/academic/fetch_subjects/',

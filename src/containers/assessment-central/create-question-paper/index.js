@@ -95,7 +95,6 @@ const CreateQuestionPaper = ({
 
   useEffect(() => {
     if (refresh) {
-      handleResetQuestionPaper();
       setIsFetched(false);
     }
   }, [refresh]);
@@ -103,7 +102,6 @@ const CreateQuestionPaper = ({
   useEffect(() => {
     if (Number(location.pathname.slice(23)) && !isFetched) {
       handleFetch();
-      handleResetQuestionPaper();
     }
   }, []);
 
