@@ -351,6 +351,7 @@ import ReferSuccess from 'containers/studentRefferal/referSuccess';
 import StudentRefer from 'containers/studentRefferal/referForm';
 import TeacherAttendance from 'containers/teacherattendance/teacher';
 import TeacherAttendanceVerify from 'containers/teacherattendance/teacherattendanceverify';
+import Observation from 'containers/observation/observation';
 
 function App({ alert, isMsAPI }) {
   // useEffect(() => {
@@ -1311,6 +1312,9 @@ function App({ alert, isMsAPI }) {
                           </Route>
                           <Route exact path='/teacher-attendance-verify'>
                             {({ match }) => <TeacherAttendanceVerify match={match}  />}
+                          </Route>
+                          <Route exact path='/observation'>
+                            {({ match }) => <Observation match={match}  />}
                           </Route>
                           
                           <Route exact path='/finance/student_shuffle'>
