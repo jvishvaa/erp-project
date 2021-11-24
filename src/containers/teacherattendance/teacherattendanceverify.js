@@ -47,6 +47,9 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import { setValueAndLabel } from 'utility-functions';
 import StudentIdCardDetails from 'containers/student-Id-Card/studentIdCardDetail';
 import StudentAttendance from 'containers/online-class/student-attendance/StudentAttendance';
+import { Select } from '@material-ui/core';
+import InputLabel from '@material-ui/core/InputLabel';
+
 
 
 function descendingComparator(a, b, orderBy) {
@@ -251,7 +254,7 @@ export default function TeacherAttendanceVerify() {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [startDate, setStartDate] = React.useState(moment().format('YYYY-MM-DD'));
   const [academicYearDropdown, setAcademicYearDropdown] = React.useState([]);
-  const [valued, setValued] = React.useState([]);
+
 
  
 
@@ -556,47 +559,42 @@ export default function TeacherAttendanceVerify() {
             />
           </Grid>
 
-          <Grid item xs={12} md={2}>
-            <TextField
-              id="outlined-select-currency"
-              select
-              label="Month"
+          <Grid item xs={12} md={2} style={{marginLeft:"25px"}}>
+          <InputLabel htmlFor="age-native-simple">Month</InputLabel>
+            <Select
+              native
               value={month}
               onChange={handleChanges}
-
-              helperText="please select the month"
-
-            >
+              >
               {months.map((option) => (
-                <MenuItem key={option.label} value={option.value}>
+                <option key={option.label} value={option.value}>
                   {option.label}
-                </MenuItem>
+                </option>
               ))}
-            </TextField>
+            </Select>
           </Grid>
-          <Grid item xs={12} md={2}>
-            <TextField
-              select
-              label="Year"
+          <Grid item xs={12} md={2} style={{marginLeft:"-49px"}}>
+          <InputLabel htmlFor="month-native-simple">Year</InputLabel>
+              <Select
+              native
               value={year}
               onChange={handleYear}
-              helperText="please select the year"
             >
               {years.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
+                <option key={option.value} value={option.value}>
                   {option.value}
-                </MenuItem>
+                </option>
               ))}
-            </TextField>
+            </Select>
           </Grid>
-          <Grid item md={2} xs={12} sm={12} >
+          <Grid item md={2} xs={12} sm={12} style={{    marginLeft: '-57px'}}>
             <Button onClick={getTeacherData} style={{ marginTop: '10px', backgroundColor: '#e65c00' }} variant="contained">
               Search
             </Button>
           </Grid>
         </Grid>
 
-        <Grid container spacing={2} style={{ marginTop: '4px' }}>
+        <Grid container spacing={2} style={{ marginTop: '35px' }}>
           <Grid item xs={12} md={2}>
           {/* <exportToCSV data={studentAttendanceData} fileName="attendance" /> */}
           <Button variant="contained" style={{  backgroundColor: '#e65c00' }} 
