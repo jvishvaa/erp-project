@@ -62,7 +62,7 @@ const Blogdisc = () => {
   }
 
   const fetchData = () => {
-    apiRequest('get', `${endpoints.dashboard.student.nextBlogdata}${next.split('=')[1]}`)
+    apiRequest('get', `${endpoints.dashboard.student.nextBlogdata}${next.split('page=')[1]}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setBlogdata([...Blogdata, ...result?.data?.data?.results]);
