@@ -552,7 +552,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/learning-notes',
     },
     {
-      name: 'Calender',
+      name: 'Calendar',
       Path: '/inhouse_calendar',
     },
     {
