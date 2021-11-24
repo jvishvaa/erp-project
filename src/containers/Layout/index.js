@@ -915,7 +915,7 @@ const Layout = ({ children, history }) => {
         history.push('/learning-notes');
         break;
       }
-      case 'Calender': {
+      case 'Calendar': {
         history.push('/inhouse_calendar');
         break;
       }
