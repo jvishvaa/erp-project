@@ -471,6 +471,14 @@ const Layout = ({ children, history }) => {
       case 'Create Test': {
         history.push('/assesment');
         break;
+      } 
+      case 'View Attendance': {
+        history.push('/teacher-attendance-verify');
+        break;
+      }
+      case 'Mark Attendance': {
+        history.push('/teacher-attendance');
+        break;
       }
       case 'Take Test': {
         history.push('/assessment');
@@ -934,6 +942,10 @@ const Layout = ({ children, history }) => {
 
       case 'Self Driven Courses': {
         history.push('/assignedCoursesByCordinator');
+        break;
+      }
+      case 'Class Section Wise Strength': {
+        history.push('/student_count_report');
         break;
       }
       case 'Connection pod': {
