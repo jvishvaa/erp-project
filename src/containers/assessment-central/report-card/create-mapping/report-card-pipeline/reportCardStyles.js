@@ -22,13 +22,31 @@ export const reportCardStyles = makeStyles((theme) => ({
   'status-card--failed': {
     '&:hover': {
       background: '#fdd4cd',
-      transition: '250ms',
+      transition: '500ms',
     },
   },
-  'status-card--reverted': {
+  'status-card--d-pending': {
+    '&:hover': {
+      background: '#fdf1dd',
+      transition: '500ms',
+    },
+  },
+  'status-card--d-running': {
+    '&:hover': {
+      background: '#cbe2f9',
+      transition: '500ms',
+    },
+  },
+  'status-card--deleted': {
     '&:hover': {
       background: '#d3d3d3',
-      transition: '250ms',
+      transition: '500ms',
+    },
+  },
+  'status-card--d-failed': {
+    '&:hover': {
+      background: '#fdd4cd',
+      transition: '500ms',
     },
   },
   'status-card': {

@@ -197,9 +197,9 @@ export const updateReportCardStatus = async (payload) => {
   }
 };
 
-export const revertReportPipeline = async (pipelineId) => {
+export const deleteReportPipeline = async (pipelineId) => {
   try {
-    const url = endpoints.reportCard.revertReportPipeline.replace(
+    const url = endpoints.reportCard.deleteReportPipeline.replace(
       '<pipeline_id>',
       pipelineId
     );
