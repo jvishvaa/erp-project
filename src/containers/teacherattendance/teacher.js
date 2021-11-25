@@ -123,7 +123,7 @@ function EnhancedTableHead(props) {
          Contact Number          
           </TableCell>
           <TableCell
-            style={{ backgroundColor: "LightGray",width:"460px" }}
+            style={{ backgroundColor: "LightGray",width:"490px" }}
             
             stickyHeader
           >
