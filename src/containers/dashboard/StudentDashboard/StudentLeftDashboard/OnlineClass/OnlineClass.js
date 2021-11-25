@@ -225,12 +225,15 @@ const OnlineClass = (props) => {
 
   const getOnlineData = () => {
     apiRequest('get', endpoints.dashboard.student.onlineclasstimestats, null, null, true)
-      .then((result) => {
-        setOnlineclassar(Array.isArray(result?.data) ? result?.data : []);
+      .then((result = {}) => {
+        const { data = [] } = result || {};
+        if (Array.isArray(data)) {
+          setOnlineclassar(data || []);
+        }
       })
-      .catch((error) => {
-      });
+      .catch((error) => {});
   };
+
   useEffect(() => {
     getOnlineData();
   }, []);
