@@ -24,6 +24,8 @@ import CardComments from './CardComments';
 import LazyLoad from 'react-lazy-load';
 import { repeat } from "lodash";
 import { display } from '@material-ui/system';
+import endpoints from '../../config/Endpoint';
+import apiRequest from '../../config/apiRequest';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -125,7 +127,7 @@ export default function Blog(props) {
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            RD
+            {props.user.charAt(0)}
           </Avatar>
         }
         action={
@@ -136,7 +138,7 @@ export default function Blog(props) {
         title={<h5 className={classes.headingsstyle}>{props.user}</h5>}
         subheader={
           <Typography className={classes.headingsstyle}>
-            <small style={{ display: 'block', fontSize: 'small' }}>{'props.role_branch'}</small>
+            <small style={{ display: 'block', fontSize: 'small' }}>{props.role_branch}</small>
             {/* {console.log(props.role_branch, 'yu')} */}
             {/* <br /> */}
             <small style={{ display: 'block', fontSize: '10px' }}>{props.time}</small>
@@ -158,14 +160,13 @@ export default function Blog(props) {
           <h6>{props.data}</h6>
         </Typography>
       </CardContent>
-      {
-        props.type === 'Blog' &&
+      {props.type === 'Blog' &&
         <CardMedia
           component="img"
           height="194"
           width="300"
-          image={props.img}
-          alt="BANGALORE"
+          image={`${endpoints.s3.Userstories}${props.img}`}
+          alt="Somthing went wrong while loading the image."
         />
       }
       <Typography variant="body2" color="text.secondary" className={classes.blogtitlesty}>
@@ -210,7 +211,7 @@ export default function Blog(props) {
           <CardComments postId={props.postId} />
         </CardContent>
       </Collapse>
-    </Card >
+    </Card>
     //   </Masonry>
     // </LazyLoad>
   );

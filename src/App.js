@@ -349,6 +349,11 @@ import WeeklyQuizPerformance from 'containers/assessment-central/assessment-repo
 import HolidayMark from 'containers/attendance/holidaymark';
 import ReferSuccess from 'containers/studentRefferal/referSuccess';
 import StudentRefer from 'containers/studentRefferal/referForm';
+import StudentCountReport from 'containers/student-strength/studentCountReport/index.jsx';
+import TeacherAttendance from 'containers/teacherattendance/teacher';
+import TeacherAttendanceVerify from 'containers/teacherattendance/teacherattendanceverify';
+import Observation from 'containers/observation/observation';
+import Observationarea from 'containers/observation/observation-area';
 
 function App({ alert, isMsAPI }) {
   // useEffect(() => {
@@ -1304,6 +1309,18 @@ function App({ alert, isMsAPI }) {
                               <DailyBillingDetails match={match} alert={alert} />
                             )}
                           </Route>
+                          <Route exact path='/teacher-attendance'>
+                            {({ match }) => <TeacherAttendance match={match}  />}
+                          </Route>
+                          <Route exact path='/teacher-attendance-verify'>
+                            {({ match }) => <TeacherAttendanceVerify match={match}  />}
+                          </Route>
+                          <Route exact path='/observation'>
+                            {({ match }) => <Observation match={match}  />}
+                          </Route>
+                          <Route path='/observation-area'>
+                            {({ match }) => <Observationarea match={match} />}
+                          </Route>
                           <Route exact path='/finance/student_shuffle'>
                             {({ match }) => (
                               <StudentShuffleReq match={match} alert={alert} />
@@ -1653,6 +1670,11 @@ function App({ alert, isMsAPI }) {
                           <Route path='/holidaymarking'>
                             {({ match }) => <HolidayMark match={match} />}
                           </Route> 
+
+                          <Route path='/student_count_report'>
+                            {({ match }) => <StudentCountReport match={match} />}
+                          </Route>
+
 
 
                           <Route exact path='/online-class/connection-pod'>

@@ -141,6 +141,11 @@ const HolidayMark = () => {
         'gradeList'
       );
     }
+    if(value?.length === 0){
+      console.log("no branch");
+      setSelectedGrade([])
+      setGradeList([])
+    }
   };
 
   const handleGrade = (event = {}, value = []) => {
@@ -265,6 +270,7 @@ const HolidayMark = () => {
         backButtonStatus: true,
       },
     });
+    console.log(payload , 'pay');
   };
 
   const styles = {
@@ -415,11 +421,14 @@ const HolidayMark = () => {
  
 
   const onunHandleClearAll = (e) => {
-    e.preventDefault();
-
-    document.getElementById('outlined-multiline-static').value = '';
-    document.getElementById('eventname').value = '';
-    // document.getElementById("coustom-date");
+      setSelectedBranch()
+      setSelectedGrade()
+      setHolidayName('')
+      setHolidayDesc('')
+      setDateRangeTechPer([
+        moment().subtract(6, 'days'),
+        moment(),
+      ])
   };
   const handleAcademicYear=(event,value)=>{
     
@@ -610,6 +619,9 @@ const HolidayMark = () => {
                   value={holidayName}
                   fullWidth
                   onChange={handleChangeHoliday}
+                  inputProps={{
+                    maxLength: 25,
+                  }}
                 />
               </Grid>
               
