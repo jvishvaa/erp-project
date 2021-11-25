@@ -105,7 +105,7 @@ const Blogdisc = () => {
     <div className={classes.box}>
       <h2>Stories, Blog, Discussion and more...</h2>
       <InfiniteScroll
-        dataLength={Blogdata.length}
+        dataLength={Blogdata?.length}
         next={fetchData}
         hasMore={next}
         loader={<h4>Loading...</h4>}
