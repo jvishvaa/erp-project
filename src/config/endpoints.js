@@ -523,6 +523,10 @@ export default {
     s3: 'https://d3ka3pry54wyko.cloudfront.net',
 
   },
+  observation: {  
+    observationGet:'/teacher_observation/observation-area/',
+  },
+
   homeworkReport: {
     branchWiseData: '/academic/teacher_homework_report/',
     subjectList: '/academic/fetch_subjects/',
@@ -571,6 +575,7 @@ export default {
     personalityTraits: '/assessment/get-traits/',
     studentReportGrade: '/assessment/get-student-grades/',
     statusList: '/assessment/get-pipeline-statuses/',
+    deleteReportPipeline: '/assessment/<pipeline_id>/revert-pipeline/',
   },
   dashboard: {
     teacher: {

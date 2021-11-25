@@ -14,9 +14,13 @@ import {
   useTheme,
   useMediaQuery,
   Tooltip,
+  IconButton,
 } from '@material-ui/core';
 import moment from 'moment';
 import TimerIcon from '@material-ui/icons/Timer';
+import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import VisibilityOffIcon from '@material-ui/icons/VisibilityOff';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import clsx from 'clsx';
 import PipelineFilters from './report-pipeline-filters';
@@ -24,7 +28,7 @@ import { useHistory } from 'react-router-dom';
 import '../../../../master-management/master-management.css';
 import useStyles from '../../useStyles';
 import { reportCardStyles } from './reportCardStyles';
-import { getReportCardPipeline } from '../../apis';
+import { getReportCardPipeline, deleteReportPipeline } from '../../apis';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import { reportPipelineTableColumns as columns } from './report-card-constants';
 import { isSuccess, getPipelineConfig } from '../../report-card-utils';
@@ -42,6 +46,7 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
   const [statusIndex, setStatusIndex] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [updateFlag, setUpdateFlag] = useState(false);
 
   const [filterData, setFilterData] = useState({
     branch: '',
@@ -51,28 +56,44 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
     status: '',
   });
 
-  const renderButtons = (status) => {
+  const deleteReportCardPipeline = async (pipelineId) => {
+    setLoading(true);
+    try {
+      const { status_code: status = 400, message = 'Error' } = await deleteReportPipeline(
+        pipelineId
+      );
+      const isSuccesful = isSuccess(status);
+      setAlert(isSuccesful ? 'success' : 'error', message);
+      if (isSuccesful) {
+        setUpdateFlag((prev) => !prev);
+      }
+    } catch (err) {}
+    setLoading(false);
+  };
+
+  const renderButtons = (status, pipelineId) => {
     return (
       <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Button
-            color='primary'
-            style={{
-              color: 'white',
-              padding: '2px px',
-              fontSize: '0.9rem',
-              height: '100%',
-              width: '100%',
-            }}
+        {status === '2' && (
+          <Grid item xs={4}>
+            <IconButton onClick={() => deleteReportCardPipeline(pipelineId)}>
+              <DeleteOutlineIcon />
+            </IconButton>
+          </Grid>
+        )}
+        <Grid item xs={status === '2' ? 4 : 8}>
+          <IconButton
             disabled={status !== '2'}
             title={status === '2' ? 'View' : 'Can`t be viewed'}
-            color='primary'
-            variant='contained'
-            onClick={() => history.push('/assessment-reports/?report-card=true')}
             title='View'
+            onClick={() => history.push('/assessment-reports/?report-card=true')}
           >
-            View
-          </Button>
+            {status !== '2' ? (
+              <VisibilityOffIcon className={classes.disabledIcon} />
+            ) : (
+              <VisibilityIcon />
+            )}
+          </IconButton>
         </Grid>
       </Grid>
     );
@@ -102,6 +123,9 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
             alignSelf: 'center',
             width: '75%',
             padding: '1px',
+            whiteSpace: 'nowrap',
+            fontSize: '14px',
+            textTransform:'capitalize'
           }}
         >
           {status}
@@ -225,7 +249,7 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
     if (currentPage) {
       fetchReportCardPipeline();
     }
-  }, [currentPage, filterData]);
+  }, [currentPage, filterData, updateFlag]);
 
   return (
     <Grid container spacing={3}>
@@ -293,7 +317,7 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
                           {getDuration(createdAt, updatedAt)}
                         </TableCell>
                         <TableCell className={classes.tableCell}>
-                          {renderButtons(status)}
+                          {renderButtons(status, pipelineId)}
                         </TableCell>
                       </TableRow>
                     );

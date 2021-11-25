@@ -45,22 +45,6 @@ import MomentUtils from '@date-io/moment';
 
 
 
-// function createData(Erp_id,  Name, Designation, Contact_Number, Attendance) {
-//   return { Erp_id,  Name, Designation, Contact_Number, Attendance };
-// }
-
-// const rows = [
-//   createData(1, 'sandeep', 'teacher', 1234567890, 'Present', 'Absent', 'Half Day', 'Late'),
-//   createData(2, 'sandeep', 'teacher', 1234567890, 'Present', 'Absent', 'Half Day', 'Late' ),
-//   createData(3, 'sandeep', 'teacher', 1234567890, 'Present', 'Absent', 'Half Day', 'Late' ),
-//   createData(4, 'sandeep', 'teacher', 1234567890, 'Present', 'Absent', 'Half Day', 'Late'),
-//   createData(5, 'sandeep', 'teacher', 1234567890, 'Present', 'Absent', 'Half Day', 'Late'),
-
-
-
-
-// ];
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -88,13 +72,11 @@ function stableSort(array, comparator) {
 }
 
 const headCells = [
-  { id: 'Erp id', numeric: true, disablePadding: true, label: 'Erp id' },
-  // { id: 'id', numeric: true, disablePadding: true, label: 'id' },
-
+  { id: 'ERP ID', numeric: true, disablePadding: true, label: 'ERP ID' },
   { id: 'Name', numeric: false, disablePadding: false, label: 'Name' },
   { id: 'Designation', numeric: false, disablePadding: false, label: 'Designation' },
   { id: 'Contact Number', numeric: false, disablePadding: false, label: 'Contact Number' },
-  { id: 'Attendance', numeric: false, disablePadding: false, label: 'Attendance' },
+  { id: 'Attendance', numeric: false,disablePadding: false, label: 'Attendance' },
 
 ];
 
@@ -107,32 +89,47 @@ function EnhancedTableHead(props) {
   return (
 
     <TableHead stickyHeader>
-      <TableRow>
+      <TableRow >
 
-        {headCells.map((headCell) => (
           <TableCell
-            key={headCell.id}
             style={{ backgroundColor: "LightGray" }}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
+            
             stickyHeader
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-              className={classes.fontColorHeadCell}
-            >
-              {headCell.label}
-              {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                </span>
-              ) : null}
-            </TableSortLabel>
+          
+         ERP Id              
           </TableCell>
-        ))}
+          <TableCell
+            style={{ backgroundColor: "LightGray" }}
+            
+            stickyHeader
+          >
+          Name
+          </TableCell>
+          <TableCell
+            style={{ backgroundColor: "LightGray" }}
+            
+            stickyHeader
+          >
+          
+         Designation           
+          </TableCell>
+          <TableCell
+            style={{ backgroundColor: "LightGray" }}
+            
+            stickyHeader
+          >
+          
+         Contact Number          
+          </TableCell>
+          <TableCell
+            style={{ backgroundColor: "LightGray",width:"490px" }}
+            
+            stickyHeader
+          >
+          
+         Attendance          
+          </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -149,10 +146,10 @@ EnhancedTableHead.propTypes = {
 };
 
 const useToolbarStyles = makeStyles((theme) => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
+  // root: {
+  //   paddingLeft: theme.spacing(2),
+  //   paddingRight: theme.spacing(1),
+  // },
   highlight:
     theme.palette.type === 'light'
       ? {
@@ -212,6 +209,8 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     width: '100%',
+    
+   
     // marginBottom: theme.spacing(2),
   },
   table: {
@@ -284,16 +283,16 @@ export default function TeacherAttendance(props) {
     getRoleApi();
   }, []);
 
-  const handleMultipleRoles = (event, value) => {
-    if (value?.length) {
-      const ids = value.map((el) => el) || [];
-      console.log("idofrole1", ids?.[ids.length - 1]?.id);
-      setRolesId(ids?.[ids.length - 1]?.id);
-      setSelectedMultipleRoles(ids);
-    } else {
-      setSelectedMultipleRoles([]);
-    }
-  };
+  // const handleMultipleRoles = (event, value) => {
+  //   if (value?.length) {
+  //     const ids = value.map((el) => el) || [];
+  //     console.log("idofrole1", ids?.[ids.length - 1]?.id);
+  //     setRolesId(ids?.[ids.length - 1]?.id);
+  //     setSelectedMultipleRoles(ids);
+  //   } else {
+  //     setSelectedMultipleRoles([]);
+  //   }
+  // };
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -317,6 +316,7 @@ export default function TeacherAttendance(props) {
 
 
   const getTeacherData = () => {
+    setData([]);
     const result = axiosInstance.get(`${endpoints.academics.teacherAttendanceData}?roles=${rolesId}&date=${startDate}`)
       .then((result) => {
         if (result.status === 200) {
@@ -344,7 +344,9 @@ export default function TeacherAttendance(props) {
   };
 
 
-
+  const handleMultipleRoles = (event, value) => {
+     setRolesId(value.id);
+   };
 
 
   const handleChangePage = (event, newPage) => {
@@ -388,6 +390,8 @@ export default function TeacherAttendance(props) {
                 id='date-picker-start-date'
                 label='Start date'
                 value={startDate}
+                // maxDate={new Date()}
+                disableFuture={true}
                 onChange={(event, date) => {
                   handleDateChange('startDate', date);
                 }}
@@ -398,27 +402,30 @@ export default function TeacherAttendance(props) {
             </Grid>
           </MuiPickersUtilsProvider>
 
-          <Grid item xs={12} md={2} style={{maxHeight:"5px"}}>
-            <Autocomplete
-                size='small'
-                multiple
-                onChange={handleMultipleRoles}
-                value={selectedMultipleRoles}
-                className='dropdownIcon'
-                id='message_log-smsType'
-                options={roles}
-                getOptionLabel={(option) => option?.role_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    label='Role'
-                    placeholder='Role'
-                  />
-                )}
-              />
+          <Grid item xs={12} md={2}>
+          <Autocomplete
+              // multiple
+              size='small'
+              onChange={handleMultipleRoles}
+              value={rolesId}
+              disableClearable
+              className='dropdownIcon'
+              style={{ marginTop: '4px' }}
+
+              id='message_log-smsType'
+              options={roles}
+              getOptionLabel={(option) => option?.role_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  className='message_log-textfield'
+                  {...params}
+                  variant='outlined'
+                  label='Role'
+                  placeholder='Role'
+                />
+              )}
+            />
            
           </Grid>
           <Grid item md={2} xs={12} sm={12} >
@@ -461,20 +468,17 @@ export default function TeacherAttendance(props) {
                       // selected={isItemSelected}
                       >
 
-                        <TableCell component="th" scope="row" padding="none">
+                        <TableCell align="left" style={{width:'1px'}}>
                           {value?.erp_id}
                         </TableCell>
-                        <TableCell align="right">{value?.name}</TableCell>
-                        <TableCell align="right">{value?.roles__role_name}</TableCell>
-                        <TableCell align="right">{value?.contact}</TableCell>
-                        <TableCell align="right" >
+                        <TableCell align="left" style={{width:'1px'}}>{value?.name}</TableCell>
+                        <TableCell align="left" style={{width:'1px'}}>{value?.roles__role_name}</TableCell>
+                        <TableCell align="left" style={{width:'1px'}}>{value?.contact}</TableCell>
+                        <TableCell align="center" style={{width:"1px"}} >
                           <TeacherAttendanceStatus user_id={value?.id} start_date={startDate} attendence_status={value?.attendence_status} />
 
                         </TableCell>
-
-
-
-                      </TableRow>
+                        </TableRow>
                     );
                   })
                   // })}

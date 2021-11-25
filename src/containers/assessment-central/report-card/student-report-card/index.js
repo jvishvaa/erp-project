@@ -46,6 +46,7 @@ const StudentReportCard = () => {
       case 1:
         return (
           <AssessmentReportBack
+            schoolInfo={reportCardData['school_info']}
             observationFeedback={reportCardData['observation_feedback']}
           />
         );
@@ -126,6 +127,7 @@ const StudentReportCard = () => {
           spacing={isMobile ? 3 : 5}
           style={{
             width: '99%',
+            margin: '0 auto',
           }}
         >
           <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>

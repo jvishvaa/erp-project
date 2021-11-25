@@ -234,7 +234,13 @@ const ViewHomework = withRouter(
         setQuestionsState([...questionsState, currentQuestion]);
       } else {
         const currentQuestion = { ...collatedQuestionState };
-        currentQuestion.corrected_submission.splice(index, 1);
+        // if(hwStatus!=3){
+          currentQuestion.corrected_submission.splice(index, 1);
+        // }else{
+          currentQuestion.evaluated_files.splice(index, 1);
+        // }
+        
+        // const currentQuestion = JSON.parse(JSON.stringify(collatedQuestionState))
         setCollatedQuestionState(currentQuestion);
       }
     };
@@ -257,7 +263,9 @@ const ViewHomework = withRouter(
       } else {
         const modifiedQuestion = collatedQuestionState;
         modifiedQuestion.corrected_submission.push(filePath);
-        modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
+        // modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
+        modifiedQuestion.evaluated_files.push(filePath);
+
 
         setCollatedQuestionState(modifiedQuestion);
       }

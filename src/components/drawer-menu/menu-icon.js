@@ -24,6 +24,7 @@ import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import LaptopChromebookIcon from '@material-ui/icons/LaptopChromebook';
 import EventIcon from '@material-ui/icons/Event';
+import EventNoteIcon from '@material-ui/icons/EventNote';
 import {
   AccountBalance,
   AccountBalanceWallet,
@@ -278,6 +279,10 @@ const menuIcon = (name) => {
     }
     case 'Event Management': {
       icon = <EventIcon />;
+      break;
+    }
+    case 'Teacher Attendance': {
+      icon = <EventNoteIcon />;
       break;
     }
     case 'Sure Learning': {

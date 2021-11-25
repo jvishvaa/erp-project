@@ -58,13 +58,13 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
-const ReportCardFooter = ({ scholastic, coScholastic }) => {
+const ReportCardFooter = ({ scholastic, coScholastic, schoolData }) => {
   const classes = useStyles();
   const [footerRowOne = [], footerRowTwo = [], footerRowThree = []] = generateFooterData(
     scholastic,
-    coScholastic
+    coScholastic,
+    schoolData
   );
-
   return (
     <>
       <TableHead />
@@ -84,8 +84,15 @@ const ReportCardFooter = ({ scholastic, coScholastic }) => {
           ))}
         </TableRow>
         <TableRow style={{ backgroundColor: '#FDBF8E' }}>
-          {footerRowTwo.map(({ value = '', colspan = '' }) => (
-            <StyledTableCell className={classes.footerRowThreeCell} colspan={colspan}>
+          {footerRowTwo.map(({ value = '', colspan = '' }, index) => (
+            <StyledTableCell
+              className={
+                index % 2 === 0
+                  ? classes.footerRowTwoCellOne
+                  : classes.footerRowTwoCellTwo
+              }
+              colspan={colspan}
+            >
               {value}
             </StyledTableCell>
           ))}

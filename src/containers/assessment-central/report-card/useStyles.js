@@ -65,6 +65,9 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  disabledIcon: {
+    color: '#dddddd',
+  },
 }));
 
 export default useStyles;
