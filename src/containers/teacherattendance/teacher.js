@@ -76,7 +76,7 @@ const headCells = [
   { id: 'Name', numeric: false, disablePadding: false, label: 'Name' },
   { id: 'Designation', numeric: false, disablePadding: false, label: 'Designation' },
   { id: 'Contact Number', numeric: false, disablePadding: false, label: 'Contact Number' },
-  { id: 'Attendance', numeric: false, disablePadding: false, label: 'Attendance' },
+  { id: 'Attendance', numeric: false,disablePadding: false, label: 'Attendance' },
 
 ];
 
@@ -89,22 +89,47 @@ function EnhancedTableHead(props) {
   return (
 
     <TableHead stickyHeader>
-      <TableRow>
+      <TableRow >
 
-        {headCells.map((headCell) => (
           <TableCell
-            key={headCell.id}
             style={{ backgroundColor: "LightGray" }}
-            align={headCell.numeric ? 'right' : 'left'}
-            padding={headCell.disablePadding ? 'none' : 'normal'}
-            sortDirection={orderBy === headCell.id ? order : false}
+            
             stickyHeader
           >
           
-              {headCell.label}
-              
+         ERP Id              
           </TableCell>
-        ))}
+          <TableCell
+            style={{ backgroundColor: "LightGray" }}
+            
+            stickyHeader
+          >
+          Name
+          </TableCell>
+          <TableCell
+            style={{ backgroundColor: "LightGray" }}
+            
+            stickyHeader
+          >
+          
+         Designation           
+          </TableCell>
+          <TableCell
+            style={{ backgroundColor: "LightGray" }}
+            
+            stickyHeader
+          >
+          
+         Contact Number          
+          </TableCell>
+          <TableCell
+            style={{ backgroundColor: "LightGray",width:"460px" }}
+            
+            stickyHeader
+          >
+          
+         Attendance          
+          </TableCell>
       </TableRow>
     </TableHead>
   );
@@ -121,10 +146,10 @@ EnhancedTableHead.propTypes = {
 };
 
 const useToolbarStyles = makeStyles((theme) => ({
-  root: {
-    paddingLeft: theme.spacing(2),
-    paddingRight: theme.spacing(1),
-  },
+  // root: {
+  //   paddingLeft: theme.spacing(2),
+  //   paddingRight: theme.spacing(1),
+  // },
   highlight:
     theme.palette.type === 'light'
       ? {
@@ -184,6 +209,8 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     width: '100%',
+    
+   
     // marginBottom: theme.spacing(2),
   },
   table: {
@@ -363,6 +390,8 @@ export default function TeacherAttendance(props) {
                 id='date-picker-start-date'
                 label='Start date'
                 value={startDate}
+                // maxDate={new Date()}
+                disableFuture={true}
                 onChange={(event, date) => {
                   handleDateChange('startDate', date);
                 }}
@@ -439,20 +468,17 @@ export default function TeacherAttendance(props) {
                       // selected={isItemSelected}
                       >
 
-                        <TableCell component="th" scope="row" padding="none">
+                        <TableCell align="left" style={{width:'1px'}}>
                           {value?.erp_id}
                         </TableCell>
-                        <TableCell align="right">{value?.name}</TableCell>
-                        <TableCell align="right">{value?.roles__role_name}</TableCell>
-                        <TableCell align="right">{value?.contact}</TableCell>
-                        <TableCell align="right" >
+                        <TableCell align="left" style={{width:'1px'}}>{value?.name}</TableCell>
+                        <TableCell align="left" style={{width:'1px'}}>{value?.roles__role_name}</TableCell>
+                        <TableCell align="left" style={{width:'1px'}}>{value?.contact}</TableCell>
+                        <TableCell align="center" style={{width:"1px"}} >
                           <TeacherAttendanceStatus user_id={value?.id} start_date={startDate} attendence_status={value?.attendence_status} />
 
                         </TableCell>
-
-
-
-                      </TableRow>
+                        </TableRow>
                     );
                   })
                   // })}
