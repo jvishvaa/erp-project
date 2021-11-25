@@ -552,7 +552,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/learning-notes',
     },
     {
-      name: 'Calender',
+      name: 'Calendar',
       Path: '/inhouse_calendar',
     },
     {
@@ -582,6 +582,14 @@ const MenuItem = withRouter(({ history, ...props }) => {
     {
       name: 'Self Driven Courses',
       Path: '/assignedCoursesByCordinator',
+    },
+    {
+      name: 'Mark Attendance',
+      Path: '/teacher-attendance',
+    },
+    {
+      name:'View Attendance',
+      Path:'/teacher-attendance-verify',
     },
   ];
 

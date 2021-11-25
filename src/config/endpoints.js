@@ -33,7 +33,12 @@ export default {
     singleStudentAttendance: '/academic/single_student_attendance_between_days/',
     markAttendance: '/academic/bulk_create_attendance/',
     students: '/academic/get_student_list/',
-    getHoliday: '/academic/holiday/'
+    getHoliday: '/academic/holiday/',
+    getStudentCountReportData:'/erp_user/grade-section-wise-student-count/',
+    teacherAttendanceData:'/erp_user/erpuser-attendance-erp/',
+    teacherAttendanceSent:'/erp_user/erpuser-attendance/',
+    getTeacherAttendanceData:'/erp_user/erpuser-attendance-monthly-reports/',
+
   },
   appBar: {
     schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,
@@ -518,6 +523,15 @@ export default {
     s3: 'https://d3ka3pry54wyko.cloudfront.net',
 
   },
+  observation: {  
+    observationGet:'/teacher_observation/observation-area/',
+  },
+
+  observationName:{
+    observationGet: '/teacher_observation/observation/',
+    observationArea: '/teacher_observation/observation-area/',
+  },
+
   homeworkReport: {
     branchWiseData: '/academic/teacher_homework_report/',
     subjectList: '/academic/fetch_subjects/',
@@ -566,6 +580,7 @@ export default {
     personalityTraits: '/assessment/get-traits/',
     studentReportGrade: '/assessment/get-student-grades/',
     statusList: '/assessment/get-pipeline-statuses/',
+    deleteReportPipeline: '/assessment/<pipeline_id>/revert-pipeline/',
   },
   dashboard: {
     teacher: {

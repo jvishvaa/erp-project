@@ -196,3 +196,16 @@ export const updateReportCardStatus = async (payload) => {
     return [];
   }
 };
+
+export const deleteReportPipeline = async (pipelineId) => {
+  try {
+    const url = endpoints.reportCard.deleteReportPipeline.replace(
+      '<pipeline_id>',
+      pipelineId
+    );
+    const { data = {} } = await axiosInstance.put(url);
+    return data || [];
+  } catch (e) {
+    return [];
+  }
+};

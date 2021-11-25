@@ -46,6 +46,7 @@ const StudentReportCard = () => {
       case 1:
         return (
           <AssessmentReportBack
+            schoolInfo={reportCardData['school_info']}
             observationFeedback={reportCardData['observation_feedback']}
           />
         );
@@ -63,9 +64,12 @@ const StudentReportCard = () => {
 
   const handleGrade = (event, value) => {
     setSelectedGrade('');
-    if (value) {
-      setSelectedGrade(value);
+    const { published = '' } = value || {};
+    if (!published) {
+      setAlert('error', 'Report card not published');
+      return;
     }
+    setSelectedGrade(value);
   };
 
   const fetchReportCardData = (params) => {
@@ -126,6 +130,7 @@ const StudentReportCard = () => {
           spacing={isMobile ? 3 : 5}
           style={{
             width: '99%',
+            margin: '0 auto',
           }}
         >
           <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>

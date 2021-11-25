@@ -98,14 +98,14 @@ const QuestionCard = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const [sizeValied, setSizeValied] = useState({});
   const [showPrev, setshowPrev] = useState(0)
-  const [pentool,setpentool] = useState(false)
+  const [pentool, setpentool] = useState(false)
   const [maxattachment, setmaxAttachment] = useState(2)
   // const [isAttachmentenable,setisAttachmentenable] = useState(false)
 
 
 
-  const [questionData,setquestionData] = useState()
-  const [edit,setisEdit] = useState(isEdit)
+  const [questionData, setquestionData] = useState()
+  const [edit, setisEdit] = useState(isEdit)
 
 
   const handleScroll = (dir) => {
@@ -117,18 +117,17 @@ const QuestionCard = ({
   };
 
 
-useEffect(() => {
-  if(edit){
-    debugger
-    setisEdit(false)
-  setquestionData(question.question)
-  setAttachmentPreviews(question.attachments)
-  setAttachments(question.attachments)
-  setpentool(question.penTool)
-  setmaxAttachment(question.max_attachment)
-  setEnableAttachments(question.is_attachment_enable)
-  }
-},[question.question,question.attachments])
+  useEffect(() => {
+    if (edit) {
+      setisEdit(false)
+      setquestionData(question.question)
+      setAttachmentPreviews(question.attachments)
+      setAttachments(question.attachments)
+      setpentool(question.penTool)
+      setmaxAttachment(question.max_attachment)
+      setEnableAttachments(question.is_attachment_enable)
+    }
+  }, [question.question, question.attachments])
 
   const openAttchmentsModal = () => {
     setOpenAttachmentModal(true);
@@ -143,12 +142,12 @@ useEffect(() => {
   };
 
   const handleFileUpload = async (file) => {
-    if(!file){
+    if (!file) {
       return null
     }
     const isValid = FileValidators(file);
     !isValid?.isValid && isValid?.msg && setAlert('error', isValid?.msg);
-    
+
     //setSizeValied(isValid);
     // if(file.name.lastIndexOf('.mp3') || file.name.lastIndexOf('.mp4')){
     //   if(file.size > 5242880){
@@ -174,7 +173,7 @@ useEffect(() => {
           fd.append('file', file);
           setFileUploadInProgress(true);
           const filePath = await uploadFile(fd);
-          const final = Object.assign({},filePath)
+          const final = Object.assign({}, filePath)
           if (file.type === 'application/pdf') {
             setAttachments((prevState) => [...prevState, final]);
             setAttachmentPreviews((prevState) => [...prevState, final]);
@@ -208,81 +207,80 @@ useEffect(() => {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
-  const removeAttachment = (pageIndex,pdfIndex,deletePdf,item) => {
+  const removeAttachment = (pageIndex, pdfIndex, deletePdf, item) => {
     // const extension = item.split('.').pop();
 
-    if(item!== undefined){
-      if(deletePdf){
+    if (item !== undefined) {
+      if (deletePdf) {
         setAttachmentPreviews((prevState) => {
-           prevState.splice(pdfIndex,1)
+          prevState.splice(pdfIndex, 1)
           return [...prevState]
         })
         setAttachments((prevState) => {
-          prevState.splice(pdfIndex,1)
-         return [...prevState]
-       })
+          prevState.splice(pdfIndex, 1)
+          return [...prevState]
+        })
       }
-     else{
+      else {
+        setAttachmentPreviews((prevState) => {
+          let newObj = prevState[pdfIndex]
+          delete newObj[pageIndex]
+          prevState[pdfIndex] = newObj
+          return [...prevState]
+        })
+        setAttachments((prevState) => {
+          let newObj = prevState[pdfIndex]
+          delete newObj[pageIndex]
+          prevState[pdfIndex] = newObj
+          return [...prevState]
+        })
+      }
+
+    }
+    else {
       setAttachmentPreviews((prevState) => {
-        let newObj=prevState[pdfIndex]
-        delete newObj[pageIndex]
-       prevState[pdfIndex]=newObj
+        prevState.splice(pdfIndex, 1)
         return [...prevState]
       })
       setAttachments((prevState) => {
-        let newObj=prevState[pdfIndex]
-        delete newObj[pageIndex]
-       prevState[pdfIndex]=newObj
+        prevState.splice(pdfIndex, 1)
         return [...prevState]
       })
     }
-  
-    }
-    else{
-      setAttachmentPreviews((prevState) => {
-        prevState.splice(pdfIndex,1)
-       return [...prevState]
-     })
-     setAttachments((prevState) => {
-       prevState.splice(pdfIndex,1)
-      return [...prevState]
-    })
-   }
-    
+
 
   };
 
-  useEffect(()=> {
-    debugger
+  useEffect(() => {
     if (firstUpdate.current) {
       firstUpdate.current = false;
       return;
     }
-    onChange('penTool',pentool );
-  },[pentool])
+    onChange('penTool', pentool);
+  }, [pentool])
 
-  useEffect(()=> {
+  useEffect(() => {
     if (firstUpdate.current) {
       firstUpdate.current = false;
       return;
     }
-    onChange('max_attachment',maxattachment );
-  },[maxattachment])
-  useEffect(()=> {
+    onChange('max_attachment', maxattachment);
+  }, [maxattachment])
+  useEffect(() => {
     if (firstUpdate.current) {
       firstUpdate.current = false;
       return;
     }
-    onChange('is_attachment_enable',enableAttachments );
-  },[enableAttachments])
-  
-  useEffect(()=> {
+    onChange('is_attachment_enable', enableAttachments);
+  }, [enableAttachments])
+
+  useEffect(() => {
     if (firstUpdate.current) {
       firstUpdate.current = false;
       return;
     }
     onChange('question', questionData);
-  },[questionData])
+  }, [questionData])
 
   useEffect(() => {
     if (firstUpdate.current) {
@@ -292,18 +290,18 @@ useEffect(() => {
     onChange('attachments', attachments);
   }, [attachments]);
 
-useEffect(()=>{
-  let count = 0
-  attachmentPreviews.forEach((e)=>{
-   if(typeof e =='string')
-   count= count+1
-   else{
-    count = Object.keys(e).length + count
-   }
-  }
-  )
-  setshowPrev(count > 2)
-},[attachmentPreviews])
+  useEffect(() => {
+    let count = 0
+    attachmentPreviews.forEach((e) => {
+      if (typeof e == 'string')
+        count = count + 1
+      else {
+        count = Object.keys(e).length + count
+      }
+    }
+    )
+    setshowPrev(count > 2)
+  }, [attachmentPreviews])
 
   return (
     <Grid container className='home-question-container'>
@@ -343,16 +341,16 @@ useEffect(()=>{
                     <TextField
                       id='question'
                       name='question'
-                      onChange={(e) => { 
-                            setquestionData(e.target.value)
-                            // onChange('question', questionData);
+                      onChange={(e) => {
+                        setquestionData(e.target.value)
+                        // onChange('question', questionData);
                       }}
                       label='Question'
                       autoFocus
                       multiline
                       rows={4}
                       rowsMax={6}
-                      value = {questionData}
+                      value={questionData}
                     />
                     <FormHelperText style={{ color: 'red' }}>
                       {question.errors?.question}
@@ -423,11 +421,11 @@ useEffect(()=>{
                 <Grid item xs={12} className='attachments-grid'>
                   <div className='attachments-list-outer-container'>
                     <div className='prev-btn'>
-                       { showPrev && (
-                          <IconButton onClick={() => handleScroll('left')}>
-                            <ArrowBackIosIcon />
-                          </IconButton>
-                        )}
+                      {showPrev && (
+                        <IconButton onClick={() => handleScroll('left')}>
+                          <ArrowBackIosIcon />
+                        </IconButton>
+                      )}
                     </div>
                     <SimpleReactLightbox>
                       <div
@@ -439,18 +437,18 @@ useEffect(()=>{
                       >
                         {attachmentPreviews.map((url, pdfindex) => {
                           let cindex = 0
-                          attachmentPreviews.forEach((item,index)=>{
-                            if(index < pdfindex){
-                              if(typeof item == 'string'){
+                          attachmentPreviews.forEach((item, index) => {
+                            if (index < pdfindex) {
+                              if (typeof item == 'string') {
                                 cindex = cindex + 1
-                              }else{
+                              } else {
                                 cindex = Object.keys(item).length + cindex
                               }
                             }
                           })
                           if (typeof url == 'object') {
                             return Object.values(url).map((item, i) => {
-                              let imageIndex=Object.keys(url)[i]
+                              let imageIndex = Object.keys(url)[i]
                               return <div className='attachment'>
                                 <Attachment
                                   key={`homework_student_question_attachment_${i}`}
@@ -459,8 +457,8 @@ useEffect(()=>{
                                   urlPrefix={`${endpoints.discussionForum.s3}/homework`}
                                   index={i}
                                   actions={['preview', 'download', 'delete']}
-                                  onDelete={(index, deletePdf) => removeAttachment(imageIndex, pdfindex, deletePdf,{item})}
-                                  ispdf = {true}
+                                  onDelete={(index, deletePdf) => removeAttachment(imageIndex, pdfindex, deletePdf, { item })}
+                                  ispdf={true}
                                 />
                               </div>
 
@@ -477,13 +475,13 @@ useEffect(()=>{
                               ispdf={false}
                             />
                           </div>
-                         
-                        
+
+
                         })}
 
                         <div style={{ position: 'absolute', visibility: 'hidden' }}>
                           <SRLWrapper>
-                            {attachmentPreviews.map((url,i) => {
+                            {attachmentPreviews.map((url, i) => {
                               if (typeof url == 'object') {
                                 return Object.values(url).map((item, i) => {
                                   return <img
@@ -494,13 +492,13 @@ useEffect(()=>{
                                     alt={`Attachment-${i + 1}`}
                                   />
                                 })
-                              }else return <img
-                              src={`${endpoints.discussionForum.s3}/homework/${url}`}
-                              onError={(e) => {
-                                e.target.src = placeholder;
-                              }}
-                              alt={`Attachment-${i + 1}`}
-                            />
+                              } else return <img
+                                src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                                onError={(e) => {
+                                  e.target.src = placeholder;
+                                }}
+                                alt={`Attachment-${i + 1}`}
+                              />
                             })}
                           </SRLWrapper>
                         </div>
@@ -534,8 +532,8 @@ useEffect(()=>{
                         }}
                         name='checkedA'
                         color='primary'
-                        checked = {enableAttachments}
-                        // value = {enableAttachments}
+                        checked={enableAttachments}
+                      // value = {enableAttachments}
                       />
                     }
                     label='File Upload'
@@ -552,10 +550,10 @@ useEffect(()=>{
                       labelId='demo-customized-select-label'
                       id='demo-customized-select'
                       defaultValue={2}
-                      onChange={(e) => 
+                      onChange={(e) =>
                         setmaxAttachment(e.target.value)}
-                        // onChange('max_attachment', e.target.value)}   
-                      value = {maxattachment}
+                      // onChange('max_attachment', e.target.value)}   
+                      value={maxattachment}
                     >
                       {Array.from({ length: 10 }, (_, index) => (
                         <option value={index + 1}>{index + 1}</option>
@@ -578,8 +576,8 @@ useEffect(()=>{
                           setpentool(e.target.checked)
                         }}
                         color='primary'
-                        checked = {pentool}
-                        value = {pentool}
+                        checked={pentool}
+                        value={pentool}
                       />
                     }
                     label='Pen tool'
