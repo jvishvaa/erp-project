@@ -16,6 +16,7 @@ import {
 import { Autocomplete } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core';
 // import { Pagination } from '@material-ui/lab';
+import clsx from 'clsx';
 import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -31,11 +32,56 @@ const useStyles = makeStyles((theme) => ({
   studentCountReportContainer: {
     padding: '10px',
   },
+  tableContainer: {
+    maxHeight: '420px',
+    '&::-webkit-scrollbar': {
+      width: '5px',
+      height: '5px',
+    },
+    '&::-webkit-scrollbar-track': {
+      boxShadow: 'inset 0 0 6px rgba(0,0,0,0.10)',
+      webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.10)',
+    },
+    '&::-webkit-scrollbar-thumb': {
+      backgroundColor: 'rgba(0,0,0,.2)',
+      outline: '1px solid slategrey',
+      borderRadius: 7,
+    },
+  },
   tableHead: {
     // backgroundColor: '#4a90e2',
-    backgroundColor: 'rgba(29,56,89,0.6)',
+    backgroundColor: '#4a90e2',
+    position: 'sticky',
+    left: 0,
+    top: 0,
+    zIndex: 30,
+  },
+  tabelBody: {
+    zIndex: 20,
+  },
+  sticky: {
+    position: 'sticky',
+    left: 0,
+    backgroundColor: 'white',
+    boxShadow: '5px 2px 5px grey',
+    // zIndex: 20,
+  },
+  stickyHead: {
+    // position: 'sticky',
+    // left: 0,
+    backgroundColor: '#4a90e2 !important',
+    // boxShadow: '5px 2px 5px grey',
+    // zIndex: 20,
+  },
+  stickyBody: {
+    position: 'sticky',
+    left: 0,
+    background: 'white',
+    boxShadow: '5px 2px 5px grey',
+    zIndex: 20,
   },
   tableHeadCell: {
+    backgroundColor: '#4a90e2',
     color: 'white',
   },
 }));
@@ -155,7 +201,7 @@ const StudentCountReport = () => {
             <Grid item xs={12}>
               <Typography>Student Count Report</Typography>
             </Grid>
-            <Grid item md={4} xs={12}>
+            <Grid item md={4} xs={12} style={{ margin: 'auto 0' }}>
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
@@ -187,7 +233,7 @@ const StudentCountReport = () => {
                 )}
               />
             </Grid>
-            <Grid item md={4} xs={12}>
+            <Grid item md={4} xs={12} style={{ margin: 'auto 0' }}>
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
@@ -219,13 +265,13 @@ const StudentCountReport = () => {
                 )}
               />
             </Grid>
-            <Grid item container spacing={2} md={3} sm={4} xs={8} alignItems='center'>
-              <Grid item xs={6}>
+            <Grid item container spacing={2} md={3} sm={5} xs={10} alignItems='center'>
+              <Grid item xs={5}>
                 <Button variant='contained' color='primary' onClick={() => filterData()}>
                   Filter
                 </Button>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={7}>
                 <Button variant='contained' onClick={() => handleClearFilter()}>
                   Clear All
                 </Button>
@@ -236,36 +282,51 @@ const StudentCountReport = () => {
 
         {/* <button onClick={() => createHead()}>hello</button> */}
         {studentCountData && (
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead className={classes.tableHead}>
-                <TableRow>
-                  {tableHead &&
-                    tableHead.map((each, index) => (
-                      <TableCell key={index} className={classes.tableHeadCell}>
-                        {studentCountData && studentCountData[0][each]}
-                      </TableCell>
-                    ))}
-                  {/* <TableCell>Total</TableCell> */}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {studentCountData &&
-                  studentCountData
-                    .filter((item, index) => index !== 0)
-                    .map((eachStudent, index) => {
-                      return (
-                        <TableRow key={index}>
-                          {tableHead &&
-                            tableHead.map((each, i) => (
-                              <TableCell key={i}>{eachStudent[each]}</TableCell>
-                            ))}
-                        </TableRow>
-                      );
-                    })}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          <Paper style={{ width: '100%', overflow: 'hidden' }}>
+            <TableContainer className={classes.tableContainer}>
+              <Table>
+                <TableHead className={classes.tableHead}>
+                  <TableRow>
+                    {tableHead &&
+                      tableHead.map((each, index) => (
+                        <TableCell
+                          key={index}
+                          className={clsx(classes.tableHeadCell, {
+                            [classes.sticky]: index === 0,
+                            [classes.stickyHead]: index === 0,
+                          })}
+                        >
+                          {studentCountData && studentCountData[0][each]}
+                        </TableCell>
+                      ))}
+                    {/* <TableCell>Total</TableCell> */}
+                  </TableRow>
+                </TableHead>
+                <TableBody className={classes.tabelBody}>
+                  {studentCountData &&
+                    studentCountData
+                      .filter((item, index) => index !== 0)
+                      .map((eachStudent, index) => {
+                        return (
+                          <TableRow key={index}>
+                            {tableHead &&
+                              tableHead.map((each, i) => (
+                                <TableCell
+                                  key={i}
+                                  className={clsx({
+                                    [classes.sticky]: i === 0,
+                                  })}
+                                >
+                                  {eachStudent[each]}
+                                </TableCell>
+                              ))}
+                          </TableRow>
+                        );
+                      })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Paper>
         )}
         {/* <Pagination
         //   style={{ textAlign: 'center', display: 'inline-flex' }}
