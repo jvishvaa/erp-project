@@ -353,6 +353,7 @@ import StudentCountReport from 'containers/student-strength/studentCountReport/i
 import TeacherAttendance from 'containers/teacherattendance/teacher';
 import TeacherAttendanceVerify from 'containers/teacherattendance/teacherattendanceverify';
 import Observation from 'containers/observation/observation';
+import Observationarea from 'containers/observation/observation-area';
 
 function App({ alert, isMsAPI }) {
   // useEffect(() => {
@@ -1317,7 +1318,9 @@ function App({ alert, isMsAPI }) {
                           <Route exact path='/observation'>
                             {({ match }) => <Observation match={match}  />}
                           </Route>
-                          
+                          <Route path='/observation-area'>
+                            {({ match }) => <Observationarea match={match} />}
+                          </Route>
                           <Route exact path='/finance/student_shuffle'>
                             {({ match }) => (
                               <StudentShuffleReq match={match} alert={alert} />
