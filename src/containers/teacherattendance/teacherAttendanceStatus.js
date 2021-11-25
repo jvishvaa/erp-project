@@ -42,33 +42,32 @@ export default function TeacherAttendanceStatus(props) {
     };
     console.log(props, "props");
     return (
-        <Grid container direction="row" justifyContent="center">
+        // <Grid container direction="row" justifyContent="center">
             <FormControl component="fieldset" name="attendence_status">
 
                 <RadioGroup row={true}  value={attendance} onChange={handleChange}>
 
-
-                    <Grid item xs={12} md={2}  >
+                    <Grid item md={2}  >
                         <FormControlLabel  value="present" control={<Radio />} label="Present" />
                     </Grid>
-                    <Grid item xs={12} md={2}  >
+                    <Grid item  md={2}  style={{marginLeft: "19px"}}>
 
                         <FormControlLabel  value="absent" control={<Radio />} label="Absent" />
                     </Grid>
-                    <Grid item xs={12} md={2} >
+                    <Grid item  md={2} style={{marginLeft: "14px"}}>
 
                         <FormControlLabel  value="halfday" control={<Radio />} label="Half Day" />
                     </Grid>
-                    <Grid item xs={12} md={2}  >
+                    <Grid item  md={2}  style={{marginLeft: "22px"}}>
 
                         <FormControlLabel  value="late" control={<Radio />} label="Late" />
                     </Grid>
-                    <Grid item xs={12} md={2}  >
+                    <Grid item md={2} style={{marginLeft: "-9px"}} >
                         <FormControlLabel  value="holiday" control={<Radio />} label="Holiday" />
                     </Grid>
                 </RadioGroup>
             </FormControl>
-        </Grid>
+        // </Grid>
     );
 
 };
