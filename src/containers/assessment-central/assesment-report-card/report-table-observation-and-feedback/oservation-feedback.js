@@ -187,9 +187,7 @@ export default function AssesmentObservatioAndFeedbackReport({
                 fontWeight: 'bold',
               }}
             >
-              {mappingList.map((label) => (
-                <Box>{label}</Box>
-              ))}
+              {principalName && <Box>{mappingList.join(': ')}</Box>}
             </Box>
           </StyledTableCell>
         </TableRow>

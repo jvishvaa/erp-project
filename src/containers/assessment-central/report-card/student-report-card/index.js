@@ -64,9 +64,12 @@ const StudentReportCard = () => {
 
   const handleGrade = (event, value) => {
     setSelectedGrade('');
-    if (value) {
-      setSelectedGrade(value);
+    const { published = '' } = value || {};
+    if (!published) {
+      setAlert('error', 'Report card not published');
+      return;
     }
+    setSelectedGrade(value);
   };
 
   const fetchReportCardData = (params) => {
