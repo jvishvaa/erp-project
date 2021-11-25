@@ -24,6 +24,8 @@ import Loader from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { getModuleInfo } from '../../../utility-functions';
 import { useLocation } from 'react-router-dom';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
 const useStyles = makeStyles((theme) => ({
   filterContainer: {
@@ -97,6 +99,9 @@ const StudentCountReport = () => {
   const [selectedBranch, setSelectedBranch] = useState('');
   const location = useLocation();
   const classes = useStyles();
+  const fileType =
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+  const fileExtension = '.xlsx';
   //   const [paginationData, setPaginationData] = useState({
   //     totalPages: 10,
   //     currentPage: 1,
@@ -165,6 +170,14 @@ const StudentCountReport = () => {
     setStudentCountData(null);
   };
 
+  const exportTo = (data, fileName) => {
+    const ws = XLSX.utils.json_to_sheet(data.slice(1));
+    const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
+    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const dataX = new Blob([excelBuffer], { type: fileType });
+    FileSaver.saveAs(dataX, fileName + fileExtension);
+  };
+
   const getStudentCountReportData = (acadYear, branch) => {
     if (acadYear !== undefined && branch !== undefined)
       axiosInstance
@@ -201,7 +214,7 @@ const StudentCountReport = () => {
             <Grid item xs={12}>
               <Typography>Student Count Report</Typography>
             </Grid>
-            <Grid item md={4} xs={12} style={{ margin: 'auto 0' }}>
+            <Grid item md={4} sm={6} xs={12} style={{ margin: 'auto 0' }}>
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
@@ -233,7 +246,7 @@ const StudentCountReport = () => {
                 )}
               />
             </Grid>
-            <Grid item md={4} xs={12} style={{ margin: 'auto 0' }}>
+            <Grid item md={4} sm={6} xs={12} style={{ margin: 'auto 0' }}>
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
@@ -265,15 +278,29 @@ const StudentCountReport = () => {
                 )}
               />
             </Grid>
-            <Grid item container spacing={2} md={3} sm={5} xs={10} alignItems='center'>
-              <Grid item xs={5}>
+            <Grid item container spacing={2} md={4} sm={12} xs={12} alignItems='center'>
+              <Grid item xs={3}>
                 <Button variant='contained' color='primary' onClick={() => filterData()}>
                   Filter
                 </Button>
               </Grid>
-              <Grid item xs={7}>
-                <Button variant='contained' onClick={() => handleClearFilter()}>
-                  Clear All
+              <Grid item xs={5}>
+                <Button
+                  variant='contained'
+                  // onClick={() => exportTo(studentCountData, 'StudentCountData')}
+                  onClick={() => handleClearFilter()}
+                >
+                  Clear all
+                </Button>
+              </Grid>
+              <Grid item xs={4}>
+                <Button
+                  variant='contained'
+                  disabled={studentCountData===null?true:false}
+                  onClick={() => exportTo(studentCountData, 'StudentCountData')}
+                  // onClick={() => handleClearFilter()}
+                >
+                  Download
                 </Button>
               </Grid>
             </Grid>
