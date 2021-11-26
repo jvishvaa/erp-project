@@ -31,12 +31,64 @@
     background-color: lightgrey;
 
   }
-  .fourth-col{
-   
-    left: 0px;
+  .tableContainer{
+    margin-top:26px;
+    overflow: hidden !important;
   }
+  /* .mobile-month {
+    margin-left: 25px;
+  }
+  .mobile-year {
+    margin-left:-49px;
+    
+}
+.mobile-search {
+ margin-left: -47px;
+}
+.mobile-download{
+    margin-left: -93px;
+    margin-top: 9px;
+} */
 
+
+
+
+
+ 
   
+  @media only screen and (max-width: 700px) {
+    .mobile-month {
+      margin-left: 8px;
+    }
+    .mobile-year {
+      margin-left:10px;
+  }
+  .mobile-download{
+   margin-left:-7px;
+  }
+  .sticky-col {
+    position: inherit;
+    
+}
+.first-col {
+  position: inherit;
+}
+.sticky-col-head{
+  position: inherit;
+}
+.second-col {
+  position: inherit;
+}
+
+.third-col {
+  position: inherit;
+
+}
+.tableContainer{
+  position:inherit;
+  overflow: scroll !important;
+}
+  }
 
 
 

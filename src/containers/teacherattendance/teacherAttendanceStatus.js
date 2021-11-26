@@ -47,22 +47,22 @@ export default function TeacherAttendanceStatus(props) {
 
                 <RadioGroup row={true}  value={attendance} onChange={handleChange}>
 
-                    <Grid item md={2}  >
+                    <Grid item md={2}  padding={10}>
                         <FormControlLabel  value="present" control={<Radio />} label="Present" />
                     </Grid>
-                    <Grid item  md={2}  style={{marginLeft: "19px"}}>
+                    <Grid item  md={2} padding={10}>
 
                         <FormControlLabel  value="absent" control={<Radio />} label="Absent" />
                     </Grid>
-                    <Grid item  md={2} style={{marginLeft: "14px"}}>
+                    <Grid item  md={2} padding={10}>
 
                         <FormControlLabel  value="halfday" control={<Radio />} label="Half Day" />
                     </Grid>
-                    <Grid item  md={2}  style={{marginLeft: "22px"}}>
+                    <Grid item  md={2}  padding={10}>
 
                         <FormControlLabel  value="late" control={<Radio />} label="Late" />
                     </Grid>
-                    <Grid item md={2} style={{marginLeft: "-9px"}} >
+                    <Grid item md={2}  padding={10}>
                         <FormControlLabel  value="holiday" control={<Radio />} label="Holiday" />
                     </Grid>
                 </RadioGroup>
