@@ -54,7 +54,9 @@
 
 
 
- 
+ .mobile-attendance{
+   width:490px;
+ }
   
   @media only screen and (max-width: 700px) {
     .mobile-month {
@@ -88,6 +90,31 @@
   position:inherit;
   overflow: scroll !important;
 }
+.mobileYear{
+  padding-left:0px !important;
+  
+}
+.absentPadding{
+  padding-left: 0px !important;
+
+}
+.holidayPadding{
+  padding-left: 0px !important;
+}
+.latePadding{
+  padding-left: 0px !important;
+}
+.halfdayPadding{
+  padding-left: 0px !important;
+}
+.mobile-attendance{
+  width:auto !important;
+}
+  }
+
+  .mobileYear{
+    padding-left:16px !important;
+
   }
 
 
