@@ -82,8 +82,9 @@ const StudentReportCard = () => {
         setLoading(false);
       })
       .catch((error) => {
-        setLoading(false);
+        setSelectedGrade('');
       });
+    setLoading(false);
   };
 
   const handlePreview = (selectedGrade) => {
