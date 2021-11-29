@@ -73,12 +73,7 @@ const headCells = [
   { id: 'ERP ID', numeric: true, disablePadding: true, label: 'ERP ID' },
   { id: 'Name', numeric: false, disablePadding: false, label: 'Name' },
   { id: 'Designation', numeric: false, disablePadding: false, label: 'Designation' },
-  {
-    id: 'Contact Number',
-    numeric: false,
-    disablePadding: false,
-    label: 'Contact Number',
-  },
+ 
   { id: 'Attendance', numeric: false, disablePadding: false, label: 'Attendance' },
 ];
 
@@ -108,10 +103,8 @@ function EnhancedTableHead(props) {
         <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader>
           Designation
         </TableCell>
-        <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader>
-          Contact Number
-        </TableCell>
-        <TableCell style={{ backgroundColor: 'LightGray', width: '490px' }} stickyHeader>
+     
+        <TableCell style={{ backgroundColor: 'LightGray'}}  className='mobile-attendance' stickyHeader>
           Attendance
         </TableCell>
       </TableRow>
@@ -402,12 +395,12 @@ export default function TeacherAttendance(props) {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Circular' &&
+          item.parent_modules === 'Teacher Attendance' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher Circular') {
+            if (item.child_name === 'Mark Attendance') {
               setModuleId(item.child_id);
             }
           });
@@ -596,9 +589,7 @@ export default function TeacherAttendance(props) {
                       <TableCell align='left' style={{ width: '1px' }}>
                         {value?.roles__role_name}
                       </TableCell>
-                      <TableCell align='left' style={{ width: '1px' }}>
-                        {value?.contact}
-                      </TableCell>
+                     
                       <TableCell align='center' style={{ width: '1px' }}>
                         <TeacherAttendanceStatus
                           user_id={value?.id}

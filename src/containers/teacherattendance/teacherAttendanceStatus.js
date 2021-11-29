@@ -10,6 +10,8 @@ import Grid from '@material-ui/core/Grid';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import { makeStyles } from '@material-ui/core/styles';
+import './teacherattendance.css';
+
 
 
 const useStyles = makeStyles((theme) => ({
@@ -69,19 +71,19 @@ export default function TeacherAttendanceStatus(props) {
                     <Grid item md={2}  padding={10}>
                         <FormControlLabel  value="present" control={<Radio />} label="Present" />
                     </Grid>
-                    <Grid item  md={2} className={classes.absentPadding}>
+                    <Grid item  md={2} className={classes.absentPadding} className='absentPadding'>
 
                         <FormControlLabel  value="absent" control={<Radio />} label="Absent" />
                     </Grid>
-                    <Grid item  md={2} className={classes.halfdayPadding}>
+                    <Grid item  md={2} className={classes.halfdayPadding} className='halfdayPadding'>
 
                         <FormControlLabel  value="halfday" control={<Radio />} label="Half Day" />
                     </Grid>
-                    <Grid item  md={2} className={classes.latePadding}>
+                    <Grid item  md={2} className={classes.latePadding} className='latePadding'>
 
                         <FormControlLabel  value="late" control={<Radio />} label="Late" />
                     </Grid>
-                    <Grid item md={2} className={classes.holidayPadding} >
+                    <Grid item md={2} className={classes.holidayPadding} className='holidayPadding' >
                         <FormControlLabel  value="holiday" control={<Radio />} label="Holiday" />
                     </Grid>
                 </RadioGroup>
