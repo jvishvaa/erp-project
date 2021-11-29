@@ -82,7 +82,10 @@ const StudentReportCard = () => {
         setLoading(false);
       })
       .catch((error) => {
-        setSelectedGrade('');
+        if(error?.response?.data?.status === 403) {
+          setAlert('error', 'Report card not published');
+          setSelectedGrade('');
+        }
       });
     setLoading(false);
   };
