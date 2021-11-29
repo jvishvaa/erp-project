@@ -131,7 +131,7 @@ const ReportStatusTable = ({ setLoading }) => {
       const {
         result = [],
         message = 'Error',
-        status_code: status = 400,
+        status: status = 400,
         total_pages: totalPages = 0,
       } = await getReportCardStatus(currentPage, pageSize);
       setMappingList(result);

@@ -109,7 +109,7 @@ const StudentCountReport = () => {
 
   useEffect(() => {
     // getStudentCountReportData();
-    setAlert('error', 'Select Acadminc year & branch');
+    // setAlert('error', 'Select Acadminc year & branch');
     callApi(`${endpoints.userManagement.academicYear}`, 'academicYearList');
   }, []);
   function callApi(api, key) {
@@ -242,6 +242,7 @@ const StudentCountReport = () => {
                     variant='outlined'
                     label='Academic Year'
                     placeholder='Academic Year'
+                    required
                   />
                 )}
               />
@@ -274,31 +275,33 @@ const StudentCountReport = () => {
                     variant='outlined'
                     label='Branch'
                     placeholder='Branch'
+                    required
                   />
                 )}
               />
             </Grid>
             <Grid item container spacing={2} md={4} sm={12} xs={12} alignItems='center'>
               <Grid item xs={3}>
-                <Button variant='contained' color='primary' onClick={() => filterData()}>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  fullWidth
+                  onClick={() => filterData()}
+                >
                   Filter
                 </Button>
               </Grid>
-              <Grid item xs={5}>
-                <Button
-                  variant='contained'
-                  // onClick={() => exportTo(studentCountData, 'StudentCountData')}
-                  onClick={() => handleClearFilter()}
-                >
+              <Grid item xs={4} sm={5}>
+                <Button variant='contained' fullWidth onClick={() => handleClearFilter()}>
                   Clear all
                 </Button>
               </Grid>
               <Grid item xs={4}>
                 <Button
                   variant='contained'
-                  disabled={studentCountData===null?true:false}
+                  disabled={studentCountData === null ? true : false}
+                  fullWidth
                   onClick={() => exportTo(studentCountData, 'StudentCountData')}
-                  // onClick={() => handleClearFilter()}
                 >
                   Download
                 </Button>
