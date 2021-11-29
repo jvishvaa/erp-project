@@ -57,16 +57,14 @@ const generateReportTopDescription = (
   coScholastic = {}
 ) => {
   const {
-    name,
-    erp_id,
-    mothers_name,
-    grade,
-    fathers_name,
-    dob,
-    section,
-    profile_img,
-    attendance,
-    attendance_percentage,
+    name = '',
+    erp_id = '',
+    mothers_name = '',
+    grade = '',
+    fathers_name = '',
+    dob = '',
+    attendance_fraction = '',
+    attendance_percentage = '',
   } = userInfo || {};
   const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
   return [
@@ -90,7 +88,10 @@ const generateReportTopDescription = (
     },
     {
       header1: { value: 'ATTENDANCE', colspan: 1 },
-      value1: { value: attendance || 'NA', colspan: categoryRowLength + 4 },
+      value1: {
+        value: attendance_fraction.split('/').join(' / ') || 'NA',
+        colspan: categoryRowLength + 4,
+      },
       header2: { value: '% ATTENDANCE', colspan: 2 },
       value2: { value: attendance_percentage || 'NA', colspan: categoryRowLength + 4 },
     },
