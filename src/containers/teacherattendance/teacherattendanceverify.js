@@ -21,6 +21,8 @@ import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { connect, useSelector } from 'react-redux';
+import FormControl from '@material-ui/core/FormControl';
+
 import './teacherattendance.css';
 
 import Layout from 'containers/Layout';
@@ -237,6 +239,12 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+    paddingTop:'2px',
+  },
+  
 }));
 
 export default function TeacherAttendanceVerify() {
@@ -364,7 +372,6 @@ export default function TeacherAttendanceVerify() {
     if (value) {
       getBranch(value?.id);
       setFilterData({ ...filterData, selectedAcademicYear });
-      console.log('acad', filterData);
     }
   };
 
@@ -442,12 +449,12 @@ export default function TeacherAttendanceVerify() {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Circular' &&
+          item.parent_modules === 'Teacher Attendance' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher Circular') {
+            if (item.child_name === 'View Attendance') {
               setModuleId(item.child_id);
             }
           });
@@ -687,19 +694,25 @@ export default function TeacherAttendanceVerify() {
                 />
               )}
             />
-          </Grid>
+          </Grid>        
+          {/* style={{width:"109px"}} */}
 
-          <Grid item xs={12} md={2} md={1} >
+          {/* <Grid item xs={12} md={2} md={1} > */}
+          <FormControl className={classes.formControl}>
             <InputLabel htmlFor='age-native-simple'>Month</InputLabel>
-            <Select native value={month} onChange={handleChanges}>
+            <Select native value={month} onChange={handleChanges} inputProps={{
+            name: 'month',
+            id: 'filled-month-native-simple',
+          }}   >
               {months.map((option) => (
                 <option key={option.label} value={option.value}>
                   {option.label}
                 </option>
               ))}
             </Select>
-          </Grid>
-          <Grid item xs={12} md={2} >
+            </FormControl>
+          {/* </Grid> */}
+          <Grid item xs={12} md={2} className='mobileYear'>
             <InputLabel htmlFor='month-native-simple'>Year</InputLabel>
             <Select native value={year} onChange={handleYear}>
               {years.map((option) => (
@@ -713,6 +726,8 @@ export default function TeacherAttendanceVerify() {
             <Button
               onClick={getTeacherData}
               variant='contained'
+              style={{ backgroundColor: '#e65c00' }}
+
             >
               Search
             </Button>

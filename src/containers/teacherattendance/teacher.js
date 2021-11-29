@@ -104,7 +104,7 @@ function EnhancedTableHead(props) {
           Designation
         </TableCell>
      
-        <TableCell style={{ backgroundColor: 'LightGray', width: '490px' }} stickyHeader>
+        <TableCell style={{ backgroundColor: 'LightGray'}}  className='mobile-attendance' stickyHeader>
           Attendance
         </TableCell>
       </TableRow>
@@ -395,12 +395,12 @@ export default function TeacherAttendance(props) {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Circular' &&
+          item.parent_modules === 'Teacher Attendance' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher Circular') {
+            if (item.child_name === 'Mark Attendance') {
               setModuleId(item.child_id);
             }
           });
