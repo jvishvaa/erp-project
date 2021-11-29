@@ -28,7 +28,8 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
     school_contact: schoolContact,
     school_email: schoolEmail,
     acad_session: acadSession = '2021-22',
-    branch_cbse_affiliation_number: affiliationCode = '0000001211213',
+    affiliation_code: affiliationCode = '',
+    school_logo: schoolLogo = '',
   } = schoolData || {};
   const [firstRowColspan = 2, secondRowColspan = 20, thirdRowColspan = 3] =
     generateHeaderColspan(scholastic, coScholastic);
@@ -69,7 +70,8 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
                   component='div'
                   style={{ textAlign: 'center' }}
                 >
-                  {affiliationCode && `CBSE AFFILIATION NO: ${affiliationCode}`}
+                  {typeof affiliationCode === 'number' &&
+                    `CBSE AFFILIATION NO: ${parseInt(affiliationCode)}`}
                 </Typography>
                 {address}
                 <br />

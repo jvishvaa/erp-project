@@ -31,12 +31,91 @@
     background-color: lightgrey;
 
   }
-  .fourth-col{
-   
-    left: 0px;
+  .tableContainer{
+    margin-top:26px;
+    overflow: hidden !important;
+  }
+  /* .mobile-month {
+    margin-left: 25px;
+  }
+  .mobile-year {
+    margin-left:-49px;
+    
+}
+.mobile-search {
+ margin-left: -47px;
+}
+.mobile-download{
+    margin-left: -93px;
+    margin-top: 9px;
+} */
+
+
+
+
+
+ .mobile-attendance{
+   width:490px;
+ }
+  
+  @media only screen and (max-width: 700px) {
+    .mobile-month {
+      margin-left: 8px;
+    }
+    .mobile-year {
+      margin-left:10px;
+  }
+  .mobile-download{
+   margin-left:-7px;
+  }
+  .sticky-col {
+    position: inherit;
+    
+}
+.first-col {
+  position: inherit;
+}
+.sticky-col-head{
+  position: inherit;
+}
+.second-col {
+  position: inherit;
+}
+
+.third-col {
+  position: inherit;
+
+}
+.tableContainer{
+  position:inherit;
+  overflow: scroll !important;
+}
+.mobileYear{
+  padding-left:0px !important;
+  
+}
+.absentPadding{
+  padding-left: 0px !important;
+
+}
+.holidayPadding{
+  padding-left: 0px !important;
+}
+.latePadding{
+  padding-left: 0px !important;
+}
+.halfdayPadding{
+  padding-left: 0px !important;
+}
+.mobile-attendance{
+  width:auto !important;
+}
   }
 
-  
+  .mobileYear{
+    padding-left:16px !important;
+
+  }
 
 
 

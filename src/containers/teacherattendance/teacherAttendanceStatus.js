@@ -9,9 +9,31 @@ import FormLabel from '@material-ui/core/FormLabel';
 import Grid from '@material-ui/core/Grid';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
+import { makeStyles } from '@material-ui/core/styles';
+import './teacherattendance.css';
 
 
+
+const useStyles = makeStyles((theme) => ({
+    absentPadding: {
+      paddingLeft:'20px',
+    },
+    halfdayPadding: {
+        paddingLeft:'20px',
+      },
+      latePadding: {
+        paddingLeft:'28px',
+      },
+      holidayPadding: {
+        paddingLeft:'15px',
+      },
+    
+   
+  }));
 export default function TeacherAttendanceStatus(props) {
+    const classes=useStyles();
+
+   
     const [value, setValue] = React.useState('');
     const [attendance, setAttendance] = React.useState(props.attendence_status);
 
@@ -40,29 +62,28 @@ export default function TeacherAttendanceStatus(props) {
         })
         
     };
-    console.log(props, "props");
     return (
         // <Grid container direction="row" justifyContent="center">
             <FormControl component="fieldset" name="attendence_status">
 
                 <RadioGroup row={true}  value={attendance} onChange={handleChange}>
 
-                    <Grid item md={2}  >
+                    <Grid item md={2}  padding={10}>
                         <FormControlLabel  value="present" control={<Radio />} label="Present" />
                     </Grid>
-                    <Grid item  md={2}  style={{marginLeft: "19px"}}>
+                    <Grid item  md={2} className={classes.absentPadding} className='absentPadding'>
 
                         <FormControlLabel  value="absent" control={<Radio />} label="Absent" />
                     </Grid>
-                    <Grid item  md={2} style={{marginLeft: "14px"}}>
+                    <Grid item  md={2} className={classes.halfdayPadding} className='halfdayPadding'>
 
                         <FormControlLabel  value="halfday" control={<Radio />} label="Half Day" />
                     </Grid>
-                    <Grid item  md={2}  style={{marginLeft: "22px"}}>
+                    <Grid item  md={2} className={classes.latePadding} className='latePadding'>
 
                         <FormControlLabel  value="late" control={<Radio />} label="Late" />
                     </Grid>
-                    <Grid item md={2} style={{marginLeft: "-9px"}} >
+                    <Grid item md={2} className={classes.holidayPadding} className='holidayPadding' >
                         <FormControlLabel  value="holiday" control={<Radio />} label="Holiday" />
                     </Grid>
                 </RadioGroup>

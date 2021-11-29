@@ -20,6 +20,10 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
+import { connect, useSelector } from 'react-redux';
+import FormControl from '@material-ui/core/FormControl';
+
+import './teacherattendance.css';
 
 import Layout from 'containers/Layout';
 import Grid from '@material-ui/core/Grid';
@@ -42,9 +46,7 @@ import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import { setValueAndLabel } from 'utility-functions';
-import StudentIdCardDetails from 'containers/student-Id-Card/studentIdCardDetail';
-import StudentAttendance from 'containers/online-class/student-attendance/StudentAttendance';
+
 import { Select, withStyles } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
 
@@ -237,6 +239,12 @@ const useStyles = makeStyles((theme) => ({
     top: 20,
     width: 1,
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+    paddingTop:'2px',
+  },
+  
 }));
 
 export default function TeacherAttendanceVerify() {
@@ -299,11 +307,92 @@ export default function TeacherAttendanceVerify() {
   const [month, setMonth] = React.useState('1');
   const [year, setYear] = React.useState('2021');
   const [open, setOpen] = React.useState(false);
+  const [branchDropdown, setBranchDropdown] = React.useState([]);
+  const [dropdownData, setDropdownData] = React.useState({
+    branch: [],
+    grade: [],
+    
+  });
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+
 
   const [filterData, setFilterData] = React.useState({
     branch: '',
     year: '',
   });
+  useEffect(() => {
+    handleAcademicYear('', selectedAcademicYear);
+    setFilterData({
+        branch: '',
+        grade: '',
+        
+      });
+    
+  }, [ moduleId]);
+
+  function getBranch(acadId) {
+    axiosInstance
+      .get(`${endpoints.academics.branches}?session_year=${acadId}&module_id=${moduleId}`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setDropdownData((prev) => {
+            return {
+              ...prev,
+              branch: result.data?.data?.results,
+            };
+          });
+        }
+      })
+      .catch((error) => { });
+  }
+
+  const handleAcademicYear = (event, value) => {
+    setDropdownData({
+      ...dropdownData,
+      branch: [],
+      grade: [],
+      subject: [],
+      section: [],
+      test: [],
+      chapter: [],
+      topic: [],
+    });
+    setFilterData({
+      ...filterData,
+      branch: '',
+      grade: '',
+      section: '',
+      subject: '',
+      test: '',
+      chapter: '',
+      topic: '',
+    });
+    if (value) {
+      getBranch(value?.id);
+      setFilterData({ ...filterData, selectedAcademicYear });
+    }
+  };
+
+  function getGrade(acadId, branchId) {
+    axiosInstance
+      .get(
+        `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchId}&module_id=${moduleId}`
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setDropdownData((prev) => {
+            return {
+              ...prev,
+              grade: result.data?.data,
+            };
+          });
+        }
+      })
+      .catch((error) => { });
+  }
+  
   const fileType =
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
   const fileExtension = '.xlsx';
@@ -360,12 +449,12 @@ export default function TeacherAttendanceVerify() {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Circular' &&
+          item.parent_modules === 'Teacher Attendance' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher Circular') {
+            if (item.child_name === 'View Attendance') {
               setModuleId(item.child_id);
             }
           });
@@ -375,9 +464,13 @@ export default function TeacherAttendanceVerify() {
   }, [window.location.pathname]);
 
   const getTeacherData = () => {
+    if(filterData.branch?.branch?.id === undefined){
+      setAlert('error','select branch')
+      return false;
+    }
     const result = axiosInstance
       .get(
-        `${endpoints.academics.getTeacherAttendanceData}?month=${month}&year=${year}&roles=${rolesId}`
+        `${endpoints.academics.getTeacherAttendanceData}?branch_id=${filterData.branch?.branch?.id}&month=${month}&year=${year}&roles=${rolesId}`
       )
       .then((result) => {
         if (result.status === 200) {
@@ -511,6 +604,26 @@ export default function TeacherAttendanceVerify() {
     const dataX = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(dataX, fileName + fileExtension);
   };
+ 
+  
+  const handleBranch = (event, value) => {
+    setDropdownData({
+      ...dropdownData,
+      grade: [],
+      
+     
+    });
+    setFilterData({
+      ...filterData,
+      branch: '',
+      grade: '',
+     
+    });
+    if (value) {
+      getGrade(selectedAcademicYear?.id, value?.branch?.id);
+      setFilterData({ ...filterData, branch: value });
+    }
+  };
 
   return (
     <Layout>
@@ -536,6 +649,28 @@ export default function TeacherAttendanceVerify() {
         </Grid>
 
         <Grid container spacing={2} style={{ marginTop: '5px' }}>
+        <Grid item xs={12} md={2} >
+          <Autocomplete
+            size='small'
+            onChange={handleBranch}
+            id='branch'
+            style={{ marginTop: '16px' }}
+            value={filterData.branch || {}}
+            options={dropdownData.branch || []}
+            getOptionLabel={(option) => option?.branch?.branch_name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Branch'
+                placeholder='Branch'
+              />
+            )}
+          />
+        
+            
+            </Grid>
           <Grid item xs={12} md={2}>
             <Autocomplete
               // multiple
@@ -559,19 +694,25 @@ export default function TeacherAttendanceVerify() {
                 />
               )}
             />
-          </Grid>
+          </Grid>        
+          {/* style={{width:"109px"}} */}
 
-          <Grid item xs={12} md={2} style={{ marginLeft: '25px' }}>
+          {/* <Grid item xs={12} md={2} md={1} > */}
+          <FormControl className={classes.formControl}>
             <InputLabel htmlFor='age-native-simple'>Month</InputLabel>
-            <Select native value={month} onChange={handleChanges}>
+            <Select native value={month} onChange={handleChanges} inputProps={{
+            name: 'month',
+            id: 'filled-month-native-simple',
+          }}   >
               {months.map((option) => (
                 <option key={option.label} value={option.value}>
                   {option.label}
                 </option>
               ))}
             </Select>
-          </Grid>
-          <Grid item xs={12} md={2} style={{ marginLeft: '-49px' }}>
+            </FormControl>
+          {/* </Grid> */}
+          <Grid item xs={12} md={2} className='mobileYear'>
             <InputLabel htmlFor='month-native-simple'>Year</InputLabel>
             <Select native value={year} onChange={handleYear}>
               {years.map((option) => (
@@ -581,19 +722,21 @@ export default function TeacherAttendanceVerify() {
               ))}
             </Select>
           </Grid>
-          <Grid item md={2} xs={12} sm={12} style={{ marginLeft: '-57px' }}>
+          <Grid item md={2} xs={12} md={1} >
             <Button
               onClick={getTeacherData}
-              style={{ marginTop: '10px', backgroundColor: '#e65c00' }}
               variant='contained'
+              style={{ backgroundColor: '#e65c00' }}
+
             >
               Search
             </Button>
           </Grid>
-          <Grid item xs={12} md={2} style={{ marginLeft: '-93px', marginTop: '9px' }}>
+          <Grid item xs={12} md={2}>
             {/* <exportToCSV data={studentAttendanceData} fileName="attendance" /> */}
             <Button
               variant='contained'
+              className='mobile-download'
               style={{ backgroundColor: '#e65c00' }}
               onClick={() => exportTo(studentAttendanceData, 'attendance')}
             >
@@ -601,9 +744,8 @@ export default function TeacherAttendanceVerify() {
             </Button>
           </Grid>
         </Grid>
-      </Grid>
+      
 
-      <Paper className={classes.paper}>
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer style={{ marginBottom: '5px' }}>
           <Table
@@ -663,7 +805,7 @@ export default function TeacherAttendanceVerify() {
             </TableBody>
           </Table>
         </TableContainer>
-      </Paper>
+        </Grid>
     </Layout>
   );
 }
