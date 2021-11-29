@@ -467,6 +467,7 @@ export default function Observation() {
                             <FormControlLabel
                               checked={row?.status}
                               onChange={handleStatus}
+                             
                               control={<Switch name='status' />}
                             />
                           </Grid>
@@ -474,7 +475,7 @@ export default function Observation() {
                         <TableCell align='center'>
                           <Button
                             variant='contained'
-                            color='secondary'
+                            style={{ color: 'white', background: '#014b7e' }}
                             onClick={() => handleDelete(row.id, index)}
                             startIcon={<DeleteIcon />}
                           >
@@ -482,8 +483,8 @@ export default function Observation() {
                           </Button>
                           <Button
                             variant='contained'
-                            style={{ marginLeft: '5px' }}
-                            color='secondary'
+                            style={{  color: 'white', background: '#014b7e' ,marginLeft: '5px' }}
+                            
                             onClick={() =>
                               handleEdit(row.id, row.observation_area_name, row.status)
                             }
@@ -525,8 +526,7 @@ export default function Observation() {
           <DialogTitle id='simple-dialog-title'>Create Observations</DialogTitle>
           <Grid
             container
-            container
-            container
+           
             direction='column'
             justifyContent='flex-start'
             alignItems='flex-start'
@@ -564,14 +564,14 @@ export default function Observation() {
           <Grid item xs={12} md={2} style={{ marginTop: '16px' }}>
             {updateId ? (<Button
               onClick={updateData}
-              style={{ marginLeft: '14px', marginBottom: '9px' }}
+              style={{ marginLeft: '14px', marginBottom: '9px',background: '#014b7e',color:'white'}}
               variant='outlined'
-              color='secondary'
+              
             >
               update
             </Button>):( <Button
               onClick={postData}
-              style={{ marginLeft: '14px', marginBottom: '9px' }}
+              style={{ marginLeft: '14px', marginBottom: '9px',background: '#014b7e' ,color:'white' }}
               variant='outlined'
               color='secondary'
             >
