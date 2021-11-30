@@ -6,7 +6,7 @@ import { Visibility, VisibilityOff } from '@material-ui/icons';
 const CustomInput = (props) => {
   const [showPassword, setShowPassword] = useState(false);
 
-  const { onChange, className, name, readonly, id, placeholder, type, value } = props;
+  const { onChange, className, name, readonly, autoFocus , id, placeholder, type, value } = props;
 
   const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
@@ -49,6 +49,7 @@ const CustomInput = (props) => {
           inputProps={{maxLength:20}}
           autoComplete='off'
           type={type || 'text'}
+          autoFocus = {autoFocus}
           onChange={onChange}
           inputProps={{
             form: {
