@@ -157,13 +157,16 @@ const Profile = (props) => {
       if(userImageData){
         formData.set('profile', userImageData);
       }
-      else if(userDetails && userDetails.name){
+      if(userDetails && userDetails.name){
         formData.set('name',userDetails.name )
-      }else if(userDetails && userDetails['Fathers Name']){
+      }
+      if(userDetails && userDetails['Fathers Name']){
         formData.set('father_name',userDetails['Fathers Name'])
-      }else if(userDetails && userDetails['Mothers Name']){
+      }
+      if(userDetails && userDetails['Mothers Name']){
         formData.set('mother_name',userDetails['Mothers Name'])
-      }else if(userDetails && userDetails.DOB){
+      }
+      if(userDetails && userDetails.DOB){
         formData.set('dob',userDetails.DOB)
       }
       const response = await axiosInstance({
