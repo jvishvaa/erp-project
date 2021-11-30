@@ -1,7 +1,14 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { useState } from 'react';
-import { InputAdornment, Input, IconButton, InputBase } from '@material-ui/core';
+import { InputAdornment, Input, IconButton, InputBase ,Grid} from '@material-ui/core';
 import { Visibility, VisibilityOff } from '@material-ui/icons';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
+
 
 const CustomInput = (props) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -38,7 +45,8 @@ const CustomInput = (props) => {
             </InputAdornment>
           }
         />
-      ) : (
+      ) 
+      : (
         <InputBase
           className={className}
           id={id}
@@ -48,7 +56,7 @@ const CustomInput = (props) => {
           defaultValue={value}
           inputProps={{maxLength:20}}
           autoComplete='off'
-          type={type || 'text'}
+          type={type ||'text'}
           autoFocus = {autoFocus}
           onChange={onChange}
           inputProps={{

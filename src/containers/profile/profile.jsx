@@ -255,6 +255,7 @@ const Profile = (props) => {
                             ? `${classes.textfields}`
                             : `${classes.textfields} ${'passwordWidth'}`
                         }
+                        type={items.type}
                         id={items.name}
                         name={items.name}
                         readonly = {!items.editable}
