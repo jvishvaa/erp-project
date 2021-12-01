@@ -445,6 +445,7 @@ export default {
     weeklyStudentReport:'/assessment/download-report-student-report/',
     individualStudentReport:'/assessment/individual-student-report/',
     weeklyQuizPerformance:'/assessment/weekly-quiz-performance-report/',
+    downloadReportTestReport :'/assessment/download-report-test-report/',
 
   },
   publish: {
