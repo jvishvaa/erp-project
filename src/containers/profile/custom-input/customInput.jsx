@@ -95,7 +95,7 @@ const CustomInput = (props) => {
               form: {
                 autocomplete: 'off',
               },
-              maxLength: 20
+              maxLength: 60
             }}
           />
         )}
