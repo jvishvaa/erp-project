@@ -39,6 +39,7 @@ const ViewMoreCard = ({
   centralGradeName,
   centralSubjectName,
   setCompletedStatus,
+  handleClickOpenFeed,
 }) => {
   const classes = useStyles();
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
@@ -62,6 +63,13 @@ const ViewMoreCard = ({
   const { chapter_name = '', id: chapterId = '' } = chapterData || {};
   const { volume_name = '', id: volumeId = '' } = volumeData || {};
 
+  const checkFeedback = () => {
+    console.log(periodDataForView , "completed");
+    if (completedStatus) {
+      handleClickOpenFeed()
+    }
+  }
+
   const handleComplete = () => {
     setLoading(true);
     let request = {
@@ -82,6 +90,7 @@ const ViewMoreCard = ({
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
           setCompletedStatus(result?.data?.result?.is_completed);
+          handleClickOpenFeed()
           // setOnComplete(result.data.result.is_completed);
         } else {
           setAlert('error', result?.data?.message);
@@ -109,6 +118,7 @@ const ViewMoreCard = ({
               onClick={() => {
                 setViewMore(false);
                 setSelectedIndex(-1);
+                checkFeedback();
               }}
             >
               <CloseIcon color='primary' />

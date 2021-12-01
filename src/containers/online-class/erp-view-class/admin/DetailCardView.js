@@ -1,15 +1,12 @@
 import React, { useContext, useState, useEffect } from 'react';
 import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
-import Timer from 'react-compound-timer';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import Loader from '../../../../components/loader/loader';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import ResourceDialog from '../../../online-class/online-class-resources/resourceDialog';
-import CountdownTimer from './CountdownTimer';
 import UploadDialogBox from './UploadDialogBox';
-import ClassIcon from '@material-ui/icons/Class';
 import './index.css';
 import { useDispatch } from 'react-redux';
 import { SvgIcon } from '@material-ui/core';
@@ -24,40 +21,28 @@ import {
   Tooltip,
   IconButton,
 } from '@material-ui/core';
-import { useHistory, Route, withRouter } from 'react-router-dom';
-import PhotoCamera from '@material-ui/icons/PhotoCamera';
+import { useHistory, withRouter } from 'react-router-dom';
 import { AttachFile as AttachFileIcon } from '@material-ui/icons';
 import edxtag from '../../../../assets/images/edxtag.jpeg';
 import APIREQUEST from '../../../../config/apiRequest';
-import ZOOMICON from "../../../../assets/images/zoom.png"
+import ZOOMICON from '../../../../assets/images/zoom.png';
 
 const JoinClass = (props) => {
-  const { setLoading, index, cardIndex, getClassName, historicalData } = props;
+  const { setLoading, getClassName, historicalData } = props;
   const fullData = props.fullData;
   const handleClose = props.handleClose;
   const { setAlert } = useContext(AlertNotificationContext);
   const [anchorEl, setAnchorEl] = useState(null);
   const [joinAnchor, setJoinAnchor] = useState(null);
   const [classWorkDialog, setDialogClassWorkBox] = useState(false);
-  const [isAccept, setIsAccept] = useState(props.data ? props?.data?.is_accepted : false);
-  const [markAttendance, setMarkAttendance] = useState(
-    props.data ? props?.data?.is_attended : false
-  );
-
-  const [isClassWork, setIsClassWork] = useState(props?.data?.is_classwork);
-
+  const [isClassWork, setIsClassWork] = useState(props.data.is_classwork);
+  const [classOver, setClassOver] = useState(false);
 
   useEffect(() => {
-    setIsAccept(props?.data?.is_accepted)
-    setIsClassWork(props?.data?.is_classwork)
-  }, [props])
+    setIsClassWork(props?.data?.is_classwork);
+  }, [props]);
 
   const history = useHistory();
-  const classStartTime = moment(props && props?.data && props?.data?.date).format(
-    'DD-MM-YYYY'
-  );
-
-  const currDate = moment(new Date()).format('DD-MM-YYYY');
 
   const startTimeProp = props?.data?.start_time;
   const endTimeProp = props?.data?.end_time;
@@ -73,11 +58,9 @@ const JoinClass = (props) => {
 
   const handleCloseData = () => {
     setAnchorEl(null);
-    // setJoinAnchor(null)
   };
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
-    // setJoinAnchor(event.currentTarget);
   };
   const handleCloseAccept = () => {
     setJoinAnchor(null);
@@ -92,7 +75,7 @@ const JoinClass = (props) => {
     if (diffTime > currentTime) {
       setJoinAnchor(event.currentTarget);
     } else if (endTime >= currentTime && currentTime >= diffTime) {
-      handleIsAccept();
+      handleJoinButton();
     } else {
       setClassOver(true);
       setAlert('error', 'Class has ended!');
@@ -100,20 +83,12 @@ const JoinClass = (props) => {
   };
 
   const msApiMarkAttandance = (params) => {
-    // var windowReference = '';
-    // if (params?.is_attended) {
-    //   windowReference = window.open();
-    // }
     APIREQUEST('put', '/oncls/v1/mark-attendance/', params)
       .then((res) => {
         setLoading(false);
         if (res.data.status_code == 200) {
-          if (params?.is_accepted) setIsAccept(true);
           if (params?.is_attended) {
-            // setMarkAttendance(true);
-            // openZoomClass();
-            // windowReference.location = fullData && fullData.join_url;
-            document.getElementById("joinclass").click();
+            openZoomClass(fullData?.join_url);
           }
         }
       })
@@ -124,21 +99,13 @@ const JoinClass = (props) => {
   };
 
   const apiMarkAttendance = (params) => {
-    // var windowReference = "";
-    // if(params?.is_attended){
-    //   windowReference = window.open();
-    // }
     axiosInstance
       .put(endpoints.studentViewBatchesApi.rejetBatchApi, params)
       .then((res) => {
         setLoading(false);
         if (res.data.status_code == 200) {
-          if (params?.is_accepted) setIsAccept(true);
           if (params?.is_attended) {
-            // setMarkAttendance(true);
-            // openZoomClass();
-            // windowReference.location = fullData && fullData.join_url;
-            document.getElementById("joinclass").click();
+            openZoomClass(fullData?.join_url);
           }
         }
       })
@@ -148,10 +115,11 @@ const JoinClass = (props) => {
       });
   };
 
-  const handleIsAccept = () => {
+  const handleIsAttended = () => {
     const params = {
       zoom_meeting_id: fullData && fullData.id,
       class_date: props.data && props.data.date,
+      is_attended: true,
       is_accepted: true,
     };
     if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
@@ -161,34 +129,22 @@ const JoinClass = (props) => {
     apiMarkAttendance(params);
   };
 
-  const handleIsAttended = () => {
-    const params = {
-      zoom_meeting_id: fullData && fullData.id,
-      class_date: props.data && props.data.date,
-      is_attended: true,
-    };
-    if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
-      msApiMarkAttandance(params);
+  const openZoomClass = (url) => {
+    if (navigator.userAgent.indexOf('iPhone') >= 0) {
+      window.location.assign(url);
       return;
     }
-    apiMarkAttendance(params);
-  };
-
-  const [classOver, setClassOver] = useState(false);
-
-  const openZoomClass = (url) => {
-    window.open(url);
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.click();
+    link.remove();
   };
 
   const handleJoinButton = () => {
     const currentTime = getCurrentTime();
     if (endTime >= currentTime) {
       handleIsAttended();
-      /* if (!markAttendance) {
-        handleIsAttended();
-      }else{
-        openZoomClass();
-      } */
     } else {
       setClassOver(true);
       setAlert('error', 'Class has ended!');
@@ -222,7 +178,6 @@ const JoinClass = (props) => {
     };
 
     if (window.location.pathname === '/erp-online-class-student-view') {
-      //url = endpoints.studentViewBatchesApi.rejetBatchApi;
       axiosInstance
         .put(endpoints.studentViewBatchesApi.rejetBatchApi, params2)
         .then((res) => {
@@ -235,7 +190,6 @@ const JoinClass = (props) => {
           setAlert('error', error.message);
         });
     } else {
-      //url = endpoints.teacherViewBatches.cancelBatchApi;
       if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
         msAPIhandleCancel('/oncls/v1/class-cancel/', params1);
         return;
@@ -295,7 +249,8 @@ const JoinClass = (props) => {
       .then((res) => {
         setLoading(false);
         if (res?.data?.url) {
-          window.open(res?.data?.url, '_blank');
+          // window.open(res?.data?.url, '_blank');
+          openZoomClass(res?.data?.url);
         } else {
           setAlert('error', res?.data?.message);
         }
@@ -318,7 +273,8 @@ const JoinClass = (props) => {
         .then((res) => {
           setLoading(false);
           if (res?.data?.url) {
-            window.open(res?.data?.url, '_blank');
+            // window.open(res?.data?.url, '_blank');
+            openZoomClass(res?.data?.url);
           } else {
             setAlert('error', res?.data?.message);
           }
@@ -332,13 +288,6 @@ const JoinClass = (props) => {
       setAlert('error', "Class can't be started now");
     }
   }
-
-  const isAcceptDisabled = () => {
-    return (
-      props?.data?.class_status?.toLowerCase() === 'cancelled' ||
-      (classStartTime === currDate ? false : true)
-    );
-  };
 
   const isClassStartted = () => {
     let disableFlag = false;
@@ -397,7 +346,6 @@ const JoinClass = (props) => {
               }
               disabled={props?.data?.is_cancelled ? true : isClassStartted()}
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
-            // className='teacherFullViewSmallButtons'
             >
               Launch Quiz
             </Button>
@@ -415,8 +363,9 @@ const JoinClass = (props) => {
               variant='contained'
               onClick={() => handleTakeQuiz(fullData)}
               disabled={
-                props?.data?.class_status?.toLowerCase() === 'cancelled' ? true : isClassStartted() ||
-                  fullData?.online_class?.question_paper_id === 0
+                props?.data?.class_status?.toLowerCase() === 'cancelled'
+                  ? true
+                  : isClassStartted() || fullData?.online_class?.question_paper_id === 0
               }
               // className='takeQuizButton'
               className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
@@ -426,21 +375,23 @@ const JoinClass = (props) => {
           </Grid>
 
           <Grid item xs={4}>
-            {isClassWork && <Button
-              size='small'
-              fullWidth
-              variant='contained'
-              onClick={() => {
-                setDialogClassWorkBox(true);
-              }}
-              disabled={
-                isClassStartted() ||
-                props?.data?.class_status?.toLowerCase() === 'cancelled'
-              }
-              className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
-            >
-              Class Work
-            </Button>}
+            {isClassWork && (
+              <Button
+                size='small'
+                fullWidth
+                variant='contained'
+                onClick={() => {
+                  setDialogClassWorkBox(true);
+                }}
+                disabled={
+                  isClassStartted() ||
+                  props?.data?.class_status?.toLowerCase() === 'cancelled'
+                }
+                className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
+              >
+                Class Work
+              </Button>
+            )}
             {classWorkDialog && (
               <UploadDialogBox
                 historicalData={historicalData}
@@ -459,60 +410,84 @@ const JoinClass = (props) => {
       {window.location.pathname === '/erp-online-class-teacher-view' ? (
         <>
           <Grid item xs={4}>
-            {isClassWork && <Button
-              size='small'
-              color='#344ADE'
-              fullWidth
-              variant='contained'
-              onClick={() => {
-                const { id = '', online_class = {} } = fullData || {};
-                const { id: onlineClassId = '', start_time = '' } = online_class || {};
-                history.push({
-                  pathname: `/erp-online-class/class-work/${onlineClassId}/${id}/${props.data.date}`,
-                  state: { historicalData: historicalData },
-                });
-              }}
-              disabled={isClassStartted() || props?.data?.is_cancelled}
-              className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
-            >
-              Class Work
-            </Button>}
+            {isClassWork && (
+              <Button
+                size='small'
+                color='#344ADE'
+                fullWidth
+                variant='contained'
+                onClick={() => {
+                  const { id = '', online_class = {} } = fullData || {};
+                  const { id: onlineClassId = '', start_time = '' } = online_class || {};
+                  history.push({
+                    pathname: `/erp-online-class/class-work/${onlineClassId}/${id}/${props.data.date}`,
+                    state: { historicalData: historicalData },
+                  });
+                }}
+                disabled={isClassStartted() || props?.data?.is_cancelled}
+                className={`teacherFullViewSmallButtons1 ${getClassName()[1]}`}
+              >
+                Class Work
+              </Button>
+            )}
           </Grid>
         </>
       ) : (
         ''
       )}
 
-      {isAccept ? (
+      {window.location.pathname === '/erp-online-class-student-view' && (
         <Grid item xs={4}>
           {endTime >= getCurrentTime() && !classOver ? (
             <>
+              <Popover
+                id={ids}
+                open={openJoin}
+                joinAnchor={joinAnchor}
+                onClose={handleClose}
+                style={{ overflow: 'hidden', margin: '19% 0 0 30%' }}
+                className='xyz'
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'center',
+                }}
+              >
+                <Grid
+                  container
+                  spacing={2}
+                  style={{ textAlign: 'center', padding: '10px' }}
+                >
+                  <Grid item xs={12} style={{ textAlign: 'right' }}>
+                    <CloseIcon
+                      style={{ color: '#014B7E' }}
+                      onClick={() => handleCloseAccept()}
+                    />
+                  </Grid>
+                  <Grid item md={12} xs={12}>
+                    <Typography>
+                      You Can Join 5mins Before :{' '}
+                      {moment(`${props?.data?.date}T${startTimeProp}`).format(
+                        'hh:mm:ss A'
+                      )}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Popover>
               <Button
                 size='small'
                 color='secondary'
                 fullWidth
                 variant='contained'
                 disabled={props?.data?.class_status?.toLowerCase() === 'cancelled'}
-                onClick={handleJoinButton}
+                onClick={(e) => handleClickAccept(e)}
                 className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
               >
                 Join
               </Button>
-              <p>
-                <a
-                  id="joinclass"
-                  style={{ display: "none" }}
-                  href={fullData?.join_url}
-                  target='SingleSecondaryWindowName'
-                  onclick={() => {
-                    openZoomClass(fullData?.join_url);
-                    return false;
-                  }}
-                  title='Join Class'
-                >
-                  join class
-                </a>
-              </p>
             </>
           ) : (
             <Button
@@ -526,7 +501,10 @@ const JoinClass = (props) => {
             </Button>
           )}
         </Grid>
-      ) : (
+      )}
+
+      {(window.location.pathname === '/erp-online-class-teacher-view' ||
+        window.location.pathname === '/erp-online-class') && (
         <>
           {endTime < getCurrentTime() && !classOver ? (
             <Grid item xs={4}>
@@ -552,10 +530,12 @@ const JoinClass = (props) => {
                     variant='contained'
                     onClick={() => {
                       if (email !== props?.fullData?.online_class?.teacher?.email) {
-                        window.open(fullData && fullData?.join_url, '_blank');
+                        // window.open(fullData && fullData?.join_url, '_blank');
+                        openZoomClass(fullData?.join_url);
                       }
                       if (email === props?.fullData?.online_class?.teacher?.email) {
-                        window.open(fullData && fullData?.presenter_url, '_blank');
+                        // window.open(fullData && fullData?.presenter_url, '_blank');
+                        openZoomClass(fullData?.presenter_url);
                       }
                     }}
                     className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
@@ -575,62 +555,8 @@ const JoinClass = (props) => {
                     onClick={() => handleHost(fullData)}
                     className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
                   >
-                    {/* Host Me */}
                     Host
                   </Button>
-                )}
-                {window.location.pathname === '/erp-online-class-student-view' && (
-                  <>
-                    <Popover
-                      id={ids}
-                      open={openJoin}
-                      joinAnchor={joinAnchor}
-                      onClose={handleClose}
-                      style={{ overflow: 'hidden', margin: '19% 0 0 30%' }}
-                      className='xyz'
-                      anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                      }}
-                      transformOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                      }}
-                    >
-                      <Grid
-                        container
-                        spacing={2}
-                        style={{ textAlign: 'center', padding: '10px' }}
-                      >
-                        <Grid item xs={12} style={{ textAlign: 'right' }}>
-                          <CloseIcon
-                            style={{ color: '#014B7E' }}
-                            onClick={() => handleCloseAccept()}
-                          />
-                        </Grid>
-                        <Grid item md={12} xs={12}>
-                          <Typography>
-                            You Can Join 5mins Before :{' '}
-                            {moment(`${props?.data?.date}T${startTimeProp}`).format(
-                              'hh:mm:ss A'
-                            )}
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </Popover>
-                    <Button
-                      size='small'
-                      color='secondary'
-                      fullWidth
-                      variant='contained'
-                      // onClick={handleIsAccept}
-                      onClick={(e) => handleClickAccept(e)}
-                      disabled={isAcceptDisabled()}
-                      className={`teacherFullViewSmallButtons ${getClassName()[3]}`}
-                    >
-                      Accept
-                    </Button>
-                  </>
                 )}
               </Grid>
               <Grid item xs={4}>
@@ -824,16 +750,16 @@ const DetailCardView = ({
       sessionStorage.setItem('isErpClass', 3);
       history.push(
         `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
-        // selectedGrade.map((el)=>el.id)
-        1
+          // selectedGrade.map((el)=>el.id)
+          1
         }`
       );
     } else if (window.location.pathname === '/erp-online-class') {
       sessionStorage.setItem('isErpClass', 1);
       history.push(
         `/create/course/${fullData.online_class && fullData.online_class.cource_id}/${
-        // selectedGrade.map((el)=>el.id)
-        1
+          // selectedGrade.map((el)=>el.id)
+          1
         }`
       );
     }
@@ -878,7 +804,16 @@ const DetailCardView = ({
             >
               <Grid item xs={10}>
                 <div className='edxTag'>
-                  <SvgIcon component={() => <img style={{ maxHeight: "50px", background: "white" }} src={fullData?.join_url?.includes('edxstream') ? edxtag : ZOOMICON} />} />
+                  <SvgIcon
+                    component={() => (
+                      <img
+                        style={{ maxHeight: '50px', background: 'white' }}
+                        src={
+                          fullData?.join_url?.includes('edxstream') ? edxtag : ZOOMICON
+                        }
+                      />
+                    )}
+                  />
                 </div>
               </Grid>
               <Grid item xs={2} style={{ textAlign: 'right' }}>

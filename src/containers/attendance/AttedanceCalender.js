@@ -503,6 +503,9 @@ const AttedanceCalender = () => {
     setSelectedSection([]);
     setStudentDataAll(null);
     setCurrentEvent(null);
+    setHolidayDetails('');
+    setGradeList([])
+    setSectionList([])
     // setCounter(2);
     // setStartDate(null)
     // setEndDate(null);
@@ -1312,6 +1315,7 @@ const AttedanceCalender = () => {
                     'gradeList'
                   );
                 }
+                setGradeList([])
                 setSelectedGrade([]);
                 setSectionList([]);
                 setSelectedSection([]);
@@ -1567,7 +1571,7 @@ const AttedanceCalender = () => {
                     </Button>
                   ) : (
                     <>
-                      <p id='teacherUpdate'>Updated At {updatedDays}</p>
+                      <p id='teacherUpdate'>Updated On {updatedDays}</p>
                     </>
                   )}
                 </Grid>
@@ -1582,7 +1586,7 @@ const AttedanceCalender = () => {
                   <p className='erpId'>ERP_ID :{userName}</p>
                 ) : (
                   <>
-                    <p id='studentPara'>Updated At {updatedDays}</p>
+                    <p id='studentPara'>Updated On {updatedDays}</p>
                   </>
                 )}
                 {/* <KeyboardArrowDownIcon className='downIcon' /> */}

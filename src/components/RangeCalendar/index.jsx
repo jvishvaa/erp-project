@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DateRangePicker } from 'react-date-range';
+import { DateRangePicker , Calendar } from 'react-date-range';
 import { Button, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import FlagIcon from '@material-ui/icons/Flag';
@@ -37,6 +37,7 @@ export default function RangeCalender(props) {
   const [holidayDetailsList, setHolidayDetailsList] = useState([]);
   const [holidayDates, setHolidaydates] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [ date , setDate ] = useState(new Date());
 
   const getHolidayDates = (holidayDetail) => {
     let dateList = [];
@@ -58,6 +59,7 @@ export default function RangeCalender(props) {
   };
 
   const getCurrentMonthDetails = () => {
+    const uniqueGrades = gradeIds.filter((val,id,array) => array.indexOf(val) == id);
     const date = currentMonth,
       y = date.getFullYear(),
       m = date.getMonth();
@@ -69,7 +71,7 @@ export default function RangeCalender(props) {
         'YYYY-MM-DD'
       )}&end_date=${moment(lastDate).format(
         'YYYY-MM-DD'
-      )}&branch=${branchIds}&grade=${gradeIds}`
+      )}&branch=${branchIds}&grade=${uniqueGrades}`
     ).then((res) => {
       if (res.data.status_code === 200) {
         getHolidayDates(res.data.holiday_detail);
@@ -120,7 +122,7 @@ export default function RangeCalender(props) {
       setState([
         {
           startDate: new Date(moment().subtract(3, 'days')),
-          endDate: new Date(moment().add(2, 'days')),
+          endDate: new Date(moment().add(3, 'days')),
           key: 'selection',
         },
       ]);
@@ -128,6 +130,7 @@ export default function RangeCalender(props) {
   }, [selectedType]);
 
   const handleChange = (item) => {
+    console.log(item);
     if (selectedType == 'today' || selectedType === undefined) {
       item.selection.startDate = new Date(moment(item.selection.startDate));
       item.selection.endDate = new Date(moment(item.selection.startDate));
@@ -136,6 +139,17 @@ export default function RangeCalender(props) {
     }
     setState([item.selection]);
   };
+
+  const handleChangeToday = (id) => {
+    setDate(id)
+    setState([
+      {
+        startDate: id,
+        endDate: id,
+        key: 'selection',
+      },
+    ])
+  }
 
   const FlagComponent = () => {
     return (
@@ -225,6 +239,17 @@ export default function RangeCalender(props) {
           </Button>
         </Grid>
       </Grid>
+      { selectedType === 'today' ? <Calendar 
+        editableDateInputs={true}
+        dayContentRenderer={customDayContent}
+        className='rangeCalendar'
+        // ranges={state}
+        date={date}
+        onChange={handleChangeToday}
+        onShownDateChange={(day) => {
+          setCurrentMonth(day);
+        }}
+        /> :
       <DateRangePicker
         editableDateInputs={true}
         dayContentRenderer={customDayContent}
@@ -235,6 +260,7 @@ export default function RangeCalender(props) {
           setCurrentMonth(day);
         }}
       />
+}
     </>
   );
 }

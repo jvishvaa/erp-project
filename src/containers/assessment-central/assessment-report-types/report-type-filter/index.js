@@ -17,29 +17,33 @@ const reportTypes = [
     type: 'Report Card',
   },
   {
-   id:6,
-   type:'Assessment Report', 
+    id: 6,
+    type: 'Assessment Report',
   },
   {
-    id:7,
-    type:'Weekly Student Report',
+    id: 7,
+    type: 'Weekly Student Report',
   },
   {
-    id:8,
-    type:'Consolidated Sample Report', 
-   },
-   {
-     id:9,
-     type:'Individual Assessment Report Teacher',
-   },
-   {
-     id:10,
-     type:'Weekly Teacher Report Each Grade',
-   },
-   {
-    id:11,
-    type:'Weekly Assessment Performance',
-  }
+    id: 8,
+    type: 'Consolidated Sample Report',
+  },
+  {
+    id: 9,
+    type: 'Individual Assessment Report Teacher',
+  },
+  {
+    id: 10,
+    type: 'Weekly Teacher Report Each Grade',
+  },
+  {
+    id: 11,
+    type: 'Weekly Assessment Performance',
+  },
+  {
+    id: 12,
+    type: 'Consolidated Subject Assessment Report',
+  },
 ];
 
 const ReportTypeFilter = ({

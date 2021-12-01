@@ -31,7 +31,7 @@ const Dashboard = () => {
         ) {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Induction Training') {
-              if (username.erp !== 'super_admin_OLV') {
+              if (userLevel === 3) {
                 axios
                   .post(endpoints.sureLearning.login, {
                     username: username?.erp,
@@ -66,7 +66,7 @@ const Dashboard = () => {
       case 3:
         return <TeacherDashboard />;
       case 4:
-        return <StudentDashboard />; // to be replaced with student dashboard
+        return <DefaultDashboard />; // to be replaced with student dashboard
       case 5:
         return <DefaultDashboard />;
       default:
