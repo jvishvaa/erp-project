@@ -477,7 +477,7 @@ export default function Observation() {
                         <TableCell align='center'>
                           <Button
                             variant='contained'
-                            style={{ color: 'white', background: '#014b7e' }}
+                            color='secondary'
                             onClick={() => handleDelete(row.id, index)}
                             startIcon={<DeleteIcon />}
                           >
@@ -485,7 +485,7 @@ export default function Observation() {
                           </Button>
                           <Button
                             variant='contained'
-                            style={{  color: 'white', background: '#014b7e' ,marginLeft: '5px' }}
+                            color='secondary'
                             
                             onClick={() =>
                               handleEdit(row.id, row.observation_area_name, row.status)
@@ -566,14 +566,14 @@ export default function Observation() {
           <Grid item xs={12} md={2} style={{ marginTop: '16px' }}>
             {updateId ? (<Button
               onClick={updateData}
-              style={{ marginLeft: '14px', marginBottom: '9px',background: '#014b7e',color:'white'}}
+              style={{ marginLeft: '14px', marginBottom: '9px'}}
               variant='outlined'
               
             >
               update
             </Button>):( <Button
               onClick={postData}
-              style={{ marginLeft: '14px', marginBottom: '9px',background: '#014b7e' ,color:'white' }}
+              style={{ marginLeft: '14px', marginBottom: '9px' }}
               variant='outlined'
               color='secondary'
             >

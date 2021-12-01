@@ -19,13 +19,13 @@ const useStyles = makeStyles((theme) => ({
       paddingLeft:'20px',
     },
     halfdayPadding: {
-        paddingLeft:'34px',
+        paddingLeft:'20px',
       },
       latePadding: {
-        paddingLeft:'58px',
+        paddingLeft:'28px',
       },
       holidayPadding: {
-        paddingLeft:'51px',
+        paddingLeft:'15px',
       },
     
    
