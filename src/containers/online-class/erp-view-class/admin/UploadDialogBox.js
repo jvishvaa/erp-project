@@ -298,6 +298,7 @@ const UploadClassWorkDiaogBox = (props) => {
         style={{ zIndex: '3' }}
         onClose={handleClose}
         aria-labelledby='form-dialog-title'
+        disableBackdropClick
       >
         <DialogTitle className={classes.uploadBoxTitle} id='form-dialog-title'>
           {isTeacher ? 'Classwork' : 'Upload Classwork'}
