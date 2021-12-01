@@ -66,7 +66,7 @@ const Dashboard = () => {
       case 3:
         return <TeacherDashboard />;
       case 4:
-        return <StudentDashboard />; // to be replaced with student dashboard
+        return <DefaultDashboard />; // to be replaced with student dashboard
       case 5:
         return <DefaultDashboard />;
       default:
