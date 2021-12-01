@@ -54,7 +54,7 @@ const LessonViewFilters = ({
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
   const [centralGsMappingId, setCentralGsMappingId] = useState();
-  let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
+  let token = JSON.parse(localStorage.getItem('userDetails'))?.token || {};
   const [erpYear, setErpYear] = useState({});
   const classes = useStyles();
 

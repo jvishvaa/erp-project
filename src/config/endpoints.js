@@ -219,6 +219,7 @@ export default {
     // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
     // s3: ERP_BUCKET,
     s3: 'https://d2r9gkgplfhsr2.cloudfront.net/',
+    lessonFeedback: `${baseURLCentral}/lesson_plan/lessonplan-feedback/`
   },
   aol: {
     cardData: '/erp_user/teacher_online_class/v3/',
