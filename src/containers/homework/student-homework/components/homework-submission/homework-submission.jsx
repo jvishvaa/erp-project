@@ -133,6 +133,13 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "18px",
     borderBottom: `1px solid ${theme.palette.primary.main}`
 
+  },
+  instructionText:{
+    display : 'flex',
+    border:`1px solid ${theme.palette.primary.main}`,
+    borderRadius: '5px',
+    height: '38px',
+    alignItems : 'center'
   }
 }));
 
@@ -714,6 +721,15 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
         </Grid>
         <Grid item lg={10}>
           <div className={classes.homeworkSubmitwrapper}>
+            
+            <div className = {classes.instructionText}>
+              {
+                desc?<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>Instructions :- {desc}</span>:<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>No Instruction</span>
+              }
+       
+         
+          </div>
+
             <div className='homework_block_wrapper_submit'>
               <div className={` ${classes.homeworkblock} homework_submit_tag`}>
                 Homework - {subjectName} : {homeworkTitle}

@@ -61,6 +61,8 @@ function SignIn({ history, setTheme }) {
 
   const searchParams = new URLSearchParams(window.location.search);
   const redirectionToken = searchParams.get('redirect_key'); //token
+  const online_class_id = +searchParams.get('online_class_id')
+  const question_paper_id = +searchParams.get('question_paper_id')
   const redirectionView = +searchParams.get('wb_view'); // 1-android , 2-ios
   const pathIdentifier = +searchParams.get('path_value'); // 1-view-orchadio , 2-manage-orchadio
   
@@ -88,6 +90,12 @@ function SignIn({ history, setTheme }) {
         history.push(`/orchadio/view-orchadio/?wb_view=${redirectionView}`);
       } else if (pathIdentifier === 2) {
         history.push(`/orchadio/manage-orchadio/?wb_view=${redirectionView}`);
+      } else if (pathIdentifier === 3){
+        history.push(
+           `/erp-online-class/${online_class_id}/${question_paper_id}/pre-quiz/?wb_view=${redirectionView}`,
+        )
+        // window.location.reload()
+
       }
     }
   }, [redirectionToken]);

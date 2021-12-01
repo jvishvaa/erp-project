@@ -19,6 +19,7 @@ import ViewMoreCard from './view-more-card';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import BreadcrumbToggler from '../../../components/breadcrumb-toggler';
+import FeedbackLesson from './feedback-LessonPLan'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,6 +50,15 @@ const LessonPlan = () => {
   const [selectedIndex, setSelectedIndex] = useState(-1);
   const [centralGradeName, setCentralGradeName] = useState('');
   const [centralSubjectName, setCentralSubjectName] = useState('');
+  const [openFeed, setOpenFeed] = React.useState(false);
+
+  const handleClickOpenFeed = () => {
+    setOpenFeed(true);
+  };
+
+  const handleCloseFeed = () => {
+    setOpenFeed(false);
+  };
   let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
 
 
@@ -167,6 +177,7 @@ const LessonPlan = () => {
                         setCompletedStatus={(val)=>setCompletedStatus({...(completedStatus||{}), [period.id]:val})}
                         centralGradeName={centralGradeName}
                         centralSubjectName={centralSubjectName}
+                        handleClickOpenFeed={handleClickOpenFeed}
                       />
                     </Grid>
                   ))}
@@ -185,6 +196,7 @@ const LessonPlan = () => {
                     setLoading={setLoading}
                     centralGradeName={centralGradeName}
                     centralSubjectName={centralSubjectName}
+                    handleClickOpenFeed={handleClickOpenFeed}
                   />
                 </Grid>
               )}
@@ -230,6 +242,7 @@ const LessonPlan = () => {
           )}
         </Paper>
       </Layout>
+      <FeedbackLesson handleClickOpenFeed={handleClickOpenFeed} periodDataForView={periodDataForView} openFeed={openFeed} handleCloseFeed={handleCloseFeed} />
     </>
   );
 };

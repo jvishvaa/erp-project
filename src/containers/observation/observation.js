@@ -297,6 +297,7 @@ export default function Observation() {
   };
   const handleClose = (value) => {
     setOpen(false);
+    setUpdateId('');
   };
 
   const addIndex = () => {
@@ -306,6 +307,10 @@ export default function Observation() {
 
 
   const postData = () => {
+    if(name === ""){
+      setAlert('error','fill the observation area')
+      return;
+    }
    
       let body = {
         observation_area_name: name,
@@ -318,7 +323,7 @@ export default function Observation() {
           observationGet();
           handleClose();
           setName('');
-          setStatus('');
+          setStatus(false);
         })
         .catch((error) => {
           console.log(error);
@@ -330,7 +335,6 @@ export default function Observation() {
     const result = axiosInstance
       .get(`${endpoints.observation.observationGet}`)
       .then((result) => {
-          console.log(result,"resultresult")
         if (result.status === 200) {
           setData(result?.data);
         }
@@ -339,11 +343,9 @@ export default function Observation() {
         console.log(error);
       });
   };
-
   const handleName = (event) => {
     setName(event.target.value);
   };
-
   const handleStatus = (event) => {
     setStatus(event.target.value);
   };
@@ -519,7 +521,7 @@ export default function Observation() {
         classes={{
           paper: classes.drawerPaper,
         }}
-        onClose={() => setOpen(false)}
+        onClose={() => {setOpen(false);setUpdateId('');}}
       >
         <Divider />
         <List>
