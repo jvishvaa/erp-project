@@ -1315,10 +1315,10 @@ function App({ alert, isMsAPI }) {
                           <Route exact path='/teacher-attendance-verify'>
                             {({ match }) => <TeacherAttendanceVerify match={match}  />}
                           </Route>
-                          <Route exact path='/observation'>
+                          <Route exact path='/observation-area'>
                             {({ match }) => <Observation match={match}  />}
                           </Route>
-                          <Route path='/observation-area'>
+                          <Route path='/observation'>
                             {({ match }) => <Observationarea match={match} />}
                           </Route>
                           <Route exact path='/finance/student_shuffle'>

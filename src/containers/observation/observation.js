@@ -33,12 +33,16 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import MenuItem from '@material-ui/core/MenuItem';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import EditIcon from '@material-ui/icons/Edit';
+
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 // import Switch from '@material-ui/material/Switch';
 
 import './observation.css';
 import { Divider } from '@material-ui/core';
 
-const drawerWidth = 300;
+const drawerWidth = 500;
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -265,6 +269,9 @@ export default function Observation() {
   const { setAlert } = useContext(AlertNotificationContext);
   const [deleteId, setDeleteId] = useState(null);
   const [edit, setEdit] = useState(false);
+  const [deleteAlert, setDeleteAlert] = useState(false);
+  // const [deleteId, setDeleteId] = useState(null);
+  const [deleteIndex, setDeleteIndex] = useState(null);
   const [state, setState] = React.useState([
     {
       checkedA: true,
@@ -286,6 +293,9 @@ export default function Observation() {
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
+
+
+
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
@@ -369,21 +379,37 @@ export default function Observation() {
 
   };
 
-  const handleDelete = (event, index) => {
+  const handleDelete = (event,index) => {
+    console.log(event,"event")
+      
     setDeleteId(event);
+    setDeleteIndex(event);
+    setDeleteAlert(true);
+  };
+
+
+  const handleDeleteConfirm =  () => {
 
     const result = axiosInstance
-      .delete(`${endpoints.observation.observationGet}${event}/`)
+      .delete(`${endpoints.observation.observationGet}${deleteId}/`)
       .then((result) => {
-          console.log(result,"resulttt")
+         
         if (result.status === 204) {
           setAlert('success', 'successfully deleted');
+          setDeleteAlert(false);
           observationGet();
        
         } else {
           console.log('error');
         }
       });
+    }
+
+   
+  const handleDeleteCancel = () => {
+    setDeleteId(null);
+    setDeleteIndex(null);
+    setDeleteAlert(false);
   };
 
 
@@ -414,7 +440,7 @@ export default function Observation() {
         <Paper className={classes.paper}>
           <Grid container className='position-observer-second'>
             <Grid item style={{ fontWeight: 'bold', fontSize: '20px' }}>
-              Observations
+              Observation Area
             </Grid>
 
             
@@ -486,6 +512,7 @@ export default function Observation() {
                           <Button
                             variant='contained'
                             color='secondary'
+                            style={{marginLeft:'5px'}}
                             
                             onClick={() =>
                               handleEdit(row.id, row.observation_area_name, row.status)
@@ -512,6 +539,30 @@ export default function Observation() {
           />
         </Paper>
       </div>
+      <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
+          <DialogTitle
+            id='draggable-dialog-title'
+          >
+            Delete Observation Area
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete this Observation Area ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleDeleteConfirm}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
       <Drawer
         className={classes.drawer}
         //variant="persistent"
@@ -534,22 +585,26 @@ export default function Observation() {
             alignItems='flex-start'
             style={{ marginLeft: '15px' }}
           >
-            <text>Observation Area</text>
+            <text style={{ fontSize: '22px'}}>Observation Area</text>
             <TextField
               placeholder='observation area'
               value={name}
+              style={{paddingRight:"38px"}}
               onChange={handleName}
               id='outlined-size-normal'
+              fullWidth
               variant='outlined'
             />
-            <text>Status</text>
+            <text style={{ marginTop:'10px',fontSize: '22px'}}>Status</text>
 
             <TextField
               id='standard-select-currency-native'
               select
               value={status}
+              style={{paddingRight:"38px"}}
               onChange={handleStatus}
               variant='filled'
+              fullWidth
               SelectProps={{
                 native: true,
               }}
