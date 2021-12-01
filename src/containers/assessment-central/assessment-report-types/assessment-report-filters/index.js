@@ -115,7 +115,6 @@ const AssessmentReportFilters = ({
     topic: '',
     erp: '',
   });
-  console.log(filterData, 'filter');
 
   useEffect(() => {
     if (page && isFilter) handleFilter();
