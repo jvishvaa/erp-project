@@ -46,7 +46,7 @@ const CustomInput = (props) => {
           readOnly={readonly}
           name={name}
           defaultValue={value}
-          inputProps={{maxLength:20}}
+          inputProps={{maxLength:60}}
           autoComplete='off'
           type={type || 'text'}
           onChange={onChange}
