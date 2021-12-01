@@ -37,7 +37,7 @@ export default function AssesmentReport({ reportCardData }) {
     { Data: scholastic, TableType: 'SCHOLASTIC' },
     { Data: coScholastic, TableType: 'CO-SCHOLASTIC' },
   ];
-
+  const { is_orchids: isOrchids = true } = schoolData;
   return (
     <TableContainer>
       <Table className={classes.table}>
@@ -46,7 +46,9 @@ export default function AssesmentReport({ reportCardData }) {
         {tableData.map((data) => (
           <ReportTableContent {...data} />
         ))}
-        <PersonalityTraitTable {...{ scholastic, coScholastic, traitGradeScale }} />
+        {isOrchids && (
+          <PersonalityTraitTable {...{ scholastic, coScholastic, traitGradeScale }} />
+        )}
         <ReportCardFooter {...{ scholastic, coScholastic, schoolData }} />
       </Table>
     </TableContainer>
