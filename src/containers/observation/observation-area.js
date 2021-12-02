@@ -25,6 +25,7 @@ import TableBody from '@material-ui/core/TableBody';
 import endpoints from 'config/endpoints';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import axiosInstance from 'config/axios';
+import clsx from 'clsx';
 import Loading from 'components/loader/loader';
 import { Autocomplete } from '@material-ui/lab';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -47,6 +48,54 @@ const useStyles = makeStyles((theme) => ({
   drawerPaper: {
     width: drawerWidth,
   },
+  deleteButton: {
+    padding: '0px',
+    paddingLeft: '10px',
+    paddingRight: '10px'
+  },
+  editButton: {
+    padding:'0px',
+    paddingLeft: '10px',
+    paddingRight: '10px',
+    marginBottom: '5px'
+  },
+  tableGrid: {
+    position: 'relative',
+    left: '118px'
+  },
+  tableMargin: {
+    width: '1px',
+  },
+  buttonColor: {
+    color: 'white',
+  },
+  observationheading: {
+    fontSize: '20px',
+    marginTop: '80px',
+    marginLeft: '20px'
+  },
+  observationinput: {
+    paddingLeft: '20px',
+    paddingRight: '24px',
+  },
+  statustyle: {
+    fontSize: '20px',
+    marginTop: '16px',
+    marginLeft: '20px'
+  },
+  statusfield: {
+    marginLeft: '20px',
+    paddingRight: '38px',
+  },
+  dropdowndata: {
+    marginTop: '24px',
+    marginLeft: '20px',
+    paddingRight: '38px'
+  },
+  // updateButton: {
+  //   paddingTop: '27px',
+  //   paddingLeft: '21px',
+  // }
 }));
 
 function descendingComparator(a, b, orderBy) {
@@ -85,15 +134,15 @@ function Observationarea() {
   const [open, setOpen] = useState(false);
   const [data, setData] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
-  const [status, setStatus] = useState(false);
+  // const [status, setStatus] = useState(false);
   const [statusEdit, setStatusEdit] = useState(false);
   const [stat, setStat] = useState(false);
-  const [branchDisplay, setBranchDisplay] = useState({});
+  // const [branchDisplay, setBranchDisplay] = useState({});
   const [observationStatus, setObservationStatus] = useState([]);
-  const [name, setName] = useState('');
+  // const [name, setName] = useState('');
   const [nameEdit, setNameEdit] = useState('');
-  const [observationArea, setObservationArea] = useState([]);
-  const [observationAreaValue, setObservationAreaValue] = useState([]);
+  const [observationArea, setObservationArea] = useState('');
+  const [observationAreaValue, setObservationAreaValue] = useState('');
   const [deleteId, setDeleteId] = useState(null);
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -128,11 +177,11 @@ function Observationarea() {
   };
 
   const handleClickOpen = () => {
+    setUpdateId('');
     setOpen(true);
   };
   const handleClose = (value) => {
     setOpen(false);
-    setUpdateId('');
   };
 
   const addIndex = () => {
@@ -140,26 +189,31 @@ function Observationarea() {
   };
 
   const postData = () => {
-    if(name === ""){
-      setAlert('error','fill the observation')
+    // setNameEdit('')
+    if(nameEdit===""){
+      setAlert('error','fill observation name')
+      return
+    }
+    if (observationAreaValue.id === undefined || null){
+      setAlert('error','select observation area')
       return
     }
     setLoading(true);
     let body = {
-      observation: name,
-      status: status,
-      observation_area: observationArea.id,
+      observation: nameEdit,
+      status: statusEdit,
+      observation_area: observationAreaValue.id,
     };
 
     axiosInstance
       .post(`${endpoints.observationName.observationGet}`, body)
       .then((result) => {
-        console.log(result,"resultpost")
         setLoading(false);
         observationGet();
         handleClose();
-        setName('');
-        setStatus('');
+        setNameEdit('')
+        // setStatus(false);
+        setStatusEdit(false);
       })
       .catch((error) => {
         setLoading(false);
@@ -172,7 +226,6 @@ function Observationarea() {
     const result = axiosInstance
       .get(`${endpoints.observationName.observationGet}`)
       .then((result) => {
-        console.log(result, 'resultresult');
         if (result.status === 200) {
           setData(result?.data);
         }
@@ -182,17 +235,17 @@ function Observationarea() {
       });
   };
 
-  const handleName = (event) => {
-    setName(event.target.value);
-  };
+  // const handleName = (event) => {
+  //   setName(event.target.value);
+  // };
 
   const handleNameEdit = (event) => {
     setNameEdit(event.target.value);
   };
 
-  const handleStatus = (event) => {
-    setStatus(event.target.value);
-  };
+  // const handleStatus = (event) => {
+  //   setStatus(event.target.value);
+  // };
 
   const handleStatusEdit = (event) => {
     setStatusEdit(event.target.value);
@@ -208,13 +261,15 @@ function Observationarea() {
   ];
   const [updateId, setUpdateId] = useState('');
 
-  const handleEdit = (id, name, stat) => {
-    setUpdateId(id);
-    setEdit(true);
-    setName(name);
-    setStat(stat);
-    handleClickOpen();
-  };
+  // const handleEdit = (id, observation, stat, observationname) => {
+  //   console.log(observationname,"observationname")
+  //   setUpdateId(id);
+  //   // setEdit(true);
+  //   setNameEdit(observation);
+  //   setStatusEdit(stat);
+  //   setObservationArea(observationname);
+  //   handleClickOpen();
+  // };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -224,19 +279,27 @@ function Observationarea() {
     setOpen(false);
   };
 
-  const handleEditButton = (id, observation_area, stat) => {
-    console.log(id, observation_area, stat, '13131313');
+  const handleEditButton = (id, observation, stat, observationname) => {
+    setUpdateId(id);
+    // setEdit(true);
+    setNameEdit(observation);
+    setStatusEdit(stat);
+    setObservationArea(observationname);
+    setObservationAreaValue(id)
+    
     handleDrawerOpen();
-    handleEdit(id, observation_area, stat);
+    // handleEdit(id, observation, stat,observationname);
   };
 
   const handleDelete = (event, index) => {
-    console.log(event, 'event');
-
     setDeleteId(event);
     setDeleteIndex(event);
     setDeleteAlert(true);
   };
+  const clearAll =()=>{
+    setNameEdit('');
+    handleClose();
+  }
 
   const handleDeleteConfirm = () => {
     const result = axiosInstance
@@ -259,7 +322,7 @@ function Observationarea() {
   };
 
   const updateData = () => {
-    setLoading(true);
+    // setLoading(true);
     let body = {
       observation: nameEdit,
       status: statusEdit,
@@ -268,12 +331,12 @@ function Observationarea() {
     axiosInstance
       .put(`${endpoints.observationName.observationGet}${updateId}/`, body)
       .then((res) => {
-        console.log(res, 'res');
+        // setLoading(false);
         setNameEdit(res?.observation);
-        setStatusEdit(res?.stat);
-        handleClose();
-        setLoading(false);
+        setStat(res?.stat);
         observationGet();
+        handleClose();
+       
       })
 
       .catch((error) => console.log(error));
@@ -294,14 +357,11 @@ function Observationarea() {
 
   const dropData = (e) => {
     let index = observationStatus.indexOf(e);
-    console.log(index, 'index');
-    console.log(e.target.value, 'valueid');
   };
 
   useEffect(() => {
     observationGet();
   }, []);
-
   return (
     <div>
       <Layout>
@@ -379,13 +439,15 @@ function Observationarea() {
             item
             style={{ fontWeight: 'bold', marginBottom: '5px', marginRight: '61px' }}
           >
+           
             <Button
-              variant='outlined'
+              className={classes.button}
+              variant='contained'
               startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
               size='medium'
               style={{ color: 'white', fontSize: '16px' }}
               onClick={handleClickOpen}
-              color='secondary'
+              color='primary'
             >
               Add
             </Button>
@@ -413,17 +475,18 @@ function Observationarea() {
                     <TableRow hover role='checkbox' tabIndex={-1} key={row?.id}>
                       <TableCell align='center'>{index + 1}</TableCell>
                       <TableCell align='center'>{row?.observation}</TableCell>
-                      <TableCell align='center'>{row?.observation_area}</TableCell>
+                      <TableCell align='center'>{row?.observation_area?.observation_area_name}</TableCell>
                       <TableCell align='center' style={{ width: '1px' }}>
-                        <Grid item md={1} style={{ position: 'relative', left: '118px' }}>
+                        <Grid item md={1} className={classes.tableGrid}>
                           <FormControlLabel
                             checked={row?.status}
-                            onChange={handleStatus}
+                            // value={status}
+                            onChange={handleStatusEdit}
                             control={<Switch name='status' />}
                           />
                         </Grid>
                       </TableCell>
-                      <TableCell style={{ width: '1px' }}>
+                      <TableCell className={classes.tableMargin}>
                         <Grid item>
                           <Button
                             id='edit'
@@ -432,17 +495,12 @@ function Observationarea() {
                             onClick={() =>
                               handleEditButton(
                                 row.id,
-                                row.observation_area_name,
-                                row.status
+                                row.observation,
+                                row.status,
+                                row.observation_area.observation_area_name
                               )
                             }
-                            className={classes.button}
-                            style={{
-                              padding: '0px',
-                              paddingLeft: '10px',
-                              paddingRight: '10px',
-                              marginBottom: '5px',
-                            }}
+                            className={clsx(classes.button,classes.editButton)}
                             endIcon={<Icon>edit</Icon>}
                           >
                             Edit
@@ -451,12 +509,7 @@ function Observationarea() {
                             variant='contained'
                             color='primary'
                             onClick={() => handleDelete(row.id, index)}
-                            className={classes.button}
-                            style={{
-                              padding: '0px',
-                              paddingLeft: '10px',
-                              paddingRight: '10px',
-                            }}
+                            className={clsx(classes.button,classes.deleteButton)}
                             endIcon={<Icon>delete</Icon>}
                           >
                             Delete
@@ -470,14 +523,14 @@ function Observationarea() {
           </Table>
         </TableContainer>
         <TablePagination
-            rowsPerPageOptions={[]}
-            component='div'
-            count={data?.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
+          rowsPerPageOptions={[]}
+          component='div'
+          count={data?.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
         <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
           <DialogTitle id='draggable-dialog-title'>Delete Observation</DialogTitle>
           <DialogContent>
@@ -492,7 +545,7 @@ function Observationarea() {
             <Button
               color='primary'
               variant='contained'
-              style={{ color: 'white' }}
+              className={classes.buttonColor}
               onClick={handleDeleteConfirm}
             >
               Confirm
@@ -507,7 +560,7 @@ function Observationarea() {
           classes={{
             paper: classes.drawerPaper,
           }}
-          onClose={() =>{ setOpen(false);setUpdateId('');}}
+          onClose={() => {setOpen(false); setUpdateId('');}}
         >
           <div className={classes.drawerHeader}></div>
 
@@ -550,7 +603,7 @@ function Observationarea() {
               <Typography
                 variant='body2'
                 component='h1'
-                style={{ fontSize: '20px', marginTop: '80px', marginLeft: '20px' }}
+                className={classes.observationheading}
               >
                 Observation
               </Typography>
@@ -558,15 +611,17 @@ function Observationarea() {
                 id='outlined-basic'
                 variant='outlined'
                 size='small'
+                multiline
+                value={nameEdit}
                 fullWidth
-                style={{ paddingLeft: '20px', paddingRight: '24px' }}
+                className={classes.observationinput}
                 onChange={handleNameEdit}
               />
             </CardContent>
             <Typography
               variant='body2'
               component='h1'
-              style={{ fontSize: '20px', marginTop: '16px', marginLeft: '20px' }}
+              className={classes.statustyle}
             >
               Status
             </Typography>
@@ -574,10 +629,10 @@ function Observationarea() {
               id='standard-select-currency-native'
               select
               size='small'
-              value={stat}
+              value={statusEdit}
               fullWidth
               onChange={handleStatusEdit}
-              style={{ marginLeft: '20px', paddingRight: '38px' }}
+              className={classes.statusfield}
               variant='filled'
               SelectProps={{
                 native: true,
@@ -593,14 +648,14 @@ function Observationarea() {
 
             <Grid item xs={12}>
               <Autocomplete
-                style={{ marginTop: '24px', marginLeft: '20px', paddingRight: '38px' }}
+                className={classes.dropdowndata}
                 id='create__class-subject'
-                className='dropdownIcon'
+                // className={dropdownIcon}
                 fullWidth
                 options={observationStatus || []}
                 getOptionLabel={(option) => option.observation_area_name || ''}
-                onChange={(event, newValue) => setObservationAreaValue(newValue)}
-                value={observationAreaValue || ''}
+                onChange={(event, newValue) => {setObservationAreaValue(newValue)}}
+                value={observationAreaValue }
                 required
                 renderInput={(params) => (
                   <TextField
@@ -616,16 +671,51 @@ function Observationarea() {
                 )}
               />
             </Grid>
-            <Grid item md={3} xs={12} style={{ paddingTop: '27px', paddingLeft: '21px' }}>
-              {updateId ? (
-                <Button onClick={updateData} size='large'>
+             {/* variant='contained'
+                            color='primary'
+                            onClick={() => handleDelete(row.id, index)}
+                            className={classes.button} */}
+            <Grid item  xs={12} className="position-observer-second" style={{paddingTop:'15px'}} >
+            <Grid item xs={12} md={3} style={{paddingLeft:'18px'}}>
+            <Button
+              onClick={clearAll}
+              style={{color:"blue"}}
+             
+              variant='outlined'
+              
+            >
+              Cancel
+            </Button>
+              </Grid>
+
+              {updateId ? (<Button
+              onClick={updateData}
+              style={{  marginRight:'246px'}}
+              variant='outlined'
+              color='secondary'
+
+              
+            >
+              update
+            </Button>):( <Button
+              onClick={postData}
+              style={{ marginRight:'246px' }}
+              variant='outlined'
+              color='secondary'
+            >
+              Submit
+            </Button>)} 
+
+
+              {/* {updateId ? (
+                <Button onClick={updateData} size='large' variant='contained' color='primary' className={classes.button}>
                   Update
                 </Button>
               ) : (
-                <Button onClick={postData} variant='outlined'>
+                <Button onClick={postData} variant='contained' color='primary' className={classes.button}>
                   Submit
                 </Button>
-              )}
+              )} */}
             </Grid>
           </List>
           <List></List>
