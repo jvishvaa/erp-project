@@ -75,7 +75,7 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-function Observationarea() {
+function Observation() {
   const classes = useStyles();
   const [order, setOrder] = useState('');
   const [orderBy, setOrderBy] = useState('');
@@ -92,8 +92,9 @@ function Observationarea() {
   const [observationStatus, setObservationStatus] = useState([]);
   const [name, setName] = useState('');
   const [nameEdit, setNameEdit] = useState('');
-  const [observationArea, setObservationArea] = useState([]);
+  const [observationArea, setObservationArea] = useState('');
   const [observationAreaValue, setObservationAreaValue] = useState([]);
+  console.log("observationAreaValue", observationAreaValue);
   const [deleteId, setDeleteId] = useState(null);
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -132,7 +133,6 @@ function Observationarea() {
   };
   const handleClose = (value) => {
     setOpen(false);
-    setUpdateId('');
   };
 
   const addIndex = () => {
@@ -140,21 +140,16 @@ function Observationarea() {
   };
 
   const postData = () => {
-    if(name === ""){
-      setAlert('error','fill the observation')
-      return
-    }
     setLoading(true);
     let body = {
-      observation: name,
-      status: status,
-      observation_area: observationArea.id,
+      observation: nameEdit,
+      status: statusEdit,
+      observation_area: observationAreaValue.id,
     };
 
     axiosInstance
       .post(`${endpoints.observationName.observationGet}`, body)
       .then((result) => {
-        console.log(result,"resultpost")
         setLoading(false);
         observationGet();
         handleClose();
@@ -208,11 +203,13 @@ function Observationarea() {
   ];
   const [updateId, setUpdateId] = useState('');
 
-  const handleEdit = (id, name, stat) => {
+  const handleEdit = (id, observation, stat, observationname) => {
+    console.log(observationname,"observationname")
     setUpdateId(id);
     setEdit(true);
-    setName(name);
-    setStat(stat);
+    setNameEdit(observation);
+    setStatusEdit(stat);
+    setObservationArea(observationname);
     handleClickOpen();
   };
 
@@ -224,10 +221,10 @@ function Observationarea() {
     setOpen(false);
   };
 
-  const handleEditButton = (id, observation_area, stat) => {
-    console.log(id, observation_area, stat, '13131313');
+  const handleEditButton = (id, observation, stat, observationname) => {
+    console.log(id, observation, stat, '13131313');
     handleDrawerOpen();
-    handleEdit(id, observation_area, stat);
+    handleEdit(id, observation, stat,observationname);
   };
 
   const handleDelete = (event, index) => {
@@ -269,8 +266,8 @@ function Observationarea() {
       .put(`${endpoints.observationName.observationGet}${updateId}/`, body)
       .then((res) => {
         console.log(res, 'res');
-        setNameEdit(res?.observation);
-        setStatusEdit(res?.stat);
+        setName(res?.observation);
+        setStat(res?.stat);
         handleClose();
         setLoading(false);
         observationGet();
@@ -301,7 +298,7 @@ function Observationarea() {
   useEffect(() => {
     observationGet();
   }, []);
-
+console.log(observationArea,edit,"observationArea")
   return (
     <div>
       <Layout>
@@ -379,13 +376,15 @@ function Observationarea() {
             item
             style={{ fontWeight: 'bold', marginBottom: '5px', marginRight: '61px' }}
           >
+           
             <Button
-              variant='outlined'
+              className={classes.button}
+              variant='contained'
               startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
               size='medium'
               style={{ color: 'white', fontSize: '16px' }}
               onClick={handleClickOpen}
-              color='secondary'
+              color='primary'
             >
               Add
             </Button>
@@ -408,16 +407,18 @@ function Observationarea() {
               {stableSort(addIndex(data), getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
+                  console.log(row,"rowdata");
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow hover role='checkbox' tabIndex={-1} key={row?.id}>
                       <TableCell align='center'>{index + 1}</TableCell>
                       <TableCell align='center'>{row?.observation}</TableCell>
-                      <TableCell align='center'>{row?.observation_area}</TableCell>
+                      <TableCell align='center'>{row?.observation_area?.observation_area_name}</TableCell>
                       <TableCell align='center' style={{ width: '1px' }}>
                         <Grid item md={1} style={{ position: 'relative', left: '118px' }}>
                           <FormControlLabel
                             checked={row?.status}
+                            // value={status}
                             onChange={handleStatus}
                             control={<Switch name='status' />}
                           />
@@ -432,8 +433,9 @@ function Observationarea() {
                             onClick={() =>
                               handleEditButton(
                                 row.id,
-                                row.observation_area_name,
-                                row.status
+                                row.observation,
+                                row.status,
+                                // row.observation_area.observation_area_name
                               )
                             }
                             className={classes.button}
@@ -470,14 +472,14 @@ function Observationarea() {
           </Table>
         </TableContainer>
         <TablePagination
-            rowsPerPageOptions={[]}
-            component='div'
-            count={data?.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            onChangePage={handleChangePage}
-            onChangeRowsPerPage={handleChangeRowsPerPage}
-          />
+          rowsPerPageOptions={[]}
+          component='div'
+          count={data?.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onChangePage={handleChangePage}
+          onChangeRowsPerPage={handleChangeRowsPerPage}
+        />
         <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
           <DialogTitle id='draggable-dialog-title'>Delete Observation</DialogTitle>
           <DialogContent>
@@ -507,7 +509,7 @@ function Observationarea() {
           classes={{
             paper: classes.drawerPaper,
           }}
-          onClose={() =>{ setOpen(false);setUpdateId('');}}
+          onClose={() => setOpen(false)}
         >
           <div className={classes.drawerHeader}></div>
 
@@ -558,6 +560,7 @@ function Observationarea() {
                 id='outlined-basic'
                 variant='outlined'
                 size='small'
+                value={nameEdit}
                 fullWidth
                 style={{ paddingLeft: '20px', paddingRight: '24px' }}
                 onChange={handleNameEdit}
@@ -574,7 +577,7 @@ function Observationarea() {
               id='standard-select-currency-native'
               select
               size='small'
-              value={stat}
+              value={statusEdit}
               fullWidth
               onChange={handleStatusEdit}
               style={{ marginLeft: '20px', paddingRight: '38px' }}
@@ -600,7 +603,7 @@ function Observationarea() {
                 options={observationStatus || []}
                 getOptionLabel={(option) => option.observation_area_name || ''}
                 onChange={(event, newValue) => setObservationAreaValue(newValue)}
-                value={observationAreaValue || ''}
+                value={observationAreaValue  }
                 required
                 renderInput={(params) => (
                   <TextField
@@ -616,13 +619,17 @@ function Observationarea() {
                 )}
               />
             </Grid>
+             {/* variant='contained'
+                            color='primary'
+                            onClick={() => handleDelete(row.id, index)}
+                            className={classes.button} */}
             <Grid item md={3} xs={12} style={{ paddingTop: '27px', paddingLeft: '21px' }}>
               {updateId ? (
-                <Button onClick={updateData} size='large'>
+                <Button onClick={updateData} size='large' variant='contained' color='primary' className={classes.button}>
                   Update
                 </Button>
               ) : (
-                <Button onClick={postData} variant='outlined'>
+                <Button onClick={postData} variant='contained' color='primary' className={classes.button}>
                   Submit
                 </Button>
               )}
@@ -635,4 +642,4 @@ function Observationarea() {
   );
 }
 
-export default Observationarea;
+export default Observation;
