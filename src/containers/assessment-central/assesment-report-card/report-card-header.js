@@ -8,6 +8,7 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
+import ReactHtmlParser from 'react-html-parser';
 import { generateHeaderColspan } from './transform-report-card-data';
 const orchidsLogo =
   'https://www.orchidsinternationalschool.com/wp-content/uploads/2019/08/logo-01.png';
@@ -29,7 +30,7 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
     school_contact: schoolContact,
     school_email: schoolEmail,
     acad_session: acadSession = '2021-22',
-    affiliation_code: affiliationCode = '',
+    // affiliation_code: affiliationCode = '',
     cbse_affiliation_code: cbseAffiliationCode = '',
     branch_code: branchCode = '',
     branch_logo: branchLogo = '',
@@ -40,8 +41,10 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
   const getAffiliationNumber = () => {
     if (cbseAffiliationCode) {
       return `CBSE AFFILIATION NO: ${cbseAffiliationCode}`;
+    } else if (branchCode) {
+      return `SCHOOL CODE: ${branchCode}`;
     } else {
-      return `SCHOOL CODE: ${branchCode || affiliationCode}`;
+      return '';
     }
   };
 
@@ -85,7 +88,7 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
                 >
                   {getAffiliationNumber()}
                 </Typography>
-                {address}
+                {ReactHtmlParser(address)}
                 <br />
                 {schoolContact && `Contact Number: ${schoolContact}`}
                 <br />
