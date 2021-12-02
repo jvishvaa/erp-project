@@ -550,6 +550,7 @@ function Observationarea() {
                 id='outlined-basic'
                 variant='outlined'
                 size='small'
+                multiline
                 value={nameEdit}
                 fullWidth
                 style={{ paddingLeft: '20px', paddingRight: '24px' }}
