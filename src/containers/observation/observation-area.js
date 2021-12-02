@@ -94,7 +94,6 @@ function Observation() {
   const [nameEdit, setNameEdit] = useState('');
   const [observationArea, setObservationArea] = useState('');
   const [observationAreaValue, setObservationAreaValue] = useState([]);
-  console.log("observationAreaValue", observationAreaValue);
   const [deleteId, setDeleteId] = useState(null);
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -204,7 +203,6 @@ function Observation() {
   const [updateId, setUpdateId] = useState('');
 
   const handleEdit = (id, observation, stat, observationname) => {
-    console.log(observationname,"observationname")
     setUpdateId(id);
     setEdit(true);
     setNameEdit(observation);
@@ -222,14 +220,11 @@ function Observation() {
   };
 
   const handleEditButton = (id, observation, stat, observationname) => {
-    console.log(id, observation, stat, '13131313');
     handleDrawerOpen();
     handleEdit(id, observation, stat,observationname);
   };
 
   const handleDelete = (event, index) => {
-    console.log(event, 'event');
-
     setDeleteId(event);
     setDeleteIndex(event);
     setDeleteAlert(true);
@@ -265,7 +260,6 @@ function Observation() {
     axiosInstance
       .put(`${endpoints.observationName.observationGet}${updateId}/`, body)
       .then((res) => {
-        console.log(res, 'res');
         setName(res?.observation);
         setStat(res?.stat);
         handleClose();
@@ -291,14 +285,11 @@ function Observation() {
 
   const dropData = (e) => {
     let index = observationStatus.indexOf(e);
-    console.log(index, 'index');
-    console.log(e.target.value, 'valueid');
   };
 
   useEffect(() => {
     observationGet();
   }, []);
-console.log(observationArea,edit,"observationArea")
   return (
     <div>
       <Layout>
@@ -407,7 +398,6 @@ console.log(observationArea,edit,"observationArea")
               {stableSort(addIndex(data), getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  console.log(row,"rowdata");
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow hover role='checkbox' tabIndex={-1} key={row?.id}>
