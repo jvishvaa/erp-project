@@ -532,6 +532,8 @@ export default {
   observationName:{
     observationGet: '/teacher_observation/observation/',
     observationArea: '/teacher_observation/observation-area/',
+    observationReport: '/teacher_observation/observation-report/',
+    observationData:'/teacher_observation/observation-data/',
   },
 
   homeworkReport: {
