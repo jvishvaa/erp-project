@@ -8,6 +8,7 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
+import ReactHtmlParser from 'react-html-parser';
 import { generateHeaderColspan } from './transform-report-card-data';
 const orchidsLogo =
   'https://www.orchidsinternationalschool.com/wp-content/uploads/2019/08/logo-01.png';
@@ -87,7 +88,7 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
                 >
                   {getAffiliationNumber()}
                 </Typography>
-                {address}
+                {ReactHtmlParser(address)}
                 <br />
                 {schoolContact && `Contact Number: ${schoolContact}`}
                 <br />
