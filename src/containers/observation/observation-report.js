@@ -16,10 +16,6 @@ import Layout from 'containers/Layout';
 
 const drawerWidth = 240;
 
-
-
-
-
 const useStyles = makeStyles((theme: Theme) => 
 
 createStyles({
@@ -120,6 +116,7 @@ function Observationreport() {
   const [status, setStatus] = useState('');
   const [observationValue , setObservationValue] = useState([]);
   const [dateUpdate, setDateUpdate] = useState();
+  const [overallRemark, setOverallRemark] = useState('');
 
   const postString = () => {
 
@@ -131,11 +128,10 @@ function Observationreport() {
         num= num + value;
     })
 
-
     nick.push({
       erp_user : status,
-      report : JSON.stringify(finaleDate,["report","score"]),
-      remark : JSON.stringify(finaleDate,["remark",""]),
+      report : JSON.stringify(finaleDate,["report","score","remark","observation"]),
+      remark : overallRemark,
       score: num,
       date: dateUpdate,
     })
@@ -152,6 +148,7 @@ function Observationreport() {
     observationValue.map((row) => {
       row.observation.map((ten) =>
       sortdata.push ({
+          observation : row.observation_area_name,
           remark : ten.remark,
           score: ten.number,
           report : ten.report,
@@ -253,6 +250,7 @@ const getupdateData = () => {
     <div className={(classes.bottommargin)}>
     <TextField id="id" name="array[]" className={clsx(classes.container, classes.textfieldlayout)}  type="number" size="small" label="ERP User" value={status} variant="outlined" onChange={handleStatus}  />
     <TextField id="date" label="Date" type="date" defaultValue="2017-05-24" className={clsx(classes.textField,classes.datestyle)} InputLabelProps={{shrink: true, }} value={dateUpdate} onChange={dateUpdatefun}/>
+    <TextField id="id" name="report" className={classes.textfieldlayout} size="small" label="Overall Remark" variant="outlined" value={overallRemark} onChange={(e)=>setOverallRemark(e.target.value)} />
     <Button variant="contained" color="primary"  className={classes.sumitbutton} onClick={() => postString()} > Submit </Button> 
     </div>
     </Layout>

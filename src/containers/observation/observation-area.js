@@ -143,7 +143,6 @@ function Observationarea() {
   const [nameEdit, setNameEdit] = useState('');
   const [observationArea, setObservationArea] = useState('');
   const [observationAreaValue, setObservationAreaValue] = useState('');
-  console.log("observationAreaValue", observationAreaValue);
   const [deleteId, setDeleteId] = useState(null);
   const [edit, setEdit] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -191,13 +190,11 @@ function Observationarea() {
 
   const postData = () => {
     // setNameEdit('')
-    console.log("observation vaoue ajayu:", observationAreaValue)
     if(nameEdit===""){
       setAlert('error','fill observation name')
       return
     }
     if (observationAreaValue.id === undefined || null){
-      console.log("mr ajay you are wrong")
       setAlert('error','select observation area')
       return
     }
@@ -229,7 +226,6 @@ function Observationarea() {
     const result = axiosInstance
       .get(`${endpoints.observationName.observationGet}`)
       .then((result) => {
-        console.log(result, 'resultresult');
         if (result.status === 200) {
           setData(result?.data);
         }
@@ -284,7 +280,6 @@ function Observationarea() {
   };
 
   const handleEditButton = (id, observation, stat, observationname) => {
-    console.log(id, observation, stat,observationname, '13131313');
     setUpdateId(id);
     // setEdit(true);
     setNameEdit(observation);
@@ -297,8 +292,6 @@ function Observationarea() {
   };
 
   const handleDelete = (event, index) => {
-    console.log(event, 'event');
-
     setDeleteId(event);
     setDeleteIndex(event);
     setDeleteAlert(true);
@@ -328,7 +321,6 @@ function Observationarea() {
     setDeleteAlert(false);
   };
 
-  console.log("observationAreaValue",observationAreaValue)
   const updateData = () => {
     // setLoading(true);
     let body = {
@@ -339,7 +331,6 @@ function Observationarea() {
     axiosInstance
       .put(`${endpoints.observationName.observationGet}${updateId}/`, body)
       .then((res) => {
-        console.log(res, 'res');
         // setLoading(false);
         setNameEdit(res?.observation);
         setStat(res?.stat);
@@ -366,8 +357,6 @@ function Observationarea() {
 
   const dropData = (e) => {
     let index = observationStatus.indexOf(e);
-    console.log(index, 'index');
-    console.log(e.target.value, 'valueid');
   };
 
   useEffect(() => {
@@ -481,7 +470,6 @@ function Observationarea() {
               {stableSort(addIndex(data), getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  console.log(row,"rowdata");
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow hover role='checkbox' tabIndex={-1} key={row?.id}>
