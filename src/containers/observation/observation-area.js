@@ -615,6 +615,7 @@ function Observationarea() {
                 id='outlined-basic'
                 variant='outlined'
                 size='small'
+                multiline
                 value={nameEdit}
                 fullWidth
                 className={classes.observationinput}
