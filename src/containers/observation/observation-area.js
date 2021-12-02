@@ -75,7 +75,7 @@ function stableSort(array, comparator) {
   return stabilizedThis.map((el) => el[0]);
 }
 
-function Observation() {
+function Observationarea() {
   const classes = useStyles();
   const [order, setOrder] = useState('');
   const [orderBy, setOrderBy] = useState('');
@@ -632,4 +632,4 @@ function Observation() {
   );
 }
 
-export default Observation;
+export default Observationarea;
