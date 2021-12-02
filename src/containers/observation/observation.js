@@ -641,6 +641,8 @@ export default function Observation() {
               onClick={updateData}
               style={{  marginRight:'308px'}}
               variant='outlined'
+              color='secondary'
+
               
             >
               update

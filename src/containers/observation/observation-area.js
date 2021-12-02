@@ -142,7 +142,7 @@ function Observationarea() {
   // const [name, setName] = useState('');
   const [nameEdit, setNameEdit] = useState('');
   const [observationArea, setObservationArea] = useState('');
-  const [observationAreaValue, setObservationAreaValue] = useState([]);
+  const [observationAreaValue, setObservationAreaValue] = useState('');
   console.log("observationAreaValue", observationAreaValue);
   const [deleteId, setDeleteId] = useState(null);
   const [edit, setEdit] = useState(false);
@@ -191,8 +191,14 @@ function Observationarea() {
 
   const postData = () => {
     // setNameEdit('')
+    console.log("observation vaoue ajayu:", observationAreaValue)
     if(nameEdit===""){
       setAlert('error','fill observation name')
+      return
+    }
+    if (observationAreaValue.id === undefined || null){
+      console.log("mr ajay you are wrong")
+      setAlert('error','select observation area')
       return
     }
     setLoading(true);
@@ -284,6 +290,7 @@ function Observationarea() {
     setNameEdit(observation);
     setStatusEdit(stat);
     setObservationArea(observationname);
+    setObservationAreaValue(id)
     
     handleDrawerOpen();
     // handleEdit(id, observation, stat,observationname);
@@ -321,6 +328,7 @@ function Observationarea() {
     setDeleteAlert(false);
   };
 
+  console.log("observationAreaValue",observationAreaValue)
   const updateData = () => {
     // setLoading(true);
     let body = {
@@ -658,8 +666,8 @@ function Observationarea() {
                 fullWidth
                 options={observationStatus || []}
                 getOptionLabel={(option) => option.observation_area_name || ''}
-                onChange={(event, newValue) => setObservationAreaValue(newValue)}
-                value={observationAreaValue  }
+                onChange={(event, newValue) => {setObservationAreaValue(newValue)}}
+                value={observationAreaValue }
                 required
                 renderInput={(params) => (
                   <TextField
