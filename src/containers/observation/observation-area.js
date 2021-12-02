@@ -558,6 +558,7 @@ function Observationarea() {
                 id='outlined-basic'
                 variant='outlined'
                 size='small'
+                multiline
                 fullWidth
                 style={{ paddingLeft: '20px', paddingRight: '24px' }}
                 onChange={handleNameEdit}
