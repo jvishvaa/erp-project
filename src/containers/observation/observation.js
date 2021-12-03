@@ -629,8 +629,8 @@ export default function Observation() {
           <Grid item xs={12} md={3} style={{paddingLeft:'18px'}}>
             <Button
               onClick={clearAll}
-              style={{color:"blue"}}
-             
+              style={{ background:"#014b7e",color:"white"}}
+           
               variant='outlined'
               
             >
@@ -639,18 +639,18 @@ export default function Observation() {
               </Grid>
             {updateId ? (<Button
               onClick={updateData}
-              style={{  marginRight:'308px'}}
+              style={{ background:"#014b7e", marginRight:'308px',color:"white"}}
               variant='outlined'
-              color='secondary'
+            
 
               
             >
               update
             </Button>):( <Button
               onClick={postData}
-              style={{ marginRight:'308px' }}
+              style={{ background:"#014b7e",marginRight:'308px',color:"white" }}
               variant='outlined'
-              color='secondary'
+             
             >
               Submit
             </Button>)}  
