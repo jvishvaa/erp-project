@@ -613,7 +613,6 @@ class Kit extends Component {
 
   langThirdChangeHandler = (e) => {
 
-console.log(this.state.secondLang , "second");    
     if(this.state.secondLang){
     if (e.value == this.state.secondLang.id) {
       this.props.alert.warning('Select another Langauge');
