@@ -227,7 +227,6 @@ export default function TeacherAttendance(props) {
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectedMultipleRoles, setSelectedMultipleRoles] = React.useState([]);
   const [roles, setRoles] = React.useState([]);
-  console.log(selectedMultipleRoles, roles, 'roles');
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   // const { setAlert } = useContext(AlertNotificationContext);
   const [startDate, setStartDate] = React.useState(moment().format('YYYY-MM-DD'));
@@ -250,7 +249,6 @@ export default function TeacherAttendance(props) {
     branch: '',
     year: '',
   });
-  console.log('branch', filterData.branch?.branch?.id);
   const handleDateChange = (name, date) => {
     if (name === 'startDate') setStartDate(date);
   };
@@ -302,7 +300,6 @@ export default function TeacherAttendance(props) {
     if (value) {
       getBranch(value?.id);
       setFilterData({ ...filterData, selectedAcademicYear });
-      console.log('acad', filterData);
     }
   };
 
@@ -422,7 +419,6 @@ export default function TeacherAttendance(props) {
       .then((result) => {
         if (result.status === 200) {
           setData(result?.data);
-          console.log(result?.data);
         }
       })
       .catch((error) => {
