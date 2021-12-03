@@ -380,7 +380,6 @@ export default function Observation() {
   };
 
   const handleDelete = (event,index) => {
-    console.log(event,"event")
       
     setDeleteId(event);
     setDeleteIndex(event);

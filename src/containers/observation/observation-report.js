@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { makeStyles, useTheme, Theme, createStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -13,10 +13,12 @@ import axiosInstance from 'config/axios';
 import clsx from 'clsx';
 import Button from '@material-ui/core/Button';
 import Layout from 'containers/Layout';
+import { Typography } from '@material-ui/core';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme: Theme) => 
+const useStyles = makeStyles((theme) => 
 
 createStyles({
   root: {
@@ -32,13 +34,13 @@ createStyles({
   },
   buttonlayoutone: {
     width:"180px", 
-    marginTop:"30px", 
-    marginLeft: "10px"
+    // marginTop:"30px", 
+    // marginLeft: "10px"
   },
   buttonlayouttwo: {
     width:"180px", 
-    marginTop:"10px", 
-    marginLeft: "10px"
+    // marginTop:"10px", 
+    // marginLeft: "10px"
   },
   container: {
     maxHeight: 440,
@@ -88,6 +90,12 @@ createStyles({
   bottommargin:{
     margin: "30px"
   },
+  tableheading:{
+    fontWeight: 'bold', 
+    fontSize: '20px', 
+    marginLeft: '20px', 
+    marginTop: '10px'
+  },
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
@@ -110,21 +118,28 @@ createStyles({
 
 
 function Observationreport() {
+  let observationIndexNumber = 0
   const classes = useStyles();
   const [finaleDate, setFinaledata] = useState();
   const theme = useTheme();
   const [status, setStatus] = useState('');
   const [observationValue , setObservationValue] = useState([]);
   const [dateUpdate, setDateUpdate] = useState();
+  const { setAlert } = useContext(AlertNotificationContext);
   const [overallRemark, setOverallRemark] = useState('');
+  const [rightScoreValue, setRightScoreValue] = useState(true);
+
 
   const postString = () => {
-
     var nick = [];
     var num = 0;
     finaleDate.map((imp) => {
       var value= parseInt(imp.score);
       if (typeof imp.score !== 'undefined')
+        if( value < 1 || value >45 ){
+          setAlert('error','Wrong Score Value')
+          setRightScoreValue(false)
+        }
         num= num + value;
     })
 
@@ -136,11 +151,15 @@ function Observationreport() {
       date: dateUpdate,
     })
     var num = JSON.stringify( nick[0],["erp_user", "report"])
-    axiosInstance.post(`${endpoints.observationName.observationReport}`,nick[0]).then((res)=>{
-            })
-            .catch((error)=>{
-              console.log('error');
-            })
+    if( rightScoreValue === true ){
+      axiosInstance.post(`${endpoints.observationName.observationReport}`,nick[0]).then((res)=>{
+        if (res.status === 201) {
+           setAlert('success', 'Successfully Submitted');
+           }})
+           .catch((error)=>{
+             console.log('error');
+           })
+    }
   }
 
   const submitButton = () => {
@@ -177,6 +196,7 @@ function Observationreport() {
     let name = event.target.name;
     let value = event.target.value;
 
+    setRightScoreValue(true)
     let newlist = [observationValue[firstindex].observation[secondindex]];
 
     newlist=newlist[0];
@@ -184,6 +204,11 @@ function Observationreport() {
 
     list[firstindex].observation[secondindex] = newlist;
     setObservationValue(list);
+    if( value < 1 || value >45 ){
+      setAlert('error','Score should be less than 45 and greater than 0')
+      return
+    }
+
     submitButton();
   };
 
@@ -206,11 +231,13 @@ const getupdateData = () => {
   return (
     <div>
     <Layout>
+    <Typography className={classes.tableheading}>Observation Report</Typography>
     <Paper className={classes.root}>
       <TableContainer className={classes.container}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow >
+              <TableCell>Index</TableCell>
               <TableCell>Area</TableCell>
               <TableCell>S. No.</TableCell>
               <TableCell>Observation</TableCell>
@@ -221,16 +248,21 @@ const getupdateData = () => {
           </TableHead>
           <TableBody>
             {observationValue.map((row, firstindex) => {
+             
               return (
                 <>
                   {row.observation.map((rowt, secondindex, thirdvalue) => {
                     let x = secondindex;
+                    if (secondindex=== 0){
+                      observationIndexNumber = observationIndexNumber + 1;
+                    }
                     return ( 
                   
                     <TableRow >
-                    { secondindex === 0 ? (
+                    { secondindex === 0 ? (<>
+                        <TableCell rowSpan={row.observation.length}>{observationIndexNumber}</TableCell>
                         <TableCell rowSpan={row.observation.length}>{row.observation_area_name}</TableCell>
-                      ) : ( <>
+                      </>) : ( <>
                         </>
                       )} 
                       <TableCell >{x+1} </TableCell>                      
