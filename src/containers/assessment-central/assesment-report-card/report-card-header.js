@@ -8,8 +8,10 @@ import {
   TableHead,
   TableRow,
 } from '@material-ui/core';
+import ReactHtmlParser from 'react-html-parser';
 import { generateHeaderColspan } from './transform-report-card-data';
-
+const orchidsLogo =
+  'https://www.orchidsinternationalschool.com/wp-content/uploads/2019/08/logo-01.png';
 const StyledTableCell = withStyles((theme) => ({
   head: {
     fontSize: 11,
@@ -28,11 +30,23 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
     school_contact: schoolContact,
     school_email: schoolEmail,
     acad_session: acadSession = '2021-22',
-    affiliation_code: affiliationCode = '',
-    school_logo: schoolLogo = '',
+    // affiliation_code: affiliationCode = '',
+    cbse_affiliation_code: cbseAffiliationCode = '',
+    branch_code: branchCode = '',
+    branch_logo: branchLogo = '',
   } = schoolData || {};
   const [firstRowColspan = 2, secondRowColspan = 20, thirdRowColspan = 3] =
     generateHeaderColspan(scholastic, coScholastic);
+
+  const getAffiliationNumber = () => {
+    if (cbseAffiliationCode) {
+      return `CBSE AFFILIATION NO: ${cbseAffiliationCode}`;
+    } else if (branchCode) {
+      return `SCHOOL CODE: ${branchCode}`;
+    } else {
+      return '';
+    }
+  };
 
   return (
     <>
@@ -41,11 +55,13 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
         <TableRow>
           <StyledTableCell colspan={firstRowColspan} scope='center'>
             <Box>
-              <img
-                src={`https://d3ka3pry54wyko.cloudfront.net/homework/Revamp%20RRS/None/2021-11-16%2020:46:19.276422/cbse_logo.png?1637075782512`}
-                alt=''
-                style={{ width: '160px', height: '160px', borderRadius: '50px' }}
-              />
+              {cbseAffiliationCode && (
+                <img
+                  src={`https://d3ka3pry54wyko.cloudfront.net/homework/Revamp%20RRS/None/2021-11-16%2020:46:19.276422/cbse_logo.png?1637075782512`}
+                  alt=''
+                  style={{ width: '160px', height: '160px', borderRadius: '50px' }}
+                />
+              )}
             </Box>
           </StyledTableCell>
           <StyledTableCell colspan={secondRowColspan} scope='center'>
@@ -70,10 +86,9 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
                   component='div'
                   style={{ textAlign: 'center' }}
                 >
-                  {typeof affiliationCode === 'number' &&
-                    `CBSE AFFILIATION NO: ${parseInt(affiliationCode)}`}
+                  {getAffiliationNumber()}
                 </Typography>
-                {address}
+                {ReactHtmlParser(address)}
                 <br />
                 {schoolContact && `Contact Number: ${schoolContact}`}
                 <br />
@@ -97,9 +112,8 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
           <StyledTableCell colspan={thirdRowColspan} scope='center'>
             <Box>
               <img
-                src={
-                  'https://www.orchidsinternationalschool.com/wp-content/uploads/2019/08/logo-01.png'
-                }
+                src={branchLogo}
+                onError={(e) => (e.target.src = orchidsLogo)}
                 alt=''
                 style={{ width: '160px', height: '160px', borderRadius: '50px' }}
               />

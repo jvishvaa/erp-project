@@ -305,7 +305,7 @@ export default function Observation() {
   const handleClickOpen = () => {
     setOpen(true);
   };
-  const handleClose = (value) => {
+  const handleClose = () => {
     setOpen(false);
     setUpdateId('');
   };
@@ -429,6 +429,10 @@ export default function Observation() {
       })
       .catch((error) => console.log(error));
   };
+  const clearAll =()=>{
+    setName('');
+    handleClose();
+  }
 
   useEffect(() => {
     observationGet();
@@ -590,6 +594,7 @@ export default function Observation() {
               placeholder='observation area'
               value={name}
               style={{paddingRight:"38px"}}
+              multiline
               onChange={handleName}
               id='outlined-size-normal'
               fullWidth
@@ -616,21 +621,36 @@ export default function Observation() {
                 </option>
               ))}
             </TextField>
+            
           </Grid>
+          
 
-          <Grid item xs={12} md={2} style={{ marginTop: '16px' }}>
+          <Grid item xs={12}  className="position-observer-second" style={{ marginTop: '16px' }}>
+          <Grid item xs={12} md={3} style={{paddingLeft:'18px'}}>
+            <Button
+              onClick={clearAll}
+              style={{ background:"#014b7e",color:"white"}}
+           
+              variant='outlined'
+              
+            >
+              Cancel
+            </Button>
+              </Grid>
             {updateId ? (<Button
               onClick={updateData}
-              style={{ marginLeft: '14px', marginBottom: '9px'}}
+              style={{ background:"#014b7e", marginRight:'308px',color:"white"}}
               variant='outlined'
+            
+
               
             >
               update
             </Button>):( <Button
               onClick={postData}
-              style={{ marginLeft: '14px', marginBottom: '9px' }}
+              style={{ background:"#014b7e",marginRight:'308px',color:"white" }}
               variant='outlined'
-              color='secondary'
+             
             >
               Submit
             </Button>)}  
