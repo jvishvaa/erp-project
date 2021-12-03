@@ -165,24 +165,18 @@ const AttedanceCalender = () => {
       setStartDate(history?.location?.state?.payload?.startDate);
       setEndDate(history?.location?.state?.payload?.endDate);
     }
-    // history.push({
-    //   state:{
-    //     backButtonStatus : false
-    //   }
-    // })
+  
   }, []);
   useEffect(() => {
     if (path === '/attendance-calendar/teacher-view') {
       console.log(path, 'path');
       console.log(history, 'checking counter');
       if (history?.location?.state?.backButtonStatus) {
-        // setSelectedAcadmeicYear(history?.location?.state?.payload?.academic_year_id);
         setSelectedBranch(history?.location?.state?.payload?.branch_id);
         setSelectedGrade(history?.location?.state?.payload?.grade_id);
         setSelectedSection(history?.location?.state?.payload?.section_id);
         setCounter(history?.location?.state?.payload?.counter);
         setStartDate(history?.location?.state?.payload?.startDate);
-        // setEndDate(history?.location?.state?.payload?.endDate);
         if (history?.location?.state?.payload?.counter == 1) {
           var dateToday = new Date();
           var formatDateToday = moment(dateToday).format('YYYY-MM-DD');
@@ -193,10 +187,8 @@ const AttedanceCalender = () => {
                 data: formatDateToday,
                 branch_id: history?.location?.state?.payload?.branch_id?.branch?.id,
                 grade_id: history?.location?.state?.payload?.grade_id?.grade_id,
-                // grade_id: 2,
 
                 section_id: history?.location?.state?.payload?.section_id?.section_id,
-                // section_id: 2,
                 academic_year: history?.location?.state?.payload?.academic_year_id?.id,
               },
             })
@@ -230,10 +222,8 @@ const AttedanceCalender = () => {
                 end_date: history?.location?.state?.payload?.endDate,
                 branch_id: history?.location?.state?.payload?.branch_id?.branch?.id,
                 grade_id: history?.location?.state?.payload?.grade_id?.grade_id,
-                // grade_id: 2,
 
                 section_id: history?.location?.state?.payload?.section_id?.section_id,
-                // section_id: 2,
                 academic_year: history?.location?.state?.payload?.academic_year_id?.id,
               },
             })
@@ -243,31 +233,8 @@ const AttedanceCalender = () => {
               let temp = [...res.data.present_list, ...res.data.absent_list];
               setStudentData(temp);
               setAlert('success', 'Data Sucessfully Fetched');
-              if (res?.data?.last_update_attendance[0]) {
-                let options = {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                };
-                let date = new Date(res?.data?.last_update_attendance);
-                // let datedata = moment(date).format('25 Mar 2015');
-                setUpdatedDays(date.toLocaleDateString());
-                console.log(date, 'Date====');
-                // setUpdatedDays(datedata);
-              }
-              // if (res?.data?.last_update_events[0]) {
-              //   let options = {
-              //     weekday: 'long',
-              //     year: 'numeric',
-              //     month: 'long',
-              //     day: 'numeric',
-              //   };
-              //   let date = new Date(res?.data?.last_update_attendance);
-              //   // let datedata = moment(date).format('25 Mar 2015');
-              //   setUpdatedEventDays(date.toLocaleDateString());
-              //   // setUpdatedDays(datedata);
-              // }
+            
+           
             })
             .catch((error) => {
               setLoading(false);
@@ -287,7 +254,6 @@ const AttedanceCalender = () => {
         }
       } else {
         setTeacherView(true);
-        // setSelectedAcadmeicYear('');
         setSelectedBranch([]);
         setSelectedGrade([]);
         setSelectedSection([]);
@@ -315,31 +281,8 @@ const AttedanceCalender = () => {
               console.log(res.data.events, 'current eventssss');
               setCurrentEvent(res.data.events);
               setStudentDataAll(res.data);
-              if (res?.data?.last_update_attendance[0]) {
-                let options = {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                };
-                let date = new Date(res?.data?.last_update_attendance);
-                // let datedata = moment(date).format('25 Mar 2015');
-                setUpdatedDays(date.toLocaleDateString('en-US', options));
-                console.log(date, 'Date====');
-                // setUpdatedDays(datedata);
-              }
-              // if (res?.data?.last_update_events[0]) {
-              //   let options = {
-              //     weekday: 'long',
-              //     year: 'numeric',
-              //     month: 'long',
-              //     day: 'numeric',
-              //   };
-              //   let date = new Date(res?.data?.last_update_attendance);
-              //   // let datedata = moment(date).format('25 Mar 2015');
-              //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-              //   // setUpdatedDays(datedata);
-              // }
+           
+           
             })
             .catch((error) => {
               setLoading(false);
@@ -374,30 +317,8 @@ const AttedanceCalender = () => {
               let temp = [...res.data.present_list, ...res.data.absent_list];
               setStudentData(temp);
               setAlert('success', 'Data Sucessfully Fetched');
-              if (res?.data?.last_update_attendance[0]) {
-                let options = {
-                  weekday: 'long',
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                };
-                let date = new Date(res?.data?.last_update_attendance);
-                // let datedata = moment(date).format('25 Mar 2015');
-                setUpdatedDays(date.toLocaleDateString('en-US', options));
-                // setUpdatedDays(datedata);
-              }
-              // if (res?.data?.last_update_events[0]) {
-              //   let options = {
-              //     weekday: 'long',
-              //     year: 'numeric',
-              //     month: 'long',
-              //     day: 'numeric',
-              //   };
-              //   let date = new Date(res?.data?.last_update_attendance);
-              //   // let datedata = moment(date).format('25 Mar 2015');
-              //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-              //   // setUpdatedDays(datedata);
-              // }
+            
+           
             })
             .catch((error) => {
               setLoading(false);
@@ -409,16 +330,7 @@ const AttedanceCalender = () => {
   }, [path]);
 
   useEffect(() => {
-    // if (history?.location?.state?.backButtonStatus ) {
-    //   if (path === '/attendance-calendar/teacher-view') {
-    //     console.log(path, 'path');
-    //     setTeacherView(true);
-    //   }
-    //   if (path === '/attendance-calendar/student-view') {
-    //     console.log(path, 'path');
-    //     setTeacherView(false);
-    //   }
-    // } else {
+   
     if (path === '/attendance-calendar/teacher-view') {
       console.log(path, 'path');
       setTeacherView(true);
@@ -431,14 +343,7 @@ const AttedanceCalender = () => {
     }
   }, [path]);
 
-  // useEffect(() => {
-  //   if (moduleId) {
-  //     callApi(
-  //       `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
-  //       'academicYearList'
-  //     );
-  //   }
-  // }, [moduleId]);
+  
 
   useEffect(() => {
     if (moduleId) {
@@ -464,7 +369,6 @@ const AttedanceCalender = () => {
         } = JSON.parse(localStorage.getItem('teacherFilters')) || {};
         if (window.location.pathname === '/attendance-calendar/teacher-view') {
           if (academic?.id) {
-            // setSelectedAcadmeicYear(academic);
             const acadId = academic?.id || '';
             callApi(
               `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
@@ -497,7 +401,6 @@ const AttedanceCalender = () => {
 
   const handleClearAll = () => {
     console.log('clear all');
-    // setSelectedAcadmeicYear('');
     setSelectedBranch([]);
     setSelectedGrade([]);
     setSelectedSection([]);
@@ -506,9 +409,7 @@ const AttedanceCalender = () => {
     setHolidayDetails('');
     setGradeList([])
     setSectionList([])
-    // setCounter(2);
-    // setStartDate(null)
-    // setEndDate(null);
+ 
   };
 
   function callApi(api, key) {
@@ -590,22 +491,14 @@ const AttedanceCalender = () => {
     console.log(currentDay, 'todays Date');
     setStartDate(date);
     setEndDate(date);
-    // getToday();
-    // axiosInstance
-    //   .get(`academic/events_list/?date=${formatDate}`)
-    //   .then((res) => {
-    //     console.log(res, 'setion');
-    //     setCurrentEvent(res);
-    //   })
-    //   .catch((error) => {
-    //     console.log(error);
-    //   });
+ 
   };
 
   const weeklyData = () => {
     setCounter(2);
     setStudentDataAll(null);
     setCurrentEvent(null);
+    console.log(startDate , "start");
   };
 
   const monthlyData = () => {
@@ -619,29 +512,33 @@ const AttedanceCalender = () => {
     var formatDate = moment(date).format('YYYY-MM-DD');
     console.log(formatDate, 'format date');
     axiosInstance
-      .get(`academic/events_list/`, {
-        params: {
-          start_date: formatDate,
-          data: formatDate,
-          branch_id: selectedBranch.branch.id,
-          grade_id: selectedGrade.grade_id,
-          // grade_id: 2,
+    .get(`academic/student_attendance_between_date_range/`, {
+      params: {
+        start_date: formatDate,
+        end_date: formatDate,
+        branch_id: selectedBranch.branch.id,
+        grade_id: selectedGrade.grade_id,
 
-          section_id: selectedSection.section_id,
-          // section_id: 2,
-          academic_year: selectedAcademicYear.id,
-        },
-      })
-      .then((res) => {
-        setLoading(false);
-        console.log(res.data.events, 'current eventssss');
-        setCurrentEvent(res.data.events);
-        setStudentDataAll(res.data);
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log(error);
-      });
+        section_id: selectedSection.section_id,
+        academic_year: selectedAcademicYear.id,
+      },
+    })
+    .then((res) => {
+      console.log(res, "qa calender")
+      setLoading(false);
+      setStudentDataAll(res.data);
+      let temp = [...res.data.present_list, ...res.data.absent_list];
+      setStudentData(temp);
+      setAlert('success', 'Data Sucessfully Fetched');
+  
+   
+    })
+    .catch((error) => {
+      setLoading(false);
+      setAlert('error', 'no attendance');
+      setStudentDataAll(null);
+      console.log(error);
+    });
 
     axiosInstance
       .get(
@@ -708,10 +605,8 @@ const AttedanceCalender = () => {
             end_date: endDate,
             branch_id: selectedBranch.branch.id,
             grade_id: selectedGrade.grade_id,
-            // grade_id: 2,
 
             section_id: selectedSection.section_id,
-            // section_id: 2,
             academic_year: selectedAcademicYear.id,
           },
         })
@@ -722,29 +617,8 @@ const AttedanceCalender = () => {
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
           setAlert('success', 'Data Sucessfully Fetched');
-          if (res?.data?.last_update_attendance[0]) {
-            let options = {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            };
-            let date = new Date(res?.data?.last_update_attendance);
-            // let datedata = moment(date).format('25 Mar 2015');
-            setUpdatedDays(date.toLocaleDateString('en-US', options));
-            console.log(date, 'Date====');
-            // setUpdatedDays(datedata);
-          }
-          // if (res?.data?.last_update_events[0]) {
-          //   let options = {
-          //     weekday: 'long',
-          //     year: 'numeric',
-          //     month: 'long',
-          //     day: 'numeric',
-          //   };
-          //   let date = new Date(res?.data?.last_update_events);
-          //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-          // }
+        
+        
         })
         .catch((error) => {
           setLoading(false);
@@ -790,31 +664,8 @@ const AttedanceCalender = () => {
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
           setAlert('success', 'Data Sucessfully Fetched');
-          if (res?.data?.last_update_attendance[0]) {
-            let options = {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            };
-            let date = new Date(res?.data?.last_update_attendance);
-            // let datedata = moment(date).format('25 Mar 2015');
-            setUpdatedDays(date.toLocaleDateString('en-US', options));
-            console.log(date, 'Date====');
-            // setUpdatedDays(datedata);
-          }
-          // if (res?.data?.last_update_events[0]) {
-          //   let options = {
-          //     weekday: 'long',
-          //     year: 'numeric',
-          //     month: 'long',
-          //     day: 'numeric',
-          //   };
-          //   let date = new Date(res?.data?.last_update_events);
-          //   // let datedata = moment(date).format('25 Mar 2015');
-          //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-          //   // setUpdatedDays(datedata);
-          // }
+        
+      
         })
         .catch((error) => {
           setLoading(false);
@@ -850,34 +701,10 @@ const AttedanceCalender = () => {
       })
       .then((res) => {
         setLoading(false);
-        console.log(res.data.events, 'current eventssss');
         setCurrentEvent(res.data.events);
         setStudentDataAll(res.data);
-        if (res?.data?.last_update_attendance[0]) {
-          let options = {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          };
-          let date = new Date(res?.data?.last_update_attendance);
-          // let datedata = moment(date).format('25 Mar 2015');
-          setUpdatedDays(date.toLocaleDateString('en-US', options));
-          console.log(date, 'Date====');
-          // setUpdatedDays(datedata);
-        }
-        // if (res?.data?.last_update_events[0]) {
-        //   let options = {
-        //     weekday: 'long',
-        //     year: 'numeric',
-        //     month: 'long',
-        //     day: 'numeric',
-        //   };
-        //   let date = new Date(res?.data?.last_update_events);
-        //   // let datedata = moment(date).format('25 Mar 2015');
-        //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-        //   // setUpdatedDays(datedata);
-        // }
+       
+      
       })
       .catch((error) => {
         setLoading(false);
@@ -903,13 +730,7 @@ const AttedanceCalender = () => {
       axiosInstance
         .get(
           `academic/student_calender/?start_date=${startDate}&end_date=${endDate}&erp_id=${userName}`
-          // , {
-          //   params: {
-          //     start_date: startDate,
-          //     end_date: endDate,
-          //     erp_id: userName[0],
-          //   },
-          // }
+      
         )
         .then((res) => {
           setLoading(false);
@@ -918,31 +739,8 @@ const AttedanceCalender = () => {
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
           setAlert('success', 'Data Sucessfully Fetched');
-          if (res?.data?.last_update_attendance[0]) {
-            let options = {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            };
-            let date = new Date(res?.data?.last_update_attendance);
-            // let datedata = moment(date).format('25 Mar 2015');
-            setUpdatedDays(date.toLocaleDateString('en-US', options));
-            console.log(date, 'Date====');
-            // setUpdatedDays(datedata);
-          }
-          // if (res?.data?.last_update_events[0]) {
-          //   let options = {
-          //     weekday: 'long',
-          //     year: 'numeric',
-          //     month: 'long',
-          //     day: 'numeric',
-          //   };
-          //   let date = new Date(res?.data?.last_update_events);
-          //   // let datedata = moment(date).format('25 Mar 2015');
-          //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-          //   // setUpdatedDays(datedata);
-          // }
+       
+       
         })
         .catch((error) => {
           setLoading(false);
@@ -982,31 +780,8 @@ const AttedanceCalender = () => {
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
           setAlert('success', 'Data Sucessfully Fetched');
-          if (res?.data?.last_update_attendance[0]) {
-            let options = {
-              weekday: 'long',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-            };
-            let date = new Date(res?.data?.last_update_attendance);
-            // let datedata = moment(date).format('25 Mar 2015');
-            setUpdatedDays(date.toLocaleDateString('en-US', options));
-            console.log(date, 'Date====');
-            // setUpdatedDays(datedata);
-          }
-          // if (res?.data?.last_update_events[0]) {
-          //   let options = {
-          //     weekday: 'long',
-          //     year: 'numeric',
-          //     month: 'long',
-          //     day: 'numeric',
-          //   };
-          //   let date = new Date(res?.data?.last_update_events);
-          //   // let datedata = moment(date).format('25 Mar 2015');
-          //   setUpdatedEventDays(date.toLocaleDateString('en-US', options));
-          //   // setUpdatedDays(datedata);
-          // }
+       
+       
         })
         .catch((error) => {
           setLoading(false);
@@ -1104,9 +879,7 @@ const AttedanceCalender = () => {
       endDate: moment(endDate).format('YYYY-MM-DD'),
       counter: counter,
     };
-    // const payload = {
-    //   counter: counter,
-    // };
+
     history.push({
       pathname: '/holidaymarking',
       state: {
@@ -1158,9 +931,7 @@ const AttedanceCalender = () => {
       endDate: moment(endDate).format('YYYY-MM-DD'),
       counter: counter,
     };
-    // const payload = {
-    //   counter: counter,
-    // };
+ 
     history.push({
       pathname: '/holidaymarking',
       state: {
@@ -1274,37 +1045,14 @@ const AttedanceCalender = () => {
           spacing={3}
           id='selectionContainer'
         >
-          {/* <Grid item md={3} xs={12}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleYear}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedAcademicYear || ''}
-              options={academicYear || ''}
-              getOptionLabel={(option) => option?.session_year || ''}
-              defaultValue={academicYear[1]}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Academic Year'
-                  placeholder='Academic Year'
-                />
-              )}
-            />
-          </Grid> */}
+        
           <Grid item md={3} xs={12}>
             <Autocomplete
-              // multiple
               style={{ width: '100%' }}
               size='small'
               onChange={(event, value) => {
                 setSelectedBranch([]);
                 if (value) {
-                  // const ids = value.map((el)=>el)
                   const selectedId = value.branch.id;
                   setSelectedBranch(value);
                   console.log(value);
@@ -1442,7 +1190,6 @@ const AttedanceCalender = () => {
                   className={counter === 2 ? 'viewDetailsButtonClick' : 'viewDetails'}
                   onClick={() => weeklyData()}
                 >
-                  {/* <p className='btnLabel'>Secondary</p> */}
                   Weekly
                 </Button>
               </div>
@@ -1454,7 +1201,6 @@ const AttedanceCalender = () => {
                   className={counter === 3 ? 'viewDetailsButtonClick' : 'viewDetails'}
                   onClick={() => monthlyData()}
                 >
-                  {/* <p className='btnLabel'>Secondary</p> */}
                   Monthly
                 </Button>
               </div>
@@ -1472,43 +1218,18 @@ const AttedanceCalender = () => {
                 counter={counter}
               />
             ) : counter === 1 ? (
-              <div className='todayEventContainer'>
-                <div className='showDate'>
-                  <p className='dateToday'> {todayDate} </p>
-                </div>
-                {currentEvent && currentEvent != null ? (
-                  <>
-                    <hr className='dividerEvent'></hr>
-
-                    {currentEvent &&
-                      currentEvent.map((data) => (
-                        <div className='eventRow'>
-                          <div className='event-data'>
-                            {data?.start_time.slice(11, 16)}
-                          </div>
-                          <div
-                            className='event-name'
-                            style={{
-                              background: data.event_category.event_category_color,
-                            }}
-                          >
-                            {/* <OutlinedFlagRoundedIcon
-                              style={{ background: '#FF6B6B', borderRadius: '30px' }}
-                            />  */}
-                            <div className='eventFlagToday'>
-                              <img src={flag} className='flagImgToday' />
-                            </div>
-                            {data?.event_name}
-                          </div>
-                        </div>
-                      ))}
-                  </>
-                ) : (
-                  <div className='noEvent'>
-                    <img src={Group} width='100%' height=' 504px' className='noDataImg' />
-                  </div>
-                )}
-              </div>
+              <RangeCalender
+              endDate={endDate}
+              startDate={startDate}
+              gradeID={selectedGrade}
+              branchID={selectedBranch}
+              sectionID={selectedSection}
+              academicYearID={selectedAcademicYear}
+              handlePassData={handlePassData}
+              sevenDay={sevenDay}
+              counter={counter}
+            />
+          
             ) : counter === 3 ? (
               <RangeCalender
                 gradeID={selectedGrade}
@@ -1545,7 +1266,6 @@ const AttedanceCalender = () => {
             </StyledFilterButton>
           </Grid>
         </div>
-        {/* <Grid item md={2} className='topGrid'> */}
         <div className='attendenceWhole'>
           <div className='startDate'> From {moment(startDate).format('DD-MM-YYYY')}</div>
           <Paper elevation={3} className={classes.paperSize} id='attendanceContainer'>
@@ -1571,7 +1291,7 @@ const AttedanceCalender = () => {
                     </Button>
                   ) : (
                     <>
-                      <p id='teacherUpdate'>Updated On {updatedDays}</p>
+                      {/* <p id='teacherUpdate'>Updated On {updatedDays}</p> */}
                     </>
                   )}
                 </Grid>
@@ -1586,7 +1306,7 @@ const AttedanceCalender = () => {
                   <p className='erpId'>ERP_ID :{userName}</p>
                 ) : (
                   <>
-                    <p id='studentPara'>Updated On {updatedDays}</p>
+                    {/* <p id='studentPara'>Updated On {updatedDays}</p> */}
                   </>
                 )}
                 {/* <KeyboardArrowDownIcon className='downIcon' /> */}
@@ -1683,104 +1403,7 @@ const AttedanceCalender = () => {
             )}
           </Paper>
         </div>
-        {/* </Grid> */}
-        {/* <Grid item md={1} className="hello" ></Grid> */}
-        {/* <Grid item md={2} className='topGrid'> */}
-        {/* <div className='eventWhole'>
-          <div className='startDate'> To {moment(endDate).format('DD-MM-YYYY')}</div>
-          <Paper
-            elevation={3}
-            className={[classes.root, classes.paperSize]}
-            id='eventContainer'
-          >
-            <Grid container direction='row' className='eventContainer'>
-              <Grid item md={6} xs={12}>
-                <Typography variant='h6' color='primary' className='eventPara'>
-                  Event
-                </Typography>
-              </Grid>
-              <Grid item md={6} xs={12} className='event-btn'>
-                {teacherView === true ? (
-                  <Button
-                    size='small'
-                    onClick={handleCreateEvent}
-                    color='primary'
-                    variant='contained'
-                    style={{ color: 'white' }}
-                  >
-                    <span className={classes.contentData} id='event-text'>
-                      Add Event
-                    </span>
-                  </Button>
-                ) : (
-                  <div></div>
-                )}
-              </Grid>
-              <div className='event-details'>
-                <Grid item md={5}>
-                  <Typography className={classes.contentsmall} id='eventpara'>
-                    Event Details
-                  </Typography>
-                </Grid>
-                <Grid item md={7} className='detailsPara'>
-                  <Typography className={classes.contentsmall} id='updated'>
-                    Updated at {updatedEventDays}
-                  </Typography>
-                </Grid>
-              </div>
-            </Grid>
-            {studentDataAll != null ? (
-              <div className='eventGrid'>
-                <Divider className='event-divider' />
-                <div className='eventList'>
-                  {studentDataAll.events &&
-                    studentDataAll.events.map((data) => (
-                      <Typography
-                        className={[classes.contentsmall, classes.root]}
-                        id='eventData'
-                      >
-                        {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
-                        <br />
-                        <Grid container direction='row' className='eventDetailsfirst'>
-                          <div className='flagBg'>
-                            <img src={flag} className='flagImg' />
-                          </div>
-                     
-                          <Typography className='eventNameData'>
-                            {' '}
-                            {data.event_name}{' '}
-                          </Typography>
-                        </Grid>
-                        <Grid container direction='row' className='dateTimeEvent'>
-                          <div className='timeEvent'>
-                            <WatchLaterOutlinedIcon
-                              color='primary'
-                              className='eventClock'
-                            />
-                            {data.start_time.slice(11, 16)}
-                          </div>
-                          <div className='dateEvent'>
-                            <EventOutlinedIcon color='primary' className='calLogo' />
-                            {moment(data.start_time.slice(0, 10)).format('DD-MM-YYYY')}
-                          </div>
-                        </Grid>
-                        <Typography className={classes.contentData}>
-                          {data.description}
-                        </Typography>
-                      </Typography>
-                    ))}
-                </div>
-              </div>
-            ) : (
-              <div className='noImgEvent'>
-                <img src={Group} width='100%' className='noDataImgEvent' />
-              </div>
-            )}
-          </Paper>
-        </div> */}
-
-        {/* holiday marking  */}
-
+       
         <div className='eventWhole'>
         <div className='startDate'> To {moment(endDate).format('DD-MM-YYYY')}</div>
           <Paper
