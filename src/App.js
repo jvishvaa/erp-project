@@ -354,7 +354,7 @@ import TeacherAttendance from 'containers/teacherattendance/teacher';
 import TeacherAttendanceVerify from 'containers/teacherattendance/teacherattendanceverify';
 import Observation from 'containers/observation/observation';
 import Observationarea from 'containers/observation/observation-area';
-
+import Observationreport from 'containers/observation/observation-report';
 function App({ alert, isMsAPI }) {
   // useEffect(() => {
   isMsAPI();
@@ -1315,11 +1315,14 @@ function App({ alert, isMsAPI }) {
                           <Route exact path='/teacher-attendance-verify'>
                             {({ match }) => <TeacherAttendanceVerify match={match}  />}
                           </Route>
-                          <Route exact path='/observation'>
+                          <Route exact path='/observation-area'>
                             {({ match }) => <Observation match={match}  />}
                           </Route>
-                          <Route path='/observation-area'>
+                          <Route path='/observation'>
                             {({ match }) => <Observationarea match={match} />}
+                          </Route>
+                          <Route path='/observation-report'>
+                            {({ match }) => <Observationreport match={match} />}
                           </Route>
                           <Route exact path='/finance/student_shuffle'>
                             {({ match }) => (

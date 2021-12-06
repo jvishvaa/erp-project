@@ -50,7 +50,10 @@ const Profile = (props) => {
   const [userImageData, setUserImageData] = useState(null);
   const [profileImage, setProfileImage] = useState(null);
   const [inputFields, setInputFields] = useState([]);
+  const [editable,seteditable] = useState(false)
   const classes = useStyles();
+  const [userDetails,setuserDetails] = useState()
+  const [inputDetails, setInputDetails] = useState()
 
   const getUserDetails = async () => {
     try {
@@ -67,39 +70,64 @@ const Profile = (props) => {
         setInputFields([
           {
             name: 'name',
-            type: 'text',
-            value: `${userDetails.user.first_name} ${userDetails.user.last_name}`,
+            type: 'text', 
+            value: `${ userDetails?.user?.first_name} ${ userDetails?.user?.last_name}`,
             placeholder: 'Name',
-            editable: true,
+            editable: false,
             requireOTPAuthentication: false,
+          },
+          {
+            name: 'Fathers Name',
+            type: 'text',
+            value: userDetails?.parent_details.father_name,
+            placeholder: 'Fathers Name',
+            editable: false,
+            requireOTPAuthentication: true,
+          },
+          {
+            name: 'Mothers Name',
+            type: 'text',
+            value: userDetails?.parent_details.mother_name,
+            placeholder: 'Mothers Name',
+            editable: false,
+            requireOTPAuthentication: true,
           },
           {
             name: 'email',
             type: 'text',
-            value: userDetails.user.email,
+            value:  userDetails?.user.email,
             placeholder: 'Email Id',
-            editable: true,
+            editable: false,
             requireOTPAuthentication: true,
           },
           {
             name: 'ERP ID',
             type: 'text',
-            value: userDetails.erp_id,
+            value: userDetails?.erp_id,
             placeholder: 'Erp Id',
-            editable: true,
+            editable: false,
             requireOTPAuthentication: true,
           },
           {
             name: 'phone no',
             type: 'text',
-            value: userDetails.contact,
+            value: userDetails?.contact,
             placeholder: 'Phone Number',
             editable: false,
             requireOTPAuthentication: true,
           },
+          {
+            name: 'DOB',
+            type: 'date',
+            value: userDetails?.date_of_birth,
+            placeholder: 'Date of Birth',
+            editable: false,
+            requireOTPAuthentication: true,
+          },
+         
         ]);
-        setUserId(userDetails.id);
-        setProfileImage(userDetails.profile);
+        setUserId(userDetails?.id);
+        setProfileImage(userDetails?.profile);
       } else {
         setAlert('error', result.data.message);
       }
@@ -107,7 +135,14 @@ const Profile = (props) => {
       setAlert('error', error.message);
     }
   };
-
+  const editDetails = () => {
+    seteditable(true)
+    setInputDetails(inputFields)
+    let data = inputFields.map((i)=> (
+      (i.name == 'name' || i.name =='Fathers Name' ||i.name == 'Mothers Name' ||i.name == 'DOB') ? {...i, editable : true} : {...i}
+    ))
+    setInputFields(data)
+  }
   const onImageChange = (event) => {
     if (event.target.files && event.target.files[0]) {
       setUserImage(URL.createObjectURL(event.target.files[0]));
@@ -119,7 +154,21 @@ const Profile = (props) => {
     const changeImageUrl = `${endpoints.communication.userStatusChange}${userId}/update-user-profile/`;
     try {
       const formData = new FormData();
-      formData.set('profile', userImageData);
+      if(userImageData){
+        formData.set('profile', userImageData);
+      }
+      if(userDetails && userDetails.name){
+        formData.set('name',userDetails.name )
+      }
+      if(userDetails && userDetails['Fathers Name']){
+        formData.set('father_name',userDetails['Fathers Name'])
+      }
+      if(userDetails && userDetails['Mothers Name']){
+        formData.set('mother_name',userDetails['Mothers Name'])
+      }
+      if(userDetails && userDetails.DOB){
+        formData.set('dob',userDetails.DOB)
+      }
       const response = await axiosInstance({
         method: 'put',
         url: changeImageUrl,
@@ -127,10 +176,12 @@ const Profile = (props) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (response.data.status_code === 200) {
-        setAlert('success', 'Image changed successfully');
+        setAlert('success', 'Profile changed successfully');
         setUserImage(null);
+        setuserDetails(null)
         setUserImageData(null);
         getUserDetails();
+        seteditable(false)
       } else {
         setAlert('error', response.data.message);
       }
@@ -141,6 +192,8 @@ const Profile = (props) => {
 
   const handleProfileUpdateCancel = () => {
     setUserImage(null);
+    seteditable(false)
+    setInputFields(inputDetails)
   };
   useEffect(() => {
     getUserDetails();
@@ -205,10 +258,13 @@ const Profile = (props) => {
                             ? `${classes.textfields}`
                             : `${classes.textfields} ${'passwordWidth'}`
                         }
+                        type={items.type}
                         id={items.name}
                         name={items.name}
-                        readonly
+                        readonly = {!items.editable}
                         value={items.value}
+                        autoFocus = {true}
+                        onChange = {(e) => setuserDetails({...userDetails,[items.name] : e.target.value})}
                       />
                     </div>
                   </Fragment>
@@ -223,8 +279,18 @@ const Profile = (props) => {
             >
               Change password
             </Button>
+            {!editable && <Button
+              color='primary'
+              variant='contained'
+              // className='profile_change_password_button'
+              style={{    marginLeft: '68%',marginTop: '3%'}}
+              onClick = {editDetails}
+              
+            >
+              Edit
+            </Button>}
           </div>
-          {userImage ? (
+          {userImage || editable ?  (
             <div className='profile_update_button_wrapper'>
               <input
                 className='profile_update_button cancel_button_profile'

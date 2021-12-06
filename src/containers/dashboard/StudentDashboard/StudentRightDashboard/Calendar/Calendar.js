@@ -61,7 +61,7 @@ export default function Calendar() {
                           <Grid item xs={5}>
                             {item.title}
                           </Grid>
-                          <Grid item xs={6}>
+                          <Grid item xs={6} style={{fontSize: '12px' , margin: 'auto 0'}} >
                             {getDisplayDate(item)}
                           </Grid>
                         </Grid>

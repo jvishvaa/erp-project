@@ -445,6 +445,7 @@ export default {
     weeklyStudentReport:'/assessment/download-report-student-report/',
     individualStudentReport:'/assessment/individual-student-report/',
     weeklyQuizPerformance:'/assessment/weekly-quiz-performance-report/',
+    downloadReportTestReport :'/assessment/download-report-test-report/',
 
   },
   publish: {
@@ -531,6 +532,8 @@ export default {
   observationName:{
     observationGet: '/teacher_observation/observation/',
     observationArea: '/teacher_observation/observation-area/',
+    observationReport: '/teacher_observation/observation-report/',
+    observationData:'/teacher_observation/observation-data/',
   },
 
   homeworkReport: {

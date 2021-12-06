@@ -398,7 +398,6 @@ export default function TeacherAttendanceVerify() {
   const fileExtension = '.xlsx';
 
   const handleChanges = (event) => {
-    console.log(event, 'event');
     setMonth(event.target.value);
   };
   const handleYear = (event) => {
@@ -413,7 +412,6 @@ export default function TeacherAttendanceVerify() {
       });
       const resultOptions = [];
       if (result.status === 200) {
-        console.log(result, 'idofrole');
         result.data.result.map((items) => resultOptions.push(items.role_name));
         setRoles(result.data.result);
       } else {
@@ -440,7 +438,6 @@ export default function TeacherAttendanceVerify() {
   // };
 
   const handleMultipleRoles = (event, value) => {
-    console.log('value', value);
 
     setRolesId(value.id);
   };
