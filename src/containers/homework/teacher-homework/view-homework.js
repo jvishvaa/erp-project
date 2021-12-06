@@ -30,6 +30,8 @@ import {
   IconButton,
   Typography,
   Divider,
+  Popover,
+  withStyles
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {
@@ -102,6 +104,25 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
+const CancelButton = withStyles({
+  root: {
+    color: '#8C8C8C',
+    backgroundColor: '#e0e0e0',
+    '&:hover': {
+      backgroundColor: '#e0e0e0',
+    },
+  },
+  })(Button);
+  const StyledButton = withStyles({
+  root: {
+    color: '#FFFFFF',
+    backgroundColor: '#FF6B6B',
+    '&:hover': {
+      backgroundColor: '#FF6B6B',
+    },
+  },
+})(Button);
+
 const ViewHomework = withRouter(
   ({
     history,
@@ -167,6 +188,17 @@ const ViewHomework = withRouter(
     useEffect(() => {
       getHomeworkDetailsById(homeworkId);
     }, []);
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+    const handleClick = (event) => {
+      setAnchorEl(true);
+     };
 
     return (
       <div className='view-homework-container create_group_filter_container'>
@@ -242,13 +274,43 @@ const ViewHomework = withRouter(
                 <Button
                   variant="contained"
                   color="secondary"
-                  onClick={handleDelete}
+                  onClick={handleClick}
                   style={{ backgroundColor: 'red', color: 'white' }}
                   startIcon={<DeleteIcon />}
                 >
                   Delete
                 </Button>
               </div>
+              <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+            >
+              <div style={{ padding: '20px 30px' }}>
+                <Typography style={{ fontSize: '20px', marginBottom: '15px' }}>
+                  Are you sure you want to delete?
+                </Typography>
+                <div>
+                  <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
+                  <StyledButton
+                    // onClick={() => removeQuestion(index)}
+                    onClick={handleDelete}
+                    style={{ float: 'right' }}
+                  >
+                    Confirm
+                  </StyledButton>
+                </div>
+              </div>
+            </Popover>
             </div>
           </Grid>
         </Grid>
