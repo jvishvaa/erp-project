@@ -1032,10 +1032,17 @@ const AttedanceCalender = () => {
   return (
     <Layout>
       <div className='profile_breadcrumb_wrapper'>
+      {teacherView === true ? (
         <CommonBreadcrumbs
-          componentName='Attendance & Calendar'
+         componentName='Calendar & Attendance'
+         childComponentName='Teacher Calendar'
           isAcademicYearVisible={true}
         />
+      ) : ( <CommonBreadcrumbs
+        componentName='Calender & Attendance'
+        childComponentName='Student Calendar'
+         isAcademicYearVisible={true}
+       />) }
       </div>
       {teacherView === true ? (
         <Grid
