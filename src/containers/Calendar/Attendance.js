@@ -337,13 +337,10 @@ const Attendance = () => {
       setLoading(false);
       if (res.status == 200) {
         setTotalGenre(res.data.count);
-        console.log(res.data.count);
-        console.log(res.data.results, 'single student data');
         setData(res.data.results);
         setAlert('success', 'Data Successfully fetched');
       }
       if (res.status == 400) {
-        console.log(res.message);
         setAlert('error', res.message);
       }
     })
