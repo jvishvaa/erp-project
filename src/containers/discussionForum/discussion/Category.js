@@ -21,6 +21,7 @@ import Box from '@material-ui/core/Box';
 import PropTypes from 'prop-types';
 import { discussionData } from './discussionData';
 import { Pagination } from '@material-ui/lab';
+import Loading from '../../../components/loader/loader';
 
 const bgColor = [
   '#EFFFB2',
@@ -136,7 +137,7 @@ const StyledFilterButton = withStyles((theme) => ({
   iconSize: {},
 }))(Button);
 
-const StyledTabs = withStyles((theme) =>({
+const StyledTabs = withStyles((theme) => ({
   root: {
     borderBottom: '1px solid #e8e8e8',
   },
@@ -225,7 +226,9 @@ const Category = (props) => {
   const [page, setPage] = React.useState(1);
   const [totalCount, setTotalCount] = React.useState();
   const limit = 6;
-  const [awardy ,setAwardy]=React.useState(false);
+  const [awardy, setAwardy] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [hidePagination, setHidePagination] = React.useState(false);
 
   const hideFilter = () => {
     props.handleFilter();
@@ -233,6 +236,7 @@ const Category = (props) => {
 
   const handleDeleteEdit = () => {
     setDeleteEdit(!deleteEdit);
+    handleMYActivity();
   }
 
   // const handleCategoryId = (id) => {
@@ -240,16 +244,19 @@ const Category = (props) => {
   // };
 
   const handleMYActivity = () => {
+    setHidePagination(true);
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.discussionForum.filterCategory}?page=1&my_activity=1`)
       .then((res) => {
         setPostList(res.data.data.results);
+        setLoading(false);
       })
-      .catch((error) => console.log(error));
+      .catch((error) => { setLoading(false); console.log(error) });
   };
 
   const handleAsk = () => {
-    if(location.pathname === '/student-forum'){
+    if (location.pathname === '/student-forum') {
       history.push('/student-forum/create');
     }
     else {
@@ -290,36 +297,38 @@ const Category = (props) => {
 
   // category list
   React.useEffect(() => {
-    if(moduleId){
-      if(location.pathname === '/student-forum' && personalInfo?.role !== "SuperUser"){
+    if (moduleId) {
+      if (location.pathname === '/student-forum' && personalInfo?.role !== "SuperUser") {
         const grade_id = userDetails.role_details?.grades[0]?.grade_id;
         const branch_id = userDetails.role_details?.branch[0]?.id;
         axiosInstance
-        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&is_delete=False`)
-        .then((res) => {
-          setCategoryList(res.data.result);
-        })
-        .catch((error) => console.log(error));
+          .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&is_delete=False`)
+          .then((res) => {
+            setCategoryList(res.data.result);
+          })
+          .catch((error) => console.log(error));
       }
       else {
         axiosInstance
-        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&category_type=1&is_delete=False`)
-        .then((res) => {
-          setCategoryList(res.data.result);
-        })
-        .catch((error) => console.log(error));
+          .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&category_type=1&is_delete=False`)
+          .then((res) => {
+            setCategoryList(res.data.result);
+          })
+          .catch((error) => console.log(error));
       }
     }
   }, [moduleId]);
 
   const getDiscussionPost = (url) => {
+    setLoading(true)
     axiosInstance.get(url)
-    .then((res) => {
-      setPostList(res.data.data.results);
-      setTotalCount(res.data.data.count? res.data.data.count : res.data.data.results.length);
-      setAwardy(false);
-    })
-    .catch((error) => console.log(error));
+      .then((res) => {
+        setPostList(res.data.data.results);
+        setTotalCount(res.data.data.count ? res.data.data.count : res.data.data.results.length);
+        setAwardy(false);
+        setLoading(false);
+      })
+      .catch((error) => { setLoading(false); console.log(error) });
   }
 
   const handlePass = (id) => {
@@ -331,17 +340,17 @@ const Category = (props) => {
     //   setTotalCount(res.data.data.count? res.data.data.count : res.data.data.results.length);
     // })
     // .catch((error) => console.log(error));
-    console.log(id,"id of award")
+    console.log(id, "id of award")
     setAwardy(id)
   }
 
   // post list API
   React.useEffect(() => {
-    if(moduleId) {
-      if(location.pathname === '/student-forum'  && personalInfo?.role !== "SuperUser"){
+    if (moduleId) {
+      if (location.pathname === '/student-forum' && personalInfo?.role !== "SuperUser") {
         const grade_id = userDetails.role_details?.grades[0]?.grade_id;
         const branch_id = userDetails.role_details?.branch[0]?.id;
-        if(categoryId > 0) {
+        if (categoryId > 0) {
           getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&category=${categoryId}&page=${page}&page_size=${limit}`);
         }
         else {
@@ -356,7 +365,7 @@ const Category = (props) => {
           props.filters.section && props.filters.section.id !== 0
             ? props.filters.section.id
             : '';
-        if (categoryId === 0 && grades === '' && sections === ''){
+        if (categoryId === 0 && grades === '' && sections === '') {
           getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&page=${page}&page_size=${limit}`);
         }
         if (categoryId !== 0 && grades === '') {
@@ -381,14 +390,16 @@ const Category = (props) => {
 
       }
     }
+    setHidePagination(false);
     //let postURL = endpoints.discussionForum.postList;
-  }, [props.url, props.filters, categoryId, moduleId, deleteEdit, page,awardy]);
+  }, [props.url, props.filters, categoryId, moduleId, deleteEdit, page, awardy]);
 
   const handlePagination = (event, page) => {
-        setPage(page);
-    };
+    setPage(page);
+  };
   return (
     <Paper className={classes.paperStyle}>
+      {loading ? <Loading message='Loading...' /> : null}
       {props.showFilter && (
         <div>
           <div>
@@ -432,71 +443,73 @@ const Category = (props) => {
           </div>
         </div>
       )}
-        <Typography className={classes.CategoriesTitleText}>Categories</Typography>
-        <Grid container>
-          <Grid item md={8} xs={12}>
-            <div className={classes.root}>
-              <StyledTabs
-                value={value}
-                onChange={handleChange}
-                indicatorColor='primary'
-                textColor='secondary'
-                variant='scrollable'
-                scrollButtons='auto'
-                aria-label='scrollable auto tabs example'
-                // TabIndicatorProps={{color: '#D5FAFF'}}
+      <Typography className={classes.CategoriesTitleText}>Categories</Typography>
+      <Grid container>
+        <Grid item md={8} xs={12}>
+          <div className={classes.root}>
+            <StyledTabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor='primary'
+              textColor='secondary'
+              variant='scrollable'
+              scrollButtons='auto'
+              aria-label='scrollable auto tabs example'
+            // TabIndicatorProps={{color: '#D5FAFF'}}
+            >
+              {categoryList.map((tab, id) => (
+                <StyledTab
+                  key={tab.id}
+                  label={tab.category_name}
+                  value={tab.id}
+                  style={{ backgroundColor: bgColor[id % 8] }}
+                  {...a11yProps(0)}
+                // onClick={(e) => setCategoryId(tab.id)}
+                />
+              ))}
+            </StyledTabs>
+          </div>
+          {/* <CategoryScrollbar categoryList={props.categoryList} categoryId={handleCategoryId} /> */}
+        </Grid>
+        <Grid item md={4} xs={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={6}>
+              <StyledOutlinedButton fullWidth onClick={handleAsk}>
+                Ask
+              </StyledOutlinedButton>
+            </Grid>
+            <Grid item xs={6}>
+              <StyledButton
+                fullWidth
+                onClick={handleMYActivity}
               >
-                {categoryList.map((tab, id) => (
-                  <StyledTab
-                    key={tab.id}
-                    label={tab.category_name}
-                    value={tab.id}
-                    style={{ backgroundColor: bgColor[id % 8] }}
-                    {...a11yProps(0)}
-                    // onClick={(e) => setCategoryId(tab.id)}
-                  />
-                ))}
-              </StyledTabs>
-            </div>
-            {/* <CategoryScrollbar categoryList={props.categoryList} categoryId={handleCategoryId} /> */}
-          </Grid>
-          <Grid item md={4} xs={12}>
-            <Grid container spacing={2}>
-              <Grid item xs={6}>
-                <StyledOutlinedButton fullWidth onClick={handleAsk}>
-                  Ask
-                </StyledOutlinedButton>
-              </Grid>
-              <Grid item xs={6}>
-                <StyledButton
-                  fullWidth
-                  onClick={handleMYActivity}
-                >
-                  MY Activity
-                </StyledButton>
-              </Grid>
+                MY Activity
+              </StyledButton>
             </Grid>
           </Grid>
         </Grid>
-        <Grid container>
-          <Grid item xs={12}>
-            {postList && postList.map((data) => (
-              <Discussion rowData={data} key={data.id} handlePass={(id)=>handlePass(id)}  deleteEdit={handleDeleteEdit}/>
-            ))}
-          </Grid>
-          <Grid item xs={12} style={{display: 'flex', justifyContent: 'center'}}>
+      </Grid>
+      <Grid container>
+        <Grid item xs={12}>
+          {postList && postList.map((data) => (
+            <Discussion rowData={data} key={data.id} handlePass={(id) => handlePass(id)} deleteEdit={handleDeleteEdit} />
+          ))}
+        </Grid>
+        {hidePagination ? null :
+          <Grid item xs={12} style={{ display: 'flex', justifyContent: 'center' }}>
             <Pagination
               onChange={handlePagination}
-              style={{ marginTop: 25}}
+              style={{ marginTop: 25 }}
               count={Math.ceil(totalCount / limit)}
               color='primary'
               page={page}
             />
           </Grid>
+        }
       </Grid>
     </Paper>
   );
 };
 
 export default Category;
-//handlePass={(id)=>handlePass(id)} 
+//handlePass={(id)=>handlePass(id)}
