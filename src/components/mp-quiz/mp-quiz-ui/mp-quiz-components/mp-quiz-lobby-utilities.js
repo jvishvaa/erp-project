@@ -39,6 +39,9 @@ const {
   params: { lobby_identifier: lobbyIdentifier } = {},
 } = constants;
 
+const searchParams = new URLSearchParams(window.location.search);
+const redirectionView = +searchParams.get('wb_view');
+
 export function GetErrorMsgC({ label, showOnlyLabel = false }) {
   return (
     <div style={{ textAlign: 'center', width: '90vw', height: '90vh', display: 'flex' }}>
@@ -77,8 +80,14 @@ export function ClearOrPauseBtn(props) {
       component='span'
       // onClick={() => { this.props.websocket.close() }}
       onClick={() => {
+        debugger
+        let confirmed
+        if(redirectionView!== 0){
+          confirmed = true
+        }else{
+          confirmed = window.confirm('Are you sure you want to exit from this quiz?');
+        }
         // eslint-disable-next-line no-alert
-        const confirmed = window.confirm('Are you sure you want to exit from this quiz?');
         if (confirmed) {
           socket.close();
         }
@@ -128,6 +137,7 @@ export function FullScreenBtn() {
 
 export function HostQuizTopBarContent() {
   const { endQuizTrigger } = useQuizEventTriggers();
+
   // return <p>Host quiz topbar cnt</p>
   return (
     <>
@@ -135,8 +145,13 @@ export function HostQuizTopBarContent() {
         type='button'
         className='btn__end--quiz'
         onClick={() => {
+          let ifYes
+        if(redirectionView!== 0){
+          ifYes = true
+        }  else{
+          ifYes = window.confirm('Are you sure on your action?');
+        }
           // eslint-disable-next-line no-alert
-          const ifYes = window.confirm('Are you sure on your action?');
           if (ifYes) {
             endQuizTrigger();
           }
