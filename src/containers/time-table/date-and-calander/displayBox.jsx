@@ -115,7 +115,7 @@ const DisplayBox = (props) => {
             {/* {data.assigned_teacher__first_name} {data.assigned_teacher__last_name} */}
           </h4>
           <div className='yellow-header'>Short description about class</div>
-          <p>{data.period_description}</p>
+          <p style={{wordWrap: "break-word"}}>{data.period_description}</p>
           <div className='yellow-header'>Material Required</div>
           <p>{data.required_material}</p>
         </>
