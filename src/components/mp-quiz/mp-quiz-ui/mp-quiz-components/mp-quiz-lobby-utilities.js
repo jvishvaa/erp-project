@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { Modal, Avatar } from '@material-ui/core';
 import LinkTag from '@material-ui/core/Link';
 import IconButton from '@material-ui/core/IconButton';
@@ -14,6 +14,7 @@ import {
   useSocket,
   useQuizQuesContext,
 } from '../../mp-quiz-providers';
+import EndquizDialog from './endquizDialog';
 
 import CurrentScore, {
   ParticipantCount,
@@ -72,6 +73,12 @@ export function GetErrorMsgC({ label, showOnlyLabel = false }) {
 }
 
 export function ClearOrPauseBtn(props) {
+  const [open, setOpen] = useState(false);
+
+  const handletoggle = () => {
+    setOpen(!open) 
+  }
+
   const socket = useSocket();
   return (
     <IconButton
@@ -82,7 +89,9 @@ export function ClearOrPauseBtn(props) {
       onClick={() => {
         let confirmed
         if(redirectionView!== 0){
-          confirmed = true
+          // confirmed = true
+          handletoggle()
+          
         }else{
           confirmed = window.confirm('Are you sure you want to exit from this quiz?');
         }
@@ -93,6 +102,11 @@ export function ClearOrPauseBtn(props) {
       }}
     >
       <ClearIcon className='topbar-btn-icon' />
+      {open && <EndquizDialog
+              open = {open}
+              handletoggle = {handletoggle}
+              closeSocket = {()=>socket.close()}
+              />}
     </IconButton>
   );
 }
@@ -134,8 +148,15 @@ export function FullScreenBtn() {
   );
 }
 
+
 export function HostQuizTopBarContent() {
   const { endQuizTrigger } = useQuizEventTriggers();
+  const [open, setOpen] = useState(false);
+
+  const handletoggle = () => {
+    setOpen(!open) 
+  }
+
 
   // return <p>Host quiz topbar cnt</p>
   return (
@@ -146,7 +167,8 @@ export function HostQuizTopBarContent() {
         onClick={() => {
           let ifYes
         if(redirectionView!== 0){
-          ifYes = true
+          handletoggle()
+          // ifYes = true
         }  else{
           ifYes = window.confirm('Are you sure on your action?');
         }
@@ -158,6 +180,11 @@ export function HostQuizTopBarContent() {
       >
         End Quiz
       </button>
+      {open && <EndquizDialog
+              open = {open}
+              handletoggle = {handletoggle}
+              endQuizTrigger = {()=> endQuizTrigger()}
+              />}
     </>
   );
 }
