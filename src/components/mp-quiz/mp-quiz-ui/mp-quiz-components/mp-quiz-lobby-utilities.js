@@ -80,7 +80,6 @@ export function ClearOrPauseBtn(props) {
       component='span'
       // onClick={() => { this.props.websocket.close() }}
       onClick={() => {
-        debugger
         let confirmed
         if(redirectionView!== 0){
           confirmed = true
