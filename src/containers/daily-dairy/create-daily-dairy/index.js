@@ -63,7 +63,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [errors, setErrors] = useState({ branches: '', grades: '' });
   const [loading, setLoading] = useState(false);
   const history = useHistory();
-  const [files,setFiles]=useState([]);
+  const [files, setFiles] = useState([]);
 
   // context
   const [state, setState] = useContext(Context);
@@ -166,8 +166,8 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
   }, [moduleId]);
   const handleAcademicYear = (event = {}, value = '') => {
-    if(state.isEdit){
-      editData.academic_year=value;
+    if (state.isEdit) {
+      editData.academic_year = value;
     }
     setSearchAcademicYear('');
     setFilterData({
@@ -308,8 +308,8 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleSection = (e, value) => {
-    if(state.isEdit){
-      editData.section[0]=value;
+    if (state.isEdit) {
+      editData.section[0] = value;
     }
     setFilterData({ ...filterData, section: '', subject: '', chapter: '' });
     if (value) {
@@ -351,8 +351,8 @@ const CreateDailyDairy = (details, onSubmit) => {
   //   }
   // };
   const handleSubject = (event, value) => {
-    if(state.isEdit){
-      editData.subject=value;
+    if (state.isEdit) {
+      editData.subject = value;
     }
     formik.setFieldValue('chapters', '' || []);
     formik.setFieldValue('subjects', '' || []);
@@ -407,10 +407,10 @@ const CreateDailyDairy = (details, onSubmit) => {
     if (filePath.length < 10) {
       if (isEdit) {
       } else if (
-        !formik.values.section ||
-        !formik.values.grade ||
-        !formik.values.subjects ||
         !formik.values.branch.id ||
+        !formik.values.grade ||
+        !formik.values.section ||
+        !formik.values.subjects ||
         !subjectIds
       ) {
         setAlert('error', 'Please select all fields');
@@ -443,8 +443,27 @@ const CreateDailyDairy = (details, onSubmit) => {
       setLoading(false);
     }
   };
-  console.log('the data ', formik);
   const handleSubmit = async () => {
+    if (filterData.branch.length === 0) {
+      setAlert('error', 'Select Branch!');
+      return;
+    }
+    if (!filterData.grade) {
+      setAlert('error', 'Select Grade!');
+      return;
+    }
+    if (!filterData.section) {
+      setAlert('error', 'Select Section!');
+      return;
+    }
+    if (!filterData.subject) {
+      setAlert('error', 'Select Subject!');
+      return;
+    }
+    if (!filterData.chapter) {
+      setAlert('error', 'Select Chapter!');
+      return;
+    }
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
     const mapId = formik.values.section.section_mapping_id;
     const ids = formik.values.section
@@ -609,78 +628,76 @@ const CreateDailyDairy = (details, onSubmit) => {
     setFiles(file);
     return (
       <>
-    <div className='file_row_image_new'>
-        <div className='file_name_container_new'>
-          {index+1}
+        <div className='file_row_image_new'>
+          <div className='file_name_container_new'>
+            {index + 1}
+          </div>
+          <div>
+            <span onClick={onClose}>
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={
+                      isMobile
+                        ? {
+                          marginLeft: '',
+                          width: '20px',
+                          height: '20px',
+                          // padding: '5px',
+                          cursor: 'pointer',
+                        }
+                        : {
+                          width: '20px',
+                          height: '20px',
+                          // padding: '5px',
+                          cursor: 'pointer',
+                        }
+                    }
+                    src={deleteIcon}
+                    alt='given'
+                  />
+                )}
+              />
+            </span>
+          </div>
+
         </div>
-       <Divider orientation="vertical"  className='divider_color' flexItem />
-        
-        <div>
-          <span onClick={onClose}>
-            <SvgIcon
-              component={() => (
-                <img
-                  style={
-                    isMobile
-                      ? {
-                        marginLeft: '',
-                        width: '20px',
-                        height: '20px',
-                        // padding: '5px',
-                        cursor: 'pointer',
-                      }
-                      : {
-                        width: '20px',
-                        height: '20px',
-                        // padding: '5px',
-                        cursor: 'pointer',
-                      }
-                  }
-                  src={deleteIcon}
-                  alt='given'
-                />
-              )}
-            />
-          </span>
-        </div>
-        
-      </div>
-      
+
       </>
-)
-             
+    )
+
   };
 
-  // const removeFileHandler = (i,file) => {
-  //   // const list = [...filePath];
-  //   filePath.splice(i, 1);
-  //   setAlert('success', 'File successfully deleted');
-  // };
   const removeFileHandler = (i, file) => {
-    delete editData.documents
-    const list = [files];
-    setLoading(true);
-    axiosInstance
-    .post(`${endpoints.circular.deleteFile}`, {
-      file_name: `${file}`,
-      daily_diary_id:`${editData.id}`,
-    })
-      .then((result) => {
-        if (result.data.status_code === 204) {
-          list.splice(i, 1);
-          setFilePath(list);
-          setAlert('success', result.data.message);
-          setLoading(false);
-        } else {
-          setAlert('error', result.data.message);
-          setLoading(false);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-        setLoading(false);
-      });
+    // const list = [...filePath];
+    filePath.splice(i, 1);
+    setAlert('success', 'File successfully deleted');
   };
+  // const removeFileHandler = (i, file) => {
+  //   delete editData.documents
+  //   const list = [files];
+  //   setLoading(true);
+  //   axiosInstance
+  //     .post(`${endpoints.circular.deleteFile}`, {
+  //       file_name: `${file}`,
+  //       daily_diary_id: `${editData.id}`,
+  //     })
+  //     .then((result) => {
+  //       if (result.data.status_code === 204) {
+  //         list.splice(i, 1);
+  //         setFilePath(list);
+  //         setAlert('success', result.data.message);
+  //         setLoading(false);
+  //       } else {
+  //         setAlert('error', result.data.message);
+  //         setLoading(false);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setAlert('error', error.message);
+  //       setLoading(false);
+  //     });
+  // };
   useEffect(() => {
     // removeFileHandler()
   }, [editData])
@@ -773,15 +790,15 @@ const CreateDailyDairy = (details, onSubmit) => {
               id='branch'
               name='branch'
               onChange={(e, value) => {
-                if(state.isEdit){
-                  editData.branch=value;
+                if (state.isEdit) {
+                  editData.branch = value;
                 }
                 setFilterData({
                   ...filterData,
                   branch: value,
                   grade: '',
-                  section: '',
-                  subject: '',
+                  section: [],
+                  subject: [],
                   chapter: '',
                 });
                 state.isEdit ? formik.setFieldValue('branch', value) : formik.setFieldValue('branch', value);
@@ -815,8 +832,8 @@ const CreateDailyDairy = (details, onSubmit) => {
                 id='grade'
                 name='grade'
                 onChange={(e, value) => {
-                  if(state.isEdit){
-                    editData.grade[0]=value;
+                  if (state.isEdit) {
+                    editData.grade[0] = value;
                   }
                   setFilterData({
                     ...filterData,
@@ -1047,15 +1064,15 @@ const CreateDailyDairy = (details, onSubmit) => {
               <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
                   {state.isEdit
-                    ? (editData?.documents?.length>0 &&
-                    editData.documents.map((file, i) => (
-                      <FileRow
-                        key={`homework_student_question_attachment_${i}`}
-                        file={file}
-                        index={i}
-                        onClose={() => removeFileHandler(i, file)}
-                      />
-                    )))
+                    ? (editData?.documents?.length > 0 &&
+                      editData.documents.map((file, i) => (
+                        <FileRow
+                          key={`homework_student_question_attachment_${i}`}
+                          file={file}
+                          index={i}
+                          onClose={() => removeFileHandler(i)}
+                        />
+                      )))
 
                     : filePath?.length > 0
                       ? filePath?.map((file, i) => (
@@ -1063,7 +1080,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                           key={`homework_student_question_attachment_${i}`}
                           file={file}
                           index={i}
-                          onClose={() => removeFileHandler(i, file)}
+                          onClose={() => removeFileHandler(i)}
                         />
                       ))
                       : null}
