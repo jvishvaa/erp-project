@@ -10,6 +10,8 @@ import {
 } from '@material-ui/core';
 import ReactHtmlParser from 'react-html-parser';
 import { generateHeaderColspan } from './transform-report-card-data';
+import ENVCONFIG from '../../../config/config';
+
 const orchidsLogo =
   'https://www.orchidsinternationalschool.com/wp-content/uploads/2019/08/logo-01.png';
 const StyledTableCell = withStyles((theme) => ({
@@ -35,6 +37,10 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
     branch_code: branchCode = '',
     branch_logo: branchLogo = '',
   } = schoolData || {};
+  const {
+    s3: { ERP_BUCKET = '' },
+  } = ENVCONFIG;
+
   const [firstRowColspan = 2, secondRowColspan = 20, thirdRowColspan = 3] =
     generateHeaderColspan(scholastic, coScholastic);
 
@@ -114,7 +120,7 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
           <StyledTableCell colspan={thirdRowColspan} scope='center'>
             <Box>
               <img
-                src={branchLogo}
+                src={`${ERP_BUCKET}${branchLogo}`}
                 onError={(e) => (e.target.src = orchidsLogo)}
                 alt=''
                 style={{ width: '100%' }}
