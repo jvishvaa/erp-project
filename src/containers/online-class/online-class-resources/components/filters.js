@@ -9,7 +9,7 @@ import {
   FormControlLabel,
   Switch,
   Tooltip,
-  Box
+  Box,
 } from '@material-ui/core';
 import InfoIcon from '@material-ui/icons/Info';
 import { withRouter } from 'react-router-dom';
@@ -23,12 +23,12 @@ import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
-import APIREQUEST from "../../../../config/apiRequest";
+import APIREQUEST from '../../../../config/apiRequest';
 
 const Filter = (props) => {
   const launchdate = localStorage.getItem('launchDate');
-  const [minStartDate, setMinStartDate]= useState();
-  const [maxStartDate, setMaxStartDate]= useState();
+  const [minStartDate, setMinStartDate] = useState();
+  const [maxStartDate, setMaxStartDate] = useState();
   const [dateRangeTechPer, setDateRangeTechPer] = useState([]);
 
   const [startDateTechPer, setStartDateTechPer] = useState(moment().format('YYYY-MM-DD'));
@@ -42,6 +42,8 @@ const Filter = (props) => {
   const [studentDetails] = useState(
     JSON.parse(window.localStorage.getItem('userDetails'))
   );
+  const { user_level: userLevel = 0 } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
   const [academicYear, setAcademicYear] = useState([]);
   // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
   const selectedAcademicYear = useSelector(
@@ -103,28 +105,48 @@ const Filter = (props) => {
     return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
   }
 
-  const msAPiCallFilterApi = (api) =>{
-    var url  = api.split("?");
+  const msAPiCallFilterApi = (api) => {
+    var url = api.split('?');
     url.shift();
-    var path = url.join("?")
-    APIREQUEST("get", `/oncls/v1/retrieve-online-class/?${path}`)
-    .then((result)=>{
-      setFilterFullData(result.data || {});
-      setFilterList(result.data.data || {});
-      setSelectedViewMore('');
-      props.getResourceData(result.data.data);
-      props.totalCount(result.data.count);
-      setTabValue(0);
-      setLoading(false);
-    })
-    .catch((error) => {
-      setAlert('error', error.message);
-      setLoading(false);
-    });
-  }
+    var path = url.join('?');
+
+    const isMsOriginURL = ![0, 1].includes(props.tabValue);
+    const apiCall = isMsOriginURL
+      ? '/reports/v1/retrieve-online-class/'
+      : '/oncls/v1/retrieve-online-class/';
+    APIREQUEST(
+      'get',
+      `${apiCall}?${path}&user_level=${userLevel}`,
+      null,
+      null,
+      isMsOriginURL
+    )
+      .then((result) => {
+        setFilterFullData(result.data || {});
+        setFilterList(result.data.data || {});
+        setSelectedViewMore('');
+        props.getResourceData(result.data.data);
+        props.totalCount(result.data.count);
+        setTabValue(0);
+        setLoading(false);
+      })
+      .catch((error) => {
+        const { response = {} } = error || {};
+        const { status = 502 } = response || {};
+        setAlert(
+          'error',
+          status === 502 ? 'Data will be available after 3:00 pm' : error?.message
+        );
+        setLoading(false);
+      });
+  };
 
   function callApi(api, key) {
-    if(key === "filter" && JSON.parse(localStorage.getItem('isMsAPI')) && props.historicalData === false) {
+    if (
+      key === 'filter' &&
+      JSON.parse(localStorage.getItem('isMsAPI')) &&
+      props.historicalData === false
+    ) {
       msAPiCallFilterApi(api);
       return;
     }
@@ -356,74 +378,80 @@ const Filter = (props) => {
   //   handleFilter();
   // }, [props?.tabValue]);
 
-  const getminMaxDate = ()=>{
-    let mindate = "",
-        maxDate = "";
+  const getminMaxDate = () => {
+    let mindate = '',
+      maxDate = '';
     let datearr = [];
-    if(JSON.parse(localStorage.getItem('isMsAPI'))){
-      if(props.historicalData){
-          mindate = moment(launchdate, "YYYY-MM-DD").subtract(1, 'year').format("YYYY-MM-DD");
-          maxDate = moment(launchdate, "YYYY-MM-DD").format("YYYY-MM-DD");
-          datearr = [moment(maxDate, "YYYY-MM-DD").subtract(6,'days'), moment(maxDate, "YYYY-MM-DD")];
+    if (JSON.parse(localStorage.getItem('isMsAPI'))) {
+      if (props.historicalData) {
+        mindate = moment(launchdate, 'YYYY-MM-DD')
+          .subtract(1, 'year')
+          .format('YYYY-MM-DD');
+        maxDate = moment(launchdate, 'YYYY-MM-DD').format('YYYY-MM-DD');
+        datearr = [
+          moment(maxDate, 'YYYY-MM-DD').subtract(6, 'days'),
+          moment(maxDate, 'YYYY-MM-DD'),
+        ];
+      } else {
+        mindate = moment(launchdate).add(1, 'day').format('YYYY-MM-DD');
+        maxDate = moment(launchdate, 'YYYY-MM-DD').add(1, 'year').format('YYYY-MM-DD');
+        var a = moment(launchdate, 'YYYY-MM-DD').add(1, 'day');
+        var b = moment();
+        if (b.diff(a, 'days') > 6) {
+          datearr = [moment().subtract(6, 'days'), moment()];
+        } else {
+          datearr = [moment(mindate, 'YYYY-MM-DD'), moment().add(1, 'day')];
+        }
       }
-      else{
-          mindate = moment(launchdate).add(1, 'day').format('YYYY-MM-DD');
-          maxDate = moment(launchdate, "YYYY-MM-DD").add(1, 'year').format("YYYY-MM-DD");
-          var a = moment(launchdate, "YYYY-MM-DD").add(1, 'day');
-          var b = moment();
-          if(b.diff(a, 'days') > 6){
-            datearr = [moment().subtract(6, 'days'),  moment()];
-          }
-          else{
-            datearr = [moment(mindate, "YYYY-MM-DD"), moment().add(1, 'day')];
-          }
-      }
+    } else {
+      mindate = '';
+      maxDate = '';
+      datearr = [moment().subtract(6, 'days'), moment()];
     }
-    else{
-        mindate = "";
-        maxDate = "";
-        datearr = [moment().subtract(6, 'days'),  moment()];
-    }
-    return { mindate : mindate, maxDate : maxDate, datearr : datearr }
-  }
+    return { mindate: mindate, maxDate: maxDate, datearr: datearr };
+  };
 
-  useEffect(()=>{
+  useEffect(() => {
     const getvalues = getminMaxDate();
     setMinStartDate(getvalues.mindate);
     setMaxStartDate(getvalues.maxDate);
     setDateRangeTechPer(getvalues.datearr);
   }, [props.historicalData]);
 
-  const HistoricalDataEle = ()=>{
-    return (
-      JSON.parse(localStorage.getItem('isMsAPI')) ? 
+  const HistoricalDataEle = () => {
+    return JSON.parse(localStorage.getItem('isMsAPI')) ? (
       <Grid item md={3} xs={12}>
         <FormControlLabel
-          style={{minWidth:"90%", margin:"0px"}}
+          style={{ minWidth: '90%', margin: '0px' }}
           control={
             <>
-            <Switch 
-              checked={props.historicalData} name="historicalData" color="primary"
-              onChange={(event)=>{ props.setHistoricalData(event.target.checked )}}
-            />
-          </>
-        }
-        label={
-          <Box alignItems="center" display="flex">
-            <Tooltip title={
-              `Recent data: records from ${launchdate} till date
-               Historical data: records before ${launchdate}`
-            }>
-              <InfoIcon fontSize="small" color="disabled"/>
-            </Tooltip>
-            <Typography style={{paddingLeft:"3px"}} color="secondary">{props.historicalData ? "Historical Data" : "Recent Data"}</Typography>
-          </Box>
-        }
+              <Switch
+                checked={props.historicalData}
+                name='historicalData'
+                color='primary'
+                onChange={(event) => {
+                  props.setHistoricalData(event.target.checked);
+                }}
+              />
+            </>
+          }
+          label={
+            <Box alignItems='center' display='flex'>
+              <Tooltip
+                title={`Recent data: records from ${launchdate} till date
+               Historical data: records before ${launchdate}`}
+              >
+                <InfoIcon fontSize='small' color='disabled' />
+              </Tooltip>
+              <Typography style={{ paddingLeft: '3px' }} color='secondary'>
+                {props.historicalData ? 'Historical Data' : 'Recent Data'}
+              </Typography>
+            </Box>
+          }
         />
       </Grid>
-      : null
-    )
-  }
+    ) : null;
+  };
 
   return (
     <>
@@ -762,8 +790,8 @@ const Filter = (props) => {
         <Grid item xs={12} sm={3}>
           <LocalizationProvider dateAdapter={MomentUtils}>
             <DateRangePicker
-              minDate = {minStartDate ? new Date(minStartDate) : undefined}
-              maxDate = {maxStartDate ? new Date(maxStartDate) : undefined}
+              minDate={minStartDate ? new Date(minStartDate) : undefined}
+              maxDate={maxStartDate ? new Date(maxStartDate) : undefined}
               startText='Select-date-range'
               value={dateRangeTechPer}
               onChange={(newValue) => {
