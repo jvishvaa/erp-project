@@ -225,18 +225,24 @@ const CreateDailyDairy = (details, onSubmit) => {
   // };
 
   const handleChangeBranch = (values) => {
-    // setGrades([]);
-    // setSections([]);
-    formik.setFieldValue('grade', '');
-    fetchGrades(searchAcademicYear?.id, values, moduleId).then((data) => {
-      const transformedData = data
-        ? data.map((grade) => ({
-          id: grade.grade_id,
-          grade_name: grade.grade__grade_name,
-        }))
-        : [];
-      setGrades(transformedData);
-    });
+    // formik.setFieldValue('grade', '');
+    if (values) {
+      fetchGrades(searchAcademicYear?.id, values, moduleId).then((data) => {
+        const transformedData = data
+          ? data.map((grade) => ({
+            id: grade.grade_id,
+            grade_name: grade.grade__grade_name,
+          }))
+          : [];
+        setGrades(transformedData);
+      });
+    }
+    else {
+      setGrades([])
+      setSections([])
+      setSubjectDropdown([])
+      setChapterDropdown([])
+    }
   };
 
   const handleChangeGrade = (values, branch) => {
@@ -260,6 +266,8 @@ const CreateDailyDairy = (details, onSubmit) => {
       // fetchSubjects(branch, values);
     } else {
       setSections([]);
+      setSubjectDropdown([]);
+      setChapterDropdown([])
     }
   };
 
@@ -304,6 +312,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       );
     } else {
       setSubjectDropdown([]);
+      setChapterDropdown([]);
     }
   };
 
@@ -539,7 +548,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       const { message, status_code: statusCode } = response.data;
       if (statusCode === 200) {
         setAlert('success', message);
-        // window.location.reload();
+        setState({ editData: [], isEdit: false })
         history.push('/diary/teacher');
       } else {
         setAlert('error', response.data.message);
@@ -613,6 +622,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
+          setState({ editData: [], isEdit: false })
           history.push('/diary/teacher');
         } else {
           setAlert('error', 'Something went wrong');
@@ -667,7 +677,10 @@ const CreateDailyDairy = (details, onSubmit) => {
     )
 
   };
-
+  const handleBack = () => {
+    history.push('/diary/teacher')
+    setState({ isEdit: false, editData: [] })
+  }
   const removeFileHandler = (i, file) => {
     // const list = [...filePath];
     filePath.splice(i, 1);
@@ -1134,7 +1147,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             <Button
               variant="contained"
               style={{ marginLeft: '37px', marginTop: "20px" }}
-              onClick={() => history.goBack()}
+              onClick={handleBack}
               className='labelColor cancelButton'
             >
               BACK
