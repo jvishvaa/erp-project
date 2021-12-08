@@ -36,6 +36,7 @@ const useStyles = makeStyles({
     textAlign: 'left !important',
     padding: '5px 2px !important',
     height: '30px',
+    textTransform: 'none !important',
   },
   footerRowThreeCell: {
     padding: '5px 2px !important',

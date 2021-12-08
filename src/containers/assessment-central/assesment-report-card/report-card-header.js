@@ -92,7 +92,9 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
                 <br />
                 {schoolContact && `Contact Number: ${schoolContact}`}
                 <br />
-                {schoolEmail && `EmailID: ${schoolEmail}`}
+                <Box style={{ textTransform: 'none' }}>
+                  {schoolEmail && `Email ID : ${schoolEmail}`}
+                </Box>
               </Box>
               <Box style={{ margin: '15px auto' }}>
                 <Typography
@@ -115,7 +117,8 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
                 src={branchLogo}
                 onError={(e) => (e.target.src = orchidsLogo)}
                 alt=''
-                style={{ width: '160px', height: '160px', borderRadius: '50px' }}
+                style={{ width: '100%' }}
+                // style={{ width: '160px', height: '160px', borderRadius: '50px' }}
               />
             </Box>
           </StyledTableCell>
