@@ -42,6 +42,9 @@ const Filter = (props) => {
   const [studentDetails] = useState(
     JSON.parse(window.localStorage.getItem('userDetails'))
   );
+  const {
+    user_level: userLevel = 0,
+  } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [academicYear, setAcademicYear] = useState([]);
   // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
   const selectedAcademicYear = useSelector(
@@ -107,7 +110,7 @@ const Filter = (props) => {
     var url  = api.split("?");
     url.shift();
     var path = url.join("?")
-    APIREQUEST("get", `/oncls/v1/retrieve-online-class/?${path}`)
+    APIREQUEST("get", `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}`)
     .then((result)=>{
       setFilterFullData(result.data || {});
       setFilterList(result.data.data || {});

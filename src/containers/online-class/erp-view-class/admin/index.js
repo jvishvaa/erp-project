@@ -44,6 +44,10 @@ const ErpAdminViewClass = ({ history }) => {
   const [studentDetails] = useState(
     JSON.parse(window.localStorage.getItem('userDetails'))
   );
+
+  const { user_level: userLevel = 0 } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
+
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
   const [academicYear, setAcademicYear] = useState([]);
@@ -261,7 +265,7 @@ const ErpAdminViewClass = ({ history }) => {
       if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
         APIREQUEST(
           'get',
-          `/oncls/v1/retrieve-online-class_no_filter/?&class_status=${
+          `/oncls/v1/retrieve-online-class_no_filter/?user_level=${userLevel}&class_status=${
             tabValue + 1
           }&start_date=${startDateTechPer?.format(
             'YYYY-MM-DD'
@@ -292,14 +296,14 @@ const ErpAdminViewClass = ({ history }) => {
     }
   }
 
-  const getEndpoint = () => {
+  const getEndpoint = (path) => {
     if (window.location.pathname === '/erp-online-class-student-view') {
-      return '/oncls/v1/student-oncls/';
+      return `/oncls/v1/student-oncls/?${path}`;
     } else if (
       window.location.pathname === '/erp-online-class' ||
       window.location.pathname === '/erp-online-class-teacher-view'
     ) {
-      return `/oncls/v1/retrieve-online-class/`;
+      return `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}`;
     }
   };
 
@@ -307,12 +311,12 @@ const ErpAdminViewClass = ({ history }) => {
     var url = api.split('?');
     url.shift();
     var path = url.join('?');
-    let endpoint1 = getEndpoint();
+    let endpoint1 = getEndpoint(path);
     if (!endpoint1) {
       setLoading(false);
       return;
     }
-    APIREQUEST('get', `${endpoint1}?${path}`)
+    APIREQUEST('get', endpoint1)
       .then((result) => {
         handleApiRes(result);
       })
