@@ -263,21 +263,34 @@ const ErpAdminViewClass = ({ history }) => {
         endDateTechPer = dateRangeTechPer[0];
       }
       if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
+        const isMsOriginURL = ![0, 1].includes(tabValue);
+        const url = isMsOriginURL
+          ? '/reports/v1/retrieve-online-class_no_filter/'
+          : '/oncls/v1/retrieve-online-class_no_filter/';
+
         APIREQUEST(
           'get',
-          `/oncls/v1/retrieve-online-class_no_filter/?user_level=${userLevel}&class_status=${
+          `${url}?user_level=${userLevel}&class_status=${
             tabValue + 1
           }&start_date=${startDateTechPer?.format(
             'YYYY-MM-DD'
           )}&end_date=${endDateTechPer?.format(
             'YYYY-MM-DD'
-          )}&page_number=${page}&page_size=${limit}`
+          )}&page_number=${page}&page_size=${limit}`,
+          null,
+          null,
+          isMsOriginURL
         )
           .then((result) => {
             handleApiRes(result);
           })
           .catch((error) => {
-            setAlert('error', error?.message);
+            const { response = {} } = error || {};
+            const { status = 502 } = response || {};
+            setAlert(
+              'error',
+              status === 502 ? 'Data will be available after 3:00 pm' : error?.message
+            );
             setLoading(false);
             setFilterList([]);
           });
@@ -303,7 +316,9 @@ const ErpAdminViewClass = ({ history }) => {
       window.location.pathname === '/erp-online-class' ||
       window.location.pathname === '/erp-online-class-teacher-view'
     ) {
-      return `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}`;
+      return [0, 1].includes(tabValue)
+        ? `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}`
+        : `/reports/v1/retrieve-online-class/?${path}&user_level=${userLevel}`;
     }
   };
 
@@ -316,12 +331,18 @@ const ErpAdminViewClass = ({ history }) => {
       setLoading(false);
       return;
     }
-    APIREQUEST('get', endpoint1)
+    const isMsOriginURL = ![0, 1].includes(tabValue);
+    APIREQUEST('get', endpoint1, null, null, isMsOriginURL)
       .then((result) => {
         handleApiRes(result);
       })
       .catch((error) => {
-        setAlert('error', error?.message);
+        const { response = {} } = error || {};
+        const { status = 502 } = response || {};
+        setAlert(
+          'error',
+          status === 502 ? 'Data will be available after 3:00 pm' : error?.message
+        );
         setLoading(false);
         setFilterList([]);
       });
