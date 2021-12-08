@@ -392,7 +392,7 @@ const Category = (props) => {
     }
     setHidePagination(false);
     //let postURL = endpoints.discussionForum.postList;
-  }, [props.url, props.filters, categoryId, moduleId, deleteEdit, page, awardy]);
+  }, [props.url, props.filters, categoryId, moduleId, page, awardy]);
 
   const handlePagination = (event, page) => {
     setPage(page);
