@@ -52,7 +52,7 @@ export default function TeacherAttendanceStatus(props) {
 
         axiosInstance.post(`${endpoints.academics.teacherAttendanceSent}`, body)
         .then((result) => {
-            console.log(result,"abcd")
+            console.log("abcd")
 
             //  setValue(event.target.value);
 
