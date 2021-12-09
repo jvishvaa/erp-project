@@ -312,11 +312,11 @@ const ErpAdminViewClass = ({ history }) => {
   const getEndpoint = (path) => {
     if (window.location.pathname === '/erp-online-class-student-view') {
       if(tabValue === 0 || tabValue === 1){
-      return `/oncls/v1/student-oncls/?${path}`;
-      }
-      else {
-      return `/reports/v1/student-oncls/?${path}`;
-      }
+        return `/oncls/v1/student-oncls/?${path}`;
+        }
+        else {
+        return `/reports/v1/student-oncls/?${path}`;
+        }
     } else if (
       window.location.pathname === '/erp-online-class' ||
       window.location.pathname === '/erp-online-class-teacher-view'
