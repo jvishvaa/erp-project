@@ -11,6 +11,7 @@ import {
   TextareaAutosize,
   FormHelperText,
 } from '@material-ui/core';
+import { Dialog, DialogActions, DialogContent, DialogContentText, Slide } from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
@@ -747,7 +748,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       {loading ? <Loading message='Loading...' /> : null}
 
       <Layout>
-        <CommonBreadcrumbs componentName='Daily Diary' childComponentName='Create New' />
+        <CommonBreadcrumbs componentName='Daily Diary' childComponentName={state.isEdit ? 'Edit Dairy' : 'Create New'} />
         <Grid
           container
           spacing={isMobile ? 3 : 5}
@@ -1159,7 +1160,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               onClick={state.isEdit ? handleEdited : handleSubmit}
 
             >
-              SUBMIT
+              {state.isEdit ? 'Update' : 'Submit'}
             </Button>
           </div>
         </div>
