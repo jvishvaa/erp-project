@@ -7,18 +7,21 @@ import {
   Button,
   useTheme,
   SvgIcon,
-  IconButton,
-  TextareaAutosize,
   FormHelperText,
 } from '@material-ui/core';
-import { Dialog, DialogActions, DialogContent, DialogContentText, Slide } from '@material-ui/core';
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  Slide,
+} from '@material-ui/core';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import axios from 'axios';
 import { useFormik } from 'formik';
-import { HomeWork } from '@material-ui/icons';
 import { useStyles } from '../../user-management/useStyles';
 
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -57,10 +60,6 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [summary, setSummary] = useState('');
   const [tools, setTools] = useState('');
   const [homework, setHomework] = useState('');
-  const [branchSel, setSelBranch] = useState([]);
-  const [gradeSel, setSelGrade] = useState([]);
-  const [sectionSel, setSelSection] = useState([]);
-  const [subjectSel, setSelSubject] = useState([]);
   const [errors, setErrors] = useState({ branches: '', grades: '' });
   const [loading, setLoading] = useState(false);
   const history = useHistory();
@@ -70,12 +69,8 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [state, setState] = useContext(Context);
   const { isEdit, editData } = state;
   const { setIsEdit, setEditData } = setState;
-  const [title, setTitle] = useState(editData.circular_name || '');
-  const [description, setDescription] = useState(editData.description || '');
-
   const [filterData, setFilterData] = useState({
     year: '',
-    // volume: '',
     branch: '',
     grade: '',
     section: '',
@@ -91,8 +86,6 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
-  console.log('details:', details);
-  console.log("filterdata checking", filterData)
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -128,27 +121,8 @@ const CreateDailyDairy = (details, onSubmit) => {
     validateOnBlur: false,
   });
 
-  const fetchAcademicYears = () => {
-    getAcademicYears(moduleId).then((data) => {
-      const transformedData = data?.map((obj) => ({
-        id: obj.id,
-        session_year: obj.session_year,
-      }));
-      setAcademicYears(transformedData);
-    });
-  };
 
   useEffect(() => {
-    // axiosInstance.get(`${endpoints.communication.branches}`)
-    //     .then(result => {
-    //         if (result.data.status_code === 200) {
-    //             setBranchDropdown(result?.data?.data);
-    //         } else {
-    //             setAlert('error', result?.data?.message);
-    //         }
-    //     }).catch(error => {
-    //         setBranchDropdown('error', error.message);
-    //     })
     if (moduleId) {
       axiosInstance
         .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
@@ -200,33 +174,10 @@ const CreateDailyDairy = (details, onSubmit) => {
           : [];
         setBranches(transformedData);
       });
-      // axiosInstance
-      //   .get(
-      //     `${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`
-      //   )
-      //   .then((result) => {
-      //     if (result?.data?.status_code) {
-      //       setBranchDropdown(result?.data?.data);
-      //     } else {
-      //       setAlert('error', result?.data?.message);
-      //     }
-      //   })
-      //   .catch((error) => setAlert('error', error?.message));
     }
   };
 
-  // const fetchBranches = () => {
-  //   fetchBranchesForCreateUser(searchAcademicYear, moduleId).then((data) => {
-  //     const transformedData = data?.map((obj) => ({
-  //       id: obj.id,
-  //       branch_name: obj.branch_name,
-  //     }));
-  //     setBranches(transformedData);
-  //   });
-  // };
-
   const handleChangeBranch = (values) => {
-    // formik.setFieldValue('grade', '');
     if (values) {
       fetchGrades(searchAcademicYear?.id, values, moduleId).then((data) => {
         const transformedData = data
@@ -237,12 +188,11 @@ const CreateDailyDairy = (details, onSubmit) => {
           : [];
         setGrades(transformedData);
       });
-    }
-    else {
-      setGrades([])
-      setSections([])
-      setSubjectDropdown([])
-      setChapterDropdown([])
+    } else {
+      setGrades([]);
+      setSections([]);
+      setSubjectDropdown([]);
+      setChapterDropdown([]);
     }
   };
 
@@ -268,34 +218,15 @@ const CreateDailyDairy = (details, onSubmit) => {
     } else {
       setSections([]);
       setSubjectDropdown([]);
-      setChapterDropdown([])
+      setChapterDropdown([]);
     }
-  };
-
-  const fetchChapters = () => {
-    axios
-      .get(
-        `/qbox/academic/chapters/?academic_year=${searchAcademicYear?.id}&subject=${subjectIds}`
-      )
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setChapterDropdown(result.data.result);
-        } else {
-          setAlert('error');
-        }
-      })
-      .catch((error) => {
-        setAlert('error');
-      });
   };
 
   const fetchSubjects = (branch, grade, section) => {
     if (
       branch &&
       grade &&
-      // grade.length > 0 &&
       section
-      // section.length > 0
     ) {
       getSubjects(searchAcademicYear?.id, branch, grade, section, moduleId).then(
         (data) => {
@@ -325,9 +256,6 @@ const CreateDailyDairy = (details, onSubmit) => {
     if (value) {
       setFilterData({ ...filterData, section: value, subject: '', chapter: '' });
       formik.setFieldValue('section', value);
-      // if (!!value.length) {
-      //   formik.setFieldValue('subjects', []);
-      // }
       const {
         values: { branch = {}, grade = [] },
       } = formik;
@@ -335,31 +263,6 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
   };
 
-  // const handleSubject = (event, value) => {
-  //   formik.setFieldValue('chapters', '' || []);
-  //   formik.setFieldValue('subjects', '' || []);
-  //   setFilterData({ ...filterData, subject: '', chapter: '' });
-  //   if (value) {
-  //     setFilterData({ ...filterData, subject: value, chapter: '' });
-  //     formik.setFieldValue('subjects', value);
-  //     formik.setFieldValue('chapters', '' || []);
-  //     setSubjectIds(value?.id);
-  //     axiosInstance
-  //       .get(
-  //         `${endpoints.dailyDairy.branches}?session_year=${searchAcademicYear?.id}&subject=${value?.id}&module_id=${moduleId}`
-  //       )
-  //       .then((result) => {
-  //         if (result.data.status_code === 200) {
-  //           setChapterDropdown(result.data.result);
-  //         } else {
-  //           setAlert('error');
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         setAlert('error');
-  //       });
-  //   }
-  // };
   const handleSubject = (event, value) => {
     if (state.isEdit) {
       editData.subject = value;
@@ -372,10 +275,6 @@ const CreateDailyDairy = (details, onSubmit) => {
       formik.setFieldValue('subjects', value);
       formik.setFieldValue('chapters', '' || []);
       setSubjectIds(value?.id);
-      // axiosInstance
-      // .get(
-      // `${endpoints.dailyDairy.branches}?session_year=${searchAcademicYear?.id}&subject=${value?.id}&module_id=${moduleId}`
-      // )
       axiosInstance
         .get(
           `${endpoints.questionBank.chapterList}?subject_id=${value?.ids}&subject=${value?.id}&session_year=${filterData?.branch?.id}`
@@ -397,9 +296,6 @@ const CreateDailyDairy = (details, onSubmit) => {
     return size / 1024 / 1024 > 25 ? false : true;
   };
 
-
-
-
   const handleImageChange = (event) => {
     let fileType = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
     let selectedFileType = event.target.files[0]?.type;
@@ -414,44 +310,49 @@ const CreateDailyDairy = (details, onSubmit) => {
       event.target.value = '';
       return;
     }
-    if (filePath.length < 10) {
-      if (isEdit) {
-      } else if (
-        !formik.values.branch.id ||
-        !formik.values.grade ||
-        !formik.values.section ||
-        !formik.values.subjects ||
-        !subjectIds
-      ) {
-        setAlert('error', 'Please select all fields');
-        return;
-      }
-
-      setLoading(true);
-      const data = event.target.files[0];
-      let fd = new FormData();
-      fd.append('file', data);
-      fd.append(
-        'branch_name',
-        isEdit ? editData.branch?.branch_name : formik.values.branch?.branch_name
-      );
-      fd.append('grades', isEdit ? editData?.grade[0]?.id : formik.values.grade?.id);
-      // fd.append('section', isEdit ? editData.section[0].id : formik.values.section[0].id);
-      axiosInstance.post(`academic/dairy-upload/`, fd).then((result) => {
-        if (result.data.status_code === 200) {
-          setLoading(false);
-          setAlert('success', result.data.message);
-          setFilePath([...filePath, result.data.result]);
-        } else {
-          setLoading(false);
-
-          setAlert('error', result.data.message);
-        }
-      });
-    } else {
-      setAlert('warning', 'Exceed Maximum Number Attachment');
-      setLoading(false);
+    // if (filePath?.length <  10) {
+    if (isEdit) {
+    } else if (
+      !formik.values.branch.id ||
+      !formik.values.grade ||
+      !formik.values.section ||
+      !formik.values.subjects ||
+      !subjectIds
+    ) {
+      setAlert('error', 'Please select all fields');
+      return;
     }
+
+    setLoading(true);
+    const data = event.target.files[0];
+    const fd = new FormData();
+    fd.append('file', data);
+    fd.append(
+      'branch_name',
+      isEdit ? editData.branch?.branch_name : formik.values.branch?.branch_name
+    );
+    fd.append('grades', isEdit ? editData?.grade[0]?.id : formik.values.grade?.id);
+    axiosInstance.post(`academic/dairy-upload/`, fd).then((result) => {
+      if (result.data.status_code === 200) {
+        setLoading(false);
+        if (editData.documents) {
+          let imageData = editData.documents;
+          imageData.push(result?.data?.result);
+          setFilePath(imageData);
+        } else {
+          setFilePath([...filePath, result?.data?.result]);
+        }
+        setAlert('success', result.data.message);
+      } else {
+        setLoading(false);
+
+        setAlert('error', result.data.message);
+      }
+    });
+    // } else {
+    //   setAlert('warning', 'Exceed Maximum Number Attachment');
+    //   setLoading(false);
+    // }
   };
   const handleSubmit = async () => {
     if (filterData.branch.length === 0) {
@@ -483,9 +384,6 @@ const CreateDailyDairy = (details, onSubmit) => {
     const section = formik.values.section
       ? [formik.values.section].map((el) => el.id)
       : '';
-    // const subjectId = formik.values.subjects
-    //   ? formik?.values?.subjects.map((el) => el?.id)
-    //   : setAlert('error', 'check');
     if (
       !formik.values.section ||
       !formik.values.grade ||
@@ -549,7 +447,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       const { message, status_code: statusCode } = response.data;
       if (statusCode === 200) {
         setAlert('success', message);
-        setState({ editData: [], isEdit: false })
+        setState({ editData: [], isEdit: false });
         history.push('/diary/teacher');
       } else {
         setAlert('error', response.data.message);
@@ -623,7 +521,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
-          setState({ editData: [], isEdit: false })
+          setState({ editData: [], isEdit: false });
           history.push('/diary/teacher');
         } else {
           setAlert('error', 'Something went wrong');
@@ -640,9 +538,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     return (
       <>
         <div className='file_row_image_new'>
-          <div className='file_name_container_new'>
-            {index + 1}
-          </div>
+          <div className='file_name_container_new'>{index + 1}</div>
           <div>
             <span onClick={onClose}>
               <SvgIcon
@@ -671,53 +567,29 @@ const CreateDailyDairy = (details, onSubmit) => {
               />
             </span>
           </div>
-
         </div>
-
       </>
-    )
-
+    );
   };
   const handleBack = () => {
-    history.push('/diary/teacher')
-    setState({ isEdit: false, editData: [] })
-  }
+    history.push('/diary/teacher');
+    setState({ isEdit: false, editData: [] });
+  };
   const removeFileHandler = (i, file) => {
     // const list = [...filePath];
     filePath.splice(i, 1);
     setAlert('success', 'File successfully deleted');
   };
-  // const removeFileHandler = (i, file) => {
-  //   delete editData.documents
-  //   const list = [files];
-  //   setLoading(true);
-  //   axiosInstance
-  //     .post(`${endpoints.circular.deleteFile}`, {
-  //       file_name: `${file}`,
-  //       daily_diary_id: `${editData.id}`,
-  //     })
-  //     .then((result) => {
-  //       if (result.data.status_code === 204) {
-  //         list.splice(i, 1);
-  //         setFilePath(list);
-  //         setAlert('success', result.data.message);
-  //         setLoading(false);
-  //       } else {
-  //         setAlert('error', result.data.message);
-  //         setLoading(false);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       setAlert('error', error.message);
-  //       setLoading(false);
-  //     });
-  // };
+  let imageCount = 1;
   useEffect(() => {
-    // removeFileHandler()
-  }, [editData])
+    if (editData?.documents) {
+      if (imageCount) {
+        setFilePath(editData.documents);
+        imageCount = 0;
+      }
+    }
+  }, [editData]);
   useEffect(() => {
-    // fetchAcademicYears();
-    // fetchBranches();
     if (details.branch) {
       handleChangeBranch([details.branch]);
       if (details.grade && details.grade.length > 0) {
@@ -748,7 +620,10 @@ const CreateDailyDairy = (details, onSubmit) => {
       {loading ? <Loading message='Loading...' /> : null}
 
       <Layout>
-        <CommonBreadcrumbs componentName='Daily Diary' childComponentName={state.isEdit ? 'Edit Dairy' : 'Create New'} />
+        <CommonBreadcrumbs
+          componentName='Daily Diary'
+          childComponentName={state.isEdit ? 'Edit Dairy' : 'Create New'}
+        />
         <Grid
           container
           spacing={isMobile ? 3 : 5}
@@ -756,25 +631,6 @@ const CreateDailyDairy = (details, onSubmit) => {
         >
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
             <FormControl fullWidth className={classes.margin} variant='outlined'>
-              {/* <Autocomplete
-            id='academic_year'
-            name='academic_year'
-            onChange={(e, value) => {
-              formik.setFieldValue('academic_years', value);
-            }}
-            value={formik.values.academic_year}
-            options={academicYears}
-            getOptionLabel={(option) => option.session_year || ''}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Academic Year'
-                placeholder='Academic Year'
-              />
-            )}
-            size='small'
-          /> */}
               <Autocomplete
                 size='small'
                 style={{ width: '100%' }}
@@ -815,7 +671,9 @@ const CreateDailyDairy = (details, onSubmit) => {
                   subject: [],
                   chapter: '',
                 });
-                state.isEdit ? formik.setFieldValue('branch', value) : formik.setFieldValue('branch', value);
+                state.isEdit
+                  ? formik.setFieldValue('branch', value)
+                  : formik.setFieldValue('branch', value);
                 formik.setFieldValue('grade', []);
                 formik.setFieldValue('section', []);
                 formik.setFieldValue('subjects', []);
@@ -895,10 +753,8 @@ const CreateDailyDairy = (details, onSubmit) => {
                 id='section'
                 name='section'
                 onChange={(e, value) => handleSection(e, value)}
-                // value={state.isEdit ? editData.section[0] : formik.values.section || {}}
                 value={state.isEdit ? editData.section[0] : filterData?.section || {}}
                 options={sections}
-                // multiple
                 getOptionLabel={(option) =>
                   option.section_name || option.section__section_name
                 }
@@ -926,14 +782,10 @@ const CreateDailyDairy = (details, onSubmit) => {
               variant='outlined'
             >
               <Autocomplete
-                // {...state.isEdit ? {}:{multiple:true}}
-
                 style={{ width: '100%' }}
                 size='small'
                 onChange={handleSubject}
                 id='subj'
-                // className='dropdownIcon'
-                // value={state.isEdit ? editData.subject : formik.values.subjects || {}}
                 value={state.isEdit ? editData.subject : filterData?.subject || {}}
                 options={subjectDropdown}
                 className='dropdownIcon'
@@ -966,7 +818,6 @@ const CreateDailyDairy = (details, onSubmit) => {
                   formik.setFieldValue('chapters', value);
                   setFilterData({ ...filterData, chapter: value });
                 }}
-                // value={state.isEdit ? editData.chapter : formik.values.chapters || {}}
                 value={state.isEdit ? editData.chapter : filterData.chapter || {}}
                 options={chapterDropdown}
                 className='dropdownIcon'
@@ -1004,7 +855,6 @@ const CreateDailyDairy = (details, onSubmit) => {
                   rows='3'
                   color='primary'
                   style={{ width: '100%', marginTop: '1.25rem' }}
-                  // defaultValue="Default Value"
                   defaultValue={
                     state.isEdit ? editData.teacher_report.previous_class : []
                   }
@@ -1020,7 +870,6 @@ const CreateDailyDairy = (details, onSubmit) => {
                   rows='3'
                   color='primary'
                   style={{ width: '100%', marginTop: '1.25rem' }}
-                  // defaultValue="Default Value"
                   defaultValue={state.isEdit ? editData.teacher_report.class_work : []}
                   variant='outlined'
                   onChange={(e) => setDetails(e.target.value)}
@@ -1034,7 +883,6 @@ const CreateDailyDairy = (details, onSubmit) => {
                   rows='3'
                   color='primary'
                   style={{ width: '100%', marginTop: '1.25rem' }}
-                  // defaultValue="Default Value"
                   defaultValue={state.isEdit ? editData.teacher_report.summary : []}
                   variant='outlined'
                   onChange={(e) => setSummary(e.target.value)}
@@ -1054,7 +902,6 @@ const CreateDailyDairy = (details, onSubmit) => {
                   rows='3'
                   color='primary'
                   style={{ width: '100%', marginTop: '1.25rem' }}
-                  // defaultValue="Default Value"
                   defaultValue={state.isEdit ? editData.teacher_report.tools_used : []}
                   variant='outlined'
                   onChange={(e) => setTools(e.target.value)}
@@ -1068,7 +915,6 @@ const CreateDailyDairy = (details, onSubmit) => {
                   rows='3'
                   color='primary'
                   style={{ width: '100%', marginTop: '1.25rem' }}
-                  // defaultValue="Default Value"
                   defaultValue={state.isEdit ? editData.teacher_report.homework : []}
                   variant='outlined'
                   onChange={(e) => setHomework(e.target.value)}
@@ -1077,27 +923,15 @@ const CreateDailyDairy = (details, onSubmit) => {
 
               <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                  {state.isEdit
-                    ? (editData?.documents?.length > 0 &&
-                      editData.documents.map((file, i) => (
-                        <FileRow
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i)}
-                        />
-                      )))
-
-                    : filePath?.length > 0
-                      ? filePath?.map((file, i) => (
-                        <FileRow
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i)}
-                        />
-                      ))
-                      : null}
+                  {filePath?.length > 0 &&
+                    filePath?.map((file, i) => (
+                      <FileRow
+                        key={`homework_student_question_attachment_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeFileHandler(i)}
+                      />
+                    ))}
                 </div>
                 <div style={isMobile ? { marginTop: '1%' } : { marginTop: '10%' }}>
                   <Button
@@ -1128,15 +962,11 @@ const CreateDailyDairy = (details, onSubmit) => {
                       id='raised-button-file'
                       accept='image/*, .pdf'
                       onChange={handleImageChange}
-                    // defaultValue={state.isEdit?editData.documents : []}
-                    // value={state.isEdit?editData.documents : []}
                     />
                     Add Document
                   </Button>
                   <br />
-                  <small
-                    className={classes.acceptedfiles}
-                  >
+                  <small className={classes.acceptedfiles}>
                     {' '}
                     Accepted files: [ jpeg,jpg,png,pdf ]
                   </small>
@@ -1146,19 +976,18 @@ const CreateDailyDairy = (details, onSubmit) => {
           </div>
           <div>
             <Button
-              variant="contained"
-              style={{ marginLeft: '37px', marginTop: "20px" }}
+              variant='contained'
+              style={{ marginLeft: '37px', marginTop: '20px' }}
               onClick={handleBack}
               className='labelColor cancelButton'
             >
               BACK
             </Button>
             <Button
-              variant="contained"
-              color="primary"
-              style={{ marginLeft: '20px', marginTop: "20px", color: "white" }}
+              variant='contained'
+              color='primary'
+              style={{ marginLeft: '20px', marginTop: '20px', color: 'white' }}
               onClick={state.isEdit ? handleEdited : handleSubmit}
-
             >
               {state.isEdit ? 'Update' : 'Submit'}
             </Button>
