@@ -21,7 +21,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import Layout from '../../Layout/index';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import ClearIcon from '../../../components/icon/ClearIcon';
-import { Pagination } from '@material-ui/lab';
+// import { Pagination } from '@material-ui/lab';
 //import categoryData from './categoryData';
 //import CreateCategory from './CreateCategory';
 import DiscussionCategory from './DiscussionCategory';
@@ -29,6 +29,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchCategoryData, fetchCategory, fetchSubCategory, fetchSubSubCategoryList } from '../../../redux/actions/discussionForumActions';
 // import CategoryCard from '../categoryData';
+import Pagination from 'components/PaginationComponent';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -419,13 +420,18 @@ function CategoryPage() {
                   </Grid>
                 </Grid>
                 <Grid item xs={12} style={{display: 'flex', justifyContent: 'center'}}>
-                  <Pagination
+                  {/* <Pagination
                     onChange={handlePagination}
                     style={{ marginTop: 25}}
                     count={Math.ceil(totalCount / limit)}
                     color='primary'
                     page={page}
-                  />
+                  /> */}
+                          <Pagination
+                  totalPages={Math.ceil(totalCount / limit)}
+                  currentPage={page}
+                  setCurrentPage={setPage}
+                />
                 </Grid>
               </Grid>
             </Paper>

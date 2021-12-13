@@ -10,7 +10,7 @@ import Layout from '../Layout';
 import Loader from '../../components/loader/loader';
 import FormControl from '@material-ui/core/FormControl';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import { Pagination } from '@material-ui/lab';
+// import { Pagination } from '@material-ui/lab';
 import ColorPicker from 'material-ui-color-picker';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
@@ -54,6 +54,7 @@ import { result } from 'lodash';
 import e from 'cors';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
+import Pagination from 'components/PaginationComponent';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -705,14 +706,20 @@ const Cal1 = () => {
 
           <Grid container justify='center'>
             {dummyData && totalGenre > 9 && (
+              // <Pagination
+              //   onChange={handlePagination}
+              //   // style={{ paddingLeft: '150px' }}
+              //   count={Math.ceil(totalGenre / limit)}
+              //   color='primary'
+              //   page={pageNumber}
+              //   color='primary'
+              // />
+
               <Pagination
-                onChange={handlePagination}
-                // style={{ paddingLeft: '150px' }}
-                count={Math.ceil(totalGenre / limit)}
-                color='primary'
-                page={pageNumber}
-                color='primary'
-              />
+              totalPages={Math.ceil(totalGenre / limit)}
+              currentPage={pageNumber}
+              setCurrentPage={setPageNumber}
+            />
             )}
           </Grid>
         </div>

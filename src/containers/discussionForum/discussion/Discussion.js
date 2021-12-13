@@ -29,6 +29,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
+import './discussion.css';
 
 const useStyles = makeStyles((theme)=>({
   discussionContainer: {
@@ -676,8 +677,8 @@ export default function DiscussionComponent(props) {
                     Read post
                   </StyledButton>
                 </Grid>
-                <Grid item sm={12} xs={6} className={classes.replyButtons}>
-                  <StyledOutlinedButton fullWidth onClick={handleReply}>
+                <Grid item sm={12} xs={6}  >
+                  <StyledOutlinedButton fullWidth className='discussion-comment-button' onClick={handleReply}>
                   Comment
                   </StyledOutlinedButton>
                 </Grid>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Paper from '@material-ui/core/Paper';
 import { Grid, useTheme, SvgIcon } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
+// import { Pagination } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../../Layout';
@@ -16,6 +16,7 @@ import DailyDairyFilter from '../view-daily-dairy';
 import DailyDairy from '../dairy-card';
 import ViewMoreDailyDairyCard from '../view-more-card';
 import { Context } from '../context/context';
+import Pagination from 'components/PaginationComponent';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -182,12 +183,18 @@ const DailyDairyList = () => {
           )}
 
           <div className='paginateData paginateMobileMargin'>
-            <Pagination
+            {/* <Pagination
               onChange={handlePagination}
               style={{ marginTop: 25 }}
               count={Math.ceil(totalCount / limit)}
               color='primary'
               page={page}
+            /> */}
+
+            <Pagination
+              totalPages={Math.ceil(totalCount / limit)}
+              currentPage={page}
+              setCurrentPage={setPage}
             />
           </div>
         </Paper>
