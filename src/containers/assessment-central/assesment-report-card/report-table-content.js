@@ -39,7 +39,7 @@ const useStyles = makeStyles({
 const ReportTableContent = (props) => {
   const classes = useStyles();
 
-  const { Data = {}, TableType = '' } = props || {};
+  const { Data = {}, TableType = '', isOrchids = true } = props || {};
 
   const {
     category_map: categoryMap = {},
@@ -53,14 +53,14 @@ const ReportTableContent = (props) => {
     constantHeaders,
     weightRow,
     categoryAssessmentType,
-  } = generateCategoryMap(categoryMap) || {};
+  } = generateCategoryMap(categoryMap, isOrchids) || {};
 
-  const semesterMarks = generateTermDetails(termDetails, categoryKeys) || [];
+  const semesterMarks = generateTermDetails(termDetails, categoryKeys, isOrchids) || [];
 
   const termDetailsSummary =
-    generateTermDetailsSummaryRow(termDetails, categoryRow?.length) || [];
+    generateTermDetailsSummaryRow(termDetails, categoryRow?.length, isOrchids) || [];
 
-  const tableHeaderRow = getTableHeaderRow(TableType, categoryRow?.length);
+  const tableHeaderRow = getTableHeaderRow(TableType, categoryRow?.length, isOrchids);
   const totalColspan = tableHeaderRow.reduce(
     (total, { colspan = 1 }) => total + colspan,
     0
@@ -119,7 +119,7 @@ const ReportTableContent = (props) => {
             <StyledTableCell
               align='right'
               rowSpan={2}
-              style={{ width: index === 3 ? '74px' : '46px' }}
+              style={{ width: index === (isOrchids ? 3 : 2) ? '74px' : '46px' }}
             >
               {item}
             </StyledTableCell>
