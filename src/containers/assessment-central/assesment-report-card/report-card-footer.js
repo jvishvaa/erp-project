@@ -59,12 +59,13 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
-const ReportCardFooter = ({ scholastic, coScholastic, schoolData }) => {
+const ReportCardFooter = ({ scholastic, coScholastic, schoolData, isOrchids = true }) => {
   const classes = useStyles();
   const [footerRowOne = [], footerRowTwo = [], footerRowThree = []] = generateFooterData(
     scholastic,
     coScholastic,
-    schoolData
+    schoolData,
+    isOrchids
   );
   return (
     <>
