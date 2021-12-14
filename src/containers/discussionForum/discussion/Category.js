@@ -332,19 +332,10 @@ const Category = (props) => {
   }
 
   const handlePass = (id) => {
-    // const grade_id = userDetails.role_details?.grades[0]?.grade_id;
-    // const branch_id = userDetails.role_details?.branch[0]?.id;
-    // axiosInstance.get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&is_delete=False`)
-    // .then((res) => {
-    //   setPostList(res.data.data.results);
-    //   setTotalCount(res.data.data.count? res.data.data.count : res.data.data.results.length);
-    // })
-    // .catch((error) => console.log(error));
-    console.log(id, "id of award")
+    
     setAwardy(id)
   }
 
-  // post list API
   React.useEffect(() => {
     if (moduleId) {
       if (location.pathname === '/student-forum' && personalInfo?.role !== "SuperUser") {
@@ -375,17 +366,11 @@ const Category = (props) => {
           getDiscussionPost(
             `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}&section_mapping=${sections}&page=${page}&page_size=${limit}`
           );
-          // getDiscussionPost(
-          //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}`
-          // );
         }
         if (categoryId !== 0 && grades !== '' && sections !== '') {
           getDiscussionPost(
             `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch_id=${branchId}&category=${categoryId}&grade=${grades}&section_mapping=${sections}&page=${page}&page_size=${limit}`
           );
-          // getDiscussionPost(
-          //   `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&category=${categoryId}&grade=${grades}`
-          // );
         }
 
       }
