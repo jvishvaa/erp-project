@@ -21,7 +21,7 @@ import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2'
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import { useLocation } from 'react-router-dom';
 
-const StyledTabs = withStyles((theme)=>({
+const StyledTabs = withStyles((theme) => ({
   indicator: {
     display: 'flex',
     justifyContent: 'center',
@@ -169,7 +169,7 @@ const GeneralDairyFilter = ({
     });
     setDateRangeTechPer([moment().subtract(6, 'days'), moment()]);
     setDateRange([moment().subtract(6, 'days'), moment()]);
-    setFilterData({ ...filterData, subject: '', chapter: '' });
+    setFilterData({ subject: '', chapter: '' });
     setSectionDropdown([]);
     setSectionIds([]);
     setPeriodData([]);
@@ -281,7 +281,7 @@ const GeneralDairyFilter = ({
   const handleSection = (event, value) => {
     sectionId = [];
     setFilterData({ ...filterData });
-    if (value.length > -1) {
+    if (value) {
       const ids =
         value &&
         value.map((el) => {
@@ -290,6 +290,7 @@ const GeneralDairyFilter = ({
         });
       setFilterData({ ...filterData, sections: value });
       setSectionIds(ids);
+      setSectionDropdown([])
     }
   };
 
