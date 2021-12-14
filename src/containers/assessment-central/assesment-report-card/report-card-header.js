@@ -25,7 +25,12 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
-const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} }) => {
+const ReportCardHeader = ({
+  schoolData = {},
+  scholastic = {},
+  coScholastic = {},
+  isOrchids = true,
+}) => {
   const {
     school_name: schoolName,
     address,
@@ -42,7 +47,7 @@ const ReportCardHeader = ({ schoolData = {}, scholastic = {}, coScholastic = {} 
   } = ENVCONFIG;
 
   const [firstRowColspan = 2, secondRowColspan = 20, thirdRowColspan = 3] =
-    generateHeaderColspan(scholastic, coScholastic);
+    generateHeaderColspan(scholastic, coScholastic, isOrchids);
 
   const getAffiliationNumber = () => {
     if (cbseAffiliationCode) {
