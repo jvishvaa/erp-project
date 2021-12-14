@@ -724,7 +724,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
             
             <div className = {classes.instructionText}>
               {
-                desc?<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>Instructions :- {desc}</span>:<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>No Instruction</span>
+                desc?<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>Instructions : {desc}</span>:<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>No Instruction</span>
               }
        
          

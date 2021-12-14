@@ -4,12 +4,12 @@
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import { DataGrid } from '@material-ui/data-grid';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useCallback } from 'react';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { Divider, Grid, TextField, Button, OutlinedInput, Typography } from '@material-ui/core';
+import { Divider, Grid, TextField, Button, OutlinedInput,Typography } from '@material-ui/core';
 import Select from '@material-ui/core/Select';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -28,6 +28,14 @@ import './styles.scss';
 import Layout from '../../Layout';
 import { SearchOutlined } from '@material-ui/icons';
 // import './assign-role.css';
+
+const debounce = (fn, delay) => {
+  let timeoutId;
+  return function(...args) {
+    clearInterval(timeoutId);
+    timeoutId = setTimeout(() => fn.apply(this, args), delay);
+  };
+};
 
 const AssignRole = (props) => {
   const classes = useStyles();
@@ -94,8 +102,8 @@ const AssignRole = (props) => {
   }, []);
 
   useEffect(() => {
-    if (moduleId && selectedYear) getBranchApi();
-  }, [moduleId, selectedYear]);
+    if (moduleId && selectedYear ) getBranchApi();
+  }, [moduleId , selectedYear]);
 
   // useEffect(() => {
   //   if (selectedYear) {
@@ -127,7 +135,7 @@ const AssignRole = (props) => {
   }, [selectedGrades]);
 
   useEffect(() => {
-    if (moduleId) displayUsersList();
+    if (moduleId && filterCheck) displayUsersList();
     if (assignedRole) {
       setAssigenedRole(false);
     }
@@ -366,9 +374,22 @@ const AssignRole = (props) => {
     }
   };
 
+  const debounceCallback = useCallback(
+    debounce(value => {
+      setIsNewSearch(true);
+    }, 500),
+    []
+  );
+
   const handleTextSearch = (e) => {
-    setIsNewSearch(true);
+    let search = e.target.value;
     setSearchText(e.target.value);
+    if(search.length > 1) {
+      debounceCallback(search);
+    }
+    else {
+      setIsNewSearch(false);
+    }
   };
 
   const handleMultipleRoles = (event, value) => {
@@ -559,7 +580,7 @@ const AssignRole = (props) => {
                 filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
-                    className='message_log-textfield'
+                    className='message_log-textfield' 
                     {...params}
                     variant='outlined'
                     label='Role'
@@ -718,16 +739,16 @@ const AssignRole = (props) => {
             </Grid>
             <Grid item md={2} xs={4}>
               <Typography color="secondary">
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={!!checkAll}
-                      onChange={(e) => handleSelectAll(e)}
-                      color='primary'
-                    />
-                  }
-                  label='Select all'
-                />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={!!checkAll}
+                    onChange={(e) => handleSelectAll(e)}
+                    color='primary'
+                  />
+                }
+                label='Select all'
+              />
               </Typography>
             </Grid>
             <Grid item md={2} xs={4}>
@@ -790,7 +811,7 @@ const AssignRole = (props) => {
           </>
         )}
       </div>
-    </Layout >
+    </Layout>
   );
 };
 

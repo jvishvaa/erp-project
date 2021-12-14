@@ -98,11 +98,11 @@ function GridList(props) {
                     </Typography>
                 </CardContent>
               </CardActionArea>
-              <CardActions >
+              <CardActions style = {{justifyContent : 'center',position:'relative'}}>
                   <Button
                     size='small'
                     color='primary'
-                    style={{ marginTop: 90, width: 150 }}
+                    style={{width: 150,position:'absolute' }}
                     onClick={() =>
                       props.history.push({
                         pathname: '/blog/teacher/contentView',
@@ -168,11 +168,11 @@ function GridList(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions style={{marginTop:'28%' }}>
+                <CardActions style = {{justifyContent : 'center',position:'relative'}}>
                   <Button
                     size='small'
                     color='primary'
-                    style={{ width: 150}}
+                    style={{ position:'absolute', width: 150}}
                     onClick={() =>
                       props.history.push({
                         pathname: '/blog/teacher/contentView',
@@ -239,11 +239,11 @@ function GridList(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions style={{marginTop:'28%' }}>
+                <CardActions style = {{justifyContent : 'center',position:'relative'}}>
                   <Button
                     size='small'
                     color='primary'
-                    style={{  width: 150 }}
+                    style={{ position:'absolute', width: 150 }}
                     onClick={() =>
                       props.history.push({
                         pathname: '/blog/teacher/contentView',
@@ -313,11 +313,11 @@ function GridList(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions style={{marginTop:'28%' }}>
+                <CardActions style = {{justifyContent : 'center',position:'relative'}}>
                   <Button
                     size='small'
                     color='primary'
-                    style={{  width: 150 }}
+                    style={{ position:'absolute', width: 150 }}
                     onClick={() =>
                       props.history.push({
                         pathname: '/blog/teacher/contentView',
@@ -386,11 +386,11 @@ function GridList(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions style={{marginTop:'28%' }}>
+                <CardActions style = {{justifyContent : 'center',position:'relative'}}>
                   <Button
                     size='small'
                     color='primary'
-                    style={{  width: 150 }}
+                    style={{ position:'absolute', width: 150 }}
                     onClick={() =>
                       props.history.push({
                         pathname: '/blog/teacher/contentView',
@@ -458,11 +458,11 @@ function GridList(props) {
                     </Typography>
                 </CardContent>
               </CardActionArea>
-              <CardActions >
+              <CardActions style = {{justifyContent : 'center',position:'relative'}} >
                   <Button
                     size='small'
                     color='primary'
-                    style={{ marginTop: '28%', width: 150 }}
+                    style={{ position:'absolute', width: 150 }}
                     onClick={() =>
                       props.history.push({
                         pathname: '/blog/teacher/contentView',

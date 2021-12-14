@@ -44,6 +44,10 @@ const ErpAdminViewClass = ({ history }) => {
   const [studentDetails] = useState(
     JSON.parse(window.localStorage.getItem('userDetails'))
   );
+
+  const { user_level: userLevel = 0 } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
+
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(1);
   const [academicYear, setAcademicYear] = useState([]);
@@ -259,21 +263,34 @@ const ErpAdminViewClass = ({ history }) => {
         endDateTechPer = dateRangeTechPer[0];
       }
       if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
+        const isMsOriginURL = ![0, 1].includes(tabValue);
+        const url = isMsOriginURL
+          ? '/reports/v1/retrieve-online-class_no_filter/'
+          : '/oncls/v1/retrieve-online-class_no_filter/';
+
         APIREQUEST(
           'get',
-          `/oncls/v1/retrieve-online-class_no_filter/?&class_status=${
+          `${url}?user_level=${userLevel}&class_status=${
             tabValue + 1
           }&start_date=${startDateTechPer?.format(
             'YYYY-MM-DD'
           )}&end_date=${endDateTechPer?.format(
             'YYYY-MM-DD'
-          )}&page_number=${page}&page_size=${limit}`
+          )}&page_number=${page}&page_size=${limit}`,
+          null,
+          null,
+          isMsOriginURL
         )
           .then((result) => {
             handleApiRes(result);
           })
           .catch((error) => {
-            setAlert('error', error?.message);
+            const { response = {} } = error || {};
+            const { status = 502 } = response || {};
+            setAlert(
+              'error',
+              status === 502 ? 'Data will be available after 3:00 pm' : error?.message
+            );
             setLoading(false);
             setFilterList([]);
           });
@@ -292,14 +309,21 @@ const ErpAdminViewClass = ({ history }) => {
     }
   }
 
-  const getEndpoint = () => {
+  const getEndpoint = (path) => {
     if (window.location.pathname === '/erp-online-class-student-view') {
-      return '/oncls/v1/student-oncls/';
+      if(tabValue === 0 || tabValue === 1){
+        return `/oncls/v1/student-oncls/?${path}`;
+        }
+        else {
+        return `/reports/v1/student-oncls/?${path}`;
+        }
     } else if (
       window.location.pathname === '/erp-online-class' ||
       window.location.pathname === '/erp-online-class-teacher-view'
     ) {
-      return `/oncls/v1/retrieve-online-class/`;
+      return [0, 1].includes(tabValue)
+        ? `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}`
+        : `/reports/v1/retrieve-online-class/?${path}&user_level=${userLevel}`;
     }
   };
 
@@ -307,17 +331,23 @@ const ErpAdminViewClass = ({ history }) => {
     var url = api.split('?');
     url.shift();
     var path = url.join('?');
-    let endpoint1 = getEndpoint();
+    let endpoint1 = getEndpoint(path);
     if (!endpoint1) {
       setLoading(false);
       return;
     }
-    APIREQUEST('get', `${endpoint1}?${path}`)
+    const isMsOriginURL = ![0, 1].includes(tabValue);
+    APIREQUEST('get', endpoint1, null, null, isMsOriginURL)
       .then((result) => {
         handleApiRes(result);
       })
       .catch((error) => {
-        setAlert('error', error?.message);
+        const { response = {} } = error || {};
+        const { status = 502 } = response || {};
+        setAlert(
+          'error',
+          status === 502 ? 'Data will be available after 3:00 pm' : error?.message
+        );
         setLoading(false);
         setFilterList([]);
       });

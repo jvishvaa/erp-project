@@ -92,7 +92,19 @@ const PreQuiz = (props) => {
   const {email: currentUserEmail, token: userAuthToken}=JSON.parse(localStorage.getItem('userDetails')) || {};
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [isOneOfTheHosts,setIsOneOfTheHosts]=useState(false)
-  
+  const [isWebview, setisWebview] = useState(false)
+  const [redirectionView,setredirectionView] = useState(null)
+ 
+
+useEffect(() => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const redirectionView = +searchParams.get('wb_view');
+  if(redirectionView === 1 || redirectionView === 2){
+    setisWebview(true)
+    setredirectionView(redirectionView)
+  }
+})
+
   useEffect(() => {
       getPreQuizStatus();
      }, []);
@@ -127,7 +139,7 @@ const PreQuiz = (props) => {
       });
       };
  
- 
+     
 const handleSubmit = () =>{
   const { lobby_info:lobbyInfoObj} = preQuizInfo||{}
   let role=''
@@ -145,7 +157,15 @@ const handleSubmit = () =>{
   const {online_class_info: onlineClassInfo} = preQuizInfo||{}
   const {online_class: onlineClassObj} = onlineClassInfo||{}
   const {id: onlineClassId} = onlineClassObj||{}
-  const url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`
+  const searchParams = new URLSearchParams(window.location.search);
+  const redirectionView = +searchParams.get('wb_view');
+  let url
+if(isWebview){
+   url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}/?wb_view=${redirectionView}`
+}else{
+   url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`
+}
+  
   let link = document.createElement('a')
   link.href = url
   link.target = '_blank'
@@ -229,7 +249,12 @@ const handleCreateLobby = ()=>{
         // const url = `/quiz/:onlineClassId/:questionpaperId/:lobbyUuid`
         // history.push(`/quiz/game/${data}/${lobbyUuid}/${lobbyId}/`)
         if(lobbyUuid) {
-          const url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`;
+          let url
+          if(isWebview){
+            url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}/?wb_view=${redirectionView}`;
+          }else{
+            url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`;
+          }
           history.push(url);
           setCreateLobby(false);
         } else {
@@ -331,14 +356,16 @@ return (
 }
        </div>
        <div>
-      <Button
-      variant='contained'
-      style={{ width: '50%', backgroundColor: 'lightgray' }}
-      size='medium'
-      onClick={()=>history.goBack()}
-      >
-      BACK
-      </Button>
+         {
+           !isWebview &&  <Button
+           variant='contained'
+           style={{ width: '50%', backgroundColor: 'lightgray' }}
+           size='medium'
+           onClick={()=>history.goBack()}
+           >
+           BACK
+           </Button>
+         }
       </div>
        </div>
        </div>
