@@ -31,10 +31,20 @@ const useStyles = makeStyles({
   },
 });
 
-const TopDetailsHeader = ({ userInfo = {}, scholastic = {}, coScholastic = {} }) => {
+const TopDetailsHeader = ({
+  userInfo = {},
+  scholastic = {},
+  coScholastic = {},
+  isOrchids = true,
+}) => {
   const { profile_img = placeholderImage } = userInfo || {};
   const classes = useStyles();
-  const userData = generateReportTopDescription(userInfo || {}, scholastic, coScholastic);
+  const userData = generateReportTopDescription(
+    userInfo || {},
+    scholastic,
+    coScholastic,
+    isOrchids
+  );
 
   return (
     <>
