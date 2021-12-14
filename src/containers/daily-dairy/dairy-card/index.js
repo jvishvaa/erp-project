@@ -15,6 +15,11 @@ import { useHistory } from 'react-router-dom'
 import cardAttachment from '../../../assets/images/cardAttachment.svg'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { Context } from '../context/context'
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 
 
 const DailyDairy = ({ lesson, period, setPeriodDataForView, setViewMoreData, setViewMore, setLoading, index, periodColor, setPeriodColor, setSelectedIndex, setEditData, handleDairyType, deleteFlag, setDeleteFlag }) => {
@@ -28,10 +33,22 @@ const DailyDairy = ({ lesson, period, setPeriodDataForView, setViewMoreData, set
   const history = useHistory()
   const [state, setState] = useContext(Context)
   const location = useLocation();
-
+  const [deleteAlert, setDeleteAlert] = React.useState(false);
+  const [deleteId, setDeleteId] = React.useState(null);
+  const [deleteIndex, setDeleteIndex] = React.useState(null);
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
     setShowPeriodIndex(index);
+  };
+  const handleDeleteCancel = () => {
+    setDeleteId(null);
+    setDeleteIndex(null);
+    setDeleteAlert(false);
+  };
+  const handleDeleteOpen = () => {
+    // setDeleteId(null);
+    // setDeleteIndex(null);
+    setDeleteAlert(true);
   };
   const isTeacher = location.pathname === '/diary/teacher' ? true : false;
 
@@ -42,10 +59,6 @@ const DailyDairy = ({ lesson, period, setPeriodDataForView, setViewMoreData, set
 
   const handleViewMore = () => {
     setLoading(true)
-    // axiosInstance.get(`${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}`)
-    //   .then(result => {
-    //     // console.log(result.data,'ooo')
-    //     if (result.data.status_code === 200) {
     setLoading(false);
     setViewMore(true);
     setViewMoreData(lesson);
@@ -53,24 +66,6 @@ const DailyDairy = ({ lesson, period, setPeriodDataForView, setViewMoreData, set
     setSelectedIndex(index);
     setPeriodColor(true);
     handleDairyType(2);
-    // } else {
-    //   setLoading(false);
-    //   setViewMore(false);
-    //   setViewMoreData({});
-    //   setAlert('error', result.data.message);
-    //   setPeriodDataForView();
-    //   setSelectedIndex(-1);
-    //   setPeriodColor(true);
-    // }
-    //   })
-    //   .catch((error) => {
-    //     setViewMore(false);
-    //     setViewMoreData({});
-    //     setAlert('error', error.message);
-    //     setPeriodDataForView();
-    //     setSelectedIndex(-1);
-    //     setPeriodColor(true);
-    //   })
   }
   const handleDelete = (e, index) => {
     axiosInstance.delete(`${endpoints.dailyDairy.updateDelete}${e.id}/update-delete-dairy/`)
@@ -79,6 +74,9 @@ const DailyDairy = ({ lesson, period, setPeriodDataForView, setViewMoreData, set
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message)
           setDeleteFlag(!deleteFlag)
+          setDeleteId(e.id);
+          setDeleteIndex(e);
+          setDeleteAlert(true);
         } else {
           setAlert('errpr', 'ERROR!')
         }
@@ -87,8 +85,14 @@ const DailyDairy = ({ lesson, period, setPeriodDataForView, setViewMoreData, set
 
 
   }
+  // const handleDelete = (e) => {
+
+  //   setDeleteId(e.id);
+  //   setDeleteIndex(e);
+  //   setDeleteAlert(true);
+  // };
+
   const handleEdit = (data) => {
-    // // setEditData(e)
     setState({ editData: data, isEdit: true });
     history.push('/create/daily-diary')
   }
@@ -131,6 +135,30 @@ const DailyDairy = ({ lesson, period, setPeriodDataForView, setViewMoreData, set
             </Typography>
           </Box>
         </Grid>
+        <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
+          <DialogTitle
+            id='draggable-dialog-title'
+          >
+            Delete Dairy
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={(e) => handleDelete(lesson)}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Grid item xs={4} className={classes.textRight}>
           <Box>
             <span
@@ -151,7 +179,7 @@ const DailyDairy = ({ lesson, period, setPeriodDataForView, setViewMoreData, set
                 showMenu) ? (
                 <div className="tooltip" style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span>
-                    <Button className={classes.tooltip} style={{ width: "120px" }} onClick={e => handleDelete(lesson)}>Delete</Button>
+                    <Button className={classes.tooltip} style={{ width: "120px" }} onClick={handleDeleteOpen}>Delete</Button>
                     <Button className={classes.tooltip} style={{ width: "120px" }} onClick={e => handleEdit(lesson)}> Edit</Button>
                   </span>
                 </div>
@@ -184,13 +212,10 @@ const DailyDairy = ({ lesson, period, setPeriodDataForView, setViewMoreData, set
                 )} />
               {lesson.documents ? lesson.documents.length : 0} Files
             </IconButton>
-            {/* <label></label> */}
           </div>
         </Grid>
 
         <Grid item xs={6} className={classes.textRight}>
-          {/* {!viewMore && */}
-
           {!periodColor &&
             <Button
               variant='contained'
