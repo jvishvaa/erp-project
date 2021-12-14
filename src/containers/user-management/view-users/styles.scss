@@ -48,3 +48,28 @@
     margin: 0 auto;
   }
 }
+.filter-container {
+  margin: 20px 0px 20px 15px;
+  display: flex;
+  flex-wrap: wrap;
+  .filter-student {
+    // @media (max-width: 600px) {
+    //   width: 100%;
+    // }
+  }
+  .filter-button {
+    text-transform: none;
+    &:hover {
+      background-color: #b24a4a;
+    }
+  }
+  .create-user-button {
+    text-transform: capitalize;
+    white-space: nowrap;
+    // margin-bottom: 30px;
+    background-color: #ef676a;
+    &:hover {
+      background-color: #b24a4a;
+    }
+  }
+}
