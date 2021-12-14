@@ -211,7 +211,6 @@ const OnlineClass = (props) => {
   const getOnlineData = () => {
     apiRequest('get', endpoints.dashboard.student.onlineclasstimestats, null, null, true, 5000)
       .then((result = {}) => {
-        // console.log("hw", result);
         const { data = [] } = result || {};
         if (Array.isArray(data)) {
           setOnlineclassar(data || []);
@@ -222,7 +221,6 @@ const OnlineClass = (props) => {
 
   useEffect(() => {
     getOnlineData();
-    console.log("online")
   }, []);
   return (
     <>

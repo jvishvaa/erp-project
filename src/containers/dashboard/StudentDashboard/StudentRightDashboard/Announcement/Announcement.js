@@ -204,12 +204,9 @@ export default function Announcement(props) {
   const [open, setOpen] = React.useState(false);
   const [checkdata, setCheckdata] = React.useState('');
   const handleOpen = (data , index) => {setOpen(true) 
-  console.log(data);
   setOpentwo(false);
   if(data?.content) {
     setCheckdata(data);
-    console.log(data , "check");
-    
   }
   };
   const handleClose = () => {
@@ -295,7 +292,6 @@ export default function Announcement(props) {
     role && role.length && role.map(item => {
       myRole.push(item.id)
     })
-    // console.log("role", role);
     const payload = { role_id: myRole, content: add }
     apiRequest('post', endpoints.dashboard.student.create, payload)
       .then((result) => {
@@ -377,7 +373,6 @@ export default function Announcement(props) {
   const checkDates = () => {
   setToday(announcementArr.filter((item) => { return (`${moment(item.created_at).format('YYYY-MM-DD')}` === 
   `${moment().format('YYYY-MM-DD')}`)}))
-  console.log("deleted")
   setYesterday(announcementArr.filter((item) => { return (`${moment(item.created_at).format('YYYY-MM-DD')}` === 
   `${moment().subtract(1, 'days').format('YYYY-MM-DD')}`)}))
   setTwodays(announcementArr.filter((item) => { return (`${moment(item.created_at).format('YYYY-MM-DD')}` === 
