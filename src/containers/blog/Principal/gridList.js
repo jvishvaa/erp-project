@@ -100,7 +100,7 @@ function GridList(props) {
                     </Typography>
                 </CardContent>
               </CardActionArea>
-              <CardActions style={{ float: 'left',marginTop:'-3%' }}>
+              <CardActions style={{justifyContent : 'center'}}>
                   <Button
                     size='small'
                     color='primary'
@@ -175,7 +175,7 @@ function GridList(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions style={{marginTop:'40%' }}>
+                <CardActions style={{justifyContent : 'center' }}>
                   <Button
                     size='small'
                     color='primary'
@@ -245,7 +245,7 @@ function GridList(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions style={{marginTop:'40%' }}>
+                <CardActions style={{justifyContent : 'center' }}>
                   <Button
                     size='small'
                     color='primary'
@@ -322,7 +322,7 @@ function GridList(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions style={{marginTop:'40%' }}>
+                <CardActions style={{justifyContent : 'center' }}>
                   <Button
                     size='small'
                     color='primary'
@@ -396,7 +396,7 @@ function GridList(props) {
                     </Typography>
                   </CardContent>
                 </CardActionArea>
-                <CardActions style={{marginTop:'40%' }}>
+                <CardActions style={{justifyContent : 'center' }}>
                   <Button
                     size='small'
                     color='primary'
@@ -467,7 +467,7 @@ function GridList(props) {
                     </Typography>
                 </CardContent>
               </CardActionArea>
-              <CardActions style={{marginTop:'-3%' }}>
+              <CardActions style={{justifyContent : 'center' }}>
                   <Button
                     size='small'
                     color='primary'
