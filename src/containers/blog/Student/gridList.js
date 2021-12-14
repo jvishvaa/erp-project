@@ -142,11 +142,11 @@ function GridList(props) {
                    'Published at branch level' :data[0]&&data[0].published_level === "3" ?
                   'Published at grade level':data[0]&&data[0].published_level === "4" ?
                   'Published at section level': "Published at orchids level" :''}</p> :''}
-                <CardActions style={{ float: 'left',marginTop:'20%' }}>
+                <CardActions style={{ justifyContent : 'center',position:'relative', height:'40px' }}>
                   <Button
                     size='small'
                     color='primary'
-                    style={{ width: 150 }}
+                    style={{ width: 150,position:'absolute' }}
                     onClick={() =>
                       props.history.push({
                         pathname: '/blog/student/view-blog',
@@ -231,11 +231,11 @@ function GridList(props) {
                    'Published at branch level' :data[1]&&data[1].published_level === "3" ?
                   'Published at grade level':data[1]&&data[1].published_level === "4" ?
                   'Published at section level': "Published at orchids level" :''}</p> :''}
-                  <CardActions style={{marginTop:'40%' }}>
+                  <CardActions style={{justifyContent : 'center',position:'relative',height:'40px' }}>
                     <Button
                       size='small'
                       color='primary'
-                      style={{ width: 150 }}
+                      style={{position:'absolute', width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -320,12 +320,12 @@ function GridList(props) {
                    'Published at branch level' :data[2]&&data[2].published_level === "3" ?
                   'Published at grade level':data[2]&&data[2].published_level === "4" ?
                   'Published at section level': "Published at orchids level" :''}</p> :''}
-                  <CardActions style={{marginTop:'40%' }}>
+                  <CardActions style={{justifyContent : 'center',position:'relative',height:'40px' }}>
                  
                     <Button
                       size='small'
                       color='primary'
-                      style={{  width: 150 }}
+                      style={{ position:'absolute', width: 150 }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -413,11 +413,11 @@ function GridList(props) {
                    'Published at branch level' :data[3]&&data[3].published_level === "3" ?
                   'Published at grade level':data[3]&&data[3].published_level === "4" ?
                   'Published at section level': "Published at orchids level" :''}</p> :''}
-                  <CardActions style={{marginTop:'40%' }}>
+                  <CardActions style={{justifyContent : 'center',position:'relative',height:'40px' }}>
                     <Button
                       size='small'
                       color='primary'
-                      style={{ width: 150 }}
+                      style={{ width: 150,position:'absolute' }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -502,11 +502,11 @@ function GridList(props) {
                    'Published at branch level' :data[4]&&data[4].published_level === "3" ?
                   'Published at grade level':data[4]&&data[4].published_level === "4" ?
                   'Published at section level': "Published at orchids level" :''}</p> : ''}
-                  <CardActions style={{marginTop:'40%' }}>
+                  <CardActions style={{justifyContent : 'center',position:'relative',height:'40px' }}>
                     <Button
                       size='small'
                       color='primary'
-                      style={{ width: 150 }}
+                      style={{ width: 150,position:'absolute' }}
                       onClick={() =>
                         props.history.push({
                           pathname: '/blog/student/view-blog',
@@ -584,11 +584,11 @@ function GridList(props) {
                    'Published at branch level' :data[5]&&data[5].published_level === "3" ?
                   'Published at grade level':data[5]&&data[5].published_level === "4" ?
                   'Published at section level': "Published at orchids level" :''}</p> :''}
-                <CardActions style={{ float: 'left',marginTop:'20%' }}>
+                <CardActions style={{ justifyContent : 'center',position:'relative',height:'40px' }}>
                   <Button
                     size='small'
                     color='primary'
-                    style={{  width: 150 }}
+                    style={{  width: 150 ,position:'absolute'}}
                     onClick={() =>
                       props.history.push({
                         pathname: '/blog/student/view-blog',

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { withRouter } from 'react-router-dom';
 import { Button } from '@material-ui/core';
 import { useSocket } from '../../mp-quiz-providers';
@@ -13,7 +13,16 @@ function MpQuizSocketStatus(props) {
     [window.WebSocket.OPEN]: 'open',
     [window.WebSocket.CONNECTING]: 'connecting',
   };
+  const [isWebview, setisWebview] = useState(false)
+ 
 
+useEffect(() => {
+  const searchParams = new URLSearchParams(window.location.search);
+  const redirectionView = +searchParams.get('wb_view');
+  if(redirectionView === 1 || redirectionView === 2){
+    setisWebview(true)
+  }
+})
   const handleGoHomeRedirection=()=>{
     {roleId==0?
       props.history.push('/erp-online-class-teacher-view') :
@@ -27,10 +36,10 @@ function MpQuizSocketStatus(props) {
         loader={false}
         label={
           <div style={{ minWidth: '40vw', display: 'flex', justifyContent: "space-evenly" }}>
-            <Button variant='outlined'
+            {!isWebview && <Button variant='outlined'
               onClick={handleGoHomeRedirection}>
               Go Home
-            </Button>
+            </Button>}
             <Button variant='outlined'
               onClick={() => { connect() }}
             >Resume
