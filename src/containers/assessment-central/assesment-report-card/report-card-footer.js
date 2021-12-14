@@ -36,6 +36,7 @@ const useStyles = makeStyles({
     textAlign: 'left !important',
     padding: '5px 2px !important',
     height: '30px',
+    textTransform: 'none !important',
   },
   footerRowThreeCell: {
     padding: '5px 2px !important',
@@ -58,12 +59,13 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
-const ReportCardFooter = ({ scholastic, coScholastic, schoolData }) => {
+const ReportCardFooter = ({ scholastic, coScholastic, schoolData, isOrchids = true }) => {
   const classes = useStyles();
   const [footerRowOne = [], footerRowTwo = [], footerRowThree = []] = generateFooterData(
     scholastic,
     coScholastic,
-    schoolData
+    schoolData,
+    isOrchids
   );
   return (
     <>

@@ -41,15 +41,15 @@ export default function AssesmentReport({ reportCardData }) {
   return (
     <TableContainer>
       <Table className={classes.table}>
-        <ReportCardHeader {...{ schoolData, scholastic, coScholastic }} />
-        <StudentDetails {...{ userInfo, scholastic, coScholastic }} />
+        <ReportCardHeader {...{ schoolData, scholastic, coScholastic, isOrchids }} />
+        <StudentDetails {...{ userInfo, scholastic, coScholastic, isOrchids }} />
         {tableData.map((data) => (
-          <ReportTableContent {...data} />
+          <ReportTableContent {...data} isOrchids={isOrchids} />
         ))}
         {isOrchids && (
           <PersonalityTraitTable {...{ scholastic, coScholastic, traitGradeScale }} />
         )}
-        <ReportCardFooter {...{ scholastic, coScholastic, schoolData }} />
+        <ReportCardFooter {...{ scholastic, coScholastic, schoolData, isOrchids }} />
       </Table>
     </TableContainer>
   );
