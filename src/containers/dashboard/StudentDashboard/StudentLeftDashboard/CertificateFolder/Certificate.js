@@ -69,19 +69,14 @@ const Certificate = (props) => {
   const getCertificateData = () => {
     apiRequest('get', endpoints.dashboard.student.certificates, null , null, null, 5000)
       .then((result) => {
-        if (result.data.status_code === 200) {
-          setCertificateArr(result.data.result);
+        if (result?.data?.status_code === 200) {
+          setCertificateArr(result?.data?.result);
         }
       })
       .catch((error) => {
         console.log('error');
       });
   };
-
-  // useEffect(() => {
-  //   getCertificateData();
-  // }, []);
-
   //arrow carousal
   const myArrow = ({ type, onClick, isEdge }) => {
     const leftPointer = '<';

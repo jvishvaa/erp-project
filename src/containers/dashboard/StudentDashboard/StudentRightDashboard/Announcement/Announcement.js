@@ -56,7 +56,8 @@ const styletwo = {
   height: '450px',
   overflow: 'auto',
   color: 'white',
-  padding: '20px 0px',
+  overflow: 'hidden',
+  padding: '10px 0px',
   "&::-webkit-scrollbar": {
     width: "5px",
     marginRight: "20px",
@@ -207,6 +208,8 @@ export default function Announcement(props) {
   setOpentwo(false);
   if(data?.content) {
     setCheckdata(data);
+    console.log(data , "check");
+    
   }
   };
   const handleClose = () => {
@@ -228,6 +231,9 @@ export default function Announcement(props) {
   const [ yesterday , setYesterday  ] = useState([])
   const [ twodays , setTwodays ] = useState([])
   const [ oldPost , setOldPost ] = useState([])
+  const [isEnabled, setIsEnabled] = React.useState(false);
+  const [page, setPage] = React.useState();
+
 
   const [loading, setLoading] = useState(false);
   //we are making request to show roles in modal
@@ -244,11 +250,12 @@ export default function Announcement(props) {
   };
   //making request to show announcements
   const updateAnnouncement = () => {
-    apiRequest('get', endpoints.dashboard.student.update,null, null, null, 5000)
+    apiRequest('get', endpoints.dashboard.student.update,null,null,true, 5000)
       .then((result) => {
         if (result?.data?.status_code === 200) {
+          setIsEnabled(result?.data?.is_enabled)
           setNextPage(result?.data?.result?.next);
-          setAnnouncementArr(result?.data?.result?.results);
+          setAnnouncementArr(result?.data?.result?.data);
         }
       })
       .catch((error) => {
@@ -256,11 +263,11 @@ export default function Announcement(props) {
       });
   };
   const nextpagehandler = () => {
-    axiosInstance
-      .get(nextPage)
+    let url = nextPage.split('page=')[1]
+    apiRequest('get', `${endpoints.dashboard.student.update}?page=${url}` ,null, null, true, 5000)
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          setAnnouncementArr([...announcementArr, ...result?.data?.result?.results]);
+          setAnnouncementArr([...announcementArr, ...result?.data?.result?.data]);
           setNextPage(result?.data?.result?.next);
         }
       })
@@ -289,7 +296,7 @@ export default function Announcement(props) {
     }
     setAdd('');
     let myRole = [];
-    role && role.length && role.map(item => {
+    role?.length && role.map(item => {
       myRole.push(item.id)
     })
     const payload = { role_id: myRole, content: add }
@@ -337,7 +344,7 @@ export default function Announcement(props) {
     // setLoading(true);
     setOpentwo(false);
     let myRole = [];
-    role && role.length && role.map(roleitem => {
+    role && role?.length && role.map(roleitem => {
       myRole.push(roleitem.id)
     })
     const payload = { role_id: myRole, content: add }
@@ -480,19 +487,19 @@ export default function Announcement(props) {
         <Grid item>
           <Grid container item>
             <Grid item className={classes.details}>
-              {isShortArray ? ( //we are checking if we want to render 2 or all items in announcement */}
+              {isShortArray ? ( //we are checking if we want to renAnvesh Tryuinbv der 2 or all items in announcement */}
                 <ul>
-                  {announcementArr.map(
+                  {isEnabled && announcementArr && announcementArr.map(
                     (d, i) =>
-                      i <= 100 && (
+                      i <= 10 && (
                         <div key={`Annoucement${i}`} >
                           <li className={classes.listitem}>
-                            <p>
-                              <span style={{ marginRight: "7px", }}><img src={bullet} alt="bulet" style={{ width: '8px' }}></img></span>
-                              <span style={{ maxWidth: "350px", wordWrap: "break-word", overflowX: 'clip' }}>
+                            <div style={{display:'flex', justifyContent:'flex-start'}}>
+                              <div style={{ marginRight: "7px", }}><img src={bullet} alt="bulet" style={{ width: '8px' }}></img></div>
+                              <div style={{textOverflow: 'ellipsis', overflow: 'hidden',whiteSpace: 'nowrap',position: 'relative'}}>
                                 {d?.content}
-                              </span>
-                            </p>
+                              </div>
+                            </div>
                             <p>
                               <span className={classes.time}>
                                 {moment(d?.created_at).calendar()};
@@ -538,7 +545,7 @@ export default function Announcement(props) {
                           <div className={classes.announcementheadtwo}>Announcements</div>
                           <hr />
                           <InfiniteScroll
-                              dataLength={announcementArr.length}
+                              dataLength={announcementArr?.length}
                               next={nextpagehandler}
                               hasMore={!!nextPage}
                               loader={<h4>Loading...</h4>}
@@ -556,7 +563,7 @@ export default function Announcement(props) {
                             <CardContent>
                             <div style={{textAlign:"center", fontSize:"16px", fontWeight:"800"}}>Today</div>
                            <ul style={{paddingLeft:"30px"}}> 
-                          { today && today?.map((item,index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`Anntoday_${index}`}>
+                          { today && today.map((item,index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`Anntoday_${index}`}>
                             <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>{item?.content}</li>
                             <div>{welcomeDetails?.userLevel == '4' ? '' : (
                               <div>
@@ -577,7 +584,7 @@ export default function Announcement(props) {
                             <CardContent>
                             <div style={{textAlign:"center", fontSize:"16px", fontWeight:"800"}}>Yesterday</div>
                            <ul style={{paddingLeft:"30px"}}> 
-                            {yesterday && yesterday?.map((item, index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`AnnYEs_${index}`}>
+                            {yesterday && yesterday.map((item, index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`AnnYEs_${index}`}>
                             <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>{item?.content}</li>
                             <div>
                             {welcomeDetails?.userLevel == '4' ? '' : (
@@ -600,7 +607,7 @@ export default function Announcement(props) {
                             <CardContent>
                             <div style={{textAlign:"center", fontSize:"16px", fontWeight:"800"}}>2 Days back</div>
                            <ul style={{paddingLeft:"30px"}}> 
-                            {twodays && twodays?.map((item, index)=>{return <div style={{display:"flex", justifyContent:"space-between"}} key={`Anntwo_${index}`}>
+                            {twodays && twodays.map((item, index)=>{return <div style={{display:"flex", justifyContent:"space-between"}} key={`Anntwo_${index}`}>
                             <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>{item?.content}</li>
                             <div>{welcomeDetails?.userLevel == '4' ? '' : (
                               <div>
@@ -620,7 +627,7 @@ export default function Announcement(props) {
                             <CardContent>
                             <div style={{textAlign:"center", fontSize:"16px", fontWeight:"800"}}>Old</div>
                             <ul style={{paddingLeft:"30px"}}> 
-                           {oldPost && oldPost?.map((item, index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`Annold_${index}`}> 
+                           {oldPost && oldPost.map((item, index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`Annold_${index}`}> 
                              <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line", }}>{item?.content}</li>
                              <div>{welcomeDetails?.userLevel == '4' ? '' : (
                                <div>
