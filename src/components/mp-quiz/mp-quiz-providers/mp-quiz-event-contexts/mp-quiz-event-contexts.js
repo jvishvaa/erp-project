@@ -74,7 +74,7 @@ export function QuizContextProvider({ children }) {
     } = removeUser || {};
     const { data: { user_id: currentUserId, is_participant: isParticipant } = {} } =
       joinLobby || {};
-    if (removedUserId === currentUserId && isParticipant) {
+    if (removedUserId === currentUserId.user_id && isParticipant) {
       socket.close();
     }
   }

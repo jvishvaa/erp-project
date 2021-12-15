@@ -11,8 +11,6 @@ import Typography from '@material-ui/core/Typography';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { connect } from 'react-redux';
 import { login, aolLogin, isMsAPI } from '../../redux/actions';
-import axiosInstance from 'config/axios';
-import endpoints from 'config/endpoints';
 
 function LoginForm(props) {
   const { onLogin, isMsAPI, aolOnLogin, setLoading, history } = props;

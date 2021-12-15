@@ -660,7 +660,9 @@ const MarkAttedance = () => {
   return (
     <Layout>
       <div className='profile_breadcrumb_wrapper'>
-        <CommonBreadcrumbs componentName='Mark Attendance'
+        <CommonBreadcrumbs 
+          componentName='Calendar & Attendance'
+          childComponentName='Mark Attendance'
             isAcademicYearVisible={true}
         />
       </div>

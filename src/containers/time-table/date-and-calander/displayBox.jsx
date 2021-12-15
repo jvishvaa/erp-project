@@ -9,6 +9,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import moment from 'moment';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import '../timetable.scss';
+import { Button, Popover, Typography } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/node_modules/@material-ui/styles';
 const useStyles = makeStyles(() => ({
   multilineColor: {
     background: 'white',
@@ -20,6 +22,26 @@ const useStyles = makeStyles(() => ({
     color: '#014B7E',
   },
 }));
+
+const CancelButton = withStyles({
+  root: {
+    color: '#8C8C8C',
+    backgroundColor: '#e0e0e0',
+    '&:hover': {
+      backgroundColor: '#e0e0e0',
+    },
+  },
+  })(Button);
+  const StyledButton = withStyles({
+  root: {
+    color: '#FFFFFF',
+    backgroundColor: '#FF6B6B',
+    '&:hover': {
+      backgroundColor: '#FF6B6B',
+    },
+  },
+})(Button);
+
 const DisplayBox = (props) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -83,6 +105,33 @@ const DisplayBox = (props) => {
         setAlert('error', "can't edit list");
       });
   };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDeletePopup = (event) => {
+    setAnchorEl(true);
+  }
+
+  const handleDelete = () =>{
+    axiosInstance
+      .delete('/academic/delete_time_table/' + data.id + '/')
+      .then((responce) => {
+        if(responce.status===200){
+          handleCloseBox();
+          setAlert('success', 'Deleted Successfully');
+        }
+        props.callGetAPI();
+      })
+      .catch((error) => {
+        setAlert('error', "can't delete");
+      });
+  }
   // const handleCloseBox = () =>{
   //   props.handleChangeDisplayView();
   // };
@@ -93,15 +142,50 @@ const DisplayBox = (props) => {
           <div className='display-heading-container'>
             <div className='yellow-header'>
               {data.period_start_time.slice(0, 5)} - {data.period_end_time.slice(0, 5)}
-            </div>
+            </div>           
             <div style={{ display: 'flex' }}></div>
             {props.teacherView ? (
-              <div className='edit-button' onClick={() => setOpenEditForm(false)}>
-                <EditTwoToneIcon size='small' /> Edit
-              </div>
+              <>
+                <div className='edit-button' onClick={() => setOpenEditForm(false)}>
+                  <EditTwoToneIcon size='small' /> Edit
+                </div>
+                <div className='edit-button' onClick={() => handleDeletePopup()}>
+                  <EditTwoToneIcon size='small' /> Delete
+                </div>
+              </>
             ) : (
               <></>
             )}
+            <Popover
+              id={id}
+              open={open}
+              anchorEl={anchorEl}
+              onClose={handleClose}
+              anchorOrigin={{
+                vertical: 'bottom',
+                horizontal: 'center',
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'center',
+              }}
+            >
+              <div style={{ padding: '20px 30px' }}>
+                <Typography style={{ fontSize: '20px', marginBottom: '15px' }}>
+                  Are you sure you want to delete?
+                </Typography>
+                <div>
+                  <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
+                  <StyledButton
+                    // onClick={() => removeQuestion(index)}
+                    onClick={handleDelete}
+                    style={{ float: 'right' }}
+                  >
+                    Confirm
+                  </StyledButton>
+                </div>
+              </div>
+            </Popover>
            <div style={{color:'#ff6b6b'}}></div>
             <CloseIcon color='primary' fontSize='large' onClick={() => handleCloseBox()} />
           </div>
@@ -115,7 +199,7 @@ const DisplayBox = (props) => {
             {/* {data.assigned_teacher__first_name} {data.assigned_teacher__last_name} */}
           </h4>
           <div className='yellow-header'>Short description about class</div>
-          <p>{data.period_description}</p>
+          <p style={{wordWrap: "break-word"}}>{data.period_description}</p>
           <div className='yellow-header'>Material Required</div>
           <p>{data.required_material}</p>
         </>
