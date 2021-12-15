@@ -20,11 +20,11 @@ const getTimeToRenderConfig = () => {
   const renderLB = 'render_leader_board';
   const renderMeme = 'render_meme';
   const durationObj = {
-    qOptionDuration: 2500,
-    memeDuration: 5000,
-    lbDuration: 5000,
+    qOptionDuration: 1500,
+    memeDuration: 1500,
+    lbDuration: 2000,
     preQuesAnimDuration: 1000,
-    firstQuesAnimDuration: 4000,
+    firstQuesAnimDuration: 3000,
 
     // qOptionDuration: 0,
     // memeDuration: 1000,
