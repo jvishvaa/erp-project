@@ -192,9 +192,9 @@ export function HostQuizTopBarContent() {
 export function getDurationCounter(props) {
   const counterDuration = 3;
   const questionAnimDuration = 1;
-  const lbDuration = 5;
-  const questionOptionduration = 2.5;
-  const memeDuration = 5;
+  const lbDuration = 2;
+  const questionOptionduration = 1.5;
+  const memeDuration = 1.5;
   /*
    * This duration module to be refactored.
    */
@@ -232,7 +232,8 @@ export function getDurationCounter(props) {
   const isHost = true;
   // logic to run counter equally
   if (isHost === true) {
-    quizDuration = durationInSec + totalNoOfQuestions * sagDuration + counterDuration;
+    quizDuration = durationInSec ;
+    // + totalNoOfQuestions * sagDuration + counterDuration;
     quizStartedAt = startedAt;
     startImmediately = !!(startedAt && startedAt !== 'None');
     timeToRender = startImmediately ? 'render_question' : undefined;
