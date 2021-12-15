@@ -461,7 +461,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     axiosInstance
       .put(
         `${endpoints.dailyDairy.updateDelete}${editData.id}/update-delete-dairy/`,
-        filePath && filePath.length > 0
+        filePath && filePath.length >= 0
           ? {
             academic_year: editData.academic_year.id,
             branch: editData.branch.id,

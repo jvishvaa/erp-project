@@ -261,7 +261,6 @@ const useToolbarStyles = makeStyles((theme) => ({
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
-
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -1330,20 +1329,19 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                       {stableSort(addIndex(usersRow), getComparator(order, orderBy))
                         .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                         .map((row, index) => {
-                          const isItemSelected = isSelected(row.id);
+                          const isItemSelected = isSelected(row.si_no);
                           const labelId = `enhanced-table-checkbox-${index}`;
 
                           return (
                             <TableRow
                               hover
-                              onClick={(event) => handleClick(event, row.id)}
+                              onClick={(event) => handleClick(event, row.si_no)}
                               role='checkbox'
                               aria-checked={isItemSelected}
                               tabIndex={-1}
-                              key={row.id}
+                              key={row.si_no}
                               selected={isItemSelected}
                             >
-
                               <TableCell align='center'>{row.sl}</TableCell>
                               <TableCell align='center'>{row.erp_id}</TableCell>
 
@@ -1351,6 +1349,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                               <TableCell padding='checkbox'>
                                 <Checkbox
                                   checked={isItemSelected}
+
                                   inputProps={{ 'aria-labelledby': labelId }}
                                 />
                               </TableCell>
