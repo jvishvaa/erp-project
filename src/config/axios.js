@@ -24,7 +24,12 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async function (error) {
-    if (error.response?.status === 401) {
+    if(error?.response?.data?.status === "412") {
+      await localStorage.clear();
+      localStorage.setItem('loggedOut',412);
+      window.location.href = '/'
+    }
+    else if (error.response?.status === 401) {
       await localStorage.removeItem('userDetails');
       // Show toast message login to continue
     } else {
