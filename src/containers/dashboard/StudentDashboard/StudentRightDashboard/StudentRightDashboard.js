@@ -34,12 +34,12 @@ export default function StudentRightDashboard(props) {
               <Hidden xsDown>
                 <SocialMedia />
               </Hidden>
-            </Grid>
-            <Grid item xs={12}>
-              <Hidden xsDown>
-                <MediaOrchadioCard />
-              </Hidden>
             </Grid> */}
+          <Grid item xs={12}>
+            <Hidden xsDown>
+              <MediaOrchadioCard />
+            </Hidden>
+          </Grid>
         </Grid>
       </Grid>
     </Grid>
