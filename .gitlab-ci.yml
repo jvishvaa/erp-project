@@ -87,6 +87,7 @@ code_analysis:
   stage: deploy
   script:
     - whoami
+    - npm audit
     - sonar-scanner  -Dsonar.projectKey=ERP_Revamp_Frontend -Dsonar.sources=. -Dsonar.host.url=http://3.6.23.199:9000 -Dsonar.login=fb5624bf10aad99b5fa4af1397b9fd1c1e62a19c
   environment:
     name: development
