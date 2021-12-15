@@ -83,6 +83,20 @@ const DisplayBox = (props) => {
         setAlert('error', "can't edit list");
       });
   };
+  const handleDelete = () =>{
+    axiosInstance
+      .delete('/academic/delete_time_table/' + data.id + '/')
+      .then((responce) => {
+        if(responce.status===200){
+          handleCloseBox();
+          setAlert('success', 'Deleted Successfully');
+        }
+        props.callGetAPI();
+      })
+      .catch((error) => {
+        setAlert('error', "can't delete");
+      });
+  }
   // const handleCloseBox = () =>{
   //   props.handleChangeDisplayView();
   // };
@@ -96,9 +110,14 @@ const DisplayBox = (props) => {
             </div>
             <div style={{ display: 'flex' }}></div>
             {props.teacherView ? (
-              <div className='edit-button' onClick={() => setOpenEditForm(false)}>
-                <EditTwoToneIcon size='small' /> Edit
-              </div>
+              <>
+                <div className='edit-button' onClick={() => setOpenEditForm(false)}>
+                  <EditTwoToneIcon size='small' /> Edit
+                </div>
+                <div className='edit-button' onClick={() => handleDelete()}>
+                  <EditTwoToneIcon size='small' /> Delete
+                </div>
+              </>
             ) : (
               <></>
             )}
