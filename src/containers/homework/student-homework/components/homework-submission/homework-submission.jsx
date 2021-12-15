@@ -605,6 +605,22 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
   };
 
   const handleSaveEvaluatedFile = async (file) => {
+    let maxAttachmentArray = resultdata.hw_questions;
+    let result = 0;
+    let totalMaxAttachment = maxAttachmentArray.map((item)=>{return result+=item.max_attachment})
+    
+    if (isQuestionWise && attachmentCount[penToolIndex]>=maxAttachmentArray[penToolIndex].max_attachment) {
+      setAlert('warning', `Can\'t upload more than ${attachmentCount[penToolIndex]} attachments in total.`);
+      handleCloseCorrectionModal();
+      return;
+    }else{
+      if(bulkDataDisplay.length>=totalMaxAttachment[totalMaxAttachment.length-1]){
+        setAlert('warning', `Can\'t upload more than ${totalMaxAttachment[totalMaxAttachment.length-1]} attachments in total.`);
+        handleCloseCorrectionModal();
+        return;
+      }
+    }
+
     const fd = new FormData();
     fd.append('file', file);
     const filePath = await uploadFile(fd);
@@ -614,6 +630,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       list[penToolIndex] = [...attachmentDataDisplay[penToolIndex], filePath];
       setAttachmentDataDisplay(list);
       attachmentData[penToolIndex].attachments.push(filePath);
+      attachmentCount[penToolIndex]+=1;
       setPenToolUrl('');
     } else {
       const list = bulkDataDisplay.slice();
@@ -724,7 +741,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
             
             <div className = {classes.instructionText}>
               {
-                desc?<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>Instructions :- {desc}</span>:<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>No Instruction</span>
+                desc?<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>Instructions : {desc}</span>:<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>No Instruction</span>
               }
        
          
@@ -812,7 +829,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                             e.preventDefault();
                           }}
                         >
-                          {console.log("@@@@@@bulkData", bulkData)}
+                          {/* {console.log("@@@@@@bulkData", bulkData)} */}
                           {bulkData?.length > 0 && bulkData?.map((file, i) => (
                             <div className='attachment'>
                               <Attachment

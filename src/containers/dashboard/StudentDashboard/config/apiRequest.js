@@ -12,7 +12,7 @@ console.log("api12", msReportsUrl)
 console.log("ENVCONFIG")
 // const baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox'
 
-const apiRequest = async (method, path, payload, responseType, isReportsURL) => {
+const apiRequest = async (method, path, payload, responseType, isReportsURL, timeout = 5000) => {
     return new Promise(async (resolve, reject) => {
         const user = await localStorage.getItem('userDetails');
         const headers = {
@@ -20,6 +20,7 @@ const apiRequest = async (method, path, payload, responseType, isReportsURL) => 
         };
         if (isReportsURL) {
             headers['X-DTS-HOST'] = window.location.host;
+            // headers['X-DTS-HOST'] = "dev.olvorchidnaigaon.letseduvate.com";
         }
         axios({
             method: method,
@@ -27,6 +28,7 @@ const apiRequest = async (method, path, payload, responseType, isReportsURL) => 
             headers: headers,
             data: payload ? payload : null,
             responseType: responseType || 'json',
+            timeout: timeout
         })
             .then((response) => {
                 resolve(response);

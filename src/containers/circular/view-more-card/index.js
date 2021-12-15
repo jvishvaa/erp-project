@@ -83,7 +83,7 @@ const ViewMoreCard = ({ viewMoreData, setViewMore, setSelectedIndex, branch }) =
           <Typography color = "primary">Description</Typography>
         </div>
         <div className={classes.bodyContentCircular}>
-          <div>{viewMoreData?.description}</div>
+        <div style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>{viewMoreData?.description}</div>
         </div>
       </Paper>
     </>

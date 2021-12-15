@@ -10,7 +10,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Carousel, { consts } from 'react-elastic-carousel';
 import endpoints from '../../config/Endpoint';
 // import endpoints from '../../config/Endpoint';
-// import apiRequest from '../../config/apiRequest';
+import apiRequest from '../../config/apiRequest';
 import axiosInstance from 'config/axios';
 const breakPoints = [
   { width: 1, itemsToShow: 2, itemsToScroll: 2 },
@@ -41,14 +41,6 @@ const useStyles = makeStyles(() => ({
     fontWeight: "1000",
   },
   layermiddle: {
-    // textAlign: 'center',
-    // backgroundColor: '#ff5c58',
-    // borderRadius: '50px',
-    // margin: '0px auto',
-    // padding: '5px',
-    // color: 'white',
-    // fontWeight: "1000",
-    // width: '80%'
     color: 'white',
     width: '80%',
     margin: '0px auto',
@@ -122,34 +114,20 @@ const useStyles = makeStyles(() => ({
     borderRadius: '50px',
     fontSize: "0.7em",
   },
-  // '@media (max-width: 960px)': {
-  //   cardhomework: {
-  //     height: '120px',
-  //     width: '200px',
-  //     background: '#349ceb',
-  //     margin: '5px',
-  //     display: 'inline-block',
-  //     borderRadius: '10px',
-  //     alignContent: 'center',
-  //     fontSize: '0.9em',
-  //   },
-  //   homework: {
-  //     color: '#014B7E',
-  //     fontWeight: 600,
-  //     marginLeft: '47px',
-  //     position: "relative",
-  //   },
-  // },
+  certihw: {
+    height: '100px',
+    width: '180px',
+    margin: '5px',
+    borderRadius: '5x',
+    backgroundColor: 'white',
+    border: '1px solid gray',
+  },
+  
 }));
 
 const Homework = (props) => {
   const classes = useStyles();
   const [homeworkArr, setHomeworkArr] = React.useState([]);
-
-  useEffect(() => {
-    getHomeworkData();
-    // console.log(homeworkArr.length, "homeworkarr");
-  }, []);
   const matches960 = useMediaQuery('(max-width: 960px)');
   const addItem = () => {
     const nextItem = Math.max(1, homeworkArr.length + 1);
@@ -161,7 +139,6 @@ const Homework = (props) => {
   };
   // arrow carousal
   const myArrow = ({ type, onClick, isEdge }) => {
-    // const pointer = type === consts.PREV ? '<' : '>'
     const leftPointer = '<';
     const rightPointer = '>';
 
@@ -174,20 +151,24 @@ const Homework = (props) => {
       </Button>
     return arrows
   }
-  const getHomeworkData = () => {
-    axiosInstance
-      .get(endpoints.dashboard.student.homework)
+  
+  const gethomeworkData = () => {
+    apiRequest('get', endpoints.dashboard.student.homeworks, null, null, true, 5000)
       .then((result) => {
-        // if (result.data.status_code === 200) {
-        setHomeworkArr(result.data);
-        // }
+        if (result.data.status_code === 200) {
+        setHomeworkArr(result?.data?.data?.results);
+        }
       })
-      .catch((error) => {
-        console.log('error');
-      });
+      .catch((error) => {});
   };
-  return (
-    <React.Fragment>
+  useEffect(() => {
+    // getHomeworkData();
+    gethomeworkData();
+    
+  }, []);
+  return (   
+    <React.Fragment> 
+      {/* {homeworkArr.length > 0 ?      */}
       <Grid
         container
         spacing={1}
@@ -219,7 +200,7 @@ const Homework = (props) => {
             </Button></div>
           <Carousel renderArrow={myArrow}
             breakPoints={breakPoints}>
-            {homeworkArr.map((item, i) => (
+            {homeworkArr.length > 0 ? homeworkArr.map((item, i) => (
               <div className={classes.cardhomework} key={`homework_${i}`}>
                 <div className={classes.layertop}>
                   <div className={classes.layertopone}>
@@ -227,17 +208,22 @@ const Homework = (props) => {
                   </div>
                   <div className={classes.submission}>
                     <span className={classes.submissionData}>{item?.homework_name} </span>
-                    {/* {item.status === 1 ? 'submission' : 'submissions'} */}
                   </div>
                 </div>
                 <div className={classes.layermiddle}>{item?.class_date__date}</div>
               </div>
 
-            ))}
+            )): 
+              <div className={classes.certihw}>
+              <div style={{ margin: '35px auto', borderRadius: '5px' }}>
+                <h5 style={{ color: "#349CEB", textAlign: "center" }}> HOMEWORK </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>No Homework</h5>
+              </div>
+            </div>}
           </Carousel>
         </Grid>
       </Grid>
-    </React.Fragment>
+    </React.Fragment>     
   );
 };
 export default Homework;
