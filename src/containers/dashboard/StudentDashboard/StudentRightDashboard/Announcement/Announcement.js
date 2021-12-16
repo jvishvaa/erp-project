@@ -660,13 +660,13 @@ export default function Announcement(props) {
                              </div>})}
                           </ul>
                           <ul>  
-                        
                           </ul>
                           </CardContent>
-                          <Button>Close</Button>
                           </Card>
+                          <div style={{width:"100%", display:"flex"}}> 
+                          <Button onClick={handleClosetwo} style={{margin: "0 auto"}}>Close</Button>
                           </div>
-                          
+                          </div>
                           </div>
                           </InfiniteScroll>
                         </Box>
