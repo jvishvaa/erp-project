@@ -145,6 +145,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [deleteId, setDeleteId] = useState(null);
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [deleteAlert, setDeleteAlert] = useState(false);
+  const [deleteStatus, setDeleteStatus] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [grade, setGrade] = useState([]);
   const [roleList, setRoleList] = useState([]);
@@ -169,6 +170,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [excelData] = useState([]);
   const [classStatus, setClassStatus] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [isClicked, setIsClicked]= useState(false);
 
 
   const headers = [
@@ -315,7 +317,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             userId: items.id,
             userName: `${items.user.first_name} ${items.user.last_name}`,
             erpId: items.erp_id,
-
+            status: items?.status,
             emails: items.user.email,
             role: items?.roles?.role_name,
             active: items.is_active,
@@ -331,6 +333,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   };
   const handlePagination = (event, page) => {
+    setIsClicked(true);
     setCurrentPage(page);
   };
 
@@ -346,18 +349,23 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   };
 
   const handleExcel = () => {
+    setLoading(true);
     const rolesId = [];
     const gradesId = [];
     if (selectedRoles && selectedRoles !== 'All') {
       rolesId.push(selectedRoles.id);
     }
-    let getUserListUrl = `communication/erp-user-info-excel/?module_id=${moduleId}`;
+    let getUserListUrl = `communication/erp-user-info-excel-v2/?module_id=${moduleId}`;
     if (rolesId.length && selectedRoles !== 'All') {
       getUserListUrl += `&role=${rolesId.toString()}`;
     }
     // /*
     if (gradesId.length && !selectedGrades.includes('All')) {
       getUserListUrl += `&grade=${gradesId.toString()}`;
+    }
+    if(classStatus && classStatus != 1 && classStatus != 0) {
+      let status = classStatus - 1;
+      getUserListUrl+= `&status=${status.toString()}`; 
     }
     // */
     // if (gradeIds.length && !selectedGrades.includes('All')) {
@@ -375,6 +383,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         });
         FileSaver.saveAs(blob, 'user_list.xls');
+        setLoading(false);
       })
       .catch((error) => setAlert('error', 'Something Wrong!'));
   };
@@ -431,9 +440,10 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       setAlert('error', error.message);
     }
   };
-  const handleDelete = async (id, index) => {
+  const handleDelete = async (id, index, status) => {
     setDeleteId(id);
     setDeleteIndex(index);
+    setDeleteStatus(status);
     setDeleteAlert(true);
   };
   const handleDeactivateUser = async () => {
@@ -485,6 +495,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         setUsersData(tempGroupData);
         setDeleteId(null);
         setDeleteIndex(null);
+        setDeleteStatus(null)
         setDeleteAlert(false);
       } else {
         setAlert('error', statusChange.data.message);
@@ -496,11 +507,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const handleDeleteCancel = () => {
     setDeleteId(null);
     setDeleteIndex(null);
+    setDeleteStatus(null);
     setDeleteAlert(false);
   };
 
   const handleDeactivateCancel = () => {
-    setDeactivateId(null);
+        setDeactivateId(null);
         setDeactivateIndex(null);
         setDeactivateStatus(null);
         setDeactivateAlert(false);
@@ -522,11 +534,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     if (moduleId && selectedYear) getBranchApi();
   }, [moduleId, selectedYear]);
 
-  // useEffect(() => {
-  //   if (moduleId) {
-  //     getUsersData();
-  //   }
-  // }, [currentPage, moduleId]);
+  useEffect(() => {
+    if (moduleId && isClicked) {
+      setIsClicked(false);
+      getUsersData();
+    }
+  }, [currentPage, moduleId]);
 
   // useEffect(() => {
   //   if (selectedYear) {
@@ -838,8 +851,10 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                       <TableCell className={classes.tableCell}>{items.emails}</TableCell>
                       <TableCell className={classes.tableCell}>{items?.role}</TableCell>
                       <TableCell className={classes.tableCell}>
-                        {items.active ? (
+                        {items && items.status === 'active' ? (
                           <div style={{ color: 'green' }}>Activated</div>
+                        ) : items && items.status === 'deleted' ? (
+                          <div style={{ color: 'red' }}>Deleted</div>
                         ) : (
                           <div style={{ color: 'red' }}>Deactivated</div>
                         )}
@@ -852,8 +867,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                         }}
                         className={classes.tableCell}
                       >
-                        {items.active ? (
-                          <IconButton
+                        {items && items.status === 'deleted' ?
+                        'Restore' : items.status === 'active' ?
+                        <IconButton
                             aria-label='deactivate'
                             onClick={() => handleDeactivate(items.userId, i, '2')}
                             title='Deactivate'
@@ -861,8 +877,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                             <BlockIcon
                               style={{ color: themeContext.palette.primary.main }}
                             />
-                          </IconButton>
-                        ) : (
+                          </IconButton> : (
                           <button
                             type='submit'
                             title='Activate'
@@ -879,25 +894,23 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                           >
                             A
                           </button>
-                        )}
-
-                        <IconButton
-                          title='Delete'
-                          onClick={() => handleDelete(items.userId, i)}
-                        >
-                          <DeleteOutlinedIcon
-                            style={{ color: themeContext.palette.primary.main }}
-                          />
-                        </IconButton>
-                        <IconButton title='Edit' onClick={() => handleEdit(items.userId)}>
-                          <EditOutlinedIcon
-                            style={{ color: themeContext.palette.primary.main }}
-                          />
-                        </IconButton>
+                        )
+                       }
+                       {items && items.status !== 'deleted' ? 
+                       <><IconButton
+                       title='Delete'
+                       onClick={() => handleDelete(items.userId, i, '3')}
+                     >
+                       <DeleteOutlinedIcon
+                         style={{ color: themeContext.palette.primary.main }}
+                       />
+                      </IconButton>
+                       <IconButton title='Edit' onClick={() => handleEdit(items.userId)}>
+                       <EditOutlinedIcon
+                         style={{ color: themeContext.palette.primary.main }}
+                       />
+                     </IconButton> </> : ''}
                       </TableCell>
-                      {/* <TableCell className={classes.tableCell}>
-                      
-                    </TableCell> */}
                     </TableRow>
                   ))}
                 </TableBody>
