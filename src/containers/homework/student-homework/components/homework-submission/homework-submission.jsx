@@ -662,6 +662,19 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
     }
   }, [penToolUrl])
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(true);
+  };
+
+
   const handleDelete = () => {
     if (homeworkSubmission.isEvaluated) {
       setAlert('error', "Homework Evaluated, can not be deleted");
