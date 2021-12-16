@@ -128,6 +128,7 @@ const useStyles = makeStyles(() => ({
 const Homework = (props) => {
   const classes = useStyles();
   const [homeworkArr, setHomeworkArr] = React.useState([]);
+  const [isEnabled, setIsEnabled] = React.useState(false);
   const matches960 = useMediaQuery('(max-width: 960px)');
   const addItem = () => {
     const nextItem = Math.max(1, homeworkArr.length + 1);
@@ -156,6 +157,7 @@ const Homework = (props) => {
     apiRequest('get', endpoints.dashboard.student.homeworks, null, null, true, 5000)
       .then((result) => {
         if (result.data.status_code === 200) {
+          setIsEnabled(result?.data?.data?.is_enabled);
         setHomeworkArr(result?.data?.data?.results);
         }
       })
@@ -200,7 +202,7 @@ const Homework = (props) => {
             </Button></div>
           <Carousel renderArrow={myArrow}
             breakPoints={breakPoints}>
-            {homeworkArr.length > 0 ? homeworkArr.map((item, i) => (
+            {homeworkArr?.length > 0 && isEnabled ?  homeworkArr.map((item, i) => (
               <div className={classes.cardhomework} key={`homework_${i}`}>
                 <div className={classes.layertop}>
                   <div className={classes.layertopone}>

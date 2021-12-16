@@ -124,6 +124,7 @@ export default function Assessment(item) {
   const classes = useStyles();
   const matches960 = useMediaQuery('(max-width: 960px)');
   const [assessmentArr, setAssessmentArr] = React.useState([]);
+  const [isEnabled, setIsEnabled] = React.useState(false);
   //carousel
   const addItem = () => {
     const nextItem = Math.max(1, assessmentArr.length + 1);
@@ -134,10 +135,11 @@ export default function Assessment(item) {
     setAssessmentArr(assessmentArr.slice(0, endRange));
   };
   const getAssessmentData = () => {
-    apiRequest('get', endpoints.dashboard.student.assessment, null, null, null, 5000  )
+    apiRequest('get', endpoints.dashboard.student.assessments, null, null, true, 5000  )
       .then((result) => {
-        if (result.data.status_code === 200) {
-          setAssessmentArr(result.data.result.results);
+        if (result?.data?.status_code === 200) {
+          setIsEnabled(result?.data?.is_enabled)
+          setAssessmentArr(result?.data?.result?.results);
         }
       })
       .catch((error) => {
@@ -194,7 +196,7 @@ export default function Assessment(item) {
         </div>
         <Carousel renderArrow={myArrow}
           breakPoints={breakPoints}>
-          {assessmentArr.length > 0 ? assessmentArr.map((item, i) => (
+          {assessmentArr?.length > 0 && isEnabled ? assessmentArr.map((item, i) => (
             <div className={classes.card} key={`Assesement${i}`}>
               <div className={classes.layertop}>
                 <div className={classes.layerupper}>
