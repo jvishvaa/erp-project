@@ -91,6 +91,11 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.main,
     fontWeight: 800,
     fontSize: "1.2em",
+    position: "sticky",
+    top: "0px",
+    // background: "wheat",
+    margin: "0 auto 0px auto",
+    zIndex: 100,
   },
   announcementheadtwo: {
     color: 'black',
@@ -104,6 +109,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   box: {
+   
     height: "135px",
     overflow: 'hidden',
     border: '1px solid #d3d1d1',
@@ -113,10 +119,10 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 10,
     padding: 10,
     transform: "translateX(4px)",
-    overflow: 'hidden',
+    // overflow: 'hidden',
     backgroundColor: 'white',
-    overflow: 'auto',
-    scrollX: 'none',
+    // overflow: 'auto',
+    // scrollX: 'none',
     color: 'theme.palette.secondary',
   },
   buttonmodalicon: {
@@ -126,7 +132,7 @@ const useStyles = makeStyles((theme) => ({
   iconmore: {
     position: 'absolute',
     bottom: 5,
-    right: '0.7em',
+    right: '1.5em',
     zIndex: '100',
     // backgroundColor: '#349ceb',
     fontSize: "1em",
@@ -136,8 +142,8 @@ const useStyles = makeStyles((theme) => ({
   },
   icon: {
     position: 'absolute',
-    bottom: 30,
-    right: '1.5em',
+    bottom: 24,
+    right: '2em',
     zIndex: '110',
     width: "10%",
     marginBottom: '10px',
@@ -147,10 +153,12 @@ const useStyles = makeStyles((theme) => ({
   },
   details: {
     color: 'white',
+    // overflowY: 'scroll',
+    // scrollX: 'none',
     fontWeight: 600,
     fontSize: "1em",
     padding: 10,
-    maxWidth: '250px',
+    maxWidth: '450px',
     paddingTop: 10,
     '&::marker': {
       color: 'yellow',
@@ -176,22 +184,22 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     fontWeight: 800,
   },
-  '@media (max-width: 960px)': {
-    iconmore: {
-      position: 'absolute',
-      bottom: 5,
-      right: '3em',
-      zIndex: '100',
-      backgroundColor: '#349ceb',
-      fontSize: "0.9em",
-    },
-    icon: {
-      position: 'absolute',
-      bottom: 40,
-      right: '3.5em',
-      zIndex: '110',
-    },
-  },
+  // '@media (max-width: 960px)': {
+  //   iconmore: {
+  //     position: 'absolute',
+  //     bottom: 5,
+  //     right: '3em',
+  //     zIndex: '100',
+  //     backgroundColor: '#349ceb',
+  //     fontSize: "0.9em",
+  //   },
+  //   icon: {
+  //     position: 'absolute',
+  //     bottom: 40,
+  //     right: '3.5em',
+  //     zIndex: '110',
+  //   },
+  // },
 }));
 export default function Announcement(props) {
   const classes = useStyles();
@@ -222,7 +230,8 @@ export default function Announcement(props) {
   const [isStudent, setIsStudent] = useState(true);
   const { welcomeDetails = {} } = useDashboardContext();
   //select
-  const [role, setrole] = React.useState([]); //which one? teacher, principal, none, student,//which one have you selected
+  const [role, setrole] = React.useState("");
+  // const [role, setrole] = React.useState([]); //which one? teacher, principal, none, student,//which one have you selected
   const [select, setSelect] = React.useState(false);
   const [roledata, setRoledata] = React.useState(); //roles coming from API
   const matches = useMediaQuery('(max-width:600px)');
@@ -280,8 +289,11 @@ export default function Announcement(props) {
     updateAnnouncement();
     // nextpagehandler();
   }, []);
-  const handleChange = (event, newValue) => {
-    setrole(newValue);
+  // const handleChange = (event, newValue) => {
+  //   setrole(newValue);
+  // };
+  const handleChange = (event, newvalue) => {
+    setrole(newvalue);
   };
   const selectClose = () => {
     setSelect(false);
@@ -294,12 +306,13 @@ export default function Announcement(props) {
       // checking if user has entered anything or not. we dont want an empty announcement to be shown
       return;
     }
-    setAdd('');
-    let myRole = [];
-    role?.length && role.map(item => {
-      myRole.push(item.id)
-    })
-    const payload = { role_id: myRole, content: add }
+    // setAdd('');
+    // let myRole = [];
+    // role?.length && role.map(item => {
+    //   myRole.push(item.id)
+    // })
+    // const payload = { role_id: myRole, content: add }
+    const payload = { role_id: role.id, content: add }
     apiRequest('post', endpoints.dashboard.student.create, payload)
       .then((result) => {
         if (result?.data?.status_code === 200) {
@@ -343,11 +356,13 @@ export default function Announcement(props) {
   const editHandler = (item, index) => {
     // setLoading(true);
     setOpentwo(false);
-    let myRole = [];
-    role && role?.length && role.map(roleitem => {
-      myRole.push(roleitem.id)
-    })
-    const payload = { role_id: myRole, content: add }
+    // let myRole = [];
+    // role && role?.length && role.map(roleitem => {
+    //   myRole.push(roleitem.id)
+    // })
+    // const payload = { role_id: myRole, content: add }
+    // const payload = { role_id: role, content: add }
+    const payload = { role_id: role.id, content: add }
     apiRequest('put', `${endpoints.dashboard.student.editAnnouncement}${checkdata?.id}/`, payload)
       .then((result) => {
         if (result?.data?.status_code === 200) {
@@ -363,7 +378,7 @@ export default function Announcement(props) {
           getRoleData();
           setRoledata([])
           setAdd('')
-          setrole([])
+          setrole("")
           setCheckdata("");
         } else {
           setAlert('error', "Not Authorized");
@@ -395,6 +410,7 @@ export default function Announcement(props) {
         <Grid item>
           <Grid container item>
             <Grid item xs={12}>
+              <div>
               <span className={classes.announcementhead}>Announcements
                 <span style={{ marginLeft: '10px' }}>
                   {welcomeDetails?.userLevel == '4' ? '' :
@@ -402,6 +418,7 @@ export default function Announcement(props) {
                 </span>
               </span>
               <hr />
+              </div>
               <span>
                 <Modal
                   open={open}
@@ -420,8 +437,9 @@ export default function Announcement(props) {
                           getOptionLabel={(option) => option?.role_name}
                           filterSelectedOptions
                           onChange={handleChange}
-                          value={role || []}
-                          multiple
+                          value={role}
+                          // value={role || []}
+                          // multiple
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -487,8 +505,9 @@ export default function Announcement(props) {
         <Grid item>
           <Grid container item>
             <Grid item className={classes.details}>
-              {isShortArray ? ( //we are checking if we want to renAnvesh Tryuinbv der 2 or all items in announcement */}
-                <ul>
+              <div >
+              {isShortArray ? ( //we are checking if we want to render 2 or all items in announcement */}
+                <ul style={{overflow: "scroll", height : "100px", width: "350px"}}>
                   {isEnabled && announcementArr && announcementArr.map(
                     (d, i) =>
                       i <= 10 && (
@@ -510,17 +529,18 @@ export default function Announcement(props) {
                       )
                     // );
                   )}
-                   {matches? <Button
+                   {isEnabled && matches? <Button
                    variant="outlined"
                    size="small"
                    style={{ fontSize: "1em" }}
                    color='black'
                    onClick={nextpagehandler}
+                   disabled={!isEnabled}
                    >
                      More
                      </Button>: ""}
                   <div>
-                    {matches ? "" : <div onClick={handleOpentwo}>
+                    {isEnabled && matches ? "" : <div onClick={handleOpentwo}>
                       <img className={classes.icon} src={moreicon} alt='bttn' />
                     </div>}
                     <div>
@@ -643,6 +663,7 @@ export default function Announcement(props) {
                         
                           </ul>
                           </CardContent>
+                          <Button>Close</Button>
                           </Card>
                           </div>
                           
@@ -654,6 +675,7 @@ export default function Announcement(props) {
                   </div>
                 </ul>
               ) : null}
+              </div>
             </Grid>
           </Grid>
         </Grid>

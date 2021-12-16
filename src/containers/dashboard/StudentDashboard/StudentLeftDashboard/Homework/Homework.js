@@ -12,6 +12,8 @@ import endpoints from '../../config/Endpoint';
 // import endpoints from '../../config/Endpoint';
 import apiRequest from '../../config/apiRequest';
 import axiosInstance from 'config/axios';
+import moment from 'moment';
+
 const breakPoints = [
   { width: 1, itemsToShow: 2, itemsToScroll: 2 },
   { width: 550, itemsToShow: 2, itemsToScroll: 2 },
@@ -105,7 +107,7 @@ const useStyles = makeStyles(() => ({
   homework: {
     color: '#014B7E',
     fontWeight: 600,
-    margin: '5px',
+    margin: '15px',
     position: "relative",
   },
   pendingbtn: {
@@ -116,7 +118,7 @@ const useStyles = makeStyles(() => ({
   },
   certihw: {
     height: '100px',
-    width: '180px',
+    width: '170px',
     margin: '5px',
     borderRadius: '5x',
     backgroundColor: 'white',
@@ -212,16 +214,25 @@ const Homework = (props) => {
                     <span className={classes.submissionData}>{item?.homework_name} </span>
                   </div>
                 </div>
-                <div className={classes.layermiddle}>{item?.class_date__date}</div>
+                <div className={classes.layermiddle}>{item?.class_date__date === moment().format('YYYY-MM-DD') ? "Due Today" : moment().subtract(1, 'days').format('YYYY-MM-DD') === item?.class_date__date ? "Due Tomorrow" : item?.class_date__date}</div>
               </div>
 
             )): 
+            <div style={{display: "flex"}}>
               <div className={classes.certihw}>
               <div style={{ margin: '35px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> HOMEWORK </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>No Homework</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Temporary Disabled</h5>
               </div>
-            </div>}
+            </div>
+            <div className={classes.certihw}>
+              <div style={{ margin: '35px auto', borderRadius: '5px' }}>
+                <h5 style={{ color: "#349CEB", textAlign: "center" }}> HOMEWORK </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Temporary Disabled</h5>
+              </div>
+            </div>
+            </div>
+            }
           </Carousel>
         </Grid>
       </Grid>
