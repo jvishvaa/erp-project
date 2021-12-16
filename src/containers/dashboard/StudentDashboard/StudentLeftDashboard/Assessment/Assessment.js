@@ -93,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
   assessment: {
     color: '#014B7E',
     fontWeight: 800,
-    margin: '10px',
+    margin: '20px',
     fontSize: "0.9em",
     position: "relative",
   },
@@ -110,7 +110,7 @@ const useStyles = makeStyles((theme) => ({
   },
   assess: {
     height: '100px',
-    width: '180px',
+    width: '170px',
     margin: '5px',
     borderRadius: '5x',
     backgroundColor: 'white',
@@ -224,10 +224,18 @@ export default function Assessment(item) {
               </div>
             </div>
           )) : 
+          <div style={{display:"flex"}}>
           <div className={classes.assess}>
               <div style={{ margin: '35px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> ASSESSMENT </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>No Assessment, you are all up to date.</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Temporarily Disabled</h5>
+              </div>
+              </div>
+              <div className={classes.assess}>
+              <div style={{ margin: '35px auto', borderRadius: '5px' }}>
+                <h5 style={{ color: "#349CEB", textAlign: "center" }}> ASSESSMENT </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Temporarily Disabled</h5>
+              </div>
               </div>
               </div>
               }

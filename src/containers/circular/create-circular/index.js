@@ -362,6 +362,8 @@ const CraeteCircular = () => {
         .then((result) => {
           if (result.data.status_code === 200) {
             setAcademicYearDropdown(result?.data?.data);
+            const defaultValue = result.data?.data?.[0];
+            handleAcademicYear({}, defaultValue);
           } else {
             setAlert('error', result.data.message);
           }

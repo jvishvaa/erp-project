@@ -124,13 +124,13 @@ const Certificate = (props) => {
             <div className={classes.certi}>
               <div style={{ margin: '50px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> CERTIFICATE </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon...</h5>
               </div>
             </div>
             <div className={classes.certi}>
               <div style={{ margin: '50px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> CERTIFICATE </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon...</h5>
               </div>
             </div>
             <div className={classes.certi}>

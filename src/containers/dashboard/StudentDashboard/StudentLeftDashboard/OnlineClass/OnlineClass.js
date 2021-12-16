@@ -95,7 +95,7 @@ const useStyles = makeStyles(() => ({
   onlineclass: {
     color: '#014B7E',
     fontWeight: 800,
-    margin: '10px',
+    margin: '15px',
     fontSize: "0.9em",
     position: "relative",
   },
@@ -108,7 +108,7 @@ const useStyles = makeStyles(() => ({
   },
   certicw: {
     height: '100px',
-    width: '180px',
+    width: '179px',
     margin: '5px',
     borderRadius: '5x',
     backgroundColor: 'white',
@@ -257,7 +257,7 @@ const OnlineClass = (props) => {
                   <div className={classes.layerupper}>
                     <div>
                       <p className={clsx(classes.white, classes.ellipsisText)}>{item?.title}</p>
-                      <p>{item?.start_time}</p>
+                      {/* <p>{item?.start_time}</p> */}
                     </div>
                     <img
                       onClick={() => handleOpen(item)}
@@ -283,11 +283,17 @@ const OnlineClass = (props) => {
               </div>
             ))
             :
-            <div>
+            <div style={{display: "flex"}}>
               <div className={classes.certicw}>
               <div style={{ margin: '35px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> ONLINE CLASS </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>No Online classes</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Temporarily Disabled  </h5>
+              </div>
+            </div>
+            <div className={classes.certicw}>
+              <div style={{ margin: '35px auto', borderRadius: '5px' }}>
+                <h5 style={{ color: "#349CEB", textAlign: "center" }}> ONLINE CLASS </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Temporarily Disabled  </h5>
               </div>
             </div>
             </div>}
