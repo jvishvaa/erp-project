@@ -355,7 +355,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     if (selectedRoles && selectedRoles !== 'All') {
       rolesId.push(selectedRoles.id);
     }
-    let getUserListUrl = `communication/erp-user-info-excel-v2/?module_id=${moduleId}`;
+    let getUserListUrl = `communication/erp-user-info-excel/?module_id=${moduleId}`;
     if (rolesId.length && selectedRoles !== 'All') {
       getUserListUrl += `&role=${rolesId.toString()}`;
     }
