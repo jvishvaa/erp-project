@@ -45,6 +45,7 @@ export default {
             editAnnouncement: '/announcement/',
             orchadioapi: '/api/reports/v1/orchadio_list/',
             likedsongorchadio: '/academic/',
+            calendar: '/api/reports/v1/holiday/',
         },
 
         // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

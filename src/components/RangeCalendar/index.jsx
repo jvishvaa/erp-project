@@ -82,7 +82,7 @@ export default function RangeCalender(props) {
     //     props.setEventList(res.data.holiday_detail);
     //   }
     // });
-    apiRequest('get', `${RCENDPOINTS.RANGECALENDAR.getHolidayList}?start_date=${moment(firstDate).format(
+    apiRequest('get', `${endpoints.dashboard.student.calendar}?start_date=${moment(firstDate).format(
       'YYYY-MM-DD'
     )}&end_date=${moment(lastDate).format(
       'YYYY-MM-DD'
@@ -258,7 +258,7 @@ export default function RangeCalender(props) {
               Custom
             </Button>
           </Grid>
-        </Grid>) : <b style={{ margin: '10px auto', background: '#fff' }}>Temporarily Disabled</b>}
+        </Grid>) : ''}
       {selectedType === 'today' ? <Calendar
         editableDateInputs={true}
         dayContentRenderer={customDayContent}

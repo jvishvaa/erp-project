@@ -155,19 +155,20 @@ const Blogdisc = (props) => {
               <Blog
                 postId={1}
                 key={1}
-                user={'Default'}
-                role_branch={'Default'}
-                time={'00:00'}
+                user={''}
+                role_branch={''}
+                time={''}
                 // data={ReactHtmlParser(blogandd.description)}
-                data={extractContent('Default')}
+                data={extractContent('')}
                 // img={blogandd?.media_content?.images}
-                blogtitle={'Default'}
-                likes={'00'}
-                comments={'00'}
+                blogtitle={'Temporarily Disabled'}
+                likes={''}
+                comments={''}
                 type={'Discussion'}
                 // award={blogandd?.action_counts?.awards_count}
                 c_like={false}
                 likestatus={false}
+                isEnabled={isEnabled}
               />
             ))
           }

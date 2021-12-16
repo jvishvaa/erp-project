@@ -110,7 +110,7 @@ export default function Blog(props) {
   const [expanded, setExpanded] = React.useState(false);
   const [likeBlogChange, setLikeBlogChange] = React.useState(false);
   const [likedStatus, setLikedStatus] = React.useState(props.likestatus);
-  const [commentCount, setCommentCount] = useState(props?.comments)
+  const [commentCount, setCommentCount] = useState(props?.comments);
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
@@ -129,6 +129,7 @@ export default function Blog(props) {
     props.c_like(props?.postId, props?.type);
   }
 
+  console.log("abcd", props.isEnabled)
   return (
     // <LazyLoad>
     <Card className={classes.card} id="mainCard">
@@ -194,34 +195,34 @@ export default function Blog(props) {
           {/* {props.type === 'Discussion' && <span style={{ fontSize: 'small' }}>{props.award}</span>} */}
         </Typography>
       </CardContent>
+      {props.isEnabled ? (
+        <CardActions style={{ display: "flex", justifyContent: "space-between", padding: '0px' }} className={classnames({ [classes.blogActions]: props.type === 'blog', [classes.discussionActions]: props.type === 'discussion' })}>
+          <IconButton aria-label="add to favorites" onClick={(e) => changeEvent(e, props)} style={{ paddingTop: '0px' }}>
+            <div>
+              {
+                //(likeBlogChange || props.likestatus) ?
+                (likedStatus) ?
+                  <img className={classes.likebuttoncss} src={likebutton} alt='like' />
+                  :
+                  <FavoriteBorderIcon style={{ color: 'red' }} className={classes.likebuttoncss} />
+              }
 
-      <CardActions style={{ display: "flex", justifyContent: "space-between", padding: '0px' }} className={classnames({ [classes.blogActions]: props.type === 'blog', [classes.discussionActions]: props.type === 'discussion' })}>
-        <IconButton aria-label="add to favorites" onClick={(e) => changeEvent(e, props)} style={{ paddingTop: '0px' }}>
-          <div>
-            {
-              //(likeBlogChange || props.likestatus) ?
-              (likedStatus) ?
-                <img className={classes.likebuttoncss} src={likebutton} alt='like' />
-                :
-                <FavoriteBorderIcon style={{ color: 'red' }} className={classes.likebuttoncss} />
-            }
 
-
-          </div>
-          <span className={classes.Likecss}> Like </span>
-        </IconButton>
-        <IconButton style={{ paddingTop: '0px' }}
-          className={clsx(classes.expand, {
-            [classes.expandOpen]: expanded,
-          })}
-          onClick={handleExpandClick}
-          aria-expanded={expanded}
-          aria-label="show more"
-        >
-          <span className={classes.Commentcss}>Comment</span>
-          <ExpandMoreIcon />
-        </IconButton>
-      </CardActions>
+            </div>
+            <span className={classes.Likecss}> Like </span>
+          </IconButton>
+          <IconButton style={{ paddingTop: '0px' }}
+            className={clsx(classes.expand, {
+              [classes.expandOpen]: expanded,
+            })}
+            onClick={handleExpandClick}
+            aria-expanded={expanded}
+            aria-label="show more"
+          >
+            <span className={classes.Commentcss}>Comment</span>
+            <ExpandMoreIcon />
+          </IconButton>
+        </CardActions>) : ''}
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
           <CardComments postId={props?.postId} commentCount={commentCount} setCommentCount={setCommentCount} />
