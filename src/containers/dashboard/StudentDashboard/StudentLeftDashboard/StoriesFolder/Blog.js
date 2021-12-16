@@ -128,8 +128,6 @@ export default function Blog(props) {
     }
     props.c_like(props?.postId, props?.type);
   }
-
-  console.log("abcd", props.isEnabled)
   return (
     // <LazyLoad>
     <Card className={classes.card} id="mainCard">
