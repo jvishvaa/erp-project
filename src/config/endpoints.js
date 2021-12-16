@@ -138,6 +138,7 @@ export default {
     editChapter: '/academic/',
     createTopic: '/assessment/topics/',
     updateTopic: '/assessment/',
+    erpSystemConfig: '/erp_user/erp_system_config/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
