@@ -26,6 +26,7 @@ import { repeat } from "lodash";
 import { display } from '@material-ui/system';
 import endpoints from '../../config/Endpoint';
 import apiRequest from '../../config/apiRequest';
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -87,7 +88,10 @@ const useStyles = makeStyles((theme) => ({
       width: '375px'
     },
     ['@media only screen and (min-width: 1900px)']: { // eslint-disable-line no-useless-computed-key
-      width: '670px'
+      width: '500px'
+    },
+    ['@media only screen and (min-width: 2750px)']: { // eslint-disable-line no-useless-computed-key
+      width: '500px'
     }, margin: 10,
   },
   // text: { display: "grid", gap: '1em', gridTemplateColumns: repeat('3', '1fr'), gridTemplateRows: 'masonary', },
@@ -101,24 +105,28 @@ const useStyles = makeStyles((theme) => ({
   awardbuttoncss: { height: "20px" },
 }));
 
+
 export default function Blog(props) {
   const [expanded, setExpanded] = React.useState(false);
   const [likeBlogChange, setLikeBlogChange] = React.useState(false);
-  const [likeDiscussChange, setLikeDiscussChange] = React.useState(false);
+  const [likedStatus, setLikedStatus] = React.useState(props.likestatus);
+  const [commentCount, setCommentCount] = useState(props?.comments)
 
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
   const classes = useStyles();
-
   function changeEvent(e, props) {
-    console.log('Button Clicked', " ")
-    if (likeBlogChange)
+    if (likeBlogChange) {
       setLikeBlogChange(false);
-    else
+      setLikedStatus(props.likestatus)
+    }
+    else {
       setLikeBlogChange(true);
-    props.c_like(props.postId, props.type);
+      setLikedStatus(!props.likestatus)
+    }
+    props.c_like(props?.postId, props?.type);
   }
 
   return (
@@ -127,21 +135,19 @@ export default function Blog(props) {
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
-            {props.user.charAt(0)}
+            {props?.user?.charAt(0)}
           </Avatar>
         }
         action={
-          <div className={classnames({ [classes.blogCard]: props.type === 'Blog', [classes.discussionCard]: props.type === 'Discussion' })}>
-            {props.type === "Blog" ? 'Blog' : 'Discussion'}
+          <div className={classnames({ [classes.blogCard]: props?.type === 'Blog', [classes.discussionCard]: props?.type === 'Discussion' })}>
+            {props?.type === "Blog" ? 'Blog' : 'Discussion'}
           </div>
         }
-        title={<h5 className={classes.headingsstyle}>{props.user}</h5>}
+        title={<h5 className={classes.headingsstyle}>{props?.user}</h5>}
         subheader={
           <Typography className={classes.headingsstyle}>
-            <small style={{ display: 'block', fontSize: 'small' }}>{props.role_branch}</small>
-            {/* {console.log(props.role_branch, 'yu')} */}
-            {/* <br /> */}
-            <small style={{ display: 'block', fontSize: '10px' }}>{props.time}</small>
+            <small style={{ display: 'block', fontSize: 'small' }}>{props?.role_branch}</small>
+            <small style={{ display: 'block', fontSize: '10px' }}>{props?.time}</small>
           </Typography>
         }
       />
@@ -157,10 +163,10 @@ export default function Blog(props) {
             height: '20px'
           }}
         >
-          <h6>{props.data}</h6>
+          <h6>{props?.data}</h6>
         </Typography>
       </CardContent>
-      {props.type === 'Blog' &&
+      {props?.type === 'Blog' &&
         <CardMedia
           component="img"
           height="194"
@@ -170,19 +176,21 @@ export default function Blog(props) {
         />
       }
       <Typography variant="body2" color="text.secondary" className={classes.blogtitlesty}>
-        <h5><b>{props.blogtitle}</b></h5>
+        <h5><b>{props?.blogtitle}</b></h5>
       </Typography>
       <CardContent style={{ padding: "0px 10px", marginTop: "10px" }}>
         <Typography style={{ display: "flex", justifyContent: "space-between", margin: '0% 10% 0% 10%', fontWeight: 'bold' }}
-          variant="body2" className={classnames({ [classes.blogRecords]: props.type === 'blog', [classes.discussionRecords]: props.type === 'discussion' })}
+          variant="body2" className={classnames({ [classes.blogRecords]: props?.type === 'blog', [classes.discussionRecords]: props?.type === 'discussion' })}
           color="text.secondary" bgColor="#ffffff"
         >
-          {likeBlogChange ?
-            <span style={{ fontSize: 'small' }}>{props.likes + 1}</span>
-            :
-            <span style={{ fontSize: 'small' }}>{props.likes}</span>
+          {likeBlogChange && props.likestatus ?
+            <span style={{ fontSize: 'small' }}>{props?.likes - 1}</span>
+            : likeBlogChange && !props.likestatus ?
+              <span style={{ fontSize: 'small' }}>{props?.likes + 1}</span>
+              :
+              <span style={{ fontSize: 'small' }}>{props?.likes}</span>
           }
-          <span style={{ fontSize: 'small' }}>{props.comments}</span>
+          <span style={{ fontSize: 'small' }}>{commentCount}</span>
           {/* {props.type === 'Discussion' && <span style={{ fontSize: 'small' }}>{props.award}</span>} */}
         </Typography>
       </CardContent>
@@ -190,7 +198,15 @@ export default function Blog(props) {
       <CardActions style={{ display: "flex", justifyContent: "space-between", padding: '0px' }} className={classnames({ [classes.blogActions]: props.type === 'blog', [classes.discussionActions]: props.type === 'discussion' })}>
         <IconButton aria-label="add to favorites" onClick={(e) => changeEvent(e, props)} style={{ paddingTop: '0px' }}>
           <div>
-            <img className={classes.likebuttoncss} src={likebutton} alt='like' />
+            {
+              //(likeBlogChange || props.likestatus) ?
+              (likedStatus) ?
+                <img className={classes.likebuttoncss} src={likebutton} alt='like' />
+                :
+                <FavoriteBorderIcon style={{ color: 'red' }} className={classes.likebuttoncss} />
+            }
+
+
           </div>
           <span className={classes.Likecss}> Like </span>
         </IconButton>
@@ -208,7 +224,7 @@ export default function Blog(props) {
       </CardActions>
       <Collapse in={expanded} timeout="auto" unmountOnExit>
         <CardContent>
-          <CardComments postId={props.postId} />
+          <CardComments postId={props?.postId} commentCount={commentCount} setCommentCount={setCommentCount} />
         </CardContent>
       </Collapse>
     </Card>

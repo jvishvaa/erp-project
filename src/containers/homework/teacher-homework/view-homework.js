@@ -13,7 +13,11 @@ import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import moment from 'moment';
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
@@ -104,24 +108,6 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const CancelButton = withStyles({
-  root: {
-    color: '#8C8C8C',
-    backgroundColor: '#e0e0e0',
-    '&:hover': {
-      backgroundColor: '#e0e0e0',
-    },
-  },
-  })(Button);
-  const StyledButton = withStyles({
-  root: {
-    color: '#FFFFFF',
-    backgroundColor: '#FF6B6B',
-    '&:hover': {
-      backgroundColor: '#FF6B6B',
-    },
-  },
-})(Button);
 
 const ViewHomework = withRouter(
   ({
@@ -281,36 +267,30 @@ const ViewHomework = withRouter(
                   Delete
                 </Button>
               </div>
-              <Popover
-              id={id}
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-              }}
-            >
-              <div style={{ padding: '20px 30px' }}>
-                <Typography style={{ fontSize: '20px', marginBottom: '15px' }}>
-                  Are you sure you want to delete?
-                </Typography>
-                <div>
-                  <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
-                  <StyledButton
-                    // onClick={() => removeQuestion(index)}
-                    onClick={handleDelete}
-                    style={{ float: 'right' }}
-                  >
-                    Confirm
-                  </StyledButton>
-                </div>
-              </div>
-            </Popover>
+              <Dialog id={id} open={open} onClose={handleClose}>
+          <DialogTitle
+            id='draggable-dialog-title'
+          >
+            Delete
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={(e) => handleClose()} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleDelete}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
             </div>
           </Grid>
         </Grid>
