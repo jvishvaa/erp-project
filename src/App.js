@@ -355,6 +355,7 @@ import TeacherAttendanceVerify from 'containers/teacherattendance/teacherattenda
 import Observation from 'containers/observation/observation';
 import Observationarea from 'containers/observation/observation-area';
 import Observationreport from 'containers/observation/observation-report';
+import ERPSystemConfig from 'containers/master-management/erp-system-config';
 function App({ alert, isMsAPI }) {
   // useEffect(() => {
   isMsAPI();
@@ -641,6 +642,9 @@ function App({ alert, isMsAPI }) {
                           </Route>
                           <Route exact path='/master-management/event-category'>
                             {({ match }) => <EventCategory match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/system-config'>
+                            {({ match }) => <ERPSystemConfig match={match} />}
                           </Route>
                           <Route exact path='/subject/grade'>
                             {({ match }) => <ListandFilter match={match} />}

@@ -344,6 +344,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/event-category');
         break;
       }
+      case 'System Config': {
+        history.push('/master-management/system-config');
+        break;
+      }
       case 'Discussion Category': {
         history.push('/master-management/discussion-category');
         break;
