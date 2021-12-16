@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Blog from './Blog';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Masonry from 'react-masonry-css';
+import Masonry from 'react-masonry-css'
 import endpoints from '../../config/Endpoint';
 import apiRequest from '../../config/apiRequest';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -14,20 +14,21 @@ const useStyles = makeStyles(() => ({
     display: 'flex',
     marginLeft: '-10px',
     width: 'auto',
+
   },
   my_masonry_grid_column: {
-    paddingLeft: '10px' /* gutter size */,
+    paddingLeft: '10px', /* gutter size */
     backgroundClip: 'paddingBox',
   },
 
   /* Style your items */
-  'my_masonry_grid_column > div': {
-    /* change div to reference your elements you put in <Masonry> */ background: 'grey',
+  'my_masonry_grid_column > div': { /* change div to reference your elements you put in <Masonry> */
+    background: 'grey',
     marginBottom: '30px',
-  },
+  }
 }));
 
-const Blogdisc = () => {
+const Blogdisc = (props) => {
   const classes = useStyles();
   const [Blogdata, setBlogdata] = React.useState([]);
   const [next, setNext] = React.useState('');
@@ -35,15 +36,19 @@ const Blogdisc = () => {
   // const [prev, setPrev] = React.useState();
 
   const getBlogData = () => {
-    apiRequest('get', endpoints.dashboard.student.blogdata)
+    apiRequest('get', endpoints.dashboard.student.blogdata, null, null, true, 5000)
       .then((result) => {
-        if (result.data.status_code === 200) {
+        if (result?.data?.status_code === 200) {
           setIsEnabled(result?.data?.data?.is_enabled);
           setBlogdata(result?.data?.data?.results);
           setNext(result?.data?.data?.next);
+          // setAlert('success', result.data.message)
         }
       })
-      .catch((error) => {});
+      .catch((error) => {
+        console.log('error');
+        // setAlert('error', 'Failed to mark attendance');
+      });
   };
 
   useEffect(() => {
@@ -64,7 +69,7 @@ const Blogdisc = () => {
   const fetchData = () => {
     apiRequest('get', `${endpoints.dashboard.student.nextBlogdata}${next.split('page=')[1]}`)
       .then((result) => {
-        if (result.data.status_code === 200) {
+        if (result?.data?.status_code === 200) {
           setBlogdata([...Blogdata, ...result?.data?.data?.results]);
           setNext(result?.data?.data?.next);
         }
@@ -76,30 +81,32 @@ const Blogdisc = () => {
   };
 
   const likes = (postId, type) => {
+
+
+
     let url, method, params;
     if (type === 'Blog') {
       url = endpoints.dashboard.student.blogLike;
-      method = 'post';
+      method = 'post'
       params = {
-        blog_id: postId,
+        blog_id: postId
       };
-    } else {
+    }
+    else {
       url = `${endpoints.dashboard.student.dicussionLike}${postId}/post-like/`;
-      method = 'put';
+      method = 'put'
     }
 
     apiRequest(method, url, params)
       .then((result) => {
-        console.log('tree', result.data.data.results);
-        if (result.data.status_code === 200) {
-          console.log('post like');
+        if (result?.data?.status_code === 200) {
+          console.log("post like")
         }
       })
       .catch((error) => {
-        console.log('error');
-        // setAlert('error', 'Failed to mark attendance');
+        console.log('Failed to like post');
       });
-  };
+  }
 
   return (
     <div className={classes.box}>
@@ -111,34 +118,36 @@ const Blogdisc = () => {
         loader={<h4>Loading...</h4>}
         endMessage={
           <p style={{ textAlign: 'center' }}>
-            <b>{isEnabled ? 'Yay! You have seen it all':'Coming Soon...'}</b>
+            <b>{isEnabled ? 'Yay! You have seen it all' : 'Coming Soon...'}</b>
           </p>
         }
         height={500}
       >
+
         <Masonry
           breakpointCols={breakpoints}
           className={classes.my_masonry_grid}
-          columnClassName={classes.my_masonry_grid_column}
-        >
+          columnClassName={classes.my_masonry_grid_column}>
           {Blogdata &&
-            Blogdata.map((blogandd) => {
+            Blogdata.map((blogandd = {}) => {
               return (
+
                 <Blog
-                  postId={blogandd.post_id}
-                  key={blogandd.post_id}
-                  user={blogandd.author.name}
-                  role_branch={blogandd.author.branch}
-                  time={blogandd.relative_time}
+                  postId={blogandd?.post_id}
+                  key={blogandd?.post_id}
+                  user={blogandd?.author?.name}
+                  role_branch={blogandd?.author?.branch}
+                  time={blogandd?.relative_time}
                   // data={ReactHtmlParser(blogandd.description)}
-                  data={extractContent(blogandd.description)}
-                  img={blogandd.media_content.images}
-                  blogtitle={blogandd.title}
-                  likes={blogandd.action_counts.likes_count}
-                  comments={blogandd.action_counts.comments_count}
-                  type={blogandd.post_type}
-                  award={blogandd.action_counts.awards_count}
+                  data={extractContent(blogandd?.description)}
+                  img={blogandd?.media_content?.images}
+                  blogtitle={blogandd?.title}
+                  likes={blogandd?.action_counts?.likes_count}
+                  comments={blogandd?.action_counts?.comments_count}
+                  type={blogandd?.post_type}
+                  award={blogandd?.action_counts?.awards_count}
                   c_like={likes}
+                  likestatus={blogandd?.user_actions?.liked}
                 />
               );
             })}
