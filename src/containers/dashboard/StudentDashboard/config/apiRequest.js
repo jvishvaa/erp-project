@@ -1,16 +1,10 @@
 import axios from 'axios';
 import ENVCONFIG from '../../../../config/config';
-// import ENVCONFIG from './config';
 
 const {
     apiGateway: { msOriginUrl, msReportsUrl, baseURL },
     // baseURL: { baseURL }
 } = ENVCONFIG;
-
-console.log("api12", baseURL)
-console.log("api12", msReportsUrl)
-console.log("ENVCONFIG")
-// const baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox'
 
 const apiRequest = async (method, path, payload, responseType, isReportsURL, timeout = 5000) => {
     return new Promise(async (resolve, reject) => {

@@ -118,7 +118,7 @@ const Blogdisc = (props) => {
         loader={<h4>Loading...</h4>}
         endMessage={
           <p style={{ textAlign: 'center' }}>
-            <b>{isEnabled ? 'Yay! You have seen it all' : 'Coming Soon...'}</b>
+            <b>{'Yay! You have seen it all'}</b>
           </p>
         }
         height={500}
@@ -128,7 +128,7 @@ const Blogdisc = (props) => {
           breakpointCols={breakpoints}
           className={classes.my_masonry_grid}
           columnClassName={classes.my_masonry_grid_column}>
-          {Blogdata &&
+          {isEnabled ? (Blogdata &&
             Blogdata.map((blogandd = {}) => {
               return (
 
@@ -150,7 +150,28 @@ const Blogdisc = (props) => {
                   likestatus={blogandd?.user_actions?.liked}
                 />
               );
-            })}
+            })) :
+            [1, 2].map((i) => (
+              <Blog
+                postId={1}
+                key={1}
+                user={''}
+                role_branch={''}
+                time={''}
+                // data={ReactHtmlParser(blogandd.description)}
+                data={extractContent('')}
+                // img={blogandd?.media_content?.images}
+                blogtitle={'Temporarily Disabled'}
+                likes={''}
+                comments={''}
+                type={'Discussion'}
+                // award={blogandd?.action_counts?.awards_count}
+                c_like={false}
+                likestatus={false}
+                isEnabled={isEnabled}
+              />
+            ))
+          }
         </Masonry>
       </InfiniteScroll>
     </div>
