@@ -9,7 +9,7 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.drawer + 200,
     backgroundColor: '#ffffff',
     color: theme.palette.secondary.main,
-    boxShadow: 'none',
+    boxShadow: '0px 1px 2px -1px rgb(0 0 0 / 8%), 0px 2px 3px 0px rgb(0 0 0 / 0%), 0px 1px 8px 0px rgb(0 0 0 / 4%)',
   },
   desktopToolbarComponents: {
     [theme.breakpoints.down('sm')]: {
@@ -20,7 +20,7 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
     display: 'flex',
-    width: '100%',
+    width: '50%',
     position: 'relative',
     // [theme.breakpoints.down('sm')]: {
     //   display: 'none',
@@ -32,7 +32,7 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
     top: '8px',
     display: 'flex',
     // marginLeft : '15px',
-    // width:'100%',
+    width:'100%',
     position: 'relative',
   },
   toolbar: {
@@ -63,17 +63,28 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
     padding: 0,
   },
   logoMObile: {
-    width: '40px',
+    width: '32px',
   },
   verticalLine: {
-    background: '#545454',
+    background: '#bbbbbb8a',
+    height: '40px',
+    padding: '1px',
+    margin: '5px 20px 0px',
   },
   inputButton: {
     '&:hover': {
       backgroundColor: 'transparent',
     },
-    padding: '0px 30px 0px 20px',
+    padding: '0px 0 0px 10px',
     // border:'1px solid black'
+  },
+  SchoolName:{
+    width:200,
+    textShadow: `1px 1px ${theme.palette.secondary.main}47`,
+    fontWeight:800,
+    whiteSpace:'nowrap',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   schoolLogoBtn: {
     height: '40px',
@@ -81,7 +92,7 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
     objectFit: 'fill',
     borderRadius: '50%',
     position: 'relative',
-    boxShadow: `0 0 4px 0px ${theme.palette.primary.main}`,
+    boxShadow: `0 0 3px -2px ${theme.palette.primary.main}`,
     '&:hover': {
       backgroundColor: 'transparent',
     },
@@ -95,8 +106,8 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
   },
   clearIconButton: {
     color: '#ffffff',
-    background: theme.palette.primary.main,
-    borderRadius: '26px',
+    // background: '#fafafa',
+    borderRadius: '10px',
     float: 'right',
     // marginLeft: '150px',
     // marginRight: '-1px',
@@ -107,9 +118,28 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
     height: '42px',
   },
   grow: {
-    flex: 1,
+    width:'8%',
     display: 'flex',
     justifyContent: 'center',
+    marginLeft:5
+  },
+  year: {
+    fontSize:'1rem',
+  },
+  AcademicYearAuto:{
+    color:'#afafaf',
+    '&:hover': {
+      color:'#afafaf',
+    },
+  },
+  AcademicYear:{
+    background:'#f8f7fd',
+    borderRadius:10,
+    width: '100%',
+    color:'#afafaf',
+    '&:hover': {
+      color:'#afafaf',
+    },
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -134,20 +164,30 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
     // borderRadius: '26px',
     [theme.breakpoints.up('sm')]: {
       marginLeft: theme.spacing(3),
-      width: '500px',
+      width: '375px',
+      // margin:'auto'
     },
   },
   searchInputContainer: {
-    //display: 'flex',
-    // alignItems: 'center',
-    border: '0.5px solid #9A9A9A',
-    borderRadius: '26px',
-    // width: '50%',
+    border: '0.5px solid #e5e8ec',
+    borderRadius: '10px',
+    minWidth: '75%',
     boxShadow: 'none',
-    //borderBottom: '1px solid lightgray',
-    // height: '40px',
-    // marginTop:'5px',
-    // marginLeft:'370px',
+    background:'#f8f7fd',
+  },
+  searchInputContaineronFocus:{
+    border: '0.5px solid #e5e8ec',
+    borderRadius: '10px',
+    minWidth: '75%',
+    boxShadow: 'none',
+    background:'#fff',
+  },
+  searchInputContainer1: {
+    border: '0.5px solid #e5e8ec',
+    borderRadius: '10px',
+    width: '100%',
+    boxShadow: 'none',
+    background:'#f8f7fd',
   },
   searchInput: {
     padding: '2px 10px',
@@ -164,6 +204,9 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     color: theme.palette.primary.main,
   },
+  searchIcononFocus: {
+    color: '#c1c1c1',
+  },
   inputRoot: {
     color: 'inherit',
   },
@@ -178,7 +221,7 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
     },
   },
   sectionDesktop: {
-    padding: '0px 15px 0px 20px',
+    padding: '0px 15px 0px 0px',
     display: 'none',
     color: '#FF6B6B',
     [theme.breakpoints.up('md')]: {
