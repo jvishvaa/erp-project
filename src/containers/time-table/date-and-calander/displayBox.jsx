@@ -11,6 +11,11 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import '../timetable.scss';
 import { Button, Popover, Typography } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/node_modules/@material-ui/styles';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 const useStyles = makeStyles(() => ({
   multilineColor: {
     background: 'white',
@@ -23,24 +28,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const CancelButton = withStyles({
-  root: {
-    color: '#8C8C8C',
-    backgroundColor: '#e0e0e0',
-    '&:hover': {
-      backgroundColor: '#e0e0e0',
-    },
-  },
-  })(Button);
-  const StyledButton = withStyles({
-  root: {
-    color: '#FFFFFF',
-    backgroundColor: '#FF6B6B',
-    '&:hover': {
-      backgroundColor: '#FF6B6B',
-    },
-  },
-})(Button);
+
 
 const DisplayBox = (props) => {
   const classes = useStyles();
@@ -156,36 +144,30 @@ const DisplayBox = (props) => {
             ) : (
               <></>
             )}
-            <Popover
-              id={id}
-              open={open}
-              anchorEl={anchorEl}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'center',
-              }}
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'center',
-              }}
-            >
-              <div style={{ padding: '20px 30px' }}>
-                <Typography style={{ fontSize: '20px', marginBottom: '15px' }}>
-                  Are you sure you want to delete?
-                </Typography>
-                <div>
-                  <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
-                  <StyledButton
-                    // onClick={() => removeQuestion(index)}
-                    onClick={handleDelete}
-                    style={{ float: 'right' }}
-                  >
-                    Confirm
-                  </StyledButton>
-                </div>
-              </div>
-            </Popover>
+            <Dialog id={id} open={open} onClose={handleClose} anchorEl={anchorEl}>
+          <DialogTitle
+            id='draggable-dialog-title'
+          >
+            Delete
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={(e) => handleClose()} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleDelete}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>      
            <div style={{color:'#ff6b6b'}}></div>
             <CloseIcon color='primary' fontSize='large' onClick={() => handleCloseBox()} />
           </div>
