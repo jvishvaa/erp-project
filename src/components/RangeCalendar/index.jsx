@@ -100,7 +100,6 @@ export default function RangeCalender(props) {
         // setAlert('error', 'Failed to mark attendance');
       });
   };
-  // console.log("result.data", isEnabled)
   useEffect(() => {
     getCurrentMonthDetails();
   }, []);
