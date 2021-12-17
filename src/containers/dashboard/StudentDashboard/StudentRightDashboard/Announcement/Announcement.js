@@ -692,10 +692,8 @@ export default function Announcement(props) {
                           </ul>
                           </CardContent>
                           </Card>
-                          
                           </div>     
                           </div>
-                          
                           </InfiniteScroll>
                           <div style={{width:"100%", display:"flex", paddingTop:"10px"}}> 
                           <Button onClick={handleClosetwo} style={{margin: "0 auto"}}>Close</Button>
