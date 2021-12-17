@@ -11,6 +11,7 @@ import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import { AttachmentPreviewerContext } from '../../../../components/attachment-previewer/attachment-previewer-contexts';
 
 const useStyles = makeStyles((theme) => ({
@@ -191,6 +192,9 @@ const ViewMoreCard = ({
                     />
                   </a>
                 </div>
+                {p?.document_type === "Activity_Sheet" ?
+                <a href={`${endpoints.lessonPlan.s3erp}${file}`} target = "_blank" download ><IconButton style={{padding: '0', margin: '0 7px'}} > <GetAppIcon /> </IconButton> </a>
+                    : '' }
               </div>
             ))}
           </div>
