@@ -584,7 +584,14 @@ export default function Announcement(props) {
                             <div style={{textAlign:"center", fontSize:"16px", fontWeight:"800"}}>Today</div>
                            <ul style={{paddingLeft:"30px"}}> 
                           { today && today.map((item,index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`Anntoday_${index}`}>
-                            <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>{item?.content}</li>
+                            <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>
+                              <div>{item?.content}</div>
+                              <p>
+                              <span className={classes.time}>
+                                {moment(item?.created_at).calendar()};
+                              </span>
+                            </p>
+                              </li>
                             <div>{welcomeDetails?.userLevel == '4' ? '' : (
                               <div>
                             <IconButton onClick={() => deleteHandler(item, index, today)} >
@@ -605,7 +612,14 @@ export default function Announcement(props) {
                             <div style={{textAlign:"center", fontSize:"16px", fontWeight:"800"}}>Yesterday</div>
                            <ul style={{paddingLeft:"30px"}}> 
                             {yesterday && yesterday.map((item, index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`AnnYEs_${index}`}>
-                            <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>{item?.content}</li>
+                            <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>
+                              <div>{item?.content}</div>
+                              <p>
+                              <span className={classes.time}>
+                                {moment(item?.created_at).calendar()};
+                              </span>
+                            </p>
+                              </li>
                             <div>
                             {welcomeDetails?.userLevel == '4' ? '' : (
                               <div>
@@ -628,7 +642,14 @@ export default function Announcement(props) {
                             <div style={{textAlign:"center", fontSize:"16px", fontWeight:"800"}}>2 Days back</div>
                            <ul style={{paddingLeft:"30px"}}> 
                             {twodays && twodays.map((item, index)=>{return <div style={{display:"flex", justifyContent:"space-between"}} key={`Anntwo_${index}`}>
-                            <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>{item?.content}</li>
+                            <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>
+                              <div>{item?.content}</div>
+                              <p>
+                              <span className={classes.time}>
+                                {moment(item?.created_at).calendar()};
+                              </span>
+                            </p>
+                              </li>
                             <div>{welcomeDetails?.userLevel == '4' ? '' : (
                               <div>
                             <IconButton onClick={() => deleteHandler(item, index, twodays)} >
@@ -648,7 +669,13 @@ export default function Announcement(props) {
                             <div style={{textAlign:"center", fontSize:"16px", fontWeight:"800"}}>Old</div>
                             <ul style={{paddingLeft:"30px"}}> 
                            {oldPost && oldPost.map((item, index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`Annold_${index}`}> 
-                             <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line", }}>{item?.content}</li>
+                             <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line", }}><div>{item?.content}</div>
+                             <p>
+                              <span className={classes.time}>
+                                {moment(item?.created_at).calendar()};
+                              </span>
+                            </p>
+                             </li>
                              <div>{welcomeDetails?.userLevel == '4' ? '' : (
                                <div>
                             <IconButton onClick={() => deleteHandler(item, index, oldPost)} >
