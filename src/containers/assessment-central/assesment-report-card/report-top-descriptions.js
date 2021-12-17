@@ -35,7 +35,8 @@ const TopDetailsHeader = ({
   userInfo = {},
   scholastic = {},
   coScholastic = {},
-  isOrchids = true,
+  isAirVisible = true,
+  isAttendanceVisible = true,
 }) => {
   const { profile_img = placeholderImage } = userInfo || {};
   const classes = useStyles();
@@ -43,7 +44,8 @@ const TopDetailsHeader = ({
     userInfo || {},
     scholastic,
     coScholastic,
-    isOrchids
+    isAirVisible,
+    isAttendanceVisible
   );
 
   return (
@@ -61,7 +63,7 @@ const TopDetailsHeader = ({
                 )}
                 style={{
                   background: '#FDD6B3',
-                  whiteSpace: index === 3 && subIndex === 2 ? 'nowrap' : 'normal',
+                  whiteSpace: 'nowrap' ,
                 }}
               >
                 {value}
