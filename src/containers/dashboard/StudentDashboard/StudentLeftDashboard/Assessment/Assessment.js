@@ -228,13 +228,13 @@ export default function Assessment(item) {
           <div className={classes.assess}>
               <div style={{ margin: '35px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> ASSESSMENT </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>Temporarily Disabled</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Assessment':'Temporary Disabled'}</h5>
               </div>
               </div>
               <div className={classes.assess}>
               <div style={{ margin: '35px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> ASSESSMENT </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>Temporarily Disabled</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Assessment':'Temporary Disabled'}</h5>
               </div>
               </div>
               </div>

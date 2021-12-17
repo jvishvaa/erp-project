@@ -53,7 +53,8 @@ const styletwo = {
   boxShadow: 24,
   p: 4,
   borderRadius: "5px",
-  height: '450px',
+  // height: '450px',
+  minHeight: '350px',
   overflow: 'auto',
   color: 'white',
   overflow: 'hidden',
@@ -562,6 +563,7 @@ export default function Announcement(props) {
                         aria-describedby='modal-modal-description'
                       >
                         <Box sx={styletwo}>
+                          {/* <div> */}
                           <div className={classes.announcementheadtwo}>Announcements</div>
                           <hr />
                           <InfiniteScroll
@@ -570,7 +572,7 @@ export default function Announcement(props) {
                               hasMore={!!nextPage}
                               loader={<h4>Loading...</h4>}
                               endMessage={
-                                <p style={{ textAlign: 'center' }}>
+                                <p style={{ textAlign: 'center',color:'grey' }}>
                                   <b>Yay! You have seen it all</b>
                                 </p>
                               }
@@ -690,12 +692,15 @@ export default function Announcement(props) {
                           </ul>
                           </CardContent>
                           </Card>
-                          <div style={{width:"100%", display:"flex"}}> 
+                          
+                          </div>     
+                          </div>
+                          
+                          </InfiniteScroll>
+                          <div style={{width:"100%", display:"flex", paddingTop:"10px"}}> 
                           <Button onClick={handleClosetwo} style={{margin: "0 auto"}}>Close</Button>
                           </div>
-                          </div>
-                          </div>
-                          </InfiniteScroll>
+                          {/* </div> */}
                         </Box>
                       </Modal>
                     </div>

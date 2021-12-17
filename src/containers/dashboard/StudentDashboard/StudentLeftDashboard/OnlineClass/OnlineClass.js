@@ -287,13 +287,13 @@ const OnlineClass = (props) => {
               <div className={classes.certicw}>
               <div style={{ margin: '35px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> ONLINE CLASS </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>Temporarily Disabled  </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Classes':'Temporary Disabled'}</h5>
               </div>
             </div>
             <div className={classes.certicw}>
               <div style={{ margin: '35px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> ONLINE CLASS </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>Temporarily Disabled  </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Classes':'Temporary Disabled'}</h5>
               </div>
             </div>
             </div>}
