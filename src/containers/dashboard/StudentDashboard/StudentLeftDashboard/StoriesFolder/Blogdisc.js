@@ -148,6 +148,7 @@ const Blogdisc = (props) => {
                   award={blogandd?.action_counts?.awards_count}
                   c_like={likes}
                   likestatus={blogandd?.user_actions?.liked}
+                  isEnabled={isEnabled}
                 />
               );
             })) :
