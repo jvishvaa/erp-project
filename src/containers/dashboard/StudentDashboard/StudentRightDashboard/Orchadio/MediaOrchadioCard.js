@@ -80,8 +80,12 @@ export default function MediaControlCard() {
             .then((res) => {
                 if (hasLiked) {
                     setLikeCount(likeCount - 1);
+                    mediaData[currentAudioId].likes = likeCount - 1;
+                    mediaData[currentAudioId].is_like = false;
                 } else {
                     setLikeCount(likeCount + 1);
+                    mediaData[currentAudioId].likes = likeCount + 1
+                    mediaData[currentAudioId].is_like = true;
                 }
                 setHasLiked(!hasLiked);
                 // setLikeChange(true);
@@ -180,6 +184,8 @@ export default function MediaControlCard() {
             const prevValue = currentAudioId;
             setCurrentAudioId(prevValue - 1);
             setChangeAudio(true);
+            setLikeCount(mediaData[prevValue - 1]?.likes);
+            setHasLiked(mediaData[prevValue - 1]?.is_like);
             audioPlayer.current.src = `${Endpoint.s3.Audio}${mediaData[prevValue - 1].files[0]}`;
         }
     };

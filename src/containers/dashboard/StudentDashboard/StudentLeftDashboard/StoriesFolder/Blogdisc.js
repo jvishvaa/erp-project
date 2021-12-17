@@ -80,10 +80,7 @@ const Blogdisc = (props) => {
       });
   };
 
-  const likes = (postId, type) => {
-
-
-
+  const handleLike = (postId, type) => {
     let url, method, params;
     if (type === 'Blog') {
       url = endpoints.dashboard.student.blogLike;
@@ -131,7 +128,6 @@ const Blogdisc = (props) => {
           {isEnabled ? (Blogdata &&
             Blogdata.map((blogandd = {}) => {
               return (
-
                 <Blog
                   postId={blogandd?.post_id}
                   key={blogandd?.post_id}
@@ -146,8 +142,9 @@ const Blogdisc = (props) => {
                   comments={blogandd?.action_counts?.comments_count}
                   type={blogandd?.post_type}
                   award={blogandd?.action_counts?.awards_count}
-                  c_like={likes}
+                  handleLike={handleLike}
                   likestatus={blogandd?.user_actions?.liked}
+                  isEnabled={isEnabled}
                 />
               );
             })) :
@@ -166,7 +163,7 @@ const Blogdisc = (props) => {
                 comments={''}
                 type={'Discussion'}
                 // award={blogandd?.action_counts?.awards_count}
-                c_like={false}
+                handleLike={false}
                 likestatus={false}
                 isEnabled={isEnabled}
               />
