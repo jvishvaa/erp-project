@@ -37,19 +37,25 @@ export default function AssesmentReport({ reportCardData }) {
     { Data: scholastic, TableType: 'SCHOLASTIC' },
     { Data: coScholastic, TableType: 'CO-SCHOLASTIC' },
   ];
-  const { is_orchids: isOrchids = true } = schoolData;
+  const {
+    // is_orchids: isAirVisible = true,
+    attendance_view: isAttendanceVisible = true,
+    air_view: isAirVisible = true,
+    trait_view: isTraitVisible = true,
+  } = schoolData;
+  
   return (
     <TableContainer>
       <Table className={classes.table}>
-        <ReportCardHeader {...{ schoolData, scholastic, coScholastic, isOrchids }} />
-        <StudentDetails {...{ userInfo, scholastic, coScholastic, isOrchids }} />
+        <ReportCardHeader {...{ schoolData, scholastic, coScholastic, isAirVisible }} />
+        <StudentDetails {...{ userInfo, scholastic, coScholastic, isAirVisible, isAttendanceVisible }} />
         {tableData.map((data) => (
-          <ReportTableContent {...data} isOrchids={isOrchids} />
+          <ReportTableContent {...data} isAirVisible={isAirVisible} />
         ))}
-        {isOrchids && (
+        {isTraitVisible && (
           <PersonalityTraitTable {...{ scholastic, coScholastic, traitGradeScale }} />
         )}
-        <ReportCardFooter {...{ scholastic, coScholastic, schoolData, isOrchids }} />
+        <ReportCardFooter {...{ scholastic, coScholastic, schoolData, isAirVisible }} />
       </Table>
     </TableContainer>
   );
