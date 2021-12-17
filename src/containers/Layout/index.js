@@ -956,6 +956,10 @@ const Layout = ({ children, history }) => {
         history.push('/online-class/connection-pod');
         break;
       }
+      case 'Assign User Level': {
+        history.push('/user-level-table');
+        break;
+      }
       default:
         break;
     }
