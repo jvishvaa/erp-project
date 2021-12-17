@@ -16,8 +16,8 @@ const getSubjectWiseMarks = (marks, categoryKeys) => {
   return marksList;
 };
 
-const generateSemesterMarks = (subjectWiseMarks, categoryKeys, isOrchids = true) => {
-  return isOrchids
+const generateSemesterMarks = (subjectWiseMarks, categoryKeys, isAirVisible = true) => {
+  return isAirVisible
     ? Object.values(subjectWiseMarks).map(
         ({ air = '', grade = '', osr = '', total = '', marks = {} }) => [
           ...getSubjectWiseMarks(marks, categoryKeys),
@@ -54,8 +54,8 @@ const generateCategoryRowLength = (scholastic, coScholastic) => {
   return categoryRowLength || 1;
 };
 
-const generateHeaderColspan = (scholastic, coScholastic, isOrchids = true) => {
-  const variableColspan = isOrchids ? 2 : 1;
+const generateHeaderColspan = (scholastic, coScholastic, isAirVisible = true) => {
+  const variableColspan = isAirVisible ? 2 : 1;
   const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
   const colspan = [
     variableColspan,
@@ -69,7 +69,8 @@ const generateReportTopDescription = (
   userInfo = {},
   scholastic = {},
   coScholastic = {},
-  isOrchids = true
+  isAirVisible = true,
+  isAttendanceVisible = true
 ) => {
   const {
     name = '',
@@ -82,10 +83,10 @@ const generateReportTopDescription = (
     attendance_percentage = '',
   } = userInfo || {};
   const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
-  const variableColspanOne = isOrchids ? 4 : 3;
-  const variableColspanTwo = isOrchids ? 2 : 1;
+  const variableColspanOne = isAirVisible ? 4 : 3;
+  const variableColspanTwo = isAirVisible ? 2 : 1;
 
-  return [
+  const studentData = [
     {
       header1: { value: "STUDENT'S NAME", colspan: 1 },
       value1: { value: name || 'NA', colspan: categoryRowLength + variableColspanOne },
@@ -123,6 +124,10 @@ const generateReportTopDescription = (
       },
     },
   ];
+  if (!isAttendanceVisible) {
+    studentData.pop();
+  }
+  return studentData;
 };
 
 const generateSemesterOneTwo = (termDetails) => {
@@ -151,7 +156,7 @@ const generateSemesterOneTwo = (termDetails) => {
 };
 
 /*transforming categoryMap as per usage*/
-const generateCategoryMap = (categoryMap = {}, isOrchids = true) => {
+const generateCategoryMap = (categoryMap = {}, isAirVisible = true) => {
   const transformedCategoryType = Object.entries(categoryMap).map(
     ([
       key,
@@ -170,7 +175,7 @@ const generateCategoryMap = (categoryMap = {}, isOrchids = true) => {
     ...transformedCategoryType.map(({ category }) => getNAString(category)),
   ];
 
-  const constantHeaders = isOrchids ? ['Grade', 'OSR', 'AIR'] : ['Grade', 'OSR'];
+  const constantHeaders = isAirVisible ? ['Grade', 'OSR', 'AIR'] : ['Grade', 'OSR'];
 
   //totalWeight added in weight row below
   const totalWeight = transformedCategoryType.reduce(
@@ -205,7 +210,7 @@ const generateCategoryMap = (categoryMap = {}, isOrchids = true) => {
 };
 
 /*transforming termDetails as per usage*/
-const generateTermDetails = (termDetails, categoryKeys, isOrchids = true) => {
+const generateTermDetails = (termDetails, categoryKeys, isAirVisible = true) => {
   const { semesterOne = {}, semesterTwo = {} } = generateSemesterOneTwo(termDetails);
   const { subjectMarks: subjectMarksSemesterOne = {} } = semesterOne || {};
   const { subjectMarks: subjectMarksSemesterTwo = {} } = semesterTwo || {};
@@ -214,12 +219,12 @@ const generateTermDetails = (termDetails, categoryKeys, isOrchids = true) => {
   let semesterOneSubjectWiseMarks = generateSemesterMarks(
     subjectMarksSemesterOne,
     categoryKeys,
-    isOrchids
+    isAirVisible
   );
   let semesterTwoSubjectWiseMarks = generateSemesterMarks(
     subjectMarksSemesterTwo,
     categoryKeys,
-    isOrchids
+    isAirVisible
   );
 
   const semOneLength = semesterOneSubjectWiseMarks?.length || 0;
@@ -241,7 +246,7 @@ const generateTermDetails = (termDetails, categoryKeys, isOrchids = true) => {
   }
   //
   //Joining rows of both sems
-  const semesterMarks = isOrchids
+  const semesterMarks = isAirVisible
     ? semesterOneSubjectWiseMarks.map((semesterOneSubject, index) => [
         subjectsList[index],
         ...semesterOneSubject,
@@ -272,8 +277,26 @@ const generateGradeScale = (gradeScale = {}) => {
   return `${gradeScaleList?.length} Point Grading Scale: ${gradeScaleToDisplay}`;
 };
 
-const getTableHeaderRow = (tableType, categoryRowLength, isOrchids = true) => {
-  const variableColspan = isOrchids ? 4 : 3;
+/*NOTE: transforming categoryMapList ([ ]) in co-scholastic */
+
+const generateCategoryListMap = (categoryMapList = []) => {
+  const categoryAssessmentType = categoryMapList.map((categoryMap) =>
+    Object.entries(categoryMap)
+      .map(([key, { name: category = null, assessment_type: assessmentType = null }]) => {
+        const assessmentTypeString = Array.isArray(assessmentType)
+          ? assessmentType.join('/')
+          : assessmentType;
+        const displayString = getNAString(assessmentTypeString);
+        return `${category}${' '} -${' '}${displayString}`;
+      })
+      .join(', ')
+  );
+
+  return categoryAssessmentType;
+};
+
+const getTableHeaderRow = (tableType, categoryRowLength, isAirVisible = true) => {
+  const variableColspan = isAirVisible ? 4 : 3;
   return [
     {
       backgroundColor: '#fff',
@@ -305,7 +328,7 @@ const getTableHeaderRow = (tableType, categoryRowLength, isOrchids = true) => {
 const generateTermDetailsSummaryRow = (
   termDetails,
   categoryRowLength,
-  isOrchids = true
+  isAirVisible = true
 ) => {
   const { semesterOne = {}, semesterTwo = {} } = generateSemesterOneTwo(termDetails);
 
@@ -320,7 +343,7 @@ const generateTermDetailsSummaryRow = (
     outOfTotal: outOfTotalSemTwo = '',
   } = semesterTwo || {};
 
-  return isOrchids
+  return isAirVisible
     ? [
         { value: 'Total' },
         {
@@ -433,15 +456,20 @@ const generatePersonalityTraits = (scholastic, coScholastic) => {
   return personalityTraits;
 };
 
-const generateFooterData = (scholastic, coScholastic, schoolData, isOrchids = true) => {
+const generateFooterData = (
+  scholastic,
+  coScholastic,
+  schoolData,
+  isAirVisible = true
+) => {
   const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
   const { term_details: termDetails = {} } = scholastic || {};
   const { overallRemarkSemOne = '', overallRemarkSemTwo = '' } =
     getOverallRemark(termDetails);
   const categoryRowLengthHalf = Math.round(categoryRowLength / 2);
   const { principal_name: principalName = '' } = schoolData || {};
-  const variableColspanOne = isOrchids ? 4 : 1;
-  const variableColspanTwo = isOrchids ? 1 : -2;
+  const variableColspanOne = isAirVisible ? 4 : 1;
+  const variableColspanTwo = isAirVisible ? 1 : -2;
   return [
     [
       { value: "CLASS TEACHER'S REMARK", colspan: categoryRowLengthHalf },
@@ -468,6 +496,7 @@ export {
   generateCategoryMap,
   generateTermDetails,
   getTableHeaderRow,
+  generateCategoryListMap,
   generateGradeScale,
   generateTermDetailsSummaryRow,
   generateHeaderColspan,

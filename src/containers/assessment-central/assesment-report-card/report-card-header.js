@@ -29,7 +29,7 @@ const ReportCardHeader = ({
   schoolData = {},
   scholastic = {},
   coScholastic = {},
-  isOrchids = true,
+  isAirVisible = true,
 }) => {
   const {
     school_name: schoolName,
@@ -37,7 +37,6 @@ const ReportCardHeader = ({
     school_contact: schoolContact,
     school_email: schoolEmail,
     acad_session: acadSession = '2021-22',
-    // affiliation_code: affiliationCode = '',
     cbse_affiliation_code: cbseAffiliationCode = '',
     branch_code: branchCode = '',
     branch_logo: branchLogo = '',
@@ -47,7 +46,7 @@ const ReportCardHeader = ({
   } = ENVCONFIG;
 
   const [firstRowColspan = 2, secondRowColspan = 20, thirdRowColspan = 3] =
-    generateHeaderColspan(scholastic, coScholastic, isOrchids);
+    generateHeaderColspan(scholastic, coScholastic, isAirVisible);
 
   const getAffiliationNumber = () => {
     if (cbseAffiliationCode) {
