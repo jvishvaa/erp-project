@@ -222,13 +222,13 @@ const Homework = (props) => {
               <div className={classes.certihw}>
               <div style={{ margin: '35px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> HOMEWORK </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Homework':'Temporary Disabled'}</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Homework':'Temporarily Disabled'}</h5>
               </div>
             </div>
             <div className={classes.certihw}>
               <div style={{ margin: '35px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> HOMEWORK </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Homework':'Temporary Disabled'}</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Homework':'Temporarily Disabled'}</h5>
               </div>
             </div>
             </div>
