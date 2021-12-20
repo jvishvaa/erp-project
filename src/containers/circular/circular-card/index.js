@@ -143,6 +143,7 @@ const CircularCard = ({ lesson, period, setPeriodDataForView, setViewMoreData, s
 
   // }
   const handleEdit = (data) => {
+    setState({ editData: data, isEdit: true });
     history.push(`/create-circular/${data?.id}`)
   }
 
