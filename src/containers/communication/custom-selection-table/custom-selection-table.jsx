@@ -55,6 +55,42 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
       }
     }
   };
+
+  const selectRowLevel = (e) => {
+    if (name !== 'assign_level') {
+      setSelectAll(false);
+    }
+    if (
+      selectedUsers.length &&
+      !e.isSelected &&
+      selectedUsers[pageno - 1].selected.includes(e.data.userid)
+    ) {
+      let tempSelection = [];
+      tempSelection = selectedUsers;
+      tempSelection[pageno - 1].selected.splice(
+        tempSelection[pageno - 1].selected.indexOf(e.data.userid),
+        1
+      );
+      setSelectedUsers(tempSelection);
+    }
+    if (selectedUsers.length && e.isSelected) {
+      let tempSelection = [];
+      tempSelection = selectedUsers;
+      tempSelection[pageno - 1].selected.push(e.data.userid);
+      setSelectedUsers(tempSelection);
+      if(tempSelection.length === totalRows){
+        setSelectAll(true);
+      }
+    }
+  };
+
+  const selectmodule = (e) => {
+    if(name === 'assign_level'){
+      selectRowLevel(e)
+    } else {
+      selectRow(e)
+    }
+  }
   const pageChange = (e) => {
     changePage(e.page + 1);
   };
@@ -89,7 +125,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
         paginationMode='server'
         ref={(input) => (apiRef = input)}
         {...data}
-        onRowSelected={selectRow}
+        onRowSelected={selectmodule}
         // selectRows={() => {
         //   console.log('selectRows ????');
         // }}
