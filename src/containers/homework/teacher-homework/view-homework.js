@@ -105,6 +105,13 @@ const useStyles = makeStyles((theme) => ({
       width: "90% !important",
       height: "auto !important",
     }
+  },
+  instructionText:{
+    display : 'flex',
+    border:`1px solid ${theme.palette.primary.main}`,
+    borderRadius: '5px',
+    height: '38px',
+    alignItems : 'center'
   }
 }));
 
@@ -217,6 +224,15 @@ const ViewHomework = withRouter(
           </Grid>
           <Grid item xs={12} md={10}>
             <div className={classes.homeworkSubmitwrapper}>
+            <div className = {classes.instructionText}>
+              {
+                selectedHomeworkDetails?.description?<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>
+                  Instructions : {selectedHomeworkDetails?.description}</span>:
+                  <span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>
+                    No Instruction
+                    </span>
+              }
+          </div>
               <div className='homework_block_wrapper home-work-date-subject-name no-border'>
                 <div className={` ${classes.homeworkblock} homework_submit_tag`}>
                   {/* Homework - {viewHomework?.subjectName?.split('_')[2]},{' '} */}
