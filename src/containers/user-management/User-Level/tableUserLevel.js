@@ -153,7 +153,7 @@ const [ loading , setLoading ] = useState(false)
         },
       });
       if (result.status === 200) {
-        const levels = result?.data?.result?.result;
+        const levels = result?.data?.result;
         setRoles(levels);
         levels.forEach(({ id = 3, level_name = 'Student' }) => levelObj[id] = level_name)
         // displayUsersList(result?.data?.result?.result)
@@ -511,6 +511,10 @@ const [ loading , setLoading ] = useState(false)
                   />
                 )}
               />
+              {selectedRole ? 
+              <div style={{marginTop : '10px' , border: '1px solid' , padding: '5px', borderColor: '#afafaf', borderRadius: '10px'}} >
+              <p><strong>User Level Description :</strong>  {selectedRole?.description}</p>
+              </div> : ' ' }
             </Grid>
             <Grid item md={2} xs={4}>
               <Typography color="secondary">
@@ -538,20 +542,9 @@ const [ loading , setLoading ] = useState(false)
                 Assign User Level
               </Button>
             </Grid>
-            {isMobile && (
-              <Grid item md={4} xs={6}>
-                <p
-                  className={classes.viewMoreBtn}
-                  onClick={() => {
-                    setViewMore((prevState) => !prevState);
-                  }}
-                  style={{ textAlign: 'right' }}
-                >
-                  {viewMore ? 'View Less' : 'View More'}
-                </p>
-              </Grid>
-            )}
+           
           </Grid>
+          
         </div>
         {loading && <Loader />}
           <div className='tableLevelArea' >
