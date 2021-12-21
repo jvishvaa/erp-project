@@ -8,8 +8,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Blogdisc from './StoriesFolder/Blogdisc';
 import { red } from '@material-ui/core/colors';
 import Hidden from '@material-ui/core/Hidden';
-import IconMobile from './IconMobile';
-import './StudentLeftDashboard.scss';
+// import './StudentLeftDashboard.scss';
+import IconMobile from '../StudentRightDashboard/IconMobile';
 
 
 const StudentLeftDashboard = (props) => {
@@ -31,6 +31,11 @@ const StudentLeftDashboard = (props) => {
         <Grid item xs={12} sm={6} md={6} spacing={4}>
           <Assessment />
         </Grid>
+        <Hidden smUp>
+        <Grid item xs={12}>
+          <IconMobile />
+        </Grid>
+        </Hidden>
       </Grid>
       <Grid item xs={12} sm={12} md={12}>
         <Blogdisc />
