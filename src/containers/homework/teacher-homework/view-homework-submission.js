@@ -92,6 +92,13 @@ const useStyles = makeStyles((theme) => ({
       width: "90% !important",
       height: "auto !important",
     }
+  },
+  instructionText:{
+    display : 'flex',
+    border:`1px solid ${theme.palette.primary.main}`,
+    borderRadius: '5px',
+    height: '38px',
+    alignItems : 'center'
   }
 }));
 let savedFiles =[]
@@ -128,6 +135,7 @@ const ViewHomework = withRouter(
     const [imageIndex, setImageIndex] = useState();
     const [mediaContained, setMediaContained] = useState()
     const [hwStatus, setHwStatus] = useState()
+    const [instruction, setInstruction] = useState(null)
     // const [imageIndex, setimageIndex] = useState(index);
 
     const scrollableContainer = useRef(null);
@@ -364,6 +372,7 @@ const ViewHomework = withRouter(
       setRemark(overallRemark);
       setScore(score);
       setHwStatus(hw_status);
+      setInstruction(data?.instruction)
       if (isQuestionwise) {
         const initialQuestionsState = hwQuestions.map((q) => ({
           id: q.id,
@@ -447,6 +456,17 @@ const ViewHomework = withRouter(
           </Grid>
           <Grid item xs={12} md={10}>
             <div className={classes.homeworkSubmitwrapper}>
+            <div className = {classes.instructionText}>
+              {
+                instruction?<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>
+                  Instructions : {instruction}</span>:
+                  <span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>
+                    No Instruction
+                    </span>
+              }
+       
+         
+          </div>
               <div className='homework_block_wrapper no-border'>
                 <div className={` ${classes.homeworkblock} homework_submit_tag`}>
                   Homework - {subject && subject}, {date}

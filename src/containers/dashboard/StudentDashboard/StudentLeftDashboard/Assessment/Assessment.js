@@ -125,21 +125,29 @@ export default function Assessment(item) {
   const matches960 = useMediaQuery('(max-width: 960px)');
   const [assessmentArr, setAssessmentArr] = React.useState([]);
   const [isEnabled, setIsEnabled] = React.useState(false);
-  //carousel
-  const addItem = () => {
-    const nextItem = Math.max(1, assessmentArr.length + 1);
-    setAssessmentArr([...assessmentArr, nextItem]);
+  const [nextPage, setNextPage] = React.useState("");
+
+  const nextpagehandler = () => {
+    let url = nextPage.split('page=')[1]
+    apiRequest('get', `${endpoints.dashboard.student.assessments}?page=${url}` ,null, null, true, 5000)
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setAssessmentArr([...assessmentArr, ...result?.data?.result?.results]);
+          setNextPage(result?.data?.result?.next);
+        }
+      })
+      .catch((error) => {
+        console.log('error');
+      });
   };
-  const removeItem = () => {
-    const endRange = Math.max(0, assessmentArr.length - 1);
-    setAssessmentArr(assessmentArr.slice(0, endRange));
-  };
+  
   const getAssessmentData = () => {
     apiRequest('get', endpoints.dashboard.student.assessments, null, null, true, 5000  )
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setIsEnabled(result?.data?.is_enabled)
           setAssessmentArr(result?.data?.result?.results);
+          setNextPage(result?.data?.result?.next);
         }
       })
       .catch((error) => {
@@ -148,6 +156,7 @@ export default function Assessment(item) {
   };
   useEffect(() => {
     getAssessmentData();
+    // nextpagehandler();
   }, []);
   //arrow carousal
   const myArrow = ({ type, onClick, isEdge }) => {
@@ -156,7 +165,9 @@ export default function Assessment(item) {
     const arrows = type === consts.PREV ?
       <Button onClick={onClick} disabled={isEdge} className="leftPointer">
         {leftPointer}
-      </Button> :
+      </Button> 
+      :
+      
       <Button onClick={onClick} disabled={isEdge} className="rightPointer">
         {rightPointer}
       </Button>
@@ -195,7 +206,12 @@ export default function Assessment(item) {
           </Button>
         </div>
         <Carousel renderArrow={myArrow}
-          breakPoints={breakPoints}>
+          breakPoints={breakPoints}
+          onNextEnd={({index})=> {
+            if(index%8 === 0 && nextPage) {
+              nextpagehandler()
+            }
+        }}>
           {assessmentArr?.length > 0 && isEnabled ? assessmentArr.map((item, i) => (
             <div className={classes.card} key={`Assesement${i}`}>
               <div className={classes.layertop}>

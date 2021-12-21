@@ -297,7 +297,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
           }
 
           // setBulkData(result.data.data.hw_questions[0].submitted_files)z
-          console.log("@@@@@@result,", result.data.data)
           if (homeworkSubmission.status === 1) {
             // setBulkData(result.data.data.hw_questions.submitted_files || [])
             // setBulkDataDisplay(result.data.data.hw_questions.submitted_files || [])
@@ -320,6 +319,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
             setMaxCount(maxVal);
 
           } else if (homeworkSubmission.status === 2 || homeworkSubmission.status === 3) {
+            setDesc(result.data.data.homework.description)
             if (result.data.data.is_question_wise) {
               setIsBulk(false);
 

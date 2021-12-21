@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import Divider from '@material-ui/core/Divider';
 import { useHistory } from 'react-router-dom';
 import {
   Grid,
@@ -336,9 +335,10 @@ const CreateDailyDairy = (details, onSubmit) => {
       if (result.data.status_code === 200) {
         setLoading(false);
         if (editData.documents) {
-          let imageData = editData.documents;
-          imageData.push(result?.data?.result);
-          setFilePath(imageData);
+          // let imageData = editData.documents;
+          // imageData.push(result?.data?.result);
+          // setFilePath(imageData);
+          setFilePath([...filePath, result?.data?.result])
         } else {
           setFilePath([...filePath, result?.data?.result]);
         }
@@ -349,11 +349,8 @@ const CreateDailyDairy = (details, onSubmit) => {
         setAlert('error', result.data.message);
       }
     });
-    // } else {
-    //   setAlert('warning', 'Exceed Maximum Number Attachment');
-    //   setLoading(false);
-    // }
   };
+
   const handleSubmit = async () => {
     if (filterData.branch.length === 0) {
       setAlert('error', 'Select Branch!');
@@ -458,65 +455,43 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleEdited = () => {
+
+    let payload = {
+      academic_year: editData.academic_year.id,
+      branch: editData.branch.id,
+      grade: editData.grade.id,
+      section: [editData.section.id],
+      subject: editData.subject.id,
+      chapter: editData.chapter.id,
+      teacher_report: {
+        previous_class:
+          recap && recap.length > 0 ? recap : editData.teacher_report.recap,
+        summary:
+          summary && summary.length > 0
+            ? summary
+            : editData.teacher_report.summary,
+        class_work:
+          detail && detail.length > 0
+            ? detail
+            : editData.teacher_report.class_work,
+        tools_used:
+          tools && tools.length > 0 ? tools : editData.teacher_report.tools_used,
+        homework:
+          homework && homework.length > 0
+            ? homework
+            : editData.teacher_report.homework,
+      },
+      dairy_type: 2,
+    }
+
+    if (filePath?.length) {
+      payload['documents'] = filePath
+    }
+
     axiosInstance
       .put(
         `${endpoints.dailyDairy.updateDelete}${editData.id}/update-delete-dairy/`,
-        filePath && filePath.length >= 0
-          ? {
-            academic_year: editData.academic_year.id,
-            branch: editData.branch.id,
-            grade: editData.grade.id,
-            section: [editData.section.id],
-            subject: editData.subject.id,
-            chapter: editData.chapter.id,
-            documents: filePath,
-            teacher_report: {
-              previous_class:
-                recap && recap.length > 0 ? recap : editData.teacher_report.recap,
-              summary:
-                summary && summary.length > 0
-                  ? summary
-                  : editData.teacher_report.summary,
-              class_work:
-                detail && detail.length > 0
-                  ? detail
-                  : editData.teacher_report.class_work,
-              tools_used:
-                tools && tools.length > 0 ? tools : editData.teacher_report.tools_used,
-              homework:
-                homework && homework.length > 0
-                  ? homework
-                  : editData.teacher_report.homework,
-            },
-            dairy_type: 2,
-          }
-          : {
-            academic_year: editData.academic_year.id,
-            branch: editData.branch.id,
-            grade: editData.grade.id,
-            section: [editData.section[0].id],
-            subject: editData.subject.id,
-            chapter: editData.chapter.id,
-            teacher_report: {
-              previous_class:
-                recap && recap.length > 0 ? recap : editData.teacher_report.recap,
-              summary:
-                summary && summary.length > 0
-                  ? summary
-                  : editData.teacher_report.summary,
-              class_work:
-                detail && detail.length > 0
-                  ? detail
-                  : editData.teacher_report.class_work,
-              tools_used:
-                tools && tools.length > 0 ? tools : editData.teacher_report.tools_used,
-              homework:
-                homework && homework.length > 0
-                  ? homework
-                  : editData.teacher_report.homework,
-            },
-            dairy_type: 2,
-          }
+        payload
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -576,10 +551,51 @@ const CreateDailyDairy = (details, onSubmit) => {
     setState({ isEdit: false, editData: [] });
   };
   const removeFileHandler = (i, file) => {
-    // const list = [...filePath];
-    filePath.splice(i, 1);
-    setAlert('success', 'File successfully deleted');
-  };
+    // delete editData.documents[
+    if (editData.documents) {
+      let list = [...filePath];
+      setLoading(true);
+      axiosInstance
+        .post(`${endpoints.circular.deleteFile}`, {
+          file_name: `${file}`,
+          daily_diary_id: `${editData.id}`,
+        }).then((result) => {
+          if (result.data.status_code === 204) {
+            list.splice(i, 1);
+            setFilePath(list);
+            setAlert('success', result.data.message);
+            setLoading(false);
+          }
+        })
+        .catch((error) => {
+          // setAlert('error', error.message);
+          setLoading(false);
+        });
+    }
+    if (!editData.documents) {
+      const list = [...filePath];
+      axiosInstance
+        .post(`${endpoints.circular.deleteFile}`, {
+          file_name: `${file}`,
+        })
+        .then((result) => {
+          if (result.data.status_code === 204) {
+            list.splice(i, 1);
+            setFilePath(list);
+            setAlert('success', result.data.message);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        })
+        .finally(() =>
+          setLoading(false)
+        );
+    };
+  }
+
   let imageCount = 1;
   useEffect(() => {
     if (editData?.documents) {
@@ -929,7 +945,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                         key={`homework_student_question_attachment_${i}`}
                         file={file}
                         index={i}
-                        onClose={() => removeFileHandler(i)}
+                        onClose={() => removeFileHandler(i, file)}
                       />
                     ))}
                 </div>
