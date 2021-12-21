@@ -69,19 +69,14 @@ const Certificate = (props) => {
   const getCertificateData = () => {
     apiRequest('get', endpoints.dashboard.student.certificates, null , null, null, 5000)
       .then((result) => {
-        if (result.data.status_code === 200) {
-          setCertificateArr(result.data.result);
+        if (result?.data?.status_code === 200) {
+          setCertificateArr(result?.data?.result);
         }
       })
       .catch((error) => {
         console.log('error');
       });
   };
-
-  // useEffect(() => {
-  //   getCertificateData();
-  // }, []);
-
   //arrow carousal
   const myArrow = ({ type, onClick, isEdge }) => {
     const leftPointer = '<';
@@ -129,13 +124,13 @@ const Certificate = (props) => {
             <div className={classes.certi}>
               <div style={{ margin: '50px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> CERTIFICATE </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon...</h5>
               </div>
             </div>
             <div className={classes.certi}>
               <div style={{ margin: '50px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> CERTIFICATE </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon...</h5>
               </div>
             </div>
             <div className={classes.certi}>

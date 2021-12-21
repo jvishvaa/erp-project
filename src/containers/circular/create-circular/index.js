@@ -11,6 +11,7 @@ import {
   TextareaAutosize,
   makeStyles
 } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -24,7 +25,6 @@ import deleteIcon from '../../../assets/images/delete.svg';
 import { Context } from '../context/CircularStore';
 import Loading from '../../../components/loader/loader';
 import classWiseSms from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/classWiseSms';
-
 
 const useStyles = makeStyles((theme) => ({
   attchmentbutton: {
@@ -55,23 +55,25 @@ const CraeteCircular = () => {
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
   const history = useHistory();
+  // const selectedAcademicYear = useSelector(
+  //   (state) => state.commonFilterReducer?.selectedYear
+  // );
   const [isFilter, setIsFilter] = useState(true);
 
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [sectionDropdown, setSectionDropdown] = useState([]);
-
-  const [state] = useContext(Context);
-  const { editData } = state;
-
+  const [files, setFiles] = useState([])
+  const [state, setState] = useContext(Context);
+  const { setIsEdit, setEditData } = setState;
+  const { isEdit, editData } = state;
   const [title, setTitle] = useState(editData.circular_name || '');
   const [description, setDescription] = useState(editData.description || '');
   const [filePath, setFilePath] = useState([]);
   const [filterEvent, setFilterEvent] = useState(false);
 
   const circularRole = [{ name: 'Student Circular', value: 'Student Circular' }];
-
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: '',
@@ -138,7 +140,6 @@ const CraeteCircular = () => {
         grade: '',
         section: '',
       });
-      //.get(`${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`)
       axiosInstance
         .get(
           `${endpoints.communication.branches}?session_year=${value.id}&module_id=${moduleId}`
@@ -258,6 +259,9 @@ const CraeteCircular = () => {
       setSectionDropdown([]);
     }
   };
+  useEffect(() => {
+    handleAcademicYear();
+  }, [])
 
   function handleTitle(e) {
     if (e.target.value.split(' ').length <= 30) {
@@ -285,9 +289,7 @@ const CraeteCircular = () => {
         if (result.data.status_code === 200) {
           setLoading(false);
           if (editData?.media) {
-            let mediaData = editData.media;
-            mediaData.push(result?.data?.result);
-            setFilePath(mediaData)
+            setFilePath([...filePath, result.data.result]);
           }
           else {
             setFilePath([...filePath, result.data.result]);
@@ -325,6 +327,7 @@ const CraeteCircular = () => {
 
   const FileRow = (props) => {
     const { file, onClose, index } = props;
+    setFiles(file);
     return (
       <div className='file_row_image'>
         <div className='file_name_container'>File {index + 1}</div>
@@ -350,11 +353,6 @@ const CraeteCircular = () => {
     );
   };
 
-  const removeFileHandler = (i, file) => {
-    // const list = [...filePath];
-    filePath.splice(i, 1);
-    setAlert('success', 'File successfully deleted');
-  };
   useEffect(() => {
     if (moduleId) {
       axiosInstance
@@ -362,6 +360,8 @@ const CraeteCircular = () => {
         .then((result) => {
           if (result.data.status_code === 200) {
             setAcademicYearDropdown(result?.data?.data);
+            // const defaultValue = result.data?.data?.[0];
+            // handleAcademicYear({}, selectedAcademicYear);
           } else {
             setAlert('error', result.data.message);
           }
@@ -371,6 +371,51 @@ const CraeteCircular = () => {
         });
     }
   }, [moduleId]);
+  const removeFileHandler = (i, file) => {
+    // delete editData.documents[
+    if (editData.media) {
+      let list = [...filePath];
+      setLoading(true);
+      axiosInstance
+        .post(`${endpoints.circular.deleteFile}`, {
+          file_name: `${file}`,
+          circular_id: `${editData.id}`,
+        }).then((result) => {
+          if (result.data.status_code === 204) {
+            list.splice(i, 1);
+            setFilePath(list);
+            setAlert('success', result.data.message);
+            setLoading(false);
+          }
+        })
+        .catch((error) => {
+          // setAlert('error', error.message);
+          setLoading(false);
+        });
+    }
+    if (!editData.media) {
+      const list = [...filePath];
+      axiosInstance
+        .post(`${endpoints.circular.deleteFile}`, {
+          file_name: `${file}`,
+        })
+        .then((result) => {
+          if (result.data.status_code === 204) {
+            list.splice(i, 1);
+            setFilePath(list);
+            setAlert('success', result.data.message);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        })
+        .finally(() =>
+          setLoading(false)
+        );
+    };
+  }
   let mediaCount = 1;
   useEffect(() => {
     if (editData?.media) {
@@ -414,85 +459,54 @@ const CraeteCircular = () => {
           setFilePath([]);
           setFilterEvent(false);
           setAlert('success', result?.data?.message);
-          history.goBack();
+          history.push('/teacher-circular');
         } else {
           setAlert('error', result?.data?.message || `${result?.data?.description}`);
         }
       });
   };
-
+  const handleBack = () => {
+    history.push('/teacher-circular')
+    setState({ isEdit: false, editData: [] });
+  };
   const handleEdited = () => {
-    if (filePath.length > 0) {
-      axiosInstance
-        .put(`${endpoints.circular.updateCircular}`, {
-          circular_id: circularKey,
-          circular_name: title,
-          description: description,
-          module_name: filterData.role.value,
-          media: filePath,
-          Branch: [filterData?.branch?.id],
-          // grades: [filterData?.grade?.id],
-          // sections: [filterData?.section?.section_id || filterData?.section?.id],
-          grades: [filterData?.grade[0]?.id],
-          sections: [filterData?.section[0]?.id],
-          academic_year: filterData?.year?.id,
-        })
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setTitle('');
-            setDescription('');
-            setFilterData({
-              branch: '',
-              grade: '',
-              section: '',
-              role: '',
-            });
-            setFilePath([]);
-            setFilterEvent(false);
-            setAlert('success', result?.data?.message);
-            history.push('/teacher-circular');
-          } else {
-            setAlert('error', result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error?.data?.message);
-        });
+    let payload = {
+      circular_id: circularKey,
+      circular_name: title,
+      description: description,
+      module_name: filterData.role.value,
+      Branch: [filterData?.branch?.id],
+      grades: [filterData?.grade[0]?.id],
+      sections: [filterData?.section[0]?.id],
+      academic_year: filterData?.year?.id,
     }
-    if (filePath.length === 0) {
-      axiosInstance
-        .put(`${endpoints.circular.updateCircular}`, {
-          circular_id: circularKey,
-          circular_name: title,
-          description: description,
-          module_name: filterData.role.value,
-          Branch: [filterData?.branch?.id],
-          grades: [filterData?.grade[0]?.id],
-          sections: [filterData?.section[0]?.id],
-          academic_year: filterData?.year?.id,
-        })
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setTitle('');
-            setDescription('');
-            setFilterData({
-              branch: '',
-              grade: '',
-              section: '',
-              role: '',
-            });
-            setFilePath([]);
-            setFilterEvent(false);
-            setAlert('success', result?.data?.message);
-            history.push('/teacher-circular');
-          } else {
-            setAlert('error', result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error?.data?.message);
-        });
+    if (filePath?.length) {
+      payload['media'] = filePath
     }
+    axiosInstance
+      .put(`${endpoints.circular.updateCircular}`, payload
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setTitle('');
+          setDescription('');
+          setFilterData({
+            branch: '',
+            grade: '',
+            section: '',
+            role: '',
+          });
+          setFilePath([]);
+          setFilterEvent(false);
+          setAlert('success', result?.data?.message);
+          history.push('/teacher-circular');
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.data?.message);
+      });
   };
 
   //////EDIT USE-EFFECT
@@ -744,13 +758,13 @@ const CraeteCircular = () => {
                     <Grid item xs={12}>
                       <div className='attchmentContainer'>
                         <div style={{ display: 'flex' }}>
-                          {filePath?.length > 0
+                          {filePath?.length >= 0
                             && filePath?.map((file, i) => (
                               <FileRow
                                 key={`create_circular_${i}`}
                                 file={file}
                                 index={i}
-                                onClose={() => removeFileHandler(i)}
+                                onClose={() => removeFileHandler(i, file)}
                               />
                             ))
                           }
@@ -813,16 +827,20 @@ const CraeteCircular = () => {
                 >
 
                   <Grid item xs={12}>
-                    <Button className='submit_button' onClick={() => history.push('/teacher-circular')}>
-                      BACK
-                    </Button>
-                    <Button
-                      onClick={circularKey ? handleEdited : handleSubmit}
-                      className='submit_button'
-                      style={{ background: '#ff6b6b' }}
-                    >
-                      {circularKey ? 'UPDATE' : 'SUBMIT'}
-                    </Button>
+                    <span style={{ marginRight: '20px' }}>
+                      <Button className='submit_button' onClick={handleBack}>
+                        BACK
+                      </Button>
+                    </span>
+                    <span>
+                      <Button
+                        onClick={circularKey ? handleEdited : handleSubmit}
+                        className='submit_button'
+                        style={{ background: '#ff6b6b' }}
+                      >
+                        {circularKey ? 'UPDATE' : 'SUBMIT'}
+                      </Button>
+                    </span>
 
                   </Grid>
                 </Grid>

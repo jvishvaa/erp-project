@@ -349,6 +349,10 @@ const Layout = ({ children, history }) => {
         history.push('/master-management/event-category');
         break;
       }
+      case 'System Config': {
+        history.push('/master-management/system-config');
+        break;
+      }
       case 'Discussion Category': {
         history.push('/master-management/discussion-category');
         break;
@@ -955,6 +959,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Connection pod': {
         history.push('/online-class/connection-pod');
+        break;
+      }
+      case 'Assign User Level': {
+        history.push('/user-level-table');
         break;
       }
       default:

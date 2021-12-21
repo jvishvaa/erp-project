@@ -53,10 +53,12 @@ const styletwo = {
   boxShadow: 24,
   p: 4,
   borderRadius: "5px",
-  height: '450px',
+  // height: '450px',
+  minHeight: '350px',
   overflow: 'auto',
   color: 'white',
-  padding: '20px 0px',
+  overflow: 'hidden',
+  padding: '10px 0px',
   "&::-webkit-scrollbar": {
     width: "5px",
     marginRight: "20px",
@@ -90,6 +92,11 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.main,
     fontWeight: 800,
     fontSize: "1.2em",
+    position: "sticky",
+    top: "0px",
+    // background: "wheat",
+    margin: "0 auto 0px auto",
+    zIndex: 100,
   },
   announcementheadtwo: {
     color: 'black',
@@ -103,6 +110,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   box: {
+   
     height: "135px",
     overflow: 'hidden',
     border: '1px solid #d3d1d1',
@@ -112,10 +120,10 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 10,
     padding: 10,
     transform: "translateX(4px)",
-    overflow: 'hidden',
+    // overflow: 'hidden',
     backgroundColor: 'white',
-    overflow: 'auto',
-    scrollX: 'none',
+    // overflow: 'auto',
+    // scrollX: 'none',
     color: 'theme.palette.secondary',
   },
   buttonmodalicon: {
@@ -125,7 +133,7 @@ const useStyles = makeStyles((theme) => ({
   iconmore: {
     position: 'absolute',
     bottom: 5,
-    right: '0.7em',
+    right: '1.5em',
     zIndex: '100',
     // backgroundColor: '#349ceb',
     fontSize: "1em",
@@ -135,8 +143,8 @@ const useStyles = makeStyles((theme) => ({
   },
   icon: {
     position: 'absolute',
-    bottom: 30,
-    right: '1.5em',
+    bottom: 24,
+    right: '2em',
     zIndex: '110',
     width: "10%",
     marginBottom: '10px',
@@ -146,10 +154,12 @@ const useStyles = makeStyles((theme) => ({
   },
   details: {
     color: 'white',
+    // overflowY: 'scroll',
+    // scrollX: 'none',
     fontWeight: 600,
     fontSize: "1em",
     padding: 10,
-    maxWidth: '250px',
+    maxWidth: '450px',
     paddingTop: 10,
     '&::marker': {
       color: 'yellow',
@@ -175,22 +185,22 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
     fontWeight: 800,
   },
-  '@media (max-width: 960px)': {
-    iconmore: {
-      position: 'absolute',
-      bottom: 5,
-      right: '3em',
-      zIndex: '100',
-      backgroundColor: '#349ceb',
-      fontSize: "0.9em",
-    },
-    icon: {
-      position: 'absolute',
-      bottom: 40,
-      right: '3.5em',
-      zIndex: '110',
-    },
-  },
+  // '@media (max-width: 960px)': {
+  //   iconmore: {
+  //     position: 'absolute',
+  //     bottom: 5,
+  //     right: '3em',
+  //     zIndex: '100',
+  //     backgroundColor: '#349ceb',
+  //     fontSize: "0.9em",
+  //   },
+  //   icon: {
+  //     position: 'absolute',
+  //     bottom: 40,
+  //     right: '3.5em',
+  //     zIndex: '110',
+  //   },
+  // },
 }));
 export default function Announcement(props) {
   const classes = useStyles();
@@ -207,6 +217,8 @@ export default function Announcement(props) {
   setOpentwo(false);
   if(data?.content) {
     setCheckdata(data);
+    console.log(data , "check");
+    
   }
   };
   const handleClose = () => {
@@ -219,7 +231,8 @@ export default function Announcement(props) {
   const [isStudent, setIsStudent] = useState(true);
   const { welcomeDetails = {} } = useDashboardContext();
   //select
-  const [role, setrole] = React.useState([]); //which one? teacher, principal, none, student,//which one have you selected
+  const [role, setrole] = React.useState("");
+  // const [role, setrole] = React.useState([]); //which one? teacher, principal, none, student,//which one have you selected
   const [select, setSelect] = React.useState(false);
   const [roledata, setRoledata] = React.useState(); //roles coming from API
   const matches = useMediaQuery('(max-width:600px)');
@@ -228,6 +241,9 @@ export default function Announcement(props) {
   const [ yesterday , setYesterday  ] = useState([])
   const [ twodays , setTwodays ] = useState([])
   const [ oldPost , setOldPost ] = useState([])
+  const [isEnabled, setIsEnabled] = React.useState(false);
+  const [page, setPage] = React.useState();
+
 
   const [loading, setLoading] = useState(false);
   //we are making request to show roles in modal
@@ -244,11 +260,12 @@ export default function Announcement(props) {
   };
   //making request to show announcements
   const updateAnnouncement = () => {
-    apiRequest('get', endpoints.dashboard.student.update,null, null, null, 5000)
+    apiRequest('get', endpoints.dashboard.student.update,null,null,true, 5000)
       .then((result) => {
         if (result?.data?.status_code === 200) {
+          setIsEnabled(result?.data?.is_enabled)
           setNextPage(result?.data?.result?.next);
-          setAnnouncementArr(result?.data?.result?.results);
+          setAnnouncementArr(result?.data?.result?.data);
         }
       })
       .catch((error) => {
@@ -256,11 +273,11 @@ export default function Announcement(props) {
       });
   };
   const nextpagehandler = () => {
-    axiosInstance
-      .get(nextPage)
+    let url = nextPage.split('page=')[1]
+    apiRequest('get', `${endpoints.dashboard.student.update}?page=${url}` ,null, null, true, 5000)
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          setAnnouncementArr([...announcementArr, ...result?.data?.result?.results]);
+          setAnnouncementArr([...announcementArr, ...result?.data?.result?.data]);
           setNextPage(result?.data?.result?.next);
         }
       })
@@ -273,8 +290,11 @@ export default function Announcement(props) {
     updateAnnouncement();
     // nextpagehandler();
   }, []);
-  const handleChange = (event, newValue) => {
-    setrole(newValue);
+  // const handleChange = (event, newValue) => {
+  //   setrole(newValue);
+  // };
+  const handleChange = (event, newvalue) => {
+    setrole(newvalue);
   };
   const selectClose = () => {
     setSelect(false);
@@ -287,12 +307,13 @@ export default function Announcement(props) {
       // checking if user has entered anything or not. we dont want an empty announcement to be shown
       return;
     }
-    setAdd('');
-    let myRole = [];
-    role && role.length && role.map(item => {
-      myRole.push(item.id)
-    })
-    const payload = { role_id: myRole, content: add }
+    // setAdd('');
+    // let myRole = [];
+    // role?.length && role.map(item => {
+    //   myRole.push(item.id)
+    // })
+    // const payload = { role_id: myRole, content: add }
+    const payload = { role_id: role.id, content: add }
     apiRequest('post', endpoints.dashboard.student.create, payload)
       .then((result) => {
         if (result?.data?.status_code === 200) {
@@ -336,11 +357,13 @@ export default function Announcement(props) {
   const editHandler = (item, index) => {
     // setLoading(true);
     setOpentwo(false);
-    let myRole = [];
-    role && role.length && role.map(roleitem => {
-      myRole.push(roleitem.id)
-    })
-    const payload = { role_id: myRole, content: add }
+    // let myRole = [];
+    // role && role?.length && role.map(roleitem => {
+    //   myRole.push(roleitem.id)
+    // })
+    // const payload = { role_id: myRole, content: add }
+    // const payload = { role_id: role, content: add }
+    const payload = { role_id: role.id, content: add }
     apiRequest('put', `${endpoints.dashboard.student.editAnnouncement}${checkdata?.id}/`, payload)
       .then((result) => {
         if (result?.data?.status_code === 200) {
@@ -356,7 +379,7 @@ export default function Announcement(props) {
           getRoleData();
           setRoledata([])
           setAdd('')
-          setrole([])
+          setrole("")
           setCheckdata("");
         } else {
           setAlert('error', "Not Authorized");
@@ -388,6 +411,7 @@ export default function Announcement(props) {
         <Grid item>
           <Grid container item>
             <Grid item xs={12}>
+              <div>
               <span className={classes.announcementhead}>Announcements
                 <span style={{ marginLeft: '10px' }}>
                   {welcomeDetails?.userLevel == '4' ? '' :
@@ -395,6 +419,7 @@ export default function Announcement(props) {
                 </span>
               </span>
               <hr />
+              </div>
               <span>
                 <Modal
                   open={open}
@@ -413,8 +438,9 @@ export default function Announcement(props) {
                           getOptionLabel={(option) => option?.role_name}
                           filterSelectedOptions
                           onChange={handleChange}
-                          value={role || []}
-                          multiple
+                          value={role}
+                          // value={role || []}
+                          // multiple
                           renderInput={(params) => (
                             <TextField
                               {...params}
@@ -480,19 +506,20 @@ export default function Announcement(props) {
         <Grid item>
           <Grid container item>
             <Grid item className={classes.details}>
+              <div >
               {isShortArray ? ( //we are checking if we want to render 2 or all items in announcement */}
-                <ul>
-                  {announcementArr.map(
+                <ul style={{overflow: "scroll", height : "100px", width: "350px"}}>
+                  {isEnabled && announcementArr && announcementArr.map(
                     (d, i) =>
-                      i <= 100 && (
+                      i <= 10 && (
                         <div key={`Annoucement${i}`} >
                           <li className={classes.listitem}>
-                            <p>
-                              <span style={{ marginRight: "7px", }}><img src={bullet} alt="bulet" style={{ width: '8px' }}></img></span>
-                              <span style={{ maxWidth: "350px", wordWrap: "break-word", overflowX: 'clip' }}>
+                            <div style={{display:'flex', justifyContent:'flex-start'}}>
+                              <div style={{ marginRight: "7px", }}><img src={bullet} alt="bulet" style={{ width: '8px' }}></img></div>
+                              <div style={{textOverflow: 'ellipsis', overflow: 'hidden',whiteSpace: 'nowrap',position: 'relative'}}>
                                 {d?.content}
-                              </span>
-                            </p>
+                              </div>
+                            </div>
                             <p>
                               <span className={classes.time}>
                                 {moment(d?.created_at).calendar()};
@@ -503,17 +530,18 @@ export default function Announcement(props) {
                       )
                     // );
                   )}
-                   {matches? <Button
+                   {isEnabled && matches? <Button
                    variant="outlined"
                    size="small"
                    style={{ fontSize: "1em" }}
                    color='black'
                    onClick={nextpagehandler}
+                   disabled={!isEnabled}
                    >
                      More
                      </Button>: ""}
                   <div>
-                    {matches ? "" : <div onClick={handleOpentwo}>
+                    {isEnabled && matches ? "" : <div onClick={handleOpentwo}>
                       <img className={classes.icon} src={moreicon} alt='bttn' />
                     </div>}
                     <div>
@@ -535,15 +563,16 @@ export default function Announcement(props) {
                         aria-describedby='modal-modal-description'
                       >
                         <Box sx={styletwo}>
+                          {/* <div> */}
                           <div className={classes.announcementheadtwo}>Announcements</div>
                           <hr />
                           <InfiniteScroll
-                              dataLength={announcementArr.length}
+                              dataLength={announcementArr?.length}
                               next={nextpagehandler}
                               hasMore={!!nextPage}
                               loader={<h4>Loading...</h4>}
                               endMessage={
-                                <p style={{ textAlign: 'center' }}>
+                                <p style={{ textAlign: 'center',color:'grey' }}>
                                   <b>Yay! You have seen it all</b>
                                 </p>
                               }
@@ -556,8 +585,15 @@ export default function Announcement(props) {
                             <CardContent>
                             <div style={{textAlign:"center", fontSize:"16px", fontWeight:"800"}}>Today</div>
                            <ul style={{paddingLeft:"30px"}}> 
-                          { today && today?.map((item,index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`Anntoday_${index}`}>
-                            <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>{item?.content}</li>
+                          { today && today.map((item,index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`Anntoday_${index}`}>
+                            <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>
+                              <div>{item?.content}</div>
+                              <p>
+                              <span className={classes.time}>
+                                {moment(item?.created_at).calendar()};
+                              </span>
+                            </p>
+                              </li>
                             <div>{welcomeDetails?.userLevel == '4' ? '' : (
                               <div>
                             <IconButton onClick={() => deleteHandler(item, index, today)} >
@@ -577,8 +613,15 @@ export default function Announcement(props) {
                             <CardContent>
                             <div style={{textAlign:"center", fontSize:"16px", fontWeight:"800"}}>Yesterday</div>
                            <ul style={{paddingLeft:"30px"}}> 
-                            {yesterday && yesterday?.map((item, index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`AnnYEs_${index}`}>
-                            <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>{item?.content}</li>
+                            {yesterday && yesterday.map((item, index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`AnnYEs_${index}`}>
+                            <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>
+                              <div>{item?.content}</div>
+                              <p>
+                              <span className={classes.time}>
+                                {moment(item?.created_at).calendar()};
+                              </span>
+                            </p>
+                              </li>
                             <div>
                             {welcomeDetails?.userLevel == '4' ? '' : (
                               <div>
@@ -600,8 +643,15 @@ export default function Announcement(props) {
                             <CardContent>
                             <div style={{textAlign:"center", fontSize:"16px", fontWeight:"800"}}>2 Days back</div>
                            <ul style={{paddingLeft:"30px"}}> 
-                            {twodays && twodays?.map((item, index)=>{return <div style={{display:"flex", justifyContent:"space-between"}} key={`Anntwo_${index}`}>
-                            <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>{item?.content}</li>
+                            {twodays && twodays.map((item, index)=>{return <div style={{display:"flex", justifyContent:"space-between"}} key={`Anntwo_${index}`}>
+                            <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line"}}>
+                              <div>{item?.content}</div>
+                              <p>
+                              <span className={classes.time}>
+                                {moment(item?.created_at).calendar()};
+                              </span>
+                            </p>
+                              </li>
                             <div>{welcomeDetails?.userLevel == '4' ? '' : (
                               <div>
                             <IconButton onClick={() => deleteHandler(item, index, twodays)} >
@@ -620,8 +670,14 @@ export default function Announcement(props) {
                             <CardContent>
                             <div style={{textAlign:"center", fontSize:"16px", fontWeight:"800"}}>Old</div>
                             <ul style={{paddingLeft:"30px"}}> 
-                           {oldPost && oldPost?.map((item, index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`Annold_${index}`}> 
-                             <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line", }}>{item?.content}</li>
+                           {oldPost && oldPost.map((item, index)=>{ return <div style={{display:"flex", justifyContent:"space-between"}} key={`Annold_${index}`}> 
+                             <li style={{ maxWidth: "350px", wordWrap: "break-word", whiteSpace: "pre-line", }}><div>{item?.content}</div>
+                             <p>
+                              <span className={classes.time}>
+                                {moment(item?.created_at).calendar()};
+                              </span>
+                            </p>
+                             </li>
                              <div>{welcomeDetails?.userLevel == '4' ? '' : (
                                <div>
                             <IconButton onClick={() => deleteHandler(item, index, oldPost)} >
@@ -633,20 +689,24 @@ export default function Announcement(props) {
                              </div>})}
                           </ul>
                           <ul>  
-                        
                           </ul>
                           </CardContent>
                           </Card>
+                          </div>     
                           </div>
                           
-                          </div>
                           </InfiniteScroll>
+                          <div style={{width:"100%", display:"flex", paddingTop:"10px"}}> 
+                          <Button onClick={handleClosetwo} style={{margin: "0 auto"}}>Close</Button>
+                          </div>
+                          {/* </div> */}
                         </Box>
                       </Modal>
                     </div>
                   </div>
                 </ul>
               ) : null}
+              </div>
             </Grid>
           </Grid>
         </Grid>

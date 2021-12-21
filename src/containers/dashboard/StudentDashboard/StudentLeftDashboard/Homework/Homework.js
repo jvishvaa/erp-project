@@ -12,6 +12,8 @@ import endpoints from '../../config/Endpoint';
 // import endpoints from '../../config/Endpoint';
 import apiRequest from '../../config/apiRequest';
 import axiosInstance from 'config/axios';
+import moment from 'moment';
+
 const breakPoints = [
   { width: 1, itemsToShow: 2, itemsToScroll: 2 },
   { width: 550, itemsToShow: 2, itemsToScroll: 2 },
@@ -105,7 +107,7 @@ const useStyles = makeStyles(() => ({
   homework: {
     color: '#014B7E',
     fontWeight: 600,
-    margin: '5px',
+    margin: '15px',
     position: "relative",
   },
   pendingbtn: {
@@ -116,7 +118,7 @@ const useStyles = makeStyles(() => ({
   },
   certihw: {
     height: '100px',
-    width: '180px',
+    width: '170px',
     margin: '5px',
     borderRadius: '5x',
     backgroundColor: 'white',
@@ -128,6 +130,7 @@ const useStyles = makeStyles(() => ({
 const Homework = (props) => {
   const classes = useStyles();
   const [homeworkArr, setHomeworkArr] = React.useState([]);
+  const [isEnabled, setIsEnabled] = React.useState(false);
   const matches960 = useMediaQuery('(max-width: 960px)');
   const addItem = () => {
     const nextItem = Math.max(1, homeworkArr.length + 1);
@@ -156,6 +159,7 @@ const Homework = (props) => {
     apiRequest('get', endpoints.dashboard.student.homeworks, null, null, true, 5000)
       .then((result) => {
         if (result.data.status_code === 200) {
+          setIsEnabled(result?.data?.data?.is_enabled);
         setHomeworkArr(result?.data?.data?.results);
         }
       })
@@ -200,7 +204,7 @@ const Homework = (props) => {
             </Button></div>
           <Carousel renderArrow={myArrow}
             breakPoints={breakPoints}>
-            {homeworkArr.length > 0 ? homeworkArr.map((item, i) => (
+            {homeworkArr?.length > 0 && isEnabled ?  homeworkArr.map((item, i) => (
               <div className={classes.cardhomework} key={`homework_${i}`}>
                 <div className={classes.layertop}>
                   <div className={classes.layertopone}>
@@ -210,16 +214,25 @@ const Homework = (props) => {
                     <span className={classes.submissionData}>{item?.homework_name} </span>
                   </div>
                 </div>
-                <div className={classes.layermiddle}>{item?.class_date__date}</div>
+                <div className={classes.layermiddle}>{item?.class_date__date === moment().format('YYYY-MM-DD') ? "Due Today" : moment().subtract(1, 'days').format('YYYY-MM-DD') === item?.class_date__date ? "Due Tomorrow" : item?.class_date__date}</div>
               </div>
 
             )): 
+            <div style={{display: "flex"}}>
               <div className={classes.certihw}>
               <div style={{ margin: '35px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> HOMEWORK </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>No Homework</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Homework':'Temporarily Disabled'}</h5>
               </div>
-            </div>}
+            </div>
+            <div className={classes.certihw}>
+              <div style={{ margin: '35px auto', borderRadius: '5px' }}>
+                <h5 style={{ color: "#349CEB", textAlign: "center" }}> HOMEWORK </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Homework':'Temporarily Disabled'}</h5>
+              </div>
+            </div>
+            </div>
+            }
           </Carousel>
         </Grid>
       </Grid>

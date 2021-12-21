@@ -50,6 +50,9 @@ export default {
     bulkUpload: '/erp_user/uploaded-users-status/',
     academicYear: '/erp_user/list-academic_year/',
     subjectName: '/erp_user/list-academic_year-subjectmapping/',
+    userLevelList : `${baseURLCentral}/central-admin/user_level_list/`,
+    getUserLevel: '/erp_user/level_list/',
+    assignLevel: '/erp_user/level_create/',
   },
   timeTable: {
     tableData: '/academic/time_table/',
@@ -138,6 +141,7 @@ export default {
     editChapter: '/academic/',
     createTopic: '/assessment/topics/',
     updateTopic: '/assessment/',
+    erpSystemConfig: '/erp_user/erp_system_config/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -219,6 +223,7 @@ export default {
     // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
     // s3: ERP_BUCKET,
     s3: 'https://d2r9gkgplfhsr2.cloudfront.net/',
+    s3erp: 'https://d3ka3pry54wyko.cloudfront.net/',
     lessonFeedback: `${baseURLCentral}/lesson_plan/lessonplan-feedback/`
   },
   aol: {

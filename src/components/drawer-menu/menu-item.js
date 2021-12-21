@@ -125,6 +125,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Signature Upload', Path: '/master-management/signature-upload' },
     { name: 'Event Category', Path: '/master-management/event-category' },
     { name: 'Discussion Category', Path: '/master-management/discussion-category' },
+    { name: 'System Config', Path: '/master-management/system-config' },
     { name: 'Teacher Calendar', Path: '/attendance-calendar/teacher-view' }, //attendance
     { name: 'Student Calendar', Path: '/attendance-calendar/student-view' }, //
     { name: 'Course', Path: '/course-list' },

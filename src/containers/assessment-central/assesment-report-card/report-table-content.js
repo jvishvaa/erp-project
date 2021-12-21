@@ -7,6 +7,7 @@ import {
   getTableHeaderRow,
   generateTermDetailsSummaryRow,
   generateGradeScale,
+  generateCategoryListMap,
 } from './transform-report-card-data';
 import clsx from 'clsx';
 
@@ -39,9 +40,10 @@ const useStyles = makeStyles({
 const ReportTableContent = (props) => {
   const classes = useStyles();
 
-  const { Data = {}, TableType = '', isOrchids = true } = props || {};
+  const { Data = {}, TableType = '', isAirVisible = true } = props || {};
 
   const {
+    category_map_list: categoryMapList = [],
     category_map: categoryMap = {},
     term_details: termDetails = {},
     grade_scale: gradeScale = {},
@@ -53,19 +55,26 @@ const ReportTableContent = (props) => {
     constantHeaders,
     weightRow,
     categoryAssessmentType,
-  } = generateCategoryMap(categoryMap, isOrchids) || {};
+  } = generateCategoryMap(categoryMap, isAirVisible) || {};
 
-  const semesterMarks = generateTermDetails(termDetails, categoryKeys, isOrchids) || [];
+  const semesterMarks =
+    generateTermDetails(termDetails, categoryKeys, isAirVisible) || [];
 
   const termDetailsSummary =
-    generateTermDetailsSummaryRow(termDetails, categoryRow?.length, isOrchids) || [];
+    generateTermDetailsSummaryRow(termDetails, categoryRow?.length, isAirVisible) || [];
 
-  const tableHeaderRow = getTableHeaderRow(TableType, categoryRow?.length, isOrchids);
+  const tableHeaderRow = getTableHeaderRow(TableType, categoryRow?.length, isAirVisible);
   const totalColspan = tableHeaderRow.reduce(
     (total, { colspan = 1 }) => total + colspan,
     0
   );
   const gradeScaleRow = generateGradeScale(gradeScale);
+
+  const coScholasticCategoryAssessmentType = generateCategoryListMap(categoryMapList);
+  const tableTypeFooter =
+    TableType === 'CO-SCHOLASTIC'
+      ? [gradeScaleRow, ...coScholasticCategoryAssessmentType]
+      : [gradeScaleRow, categoryAssessmentType];
 
   return (
     <>
@@ -119,7 +128,7 @@ const ReportTableContent = (props) => {
             <StyledTableCell
               align='right'
               rowSpan={2}
-              style={{ width: index === (isOrchids ? 3 : 2) ? '74px' : '46px' }}
+              style={{ width: index === (isAirVisible ? 3 : 2) ? '74px' : '46px' }}
             >
               {item}
             </StyledTableCell>
@@ -171,7 +180,7 @@ const ReportTableContent = (props) => {
             </StyledTableCell>
           ))}
         </TableRow>
-        {[gradeScaleRow, categoryAssessmentType].filter(Boolean).map((element) => (
+        {tableTypeFooter.filter(Boolean).map((element) => (
           <TableRow>
             <StyledTableCell className={classes.tableFooter} colSpan={totalColspan}>
               {element}

@@ -93,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
   assessment: {
     color: '#014B7E',
     fontWeight: 800,
-    margin: '10px',
+    margin: '20px',
     fontSize: "0.9em",
     position: "relative",
   },
@@ -110,7 +110,7 @@ const useStyles = makeStyles((theme) => ({
   },
   assess: {
     height: '100px',
-    width: '180px',
+    width: '170px',
     margin: '5px',
     borderRadius: '5x',
     backgroundColor: 'white',
@@ -124,20 +124,30 @@ export default function Assessment(item) {
   const classes = useStyles();
   const matches960 = useMediaQuery('(max-width: 960px)');
   const [assessmentArr, setAssessmentArr] = React.useState([]);
-  //carousel
-  const addItem = () => {
-    const nextItem = Math.max(1, assessmentArr.length + 1);
-    setAssessmentArr([...assessmentArr, nextItem]);
-  };
-  const removeItem = () => {
-    const endRange = Math.max(0, assessmentArr.length - 1);
-    setAssessmentArr(assessmentArr.slice(0, endRange));
-  };
-  const getAssessmentData = () => {
-    apiRequest('get', endpoints.dashboard.student.assessment, null, null, null, 5000  )
+  const [isEnabled, setIsEnabled] = React.useState(false);
+  const [nextPage, setNextPage] = React.useState("");
+
+  const nextpagehandler = () => {
+    let url = nextPage.split('page=')[1]
+    apiRequest('get', `${endpoints.dashboard.student.assessments}?page=${url}` ,null, null, true, 5000)
       .then((result) => {
-        if (result.data.status_code === 200) {
-          setAssessmentArr(result.data.result.results);
+        if (result?.data?.status_code === 200) {
+          setAssessmentArr([...assessmentArr, ...result?.data?.result?.results]);
+          setNextPage(result?.data?.result?.next);
+        }
+      })
+      .catch((error) => {
+        console.log('error');
+      });
+  };
+  
+  const getAssessmentData = () => {
+    apiRequest('get', endpoints.dashboard.student.assessments, null, null, true, 5000  )
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setIsEnabled(result?.data?.is_enabled)
+          setAssessmentArr(result?.data?.result?.results);
+          setNextPage(result?.data?.result?.next);
         }
       })
       .catch((error) => {
@@ -146,6 +156,7 @@ export default function Assessment(item) {
   };
   useEffect(() => {
     getAssessmentData();
+    // nextpagehandler();
   }, []);
   //arrow carousal
   const myArrow = ({ type, onClick, isEdge }) => {
@@ -154,7 +165,9 @@ export default function Assessment(item) {
     const arrows = type === consts.PREV ?
       <Button onClick={onClick} disabled={isEdge} className="leftPointer">
         {leftPointer}
-      </Button> :
+      </Button> 
+      :
+      
       <Button onClick={onClick} disabled={isEdge} className="rightPointer">
         {rightPointer}
       </Button>
@@ -193,8 +206,13 @@ export default function Assessment(item) {
           </Button>
         </div>
         <Carousel renderArrow={myArrow}
-          breakPoints={breakPoints}>
-          {assessmentArr.length > 0 ? assessmentArr.map((item, i) => (
+          breakPoints={breakPoints}
+          onNextEnd={({index})=> {
+            if(index%8 === 0 && nextPage) {
+              nextpagehandler()
+            }
+        }}>
+          {assessmentArr?.length > 0 && isEnabled ? assessmentArr.map((item, i) => (
             <div className={classes.card} key={`Assesement${i}`}>
               <div className={classes.layertop}>
                 <div className={classes.layerupper}>
@@ -222,10 +240,18 @@ export default function Assessment(item) {
               </div>
             </div>
           )) : 
+          <div style={{display:"flex"}}>
           <div className={classes.assess}>
               <div style={{ margin: '35px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> ASSESSMENT </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>No Assessment, you are all up to date.</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Assessment':'Temporarily Disabled'}</h5>
+              </div>
+              </div>
+              <div className={classes.assess}>
+              <div style={{ margin: '35px auto', borderRadius: '5px' }}>
+                <h5 style={{ color: "#349CEB", textAlign: "center" }}> ASSESSMENT </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Assessment':'Temporarily Disabled'}</h5>
+              </div>
               </div>
               </div>
               }

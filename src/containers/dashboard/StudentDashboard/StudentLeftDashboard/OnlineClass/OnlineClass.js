@@ -95,7 +95,7 @@ const useStyles = makeStyles(() => ({
   onlineclass: {
     color: '#014B7E',
     fontWeight: 800,
-    margin: '10px',
+    margin: '15px',
     fontSize: "0.9em",
     position: "relative",
   },
@@ -108,7 +108,7 @@ const useStyles = makeStyles(() => ({
   },
   certicw: {
     height: '100px',
-    width: '180px',
+    width: '179px',
     margin: '5px',
     borderRadius: '5x',
     backgroundColor: 'white',
@@ -173,7 +173,9 @@ const OnlineClass = (props) => {
   const classes = useStyles();
   const history = useHistory();
   const matches960 = useMediaQuery('(max-width: 960px)');
-  const [onlineclassar, setOnlineclassar] = useState([]);
+  const [onlineClassArr, setOnlineClassArr] = useState([]);
+  const [isEnabled, setIsEnabled] = React.useState(false);
+
   const [open, setOpen] = useState(false);
   const handleOpen = (item) => {
     setOpen(true);
@@ -183,17 +185,10 @@ const OnlineClass = (props) => {
     setOpen(false);
     setSelectedData('');
   };
-  const [selectedData, setSelectedData] = useState('');
-
-  //carousel
-  // const addItem = () => {
-  //   const nextItem = Math.max(1, onlineclassar.length + 1);
-  //   setOnlineclassar([...onlineclassar, nextItem]);
-  // };
-
+  const [selectedData, setSelectedData] = useState('');  
   const removeItem = () => {
-    const endRange = Math.max(0, onlineclassar.length - 1);
-    setOnlineclassar(onlineclassar.slice(0, endRange));
+    const endRange = Math.max(0, onlineClassArr?.length - 1);
+    setOnlineClassArr(onlineClassArr.slice(0, endRange));
   };
   const myArrow = ({ type, onClick, isEdge }) => {
     // const pointer = type === consts.PREV ? '<' : '>'
@@ -210,10 +205,10 @@ const OnlineClass = (props) => {
   }
   const getOnlineData = () => {
     apiRequest('get', endpoints.dashboard.student.onlineclasstimestats, null, null, true, 5000)
-      .then((result = {}) => {
-        const { data = [] } = result || {};
-        if (Array.isArray(data)) {
-          setOnlineclassar(data || []);
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setIsEnabled(result?.data?.data?.is_enabled);
+          setOnlineClassArr(result?.data?.data?.results);
         }
       })
       .catch((error) => {});
@@ -256,13 +251,13 @@ const OnlineClass = (props) => {
           <Carousel
             renderArrow={myArrow}
             breakPoints={breakPoints}>
-            {onlineclassar.length > 0 ? onlineclassar.map((item, i) => (
+            {onlineClassArr?.length > 0 && isEnabled && onlineClassArr ? onlineClassArr.map((item, i) => (
               <div className={classes.card} key={`Ocls${i}`}>
                 <div className={classes.layertop}>
                   <div className={classes.layerupper}>
                     <div>
                       <p className={clsx(classes.white, classes.ellipsisText)}>{item?.title}</p>
-                      <p>{item?.start_time}</p>
+                      {/* <p>{item?.start_time}</p> */}
                     </div>
                     <img
                       onClick={() => handleOpen(item)}
@@ -288,11 +283,17 @@ const OnlineClass = (props) => {
               </div>
             ))
             :
-            <div>
+            <div style={{display: "flex"}}>
               <div className={classes.certicw}>
               <div style={{ margin: '35px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> ONLINE CLASS </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>No Online classes</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Classes':'Temporarily Disabled'}</h5>
+              </div>
+            </div>
+            <div className={classes.certicw}>
+              <div style={{ margin: '35px auto', borderRadius: '5px' }}>
+                <h5 style={{ color: "#349CEB", textAlign: "center" }}> ONLINE CLASS </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Classes':'Temporarily Disabled'}</h5>
               </div>
             </div>
             </div>}

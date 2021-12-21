@@ -49,6 +49,11 @@ import {
 } from '../../../../../redux/actions';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 
 const useStyles = makeStyles((theme) => ({
   attachmentIcon: {
@@ -292,7 +297,6 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
           }
 
           // setBulkData(result.data.data.hw_questions[0].submitted_files)z
-          console.log("@@@@@@result,", result.data.data)
           if (homeworkSubmission.status === 1) {
             // setBulkData(result.data.data.hw_questions.submitted_files || [])
             // setBulkDataDisplay(result.data.data.hw_questions.submitted_files || [])
@@ -315,6 +319,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
             setMaxCount(maxVal);
 
           } else if (homeworkSubmission.status === 2 || homeworkSubmission.status === 3) {
+            setDesc(result.data.data.homework.description)
             if (result.data.data.is_question_wise) {
               setIsBulk(false);
 
@@ -656,6 +661,19 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
       setPenToolOpen(false);
     }
   }, [penToolUrl])
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(true);
+  };
+
 
   const handleDelete = () => {
     if (homeworkSubmission.isEvaluated) {
@@ -1386,6 +1404,31 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   >
                     Delete
                   </Button>}
+
+                  <Dialog id={id} open={open} onClose={handleClose}>
+          <DialogTitle
+            id='draggable-dialog-title'
+          >
+            Delete
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={(e) => handleClose()} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleDelete}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
               </div>
               {homeworkSubmission.status === 1 &&
                 <div>
