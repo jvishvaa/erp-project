@@ -84,6 +84,7 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
     fontWeight:800,
     whiteSpace:'nowrap',
     overflow: 'hidden',
+    fontSize : '14px',
     textOverflow: 'ellipsis',
   },
   schoolLogoBtn: {
@@ -118,10 +119,10 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
     height: '42px',
   },
   grow: {
-    width:'8%',
     display: 'flex',
     justifyContent: 'center',
-    marginLeft:5
+    marginRight: '30px',
+    padding: '10px'
   },
   year: {
     fontSize:'1rem',

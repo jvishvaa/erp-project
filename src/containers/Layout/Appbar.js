@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
+
 import { Divider, FormControl, MenuItem, Select, AppBar, Grid, TextField } from '@material-ui/core';
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -27,9 +28,11 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import logoMobile from '../../assets/images/logo_mobile.png';
 import SearchBar from './SearchBar';
 import AppSearchBarUseStyles from './AppSearchBarUseStyles';
-import { Autocomplete } from '@material-ui/lab';
+import {fetchAcademicYearList} from '../../redux/actions/common-actions'
+import {currentSelectedYear} from '../../redux/actions/common-actions'
+// import { Autocomplete } from '@material-ui/lab';
 import './styles.scss';
-import { Item } from 'semantic-ui-react';
+// import { Item } from 'semantic-ui-react';
 
 const Appbar = ({ children, history, ...props }) => {
   const classes = AppSearchBarUseStyles();
@@ -51,13 +54,13 @@ const Appbar = ({ children, history, ...props }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchUserDetails, setSearchUserDetails] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
-  const [userId, setUserId] = useState();
-  const [displayUserDetails, setDisplayUserDetails] = useState(false);
-  const [mobileSeach, setMobileSeach] = useState(false);
-  const [open, setOpen] = React.useState(false);
-  const [branchDropdown, setBranchDropdown] = useState([]);
-  const [filterData, setFilterData] = useState({year: '',});
-  const [moduleId, setModuleId] = useState(); 
+  // const [userId, setUserId] = useState();
+  // const [displayUserDetails, setDisplayUserDetails] = useState(false);
+  // const [mobileSeach, setMobileSeach] = useState(false);
+  // const [open, setOpen] = React.useState(false);
+  // const [branchDropdown, setBranchDropdown] = useState([]);
+  // const [filterData, setFilterData] = useState({year: '',});
+  // const [moduleId, setModuleId] = useState(); 
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
@@ -253,60 +256,79 @@ const Appbar = ({ children, history, ...props }) => {
     }
   }, []);
 
-  const handleAcademicYear = (event = {}, value = '') => {
-    setFilterData({
-      ...filterData,
-      year: '',
-    });
-    const selectedYear= '' || JSON.parse(localStorage.getItem('acad_session'));
-    console.log('selectedYear',selectedYear)
+  // const handleAcademicYear = (event = {}, value = '') => {
+  //   setFilterData({
+  //     ...filterData,
+  //     year: '',
+  //   });
+  //   const selectedYear= '' || JSON.parse(localStorage.getItem('acad_session'));
+  //   console.log('selectedYear',selectedYear)
 
-    if (value) {
-      setFilterData({ ...filterData, year: value,});
-      axiosInstance
-        .get(
-          `${endpoints.masterManagement.branchMappingTable}?session_year=${value.id}&module_id=${moduleId}`
-        )
-        .then((result) => {
-          if (result?.data?.status_code) {
-            setBranchDropdown(result?.data?.data?.results);
+  //   if (value) {
+  //     setFilterData({ ...filterData, year: value,});
+  //     axiosInstance
+  //       .get(
+  //         `${endpoints.masterManagement.branchMappingTable}?session_year=${value.id}&module_id=${moduleId}`
+  //       )
+  //       .then((result) => {
+  //         if (result?.data?.status_code) {
+  //           setBranchDropdown(result?.data?.data?.results);
 
-          } else {
-            setAlert('error', result?.message);
-          }
-        })
-        .catch((error) => setAlert('error', error?.message));
-    }
-  };
+  //         } else {
+  //           setAlert('error', result?.message);
+  //         }
+  //       })
+  //       .catch((error) => setAlert('error', error?.message));
+  //   }
+  // };
+    //      
 
+  const academicYearlist = useSelector((state) => state.commonFilterReducer?.academicYearList);
+  let acdemicCurrentYear = useSelector((state) => state.commonFilterReducer?.selectedcurrentYear)
 
+  if(acdemicCurrentYear === null || undefined){
+    acdemicCurrentYear= '' || JSON.parse(localStorage.getItem('acad_session'));
+  }
   useEffect(() => {
-      axiosInstance
-        .get(`${endpoints.userManagement.academicYear}?module_id=68`)
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setAcademicYearDropdown(result?.data?.data);
-            const defaultValue = result.data?.data?.[0];
-            let selectedYear= '' || JSON.parse(localStorage.getItem('acad_session'));
-            if(selectedYear==null){
-              selectedYear=result.data.current_acad_session_data
-            }
-            // handleAcademicYear({}, selectedYear);
-            setAcademicYear(selectedYear.session_year);
-          } else {
-            setAlert('error', result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-        });
-  }, [academicYear]);
+    if(academicYearlist.length === 0){
+      dispatch(fetchAcademicYearList());
+    }
+  }, []);
+  useEffect(() => {
+    setAcademicYearDropdown(academicYearlist)
+    setAcademicYear(acdemicCurrentYear?.session_year)
+  },[academicYearlist,acdemicCurrentYear])
+  
+
+  // useEffect(() => {
+  //     axiosInstance
+  //       .get(`${endpoints.userManagement.academicYear}?module_id=68`)
+  //       .then((result) => {
+  //         if (result.data.status_code === 200) {
+  //           setAcademicYearDropdown(result?.data?.data);
+  //           const defaultValue = result.data?.data?.[0];
+  //           let selectedYear= '' || JSON.parse(localStorage.getItem('acad_session'));
+  //           if(selectedYear==null){
+  //             selectedYear=result.data.current_acad_session_data
+  //           }
+  //           // handleAcademicYear({}, selectedYear);
+  //           setAcademicYear(selectedYear.session_year);
+  //         } else {
+  //           setAlert('error', result?.data?.message);
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         setAlert('error', error.message);
+  //       });
+  // }, [academicYear]);
 
   const handleChange = (event) => {
     setAcademicYear(event.target.value);
     const selectedYear= '' || JSON.parse(localStorage.getItem('acad_session'));
+    acdemicCurrentYear = {...selectedYear, session_year: event.target.value }
+    dispatch(currentSelectedYear(acdemicCurrentYear))
     localStorage.setItem('acad_session', JSON.stringify({...selectedYear, session_year: event.target.value }));
-    window.location.reload();
+    // window.location.reload();
   };
 
   return (
@@ -382,7 +404,7 @@ const Appbar = ({ children, history, ...props }) => {
             </Box>
           )}
           {props.drawerOpen ? (
-            <>
+            <div style={{display : 'flex'}}>
               <Box pr={1} pl={38} component="span">
                 {centralSchoolLogo && (
                   <IconButton
@@ -406,13 +428,13 @@ const Appbar = ({ children, history, ...props }) => {
                 )}
 
               </Box>
-              {isMobile ? null : <Box component="span">
+              {isMobile ? null : <Box ml={4} p={2} component="span">
                 <h4 className={classes.SchoolName} >{centralSchoolName}</h4>
               </Box>}
               
-            </>
+            </div>
           ) : (
-            <>
+            <div style={{display : 'flex'}}>
               <Box pr={1} pl={7} >
                 {centralSchoolLogo && (
                   <IconButton
@@ -435,14 +457,14 @@ const Appbar = ({ children, history, ...props }) => {
                   </IconButton>
                 )}
               </Box>
-              {isMobile ? null : <Box>
+              {isMobile ? null : <Box ml={4} p={2}>
                 <h4 className={classes.SchoolName} >{centralSchoolName}</h4>
               </Box>}
               
-            </>
+            </div>
           )}
           {isMobile ? null : <SearchBar />}
-       
+       <div style={{display : 'flex'}}>
           {isMobile ? null : <div className={classes.grow} >
 
             <FormControl variant="standard" sx={{ m: 1, minWidth: 100 }}>
@@ -473,7 +495,7 @@ const Appbar = ({ children, history, ...props }) => {
               <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
             </IconButton>
           </div>
-
+        </div>
           {!isMobile && (
             <div className={classes.sectionMobile}>
               <IconButton
