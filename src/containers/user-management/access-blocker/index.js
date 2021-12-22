@@ -884,7 +884,7 @@ const AccessBlocker = () => {
                 className='searchViewUser'
                 size='small'
               >
-                <InputLabel>Search ERP</InputLabel>
+                <InputLabel>Search</InputLabel>
                 <OutlinedInput
                   endAdornment={<SearchOutlined color='primary' />}
                   placeholder='Search erp'

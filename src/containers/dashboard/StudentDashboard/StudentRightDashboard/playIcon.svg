@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="36" height="36" viewBox="0 0 95 95">
+  <defs>
+    <filter id="Path_78854" x="0" y="0" width="95" height="95" filterUnits="userSpaceOnUse">
+      <feOffset dy="2" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="10" result="blur"/>
+      <feFlood flood-opacity="0.161"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+  </defs>
+  <g id="Group_51627" data-name="Group 51627" transform="translate(30.427 27.875)">
+    <g transform="matrix(1, 0, 0, 1, -30.43, -27.88)" filter="url(#Path_78854)">
+      <g id="Path_78854-2" data-name="Path 78854" transform="translate(30 28)" fill="#fff">
+        <path d="M 30 34.75 L 5 34.75 C 2.380840063095093 34.75 0.25 32.61915969848633 0.25 30 L 0.25 5 C 0.25 2.380840063095093 2.380840063095093 0.25 5 0.25 L 30 0.25 C 32.61915969848633 0.25 34.75 2.380840063095093 34.75 5 L 34.75 30 C 34.75 32.61915969848633 32.61915969848633 34.75 30 34.75 Z" stroke="none"/>
+        <path d="M 5 0.5 C 2.518688201904297 0.5 0.5 2.518688201904297 0.5 5 L 0.5 30 C 0.5 32.48130798339844 2.518688201904297 34.5 5 34.5 L 30 34.5 C 32.48130798339844 34.5 34.5 32.48130798339844 34.5 30 L 34.5 5 C 34.5 2.518688201904297 32.48130798339844 0.5 30 0.5 L 5 0.5 M 5 0 L 30 0 C 32.76142120361328 0 35 2.238571166992188 35 5 L 35 30 C 35 32.76142120361328 32.76142120361328 35 30 35 L 5 35 C 2.238571166992188 35 0 32.76142120361328 0 30 L 0 5 C 0 2.238571166992188 2.238571166992188 0 5 0 Z" stroke="none" fill="#ffd83a"/>
+      </g>
+    </g>
+    <path id="Polygon_56" data-name="Polygon 56" d="M10.688,1.13a1,1,0,0,1,1.624,0l9.55,13.287A1,1,0,0,1,21.05,16H1.95a1,1,0,0,1-.812-1.584Z" transform="translate(26.606 6.625) rotate(90)" fill="#ffd83a"/>
+  </g>
+</svg>
