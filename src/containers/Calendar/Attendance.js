@@ -169,13 +169,13 @@ const Attendance = () => {
       )
       .then((res) => {
         setLoading(false);
-        if (res.status == 200) {
+        if (res.status === 200) {
           setTotalGenre(res?.data?.count);
           setData(res?.data?.results);
           setAlert('success', 'Data Successfully fetched');
         
         }
-        if (res.status == 400) {
+        if (res.status === 400) {
           setAlert('error', res.message);
         }
       })
