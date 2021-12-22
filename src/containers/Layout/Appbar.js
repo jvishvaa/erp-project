@@ -328,7 +328,7 @@ const Appbar = ({ children, history, ...props }) => {
     acdemicCurrentYear = {...selectedYear, session_year: event.target.value }
     dispatch(currentSelectedYear(acdemicCurrentYear))
     localStorage.setItem('acad_session', JSON.stringify({...selectedYear, session_year: event.target.value }));
-    // window.location.reload();
+    window.location.reload();
   };
 
   return (
