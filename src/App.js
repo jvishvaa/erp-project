@@ -358,9 +358,9 @@ import Observationreport from 'containers/observation/observation-report';
 import UserLevelTable from 'containers/user-management/User-Level/tableUserLevel';
 import ERPSystemConfig from 'containers/master-management/erp-system-config';
 function App({ alert, isMsAPI }) {
-  // useEffect(() => {
+  useEffect(() => {
   isMsAPI();
-  // }, []);
+  }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
   return (
     // <ErrorBoundary404 HomeButton={false}>

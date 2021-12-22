@@ -62,6 +62,20 @@ const styles = (theme) => ({
     marginBottom: 20,
     textAlign: 'center',
   },
+  likeColor: {
+    color: 'red !important'
+  },
+  likeAndViewbtn: {
+    fontFamily: 'Open Sans',
+    fontSize: '12px',
+    fontWeight: 'lighter',
+    textTransform: 'capitalize',
+    color: theme.palette.primary.main,
+    backgroundColor: 'white',
+  },
+  ViewColor: {
+    color: `${theme.palette.primary.main} !important`
+  },
 });
 
 
@@ -334,7 +348,7 @@ class ContentView extends Component {
                               Comment
                             </Button> : ''}
                           {
-                            !data.feedback_revision_required ?
+                            data.feedback_revision_required !== null ?
                               <Button
                                 size='small'
                                 variant = "contained"
@@ -347,7 +361,7 @@ class ContentView extends Component {
                           }
 
 
-                          {!data.feedback_revision_required ?
+                          {data.feedback_revision_required !== null ?
                             <Button
                               size='small'
                               variant = "contained"

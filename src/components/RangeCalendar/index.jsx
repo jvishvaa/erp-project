@@ -100,9 +100,9 @@ export default function RangeCalender(props) {
         // setAlert('error', 'Failed to mark attendance');
       });
   };
-  useEffect(() => {
-    getCurrentMonthDetails();
-  }, []);
+  // useEffect(() => {
+  //   getCurrentMonthDetails();
+  // }, []);
 
   useEffect(() => {
     setHolidaydates([]);
