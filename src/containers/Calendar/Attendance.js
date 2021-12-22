@@ -170,8 +170,8 @@ const Attendance = () => {
       .then((res) => {
         setLoading(false);
         if (res.status == 200) {
-          setTotalGenre(res.data.count);
-          setData(res.data.results);
+          setTotalGenre(res?.data?.count);
+          setData(res?.data?.results);
           setAlert('success', 'Data Successfully fetched');
         
         }
