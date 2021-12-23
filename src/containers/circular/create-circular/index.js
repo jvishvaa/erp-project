@@ -279,10 +279,19 @@ const CraeteCircular = () => {
       const data = event.target.files[0];
       const fd = new FormData();
       fd.append('file', data);
-      fd.append(
-        'branch',
-        filterData?.branch?.branch && filterData?.branch?.branch?.branch_name
-      );
+      if(filterData.branch.branch_name !== undefined){
+        fd.append(
+          'branch',
+        filterData?.branch?.branch_name 
+        );
+        }
+        else{
+          fd.append(
+            'branch',
+            filterData?.branch?.branch?.branch_name 
+          );
+        }
+
       // fd.append('grade',filterData.grade[0].id)
       // fd.append('section',filterData.section.id)
       axiosInstance.post(`${endpoints.circular.fileUpload}`, fd).then((result) => {
@@ -462,6 +471,7 @@ const CraeteCircular = () => {
           history.push('/teacher-circular');
         } else {
           setAlert('error', result?.data?.message || `${result?.data?.description}`);
+          setState({ isEdit: false, editData: [] });
         }
       });
   };
@@ -502,6 +512,7 @@ const CraeteCircular = () => {
           history.push('/teacher-circular');
         } else {
           setAlert('error', result?.data?.message);
+          setState({ isEdit: false, editData: [] });
         }
       })
       .catch((error) => {

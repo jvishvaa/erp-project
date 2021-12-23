@@ -567,6 +567,7 @@ export default function DiscussionComponent(props) {
                     {goldCount === 0 && silverCount === 0 && bronzeCount === 0 && (<span className={classes.noAwardsText}>No Awards Found</span>)}
                   </div>
                   <Divider />
+                  {props.rowData.post_by.id !== userDetails.user_id ?
                   <OutlinedButton
                     variant="outlined"
                     color="secondary"
@@ -574,6 +575,7 @@ export default function DiscussionComponent(props) {
                   >
                     GIVE AWARD
                   </OutlinedButton>
+                  :<></> }
                 </div>
               </Popover>
             </ClickAwayListener>
