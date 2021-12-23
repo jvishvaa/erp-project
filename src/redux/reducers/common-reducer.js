@@ -3,7 +3,7 @@ import { commonActions } from '../actions/common-actions';
 const INITIAL_STATE = {
   selectedYear: '' || JSON.parse(localStorage.getItem('acad_session')),
   academicYearList: [],
-  selectedcurrentYear : '' || JSON.parse(localStorage.getItem('acad_session')),
+  // selectedcurrentYear : '' || JSON.parse(localStorage.getItem('acad_session')),
   isMsAPIKey: !!JSON.parse(localStorage.getItem('isMsAPI')),
 };
 
@@ -18,7 +18,7 @@ const commonReducer = (state = INITIAL_STATE, action) => {
       case commonActions.SELECTED_YEAR:
         return {
           ...state,
-          selectedcurrentYear: action.payload,
+          selectedYear: action.payload,
         };
     case commonActions.MS_API:
       return {

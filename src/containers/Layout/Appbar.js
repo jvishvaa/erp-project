@@ -256,48 +256,19 @@ const Appbar = ({ children, history, ...props }) => {
     }
   }, []);
 
-  // const handleAcademicYear = (event = {}, value = '') => {
-  //   setFilterData({
-  //     ...filterData,
-  //     year: '',
-  //   });
-  //   const selectedYear= '' || JSON.parse(localStorage.getItem('acad_session'));
-  //   console.log('selectedYear',selectedYear)
+let  academicYearlist= '' || JSON.parse(localStorage.getItem('acad_session_list'));
+let  acdemicCurrentYear= '' || JSON.parse(localStorage.getItem('acad_session'));
 
-  //   if (value) {
-  //     setFilterData({ ...filterData, year: value,});
-  //     axiosInstance
-  //       .get(
-  //         `${endpoints.masterManagement.branchMappingTable}?session_year=${value.id}&module_id=${moduleId}`
-  //       )
-  //       .then((result) => {
-  //         if (result?.data?.status_code) {
-  //           setBranchDropdown(result?.data?.data?.results);
 
-  //         } else {
-  //           setAlert('error', result?.message);
-  //         }
-  //       })
-  //       .catch((error) => setAlert('error', error?.message));
-  //   }
-  // };
-    //      
-
-  const academicYearlist = useSelector((state) => state.commonFilterReducer?.academicYearList);
-  let acdemicCurrentYear = useSelector((state) => state.commonFilterReducer?.selectedcurrentYear)
-
-  if(acdemicCurrentYear === null || undefined){
-    acdemicCurrentYear= '' || JSON.parse(localStorage.getItem('acad_session'));
-  }
   useEffect(() => {
-    if(academicYearlist.length === 0){
+    if(academicYearlist === null){
       dispatch(fetchAcademicYearList());
     }
   }, []);
   useEffect(() => {
-    setAcademicYearDropdown(academicYearlist)
+    // setAcademicYearDropdown(academicYearlist)
     setAcademicYear(acdemicCurrentYear?.session_year)
-  },[academicYearlist,acdemicCurrentYear])
+  },[acdemicCurrentYear])
   
 
   // useEffect(() => {
@@ -382,7 +353,7 @@ const Appbar = ({ children, history, ...props }) => {
                       onChange={handleChange}
                       className={classes.year}
                     >
-                      {academicYearDropdown.map((year) =>
+                      {academicYearlist?.map((year) =>
                         <MenuItem value={year.session_year}>{year.session_year}</MenuItem>
                       )}
                     </Select>
@@ -475,7 +446,7 @@ const Appbar = ({ children, history, ...props }) => {
                 onChange={handleChange}
                 className={classes.year}
               >
-                {academicYearDropdown.map((year) =>
+                {academicYearlist?.map((year) =>
                   <MenuItem value={year.session_year}>{year.session_year}</MenuItem>
                 )}
               </Select>

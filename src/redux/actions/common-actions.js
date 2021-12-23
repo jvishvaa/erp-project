@@ -31,7 +31,8 @@ export const fetchAcademicYearList = (moduleId) => (dispatch) => {
       if (status_code > 199 && status_code < 300) {
         const [current_academic_year = {}] = academicYearData || [];
         localStorage.setItem('acad_session', JSON.stringify(current_academic_year));
-        dispatch({type: SELECTED_YEAR, payload: current_academic_year})
+        localStorage.setItem('acad_session_list', JSON.stringify(academicYearData));
+        // dispatch({type: SELECTED_YEAR, payload: current_academic_year})
         dispatch({ type: ACADEMIC_YEAR_LIST, payload: academicYearData });
       }
     })
