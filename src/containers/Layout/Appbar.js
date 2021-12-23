@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { useDispatch,useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Divider, FormControl, MenuItem, Select, AppBar, Grid, TextField } from '@material-ui/core';
 import clsx from 'clsx';
@@ -28,8 +28,8 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import logoMobile from '../../assets/images/logo_mobile.png';
 import SearchBar from './SearchBar';
 import AppSearchBarUseStyles from './AppSearchBarUseStyles';
-import {fetchAcademicYearList} from '../../redux/actions/common-actions'
-import {currentSelectedYear} from '../../redux/actions/common-actions'
+import { fetchAcademicYearList } from '../../redux/actions/common-actions'
+import { currentSelectedYear } from '../../redux/actions/common-actions'
 // import { Autocomplete } from '@material-ui/lab';
 import './styles.scss';
 // import { Item } from 'semantic-ui-react';
@@ -115,7 +115,7 @@ const Appbar = ({ children, history, ...props }) => {
   const autocompleteSearchThrottled = throttle(500, autocompleteSearch);
   const [profileOpen, setProfileOpen] = useState(false);
   const [academicYear, setAcademicYear] = useState('');
-  
+
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
     if (navigationData) {
@@ -256,50 +256,29 @@ const Appbar = ({ children, history, ...props }) => {
     }
   }, []);
 
-let  academicYearlist= '' || JSON.parse(localStorage.getItem('acad_session_list'));
-let  acdemicCurrentYear= '' || JSON.parse(localStorage.getItem('acad_session'));
-
+  let academicYearlist = useSelector(state => state.commonFilterReducer.academicYearList);
+  let acdemicCurrentYear = useSelector(state => state.commonFilterReducer.selectedYear);
 
   useEffect(() => {
-    if(academicYearlist === null){
+    if (academicYearlist === null) {
       dispatch(fetchAcademicYearList());
     }
   }, []);
+
   useEffect(() => {
-    // setAcademicYearDropdown(academicYearlist)
+    if (academicYearlist && acdemicCurrentYear) {
       setAcademicYear(acdemicCurrentYear?.session_year)
-  },[acdemicCurrentYear])
-  
-  
-  // useEffect(() => {
-  //     axiosInstance
-  //       .get(`${endpoints.userManagement.academicYear}?module_id=68`)
-  //       .then((result) => {
-  //         if (result.data.status_code === 200) {
-  //           setAcademicYearDropdown(result?.data?.data);
-  //           const defaultValue = result.data?.data?.[0];
-  //           let selectedYear= '' || JSON.parse(localStorage.getItem('acad_session'));
-  //           if(selectedYear==null){
-  //             selectedYear=result.data.current_acad_session_data
-  //           }
-  //           // handleAcademicYear({}, selectedYear);
-  //           setAcademicYear(selectedYear.session_year);
-  //         } else {
-  //           setAlert('error', result?.data?.message);
-  //         }
-  //       })
-  //       .catch((error) => {
-  //         setAlert('error', error.message);
-  //       });
-  // }, [academicYear]);
+    }
+  }, [acdemicCurrentYear,academicYearlist])
+
 
   const handleChange = (event) => {
     setAcademicYear(event.target.value);
     let acdemicCurrentYear;
     academicYearlist.forEach((item) => {
-      if(item.session_year === event.target.value){
+      if (item.session_year === event.target.value) {
         acdemicCurrentYear = item
-        
+
       }
     })
     dispatch(currentSelectedYear(acdemicCurrentYear))
@@ -333,7 +312,7 @@ let  acdemicCurrentYear= '' || JSON.parse(localStorage.getItem('acad_session'));
               </IconButton>
 
               <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                <Grid item xs={6} style={{textAlign: 'center'}}>
+                <Grid item xs={6} style={{ textAlign: 'center' }}>
                   <IconButton className={classes.logoMobileContainer}>
                     <img className={classes.logoMObile} src={logoMobile} alt='logo-small' />
                     <Divider
@@ -349,7 +328,7 @@ let  acdemicCurrentYear= '' || JSON.parse(localStorage.getItem('acad_session'));
                     />
                   </IconButton>
                 </Grid>
-                <Grid item xs={6} style={{textAlign: 'center',paddingTop:10}}>
+                <Grid item xs={6} style={{ textAlign: 'center', paddingTop: 10 }}>
                   <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                     <Select
                       labelId="demo-simple-select-label"
@@ -380,7 +359,7 @@ let  acdemicCurrentYear= '' || JSON.parse(localStorage.getItem('acad_session'));
             </Box>
           )}
           {props.drawerOpen ? (
-            <div style={{display : 'flex'}}>
+            <div style={{ display: 'flex' }}>
               <Box pr={1} pl={38} component="span">
                 {centralSchoolLogo && (
                   <IconButton
@@ -407,10 +386,10 @@ let  acdemicCurrentYear= '' || JSON.parse(localStorage.getItem('acad_session'));
               {isMobile ? null : <Box ml={4} p={2} component="span">
                 <h4 className={classes.SchoolName} >{centralSchoolName}</h4>
               </Box>}
-              
+
             </div>
           ) : (
-            <div style={{display : 'flex'}}>
+            <div style={{ display: 'flex' }}>
               <Box pr={1} pl={7} >
                 {centralSchoolLogo && (
                   <IconButton
@@ -436,42 +415,42 @@ let  acdemicCurrentYear= '' || JSON.parse(localStorage.getItem('acad_session'));
               {isMobile ? null : <Box ml={4} p={2}>
                 <h4 className={classes.SchoolName} >{centralSchoolName}</h4>
               </Box>}
-              
+
             </div>
           )}
           {isMobile ? null : <SearchBar />}
-       <div style={{display : 'flex'}}>
-          {isMobile ? null : <div className={classes.grow} >
+          <div style={{ display: 'flex' }}>
+            {isMobile ? null : <div className={classes.grow} >
 
-            <FormControl variant="standard" sx={{ m: 1, minWidth: 100 }}>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={academicYear}
-                onChange={handleChange}
-                className={classes.year}
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 100 }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={academicYear}
+                  onChange={handleChange}
+                  className={classes.year}
+                >
+                  {academicYearlist?.map((year) =>
+                    <MenuItem value={year.session_year}>{year.session_year}</MenuItem>
+                  )}
+                </Select>
+              </FormControl>
+
+            </div>}
+
+
+            <div className={classes.sectionDesktop}>
+              <IconButton
+                aria-label='show more'
+                aria-controls={mobileMenuId}
+                aria-haspopup='true'
+                onClick={handleMobileMenuOpen}
+                color='inherit'
               >
-                {academicYearlist?.map((year) =>
-                  <MenuItem value={year.session_year}>{year.session_year}</MenuItem>
-                )}
-              </Select>
-            </FormControl>
-       
-          </div>}
-
-         
-          <div className={classes.sectionDesktop}>
-            <IconButton
-              aria-label='show more'
-              aria-controls={mobileMenuId}
-              aria-haspopup='true'
-              onClick={handleMobileMenuOpen}
-              color='inherit'
-            >
-              <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
-            </IconButton>
+                <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
+              </IconButton>
+            </div>
           </div>
-        </div>
           {!isMobile && (
             <div className={classes.sectionMobile}>
               <IconButton

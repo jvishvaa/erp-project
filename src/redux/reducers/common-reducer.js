@@ -2,8 +2,7 @@ import { commonActions } from '../actions/common-actions';
 
 const INITIAL_STATE = {
   selectedYear: '' || JSON.parse(localStorage.getItem('acad_session')),
-  academicYearList: [],
-  // selectedcurrentYear : '' || JSON.parse(localStorage.getItem('acad_session')),
+  academicYearList: '' || JSON.parse(localStorage.getItem('acad_session_list')),
   isMsAPIKey: !!JSON.parse(localStorage.getItem('isMsAPI')),
 };
 
