@@ -279,7 +279,7 @@ const CraeteCircular = () => {
       const data = event.target.files[0];
       const fd = new FormData();
       fd.append('file', data);
-      if(filterData.branch.branch_name !== undefined){
+      if(filterData?.branch?.branch_name){
         fd.append(
           'branch',
         filterData?.branch?.branch_name 
@@ -361,6 +361,10 @@ const CraeteCircular = () => {
       </div>
     );
   };
+
+  useEffect(()=> {
+    setState({ isEdit: false, editData: [] });
+  },[])
 
   useEffect(() => {
     if (moduleId) {
