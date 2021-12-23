@@ -267,10 +267,10 @@ let  acdemicCurrentYear= '' || JSON.parse(localStorage.getItem('acad_session'));
   }, []);
   useEffect(() => {
     // setAcademicYearDropdown(academicYearlist)
-    setAcademicYear(acdemicCurrentYear?.session_year)
+      setAcademicYear(acdemicCurrentYear?.session_year)
   },[acdemicCurrentYear])
   
-
+  
   // useEffect(() => {
   //     axiosInstance
   //       .get(`${endpoints.userManagement.academicYear}?module_id=68`)
@@ -295,10 +295,15 @@ let  acdemicCurrentYear= '' || JSON.parse(localStorage.getItem('acad_session'));
 
   const handleChange = (event) => {
     setAcademicYear(event.target.value);
-    const selectedYear= '' || JSON.parse(localStorage.getItem('acad_session'));
-    acdemicCurrentYear = {...selectedYear, session_year: event.target.value }
+    let acdemicCurrentYear;
+    academicYearlist.forEach((item) => {
+      if(item.session_year === event.target.value){
+        acdemicCurrentYear = item
+        
+      }
+    })
     dispatch(currentSelectedYear(acdemicCurrentYear))
-    localStorage.setItem('acad_session', JSON.stringify({...selectedYear, session_year: event.target.value }));
+    localStorage.setItem('acad_session', JSON.stringify(acdemicCurrentYear));
     window.location.reload();
   };
 
