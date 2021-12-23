@@ -233,13 +233,13 @@ const GeneralDairyFilter = ({
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value[0].grade_id}&module_id=${moduleId}`
+          `${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value[0]?.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
             const sectionData = result?.data?.data || [];
-            for (let i = 0; i < sectionData.length; i++) {
-              allSectionIds.push(sectionData[i].section_id)
+            for (let i = 0; i < sectionData?.length; i++) {
+              allSectionIds.push(sectionData[i]?.section_id)
             }
             sectionData.unshift({
               section__section_name: 'Select All',
@@ -371,7 +371,7 @@ const GeneralDairyFilter = ({
       } else {
         handleDairyList(
           filterData.branch.branch.id,
-          filterData.grade[0].grade_id,
+          filterData?.grade[0]?.grade_id,
           sectionIds,
           startDateTechPer,
           endDateTechPer,
