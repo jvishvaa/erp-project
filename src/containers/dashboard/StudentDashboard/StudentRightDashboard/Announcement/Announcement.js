@@ -273,8 +273,8 @@ export default function Announcement(props) {
       });
   };
   const nextpagehandler = () => {
-    let url = nextPage.split('page=')[1]
-    apiRequest('get', `${endpoints.dashboard.student.update}?page=${url}` ,null, null, true, 5000)
+    let url = nextPage?.split('page=')[1]
+    if ( url) apiRequest('get', `${endpoints.dashboard.student.update}?page=${url}` ,null, null, true, 5000)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAnnouncementArr([...announcementArr, ...result?.data?.result?.data]);
@@ -508,10 +508,10 @@ export default function Announcement(props) {
             <Grid item className={classes.details}>
               <div >
               {isShortArray ? ( //we are checking if we want to render 2 or all items in announcement */}
-                <ul style={{overflow: "scroll", height : "100px", width: "350px"}}>
+                <ul style={{overflow: "scroll", height : "250px", width: "350px"}}>
                   {isEnabled && announcementArr && announcementArr.map(
                     (d, i) =>
-                      i <= 10 && (
+                      i <= 100 && (
                         <div key={`Annoucement${i}`} >
                           <li className={classes.listitem}>
                             <div style={{display:'flex', justifyContent:'flex-start'}}>
@@ -532,6 +532,7 @@ export default function Announcement(props) {
                   )}
                    {isEnabled && matches? <Button
                    variant="outlined"
+                   backgroundColor="primary"
                    size="small"
                    style={{ fontSize: "1em" }}
                    color='black'
@@ -692,7 +693,8 @@ export default function Announcement(props) {
                           </ul>
                           </CardContent>
                           </Card>
-                          </div>     
+                          
+                          </div>
                           </div>
                           
                           </InfiniteScroll>

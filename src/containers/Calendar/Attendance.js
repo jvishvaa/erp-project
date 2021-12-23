@@ -160,6 +160,33 @@ const Attendance = () => {
     }
   }, []);
 
+  const checkModule = () => {
+    if (history?.location?.pathname === '/student-view/attendance') {
+    let userName = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
+    axiosInstance
+      .get(
+        `${endpoints.academics.singleStudentAttendance}?start_date=${startDate}&end_date=${endDate}&erp_id=${userName}&page=${pageNumber}&page_size=${limit}`
+      )
+      .then((res) => {
+        setLoading(false);
+        if (res.status === 200) {
+          setTotalGenre(res?.data?.count);
+          setData(res?.data?.results);
+          setAlert('success', 'Data Successfully fetched');
+        
+        }
+        if (res.status === 400) {
+          setAlert('error', res.message);
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+      });
+    } else {
+      handleFilter()
+    }
+  }
+
   useEffect(()=>{
     if(moduleId){
   //   callApi(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`, 'academicYearList');
@@ -204,11 +231,10 @@ const Attendance = () => {
     setEndDate(history?.location?.state?.payload?.endDate);
     setStudentName(history?.location?.state?.data[0]?.student_name);
     setStudentView(true);
-    let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
-    console.log(userName[0], 'userName');
+    let userName = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
     axiosInstance
       .get(
-        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName[0]}&page=${pageNumber}&page_size=${limit}`
+        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName}&page=${pageNumber}&page_size=${limit}`
       )
       // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
       .then((res) => {
@@ -779,7 +805,7 @@ const Attendance = () => {
               color='secondary'
               startIcon={<FilterFilledIcon className={classes.filterIcon} />}
               className={classes.filterButton}
-              onClick={handleFilter}
+              onClick={checkModule}
             >
               filter
             </StyledFilterButton>
