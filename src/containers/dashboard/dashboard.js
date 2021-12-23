@@ -31,7 +31,7 @@ const Dashboard = () => {
         ) {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Induction Training') {
-              if (userLevel === 3) {
+              if (userLevel === 11) {
                 axios
                   .post(endpoints.sureLearning.login, {
                     username: username?.erp,
