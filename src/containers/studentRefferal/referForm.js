@@ -174,8 +174,10 @@ const StudentRefer = () => {
   const [cityError, setCityError] = useState('');
 
   const [mailError, setMailError] = useState('');
-  const regexEmail =
-    /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  const [valid, setValid] = useState(true);
+  const regexEmail =    
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  const nameRegex = /^[a-zA-Z ]+$/;
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -197,13 +199,52 @@ const StudentRefer = () => {
 
   const handleStudentName = (e) => {
     setStudent(e.target.value);
-    console.log(e.target.value, 'check');
+    validateStudentName(e.target.value);
   };
+
+  const validateCity = (value) => {
+    if(!nameRegex.test(value) && value !== '') {
+      setCityError('Invalid City Name ie. Only Alphabets');
+      setValid(false);
+      return false;
+    } else {
+      setCityError('');
+      setValid(true);
+      return true;
+    }
+  }
+
+  const validateStudentName = (value) => {
+    if(!nameRegex.test(value) && value !== '') {
+      setStudentError('Invalid Student Name ie. Only Alphabets');
+      setValid(false);
+      return false;
+    } else {
+      setStudentError('');
+      setValid(true);
+      return true;
+    }
+  }
+
+  const validateParentName = ( value) => {
+    if(!nameRegex.test(value) && value !== '') {
+      setParentError('Invalid Parent Name ie. Only Alphabets');
+      setValid(false);
+      return false;
+    } else {
+      setParentError('');
+      setValid(true);
+      return true;
+    }
+  }
+
   const handleParentName = (e) => {
     setParent(e.target.value);
+    validateParentName(e.target.value)
   };
   const handleCity = (e) => {
     setSelectedBranch(e.target.value);
+    validateCity(e.target.value);
   };
   const handlePhone = (e) => {
     setPhone(e.target.value);
@@ -215,25 +256,27 @@ const StudentRefer = () => {
   };
 
   const emailValidate = (value) => {
-    const email = value;
-    if (!regexEmail.test(email)) {
-      console.log('not match');
+    if (!regexEmail.test(value) && value !== '') {
       setMailError('Email is Invalid');
+      setValid(false);
       return false;
     } else {
       setMailError('');
+      setValid(true);
       return true;
     }
   };
 
   const phonevalidate = (value) => {
-    const phone = value;
-    console.log(phone.length, 'leng');
-    if (phone.length === 10) {
-      setPhoneError('');
-      return true;
-    } else {
+    let numberRegex = /^[1-9]([0-9]{9}$)/;
+    if(!numberRegex.test(value) && value !== ''){
+      setValid(false);
       setPhoneError('phone number not valid');
+      return false;
+    } else {
+      setPhoneError('');
+      setValid(true);
+      return true;
     }
   };
 
@@ -269,6 +312,7 @@ const StudentRefer = () => {
       setAlert('warning', 'Please select branch');
       console.log(selectedBranch.length);
     } else {
+      // setAlert('warning', 'mil gya');
     }
   };
 
@@ -283,9 +327,7 @@ const StudentRefer = () => {
   }
 
   const handleSubmit = () => {
-    phonevalidate(phone);
-    branchCheck();
-    emailValidate(mail);
+    branchCheck();  
 
     const data = {
       parent_name: parent,
@@ -295,9 +337,7 @@ const StudentRefer = () => {
       phone_number: phone,
       referral_code: userDetails?.erp
     };
-
-    if (student && parent) {
-      console.log('not null');
+    if (student && parent && valid) {
       axiosInstance
         .post(`${endpoints.referral.studentRefer}`, data, {
           headers: {
@@ -350,10 +390,11 @@ const StudentRefer = () => {
                     label='City'
                     variant='outlined'
                     size='small'
-                    className='input-boxes'
+                    className='input-boxes border'
                     onChange={(e) => handleCity(e)}
                     helperText={cityError}
                     error={cityError.length !== 0}
+                    required={true}
                   />
 
                   <TextField
@@ -365,6 +406,7 @@ const StudentRefer = () => {
                     onChange={(e) => handleStudentName(e)}
                     helperText={studentError}
                     error={studentError.length !== 0}
+                    required={true}
                   />
                   <TextField
                     id='outlined-basic'
@@ -375,6 +417,7 @@ const StudentRefer = () => {
                     error={parentError.length !== 0}
                     className='input-boxes'
                     onChange={(e) => handleParentName(e)}
+                    required={true}
                   />
                   <TextField
                     id='outlined-basic'
@@ -386,6 +429,7 @@ const StudentRefer = () => {
                     size='small'
                     onChange={(e) => handlePhone(e)}
                     type='number'
+                    required={true}
                   />
                   <TextField
                     id='outlined-basic'
@@ -396,6 +440,7 @@ const StudentRefer = () => {
                     error={mailError.length !== 0}
                     className='input-boxes'
                     onChange={(e) => handleMail(e)}
+                    required={true}
                   />
 
                   <div className='submit-btn-area'>
