@@ -167,7 +167,7 @@ const ViewMoreCard = ({
               ))}
             </div>
             <div style={{ margin: '5px 15px 15px 5px' }}>
-              {(periodDataForView?.is_verified || periodDataForView?.is_review) && (
+              {((periodDataForView?.is_verified || periodDataForView?.is_review) && (!periodDataForView?.is_central)) && (
                 <Button
                   style={{ margin: '0.5rem', color: 'white', width: '100%' }}
                   onClick={() => handlePublish(false)}

@@ -41,7 +41,6 @@ const AssessmentCard = ({
   const [showPeriodIndex, setShowPeriodIndex] = useState();
 
   const history = useHistory();
-
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
     setShowPeriodIndex(index);
@@ -259,12 +258,16 @@ const AssessmentCard = ({
                     <span className={` ${classes.tooltiptext} tooltiptext`} style={{ width: '105px' }}>
                       <span onClick={handleAssign}>Assign Test</span>
                       <Divider />
-                      <span onClick={handleDelete}>Delete</span>
+                      {!period.is_central && (
+                        <span onClick={handleDelete}>Delete</span>
+                      )
+                      }
                     </span>
                   )}
                   {!period.is_verified && (
                     <span className='tooltiptext'>
                       <span onClick={handlePublish}>Publish Paper</span>
+                      <Divider />
                       <span onClick={handleDelete}>Delete</span>
                     </span>
                   )}

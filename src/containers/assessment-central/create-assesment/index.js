@@ -390,7 +390,7 @@ const CreateAssesment = ({
   useEffect(() => {
     if (selectedQuestionPaper) {
       // initFetchQuestionPaperDetails(3);
-      initFetchQuestionPaperDetails(selectedQuestionPaper?.id);
+      initFetchQuestionPaperDetails(selectedQuestionPaper?.id, selectedQuestionPaper);
     }
     getAssesmentTypes();
     // initFetchQuestionPaperDetails(3);
@@ -588,7 +588,7 @@ const mapStateToProps = (state) => ({
 });
 const mapDispatchToProps = (dispatch) => ({
   initSetFilter: (filter, data) => dispatch(setFilterForCreateAssesment(filter, data)),
-  initFetchQuestionPaperDetails: (id) => dispatch(fetchQuestionPaperDetails(id)),
+  initFetchQuestionPaperDetails: (id, data) => dispatch(fetchQuestionPaperDetails(id, data)),
   initCreateAssesment: (data) => dispatch(createAssesment(data)),
   initChangeTestFormFields: (field, data) => dispatch(changeTestFormField(field, data)),
   initResetFormState: () => dispatch(resetFormState()),
