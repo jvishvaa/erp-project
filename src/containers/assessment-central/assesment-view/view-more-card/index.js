@@ -121,13 +121,15 @@ const ViewMoreCard = ({
               {periodDataForView?.created_at?.substring(0, 10)}
             </div>
           </div>
-          <Button
-            size='small'
-            className={classes.margin}
-            onClick={() => handleOpenEdit()}
-          >
-            Edit
-          </Button>
+          {!periodDataForView?.is_central && (
+            <Button
+              size='small'
+              className={classes.margin}
+              onClick={() => handleOpenEdit()}
+            >
+              Edit
+            </Button>
+          )}
         </div>
       </div>
       <div className={classes.resourceBulkDownload}>

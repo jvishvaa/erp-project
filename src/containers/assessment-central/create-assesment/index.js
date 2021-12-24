@@ -88,7 +88,7 @@ const CreateAssesment = ({
       test_mode: selectedTestType || testTypes[0],
       test_type: '',
     },
-    onSubmit: (values) => {},
+    onSubmit: (values) => { },
     validateOnChange: false,
     validateOnBlur: false,
   });
@@ -108,7 +108,7 @@ const CreateAssesment = ({
       const data = await fetchAssesmentTypes();
       setAssesmentTypes(data);
       formik.setFieldValue('test_type', data[0]);
-    } catch (e) {}
+    } catch (e) { }
   };
   // useEffect(() => {
   //   if (moduleId) {
@@ -259,6 +259,10 @@ const CreateAssesment = ({
       instructions,
       descriptions: 'Assessment',
       is_question_wise: !paperchecked,
+      grade: selectedQuestionPaper['grade'],
+      subjects: selectedQuestionPaper['subjects'],
+      acad_session: selectedQuestionPaper['academic_session'],
+      is_central: selectedQuestionPaper['is_central'],
     };
 
     if (!paperchecked) {
@@ -404,7 +408,7 @@ const CreateAssesment = ({
             className='collapsible-section'
             square
             expanded={expandFilter}
-            onChange={() => {}}
+            onChange={() => { }}
           >
             <AccordionSummary>
               <div className='header mv-20'>

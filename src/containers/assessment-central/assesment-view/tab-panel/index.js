@@ -24,13 +24,15 @@ export default function CenteredTabs({
   tabValue,
   setPage,
   setSelectedIndex,
+  tabIsErpCentral
 }) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-
+  // const tabPanelList = tabIsErpCentral.id === 2 ? ['All'] : ['All', 'Draft', 'For Review', 'Published'];
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
     handlePeriodList(
+      tabIsErpCentral,
       tabAcademic,
       tabBranch,
       tabGradeId,
