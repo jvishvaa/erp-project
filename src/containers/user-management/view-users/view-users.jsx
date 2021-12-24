@@ -171,6 +171,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [classStatus, setClassStatus] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isClicked, setIsClicked]= useState(false);
+  const [status, setStatus] = useState(false);
 
 
   const headers = [
@@ -432,6 +433,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         const active = !usersData[index].active;
         const newData = { ...tempGroupData[index], active };
         tempGroupData.splice(index, 1, newData);
+        setLoading(true)
+        setStatus(true)
         setUsersData(tempGroupData);
       } else {
         setAlert('error', statusChange.data.message);
@@ -468,6 +471,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         tempGroupData.splice(deactivateIndex, 1, newData);
         setUsersData(tempGroupData);
         setDeactivateId(null);
+        setLoading(true)
+        setStatus(true);
         setDeactivateIndex(null);
         setDeactivateStatus(null);
         setDeactivateAlert(false);
@@ -494,6 +499,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         tempGroupData.splice(deleteIndex, 1);
         setUsersData(tempGroupData);
         setDeleteId(null);
+        setLoading(true);
+        setStatus(true);
         setDeleteIndex(null);
         setDeleteStatus(null)
         setDeleteAlert(false);
@@ -546,6 +553,14 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   //     getBranchApi();
   //   }
   // }, [selectedYear]);
+
+  useEffect(() => {
+    if(status){
+      setStatus(false);
+      setLoading(true);
+      getUsersData()
+    }
+  },[status])
 
   useEffect(() => {
     if (selectedBranch) {
