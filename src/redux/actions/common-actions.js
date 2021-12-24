@@ -14,9 +14,10 @@ export const uploadFile = async (file) => {
 export const commonActions = {
   ACADEMIC_YEAR_LIST: 'ACADEMIC_YEAR_LIST',
   MS_API: 'MS_API',
+  SELECTED_YEAR: 'SELECTED_YEAR'
 };
 
-const { ACADEMIC_YEAR_LIST, MS_API } = commonActions;
+const { ACADEMIC_YEAR_LIST,SELECTED_YEAR, MS_API } = commonActions;
 
 export const fetchAcademicYearList = (moduleId) => (dispatch) => {
   dispatch({ type: ACADEMIC_YEAR_LIST, payload: [] });
@@ -30,6 +31,8 @@ export const fetchAcademicYearList = (moduleId) => (dispatch) => {
       if (status_code > 199 && status_code < 300) {
         const [current_academic_year = {}] = academicYearData || [];
         localStorage.setItem('acad_session', JSON.stringify(current_academic_year));
+        localStorage.setItem('acad_session_list', JSON.stringify(academicYearData));
+        // dispatch({type: SELECTED_YEAR, payload: current_academic_year})
         dispatch({ type: ACADEMIC_YEAR_LIST, payload: academicYearData });
       }
     })
@@ -38,7 +41,11 @@ export const fetchAcademicYearList = (moduleId) => (dispatch) => {
     });
 };
 
-export const isMsAPI = () => (dispatch) => {
+export const currentSelectedYear = (data) => (dispatch) => {
+  dispatch({type: SELECTED_YEAR, payload: data})
+}
+
+export const isMsAPI = () => (dispatch)  =>{
   let { token = null } = JSON.parse(localStorage.getItem('userDetails')) || {};
   if (!token) {
     return;
