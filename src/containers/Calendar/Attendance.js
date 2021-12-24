@@ -836,12 +836,12 @@ const Attendance = () => {
               <Typography variant='subtitle2' color='primary'>
                 {!studentView && (
                   <strong>
-                    {studentName && studentName[0].student_first_name.slice(0, 10)}
+                    {studentName && studentName[0].student_first_name}
                   </strong>
                 )}
                 {studentView && (
                   <strong>
-                    {history?.location?.state?.data[0]?.student_name.slice(0, 10)}
+                    {history?.location?.state?.data[0]?.student_name}
                   </strong>
                 )}
               </Typography>
