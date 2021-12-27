@@ -23,24 +23,14 @@ const LikeButton = (props) => {
   const [isComment] = React.useState(!!props.isComment);
 
   const handleLikeButton = () => {
-    if (!isLike && !isComment) {
+    let url = isComment ? `/academic/${props.id}/comment-like/` : `/academic/${props.id}/post-like/`; 
       axiosInstance
-        .put(`/academic/${props.id}/post-like/`)
+        .put(url)
         .then((res) => {
-          setLikeCount(likeCount + 1);
+          setLikeCount(res?.data?.like_count);
           setIsLike(true);
         })
         .catch((error) => console.log(error));
-    }
-    if (isComment && !isLike) {
-      axiosInstance
-        .put(`/academic/${props.id}/comment-like/`)
-        .then((res) => {
-          setLikeCount(likeCount + 1);
-          setIsLike(true);
-        })
-        .catch((error) => console.log(error));
-    }
   };
 
   return (
