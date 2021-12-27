@@ -62,11 +62,10 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const [testDate, setTestDate] = useState();
   const { setAlert } = useContext(AlertNotificationContext);
   const fetchQuestionPapers = () => {
-    
     setLoading(true);
 
     const statusId = status === 0 ? 2 : 1;
-    
+
     const params = [0, 1].includes(status)
       ? `?user=${user}&page=${page}&page_size=${9}&status=${statusId}`
       : `?page=${page}&page_size=${9}`;
@@ -165,7 +164,8 @@ const ViewAssessments = ({ history, ...restProps }) => {
           onChange={(e, a) => {
             setPageNumber(1);
             setStatus(a);
-            setShowInfo(undefined)
+            setShowInfo(undefined);
+            localStorage.setItem('is_retest', a === 2);
           }}
           aria-label='simple tabs example'
         >

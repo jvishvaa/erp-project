@@ -451,7 +451,8 @@ export const AssessmentHandlerContextProvider = ({
       start_time: new Date(startedAt),
       end_time: new Date(),
       user_response: userReponses,
-      questions: getSortedAndMainQuestions(questionsDataObj || {})
+      questions: getSortedAndMainQuestions(questionsDataObj || {}),
+      is_retest: JSON.parse(localStorage.getItem('is_retest')),
     };
     // const API = 'http://13.232.30.169/qbox/assessment/user_response/';
     const { onStart = () => {}, onResolve = () => {}, onReject = () => {} } =

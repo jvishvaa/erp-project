@@ -262,14 +262,15 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
 
   const handleResetCheckedERP = () => {
     const list = [...reportData];
-    list.forEach(item => item.is_checked=false)
+    list.forEach((item) => (item.is_checked = false));
     setReportData(list);
-  }
+  };
 
   const handleCreateRetest = () => {
+    const retestDate = moment(selectedDate).format();
     const payload = {
       test: filterData.test?.id,
-      retest_date: moment(selectedDate).format('yyyy-MM-DDThh:mm:ss'),
+      retest_date: retestDate?.split('+')?.[0] || '',
       erpusers: selectedERP,
     };
     axiosInstance
@@ -389,6 +390,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
                       onError={console.log}
                       minDate={new Date()}
                       disablePast
+                      ampm={true}
                       format='yyyy/MM/DD hh:mm A'
                     />
                   </MuiPickersUtilsProvider>
