@@ -412,6 +412,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               homework,
             },
             dairy_type: 2,
+            is_central: formik.values?.chapters?.is_central,
           }
           : {
             academic_year: searchAcademicYear?.id,
@@ -430,6 +431,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               homework,
             },
             dairy_type: 2,
+            is_central: formik.values?.chapters?.is_central,
           },
         {
           headers: {
