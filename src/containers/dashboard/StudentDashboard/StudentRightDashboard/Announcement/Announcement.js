@@ -420,7 +420,7 @@ export default function Announcement(props) {
                 <span className={classes.announcementhead}>
                   Announcements
                   <span style={{ marginLeft: '10px' }}>
-                    {welcomeDetails?.userLevel == '4' ? (
+                    {welcomeDetails?.userLevel == '13' ? (
                       ''
                     ) : (
                       <AddCommentIcon
@@ -670,7 +670,7 @@ export default function Announcement(props) {
                                                   </p>
                                                 </li>
                                                 <div>
-                                                  {welcomeDetails?.userLevel == '4' ? (
+                                                  {welcomeDetails?.userLevel == '13' ? (
                                                     ''
                                                   ) : (
                                                     <div>
@@ -743,7 +743,7 @@ export default function Announcement(props) {
                                                   </p>
                                                 </li>
                                                 <div>
-                                                  {welcomeDetails?.userLevel == '4' ? (
+                                                  {welcomeDetails?.userLevel == '13' ? (
                                                     ''
                                                   ) : (
                                                     <div>
@@ -816,7 +816,7 @@ export default function Announcement(props) {
                                                   </p>
                                                 </li>
                                                 <div>
-                                                  {welcomeDetails?.userLevel == '4' ? (
+                                                  {welcomeDetails?.userLevel == '13' ? (
                                                     ''
                                                   ) : (
                                                     <div>
@@ -889,7 +889,7 @@ export default function Announcement(props) {
                                                   </p>
                                                 </li>
                                                 <div>
-                                                  {welcomeDetails?.userLevel == '4' ? (
+                                                  {welcomeDetails?.userLevel == '13' ? (
                                                     ''
                                                   ) : (
                                                     <div>

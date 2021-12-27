@@ -45,7 +45,7 @@ const ErpAdminViewClass = ({ history }) => {
     JSON.parse(window.localStorage.getItem('userDetails'))
   );
 
-  const { user_level: userLevel = 0 } =
+  const { user_level: userLevel = 5} =
     JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [totalCount, setTotalCount] = useState(0);
