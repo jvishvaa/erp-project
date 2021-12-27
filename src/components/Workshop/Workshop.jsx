@@ -57,7 +57,7 @@ const column = [
 const ConnectionPodFn = (props) => {
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   const {
-    welcomeDetails: { userLevel = 1 },
+    welcomeDetails: { userLevel = 5 },
   } = useContext(DashboardContext);
   const { setAlert } = useContext(AlertNotificationContext);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -248,7 +248,7 @@ const ConnectionPodFn = (props) => {
     if (joinStatus !== 'Host' && joinStatus !== 'Join') {
       return false;
     }
-    if (userLevel === 4) {
+    if (userLevel === 13) {
       const result = await WSAPI('post', WSENDPOINT.WORKSHOP.userWorkShop, {
         workshop_id: id,
       });
@@ -318,11 +318,11 @@ const ConnectionPodFn = (props) => {
   }, [selectedGrade, selectedBranch]);
 
   useEffect(() => {
-    if (userLevel !== 4) {
+    if (userLevel !== 13) {
       fetchBranches();
       fetchGrades();
     }
-    if (userLevel === 4) {
+    if (userLevel === 13) {
       const {
         role_details: { grades },
       } = JSON.parse(localStorage.getItem('userDetails'));
@@ -391,7 +391,7 @@ const ConnectionPodFn = (props) => {
           </div>
           <div className='filter-container'>
             <Grid container spacing={3} alignItems='center'>
-              {userLevel !== 4 && (
+              {userLevel !== 13 && (
                 <Grid item sm={1} xs={12}>
                   <Tooltip title='Create Meeting' placement='bottom' arrow>
                     <IconButton
@@ -405,7 +405,7 @@ const ConnectionPodFn = (props) => {
                   </Tooltip>
                 </Grid>
               )}
-              <Grid item sm={userLevel !== 4 ? 11 : 12} xs={12}>
+              <Grid item sm={userLevel !== 13 ? 11 : 12} xs={12}>
                 <Accordion expanded={accordianOpen}>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -419,7 +419,7 @@ const ConnectionPodFn = (props) => {
                   </AccordionSummary>
                   <AccordionDetails>
                     <Grid container spacing={3}>
-                      {userLevel !== 4 && (
+                      {userLevel !== 13 && (
                         <>
                           <Grid item md={3} sm={4} xs={12}>
                             <Autocomplete
@@ -608,7 +608,7 @@ const ConnectionPodFn = (props) => {
                     {column
                       .filter((val) => {
                         if (
-                          userLevel === 4 &&
+                          userLevel === 13 &&
                           (val === 'Attendance Count' || val === 'Attendance Sheet')
                         ) {
                           return false;
@@ -628,7 +628,7 @@ const ConnectionPodFn = (props) => {
                         <TableCell>{wsdata?.course_name}</TableCell>
                         <TableCell>{getDatenTime(wsdata?.start_time)}</TableCell>
                         <TableCell>{wsdata?.tutor_id_name}</TableCell>
-                        {userLevel !== 4 && <TableCell>{wsdata?.attended}</TableCell>}
+                        {userLevel !== 13 && <TableCell>{wsdata?.attended}</TableCell>}
                         {wsdata?.is_cancel ? (
                           <TableCell>{wsdata?.cancel_remarks}</TableCell>
                         ) : (
@@ -656,7 +656,7 @@ const ConnectionPodFn = (props) => {
                                 wsdata?.tutor_erp_id
                               )}
                             </Button>{' '}
-                            {userLevel !== 4 && (
+                            {userLevel !== 13 && (
                               <Button
                                 variant='contained'
                                 color='primary'
@@ -669,7 +669,7 @@ const ConnectionPodFn = (props) => {
                             )}
                           </TableCell>
                         )}
-                        {userLevel !== 4 && (
+                        {userLevel !== 13 && (
                           <TableCell>
                             <GetAppIcon
                               color={'primary'}
