@@ -184,8 +184,14 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
       window.alert('param not fed');
       return null;
     }
+    const query = new URLSearchParams(window.location.search);
     const dataProp = {
-      queryParamObj: { test_id: testId, user_id: userId, test_date: testDate },
+      queryParamObj: {
+        test_id: testId,
+        user_id: userId,
+        test_date: testDate,
+        is_retest: query.get('status') === '2',
+      },
       callbacks: {
         ...callbacks,
         onResolve: (res) => {

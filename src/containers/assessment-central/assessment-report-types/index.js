@@ -390,7 +390,6 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
                       onError={console.log}
                       minDate={new Date()}
                       disablePast
-                      ampm={true}
                       format='yyyy/MM/DD hh:mm A'
                     />
                   </MuiPickersUtilsProvider>
