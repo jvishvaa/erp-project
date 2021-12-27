@@ -8,6 +8,7 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  Checkbox,
   Paper,
   TablePagination,
   Box,
@@ -24,14 +25,15 @@ import AssessmentReportFilters from '../assessment-report-types/assessment-repor
 import AssesmentReportTable from '../assesment-report-card/index';
 import AssessmentReportBack from '../assesment-report-card/report-table-observation-and-feedback';
 import { connect } from 'react-redux';
-import { setClearFilters } from 'redux/actions';
+import { setClearFilters, setSelectedRole } from 'redux/actions';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import useStyles from './useStyles';
 import TabPanel from '../../../components/tab-panel';
+import { transform } from 'lodash';
 
 const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType }) => {
-  const limit = 15;
+  const limit = 10;
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const widerWidth = isMobile ? '98%' : '95%';
@@ -49,6 +51,8 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   const [isPreview, setIsPreview] = useState(false);
   const [tabValue, setTabValue] = useState(0);
 
+  const [selectedERP, setSelectedERP] = useState([]);
+
   const renderReportCard = () => {
     switch (tabValue) {
       case 0:
@@ -63,10 +67,42 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
     }
   };
 
+  const getTransformedReportData = (data) => {
+    if (data) {
+      const transformedResponse = data.map((item) => ({ is_checked: false, ...item }));
+      transformedResponse.forEach((item) => {
+        if (selectedERP.includes(item?.erp_no)) {
+          item['is_checked'] = true;
+        }
+      });
+      return transformedResponse || [];
+    }
+  };
+
+  const handleSelectERP = (e, erp, index) => {
+    const isChecked = e.target.checked;
+    if (isChecked) {
+      setSelectedERP((prev) => [...prev, erp]);
+    } else {
+      const selectedERPs = [...selectedERP];
+      const erpIndex = selectedERPs.indexOf(erp);
+      selectedERPs.splice(erpIndex, 1);
+      setSelectedERP(selectedERPs);
+    }
+    const list = [...reportData];
+    list[index]['is_checked'] = isChecked;
+    setReportData(list);
+  };
+
   useEffect(() => {
     if (isFilter) {
-      setReportData(assessmentReportListData?.results);
       setTotalCount(assessmentReportListData?.count);
+      setReportData(assessmentReportListData?.results);
+      if (selectedReportType?.id === 3) {
+        const transformedResponse =
+          getTransformedReportData(assessmentReportListData?.results) || [];
+        setReportData(transformedResponse);
+      }
     }
   }, [isFilter, assessmentReportListData]);
 
@@ -98,6 +134,51 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
         ]);
         break;
       case 3:
+        setColumns([
+          {
+            id: 'serial_number',
+            label: '   ',
+            minWidth: 100,
+            align: 'center',
+            labelAlign: 'center',
+          },
+          {
+            id: 'serial_number',
+            label: 'S.No',
+            minWidth: 100,
+            align: 'center',
+            labelAlign: 'center',
+          },
+          {
+            id: 'erp_number',
+            label: 'ERP No.',
+            minWidth: 170,
+            align: 'center',
+            labelAlign: 'center',
+          },
+          {
+            id: 'student_name',
+            label: 'Student Name',
+            minWidth: 170,
+            align: 'center',
+            labelAlign: 'center',
+          },
+          {
+            id: 'marks_obtained',
+            label: 'Marks Obtained',
+            minWidth: 170,
+            align: 'center',
+            labelAlign: 'center',
+          },
+          {
+            id: 'comparison',
+            label: 'Comparison',
+            minWidth: 170,
+            align: 'center',
+            labelAlign: 'center',
+          },
+        ]);
+        break;
       case 4:
         setColumns([
           {
@@ -253,6 +334,16 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
                   {reportData?.map((rowData, index) => {
                     return (
                       <TableRow hover academicyear='checkbox' tabIndex={-1} key={index}>
+                        {selectedReportType?.id === 3 && (
+                          <TableCell>
+                            <Checkbox
+                              checked={rowData?.is_checked}
+                              onChange={(e) => handleSelectERP(e, rowData?.erp_no, index)}
+                              color='primary'
+                              name='is_erp_selected'
+                            />
+                          </TableCell>
+                        )}
                         <TableCell className={classes.tableCell}>
                           {limit * (page - 1) + index + 1}
                         </TableCell>
