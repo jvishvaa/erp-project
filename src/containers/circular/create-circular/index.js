@@ -294,7 +294,7 @@ const CraeteCircular = () => {
 
       // fd.append('grade',filterData.grade[0].id)
       // fd.append('section',filterData.section.id)
-      axiosInstance.post(`${endpoints.circular.fileUpload}`, fd).then((result) => {
+      axiosInstance.post(`${endpoints.circular.fileUpload}`, fd).then((result) => {    
         if (result.data.status_code === 200) {
           setLoading(false);
           if (editData?.media) {
@@ -411,6 +411,7 @@ const CraeteCircular = () => {
       axiosInstance
         .post(`${endpoints.circular.deleteFile}`, {
           file_name: `${file}`,
+          circular_id: circularKey,
         })
         .then((result) => {
           if (result.data.status_code === 204) {
