@@ -19,6 +19,7 @@ const AssessmentFilters = ({
   setViewMoreData,
   setFilterDataDown,
   setSelectedIndex,
+  setClearFlag
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
@@ -34,12 +35,16 @@ const AssessmentFilters = ({
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
   const [qpValue, setQpValue] = useState('');
-
+  const is_ERP_CENTRAL = [
+    { id: 1, flag: false, name: 'ERP' },
+    { id: 2, flag: true, name: 'CENTRAL' },
+  ];
   const [filterData, setFilterData] = useState({
     academic: '',
     branch: [],
     grade: '',
     subject: '',
+    is_erp_central: is_ERP_CENTRAL[0],
   });
   // question level input
   const qpLevel = [
@@ -90,6 +95,7 @@ const AssessmentFilters = ({
   }, [moduleId, selectedAcademicYear]);
 
   const handleClear = () => {
+    setClearFlag((prev) => !prev);
     setFilterData({
       academic: '',
       branch: [],
@@ -205,6 +211,11 @@ const AssessmentFilters = ({
         });
     }
   };
+  const handleIsErpCentral = (event, value) => {
+    if (value) {
+      setFilterData({ ...filterData, is_erp_central: value });
+    }
+  }
 
   const handleSubject = (event, value) => {
     setFilterData({ ...filterData, subject: '' });
@@ -239,13 +250,18 @@ const AssessmentFilters = ({
       setAlert('error', 'Select QP Level!');
       return;
     }
+    if (!filterData?.is_erp_central) {
+      setAlert('error', `Select Question From! ${filterData?.is_erp_central.name}`);
+      return;
+    }
     setSelectedIndex(-1);
     handlePeriodList(
+      filterData.is_erp_central,
       filterData.academic,
       filterData.branch,
       filterData.grade,
       filterData.subject,
-      qpValue
+      qpValue,
     );
   };
 
@@ -354,6 +370,27 @@ const AssessmentFilters = ({
               variant='outlined'
               label='Question Paper Level'
               placeholder='Question Paper Level'
+            />
+          )}
+        />
+      </Grid>
+      <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+        <Autocomplete
+          style={{ width: '100%' }}
+          size='small'
+          onChange={handleIsErpCentral}
+          id='Question Type'
+          className='dropdownIcon'
+          value={filterData?.is_erp_central || {}}
+          options={is_ERP_CENTRAL || []}
+          getOptionLabel={(option) => option?.name || ''}
+          filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              variant='outlined'
+              label='Question From'
+              placeholder='Question From'
             />
           )}
         />
