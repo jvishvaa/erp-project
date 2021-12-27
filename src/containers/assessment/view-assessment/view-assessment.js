@@ -61,6 +61,11 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const [showInfo, setShowInfo] = useState(getInfoDefaultVal());
   const [testDate, setTestDate] = useState();
   const { setAlert } = useContext(AlertNotificationContext);
+  const query = new URLSearchParams(window.location.search);
+  useEffect(()=>{
+    localStorage.setItem('is_retest',  query.get('status') === '2');
+  },[])
+
   const fetchQuestionPapers = () => {
     setLoading(true);
 
