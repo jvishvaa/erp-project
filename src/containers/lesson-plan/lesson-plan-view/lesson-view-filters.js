@@ -89,9 +89,9 @@ const LessonViewFilters = ({
     setCentralGsMappingId();
     setCentralSubjectName('');
     setCentralGradeName('');
-    if (defaultAcademicYear) {
-      handleAcademicYear('', defaultAcademicYear);
-    }
+    // if (defaultAcademicYear) {
+    //   handleAcademicYear('', defaultAcademicYear);
+    // }
   };
 
   useEffect(() => {

@@ -1,11 +1,10 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Divider } from '@material-ui/core';
-import AppBar from '@material-ui/core/AppBar';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { Divider, FormControl, MenuItem, Select, AppBar, Grid, TextField } from '@material-ui/core';
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import MenuItem from '@material-ui/core/MenuItem';
 import Menu from '@material-ui/core/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -26,10 +25,14 @@ import { logout } from '../../redux/actions';
 import { throttle, debounce } from 'throttle-debounce';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
-import logo from '../../assets/images/logo.png';
 import logoMobile from '../../assets/images/logo_mobile.png';
 import SearchBar from './SearchBar';
 import AppSearchBarUseStyles from './AppSearchBarUseStyles';
+import { fetchAcademicYearList } from '../../redux/actions/common-actions'
+import { currentSelectedYear } from '../../redux/actions/common-actions'
+// import { Autocomplete } from '@material-ui/lab';
+import './styles.scss';
+// import { Item } from 'semantic-ui-react';
 
 const Appbar = ({ children, history, ...props }) => {
   const classes = AppSearchBarUseStyles();
@@ -39,6 +42,7 @@ const Appbar = ({ children, history, ...props }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [centralSchoolLogo, setCentralSchoolLogo] = useState('');
+  const [centralSchoolName, setcentralSchoolName] = useState('')
   const [superUser, setSuperUser] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
@@ -50,12 +54,16 @@ const Appbar = ({ children, history, ...props }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchUserDetails, setSearchUserDetails] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
-  const [userId, setUserId] = useState();
-  const [displayUserDetails, setDisplayUserDetails] = useState(false);
-  const [mobileSeach, setMobileSeach] = useState(false);
-  const [open, setOpen] = React.useState(false);
-
+  // const [userId, setUserId] = useState();
+  // const [displayUserDetails, setDisplayUserDetails] = useState(false);
+  // const [mobileSeach, setMobileSeach] = useState(false);
+  // const [open, setOpen] = React.useState(false);
+  // const [branchDropdown, setBranchDropdown] = useState([]);
+  // const [filterData, setFilterData] = useState({year: '',});
+  // const [moduleId, setModuleId] = useState(); 
+  const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+
   const { role_details: roleDetails } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
 
@@ -106,6 +114,7 @@ const Appbar = ({ children, history, ...props }) => {
   const autocompleteSearchDebounced = debounce(500, autocompleteSearch);
   const autocompleteSearchThrottled = throttle(500, autocompleteSearch);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [academicYear, setAcademicYear] = useState('');
 
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
@@ -237,13 +246,45 @@ const Appbar = ({ children, history, ...props }) => {
           const appBarLocalStorage = response.data.data;
           localStorage.setItem('schoolDetails', JSON.stringify(appBarLocalStorage));
           setCentralSchoolLogo(response.data.data.school_logo);
+          setcentralSchoolName(response.data.data.school_name);
         })
         .catch((err) => console.log(err));
     } else {
       const logo = JSON.parse(schoolData);
       setCentralSchoolLogo(logo.school_logo);
+      setcentralSchoolName(logo.school_name)
     }
   }, []);
+
+  let academicYearlist = useSelector(state => state.commonFilterReducer.academicYearList);
+  let acdemicCurrentYear = useSelector(state => state.commonFilterReducer.selectedYear);
+
+  useEffect(() => {
+    if (academicYearlist === null) {
+      dispatch(fetchAcademicYearList());
+    }
+  }, []);
+
+  useEffect(() => {
+    if (academicYearlist && acdemicCurrentYear) {
+      setAcademicYear(acdemicCurrentYear?.session_year)
+    }
+  }, [acdemicCurrentYear,academicYearlist])
+
+
+  const handleChange = (event) => {
+    setAcademicYear(event.target.value);
+    let acdemicCurrentYear;
+    academicYearlist.forEach((item) => {
+      if (item.session_year === event.target.value) {
+        acdemicCurrentYear = item
+
+      }
+    })
+    dispatch(currentSelectedYear(acdemicCurrentYear))
+    localStorage.setItem('acad_session', JSON.stringify(acdemicCurrentYear));
+    window.location.reload();
+  };
 
   return (
     <>
@@ -270,20 +311,40 @@ const Appbar = ({ children, history, ...props }) => {
                 )}
               </IconButton>
 
-              <IconButton className={classes.logoMobileContainer}>
-                <img className={classes.logoMObile} src={logoMobile} alt='logo-small' />
-                <Divider
-                  variant='middle'
-                  className={classes.verticalLine}
-                  orientation='vertical'
-                  flexItem
-                />
-                <img
-                  src={centralSchoolLogo}
-                  alt='logo'
-                  style={{ maxHeight: '50px', maxWidth: '50px', objectFit: 'fill' }}
-                />
-              </IconButton>
+              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+                <Grid item xs={6} style={{ textAlign: 'center' }}>
+                  <IconButton className={classes.logoMobileContainer}>
+                    <img className={classes.logoMObile} src={logoMobile} alt='logo-small' />
+                    <Divider
+                      variant='middle'
+                      className={classes.verticalLine}
+                      orientation='vertical'
+                      flexItem
+                    />
+                    <img
+                      src={centralSchoolLogo}
+                      alt='logo'
+                      style={{ maxHeight: '38px', maxWidth: '38px', objectFit: 'fill' }}
+                    />
+                  </IconButton>
+                </Grid>
+                <Grid item xs={6} style={{ textAlign: 'center', paddingTop: 10 }}>
+                  <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={academicYear}
+                      onChange={handleChange}
+                      className={classes.year}
+                    >
+                      {academicYearlist?.map((year) =>
+                        <MenuItem value={year.session_year}>{year.session_year}</MenuItem>
+                      )}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+
               <div className={classes.sectionMobile}>
                 <IconButton
                   aria-label='show more'
@@ -298,58 +359,97 @@ const Appbar = ({ children, history, ...props }) => {
             </Box>
           )}
           {props.drawerOpen ? (
-            <Box pr={7} pl={40}>
-              <img
-                src={logo}
-                alt='logo'
-                style={{ height: '35px' }}
-                className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
-              />
-            </Box>
+            <div style={{ display: 'flex' }}>
+              <Box pr={1} pl={38} component="span">
+                {centralSchoolLogo && (
+                  <IconButton
+                    className={classes.inputButton}
+                    disableRipple={true}
+                    aria-controls={mobileMenuId}
+                    aria-label='show school logo'
+                    color='inherit'
+                    aria-haspopup='true'
+                    size='small'
+                  >
+                    <img
+                      src={centralSchoolLogo}
+                      alt='logo'
+                      className={clsx(
+                        classes.schoolLogoBtn,
+                        classes.desktopToolbarComponents
+                      )}
+                    />
+                  </IconButton>
+                )}
+
+              </Box>
+              {isMobile ? null : <Box ml={4} p={2} component="span">
+                <h4 className={classes.SchoolName} >{centralSchoolName}</h4>
+              </Box>}
+
+            </div>
           ) : (
-            <Box px={7}>
-              <img
-                src={logo}
-                alt='logo'
-                style={{ height: '35px' }}
-                className={clsx(classes.logoBtn, classes.desktopToolbarComponents)}
-              />
-            </Box>
+            <div style={{ display: 'flex' }}>
+              <Box pr={1} pl={7} >
+                {centralSchoolLogo && (
+                  <IconButton
+                    className={classes.inputButton}
+                    disableRipple={true}
+                    aria-controls={mobileMenuId}
+                    aria-label='show school logo'
+                    color='inherit'
+                    aria-haspopup='true'
+                    size='small'
+                  >
+                    <img
+                      src={centralSchoolLogo}
+                      alt='logo'
+                      className={clsx(
+                        classes.schoolLogoBtn,
+                        classes.desktopToolbarComponents
+                      )}
+                    />
+                  </IconButton>
+                )}
+              </Box>
+              {isMobile ? null : <Box ml={4} p={2}>
+                <h4 className={classes.SchoolName} >{centralSchoolName}</h4>
+              </Box>}
+
+            </div>
           )}
-
           {isMobile ? null : <SearchBar />}
+          <div style={{ display: 'flex' }}>
+            {isMobile ? null : <div className={classes.grow} >
 
-          <div className={classes.grow} />
-          <div className={classes.sectionDesktop}>
-            <IconButton
-              aria-label='show more'
-              aria-controls={mobileMenuId}
-              aria-haspopup='true'
-              onClick={handleMobileMenuOpen}
-              color='inherit'
-            >
-              <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
-            </IconButton>
-            {centralSchoolLogo && (
-              <IconButton
-                className={classes.inputButton}
-                disableRipple={true}
-                aria-controls={mobileMenuId}
-                aria-label='show school logo'
-                color='inherit'
-                aria-haspopup='true'
-                size='small'
-              >
-                <img
-                  src={centralSchoolLogo}
-                  alt='logo'
-                  className={clsx(
-                    classes.schoolLogoBtn,
-                    classes.desktopToolbarComponents
+              <FormControl variant="standard" sx={{ m: 1, minWidth: 100 }}>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={academicYear}
+                  onChange={handleChange}
+                  className={classes.year}
+                >
+                  {academicYearlist?.map((year) =>
+                    <MenuItem value={year.session_year}>{year.session_year}</MenuItem>
                   )}
-                />
+                </Select>
+              </FormControl>
+
+            </div>}
+
+
+            <div className={classes.sectionDesktop}>
+              <IconButton
+                aria-label='show more'
+                aria-controls={mobileMenuId}
+                aria-haspopup='true'
+                onClick={handleMobileMenuOpen}
+                color='inherit'
+              >
+                <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
               </IconButton>
-            )}
+            </div>
           </div>
           {!isMobile && (
             <div className={classes.sectionMobile}>

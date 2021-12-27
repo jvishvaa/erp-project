@@ -191,6 +191,14 @@ const UpperGrade = (props) => {
       props.handleCloseTable(true);
     }
   };
+  // const backcounter = () =>{
+  //   debugger
+  //   if(counter == 2){
+  //     return null
+  //   }else{
+  //     setCounter(counter - 1)
+  //   }
+  // }
   return (
     <>
       <div className='upper-table-container'>
@@ -287,13 +295,13 @@ const UpperGrade = (props) => {
                   </div>
                   <div className={classes.textFixedLast}>
                     Expand
-                    <IconButton
+                    {/* <IconButton
                       aria-label='delete'
-                      onClick={() => setCounter(counter - 1)}
+                      onClick={backcounter}
                       size='small'
                     >
                       <ArrowBackIcon className={classes.arrowbutton} />
-                    </IconButton>
+                    </IconButton> */}
                     <IconButton onClick={() => setCounter(counter + 1)} size='small'>
                       <ArrowForwardIcon className = {classes.arrowbutton} />
                     </IconButton>
@@ -346,6 +354,7 @@ const UpperGrade = (props) => {
                     <IconButton
                       aria-label='delete'
                       onClick={() => setCounter(counter - 1)}
+                      // () => setCounter(counter - 1)
                       size='small'
                     >
                       <ArrowBackIcon className={classes.arrowbutton} />

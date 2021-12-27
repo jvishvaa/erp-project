@@ -24,13 +24,15 @@ export default function CenteredTabs({
   tabValue,
   setPage,
   setSelectedIndex,
+  tabIsErpCentral
 }) {
   const classes = useStyles();
   const [value, setValue] = useState(0);
-
+  const tabPanelList = tabIsErpCentral.id === 2 ? ['Published'] : ['All', 'Draft', 'For Review', 'Published'];
   const handleChange = (event, newValue) => {
     setTabValue(newValue);
     handlePeriodList(
+      tabIsErpCentral,
       tabAcademic,
       tabBranch,
       tabGradeId,
@@ -50,10 +52,9 @@ export default function CenteredTabs({
         indicatorColor={classes.indicatorColor}
         textColor={classes.indicatorColor}
       >
-        <Tab label='ALL' />
-        <Tab label='Draft' />
-        <Tab label='For Review' />
-        <Tab label='Published' />
+        {tabPanelList.map((tabBar) =>
+          <Tab label={tabBar} />
+        )}
       </Tabs>
     </Paper>
   );

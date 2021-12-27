@@ -7,15 +7,15 @@
 // }
 .menu-item-text {
   span {
-    color: #ffffff ;
+    color: #ffffff;
   }
 }
 
 .layout_user_icon {
   margin-left: 52% !important;
 }
-.search_icon{
-  border: 0.5px solid #9A9A9A;
+.search_icon {
+  border: 0.5px solid #9a9a9a;
   border-radius: 26px;
 }
 .profile_img {
@@ -30,27 +30,62 @@
   background-color: rgb(221, 203, 180) !important;
 }
 @media screen and (max-width: 700px) {
-.main_search_container{
-margin: auto !important;
+  .main_search_container {
+    margin: auto !important;
+  }
 }
-}
+
 .drawerScrollBar .MuiDrawer-paper::-webkit-scrollbar {
   width: 5px;
 }
 
 /* Track */
 .drawerScrollBar .MuiDrawer-paper::-webkit-scrollbar-track {
-  // background: #F9F9F9; 
+  // background: #F9F9F9;
   border-radius: 10px;
 }
- 
+
 /* Handle */
 .drawerScrollBar .MuiDrawer-paper::-webkit-scrollbar-thumb {
-  background: #ffffff; 
+  background: #ffffff;
   border-radius: 10px;
 }
 
 /* Handle on hover */
 .drawerScrollBar .MuiDrawer-paper::-webkit-scrollbar-thumb:hover {
-  background: #ffffff; 
+  background: #ffffff;
 }
+
+.MuiFormLabel-root{
+  color: #afafaf !important;
+}
+
+#academic-year{
+ color: #7d7d7d;
+}
+
+#menu- .MuiPaper-rounded{
+	top: 60px !important;
+  // left: 1134px !important;
+  }
+
+  @media screen and (max-width: 960px) {
+    #menu- .MuiPaper-rounded{
+      top: 56px !important;
+      left: 203px !important;
+
+      }
+  }
+
+  .MuiInput-underline:before{
+    border-bottom:none !important;
+  }
+  
+  .MuiInput-underline:after{
+    border-bottom:none !important;
+  }
+
+  #demo-simple-select{
+    color: #737373;
+    font-weight: 500;
+  }

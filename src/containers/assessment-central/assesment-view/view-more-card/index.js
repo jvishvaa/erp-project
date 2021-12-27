@@ -121,13 +121,15 @@ const ViewMoreCard = ({
               {periodDataForView?.created_at?.substring(0, 10)}
             </div>
           </div>
-          <Button
-            size='small'
-            className={classes.margin}
-            onClick={() => handleOpenEdit()}
-          >
-            Edit
-          </Button>
+          {!periodDataForView?.is_central && (
+            <Button
+              size='small'
+              className={classes.margin}
+              onClick={() => handleOpenEdit()}
+            >
+              Edit
+            </Button>
+          )}
         </div>
       </div>
       <div className={classes.resourceBulkDownload}>
@@ -165,7 +167,7 @@ const ViewMoreCard = ({
               ))}
             </div>
             <div style={{ margin: '5px 15px 15px 5px' }}>
-              {(periodDataForView?.is_verified || periodDataForView?.is_review) && (
+              {((periodDataForView?.is_verified || periodDataForView?.is_review) && (!periodDataForView?.is_central)) && (
                 <Button
                   style={{ margin: '0.5rem', color: 'white', width: '100%' }}
                   onClick={() => handlePublish(false)}

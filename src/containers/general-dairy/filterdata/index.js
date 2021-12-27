@@ -211,6 +211,7 @@ const GeneralDairyFilter = ({
   }, [activeTab]);
 
   let sectionId = [];
+  let allSectionIds = [];
   const handleGrade = (event, value) => {
     setFilterData({
       ...filterData,
@@ -232,10 +233,18 @@ const GeneralDairyFilter = ({
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value.grade_id}&module_id=${moduleId}`
+          `${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value[0]?.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
+            const sectionData = result?.data?.data || [];
+            for (let i = 0; i < sectionData?.length; i++) {
+              allSectionIds.push(sectionData[i]?.section_id)
+            }
+            sectionData.unshift({
+              section__section_name: 'Select All',
+              section_id: allSectionIds,
+            });
             setSectionDropdown(result.data.data);
             setSectionIds([]);
           } else {
@@ -293,7 +302,7 @@ const GeneralDairyFilter = ({
       setSectionDropdown([])
     }
   };
-
+  let allGradeIds = []
   const handleBranch = (event, value) => {
     setFilterData({
       ...filterData,
@@ -309,7 +318,7 @@ const GeneralDairyFilter = ({
       setFilterData({
         ...filterData,
         branch: value,
-        grade: '',
+        grade: [],
         subject: '',
         chapter: '',
         sections: [],
@@ -320,8 +329,16 @@ const GeneralDairyFilter = ({
           `${endpoints.communication.grades}?session_year=${filterData?.year?.id}&branch_id=${value.branch.id}&module_id=${moduleId}`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
-            setGradeDropdown(result.data.data);
+          if (result.data.status_code === 200) { 
+            const gradeData = result?.data?.data || [];
+            for (let i = 0; i < gradeData.length; i++) {
+              allGradeIds.push(gradeData[i].grade_id)
+            }
+            gradeData.unshift({
+              grade__grade_name: 'Select All',
+              grade_id: allGradeIds,
+            });
+            setGradeDropdown(gradeData);
           } else {
             setAlert('error', result.data.message);
             setGradeDropdown([]);
@@ -354,7 +371,7 @@ const GeneralDairyFilter = ({
       } else {
         handleDairyList(
           filterData.branch.branch.id,
-          filterData.grade.grade_id,
+          filterData?.grade[0]?.grade_id,
           sectionIds,
           startDateTechPer,
           endDateTechPer,
@@ -461,6 +478,7 @@ const GeneralDairyFilter = ({
       {isTeacher && (
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
+            multiple
             style={{ width: '100%' }}
             size='small'
             onChange={handleGrade}

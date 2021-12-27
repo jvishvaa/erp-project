@@ -85,7 +85,7 @@ const WelcomeComponent = () => {
           ({userRole})
         </Typography>
       </div>
-      {/* {userLevel === 4 ? '' : (
+      {/* {userLevel === 13 ? '' : (
         <div>
           <SyncIcon
             id="refreshButton"
@@ -95,7 +95,7 @@ const WelcomeComponent = () => {
         </div>
       )} */}
       {checkOrigin ? <>
-        {welcomeDetails.userLevel === 4 ?
+        {welcomeDetails.userLevel === 13 ?
           <Button onClick={studentrefer} style={{ marginLeft: '20px' }}>
             <GroupAddIcon style={{ marginRight: '5px' }} />
             <h4>Orchids Ambassador Program</h4>
