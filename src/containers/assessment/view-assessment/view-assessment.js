@@ -62,13 +62,21 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const [testDate, setTestDate] = useState();
   const { setAlert } = useContext(AlertNotificationContext);
   const fetchQuestionPapers = () => {
+    
     setLoading(true);
+
+    const statusId = status === 0 ? 2 : 1;
+    
+    const params = [0, 1].includes(status)
+      ? `?user=${user}&page=${page}&page_size=${9}&status=${statusId}`
+      : `?page=${page}&page_size=${9}`;
+
+    const endpoint = [0, 1].includes(status)
+      ? endpoints.assessment.questionPaperList
+      : endpoints.assessment.retestQuestionPaperList;
+
     axiosInstance
-      .get(
-        `${
-          endpoints.assessment.questionPaperList
-        }?user=${user}&page=${page}&page_size=${9}&status=${status}`
-      )
+      .get(`${endpoint}${params}`)
       .then((response) => {
         if (response?.data?.status_code === 200) {
           setQuestionPaperList(response?.data?.result?.results);
@@ -87,9 +95,9 @@ const ViewAssessments = ({ history, ...restProps }) => {
     // setQuestionPaperList(x.result.result);
     // setTotalCount(x.result.count);
   };
+
   useEffect(() => {
     fetchQuestionPapers();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, status]);
 
   const handlePagination = (event, page) => {
@@ -102,7 +110,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
 
   const handleShowInfo = (paperInfoObj) => {
     setShowInfo(paperInfoObj.id);
-    setTestDate(paperInfoObj.test_date)
+    setTestDate(paperInfoObj.test_date);
   };
 
   const [downloadTestId, setDownloadTestId] = useState(null);
@@ -161,9 +169,10 @@ const ViewAssessments = ({ history, ...restProps }) => {
           }}
           aria-label='simple tabs example'
         >
-          <Tab label='All' {...a11yProps(0)} />
+          {/* <Tab label='All' {...a11yProps(0)} /> */}
+          <Tab label='Upcoming' {...a11yProps(0)} />
           <Tab label='Completed' {...a11yProps(1)} />
-          <Tab label='Upcoming' {...a11yProps(2)} />
+          <Tab label='Retest' {...a11yProps(2)} />
         </Tabs>
       </>
     );
