@@ -1216,7 +1216,7 @@ const CreateClassForm = (props) => {
               onClose={toggleDrawer}
               onOpen={toggleDrawer}
             >
-              <FilterStudents />
+              <FilterStudents onClose={toggleDrawer} />
             </SwipeableDrawer>
           </Grid>
           {onlineClass.tutorEmail && (
