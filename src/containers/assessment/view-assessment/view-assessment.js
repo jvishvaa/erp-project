@@ -59,6 +59,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
     return questionPaperId || undefined;
   };
   const [showInfo, setShowInfo] = useState(getInfoDefaultVal());
+  const [testDate, setTestDate] = useState();
   const { setAlert } = useContext(AlertNotificationContext);
   const fetchQuestionPapers = () => {
     setLoading(true);
@@ -101,6 +102,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
 
   const handleShowInfo = (paperInfoObj) => {
     setShowInfo(paperInfoObj.id);
+    setTestDate(paperInfoObj.test_date)
   };
 
   const [downloadTestId, setDownloadTestId] = useState(null);
@@ -207,6 +209,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
             <Grid item xs={12} md={6}>
               <QuestionPaperInfo
                 assessmentId={showInfo}
+                assessmentDate={testDate}
                 key={showInfo}
                 loading={loading}
                 handleCloseInfo={handleCloseInfo}

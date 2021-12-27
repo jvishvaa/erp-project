@@ -38,6 +38,7 @@ import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pi
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import moment from 'moment';
+import { returnAdmin } from 'containers/Finance/src/components/Finance/store/actions';
 
 const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType }) => {
   const limit = 10;
@@ -245,7 +246,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   };
 
   const handleSelectERP = (e, erp, index) => {
-    const isChecked = e.target.checked;
+    const isChecked = e?.target?.checked;
     if (isChecked) {
       setSelectedERP((prev) => [...prev, erp]);
     } else {
@@ -259,16 +260,36 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
     setReportData(list);
   };
 
+  const handleResetCheckedERP = () => {
+    const list = [...reportData];
+    list.forEach(item => item.is_checked=false)
+    setReportData(list);
+  }
+
   const handleCreateRetest = () => {
     const payload = {
       test: filterData.test?.id,
-      retest_date: moment(selectedDate).format('yyyy-MM-DDThh:mm'),
+      retest_date: moment(selectedDate).format('yyyy-MM-DDThh:mm:ss'),
       erpusers: selectedERP,
     };
     axiosInstance
       .post(endpoints.assessmentReportTypes.assessmentRetest, payload)
-      .then((response) => {})
-      .catch((error) => console.log(error));
+      .then((response) => {
+        if (response?.data?.status_code === 200) {
+          setAlert('success', response?.data?.message);
+          setSelectedERP([]);
+          handleResetCheckedERP();
+        } else {
+          setAlert('error', response?.data?.message);
+        }
+      })
+      .catch((error) => {
+        if (error?.response?.data?.status_code === 400) {
+          setAlert('error', error?.response?.data?.message);
+          setSelectedERP([]);
+          handleResetCheckedERP();
+        }
+      });
   };
 
   const renderReportCard = () => {
