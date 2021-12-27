@@ -11,6 +11,8 @@ import {
   Checkbox,
   Paper,
   TablePagination,
+  Button,
+  Grid,
   Box,
   useTheme,
   useMediaQuery,
@@ -31,6 +33,11 @@ import selectfilter from '../../../assets/images/selectfilter.svg';
 import useStyles from './useStyles';
 import TabPanel from '../../../components/tab-panel';
 import { transform } from 'lodash';
+import MomentUtils from '@date-io/moment';
+import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import axiosInstance from 'config/axios';
+import endpoints from 'config/endpoints';
+import moment from 'moment';
 
 const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType }) => {
   const limit = 10;
@@ -39,6 +46,16 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   const widerWidth = isMobile ? '98%' : '95%';
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
+  const [filterData, setFilterData] = useState({
+    branch: '',
+    grade: '',
+    section: '',
+    subject: '',
+    test: '',
+    chapter: '',
+    topic: '',
+    erp: '',
+  });
 
   const [page, setPage] = useState(1);
   const [isFilter, setIsFilter] = useState(false);
@@ -52,47 +69,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   const [tabValue, setTabValue] = useState(0);
 
   const [selectedERP, setSelectedERP] = useState([]);
-
-  const renderReportCard = () => {
-    switch (tabValue) {
-      case 0:
-        return <AssesmentReportTable reportCardData={reportCardData} />;
-      case 1:
-        return (
-          <AssessmentReportBack
-            schoolInfo={reportCardData['school_info']}
-            observationFeedback={reportCardData['observation_feedback']}
-          />
-        );
-    }
-  };
-
-  const getTransformedReportData = (data) => {
-    if (data) {
-      const transformedResponse = data.map((item) => ({ is_checked: false, ...item }));
-      transformedResponse.forEach((item) => {
-        if (selectedERP.includes(item?.erp_no)) {
-          item['is_checked'] = true;
-        }
-      });
-      return transformedResponse || [];
-    }
-  };
-
-  const handleSelectERP = (e, erp, index) => {
-    const isChecked = e.target.checked;
-    if (isChecked) {
-      setSelectedERP((prev) => [...prev, erp]);
-    } else {
-      const selectedERPs = [...selectedERP];
-      const erpIndex = selectedERPs.indexOf(erp);
-      selectedERPs.splice(erpIndex, 1);
-      setSelectedERP(selectedERPs);
-    }
-    const list = [...reportData];
-    list[index]['is_checked'] = isChecked;
-    setReportData(list);
-  };
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
     if (isFilter) {
@@ -107,6 +84,9 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   }, [isFilter, assessmentReportListData]);
 
   useEffect(() => {
+    if (selectedReportType?.id) {
+      setSelectedERP([]);
+    }
     switch (selectedReportType?.id) {
       case 2:
         setColumns([
@@ -137,7 +117,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
         setColumns([
           {
             id: 'serial_number',
-            label: '   ',
+            label: 'Select',
             minWidth: 100,
             align: 'center',
             labelAlign: 'center',
@@ -253,16 +233,69 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
     }
   }, [selectedReportType?.id]);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage + 1);
-  };
-
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
     }, 450);
   }, [page]);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage + 1);
+  };
+
+  const handleSelectERP = (e, erp, index) => {
+    const isChecked = e.target.checked;
+    if (isChecked) {
+      setSelectedERP((prev) => [...prev, erp]);
+    } else {
+      const selectedERPs = [...selectedERP];
+      const erpIndex = selectedERPs.indexOf(erp);
+      selectedERPs.splice(erpIndex, 1);
+      setSelectedERP(selectedERPs);
+    }
+    const list = [...reportData];
+    list[index]['is_checked'] = isChecked;
+    setReportData(list);
+  };
+
+  const handleCreateRetest = () => {
+    const payload = {
+      test: filterData.test?.id,
+      retest_date: moment(selectedDate).format('yyyy-MM-DDThh:mm'),
+      erpusers: selectedERP,
+    };
+    axiosInstance
+      .post(endpoints.assessmentReportTypes.assessmentRetest, payload)
+      .then((response) => {})
+      .catch((error) => console.log(error));
+  };
+
+  const renderReportCard = () => {
+    switch (tabValue) {
+      case 0:
+        return <AssesmentReportTable reportCardData={reportCardData} />;
+      case 1:
+        return (
+          <AssessmentReportBack
+            schoolInfo={reportCardData['school_info']}
+            observationFeedback={reportCardData['observation_feedback']}
+          />
+        );
+    }
+  };
+
+  const getTransformedReportData = (data) => {
+    if (data) {
+      const transformedResponse = data.map((item) => ({ is_checked: false, ...item }));
+      transformedResponse.forEach((item) => {
+        if (selectedERP.includes(item?.erp_no)) {
+          item['is_checked'] = true;
+        }
+      });
+      return transformedResponse || [];
+    }
+  };
 
   return (
     <>
@@ -285,6 +318,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
             setLoading={setLoading}
             setIsPreview={setIsPreview}
             setPage={setPage}
+            setSelectedERP={setSelectedERP}
             pageSize={limit}
             setReportCardData={setReportCardData}
             classTopicAverage={
@@ -297,6 +331,8 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
             selectedReportType={selectedReportType}
             widerWidth={widerWidth}
             isMobile={isMobile}
+            filterData={filterData}
+            setFilterData={setFilterData}
           />
         )}
         {selectedReportType?.id === 5 && isPreview && (
@@ -314,6 +350,41 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
 
         {isFilter && (
           <Paper className={`${classes.root} common-table`}>
+            {selectedERP.length > 0 && selectedReportType?.id === 3 && (
+              <Grid
+                container
+                spacing={isMobile ? 3 : 5}
+                style={{
+                  width: widerWidth,
+                  margin: isMobile ? '10px 0px -10px 0px' : '-20px 0px 20px 8px',
+                }}
+              >
+                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <KeyboardDateTimePicker
+                      value={selectedDate}
+                      onChange={setSelectedDate}
+                      label='Re-Test Date-Time'
+                      onError={console.log}
+                      minDate={new Date()}
+                      disablePast
+                      format='yyyy/MM/DD hh:mm A'
+                    />
+                  </MuiPickersUtilsProvider>
+                </Grid>
+                <Grid item xs={12} sm={2} style={{ alignSelf: 'center' }}>
+                  <Button
+                    variant='contained'
+                    size='medium'
+                    color='secondary'
+                    style={{ color: 'white', width: '100%' }}
+                    onClick={() => handleCreateRetest()}
+                  >
+                    Re-Test
+                  </Button>
+                </Grid>
+              </Grid>
+            )}
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
                 <TableHead className='table-header-row'>
