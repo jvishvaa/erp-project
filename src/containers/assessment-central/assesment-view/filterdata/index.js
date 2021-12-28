@@ -234,16 +234,16 @@ const AssessmentFilters = ({
   };
 
   const handleFilter = () => {
-    if (filterData.branch.length === 0) {
+    if (filterData?.branch.length === 0) {
       setAlert('error', 'Select Branch!');
       return;
     }
-    if (!filterData.grade) {
+    if (!filterData?.grade) {
       setAlert('error', 'Select Grade!');
       return;
     }
-    if (!filterData.subject) {
-      setAlert('error', 'Select subject!');
+    if (!filterData?.subject) {
+      setAlert('error', 'Select Subject!');
       return;
     }
     if (!qpValue) {
@@ -251,7 +251,7 @@ const AssessmentFilters = ({
       return;
     }
     if (!filterData?.is_erp_central) {
-      setAlert('error', `Select Question From! ${filterData?.is_erp_central.name}`);
+      setAlert('error', `Select Question Paper From! ${filterData?.is_erp_central.name}`);
       return;
     }
     setSelectedIndex(-1);
@@ -389,8 +389,8 @@ const AssessmentFilters = ({
             <TextField
               {...params}
               variant='outlined'
-              label='Question From'
-              placeholder='Question From'
+              label='Question Paper From'
+              placeholder='Question Paper From'
             />
           )}
         />

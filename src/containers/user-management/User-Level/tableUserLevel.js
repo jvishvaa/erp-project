@@ -153,8 +153,14 @@ const [ loading , setLoading ] = useState(false)
         },
       });
       if (result.status === 200) {
+        const activeRole = [];
         const levels = result?.data?.result;
-        setRoles(levels);
+        levels.forEach((item) => {
+          if(!item?.is_delete){
+            activeRole.push(item)
+          }
+        } )
+        setRoles(activeRole);
         levels.forEach(({ id = 3, level_name = 'Student' }) => levelObj[id] = level_name)
         // displayUsersList(result?.data?.result?.result)
       } else {
