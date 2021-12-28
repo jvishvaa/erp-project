@@ -9,13 +9,16 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import moment from 'moment';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import '../timetable.scss';
-import { Button, Popover, Typography } from '@material-ui/core';
+import { Button, Popover, Typography, IconButton } from '@material-ui/core';
 import { withStyles } from '@material-ui/core/node_modules/@material-ui/styles';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+
 const useStyles = makeStyles(() => ({
   multilineColor: {
     background: 'white',
@@ -25,6 +28,10 @@ const useStyles = makeStyles(() => ({
   autoCompColor: {
     background: 'white',
     color: '#014B7E',
+  },
+  deleteIcon: {
+      fontSize: '26px !important',
+      width:'22px !important',
   },
 }));
 
@@ -134,12 +141,12 @@ const DisplayBox = (props) => {
             <div style={{ display: 'flex' }}></div>
             {props.teacherView ? (
               <>
-                <div className='edit-button' onClick={() => setOpenEditForm(false)}>
-                  <EditTwoToneIcon size='small' /> Edit
-                </div>
-                <div className='edit-button' onClick={() => handleDeletePopup()}>
-                  <EditTwoToneIcon size='small' /> Delete
-                </div>
+                <IconButton onClick={() => setOpenEditForm(false)}>
+                  <EditIcon className={classes.deleteIcon}/>
+                </IconButton>
+                <IconButton onClick={() => handleDeletePopup()}>
+                  <DeleteIcon className={classes.deleteIcon} />
+                </IconButton>
               </>
             ) : (
               <></>
