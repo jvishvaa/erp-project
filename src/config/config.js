@@ -6,7 +6,8 @@ const local = {
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   apiGateway: {
-    baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
+    baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
+    baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',

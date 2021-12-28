@@ -8,8 +8,11 @@ import {
   TableRow,
   TableHead,
   TableCell,
+  Checkbox,
   Paper,
   TablePagination,
+  Button,
+  Grid,
   Box,
   useTheme,
   useMediaQuery,
@@ -24,19 +27,36 @@ import AssessmentReportFilters from '../assessment-report-types/assessment-repor
 import AssesmentReportTable from '../assesment-report-card/index';
 import AssessmentReportBack from '../assesment-report-card/report-table-observation-and-feedback';
 import { connect } from 'react-redux';
-import { setClearFilters } from 'redux/actions';
+import { setClearFilters, setSelectedRole } from 'redux/actions';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import useStyles from './useStyles';
 import TabPanel from '../../../components/tab-panel';
+import { transform } from 'lodash';
+import MomentUtils from '@date-io/moment';
+import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import axiosInstance from 'config/axios';
+import endpoints from 'config/endpoints';
+import moment from 'moment';
+import { returnAdmin } from 'containers/Finance/src/components/Finance/store/actions';
 
 const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType }) => {
-  const limit = 15;
+  const limit = 10;
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const widerWidth = isMobile ? '98%' : '95%';
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
+  const [filterData, setFilterData] = useState({
+    branch: '',
+    grade: '',
+    section: '',
+    subject: '',
+    test: '',
+    chapter: '',
+    topic: '',
+    erp: '',
+  });
 
   const [page, setPage] = useState(1);
   const [isFilter, setIsFilter] = useState(false);
@@ -49,28 +69,25 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   const [isPreview, setIsPreview] = useState(false);
   const [tabValue, setTabValue] = useState(0);
 
-  const renderReportCard = () => {
-    switch (tabValue) {
-      case 0:
-        return <AssesmentReportTable reportCardData={reportCardData} />;
-      case 1:
-        return (
-          <AssessmentReportBack
-            schoolInfo={reportCardData['school_info']}
-            observationFeedback={reportCardData['observation_feedback']}
-          />
-        );
-    }
-  };
+  const [selectedERP, setSelectedERP] = useState([]);
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
   useEffect(() => {
     if (isFilter) {
-      setReportData(assessmentReportListData?.results);
       setTotalCount(assessmentReportListData?.count);
+      setReportData(assessmentReportListData?.results);
+      if (selectedReportType?.id === 3) {
+        const transformedResponse =
+          getTransformedReportData(assessmentReportListData?.results) || [];
+        setReportData(transformedResponse);
+      }
     }
   }, [isFilter, assessmentReportListData]);
 
   useEffect(() => {
+    if (selectedReportType?.id) {
+      setSelectedERP([]);
+    }
     switch (selectedReportType?.id) {
       case 2:
         setColumns([
@@ -98,6 +115,51 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
         ]);
         break;
       case 3:
+        setColumns([
+          {
+            id: 'serial_number',
+            label: 'Select',
+            minWidth: 100,
+            align: 'center',
+            labelAlign: 'center',
+          },
+          {
+            id: 'serial_number',
+            label: 'S.No',
+            minWidth: 100,
+            align: 'center',
+            labelAlign: 'center',
+          },
+          {
+            id: 'erp_number',
+            label: 'ERP No.',
+            minWidth: 170,
+            align: 'center',
+            labelAlign: 'center',
+          },
+          {
+            id: 'student_name',
+            label: 'Student Name',
+            minWidth: 170,
+            align: 'center',
+            labelAlign: 'center',
+          },
+          {
+            id: 'marks_obtained',
+            label: 'Marks Obtained',
+            minWidth: 170,
+            align: 'center',
+            labelAlign: 'center',
+          },
+          {
+            id: 'comparison',
+            label: 'Comparison',
+            minWidth: 170,
+            align: 'center',
+            labelAlign: 'center',
+          },
+        ]);
+        break;
       case 4:
         setColumns([
           {
@@ -172,16 +234,90 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
     }
   }, [selectedReportType?.id]);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage + 1);
-  };
-
   useEffect(() => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
     }, 450);
   }, [page]);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage + 1);
+  };
+
+  const handleSelectERP = (e, erp, index) => {
+    const isChecked = e?.target?.checked;
+    if (isChecked) {
+      setSelectedERP((prev) => [...prev, erp]);
+    } else {
+      const selectedERPs = [...selectedERP];
+      const erpIndex = selectedERPs.indexOf(erp);
+      selectedERPs.splice(erpIndex, 1);
+      setSelectedERP(selectedERPs);
+    }
+    const list = [...reportData];
+    list[index]['is_checked'] = isChecked;
+    setReportData(list);
+  };
+
+  const handleResetCheckedERP = () => {
+    const list = [...reportData];
+    list.forEach((item) => (item.is_checked = false));
+    setReportData(list);
+  };
+
+  const handleCreateRetest = () => {
+    const retestDate = moment(selectedDate).format();
+    const payload = {
+      test: filterData.test?.id,
+      retest_date: retestDate?.split('+')?.[0] || '',
+      erpusers: selectedERP,
+    };
+    axiosInstance
+      .post(endpoints.assessmentReportTypes.assessmentRetest, payload)
+      .then((response) => {
+        if (response?.data?.status_code === 200) {
+          setAlert('success', response?.data?.message);
+          setSelectedERP([]);
+          handleResetCheckedERP();
+        } else {
+          setAlert('error', response?.data?.message);
+        }
+      })
+      .catch((error) => {
+        if (error?.response?.data?.status_code === 400) {
+          setAlert('error', error?.response?.data?.message);
+          setSelectedERP([]);
+          handleResetCheckedERP();
+        }
+      });
+  };
+
+  const renderReportCard = () => {
+    switch (tabValue) {
+      case 0:
+        return <AssesmentReportTable reportCardData={reportCardData} />;
+      case 1:
+        return (
+          <AssessmentReportBack
+            schoolInfo={reportCardData['school_info']}
+            observationFeedback={reportCardData['observation_feedback']}
+          />
+        );
+    }
+  };
+
+  const getTransformedReportData = (data) => {
+    if (data) {
+      const transformedResponse = data.map((item) => ({ is_checked: false, ...item }));
+      transformedResponse.forEach((item) => {
+        if (selectedERP.includes(item?.erp_no)) {
+          item['is_checked'] = true;
+        }
+      });
+      return transformedResponse || [];
+    }
+  };
 
   return (
     <>
@@ -204,6 +340,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
             setLoading={setLoading}
             setIsPreview={setIsPreview}
             setPage={setPage}
+            setSelectedERP={setSelectedERP}
             pageSize={limit}
             setReportCardData={setReportCardData}
             classTopicAverage={
@@ -216,6 +353,8 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
             selectedReportType={selectedReportType}
             widerWidth={widerWidth}
             isMobile={isMobile}
+            filterData={filterData}
+            setFilterData={setFilterData}
           />
         )}
         {selectedReportType?.id === 5 && isPreview && (
@@ -233,6 +372,41 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
 
         {isFilter && (
           <Paper className={`${classes.root} common-table`}>
+            {selectedERP.length > 0 && selectedReportType?.id === 3 && (
+              <Grid
+                container
+                spacing={isMobile ? 3 : 5}
+                style={{
+                  width: widerWidth,
+                  margin: isMobile ? '10px 0px -10px 0px' : '-20px 0px 20px 8px',
+                }}
+              >
+                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                  <MuiPickersUtilsProvider utils={MomentUtils}>
+                    <KeyboardDateTimePicker
+                      value={selectedDate}
+                      onChange={setSelectedDate}
+                      label='Re-Test Date-Time'
+                      onError={console.log}
+                      minDate={new Date()}
+                      disablePast
+                      format='yyyy/MM/DD hh:mm A'
+                    />
+                  </MuiPickersUtilsProvider>
+                </Grid>
+                <Grid item xs={12} sm={2} style={{ alignSelf: 'center' }}>
+                  <Button
+                    variant='contained'
+                    size='medium'
+                    color='secondary'
+                    style={{ color: 'white', width: '100%' }}
+                    onClick={() => handleCreateRetest()}
+                  >
+                    Re-Test
+                  </Button>
+                </Grid>
+              </Grid>
+            )}
             <TableContainer className={classes.container}>
               <Table stickyHeader aria-label='sticky table'>
                 <TableHead className='table-header-row'>
@@ -253,6 +427,16 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
                   {reportData?.map((rowData, index) => {
                     return (
                       <TableRow hover academicyear='checkbox' tabIndex={-1} key={index}>
+                        {selectedReportType?.id === 3 && (
+                          <TableCell>
+                            <Checkbox
+                              checked={rowData?.is_checked}
+                              onChange={(e) => handleSelectERP(e, rowData?.erp_no, index)}
+                              color='primary'
+                              name='is_erp_selected'
+                            />
+                          </TableCell>
+                        )}
                         <TableCell className={classes.tableCell}>
                           {limit * (page - 1) + index + 1}
                         </TableCell>
