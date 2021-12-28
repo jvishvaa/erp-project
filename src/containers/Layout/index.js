@@ -17,6 +17,8 @@ import {
   Drawer,
   useMediaQuery,
   useTheme,
+  Divider,	
+  IconButton,
 } from '@material-ui/core';
 import clsx from 'clsx';
 import { fetchAcademicYearList } from '../../redux/actions';
@@ -33,6 +35,9 @@ import {
 import Footer from '../footer/index';
 import AppSearchBarUseStyles from './AppSearchBarUseStyles';
 import ENVCONFIG from 'config/config';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';	
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';	
+import logo from '../../assets/images/logo.png';
 // import { isMsAPI } from '../../utility-functions/index';
 
 export const ContainerContext = createContext();
@@ -89,10 +94,10 @@ const Layout = ({ children, history }) => {
     }
   }, [isLogout]);
 
-  const academicYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
-  useEffect(() => {
-    if (!academicYear) dispatch(fetchAcademicYearList());
-  }, [academicYear]);
+  // const academicYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
+  // useEffect(() => {
+  //   if (!academicYear) dispatch(fetchAcademicYearList());
+  // }, [academicYear]);
 
   useEffect(() => {
     if (isFetchThemeRequired()) {
@@ -996,23 +1001,40 @@ const Layout = ({ children, history }) => {
       >
         {isMobile ? <div className={classes.appBarSpacer} /> : null}
         {isMobile ? <SearchBar /> : null}
+        {isMobile ? null : (	
+          <div	
+            style={{	
+              paddingBottom: 10,	
+              background: '#fafafa',	
+              display: 'flex',	
+              alignItems: 'center',	
+              justifyContent: 'space-between',	
+            }}	
+          >	
+            <img src={logo} alt='logo' style={{ height: '36px', paddingLeft: '15px' }} />	
+            <IconButton onClick={() => setDrawerOpen((prevState) => !prevState)}>	
+              {themeContext.direction === 'rtl' ? (	
+                <ChevronRightIcon />	
+              ) : (	
+                <ChevronLeftIcon />	
+              )}	
+            </IconButton>	
+          </div>	
+        )}	
+        <Divider />
         <List>
           <ListItem
             className={classes.menuControlContainer}
             onClick={() => setDrawerOpen((prevState) => !prevState)}
           >
-            <ListItemIcon className={classes.menuItemIcon}>
-              {drawerOpen ? (
-                <>
-                  <CloseIcon />
-                </>
-              ) : (
-                <>
-                  <MenuIcon />
-                </>
-              )}
-            </ListItemIcon>
-            <ListItemText className='menu-item-text'>Menu</ListItemText>
+            {drawerOpen ? null : (	
+              <>	
+                <ListItemIcon className={classes.menuItemIcon}>	
+                  <MenuIcon />	
+                </ListItemIcon>	
+              </>	
+            )}
+            {/* <ListItemText className='menu-item-text'>Menu</ListItemText> */}
           </ListItem>
           {drawerOpen
             ? navigationData &&

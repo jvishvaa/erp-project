@@ -8,8 +8,8 @@ const useStyles = makeStyles((theme) => ({
     width: '105%',
     boxShadow: 'none',
   },
-  backgroundColor:{
-    backgroundColor : theme.palette.primary.primarylightest
+  backgroundColor: {
+    backgroundColor: theme.palette.primary.primarylightest
   },
   selectedRoot: {
     border: `1px solid ${theme.palette.primary.main}`,
@@ -27,14 +27,21 @@ const useStyles = makeStyles((theme) => ({
   textRight: {
     textAlign: 'right',
   },
-  tooltiptext:theme.toolTipText,
-  verifiedColor:{
-    background : theme.palette.primary.primarylightest
+  tooltiptext: theme.toolTipText,
+  verifiedColor: {
+    background: theme.palette.primary.primarylightest
   },
-  notverified : {
-    background : "#fff"
+  notverified: {
+    background: "#fff"
+  },
+  checkCentral: {
+    color: theme.palette.primary.primarylightest,
+    fontSize: "0.99rem"
+  },
+  checkCentralNot: {
+    color: theme.palette.primary.main,
+    fontSize: "0.99rem"
   }
-
 }));
 
 export default useStyles;
