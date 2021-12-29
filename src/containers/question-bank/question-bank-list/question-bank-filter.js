@@ -325,7 +325,7 @@ const QuestionBankFilters = ({
       setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
       axiosInstance
         .get(
-          `${endpoints.lessonReport.subjects}?session_year=${filterData?.year?.id}&branch=${filterData?.branch?.id}&grade=${value?.grade_id}&module_id=${moduleId}`
+          `${endpoints.lessonReport.subjects}?session_year=${filterData?.year?.id}&branch=${filterData?.branch?.branch?.id}&grade=${value?.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result?.data?.status_code === 200) {
@@ -364,7 +364,7 @@ const QuestionBankFilters = ({
       if (value) {
         axiosInstance
           .get(
-            `${endpoints.questionBank.chapterList}?subject_id=${value?.id}&subject=${value?.subject_id}&session_year=${filterData?.branch?.id}`
+            `${endpoints.questionBank.chapterList}?branch_id=${filterData?.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade=${filterData?.grade?.grade_id}&subject_id=${value?.id}&subject=${value?.subject_id}`
           )
           .then((result) => {
             if (result?.data?.status_code === 200) {
@@ -482,7 +482,7 @@ const QuestionBankFilters = ({
       filterData?.subject?.subject_id,
       filterData?.question_level,
       filterData?.topicId,
-      filterData?.branch?.id,
+      filterData?.year?.id,
       filterData?.grade?.grade_id,
       filterData?.chapter,
       filterData?.is_erp_central,
