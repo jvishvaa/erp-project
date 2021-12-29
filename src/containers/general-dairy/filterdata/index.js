@@ -236,7 +236,7 @@ const GeneralDairyFilter = ({
           `${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value[0]?.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
+          if (result?.data?.status_code === 200) {
             const sectionData = result?.data?.data || [];
             for (let i = 0; i < sectionData?.length; i++) {
               allSectionIds.push(sectionData[i]?.section_id)
@@ -329,7 +329,7 @@ const GeneralDairyFilter = ({
           `${endpoints.communication.grades}?session_year=${filterData?.year?.id}&branch_id=${value.branch.id}&module_id=${moduleId}`
         )
         .then((result) => {
-          if (result.data.status_code === 200) { 
+          if (result?.data?.status_code === 200) { 
             const gradeData = result?.data?.data || [];
             for (let i = 0; i < gradeData.length; i++) {
               allGradeIds.push(gradeData[i].grade_id)
@@ -408,7 +408,7 @@ const GeneralDairyFilter = ({
       axiosInstance
         .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
         .then((result) => {
-          if (result.data.status_code === 200) {
+          if (result?.data?.status_code === 200) {
             setAcademicYearDropdown(result?.data?.data);
             const defaultValue = result.data?.data?.[0];
             handleAcademicYear({}, defaultValue);

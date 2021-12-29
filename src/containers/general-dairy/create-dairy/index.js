@@ -499,7 +499,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       });
     }
   }, [location.pathname]);
-  let allGradeIds = []
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: [], grade: [], subject: '', chapter: '', section: [] });
     setOverviewSynopsis([]);
@@ -521,18 +520,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         // axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${location.pathname === "/diary/student"?studentModuleId:teacherModuleId}`)
         .then((result) => {
           if (result.data.status_code === 200) {
-            const gradeData = result?.data?.data || [];
-            for (let i = 0; i < gradeData.length; i++) {
-              allGradeIds.push(gradeData[i].grade_id)
-            }
-            gradeData.unshift({
-              grade__grade_name: 'Select All',
-              grade_id: allGradeIds,
-            });
-            setGradeDropdown(gradeData);
-          } else {
-            setAlert('error', result.data.message);
-            setGradeDropdown([]);
+            setGradeDropdown(result.data.data);
             // setSubjectDropdown([]);
             // setChapterDropdown([]);
           }
@@ -551,7 +539,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       // setChapterDropdown([]);
     }
   };
-  let allSectionIds = [];
   const handleGrade = (event, value) => {
     setFilterData({
       ...filterData,
@@ -572,7 +559,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       axiosInstance
         .get(
           `${endpoints.masterManagement.sections}?session_year=${searchAcademicYear?.id
-          }&branch_id=${filterData?.branch[0]?.branch?.id}&grade_id=${value[0]?.grade_id
+          }&branch_id=${filterData?.branch[0]?.branch?.id}&grade_id=${value?.grade_id
           }&module_id=${location.pathname === '/lesson-plan/student-view'
             ? studentModuleId
             : teacherModuleId
@@ -580,14 +567,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         )
         .then((result) => {
           if (result.data.status_code === 200) {
-            const sectionData = result?.data?.data || [];
-            for (let i = 0; i < sectionData.length; i++) {
-              allSectionIds.push(sectionData[i].section_id)
-            }
-            sectionData.unshift({
-              section__section_name: 'Select All',
-              id: allSectionIds,
-            });
             setSectionDropdown(result.data.data);
           } else {
             setAlert('error', result.data.message);
@@ -652,7 +631,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         filterData.section.map((s) => s.id)
       );
       axiosInstance.post(`${endpoints.generalDairy.uploadFile}`, fd).then((result) => {
-        if (result.data.status_code === 200) {
+        if (result?.data?.status_code === 200) {
           setAlert('success', result.data.message);
           setLoading(false);
           setFilePath([...filePath, result.data.result]);
@@ -766,9 +745,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     let getUserListUrl;
     getUserListUrl = `${endpoints.generalDairy.studentList}?academic_year=${searchAcademicYear?.id
       }&active=${!isEmail ? '0' : '1'
-    }&bgs_mapping=${filterData?.section[0][0]?.id
-      // .map((s) => s.id)
-    }&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+    }&bgs_mapping=${filterData?.section?.map(
+      (s) => s.id
+    )}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
       }`;
 
     if (selectedSections.length && !selectedSections.includes('All')) {
@@ -1093,7 +1072,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         module_name: filterData.role.value,
       })
       .then((result) => {
-        if (result.data.status_code === 200) {
+        if (result?.data?.status_code === 200) {
           setState({ ...state, isEdit: false });
           setTitle('');
           setDescription('');
@@ -1192,13 +1171,12 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
             >
               <Autocomplete
-                multiple
                 style={{ width: '100%' }}
                 size='small'
                 onChange={handleGrade}
                 id='grade'
                 className='dropdownIcon'
-                value={filterData?.grade[0] || []}
+                value={filterData?.grade[0] || ''}
                 options={gradeDropdown}
                 getOptionLabel={(option) => option?.grade__grade_name}
                 filterSelectedOptions
@@ -1214,13 +1192,12 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
             </Grid>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
-                multiple
                 style={{ width: '100%' }}
                 size='small'
                 onChange={handleSection}
                 id='grade'
                 className='dropdownIcon'
-                value={filterData?.section[0] || []}
+                value={filterData?.section[0] || ''}
                 options={sectionDropdown}
                 getOptionLabel={(option) => option?.section__section_name}
                 filterSelectedOptions
