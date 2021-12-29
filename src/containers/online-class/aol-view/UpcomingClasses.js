@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useSelector } from 'react-redux';
 import ClassCard from './ClassCard';
 import { Divider, Grid, makeStyles, useTheme, withStyles, Button, TextField, Switch, FormControlLabel, Typography } from '@material-ui/core';
 import ClassdetailsCard from './ClassdetailCard';
@@ -165,6 +166,9 @@ const UpcomingClasses = () => {
         moment().subtract(6, 'days'),
         moment(),
     ]);
+    const selectedAcademicYear = useSelector(
+        (state) => state.commonFilterReducer?.selectedYear
+    );
     const [startDateTechPer, setStartDateTechPer] = useState(moment().format('YYYY-MM-DD'));
     const [endDateTechPer, setEndDateTechPer] = useState(getDaysAfter(moment(), 7));
 
@@ -200,7 +204,7 @@ const UpcomingClasses = () => {
         setFilterData({ ...filterData, branch: '' })
         if (value) {
             setFilterData({ ...filterData, branch: value })
-            axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+            axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&session_year=${selectedAcademicYear?.id}&module_id=8`)
                 .then((result) => {
                     if (result.data.status_code === 200) {
                         setGradeDropdown(result.data.data)

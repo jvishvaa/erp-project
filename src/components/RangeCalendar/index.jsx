@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { DateRangePicker, Calendar } from 'react-date-range';
+import { useSelector } from 'react-redux';
+import { DateRangePicker , Calendar } from 'react-date-range';
 import { Button, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import FlagIcon from '@material-ui/icons/Flag';
@@ -39,8 +40,11 @@ export default function RangeCalender(props) {
   const [holidayDetailsList, setHolidayDetailsList] = useState([]);
   const [holidayDates, setHolidaydates] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [date, setDate] = useState(new Date());
   const [isEnabled, setIsEnabled] = useState(false);
+  const [ date , setDate ] = useState(new Date());
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const getHolidayDates = (holidayDetail) => {
     let dateList = [];
@@ -86,7 +90,7 @@ export default function RangeCalender(props) {
       'YYYY-MM-DD'
     )}&end_date=${moment(lastDate).format(
       'YYYY-MM-DD'
-    )}&branch=${branchIds}&grade=${uniqueGrades}`, null, null, true, 5000)
+    )}&branch=${branchIds}&grade=${uniqueGrades}&session_year=${selectedAcademicYear?.id}`, null, null, true, 5000)
       .then((res) => {
         if (res?.data?.status_code === 200) {
           getHolidayDates(res?.data?.holiday_detail);

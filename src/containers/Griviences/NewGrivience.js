@@ -211,14 +211,14 @@ const NewGrivience = (props) => {
       setAlert('warning', 'Select Grivience Type');
       return;
     }
-    console.log(
-      acadamicYearID,
-      branchID,
-      gradeID,
-      sectionID,
-      gevienceTypeID,
-      '***************SSSSS***********'
-    );
+    const payload = {
+     academic_year_id :  acadamicYearID,
+     branch_id: branchID,
+     grade_id: gradeID,
+     section_id: sectionID,
+     grevience_id: gevienceTypeID
+    }
+
     axiosInstance
       .get(
         `${endpoints.grievances.getGrivienceList}?academic_year=${acadamicYearID[0]}&branch=${branchID[0]}&grade=${gradeID[0]}&section=${sectionID[0]}&grievance_type=${gevienceTypeID[0]}`

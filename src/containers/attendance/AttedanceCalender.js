@@ -204,7 +204,7 @@ const AttedanceCalender = () => {
             });
             axiosInstance
             .get(
-              `${endpoints.academics.getHoliday}?start_date=${formatDateToday}&end_date=${formatDateToday}&branch=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
+              `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${formatDateToday}&end_date=${formatDateToday}&branch=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
             )
             .then((res) => {
               console.log(res, 'holiday');
@@ -242,7 +242,7 @@ const AttedanceCalender = () => {
             });
             axiosInstance
             .get(
-              `${endpoints.academics.getHoliday}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&branch=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
+              `${endpoints.academics.getHoliday}session_year=${selectedAcademicYear?.id}&?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&branch=${history?.location?.state?.payload?.branch_id?.branch?.id}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
             )
             .then((res) => {
               console.log(res, 'holiday');
@@ -292,7 +292,7 @@ const AttedanceCalender = () => {
             });
             axiosInstance
             .get(
-              `${endpoints.academics.getHoliday}?start_date=${formatDate}&end_date=${formatDate}&branch=${selectedBranch.branch.id}&grade=${selectedGrade.grade_id}`
+              `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${formatDate}&end_date=${formatDate}&branch=${selectedBranch.branch.id}&grade=${selectedGrade.grade_id}`
             )
             .then((res) => {
               console.log(res, 'holiday');
@@ -542,7 +542,7 @@ const AttedanceCalender = () => {
 
     axiosInstance
       .get(
-        `${endpoints.academics.getHoliday}?start_date=${formatDate}&end_date=${formatDate}&branch=${selectedBranch.branch.id}&grade=${selectedGrade.grade_id}`
+        `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${formatDate}&end_date=${formatDate}&branch=${selectedBranch.branch.id}&grade=${selectedGrade.grade_id}`
       )
       .then((res) => {
         console.log(res, 'holiday');
@@ -629,7 +629,7 @@ const AttedanceCalender = () => {
 
       axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?start_date=${startDate}&end_date=${endDate}&branch=${selectedBranch.branch.id}&grade=${selectedGrade.grade_id}`
+          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${startDate}&end_date=${endDate}&branch=${selectedBranch.branch.id}&grade=${selectedGrade.grade_id}`
         )
         .then((res) => {
           console.log(res, 'holiday');
@@ -676,7 +676,7 @@ const AttedanceCalender = () => {
 
       axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?start_date=${startDate}&end_date=${endDate}&branch=${selectedBranch.branch.id}&grade=${selectedGrade.grade_id}`
+          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${startDate}&end_date=${endDate}&branch=${selectedBranch.branch.id}&grade=${selectedGrade.grade_id}`
         )
         .then((res) => {
           console.log(res, 'holiday');
@@ -714,7 +714,7 @@ const AttedanceCalender = () => {
       });
       axiosInstance
       .get(
-        `${endpoints.academics.getHoliday}?start_date=${formatDate}&end_date=${formatDate}&branch=${studentDetails?.role_details?.branch[0]?.id}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
+        `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${formatDate}&end_date=${formatDate}&branch=${studentDetails?.role_details?.branch[0]?.id}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
       )
       .then((res) => {
         console.log(res, 'holiday');
@@ -751,7 +751,7 @@ const AttedanceCalender = () => {
 
         axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?start_date=${startDate}&end_date=${endDate}&branch=${studentDetails?.role_details?.branch[0]?.id}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
+          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${startDate}&end_date=${endDate}&branch=${studentDetails?.role_details?.branch[0]?.id}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
         )
         .then((res) => {
           console.log(res, 'holiday');
@@ -791,7 +791,7 @@ const AttedanceCalender = () => {
         });
         axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?start_date=${startDate}&end_date=${endDate}&branch=${studentDetails?.role_details?.branch[0]?.id}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
+          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${startDate}&end_date=${endDate}&branch=${studentDetails?.role_details?.branch[0]?.id}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
         )
         .then((res) => {
           console.log(res, 'holiday');
@@ -959,7 +959,7 @@ const AttedanceCalender = () => {
   const getholidayrefresh = () => {
     axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?start_date=${startDate}&end_date=${endDate}&branch=${selectedBranch.branch.id}&grade=${selectedGrade.grade_id}`
+          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${startDate}&end_date=${endDate}&branch=${selectedBranch.branch.id}&grade=${selectedGrade.grade_id}`
         )
         .then((res) => {
           console.log(res, 'holiday');

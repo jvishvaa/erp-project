@@ -364,7 +364,7 @@ const QuestionBankFilters = ({
       if (value) {
         axiosInstance
           .get(
-            `${endpoints.questionBank.chapterList}?subject_id=${value?.id}&subject=${value?.subject_id}&session_year=${filterData?.branch?.id}`
+            `${endpoints.questionBank.chapterList}?branch_id=${filterData?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade=${filterData?.grade?.grade_id}&subject_id=${value?.id}&subject=${value?.subject_id}`
           )
           .then((result) => {
             if (result?.data?.status_code === 200) {

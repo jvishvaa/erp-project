@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
+import { useSelector } from 'react-redux';
 import Layout from '../Layout'
 import {  TextField, Grid, Button, useTheme } from '@material-ui/core'
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -76,7 +77,6 @@ const CreateEbook = () => {
 
   const [gradeList, setGradeList] = useState([]);
   const branchId=roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
-  console.log(branchId,"@@@@@@@@@@@2")
   // const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [branchList, setBranchList] = useState([]);
@@ -92,6 +92,9 @@ const CreateEbook = () => {
   const [openEditor, setOpenEditor] = useState(true);
   const [moduleId, setModuleId] = useState(8);
   const [subjectList,setSubjectList]=useState([]);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
 
   const handleSubmit = (e) => {
@@ -144,7 +147,7 @@ const handleBookType = (event, value) => {
 const handleGrade = (event, value) => {
   if (value) {
     setSelectedGrades(value.id);
-    axiosInstance.get(`${endpoints.mappingStudentGrade.subjects}?branch=${branchId}&grade=${value.id}`)
+    axiosInstance.get(`${endpoints.mappingStudentGrade.subjects}?branch=${branchId}&session_year=${selectedAcademicYear?.id}&grade=${value.id}`)
     .then(result => {
       if (result.data.status_code === 200) {
         setSubjectList(result.data.result)

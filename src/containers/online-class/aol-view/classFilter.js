@@ -93,7 +93,7 @@ export default function ClassFilterComponent() {
           ','
         )}&grade=${gradeids.join(',')}&section=${sectionIds.join(
           ','
-        )}&module_id=${moduleId}`
+        )}&module_id=${moduleId}&session_year=${selectedAcademicYear?.id}`
       );
       setSubjects(data.data);
     } catch (error) {

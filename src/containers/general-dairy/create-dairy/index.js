@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import {useSelector} from 'react-redux'
 import Divider from '@material-ui/core/Divider';
 import { useHistory, withRouter, useLocation } from 'react-router-dom';
 import {
@@ -377,6 +378,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
 
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
   const [doc, setDoc] = useState(null);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+  
   // useEffect(() => {});
 
   const selectionArray = [];
@@ -917,7 +922,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         });
       const result = await axiosInstance.get(
         `${endpoints.communication.sections}?branch_id=${selectedBranch.id
-        }&grade_id=${gradesId.toString()}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+        }&session_year=${selectedAcademicYear?.id}&grade_id=${gradesId.toString()}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
         }`,
         {
           headers: {

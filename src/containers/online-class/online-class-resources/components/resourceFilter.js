@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Button,
   Checkbox,
@@ -62,6 +63,9 @@ export default function ResourceFilterComponent() {
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [sectionMappingIds,setSectionMappingIds]=useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const {
     resourceView: { currentPage },
@@ -93,7 +97,7 @@ export default function ResourceFilterComponent() {
       const { data } = await axiosInstance(
         `${endpoints.academics.subjects}?branch=5&grade=${gradeids.join(',')}&section=${sectionIds.join(
           ','
-        )}&module_id=${moduleId}`
+        )}&module_id=${moduleId}&session_year=${selectedAcademicYear?.id}`
       );
       setSubjects(data.data);
     } catch (error) {

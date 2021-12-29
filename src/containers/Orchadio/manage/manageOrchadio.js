@@ -293,23 +293,18 @@ function ManageOrchadio() {
       .then((result) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
-            console.log(result?.data?.data || []);
             setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
-            console.log(result?.data?.data || []);
             setBranchList(result?.data?.data?.results || []);
           }
           if (key === 'gradeList') {
-            console.log(result?.data?.data || []);
             setGradeList(result.data.data || []);
           }
           if (key === 'section') {
-            console.log(result?.data?.data || []);
             setSectionList(result.data.data);
           }
           if (key === 'student') {
-            console.log(result.data.result || [], "studentsss");
             setStudentList(result?.data?.result);
           }
           setLoading(false);
@@ -333,7 +328,7 @@ function ManageOrchadio() {
     console.log(branchId);
     setBranchId(branchId);
     axios
-      .get(`${endpoints.orchadio.AddParticipants}?branch_id=${branchId}`)
+      .get(`${endpoints.orchadio.AddParticipants}?branch_id=${branchId}&session_year=${selectedAcademicYear?.id}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setLoading(false);

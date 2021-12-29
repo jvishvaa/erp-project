@@ -1,4 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import {
   makeStyles,
   Box,
@@ -58,6 +59,9 @@ function BranchTable(props) {
   const { setAlert } = useContext(AlertNotificationContext);
   const classes = useRowStyles();
   const [gradeWiseData, setGradeWiseData] = useState([]);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  ) || 1;
 
   //to-call-grade-wise-data
   const handleGrade = (event, value) => {
@@ -70,7 +74,7 @@ function BranchTable(props) {
             selectedSubject?.subject_id
           }&start_date=${moment(startDate).format('YYYY-MM-DD')}&end_date=${moment(
             endDate
-          ).format('YYYY-MM-DD')}&branch_id=${event?.branch_id}
+          ).format('YYYY-MM-DD')}&branch_id=${event?.branch_id}&session_year=${selectedAcademicYear?.id}
       `
         )
         .then((result) => {

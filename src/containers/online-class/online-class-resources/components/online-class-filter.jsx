@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Button,
   Checkbox,
@@ -62,6 +63,9 @@ const OnlineClassFilter = () => {
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [sectionMappingIds,setSectionMappingIds]=useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const {
     resourceView: { currentPage },
@@ -95,7 +99,7 @@ const OnlineClassFilter = () => {
           ','
         )}&grade=${gradeids.join(',')}&section=${sectionIds.join(
           ','
-        )}&module_id=${moduleId}`
+        )}&module_id=${moduleId}&session_year=${selectedAcademicYear?.id}`
       );
       setSubjects(data.data);
     } catch (error) {

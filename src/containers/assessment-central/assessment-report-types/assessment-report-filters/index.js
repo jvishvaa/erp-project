@@ -291,7 +291,7 @@ const AssessmentReportFilters = ({
   function getTest(branchId, gradeId, subjectId) {
     axiosInstance
       .get(
-        `${endpoints.assessmentErp.testList}?branch=${branchId}&grade=${gradeId}&subjects=${subjectId}`
+        `${endpoints.assessmentErp.testList}?session_year=${selectedAcademicYear?.id}&branch=${branchId}&grade=${gradeId}&subjects=${subjectId}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -362,7 +362,7 @@ const AssessmentReportFilters = ({
     const {
       personal_info: { role = '' },
     } = userDetails || {};
-    let params = `?branch=${branchId}&grade=${gradeId}&section=${sectionId}`;
+    let params = `?branch=${branchId}&session_year=${selectedAcademicYear?.id}&grade=${gradeId}&section=${sectionId}`;
     if (role) params += `&role=${role}`;
     axiosInstance
       .get(`${endpoints.communication.studentUserList}${params}`)
