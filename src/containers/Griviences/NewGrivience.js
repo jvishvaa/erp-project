@@ -211,13 +211,6 @@ const NewGrivience = (props) => {
       setAlert('warning', 'Select Grivience Type');
       return;
     }
-    const payload = {
-     academic_year_id :  acadamicYearID,
-     branch_id: branchID,
-     grade_id: gradeID,
-     section_id: sectionID,
-     grevience_id: gevienceTypeID
-    }
 
     axiosInstance
       .get(
