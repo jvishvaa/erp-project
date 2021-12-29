@@ -1,23 +1,28 @@
-import React, {useContext,useState} from 'react';
+import React, { useContext, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
-import {useLocation} from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Button, useTheme, IconButton ,Divider,SvgIcon} from '@material-ui/core';
+import { Button, useTheme, IconButton, Divider, SvgIcon } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import useStyles from './useStyles';
 import './dairy-card.css'
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import {useHistory} from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import cardAttachment from '../../../assets/images/cardAttachment.svg'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import {Context} from '../context/context'
+import { Context } from '../context/context'
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 
 
-const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, setEditData, handleDairyType,deleteFlag,setDeleteFlag}) => {
+const DailyDairy = ({ lesson, period, setPeriodDataForView, setViewMoreData, setViewMore, setLoading, index, periodColor, setPeriodColor, setSelectedIndex, setEditData, handleDairyType, deleteFlag, setDeleteFlag }) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -25,16 +30,28 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
-    const history=useHistory()
-    const [state,setState] = useContext(Context)
-    const location = useLocation();
-
+  const history = useHistory()
+  const [state, setState] = useContext(Context)
+  const location = useLocation();
+  const [deleteAlert, setDeleteAlert] = React.useState(false);
+  const [deleteId, setDeleteId] = React.useState(null);
+  const [deleteIndex, setDeleteIndex] = React.useState(null);
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
     setShowPeriodIndex(index);
   };
+  const handleDeleteCancel = () => {
+    setDeleteId(null);
+    setDeleteIndex(null);
+    setDeleteAlert(false);
+  };
+  const handleDeleteOpen = () => {
+    // setDeleteId(null);
+    // setDeleteIndex(null);
+    setDeleteAlert(true);
+  };
   const isTeacher = location.pathname === '/diary/teacher' ? true : false;
- 
+
   const handlePeriodMenuClose = (index) => {
     setShowMenu(false);
     setShowPeriodIndex();
@@ -42,59 +59,46 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
 
   const handleViewMore = () => {
     setLoading(true)
-    // axiosInstance.get(`${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}`)
-    //   .then(result => {
-    //     // console.log(result.data,'ooo')
-    //     if (result.data.status_code === 200) {
-          setLoading(false);
-          setViewMore(true);
-          setViewMoreData(lesson);
-          setPeriodDataForView(lesson);
-          setSelectedIndex(index);
-          setPeriodColor(true);
-          handleDairyType(2);
-        // } else {
-        //   setLoading(false);
-        //   setViewMore(false);
-        //   setViewMoreData({});
-        //   setAlert('error', result.data.message);
-        //   setPeriodDataForView();
-        //   setSelectedIndex(-1);
-        //   setPeriodColor(true);
-        // }
-    //   })
-    //   .catch((error) => {
-    //     setViewMore(false);
-    //     setViewMoreData({});
-    //     setAlert('error', error.message);
-    //     setPeriodDataForView();
-    //     setSelectedIndex(-1);
-    //     setPeriodColor(true);
-    //   })
+    setLoading(false);
+    setViewMore(true);
+    setViewMoreData(lesson);
+    setPeriodDataForView(lesson);
+    setSelectedIndex(index);
+    setPeriodColor(true);
+    handleDairyType(2);
   }
-  const handleDelete=(e,index)=>{
+  const handleDelete = (e, index) => {
     axiosInstance.delete(`${endpoints.dailyDairy.updateDelete}${e.id}/update-delete-dairy/`)
-    .then((result)=>{
+      .then((result) => {
 
-      if(result.data.status_code===200){
-        setAlert('success',result.data.message)
-        setDeleteFlag(!deleteFlag)
-      }else{
-        setAlert('errpr', 'ERROR!')
-      }
+        if (result.data.status_code === 200) {
+          setAlert('success', result.data.message)
+          setDeleteFlag(!deleteFlag)
+          setDeleteId(e.id);
+          setDeleteIndex(e);
+          setDeleteAlert(true);
+        } else {
+          setAlert('errpr', 'ERROR!')
+        }
 
-    })
+      })
 
 
   }
-  const handleEdit=(data)=>{
-    // // setEditData(e)
-    setState({editData:data,isEdit:true});
+  // const handleDelete = (e) => {
+
+  //   setDeleteId(e.id);
+  //   setDeleteIndex(e);
+  //   setDeleteAlert(true);
+  // };
+
+  const handleEdit = (data) => {
+    setState({ editData: data, isEdit: true });
     history.push('/create/daily-diary')
   }
 
   return (
-    <Paper className={periodColor?classes.selectedRoot:classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' } }>
+    <Paper className={periodColor ? classes.selectedRoot : classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}>
       <Grid container spacing={2}>
         <Grid item xs={8}>
           <Box>
@@ -109,7 +113,7 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
             </Typography>
           </Box>
           <Box mt={2}>
-          <Typography
+            <Typography
               className={classes.content}
               variant='p'
               component='p'
@@ -118,7 +122,7 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
             >
               Daily Diary
             </Typography>
-            <Divider className='divider'/>
+            <Divider className='divider' />
             <Typography
               className={classes.content}
               variant='p'
@@ -126,11 +130,35 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
               color='secondary'
               noWrap
             >
-             {lesson.teacher_report.homework}
+              {lesson.teacher_report.homework}
 
             </Typography>
           </Box>
         </Grid>
+        <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
+          <DialogTitle
+            id='draggable-dialog-title'
+          >
+            Delete Dairy
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={(e) => handleDelete(lesson)}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Grid item xs={4} className={classes.textRight}>
           <Box>
             <span
@@ -138,24 +166,25 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
               onClick={() => handlePeriodMenuOpen(index)}
               onMouseLeave={handlePeriodMenuClose}
             >
-              {isTeacher?
+              {isTeacher ?
 
                 <IconButton
-                className="moreHorizIcon"
-                color='primary'
+                  className="moreHorizIcon"
+                  color='primary'
                 >
-                <MoreHorizIcon />
-              </IconButton>:''
+                  <MoreHorizIcon />
+                </IconButton> : ''
               }
               {(showPeriodIndex === index &&
                 showMenu) ? (
-                  <div className="tooltip" style={{display:'flex',justifyContent:'space-between'}}>
-                    <span className={` ${classes.toolTipText} tooltiptext`} >
-                        <Button className={classes.tooltip} onClick={e=> handleDelete(lesson)}>Delete</Button>
-                        <Button className={classes.tooltip} onClick={e=> handleEdit(lesson)}> Edit</Button>
-                    </span>
-                  </div>
-                ) : null}
+                <div className="tooltip" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>
+                    <Button className={classes.tooltip} style={{ width: "120px" }} onClick={handleDeleteOpen}>Delete</Button>
+                    <Button className={classes.tooltip} style={{ width: "120px" }} onClick={e => handleEdit(lesson)}> Edit</Button>
+                  </span>
+                </div>
+
+              ) : null}
             </span>
           </Box>
         </Grid>
@@ -169,38 +198,35 @@ const DailyDairy = ({ lesson,period, setPeriodDataForView, setViewMoreData, setV
               color='secondary'
             >
               Created By - <p>{lesson.created_by.first_name} {lesson.created_at.substring(0, 10)}</p>
-              </Typography>
+            </Typography>
           </Box>
           <div>
-          <IconButton style={{fontSize:'1rem',color:'#042955'}}>
+            <IconButton style={{ fontSize: '1rem', color: '#042955' }}>
               <SvgIcon
                 component={() => (
-                                    <img
-                                        style={{ height: '21px', width: '21px', marginRight: '5px'}}
-                                        src={cardAttachment}
-                                        alt='attachment'
-                                    />
-                                )}/>
+                  <img
+                    style={{ height: '21px', width: '21px', marginRight: '5px' }}
+                    src={cardAttachment}
+                    alt='attachment'
+                  />
+                )} />
               {lesson.documents ? lesson.documents.length : 0} Files
-          </IconButton>
-            {/* <label></label> */}
-        </div>
+            </IconButton>
+          </div>
         </Grid>
-       
-        <Grid item xs={6} className={classes.textRight}> 
-          {/* {!viewMore && */}
 
-         {!periodColor && 
-          <Button
-            variant='contained'
-            style={{color:'white', width: '100%' }}
-            color="primary"
-            size='small'
-            onClick={handleViewMore}
-          >
-            VIEW MORE
-          </Button>}
-           {/* } */}
+        <Grid item xs={6} className={classes.textRight}>
+          {!periodColor &&
+            <Button
+              variant='contained'
+              style={{ color: 'white', width: '100%' }}
+              color="primary"
+              size='small'
+              onClick={handleViewMore}
+            >
+              VIEW MORE
+            </Button>}
+          {/* } */}
         </Grid>
       </Grid>
     </Paper>

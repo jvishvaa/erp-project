@@ -229,7 +229,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
             )}
           />
         </Grid>
-        <Grid item md={9}></Grid>
+        {/* <Grid item md={9}></Grid> */}
         <Grid item md={3} xs={12}>
           <Grid container spacing={2}>
             <Grid item md={6} xs={6}>

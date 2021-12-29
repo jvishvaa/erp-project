@@ -1,7 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
-// import classes from './Assessment.module.css';
-// import { Stepper } from '../../ReusableComponents';
 import Grid from '@material-ui/core/Grid';
 import icon from './icon.svg';
 import { makeStyles } from '@material-ui/core/styles';
@@ -13,25 +10,16 @@ import Carousel, { consts } from 'react-elastic-carousel';
 import './assessment.scss';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import clsx from 'clsx';
-// import LazyLoad from 'react-lazy-load';
-// import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-// import { Carousel } from 'react-responsive-carousel';
-
 const breakPoints = [
   { width: 1, itemsToShow: 2, itemsToScroll: 2 },
   { width: 550, itemsToShow: 2, itemsToScroll: 2 },
   { width: 768, itemsToShow: 2, itemsToScroll: 2 },
   { width: 1200, itemsToShow: 2, itemsToScroll: 2 },
 ];
-
 const useStyles = makeStyles((theme) => ({
-
-
   track: {
     backgroundColor: '#fafafa',
-    // overflow: 'auto',
     whiteSpace: 'nowrap',
-    // margin: '10px',
   },
   card: {
     height: '100px',
@@ -42,21 +30,16 @@ const useStyles = makeStyles((theme) => ({
     display: 'inline-block',
     fontSize: '0.7em',
     border: '1px solid #349ceb',
-    // marginBottom: "40px",
-
   },
-
   assessmentbtn: {
     background: '#349CEB',
     color: 'white',
     borderRadius: 20,
     padding: '5px',
-    // fontSize:"0.7em",
   },
   icon: {
     width: '12%',
   },
-
   layertop: {
     display: 'flex',
     flexDirection: 'column',
@@ -75,19 +58,16 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "800",
     fontSize: "1.2em",
   },
-
   layerbottom: {
     display: 'flex',
     justifyContent: 'space-between',
     padding: '1px 10px',
     fontWeight: "800",
   },
-
   columnlayer: {
     display: 'flex',
     flexDirection: 'column',
   },
-
   layermiddle: {
     textAlign: 'left',
     color: '#014b7e',
@@ -95,7 +75,6 @@ const useStyles = makeStyles((theme) => ({
     height: '30px',
     padding: '10px',
   },
-
   white: {
     color: 'white',
     fontWeight: 600,
@@ -114,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
   assessment: {
     color: '#014B7E',
     fontWeight: 800,
-    margin: '10px',
+    margin: '20px',
     fontSize: "0.9em",
     position: "relative",
   },
@@ -129,59 +108,71 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'hidden',
     whiteSpace: 'nowrap',
   },
-
+  assess: {
+    height: '100px',
+    width: '170px',
+    margin: '5px',
+    borderRadius: '5x',
+    backgroundColor: 'white',
+    border: '1px solid gray',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+  }
 }));
-
 export default function Assessment(item) {
   const classes = useStyles();
   const matches960 = useMediaQuery('(max-width: 960px)');
   const [assessmentArr, setAssessmentArr] = React.useState([]);
+  const [isEnabled, setIsEnabled] = React.useState(false);
+  const [nextPage, setNextPage] = React.useState("");
 
-  //carousel
-  // const addItem = () => {
-  //   const nextItem = Math.max(1, assessmentArr.length + 1);
-  //   setAssessmentArr([...assessmentArr, nextItem]);
-  // };
-
-  // const removeItem = () => {
-  //   const endRange = Math.max(0, assessmentArr.length - 1);
-  //   setAssessmentArr(assessmentArr.slice(0, endRange));
-  // };
-
-  const getAssessmentData = () => {
-    apiRequest('get', endpoints.dashboard.student.assessment)
+  const nextpagehandler = () => {
+    let url = nextPage.split('page=')[1]
+    apiRequest('get', `${endpoints.dashboard.student.assessments}?page=${url}` ,null, null, true, 5000)
       .then((result) => {
-        if (result.data.status_code === 200) {
-          setAssessmentArr(result.data.result.results);
+        if (result?.data?.status_code === 200) {
+          setAssessmentArr([...assessmentArr, ...result?.data?.result?.results]);
+          setNextPage(result?.data?.result?.next);
         }
       })
       .catch((error) => {
         console.log('error');
       });
   };
-
+  
+  const getAssessmentData = () => {
+    apiRequest('get', endpoints.dashboard.student.assessments, null, null, true, 5000  )
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setIsEnabled(result?.data?.is_enabled)
+          setAssessmentArr(result?.data?.result?.results);
+          setNextPage(result?.data?.result?.next);
+        }
+      })
+      .catch((error) => {
+        console.log('error');
+      });
+  };
   useEffect(() => {
     getAssessmentData();
+    // nextpagehandler();
   }, []);
-
   //arrow carousal
   const myArrow = ({ type, onClick, isEdge }) => {
-    // const pointer = type === consts.PREV ? '<' : '>'
     const leftPointer = '<';
     const rightPointer = '>';
-
     const arrows = type === consts.PREV ?
       <Button onClick={onClick} disabled={isEdge} className="leftPointer">
         {leftPointer}
-      </Button> :
+      </Button> 
+      :
+      
       <Button onClick={onClick} disabled={isEdge} className="rightPointer">
         {rightPointer}
       </Button>
-
     return arrows
-
   }
-
   return (
     <Grid
       container
@@ -214,44 +205,58 @@ export default function Assessment(item) {
             Upcoming
           </Button>
         </div>
-
         <Carousel renderArrow={myArrow}
-          breakPoints={breakPoints}>
-          {assessmentArr.map((item, i) => (
-
+          breakPoints={breakPoints}
+          onNextEnd={({index})=> {
+            if(index%8 === 0 && nextPage) {
+              nextpagehandler()
+            }
+        }}>
+          {assessmentArr?.length > 0 && isEnabled ? assessmentArr.map((item, i) => (
             <div className={classes.card} key={`Assesement${i}`}>
               <div className={classes.layertop}>
                 <div className={classes.layerupper}>
-                  <div className={clsx(classes.white, classes.ellipsisText)} title={item.test_name}>{item.test_name}</div>
+                  <div className={clsx(classes.white, classes.ellipsisText)} title={item?.test_name}>{item?.test_name}</div>
                   <img className={classes.icon} src={icon} alt='i'
-
                   />
                 </div>
-
               </div>
               <div className={classes.layermiddle}>
-                {moment(item.test_date).format('dddd')}
+                {moment(item?.test_date).format('dddd')}
               </div>
               <div className={classes.layerbottom}>
                 <div className={classes.columnlayer}>
                   <div className={classes.blue}>
-                    {moment(item.test_date).format('DD-MM-YYYY')}
+                    {moment(item?.test_date).format('DD-MM-YYYY')}
                   </div>
                   <div className={classes.blue}>DATE</div>
                 </div>
-
                 <div className={classes.columnlayer}>
                   <div className={classes.blue}>
-                    {moment(item.test_date).format('LT')}
+                    {moment(item?.test_date).format('LT')}
                   </div>
                   <div className={classes.blue}>TIME</div>
                 </div>
               </div>
             </div>
-
-          ))}
+          )) : 
+          <div style={{display:"flex"}}>
+          <div className={classes.assess}>
+              <div style={{ margin: '35px auto', borderRadius: '5px' }}>
+                <h5 style={{ color: "#349CEB", textAlign: "center" }}> ASSESSMENT </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Assessment':'Temporarily Disabled'}</h5>
+              </div>
+              </div>
+              <div className={classes.assess}>
+              <div style={{ margin: '35px auto', borderRadius: '5px' }}>
+                <h5 style={{ color: "#349CEB", textAlign: "center" }}> ASSESSMENT </h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>{isEnabled?'No Assessment':'Temporarily Disabled'}</h5>
+              </div>
+              </div>
+              </div>
+              }
+              
         </Carousel>
-
       </Grid>
     </Grid>
   );

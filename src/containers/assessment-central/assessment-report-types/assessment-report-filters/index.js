@@ -36,10 +36,13 @@ const AssessmentReportFilters = ({
   classTopicAverage,
   page,
   setPage,
+  setSelectedERP,
   pageSize,
   setLoading,
   setIsPreview,
   setReportCardData,
+  filterData,
+  setFilterData
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState('');
@@ -105,17 +108,6 @@ const AssessmentReportFilters = ({
     } catch (err) {}
   };
 
-  const [filterData, setFilterData] = useState({
-    branch: '',
-    grade: '',
-    section: '',
-    subject: '',
-    test: '',
-    chapter: '',
-    topic: '',
-    erp: '',
-  });
-
   useEffect(() => {
     if (page && isFilter) handleFilter();
   }, [page]);
@@ -147,9 +139,7 @@ const AssessmentReportFilters = ({
         }
         setLoading(false);
       })
-      .catch((error) => {
-        setLoading(false);
-      });
+      .catch((error) => {});
   };
 
   const handleDateChange = (name, date) => {
@@ -210,6 +200,7 @@ const AssessmentReportFilters = ({
         section_mapping: filterData.section?.id,
       };
     }
+    // setSelectedERP([]);
     const filterFlag = Object.values(paramObj).every(Boolean);
     if (filterFlag) {
       paramObj = { ...paramObj, page: page, page_size: pageSize };
@@ -415,7 +406,6 @@ const AssessmentReportFilters = ({
     if (value) {
       getBranch(value?.id);
       setFilterData({ ...filterData, selectedAcademicYear });
-      console.log('acad', filterData);
     }
   };
 
@@ -681,6 +671,7 @@ const AssessmentReportFilters = ({
 
     if (selectedReportType?.id === 8) {
       try {
+        // http://localhost:8000/qbox/assessment/download-report-consolidate/?section_mapping=5&test=90&subject_id=3
         const { data } = await axiosInstance.get(
           `${endpoints.assessmentReportTypes.reportConsolidated}?section_mapping=${
             filterData.section?.id
@@ -733,28 +724,12 @@ const AssessmentReportFilters = ({
         setAlert('error', 'Failed to download report');
       }
     }
-
-    if (selectedReportType?.id === 12) {
-      try {
-        const { data } = await axiosInstance.get(
-          `${endpoints.assessmentReportTypes.downloadReportTestReport}?academic_year=${selectedAcademicYear?.id}&branch_id=${filterData.branch?.branch?.id}&grade_id=${filterData.grade?.grade_id}&subject_id=${filterData?.subject?.subject_id}&start_date=${startDate}&end_date=${endDate}`,
-          {
-            responseType: 'arraybuffer',
-          }
-        );
-        const blob = new Blob([data], {
-          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        });
-        FileSaver.saveAs(blob, `ConsolidatedSubject_AssessmentReport${new Date()}.xls`);
-      } catch (error) {
-        setAlert('error', 'Failed to download report');
-      }
-    }
   };
 
   const handleClear = () => {
     url = '';
     setPage(1);
+    setSelectedERP([]);
     setIsFilter(false);
     setDropdownData({
       ...dropdownData,
@@ -887,8 +862,7 @@ const AssessmentReportFilters = ({
           selectedReportType?.id !== 7 &&
           selectedReportType?.id !== 9 &&
           selectedReportType?.id !== 10 &&
-          selectedReportType?.id !== 11 &&
-          selectedReportType?.id !== 12 && (
+          selectedReportType?.id !== 11 && (
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
                 style={{ width: '100%' }}
@@ -1068,50 +1042,6 @@ const AssessmentReportFilters = ({
             </Grid>
           </MuiPickersUtilsProvider>
         )}
-        {selectedReportType?.id === 12 && (
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <KeyboardDatePicker
-                size='small'
-                color='primary'
-                // disableToolbar
-                variant='dialog'
-                format='YYYY-MM-DD'
-                margin='none'
-                id='date-picker-start-date'
-                label='Start date'
-                value={startDate}
-                onChange={(event, date) => {
-                  handleDateChange('startDate', date);
-                }}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-                style={{ marginTop: -6 }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <KeyboardDatePicker
-                size='small'
-                // disableToolbar
-                variant='dialog'
-                format='YYYY-MM-DD'
-                margin='none'
-                id='date-picker-end-date'
-                name='endDate'
-                label='End date'
-                value={endDate}
-                onChange={(event, date) => {
-                  handleDateChange('endDate', date);
-                }}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-                // style={{ marginTop: -6 }}
-              />
-            </Grid>
-          </MuiPickersUtilsProvider>
-        )}
         {selectedReportType?.id === 10 && (
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
@@ -1156,8 +1086,8 @@ const AssessmentReportFilters = ({
             </Grid>
           </MuiPickersUtilsProvider>
         )}
-        {/* 
-{selectedReportType?.id === 8 && (
+
+        {/* {selectedReportType?.id === 8 && (
 <MuiPickersUtilsProvider utils={MomentUtils}>
 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
             <KeyboardDatePicker
@@ -1239,15 +1169,21 @@ const AssessmentReportFilters = ({
         selectedReportType?.id === 8 ||
         selectedReportType?.id === 9 ||
         selectedReportType?.id === 10 ||
-        selectedReportType?.id === 11 ||
-        selectedReportType?.id === 12 ? null : (
+        selectedReportType?.id === 11 ? null : (
           <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
             <Button
               variant='contained'
               size='medium'
               color='primary'
               style={{ color: 'white', width: '100%' }}
-              onClick={selectedReportType?.id === 5 ? handlePreview : handleFilter}
+              onClick={
+                selectedReportType?.id === 5
+                  ? handlePreview
+                  : () => {
+                      setSelectedERP([]);
+                      handleFilter();
+                    }
+              }
             >
               {selectedReportType?.id === 5 ? 'Preview' : 'Filter'}
             </Button>

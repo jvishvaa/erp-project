@@ -9,6 +9,16 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import moment from 'moment';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import '../timetable.scss';
+import { Button, Popover, Typography, IconButton } from '@material-ui/core';
+import { withStyles } from '@material-ui/core/node_modules/@material-ui/styles';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+
 const useStyles = makeStyles(() => ({
   multilineColor: {
     background: 'white',
@@ -19,7 +29,14 @@ const useStyles = makeStyles(() => ({
     background: 'white',
     color: '#014B7E',
   },
+  deleteIcon: {
+      fontSize: '26px !important',
+      width:'22px !important',
+  },
 }));
+
+
+
 const DisplayBox = (props) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -83,6 +100,33 @@ const DisplayBox = (props) => {
         setAlert('error', "can't edit list");
       });
   };
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleDeletePopup = (event) => {
+    setAnchorEl(true);
+  }
+
+  const handleDelete = () =>{
+    axiosInstance
+      .delete('/academic/delete_time_table/' + data.id + '/')
+      .then((responce) => {
+        if(responce.status===200){
+          handleCloseBox();
+          setAlert('success', 'Deleted Successfully');
+        }
+        props.callGetAPI();
+      })
+      .catch((error) => {
+        setAlert('error', "can't delete");
+      });
+  }
   // const handleCloseBox = () =>{
   //   props.handleChangeDisplayView();
   // };
@@ -93,15 +137,44 @@ const DisplayBox = (props) => {
           <div className='display-heading-container'>
             <div className='yellow-header'>
               {data.period_start_time.slice(0, 5)} - {data.period_end_time.slice(0, 5)}
-            </div>
+            </div>           
             <div style={{ display: 'flex' }}></div>
             {props.teacherView ? (
-              <div className='edit-button' onClick={() => setOpenEditForm(false)}>
-                <EditTwoToneIcon size='small' /> Edit
-              </div>
+              <>
+                <IconButton onClick={() => setOpenEditForm(false)}>
+                  <EditIcon className={classes.deleteIcon}/>
+                </IconButton>
+                <IconButton onClick={() => handleDeletePopup()}>
+                  <DeleteIcon className={classes.deleteIcon} />
+                </IconButton>
+              </>
             ) : (
               <></>
             )}
+            <Dialog id={id} open={open} onClose={handleClose} anchorEl={anchorEl}>
+          <DialogTitle
+            id='draggable-dialog-title'
+          >
+            Delete
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={(e) => handleClose()} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleDelete}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>      
            <div style={{color:'#ff6b6b'}}></div>
             <CloseIcon color='primary' fontSize='large' onClick={() => handleCloseBox()} />
           </div>
@@ -115,7 +188,7 @@ const DisplayBox = (props) => {
             {/* {data.assigned_teacher__first_name} {data.assigned_teacher__last_name} */}
           </h4>
           <div className='yellow-header'>Short description about class</div>
-          <p>{data.period_description}</p>
+          <p style={{wordWrap: "break-word"}}>{data.period_description}</p>
           <div className='yellow-header'>Material Required</div>
           <p>{data.required_material}</p>
         </>

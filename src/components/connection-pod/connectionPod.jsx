@@ -58,7 +58,7 @@ const ConnectionPodFn = (props) => {
     JSON.parse(localStorage.getItem('userDetails'))?.role_details || {};
 
   const {
-    welcomeDetails: { userLevel = 1 },
+    welcomeDetails: { userLevel = 5 },
   } = useContext(DashboardContext);
 
   const [loading, setLoading] = useState(false);
@@ -140,7 +140,7 @@ const ConnectionPodFn = (props) => {
   }, []);
 
   useEffect(() => {
-    if (userLevel !== 4 && selectedYear && moduleId && dialogOpen) {
+    if (userLevel !== 13 && selectedYear && moduleId && dialogOpen) {
       fetchBranches(selectedYear?.id);
     }
   }, [selectedYear, moduleId, dialogOpen]);
@@ -156,7 +156,7 @@ const ConnectionPodFn = (props) => {
   };
 
   useEffect(() => {
-    if (userLevel !== 4) {
+    if (userLevel !== 13) {
       fetchFilterBranchList();
       fetchFilterGradeList();
       fetchFilterSectionList();
@@ -321,7 +321,7 @@ const ConnectionPodFn = (props) => {
     let sectionFlag = false;
     let gradeFlag = false;
 
-    if (userLevel !== 4) {
+    if (userLevel !== 13) {
       roleFlag = true;
     }
     if (selectedSection?.branch_id !== undefined) {
@@ -630,7 +630,7 @@ const ConnectionPodFn = (props) => {
           ? meetingTypeFilter
           : filterInput.meetingTypeFilter
       }`;
-    } else if (userLevel === 4) {
+    } else if (userLevel === 13) {
       params = `student_id=${erp_user_id}&page_size=${data.dataPerPage}&page=${
         page !== undefined ? page : data.currentPage
       }&meeting_name=${
@@ -682,7 +682,7 @@ const ConnectionPodFn = (props) => {
       }`;
     }
     let apiUrl;
-    if (userLevel === 4) {
+    if (userLevel === 13) {
       apiUrl = `${endpoints.connectionPod.getStudentMeeting}?${params}`;
     } else {
       apiUrl = `${endpoints.connectionPod.getTeacherMeeting}?${params}`;
@@ -882,7 +882,7 @@ const ConnectionPodFn = (props) => {
       return 'Completed';
     }
     if (parseInt(duration.asMinutes()) < 5) {
-      if (userLevel === 4) {
+      if (userLevel === 13) {
         return 'Join Meeting';
       }
       return 'Host Meeting';
@@ -932,7 +932,7 @@ const ConnectionPodFn = (props) => {
   const joinMeeting = (data) => {
     if (is_superuser) {
       window.open(data.host, '_blank');
-    } else if (userLevel === 4) {
+    } else if (userLevel === 13) {
       markAttendanceFn(data.id);
       window.open(data.participant, '_blank');
     } else {
@@ -957,7 +957,7 @@ const ConnectionPodFn = (props) => {
             </div>
             <div className='filter-container'>
               <Grid container spacing={3} alignItems='center'>
-                {userLevel !== 4 && (
+                {userLevel !== 13 && (
                   <Grid item sm={1} xs={12}>
                     <Tooltip title='Create Meeting' placement='bottom' arrow>
                       <IconButton
@@ -972,7 +972,7 @@ const ConnectionPodFn = (props) => {
                     </Tooltip>
                   </Grid>
                 )}
-                <Grid item sm={userLevel !== 4 ? 11 : 12} xs={12}>
+                <Grid item sm={userLevel !== 13 ? 11 : 12} xs={12}>
                   <Accordion expanded={accordianOpen}>
                     <AccordionSummary
                       expandIcon={<ExpandMoreIcon />}
@@ -986,7 +986,7 @@ const ConnectionPodFn = (props) => {
                     </AccordionSummary>
                     <AccordionDetails>
                       <Grid container spacing={3} alignItems='center'>
-                        {userLevel !== 4 && (
+                        {userLevel !== 13 && (
                           <>
                             <Grid item md={3} sm={4} xs={12}>
                               <Autocomplete
@@ -1096,7 +1096,7 @@ const ConnectionPodFn = (props) => {
                             }}
                           />
                         </Grid>
-                        {/* {(is_superuser || userLevel === 4) && ( */}
+                        {/* {(is_superuser || userLevel === 13) && ( */}
                         <Grid item md={3} sm={4} xs={12}>
                           <TextField
                             fullWidth
@@ -1113,7 +1113,7 @@ const ConnectionPodFn = (props) => {
                           />
                         </Grid>
                         {/* )} */}
-                        {userLevel !== 4 && (
+                        {userLevel !== 13 && (
                           <Grid item md={3} sm={4} xs={12}>
                             <TextField
                               fullWidth
@@ -1186,7 +1186,7 @@ const ConnectionPodFn = (props) => {
                             <TableCell>{eachData.meeting_time}</TableCell>
                             <TableCell>{eachData.student.student_name}</TableCell>
                             <TableCell>{eachData.teacher.teacher_name}</TableCell>
-                            {userLevel === 4 ? (
+                            {userLevel === 13 ? (
                               <TableCell>{eachData.is_attended ? 'Yes' : 'No'}</TableCell>
                             ) : (
                               <TableCell>

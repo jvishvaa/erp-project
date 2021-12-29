@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DateRangePicker , Calendar } from 'react-date-range';
+import { DateRangePicker, Calendar } from 'react-date-range';
 import { Button, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import FlagIcon from '@material-ui/icons/Flag';
@@ -8,6 +8,8 @@ import moment from 'moment';
 import './index.scss';
 import RCAPI from './RCconfig/RCapi';
 import RCENDPOINTS from './RCconfig/RCendpoints';
+import apiRequest from '../../containers/dashboard/StudentDashboard/config/apiRequest';
+import endpoints from '../../containers/dashboard/StudentDashboard/config/Endpoint';
 import clsx from 'clsx';
 
 const useStyles = makeStyles((theme) => ({
@@ -22,9 +24,9 @@ const useStyles = makeStyles((theme) => ({
 export default function RangeCalender(props) {
   const classes = useStyles();
   const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
-  const branchIds = role_details.branch ? role_details.branch.map((obj) => obj.id) : [];
-  const gradeIds = role_details.grades
-    ? role_details.grades.map((obj) => obj.grade_id)
+  const branchIds = role_details?.branch ? role_details?.branch.map((obj) => obj.id) : [];
+  const gradeIds = role_details?.grades
+    ? role_details?.grades.map((obj) => obj.grade_id)
     : [];
   const [selectedType, setSelectedType] = useState('today');
   const [state, setState] = useState([
@@ -37,7 +39,8 @@ export default function RangeCalender(props) {
   const [holidayDetailsList, setHolidayDetailsList] = useState([]);
   const [holidayDates, setHolidaydates] = useState([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
-  const [ date , setDate ] = useState(new Date());
+  const [date, setDate] = useState(new Date());
+  const [isEnabled, setIsEnabled] = useState(false);
 
   const getHolidayDates = (holidayDetail) => {
     let dateList = [];
@@ -59,31 +62,47 @@ export default function RangeCalender(props) {
   };
 
   const getCurrentMonthDetails = () => {
-    const uniqueGrades = gradeIds.filter((val,id,array) => array.indexOf(val) == id);
+    const uniqueGrades = gradeIds.filter((val, id, array) => array.indexOf(val) == id);
     const date = currentMonth,
       y = date.getFullYear(),
       m = date.getMonth();
     const firstDate = new Date(y, m, 1);
     const lastDate = new Date(y, m + 1, 0);
-    RCAPI(
-      'get',
-      `${RCENDPOINTS.RANGECALENDAR.getHolidayList}?start_date=${moment(firstDate).format(
-        'YYYY-MM-DD'
-      )}&end_date=${moment(lastDate).format(
-        'YYYY-MM-DD'
-      )}&branch=${branchIds}&grade=${uniqueGrades}`
-    ).then((res) => {
-      if (res.data.status_code === 200) {
-        getHolidayDates(res.data.holiday_detail);
-        setHolidayDetailsList(res.data.holiday_detail);
-        props.setEventList(res.data.holiday_detail);
-      }
-    });
+    // RCAPI(
+    //   'get',
+    //   `${RCENDPOINTS.RANGECALENDAR.getHolidayList}?start_date=${moment(firstDate).format(
+    //     'YYYY-MM-DD'
+    //   )}&end_date=${moment(lastDate).format(
+    //     'YYYY-MM-DD'
+    //   )}&branch=${branchIds}&grade=${uniqueGrades}`
+    // ).then((res) => {
+    //   if (res.data.status_code === 200) {
+    //     getHolidayDates(res.data.holiday_detail);
+    //     setHolidayDetailsList(res.data.holiday_detail);
+    //     props.setEventList(res.data.holiday_detail);
+    //   }
+    // });
+    apiRequest('get', `${endpoints.dashboard.student.calendar}?start_date=${moment(firstDate).format(
+      'YYYY-MM-DD'
+    )}&end_date=${moment(lastDate).format(
+      'YYYY-MM-DD'
+    )}&branch=${branchIds}&grade=${uniqueGrades}`, null, null, true, 5000)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          getHolidayDates(res?.data?.holiday_detail);
+          setIsEnabled(res?.data?.is_enabled);
+          setHolidayDetailsList(res?.data?.holiday_detail);
+          props.setEventList(res?.data?.holiday_detail);
+        }
+      })
+      .catch((error) => {
+        console.log('error');
+        // setAlert('error', 'Failed to mark attendance');
+      });
   };
-
-  useEffect(() => {
-    getCurrentMonthDetails();
-  }, []);
+  // useEffect(() => {
+  //   getCurrentMonthDetails();
+  // }, []);
 
   useEffect(() => {
     setHolidaydates([]);
@@ -187,59 +206,60 @@ export default function RangeCalender(props) {
 
   return (
     <>
-      <Grid
-        className={clsx(classes.themeBg, classes.calcss)}
-        container
-        direction='row'
-        justifyContent='space-evenly'
-        alignItems='center'
-        style={{ padding: '0.5rem', margin: '0px !important' }}
-      >
-        <Grid item>
-          <Button
-            style={{ fontSize: '1rem', padding: '0px 2px' }}
-            size={'small'}
-            variant={'contained'}
-            color={
-              selectedType === 'today' || selectedType === undefined
-                ? 'primary'
-                : 'secondry'
-            }
-            onClick={() => {
-              setSelectedType('today');
-            }}
-          >
-            Today
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button
-            style={{ fontSize: '1rem', padding: '0px 2px' }}
-            size={'small'}
-            variant={'contained'}
-            color={selectedType === 'weekly' ? 'primary' : 'secondry'}
-            onClick={() => {
-              setSelectedType('weekly');
-            }}
-          >
-            Weekly
-          </Button>
-        </Grid>
-        <Grid item>
-          <Button
-            style={{ fontSize: '1rem', padding: '0px 2px' }}
-            size={'small'}
-            variant={'contained'}
-            color={selectedType === 'custom' ? 'primary' : 'secondry'}
-            onClick={() => {
-              setSelectedType('custom');
-            }}
-          >
-            Custom
-          </Button>
-        </Grid>
-      </Grid>
-      { selectedType === 'today' ? <Calendar 
+      {isEnabled ? (
+        <Grid
+          className={clsx(classes.themeBg, classes.calcss)}
+          container
+          direction='row'
+          justifyContent='space-evenly'
+          alignItems='center'
+          style={{ padding: '0.5rem', margin: '0px !important' }}
+        >
+          <Grid item>
+            <Button
+              style={{ fontSize: '1rem', padding: '0px 2px' }}
+              size={'small'}
+              variant={'contained'}
+              color={
+                selectedType === 'today' || selectedType === undefined
+                  ? 'primary'
+                  : 'secondry'
+              }
+              onClick={() => {
+                setSelectedType('today');
+              }}
+            >
+              Today
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              style={{ fontSize: '1rem', padding: '0px 2px' }}
+              size={'small'}
+              variant={'contained'}
+              color={selectedType === 'weekly' ? 'primary' : 'secondry'}
+              onClick={() => {
+                setSelectedType('weekly');
+              }}
+            >
+              Weekly
+            </Button>
+          </Grid>
+          <Grid item>
+            <Button
+              style={{ fontSize: '1rem', padding: '0px 2px' }}
+              size={'small'}
+              variant={'contained'}
+              color={selectedType === 'custom' ? 'primary' : 'secondry'}
+              onClick={() => {
+                setSelectedType('custom');
+              }}
+            >
+              Custom
+            </Button>
+          </Grid>
+        </Grid>) : ''}
+      {selectedType === 'today' ? <Calendar
         editableDateInputs={true}
         dayContentRenderer={customDayContent}
         className='rangeCalendar'
@@ -249,18 +269,18 @@ export default function RangeCalender(props) {
         onShownDateChange={(day) => {
           setCurrentMonth(day);
         }}
-        /> :
-      <DateRangePicker
-        editableDateInputs={true}
-        dayContentRenderer={customDayContent}
-        className='rangeCalendar'
-        ranges={state}
-        onChange={handleChange}
-        onShownDateChange={(day) => {
-          setCurrentMonth(day);
-        }}
-      />
-}
+      /> :
+        <DateRangePicker
+          editableDateInputs={true}
+          dayContentRenderer={customDayContent}
+          className='rangeCalendar'
+          ranges={state}
+          onChange={handleChange}
+          onShownDateChange={(day) => {
+            setCurrentMonth(day);
+          }}
+        />
+      }
     </>
   );
 }

@@ -6,6 +6,7 @@ import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { Button, useTheme, IconButton, SvgIcon } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
+import FlagIcon from '@material-ui/icons/Flag';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { connect } from 'react-redux';
 import useStyles from './useStyles';
@@ -30,6 +31,7 @@ const AssessmentCard = ({
   setSelectedIndex,
   initAddQuestionPaperToTest,
   setPublishFlag,
+  tabIsErpCentral
 }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -39,7 +41,6 @@ const AssessmentCard = ({
   const [showPeriodIndex, setShowPeriodIndex] = useState();
 
   const history = useHistory();
-
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
     setShowPeriodIndex(index);
@@ -108,62 +109,108 @@ const AssessmentCard = ({
   const handleViewMore = () => {
     setLoading(true);
     setPeriodDataForView({});
-    const url = endpoints.assessmentErp?.questionPaperViewMore.replace(
-      '<question-paper-id>',
-      period?.id
-    );
-
-    axiosInstance
-      .get(url)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          const { sections, questions } = result.data.result;
-          const parsedResponse = [];
-          sections.forEach((sec) => {
-            const sectionObject = { name: '', questions: [] };
-            const sectionName = Object.keys(sec)[0];
-            sectionObject.name = sectionName;
-            sec[sectionName].forEach((qId) => {
-              const questionFound = questions.find((q) => q?.identifier === qId);
-              if (questionFound) {
-                sectionObject.questions.push(questionFound);
-              }
+    if (tabIsErpCentral.id == 1) {
+      const url = endpoints.assessmentErp?.questionPaperViewMore.replace(
+        '<question-paper-id>',
+        period?.id
+      );
+      axiosInstance
+        .get(url)
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            const { sections, questions } = result.data.result;
+            const parsedResponse = [];
+            sections.forEach((sec) => {
+              const sectionObject = { name: '', questions: [] };
+              const sectionName = Object.keys(sec)[0];
+              sectionObject.name = sectionName;
+              sec[sectionName].forEach((qId) => {
+                const questionFound = questions.find((q) => q?.identifier === qId);
+                if (questionFound) {
+                  sectionObject.questions.push(questionFound);
+                }
+              });
+              parsedResponse.push(sectionObject);
             });
-            parsedResponse.push(sectionObject);
-          });
 
-          setLoading(false);
-          setViewMore(true);
-          // setViewMoreData(result.data.result);
-          setViewMoreData(parsedResponse);
-          setPeriodDataForView(period);
-          setSelectedIndex(index);
-        } else {
+            setLoading(false);
+            setViewMore(true);
+            // setViewMoreData(result.data.result);
+            setViewMoreData(parsedResponse);
+            setPeriodDataForView(period);
+            setSelectedIndex(index);
+          } else {
+            setLoading(false);
+            setViewMore(false);
+            setViewMoreData([]);
+            setPeriodDataForView();
+            setAlert('error', result.data.message);
+            setSelectedIndex(-1);
+          }
+        })
+        .catch((error) => {
           setLoading(false);
           setViewMore(false);
           setViewMoreData([]);
           setPeriodDataForView();
-          setAlert('error', result.data.message);
+          setAlert('error', error.message);
           setSelectedIndex(-1);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setViewMore(false);
-        setViewMoreData([]);
-        setPeriodDataForView();
-        setAlert('error', error.message);
-        setSelectedIndex(-1);
-      });
+        });
+    }
+    else {
+      const url = endpoints.assessmentErp?.questionPaperViewMoreCentral.replace(
+        '<question-paper-id>',
+        period?.id
+      );
+      axios
+        .get(url, { headers: { 'x-api-key': 'vikash@12345#1231' } })
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            const { sections, questions } = result.data.result;
+            const parsedResponse = [];
+            sections.forEach((sec) => {
+              const sectionObject = { name: '', questions: [] };
+              const sectionName = Object.keys(sec)[0];
+              sectionObject.name = sectionName;
+              sec[sectionName].forEach((qId) => {
+                const questionFound = questions.find((q) => q?.id === qId);
+                if (questionFound) {
+                  sectionObject.questions.push(questionFound);
+                }
+              });
+              parsedResponse.push(sectionObject);
+            });
+
+            setLoading(false);
+            setViewMore(true);
+            setViewMoreData(parsedResponse);
+            setPeriodDataForView(period);
+            setSelectedIndex(index);
+          } else {
+            setLoading(false);
+            setViewMore(false);
+            setViewMoreData([]);
+            setPeriodDataForView();
+            setAlert('error', result.data.message);
+            setSelectedIndex(-1);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          setViewMore(false);
+          setViewMoreData([]);
+          setPeriodDataForView();
+          setAlert('error', error.message);
+          setSelectedIndex(-1);
+        });
+    }
   };
 
   return (
     <Paper
-      className={`${periodColor ? classes.selectedRoot : classes.root } ${period.is_verified ? classes.verifiedColor : classes.notverified}`}
-      // || period.is_verified ? classes.verifiedColor : classes.notverified
+      className={`${periodColor ? classes.selectedRoot : classes.root} ${period.is_verified ? classes.verifiedColor : classes.notverified}`}
       style={
         (isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }
-        // period.is_verified ? { background: '#FCEEEE' } : { background: '#FFF' }
         )
       }
     >
@@ -208,15 +255,19 @@ const AssessmentCard = ({
               {showPeriodIndex === index && showMenu ? (
                 <div className='tooltipContainer'>
                   {period.is_verified && (
-                    <span className={` ${classes.tooltiptext} tooltiptext`} style={{width:'105px'}}>
+                    <span className={` ${classes.tooltiptext} tooltiptext`} style={{ width: '105px' }}>
                       <span onClick={handleAssign}>Assign Test</span>
-                      <Divider/>
-                      <span onClick={handleDelete}>Delete</span>
+                      <Divider />
+                      {!period.is_central && (
+                        <span onClick={handleDelete}>Delete</span>
+                      )
+                      }
                     </span>
                   )}
                   {!period.is_verified && (
                     <span className='tooltiptext'>
                       <span onClick={handlePublish}>Publish Paper</span>
+                      <Divider />
                       <span onClick={handleDelete}>Delete</span>
                     </span>
                   )}
@@ -225,20 +276,21 @@ const AssessmentCard = ({
             </span>
           </Box>
         </Grid>
-        {/* )} */}
         <Grid item xs={12} sm={12} />
         <Grid item xs={6}>
           <Box>
             <Typography
-              className={classes.title}
+              className={classes.content}
               variant='p'
               component='p'
               color='secondary'
             >
-              Created On
+              {tabIsErpCentral.id == 1 ?
+                <FlagIcon className={classes.checkCentral} /> :
+                <FlagIcon className={classes.checkCentralNot} />}Created On :{period.created_at.substring(0, 10)}
             </Typography>
           </Box>
-          <Box>
+          {/* <Box>
             <Typography
               className={classes.content}
               variant='p'
@@ -247,13 +299,13 @@ const AssessmentCard = ({
             >
               {period.created_at.substring(0, 10)}
             </Typography>
-          </Box>
+          </Box> */}
         </Grid>
         <Grid item xs={6} className={classes.textRight}>
           {!periodColor && (
             <Button
               variant='contained'
-              style={{color:'white', width: '100%' }}
+              style={{ color: 'white', width: '100%' }}
               color='primary'
               size='small'
               onClick={handleViewMore}

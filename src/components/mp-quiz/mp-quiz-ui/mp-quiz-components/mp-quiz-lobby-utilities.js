@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import { Modal, Avatar } from '@material-ui/core';
 import LinkTag from '@material-ui/core/Link';
 import IconButton from '@material-ui/core/IconButton';
@@ -14,6 +14,7 @@ import {
   useSocket,
   useQuizQuesContext,
 } from '../../mp-quiz-providers';
+import EndquizDialog from './endquizDialog';
 
 import CurrentScore, {
   ParticipantCount,
@@ -38,6 +39,9 @@ const {
   },
   params: { lobby_identifier: lobbyIdentifier } = {},
 } = constants;
+
+const searchParams = new URLSearchParams(window.location.search);
+const redirectionView = +searchParams.get('wb_view');
 
 export function GetErrorMsgC({ label, showOnlyLabel = false }) {
   return (
@@ -69,6 +73,12 @@ export function GetErrorMsgC({ label, showOnlyLabel = false }) {
 }
 
 export function ClearOrPauseBtn(props) {
+  const [open, setOpen] = useState(false);
+
+  const handletoggle = () => {
+    setOpen(!open) 
+  }
+
   const socket = useSocket();
   return (
     <IconButton
@@ -77,14 +87,26 @@ export function ClearOrPauseBtn(props) {
       component='span'
       // onClick={() => { this.props.websocket.close() }}
       onClick={() => {
+        let confirmed
+        if(redirectionView!== 0){
+          // confirmed = true
+          handletoggle()
+          
+        }else{
+          confirmed = window.confirm('Are you sure you want to exit from this quiz?');
+        }
         // eslint-disable-next-line no-alert
-        const confirmed = window.confirm('Are you sure you want to exit from this quiz?');
         if (confirmed) {
           socket.close();
         }
       }}
     >
       <ClearIcon className='topbar-btn-icon' />
+      {open && <EndquizDialog
+              open = {open}
+              handletoggle = {handletoggle}
+              closeSocket = {()=>socket.close()}
+              />}
     </IconButton>
   );
 }
@@ -126,8 +148,16 @@ export function FullScreenBtn() {
   );
 }
 
+
 export function HostQuizTopBarContent() {
   const { endQuizTrigger } = useQuizEventTriggers();
+  const [open, setOpen] = useState(false);
+
+  const handletoggle = () => {
+    setOpen(!open) 
+  }
+
+
   // return <p>Host quiz topbar cnt</p>
   return (
     <>
@@ -135,8 +165,14 @@ export function HostQuizTopBarContent() {
         type='button'
         className='btn__end--quiz'
         onClick={() => {
+          let ifYes
+        if(redirectionView!== 0){
+          handletoggle()
+          // ifYes = true
+        }  else{
+          ifYes = window.confirm('Are you sure on your action?');
+        }
           // eslint-disable-next-line no-alert
-          const ifYes = window.confirm('Are you sure on your action?');
           if (ifYes) {
             endQuizTrigger();
           }
@@ -144,6 +180,11 @@ export function HostQuizTopBarContent() {
       >
         End Quiz
       </button>
+      {open && <EndquizDialog
+              open = {open}
+              handletoggle = {handletoggle}
+              endQuizTrigger = {()=> endQuizTrigger()}
+              />}
     </>
   );
 }
@@ -151,9 +192,9 @@ export function HostQuizTopBarContent() {
 export function getDurationCounter(props) {
   const counterDuration = 3;
   const questionAnimDuration = 1;
-  const lbDuration = 5;
-  const questionOptionduration = 2.5;
-  const memeDuration = 5;
+  const lbDuration = 2;
+  const questionOptionduration = 1.5;
+  const memeDuration = 1.5;
   /*
    * This duration module to be refactored.
    */
@@ -191,7 +232,8 @@ export function getDurationCounter(props) {
   const isHost = true;
   // logic to run counter equally
   if (isHost === true) {
-    quizDuration = durationInSec + totalNoOfQuestions * sagDuration + counterDuration;
+    quizDuration = durationInSec ;
+    // + totalNoOfQuestions * sagDuration + counterDuration;
     quizStartedAt = startedAt;
     startImmediately = !!(startedAt && startedAt !== 'None');
     timeToRender = startImmediately ? 'render_question' : undefined;

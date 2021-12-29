@@ -15,7 +15,8 @@ import {
   Dialog,
   AppBar,
 } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
+// import { Pagination } from '@material-ui/lab';
+import Pagination from 'components/PaginationComponent';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../../Layout';
@@ -367,12 +368,17 @@ const AllBooksPage = () => {
 
         {booksData && (
           <Grid item xs={12} md={12} style={{ textAlign: 'center' }}>
-            <Pagination
+            {/* <Pagination
               onChange={handlePagination}
               count={totalPages}
               color='primary'
               page={pageNo}
               style={{ paddingLeft: '45%' }}
+            /> */}
+            <Pagination
+              totalPages={totalPages}
+              currentPage={pageNo}
+              setCurrentPage={setPageNo}
             />
           </Grid>
         )}

@@ -29,6 +29,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
+import './discussion.css';
 
 const useStyles = makeStyles((theme)=>({
   discussionContainer: {
@@ -566,6 +567,7 @@ export default function DiscussionComponent(props) {
                     {goldCount === 0 && silverCount === 0 && bronzeCount === 0 && (<span className={classes.noAwardsText}>No Awards Found</span>)}
                   </div>
                   <Divider />
+                  {props?.rowData?.post_by?.id !== userDetails?.user_id ?
                   <OutlinedButton
                     variant="outlined"
                     color="secondary"
@@ -573,6 +575,7 @@ export default function DiscussionComponent(props) {
                   >
                     GIVE AWARD
                   </OutlinedButton>
+                  :<></> }
                 </div>
               </Popover>
             </ClickAwayListener>
@@ -676,8 +679,8 @@ export default function DiscussionComponent(props) {
                     Read post
                   </StyledButton>
                 </Grid>
-                <Grid item sm={12} xs={6} className={classes.replyButtons}>
-                  <StyledOutlinedButton fullWidth onClick={handleReply}>
+                <Grid item sm={12} xs={6}  >
+                  <StyledOutlinedButton fullWidth className='discussion-comment-button' onClick={handleReply}>
                   Comment
                   </StyledOutlinedButton>
                 </Grid>

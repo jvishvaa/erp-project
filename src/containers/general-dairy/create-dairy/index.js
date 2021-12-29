@@ -108,7 +108,7 @@ const StyledTab = withStyles((theme) => ({
 
 const useStyles = makeStyles((theme) => ({
 
-  
+
   paper: {
     width: '100%',
     marginBottom: theme.spacing(2),
@@ -175,9 +175,9 @@ const useStyles = makeStyles((theme) => ({
 
 }));
 const headCells = [
-  { id: 'si_no', label: 'SI no.' },
-{ id: 'erp_id', label: 'ERP id'},
-{ id: 'Student name', label: 'Name' },
+  { id: 'si_no', label: 'S.No.' },
+  { id: 'erp_id', label: 'ERP id' },
+  { id: 'Student name', label: 'Name' },
 ];
 function EnhancedTableHead(props) {
   const {
@@ -192,7 +192,6 @@ function EnhancedTableHead(props) {
   const createSortHandler = (property) => (event) => {
     onRequestSort(event, property);
   };
-console.log("props.data",props)
   return (
     <TableHead className='styled__table-head'>
       <TableRow>
@@ -211,8 +210,8 @@ console.log("props.data",props)
             >
               {headCell.label}
               {orderBy === headCell.id ? (
-                <span className={classes.visuallyHidden}>
-                  {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                <span>
+                  {order === 'desc' ? '' : ''}
                 </span>
               ) : null}
             </TableSortLabel>
@@ -224,7 +223,7 @@ console.log("props.data",props)
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
             inputProps={{ 'aria-label': 'select all desserts' }}
-          /> 
+          />
         </TableCell>
       </TableRow>
     </TableHead>
@@ -248,21 +247,20 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark,
+      },
   title: {
     flex: '1 1 100%',
   },
-}));  
+}));
 const EnhancedTableToolbar = (props) => {
   const classes = useToolbarStyles();
   const { numSelected } = props;
-
   return (
     <Toolbar
       className={clsx(classes.root, {
@@ -366,6 +364,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const [state, setState] = useContext(Context);
   const { isEdit, editData } = state;
   const { setIsEdit, setEditData } = setState;
+  const [files, setFiles] = useState([]);
 
 
 
@@ -409,14 +408,14 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     setOrderBy(property);
   };
 
-  
+
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-     
+
       const newSelecteds = completeData.map((n) => n.id);
-    
+
       setSelected(newSelecteds);
-    //   dispatch(listFilteredStudents(newSelecteds));
+      //   dispatch(listFilteredStudents(newSelecteds));
       return;
     }
     // dispatch(listFilteredStudents([]));
@@ -453,13 +452,13 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   };
 
   const isSelected = (name) =>
-    selected.indexOf(name) !== -1 
+    selected.indexOf(name) !== -1
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, props.rows?.length - page * rowsPerPage);
 
   const addIndex = () => {
-     
+
     return usersRow.map((student, index) => ({ ...student, sl: index + 1 }));
   };
 
@@ -467,7 +466,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   //   setFlag(true);
   //   setPageno(newPage + 1);
   //   // displayUsersList();
-  //   // console.log(newPage, 'newpage')
   // };
   const [filterData, setFilterData] = useState({
     branch: '',
@@ -501,9 +499,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       });
     }
   }, [location.pathname]);
-
+  let allGradeIds = []
   const handleBranch = (event, value) => {
-    setFilterData({ ...filterData, branch: [], grade: [], subject: '', chapter: '' });
+    setFilterData({ ...filterData, branch: [], grade: [], subject: '', chapter: '', section: [] });
     setOverviewSynopsis([]);
     if (value) {
       setFilterData({
@@ -512,6 +510,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         grade: '',
         subject: '',
         chapter: '',
+        section: [],
       });
       axiosInstance
         .get(
@@ -522,7 +521,15 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         // axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${location.pathname === "/diary/student"?studentModuleId:teacherModuleId}`)
         .then((result) => {
           if (result.data.status_code === 200) {
-            setGradeDropdown(result.data.data);
+            const gradeData = result?.data?.data || [];
+            for (let i = 0; i < gradeData.length; i++) {
+              allGradeIds.push(gradeData[i].grade_id)
+            }
+            gradeData.unshift({
+              grade__grade_name: 'Select All',
+              grade_id: allGradeIds,
+            });
+            setGradeDropdown(gradeData);
           } else {
             setAlert('error', result.data.message);
             setGradeDropdown([]);
@@ -533,16 +540,18 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         .catch((error) => {
           // setAlert('error', error.message);
           setGradeDropdown([]);
+          setSectionDropdown([])
           // setSubjectDropdown([]);
           // setChapterDropdown([]);
         });
     } else {
       setGradeDropdown([]);
+      setSectionDropdown([]);
       // setSubjectDropdown([]);
       // setChapterDropdown([]);
     }
   };
-
+  let allSectionIds = [];
   const handleGrade = (event, value) => {
     setFilterData({
       ...filterData,
@@ -563,7 +572,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       axiosInstance
         .get(
           `${endpoints.masterManagement.sections}?session_year=${searchAcademicYear?.id
-          }&branch_id=${filterData?.branch[0]?.branch?.id}&grade_id=${value.grade_id
+          }&branch_id=${filterData?.branch[0]?.branch?.id}&grade_id=${value[0]?.grade_id
           }&module_id=${location.pathname === '/lesson-plan/student-view'
             ? studentModuleId
             : teacherModuleId
@@ -571,6 +580,14 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         )
         .then((result) => {
           if (result.data.status_code === 200) {
+            const sectionData = result?.data?.data || [];
+            for (let i = 0; i < sectionData.length; i++) {
+              allSectionIds.push(sectionData[i].section_id)
+            }
+            sectionData.unshift({
+              section__section_name: 'Select All',
+              id: allSectionIds,
+            });
             setSectionDropdown(result.data.data);
           } else {
             setAlert('error', result.data.message);
@@ -741,17 +758,17 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     }
     if (
       filterData.branch.length === 0 ||
-      filterData.section.length === 0 ||
-      filterData.grade.length === 0
+      filterData.grade.length === 0 ||
+      filterData.section.length === 0
     ) {
       return;
     }
     let getUserListUrl;
     getUserListUrl = `${endpoints.generalDairy.studentList}?academic_year=${searchAcademicYear?.id
       }&active=${!isEmail ? '0' : '1'
-      }&bgs_mapping=${filterData?.section?.map(
-        (s) => s.id
-      )}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+    }&bgs_mapping=${filterData?.section[0][0]?.id
+      // .map((s) => s.id)
+    }&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
       }`;
 
     if (selectedSections.length && !selectedSections.includes('All')) {
@@ -777,6 +794,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         const rows = [];
         const selectionRows = [];
         setHeaders([
+          { field: 'si_no', headerName: 'S.No.', width: 500 },
           { field: 'name', headerName: 'Name', width: 500 },
           { field: 'erp_id', headerName: 'ERP Id', width: 500 },
         ]);
@@ -784,14 +802,14 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         result.data.result &&
           res.reverse().forEach((items) => {
             rows.push({
-              id: items.id,
+              si_no: items.id,
               erp_id: items.erp_id,
               name: items.name,
             });
             selectionRows.push({
               id: items.id,
               data: {
-                id: items.id,
+                si_no: items.id,
                 erp_id: items.erp_id,
                 name: items.name,
               },
@@ -942,8 +960,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       }
     }
   };
-  // console.log('the data section', filterData.section[0]?.section_id);
-  // console.log('the data', filterData);
   const handleSubmit = async () => {
     // if (!!filePath.length) {
     //   return setAlert('error', 'Upload attachment!');
@@ -961,7 +977,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
           });
         });
       }
-    
+
       if (selectAll) {
         completeData
           .forEach((items) => {
@@ -1026,11 +1042,11 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   };
   const FileRow = (props) => {
     const { file, onClose, index } = props;
+    setFiles(file);
     return (
       <div className='file_row_image_new'>
         <div className='file_name_container_new'>
-          {file}
-          {/* {index + 1} */}
+          {index + 1}
         </div>
         <div>
           <span onClick={onClose}>
@@ -1176,12 +1192,13 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
             >
               <Autocomplete
+                multiple
                 style={{ width: '100%' }}
                 size='small'
                 onChange={handleGrade}
                 id='grade'
                 className='dropdownIcon'
-                value={filterData?.grade[0] || ''}
+                value={filterData?.grade[0] || []}
                 options={gradeDropdown}
                 getOptionLabel={(option) => option?.grade__grade_name}
                 filterSelectedOptions
@@ -1195,15 +1212,15 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 )}
               />
             </Grid>
-
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
+                multiple
                 style={{ width: '100%' }}
                 size='small'
                 onChange={handleSection}
                 id='grade'
                 className='dropdownIcon'
-                value={filterData?.section[0] || ''}
+                value={filterData?.section[0] || []}
                 options={sectionDropdown}
                 getOptionLabel={(option) => option?.section__section_name}
                 filterSelectedOptions
@@ -1309,74 +1326,74 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 }}
               /> */}
               <Paper className={classes.paper}>
-        <EnhancedTableToolbar numSelected={selected?.length} />
-       
-        <TableContainer>
-          <Table
-            // className={`${classes.table} styled__table`}
-            aria-labelledby='tableTitle'
-            aria-label='enhanced table'
-          >
-            <EnhancedTableHead
-              // classes={classes}
-              numSelected={selected?.length}
-              order={order}
-              orderBy={orderBy}
-              onSelectAllClick={handleSelectAllClick}
-              onRequestSort={handleRequestSort}
-              rowCount={usersRow?.length}
-            />
-            <TableBody className='styled__table-body'>
-              {stableSort(addIndex(usersRow), getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  const isItemSelected = isSelected(row.id);
-                  const labelId = `enhanced-table-checkbox-${index}`;
+                <EnhancedTableToolbar numSelected={selected?.length} />
 
-                  return (
-                    <TableRow
-                      hover
-                      onClick={(event) => handleClick(event, row.id)}
-                      role='checkbox'
-                      aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={row.id}
-                      selected={isItemSelected}
-                    >
-                        
-                  <TableCell align='center'>{row.sl}</TableCell>
-                     <TableCell align='center'>{row.erp_id}</TableCell>
-                    
-                      <TableCell >{row.name}</TableCell>
-                       <TableCell padding='checkbox'>
-                    <Checkbox
-                      checked={isItemSelected}
-                      inputProps={{ 'aria-labelledby': labelId }}
+                <TableContainer>
+                  <Table
+                    // className={`${classes.table} styled__table`}
+                    aria-labelledby='tableTitle'
+                    aria-label='enhanced table'
+                  >
+                    <EnhancedTableHead
+                      // classes={classes}
+                      numSelected={selected?.length}
+                      order={order}
+                      orderBy={orderBy}
+                      onSelectAllClick={handleSelectAllClick}
+                      onRequestSort={handleRequestSort}
+                      rowCount={usersRow?.length}
                     />
-                  </TableCell>
-                      
-                    </TableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
-                <TableRow>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[]}
-          component='div'
-          count={usersRow.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
-        />
-      </Paper>
-              
+                    <TableBody className='styled__table-body'>
+                      {stableSort(addIndex(usersRow), getComparator(order, orderBy))
+                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                        .map((row, index) => {
+                          const isItemSelected = isSelected(row.si_no);
+                          const labelId = `enhanced-table-checkbox-${index}`;
+
+                          return (
+                            <TableRow
+                              hover
+                              onClick={(event) => handleClick(event, row.si_no)}
+                              role='checkbox'
+                              aria-checked={isItemSelected}
+                              tabIndex={-1}
+                              key={row.si_no}
+                              selected={isItemSelected}
+                            >
+                              <TableCell align='center'>{row.sl}</TableCell>
+                              <TableCell align='center'>{row.erp_id}</TableCell>
+
+                              <TableCell >{row.name}</TableCell>
+                              <TableCell padding='checkbox'>
+                                <Checkbox
+                                  checked={isItemSelected}
+
+                                  inputProps={{ 'aria-labelledby': labelId }}
+                                />
+                              </TableCell>
+
+                            </TableRow>
+                          );
+                        })}
+                      {emptyRows > 0 && (
+                        <TableRow>
+                          <TableCell colSpan={6} />
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                <TablePagination
+                  rowsPerPageOptions={[]}
+                  component='div'
+                  count={usersRow.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  onChangePage={handleChangePage}
+                  onChangeRowsPerPage={handleChangeRowsPerPage}
+                />
+              </Paper>
+
             </div>
           ) : (
             <div className='periodDataUnavailable'>
@@ -1518,18 +1535,18 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
             <div>
               <Button
                 variant="contained"
-                style={{ marginLeft: '37px' , marginTop: "20px"}}
+                style={{ marginLeft: '37px', marginTop: "20px" }}
                 onClick={() => history.goBack()}
                 className='labelColor cancelButton'
               >
                 BACK
               </Button>
               <Button
-              variant="contained"
-              color = "primary"
-                style={{ marginLeft: '20px', marginTop: "20px",color : "white" }}
+                variant="contained"
+                color="primary"
+                style={{ marginLeft: '20px', marginTop: "20px", color: "white" }}
                 onClick={state.isEdit ? handleEdited : handleSubmit}
-              
+
               >
                 SUBMIT
               </Button>

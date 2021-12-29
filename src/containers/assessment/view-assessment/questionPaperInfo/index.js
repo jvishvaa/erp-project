@@ -15,12 +15,18 @@ import { AssessmentReviewContext } from '../../assess-attemption/assess-review-c
 import './questionPaperInfo.css';
 import useStyles from './useStyles';
 
-const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
-  const [subQuestionsData, setsubQuestionData] = useState([])
+const QuestionPaperInfo = ({
+  assessmentId,
+  assessmentDate,
+  handleCloseInfo,
+  ...restProps
+}) => {
+  const [subQuestionsData, setsubQuestionData] = useState([]);
   const classes = useStyles();
   const {
     assessmentId: assessmentIdFromContext = null,
     setAssessmentId,
+    setAssessmentDate,
     assessmentResult: {
       data: {
         instructions: testInstructions,
@@ -47,18 +53,17 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
     questionsArray,
   } = useContext(AssessmentReviewContext) || {};
   useEffect(() => {
-    countSubQuestions()
-  }, [questionsArray])
+    countSubQuestions();
+  }, [questionsArray]);
   const countSubQuestions = () => {
     let data = 0;
     questionsArray.map((e) => {
       if (e.sub_question_answer?.length) {
-        data = data + e.sub_question_answer?.length
+        data = data + e.sub_question_answer?.length;
       }
-      setsubQuestionData(data)
-    }
-    )
-  }
+      setsubQuestionData(data);
+    });
+  };
   const testEndTime = new Date(testDate).getTime() + testDuration * 60 * 1000;
 
   const isTestAttempted = !!userResponseObj;
@@ -78,11 +83,14 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
 
   const getTestStatus = () => {
     return new Date(testDate).getTime() <= new Date().getTime();
-  }
+  };
 
   useEffect(() => {
     if (assessmentIdFromContext !== assessmentId) {
       setAssessmentId(assessmentId);
+    }
+    if (assessmentDate) {
+      setAssessmentDate(assessmentDate);
     }
   }, []);
 
@@ -101,7 +109,9 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
             margin: 'auto',
           }}
           onClick={() => {
-            restProps.history.push(`/assessment/${questionPaperId}/${assessmentId}/analysis/`);
+            restProps.history.push(
+              `/assessment/${questionPaperId}/${assessmentId}/analysis/`
+            );
           }}
         >
           Details
@@ -126,11 +136,13 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
             <div className={classes.timeTakenContainer}>
               <div className={classes.timeTakenLabel}>You took</div>
               <div className={classes.timeTaken}>
-                {`${timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.minutes
-                  }`}
+                {`${
+                  timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.minutes
+                }`}
                 <span className={classes.timeUnits}>min</span>
-                {` ${timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.seconds
-                  }`}
+                {` ${
+                  timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.seconds
+                }`}
                 <span className={classes.timeUnits}>secs</span>
               </div>
             </div>
@@ -185,8 +197,9 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
           </h4>
         </div>
         <div className={classes.cardDate}>
-          {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${new Date(testDate).toDateString() || (fetching ? 'Loading...' : '')
-            }`}
+          {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${
+            new Date(testDate).toDateString() || (fetching ? 'Loading...' : '')
+          }`}
         </div>
       </div>
     </>
@@ -233,16 +246,15 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
         {testEndTime < new Date().getTime() ? (
           <Button
             style={{
-
               padding: '0.3rem 1rem',
               borderRadius: '0.6rem',
               fontSize: '0.9rem',
               margin: 'auto',
             }}
             disabled
-          // onClick={() => {
-          //   restProps.history.push(`/assessment/${questionPaperId}/attempt/`);
-          // }}
+            // onClick={() => {
+            //   restProps.history.push(`/assessment/${questionPaperId}/attempt/`);
+            // }}
           >
             Not Attempted
           </Button>
@@ -264,7 +276,9 @@ const QuestionPaperInfo = ({ assessmentId, handleCloseInfo, ...restProps }) => {
               //     localStorage.removeItem(key);
               //   }
               // });
-              restProps.history.push(`/assessment/${questionPaperId}/${assessmentId}/attempt/`);
+              restProps.history.push(
+                `/assessment/${questionPaperId}/${assessmentId}/attempt/`
+              );
             }}
           >
             {getTestStatus() ? 'Take Test' : 'Not Started'}

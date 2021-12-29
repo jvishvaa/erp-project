@@ -22,4 +22,20 @@
       }
     }
   }
+ 
+}
+.tableLevelArea{
+  .MuiDataGrid-colCellTitleContainer{
+    .MuiIconButton-root{
+      display: none;
+    }
+  }
+  .MuiDataGrid-colCell{
+  .MuiDataGrid-menuIcon{
+    display: none;
+  }
+}
+.MuiDataGrid-root , .MuiDataGrid-cellLeft{
+  text-align: center !important;
+}
 }

@@ -51,14 +51,19 @@ export const addQuestionPaperToTest = (data) => ({
   data,
 });
 
-export const fetchQuestionPaperDetails = (id) => async (dispatch) => {
+export const fetchQuestionPaperDetails = (id, data) => async (dispatch) => {
   try {
     dispatch({ type: createAssesmentActions.FETCH_QUESTION_PAPER_DETAILS_REQUEST });
-    const url = endpoints.assessmentErp?.questionPaperViewMore.replace(
+    const url = !data?.is_central ? endpoints.assessmentErp?.questionPaperViewMore.replace(
       '<question-paper-id>',
-      id
-    );
-    const response = await axiosInstance.get(url);
+      id,
+    ) :
+      endpoints.assessmentErp?.questionPaperViewMoreCentral.replace(
+        '<question-paper-id>',
+        id,
+      );
+
+    const response = !data.is_central ? await axiosInstance.get(url) : await axios.get(url, { headers: { 'x-api-key': 'vikash@12345#1231' } });
     if (response.data.status_code === 200) {
       const { sections, questions } = response.data.result;
       const parsedResponse = [];
@@ -72,7 +77,7 @@ export const fetchQuestionPaperDetails = (id) => async (dispatch) => {
         sectionObject.name = sectionName;
         sec[sectionName].forEach((qId) => {
           //iterating question ids and finding corresponding questions
-          const questionFound = questions.find((q) => q.identifier === qId);
+          const questionFound = !data?.is_central ? questions.find((q) => q.identifier === qId) : questions.find((q) => q.id === qId);
           if (questionFound) {
             sectionObject.questions.push(questionFound);
           }
@@ -87,42 +92,4 @@ export const fetchQuestionPaperDetails = (id) => async (dispatch) => {
   } catch (e) {
     dispatch({ type: createAssesmentActions.FETCH_QUESTION_PAPER_DETAILS_FAILURE });
   }
-  // {
-  // id: 1;
-  // questions: [
-  //   {
-  //     id: 1,
-  //     sections: [{ id: 1, questions: [] }],
-  //   },
-  //   {
-  //     id: 1,
-  //     sections: [{ id: 1, questions: [] }],
-  //   },
-  // ];
-  // }
-  //   {
-  //     "question_paper":1,
-  //     "test_id":12384,
-  //     "test_name":"vikash",
-  //     "total_mark":100,
-  //     "test_date":"2020-12-11",
-  //     "test_type":"1",
-  //     "test_duration":30,
-  //     "instructions":"Hii",
-  //     "descriptions":"Hello",
-  //     "test_mark":[
-  //         {
-  //             "question_id":1,
-  //             "question_mark":[1,0],
-  //             "mark_type":"1",
-  //             "child_mark":[{"option1": [1, -1]}]
-  //         },
-  //          {
-  //             "question_id":1,
-  //             "question_mark":[1,0],
-  //             "mark_type":"1",
-  //             "child_mark":[{"option1": [1, -1]}]
-  //         }
-  //     ]
-  // }
 };

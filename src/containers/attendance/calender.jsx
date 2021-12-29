@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { DateRangePicker } from 'react-date-range';
+import { DateRangePicker , Calendar } from 'react-date-range';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
@@ -17,7 +17,6 @@ const RangeCalender = (props) => {
   const [state, setState] = useState([
     { endDate: props.endDate || new Date(), startDate: addDays(new Date(), -6), key: 'selection' },
   ]);
-  console.log(state.startDate, state.endDate, 'wadawda');
   const [stateMonthly, setStateMonthly] = useState([
     {
       startDate: props.startDate || new Date(),
@@ -29,6 +28,8 @@ const RangeCalender = (props) => {
   const [endDate, setEndDate] = useState();
   const [student, setStudent] = useState([]);
 
+
+
   postSeven = state[0].startDate;
   useEffect(() => {
     getAttendance();
@@ -38,7 +39,6 @@ const RangeCalender = (props) => {
     if (props.counter === 2) {
       setStartDate(moment(state[0].startDate).format('YYYY-MM-DD'));
     }
-    console.log(postSeven, 'dcdcdcdccdd');
     // autoEndDate();
     // setState(endDate : postSeven.setDate(postSeven).getDate()+7);
     // setEndDate((moment(state[0].endDate).format("YYYY-MM-DD")));
@@ -56,13 +56,15 @@ const RangeCalender = (props) => {
     getfuture();
   }, []);
 
+  useEffect(() => {
+    passData()
+  },[props.counter])
+
   const getfuture = () => {
     var myCurrentDate = new Date();
     myFutureDate = new Date(myCurrentDate);
     myFutureDate.setDate(myFutureDate.getDate() + 7);
-    console.log(myFutureDate, 'futuree');
     setEndDate(myFutureDate);
-    console.log(moment(state[0].startDate).format('YYYY-MM-DD'), 'starttttttttttttt');
     if (props.counter === 2) {
       setStartDate(moment(state[0].startDate).format('YYYY-MM-DD'));
     }
@@ -96,15 +98,11 @@ const RangeCalender = (props) => {
     if (props.counter === 2) {
       let starttime = moment(state[0].startDate).format('YYYY-MM-DD');
       let endtime = moment(state[0].endDate).format('YYYY-MM-DD');
-      console.log(startDate, 'start');
-      console.log(endtime, 'end');
       props.handlePassData(endtime, startDate, starttime);
     }
     if (props.counter === 3) {
       let starttime = moment(stateMonthly[0].startDate).format('YYYY-MM-DD');
       let endtime = moment(stateMonthly[0].endDate).format('YYYY-MM-DD');
-      console.log(startDate, 'start');
-      console.log(endtime, 'end');
       props.handlePassData(endtime, startDate, starttime);
     }
   };
@@ -152,9 +150,11 @@ const RangeCalender = (props) => {
           moveRangeOnFirstSelection={true}
           ranges={stateMonthly}
         />
-      ) : (
-        <></>
-      )}
+      ) :  (
+        
+       <Calendar minDate={moment().toDate()} maxDate={moment().toDate()}   />
+      )
+    }
     </div>
   );
 };

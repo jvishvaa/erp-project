@@ -31,7 +31,7 @@ const Dashboard = () => {
         ) {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Induction Training') {
-              if (userLevel === 3) {
+              if (userLevel === 11) {
                 axios
                   .post(endpoints.sureLearning.login, {
                     username: username?.erp,
@@ -49,7 +49,7 @@ const Dashboard = () => {
   }, []);
 
   const {
-    welcomeDetails: { userLevel = 4 },
+    welcomeDetails: { userLevel = 5 },
   } = useDashboardContext();
 
   const isMsAPIKey = useSelector((state) => state.commonFilterReducer?.isMsAPIKey);
@@ -61,12 +61,12 @@ const Dashboard = () => {
     switch (userLevel) {
       case 1:
         return <AdminDashboard />;
-      case 2:
+      case 8:
         return <PrincipalDashboard />;
-      case 3:
+      case 11:
         return <TeacherDashboard />;
-      case 4:
-        return <DefaultDashboard />; // to be replaced with student dashboard
+      case 13:
+        return <StudentDashboard />; // to be replaced with student dashboard
       case 5:
         return <DefaultDashboard />;
       default:

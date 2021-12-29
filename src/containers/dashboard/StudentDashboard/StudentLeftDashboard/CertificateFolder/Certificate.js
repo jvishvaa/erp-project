@@ -67,24 +67,18 @@ const Certificate = (props) => {
   };
 
   const getCertificateData = () => {
-    apiRequest('get', endpoints.dashboard.student.certificates)
+    apiRequest('get', endpoints.dashboard.student.certificates, null , null, null, 5000)
       .then((result) => {
-        if (result.data.status_code === 200) {
-          setCertificateArr(result.data.result);
+        if (result?.data?.status_code === 200) {
+          setCertificateArr(result?.data?.result);
         }
       })
       .catch((error) => {
         console.log('error');
       });
   };
-
-  // useEffect(() => {
-  //   getCertificateData();
-  // }, []);
-
   //arrow carousal
   const myArrow = ({ type, onClick, isEdge }) => {
-    // const pointer = type === consts.PREV ? '<' : '>'
     const leftPointer = '<';
     const rightPointer = '>';
 
@@ -95,18 +89,14 @@ const Certificate = (props) => {
       <Button onClick={onClick} disabled={isEdge} className="rightPointer">
         {rightPointer}
       </Button>
-
     return arrows
-
   }
-
   return (
     <React.Fragment>
       <Grid
         container
         spacing={1}
         style={{
-          // border: '2px solid blue',
           justifyContent: 'flex-start',
         }}
       >
@@ -115,16 +105,12 @@ const Certificate = (props) => {
           className={classes.track}
           id='carasol-gridone'
           style={{
-            // border: '2px solid red',
             justifyContent: 'flex-start',
             width: "100%",
           }}
         >
-
           <Carousel renderArrow={myArrow}
-
             breakPoints={breakPoints}
-
           >
             {/* {certificateArr.map((item) => (
               <div className={classes.certi}>
@@ -138,13 +124,13 @@ const Certificate = (props) => {
             <div className={classes.certi}>
               <div style={{ margin: '50px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> CERTIFICATE </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon...</h5>
               </div>
             </div>
             <div className={classes.certi}>
               <div style={{ margin: '50px auto', borderRadius: '5px' }}>
                 <h5 style={{ color: "#349CEB", textAlign: "center" }}> CERTIFICATE </h5>
-                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon</h5>
+                <h5 style={{ color: "black", textAlign: "center" }}>Coming soon...</h5>
               </div>
             </div>
             <div className={classes.certi}>
@@ -154,7 +140,6 @@ const Certificate = (props) => {
               </div>
             </div>
           </Carousel>
-          {/* </Slider> */}
         </Grid>
       </Grid>
     </React.Fragment>

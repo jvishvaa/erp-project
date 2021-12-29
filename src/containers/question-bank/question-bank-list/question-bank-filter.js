@@ -325,7 +325,7 @@ const QuestionBankFilters = ({
       setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
       axiosInstance
         .get(
-          `${endpoints.questionBank.subjectList}?session_year=${filterData?.branch?.id}&grade=${value?.grade_id}&module_id=${moduleId}`
+          `${endpoints.lessonReport.subjects}?session_year=${filterData?.year?.id}&branch=${filterData?.branch?.id}&grade=${value?.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result?.data?.status_code === 200) {
