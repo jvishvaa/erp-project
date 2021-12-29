@@ -428,10 +428,6 @@ userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
               disabled={
                 !this.state.concessionTypeId ||
                 !this.state.concession_name ||
-                !this.state.automatic_manual_fixed ||
-                !this.state.adjustmentOrder ||
-                !this.state.amount ||
-                !this.state.concession_percentage ||
                 this.state.branchIds.length === 0
               }
             >
