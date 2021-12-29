@@ -584,18 +584,18 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
           }`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
+          if (result?.data?.status_code === 200) {
             const sectionData = result?.data?.data || [];
             for (let i = 0; i < sectionData.length; i++) {
-              allSectionIds.push(sectionData[i].section_id)
+              allSectionIds.push(sectionData[i]?.id)
             }
             sectionData.unshift({
               section__section_name: 'Select All',
               id: allSectionIds,
             });
-            setSectionDropdown(result.data.data);
+            setSectionDropdown(result?.data?.data);
           } else {
-            setAlert('error', result.data.message);
+            setAlert('error', result?.data?.message);
             setSectionDropdown([]);
           }
         })
@@ -778,9 +778,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
 
     if (selectedSections.length && !selectedSections.includes('All')) {
       sectionList
-        .filter((item) => selectedSections.includes(item.section__section_name))
+        .filter((item) => selectedSections.includes(item?.section__section_name))
         .forEach((items) => {
-          sectionsId.push(items.section_id);
+          sectionsId.push(items?.id);
         });
     }
 

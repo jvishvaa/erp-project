@@ -138,7 +138,7 @@ class PrincipalBlog extends Component {
     }))
     let urlPath = '';
     if (selectedSection) {
-      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}&session_year=${this.props.selectedAcademicYear?.id}&grade_id=${selectedGrade.grade_id}&session_year=${this.props.selectedAcademicYear?.id}`;
+      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}&session_year=${this.props.selectedAcademicYear?.id}&grade_id=${selectedGrade.grade_id}`;
     } else if (selectedGrade) {
       urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&grade_id=${selectedGrade.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}&session_year=${this.props.selectedAcademicYear?.id}`;
     } else if (selectedBranch) {

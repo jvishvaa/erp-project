@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useContext, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -30,6 +31,7 @@ import EditAcademicYear from './edit-academic-year';
 import '../master-management.css';
 import Loading from '../../../components/loader/loader';
 import AcademicYearCard from './academic-year-card';
+import { fetchAcademicYearList } from '../../../redux/actions/common-actions'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -97,6 +99,7 @@ const AcademicYearTable = () => {
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [defaultYear, setDefaultYear] = useState({ isDefault: false, id: '' });
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -157,6 +160,7 @@ const AcademicYearTable = () => {
             'success',
             `Updated Current Academic Year`
           );
+          dispatch(fetchAcademicYearList());
         } else {
           setLoading(false);
           setAlert('error', 'something went wrong');
