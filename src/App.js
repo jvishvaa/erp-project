@@ -355,10 +355,12 @@ import TeacherAttendanceVerify from 'containers/teacherattendance/teacherattenda
 import Observation from 'containers/observation/observation';
 import Observationarea from 'containers/observation/observation-area';
 import Observationreport from 'containers/observation/observation-report';
+import UserLevelTable from 'containers/user-management/User-Level/tableUserLevel';
+import ERPSystemConfig from 'containers/master-management/erp-system-config';
 function App({ alert, isMsAPI }) {
-  // useEffect(() => {
+  useEffect(() => {
   isMsAPI();
-  // }, []);
+  }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
   return (
     // <ErrorBoundary404 HomeButton={false}>
@@ -641,6 +643,9 @@ function App({ alert, isMsAPI }) {
                           </Route>
                           <Route exact path='/master-management/event-category'>
                             {({ match }) => <EventCategory match={match} />}
+                          </Route>
+                          <Route exact path='/master-management/system-config'>
+                            {({ match }) => <ERPSystemConfig match={match} />}
                           </Route>
                           <Route exact path='/subject/grade'>
                             {({ match }) => <ListandFilter match={match} />}
@@ -1678,7 +1683,9 @@ function App({ alert, isMsAPI }) {
                             {({ match }) => <StudentCountReport match={match} />}
                           </Route>
 
-
+                          <Route path='/user-level-table'>
+                            {({ match }) => <UserLevelTable match={match} />}
+                          </Route>
 
                           <Route exact path='/online-class/connection-pod'>
                             {({ match }) => <ConnectionPod match={match} />}

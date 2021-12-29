@@ -11,6 +11,7 @@ import {
   TextareaAutosize,
   makeStyles
 } from '@material-ui/core';
+import { useSelector } from 'react-redux';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
@@ -25,26 +26,25 @@ import { Context } from '../context/CircularStore';
 import Loading from '../../../components/loader/loader';
 import classWiseSms from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/classWiseSms';
 
-
-const useStyles = makeStyles((theme)=>({
-  attchmentbutton:{
+const useStyles = makeStyles((theme) => ({
+  attchmentbutton: {
     textTransform: "none",
     background: "white",
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: "10px",
     marginLeft: "1.75rem",
   },
-  descriptionBorder:{
+  descriptionBorder: {
     border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: "10px",
     marginLeft: "2.3125rem",
     marginRight: "2.3125rem",
     opacity: 1,
   }
- 
+
 }))
-let gradeIds= [];
-let sectionIds= [];
+let gradeIds = [];
+let sectionIds = [];
 const CraeteCircular = () => {
   const classes = useStyles
   const { setAlert } = useContext(AlertNotificationContext);
@@ -55,23 +55,25 @@ const CraeteCircular = () => {
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
   const history = useHistory();
+  // const selectedAcademicYear = useSelector(
+  //   (state) => state.commonFilterReducer?.selectedYear
+  // );
   const [isFilter, setIsFilter] = useState(true);
 
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [sectionDropdown, setSectionDropdown] = useState([]);
-
-  const [state] = useContext(Context);
-  const { editData } = state;
-
+  const [files, setFiles] = useState([])
+  const [state, setState] = useContext(Context);
+  const { setIsEdit, setEditData } = setState;
+  const { isEdit, editData } = state;
   const [title, setTitle] = useState(editData.circular_name || '');
   const [description, setDescription] = useState(editData.description || '');
   const [filePath, setFilePath] = useState([]);
   const [filterEvent, setFilterEvent] = useState(false);
 
   const circularRole = [{ name: 'Student Circular', value: 'Student Circular' }];
-
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: '',
@@ -138,7 +140,6 @@ const CraeteCircular = () => {
         grade: '',
         section: '',
       });
-      //.get(`${endpoints.masterManagement.branchList}?session_year=${value.id}&module_id=${moduleId}`)
       axiosInstance
         .get(
           `${endpoints.communication.branches}?session_year=${value.id}&module_id=${moduleId}`
@@ -227,8 +228,6 @@ const CraeteCircular = () => {
           : value;
       const ids = value.map((el) => el) || [];
       gradeIds = value.map((el) => el?.grade_id) || [];
-      console.log("ids",ids)
-
       setFilterData({
         ...filterData,
         grade: ids,
@@ -236,7 +235,6 @@ const CraeteCircular = () => {
         chapter: '',
         section: '',
       });
-      
       axiosInstance
         .get(
           `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.branch?.id}&session_year=${filterData.year.id}&grade_id=${gradeIds}&module_id=${moduleId}`
@@ -244,8 +242,8 @@ const CraeteCircular = () => {
         .then((result) => {
           if (result.data.status_code === 200) {
             const gradeData = result?.data?.data || [];
-              gradeData.unshift({
-              section__section_name: "Select All",section_id: "all"
+            gradeData.unshift({
+              section__section_name: "Select All", section_id: "all"
             });
             setSectionDropdown(gradeData);
           } else {
@@ -261,6 +259,9 @@ const CraeteCircular = () => {
       setSectionDropdown([]);
     }
   };
+  useEffect(() => {
+    handleAcademicYear();
+  }, [])
 
   function handleTitle(e) {
     if (e.target.value.split(' ').length <= 30) {
@@ -277,18 +278,32 @@ const CraeteCircular = () => {
       setLoading(true);
       const data = event.target.files[0];
       const fd = new FormData();
-      fd.append('file', event.target.files[0]);
-      fd.append(
-        'branch',
-        filterData?.branch?.branch && filterData?.branch?.branch?.branch_name
-      );
+      fd.append('file', data);
+      if(filterData?.branch?.branch_name){
+        fd.append(
+          'branch',
+        filterData?.branch?.branch_name 
+        );
+        }
+        else{
+          fd.append(
+            'branch',
+            filterData?.branch?.branch?.branch_name 
+          );
+        }
+
       // fd.append('grade',filterData.grade[0].id)
       // fd.append('section',filterData.section.id)
       axiosInstance.post(`${endpoints.circular.fileUpload}`, fd).then((result) => {
         if (result.data.status_code === 200) {
-          setAlert('success', result.data.message);
           setLoading(false);
-          setFilePath([...filePath, result.data.result]);
+          if (editData?.media) {
+            setFilePath([...filePath, result.data.result]);
+          }
+          else {
+            setFilePath([...filePath, result.data.result]);
+          }
+          setAlert('success', result.data.message);
         } else {
           setAlert('error', result.data.message);
         }
@@ -321,6 +336,7 @@ const CraeteCircular = () => {
 
   const FileRow = (props) => {
     const { file, onClose, index } = props;
+    setFiles(file);
     return (
       <div className='file_row_image'>
         <div className='file_name_container'>File {index + 1}</div>
@@ -346,30 +362,9 @@ const CraeteCircular = () => {
     );
   };
 
-  const removeFileHandler = (i, file) => {
-    const list = [...filePath];
-    setLoading(true);
-    axiosInstance
-      .post(`${endpoints.circular.deleteFile}`, {
-        file_name: `dev/circular_files/${filterData?.branch?.branch?.branch_name}/${file}`,
-        circular_id:`${circularKey}`,
-      })
-      .then((result) => {
-        if (result.data.status_code === 204) {
-          list.splice(i, 1);
-          setFilePath(list);
-          setAlert('success', result.data.message);
-          setLoading(false);
-        } else {
-          setAlert('error', result.data.message);
-          setLoading(false);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-        setLoading(false);
-      });
-  };
+  useEffect(()=> {
+    setState({ isEdit: false, editData: [] });
+  },[])
 
   useEffect(() => {
     if (moduleId) {
@@ -379,7 +374,7 @@ const CraeteCircular = () => {
           if (result.data.status_code === 200) {
             setAcademicYearDropdown(result?.data?.data);
             // const defaultValue = result.data?.data?.[0];
-            // handleAcademicYear({}, defaultValue);
+            // handleAcademicYear({}, selectedAcademicYear);
           } else {
             setAlert('error', result.data.message);
           }
@@ -389,6 +384,60 @@ const CraeteCircular = () => {
         });
     }
   }, [moduleId]);
+  const removeFileHandler = (i, file) => {
+    // delete editData.documents[
+    if (editData.media) {
+      let list = [...filePath];
+      setLoading(true);
+      axiosInstance
+        .post(`${endpoints.circular.deleteFile}`, {
+          file_name: `${file}`,
+          circular_id: `${editData.id}`,
+        }).then((result) => {
+          if (result.data.status_code === 204) {
+            list.splice(i, 1);
+            setFilePath(list);
+            setAlert('success', result.data.message);
+            setLoading(false);
+          }
+        })
+        .catch((error) => {
+          // setAlert('error', error.message);
+          setLoading(false);
+        });
+    }
+    if (!editData.media) {
+      const list = [...filePath];
+      axiosInstance
+        .post(`${endpoints.circular.deleteFile}`, {
+          file_name: `${file}`,
+        })
+        .then((result) => {
+          if (result.data.status_code === 204) {
+            list.splice(i, 1);
+            setFilePath(list);
+            setAlert('success', result.data.message);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        })
+        .finally(() =>
+          setLoading(false)
+        );
+    };
+  }
+  let mediaCount = 1;
+  useEffect(() => {
+    if (editData?.media) {
+      if (mediaCount) {
+        setFilePath(editData.media);
+        mediaCount = 0;
+      }
+    }
+  }, [editData]);
 
   const handleSubmit = () => {
     const gradesId = [];
@@ -423,100 +472,56 @@ const CraeteCircular = () => {
           setFilePath([]);
           setFilterEvent(false);
           setAlert('success', result?.data?.message);
-          history.goBack();
+          history.push('/teacher-circular');
         } else {
           setAlert('error', result?.data?.message || `${result?.data?.description}`);
+          setState({ isEdit: false, editData: [] });
         }
       });
   };
-
+  const handleBack = () => {
+    history.push('/teacher-circular')
+    setState({ isEdit: false, editData: [] });
+  };
   const handleEdited = () => {
-    // if (!filterData.year) {
-    //   return setAlert('warning', 'Select Academic Year');
-    // }
-    // if (!filterData.branch) {
-    //   return setAlert('warning', 'Select Branch');
-    // }
-    // if (!filterData.role) {
-    //   return setAlert('warning', 'Select Role');
-    // }
-    // if (!filterData.grade) {
-    //   return setAlert('warning', 'Select Grade');
-    // }
-    // if (!filterData.section) {
-    //   return setAlert('warning', 'Select Section');
-    // }
-    if (filePath.length > 0) {
-      axiosInstance
-        .put(`${endpoints.circular.updateCircular}`, {
-          circular_id: circularKey,
-          circular_name: title,
-          description: description,
-          module_name: filterData.role.value,
-          media: filePath,
-          Branch: [filterData?.branch?.id],
-          // grades: [filterData?.grade?.id],
-          // sections: [filterData?.section?.section_id || filterData?.section?.id],
-          grades: [filterData?.grade[0]?.id],
-          sections: [filterData?.section[0]?.id],
-          academic_year: filterData?.year?.id,
-        })
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setTitle('');
-            setDescription('');
-            setFilterData({
-              branch: '',
-              grade: '',
-              section: '',
-              role: '',
-            });
-            setFilePath([]);
-            setFilterEvent(false);
-            setAlert('success', result?.data?.message);
-            history.push('/teacher-circular');
-          } else {
-            setAlert('error', result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error?.data?.message);
-        });
+    let payload = {
+      circular_id: circularKey,
+      circular_name: title,
+      description: description,
+      module_name: filterData.role.value,
+      Branch: [filterData?.branch?.id],
+      grades: [filterData?.grade[0]?.id],
+      sections: [filterData?.section[0]?.id],
+      academic_year: filterData?.year?.id,
     }
-    if (filePath.length === 0) {
-      axiosInstance
-        .put(`${endpoints.circular.updateCircular}`, {
-          circular_id: circularKey,
-          circular_name: title,
-          description: description,
-          module_name: filterData.role.value,
-          Branch: [filterData?.branch?.id],
-          grades: [filterData?.grade[0]?.id],
-          sections: [filterData?.section[0]?.id],
-          academic_year: filterData?.year?.id,
-        })
-        .then((result) => {
-          if (result.data.status_code === 200) {
-            setTitle('');
-            setDescription('');
-            setFilterData({
-              branch: '',
-              grade: '',
-              section: '',
-              role: '',
-            });
-            setFilePath([]);
-            setFilterEvent(false);
-            setAlert('success', result?.data?.message);
-            history.push('/teacher-circular');
-          } else {
-            setAlert('error', result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error?.data?.message);
-        });
+    if (filePath?.length) {
+      payload['media'] = filePath
     }
+    axiosInstance
+      .put(`${endpoints.circular.updateCircular}`, payload
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setTitle('');
+          setDescription('');
+          setFilterData({
+            branch: '',
+            grade: '',
+            section: '',
+            role: '',
+          });
+          setFilePath([]);
+          setFilterEvent(false);
+          setAlert('success', result?.data?.message);
+          history.push('/teacher-circular');
+        } else {
+          setAlert('error', result?.data?.message);
+          setState({ isEdit: false, editData: [] });
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.data?.message);
+      });
   };
 
   //////EDIT USE-EFFECT
@@ -548,7 +553,7 @@ const CraeteCircular = () => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
-          <CommonBreadcrumbs componentName='Circulars' childComponentName='Create New' />
+          <CommonBreadcrumbs componentName='Circular' childComponentName={circularKey ? 'Edit' : 'Create New'} />
         </BreadcrumbToggler>
         {isFilter ? (
           <Grid
@@ -731,129 +736,131 @@ const CraeteCircular = () => {
               style={{ width: widerWidth, margin: wider }}
             >
               <Grid item xs={12} sm={12} >
-           
-            <div className={classes.descriptionBorder}>
-              <Grid
-                container
-                spacing={isMobile ? 3 : 5}
-                style={{ width: widerWidth, margin: wider }}
-              >
-                <Grid item xs={12}>
-                  <TextField
-                    id='outlined-multiline-static'
-                    label='Title'
-                    multiline
-                    rows='1'
-                    color='secondary'
-                    style={{ width: '100%', marginTop: '1.25rem' }}
-                    value={title}
-                    variant='outlined'
-                    // onChange={(e) => setTitle(e.target.value)}
-                    onChange={(e) => handleTitle(e)}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    id='outlined-multiline-static'
-                    label='Description'
-                    multiline
-                    rows='6'
-                    color='secondary'
-                    style={{ width: '100%' }}
-                    value={description}
-                    variant='outlined'
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                    <div className='attchmentContainer'>
-                      <div style={{ display: 'flex' }}>
-                        {filePath?.length > 0
-                          ? filePath?.map((file, i) => (
-                            <FileRow
-                              key={`create_circular_${i}`}
-                              file={file}
-                              index={i}
-                              onClose={() => removeFileHandler(i, file)}
-                            />
-                          ))
-                          : null}
-                      </div>
 
-                      <div className='attachmentButton_circular'>
-                        <Button
-                          startIcon={
-                            <SvgIcon
-                              component={() => (
-                                <img
-                                  style={{ height: '20px', width: '20px' }}
-                                  src={attachmenticon}
-                                />
-                              )}
-                            />
-                          }
-                          className={classes.attchmentbutton}
-                          title='Attach Supporting File'
-                          variant='contained'
-                          size='medium'
-                          disableRipple
-                          disableElevation
-                          disableFocusRipple
-                          disableTouchRipple
-                          component='label'
-                          style={{ textTransform: 'none' }}
-                        >
-                          <input
-                            type='file'
-                            accept='.png, .jpg, .jpeg,.mp3,.mp4,.pdf'
-                            style={{ display: 'none' }}
-                            id='raised-button-file'
-                            accept='image/*'
-                            onChange={handleImageChange}
-                          />
-                          Add Document
-                        </Button>
-                        <small
-                          style={{
-                            color: '#014b7e',
-                            fontSize: '16px',
-                            marginLeft: '28px',
-                            marginTop: '8px',
-                          }}
-                        >
-                          {' '}
-                          Accepted files: [jpeg,jpg,png,mp3,mp4,pdf]
-                        </small>
-                      </div>
-
-                    </div>
-                  </Grid>
-              </Grid>
-              </div>
+                <div className={classes.descriptionBorder}>
                   <Grid
                     container
                     spacing={isMobile ? 3 : 5}
                     style={{ width: widerWidth, margin: wider }}
                   >
-                
                     <Grid item xs={12}>
-                      {circularKey && (
-                        <Button className='submit_button' onClick={() => history.goBack()}>
-                          BACK
-                        </Button>
-                      )}
+                      <TextField
+                        id='outlined-multiline-static'
+                        label='Title'
+                        multiline
+                        rows='1'
+                        color='secondary'
+                        style={{ width: '100%', marginTop: '1.25rem' }}
+                        value={title}
+                        variant='outlined'
+                        // onChange={(e) => setTitle(e.target.value)}
+                        onChange={(e) => handleTitle(e)}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        id='outlined-multiline-static'
+                        label='Description'
+                        multiline
+                        rows='6'
+                        color='secondary'
+                        style={{ width: '100%' }}
+                        value={description}
+                        variant='outlined'
+                        onChange={(e) => setDescription(e.target.value)}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <div className='attchmentContainer'>
+                        <div style={{ display: 'flex' }}>
+                          {filePath?.length >= 0
+                            && filePath?.map((file, i) => (
+                              <FileRow
+                                key={`create_circular_${i}`}
+                                file={file}
+                                index={i}
+                                onClose={() => removeFileHandler(i, file)}
+                              />
+                            ))
+                          }
+                        </div>
+
+                        <div className='attachmentButton_circular'>
+                          <Button
+                            startIcon={
+                              <SvgIcon
+                                component={() => (
+                                  <img
+                                    style={{ height: '20px', width: '20px' }}
+                                    src={attachmenticon}
+                                  />
+                                )}
+                              />
+                            }
+                            className={classes.attchmentbutton}
+                            title='Attach Supporting File'
+                            variant='contained'
+                            size='medium'
+                            disableRipple
+                            disableElevation
+                            disableFocusRipple
+                            disableTouchRipple
+                            component='label'
+                            style={{ textTransform: 'none' }}
+                          >
+                            <input
+                              type='file'
+                              accept='.png, .jpg, .jpeg,.mp3,.mp4,.pdf'
+                              style={{ display: 'none' }}
+                              id='raised-button-file'
+                              accept='image/*'
+                              onChange={handleImageChange}
+                            />
+                            Add Document
+                          </Button>
+                          <small
+                            style={{
+                              color: '#014b7e',
+                              fontSize: '16px',
+                              marginLeft: '28px',
+                              marginTop: '8px',
+                            }}
+                          >
+                            {' '}
+                            Accepted files: [jpeg,jpg,png,mp3,mp4,pdf]
+                          </small>
+                        </div>
+
+                      </div>
+                    </Grid>
+                  </Grid>
+                </div>
+                <Grid
+                  container
+                  spacing={isMobile ? 3 : 5}
+                  style={{ width: widerWidth, margin: wider }}
+                >
+
+                  <Grid item xs={12}>
+                    <span style={{ marginRight: '20px' }}>
+                      <Button className='submit_button' onClick={handleBack}>
+                        BACK
+                      </Button>
+                    </span>
+                    <span>
                       <Button
                         onClick={circularKey ? handleEdited : handleSubmit}
                         className='submit_button'
                         style={{ background: '#ff6b6b' }}
                       >
-                        SUBMIT
+                        {circularKey ? 'UPDATE' : 'SUBMIT'}
                       </Button>
+                    </span>
 
-                    </Grid>
                   </Grid>
+                </Grid>
 
-            </Grid>
+              </Grid>
             </Grid>
           </div>
         ) : null}

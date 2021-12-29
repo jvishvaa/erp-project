@@ -1,7 +1,7 @@
 import ENVCONFIG from './config';
 
 const {
-  apiGateway: { baseURLCentral , baseUdaan },
+  apiGateway: { baseURLCentral, baseUdaan },
   s3: { BUCKET: s3BUCKET, ERP_BUCKET },
 } = ENVCONFIG;
 
@@ -34,11 +34,10 @@ export default {
     markAttendance: '/academic/bulk_create_attendance/',
     students: '/academic/get_student_list/',
     getHoliday: '/academic/holiday/',
-    getStudentCountReportData:'/erp_user/grade-section-wise-student-count/',
-    teacherAttendanceData:'/erp_user/erpuser-attendance-erp/',
-    teacherAttendanceSent:'/erp_user/erpuser-attendance/',
-    getTeacherAttendanceData:'/erp_user/erpuser-attendance-monthly-reports/',
-
+    teacherAttendanceData: '/erp_user/erpuser-attendance-erp/',
+    teacherAttendanceSent: '/erp_user/erpuser-attendance/',
+    getTeacherAttendanceData: '/erp_user/erpuser-attendance-monthly-reports/',
+    getStudentCountReportData: '/erp_user/grade-section-wise-student-count/'
   },
   appBar: {
     schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,
@@ -50,6 +49,9 @@ export default {
     bulkUpload: '/erp_user/uploaded-users-status/',
     academicYear: '/erp_user/list-academic_year/',
     subjectName: '/erp_user/list-academic_year-subjectmapping/',
+    userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
+    getUserLevel: '/erp_user/level_list/',
+    assignLevel: '/erp_user/level_create/',
   },
   timeTable: {
     tableData: '/academic/time_table/',
@@ -138,6 +140,7 @@ export default {
     editChapter: '/academic/',
     createTopic: '/assessment/topics/',
     updateTopic: '/assessment/',
+    erpSystemConfig: '/erp_user/erp_system_config/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -219,6 +222,7 @@ export default {
     // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
     // s3: ERP_BUCKET,
     s3: 'https://d2r9gkgplfhsr2.cloudfront.net/',
+    s3erp: 'https://d3ka3pry54wyko.cloudfront.net/',
     lessonFeedback: `${baseURLCentral}/lesson_plan/lessonplan-feedback/`
   },
   aol: {
@@ -400,6 +404,7 @@ export default {
     listAssessment: '/assessment/test/',
     testList: '/assessment/test-list/',
     questionPaperViewMore: `/assessment/<question-paper-id>/qp-questions-list/`,
+    questionPaperViewMoreCentral: `${baseURLCentral}/assessment/<question-paper-id>/qp-questions-list/`,
     publishQuestionPaper: `/assessment/<question-paper-id>/update-status-question-paper/`,
     createQuestionPaper: `/assessment/question-paper/`,
     editQuestionPaper: '/assessment/<question-paper-id>/update-question-paper/',
@@ -415,6 +420,7 @@ export default {
   assessment: {
     assessmentResultAnalysis: `/assessment/student-reports/`,
     questionPaperList: `/assessment/assessment-list/`,
+    retestQuestionPaperList: `/assessment/retake-assessment-list/`,
     viewQuestionList: `${baseURLCentral}/assessment/3/qp-questions-list/`,
     userTests: `/assessment/user-tests/`, // ?user=20&subject=1,
     userTestComparisions: `/assessment/student-test-comparison/`, // ?test_1=7&user=20&test_2=10
@@ -437,16 +443,26 @@ export default {
     reportDownloadClassAverage: `/assessment/download-report-class-average/`,
     reportDownloadTopicStudentAverage: `/assessment/download-report-topic-student-average/`,
     reportCardData: '/assessment/generate-report/',
-    reportPdf:'/assessment/download-report-pdf/',
-    weeklyStudentReport:'/assessment/download-report-student-report/',
+    reportPdf: '/assessment/download-report-pdf/',
+    weeklyStudentReport: '/assessment/download-report-student-report/',
     reportConsolidated: '/assessment/download-report-consolidate/',
     individualQuizTeacherReport:'/assessment/download-report-individual-teacher/',
     weeklyTeacherReportEachGrade:'/assessment/download-report-teacher-grade-section-wise/',
-    weeklyStudentReport:'/assessment/download-report-student-report/',
     individualStudentReport:'/assessment/individual-student-report/',
     weeklyQuizPerformance:'/assessment/weekly-quiz-performance-report/',
-    downloadReportTestReport :'/assessment/download-report-test-report/',
-
+    assessmentRetest: '/assessment/retake-assessment-permission/',
+    downloadReportTestReport: '/assessment/download-report-test-report/',
+  },
+  observation: {
+    observationGet: '/teacher_observation/observation-area/',
+    observationTableData: '/teacher_observation/observation-report/',
+  },
+  observationName: {
+    observationGet: '/teacher_observation/observation/',
+    observationArea: '/teacher_observation/observation-area/',
+    observationReport: '/teacher_observation/observation-report/',
+    observationData: '/teacher_observation/observation-data/',
+    observationTeacherDetail: '/teacher_observation/observation-report-get/'
   },
   publish: {
     ebook: `erp_user/publication/`,
@@ -525,15 +541,15 @@ export default {
     s3: 'https://d3ka3pry54wyko.cloudfront.net',
 
   },
-  observation: {  
-    observationGet:'/teacher_observation/observation-area/',
+  observation: {
+    observationGet: '/teacher_observation/observation-area/',
   },
 
-  observationName:{
+  observationName: {
     observationGet: '/teacher_observation/observation/',
     observationArea: '/teacher_observation/observation-area/',
     observationReport: '/teacher_observation/observation-report/',
-    observationData:'/teacher_observation/observation-data/',
+    observationData: '/teacher_observation/observation-data/',
   },
 
   homeworkReport: {
@@ -593,7 +609,7 @@ export default {
       downloadHomeworkReport: '/api/reports/v1/homework-download/',
       downloadBlogReport: '/api/reports/v1/blogs-download/',
       downloadDiscussionReport: '/api/reports/v1/discussion-forum-download/',
-      downloadRefferalReport:'/api/reports/v1/referral-download-stats/',
+      downloadRefferalReport: '/api/reports/v1/referral-download-stats/',
       listAttendanceReport: '/api/reports/v1/attendance-stats/',
       listClassworkReport: '/api/reports/v1/classwork-stats/',
       listHomeworkReport: '/api/reports/v1/homework-stats/',
@@ -609,7 +625,7 @@ export default {
   },
 
   referral: {
-    studentRefer:  '/erp_user/student_refferal/',
+    studentRefer: '/erp_user/student_refferal/',
   },
 
   connectionPod: {

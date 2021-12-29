@@ -6,7 +6,8 @@ const local = {
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   apiGateway: {
-    baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
+    baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
+    baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
@@ -103,7 +104,7 @@ const DEV = 'DEV';
 const QA = 'QA';
 const STAGE = 'STAGE';
 const env = { [PROD]: prod, [DEV]: dev, [QA]: qa, [STAGE]: stage };
-const config = env[process.env.REACT_APP_UI_ENV] || local;
+const config = env[process.env.REACT_APP_UI_ENV] || qa;
 
 export default {
   // Add common config values here

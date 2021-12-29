@@ -60,6 +60,7 @@ const CardComments = (props) => {
             .then((res) => {
                 console.log(res);
                 setNewComment('');
+                props.setCommentCount(props.commentCount + 1)
                 setShouldRerender(true);
             })
             .catch((error) => {

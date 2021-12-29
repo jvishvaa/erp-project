@@ -15,6 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import './create-class.scss';
+import Button from '@material-ui/core/Button';
 import { CreateclassContext } from './create-class-context/create-class-state';
 
 function descendingComparator(a, b, orderBy) {
@@ -192,7 +193,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function FilterStudents() {
+export default function FilterStudents(props) {
   const classes = useStyles();
   const [order, setOrder] = useState('');
   const [orderBy, setOrderBy] = useState('');
@@ -268,8 +269,21 @@ export default function FilterStudents() {
     <div className={classes.root}>
       <Paper className={classes.paper}>
         <EnhancedTableToolbar numSelected={selected?.length} />
-        <div style={{color:'#014b7e',fontWeight:'600',fontSize:'16px',margin:'10px'}}><span
-        style={{color:'#fe6b6b',fontSize:'18px'}} >**</span>Note:&nbsp;<span style={{fontWeight:'500'}}>Select from the following list of students to <span>{classTypeId===0?'not permit':'permit'}</span> them to attend the class.</span></div>
+        <div
+          style={{
+            color: '#014b7e',
+            fontWeight: '600',
+            fontSize: '16px',
+            margin: '10px',
+          }}
+        >
+          <span style={{ color: '#fe6b6b', fontSize: '18px' }}>**</span>Note:&nbsp;
+          <span style={{ fontWeight: '500' }}>
+            Select from the following list of students to{' '}
+            <span>{classTypeId === 0 ? 'not permit' : 'permit'}</span> them to attend the
+            class.
+          </span>
+        </div>
         <TableContainer>
           <Table
             className={`${classes.table} styled__table`}
@@ -331,6 +345,9 @@ export default function FilterStudents() {
           onChangePage={handleChangePage}
           onChangeRowsPerPage={handleChangeRowsPerPage}
         />
+        <Button style={{ backgroundColor: '#349ceb' }} onClick={props.onClose}>
+          Close
+        </Button>
       </Paper>
     </div>
   );

@@ -386,6 +386,7 @@ const Attend = () => {
       startDate: startDate,
       endDate: endDate,
       counter: history?.location?.state?.payload?.counter,
+      erp: id
     };
     history.push({
       pathname: '/teacher-view/attendance',
@@ -399,7 +400,9 @@ const Attend = () => {
   return (
     <Layout>
       <div className='profile_breadcrumb_wrapper'>
-        <CommonBreadcrumbs componentName='Overall Attendance' 
+        <CommonBreadcrumbs 
+          componentName='Calender & Attendance'
+          childComponentName='Overall Attendance'
             isAcademicYearVisible={true}
         />
       </div>

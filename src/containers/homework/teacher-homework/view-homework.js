@@ -13,7 +13,11 @@ import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import moment from 'moment';
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 
@@ -30,6 +34,8 @@ import {
   IconButton,
   Typography,
   Divider,
+  Popover,
+  withStyles
 } from '@material-ui/core';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {
@@ -99,8 +105,16 @@ const useStyles = makeStyles((theme) => ({
       width: "90% !important",
       height: "auto !important",
     }
+  },
+  instructionText:{
+    display : 'flex',
+    border:`1px solid ${theme.palette.primary.main}`,
+    borderRadius: '5px',
+    height: '38px',
+    alignItems : 'center'
   }
 }));
+
 
 const ViewHomework = withRouter(
   ({
@@ -168,6 +182,17 @@ const ViewHomework = withRouter(
       getHomeworkDetailsById(homeworkId);
     }, []);
 
+    const [anchorEl, setAnchorEl] = React.useState(null);
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
+    const handleClose = () => {
+      setAnchorEl(null);
+    };
+    const handleClick = (event) => {
+      setAnchorEl(true);
+     };
+
     return (
       <div className='view-homework-container create_group_filter_container'>
         <Grid container spacing={2} className='message_log_container'>
@@ -199,6 +224,15 @@ const ViewHomework = withRouter(
           </Grid>
           <Grid item xs={12} md={10}>
             <div className={classes.homeworkSubmitwrapper}>
+            <div className = {classes.instructionText}>
+              {
+                selectedHomeworkDetails?.description?<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>
+                  Instructions : {selectedHomeworkDetails?.description}</span>:
+                  <span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>
+                    No Instruction
+                    </span>
+              }
+          </div>
               <div className='homework_block_wrapper home-work-date-subject-name no-border'>
                 <div className={` ${classes.homeworkblock} homework_submit_tag`}>
                   {/* Homework - {viewHomework?.subjectName?.split('_')[2]},{' '} */}
@@ -242,13 +276,37 @@ const ViewHomework = withRouter(
                 <Button
                   variant="contained"
                   color="secondary"
-                  onClick={handleDelete}
+                  onClick={handleClick}
                   style={{ backgroundColor: 'red', color: 'white' }}
                   startIcon={<DeleteIcon />}
                 >
                   Delete
                 </Button>
               </div>
+              <Dialog id={id} open={open} onClose={handleClose}>
+          <DialogTitle
+            id='draggable-dialog-title'
+          >
+            Delete
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={(e) => handleClose()} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleDelete}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
             </div>
           </Grid>
         </Grid>

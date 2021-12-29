@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import { Grid, useTheme, SvgIcon, IconButton } from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
+// import { Pagination } from '@material-ui/lab';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../Layout';
@@ -19,6 +19,7 @@ import selectfilter from '../../assets/images/selectfilter.svg';
 import BreadcrumbToggler from '../../components/breadcrumb-toggler';
 import { Context } from './context/CircularStore';
 import { Breadcrumb } from 'semantic-ui-react';
+import Pagination from 'components/PaginationComponent';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -317,13 +318,19 @@ const CircularList = () => {
           )}
           {periodData?.length > 0 && (
             <div className='paginateData paginateMobileMargin'>
-              <Pagination
+              {/* <Pagination
                 onChange={handlePagination}
                 style={{ marginTop: 25 }}
                 count={Math.ceil(totalCount / limit)}
                 color='primary'
                 page={page}
-              />
+              /> */}
+
+            <Pagination
+              totalPages={Math.ceil(totalCount / limit)}
+              currentPage={page}
+              setCurrentPage={setPage}
+            />
             </div>
           )}
         </Paper>

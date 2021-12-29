@@ -86,6 +86,7 @@ const Attendance = () => {
   const [setSelectedStudent, setSetSelectedStudent] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+  let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
 
   const [totalGenre, setTotalGenre] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
@@ -159,6 +160,33 @@ const Attendance = () => {
     }
   }, []);
 
+  const checkModule = () => {
+    if (history?.location?.pathname === '/student-view/attendance') {
+    let userName = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
+    axiosInstance
+      .get(
+        `${endpoints.academics.singleStudentAttendance}?start_date=${startDate}&end_date=${endDate}&erp_id=${userName}&page=${pageNumber}&page_size=${limit}`
+      )
+      .then((res) => {
+        setLoading(false);
+        if (res.status === 200) {
+          setTotalGenre(res?.data?.count);
+          setData(res?.data?.results);
+          setAlert('success', 'Data Successfully fetched');
+        
+        }
+        if (res.status === 400) {
+          setAlert('error', res.message);
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+      });
+    } else {
+      handleFilter()
+    }
+  }
+
   useEffect(()=>{
     if(moduleId){
   //   callApi(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`, 'academicYearList');
@@ -203,11 +231,10 @@ const Attendance = () => {
     setEndDate(history?.location?.state?.payload?.endDate);
     setStudentName(history?.location?.state?.data[0]?.student_name);
     setStudentView(true);
-    let userName = JSON.parse(localStorage.getItem('rememberDetails')) || {};
-    console.log(userName[0], 'userName');
+    let userName = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
     axiosInstance
       .get(
-        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName[0]}&page=${pageNumber}&page_size=${limit}`
+        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName}&page=${pageNumber}&page_size=${limit}`
       )
       // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
       .then((res) => {
@@ -274,8 +301,8 @@ const Attendance = () => {
       branch_id: selectedBranch,
       grade_id: selectedGrade,
       section_id: selectedSection,
-      startDate: startDate,
-      endDate: endDate,
+      startDate: history?.location?.state?.payload?.startDate,
+      endDate: history?.location?.state?.payload?.endDate,
       counter: history?.location?.state?.payload?.counter,
     };
     if (history?.location?.pathname === '/teacher-view/attendance') {
@@ -322,10 +349,32 @@ const Attendance = () => {
       branch_id: selectedBranch.branch.id,
       grade_id: selectedGrade.grade_id,
       section_id: selectedSection.section_id,
-      dateValue: dateValue,
+      startDate: startDate,
+      endDate: endDate,
       attendanceType: attendanceType,
     };
     console.log(payload, 'testing');
+    axiosInstance
+    .get(
+      `${endpoints.academics.singleStudentAttendance}?start_date=${startDate}&end_date=${endDate}&erp_id=${history?.location?.state?.payload?.erp}`
+    )
+    // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
+    .then((res) => {
+      setLoading(false);
+      if (res.status == 200) {
+        setTotalGenre(res.data.count);
+        setData(res.data.results);
+        setAlert('success', 'Data Successfully fetched');
+      }
+      if (res.status == 400) {
+        setAlert('error', res.message);
+      }
+    })
+    .catch((err) => {
+      setLoading(false);
+      console.log(err);
+      // setAlert('error', 'something went wrong');
+    });
   };
 
   const handleDateChange = () => {};
@@ -497,7 +546,7 @@ const Attendance = () => {
   return (
     <Layout>
       <div className='profile_breadcrumb_wrapper'>
-        <CommonBreadcrumbs componentName='Attendance' />
+        <CommonBreadcrumbs componentName='Calendar & Attendance' childComponentName='Student Attendance' />
       </div>
       <Grid container direction='row' className={classes.root} spacing={3}>
         <Grid item md={6} xs={12} className='items'>
@@ -612,6 +661,7 @@ const Attendance = () => {
                 id='branch_id'
                 className='dropdownIcon'
                 value={selectedBranch || ''}
+                disabled={true}
                 options={branchList || ''}
                 getOptionLabel={(option) => option?.branch?.branch_name || ''}
                 filterSelectedOptions
@@ -649,6 +699,7 @@ const Attendance = () => {
                 id='grade_id'
                 className='dropdownIcon'
                 value={selectedGrade || ''}
+                disabled={true}
                 options={gradeList || ''}
                 getOptionLabel={(option) => option?.grade__grade_name || ''}
                 filterSelectedOptions
@@ -679,6 +730,7 @@ const Attendance = () => {
                 }}
                 id='section_id'
                 className='dropdownIcon'
+                disabled={true}
                 value={selectedSection || ''}
                 options={sectionList || ''}
                 getOptionLabel={(option) =>
@@ -747,17 +799,17 @@ const Attendance = () => {
               back
             </StyledClearButton>
           </Grid>
-          {/* <Grid item md={2} xs={6}>
+          <Grid item md={2} xs={6}>
             <StyledFilterButton
               variant='contained'
               color='secondary'
               startIcon={<FilterFilledIcon className={classes.filterIcon} />}
               className={classes.filterButton}
-              onClick={handleFilter}
+              onClick={checkModule}
             >
               filter
             </StyledFilterButton>
-          </Grid> */}
+          </Grid>
         </Grid>
       </Grid>
       <MediaQuery minWidth={541}>
@@ -784,12 +836,12 @@ const Attendance = () => {
               <Typography variant='subtitle2' color='primary'>
                 {!studentView && (
                   <strong>
-                    {studentName && studentName[0].student_first_name.slice(0, 10)}
+                    {studentName && studentName[0].student_first_name}
                   </strong>
                 )}
                 {studentView && (
                   <strong>
-                    {history?.location?.state?.data[0]?.student_name.slice(0, 10)}
+                    {history?.location?.state?.data[0]?.student_name}
                   </strong>
                 )}
               </Typography>

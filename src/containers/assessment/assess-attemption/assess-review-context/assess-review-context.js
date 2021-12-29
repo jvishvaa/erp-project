@@ -48,6 +48,7 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
   const [assessmentResultDetails, setAssessmentResultDetails] = useState();
 
   const [assessmentId, setAssessmentId] = React.useState();
+  const [assessmentDate, setAssessmentDate] = React.useState();
   const [assessmentResult, fetchAssessmentResultHook] = useFetcher(
     assessmentResultHookProps
   );
@@ -177,14 +178,20 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
 
   function fetchAssessmentResult(params = {}, callbacks) {
     const { onResolve: onResolveInstacnceOne = () => {} } = callbacks || {};
-    const { test_id: testId, user_id: userId } = params || {};
-    if ([!!testId, !!userId].includes(false)) {
+    const { test_id: testId, user_id: userId, test_date: testDate } = params || {};
+    if ([!!testId, !!userId, !!testDate].includes(false)) {
       // eslint-disable-next-line no-alert
       window.alert('param not fed');
       return null;
     }
+    const query = new URLSearchParams(window.location.search);
     const dataProp = {
-      queryParamObj: { test_id: testId, user_id: userId },
+      queryParamObj: {
+        test_id: testId,
+        user_id: userId,
+        test_date: testDate,
+        is_retest: query.get('status') === '2',
+      },
       callbacks: {
         ...callbacks,
         onResolve: (res) => {
@@ -199,11 +206,15 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
   }
   React.useEffect(() => {
     const { user_id: user } = JSON.parse(localStorage.getItem('userDetails') || {});
-    if (assessmentId) {
-      fetchAssessmentResult({ user_id: user, test_id: assessmentId });
+    if (assessmentId && assessmentDate) {
+      fetchAssessmentResult({
+        user_id: user,
+        test_id: assessmentId,
+        test_date: assessmentDate,
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [assessmentId]);
+  }, [assessmentId, assessmentDate]);
 
   function selectQues(qId) {
     const { [qId]: isQuestionAvailable } = questionsDataObj || {};
@@ -262,10 +273,10 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
         fetchAssessmentResult,
         assessmentId,
         setAssessmentId,
-
+        setAssessmentDate,
         questionsDataObj,
 
-        questionsArray: getSortedAndMainQuestions(questionsDataObj || {}) || [] ,
+        questionsArray: getSortedAndMainQuestions(questionsDataObj || {}) || [],
 
         currentQuesionId,
         controls: {

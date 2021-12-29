@@ -55,40 +55,22 @@ const AssessmentView = () => {
   const [tabSubjectId, setTabSubjectId] = useState('');
   const [tabQpValue, setTabQpValue] = useState('');
   const [publishFlag, setPublishFlag] = useState(false);
-
+  const [tabIsErpCentral, setTabIsErpCentral] = useState(false);
+  const [clearFlag, setClearFlag] = useState(false);
+  const [callFlag, setCallFlag] = useState(false);
   const handlePagination = (event, page) => {
     setPage(page);
   };
-  useEffect(() => {
-    if (
-      tabAcademic ||
-      !tabBranch?.length === 0 ||
-      tabGradeId ||
-      tabSubjectId ||
-      tabQpValue
-    ) {
-      handlePeriodList(
-        tabAcademic,
-        tabBranch,
-        tabGradeId,
-        tabSubjectId,
-        tabQpValue,
-        tabValue
-      );
-    }
-  }, [tabValue]);
 
-  const handleGetQuestionPapers = (newValue, requestURL) => {
-    if (newValue != undefined) {
-      setTabValue(newValue);
-    }
-    if (tabValue == 1 || newValue == 1) {
+  const handleGetQuestionPapers = (newValue = 0, requestURL) => {
+    setTabValue(newValue);
+    if (newValue == 1) {
       requestURL += `&is_draft=True`;
     }
-    if (tabValue == 2 || newValue == 2) {
+    if (newValue == 2) {
       requestURL += `&is_review=True`;
     }
-    if (tabValue == 3 || newValue == 3) {
+    if (newValue == 3) {
       requestURL += `&is_verified=True`;
     }
     axiosInstance
@@ -110,14 +92,14 @@ const AssessmentView = () => {
         setAlert('error', error?.message);
       });
   };
-
   const handlePeriodList = (
+    isErpCentral = {},
     academic = '',
     branch = [],
     grade = '',
     subject = '',
     qpValue,
-    newValue
+    newValue = 0,
   ) => {
     if (!academic || branch?.length === 0 || !grade || !subject || !qpValue) {
       setAlert('error', 'Select all the fields!');
@@ -130,22 +112,24 @@ const AssessmentView = () => {
     setTabGradeId(grade);
     setTabSubjectId(subject);
     setTabQpValue(qpValue);
+    setTabIsErpCentral(isErpCentral);
     const branchIds = branch.map((element) => element?.branch?.id) || [];
-    let requestURL = `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branchIds}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}&page=${page}&page_size=${limit}`;
+    const requestURL = `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branchIds}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}&page=${page}&page_size=${limit}&request_type=${isErpCentral.id} `;
     handleGetQuestionPapers(newValue, requestURL);
   };
 
   useEffect(() => {
     if (publishFlag)
-      handlePeriodList(tabAcademic, tabBranch, tabGradeId, tabSubjectId, tabQpValue);
-    if (tabAcademic && tabBranch && tabGradeId && tabSubjectId && tabQpValue)
+      handlePeriodList(tabIsErpCentral, tabAcademic, tabBranch, tabGradeId, tabSubjectId, tabQpValue);
+    if (tabAcademic && tabBranch && tabGradeId && tabSubjectId && tabQpValue && tabIsErpCentral)
       handlePeriodList(
+        tabIsErpCentral,
         tabAcademic,
         tabBranch,
         tabGradeId,
         tabSubjectId,
         tabQpValue,
-        tabValue
+        tabValue,
       );
   }, [publishFlag, page]);
 
@@ -162,6 +146,7 @@ const AssessmentView = () => {
         </BreadcrumbToggler>
         <div className={!isFilter ? 'showFilters' : 'hideFilters'}>
           <AssessmentFilters
+            setClearFlag={setClearFlag}
             handlePeriodList={handlePeriodList}
             setPeriodData={setPeriodData}
             setViewMore={setViewMore}
@@ -182,6 +167,7 @@ const AssessmentView = () => {
             page={page}
             setPage={setPage}
             setSelectedIndex={setSelectedIndex}
+            tabIsErpCentral={tabIsErpCentral}
           />
         </div>
 
@@ -214,9 +200,11 @@ const AssessmentView = () => {
                         viewMore={viewMore}
                         setLoading={setLoading}
                         setViewMore={setViewMore}
+                        setCallFlag={setCallFlag}
                         setViewMoreData={setViewMoreData}
                         setPeriodDataForView={setPeriodDataForView}
                         setPublishFlag={setPublishFlag}
+                        tabIsErpCentral={tabIsErpCentral}
                       />
                     </Grid>
                   ))}
