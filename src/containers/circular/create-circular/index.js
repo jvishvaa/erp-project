@@ -193,7 +193,7 @@ const CraeteCircular = () => {
       });
       axiosInstance
         .get(
-          `${endpoints.communication.grades}?branch_id=${value?.branch.id}&session_year=${filterData.year?.id}&module_id=${moduleId}`
+          `${endpoints.communication.grades}?branch_id=${value?.branch.id}&session_year=${filterData?.year?.id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -237,7 +237,7 @@ const CraeteCircular = () => {
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.branch?.id}&session_year=${filterData.year.id}&grade_id=${gradeIds}&module_id=${moduleId}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.branch?.id}&session_year=${filterData?.year?.id}&grade_id=${gradeIds}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {

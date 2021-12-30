@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Grid, TextField, Button, useTheme, FormHelperText } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -48,6 +49,9 @@ const CreateChapterType = ({
   const [centralGsMappingId, setCentralGsMappingId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -332,7 +336,7 @@ const CreateChapterType = ({
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.branch.id}&grade=${value.grade_id}&module_id=${moduleId}`
+          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.branch.id}&session_year=${selectedAcademicYear?.id}&grade=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {

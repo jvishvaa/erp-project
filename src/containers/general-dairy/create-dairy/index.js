@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import {useSelector} from 'react-redux'
 import Divider from '@material-ui/core/Divider';
 import { useHistory, withRouter, useLocation } from 'react-router-dom';
 import {
@@ -377,6 +378,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
 
   const [overviewSynopsis, setOverviewSynopsis] = useState([]);
   const [doc, setDoc] = useState(null);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+  
   // useEffect(() => {});
 
   const selectionArray = [];
@@ -579,18 +584,18 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
           }`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
+          if (result?.data?.status_code === 200) {
             const sectionData = result?.data?.data || [];
             for (let i = 0; i < sectionData.length; i++) {
-              allSectionIds.push(sectionData[i].section_id)
+              allSectionIds.push(sectionData[i]?.id)
             }
             sectionData.unshift({
               section__section_name: 'Select All',
               id: allSectionIds,
             });
-            setSectionDropdown(result.data.data);
+            setSectionDropdown(result?.data?.data);
           } else {
-            setAlert('error', result.data.message);
+            setAlert('error', result?.data?.message);
             setSectionDropdown([]);
           }
         })
@@ -773,9 +778,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
 
     if (selectedSections.length && !selectedSections.includes('All')) {
       sectionList
-        .filter((item) => selectedSections.includes(item.section__section_name))
+        .filter((item) => selectedSections.includes(item?.section__section_name))
         .forEach((items) => {
-          sectionsId.push(items.section_id);
+          sectionsId.push(items?.id);
         });
     }
 
@@ -917,7 +922,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         });
       const result = await axiosInstance.get(
         `${endpoints.communication.sections}?branch_id=${selectedBranch.id
-        }&grade_id=${gradesId.toString()}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+        }&session_year=${selectedAcademicYear?.id}&grade_id=${gradesId.toString()}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
         }`,
         {
           headers: {

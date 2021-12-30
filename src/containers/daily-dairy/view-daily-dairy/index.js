@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState, useStyles } from 'react';
+import { useSelector } from 'react-redux';
 import Divider from '@material-ui/core/Divider';
 import {useHistory} from 'react-router-dom'
 import { Grid, TextField, Button, useTheme } from '@material-ui/core';
@@ -58,6 +59,9 @@ const [sectionIds,setSectionIds] = useState([])
   const [datePopperOpen, setDatePopperOpen] = useState(false);
 
   const [teacherModuleId, setTeacherModuleId] = useState(null);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 const history=useHistory()
 
   const [filterData, setFilterData] = useState({
@@ -92,7 +96,7 @@ const history=useHistory()
     // setOverviewSynopsis([]);
     if (value && filterData.branch) {
         setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`)
+        axiosInstance.get(`${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}&session_year=${selectedAcademicYear?.id}`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setSectionDropdown(result.data.data);
@@ -128,7 +132,7 @@ const history=useHistory()
     // setOverviewSynopsis([]);
     if (value) {
         setFilterData({ ...filterData, branch: value, grade: '', subject: '', chapter: '' });
-        axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+        axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&session_year=${selectedAcademicYear?.id}&module_id=8`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setGradeDropdown(result?.data?.data);

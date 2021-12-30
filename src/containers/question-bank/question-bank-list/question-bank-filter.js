@@ -482,7 +482,7 @@ const QuestionBankFilters = ({
       filterData?.subject?.subject_id,
       filterData?.question_level,
       filterData?.topicId,
-      filterData?.branch?.id,
+      filterData?.year?.id,
       filterData?.grade?.grade_id,
       filterData?.chapter,
       filterData?.is_erp_central,

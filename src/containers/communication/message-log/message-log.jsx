@@ -4,6 +4,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
 import React, { useContext, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -103,7 +104,9 @@ const MessageLog = withRouter(({ history, ...props }) => {
   const handleFromDateChange = (event, value) => {
     setSelectedFromDate(value);
   };
-
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const handleToDateChange = (event, value) => {
     setSelectedToDate(value);
   };
@@ -210,7 +213,7 @@ const MessageLog = withRouter(({ history, ...props }) => {
     let getMessagesUrl = `${endpoints.communication.getMessages}?page=${messageCurrentPageno}&page_size=15&module_id=${moduleId}`;
     if (selectedBranches.length) {
       const selectedBranchId = selectedBranches.map((el) => el.id);
-      getMessagesUrl += `&branch=${selectedBranchId.toString()}`;
+      getMessagesUrl += `&session_year=${selectedAcademicYear?.id}&branch=${selectedBranchId.toString()}`;
     }
     getMessagesUrl += `&message_type=${isEmail ? '1' : '2'}`;
     if (selectedSmsType.length) {

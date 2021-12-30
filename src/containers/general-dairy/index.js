@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useSelector } from 'react-redux'
 import Paper from '@material-ui/core/Paper';
 import { Grid, useTheme, SvgIcon } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
@@ -61,6 +62,9 @@ const GeneralDairyList = () => {
   const [startDate, setSDate] = useState([]);
   const [endDate, setEDate] = useState([]);
   const [deleteFlag, setDeleteFlag] = useState(false);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const handlePagination = (event, page) => {
     setPage(page);
@@ -134,7 +138,7 @@ const GeneralDairyList = () => {
     const diaryUrl = isTeacher
       ? `${
           endpoints.generalDairy.dairyList
-        }?module_id=${teacherModuleId}&branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format(
+        }?module_id=${teacherModuleId}&session_year=${selectedAcademicYear?.id}&branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format(
           'YYYY-MM-DD'
         )}&end_date=${endDate.format('YYYY-MM-DD')}${
           activeTab !== 0 ? '&dairy_type=' + activeTab : ''

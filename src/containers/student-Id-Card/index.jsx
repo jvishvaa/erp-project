@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import './style.scss';
 import {
   Grid,
@@ -24,6 +25,9 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 const StudentIdCard = ({ history }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [filterList, setFilterList] = useState({
     acadminYearList: [],
     selectedYear: '',
@@ -59,7 +63,7 @@ const StudentIdCard = ({ history }) => {
       setLoading(true);
       axiosInstance
         .get(
-          `${endpoints.academics.sections}?branch_id=${filterList.selectedBranch.id}&grade_id=${value}`
+          `${endpoints.academics.sections}?branch_id=${filterList.selectedBranch.id}&session_year=${selectedAcademicYear?.id}&grade_id=${value}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -83,7 +87,7 @@ const StudentIdCard = ({ history }) => {
     if (branch) {
       setLoading(true);
       axiosInstance
-        .get(`${endpoints.academics.grades}?branch_id=${branch}`)
+        .get(`${endpoints.academics.grades}?branch_id=${branch}&session_year=${selectedAcademicYear?.id}`)
         .then((result) => {
           if (result.status === 200) {
             handleStateData(result.data.data, 'gradeList');
@@ -147,7 +151,7 @@ const StudentIdCard = ({ history }) => {
     getBranchAndRoleAcadList(
       `${endpoints.signature.getSignatureList}?branch_id=${
         filterList && filterList.selectedBranch.id
-      }&is_delete=False`,
+      }&session_year=${selectedAcademicYear?.id}&is_delete=False`,
       'signature'
     );
   }

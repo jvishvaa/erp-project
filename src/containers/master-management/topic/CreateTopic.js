@@ -1,4 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Grid,
   TextField,
@@ -32,6 +33,9 @@ const CreateTopic = ({ grades, setLoading, handleGoBack }) => {
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [selectedChapter, setSelectedChapter] = useState('');
   const [topicName, setTopicName] = useState([]);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   //const [noOfChapter,setNoOfChapter]=useState([]);
   const { role_details } = JSON.parse(localStorage.getItem('userDetails'));
 
@@ -211,7 +215,7 @@ const CreateTopic = ({ grades, setLoading, handleGoBack }) => {
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.subjects}?grade=${value?.grade_id}&branch_id=${filterData.branch?.branch?.id}&module_id=${moduleId}`
+          `${endpoints.masterManagement.subjects}?grade=${value?.grade_id}&branch_id=${filterData.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {

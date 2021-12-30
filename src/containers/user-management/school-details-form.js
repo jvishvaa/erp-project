@@ -363,6 +363,17 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
         <Divider />
       </Grid>
       <Grid item md={4} xs={12}>
+        <TextField
+          id="outlined-required"
+          label="Academic Year"
+          style={{width:'100%', padding:'0px !important', height:'7px !important'}}
+          defaultValue={details?.erp_id ? details?.academic_year?.session_year : selectedYear?.session_year}
+          variant="outlined"
+          disabled
+          size='small'
+        />
+      </Grid>
+      <Grid item md={4} xs={12}>
         <FormControl fullWidth className={classes.margin} variant='outlined'>
           <Autocomplete
             id='branch'
