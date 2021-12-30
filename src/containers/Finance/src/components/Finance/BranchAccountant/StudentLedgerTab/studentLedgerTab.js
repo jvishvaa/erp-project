@@ -82,6 +82,24 @@ const styles = (theme) => ({
 
 let userToken ="";
 let moduleId;
+
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'student' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Ledger Tab') {
+          moduleId = item.child_id;
+        }
+      });
+    } 
+  });
+} 
 class StudentLedgerTab extends Component {
   constructor(props) {
     super(props);

@@ -354,15 +354,26 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     const rolesId = [];
     const gradesId = [];
     if (selectedRoles && selectedRoles !== 'All') {
-      rolesId.push(selectedRoles.id);
+      selectedRoles.map((each,i) => {
+        rolesId.push(each.id);
+      })
+    }
+    if(selectedGrades && selectedGrades !== 'All') {
+      selectedGrades.map((each,i) => {
+        gradesId.push(each.id)
+      })
     }
     let getUserListUrl = `communication/erp-user-info-excel/?module_id=${moduleId}`;
-    if (rolesId.length && selectedRoles !== 'All') {
-      getUserListUrl += `&role=${rolesId.toString()}`;
+    if (rolesId.length > 0 && selectedRoles !== 'All') {
+      rolesId.map((each,i) => { 
+        getUserListUrl += `&role=${each.toString()}`;
+      })
     }
     // /*
-    if (gradesId.length && !selectedGrades.includes('All')) {
-      getUserListUrl += `&grade=${gradesId.toString()}`;
+    if (gradesId.length > 0 && selectedGrades !== 'All') {
+      gradesId.map((each,i) => { 
+        getUserListUrl += `&grade=${each.toString()}`;
+      })
     }
     if(classStatus && classStatus != 1 && classStatus != 0) {
       let status = classStatus - 1;

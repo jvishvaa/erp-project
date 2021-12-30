@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -761,7 +760,7 @@ const ErpAdminViewClass = ({ history }) => {
       link.href = window.URL.createObjectURL(blob);
       link.download = `erp_classes_from${moment(startDateTechPer).format(
         'YYYY-MM-DD'
-      )}_to_${moment(endDateTechPer).format('YYYY-MM-DD')}`;
+      )}to${moment(endDateTechPer).format('YYYY-MM-DD')}`;
       link.click();
       link.remove();
     } catch {
