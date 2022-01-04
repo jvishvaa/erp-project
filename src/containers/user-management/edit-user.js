@@ -9,7 +9,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import { styles } from './useStyles';
 import UserDetailsForm from './user-details-form';
-import SchoolDetailsForm from './school-details-form';
+import EditSchoolDetailsForm from './edit-school-details-form';
 import GuardianDetailsForm from './guardian-details-form';
 import { fetchUser, editUser } from '../../redux/actions';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
@@ -18,6 +18,18 @@ import CustomStepperConnector from '../../components/custom-stepper-connector';
 import CustomStepperIcon from '../../components/custom-stepper-icon';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../Layout';
+import Button from '@material-ui/core/Button';
+import './styles.scss';
+
+const BackButton = withStyles({
+  root: {
+    color: 'rgb(140, 140, 140)',
+    backgroundColor: '#e0e0e0',
+    '&:hover': {
+      backgroundColor: '#e0e0e0',
+    },
+  },
+})(Button);
 
 class EditUser extends Component {
   constructor(props) {
@@ -27,6 +39,9 @@ class EditUser extends Component {
       showParentForm: false,
       showGuardianForm: false,
       user: null,
+      isNext: false,
+      collectData: {},
+      mappingData:[],
     };
   }
 
@@ -59,6 +74,37 @@ class EditUser extends Component {
 
   handleBack = () => {
     this.setState((prevState) => ({ activeStep: prevState.activeStep - 1 }));
+  };
+
+  handleCollectData = (details, index) => {
+    const {
+      academic_year = [],
+      branch = [],
+      grade = [],
+      section = [],
+      subjects = [],
+    } = { ...details };
+    const {
+      academic_year: academicYear = [],
+      branch: collectedBranch = [],
+      grade: collectedGrade = [],
+      section: collectedSection = [],
+      subjects: collectedSubjects = [],
+    } = { ...this.state.collectData };
+    const updatedCollectData = {
+      academic_year: [...academicYear, academic_year],
+      branch: [...collectedBranch, branch],
+      grade: [...collectedGrade, grade],
+      section: [...collectedSection, section],
+      subjects: [...collectedSubjects, subjects],
+    };
+    this.setState({
+      collectData: updatedCollectData,
+    });
+    if (index === this.state.user?.mapping_bgs?.length - 1) {
+      this.setState((prevState) => ({ isNext: !prevState.isNext, collectData: [] }));
+      this.onSubmitSchoolDetails(updatedCollectData);
+    }
   };
 
   onSubmitSchoolDetails = (details) => {
@@ -96,7 +142,6 @@ class EditUser extends Component {
 
   onEditUser = (requestWithParentorGuradianDetails) => {
     const { user } = this.state;
-    // console.log('the user', user);
     const { editUser, history, selectedUser } = this.props;
     let requestObj = user;
     const {
@@ -173,12 +218,22 @@ class EditUser extends Component {
 
     requestObj = {
       erp_id: selectedUser.erp_id,
-
-      academic_year: academic_year.id,
-      branch: branch.map(({ id }) => id).join(),
-      grade: grade.map((grade) => grade.id).join(),
-      section: section.map((section) => section.id).join(),
-      subjects: subjects.map((sub) => sub.id).join(),
+      branch: branch
+        .reduce((acc, subArr) => [...acc, ...subArr], [])
+        .map(({ id }) => id)
+        .filter((id, index, self) => self.indexOf(id) === index)
+        .join(),
+      section_mapping: grade
+        .reduce((acc, subArr) => [...acc, ...subArr], [])
+        .map((gr = {}) => gr?.item_id)
+        .filter(Boolean)
+        .filter((id, index, self) => self.indexOf(id) === index)
+        .join(),
+      subjects: subjects
+        .reduce((acc, subArr) => [...acc, ...subArr], [])
+        .map((sub = {}) => sub?.id)
+        .filter((id, index, self) => self.indexOf(id) === index)
+        .join(),
       first_name,
       middle_name,
       last_name,
@@ -217,8 +272,64 @@ class EditUser extends Component {
 
   fetchUserDetails() {
     const { fetchUser, match } = this.props;
-
     fetchUser(match.params.id);
+  }
+
+  handleAddMappingObject() {
+    const { user } = this.state;
+    let userObj = user;
+    const clonedMappingObject = userObj.mapping_bgs[0];
+    const modifiedMappingObject = {
+      ...clonedMappingObject,
+      academic_year: [],
+      branch: [],
+      grade: [],
+      section: [],
+      subjects: [],
+      is_acad_disabled: true,
+    };
+    const modifiedUserObject = {
+      ...userObj,
+      academic_year: [...userObj['academic_year'], []],
+      branch: [...userObj['branch'], []],
+      grade: [...userObj['grade'], []],
+      section: [...userObj['section'], []],
+      subjects: [...userObj['subjects'], []],
+      mapping_bgs: [...userObj['mapping_bgs'], modifiedMappingObject],
+    };
+    this.setState({ user: modifiedUserObject });
+  }
+
+  getUserDetails(user, index){
+    return {
+      ...user,
+      academic_year: user['academic_year'][index],
+      branch: user['branch'][index],
+      grade: user['grade'][index],
+      section: user['section'][index],
+      subjects: user['subjects'][index],
+    }
+  }
+
+  handleDeleteMappingObject(index) {
+    const { user } = this.state;
+    let userObj = user;
+    userObj['academic_year'].splice(index, 1);
+    userObj['branch'].splice(index, 1);
+    userObj['grade'].splice(index, 1);
+    userObj['section'].splice(index, 1);
+    userObj['subjects'].splice(index, 1);
+    userObj['mapping_bgs'].splice(index, 1);
+    const modifiedUserObject = {
+      ...userObj,
+      academic_year: userObj['academic_year'],
+      branch: userObj['branch'],
+      grade: userObj['grade'],
+      section: userObj['section'],
+      subjects: userObj['subjects'],
+      mapping_bgs: userObj['mapping_bgs'],
+    };
+    this.setState({ user: modifiedUserObject });
   }
 
   render() {
@@ -257,11 +368,46 @@ class EditUser extends Component {
               </Stepper>
               <div className={classes.formContainer}>
                 {activeStep === 0 && (
-                  <SchoolDetailsForm
-                    onSubmit={this.onSubmitSchoolDetails}
-                    details={user}
-                    isEdit={true}
-                  />
+                  <>
+                    {this.state.user?.mapping_bgs?.length > 0 &&
+                      this.state.user?.mapping_bgs
+                        .map(({ is_acad_disabled = false }, index) => (
+                          <EditSchoolDetailsForm
+                            key={`edit_school_details_form_${index}`}
+                            onSubmit={this.handleCollectData}
+                            details={this.getUserDetails(user, index)}
+                            isEdit={true}
+                            isNext={this.state.isNext}
+                            isAcadDisabled={is_acad_disabled}
+                            index={index}
+                            handleDelete={() => this.handleDeleteMappingObject(index)}
+                            handleAddMappingObject={() => this.handleAddMappingObject()}
+                            isAddVisible={user?.mapping_bgs?.length - 1 === index}
+                            className={`classForm${index}`}
+                          />
+                        ))}
+                    <BackButton
+                      className={classes.formActionButton}
+                      variant='contained'
+                      color='primary'
+                      onClick={() => {
+                        this.props.history.push('/user-management/view-users');
+                      }}
+                    >
+                      Back
+                    </BackButton>
+                    <Button
+                      className={classes.formActionButton}
+                      variant='contained'
+                      color='primary'
+                      onClick={() => {
+                        this.setState({ isNext: true });
+                      }}
+                      style={{ float: 'right' }}
+                    >
+                      Next
+                    </Button>
+                  </>
                 )}
                 {activeStep === 1 && (
                   <UserDetailsForm
@@ -293,21 +439,6 @@ class EditUser extends Component {
           ) : (
             'Loading'
           )}
-
-          {/* <div>
-              <div>
-                <Button
-                  disabled={activeStep === 0}
-                  onClick={this.handleBack}
-                  className={classes.backButton}
-                >
-                  Back
-                </Button>
-                <Button variant='contained' color='primary' onClick={this.handleNext}>
-                  {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                </Button>
-              </div>
-            </div> */}
         </div>
       </Layout>
     );

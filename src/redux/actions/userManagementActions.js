@@ -53,7 +53,6 @@ export const fetchUsers = () => (dispatch) => {
       });
     })
     .catch((error) => {
-      console.log(error);
       dispatch({ type: FETCH_USERS_FAILURE });
     });
 };
@@ -88,40 +87,67 @@ export const fetchUser = (id) => (dispatch) => {
         last_name: user.user.last_name || '',
         email: user.user.email || '',
         username: user.user.username || '',
-        // erp_user: user.erp_user || '',
-        // branch_code:user.branch_code || '',
-        academic_year: user.academic_year && {
-          id: user.academic_year.id,
-          session_year: user.academic_year.session_year,
-        },
-        branch:
-          user.mapping_bgs[0].branch &&
-          user.mapping_bgs[0].branch.length > 0 &&
-          user.mapping_bgs[0].branch.map((branch) => ({
-            id: branch.branch_id,
-            branch_name: branch.branch__branch_name, 
-            branch_code: branch?.branch_code,
-          })),
-        grade:
-          user.mapping_bgs[0].grade &&
-          user.mapping_bgs[0].grade.map((grade) => ({
-            id: grade.grade_id,
-            branch_id: grade.acad_session__branch_id, // Added
-            grade_name: grade.grade__grade_name,
-          })),
-        section:
-          user.mapping_bgs[0].section &&
-          user.mapping_bgs[0].section.map((section) => ({
-            id: section.section_id,
-            grade_id : section.grade_id, // Added
-            branch_id: section.acad_session__branch_id, // Added
-            section_name: section.section__section_name,
-          })),
-        subjects: user?.subjects.map((subject) => ({
-          id: subject.id,
-          item_id: subject.subject_mapping_id,
-          subject_name: subject.subject_name,
-        })),
+        mapping_bgs: user?.mapping_bgs || [],
+
+        academic_year: user?.mapping_bgs?.map(({ session_year: sessionYear = [] }) =>
+          sessionYear.map(({ session_year = '', session_year_id = '',is_current_session = false  }) => ({
+            id: session_year_id,
+            session_year: session_year,
+            is_default: is_current_session
+          }))
+        ),
+        branch: user?.mapping_bgs?.map(({ branch: branches = [] }) =>
+          branches.map(({ branch_id = '', branch__branch_name = '' }) => ({
+            id: branch_id,
+            branch_name: branch__branch_name,
+          }))
+        ),
+        grade: user?.mapping_bgs?.map(({ grade: grades = [] }) =>
+          grades.map(
+            ({
+              id = '',
+              grade_id = '',
+              acad_session__branch_id = '',
+              grade__grade_name = '',
+            }) =>
+              ({
+                id: grade_id,
+                branch_id: acad_session__branch_id,
+                grade_name: grade__grade_name,
+                item_id: id,
+              } || [])
+          )
+        ),
+
+        section: user?.mapping_bgs?.map(({ section: Sections = [] }) =>
+          Sections.map(
+            ({
+              id = '',
+              section_id = '',
+              grade_id = '',
+              acad_session__branch_id = '',
+              section__section_name = '',
+            }) =>
+              ({
+                id: section_id,
+                grade_id: grade_id, // Added
+                branch_id: acad_session__branch_id, // Added
+                section_name: section__section_name,
+                section_mapping: id,
+              } || [])
+          )
+        ),
+
+        subjects: user?.mapping_bgs?.map(({ subjects = [] }) =>
+          subjects.map(
+            ({ id = '', subject_name = '', subject_mapping_id = '' }) =>
+              ({
+                id: id,
+                item_id: subject_mapping_id,
+                subject_name: subject_name,
+              } || [])
+          )
+        ),
         contact: user?.contact || '',
         date_of_birth: user.date_of_birth,
         gender,
@@ -154,7 +180,6 @@ export const fetchUser = (id) => (dispatch) => {
     })
 
     .catch((e) => {
-      console.log(e);
       dispatch({ type: FETCH_USER_DETAIL_FAILURE });
     });
 };
@@ -168,7 +193,6 @@ export const createUser = (params) => (dispatch) => {
       dispatch({ type: CREATE_USER_SUCCESS });
     })
     .catch((error) => {
-      console.log(error);
       dispatch({ type: CREATE_USER_FAILURE });
       throw error;
     });
@@ -182,21 +206,12 @@ export const editUser = (params) => (dispatch) => {
       dispatch({ type: EDIT_USER_SUCCESS });
     })
     .catch((error) => {
-      console.log(error);
       dispatch({ type: EDIT_USER_FAILURE });
       throw error;
     });
 };
 
 export const fetchBranchesForCreateUser = (acadId, moduleId) => {
-  // return axios
-  //   .get(`/erp_user/list-all-branch/?session_year=${acadId}&module_id=${moduleId}`)
-  //   .then((response) => {
-  //     if (response.data.status_code === 200) return response?.data?.data;
-  //   })
-  //   .catch((error) => {
-  //     throw error;
-  //   });
 
   return axios
     .get(`/erp_user/branch/?session_year=${acadId}&module_id=${moduleId}`)
@@ -213,7 +228,7 @@ export const fetchBranchesForCreateUser = (acadId, moduleId) => {
 
 export const fetchAcademicYears = (moduleId) => {
   let url = '/erp_user/list-academic_year/';
-  if(moduleId) url += `?module_id=${moduleId}`;
+  if (moduleId) url += `?module_id=${moduleId}`;
   return axios
     .get(url)
     .then((response) => {
