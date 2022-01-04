@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState, useStyles } from 'react';
+import { useSelector } from 'react-redux';
 import Divider from '@material-ui/core/Divider';
 import { Grid, TextField, Button, useTheme, SvgIcon } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -91,6 +92,10 @@ const LessonPlanGraphReport = ({
     teacher: '',
   });
 
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+
   function getDaysAfter(date, amount) {
     // TODO: replace with implementation for your date library
     return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
@@ -163,7 +168,7 @@ const LessonPlanGraphReport = ({
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&grade=${
+          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.id}&session_year=${selectedAcademicYear?.id}&grade=${
             value.grade_id
           }&module_id=${getModuleId()}`
         )
@@ -225,7 +230,7 @@ const LessonPlanGraphReport = ({
       const { year: { school: { id: schoolAcademicId } } = {} } = filterData || {};
       axiosInstance
         .get(
-          `${endpoints.lessonReport.teacherList}?branch=${filterData?.branch?.id}&grade=${filterData?.grade?.grade_id}&section=${filterData.section?.section_id}&subject=${ids}&academic_year=${schoolAcademicId}`
+          `${endpoints.lessonReport.teacherList}?branch=${filterData?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade=${filterData?.grade?.grade_id}&section=${filterData.section?.section_id}&subject=${ids}&academic_year=${schoolAcademicId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {

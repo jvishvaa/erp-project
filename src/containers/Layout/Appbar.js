@@ -282,7 +282,7 @@ const Appbar = ({ children, history, ...props }) => {
       }
     })
     dispatch(currentSelectedYear(acdemicCurrentYear))
-    localStorage.setItem('acad_session', JSON.stringify(acdemicCurrentYear));
+    sessionStorage.setItem('acad_session', JSON.stringify(acdemicCurrentYear));
     window.location.reload();
   };
 

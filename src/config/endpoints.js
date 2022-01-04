@@ -141,6 +141,7 @@ export default {
     createTopic: '/assessment/topics/',
     updateTopic: '/assessment/',
     erpSystemConfig: '/erp_user/erp_system_config/',
+    defaultAcademicYear: '/erp_user/default-current-session-year/'
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',

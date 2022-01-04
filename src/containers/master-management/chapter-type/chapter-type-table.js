@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import axiosInstance from '../../../config/axios';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import axios from 'axios';
@@ -103,6 +104,9 @@ const ChapterTypeTable = (setCentralSubjectName) => {
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -251,7 +255,7 @@ const ChapterTypeTable = (setCentralSubjectName) => {
       setFilterData({ ...filterData, grade: value });
       axiosInstance
         .get(
-          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.branch.id}&grade=${value.grade_id}&module_id=${moduleId}`
+          `${endpoints.lessonReport.subjects}?branch=${filterData.branch.branch.id}&session_year=${selectedAcademicYear?.id}&grade=${value.grade_id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {

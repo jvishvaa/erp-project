@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useContext } from 'react';
+import { useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import {
   Grid,
@@ -38,6 +39,9 @@ const UpdateGroup = () => {
 
   const [fullUserList, setFullUserList] = useState('');
   const [selectedUser, setSelectedUser] = useState([]);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const getApiCall = async (api, type) => {
     try {
@@ -73,7 +77,7 @@ const UpdateGroup = () => {
     getApiCall(
       `${
         endpoints.communication.communicationUserList
-      }?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&branch=${branchId}${gradeId.length !== 0 ? `&grade=${gradeId}`: ''}${
+      }?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&session_year=${selectedAcademicYear?.id}&branch=${branchId}${gradeId.length !== 0 ? `&grade=${gradeId}`: ''}${
         sectionId.length !== 0 ? `&section=${sectionId}` : ''
       }`,
       'fullGroup'
@@ -84,7 +88,7 @@ const UpdateGroup = () => {
     getApiCall(
       `${endpoints.communication.editGroup}${
         location.state.groupId
-      }/retrieve-update-group/?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&branch=${branchId}${gradeId.length !== 0 ? `&grade=${gradeId}`: ''}${
+      }/retrieve-update-group/?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&session_year=${selectedAcademicYear?.id}&branch=${branchId}${gradeId.length !== 0 ? `&grade=${gradeId}`: ''}${
         sectionId.length !== 0 ? `&section=${sectionId}` : ''
       }`,
       'selectedGroup'

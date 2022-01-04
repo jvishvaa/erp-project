@@ -110,13 +110,9 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const [branchCode, setBranchCode] = useState('');
   const [branchList, setBranchList] = useState([]);
   const [branchDisplay, setBranchDisplay] = useState({});
-  const [yearDisplay, setYearDisplay] = useState({});
-  const [academicYearVal, setAcademicYearVal] = useState('');
-  const [year, setYear] = useState(null);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-  const [yearList, setYearList] = useState([]);
   const [file, setFile] = useState(null);
   const [grades, setGrades] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -185,51 +181,12 @@ const BulkUpload = ({ onUploadSuccess }) => {
       field:
         " From the following dropdowns select grade & section and use the respective Id's for user creation",
     },
-    // 'profile',
-    // 'Grade',
-    // 'Section',
-    // 'Subject',
-    // 'father_first_name',
-    // 'father_middle_name',
-    // 'father_last_name',
-    // 'father_email',
-    // 'father_contact',
-    // 'mother_first_name',
-    // 'mother_middle_name',
-    // 'mother_last_name',
-    // 'mother_email',
-    // 'mother_contact',
-    // 'guardian_first_name',
-    // 'guardian_middle_name',
-    // 'guardian_last_name',
-    // 'guardian_email',
-    // 'guardian_mobile',
-    // 'parent_address'
   ];
 
-  // const getYears = async () => {
-  //   try {
-  //     const data = await axios.get(`erp_user/list-academic_year/?module_id=${moduleId}`);
-  //     if (data.data?.status_code === 200) {
-  //       const {
-  //         data: { data: acadYearData = [] },
-  //       } = data || {};
-  //       setYearList(acadYearData);
-  //       const defaultYear = acadYearData?.[0];
-  //       if (defaultYear) {
-  //         handleYearChange({}, defaultYear);
-  //       }
 
-  //       getBranches(acadYearData?.[0]?.id);
-  //     } else setYearList([]);
-  //   } catch (error) {
-  //     console.log('failed to load years');
-  //   }
-  // };
 
   useEffect(() => {
     if (moduleId && selectedAcademicYear) getBranches();
-    console.log(selectedAcademicYear, 'yesr');
   }, [moduleId, selectedAcademicYear]);
 
   const handleFileChange = (event) => {
@@ -248,8 +205,6 @@ const BulkUpload = ({ onUploadSuccess }) => {
   };
 
   const handleClearAll = () => {
-    setYearDisplay('');
-    setYear(null);
     setBranchDisplay('');
     setBranch(null);
     setBranchList([]);
@@ -271,7 +226,6 @@ const BulkUpload = ({ onUploadSuccess }) => {
         .then((result) => {
           if (result.data.status_code === 200) {
             setBranch(null);
-            setYear(null);
             setFile(null);
             onUploadSuccess();
             setAlert('success', result.data.message);
@@ -308,24 +262,12 @@ const BulkUpload = ({ onUploadSuccess }) => {
             (obj) => (obj && obj.branch) || {}
           );
           setBranchList(modifiedResponse);
-        } else console.log('');
+        }
       })
       .catch((error) => {
         console.log('');
       });
   };
-
-  // const handleYearChange = (event = {}, data = '') => {
-  //   setYear(data?.id);
-  //   setAcademicYearVal(data?.session_year);
-  //   setYearDisplay(data);
-  //   setBranchList([]);
-  //   setBranchDisplay('');
-  //   setBranch(null);
-  //   if (data) {
-  //     getBranches(data?.id);
-  //   }
-  // };
 
   const handleBranchChange = (event, data) => {
     setSearchGrade([]);

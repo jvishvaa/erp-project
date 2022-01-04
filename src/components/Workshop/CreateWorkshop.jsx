@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   CircularProgress,
   Button,
@@ -32,6 +33,9 @@ export default function CreateWorkshop(props) {
   const [selectedTutorEmail, setSelectedTutorEmail] = useState();
   const [tutorEmailsLoading, setTutorEmailsLoading] = useState();
   const [tutorNotAvailableMsg, setTutorNotAvailableMsg] = useState();
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [duration, setDuration] = useState();
 
   const fetchBranches = () => {
@@ -82,7 +86,7 @@ export default function CreateWorkshop(props) {
     const gradeIds = selectedGrade.map((obj) => obj.id);
     WSAPI(
       'get',
-      `${WSENDPOINT.WORKSHOP.tutorList}?branch_id=${branchIds}&grade_id=${gradeIds}`
+      `${WSENDPOINT.WORKSHOP.tutorList}?branch_id=${branchIds}&grade_id=${gradeIds}&session_year=${selectedAcademicYear?.id}`
     )
       .then((res) => {
         setTutorEmailsLoading(false);

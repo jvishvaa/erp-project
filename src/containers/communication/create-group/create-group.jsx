@@ -7,6 +7,7 @@
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useContext, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -81,6 +82,9 @@ const CreateGroup =({ history, ...props }) => {
   const [moduleId, setModuleId] = useState();
   const [loading, setLoading] = useState(false);
   const [modulePermision, setModulePermision] = useState(true);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const getRoleApi = async () => {
     try {
@@ -327,7 +331,7 @@ const CreateGroup =({ history, ...props }) => {
       getUserListUrl += `&role=${rolesId.toString()}`;
     }
     if (selectedBranch) {
-      getUserListUrl += `&branch=${branchsId.toString()}`;
+      getUserListUrl += `&session_year=${selectedAcademicYear?.id}&branch=${branchsId.toString()}`;
     }
     if (gradesId.length && !selectedGrades.includes('All')) {
       getUserListUrl += `&grade=${gradesId.toString()}`;

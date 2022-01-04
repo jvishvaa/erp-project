@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Divider, makeStyles, withStyles, Typography, Button } from '@material-ui/core';
 import moment from 'moment';
 import JoinClass from './JoinClass';
@@ -142,6 +143,9 @@ export default function ClassdetailsCardComponent(props) {
 
     const assignData = props
     const [periodsData, setPeriodsData] = React.useState([]);
+    const selectedAcademicYear = useSelector(
+        (state) => state.commonFilterReducer?.selectedYear
+    );
     //Periods date start
     const history = useHistory();
 
@@ -184,7 +188,7 @@ export default function ClassdetailsCardComponent(props) {
     }
 
     useEffect(() => {
-        axiosInstance.get(`${endpoints.aol.teacherList}?branch_id=${props?.filterData?.branch?.id}&grade_id=${props?.filterData?.grade?.grade_id}&is_aol=1`)
+        axiosInstance.get(`${endpoints.aol.teacherList}?branch_id=${props?.filterData?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade_id=${props?.filterData?.grade?.grade_id}&is_aol=1`)
             .then(result => {
                 if (result.data.status_code === 200) {
                     setTeacherDropdown(result.data.data)

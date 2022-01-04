@@ -87,6 +87,9 @@ const ConnectionPodFn = (props) => {
     moment(),
     moment().add(6, 'days'),
   ]);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const limit = 5;
   const fetchBranches = () => {
@@ -160,7 +163,7 @@ const ConnectionPodFn = (props) => {
     const gradeIds = selectedGrade.map((obj) => obj.id);
     WSAPI(
       'get',
-      `${WSENDPOINT.WORKSHOP.tutorList}?branch_id=${branchIds}&grade_id=${gradeIds}`
+      `${WSENDPOINT.WORKSHOP.tutorList}?branch_id=${branchIds}&grade_id=${gradeIds}&session_year=${selectedAcademicYear?.id}`
     )
       .then((res) => {
         if (res.data.status_code === 200) {
@@ -204,7 +207,7 @@ const ConnectionPodFn = (props) => {
       paramPath += `&start_date=${sd}&end_date=${ed}`;
     }
     if (selectedBranch.length) {
-      paramPath += `&branch=${selectedBranch.map((obj) => obj.id)}`;
+      paramPath += `&session_year=${selectedAcademicYear?.id}&branch=${selectedBranch.map((obj) => obj.id)}`;
     }
     if (selectedGrade.length) {
       paramPath += `&grade=${selectedGrade.map((obj) => obj.id)}`;

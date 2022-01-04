@@ -550,7 +550,7 @@ const Attend = () => {
                 const branchId = selectedBranch.branch.id;
                 setSelectedGrade(value);
                 callApi(
-                  `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                  `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
                   'section'
                 );
               }
