@@ -53,6 +53,7 @@ import clsx from 'clsx';
 
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
+import { filter } from 'lodash';
 
 
 // import CustomSelectionTable from '../../../containers/communication/custom-selection-table';
@@ -676,10 +677,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     displayUsersList();
   }, [pageno, searchAcademicYear]);
 
-  // useEffect(() => {
-  //   // getBranchApi();
-  // }, []);
-
+  
   useEffect(() => {
     if (selectedBranch) {
       setGrade([]);
@@ -697,16 +695,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   }, [gradeList, selectedGrades]);
 
   useEffect(() => {
-    // axiosInstance.get(`${endpoints.communication.branches}`)
-    //     .then(result => {
-    //         if (result.data.status_code === 200) {
-    //             setBranchDropdown(result.data.data);
-    //         } else {
-    //             setAlert('error', result.data.message);
-    //         }
-    //     }).catch(error => {
-    //         setBranchDropdown('error', error.message);
-    //     })
     if (teacherModuleId || studentModuleId) {
       axiosInstance
         .get(
@@ -836,29 +824,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     }
   };
 
-  // const getBranchApi = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const result = await axiosInstance.get(endpoints.communication.branches, {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //     });
-  //     const resultOptions = [];
-  //     if (result.status === 200) {
-  //       result.data.data.map((items) => resultOptions.push(items.branch_name));
-  //       setBranchList(result.data.data);
-  //       setLoading(false);
-  //     } else {
-  //       setAlert('error', result.data.message);
-  //       setLoading(false);
-  //     }
-  //   } catch (error) {
-  //     setAlert('error', error.message);
-  //     setLoading(false);
-  //   }
-  // };
-
+  
   const getGradeApi = async () => {
     try {
       setLoading(true);
@@ -985,7 +951,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
             // branch:filterData.branch.map(function (b) {
             //     return b.id
             //   }),
-
+            academic_year:searchAcademicYear?.id,
             branch: filterData?.branch[0]?.branch?.id,
             // grades:[54],
             grade: filterData.grade.map((g) => g.grade_id),
@@ -997,6 +963,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
           : {
             title,
             message: description,
+            academic_year:filterData?.branch[0]?.id,
             branch: filterData?.branch[0]?.branch?.id,
             grade: filterData.grade.map((g) => g.grade_id),
             section_mapping: filterData.section.map((s) => s.id),
@@ -1063,11 +1030,29 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       </div>
     );
   };
-  const removeFileHandler = (i) => {
-    // const list = [...filePath];
-    filePath.splice(i, 1);
-    setAlert('success', 'File successfully deleted');
-  };
+  const removeFileHandler = (i,file) => {
+      const list = [...filePath];
+      axiosInstance
+        .post(`${endpoints.circular.deleteFile}`, {
+          file_name: `${file}`,
+        })
+        .then((result) => {
+          if (result.data.status_code === 204) {
+            list.splice(i, 1);
+            setFilePath(list);
+            setAlert('success', result.data.message);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        })
+        .finally(() =>
+          setLoading(false)
+        );
+    };
+
   const handleEdited = () => {
     axiosInstance
       .put(`${endpoints.circular.updateCircular}`, {
@@ -1157,18 +1142,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                 )}
               />
             </Grid>
-            {/* <Grid xs={12} lg={4} className='create_group_items' item>
-                      {selectedBranch && gradeList.length ? (
-                        <div>
-                          <CustomMultiSelect
-                            selections={selectedGrades}
-                            setSelections={setSelectedGrades}
-                            nameOfDropdown='Grade'
-                            optionNames={grade}
-                          />
-                        </div>
-                      ) : null}
-                    </Grid> */}
             <Grid
               item
               xs={12}
@@ -1232,81 +1205,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
             </Grid>
           </Grid>
 
-          {/* <Grid container className='studentview-tab-container'>
-            <Grid item xs={12} sm={6}>
-              <StyledTabs
-                variant='standard'
-                value={currentTab}
-                onChange={handleTabChange}
-                aria-label='styled tabs example'
-              >
-                <StyledTab
-                  label={<Typography variant='h8'>Active Students</Typography>}
-                  onClick={(e) => handleActiveTab(0)}
-                />
-                 <StyledTab label={<Typography variant='h8'>Inactive Students</Typography>} onClick={(e) => handleActiveTab(1)}/> 
-
-                <StyledTab label={<Typography variant='h8'>In-Active Students</Typography>} />
-              </StyledTabs>
-            </Grid>
-            <input
-              type='checkbox'
-              className='send_message_select_all_checkbox'
-              checked={selectAll}
-              style={
-                isMobile
-                  ? { marginLeft: '252px', marginTop: '-22px' }
-                  : { marginLeft: '521px', marginTop: '19px' }
-              }
-              // style={{marginLeft: '-344px', marginTop: '19px'}}
-              onChange={handleSelectAll}
-            />
-            <span
-              style={
-                isMobile
-                  ? { marginLeft: '1%', marginTop: '-25px', fontSize: '16px' }
-                  : { marginLeft: '1%', marginTop: '14px', fontSize: '16px' }
-              }
-            >
-              Select All
-            </span>
-
-            <span style={{ marginLeft: '1%', marginTop: '14px', fontSize: '16px'}}>Select All</span> 
-          </Grid> */}
-
-          {/* <div className='create_group_select_all_wrapper'>
-                
-                </div> */}
           {totalPage ? (
             <div>
               <span className='create_group_error_span'>{selectectUserError}</span>
-              {/* <DiaryCustomSelectionTable
-                // header={headers}
-                // rows={usersRow}
-                // checkAll={checkAll}
-                // completeData={completeData}
-                // totalRows={totalPage}
-                // pageno={pageno}
-                // setSelectAll={setSelectAll}
-                // selectedUsers={selectedUsers}
-                // changePage={setPageno}
-                // setSelectedUsers={setSelectedUsers}
-                // onChangePage={handleChangePage}
-                // page={pageno-1}
-                // count={totalPage}
-                // pageSize={5}
-                header={headers}
-                rows={usersRow}
-                completeData={completeData}
-                totalRows={totalPage}
-                setSelectAll={setSelectAll}
-                pageno={pageno}
-                selectedUsers={selectedUsers}
-                changePage={handleChangePage}
-                setSelectedUsers={(data) => {
-                  setSelectedUsers(data);
-                }}
-              /> */}
               <Paper className={classes.paper}>
                 <EnhancedTableToolbar numSelected={selected?.length} />
 
@@ -1459,7 +1360,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                         key={`homework_student_question_attachment_${i}`}
                         file={file}
                         index={i}
-                        onClose={() => removeFileHandler(i)}
+                        onClose={() => removeFileHandler(i,file)}
                       />
                     ))
                     : null}
