@@ -87,14 +87,22 @@ export const fetchUser = (id) => (dispatch) => {
         last_name: user.user.last_name || '',
         email: user.user.email || '',
         username: user.user.username || '',
-        mapping_bgs: user?.mapping_bgs || [],
+        user_level: user.user.user_level || '', 
+        mapping_bgs:
+          user?.mapping_bgs.map(mapping => ({ ...mapping, is_delete: false })) || [],
 
         academic_year: user?.mapping_bgs?.map(({ session_year: sessionYear = [] }) =>
-          sessionYear.map(({ session_year = '', session_year_id = '',is_current_session = false  }) => ({
-            id: session_year_id,
-            session_year: session_year,
-            is_default: is_current_session
-          }))
+          sessionYear.map(
+            ({
+              session_year = '',
+              session_year_id = '',
+              is_current_session = false,
+            }) => ({
+              id: session_year_id,
+              session_year: session_year,
+              is_default: is_current_session,
+            })
+          )
         ),
         branch: user?.mapping_bgs?.map(({ branch: branches = [] }) =>
           branches.map(({ branch_id = '', branch__branch_name = '' }) => ({
@@ -127,17 +135,17 @@ export const fetchUser = (id) => (dispatch) => {
               grade_id = '',
               acad_session__branch_id = '',
               section__section_name = '',
+              section_mapping_id=''
             }) =>
               ({
                 id: section_id,
-                grade_id: grade_id, // Added
-                branch_id: acad_session__branch_id, // Added
+                grade_id: grade_id, 
+                branch_id: acad_session__branch_id, 
                 section_name: section__section_name,
-                section_mapping: id,
+                item_id: section_mapping_id,
               } || [])
           )
         ),
-
         subjects: user?.mapping_bgs?.map(({ subjects = [] }) =>
           subjects.map(
             ({ id = '', subject_name = '', subject_mapping_id = '' }) =>
