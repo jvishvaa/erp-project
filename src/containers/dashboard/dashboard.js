@@ -63,6 +63,8 @@ const Dashboard = () => {
         return <AdminDashboard />;
       case 8:
         return <PrincipalDashboard />;
+      case 10:
+        return <PrincipalDashboard />;
       case 11:
         return <TeacherDashboard />;
       case 13:
