@@ -270,7 +270,7 @@ const ErpAdminViewClass = ({ history }) => {
         APIREQUEST(
           'get',
           `${url}?module_id=${moduleId}&user_level=${userLevel}&class_status=${tabValue + 1
-          }$audit=0&start_date=${startDateTechPer?.format(
+          }&audit=0&start_date=${startDateTechPer?.format(
             'YYYY-MM-DD'
           )}&end_date=${endDateTechPer?.format(
             'YYYY-MM-DD'
