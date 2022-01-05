@@ -7,9 +7,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useFormik } from 'formik';
 import { FormHelperText, withStyles } from '@material-ui/core';
-import Box from '@material-ui/core/Box';
 import { useStyles } from './useStyles';
-import validationSchema from './schemas/school-details';
 import {
   fetchBranchesForCreateUser,
   fetchGrades,
@@ -17,21 +15,16 @@ import {
   fetchAcademicYears as getAcademicYears,
   fetchSubjects as getSubjects,
 } from '../../redux/actions';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import DeleteIcon from '@material-ui/icons/Delete';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-
-const BackButton = withStyles({
-  root: {
-    color: 'rgb(140, 140, 140)',
-    backgroundColor: '#e0e0e0',
-    '&:hover': {
-      backgroundColor: '#e0e0e0',
-    },
-  },
-})(Button);
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 
 const EditSchoolDetailsForm = ({
   details,
@@ -40,9 +33,7 @@ const EditSchoolDetailsForm = ({
   index = 0,
   handleDelete,
   isAcadDisabled = false,
-  handleAddMappingObject,
-  isAddVisible = false,
-  className,
+//   selectedYearIds
 }) => {
   const [academicYears, setAcademicYears] = useState([]);
   const [branches, setBranches] = useState([]);
@@ -54,7 +45,6 @@ const EditSchoolDetailsForm = ({
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
-
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -90,6 +80,11 @@ const EditSchoolDetailsForm = ({
   });
 
   const fetchAcademicYears = () => {
+    // for (let i = 0; i < details?.mapping_bgs.length; i++) {
+    //   for (let j = 0; j < details?.mapping_bgs[i].session_year.length; j++) {
+    //     selectedYearIds.push(details.mapping_bgs[i]?.session_year[j].session_year_id);
+    //   }
+    // }
     getAcademicYears(moduleId).then((data) => {
       let transformedData = '';
       transformedData = data?.map((obj = {}) => ({
@@ -145,6 +140,13 @@ const EditSchoolDetailsForm = ({
   };
 
   const handleChangeAcademicYear = (value = {}) => {
+    // if (value && selectedYearIds?.includes(value?.id)) {
+    //   setAlert('error', `${value.session_year} Already Selected`);
+    //   return;
+    // } 
+    // if(value===null && selectedYearIds?.includes(value?.id)){
+    //     selectedYearIds.splice(selectedYearIds.indexOf(value?.id),1)
+    // }
     setBranches([]);
     setGrades([]);
     setSections([]);
@@ -157,6 +159,7 @@ const EditSchoolDetailsForm = ({
     if (value) {
       formik.setFieldValue('academic_year', [value]);
       fetchBranches(value?.id);
+    //   selectedYearIds.push(value.id);
     }
   };
 
@@ -209,7 +212,7 @@ const EditSchoolDetailsForm = ({
           ? [...grades].filter(({ id }) => id !== 'all')
           : values;
       formik.setFieldValue('grade', values);
-      const branchList = values.map((element) => ({ id: element?.branch_id })) || branch; // Added
+      const branchList = values.map((element) => ({ id: element?.branch_id })) || branch;
       fetchSections(acadId, branchList, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
@@ -245,8 +248,8 @@ const EditSchoolDetailsForm = ({
           ? [...sections].filter(({ id }) => id !== 'all')
           : values;
       formik.setFieldValue('section', values);
-      const branchList = values.map((element) => ({ id: element?.branch_id })) || branch; // Added
-      const gradeList = values.map((element) => ({ id: element?.grade_id })) || grade; // Added
+      const branchList = values.map((element) => ({ id: element?.branch_id })) || branch;
+      const gradeList = values.map((element) => ({ id: element?.grade_id })) || grade;
       getSubjects(acadId, branchList, gradeList, values, moduleId).then((data) => {
         const transformedData =
           data &&
@@ -270,24 +273,25 @@ const EditSchoolDetailsForm = ({
   useEffect(() => {
     if (moduleId) {
       fetchAcademicYears();
-      if (details?.selected_year?.length) {
+      if (details?.academic_year?.length > 0) {
         handleChangeAcademicYear(details.academic_year[0]);
+
         if (details.branch) {
           handleChangeBranch(details.branch, details.academic_year[0]?.id);
-          if (details.grade && details.grade.length > 0) {
+          if (details?.grade?.length > 0) {
             handleChangeGrade(
               details.grade,
               details.academic_year[0]?.id,
               details.branch
             );
-            if (details.section && details.section.length > 0) {
+            if (details?.section?.length > 0) {
               handleChangeSection(
                 details.section,
                 details.academic_year[0]?.id,
                 details.branch,
                 details.grade
               );
-              if (details.subjects && details.subjects.length > 0) {
+              if (details?.subjects?.length > 0) {
                 formik.setFieldValue('subjects', details.subjects);
               }
             }
@@ -297,235 +301,270 @@ const EditSchoolDetailsForm = ({
     }
   }, [moduleId]);
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const handleClick = (event) => {
+    setAnchorEl(true);
+  };
+
   useEffect(() => {
     if (isNext) handleSubmit();
   }, [isNext]);
 
-  const handleSubmit = () => {
-    if (formik.values.subjects.length === 0) {
-      setAlert('error', 'Please select all fields');
-    } else {
-      formik.handleSubmit();
+  const validateEntries = () => {
+    const validationObject = {
+      'academic year': formik.values?.academic_year?.length,
+      branch: formik.values?.branch?.length,
+      grade: formik.values?.grade?.length,
+      section: formik.values?.section?.length,
+      subjects: formik.values?.subjects?.length,
+    };
+    const validationEntries = Object.entries(validationObject);
+    for (let i = 0; i < validationEntries.length; i++) {
+      const [key, value] = validationEntries[i];
+      if (!value) {
+        setAlert('error', `Please select ${key}`);
+        return false;
+      }
     }
+    return true;
+  };
+
+  const handleSubmit = () => {
+    // if (!validateEntries()) return;
+
+    formik.handleSubmit();
   };
 
   const classes = useStyles();
 
   return (
-    <Grid container spacing={4} className={`school-details-form-container-${className}`}>
-      <Grid item xs={12}>
-        <Divider />
-      </Grid>
-      <Grid item md={4} xs={12}>
-        <FormControl fullWidth className={classes.margin} variant='outlined'>
-          <Autocomplete
-            id='year'
-            name='year'
-            disabled={!isAcadDisabled}
-            key={`acad_year_${index}`}
-            onChange={(e, value) => {
-              handleChangeAcademicYear(value);
-            }}
-            value={formik.values.academic_year?.[0] || []}
-            options={academicYears || []}
-            // filterSelectedOptions
-            limitTags={2}
-            className='dropdownIcon'
-            getOptionLabel={(option) => option.session_year || ''}
-            getOptionSelected={(option, value) => option.id == value.id}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Academic Year'
-                placeholder='Academic Year'
-              />
-            )}
-            size='small'
-          />
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.branch ? formik.errors.branch : ''}
-          </FormHelperText>
-        </FormControl>
-      </Grid>
-      <Grid item md={4} xs={12}>
-        <FormControl fullWidth className={classes.margin} variant='outlined'>
-          <Autocomplete
-            id='branch'
-            name='branch'
-            key={`branch_${index}`}
-            onChange={(e, value) => {
-              formik.setFieldValue('grade', []);
-              formik.setFieldValue('section', []);
-              formik.setFieldValue('subjects', []);
-              handleChangeBranch(value, formik.values.academic_year?.[0]?.id);
-            }}
-            multiple
-            value={formik.values.branch || []}
-            options={branches || []}
-            // filterSelectedOptions
-            limitTags={2}
-            className='dropdownIcon'
-            getOptionLabel={(option) => option.branch_name || ''}
-            getOptionSelected={(option, value) => option.id == value.id}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Branch'
-                placeholder='Branch'
-              />
-            )}
-            size='small'
-          />
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.branch ? formik.errors.branch : ''}
-          </FormHelperText>
-        </FormControl>
-      </Grid>
-      <Grid item md={4} xs={12}>
-        <FormControl fullWidth className={classes.margin} variant='outlined'>
-          <Autocomplete
-            id='grade'
-            name='grade'
-            key={`grade_${index}`}
-            onChange={(e, value) => {
-              formik.setFieldValue('section', []);
-              formik.setFieldValue('subjects', []);
-              handleChangeGrade(value, selectedYear?.id, formik.values.branch);
-            }}
-            multiple
-            value={formik.values.grade || []}
-            options={grades}
-            // filterSelectedOptions
-            className='dropdownIcon'
-            limitTags={2}
-            getOptionLabel={(option) => option.grade_name || ''}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Grade'
-                placeholder='Grade'
-              />
-            )}
-            getOptionSelected={(option, value) => option.grade_name == value.grade_name}
-            size='small'
-          />
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.grade ? formik.errors.grade : ''}
-          </FormHelperText>
-        </FormControl>
-      </Grid>
-      <Grid item md={4} xs={12}>
-        <FormControl fullWidth className={classes.margin} variant='outlined'>
-          <Autocomplete
-            id='section'
-            name='section'
-            key={`section_${index}`}
-            onChange={(e, value) => {
-              handleChangeSection(
-                value,
-                formik.values.academic_year?.[0]?.id,
-                formik.values.branch,
-                formik.values.grade
-              );
-            }}
-            value={formik.values.section || []}
-            options={sections || []}
-            multiple
-            limitTags={2}
-            // filterSelectedOptions
-            className='dropdownIcon'
-            getOptionLabel={(option) => option.section_name || ''}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Section'
-                placeholder='Section'
-              />
-            )}
-            getOptionSelected={(option, value) =>
-              option.section_name == value.section_name
-            }
-            size='small'
-          />
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.section ? formik.errors.section : ''}
-          </FormHelperText>
-        </FormControl>
-      </Grid>
-      <Grid item md={4} xs={12}>
-        <FormControl
-          color='secondary'
-          fullWidth
-          className={classes.margin}
-          variant='outlined'
-        >
-          <Autocomplete
-            id='subjects'
-            name='subjects'
-            key={`subjects_${index}`}
-            onChange={(e, value) => {
-              value =
-                value.filter(({ id }) => id === 'all').length === 1
-                  ? [...subjects].filter(({ id }) => id !== 'all')
-                  : value;
-              formik.setFieldValue('subjects', value);
-            }}
-            value={formik.values.subjects || []}
-            limitTags={2}
-            multiple
-            options={subjects || []}
-            // filterSelectedOptions
-            className='dropdownIcon'
-            getOptionLabel={(option) => option.subject_name || ''}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Subjects'
-                placeholder='Subjects'
-              />
-            )}
-            getOptionSelected={(option, value) => option.item_id == value.item_id}
-            size='small'
-          />
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.subjects ? formik.errors.subjects : ''}
-          </FormHelperText>
-        </FormControl>
-      </Grid>
-      {!formik.values.academic_year?.[0]?.is_default && (
-        <Grid item md={2} xs={12}>
-          <Button
-            variant='contained'
+    <>
+      <Grid container spacing={4} className='school-details-form-container'>
+        <Grid item xs={12}>
+          <Divider />
+        </Grid>
+        <Grid item md={4} xs={12}>
+          <FormControl fullWidth className={classes.margin} variant='outlined'>
+            <Autocomplete
+              id='year'
+              name='year'
+              disabled={!isAcadDisabled}
+              key={`acad_year_${index}`}
+              onChange={(e, value) => {
+                handleChangeAcademicYear(value);
+              }}
+              value={formik.values.academic_year?.[0] || []}
+              options={academicYears || []}
+              // filterSelectedOptions
+              limitTags={2}
+              className='dropdownIcon'
+              getOptionLabel={(option) => option.session_year || ''}
+              getOptionSelected={(option, value) => option.id == value.id}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Academic Year'
+                  placeholder='Academic Year'
+                />
+              )}
+              size='small'
+            />
+            <FormHelperText style={{ color: 'red' }}>
+              {formik.errors.branch ? formik.errors.branch : ''}
+            </FormHelperText>
+          </FormControl>
+        </Grid>
+        <Grid item md={4} xs={12}>
+          <FormControl fullWidth className={classes.margin} variant='outlined'>
+            <Autocomplete
+              id='branch'
+              name='branch'
+              key={`branch_${index}`}
+              onChange={(e, value) => {
+                formik.setFieldValue('grade', []);
+                formik.setFieldValue('section', []);
+                formik.setFieldValue('subjects', []);
+                handleChangeBranch(value, formik.values.academic_year?.[0]?.id);
+              }}
+              multiple
+              value={formik.values.branch || []}
+              options={branches || []}
+              // filterSelectedOptions
+              limitTags={2}
+              className='dropdownIcon'
+              getOptionLabel={(option) => option.branch_name || ''}
+              getOptionSelected={(option, value) => option.id == value.id}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  placeholder='Branch'
+                />
+              )}
+              size='small'
+            />
+            <FormHelperText style={{ color: 'red' }}>
+              {formik.errors.branch ? formik.errors.branch : ''}
+            </FormHelperText>
+          </FormControl>
+        </Grid>
+        <Grid item md={4} xs={12}>
+          <FormControl fullWidth className={classes.margin} variant='outlined'>
+            <Autocomplete
+              id='grade'
+              name='grade'
+              key={`grade_${index}`}
+              onChange={(e, value) => {
+                formik.setFieldValue('section', []);
+                formik.setFieldValue('subjects', []);
+                handleChangeGrade(value, selectedYear?.id, formik.values.branch);
+              }}
+              multiple
+              value={formik.values.grade || []}
+              options={grades}
+              // filterSelectedOptions
+              className='dropdownIcon'
+              limitTags={2}
+              getOptionLabel={(option) => option.grade_name || ''}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Grade'
+                  placeholder='Grade'
+                />
+              )}
+              getOptionSelected={(option, value) => option.grade_name == value.grade_name}
+              size='small'
+            />
+            <FormHelperText style={{ color: 'red' }}>
+              {formik.errors.grade ? formik.errors.grade : ''}
+            </FormHelperText>
+          </FormControl>
+        </Grid>
+        <Grid item md={4} xs={12}>
+          <FormControl fullWidth className={classes.margin} variant='outlined'>
+            <Autocomplete
+              id='section'
+              name='section'
+              key={`section_${index}`}
+              onChange={(e, value) => {
+                handleChangeSection(
+                  value,
+                  formik.values.academic_year?.[0]?.id,
+                  formik.values.branch,
+                  formik.values.grade
+                );
+              }}
+              value={formik.values.section || []}
+              options={sections || []}
+              multiple
+              limitTags={2}
+              // filterSelectedOptions
+              className='dropdownIcon'
+              getOptionLabel={(option) => option.section_name || ''}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Section'
+                  placeholder='Section'
+                />
+              )}
+              getOptionSelected={(option, value) =>
+                option.section_name == value.section_name
+              }
+              size='small'
+            />
+            <FormHelperText style={{ color: 'red' }}>
+              {formik.errors.section ? formik.errors.section : ''}
+            </FormHelperText>
+          </FormControl>
+        </Grid>
+        <Grid item md={4} xs={12}>
+          <FormControl
             color='secondary'
-            // className={classes.button}
-            onClick={() => handleDelete(index)}
-            startIcon={<DeleteIcon />}
+            fullWidth
+            className={classes.margin}
+            variant='outlined'
           >
-            Delete
-          </Button>
+            <Autocomplete
+              id='subjects'
+              name='subjects'
+              key={`subjects_${index}`}
+              onChange={(e, value) => {
+                value =
+                  value.filter(({ id }) => id === 'all').length === 1
+                    ? [...subjects].filter(({ id }) => id !== 'all')
+                    : value;
+                formik.setFieldValue('subjects', value);
+              }}
+              value={formik.values.subjects || []}
+              limitTags={2}
+              multiple
+              options={subjects || []}
+              // filterSelectedOptions
+              className='dropdownIcon'
+              getOptionLabel={(option) => option.subject_name || ''}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Subjects'
+                  placeholder='Subjects'
+                />
+              )}
+              getOptionSelected={(option, value) => option.item_id == value.item_id}
+              size='small'
+            />
+            <FormHelperText style={{ color: 'red' }}>
+              {formik.errors.subjects ? formik.errors.subjects : ''}
+            </FormHelperText>
+          </FormControl>
         </Grid>
-      )}
-      {isAddVisible && (
-        <Grid item md={2} xs={12}>
+        {!formik.values.academic_year?.[0]?.is_default && (
+          <Grid item md={2} xs={12}>
+            <Button
+              variant='contained'
+              color='secondary'
+              // className={classes.button}
+              // onClick={() => handleDelete(index)}
+              onClick={() => handleClick()}
+              startIcon={<DeleteIcon />}
+            >
+              Delete
+            </Button>
+          </Grid>
+        )}
+      </Grid>
+      <Dialog id={id} open={open} onClose={handleClose}>
+        <DialogTitle id='draggable-dialog-title'>Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Are you sure you want to delete... ?</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={(e) => handleClose()} className='labelColor cancelButton'>
+            Cancel
+          </Button>
           <Button
-            startIcon={<AddOutlinedIcon />}
-            variant='contained'
             color='primary'
+            variant='contained'
             style={{ color: 'white' }}
-            size='medium'
-            title='Add Academic Year'
-            onClick={() => handleAddMappingObject()}
+            onClick={() => handleDelete(index)}
           >
-            Add
+            Confirm
           </Button>
-        </Grid>
-      )}
-    </Grid>
+        </DialogActions>
+      </Dialog>
+    </>
   );
 };
 
