@@ -388,7 +388,7 @@ const ConnectionPodFn = (props) => {
           <div className='connection-pod-breadcrumb-wrapper'>
             <CommonBreadcrumbs
               componentName='Online Class'
-              childComponentName='Workshop'
+              childComponentName='Work Shop'
               isAcademicYearVisible={true}
             />
           </div>
@@ -478,7 +478,7 @@ const ConnectionPodFn = (props) => {
                               )}
                             />
                           </Grid>
-                          {tutorEmailList.length > 0 && (
+                          {tutorEmailList.length > 0 && userLevel !== 11 && (
                             <Grid item md={3} sm={4} xs={12}>
                               <Autocomplete
                                 size='small'

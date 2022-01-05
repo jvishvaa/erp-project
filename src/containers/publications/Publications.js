@@ -310,7 +310,7 @@ const Publications = (props) => {
   const handleclear = () => {
     const newPage = 1;
     setFilterPage(false);
-    setMainsubject('');
+    setTheSubjectId()
     setPage(1);
     setReviewData('');
     setIndividualData('');
@@ -367,7 +367,7 @@ const Publications = (props) => {
   }, [goBackFlag]);
 
   const filterForAllData = (theSubjectId, page) => {
-    if (!mainsubject) {
+    if (!theSubjectId) {
       setAlert('error', 'Select Subject');
       return;
     }
