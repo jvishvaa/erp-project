@@ -1,12 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Grid from '@material-ui/core/Grid';
-import Divider from '@material-ui/core/Divider';
-import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
-import Button from '@material-ui/core/Button';
 import { useFormik } from 'formik';
-import { FormHelperText, withStyles } from '@material-ui/core';
 import { useStyles } from './useStyles';
 import {
   fetchBranchesForCreateUser,
@@ -19,12 +13,19 @@ import { useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import DeleteIcon from '@material-ui/icons/Delete';
-import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import Dialog from '@material-ui/core/Dialog';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogActions from '@material-ui/core/DialogActions';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  FormHelperText,
+  Grid,
+  Divider,
+  FormControl,
+  TextField,
+  Button,
+} from '@material-ui/core';
 
 const EditSchoolDetailsForm = ({
   details,
@@ -33,7 +34,6 @@ const EditSchoolDetailsForm = ({
   index = 0,
   handleDelete,
   isAcadDisabled = false,
-//   selectedYearIds
 }) => {
   const [academicYears, setAcademicYears] = useState([]);
   const [branches, setBranches] = useState([]);
@@ -45,6 +45,7 @@ const EditSchoolDetailsForm = ({
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
+
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -80,11 +81,6 @@ const EditSchoolDetailsForm = ({
   });
 
   const fetchAcademicYears = () => {
-    // for (let i = 0; i < details?.mapping_bgs.length; i++) {
-    //   for (let j = 0; j < details?.mapping_bgs[i].session_year.length; j++) {
-    //     selectedYearIds.push(details.mapping_bgs[i]?.session_year[j].session_year_id);
-    //   }
-    // }
     getAcademicYears(moduleId).then((data) => {
       let transformedData = '';
       transformedData = data?.map((obj = {}) => ({
@@ -140,13 +136,6 @@ const EditSchoolDetailsForm = ({
   };
 
   const handleChangeAcademicYear = (value = {}) => {
-    // if (value && selectedYearIds?.includes(value?.id)) {
-    //   setAlert('error', `${value.session_year} Already Selected`);
-    //   return;
-    // } 
-    // if(value===null && selectedYearIds?.includes(value?.id)){
-    //     selectedYearIds.splice(selectedYearIds.indexOf(value?.id),1)
-    // }
     setBranches([]);
     setGrades([]);
     setSections([]);
@@ -159,7 +148,6 @@ const EditSchoolDetailsForm = ({
     if (value) {
       formik.setFieldValue('academic_year', [value]);
       fetchBranches(value?.id);
-    //   selectedYearIds.push(value.id);
     }
   };
 
@@ -275,7 +263,6 @@ const EditSchoolDetailsForm = ({
       fetchAcademicYears();
       if (details?.academic_year?.length > 0) {
         handleChangeAcademicYear(details.academic_year[0]);
-
         if (details.branch) {
           handleChangeBranch(details.branch, details.academic_year[0]?.id);
           if (details?.grade?.length > 0) {
@@ -301,6 +288,10 @@ const EditSchoolDetailsForm = ({
     }
   }, [moduleId]);
 
+  useEffect(() => {
+    if (isNext) handleSubmit();
+  }, [isNext]);
+
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
@@ -311,10 +302,6 @@ const EditSchoolDetailsForm = ({
   const handleClick = (event) => {
     setAnchorEl(true);
   };
-
-  useEffect(() => {
-    if (isNext) handleSubmit();
-  }, [isNext]);
 
   const validateEntries = () => {
     const validationObject = {
@@ -425,7 +412,11 @@ const EditSchoolDetailsForm = ({
               onChange={(e, value) => {
                 formik.setFieldValue('section', []);
                 formik.setFieldValue('subjects', []);
-                handleChangeGrade(value, selectedYear?.id, formik.values.branch);
+                handleChangeGrade(
+                  value,
+                  formik.values.academic_year?.[0]?.id,
+                  formik.values.branch
+                );
               }}
               multiple
               value={formik.values.grade || []}
