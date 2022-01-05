@@ -42,6 +42,8 @@ class EditUser extends Component {
       user: null,
       isNext: false,
       collectData: {},
+      mappingBgsLength: 0,
+      collectDataCount: 0,
     };
   }
 
@@ -49,10 +51,23 @@ class EditUser extends Component {
     this.fetchUserDetails();
   }
 
+  // collectSessionIds(details) {
+  //   let selectedYearIds = [];
+  //   for (let i = 0; i < details?.mapping_bgs.length; i++) {
+  //     for (let j = 0; j < details?.mapping_bgs[i].session_year.length; j++) {
+  //       selectedYearIds.push(details.mapping_bgs[i]?.session_year[j].session_year_id);
+  //     }
+  //   }
+  //   this.setState({ selectedYearIds });
+  // }
+
   componentDidUpdate(prevProps) {
     const { selectedUser } = this.props;
     if (prevProps.selectedUser !== selectedUser && selectedUser) {
-      this.setState({ user: selectedUser });
+      this.setState({
+        user: selectedUser,
+        mappingBgsLength: selectedUser.mapping_bgs?.length,
+      });
     }
   }
 
@@ -98,24 +113,27 @@ class EditUser extends Component {
       section: [...collectedSection, section],
       subjects: [...collectedSubjects, subjects],
     };
+    const count = this.state.collectDataCount + 1;
     this.setState({
       collectData: updatedCollectData,
+      collectDataCount: count,
     });
-    if (index === this.state.user?.mapping_bgs?.length - 1) {
-      this.setState({ collectData: [] });
+    if (count === this.state.mappingBgsLength) {
+      this.setState({ collectData: [], collectDataCount: 0 });
       this.onSubmitSchoolDetails(updatedCollectData);
     }
   };
 
   onSubmitSchoolDetails = (details) => {
+    const { selectedUser } = this.props;
     this.state.user.mapping_bgs.forEach(({ is_delete }, index) => {
       if (is_delete) {
+        // let spliceCount = index === this.state.mappingBgsLength - 1 ? 1 : 0;
         ['academic_year', 'grade', 'branch', 'section', 'subjects'].forEach((key) =>
           details[key].splice(index, 0, [])
         );
       }
     });
-    const { selectedUser } = this.props;
     if (selectedUser.parent.father_first_name) {
       this.setState({ showParentForm: true });
     }
@@ -308,11 +326,14 @@ class EditUser extends Component {
       subjects: [...userObj['subjects'], []],
       mapping_bgs: [...userObj['mapping_bgs'], modifiedMappingObject],
     };
-    this.setState({ user: modifiedUserObject });
+    this.setState((prevState) => ({
+      user: modifiedUserObject,
+      mappingBgsLength: prevState.mappingBgsLength + 1,
+    }));
   }
 
   getUserDetails(user, index) {
-    return {
+    const details =  {
       ...user,
       academic_year: user['academic_year'][index],
       branch: user['branch'][index],
@@ -320,27 +341,22 @@ class EditUser extends Component {
       section: user['section'][index],
       subjects: user['subjects'][index],
     };
+    return details;
   }
 
   handleDeleteMappingObject(index) {
     const { user } = this.state;
     let userObj = user;
-
     userObj['mapping_bgs'][index]['is_delete'] = true;
-
-    let transformedData = {
-      academic_year: userObj['academic_year'].splice(index, 0, []),
-      branch: userObj['branch'].splice(index, 0, []),
-      grade: userObj['grade'].splice(index, 0, []),
-      section: userObj['section'].splice(index, 0, []),
-      subjects: userObj['subjects'].splice(index, 0, []),
-    };
-
-    const modifiedUserObject = {
-      ...userObj,
-      ...transformedData,
-    };
-    this.setState({ user: modifiedUserObject });
+    userObj['academic_year'].splice(index, 1, []);
+    userObj['branch'].splice(index, 1, []);
+    userObj['grade'].splice(index, 1, []);
+    userObj['section'].splice(index, 1, []);
+    userObj['subjects'].splice(index, 1, []);
+    this.setState((prevState) => ({
+      user: userObj,
+      mappingBgsLength: prevState.mappingBgsLength - 1,
+    }));
   }
 
   render() {
@@ -393,6 +409,7 @@ class EditUser extends Component {
                               isAcadDisabled={is_acad_disabled}
                               index={index}
                               handleDelete={() => this.handleDeleteMappingObject(index)}
+                              // selectedYearIds={this.state.selectedYearIds}
                             />
                           )
                       )}
