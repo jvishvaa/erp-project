@@ -107,7 +107,7 @@ const CreateAssesment = ({
     try {
       const data = await fetchAssesmentTypes();
       setAssesmentTypes(data);
-      formik.setFieldValue('test_type', data[0]);
+      formik.setFieldValue('test_type', data);
     } catch (e) { }
   };
   // useEffect(() => {
