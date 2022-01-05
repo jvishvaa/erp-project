@@ -126,7 +126,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       axiosInstance
         .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
         .then((result) => {
-          if (result.data.status_code === 200) {
+          if (result?.data?.status_code === 200) {
             setAcademicYear(result?.data?.data);
             const defaultValue = result?.data?.data?.[0];
             handleAcademicYear({}, defaultValue);
@@ -135,12 +135,12 @@ const CreateDailyDairy = (details, onSubmit) => {
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         });
     }
   }, [moduleId]);
   const handleAcademicYear = (event = {}, value = '') => {
-    if (state.isEdit) {
+    if (state?.isEdit) {
       editData.academic_year = value;
     }
     setSearchAcademicYear('');
@@ -164,7 +164,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         subject: '',
         chapter: '',
       });
-      fetchBranchesForCreateUser(value.id, moduleId).then((data) => {
+      fetchBranchesForCreateUser(value?.id, moduleId).then((data) => {
         const transformedData = data
           ? data?.map((obj) => ({
             id: obj.id,
@@ -248,7 +248,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleSection = (e, value) => {
-    if (state.isEdit) {
+    if (state?.isEdit) {
       editData.section[0] = value;
     }
     setFilterData({ ...filterData, section: '', subject: '', chapter: '' });
@@ -263,7 +263,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleSubject = (event, value) => {
-    if (state.isEdit) {
+    if (state?.isEdit) {
       editData.subject = value;
     }
     formik.setFieldValue('chapters', '' || []);
@@ -279,8 +279,8 @@ const CreateDailyDairy = (details, onSubmit) => {
           `${endpoints.questionBank.chapterList}?subject_id=${value?.ids}&subject=${value?.id}&session_year=${filterData?.branch?.id}`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
-            setChapterDropdown(result.data.result);
+          if (result?.data?.status_code === 200) {
+            setChapterDropdown(result?.data?.result);
           } else {
             setAlert('error');
           }
@@ -312,10 +312,10 @@ const CreateDailyDairy = (details, onSubmit) => {
     // if (filePath?.length <  10) {
     if (isEdit) {
     } else if (
-      !formik.values.branch.id ||
-      !formik.values.grade ||
-      !formik.values.section ||
-      !formik.values.subjects ||
+      !formik.values?.branch.id ||
+      !formik.values?.grade ||
+      !formik.values?.section ||
+      !formik.values?.subjects ||
       !subjectIds
     ) {
       setAlert('error', 'Please select all fields');
@@ -328,13 +328,13 @@ const CreateDailyDairy = (details, onSubmit) => {
     fd.append('file', data);
     fd.append(
       'branch_name',
-      isEdit ? editData.branch?.branch_name : formik.values.branch?.branch_name
+      isEdit ? editData?.branch?.branch_name : formik.values.branch?.branch_name
     );
     fd.append('grades', isEdit ? editData?.grade[0]?.id : formik.values.grade?.id);
     axiosInstance.post(`academic/dairy-upload/`, fd).then((result) => {
-      if (result.data.status_code === 200) {
+      if (result?.data?.status_code === 200) {
         setLoading(false);
-        if (editData.documents) {
+        if (editData?.documents) {
           // let imageData = editData.documents;
           // imageData.push(result?.data?.result);
           // setFilePath(imageData);
@@ -342,50 +342,50 @@ const CreateDailyDairy = (details, onSubmit) => {
         } else {
           setFilePath([...filePath, result?.data?.result]);
         }
-        setAlert('success', result.data.message);
+        setAlert('success', result?.data?.message);
       } else {
         setLoading(false);
 
-        setAlert('error', result.data.message);
+        setAlert('error', result?.data?.message);
       }
     });
   };
 
   const handleSubmit = async () => {
-    if (filterData.branch.length === 0) {
+    if (filterData?.branch?.length === 0) {
       setAlert('error', 'Select Branch!');
       return;
     }
-    if (!filterData.grade) {
+    if (!filterData?.grade) {
       setAlert('error', 'Select Grade!');
       return;
     }
-    if (!filterData.section) {
+    if (!filterData?.section) {
       setAlert('error', 'Select Section!');
       return;
     }
-    if (!filterData.subject) {
+    if (!filterData?.subject) {
       setAlert('error', 'Select Subject!');
       return;
     }
-    if (!filterData.chapter) {
+    if (!filterData?.chapter) {
       setAlert('error', 'Select Chapter!');
       return;
     }
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
-    const mapId = formik.values.section.section_mapping_id;
-    const ids = formik.values.section
+    const mapId = formik.values?.section?.section_mapping_id;
+    const ids = formik.values?.section
       ? [formik.values.section].map((el) => el.id)
       : setAlert('error', 'Fill all the required fields');
-    const grade = formik.values.grade ? [formik.values.grade].map((el) => el.id) : '';
-    const section = formik.values.section
+    const grade = formik.values?.grade ? [formik.values.grade].map((el) => el.id) : '';
+    const section = formik.values?.section
       ? [formik.values.section].map((el) => el.id)
       : '';
     if (
-      !formik.values.section ||
-      !formik.values.grade ||
-      !formik.values.subjects ||
-      !formik.values.branch.id
+      !formik.values?.section ||
+      !formik.values?.grade ||
+      !formik.values?.subjects ||
+      !formik.values?.branch.id
     ) {
       return setAlert('error', 'Please select all fields');
     }
@@ -449,10 +449,10 @@ const CreateDailyDairy = (details, onSubmit) => {
         setState({ editData: [], isEdit: false });
         history.push('/diary/teacher');
       } else {
-        setAlert('error', response.data.message);
+        setAlert('error', response?.data?.message);
       }
     } catch (error) {
-      setAlert('error', error.message);
+      setAlert('error', error?.message);
     }
   };
 
@@ -496,8 +496,8 @@ const CreateDailyDairy = (details, onSubmit) => {
         payload
       )
       .then((result) => {
-        if (result.data.status_code === 200) {
-          setAlert('success', result.data.message);
+        if (result?.data?.status_code === 200) {
+          setAlert('success', result?.data?.message);
           setState({ editData: [], isEdit: false });
           history.push('/diary/teacher');
         } else {
@@ -560,12 +560,12 @@ const CreateDailyDairy = (details, onSubmit) => {
       axiosInstance
         .post(`${endpoints.circular.deleteFile}`, {
           file_name: `${file}`,
-          daily_diary_id: `${editData.id}`,
+          daily_diary_id: `${editData?.id}`,
         }).then((result) => {
-          if (result.data.status_code === 204) {
+          if (result?.data?.status_code === 204) {
             list.splice(i, 1);
             setFilePath(list);
-            setAlert('success', result.data.message);
+            setAlert('success', result?.data?.message);
             setLoading(false);
           }
         })
@@ -574,23 +574,23 @@ const CreateDailyDairy = (details, onSubmit) => {
           setLoading(false);
         });
     }
-    if (!editData.documents) {
+    if (!editData?.documents) {
       const list = [...filePath];
       axiosInstance
         .post(`${endpoints.circular.deleteFile}`, {
           file_name: `${file}`,
         })
         .then((result) => {
-          if (result.data.status_code === 204) {
+          if (result?.data?.status_code === 204) {
             list.splice(i, 1);
             setFilePath(list);
-            setAlert('success', result.data.message);
+            setAlert('success', result?.data?.message);
           } else {
-            setAlert('error', result.data.message);
+            setAlert('error', result?.data?.message);
           }
         })
         .catch((error) => {
-          setAlert('error', error.message);
+          setAlert('error', error?.message);
         })
         .finally(() =>
           setLoading(false)
@@ -602,26 +602,26 @@ const CreateDailyDairy = (details, onSubmit) => {
   useEffect(() => {
     if (editData?.documents) {
       if (imageCount) {
-        setFilePath(editData.documents);
+        setFilePath(editData?.documents);
         imageCount = 0;
       }
     }
   }, [editData]);
   useEffect(() => {
-    if (details.branch) {
-      handleChangeBranch([details.branch]);
+    if (details?.branch) {
+      handleChangeBranch([details?.branch]);
       if (details.grade && details.grade.length > 0) {
-        handleChangeGrade(details.grade, [details.branch]);
+        handleChangeGrade(details?.grade, [details.branch]);
       }
     }
-    if (details.subjects && details.subjects.length > 0) {
+    if (details?.subjects && details?.subjects?.length > 0) {
       axios
         .get(
           `/academic/chapters/?academic_year=${searchAcademicYear?.id}&subject=${subjectIds}`
         )
         .then((result) => {
-          if (result.data.status_code === 200) {
-            setChapterDropdown(result.data.result);
+          if (result?.data?.status_code === 200) {
+            setChapterDropdown(result?.data?.result);
           } else {
             setAlert('error');
           }
@@ -678,7 +678,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               id='branch'
               name='branch'
               onChange={(e, value) => {
-                if (state.isEdit) {
+                if (state?.isEdit) {
                   editData.branch = value;
                 }
                 setFilterData({
@@ -689,7 +689,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                   subject: [],
                   chapter: '',
                 });
-                state.isEdit
+                state?.isEdit
                   ? formik.setFieldValue('branch', value)
                   : formik.setFieldValue('branch', value);
                 formik.setFieldValue('grade', []);
@@ -722,7 +722,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                 id='grade'
                 name='grade'
                 onChange={(e, value) => {
-                  if (state.isEdit) {
+                  if (state?.isEdit) {
                     editData.grade[0] = value;
                   }
                   setFilterData({
@@ -742,7 +742,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                 value={state.isEdit ? editData.grade[0] : filterData?.grade || {}}
                 options={grades}
                 className='dropdownIcon'
-                getOptionLabel={(option) => option.grade_name || ''}
+                getOptionLabel={(option) => option?.grade_name || ''}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -751,7 +751,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     placeholder='Grade'
                   />
                 )}
-                getOptionSelected={(option, value) => option.id == value.id}
+                getOptionSelected={(option, value) => option?.id == value?.id}
                 size='small'
               />
               <FormHelperText style={{ color: 'red' }}>
@@ -784,7 +784,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                     placeholder='Section'
                   />
                 )}
-                getOptionSelected={(option, value) => option.id == value.id}
+                getOptionSelected={(option, value) => option?.id == value?.id}
                 size='small'
               />
               <FormHelperText style={{ color: 'red' }}>
@@ -819,7 +819,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                 )}
               />
               <FormHelperText style={{ color: 'red' }}>
-                {formik.errors.subjects ? formik.errors.subjects : ''}
+                {formik.errors?.subjects ? formik.errors?.subjects : ''}
               </FormHelperText>
             </FormControl>
           </Grid>
@@ -830,13 +830,13 @@ const CreateDailyDairy = (details, onSubmit) => {
                 style={{ width: '100%' }}
                 size='small'
                 onChange={(e, value) => {
-                  if (state.isEdit) {
-                    editData.chapter = value;
+                  if (state?.isEdit) {
+                    editData.chapter[0] = value;
                   }
-                  formik.setFieldValue('chapters', value);
                   setFilterData({ ...filterData, chapter: value });
+                  formik.setFieldValue('chapters', value);
                 }}
-                value={state.isEdit ? editData.chapter : filterData.chapter || {}}
+                value={state.isEdit ? editData?.chapter[0] : filterData?.chapter || {}}
                 options={chapterDropdown}
                 className='dropdownIcon'
                 getOptionLabel={(option) => option?.chapter_name}
@@ -851,7 +851,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                 )}
               />
               <FormHelperText style={{ color: 'red' }}>
-                {formik.errors.chapters ? formik.errors.chapters : ''}
+                {formik.errors?.chapters ? formik.errors?.chapters : ''}
               </FormHelperText>
             </FormControl>
           </Grid>
