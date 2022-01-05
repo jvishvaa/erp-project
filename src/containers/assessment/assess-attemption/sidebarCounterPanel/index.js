@@ -148,7 +148,7 @@ const SidebarCounterPanel = (props) => {
         .catch((err) => setAlert('error', 'Something went wrong'))
     }
     else {
-      setAlert('error', 'Something went wrong');
+      // setAlert('error', 'Something went wrong');
     }
   }
 
