@@ -264,13 +264,13 @@ const ErpAdminViewClass = ({ history }) => {
       if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
         const isMsOriginURL = ![0, 1].includes(tabValue);
         const url = isMsOriginURL
-          ? `/reports/v1/retrieve-online-class_no_filter/?module_id=${moduleId}`
-          : `/oncls/v1/retrieve-online-class_no_filter/?module_id=${moduleId}`;
+          ? `/reports/v1/retrieve-online-class_no_filter/`
+          : `/oncls/v1/retrieve-online-class_no_filter/`;
 
         APIREQUEST(
           'get',
-          `${url}&user_level=${userLevel}&class_status=${tabValue + 1
-          }&start_date=${startDateTechPer?.format(
+          `${url}?module_id=${moduleId}&user_level=${userLevel}&class_status=${tabValue + 1
+          }$audit=0&start_date=${startDateTechPer?.format(
             'YYYY-MM-DD'
           )}&end_date=${endDateTechPer?.format(
             'YYYY-MM-DD'
@@ -319,8 +319,8 @@ const ErpAdminViewClass = ({ history }) => {
       window.location.pathname === '/erp-online-class-teacher-view'
     ) {
       return [0, 1].includes(tabValue)
-        ? `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}`
-        : `/reports/v1/retrieve-online-class/?${path}&user_level=${userLevel}`;
+        ? `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=0`
+        : `/reports/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=0`;
     }
   };
 
