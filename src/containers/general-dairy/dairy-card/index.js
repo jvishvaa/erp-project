@@ -15,7 +15,11 @@ import cardAttachment from '../../../assets/images/cardAttachment.svg'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import {Context} from '../context/context'
 import {useLocation} from 'react-router-dom';
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 
 const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, handleDairyType, deleteFlag,setDeleteFlag}) => {
 
@@ -29,12 +33,21 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   const [state, setState] = useContext(Context)
   const location = useLocation();
   const isTeacher = location.pathname === '/diary/teacher' ? true : false;
-
+  const [deleteAlert, setDeleteAlert] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleteIndex, setDeleteIndex] = useState(null);
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
     setShowPeriodIndex(index);
   };
-
+  const handleDeleteCancel = () => {
+    setDeleteId(null);
+    setDeleteIndex(null);
+    setDeleteAlert(false);
+  };
+  const handleDeleteOpen = () => {
+       setDeleteAlert(true);
+  };
   const handlePeriodMenuClose = (index) => {
     setShowMenu(false);
     setShowPeriodIndex();
@@ -121,6 +134,30 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
             </Typography>
           </Box>
         </Grid>
+        <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
+          <DialogTitle
+            id='draggable-dialog-title'
+          >
+            Delete Dairy
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to delete ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={(e) => handleDelete(lesson)}>
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
         <Grid item xs={2} className={classes.textRight}>
           <Box>
             <span
@@ -140,7 +177,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
                 showMenu) ? (
                   <div className="tooltip" style={{display:'flex',justifyContent:'space-between'}}>
                   <span className={` ${classes.tooltiptext} tooltiptext`} >
-                        <Button className={classes.tooltip} onClick={e=> handleDelete(lesson)}>Delete</Button>
+                        <Button className={classes.tooltip} onClick={handleDeleteOpen}>Delete</Button>
                         {/* <Button className='tooltip' onClick={e=> handleEdit(lesson)}> Edit</Button> */}
                     </span>
                   </div>
