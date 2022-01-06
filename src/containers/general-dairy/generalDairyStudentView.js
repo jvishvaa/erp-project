@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState, useStyles } from 'react';
+import { useSelector } from 'react-redux';
 import Divider from '@material-ui/core/Divider';
 import { useHistory } from 'react-router-dom';
 import { Grid, TextField, Button, useTheme } from '@material-ui/core';
@@ -56,6 +57,9 @@ const GeneralDairyStudentView = ({
   const [datePopperOpen, setDatePopperOpen] = useState(false);
 
   const [teacherModuleId, setTeacherModuleId] = useState(null);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const history = useHistory();
 
   const [filterData, setFilterData] = useState({
@@ -91,7 +95,7 @@ const GeneralDairyStudentView = ({
       setFilterData({ ...filterData, grade: value, subject: '', chapter: '' });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&grade_id=${value.grade_id}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData.branch.id}&session_year=${selectedAcademicYear?.id}&grade_id=${value.grade_id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -131,7 +135,7 @@ const GeneralDairyStudentView = ({
         chapter: '',
       });
       axiosInstance
-        .get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=8`)
+        .get(`${endpoints.communication.grades}?branch_id=${value.id}&session_year=${selectedAcademicYear?.id}&module_id=8`)
         .then((result) => {
           if (result.data.status_code === 200) {
             setGradeDropdown(result.data.data);

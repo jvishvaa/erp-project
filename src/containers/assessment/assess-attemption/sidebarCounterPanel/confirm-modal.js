@@ -5,7 +5,6 @@ const ConfirmModal = ({ openModal, setOpenModal, submit }) => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
-
   return (
     <Dialog
       className='reminderDialog'

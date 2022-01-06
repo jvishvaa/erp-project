@@ -367,15 +367,6 @@ const Filters = (props) => {
         selectedSection
       );
     }
-    /*
-        axiosInstance.get(props.url)
-        .then((res) => {
-            console.log(res.data);
-            //props.handleFilterData(res.data);
-            //props.handleFilterData(res.data,gradeId,sectionId);
-        })
-        .catch((error) => console.log(error))
-        */
   };
 
   React.useEffect(() => {

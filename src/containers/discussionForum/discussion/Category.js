@@ -1,4 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Grid,
   Typography,
@@ -226,9 +227,12 @@ const Category = (props) => {
   const [page, setPage] = React.useState(1);
   const [totalCount, setTotalCount] = React.useState();
   const limit = 6;
-  const [awardy, setAwardy] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [hidePagination, setHidePagination] = React.useState(false);
+  const [awardy ,setAwardy]=React.useState(false);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const hideFilter = () => {
     props.handleFilter();
@@ -302,11 +306,11 @@ const Category = (props) => {
         const grade_id = userDetails.role_details?.grades[0]?.grade_id;
         const branch_id = userDetails.role_details?.branch[0]?.id;
         axiosInstance
-          .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&is_delete=False`)
-          .then((res) => {
-            setCategoryList(res.data.result);
-          })
-          .catch((error) => console.log(error));
+        .get(`${endpoints.discussionForum.categoryList}?module_id=${moduleId}&session_year=${selectedAcademicYear?.id}&branch=${branch_id}&grade=${grade_id}&is_delete=False`)
+        .then((res) => {
+          setCategoryList(res.data.result);
+        })
+        .catch((error) => console.log(error));
       }
       else {
         axiosInstance
@@ -341,11 +345,11 @@ const Category = (props) => {
       if (location.pathname === '/student-forum' && personalInfo?.role !== "SuperUser") {
         const grade_id = userDetails.role_details?.grades[0]?.grade_id;
         const branch_id = userDetails.role_details?.branch[0]?.id;
-        if (categoryId > 0) {
-          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&category=${categoryId}&page=${page}&page_size=${limit}`);
+        if(categoryId > 0) {
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&session_year=${selectedAcademicYear?.id}&branch=${branch_id}&grade=${grade_id}&category=${categoryId}&page=${page}&page_size=${limit}`);
         }
         else {
-          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branch_id}&grade=${grade_id}&page=${page}&page_size=${limit}`);
+          getDiscussionPost(`${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&session_year=${selectedAcademicYear?.id}&session_year=${selectedAcademicYear?.id}&branch=${branch_id}&grade=${grade_id}&page=${page}&page_size=${limit}`);
         }
       }
       else {
@@ -364,12 +368,12 @@ const Category = (props) => {
         }
         if (categoryId === 0 && grades !== '' && sections !== '') {
           getDiscussionPost(
-            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch=${branchId}&grade=${grades}&section_mapping=${sections}&page=${page}&page_size=${limit}`
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&session_year=${selectedAcademicYear?.id}&branch=${branchId}&grade=${grades}&section_mapping=${sections}&page=${page}&page_size=${limit}`
           );
         }
         if (categoryId !== 0 && grades !== '' && sections !== '') {
           getDiscussionPost(
-            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&branch_id=${branchId}&category=${categoryId}&grade=${grades}&section_mapping=${sections}&page=${page}&page_size=${limit}`
+            `${endpoints.discussionForum.filterCategory}?module_id=${moduleId}&session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&category=${categoryId}&grade=${grades}&section_mapping=${sections}&page=${page}&page_size=${limit}`
           );
         }
 

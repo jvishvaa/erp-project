@@ -11,6 +11,7 @@
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
@@ -166,6 +167,9 @@ const SendMessage = withRouter(({ history, ...props }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [modulePermision, setModulePermision] = useState(true);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const handleCustomChange = () => {
     setCustomSelect(!customSelect);
@@ -376,7 +380,7 @@ const SendMessage = withRouter(({ history, ...props }) => {
         getUserListUrl += `&grade=${gradesId.toString()}`;
       }
       if (selectedBranch) {
-        getUserListUrl += `&branch=${branchsId.toString()}`;
+        getUserListUrl += `&session_year=${selectedAcademicYear?.id}&branch=${branchsId.toString()}`;
       }
       if (sectionsId.length) {
         getUserListUrl += `&section=${sectionsId.toString()}`;

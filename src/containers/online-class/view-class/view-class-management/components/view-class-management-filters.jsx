@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Button,
   Checkbox,
@@ -61,6 +62,9 @@ const ViewClassManagementFilters = () => {
   const [selectedGrades, setSelectedGrades] = useState([]);
   const [selectedSections, setSelectedSections] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const {
     managementView: { currentPage },
@@ -99,7 +103,7 @@ const ViewClassManagementFilters = () => {
           ','
         )}&grade=${gradeids.join(',')}&section=${sectionIds.join(
           ','
-        )}&module_id=${moduleId}`
+        )}&module_id=${moduleId}&session_year=${selectedAcademicYear?.id}`
       );
       setSubjects(data.data);
     } catch (error) {

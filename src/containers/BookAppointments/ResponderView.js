@@ -342,7 +342,7 @@ const ResponderView = () => {
                       callApi(
                         `${endpoints.academics.grades}?session_year=${
                           selectedAcademicYear.id
-                        }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                        }&session_year=${selectedAcademicYear?.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
                         'gradeList'
                       );
                     }

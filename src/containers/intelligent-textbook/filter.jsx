@@ -150,7 +150,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
             onChange={(event, value) => {
               if (value) {
                 withAxiosInstance(
-                  `${endpoints.ibook.ibookMappedGrade}?branch_id=${selectedBranch.branch.id}&grade_id=${value.erp_grade}`,
+                  `${endpoints.ibook.ibookMappedGrade}?branch_id=${selectedBranch.branch.id}&session_year=${selectedAcad?.id}&grade_id=${value.erp_grade}`,
                   'subject'
                 );
               }

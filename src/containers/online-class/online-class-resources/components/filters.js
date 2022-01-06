@@ -116,7 +116,7 @@ const Filter = (props) => {
       : '/oncls/v1/retrieve-online-class/';
     APIREQUEST(
       'get',
-      `${apiCall}?${path}&user_level=${userLevel}`,
+      `${apiCall}?${path}&user_level=${userLevel}&audit=0`,
       null,
       null,
       isMsOriginURL
@@ -210,14 +210,12 @@ const Filter = (props) => {
     if (data === 'success') {
       setPage(1);
       callApi(
-        `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
-          selectedBatch && selectedBatch.id
+        `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${selectedBatch && selectedBatch.id
         }&start_date=${startDateTechPer.format(
           'YYYY-MM-DD'
         )}&end_date=${endDateTechPer.format(
           'YYYY-MM-DD'
-        )}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${
-          selectedBatch.batch_size
+        )}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch.batch_size
         }`,
         'filter'
       );
@@ -236,14 +234,12 @@ const Filter = (props) => {
   function handlePagination(e, page) {
     setPage(page);
     callApi(
-      `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${
-        selectedBatch && selectedBatch.id
+      `${endpoints.teacherViewBatches.getBatchList}?aol_batch=${selectedBatch && selectedBatch.id
       }&start_date=${startDateTechPer.format(
         'YYYY-MM-DD'
       )}&end_date=${endDateTechPer.format(
         'YYYY-MM-DD'
-      )}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${
-        selectedBatch.batch_size
+      )}&page_number=${page}&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch.batch_size
       }`,
       'filter'
     );
@@ -315,48 +311,37 @@ const Filter = (props) => {
     setPage(1);
     if (window.location.host === endpoints?.aolConfirmURL) {
       callApi(
-        `${endpoints.teacherViewBatches.getBatchList}?is_aol=1&course=${
-          selectedCourse.id
+        `${endpoints.teacherViewBatches.getBatchList}?is_aol=1&course=${selectedCourse.id
         }&start_date=${startDateTechPer.format(
           'YYYY-MM-DD'
-        )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=${
-          props.pages
-        }&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${
-          selectedBatch && selectedBatch.batch_size
+        )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=${props.pages
+        }&page_size=12&module_id=${moduleId}&class_type=1&batch_limit=${selectedBatch && selectedBatch.batch_size
         }`,
         'filter'
       );
     } else if (selectedCourse.id) {
       callApi(
-        `${
-          endpoints.aol.classesresources
+        `${endpoints.aol.classesresources
         }?is_aol=0&section_mapping_ids=${selectedSection.map(
           (el) => el.id
-        )}&session_year=${selectedAcademicYear.id}&class_type=${
-          selectedClassType.id
+        )}&session_year=${selectedAcademicYear.id}&class_type=${selectedClassType.id
         }&start_date=${startDateTechPer.format(
           'YYYY-MM-DD'
-        )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${
-          selectedCourse.id
-        }&page_number=${props.pages}&page_size=12&class_status=${
-          props.tabValue + 1
+        )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${selectedCourse.id
+        }&page_number=${props.pages}&page_size=12&class_status=${props.tabValue + 1
         }&module_id=${moduleId}`,
         'filter'
       );
     } else {
       callApi(
-        `${
-          endpoints.aol.classesresources
+        `${endpoints.aol.classesresources
         }?is_aol=0&section_mapping_ids=${selectedSection.map(
           (el) => el.id
-        )}&session_year=${
-          selectedAcademicYear.id
-        }&subject_id=${subSelectedId}&class_type=${
-          selectedClassType.id
+        )}&session_year=${selectedAcademicYear.id
+        }&subject_id=${subSelectedId}&class_type=${selectedClassType.id
         }&start_date=${startDateTechPer.format(
           'YYYY-MM-DD'
-        )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=${
-          props.pages
+        )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&page_number=${props.pages
         }&page_size=12&class_status=${props.tabValue + 1}&module_id=${moduleId}`,
         'filter'
       );
@@ -552,8 +537,7 @@ const Filter = (props) => {
                 const selectedId = value.map((el) => el.branch.id);
                 setSelectedBranch(ids);
                 callApi(
-                  `${endpoints.academics.grades}?session_year=${
-                    selectedAcademicYear.id
+                  `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id
                   }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
                   'gradeList'
                 );
@@ -730,8 +714,7 @@ const Filter = (props) => {
                 setSelectedCourse(value);
                 if (value) {
                   callApi(
-                    `${endpoints.teacherViewBatches.batchSizeList}?course_id=${
-                      value && value.id
+                    `${endpoints.teacherViewBatches.batchSizeList}?course_id=${value && value.id
                     }`,
                     'batchsize'
                   );

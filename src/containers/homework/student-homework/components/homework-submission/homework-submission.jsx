@@ -1373,7 +1373,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                   variant='contained'
                   className='cancelButton labelColor homework_submit_button_cancel'
                   size='medium'
-                  style={{ width: '15%' }}
+                  style={{ width: '15%',marginLeft:'80%' }}
                   onClick={handleHomeworkCancel}
                 >
                   {homeworkSubmission.status === 1 ? 'CANCEL' : 'BACK'}

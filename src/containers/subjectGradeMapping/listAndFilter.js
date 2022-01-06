@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { useSelector } from 'react-redux';
 import Layout from '../Layout/index';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
@@ -44,6 +45,9 @@ const ListandFilter = (props) => {
   const [error, setError] = useState(null);
   const [filter, setFilter] = useState(false);
   const [selectedModule, setSelectedModule] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const moduleList = [
     { id: 'lesson-plan', label: 'Lesson plan', key: 'is_lesson_plan', value: true },
     { id: 'assessment', label: 'Assessment', key: 'is_assessment', value: true },
@@ -188,7 +192,7 @@ const ListandFilter = (props) => {
         setFilter(true);
         axiosInstance
           .get(
-            `${endpoints.mappingStudentGrade.schoolGsMapping}?branch=${body.branch}&erp_grade=${body.erp_grade}&${queryString}`
+            `${endpoints.mappingStudentGrade.schoolGsMapping}?branch=${body.branch}&session_year=${selectedAcademicYear?.id}&erp_grade=${body.erp_grade}&${queryString}`
           )
           .then((res) => {
             setSchoolGsMapping(res.data.data.results);
