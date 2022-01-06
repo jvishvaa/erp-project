@@ -414,7 +414,7 @@ export default function TeacherAttendance(props) {
     setData([]);
     const result = axiosInstance
       .get(
-        `${endpoints.academics.teacherAttendanceData}?branch_id=${filterData.branch?.branch?.id}&roles=${rolesId}&date=${startDate}`
+        `${endpoints.academics.teacherAttendanceData}?branch_id=${filterData.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&roles=${rolesId}&date=${startDate}`
       )
       .then((result) => {
         if (result.status === 200) {

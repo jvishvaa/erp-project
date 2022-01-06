@@ -44,7 +44,7 @@ const ErpAdminViewClass = ({ history }) => {
     JSON.parse(window.localStorage.getItem('userDetails'))
   );
 
-  const { user_level: userLevel = 5} =
+  const { user_level: userLevel = 5 } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const [totalCount, setTotalCount] = useState(0);
@@ -264,14 +264,13 @@ const ErpAdminViewClass = ({ history }) => {
       if (JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false) {
         const isMsOriginURL = ![0, 1].includes(tabValue);
         const url = isMsOriginURL
-          ? '/reports/v1/retrieve-online-class_no_filter/'
-          : '/oncls/v1/retrieve-online-class_no_filter/';
+          ? `/reports/v1/retrieve-online-class_no_filter/`
+          : `/oncls/v1/retrieve-online-class_no_filter/`;
 
         APIREQUEST(
           'get',
-          `${url}?user_level=${userLevel}&class_status=${
-            tabValue + 1
-          }&start_date=${startDateTechPer?.format(
+          `${url}?module_id=${moduleId}&user_level=${userLevel}&class_status=${tabValue + 1
+          }&audit=0&start_date=${startDateTechPer?.format(
             'YYYY-MM-DD'
           )}&end_date=${endDateTechPer?.format(
             'YYYY-MM-DD'
@@ -295,8 +294,7 @@ const ErpAdminViewClass = ({ history }) => {
           });
       } else {
         callApi(
-          `${endpoints.aol.onlineClassNoFilter}?class_status=${
-            tabValue + 1
+          `${endpoints.aol.onlineClassNoFilter}?class_status=${tabValue + 1
           }&start_date=${startDateTechPer?.format(
             'YYYY-MM-DD'
           )}&end_date=${endDateTechPer?.format(
@@ -310,19 +308,19 @@ const ErpAdminViewClass = ({ history }) => {
 
   const getEndpoint = (path) => {
     if (window.location.pathname === '/erp-online-class-student-view') {
-      if(tabValue === 0 || tabValue === 1){
+      if (tabValue === 0 || tabValue === 1) {
         return `/oncls/v1/student-oncls/?${path}`;
-        }
-        else {
+      }
+      else {
         return `/reports/v1/student-oncls/?${path}`;
-        }
+      }
     } else if (
       window.location.pathname === '/erp-online-class' ||
       window.location.pathname === '/erp-online-class-teacher-view'
     ) {
       return [0, 1].includes(tabValue)
-        ? `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}`
-        : `/reports/v1/retrieve-online-class/?${path}&user_level=${userLevel}`;
+        ? `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=0`
+        : `/reports/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=0`;
     }
   };
 
@@ -441,12 +439,10 @@ const ErpAdminViewClass = ({ history }) => {
           .then((result) => {
             if (result?.data?.status_code === 200) {
               callApi(
-                `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-                  studentDetails &&
-                  studentDetails.role_details &&
-                  studentDetails.role_details.erp_user_id
-                }&page_number=${page}&page_size=${limit}&class_type=${
-                  selectedClassType?.id
+                `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${studentDetails &&
+                studentDetails.role_details &&
+                studentDetails.role_details.erp_user_id
+                }&page_number=${page}&page_size=${limit}&class_type=${selectedClassType?.id
                 }&module_id=${moduleId}&class_status=${tabValue + 1}`,
                 'filter'
               );
@@ -466,33 +462,26 @@ const ErpAdminViewClass = ({ history }) => {
       ) {
         if (selectedCourse?.id) {
           callApi(
-            `${endpoints.aol.classes}?is_aol=0&session_year=${
-              selectedAcademicYear?.id
-            }&section_mapping_ids=${selectedSection.map((el) => el?.id)}&class_type=${
-              selectedClassType?.id
+            `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
+            }&section_mapping_ids=${selectedSection.map((el) => el?.id)}&class_type=${selectedClassType?.id
             }&start_date=${startDateTechPer?.format(
               'YYYY-MM-DD'
-            )}&end_date=${endDateTechPer?.format('YYYY-MM-DD')}&course_id=${
-              selectedCourse?.id
-            }&page_number=${page}&page_size=${limit}&class_status=${
-              tabValue + 1
+            )}&end_date=${endDateTechPer?.format('YYYY-MM-DD')}&course_id=${selectedCourse?.id
+            }&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
             }&module_id=${moduleId}`,
             'filter'
           );
         } else {
           callApi(
-            `${endpoints.aol.classes}?is_aol=0&session_year=${
-              selectedAcademicYear?.id
+            `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
             }&section_mapping_ids=${selectedSection.map(
               (el) => el?.id
-            )}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${
-              selectedClassType?.id
+            )}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${selectedClassType?.id
             }&start_date=${startDateTechPer?.format(
               'YYYY-MM-DD'
             )}&end_date=${endDateTechPer?.format(
               'YYYY-MM-DD'
-            )}&page_number=${page}&page_size=${limit}&class_status=${
-              tabValue + 1
+            )}&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
             }&module_id=${moduleId}`,
             'filter'
           );
@@ -523,33 +512,26 @@ const ErpAdminViewClass = ({ history }) => {
       ) {
         if (selectedCourse?.id) {
           callApi(
-            `${endpoints.aol.classes}?is_aol=0&session_year=${
-              selectedAcademicYear?.id
-            }&section_mapping_ids=${selectedSection.map((el) => el?.id)}&class_type=${
-              selectedClassType?.id
+            `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
+            }&section_mapping_ids=${selectedSection.map((el) => el?.id)}&class_type=${selectedClassType?.id
             }&start_date=${startDateTechPer.format(
               'YYYY-MM-DD'
-            )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${
-              selectedCourse?.id
-            }&page_number=${page}&page_size=${limit}&class_status=${
-              tabValue + 1
+            )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${selectedCourse?.id
+            }&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
             }&module_id=${moduleId}`,
             'filter'
           );
         } else if (selectedSubject?.length > 0) {
           callApi(
-            `${endpoints.aol.classes}?is_aol=0&session_year=${
-              selectedAcademicYear?.id
+            `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
             }&section_mapping_ids=${selectedSection.map(
               (el) => el?.id
-            )}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${
-              selectedClassType?.id
+            )}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${selectedClassType?.id
             }&start_date=${startDateTechPer.format(
               'YYYY-MM-DD'
             )}&end_date=${endDateTechPer.format(
               'YYYY-MM-DD'
-            )}&page_number=${page}&page_size=${limit}&class_status=${
-              tabValue + 1
+            )}&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
             }&module_id=${moduleId}`,
             'filter'
           );
@@ -565,12 +547,10 @@ const ErpAdminViewClass = ({ history }) => {
           .then((result) => {
             if (result?.data?.status_code === 200) {
               callApi(
-                `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${
-                  studentDetails &&
-                  studentDetails.role_details &&
-                  studentDetails.role_details.erp_user_id
-                }&page_number=${page}&page_size=${limit}&class_type=${
-                  selectedClassType?.id
+                `${endpoints.studentViewBatchesApi.getBatchesApi}?user_id=${studentDetails &&
+                studentDetails.role_details &&
+                studentDetails.role_details.erp_user_id
+                }&page_number=${page}&page_size=${limit}&class_type=${selectedClassType?.id
                 }&class_status=${tabValue + 1}&module_id=${moduleId}`,
                 'filter'
               );
@@ -622,14 +602,11 @@ const ErpAdminViewClass = ({ history }) => {
         .then((result) => {
           if (result?.data?.status_code === 200) {
             callApi(
-              `${
-                endpoints.studentViewBatchesApi.getBatchesApi
-              }?module_id=${moduleId}&user_id=${
-                studentDetails &&
-                studentDetails.role_details &&
-                studentDetails.role_details.erp_user_id
-              }&page_number=${1}&page_size=${limit}&class_type=${
-                selectedClassType?.id
+              `${endpoints.studentViewBatchesApi.getBatchesApi
+              }?module_id=${moduleId}&user_id=${studentDetails &&
+              studentDetails.role_details &&
+              studentDetails.role_details.erp_user_id
+              }&page_number=${1}&page_size=${limit}&class_type=${selectedClassType?.id
               }&class_status=${tabValue + 1}`,
               'filter'
             );
@@ -698,31 +675,24 @@ const ErpAdminViewClass = ({ history }) => {
 
       if (selectedCourse?.id) {
         callApi(
-          `${endpoints.aol.classes}?is_aol=0&session_year=${
-            selectedAcademicYear?.id
-          }&section_mapping_ids=${selectedSection.map((el) => el?.id)}&class_type=${
-            selectedClassType?.id
+          `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
+          }&section_mapping_ids=${selectedSection.map((el) => el?.id)}&class_type=${selectedClassType?.id
           }&start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(
             endDateTechPer
-          ).format('YYYY-MM-DD')}&course_id=${
-            selectedCourse?.id
-          }&page_number=${1}&page_size=${limit}&class_status=${
-            tabValue + 1
+          ).format('YYYY-MM-DD')}&course_id=${selectedCourse?.id
+          }&page_number=${1}&page_size=${limit}&class_status=${tabValue + 1
           }&module_id=${moduleId}`,
           'filter'
         );
       } else {
         callApi(
-          `${endpoints.aol.classes}?is_aol=0&session_year=${
-            selectedAcademicYear?.id
+          `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
           }&section_mapping_ids=${selectedSection.map(
             (el) => el?.id
-          )}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${
-            selectedClassType?.id
+          )}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${selectedClassType?.id
           }&start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(
             endDateTechPer
-          ).format('YYYY-MM-DD')}&class_status=${
-            tabValue + 1
+          ).format('YYYY-MM-DD')}&class_status=${tabValue + 1
           }&module_id=${moduleId}&page_number=${1}&page_size=${limit}`,
           'filter'
         );
@@ -735,24 +705,24 @@ const ErpAdminViewClass = ({ history }) => {
       const { data } =
         JSON.parse(localStorage.getItem('isMsAPI')) && historicalData === false
           ? await APIREQUEST(
-              'get',
-              `/reports/v1/oncls-report/?start_date=${moment(startDateTechPer).format(
-                'YYYY-MM-DD'
-              )}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
-              null,
-              'arraybuffer',
-              true
-            )
+            'get',
+            `/reports/v1/oncls-report/?start_date=${moment(startDateTechPer).format(
+              'YYYY-MM-DD'
+            )}&end_date=${moment(endDateTechPer).format('YYYY-MM-DD')}`,
+            null,
+            'arraybuffer',
+            true
+          )
           : await axiosInstance.get(
-              `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
-                startDateTechPer
-              ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format(
-                'YYYY-MM-DD'
-              )}`,
-              {
-                responseType: 'arraybuffer',
-              }
-            );
+            `${endpoints.onlineClass.downloadOnlineClass_EXCEL}?start_date=${moment(
+              startDateTechPer
+            ).format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer).format(
+              'YYYY-MM-DD'
+            )}`,
+            {
+              responseType: 'arraybuffer',
+            }
+          );
       const blob = new Blob([data], {
         type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       });
@@ -803,8 +773,7 @@ const ErpAdminViewClass = ({ history }) => {
       const selectedId = value.map((el) => el?.branch?.id);
       setSelectedBranch(ids);
       callApi(
-        `${endpoints.academics.grades}?session_year=${
-          selectedAcademicYear?.id
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
         }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
         'gradeList'
       );
@@ -975,8 +944,8 @@ const ErpAdminViewClass = ({ history }) => {
                   .add(1, 'day')
                   .format('YYYY-MM-DD')} till date
                Historical data: records before ${moment(launchdate)
-                 .add(1, 'day')
-                 .format('YYYY-MM-DD')}`}
+                    .add(1, 'day')
+                    .format('YYYY-MM-DD')}`}
               >
                 <InfoIcon fontSize='small' color='disabled' />
               </Tooltip>
@@ -1001,10 +970,10 @@ const ErpAdminViewClass = ({ history }) => {
               window.location.pathname === '/erp-online-class'
                 ? 'Online Class View'
                 : window.location.pathname === '/erp-online-class-teacher-view'
-                ? 'Teacher Class View'
-                : window.location.pathname === '/erp-online-class-student-view'
-                ? 'Student Class View'
-                : ''
+                  ? 'Teacher View Class'
+                  : window.location.pathname === '/erp-online-class-student-view'
+                    ? 'Student Class View'
+                    : ''
             }
             isAcademicYearVisible={true}
           />

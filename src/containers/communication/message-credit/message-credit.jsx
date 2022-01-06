@@ -4,6 +4,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable react/no-array-index-key */
 import React, { useContext, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -88,6 +89,10 @@ const MessageCredit = withRouter(({ history, ...props }) => {
   const [branchList, setBranchList] = useState([]);
   const [testData, setTestData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+
   const handleSubmit = async (index) => {
     const addSmsCreditUrl = `${endpoints.communication.editGroup}${smsCreditId}/sms-credits/`;
     setLoading(true);
@@ -178,7 +183,7 @@ const MessageCredit = withRouter(({ history, ...props }) => {
     try {
       let smsCreditUrl = endpoints.communication.getSmsCredit;
       if (selectedBranch) {
-        smsCreditUrl += `?branch=${selectedBranch.branch.id}`;
+        smsCreditUrl += `?branch=${selectedBranch?.branch?.id}&session_year=${selectedAcademicYear?.id}`;
       }
       const result = await axiosInstance.get(smsCreditUrl);
       const resultOptions = [];

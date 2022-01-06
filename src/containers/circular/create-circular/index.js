@@ -193,7 +193,7 @@ const CraeteCircular = () => {
       });
       axiosInstance
         .get(
-          `${endpoints.communication.grades}?branch_id=${value?.branch.id}&session_year=${filterData.year?.id}&module_id=${moduleId}`
+          `${endpoints.communication.grades}?branch_id=${value?.branch.id}&session_year=${filterData?.year?.id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -237,7 +237,7 @@ const CraeteCircular = () => {
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.branch?.id}&session_year=${filterData.year.id}&grade_id=${gradeIds}&module_id=${moduleId}`
+          `${endpoints.masterManagement.sections}?branch_id=${filterData?.branch?.branch?.id}&session_year=${filterData?.year?.id}&grade_id=${gradeIds}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -294,7 +294,7 @@ const CraeteCircular = () => {
 
       // fd.append('grade',filterData.grade[0].id)
       // fd.append('section',filterData.section.id)
-      axiosInstance.post(`${endpoints.circular.fileUpload}`, fd).then((result) => {
+      axiosInstance.post(`${endpoints.circular.fileUpload}`, fd).then((result) => {    
         if (result.data.status_code === 200) {
           setLoading(false);
           if (editData?.media) {
@@ -411,6 +411,7 @@ const CraeteCircular = () => {
       axiosInstance
         .post(`${endpoints.circular.deleteFile}`, {
           file_name: `${file}`,
+          circular_id: circularKey,
         })
         .then((result) => {
           if (result.data.status_code === 204) {

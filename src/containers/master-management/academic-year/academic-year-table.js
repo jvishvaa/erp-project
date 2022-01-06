@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useContext, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -30,6 +31,7 @@ import EditAcademicYear from './edit-academic-year';
 import '../master-management.css';
 import Loading from '../../../components/loader/loader';
 import AcademicYearCard from './academic-year-card';
+import { fetchAcademicYearList } from '../../../redux/actions/common-actions'
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -52,6 +54,13 @@ const useStyles = makeStyles((theme) => ({
   tableCell: {
     color: theme.palette.secondary.main,
   },
+  defaultButton: {
+    backgroundColor: 'lightgreen',
+    cursor: 'not-allowed',
+    '&:disabled': {
+      cursor: 'not-allowed'
+    }
+  }
 }));
 
 const columns = [
@@ -89,6 +98,8 @@ const AcademicYearTable = () => {
 
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [defaultYear, setDefaultYear] = useState({ isDefault: false, id: '' });
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -124,6 +135,51 @@ const AcademicYearTable = () => {
     setEditFlag(true);
     setYearId(id);
     setSessionYear(year);
+  };
+
+  const colorDefaultYearColumn = (initial) => {
+    academicYear.map((i, index) => {
+      let button = document.getElementById(`defaultAcademicYear${index}`);
+      // doc.style.background = ''
+      button.disabled = false;
+    })
+    let button = document.getElementById(`defaultAcademicYear${defaultYear.id}`);
+    // doc.style.background = 'lightgreen'
+    button.disabled = true;
+  }
+
+  const defaultAcademicYear = () => {
+    setLoading(true);
+    let body = { "is_current_session": true }
+    axiosInstance
+      .put(`${endpoints.masterManagement.defaultAcademicYear}?session_year_id=${yearId}`, body)
+      .then((result) => {
+        if (result.status === 200) {
+          setLoading(false);
+          setAlert(
+            'success',
+            `Updated Current Academic Year`
+          );
+          dispatch(fetchAcademicYearList());
+        } else {
+          setLoading(false);
+          setAlert('error', 'something went wrong');
+        }
+        setDelFlag(prev => !prev);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', 'something went wrong');
+      });
+    setOpenDeleteModal(false);
+    // colorDefaultYearColumn()
+  }
+
+  const openPopOver = (year, index) => {
+    // setSessionYear(year.session_year);
+    // let id = document.getElementById(`defaultAcademicYear${index}`)
+    setDefaultYear({ isDefault: true, id: index });
+    handleOpenDeleteModal(year.id);
   };
 
   const handleGoBack = () => {
@@ -211,8 +267,8 @@ const AcademicYearTable = () => {
             addFlag && !tableFlag
               ? 'Add Academic Year'
               : editFlag && !tableFlag
-              ? 'Edit Academic Year'
-              : null
+                ? 'Edit Academic Year'
+                : null
           }
         />
         {!tableFlag && addFlag && !editFlag && (
@@ -290,6 +346,7 @@ const AcademicYearTable = () => {
                           >
                             <EditOutlinedIcon />
                           </IconButton>
+                          <Button id={`defaultAcademicYear${index}`} disabled={year?.is_current_session}  variant="contained" color="primary" onClick={(e) => { openPopOver(year, index) }}>Default</Button>
                         </TableCell>
                       </TableRow>
                     );
@@ -336,9 +393,13 @@ const AcademicYearTable = () => {
           onClose={handleCloseDeleteModal}
           aria-labelledby='draggable-dialog-title'
         >
-          <DialogTitle id='draggable-dialog-title'>Delete Academic Year</DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Are You Sure ?</DialogTitle>
           <DialogContent>
-            <DialogContentText>{`Confirm Delete Academic Year ${sessionYear}`}</DialogContentText>
+            {defaultYear.isDefault ?
+              <DialogContentText>{`Confirm Default Academic Year ${sessionYear}`}</DialogContentText>
+              :
+              <DialogContentText>{`Confirm Delete Academic Year ${sessionYear}`}</DialogContentText>
+            }
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDeleteModal} className='labelColor cancelButton'>
@@ -348,7 +409,7 @@ const AcademicYearTable = () => {
               variant='contained'
               style={{ color: 'white' }}
               color='primary'
-              onClick={handleDeleteYear}
+              onClick={defaultYear.isDefault ? defaultAcademicYear : handleDeleteYear}
             >
               Confirm
             </Button>

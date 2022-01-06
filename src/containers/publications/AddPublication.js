@@ -25,9 +25,9 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import PublicationPreview from './PublicationPreview';
 import Loading from '../../components/loader/loader';
 
-const StyledFilterButton = withStyles({
+const StyledFilterButton = withStyles((theme)=>({
   root: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: theme.palette.primary.main,
     color: '#FFFFFF',
     height: '42px',
     borderRadius: '10px',
@@ -35,14 +35,14 @@ const StyledFilterButton = withStyles({
     marginLeft: '20px',
     marginTop: 'auto',
     '&:hover': {
-      backgroundColor: '#FF6B6B',
+      backgroundColor:theme.palette.primary.main ,
     },
   },
   startIcon: {
     fill: '#FFFFFF',
     stroke: '#FFFFFF',
   },
-})(Button);
+}))(Button);
 const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {

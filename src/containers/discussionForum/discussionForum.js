@@ -78,7 +78,7 @@ const Discussionforum = (props) => {
     if (value) {
       setBranchValue(value);
       axiosInstance
-        .get(`${endpoints.discussionForum.grade}?branch_id=${value.id}&module_id=8`)
+        .get(`${endpoints.discussionForum.grade}?branch_id=${value.id}&session_year=${selectedAcademicYear?.id}&module_id=8`)
         .then((res) => {
           if (res.data.data) {
             setGradeRes(res.data.data);

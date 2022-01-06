@@ -103,7 +103,6 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   // }, [selectedYear , moduleId]);
 
   const fetchBranches = () => {
-    console.log(selectedYear , "selected year");
     if (selectedYear) {
       fetchBranchesForCreateUser(selectedYear?.id, moduleId).then((data) => {
         const transformedData = data?.map((obj) => ({
@@ -150,7 +149,6 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   const handleChangeBranch = (values, acadId) => {
     setGrades([]);
-    console.log(selectedYear?.id , "acad");
     setSections([]);
     setSubjects([]);
     values =
@@ -160,7 +158,6 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
     formik.setFieldValue('branch', values);
     if (values?.length > 0) {
       fetchGrades(selectedYear?.id, values, moduleId).then((data) => {
-        console.log(selectedYear?.id , "acad id");
         const transformedData = data
           ? data.map((grade) => ({
               item_id: grade?.id,
@@ -223,7 +220,6 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   const handleChangeSection = (values, acadId, branch, grade) => {
     setSubjects([]);
-    console.log(formik , "formik");
     formik.setFieldValue('subjects', []);
     formik.setFieldValue('section', []);
     values =
@@ -250,7 +246,6 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
           });
         }
         setSubjects(transformedData);
-    console.log(formik , "formik");
         // const filteredSelectedSections = formik.values.section.filter(
         //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1
         // );
@@ -259,28 +254,6 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
       // fetchSubjects(branch, values);
     }
   };
-
-  // const handleChangeSubject = (event, value) => {
-  //   formik.setFieldValue('subjects', []);
-  //   value =
-  //     value.filter(({ id }) => id === 'all').length === 1
-  //       ? [...subjects].filter(({ id }) => id !== 'all')
-  //       : value;
-  //   if (value.length > 0) {
-  //     formik.setFieldValue('subjects', value);
-  //   }
-  // };
-
-  // const handleSection = (e, value) => {
-  //   formik.setFieldValue('section', value);
-  //   if (!value.length) {
-  //     formik.setFieldValue('subjects', []);
-  //   }
-  //   const {
-  //     values: { branch = {}, grade = [] },
-  //   } = formik;
-  //   fetchSubjects([branch], grade, value);
-  // };
 
   useEffect(() => {
     if (moduleId && selectedYear) {
@@ -308,11 +281,9 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
   const handleSubmit = () => {
 
     if(formik.values.subjects.length === 0){
-      console.log("no sub");
       setAlert('error','Please select all fields')
     }
     else {
-      console.log("proceed");
       formik.handleSubmit()
     }
   }
@@ -321,46 +292,19 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
 
   return (
     <Grid container spacing={4} className='school-details-form-container'>
-      {/* <Grid container item xs={12}> */}
-      <Grid item md={4} xs={12}>
-        {/* <FormControl fullWidth className={classes.margin} variant='outlined'>
-          <Autocomplete
-            id='academic_year'
-            name='academic_year'
-            onChange={(e, value) => {
-              formik.setFieldValue('academic_year', value);
-              formik.setFieldValue('branch', []);
-              formik.setFieldValue('grade', []);
-              formik.setFieldValue('section', []);
-              formik.setFieldValue('subjects', []);
-              setBranches([]);
-              fetchBranches(value?.id);
-            }}
-            value={formik.values.academic_year || ''}
-            options={academicYears || []}
-            // filterSelectedOptions
-            className='dropdownIcon'
-            getOptionSelected={(option, value) => option.id == value.id}
-            getOptionLabel={(option) => option?.session_year || ''}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Academic Year'
-                placeholder='Academic Year'
-                required
-              />
-            )}
-            size='small'
-          />
-          <FormHelperText style={{ color: 'red' }}>
-            {formik.errors.academic_year ? formik.errors.academic_year : ''}
-          </FormHelperText>
-        </FormControl> */}
-      </Grid>
-      {/* </Grid> */}
       <Grid item xs={12}>
         <Divider />
+      </Grid>
+      <Grid item md={4} xs={12}>
+        <TextField
+          id="outlined-required"
+          label="Academic Year"
+          style={{width:'100%', padding:'0px !important', height:'7px !important'}}
+          defaultValue={details?.erp_id ? details?.academic_year?.session_year : selectedYear?.session_year}
+          variant="outlined"
+          disabled
+          size='small'
+        />
       </Grid>
       <Grid item md={4} xs={12}>
         <FormControl fullWidth className={classes.margin} variant='outlined'>
@@ -532,8 +476,6 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
             variant='contained'
             color='primary'
             onClick={() => {
-              // formik.handleSubmit();
-              // console.log(formik , "formik")
               handleSubmit()
             }}
             style={{ float: 'right' }}

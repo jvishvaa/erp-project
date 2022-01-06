@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import {
   Grid,
   TextField,
@@ -56,6 +57,9 @@ const TeacherBatchView = ({ history }) => {
   const [selectedModule] = useState(178);
   const [selectedViewMore, setSelectedViewMore] = useState('');
   const [page, setPage] = useState(1);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   function callApi(api, key) {
     setLoading(true);
@@ -130,7 +134,7 @@ const TeacherBatchView = ({ history }) => {
       );
     } else {
       callApi(
-        `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&module_id=${selectedModule}`,
+        `${endpoints.academics.grades}?branch_id=${selectedBranch.id}&session_year=${selectedAcademicYear?.id}&module_id=${selectedModule}`,
         'gradeList'
       );
     }

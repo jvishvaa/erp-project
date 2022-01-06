@@ -467,7 +467,7 @@ export default function TeacherAttendanceVerify() {
     }
     const result = axiosInstance
       .get(
-        `${endpoints.academics.getTeacherAttendanceData}?branch_id=${filterData.branch?.branch?.id}&month=${month}&year=${year}&roles=${rolesId}`
+        `${endpoints.academics.getTeacherAttendanceData}?branch_id=${filterData.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&month=${month}&year=${year}&roles=${rolesId}`
       )
       .then((result) => {
         if (result.status === 200) {

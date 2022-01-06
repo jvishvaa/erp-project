@@ -2,6 +2,7 @@
 /* eslint-disable react/forbid-prop-types */
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 import withStyles from '@material-ui/core/styles/withStyles';
 import { Grid, Button, Divider } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
@@ -137,11 +138,11 @@ class PrincipalBlog extends Component {
     }))
     let urlPath = '';
     if (selectedSection) {
-      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}&grade_id=${selectedGrade.grade_id}`;
+      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${selectedSection.section_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}&session_year=${this.props.selectedAcademicYear?.id}&grade_id=${selectedGrade.grade_id}`;
     } else if (selectedGrade) {
-      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&grade_id=${selectedGrade.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}`;
+      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&grade_id=${selectedGrade.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${selectedBranch?.branch.id}&session_year=${this.props.selectedAcademicYear?.id}`;
     } else if (selectedBranch) {
-      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&branch_id=${selectedBranch?.branch.id}&start_date=${startDate}&end_date=${endDate}`;
+      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&branch_id=${selectedBranch?.branch.id}&start_date=${startDate}&end_date=${endDate}&session_year=${this.props.selectedAcademicYear?.id}`;
     }
     axios
       .get(urlPath)
@@ -163,7 +164,7 @@ class PrincipalBlog extends Component {
     let { selectedBranch, moduleId, gradeList, selectedYear } = this.state;
     axios
       .get(
-        `${endpoints.communication.grades}?branch_id=${selectedBranch?.branch.id}&module_id=${moduleId}&session_year=${selectedYear.id}`,
+        `${endpoints.communication.grades}?branch_id=${selectedBranch?.branch.id}&module_id=${moduleId}&session_year=${selectedYear?.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -185,7 +186,7 @@ class PrincipalBlog extends Component {
     let { selectedBranch, moduleId, gradeList, selectedGrade, selectedYear } = this.state;
     axios
       .get(
-        `${endpoints.communication.sections}?branch_id=${selectedBranch?.branch.id}&grade_id=${selectedGrade.grade_id}&module_id=${moduleId}&session_year=${selectedYear.id}`,
+        `${endpoints.communication.sections}?branch_id=${selectedBranch?.branch?.id}&grade_id=${selectedGrade?.grade_id}&module_id=${moduleId}&session_year=${selectedYear?.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -218,7 +219,6 @@ class PrincipalBlog extends Component {
       .catch((error) => {});
   };
   handleYear = (event, value) => {
-    console.log(value, '@@@@@@@@@@@@');
     this.setState(
       {
         data: [],
@@ -266,11 +266,11 @@ class PrincipalBlog extends Component {
     } = this.state;
     let urlPath = '';
     if (blogFilter?.selectedSection) {
-      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${blogFilter?.selectedSection?.section_id}&start_date=${startDate}&end_date=${endDate}&grade_id=${blogFilter?.selectedGrade?.grade_id}&branch_id=${blogFilter?.selectedBranch?.branch?.id}`;
+      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&section_id=${blogFilter?.selectedSection?.section_id}&start_date=${startDate}&end_date=${endDate}&grade_id=${blogFilter?.selectedGrade?.grade_id}&branch_id=${blogFilter?.selectedBranch?.branch?.id}&session_year=${this.props.selectedAcademicYear?.id}`;
     } else if (selectedGrade) {
-      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&grade_id=${blogFilter?.selectedGrade?.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${blogFilter?.selectedBranch?.branch?.id}`;
+      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&grade_id=${blogFilter?.selectedGrade?.grade_id}&start_date=${startDate}&end_date=${endDate}&branch_id=${blogFilter?.selectedBranch?.branch?.id}&session_year=${this.props.selectedAcademicYear?.id}`;
     } else if(blogFilter?.selectedBranch){
-      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&branch_id=${blogFilter?.selectedBranch?.branch?.id}&start_date=${startDate}&end_date=${endDate}`;
+      urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&branch_id=${blogFilter?.selectedBranch?.branch?.id}&start_date=${startDate}&end_date=${endDate}&session_year=${this.props.selectedAcademicYear?.id}`;
     } else {
       urlPath = `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${status}&module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}`
     }
@@ -621,4 +621,11 @@ class PrincipalBlog extends Component {
     );
   }
 }
-export default withRouter(withStyles(styles)(PrincipalBlog));
+
+const mapStateToProps = state => {
+  return {
+    selectedAcademicYear: state.commonFilterReducer?.selectedYear,
+  }
+}
+// export default withRouter(withStyles(styles)(PrincipalBlog));
+export default connect(mapStateToProps)(withStyles(styles, { withTheme: true })(withRouter(PrincipalBlog)))

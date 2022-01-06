@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Grid, TextField, Button, Typography } from '@material-ui/core';
 import { withRouter } from 'react-router-dom';
 import AddIcon from '@material-ui/icons/Add';
@@ -25,6 +26,9 @@ const SignatureUpload = ({ history }) => {
   const [edit, setEdit] = useState(false);
   const [updateData, setUpdateData] = useState('');
   const [signatureList, setsignatureList] = useState('');
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   function getBranchList() {
     setLoading(true);
@@ -50,7 +54,7 @@ const SignatureUpload = ({ history }) => {
       axiosInstance
         .get(
           `${endpoints.signature.getSignatureList}?branch_id=${selectedBranch && selectedBranch.id
-          }&is_delete=False`
+          }&session_year=${selectedAcademicYear?.id}&is_delete=False`
         )
         .then((result) => {
           setLoading(false);

@@ -37,7 +37,7 @@ const StudentReportCard = () => {
   );
   const { erp = '' } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { id: sessionYearId = '' } =
-    JSON.parse(localStorage.getItem('acad_session')) || {};
+    JSON.parse(sessionStorage.getItem('acad_session')) || {};
 
   const renderReportCard = () => {
     switch (tabValue) {

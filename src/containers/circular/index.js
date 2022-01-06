@@ -1,5 +1,6 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 import React, { useContext, useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import { Grid, useTheme, SvgIcon, IconButton } from '@material-ui/core';
 // import { Pagination } from '@material-ui/lab';
@@ -60,6 +61,9 @@ const CircularList = () => {
   const [startDateFilter, setStartDateFilter] = useState();
   const [endDateFilter, setEndDateFilter] = useState();
   const [deleteFlag, setDeleteFlag] = useState(false);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   //for edit circular data
   const [editData, setEditData] = useState([]);
@@ -116,7 +120,7 @@ const CircularList = () => {
         .get(
           `${endpoints.circular.circularList}?is_superuser=True&branch=${
             branch.branch?.id
-          }&grade=${grade.grade_id}&section=${section?.section_id}&academic_year=${
+          }&session_year=${selectedAcademicYear?.id}&grade=${grade.grade_id}&section=${section?.section_id}&academic_year=${
             year.id
           }&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format(
             'YYYY-MM-DD'

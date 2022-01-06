@@ -1,10 +1,14 @@
 import { commonActions } from '../actions/common-actions';
 
 const INITIAL_STATE = {
-  selectedYear: '' || JSON.parse(localStorage.getItem('acad_session')),
-  academicYearList: '' || JSON.parse(localStorage.getItem('acad_session_list')),
+  selectedYear: '' || JSON.parse(sessionStorage.getItem('acad_session')),
+  academicYearList: '' || JSON.parse(sessionStorage.getItem('acad_session_list')),
   isMsAPIKey: !!JSON.parse(localStorage.getItem('isMsAPI')),
 };
+
+export const getDefaultYear = (data) =>{
+  return data.filter(({is_current_session=false}) =>Boolean(is_current_session))[0] 
+}
 
 const commonReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
@@ -12,7 +16,7 @@ const commonReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         academicYearList: action.payload,
-        selectedYear: action.payload?.[0],
+        selectedYear: getDefaultYear(action.payload) || action.payload[0]
       };
       case commonActions.SELECTED_YEAR:
         return {

@@ -196,10 +196,10 @@ const HolidayMark = () => {
       .put(endpoints.academics.getHoliday, {
         title: holidayName,
         description: holidayDesc,
-        holiday_start_date: moment(startDateTechPer).format(
+        holiday_start_date: moment(startDateTechPer)?.format(
             'YYYY-MM-DD'
           ),
-          holiday_end_date: moment(endDateTechPer).format(
+          holiday_end_date: moment(endDateTechPer)?.format(
             'YYYY-MM-DD'
           ),
         branch: selectedBranch.map(
@@ -208,7 +208,8 @@ const HolidayMark = () => {
         grade: selectedGrade.map(
             (el) => el?.grade_id
           ),
-          holiday_id: history?.location?.state?.data?.id
+          holiday_id: history?.location?.state?.data?.id,
+          academic_year: selectedAcademicYear?.id
       })
       .then((result) => {
         setAlert('success', result.data.message);
@@ -240,6 +241,7 @@ const HolidayMark = () => {
         grade: selectedGrade.map(
             (el) => el?.grade_id
           ),
+        academic_year: selectedAcademicYear?.id
       })
       .then((result) => {
         setAlert('success', result.data.message);

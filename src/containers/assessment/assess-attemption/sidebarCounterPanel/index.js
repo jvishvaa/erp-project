@@ -141,6 +141,16 @@ const SidebarCounterPanel = (props) => {
 
   // const { topic, topic_name: topicName } = currentQuestionObj || {};
   const { section: { name: sectionName } = {} } = currentQuestionObj || {};
+  function exitFullScreen(event) {
+    if (document.fullscreenElement) {
+      document.exitFullscreen()
+        .then(() => console.log("Exited from Full screen mode"))
+        .catch((err) => setAlert('error', 'Something went wrong'))
+    }
+    else {
+      // setAlert('error', 'Something went wrong');
+    }
+  }
 
   const submitTheResult = () => {
     const onSubmitSuccess = (res = {}) => {
@@ -152,11 +162,12 @@ const SidebarCounterPanel = (props) => {
           isAutoSubmit ? 'Test timed out! Thanks for taking the test.' : `${message}`
         );
         props.history.push(`/assessment/?info=${assessmentId}`);
-        // 'Result Submitted Successfully!'
-      } else {
+        exitFullScreen();
+      }
+      else {
         setAlert('error', `${message}`);
       }
-    };
+    }
     const onSubmitFailure = (err) => {
       const {
         response: { statusText = 'Failed to connect to server' } = {},
