@@ -16,7 +16,7 @@ const commonReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         academicYearList: action.payload,
-        selectedYear: getDefaultYear(action.payload)
+        selectedYear: getDefaultYear(action.payload) || action.payload[0]
       };
       case commonActions.SELECTED_YEAR:
         return {

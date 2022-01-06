@@ -35,7 +35,11 @@ export const fetchAcademicYearList = (moduleId) => (dispatch) => {
       const { status_code, data: academicYearData = [] } = data || {};
       if (status_code > 199 && status_code < 300) {
         const current_academic_year = getDefaultYear(academicYearData) ;
-        sessionStorage.setItem('acad_session', JSON.stringify(current_academic_year));
+        if(!current_academic_year){
+          sessionStorage.setItem('acad_session', JSON.stringify(academicYearData[0]));
+        }else{
+          sessionStorage.setItem('acad_session', JSON.stringify(current_academic_year));
+        }
         sessionStorage.setItem('acad_session_list', JSON.stringify(academicYearData));
         // dispatch({type: SELECTED_YEAR, payload: current_academic_year})
         dispatch({ type: ACADEMIC_YEAR_LIST, payload: academicYearData });
