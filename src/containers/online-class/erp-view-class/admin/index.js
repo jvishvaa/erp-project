@@ -314,13 +314,20 @@ const ErpAdminViewClass = ({ history }) => {
       else {
         return `/reports/v1/student-oncls/?${path}`;
       }
-    } else if (
-      window.location.pathname === '/erp-online-class' ||
-      window.location.pathname === '/erp-online-class-teacher-view'
-    ) {
-      return [0, 1].includes(tabValue)
-        ? `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=0`
-        : `/reports/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=0`;
+    } else {
+      if (
+        window.location.pathname === '/erp-online-class'
+      ) {
+        return [0, 1].includes(tabValue)
+          ? `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=1`
+          : `/reports/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=1`;
+      }
+      else if (
+        window.location.pathname === '/erp-online-class-teacher-view') {
+        return [0, 1].includes(tabValue)
+          ? `/oncls/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=0`
+          : `/reports/v1/retrieve-online-class/?${path}&user_level=${userLevel}&audit=0`;
+      }
     }
   };
 
