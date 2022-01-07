@@ -11,6 +11,7 @@ import TableRow from '@material-ui/core/TableRow';
 import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import IconButton from '@material-ui/core/IconButton';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
+import { useSelector } from 'react-redux';
 import Chip from '@material-ui/core/Chip';
 import {
   Grid,
@@ -145,6 +146,7 @@ const SubjectMappingTable = () => {
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+  const selectedAcademicYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
 
   const getYearApi = async () => {
     try {
@@ -329,6 +331,8 @@ const SubjectMappingTable = () => {
     let getUserListUrl = `${endpoints.masterManagement.subjectMappingTable}?page=${page}&page_size=${limit}`;
     if (selectedYear) {
       getUserListUrl += `&session_year=${selectedYear.session_year}`;
+    } else {
+      getUserListUrl += `&session_year=${selectedAcademicYear?.session_year}`
     }
     if (selectedBranch) {
       getUserListUrl += `&branch_name=${selectedBranch.branch.branch_name}`;
@@ -343,8 +347,8 @@ const SubjectMappingTable = () => {
     try {
       const result = await axiosInstance.get(getUserListUrl);
       if (result.status === 200) {
-        setTotalCount(result.data?.data?.count);
-        setSubjects(result.data?.data?.results);
+        setTotalCount(result?.data?.data?.count);
+        setSubjects(result?.data?.data?.results);
       } else {
         setAlert('error', result.data?.msg || result.data?.message);
       }
@@ -410,22 +414,8 @@ const SubjectMappingTable = () => {
   }, [goBackFlag, page, delFlag]);
 
   useEffect(() => {
-    let url = `${endpoints.masterManagement.subjectMappingTable}?page=${page}&page_size=${limit}`;
-    if (searchSubject) url += `&subject=${searchSubject}`;
+    displayUsersList();
 
-    axiosInstance
-      .get(url)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setTotalCount(result.data?.data?.count);
-          setSubjects(result.data?.data?.results);
-        } else {
-          setAlert('error', result.data?.msg || result.data?.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.response?.data?.message || error.response?.data?.msg);
-      });
   }, [goBackFlag, delFlag, page, searchSubject, clearAll]);
 
   return (
@@ -628,7 +618,7 @@ const SubjectMappingTable = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {subjects.map((subject, index) => {
+                      {subjects?.map((subject, index) => {
                         const {
                           created_by,
                           id,
