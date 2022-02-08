@@ -166,7 +166,7 @@ $font-roboto: 'Raleway', sans-serif;
     background: white;
     width: 100%;
     padding: 2%;
-    height: 100%;
+    // height: 100%;
     margin-top: 5px;
     .table-header {
       display: flex;
@@ -318,6 +318,7 @@ $font-roboto: 'Raleway', sans-serif;
     font-family: $font-roboto;
   }
   .calander-week-time-table-module {
+    overflow-x: scroll;
     @include box-border();
     width: 68%;
     height: fit-content;

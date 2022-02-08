@@ -4,7 +4,7 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import EmojiObjectsSharpIcon from '@material-ui/icons/EmojiObjectsSharp';
-import { connect, useSelector } from 'react-redux';
+import {  useSelector } from 'react-redux';
 import Select from '@material-ui/core/Select';
 import LayersClearIcon from '@material-ui/icons/LayersClear';
 import { Button, IconButton ,makeStyles} from '@material-ui/core';
@@ -45,10 +45,7 @@ arrowbutton:{
 const UpperGrade = (props) => {
   const classes = useStyles()
   const [dataMap, setDataMap] = useState();
-  const [dataMapAcademicYear, setDataMapAcademicYear] = useState();
-  const location = useLocation();
   const { setAlert } = useContext(AlertNotificationContext);
-  const [acadamicYearID, setAcadamicYear] = useState(1);
   const [gradeID, setGradeID] = useState(null);
   const [sectionID, setSectionID] = useState(null);
   const [branchID, setBranchID] = useState(null);
@@ -61,6 +58,7 @@ const UpperGrade = (props) => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [sectinName, setSectionName] = useState();
   const [addPeriodButton, setShowAddPeriodButton] = useState(false);
+const [section, setSection] = useState();
 
   const handleChangeMultiple = (event) => {
     const { options } = event.target;
@@ -74,9 +72,6 @@ const UpperGrade = (props) => {
         value.push(options[noOfOption].value);
       }
     }
-    // if (counter === 1) {
-    //   setAcadamicYear(value);
-    // }
     if (counter === 2) {
       setBranchID(value);
     }
@@ -89,8 +84,9 @@ const UpperGrade = (props) => {
   };
   // '/erp_user/branch/'
   useEffect(() => {
+    if(props?.moduleId)
     callingAPI();
-  }, [counter]);
+  }, [counter,props?.moduleId]);
   const handleOpenNewPeriod = () => {
     props.handlePassOpenNewPeriod();
   };
@@ -108,7 +104,7 @@ const UpperGrade = (props) => {
   const callingGradeAPI = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.grades}?session_year=${academicYear?.id}&branch_id=${branchID}&module_id=${props.moduleId}`
+        `${endpoints.academics.grades}?session_year=${academicYear?.id}&branch_id=${branchID}&module_id=${props?.moduleId}`
       )
       .then((res) => {
         setDataMap(res.data.data);
@@ -117,10 +113,19 @@ const UpperGrade = (props) => {
         setAlert('error', "can't fetch grade list");
       });
   };
+  const handleGrade =(value) => {
+    setGradeName(value?.grade__grade_name)
+    // props.section_mapping_id(value?.id)
+  }
+  const handleSection = (value) => {
+    setSection(value)
+    setSectionName(value?.section__section_name)
+    
+  }
   const callingBranchAPI = () => {
     axiosInstance
       .get(
-        `${endpoints.communication.branches}?session_year=${academicYear?.id}&module_id=${props.moduleId}`
+        `${endpoints.communication.branches}?session_year=${academicYear?.id}&module_id=${props?.moduleId}`
       )
       .then((res) => {
         if (res.status === 200) {
@@ -135,9 +140,9 @@ const UpperGrade = (props) => {
   const callingSectionAPI = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.sections}?session_year=${academicYear?.id}&branch_id=${branchID}&grade_id=${gradeID}&module_id=${props.moduleId}`
+        `${endpoints.academics.sections}?session_year=${academicYear?.id}&branch_id=${branchID}&grade_id=${gradeID}&module_id=${props?.moduleId}`
       )
-      .then((res) => {
+      .then((res) => {  
         if (res.status === 200) {
           setDataMap(res.data.data);
         }
@@ -164,6 +169,7 @@ const UpperGrade = (props) => {
       setAlert('warning', 'please select all filters');
     } else {
       setShowAddPeriodButton(true);
+      props.section_mapping_id(section?.id)
       props.handlePassData(
         academicYear?.id,
         gradeID,
@@ -182,7 +188,8 @@ const UpperGrade = (props) => {
     if (data === 'clear') {
       setShowAddPeriodButton(false);
       props.handleCloseTable(false);
-      setCounter(1);
+      // 
+      setCounter(2);
       setBranchID(null);
       setGradeID(null);
       setSectionID(null);
@@ -191,71 +198,10 @@ const UpperGrade = (props) => {
       props.handleCloseTable(true);
     }
   };
-  // const backcounter = () =>{
-  //   debugger
-  //   if(counter == 2){
-  //     return null
-  //   }else{
-  //     setCounter(counter - 1)
-  //   }
-  // }
   return (
     <>
       <div className='upper-table-container'>
         <div className='all-box-container'>
-          {/* <div
-            className={
-              counter === 1
-                ? 'grade-container'
-                : counter === 4
-                ? 'box-right-3'
-                : counter === 2
-                ? 'box-right-1'
-                : counter === 3
-                ? 'box-right-2'
-                : 'acadamic-year-box'
-            }
-          >
-            {counter === 1 ? (
-              <>
-                <div className='text-fixed'>Academic Year</div>
-                <div className='inner-grade-container'>
-                  <div className='change-grade-options'>
-                    <Select
-                      multiple
-                      fullWidth
-                      native
-                      value={acadamicYearID}
-                      onChange={handleChangeMultiple}
-                    >
-                      {dataMapAcademicYear &&
-                        dataMapAcademicYear.map((name) => (
-                          <option
-                            key={name?.id}
-                            value={name?.id}
-                            onClick={() => setAcadamicYearName(name?.session_year)}
-                          >
-                            {name?.session_year}
-                          </option>
-                        ))}
-                    </Select>
-                  </div>
-                  <div className='text-fixed-last'>
-                    Expand
-                    <IconButton
-                      aria-label='delete'
-                      onClick={() => setCounter(counter + 1)}
-                      size='small'
-                    >
-                      <ArrowForwardIcon className='arrow-button' />
-                    </IconButton>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <div className='text-rotate'>Academic&nbsp;Year</div>
-            )}
-          </div> */}
           <div
             className={
               counter === 2
@@ -295,13 +241,6 @@ const UpperGrade = (props) => {
                   </div>
                   <div className={classes.textFixedLast}>
                     Expand
-                    {/* <IconButton
-                      aria-label='delete'
-                      onClick={backcounter}
-                      size='small'
-                    >
-                      <ArrowBackIcon className={classes.arrowbutton} />
-                    </IconButton> */}
                     <IconButton onClick={() => setCounter(counter + 1)} size='small'>
                       <ArrowForwardIcon className = {classes.arrowbutton} />
                     </IconButton>
@@ -342,7 +281,7 @@ const UpperGrade = (props) => {
                           <option
                             key={name?.id}
                             value={name?.grade_id}
-                            onClick={() => setGradeName(name?.grade__grade_name)}
+                            onClick={() => handleGrade(name)}
                           >
                             {name?.grade__grade_name}
                           </option>
@@ -354,7 +293,6 @@ const UpperGrade = (props) => {
                     <IconButton
                       aria-label='delete'
                       onClick={() => setCounter(counter - 1)}
-                      // () => setCounter(counter - 1)
                       size='small'
                     >
                       <ArrowBackIcon className={classes.arrowbutton} />
@@ -401,7 +339,7 @@ const UpperGrade = (props) => {
                           <option
                             key={name?.id}
                             value={name?.section_id}
-                            onClick={() => setSectionName(name?.section__section_name)}
+                            onClick={() =>handleSection(name)}
                           >
                             {name?.section__section_name}
                           </option>
@@ -417,12 +355,6 @@ const UpperGrade = (props) => {
                     >
                       <ArrowBackIcon className={classes.arrowbutton} />
                     </IconButton>
-                    {/* <IconButton
-                      disabled color="primary"
-                      size='small'
-                    >
-                      <ArrowForwardIcon className='arrow-button' />
-                    </IconButton> */}
                   </div>
                 </div>
               </>
@@ -455,7 +387,7 @@ const UpperGrade = (props) => {
               Filter
             </Button>
           </div>
-          {props.teacherView && addPeriodButton ? (
+          {/* {props.teacherView && addPeriodButton ? (
             <Button color="primary"
               variant="contained"
               style={{ color: "white !important" }}
@@ -464,7 +396,7 @@ const UpperGrade = (props) => {
             </Button>
           ) : (
             <></>
-          )}
+          )} */}
         </div>
       </div>
     </>
