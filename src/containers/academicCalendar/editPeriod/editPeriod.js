@@ -38,6 +38,8 @@ import StudentClassParticipate from '../dialogs/studentClassParticipate';
 import StudentHwCwStats from './studentCwHwStats';
 import LessonPlanTabsStudent from './lessonPlanStudent';
 import apiRequest from '../../../config/apiRequest';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
+import Loader from '../../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -118,6 +120,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const [topicDetails, setTopicDetails] = useState([]);
   const [periodDetails, setPeriodDetails] = useState(history?.location?.state?.data);
   const [openParticipate, setOpenParticipate] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const [state, setState] = React.useState({
     top: false,
@@ -147,6 +150,8 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const isStudent = user_level == 13 ? true : false;
 
   const [currTime, setCurrTime] = useState(new Date());
+  const [currDate, setCurrDate] = useState();
+  const [classDate, setClassDate] = useState();
   const [class_StartTime, setClassStartTime] = useState(
     history?.location?.state?.data?.start
   );
@@ -223,14 +228,16 @@ const EditPeriod = withRouter(({ history, ...props }) => {
     setIsHomeWorkOpen((prevState) => !prevState);
   };
   const openViewDairy = () => {
+    setLoading(true);
     setOpen(!open);
     axiosInstance
       .get(`/academic/general-dairy-messages/?diary_id=${dairyId}`)
       .then((res) => {
         setCreatedDairy(res?.data?.result?.results);
+        setLoading(false);
       })
       .catch((err) => {
-        // console.log(err);
+        setLoading(false);
       });
   };
   useEffect(() => {
@@ -240,11 +247,17 @@ const EditPeriod = withRouter(({ history, ...props }) => {
       );
       setCurrTime(`${moment(currTime).format('HH:mm:00')}`);
       setPeriodId(periodDetails?.info?.id);
+      setClassDate(`${moment(class_StartTime).format('YYYY-MM-DD')}`);
+      setCurrDate(`${moment(currTime).format('YYYY-MM-DD')}`);
     }
   }, [periodDetails, history]);
 
   const handleClass = () => {
-    apiRequest('get', `/oncls/v1/retrieve_zoom_link_by_user_level/?online_class_id=${periodData.online_class_id}&user_level_id=11`)
+    setLoading(true);
+    apiRequest(
+      'get',
+      `/oncls/v1/retrieve_zoom_link_by_user_level/?online_class_id=${periodData.online_class_id}&user_level_id=11`
+    )
       .then((result) => {
         if (result?.data?.status_code === 200) {
           const url = result.data?.result;
@@ -253,13 +266,15 @@ const EditPeriod = withRouter(({ history, ...props }) => {
         } else {
           setAlert('error', result?.data?.message);
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
       });
   };
 
-  useEffect(() => {
+  useEffect(() => {  
     if (history?.location?.state) {
       let url;
       if (isStudent) {
@@ -267,10 +282,12 @@ const EditPeriod = withRouter(({ history, ...props }) => {
       } else {
         url = `${endpoints.period.retrieveTeacherDetails}?period_id=${id}`;
       }
+      setLoading(true);
       axiosInstance
         .get(url)
         .then((result) => {
           if (result?.data?.status_code === 200) {
+            setLoading(false);
             const lists = result?.data?.result;
             setPeriodData(lists);
             setDate(lists?.date);
@@ -289,6 +306,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
           }
         })
         .catch((error) => {
+          setLoading(false);
           // setAlert('error', error?.message);
         });
     }
@@ -349,17 +367,21 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   };
 
   const joinStudentClass = () => {
-    axiosInstance.put(`${endpoints.period.updateAttendance.replace('<period-id>', id)}`)
+    setLoading(true);
+    axiosInstance
+      .put(`${endpoints.period.updateAttendance.replace('<period-id>', id)}`)
       .then((response) => {
         if (response?.data?.status_code === 200) {
           setIsPresent(true);
           setAlert('success', response.data?.message);
+          setLoading(false);
         }
       })
       .catch((e) => {
         setAlert('error', e?.message);
-      })
-  }
+        setLoading(false);
+      });
+  };
 
   const renderPeriodsUI = () => {
     switch (periodUI) {
@@ -429,7 +451,8 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   };
   return (
     <Layout>
-      <div className='container'>
+      {loading && <Loader />}
+      <div className='container' style={{ minHeight: '650px' }}>
         <div className='initialRow'>
           <div className='onlineClass'>
             <Box p={2}>
@@ -437,21 +460,23 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                 <Box p={3}>
                   {!isStudent ? (
                     <div className='classDetails'>
-                      <div className='classes'>
-                        {/* <p>Class : </p> <br />
-                    Chapter: */}
-                        <div className='classTitle'>
-                          Class: <span className='classSection'>3A</span>
-                        </div>
-                      </div>
-                      {/* </div> */}
-                      {/* <Button
-                        variant='contained'
-                        className={classes.JoinClassButton}
-                        onClick={handleClass}
+                      <div
+                        className='classes'
+                        style={{
+                          margin: '10px',
+                          padding: '5px',
+                        }}
                       >
-                        Host Class
-                      </Button> */}
+                        <p
+                          style={{
+                            fontSize: '15px',
+                            fontWeight: '600',
+                          }}
+                        >
+                          {history?.location?.state?.data?.grade?.name}
+                        </p>
+                        <p>{history?.location?.state?.data?.section?.name}</p>
+                      </div>
                       {periodDetails?.ongoing_status === 'Completed' ? (
                         <div>
                           <Button
@@ -468,21 +493,40 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           variant='contained'
                           className={classes.ongoingClass}
                           onClick={handleClass}
-                        // style={{ width: '250px' }}
+                          // style={{ width: '250px' }}
                         >
                           Ongoing
                         </Button>
                       ) : (
-                        <Button
-                          variant='contained'
-                          className={classes.JoinClassButton}
-                          onClick={handleClass}
-                        >
-                          {isOngoing ? 'Ongoing' : 'Host Class'}
-                        </Button>
+                        <div>
+                          <Button
+                            variant='contained'
+                            className={classes.JoinClassButton}
+                            onClick={handleClass}
+                            disabled={
+                              currTime < class_StartTime || currDate !== classDate
+                            }
+                          >
+                            Host Class
+                            {/* {isOngoing ? 'Ongoing' : 'Host Class'} */}
+                          </Button>
+                          {currTime < class_StartTime && currDate === classDate && (
+                            <p
+                              style={{
+                                fontSize: 'x-small',
+                                fontWeight: '900',
+                                marginTop: '5%',
+                                marginLeft: '16%',
+                                color: 'red',
+                              }}
+                            >
+                              you can Host class at {class_StartTime}
+                            </p>
+                          )}
+                        </div>
                       )}
                       {/* </div> */}
-                      {currTime >= class_StartTime && (
+                      {currTime >= class_StartTime && currDate === classDate && (
                         // <Grid item md={12} xs={12}>
                         <div>
                           <Typography
@@ -518,19 +562,89 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           Class: <span className='classSection'>3A</span>
                         </div>
                       </div>
-                      <Button
-                        variant='contained'
-                        className={`${isOngoing ? classes.JoinClassButton1 : classes.JoinClassButton
-                          }`}
-                        onClick={handleClass}
-                      >
-                        {isOngoing ? 'Ongoing' : <p onClick={joinStudentClass}>Join Class</p>}
-                      </Button>
+                      {periodDetails?.ongoing_status === 'Completed' ? (
+                        <div>
+                          <Button
+                            variant='contained'
+                            // className={classes.JoinClassButton}
+                            // onClick={handleClass}
+                            disabled
+                          >
+                            Class Completed
+                          </Button>
+                        </div>
+                      ) : (
+                        <div>
+                          <Button
+                            variant='contained'
+                            className={`${
+                              isOngoing
+                                ? classes.JoinClassButton1
+                                : classes.JoinClassButton
+                            }`}
+                            onClick={handleClass}
+                            disabled={
+                              currTime < class_StartTime || currDate !== classDate
+                            }
+                          >
+                            {isOngoing ? (
+                              'Ongoing'
+                            ) : (
+                              <p onClick={joinStudentClass}>Join Class</p>
+                            )}
+                          </Button>
+                          {currTime < class_StartTime && currDate === classDate && (
+                            <p
+                              style={{
+                                fontSize: 'x-small',
+                                fontWeight: '900',
+                                marginTop: '5%',
+                                marginLeft: '16%',
+                                color: 'red',
+                              }}
+                            >
+                              you can Join class at {class_StartTime}
+                            </p>
+                          )}
+                        </div>
+                      )}
+                      {currTime >= class_StartTime && currDate === classDate && (
+                        // <Grid item md={12} xs={12}>
+                        <div>
+                          <Typography
+                            style={{
+                              font: 'normal normal normal 16px/18px Raleway',
+                              borderRadius: '7px',
+                            }}
+                          >
+                            <span
+                              className='countdownTimerWrapper teacherBatchCardLable'
+                              style={{
+                                position: 'absolute',
+                                top: '90px',
+                                left: '653px',
+                                fontSize: '15px',
+                              }}
+                            >
+                              <Countdown
+                                date={new Date(periodDetails?.start)}
+                                renderer={renderer}
+                              ></Countdown>
+                            </span>
+                          </Typography>
+                        </div>
+                      )}
                     </div>
                   )}
                 </Box>
               </Paper>
             </Box>
+            <ArrowBackIcon
+              style={{ size: 'small', marginLeft: '15px', cursor: 'pointer' }}
+              onClick={() => {
+                history.goBack();
+              }}
+            />
           </div>
           {!isStudent ? (
             <div className='attendence'>
@@ -591,7 +705,6 @@ const EditPeriod = withRouter(({ history, ...props }) => {
         <div className='alreadyAddedTopic'>
           {!isStudent &&
             periodDetails?.info?.type_name !== 'Examination' &&
-            periodDetails?.ongoing_status !== 'Completed' &&
             topicDetails?.map((value, index) => {
               return (
                 <div className={`acc${index + 1}`} style={{}}>
@@ -610,8 +723,8 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           {value?.status === 2
                             ? 'Completed'
                             : value?.status === 1
-                              ? 'Partially completed'
-                              : 'Not completed'}
+                            ? 'Partially completed'
+                            : 'Not completed'}
                           {/* <CheckIcon style={{ fontSize: 'large', color: '#53e24a' }} /> */}
                         </div>
                       </AccordionSummary>
@@ -925,7 +1038,11 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                     }}
                                     style={{ cursor: 'pointer', color: 'tomato' }}
                                   >
-                                    <Button variant='contained' size='small'>
+                                    <Button
+                                      variant='contained'
+                                      size='small'
+                                      style={{ display: 'flex', flexWrap: 'wrap' }}
+                                    >
                                       Launch Quiz
                                     </Button>
                                   </div>
@@ -1207,7 +1324,15 @@ const EditPeriod = withRouter(({ history, ...props }) => {
           </div>
         ) : (
           <div className='assessmentParent'>
-            <AssessmentView isStudent={!isStudent} periodId={id} assessmentSubmitted={periodData?.assessment_details} periodData={periodData} assessmentId={periodData?.test_details?.id} questionPaperId={periodData?.test_details?.question_paper_id} isAssessment={periodData?.test_details?.submitted} />
+            <AssessmentView
+              isStudent={!isStudent}
+              periodId={id}
+              assessmentSubmitted={periodData?.assessment_details}
+              periodData={periodData}
+              assessmentId={periodData?.test_details?.id}
+              questionPaperId={periodData?.test_details?.question_paper_id}
+              isAssessment={periodData?.test_details?.submitted}
+            />
           </div>
         )}
       </div>

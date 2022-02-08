@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Layout from '../../Layout';
 import './acadCalendar.scss';
 import MyCalendar from './monthly';
@@ -14,8 +14,12 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/core/styles';
-import Loader from '../.././../components/loader/loader'
+import Loader from '../.././../components/loader/loader';
 import { useHistory } from 'react-router';
+import endpoints from '../../../config/endpoints';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import axiosInstance from '../../../config/axios';
+import { connect, useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   outlined: {
@@ -31,33 +35,170 @@ const useStyles = makeStyles((theme) => ({
 const AcadCalendar = () => {
   const classes = useStyles();
   const history = useHistory();
+  const { setAlert } = useContext(AlertNotificationContext);
+
   const [accordianOpen, setAccordianOpen] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState(null);
   const [roleList, setRoleList] = useState([]);
-  const [selectedBranch, setSelectedBranch] = useState(null);
-  const [selectedGrades, setSelectedGrades] = useState([]);
-  const [branchList, setBranchList] = useState([]);
-  const [gradeList, setGradeList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+  const [branchList, setBranchList] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState([]);
+  const [gradeList, setGradeList] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
+  const [selectedSection, setSelectedSection] = useState([]);
+  const [selectedbranchIds, setSelectedbranchIds] = useState([]);
+  const [selectedGradeIds, setSelectedGradeIds] = useState([]);
+  const [selectedSectionIds, setSelectedSectionIds] = useState([]);
+  const [academicYear, setAcademicYear] = useState([]);
+  const [subjectList, setSubjectList] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState([]);
+  const [selectedSubjectIds, setSelectedSubjectIds] = useState([]);
+  const [filtered, setFiltered] = useState(false);
 
-  const handleBranch = (event, value) => {
-    setSelectedBranch('');
-    setGradeList([]);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
+  const handleAcademicYear = (event, value) => {
     if (value) {
-      setSelectedBranch(value);
+      callApi(
+        `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+        'branchList'
+      );
+    }
+    setSelectedGrade([]);
+    setSectionList([]);
+    setSelectedSection([]);
+    setSelectedBranch([]);
+  };
+
+  const handleBranch = (event = {}, value = []) => {
+    setSelectedBranch([]);
+    setGradeList([]);
+    setSelectedbranchIds(value?.branch?.id);
+    setSelectedBranch(value);
+    callApi(
+      `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`,
+      'gradeList'
+    );
+  };
+
+  const handleGrade = (event = {}, value = []) => {
+    setSelectedGrade([]);
+    if (value?.length) {
+      value =
+        value.filter(({ grade_id }) => grade_id === 'all').length === 1
+          ? [...gradeList].filter(({ grade_id }) => grade_id !== 'all')
+          : value;
+      const ids = value.map((el) => el) || [];
+      const selectedId = value.map((el) => el?.grade_id) || [];
+      // const branchId = selectedBranch.map((el) => el?.branch?.id) || [];
+      setSelectedGrade(ids);
+      setSelectedGradeIds(selectedId);
+      callApi(
+        `${endpoints.academics.sections}?session_year=${
+          selectedAcademicYear?.id
+        }&branch_id=${selectedbranchIds}&grade_id=${selectedId.toString()}&module_id=${moduleId}`,
+        'section'
+      );
     }
   };
 
-  const handleGrade = (event, value) => {
-    setSelectedGrades(value);
-    if (value.length) {
-      const ids = value.map((el) => el.grade_id);
-      //   setGradeIds(ids);
-      // listSubjects(ids)
-    } else {
-      //   setGradeIds([]);
-      setSelectedGrades([]);
+  const handleSection = (event = {}, value = []) => {
+    if (value?.length) {
+      const ids = value.map((el) => el);
+      const selectedId = value.map((el) => el?.section_id);
+      setSelectedSection(ids);
+      setSelectedSectionIds(selectedId);
+      callApi(
+        `${
+          endpoints.academics.subjects
+        }?branch=${selectedbranchIds}&grade=${selectedGradeIds}&session_year=${
+          selectedAcademicYear?.id
+        }&section=${selectedId.toString()}&module_id=${moduleId}`,
+        'subject'
+      );
     }
+  };
+  const handleSubject = (event = {}, value = []) => {
+    if (value?.length) {
+      const ids = value.map((el) => el);
+      const selectedId = value.map((el) => el?.subject__id);
+      setSelectedSubject(ids);
+      setSelectedSubjectIds(selectedId);
+    }
+  };
+
+  function callApi(api, key) {
+    setLoading(true);
+    axiosInstance
+      .get(api)
+      .then((result) => {
+        if (result.status === 200) {
+          if (key === 'academicYearList') {
+            const defaultValue = result?.data?.data?.[0];
+            handleAcademicYear({}, defaultValue);
+            setAcademicYear(result?.data?.data || []);
+          }
+          if (key === 'branchList') {
+            setBranchList(result?.data?.data?.results || []);
+          }
+          if (key === 'gradeList') {
+            setGradeList(result.data.data || []);
+          }
+          if (key === 'section') {
+            setSectionList(result.data.data);
+          }
+          if (key === 'subject') {
+            setSubjectList(result.data.data);
+          }
+          setLoading(false);
+        } else {
+          setAlert('error', result.data.message);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+        setLoading(false);
+      });
+  }
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Online Class' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Create Class') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    callApi(
+      `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+      'branchList'
+    );
+  }, [moduleId]);
+
+  const clearfilter = () => {
+    setSelectedBranch([]);
+    setSelectedGrade([]);
+    setSelectedSection([]);
+    setSelectedSubject([]);
+    setSelectedbranchIds([]);
+    setSelectedGradeIds([]);
+    setSelectedSubjectIds([]);
+    setSelectedSectionIds([]);
   };
 
   const statsView = () => {
@@ -66,9 +207,13 @@ const AcadCalendar = () => {
     setLoading(false);
   };
 
+  const handleFilter = () => {
+    setFiltered(true);
+  };
+
   return (
     <Layout className='acadyearCalendarContainer'>
-      {/* <Grid
+      <Grid
         id
         item
         sm={8}
@@ -96,16 +241,19 @@ const AcadCalendar = () => {
             <Grid container spacing={3}>
               <Grid item md={4} sm={4} xs={12}>
                 <Autocomplete
+                  // multiple
                   style={{ width: '100%' }}
                   size='small'
                   //onChange={(e) => setSelectedBranch(e.target.value)}
                   onChange={handleBranch}
                   id='branch_id'
                   className='dropdownIcon'
-                  value={selectedBranch}
-                  options={branchList}
-                  getOptionLabel={(option) => option?.branch_name}
-                  filterSelectedOptions
+                  value={selectedBranch || []}
+                  options={branchList || []}
+                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                  getOptionSelected={(option, value) =>
+                    option?.branch?.id == value?.branch?.id
+                  }
                   renderInput={(params) => (
                     <TextField
                       {...params}
@@ -127,7 +275,7 @@ const AcadCalendar = () => {
                   className='dropdownIcon'
                   getOptionLabel={(option) => option?.grade__grade_name}
                   filterSelectedOptions
-                  value={selectedGrades}
+                  value={selectedGrade}
                   renderInput={(params) => (
                     <TextField
                       className='create__class-textfield'
@@ -145,14 +293,12 @@ const AcadCalendar = () => {
                   multiple
                   fullWidth
                   size='small'
-                  onChange={(event, value) => {
-                    setSelectedRoles(value);
-                  }}
+                  onChange={handleSection}
                   id='role_id'
                   className='dropdownIcon'
-                  value={selectedRoles?.role_name}
-                  options={roleList}
-                  getOptionLabel={(option) => option?.role_name}
+                  value={selectedSection}
+                  options={sectionList}
+                  getOptionLabel={(option) => option?.section__section_name}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -170,14 +316,12 @@ const AcadCalendar = () => {
                   multiple
                   fullWidth
                   size='small'
-                  onChange={(event, value) => {
-                    setSelectedRoles(value);
-                  }}
+                  onChange={handleSubject}
                   id='role_id'
                   className='dropdownIcon'
-                  value={selectedRoles?.role_name}
-                  options={roleList}
-                  getOptionLabel={(option) => option?.role_name}
+                  value={selectedSubject}
+                  options={subjectList}
+                  getOptionLabel={(option) => option?.subject__subject_name}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -194,8 +338,8 @@ const AcadCalendar = () => {
                   style={{ marginTop: '5px' }}
                   variant='contained'
                   color='primary'
-                  //   onClick={() => getUsersData()}
                   fullWidth={true}
+                  onClick={handleFilter}
                 >
                   Filter
                 </Button>
@@ -205,7 +349,7 @@ const AcadCalendar = () => {
                   style={{ marginTop: '5px' }}
                   variant='contained'
                   color='primary'
-                  //   onClick={handleResetFilters}
+                  onClick={clearfilter}
                   fullWidth={true}
                 >
                   Clear
@@ -219,9 +363,19 @@ const AcadCalendar = () => {
             Stats View
           </Button>
         </div>
-      </Grid> */}
+      </Grid>
       <div className='calenderContainer'>
-        <MyCalendar />
+        {filtered ? (
+          <MyCalendar
+            selectedGrade={selectedGradeIds}
+            selectedSubject={selectedSubjectIds}
+            acadyear={selectedAcademicYear}
+            filtered = {filtered}
+            setFiltered = {setFiltered}
+          />
+        ) : (
+          <MyCalendar />
+        )}
       </div>
       {loading && <Loader />}
     </Layout>

@@ -1,220 +1,220 @@
 .initialRow {
+  display: flex;
+}
+.onlineClass {
+  width: 70%;
+}
+.attendence {
+  width: 30%;
+  .att1 {
     display: flex;
+    justify-content: space-around;
+    margin-top: -3%;
   }
-  .onlineClass {
-    width: 70%;
+  p {
+    margin-top: 9px;
   }
-  .attendence {
-    width: 30%;
-    .att1 {
-      display: flex;
-      justify-content: space-around;
-      margin-top: -3%;
-    }
-    p {
-      margin-top: 9px;
-    }
-  }
-  .attendences {
-    width: 30%;
-    .att11 {
-      display: flex;
-      margin-top: -3%;
-    }
-    p {
-      margin-top: 9px;
-    }
-  }
-  .classDetails {
-    width: 100%;
+}
+.attendences {
+  width: 30%;
+  .att11 {
     display: flex;
-    justify-content: space-between;
-    .classes {
-      width: 70%;
-    }
+    margin-top: -3%;
   }
-  .secondRow {
-    display: flex;
-    width: 100%;
+  p {
+    margin-top: 9px;
   }
-  .topic {
-    width: 70%;
-    text-align: center;
+}
+.classDetails {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .classes {
+    width: 60%;
   }
-  .right-side {
-    width: 30%;
-  }
-  .create-diary-button {
-    margin: 15px 20px 0px 10px;
-  }
-  .created {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-  .addedTopicFilter {
-    width: 100%;
-    display: flex;
-  }
-  .classTitle {
-    background: #d5d2d2;
-    width: 14%;
-    padding: 1% 2%;
-    font-weight: 500;
-    border-radius: 5px;
-  }
-  
-  span.classSection {
-    font-weight: bold;
-  }
-  
-  .chapterWrapper {
-    margin-top: 2%;
-    font-weight: bolder;
-  }
-  
-  .presentWrapper {
-    color: green;
-    width: 20%;
-  }
-  .presentWrappers {
-    color: black;
-    width: 20%;
-  }
-  .PresentNum {
-    font-weight: bold;
-    text-align: center;
-    background: #cbf9cb;
-    padding: 15% 0px;
-    border-radius: 5px;
-    width: 135%;
-    font-size: 20px;
-  }
-  .attendOnline {
-    font-weight: bold;
-    text-align: center;
-    background: #cbf9cb;
-    padding: 15% 0px;
-    border-radius: 5px;
-    width: 500%;
-    font-size: 20px;
-  }
-  .notyet {
-    font-weight: bold;
-    text-align: center;
-    background: #d5d2d2;
-    padding: 15% 0px;
-    border-radius: 5px;
-    width: 500%;
-    font-size: 20px;
-  }
-  .presentTitle {
-    margin-left: 30%;
-  }
-  
-  .absentWrapper {
-    color: #eb2828;
-    width: 20%;
-  }
-  
-  .AbsentNum {
-    font-weight: bold;
-    text-align: center;
-    background: #f9d4d4;
-    padding: 15% 0px;
-    border-radius: 5px;
-    width: 135%;
-    font-size: 20px;
-  }
-  
-  .absentTitle {
-    margin-left: 30%;
-  }
-  
-  .attenWrapper {
-    text-align: center;
-    margin-top: 3%;
-    font-weight: bold;
-    margin-bottom: -3%;
-  }
-  
-  .classParticipationWrapper {
-    margin: 15% 3%;
-  }
-  
-  .classWorkWrapper {
-    margin: 3% 3%;
-  }
-  
-  .homeWorkWrapper {
-    margin: 4% 3%;
-  }
-  
-  .noTopicWrapper {
-    text-align: center;
-    vertical-align: middle;
-    background: #b6b6b6;
-    padding: 10%;
-    margin: 10% 0%;
-    border-radius: 3%;
-  }
-  
-  .ss {
-    width: 100%;
-    background: #d5d2d2;
-  }
-  
-  .addTopicTitle {
-    padding: 2% 10% 1%;
-    font-weight: 600;
-    text-align: start;
-  }
-  
-  .MuiBox-root-20 {
-    padding: 0px !important;
-  }
-  
-  .classworkPresent {
-    padding: 10px;
-    // background-color: grey;
-    margin: 10px;
-    // border: 1px solid #cccccc;
-    height: 175px;
-    overflow: hidden auto;
-  }
-  .classesWrapper {
-    display: flex;
-    flex-direction: column;
-    // background: aliceblue;
-    margin: 4px -6px;
-    border: 1px solid #cccccc;
-    border-radius: 5px;
-  }
-  .individualClass {
-    border: 1px solid #cccccc;
-    width: 100%;
-    border-radius: 5px;
-  }
-  .lessonPlanTabs {
-    width: 100%;
-  }
-  .assignTasks {
-    margin: 5% 3%;
-  }
-  .addtopicWrapper {
-    background: #cccccc;
-  }
-  .alreadyAddedTopic {
-    width: 67%;
-    margin-left: 20px;
-  }
-  .assign {
-    background: #cccccc;
-  }
-  .right-side {
-    width: 30%;
-    position: absolute;
-    top: 135px;
-    right: 2px;
-  }
-  
+}
+.secondRow {
+  display: flex;
+  width: 100%;
+}
+.topic {
+  width: 70%;
+  text-align: center;
+}
+.right-side {
+  width: 30%;
+}
+.create-diary-button {
+  margin: 15px 20px 0px 10px;
+}
+.created {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.addedTopicFilter {
+  width: 100%;
+  display: flex;
+}
+.classTitle {
+  background: #d5d2d2;
+  width: 14%;
+  padding: 1% 2%;
+  font-weight: 500;
+  border-radius: 5px;
+}
+
+span.classSection {
+  font-weight: bold;
+}
+
+.chapterWrapper {
+  margin-top: 2%;
+  font-weight: bolder;
+}
+
+.presentWrapper {
+  color: green;
+  width: 20%;
+}
+.presentWrappers {
+  color: black;
+  width: 20%;
+}
+.PresentNum {
+  font-weight: bold;
+  text-align: center;
+  background: #cbf9cb;
+  padding: 15% 0px;
+  border-radius: 5px;
+  width: 135%;
+  font-size: 20px;
+}
+.attendOnline {
+  font-weight: bold;
+  text-align: center;
+  background: #cbf9cb;
+  padding: 15% 0px;
+  border-radius: 5px;
+  width: 500%;
+  font-size: 20px;
+}
+.notyet {
+  font-weight: bold;
+  text-align: center;
+  background: #d5d2d2;
+  padding: 15% 0px;
+  border-radius: 5px;
+  width: 500%;
+  font-size: 20px;
+}
+.presentTitle {
+  margin-left: 30%;
+}
+
+.absentWrapper {
+  color: #eb2828;
+  width: 20%;
+}
+
+.AbsentNum {
+  font-weight: bold;
+  text-align: center;
+  background: #f9d4d4;
+  padding: 15% 0px;
+  border-radius: 5px;
+  width: 135%;
+  font-size: 20px;
+}
+
+.absentTitle {
+  margin-left: 30%;
+}
+
+.attenWrapper {
+  text-align: center;
+  margin-top: 3%;
+  font-weight: bold;
+  margin-bottom: -3%;
+}
+
+.classParticipationWrapper {
+  margin: 15% 3%;
+}
+
+.classWorkWrapper {
+  margin: 3% 3%;
+}
+
+.homeWorkWrapper {
+  margin: 4% 3%;
+}
+
+.noTopicWrapper {
+  text-align: center;
+  vertical-align: middle;
+  background: #b6b6b6;
+  padding: 10%;
+  margin: 10% 0%;
+  border-radius: 3%;
+}
+
+.ss {
+  width: 100%;
+  background: #d5d2d2;
+}
+
+.addTopicTitle {
+  padding: 2% 10% 1%;
+  font-weight: 600;
+  text-align: start;
+}
+
+.MuiBox-root-20 {
+  padding: 0px !important;
+}
+
+.classworkPresent {
+  padding: 10px;
+  // background-color: grey;
+  margin: 10px;
+  // border: 1px solid #cccccc;
+  height: 175px;
+  overflow: hidden auto;
+}
+.classesWrapper {
+  display: flex;
+  flex-direction: column;
+  // background: aliceblue;
+  margin: 4px -6px;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+}
+.individualClass {
+  border: 1px solid #cccccc;
+  width: 100%;
+  border-radius: 5px;
+}
+.lessonPlanTabs {
+  width: 100%;
+}
+.assignTasks {
+  margin: 5% 3%;
+}
+.addtopicWrapper {
+  background: #cccccc;
+}
+.alreadyAddedTopic {
+  width: 67%;
+  margin-left: 20px;
+}
+.assign {
+  background: #cccccc;
+}
+.right-side {
+  width: 30%;
+  position: absolute;
+  top: 135px;
+  right: 2px;
+}

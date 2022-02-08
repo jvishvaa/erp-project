@@ -14,7 +14,12 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import deleteIcon from '../../../assets/images/delete.svg';
+import DeleteIcon from '@material-ui/icons/Delete';
 import attachmenticon from '../../../assets/images/attachmenticon.svg';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import Loader from '../../../components/loader/loader';
+
+
 const Input = styled('input')({
   display: 'none',
 });
@@ -32,7 +37,9 @@ const CreateDiary = (props, { lesson }) => {
   const [details, setDetail] = useState('');
   const [title, setTitle] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const s3Images = `${endpoints.assessmentErp.s3}/`;
+  const { openPreview, closePreview } =
+    React.useContext(AttachmentPreviewerContext) || {};
   const handleImageChange = (event) => {
     let fileType = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
     let selectedFileType = event.target.files[0]?.type;
@@ -50,18 +57,22 @@ const CreateDiary = (props, { lesson }) => {
     const data = event.target.files[0];
     const fd = new FormData();
     fd.append('file', data);
+    setLoading(true);
     axiosInstance.post(`academic/dairy-upload/`, fd).then((result) => {
       if (result?.data?.status_code === 200) {
         setFilePath([...filePath, result?.data?.result]);
         setAlert('success', result?.data?.message);
+        setLoading(false);
       } else {
         setAlert('error', result?.data?.message);
+        setLoading(false);
       }
     });
   };
 
   const removeFileHandler = (i, file) => {
     const list = [...filePath];
+    setLoading(true);
     axiosInstance
       .post(`${endpoints.circular.deleteFile}`, {
         file_name: `${file}`,
@@ -74,9 +85,11 @@ const CreateDiary = (props, { lesson }) => {
         } else {
           setAlert('error', result?.data?.message);
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
       })
       .finally(() => setLoading(false));
   };
@@ -90,23 +103,32 @@ const CreateDiary = (props, { lesson }) => {
     return (
       <>
         <div className='file_row_image'>
-          <div className='file_name_container'>{index + 1}</div>
+          <div className='file_name_container'>File {index + 1}</div>
           <div className='file_closeCircular'>
+            <img
+              style={{
+                width: '50px',
+                height: '50px',
+                cursor: 'pointer',
+              }}
+              src={`${s3Images}${file}`}
+              alt={`${s3Images}${file}`}
+              onClick={() => {
+                const fileSrc = `${s3Images}${file}`;
+                openPreview({
+                  currentAttachmentIndex: 0,
+                  attachmentsArray: [
+                    {
+                      src: fileSrc,
+                      name: `demo`,
+                      extension: '.png',
+                    },
+                  ],
+                });
+              }}
+            />
             <span onClick={onClose}>
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={{
-                      width: '20px',
-                      height: '20px',
-                      // padding: '5px',
-                      cursor: 'pointer',
-                    }}
-                    src={deleteIcon}
-                    alt='given'
-                  />
-                )}
-              />
+              <SvgIcon component={() => <DeleteIcon style={{ cursor: "pointer" }} />} />
             </span>
           </div>
         </div>
@@ -115,6 +137,14 @@ const CreateDiary = (props, { lesson }) => {
   };
 
   const handleSubmit = async () => {
+    if (!details) {
+      setAlert('error', "Please Enter Details of classwork")
+      return;
+    }
+    if (!title) {
+      setAlert('error', "Please Enter Tools Used")
+      return;
+    }
     let payload = {
       title,
       message: details,
@@ -145,6 +175,7 @@ const CreateDiary = (props, { lesson }) => {
   };
   return (
     <div style={{ marginTop: '100px', width: '700px' }}>
+      {loading && <Loader />}
       {/* <div> */}
       <div style={{ display: 'flex' }}>
         <div style={{ marginLeft: '5%', fontSize: '20px' }}>Create Diary</div>

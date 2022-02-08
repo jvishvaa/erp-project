@@ -29,6 +29,8 @@ import Layout from '../../Layout';
 import Pagination from 'components/PaginationComponent';
 import endpoints from 'config/endpoints';
 import CloseIcon from '@material-ui/icons/Close';
+import Loader from '../../../components/loader/loader';
+
 const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: '#EEEEEE',
@@ -79,6 +81,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
   const [pageNumber, setPageNumber] = useState(1);
   const { setAlert } = useContext(AlertNotificationContext);
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -94,6 +97,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
   }
 
   const studentList = () => {
+    setLoading(true);
     axiosInstance
       .get(
         `${endpoints.period.getAttendance.replace(
@@ -106,16 +110,21 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
           setStudentData(result);
           setTotalGenre(result?.data?.result?.count);
           setCount(result?.data?.result?.count);
+
         } else {
           setAlert('error', result?.data?.message);
+
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
       });
   };
 
   const studentListUpdate = (e, id, status) => {
+    setLoading(true);
     axiosInstance
       .put(`${endpoints.period.updateAttendance.replace('<period-id>', periodId)}`, {
         erp_id: id,
@@ -125,16 +134,21 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
           setCheckedPresent(!checkedPresent);
+
         } else {
           setAlert('error', result?.data?.message);
+
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
       });
   };
 
   const confirmAttendance = () => {
+    setLoading(true);
     axiosInstance
       .put(
         `${endpoints.period.confirmAttendance}${periodId}/confirm-attendance/`
@@ -143,12 +157,16 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
           setCheckedPresent(!checkedPresent);
+
         } else {
           setAlert('error', result?.data?.message);
+
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
       });
   };
 
@@ -157,14 +175,17 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
   }, [history, checkedPresent, pageNumber]);
 
   const handleExcel = () => {
+    setLoading(true);
     apiRequest('get', `/oncls/v1/oncls-attendeelist/?online_class_id=${online_class_id}&class_date=${date}&type=excel&page_number=${pageNumber}&page_size=${limit}`, null, 'arraybuffer')
       .then((res) => {
         const blob = new Blob([res.data], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         });
         FileSaver.saveAs(blob, 'user_list.xls');
+        setLoading(false);
       })
-      .catch((error) => setAlert('error', 'Something Wrong!'));
+      .catch((error) => setAlert('error', 'Something Wrong!')
+      );
   };
 
   const handleback = () => {
@@ -177,6 +198,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
   const { data } = studentData;
   return (
     <Layout>
+      {loading && <Loader />}
       <div
         style={{
           display: 'flex',
@@ -184,11 +206,11 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
           justifyContent: 'space-between',
           alignItems: window.innerWidth < 500 ? 'left' : 'center',
           flexDirection: window.innerWidth < 500 ? 'column' : 'row',
-          marginTop:"-30px"
+          marginTop: "-30px"
         }}
       >
         <div style={{ marginTop: '20px' }}>
-          <span style={{fontSize:"20px"}}>
+          <span style={{ fontSize: "20px" }}>
             <b>Attendance</b>
           </span>
           <br />
@@ -220,7 +242,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
         </div>
         <CloseIcon onClick={handleback} style={{ cursor: 'pointer' }} />
       </div>
-      <Grid container xs={12} sm={12} md={12} style={{ padding: '20px' }}>
+      <Grid container xs={12} sm={12} md={12} style={{ padding: '0px 20px' }}>
         <AppBar position='static'></AppBar>
         <Grid item={12} xs={12} sm={12} md={12} spacing={1}>
           <TableContainer component={Paper}>
@@ -331,7 +353,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
         <DialogTitle id="form-dialog-title" >Confirmation</DialogTitle>
         <DialogContent>
           <DialogContentText>
-          Do you really want to lock the attendanc for period {periodId} ?
+            Do you really want to lock the attendanc for period {periodId} ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -344,7 +366,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
         </DialogActions>
       </Dialog>
     </Layout>
-    
+
   );
 });
 export default ViewAttendence;

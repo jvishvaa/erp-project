@@ -26,6 +26,8 @@ import apiRequest from '../../../config/apiRequest'
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../../src/context-api/alert-context/alert-state';
 import { AttachmentPreviewerContext } from '../../../components/attachment-previewer/attachment-previewer-contexts';
+import Loader from '../../../components/loader/loader';
+
 const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: '#EEEEEE',
@@ -100,6 +102,7 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
   const [submittedData, setSubmittedData] = useState([]);
   const [pendingData, setPendingData] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false);
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -110,7 +113,8 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
   }, []);
 
   const getSubmittedList = () => {
-    apiRequest('get',`/oncls/v1/classwork-submitted-list/?date=${date}&online_class_id=${online_class_id}`)
+    setLoading(true);
+    apiRequest('get', `/oncls/v1/classwork-submitted-list/?date=${date}&online_class_id=${online_class_id}`)
       .then((result) => {
         if (result?.status === 200) {
           setAlert('success', result?.data?.message);
@@ -118,13 +122,16 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
         } else {
           setAlert('error', result?.data?.message);
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', 'No Submitted Data found');
+        setLoading(false);
       });
   };
 
   const getPendingList = () => {
+    setLoading(true);
     axiosInstance
       .get(
         `/period/classwork_submitted_pending_list/?date=${date}&online_class_id=${online_class_id}&period_id=${periodId}`
@@ -133,17 +140,22 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
         if (result?.status === 200) {
           setAlert('success', 'Pending data fetched successfully');
           setPendingData(result?.data);
+
         } else {
           setAlert('error', result?.data?.message);
+
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
       });
   };
 
   return (
     <Layout>
+      {loading && <Loader />}
       <Grid container xs={12} sm={12} md={12} spacing={2}>
         <Grid item xs={12} sm={12} md={12} spacing={2}>
           <div
@@ -166,11 +178,11 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
             </div>
           </div>
         </Grid>
-        <AppBar position='static'>
+        <AppBar position='static' style={{ width:"95%",margin:"auto" }}>
           <Tabs
             value={value}
             onChange={handleChange}
-            indicatorColor='primary'
+            indicatorColor='primary' 
             textColor='primary'
             style={{ background: 'white' }}
             variant='fullWidth'

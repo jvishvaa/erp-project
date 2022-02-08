@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   Grid,
   Accordion,
@@ -17,10 +17,12 @@ import { withRouter } from 'react-router-dom';
 import axiosInstance from 'config/axios';
 import { DataUsageSharp } from '@material-ui/icons';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
-import apiRequest from '../../../config/apiRequest'
+import apiRequest from '../../../config/apiRequest';
+import Loader from '../../../components/loader/loader';
 
 const studentCwHwStats = withRouter(({ history, data, hwData }) => {
   const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false);
   const handleSudentSubmitHW = (id) => {
     if (id === undefined) return;
     history.push({
@@ -32,10 +34,10 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
   const handleStudentClassWork = (id) => {
     history.push({
       pathname: `/academic-calendar/submit-class-work/${id}`,
-      state:  {
+      state: {
         classWorkId: id,
-        online_class_id: data?.online_class_id
-      }
+        online_class_id: data?.online_class_id,
+      },
     });
   };
 
@@ -45,21 +47,12 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
     });
   };
 
-  const handleViewSubmittedWork = () => {
-    axiosInstance
-      .get(
-        `/academic/${data?.homework_details?.homework_list[0].id}/hw-questions/hw_status=2`
-      )
-      .then((response) => {
-        if (response?.data?.status_code === 200) {
-
-        } else {
-          
-        }
-      })
-      .catch((e) => {
-        setAlert('error', e.message);
-      });
+  const handleViewSubmittedWork = (id) => {
+      if (id === undefined) return;
+    history.push({
+      pathname: `/academic-calendar/submit-home-work/${id}`,
+      homeworkId: data?.homework_details?.homework_list[0].id,
+    });
   };
 
   const showAsPerStatus = (data) => {
@@ -72,29 +65,29 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
           </div>
         );
       case 'evaluated':
-        return;
+        return <div >
+            Evaluated
+          </div>
       default:
         return (
           <div onClick={() => handleSudentSubmitHW(firstData?.id)}>Submit Home Work</div>
         );
     }
   };
-  const handleViewSubmittedClassWork = () => {
-    apiRequest('get', `/oncls/v1/oncls-classwork/?online_class_id=${data?.online_class_id}&date=${data?.date}`)
-      .then((response) => {
-        if (response.data.status_code === 200) {
-          // console.log('data', data);
-        } else {
-          // console.log('t')
-        }
-      })
-      .catch((e) => {
-        setAlert('error', e.message);
-      });
+  const handleViewSubmittedClassWork = (id) => {
+    history.push({
+      pathname: `/academic-calendar/submit-class-work/${id}`,
+      state:  {
+        classWorkId: id,
+        online_class_id: data?.online_class_id,
+        class_date: data?.date
+      }
+    });
   };
   return (
     <>
       <div className='classParticipationWrapper'>
+        {loading && <Loader />}
         {data?.classwork_details?.assigned ? (
           <Accordion style={{ width: '100%', cursor: 'pointer' }}>
             <AccordionSummary
@@ -174,7 +167,7 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
                             display: 'flex',
                             justifyContent: 'center',
                           }}
-                          onClick={() => handleViewSubmittedClassWork()}
+                          onClick={() => handleViewSubmittedClassWork(item?.period_classwork_id)}
                         >
                           View Submitted Class work
                         </Typography>
@@ -190,7 +183,9 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
                             display: 'flex',
                             justifyContent: 'center',
                           }}
-                          onClick={(e) => handleStudentClassWork(item?.period_classwork_id)}
+                          onClick={(e) =>
+                            handleStudentClassWork(item?.period_classwork_id)
+                          }
                         >
                           Submit
                         </Typography>

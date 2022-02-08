@@ -16,6 +16,7 @@ import axiosInstance from 'config/axios';
 import { AttachmentPreviewerContext } from './../../../components/attachment-previewer/attachment-previewer-contexts/attachment-previewer-contexts';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
+import Loader from '../../../components/loader/loader';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -83,6 +84,7 @@ const LessonPlanTabs = ({
   const [uploadedData, setUploadedData] = React.useState([]);
   const [addbtnStatus, setAddbtnStatus] = React.useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false);
 
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
@@ -94,12 +96,14 @@ const LessonPlanTabs = ({
   const [fileId, setFileId] = useState(-1);
 
   const TopicContentView = (topicId) => {
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${topicId}`)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           const FilesData = result.data?.result;
           setFilesData(FilesData);
+          setLoading(false);
           FilesData.filter((tabs) => {
             if (tabs.document_type === 'my_files') {
               setFileId(tabs.id);
@@ -107,14 +111,17 @@ const LessonPlanTabs = ({
           });
         } else {
           setAlert('error', result?.data?.message);
+          setLoading(false);
         }
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
       });
   };
 
   const previousUploadedFiles = (tempFileId) => {
+    setLoading(true);
     if (tempFileId !== null) {
       axiosInstance
         .get(
@@ -123,13 +130,15 @@ const LessonPlanTabs = ({
         .then((result) => {
           if (result?.data?.status_code === 200) {
             const UploadData = result.data?.result?.my_files;
-            setUploadedData(UploadData);
+            setUploadedData(UploadData);            
           } else {
-            setAlert('error', result?.data?.message);
+            setAlert('error', result?.data?.message);           
           }
+          setLoading(false);
         })
         .catch((error) => {
           setAlert('error', error?.message);
+          setLoading(false);
         });
     }
   };
@@ -161,36 +170,42 @@ const LessonPlanTabs = ({
     isMarkCompleted(true);
   };
   const handleTopicCompleted = () => {
+    setLoading(true);
     axiosInstance
       .put(`/period/${assignedTopic}/assign-topic-period/`, {
         status: 2,
       })
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          setAlert('success', result?.data?.message);
+          setAlert('success', result?.data?.message);         
           window.location.reload();
         } else if (result?.data?.status_code === 404) {
-          setAlert('error', result?.data?.message);
+          setAlert('error', result?.data?.message);       
         }
+        setLoading(false);
       })
       .catch((err) => {
         setAlert('error', err?.message);
+        setLoading(false);
       });
   };
   const handlePartiallyCompleted = () => {
+    setLoading(true);
     axiosInstance
       .put(`/period/${assignedTopic}/assign-topic-period/`, {
         status: 1,
       })
       .then((result) => {
-        if (result?.data?.status_code === 200) {
+        if (result?.data?.status_code === 200) {     
           setAlert('success', result?.data?.message);
         } else if (result?.data?.status_code === 404) {
-          setAlert('error', result?.data?.message);
+          setAlert('error', result?.data?.message);         
         }
+        setLoading(false);
       })
       .catch((err) => {
         setAlert('error', err?.message);
+        setLoading(false);
       });
   };
   const handleAddTopic = () => {
@@ -198,6 +213,7 @@ const LessonPlanTabs = ({
   };
 
   const handleUpload = () => {
+    setLoading(true);
     const formData = new FormData();
     formData.append('file', selectedFiles3);
     axiosInstance
@@ -205,6 +221,7 @@ const LessonPlanTabs = ({
       .then((res) => {
         if (res?.data?.data) {
           if (!uploadedData.length) {
+            setLoading(false);
             axiosInstance
               .post(`${endpoints.lessonPlanTabs.postData2}`, {
                 topic_id: upcomingTopicId,
@@ -212,29 +229,34 @@ const LessonPlanTabs = ({
               })
               .then((response) => {
                 setFileId(response?.data?.result?.id);
+                setLoading(false);
               })
               .catch((err) => {
-                console.log('File Upload Error');
+                setLoading(false);
               });
           } else {
+            setLoading(true);
             axiosInstance
               .put(`${endpoints.lessonPlanTabs.getData2.replace('<file-id>', fileId)}`, {
                 my_files: [...uploadedData, res?.data?.data],
               })
               .then((response) => {
+                setLoading(false);
                 previousUploadedFiles(fileId);
               })
               .catch((err) => {
-                console.log('File Upload Error');
+                setLoading(false);
               });
           }
         }
       })
       .catch((err) => console.log('File Upload Error'));
+      setLoading(false);
   };
 
   return (
     <div className={classes.root} style={{ minHeight: isAccordian ? '300px' : '300px' }}>
+    {loading && <Loader />} 
       <AppBar position='static'>
         <Tabs
           value={value}

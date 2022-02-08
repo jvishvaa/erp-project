@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import moment from 'moment';
-import FullCalendar from '@fullcalendar/react'; // must go before plugins
+import FullCalendar, { filterEventStoreDefs } from '@fullcalendar/react'; // must go before plugins
 import dayGridPlugin from '@fullcalendar/daygrid'; // a plugin!
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -20,7 +20,7 @@ import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CreateClass from '../dialogs/createClass';
 
-const MyCalendar = () => {
+const MyCalendar = ({ selectedGrade, selectedSubject, acadyear,filtered , setFiltered}) => {
   const [startDate, setStartDate] = useState([]);
   const [endDate, setEndDate] = useState([]);
   const [events, setEvents] = useState([]);
@@ -55,14 +55,38 @@ const MyCalendar = () => {
   };
 
   useEffect(() => {
+    if(filtered){
+      setFiltered(false)
+    }
     if (isDay === false) {
+      
+      let params = {
+        start_date: startDate,
+        end_date: endDate, 
+      }
+
+      const gradesId = [];
+      const SubjectId = [];
+      // const sectionId = []
+      if (selectedGrade) {
+        selectedGrade.map((each,key) => {
+          gradesId.push(each);
+        })
+        params['selectedGrade'] = gradesId.toString();
+      }
+      if (selectedSubject) {
+        selectedSubject.map((each,key) => {
+          SubjectId.push(each);
+        })
+        params['subject'] = SubjectId.toString();
+      }
+      if(acadyear){
+        params['acad_session'] = acadyear?.id;
+      }
       axios({
         method: 'get',
         url: `${endpoints.period.getDate}`,
-        params: {
-          start_date: startDate,
-          end_date: endDate,
-        },
+        params: params ,
       })
         .then((res) => {
           // setEvents(res.data.result);
@@ -90,7 +114,7 @@ const MyCalendar = () => {
           // setAlert('error', 'Something Wrong!');
         });
     }
-  }, [endDate, isCreateClassOpen]);
+  }, [endDate, isCreateClassOpen,filtered]);
 
   const getEvent = (info) => {
     info.jsEvent.preventDefault();

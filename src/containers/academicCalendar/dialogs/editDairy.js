@@ -21,8 +21,9 @@ import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import deleteIcon from '../../../assets/images/delete.svg';
 import attachmenticon from '../../../assets/images/attachmenticon.svg';
-
-const EditDairy = ({ lesson, onClose, periodId }) => {
+import DeleteIcon from '@material-ui/icons/Delete';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+const EditDairy = ({ lesson, onClose, periodId, updateDiary }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [doc, setDoc] = useState(null);
   const [filePath, setFilePath] = useState([]);
@@ -32,13 +33,23 @@ const EditDairy = ({ lesson, onClose, periodId }) => {
   const [storeData, setStoreData] = useState([]);
   const [createdDiary, setCreatedDiary] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const s3Images = `${endpoints.assessmentErp.s3}/`;
+  const { openPreview, closePreview } =
+    React.useContext(AttachmentPreviewerContext) || {};
   useEffect(() => {
     setTitle(lesson?.title);
     setDetail(lesson?.message);
     setFilePath(lesson?.documents);
   }, []);
-
+  let imageCount = 1;
+  useEffect(() => {
+    if (storeData?.documents) {
+      if (imageCount) {
+        setFilePath(storeData?.documents);
+        imageCount = 0;
+      }
+    }
+  }, [storeData]);
   const handleImageChange = (event) => {
     let fileType = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
     let selectedFileType = event.target.files[0]?.type;
@@ -59,9 +70,9 @@ const EditDairy = ({ lesson, onClose, periodId }) => {
     axiosInstance.post(`academic/dairy-upload/`, fd).then((result) => {
       if (result?.data?.status_code === 200) {
         if (storeData?.documents) {
-          let imageData = storeData.documents;
-          imageData.push(result?.data?.result);
-          setFilePath([...filePath, imageData]);
+          // let imageData = storeData.documents;
+          // imageData.push(result?.data?.result);
+          setFilePath([...filePath, result?.data?.result]);
         } else {
           setFilePath([...filePath, result?.data?.result]);
         }
@@ -73,24 +84,6 @@ const EditDairy = ({ lesson, onClose, periodId }) => {
   };
 
   const removeFileHandler = (i, file) => {
-    if (storeData?.documents) {
-      let list = [...filePath];
-      axiosInstance
-        .post(`${endpoints.circular.deleteFile}`, {
-          file_name: `${file}`,
-          daily_diary_id: `${storeData?.id}`,
-        })
-        .then((result) => {
-          if (result?.data?.status_code === 204) {
-            list.splice(i, 1);
-            setFilePath(list);
-            setAlert('success', result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error?.message);
-        });
-    }
     if (!storeData?.documents) {
       const list = [...filePath];
       axiosInstance
@@ -119,10 +112,11 @@ const EditDairy = ({ lesson, onClose, periodId }) => {
       user_id: [],
       dairy_type: 1,
       period_id: periodId,
+      documents: filePath
     };
-    if (filePath?.length) {
-      payload['documents'] = filePath;
-    }
+    // if (filePath?.length) {
+    //   payload['documents'] = filePath;
+    // }
     axiosInstance
       .put(
         `${endpoints.dailyDairy.updateDelete}${lesson?.id}/update-delete-dairy/`,
@@ -131,6 +125,7 @@ const EditDairy = ({ lesson, onClose, periodId }) => {
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
+          updateDiary();
           onClose();
         } else {
           setAlert('error', 'Something went wrong');
@@ -149,23 +144,32 @@ const EditDairy = ({ lesson, onClose, periodId }) => {
     return (
       <>
         <div className='file_row_image'>
-          <div className='file_name_container'>{index + 1}</div>
+          <div className='file_name_container'>File {index + 1}&nbsp;</div>
           <div className='file_closeCircular'>
+            <img
+              style={{
+                width: '50px',
+                height: '50px',
+                cursor: 'pointer',
+              }}
+              src={`${s3Images}${file}`}
+              alt={`${s3Images}${file}`}
+              onClick={() => {
+                const fileSrc = `${s3Images}${file}`;
+                openPreview({
+                  currentAttachmentIndex: 0,
+                  attachmentsArray: [
+                    {
+                      src: fileSrc,
+                      name: `demo`,
+                      extension: '.png',
+                    },
+                  ],
+                });
+              }}
+            />
             <span onClick={onClose}>
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={{
-                      width: '20px',
-                      height: '20px',
-                      // padding: '5px',
-                      cursor: 'pointer',
-                    }}
-                    src={deleteIcon}
-                    alt='given'
-                  />
-                )}
-              />
+              <SvgIcon component={() => <DeleteIcon style={{ cursor: "pointer" }} />} />
             </span>
           </div>
         </div>

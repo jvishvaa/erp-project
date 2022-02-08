@@ -18,6 +18,7 @@ import { AlertNotificationContext } from '../../.././context-api/alert-context/a
 import { AttachmentPreviewerContext } from './../../../components/attachment-previewer/attachment-previewer-contexts/attachment-previewer-contexts';
 import CloseIcon from '@material-ui/icons/Close';
 import apiRequest from '../../../config/apiRequest';
+import Loader from '../../../components/loader/loader';
 import { useParams } from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
@@ -52,18 +53,23 @@ function ClassWorkSubmit() {
   const { openPreview, closePreview } = useContext(AttachmentPreviewerContext) || {};
 
   const handleStudentClassworkData = () => {
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.period.confirmAttendance}${classworkId}/get-update-period-classwork/`)
       .then((result) => {
+
         if (result?.data?.status_code === 200) {
           setStudentClassWork(result?.data?.result);
           setImage(result?.data?.result?.classwork_files[0]);
         } else {
           setAlert('error', result?.data?.message);
+
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
       });
   };
 
@@ -73,6 +79,7 @@ function ClassWorkSubmit() {
     return (
       <>
         <div className='file_row_image'>
+          {loading && <Loader />}
           <div className='file_name_container'>{index + 1}</div>
           <div className='file_closeCircular'>
             <div style={{ display: 'flex' }}>
@@ -140,18 +147,22 @@ function ClassWorkSubmit() {
     const data = event.target.files[0];
     const fd = new FormData();
     fd.append('file', data);
+    setLoading(true);
     axiosInstance.post(`academic/dairy-upload/`, fd).then((result) => {
       if (result?.data?.status_code === 200) {
         setFilePath([...filePath, result?.data?.result]);
         setAlert('success', result?.data?.message);
+        setLoading(false);
       } else {
         setAlert('error', result?.data?.message);
+        setLoading(false);
       }
     });
   };
 
   const removeFileHandler = (i, file) => {
     const list = [...filePath];
+
     axiosInstance
       .post(`${endpoints.circular.deleteFile}`, {
         file_name: `${file}`,
@@ -161,8 +172,10 @@ function ClassWorkSubmit() {
           list.splice(i, 1);
           setFilePath(list);
           setAlert('success', result?.data?.message);
+
         } else {
           setAlert('error', result?.data?.message);
+
         }
       })
       .catch((error) => {
@@ -182,7 +195,7 @@ function ClassWorkSubmit() {
       payload['submitted_files'] = filePath;
     }
     try {
-      const result = apiRequest('post','/oncls/v1/submit-classwork/',payload);
+      const result = apiRequest('post', '/oncls/v1/submit-classwork/', payload);
       if (result.data.status_code === 200) {
         setTitle('');
         setDetail('');
@@ -191,13 +204,13 @@ function ClassWorkSubmit() {
         setAlert('error', 'Something Went Wrong');
       }
     }
-    catch(e) {
+    catch (e) {
       setAlert('error', error.message);
     }
   }
 
   const handleback = () => {
-    window.open("/acad-calendar/","_self")
+    window.open("/acad-calendar/", "_self")
   };
 
   useEffect(() => {
@@ -206,18 +219,19 @@ function ClassWorkSubmit() {
 
   return (
     <div className={classes.root}>
+      {loading && <Loader />}
       <Layout>
         <Grid container xs={12} alignItems='center' justifyContent='center' spacing={3}>
           <Grid item xs={12}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>
-            <ArrowBackIosIcon style={{marginLeft: '20px', marginTop: '8px' ,float: 'left', textAlign: 'left', cursor:'pointer'  }} onClick={handleback}/>
-            <h3 style={{ float: 'left', textAlign: 'left', marginTop: '10px' }}>
-              {' '}
-              Class Work{' '}
-            </h3>
-            </div>
-            <CloseIcon onClick={handleback} style={{cursor: 'pointer'}} />
+                <ArrowBackIosIcon style={{ marginLeft: '20px', marginTop: '8px', float: 'left', textAlign: 'left', cursor: 'pointer' }} onClick={handleback} />
+                <h3 style={{ float: 'left', textAlign: 'left', marginTop: '10px' }}>
+                  {' '}
+                  Class Work{' '}
+                </h3>
+              </div>
+              <CloseIcon onClick={handleback} style={{ cursor: 'pointer' }} />
             </div>
           </Grid>
           <Grid item xs={11}>
@@ -233,6 +247,7 @@ function ClassWorkSubmit() {
               const name = value.split('/')[value.split('/').length - 1];
               return (
                 <Paper className={classes.paper} style={{ margin: '5px' }}>
+                  {loading && <Loader />}
                   <PictureAsPdfIcon style={{ float: 'left', textAlign: 'left' }} />
                   <p
                     style={{

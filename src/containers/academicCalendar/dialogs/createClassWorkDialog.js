@@ -18,6 +18,7 @@ import { useEffect } from 'react';
 import axiosInstance from 'config/axios';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
 import endpoints from 'config/endpoints';
+import Loader from '../../../components/loader/loader';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction='right' ref={ref} {...props} />;
@@ -29,6 +30,7 @@ const Input = styled('input')({
 });
 
 const CreateClassWorkDialog = (props) => {
+  const [loading, setLoading] = useState(false);
   const [value, setValue] = useState('1');
   const { setAlert } = useContext(AlertNotificationContext);
   const [quizData, setQuizData] = useState([]);
@@ -45,13 +47,15 @@ const CreateClassWorkDialog = (props) => {
   };
 
   useEffect(() => {
+    setLoading(true);
     axiosInstance
       .get(`/period/period-test-list/?period_id=${props?.periodId}`)
       .then((res) => {
         setQuizData(res?.data?.result);
+        setLoading(false);
       })
       .catch((err) => {
-        console.log(err);
+        setLoading(false);
       });
   }, []);
 
@@ -71,6 +75,7 @@ const CreateClassWorkDialog = (props) => {
   };
 
   const TopicContentView = () => {
+    setLoading(true);
     axiosInstance
       .get(
         `${endpoints.lessonPlanTabs.topicData}?topic_id=${props?.topicId}`
@@ -86,26 +91,30 @@ const CreateClassWorkDialog = (props) => {
         } else {
           setAlert('error', result?.data?.message);
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
       });
   };
 
   const handleCreteClassworkAPI = (payload) => {
+    setLoading(true);
     axiosInstance
       .post(`${endpoints.period.createPeriodAPI}`, payload)
       .then((result) => {
         if (result?.data?.status_code === 201) {
           setAlert('success', result?.data?.message);
-          props.onClose();
         } else {
           setAlert('error', result?.data?.message);
-          props.onClose();
         }
+        setLoading(false);
+        props.onClose();
       })
       .catch((error) => {
-        setAlert('error', error?.message);
+        setAlert('error', error?.response.data.developer_msg);
+        setLoading(false);
       });
   };
 
@@ -119,8 +128,8 @@ const CreateClassWorkDialog = (props) => {
         period_id: props.periodId,
         description: description,
       };
-      if(selectedFiles.length) {
-        obj['classwork_files'] = selectedFiles;   
+      if (selectedFiles.length) {
+        obj['classwork_files'] = selectedFiles;
       }
       handleCreteClassworkAPI(obj);
     }
@@ -152,13 +161,14 @@ const CreateClassWorkDialog = (props) => {
   };
 
   useEffect(() => {
-    if(props?.topicId) {
+    if (props?.topicId) {
       TopicContentView();
     }
   }, []);
 
   return (
     <>
+      {loading && <Loader />}
       <div style={{ marginTop: '10%', marginLeft: '3%', fontSize: '18px' }}>
         <b>Create Class Work</b>
       </div>

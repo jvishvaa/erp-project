@@ -32,279 +32,294 @@ import axiosInstance from 'config/axios';
 import Pagination from 'components/PaginationComponent';
 import CloseIcon from '@material-ui/icons/Close';
 import {
-    finalEvaluationForHomework,
-  } from '../../../redux/actions';
+  finalEvaluationForHomework,
+} from '../../../redux/actions';
+
+import Loader from '../../../components/loader/loader';
+
+
 
 
 const useStyles = makeStyles((theme) => ({
-    grow: {
-      flexGrow: 1,
+  grow: {
+    flexGrow: 1,
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    display: 'none',
+    [theme.breakpoints.up('sm')]: {
+      display: 'block',
     },
-    menuButton: {
-      marginRight: theme.spacing(2),
-    },
-    title: {
-      display: 'none',
-      [theme.breakpoints.up('sm')]: {
-        display: 'block',
-      },
-    },
-  
-    navcontent: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-    },
-  
-    closebutton: {
-      padding: theme.spacing(2),
-      textAlign: 'end',
-    },
-  
-    search: {
-      position: 'relative',
-      borderRadius: theme.shape.borderRadius,
-      backgroundColor: alpha(theme.palette.common.white, 0.15),
-      '&:hover': {
-        backgroundColor: alpha(theme.palette.common.white, 0.25),
-      },
-      marginRight: theme.spacing(2),
-      marginLeft: 0,
-      width: '100%',
-      [theme.breakpoints.up('sm')]: {
-        marginLeft: theme.spacing(3),
-        width: 'auto',
-      },
-    },
-    searchIcon: {
-      padding: theme.spacing(0, 2),
-      height: '100%',
-      position: 'absolute',
-      pointerEvents: 'none',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    inputRoot: {
-      color: 'inherit',
-    },
-    inputInput: {
-      paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
-      transition: theme.transitions.create('width'),
-      width: '100%',
-      [theme.breakpoints.up('md')]: {
-        width: '50ch',
-      },
-      border: '1px solid #77787a',
-      borderRadius: '5px',
-    },
-    sectionDesktop: {
-      display: 'none',
-      [theme.breakpoints.up('md')]: {
-        display: 'flex',
-      },
-    },
-    sectionMobile: {
-      display: 'flex',
-      [theme.breakpoints.up('md')]: {
-        display: 'none',
-      },
-    },
-    root: {
-      flexGrow: 1,
-      backgroundColor: theme.palette.background.paper,
-    },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: theme.palette.text.primary,
-    },
-  }));
+  },
 
- const AddScoreDialog = (props) =>{
-    const [rating, setRating] = useState(0);
-    const [remarks, setRemarks] = useState();
-    const { setAlert } = useContext(AlertNotificationContext);
-    const classes = useStyles();
-    const {
-      periodId,
-      onClose,
-      selectedValue,
-      open,
-      studentId,
-      nameStudent,
-      studentScore,
-      updateScore,
-      flagprop,
-      studentRemark,
-      handlestudentRemark,
-      homeWorkId
-    } = props;
+  navcontent: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+  },
 
-const handleChange = (e) => {
-  updateScore(e.target.value)
-}
-  
-const finalEvaluationForHomework = async () => {
-  const reqData = {
-    studentRemark,
+  closebutton: {
+    padding: theme.spacing(2),
+    textAlign: 'end',
+  },
+
+  search: {
+    position: 'relative',
+    borderRadius: theme.shape.borderRadius,
+    backgroundColor: alpha(theme.palette.common.white, 0.15),
+    '&:hover': {
+      backgroundColor: alpha(theme.palette.common.white, 0.25),
+    },
+    marginRight: theme.spacing(2),
+    marginLeft: 0,
+    width: '100%',
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(3),
+      width: 'auto',
+    },
+  },
+  searchIcon: {
+    padding: theme.spacing(0, 2),
+    height: '100%',
+    position: 'absolute',
+    pointerEvents: 'none',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  inputRoot: {
+    color: 'inherit',
+  },
+  inputInput: {
+    paddingLeft: `calc(1em + ${theme.spacing(4)}px)`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: '50ch',
+    },
+    border: '1px solid #77787a',
+    borderRadius: '5px',
+  },
+  sectionDesktop: {
+    display: 'none',
+    [theme.breakpoints.up('md')]: {
+      display: 'flex',
+    },
+  },
+  sectionMobile: {
+    display: 'flex',
+    [theme.breakpoints.up('md')]: {
+      display: 'none',
+    },
+  },
+  root: {
+    flexGrow: 1,
+    backgroundColor: theme.palette.background.paper,
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.primary,
+  },
+}));
+
+const AddScoreDialog = (props) => {
+  const [rating, setRating] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [remarks, setRemarks] = useState();
+  const { setAlert } = useContext(AlertNotificationContext);
+  const classes = useStyles();
+  const {
+    periodId,
+    onClose,
+    selectedValue,
+    open,
+    studentId,
+    nameStudent,
     studentScore,
+    updateScore,
+    flagprop,
+    studentRemark,
+    handlestudentRemark,
+    homeWorkId
+  } = props;
+
+  const handleChange = (e) => {
+    updateScore(e.target.value)
+  }
+
+  const finalEvaluationForHomework = async () => {
+    setLoading(true);
+
+    const reqData = {
+      studentRemark,
+      studentScore,
+    };
+    if (!studentRemark) {
+      setAlert('error', 'Please provide a remark');
+      return;
+    }
+
+    if (!studentScore) {
+      setAlert('error', 'Please provide a score');
+      return;
+    }
+    try {
+      await finalEvaluationForHomework(periodId, reqData);
+      setAlert('success', 'Homework Evaluated');
+      setLoading(false);
+
+      // onClose();
+    } catch (e) {
+      setAlert('error', 'Homework Evaluation Failed');
+      setLoading(false);
+
+    }
   };
-  if (!studentRemark) {
-    setAlert('error', 'Please provide a remark');
-    return;
-  }
-
-  if (!studentScore) {
-    setAlert('error', 'Please provide a score');
-    return;
-  }
-  try {
-    await finalEvaluationForHomework(periodId, reqData);
-    setAlert('success', 'Homework Evaluated');
-    // onClose();
-  } catch (e) {
-    setAlert('error', 'Homework Evaluation Failed');
-  }
-};
 
 
 
-    const studentRemarkUpdate = () => {
-      axiosInstance
-        .put(`/period/${periodId}/update-attendance/`, {
-          erp_id: studentId,
-          cp_remarks: studentRemark,
-          cp_marks: parseFloat(studentScore),
-        })
-        .then((result) => {
-          if (result?.data?.status_code === 200) {
-            setAlert('success', result.data.message);
-            flagprop();
-          } else {
-            setAlert('error', result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          console.log('error', error?.message);
-        });
-    };
-    const handleClose = () => {
-      onClose(selectedValue);
-      setRemarks();
-      setRating();
-    };
-  
-    const handleIncrementItem = () => {
-      if (studentScore < 10) {
-        updateScore(Math.round((parseFloat(studentScore) + parseFloat(0.1)) * 10) / 10);
-      }
-    };
-  
-    const handleDecreaseItem = () => {
-      if (studentScore > 0) {
-        updateScore(Math.round((parseFloat(studentScore) - parseFloat(0.1)) * 10) / 10);
-      }
-    };
-  
-    const handleUpdate = () => {
-      handleClose();
-      studentRemarkUpdate();
-      if(homeWorkId){
-        finalEvaluationForHomework()
-      }
-    };
-  
-    const handleListItemClick = (value) => {
-      onClose(value);
-    };
-  
-    const handleRatingUpdate = (e) => {
-      handlestudentRemark(e.target.value);
-    };
-  
-    return (
-      <Dialog onClose={handleClose} aria-labelledby='simple-dialog-title' open={open}>
-        <DialogTitle id='simple-dialog-title'>
-          <div
+  const studentRemarkUpdate = () => {
+    setLoading(true);
+    axiosInstance
+      .put(`/period/${periodId}/update-attendance/`, {
+        erp_id: studentId,
+        cp_remarks: studentRemark,
+        cp_marks: parseFloat(studentScore),
+      })
+      .then((result) => {
+
+        if (result?.data?.status_code === 200) {
+          setAlert('success', result.data.message);
+          flagprop();
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+      });
+  };
+  const handleClose = () => {
+    onClose(selectedValue);
+    setRemarks();
+    setRating();
+  };
+
+  const handleIncrementItem = () => {
+    if (studentScore < 10) {
+      updateScore(Math.round((parseFloat(studentScore) + parseFloat(0.1)) * 10) / 10);
+    }
+  };
+
+  const handleDecreaseItem = () => {
+    if (studentScore > 0) {
+      updateScore(Math.round((parseFloat(studentScore) - parseFloat(0.1)) * 10) / 10);
+    }
+  };
+
+  const handleUpdate = () => {
+    handleClose();
+    studentRemarkUpdate();
+    if (homeWorkId) {
+      finalEvaluationForHomework()
+    }
+  };
+
+  const handleListItemClick = (value) => {
+    onClose(value);
+  };
+
+  const handleRatingUpdate = (e) => {
+    handlestudentRemark(e.target.value);
+  };
+
+  return (
+    <Dialog onClose={handleClose} aria-labelledby='simple-dialog-title' open={open}>
+      {loading && <Loader />}
+      <DialogTitle id='simple-dialog-title'>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'start',
+            alignItems: 'center',
+            border: '1px solid black',
+            borderRadius: '5px',
+            backgroundColor: '#c4c7cc',
+            padding: '7px',
+          }}
+        >
+          <AccountCircleIcon style={{ fontSize: '50px' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: 10 }}>
+            <h6>Student Name: {nameStudent}</h6>
+            <h6>Roll NO: {studentId}</h6>
+          </div>
+        </div>
+        <hr />
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'start',
+            alignItems: 'center',
+            paddingBottom: 5,
+            paddingTop: 5,
+          }}
+        >
+          <h5 style={{ paddingRight: 5 }}>Marks: </h5>
+          <br />
+          <form
             style={{
               display: 'flex',
-              justifyContent: 'start',
+              justifyContent: 'flex-start',
               alignItems: 'center',
-              border: '1px solid black',
-              borderRadius: '5px',
-              backgroundColor: '#c4c7cc',
-              padding: '7px',
             }}
           >
-            <AccountCircleIcon style={{ fontSize: '50px' }} />
-            <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: 10 }}>
-              <h6>Student Name: {nameStudent}</h6>
-              <h6>Roll NO: {studentId}</h6>
+            <div
+              class='value-button'
+              id='decrease'
+              onClick={handleDecreaseItem}
+              value='Decrease Value'
+            >
+              -
             </div>
-          </div>
-          <hr />
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'start',
-              alignItems: 'center',
-              paddingBottom: 5,
-              paddingTop: 5,
-            }}
+            <input type='number' id='number' value={studentScore} onChange={handleChange} />
+            <div
+              class='value-button'
+              id='increase'
+              onClick={handleIncrementItem}
+              value='Increase Value'
+            >
+              +
+            </div>
+          </form>
+          <h5 style={{ paddingLeft: 5 }}> /10</h5>
+        </div>
+        <TextField
+          style={{ width: '25rem' }}
+          id='outlined-multiline-static'
+          label=''
+          multiline
+          value={studentRemark}
+          rows={4}
+          variant='outlined'
+          onChange={handleRatingUpdate}
+        />
+        <div style={{ display: 'flex', justifyContent: 'center', marginTop: 5 }}>
+          <Button
+            size='small'
+            variant="contained"
+            color="primary"
+            onClick={handleUpdate}
+            style={{ paddingBottom: 5, paddingTop: 5, width: 200 }}
           >
-            <h5 style={{ paddingRight: 5 }}>Marks: </h5>
-            <br />
-            <form
-              style={{
-                display: 'flex',
-                justifyContent: 'flex-start',
-                alignItems: 'center',
-              }}
-            >
-              <div
-                class='value-button'
-                id='decrease'
-                onClick={handleDecreaseItem}
-                value='Decrease Value'
-              >
-                -
-              </div>
-              <input type='number' id='number' value={studentScore} onChange={handleChange}/>
-              <div
-                class='value-button'
-                id='increase'
-                onClick={handleIncrementItem}
-                value='Increase Value'
-              >
-                +
-              </div>
-            </form>
-            <h5 style={{ paddingLeft: 5 }}> /10</h5>
-          </div>
-          <TextField
-            style={{ width: '25rem' }}
-            id='outlined-multiline-static'
-            label=''
-            multiline
-            value={studentRemark}
-            rows={4}
-            variant='outlined'
-            onChange={handleRatingUpdate}
-          />
-          <div style={{ display: 'flex', justifyContent: 'center', marginTop: 5 }}>
-            <Button
-              size='small'
-              variant="contained" 
-              color="primary"
-              onClick={handleUpdate}
-              style={{ paddingBottom: 5, paddingTop: 5, width: 200 }}
-            >
-              {' '}
-              Done{' '}
-            </Button>
-          </div>
-        </DialogTitle>
-      </Dialog>
-    );
-  }
-  export default AddScoreDialog;
+            {' '}
+            Done{' '}
+          </Button>
+        </div>
+      </DialogTitle>
+    </Dialog>
+  );
+}
+export default AddScoreDialog;

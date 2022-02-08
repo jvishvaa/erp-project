@@ -13,6 +13,7 @@ import { useTheme } from '@material-ui/core';
 import './academicStyles.scss';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
+import Loader from '../../../components/loader/loader';
 
 const useStyles = makeStyles(() => ({
   div: {
@@ -96,6 +97,7 @@ export default function Cards({
   const [uniqueIndex, setUniqueIndex] = React.useState();
   const { setAlert } = useContext(AlertNotificationContext);
   const [result, setTopicResult] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (chapterId) {
@@ -104,23 +106,26 @@ export default function Cards({
   }, [selectedChapter]);
 
   const handleAssign = () => {
+    setLoading(true);
     axiosInstance
       .post(`/period/assign-topic-period/`, {
         period: periodId,
         topic_id: uniqueIdd,
       })
       .then((result) => {
-        if (result?.data?.status_code === 200) {
+        if (result?.data?.status_code === 200) {         
           setAlert('success', result?.data?.message);
           setTopicResult(result?.data?.result);
           setAssignedTopic(result?.data?.result?.id);
           setPeriodUI('lessonPlanTabs');
         } else if (result?.data?.status_code === 404) {
-          setAlert('error', result?.data?.message);
+          setAlert('error', result?.data?.message);       
         }
+        setLoading(false);
       })
       .catch((err) => {
         setAlert('error', err?.message);
+        setLoading(false);
       });
   };
 
@@ -133,19 +138,22 @@ export default function Cards({
   };
 
   const getLessonPlanTopic = () => {
+    setLoading(true);
     axiosInstance
       .get(`/period/lp-topic-view/?chapter=${selectedChapter?.id}&period_id=${periodId}`)
       .then((result) => {
-        if (result?.data?.status_code === 200) {
+        if (result?.data?.status_code === 200) {        
           setAlert('success', result?.data?.message);
           const lists = result.data?.result;
           setPeriosLists(lists);
         } else {
-          setAlert('error', result?.data?.message);
+          setAlert('error', result?.data?.message);    
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
       });
   };
 
@@ -196,6 +204,7 @@ export default function Cards({
 function PeriodCard(props) {
   const [isAdded, setIsAdded] = useState(false);
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const classes = useStyles();
 
   const handleClickOpen = () => {
@@ -207,6 +216,7 @@ function PeriodCard(props) {
 
   return (
     <Grid item xs={6} sm={3} md={3} spacing={2}>
+      {loading && <Loader />}
       <Card className={classes.root}>
         <CardContent>
           <div className={classes.cardHeaderWrapper}>

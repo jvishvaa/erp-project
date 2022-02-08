@@ -121,7 +121,7 @@ const CreateClass = ({
   const [periodName, setPeriodName] = useState();
   const [periodDate, setPeriodDate] = useState();
 
-  let date =  moment().format("YYYY-MM-DD")
+  let date = moment().format("YYYY-MM-DD")
 
   const handleDateClass = (e) => {
     setPeriodDate(e.target.value);
@@ -165,8 +165,7 @@ const CreateClass = ({
       setSelectedBranch(ids);
       setSelectedbranchIds(selectedId);
       callApi(
-        `${endpoints.academics.grades}?session_year=${
-          selectedAcademicYear?.id
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
         }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
         'gradeList'
       );
@@ -190,8 +189,7 @@ const CreateClass = ({
       setSelectedGrade(ids);
       setSelectedGradeIds(selectedId);
       callApi(
-        `${endpoints.academics.sections}?session_year=${
-          selectedAcademicYear?.id
+        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
         }&branch_id=${selectedbranchIds}&grade_id=${selectedId.toString()}&module_id=${moduleId}`,
         'section'
       );
@@ -227,11 +225,10 @@ const CreateClass = ({
           if (key === 'section') {
             setSectionList(result.data.data);
           }
-          setLoading(false);
         } else {
           setAlert('error', result.data.message);
-          setLoading(false);
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error.message);
@@ -264,6 +261,8 @@ const CreateClass = ({
   }, [moduleId, isCreateClassOpen]);
 
   const getPeriodTypes = () => {
+    setLoading(true);
+
     axiosInstance
       .get(`${endpoints.period.periodType}`)
       .then((result) => {
@@ -273,13 +272,17 @@ const CreateClass = ({
         } else {
           setAlert('error', result?.data?.message);
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
+
       });
   };
 
   const getTeachers = () => {
+    setLoading(true);
     axiosInstance
       .get(
         `${endpoints.aol.teacherList}?branch_id=${selectedbranchIds}&grade_id=${selectedGradeIds}&session_year=${selectedAcademicYear?.id}`
@@ -290,13 +293,18 @@ const CreateClass = ({
         } else {
           setAlert('error', result?.data?.message);
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
+
       });
   };
 
   const getSubjects = () => {
+    setLoading(true);
+
     axiosInstance
       .get(
         `${endpoints.academics.subjects}?branch=${selectedbranchIds}&grade=${selectedGradeIds}&session_year=${selectedAcademicYear?.id}&section=${selectedSectionIds}&module_id=${moduleId}`
@@ -309,9 +317,12 @@ const CreateClass = ({
         } else {
           setAlert('error', result?.data?.message);
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
+
       });
   };
 
@@ -342,6 +353,7 @@ const CreateClass = ({
   useEffect(() => {
     if (!selectAll) {
       if (selectedSection.length > 0) {
+
         axiosInstance
           .get(
             `${endpoints.period.paticipantsList}?page=${pageno}&section_mappings=${selectedSectionIds}`
@@ -394,8 +406,8 @@ const CreateClass = ({
                   selected: selectAll
                     ? true
                     : selectedUsers.length
-                    ? selectedUsers[pageno - 1].selected.includes(items.user_id)
-                    : false,
+                      ? selectedUsers[pageno - 1].selected.includes(items.user_id)
+                      : false,
                 });
               });
 
@@ -523,6 +535,7 @@ const CreateClass = ({
           period_type: selectedPeriod?.id,
         };
       }
+      setLoading(true);
       axiosInstance
         .post(`${endpoints.period.createPeriod}`, data, {
           headers: {
@@ -534,12 +547,15 @@ const CreateClass = ({
             setAlert('success', 'Period Created');
             toggleCreateClass();
             handleClear();
+            setLoading(false);
           } else {
             setAlert('error', result?.data?.message);
+            setLoading(false);
           }
         })
         .catch((error) => {
           setAlert('error', error?.message);
+          setLoading(false);
         });
     }
   };
@@ -560,6 +576,8 @@ const CreateClass = ({
 
   return (
     <div>
+      {loading && <Loader />}
+
       <Dialog
         open={isCreateClassOpen}
         onClose={toggleCreateClass}
@@ -579,9 +597,9 @@ const CreateClass = ({
         <div style={{ padding: 5 }}>
           <div className={classes.root}>
             <div
-              style={{ display: 'flex', justifyContent: 'column', paddingLeft: '20px', cursor:'pointer'}}
+              style={{ display: 'flex', justifyContent: 'column', paddingLeft: '20px', cursor: 'pointer' }}
             >
-              <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ margin: '0px'}}>
+              <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ margin: '0px' }}>
                 <KeyboardTimePicker
                   margin='normal'
                   id='time-picker'
@@ -594,7 +612,7 @@ const CreateClass = ({
                 />
               </MuiPickersUtilsProvider>
               <TextField
-                style={{ marginTop: '4%', cursor:'pointer'}}
+                style={{ marginTop: '4%', cursor: 'pointer' }}
                 id='date'
                 label='Select Date'
                 type='date'

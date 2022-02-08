@@ -3,6 +3,8 @@ import { Button, Dialog, useMediaQuery, useTheme } from '@material-ui/core';
 import axiosInstance from 'config/axios';
 import { AlertNotificationContext } from '../../../../src/context-api/alert-context/alert-state';
 import CloseIcon from '@material-ui/icons/Close';
+import Loader from '../../../components/loader/loader';
+
 
 const StudentClassParticipate = ({
   periodId,
@@ -12,6 +14,7 @@ const StudentClassParticipate = ({
   date,
 }) => {
   const [studentData, setStudentData] = useState({});
+  const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('xs'));
@@ -19,18 +22,24 @@ const StudentClassParticipate = ({
     setOpenParticipate(false);
   };
   const studentRemarks = () => {
+    setLoading(true);
     axiosInstance
       .get(`/period/${periodId}/attendance-list/?user_id=${userId}`)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setStudentData(result?.data?.result?.results[0]);
           setAlert('success', result?.data?.message);
+          setLoading(false);
         } else {
           setAlert('error', result?.data?.message);
+          setLoading(false);
+
         }
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
+
       });
   };
   useEffect(() => {
@@ -38,6 +47,7 @@ const StudentClassParticipate = ({
   }, []);
   return (
     <div>
+      {loading && <Loader />}
       <Dialog
         fullScreen={fullScreen}
         open={openParticipate}

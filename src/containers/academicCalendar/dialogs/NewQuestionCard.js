@@ -20,6 +20,8 @@ import Attachment from '../../../containers/homework/teacher-homework/attachment
 import placeholder from '../../../assets/images/placeholder_small.jpg';
 import DeleteIcon from '@material-ui/icons/Delete';
 import './styles.scss';
+import Loader from '../../../components/loader/loader';
+
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -54,11 +56,12 @@ export default function NewQuestionCard(props) {
   //   const [pentool,setpentool] = useState(props.pentool)
   const [maxattachment, setmaxAttachment] = useState(2);
   const classes = useStyles();
+  const [loading, setLoading] = useState(false);
 
   const onChange = (field, value) => {
     props.handleChange(props.index, field, value);
   };
-  
+
   useEffect(() => {
     setQuestion("");
     setAttachmentPreviews([])
@@ -118,6 +121,7 @@ export default function NewQuestionCard(props) {
   }, [question]);
 
   const handleFileUpload = async (file) => {
+    setLoading(true);
     if (!file) {
       return null;
     }
@@ -134,6 +138,7 @@ export default function NewQuestionCard(props) {
           file.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
           file.name.toLowerCase().lastIndexOf('.mp4') > 0
         ) {
+          setLoading(false);
           const fd = new FormData();
           fd.append('file', file);
           setFileUploadInProgress(true);
@@ -150,10 +155,12 @@ export default function NewQuestionCard(props) {
           setAlert('success', 'File uploaded successfully');
           setSizeValied('');
         } else {
+          setLoading(false);
           setAlert('error', 'Please upload valid file');
         }
       } catch (e) {
         setFileUploadInProgress(false);
+        setLoading(false);
         setAlert('error', 'File upload failed');
       }
     }
@@ -208,6 +215,7 @@ export default function NewQuestionCard(props) {
 
   return (
     <div style={{ overflow: 'hidden', position: 'relative' }}>
+      {loading && <Loader />}
       <TextField
         id={props.index}
         label={`Question ${props?.index + 1}`}

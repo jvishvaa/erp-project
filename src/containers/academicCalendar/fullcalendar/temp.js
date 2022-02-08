@@ -7,7 +7,7 @@ import Cards from './cards';
 let div = document.createElement('div');
 
 const getDate = (dateInfo) => {
-  console.log(dateInfo);
+  // console.log(dateInfo);
 };
 
 const CustomViewConfig = {

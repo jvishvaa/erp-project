@@ -36,7 +36,7 @@ import moment from 'moment';
 import EvaluateHomeWork from './evaluateHomeWork'
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import EvaluateHomeworkNew from './evaluateHomeworkNew';
-
+import Loader from '../../../components/loader/loader';
 
 
 const StyledTableCell = withStyles((theme) => ({
@@ -116,11 +116,13 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const [isredirect,setisredirect] = useState(false)
-  const [studentData,setStudentData] = useState()
-  const [evaluatedList,setevaluatedList] = useState([])
+  const [isredirect, setisredirect] = useState(false)
+  const [studentData, setStudentData] = useState()
+  const [evaluatedList, setevaluatedList] = useState([])
+  const [loading, setLoading] = useState(false);
 
   const callSubmittedDetail = () => {
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.homework.HwSubmittedDetail}?homework=${homeWorkId}`)
       .then((result) => {
@@ -132,23 +134,26 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
         } else {
           setAlert('error', result.data.message);
         }
+        setLoading(false);
       })
       .catch((error) => {
         setAlert('error', error.message);
+        setLoading(false);
       });
   };
 
   useEffect(() => {
     callSubmittedDetail();
-  }, [homeWorkId,isredirect]);
+  }, [homeWorkId, isredirect]);
 
- const redirect = (data) => {
-   setStudentData(data)
-setisredirect(!isredirect)
+  const redirect = (data) => {
+    setStudentData(data)
+    setisredirect(!isredirect)
   }
 
   return (
     <Layout>
+      {loading && <Loader />}
       {!isredirect && <Grid container xs={12} sm={12} md={12} spacing={2}>
         <Grid item xs={12} sm={12} md={12} spacing={2}>
           <div
@@ -176,7 +181,7 @@ setisredirect(!isredirect)
             </div>
           </div>
         </Grid>
-        <AppBar position='static'>
+        <AppBar position='static' style={{ width:"95%",margin:"auto" }}>
           <Tabs
             value={value}
             onChange={handleChange}
@@ -263,15 +268,15 @@ setisredirect(!isredirect)
                             >
                               <a
                                 className='underlineRemove'
-                                onClick={()=> redirect(row)}>
-                                  <SvgIcon component={() => <FileCopyIcon />} fontSize='xx-large' />
-                                </a>
-                                </div>
-                                {/* ) */}
-                            
-                              {/* })} */}
-                            
-                         
+                                onClick={() => redirect(row)}>
+                                <SvgIcon component={() => <FileCopyIcon />} fontSize='xx-large' />
+                              </a>
+                            </div>
+                            {/* ) */}
+
+                            {/* })} */}
+
+
                           </StyledTableCell>
                         </StyledTableRow>
                       </>
@@ -336,7 +341,7 @@ setisredirect(!isredirect)
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                {evaluatedList?.length !== 0 &&
+                  {evaluatedList?.length !== 0 &&
                     evaluatedList?.map((row) => (
                       <>
                         <div style={{ margin: 5, background: 'red' }}></div>
@@ -375,8 +380,8 @@ setisredirect(!isredirect)
                           <StyledTableCell align='right'>
                             {row?.score}
                           </StyledTableCell>
-                          <StyledTableCell align='right'>                            
-                          {row?.remarks}
+                          <StyledTableCell align='right'>
+                            {row?.remarks}
                           </StyledTableCell>
                         </StyledTableRow>
                       </>
@@ -387,7 +392,7 @@ setisredirect(!isredirect)
           </TabPanel>
         </Grid>
       </Grid>}
-      {isredirect && <EvaluateHomeworkNew redirect = {redirect} studentData = {studentData} homeWorkId = {homeWorkId}/>}
+      {isredirect && <EvaluateHomeworkNew redirect={redirect} studentData={studentData} homeWorkId={homeWorkId} />}
     </Layout>
   );
 });

@@ -26,6 +26,8 @@ import placeholder from '../../../assets/images/placeholder_small.jpg';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import './styles.scss';
 import { useParams } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
+import Loader from '../../../components/loader/loader';
 
 import DescriptiveTestcorrectionModule from '../../../components/EvaluationTool';
 const desTestDetails = [{ asessment_response: { evaluvated_result: '' } }];
@@ -47,9 +49,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function StudentSubmitHW({ history, ...props }) {
+const StudentSubmitHW = withRouter (({ history, ...props }) => {
   const fileUploadInput = useRef(null);
-  const {homeWorkId} = useParams();
+  const { homeWorkId } = useParams();
   const [attachmentPreviews, setAttachmentPreviews] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [fileUploadInProgress, setFileUploadInProgress] = useState(false);
@@ -57,6 +59,7 @@ export default function StudentSubmitHW({ history, ...props }) {
   const [sizeValied, setSizeValied] = useState({});
   const classes = useStyles();
   const [resultdata, setresultdata] = useState();
+  const [loading, setLoading] = useState(false);
 
   //For Preview//
   const [showPrev, setshowPrev] = useState(0);
@@ -70,6 +73,9 @@ export default function StudentSubmitHW({ history, ...props }) {
   const [calssNameWise, setClassName] = useState('');
   const [bulkDataDisplay, setBulkDataDisplay] = useState([]);
   const [bulkData, setBulkData] = useState([]);
+
+  //submitted files
+  const [submittedFiles, setSubmittedFiles] = useState([])
 
   const mediaContent = {
     file_content: penToolUrl,
@@ -106,8 +112,7 @@ export default function StudentSubmitHW({ history, ...props }) {
     if (bulkDataDisplay.length >= totalMaxAttachment[totalMaxAttachment.length - 1]) {
       setAlert(
         'warning',
-        `Can\'t upload more than ${
-          totalMaxAttachment[totalMaxAttachment.length - 1]
+        `Can\'t upload more than ${totalMaxAttachment[totalMaxAttachment.length - 1]
         } attachments in total.`
       );
       handleCloseCorrectionModal();
@@ -139,6 +144,7 @@ export default function StudentSubmitHW({ history, ...props }) {
   ////////////////////////////////////////////////////////////
 
   useEffect(() => {
+    setLoading(true);
     axiosInstance
       .get(
         `${endpoints.homework.hwDelete}${homeWorkId}/hw-questions/?hw_status=${1}&module_id=${1}`
@@ -148,6 +154,28 @@ export default function StudentSubmitHW({ history, ...props }) {
           setresultdata(result.data.data);
           setSubjectQuestions(result.data.data.hw_questions);
           setAlert('success', result.data.message);
+          setLoading(false);
+        } else {
+          setAlert('error', result.data.message);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+        setLoading(false);
+      });
+
+      axiosInstance
+      .get(`/academic/${history?.location?.homeworkId}/hw-questions/?hw_status=${2}`)
+      .then((result) => {
+          let submittedFile = result?.data?.data?.hw_questions?.submitted_files;
+        if (result.data.status_code === 200 || result.data.status_code === 201) {
+            if(submittedFile?.length){
+                setAttachments((prevState) => [...prevState, ...submittedFile]);
+                setAttachmentPreviews((prevState) => [...prevState, ...submittedFile]);
+            }
+            setSubmittedFiles(submittedFile)
+          setAlert('success', result.data.message);
         } else {
           setAlert('error', result.data.message);
         }
@@ -155,9 +183,12 @@ export default function StudentSubmitHW({ history, ...props }) {
       .catch((error) => {
         setAlert('error', error.message);
       });
+
+      
   }, [homeWorkId]);
 
   const handleFileUpload = async (file) => {
+    setLoading(true);
     if (!file) {
       return null;
     }
@@ -174,6 +205,7 @@ export default function StudentSubmitHW({ history, ...props }) {
           file.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
           file.name.toLowerCase().lastIndexOf('.mp4') > 0
         ) {
+          setLoading(false);
           const fd = new FormData();
           fd.append('file', file);
           setFileUploadInProgress(true);
@@ -191,10 +223,12 @@ export default function StudentSubmitHW({ history, ...props }) {
           setSizeValied('');
         } else {
           setAlert('error', 'Please upload valid file');
+          setLoading(false);
         }
       } catch (e) {
         setFileUploadInProgress(false);
         setAlert('error', 'File upload failed');
+        setLoading(false);
       }
     }
   };
@@ -248,12 +282,12 @@ export default function StudentSubmitHW({ history, ...props }) {
 
   const handleHomeworkSubmit = () => {
     let attachmentData = [
-        {
+      {
         "homework_question": '',
         "attachments": [],
         "comments": ""
-         }
-       ]
+      }
+    ]
     let requestData = {
       homework: resultdata?.id,
       is_question_wise: false,
@@ -267,6 +301,7 @@ export default function StudentSubmitHW({ history, ...props }) {
           if (result.data.status_code === 201) {
             setAlert('success', result.data.message);
             //   handleHomeworkCancel();
+            history.goBack()
           } else setAlert('error', result.data.message);
         })
         .catch((error) => {
@@ -277,6 +312,7 @@ export default function StudentSubmitHW({ history, ...props }) {
 
   return (
     <Layout>
+      {loading && <Loader />}
       <Grid
         container
         xs={12}
@@ -490,7 +526,7 @@ export default function StudentSubmitHW({ history, ...props }) {
             handleClose={handleCloseCorrectionModal}
             alert={undefined}
             open={penToolOpen}
-            callBackOnPageChange={() => {}}
+            callBackOnPageChange={() => { }}
             handleSaveFile={handleSaveEvaluatedFile}
           />
         )}
@@ -659,4 +695,5 @@ export default function StudentSubmitHW({ history, ...props }) {
       </Grid>
     </Layout>
   );
-}
+})
+export default StudentSubmitHW;

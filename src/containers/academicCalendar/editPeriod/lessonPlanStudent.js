@@ -14,6 +14,7 @@ import axiosInstance from 'config/axios';
 import { AttachmentPreviewerContext } from './../../../components/attachment-previewer/attachment-previewer-contexts/attachment-previewer-contexts';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
+import Loader from '../../../components/loader/loader';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -72,6 +73,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
   const [uploadedData, setUploadedData] = React.useState([]);
   const [addbtnStatus, setAddbtnStatus] = React.useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false);
 
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
@@ -85,19 +87,21 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
 
 
   let ids = [];
+  if (upcomingTopicId){
   upcomingTopicId.forEach((topic) => {
-    console.log("debug individual topic:", topic);
-    ids.push(topic.topic_id)
+    ids.push(topic?.topic_id)
   });
+}
 
   const concaticatedIds = ids.join(',');
 
 
   const TopicContentView = (concaticatedIds) => {
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${concaticatedIds}`)
       .then((result) => {
-        if (result?.data?.status_code === 200) {
+        if (result?.data?.status_code === 200) {       
           const FilesData = result.data?.result;
           setFilesData(FilesData);
           FilesData.filter((tabs) => {
@@ -106,11 +110,13 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
             }
           });
         } else {
-          setAlert('error', result?.data?.message);
+          setAlert('error', result?.data?.message);         
         }
-      })
+        setLoading(false);
+      })     
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
       });
   };
 
@@ -128,6 +134,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
 
   return (
     <div className={classes.root} style={{ minHeight: '300px' }}>
+    {loading && <Loader />} 
       <AppBar position='static'>
         <Tabs
           value={value}
@@ -531,7 +538,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
       <TabPanel value={value} index={6}>
         <div>
           {filesData
-            ?.filter((file) => file.document_type === 'Teachers_File')
+            ?.filter((file) => file.document_type === 'my_files')
             .map((file) => (
               <div
                 style={{

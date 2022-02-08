@@ -12,13 +12,14 @@ import { Button } from '@material-ui/core';
 import { SvgIcon } from '@material-ui/core';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import axiosInstance from 'config/axios';
-import apiRequest from '../../../config/apiRequest'
+import apiRequest from '../../../config/apiRequest';
 import endpoints from 'config/endpoints';
 import { withRouter } from 'react-router-dom';
 import attachmenticon from '../../../assets/images/attachmenticon.svg';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
 import { AttachmentPreviewerContext } from './../../../components/attachment-previewer/attachment-previewer-contexts/attachment-previewer-contexts';
 import CloseIcon from '@material-ui/icons/Close';
+import Loader from '../../../components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StudentCwSubmit = withRouter(({ history, ...props }) => {
-  const { classWorkId, online_class_id } = props?.location?.state;
+  const { classWorkId, online_class_id, class_date } = props?.location?.state;
   const classes = useStyles();
   const [studentClasswork, setStudentClassWork] = useState('');
   const { setAlert } = useContext(AlertNotificationContext);
@@ -51,24 +52,26 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
   const [title, setTitle] = useState('');
   const { openPreview, closePreview } = useContext(AttachmentPreviewerContext) || {};
 
-
-
   const handleStudentClassworkData = () => {
+    setLoading(true);
     axiosInstance
-    .get(
-      `${endpoints.period.confirmAttendance}${classWorkId}/get-update-period-classwork/`
-    )
+      .get(
+        `${endpoints.period.confirmAttendance}${classWorkId}/get-update-period-classwork/`
+      )
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setStudentClassWork(result?.data?.result);
           setImage(result?.data?.result?.classwork_files[0]);
           setAlert('success', result?.data?.message);
+          setLoading(false);
         } else {
           setAlert('error', result?.data?.message);
+          setLoading(false);
         }
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setLoading(false);
       });
   };
 
@@ -113,6 +116,7 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
                         width: '20px',
                         height: '20px',
                         cursor: 'pointer',
+                        marginRight: '15px',
                       }}
                       src={deleteIcon}
                       alt='given'
@@ -145,17 +149,21 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
     const data = event.target.files[0];
     const fd = new FormData();
     fd.append('file', data);
+    setLoading(true);
     axiosInstance.post(`academic/dairy-upload/`, fd).then((result) => {
       if (result?.data?.status_code === 200) {
+        setLoading(false);
         setFilePath([...filePath, result?.data?.result]);
         setAlert('success', result?.data?.message);
       } else {
+        setLoading(false);
         setAlert('error', result?.data?.message);
       }
     });
   };
 
   const removeFileHandler = (i, file) => {
+    setLoading(true);
     const list = [...filePath];
     axiosInstance
       .post(`${endpoints.circular.deleteFile}`, {
@@ -165,9 +173,11 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
         if (result?.data?.status_code === 204) {
           list.splice(i, 1);
           setFilePath(list);
+          setLoading(false);
           setAlert('success', result?.data?.message);
         } else {
           setAlert('error', result?.data?.message);
+          setLoading(false);
         }
       })
       .catch((error) => {
@@ -179,7 +189,8 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
     return size / 1024 / 1024 > 25 ? false : true;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async () => {   
+    setLoading(true);
     let payload = {
       online_class_id: online_class_id, //To do import online class id as prop
     };
@@ -187,42 +198,71 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
       payload['submitted_files'] = filePath;
     }
     try {
-      const result = apiRequest('post', '/oncls/v1/submit-classwork/', payload)
-      if (result.data.status_code === 200) {
+      const result = await apiRequest('post', '/oncls/v1/submit-classwork/', payload)
+      if (result?.data?.status_code === 200) {
         setTitle('');
         setFilePath([]);
         setDetail('');
+        setLoading(false);
         setAlert('success', result?.data?.message);
+        handleback();
       } else {
-        setAlert('error', 'Something Went Wrong');
+        setAlert('error', 'Something Went Wrong'); 
+        setLoading(false);      
       }
     } catch (error) {
-      setAlert('error', error.message);
+      setAlert('error', error.message);  
+      setLoading(false);   
     }
   };
 
   const handleback = () => {
-    window.open("/acad-calendar/","_self")
+    history.goBack();
   };
 
   useEffect(() => {
     handleStudentClassworkData();
+    if(online_class_id && class_date){
+      apiRequest('get', `/oncls/v1/oncls-classwork/?online_class_id=${online_class_id}&date=${class_date}`)
+      .then((response) => {
+        if (response.data.status_code === 200) {
+          // setStudentClassWork(response?.data);
+          setFilePath(response?.data.data);
+        } else {
+          // console.log('t')
+        }
+      })
+      .catch((e) => {
+        setAlert('error', e.message);
+      });
+    }
   }, []);
 
   return (
     <div className={classes.root}>
+    {loading && <Loader />} 
       <Layout>
         <Grid container xs={12} alignItems='center' justifyContent='center' spacing={3}>
           <Grid item xs={12}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <div>
-            <ArrowBackIosIcon style={{marginLeft: '20px', marginTop: '8px' ,float: 'left', textAlign: 'left', cursor:'pointer'  }} onClick={handleback}/>
-            <h3 style={{ float: 'left', textAlign: 'left', marginTop: '10px' }}>
-              {' '}
-              Class Work{' '}
-            </h3>
-            </div>
-            <CloseIcon onClick={handleback} style={{cursor: 'pointer'}} />
+                <ArrowBackIosIcon
+                  style={{
+                    marginLeft: '20px',
+                    marginTop: '11px',
+                    fontSize: '20px',
+                    float: 'left',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                  onClick={handleback}
+                />
+                <h3 style={{ float: 'left', textAlign: 'left', marginTop: '10px' }}>
+                  {' '}
+                  Class Work{' '}
+                </h3>
+              </div>
+              <CloseIcon onClick={handleback} style={{ cursor: 'pointer', marginTop : '9px' }} />
             </div>
           </Grid>
           <Grid item xs={11}>
@@ -233,7 +273,7 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
               <p>{studentClasswork?.discription}</p>
             </Paper>
           </Grid>
-          <Grid item xs={11} sm={11} style={{height:"300px", overflowX:"hidden"}}>
+          <Grid item xs={11} sm={11} style={{ height: '300px', overflowX: 'hidden' }}>
             {studentClasswork?.classwork_files?.map((value, index) => {
               const name = value.split('/')[value.split('/').length - 1];
               return (
@@ -271,7 +311,6 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
                       />
                     )}
                   />
-
                 </Paper>
               );
             })}
@@ -331,10 +370,13 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
                     ))}
                 </div>
               </div>
-
-              <Button variant='contained' color='secondary' onClick={handleSubmit}>
-                Submit Class Work
-              </Button>
+              {class_date ? (
+                <></>
+              ) : (
+                <Button variant='contained' color='secondary' onClick={handleSubmit}>
+                  Submit Class Work
+                </Button>
+              )}
             </Paper>
           </Grid>
         </Grid>

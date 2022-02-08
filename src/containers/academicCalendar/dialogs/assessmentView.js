@@ -7,9 +7,13 @@ import axiosInstance from 'config/axios';
 import { useHistory } from 'react-router-dom';
 import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
+import Loader from '../../../components/loader/loader';
+
 
 const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, isAssessment, assessmentId, questionPaperId }) => {
   const history = useHistory();
+  const [loading, setLoading] = useState(false);
+
   const [assesmentData, setAssessmentData] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectedPaper, setSelectedPaper] = useState(null);
@@ -19,6 +23,8 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
 
   const handleFetch = () => {
     if (periodId) {
+      setLoading(true);
+
       axiosInstance
         .get(`/period/test-list/?period_id=${periodId}`)
         .then((result) => {
@@ -29,9 +35,11 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
           else {
             setAlert('error', result?.data?.message)
           }
+          setLoading(false);
         })
         .catch((err) => {
           setAlert('error', err?.message)
+          setLoading(false);
         })
     }
   };
@@ -41,6 +49,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
       setAlert('error', "Please Select Question Paper Name")
       return;
     }
+    setLoading(true);
     axiosInstance
       .put(`/period/${periodId}/create-period/`, {
         test_ids: [selectedPaper?.id],
@@ -48,12 +57,15 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', 'success assigned the Question paper');
+          setLoading(false);
         } else {
           setAlert('error', result?.data?.message);
+          setLoading(false);
         }
       })
       .catch((err) => {
         setAlert('error', err?.message)
+        setLoading(false);
       })
   };
   const handleTest = () => {
@@ -73,6 +85,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
     <>
       {isStudent ? (
         <div className='assignedQuestionPaper'>
+          {loading && <Loader />}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ width: '188%' }}>
               <Autocomplete

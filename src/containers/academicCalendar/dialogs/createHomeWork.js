@@ -111,7 +111,7 @@ const CreateHomeWork = ({ openStudentDialog, setStudentDialog }) => {
             // variant="contained"
             color='primary'
             style={{ padding: '5px', width: '150px' }}
-            // onClick={handleClose}
+          // onClick={handleClose}
           >
             Cancel
           </Button>
@@ -119,7 +119,7 @@ const CreateHomeWork = ({ openStudentDialog, setStudentDialog }) => {
             // variant="contained"
             color='primary'
             style={{ padding: '5px', width: '150px' }}
-            // onClick={handleClose}
+          // onClick={handleClose}
           >
             Edit
           </Button>

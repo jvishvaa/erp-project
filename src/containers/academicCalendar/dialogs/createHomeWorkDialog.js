@@ -144,7 +144,7 @@ const CreateHomeWorkDialog = (props) => {
               handleChange={handleChange}
               // removeQuestion={(index)=>removeFormFields(index)}
               pentool={pentool}
-              reset = {reset}
+              reset={reset}
             />
           ))}
         </div>
@@ -162,19 +162,19 @@ const CreateHomeWorkDialog = (props) => {
           <AddIcon /> Add Question
         </Button>
         {questions.length > 1 &&
-        <Button
-          variant='contained'
-          color='primary'
-          style={{
-            float: 'right',
-            marginRight: '20px',
-            marginTop: '10px',
-            width: '250px',
-          }}
-          onClick={()=>removeFormFields(questions.length-1)}
-        >
-          <RemoveIcon /> Remove Question
-        </Button> }
+          <Button
+            variant='contained'
+            color='primary'
+            style={{
+              float: 'right',
+              marginRight: '20px',
+              marginTop: '10px',
+              width: '250px',
+            }}
+            onClick={() => removeFormFields(questions.length - 1)}
+          >
+            <RemoveIcon /> Remove Question
+          </Button>}
       </div>
       <div
         style={{

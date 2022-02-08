@@ -149,6 +149,7 @@ const EditDiaryDialog = ({ isStudent, lesson, onClose, setOpen, periodId }) => {
                 <EditDiary
                   onClose={handleEditDairy}
                   lesson={lesson}
+                  updateDiary={onClose}
                   periodId={periodId}
                 />
               </SwipeableDrawer>
