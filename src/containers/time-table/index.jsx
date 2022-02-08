@@ -24,7 +24,7 @@ import FilterMobile from './filterMobile/filterMobile';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import { getPeriodTypes, createPeriod } from './date-and-calander/apis';
-import NoFilterData from 'components/noFilteredData/noFilterData';
+import NoFilterData from '../../components/noFilteredData/noFilterData';
 import clsx from 'clsx';
 import './timetable.scss';
 import Filters from './uppergrade/Filters';
