@@ -40,7 +40,7 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
       onLogin(params, true).then((response) => {
         if (response?.isLogin) {
           isMsAPI();
-          history.push('/dashboard');
+          history.push('/acad-calendar');
         } else {
           setAlert('error', response?.message);
           setDisableLogin(false);
