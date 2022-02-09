@@ -76,7 +76,6 @@ const AcadCalendar = () => {
   };
 
   const handleBranch = (event = {}, value = []) => {
-    console.log(value);
     setSelectedBranch([]);
     setGradeList([]);
     setSelectedbranchIds(value?.branch?.id);
@@ -109,7 +108,6 @@ const AcadCalendar = () => {
   };
 
   const handleSection = (event = {}, value = []) => {
-    console.log(value);
     if (value?.length) {
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.section_id);
@@ -126,7 +124,6 @@ const AcadCalendar = () => {
     }
   };
   const handleSubject = (event = {}, value = []) => {
-    console.log(value);
     if (value?.length) {
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.subject__id);
@@ -156,7 +153,6 @@ const AcadCalendar = () => {
             setSectionList(result.data.data);
           }
           if (key === 'subject') {
-            console.log(result);
             setSubjectList(result.data.data);
           }
           setLoading(false);

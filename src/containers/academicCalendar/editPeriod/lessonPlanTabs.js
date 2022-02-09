@@ -214,7 +214,7 @@ const LessonPlanTabs = ({
                 setFileId(response?.data?.result?.id);
               })
               .catch((err) => {
-                console.log('File Upload Error');
+                // console.log('File Upload Error');
               });
           } else {
             axiosInstance
@@ -225,7 +225,7 @@ const LessonPlanTabs = ({
                 previousUploadedFiles(fileId);
               })
               .catch((err) => {
-                console.log('File Upload Error');
+                // console.log('File Upload Error');
               });
           }
         }

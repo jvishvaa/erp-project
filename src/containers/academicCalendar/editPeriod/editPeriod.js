@@ -250,7 +250,6 @@ const EditPeriod = withRouter(({ history, ...props }) => {
         setLoading(false);
       })
       .catch((err) => {
-        // console.log(err);
         setLoading(false);
       });
   };
@@ -399,11 +398,10 @@ const EditPeriod = withRouter(({ history, ...props }) => {
 
   const handleEditClassWork = () => {
     setEditCw(!editCw)
-    console.log('handle edit class work');
     // toggleHomeWorkDrawer
   }
   const handleEditHomeWork = () => {
-    console.log('inside edit home work');
+    // console.log('inside edit home work');
 
   }
 
