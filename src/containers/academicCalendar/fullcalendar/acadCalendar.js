@@ -58,6 +58,7 @@ const AcadCalendar = () => {
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [selectedSubjectIds, setSelectedSubjectIds] = useState([]);
   const [filtered, setFiltered] = useState(false);
+  const [ counter , setCounter ] = useState(1)
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -75,6 +76,7 @@ const AcadCalendar = () => {
   };
 
   const handleBranch = (event = {}, value = []) => {
+    console.log(value);
     setSelectedBranch([]);
     setGradeList([]);
     setSelectedbranchIds(value?.branch?.id);
@@ -107,6 +109,7 @@ const AcadCalendar = () => {
   };
 
   const handleSection = (event = {}, value = []) => {
+    console.log(value);
     if (value?.length) {
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.section_id);
@@ -123,6 +126,7 @@ const AcadCalendar = () => {
     }
   };
   const handleSubject = (event = {}, value = []) => {
+    console.log(value);
     if (value?.length) {
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.subject__id);
@@ -152,6 +156,7 @@ const AcadCalendar = () => {
             setSectionList(result.data.data);
           }
           if (key === 'subject') {
+            console.log(result);
             setSubjectList(result.data.data);
           }
           setLoading(false);
@@ -183,12 +188,14 @@ const AcadCalendar = () => {
     }
   }, []);
 
-  useEffect(() => {
+  useEffect( () => {
+    if(moduleId && selectedAcademicYear?.id){
     callApi(
       `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
       'branchList'
     );
-  }, [moduleId]);
+    }
+  }, [ selectedAcademicYear , moduleId ]);
 
   const clearfilter = () => {
     setSelectedBranch([]);
@@ -199,6 +206,7 @@ const AcadCalendar = () => {
     setSelectedGradeIds([]);
     setSelectedSubjectIds([]);
     setSelectedSectionIds([]);
+    setFiltered(false)
   };
 
   const statsView = () => {
@@ -209,6 +217,7 @@ const AcadCalendar = () => {
 
   const handleFilter = () => {
     setFiltered(true);
+    setCounter(counter + 1)
   };
 
   return (
@@ -372,6 +381,7 @@ const AcadCalendar = () => {
             acadyear={selectedAcademicYear}
             filtered = {filtered}
             setFiltered = {setFiltered}
+            counter={counter}
           />
         ) : (
           <MyCalendar />

@@ -84,7 +84,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
   return (
     <>
       {isStudent ? (
-        <div className='assignedQuestionPaper'>
+        <div className='assignedQuestionPaper' style={{ position: 'absolute', left: '25vw' }}>
           {loading && <Loader />}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <div style={{ width: '188%' }}>
@@ -154,7 +154,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
             <div>
               <Paper
                 style={{
-                  width: '222%',
+                  width: '160%',
                   padding: '10px 15px',
                   position: 'absolute',
                   left: '-44%',

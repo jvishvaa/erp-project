@@ -27,7 +27,11 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
     if (id === undefined) return;
     history.push({
       pathname: `/academic-calendar/submit-home-work/${id}`,
-      homeworkId: id,
+      state: {
+        homeworkId: id,
+        homeworkdata : data?.homework_details?.homework_list[0]
+      }
+      
     });
   };
 
@@ -51,7 +55,11 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
       if (id === undefined) return;
     history.push({
       pathname: `/academic-calendar/submit-home-work/${id}`,
-      homeworkId: data?.homework_details?.homework_list[0].id,
+      state:{
+        homeworkId: data?.homework_details?.homework_list[0].id,
+        homeworkdata : data?.homework_details?.homework_list[0]
+      }
+     
     });
   };
 
@@ -65,8 +73,8 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
           </div>
         );
       case 'evaluated':
-        return <div >
-            Evaluated
+        return <div onClick={() => handleViewSubmittedWork(firstData?.id)}>
+            Evaluated HomeWork
           </div>
       default:
         return (

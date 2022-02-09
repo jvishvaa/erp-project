@@ -651,6 +651,7 @@ export default {
     createPeriod: '/period/create-period/',
     getAttendance: "/period/<period-id>/attendance-list/",
     updateAttendance: "/period/<period-id>/update-attendance/",
+    updateAttendanceStudent: "/period/<period-id>/update-attendance_by_student/",
     getSubject: '/erp_user/sub-sec-list/',
     getTopicDetails: '/period/topic-content/',
     createPeriodAPI: '/period/create-period-classwork/',
@@ -667,6 +668,7 @@ export default {
     postData2: 'period/custom-resource/',
     getData2: 'period/<file-id>/custom-resource/',
     confirmAttendance: '/period/',
+    getCwDetails: '/period/<period_classowrk_id>/get-update-period-classwork/'
   },
   connectionPod: {
     getStudentList: '/course_extend/students_list/',

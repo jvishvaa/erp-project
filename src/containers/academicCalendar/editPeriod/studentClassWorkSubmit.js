@@ -226,6 +226,7 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
       apiRequest('get', `/oncls/v1/oncls-classwork/?online_class_id=${online_class_id}&date=${class_date}`)
       .then((response) => {
         if (response.data.status_code === 200) {
+          // console.log('data', data);
           // setStudentClassWork(response?.data);
           setFilePath(response?.data.data);
         } else {

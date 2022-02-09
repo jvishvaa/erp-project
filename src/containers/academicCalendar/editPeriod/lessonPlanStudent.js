@@ -89,6 +89,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
   let ids = [];
   if (upcomingTopicId){
   upcomingTopicId.forEach((topic) => {
+    console.log("debug individual topic:", topic);
     ids.push(topic?.topic_id)
   });
 }

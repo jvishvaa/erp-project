@@ -20,7 +20,7 @@ import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CreateClass from '../dialogs/createClass';
 
-const MyCalendar = ({ selectedGrade, selectedSubject, acadyear,filtered , setFiltered}) => {
+const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFiltered, counter }) => {
   const [startDate, setStartDate] = useState([]);
   const [endDate, setEndDate] = useState([]);
   const [events, setEvents] = useState([]);
@@ -30,6 +30,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear,filtered , setFil
   const [jumpTo, setJumpTo] = useState();
   const [isDay, setIsDay] = useState(false);
   const [isCreateClassOpen, setIsCreateClassOpen] = useState(false);
+  const [ filterData , setFilterData ] = useState([])
   const toggleCreateClass = () => {
     setIsCreateClassOpen((prevState) => !prevState);
   };
@@ -55,66 +56,88 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear,filtered , setFil
   };
 
   useEffect(() => {
-    if(filtered){
-      setFiltered(false)
-    }
     if (isDay === false) {
-      
-      let params = {
-        start_date: startDate,
-        end_date: endDate, 
-      }
+      if (!filtered) {
+        let params = {
+          start_date: startDate,
+          end_date: endDate,
+        }
 
-      const gradesId = [];
-      const SubjectId = [];
-      // const sectionId = []
-      if (selectedGrade) {
-        selectedGrade.map((each,key) => {
-          gradesId.push(each);
+        setFilterData(params)
+        axios({
+          method: 'get',
+          url: `${endpoints.period.getDate}`,
+          params: params,
         })
-        params['selectedGrade'] = gradesId.toString();
-      }
-      if (selectedSubject) {
-        selectedSubject.map((each,key) => {
-          SubjectId.push(each);
-        })
-        params['subject'] = SubjectId.toString();
-      }
-      if(acadyear){
-        params['acad_session'] = acadyear?.id;
-      }
-      axios({
-        method: 'get',
-        url: `${endpoints.period.getDate}`,
-        params: params ,
-      })
-        .then((res) => {
-          // setEvents(res.data.result);
-          let eventsArray = [];
-          res.data.result.forEach((items, index) => {
-            eventsArray.push({
-              start: items?.start || items?.date,
-              end: items?.end,
-              title: items?.info?.name || items?.holidays,
-              color:
-                items?.info?.type_name === 'Examination'
-                  ? '#F0485B'
-                  : items?.info?.type_name === 'Lecture'
-                  ? '#A7A09B'
-                  : items?.type?.name === 'Holiday'
-                  ? '#308143'
-                  : '#BD78F9',
-              extendedProps: items,
-              id: items?.id,
+          .then((res) => {
+            // setEvents(res.data.result);
+            let eventsArray = [];
+            res.data.result.forEach((items, index) => {
+              eventsArray.push({
+                start: items?.start || items?.date,
+                end: items?.end,
+                title: items?.info?.name || items?.holidays,
+                color:
+                  items?.info?.type_name === 'Examination'
+                    ? '#F0485B'
+                    : items?.info?.type_name === 'Lecture'
+                      ? '#A7A09B'
+                      : items?.type?.name === 'Holiday'
+                        ? '#308143'
+                        : '#BD78F9',
+                extendedProps: items,
+                id: items?.id,
+              });
             });
+            setEvents(eventsArray);
+          })
+          .catch((error) => {
+            // setAlert('error', 'Something Wrong!');
           });
-          setEvents(eventsArray);
+      }
+      else {
+        let params = {
+          start_date: startDate,
+          end_date: endDate,
+          subject: selectedSubject.toString(),
+          grade: selectedGrade.toString()
+        }
+
+        setFilterData(params)
+
+        axios({
+          method: 'get',
+          url: `${endpoints.period.getDate}`,
+          params: params,
         })
-        .catch((error) => {
-          // setAlert('error', 'Something Wrong!');
-        });
+          .then((res) => {
+            // setEvents(res.data.result);
+            let eventsArray = [];
+            res.data.result.forEach((items, index) => {
+              eventsArray.push({
+                start: items?.start || items?.date,
+                end: items?.end,
+                title: items?.info?.name || items?.holidays,
+                color:
+                  items?.info?.type_name === 'Examination'
+                    ? '#F0485B'
+                    : items?.info?.type_name === 'Lecture'
+                      ? '#A7A09B'
+                      : items?.type?.name === 'Holiday'
+                        ? '#308143'
+                        : '#BD78F9',
+                extendedProps: params,
+                id: items?.id,
+              });
+            });
+            setEvents(eventsArray);
+          })
+          .catch((error) => {
+            // setAlert('error', 'Something Wrong!');
+          });
+      }
     }
-  }, [endDate, isCreateClassOpen,filtered]);
+  }, [endDate, isCreateClassOpen, filtered, counter]);
 
   const getEvent = (info) => {
     info.jsEvent.preventDefault();
@@ -196,8 +219,9 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear,filtered , setFil
         }}
         viewDidMount={getView}
         dayMaxEventRows={4}
-        // allDaySlot={false}
-        // eventMinHeight={30}
+        extendedProps={filterData}
+      // allDaySlot={false}
+      // eventMinHeight={30}
       />
 
       <div>

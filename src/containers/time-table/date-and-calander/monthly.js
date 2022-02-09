@@ -13,12 +13,11 @@ const MyCalendar = (props) => {
 
 
     const handleDateClick = (e) => {
-        console.log(e);
+        // console.log(e);
     }
 
     const renderEventContent = (e) => {
-        console.log(e.timeText);
-        console.log(e.event.title);
+        // console.log(e.event.title);
     }
 
 
@@ -37,7 +36,7 @@ const MyCalendar = (props) => {
                 slotMinTime={props?.startSchoolTime}
                 slotMaxTime={props?.endSchoolTime}
                 dayHeaderFormat={{weekday: 'long'}}
-
+                allDaySlot={false}
             />
         </div>
     )

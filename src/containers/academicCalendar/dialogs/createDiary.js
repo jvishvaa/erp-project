@@ -16,9 +16,8 @@ import endpoints from 'config/endpoints';
 import deleteIcon from '../../../assets/images/delete.svg';
 import DeleteIcon from '@material-ui/icons/Delete';
 import attachmenticon from '../../../assets/images/attachmenticon.svg';
-import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 import Loader from '../../../components/loader/loader';
-
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 
 const Input = styled('input')({
   display: 'none',

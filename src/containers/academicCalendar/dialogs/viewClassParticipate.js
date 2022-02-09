@@ -33,6 +33,11 @@ import Pagination from 'components/PaginationComponent';
 import CloseIcon from '@material-ui/icons/Close';
 import AddScoreDialog from './addScoreDialog';
 import Loader from '../../../components/loader/loader';
+import endpoints from 'config/endpoints';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -187,8 +192,10 @@ const ViewClassParticipate = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const [open, setOpen] = React.useState(false);
+  const [confirmBox,setConfirmBox] = useState(false)
   const [selectedValue, setSelectedValue] = React.useState('Hello');
   const [loading, setLoading] = useState(false);
+  const [checkedPresent, setCheckedPresent] = useState(false);
   const [classParticipant, setClassParticipant] = useState([]);
   const limit = 15;
   const { setAlert } = useContext(AlertNotificationContext);
@@ -292,6 +299,39 @@ const handleSearch = () => {
     history.goBack();
   };
 
+
+  const handleConfirmSubmit = () => {
+    confirmAttendance();
+    setConfirmBox(false);
+  }
+
+  const dialogeClose = () =>{
+    setConfirmBox(!confirmBox)
+  }
+
+  const confirmAttendance = () => {
+    setLoading(true);
+    const confirmData = { is_cp_confirmed : true }
+    axiosInstance
+      .put(
+        `${endpoints.period.confirmAttendance}${id}/confirm-attendance`, confirmData)
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setAlert('success', result?.data?.message);
+          setCheckedPresent(!checkedPresent);
+
+        } else {
+          setAlert('error', result?.data?.message);
+
+        }
+        setLoading(false);
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+        setLoading(false);
+      });
+  };
+
   return (
     <Layout>
       {loading && <Loader />}
@@ -303,7 +343,7 @@ const handleSearch = () => {
                 Class Participation
               </Typography>
             </Grid>
-            <Grid item xs={6} justify='center' className={classes.navcontent}>
+            <Grid item xs={6} justify='center' style={{display:"flex",flexDirection:"flex-end"}} className={classes.navcontent}>
               <div className={classes.search}>
                 <div className={classes.searchIcon}>
                   <SearchIcon />
@@ -318,6 +358,9 @@ const handleSearch = () => {
                   onChange={handleSearchBar}
                 />
               </div>
+              <Button onClick={()=> setConfirmBox(!confirmBox)} size='small'>
+                Confirm
+              </Button>
             </Grid>
             <Grid item xs={3} className={classes.closebutton}>
               <CloseIcon onClick={handleback} style={{ cursor: 'pointer' }} />
@@ -355,16 +398,16 @@ const handleSearch = () => {
                             <AccountCircleIcon />
                             <div style={{ paddingLeft: 10 }}>
                               <h5 style={{ display: 'flex', justifyContent: 'start' }}>
-                                {row.name}
+                                {row?.name}
                               </h5>
                               <h5 style={{ display: 'flex', justifyContent: 'start' }}>
-                                Role No.{row.participant.erp_id}
+                                Erp ID: {row?.erp_id}
                               </h5>
                             </div>
                           </div>
                         </StyledTableCell>
                         <StyledTableCell align='right'>
-                          {row.participant.cp_marks}
+                          {row?.participant?.cp_marks}
                         </StyledTableCell>
                         <StyledTableCell align='right'>
                           {!row.participant.cp_marks ? (
@@ -372,7 +415,7 @@ const handleSearch = () => {
                               style={{ cursor: 'pointer', color: 'red' }}
                               onClick={() => {
                                 setOpen(true);
-                                setCurrentId(row.participant.erp_id);
+                                setCurrentId(row?.participant?.erp_id);
                                 setStudentName(row.name);
                                 setScore(0);
                                 setRemark('');
@@ -425,10 +468,6 @@ const handleSearch = () => {
             }}
           >
             <h4>Total: {count} Students </h4>
-            <Button size='small'>
-              {' '}
-              Submit
-            </Button>
           </div>
         </Grid>
         <AddScoreDialog
@@ -445,6 +484,22 @@ const handleSearch = () => {
           handlestudentRemark={setStudentRemark}
         />
       </Grid>
+      <Dialog open={confirmBox} onClose={dialogeClose} aria-labelledby="form-dialog-title">
+        <DialogTitle id="form-dialog-title" >Confirmation</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Do you really want to lock the class participation for period {id} ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={dialogeClose} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmSubmit} color="primary">
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Layout>
   );
 });

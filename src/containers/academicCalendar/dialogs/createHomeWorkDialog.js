@@ -94,20 +94,21 @@ const CreateHomeWorkDialog = (props) => {
           <CloseIcon />
         </div>
       </div>
-      <Divider />
+      <Divider style={{marginRight:'2%', marginLeft:'2%'}} />
       <div
         container
         style={{
           background: 'white',
           marginTop: '3%',
-          marginLeft: '3%',
+          marginLeft: '5%',
           fontSize: '18px',
           marginBottom: '5%',
+          paddingRight: '4%',
         }}
       >
         Create
         <div>
-          <div style={{ marginLeft: '20px', marginRight: '20px', marginTop: '3%' }}>
+          <div style={{ marginTop: '3%' }}>
             <TextField
               id='title'
               style={{ background: 'white' }}
@@ -119,7 +120,7 @@ const CreateHomeWorkDialog = (props) => {
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
-          <div style={{ marginTop: '10px', marginLeft: '20px', marginRight: '20px' }}>
+          <div style={{ marginTop: '10px' }}>
             <TextField
               multiline={true}
               rows={2}
@@ -134,7 +135,7 @@ const CreateHomeWorkDialog = (props) => {
             />
           </div>
         </div>
-        <div style={{ marginTop: '5px', marginLeft: '20px', marginRight: '20px' }}>
+        <div style={{ marginTop: '5px' }}>
           {questions.length && questions.map((item, i) => (
             <NewQuestionCard
               key={item.id}
@@ -153,7 +154,6 @@ const CreateHomeWorkDialog = (props) => {
           color='primary'
           style={{
             float: 'right',
-            marginRight: '20px',
             marginTop: '10px',
             width: '250px',
           }}
@@ -167,8 +167,8 @@ const CreateHomeWorkDialog = (props) => {
             color='primary'
             style={{
               float: 'right',
-              marginRight: '20px',
               marginTop: '10px',
+              marginRight: '20px',
               width: '250px',
             }}
             onClick={() => removeFormFields(questions.length - 1)}
@@ -178,13 +178,13 @@ const CreateHomeWorkDialog = (props) => {
       </div>
       <div
         style={{
-          marginTop: '15px',
           display: 'flex',
           background: '#D4D4D4',
           justifyContent: 'flex-start',
           alignItems: 'center',
-          padding: '2% 10%',
+          padding: '1% 5%',
           flexDirection: window.innerWidth < 500 ? 'column' : 'row',
+          margin: '0px 4% 0px 5%',
         }}
       >
         <h4>Allow Students to</h4>
@@ -225,6 +225,7 @@ const CreateHomeWorkDialog = (props) => {
           flexFlow: 'row-reverse wrap',
           marginTop: '3%',
           marginRight: '20px',
+          marginBottom: '15px',
         }}
       >
         <div>

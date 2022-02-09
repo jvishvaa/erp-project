@@ -106,6 +106,14 @@ const EditDairy = ({ lesson, onClose, periodId, updateDiary }) => {
     }
   };
   const handleUpdate = () => {
+    if (!details) {
+      setAlert('error', "Please Enter Details of Classwork")
+      return;
+    }
+    if (!title) {
+      setAlert('error', "Please Enter Tools Used")
+      return;
+    }
     let payload = {
       title,
       message: details,

@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ViewAttendence = withRouter(({ history, ...props }) => {
-  const { periodId, online_class_id, date } = props?.location?.state;
+  const { periodId, online_class_id, date,grade,section,periodName } = props?.location?.state;
   const classes = useStyles();
   const [checkedPresent, setCheckedPresent] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -149,10 +149,10 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
 
   const confirmAttendance = () => {
     setLoading(true);
+    const confirmData = { is_attendance_confirmed : true }
     axiosInstance
       .put(
-        `${endpoints.period.confirmAttendance}${periodId}/confirm-attendance/`
-      )
+        `${endpoints.period.confirmAttendance}${periodId}/confirm-attendance`, confirmData)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
@@ -215,7 +215,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
           </span>
           <br />
           <span>
-            <b>Grade 3A - Science</b>
+            <b>{grade} {section} - {periodName}</b>
           </span>
         </div>
         <div onClick={handleExcel} style={{ marginTop: '20px', cursor: 'pointer' }}>
@@ -283,7 +283,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
                           />
                           {row?.name}
                           <br />
-                          {`Roll No. : ${row?.id}`}
+                          {`Erp ID: ${row?.erp_id}`}
                         </div>
                       </StyledTableCell>
                       <StyledTableCell align='right'>
