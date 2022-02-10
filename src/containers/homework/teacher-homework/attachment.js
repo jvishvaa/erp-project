@@ -9,6 +9,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import DeleteIcon from '@material-ui/icons/Delete';
 import placeholder from '../../../assets/images/placeholder_small.jpg';
 import { isVideo, isAudio } from '../../../utility-functions';
+import './styles.scss'
 
 const Attachment = (props) => {
   const {

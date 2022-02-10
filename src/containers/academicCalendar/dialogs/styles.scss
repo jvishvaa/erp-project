@@ -153,3 +153,45 @@
   overflow: hidden;
   position: relative;
 }
+
+.file-card-container {
+  position: relative;
+  height: 100%;
+  &:hover {
+    .overlay-container {
+      opacity: 1;
+    }
+  }
+  .overlay-container {
+    padding: 0.5rem;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: 0.3s ease;
+    .overlay {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      background-color: rgba($color: #000000, $alpha: 0.5);
+      .action-buttons {
+        margin: auto 0;
+      }
+    }
+  }
+
+  .video-file {
+    padding: 0.5rem;
+    width: 100%;
+  }
+  .audio-file {
+    padding: 0.5rem;
+    width: 100%;
+  }
+}
