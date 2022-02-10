@@ -180,7 +180,6 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const joinQuiz = (i) => {
     history.push({
       pathname: `/erp-online-class/${periodData.online_class_id}/${assignClassWork?.quiz_list[0]?.question_paper_id}/pre-quiz`,
-      // state: { data: periodData.online_class_id },
     });
   };
 
@@ -993,7 +992,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           </div>
                         ))}
                         {assignClassWork?.quiz_list?.map((each, index) => (
-                          <div className='individualClass'>
+                          <div className='individualClass' style={{ marginTop: '2px' }}>
                             <paper variant='outlined'>
                               <div
                                 style={{
@@ -1083,33 +1082,36 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                   >
                                     {''}
                                   </div>
-                                </div>
-                                {index === 0 ? (
-                                  <div
-                                    onClick={() => {
-                                      joinQuiz(index);
-                                    }}
-                                    style={{ cursor: 'pointer', color: 'tomato' }}
-                                  >
-                                    <Button
-                                      variant='contained'
-                                      size='small'
-                                      style={{
-                                        display: 'flex',
-                                        flexWrap: 'wrap',
-                                        fontSize: '10px',
-                                        background: '#014b7e',
-                                        color: 'white',
-                                        marginTop: '8px',
-                                        marginRight: '-7px',
+                                  {index === 0 ? (
+                                    <div
+                                      onClick={() => {
+                                        joinQuiz(index);
                                       }}
+                                      style={{ cursor: 'pointer', color: 'tomato' }}
                                     >
-                                      Launch Quiz
-                                    </Button>
-                                  </div>
-                                ) : (
-                                  ''
-                                )}
+                                      <Button
+                                        variant='contained'
+                                        size='small'
+                                        style={{
+                                          display: 'flex',
+                                          flexWrap: 'wrap',
+                                          fontSize: '8px',
+                                          background: '#014b7e',
+                                          color: 'white',
+                                          marginTop: '10px',
+                                          marginRight: '-16px',
+                                          padding: '1px 0px',
+                                          position: 'absolute',
+                                          right: '33px',
+                                        }}
+                                      >
+                                        Launch Quiz
+                                      </Button>
+                                    </div>
+                                  ) : (
+                                    ''
+                                  )}
+                                </div>
                               </div>
                             </paper>
                           </div>
