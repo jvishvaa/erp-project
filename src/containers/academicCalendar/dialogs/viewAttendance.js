@@ -357,10 +357,10 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleClose} color="primary" variant='contained'>
             Cancel
           </Button>
-          <Button onClick={handleConfirmSubmit} color="primary">
+          <Button onClick={handleConfirmSubmit} color="primary" variant='contained'>
             Confirm
           </Button>
         </DialogActions>

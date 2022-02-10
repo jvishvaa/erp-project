@@ -13,7 +13,6 @@ import Box from '@material-ui/core/Box';
 import orchids1 from '../../../assets/images/orchids.png';
 import orchids2 from '../../../assets/images/orchids.png';
 
-
 import {
   TableCell,
   TableBody,
@@ -22,7 +21,7 @@ import {
   TableRow,
   TableContainer,
   SvgIcon,
-  Button
+  Button,
 } from '@material-ui/core';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import CloseIcon from '@material-ui/icons/Close';
@@ -33,11 +32,10 @@ import { AttachmentPreviewerContext } from '../../../components/attachment-previ
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import moment from 'moment';
-import EvaluateHomeWork from './evaluateHomeWork'
+import EvaluateHomeWork from './evaluateHomeWork';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import EvaluateHomeworkNew from './evaluateHomeworkNew';
 import Loader from '../../../components/loader/loader';
-
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -116,9 +114,9 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
-  const [isredirect, setisredirect] = useState(false)
-  const [studentData, setStudentData] = useState()
-  const [evaluatedList, setevaluatedList] = useState([])
+  const [isredirect, setisredirect] = useState(false);
+  const [studentData, setStudentData] = useState();
+  const [evaluatedList, setevaluatedList] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const callSubmittedDetail = () => {
@@ -130,7 +128,7 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
           setAlert('success', result?.data?.message);
           setSubmitted(result?.data?.submitted_list);
           setPending(result?.data?.un_submitted_list);
-          setevaluatedList(result?.data?.evaluated_list)
+          setevaluatedList(result?.data?.evaluated_list);
         } else {
           setAlert('error', result.data.message);
         }
@@ -147,252 +145,261 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
   }, [homeWorkId, isredirect]);
 
   const redirect = (data) => {
-    setStudentData(data)
-    setisredirect(!isredirect)
-  }
+    setStudentData(data);
+    setisredirect(!isredirect);
+  };
 
   return (
     <Layout>
       {loading && <Loader />}
-      {!isredirect && <Grid container xs={12} sm={12} md={12} spacing={2}>
-        <Grid item xs={12} sm={12} md={12} spacing={2}>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              width: '100%',
-              alignItems: 'center',
-              marginTop: 20,
-            }}
-          >
-            <span style={{ paddingLeft: 40, paddingTop: 10 }}>
-              <b>View Home Work</b>
-            </span>
-            {/* <CenterPart>
+      {!isredirect && (
+        <Grid container xs={12} sm={12} md={12} spacing={2}>
+          <Grid item xs={12} sm={12} md={12} spacing={2}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%',
+                alignItems: 'center',
+                marginTop: 20,
+              }}
+            >
+              <span style={{ paddingLeft: 40, paddingTop: 10 }}>
+                <b>View Home Work</b>
+              </span>
+              {/* <CenterPart>
               <div>Question Bank 1</div>
               <div>Duration : 10min</div>
               <div>Grade 3A</div>
             </CenterPart> */}
-            <div>
-              <CloseIcon
-                style={{ cursor: 'pointer' }}
-                onClick={(e) => history.goBack()}
-              />
+              <div>
+                <CloseIcon
+                  style={{ cursor: 'pointer' }}
+                  onClick={(e) => history.goBack()}
+                />
+              </div>
             </div>
-          </div>
-        </Grid>
-        <AppBar position='static' style={{ width:"95%",margin:"auto" }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            indicatorColor='primary'
-            textColor='primary'
-            style={{ background: 'white' }}
-            variant='fullWidth'
-            aria-label='full width tabs example'
-            centered
-          >
-            <Tab
-              label={`Submitted (${submitted?.length})`}
-              style={{ color: 'black !important' }}
-              {...a11yProps(0)}
-            />
-            <Tab label={`pending (${pending?.length})`} {...a11yProps(1)} />
-            <Tab label='Avg. Marks' {...a11yProps(2)} />
-          </Tabs>
-        </AppBar>
-        <Grid item={12} xs={12} sm={12} md={12} spacing={1}>
-          <TabPanel value={value} index={0}>
-            <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label='customized table'>
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell
-                      style={{ display: 'flex', justifyContent: 'flex-start' }}
-                    >
-                      <AccountCircleIcon style={{ visibility: 'hidden' }} />
-                      Student Name
-                    </StyledTableCell>
-                    <StyledTableCell align='right'>Submitted At</StyledTableCell>
-                    <StyledTableCell align='right'>Uploaded HomeWork</StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {submitted?.length !== 0 &&
-                    submitted?.map((row) => (
-                      <>
-                        <div style={{ margin: 5, background: 'red' }}></div>
-                        <StyledTableRow key={row?.student_name}>
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              margin: '0 !important',
-                              padding: 0,
-                            }}
-                          >
-                            <StyledTableCell component='th' scope='row'>
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'flex-start',
-                                  alignItems: 'center',
-                                  textAlign: 'left',
-                                }}
-                              >
-                                <AccountCircleIcon
-                                  style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    display: 'flex',
-                                    marginRight: '10px',
-                                  }}
-                                />
-                                {row?.student_name}
-                                <br />
-                                Erp id: {row?.erp_id}
-                              </div>
-                            </StyledTableCell>
-                          </div>
-                          <StyledTableCell align='right'>
-                            {moment(row?.submitted_at).format('MMMM Do YYYY, h:mm:ss a')}
-                          </StyledTableCell>
-                          <StyledTableCell align='right'>
-
-                            {/* {row?.uploaded_file.map((e)=>{ */}
-                            {/* return(   */}
+          </Grid>
+          <AppBar position='static' style={{ width: '95%', margin: 'auto' }}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              indicatorColor='primary'
+              textColor='primary'
+              style={{ background: 'white' }}
+              variant='fullWidth'
+              aria-label='full width tabs example'
+              centered
+            >
+              <Tab
+                label={`Submitted (${submitted?.length})`}
+                style={{ color: 'black !important' }}
+                {...a11yProps(0)}
+              />
+              <Tab label={`pending (${pending?.length})`} {...a11yProps(1)} />
+              <Tab label='Avg. Marks' {...a11yProps(2)} />
+            </Tabs>
+          </AppBar>
+          <Grid item={12} xs={12} sm={12} md={12} spacing={1}>
+            <TabPanel value={value} index={0}>
+              <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label='customized table'>
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell
+                        style={{ display: 'flex', justifyContent: 'flex-start' }}
+                      >
+                        <AccountCircleIcon style={{ visibility: 'hidden' }} />
+                        Student Name
+                      </StyledTableCell>
+                      <StyledTableCell align='right'>Submitted At</StyledTableCell>
+                      <StyledTableCell align='right'>Uploaded HomeWork</StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {submitted?.length !== 0 &&
+                      submitted?.map((row) => (
+                        <>
+                          <div style={{ margin: 5, background: 'red' }}></div>
+                          <StyledTableRow key={row?.student_name}>
                             <div
                               style={{
-                                cursor: 'pointer',
+                                display: 'flex',
+                                alignItems: 'center',
+                                margin: '0 !important',
+                                padding: 0,
                               }}
                             >
-                              <a
-                                className='underlineRemove'
-                                onClick={() => redirect(row)}>
-                                <SvgIcon component={() => <FileCopyIcon />} fontSize='xx-large' />
-                              </a>
+                              <StyledTableCell component='th' scope='row'>
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    textAlign: 'left',
+                                  }}
+                                >
+                                  <AccountCircleIcon
+                                    style={{
+                                      width: '40px',
+                                      height: '40px',
+                                      display: 'flex',
+                                      marginRight: '10px',
+                                    }}
+                                  />
+                                  {row?.first_name}
+                                  <br />
+                                  Erp id: {row?.submitted_by}
+                                </div>
+                              </StyledTableCell>
                             </div>
-                            {/* ) */}
-
-                            {/* })} */}
-
-
-                          </StyledTableCell>
-                        </StyledTableRow>
-                      </>
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label='customized table'>
-                <TableBody>
-                  {pending?.length !== 0 &&
-                    pending.map((row) => (
-                      <>
-                        <div style={{ margin: 5, background: 'red' }}></div>
-                        <StyledTableRow key={row?.student_name}>
-                          <div style={{ display: 'flex', alignItems: 'center' }}>
-                            <StyledTableCell component='th' scope='row'>
+                            <StyledTableCell align='right'>
+                              {moment(row?.submitted_at).format(
+                                'MMMM Do YYYY, h:mm:ss a'
+                              )}
+                            </StyledTableCell>
+                            <StyledTableCell align='right'>
+                              {/* {row?.uploaded_file.map((e)=>{ */}
+                              {/* return(   */}
                               <div
                                 style={{
-                                  display: 'flex',
-                                  justifyContent: 'flex-start',
-                                  alignItems: 'center',
-                                  textAlign: 'left',
+                                  cursor: 'pointer',
                                 }}
                               >
-                                <AccountCircleIcon
-                                  style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    display: 'flex',
-                                    marginRight: '10px',
-                                  }}
-                                />
-                                {row?.first_name}{' '} {row?.last_name}
-                                <br />
-                                Erp id: {row?.erp_id}
+                                <a
+                                  className='underlineRemove'
+                                  onClick={() => redirect(row)}
+                                >
+                                  <SvgIcon
+                                    component={() => <FileCopyIcon />}
+                                    fontSize='xx-large'
+                                  />
+                                </a>
                               </div>
+                              {/* ) */}
+
+                              {/* })} */}
                             </StyledTableCell>
-                          </div>
-                        </StyledTableRow>
-                      </>
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-            <TableContainer component={Paper}>
-              <Table className={classes.table} aria-label='customized table'>
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell
-                      style={{ display: 'flex', justifyContent: 'flex-start' }}
-                    >
-                      <AccountCircleIcon style={{ visibility: 'hidden' }} />
-                      Student Name
-                    </StyledTableCell>
-                    <StyledTableCell align='right'>Score</StyledTableCell>
-                    <StyledTableCell align='right'>Remarks</StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {evaluatedList?.length !== 0 &&
-                    evaluatedList?.map((row) => (
-                      <>
-                        <div style={{ margin: 5, background: 'red' }}></div>
-                        <StyledTableRow key={row?.student_name}>
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              margin: '0 !important',
-                              padding: 0,
-                            }}
-                          >
-                            <StyledTableCell component='th' scope='row'>
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'flex-start',
-                                  alignItems: 'center',
-                                  textAlign: 'left',
-                                }}
-                              >
-                                <AccountCircleIcon
+                          </StyledTableRow>
+                        </>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+              <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label='customized table'>
+                  <TableBody>
+                    {pending?.length !== 0 &&
+                      pending.map((row) => (
+                        <>
+                          <div style={{ margin: 5, background: 'red' }}></div>
+                          <StyledTableRow key={row?.student_name}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                              <StyledTableCell component='th' scope='row'>
+                                <div
                                   style={{
-                                    width: '40px',
-                                    height: '40px',
                                     display: 'flex',
-                                    marginRight: '10px',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    textAlign: 'left',
                                   }}
-                                />
-                                {row?.first_name}{' '}{row?.last_name}
-                                <br />
-                                Erp id: {row?.erp_id}
-                              </div>
+                                >
+                                  <AccountCircleIcon
+                                    style={{
+                                      width: '40px',
+                                      height: '40px',
+                                      display: 'flex',
+                                      marginRight: '10px',
+                                    }}
+                                  />
+                                  {row?.first_name} {row?.last_name}
+                                  <br />
+                                  Erp id: {row?.erp_id}
+                                </div>
+                              </StyledTableCell>
+                            </div>
+                          </StyledTableRow>
+                        </>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </TabPanel>
+            <TabPanel value={value} index={2}>
+              <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label='customized table'>
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell
+                        style={{ display: 'flex', justifyContent: 'flex-start' }}
+                      >
+                        <AccountCircleIcon style={{ visibility: 'hidden' }} />
+                        Student Name
+                      </StyledTableCell>
+                      <StyledTableCell align='right'>Score</StyledTableCell>
+                      <StyledTableCell align='right'>Remarks</StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {evaluatedList?.length !== 0 &&
+                      evaluatedList?.map((row) => (
+                        <>
+                          <div style={{ margin: 5, background: 'red' }}></div>
+                          <StyledTableRow key={row?.student_name}>
+                            <div
+                              style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                margin: '0 !important',
+                                padding: 0,
+                              }}
+                            >
+                              <StyledTableCell component='th' scope='row'>
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    justifyContent: 'flex-start',
+                                    alignItems: 'center',
+                                    textAlign: 'left',
+                                  }}
+                                >
+                                  <AccountCircleIcon
+                                    style={{
+                                      width: '40px',
+                                      height: '40px',
+                                      display: 'flex',
+                                      marginRight: '10px',
+                                    }}
+                                  />
+                                  {row?.first_name} {row?.last_name}
+                                  <br />
+                                  Erp id: {row?.erp_id}
+                                </div>
+                              </StyledTableCell>
+                            </div>
+                            <StyledTableCell align='right'>{row?.score}</StyledTableCell>
+                            <StyledTableCell align='right'>
+                              {row?.remarks}
                             </StyledTableCell>
-                          </div>
-                          <StyledTableCell align='right'>
-                            {row?.score}
-                          </StyledTableCell>
-                          <StyledTableCell align='right'>
-                            {row?.remarks}
-                          </StyledTableCell>
-                        </StyledTableRow>
-                      </>
-                    ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </TabPanel>
+                          </StyledTableRow>
+                        </>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </TabPanel>
+          </Grid>
         </Grid>
-      </Grid>}
-      {isredirect && <EvaluateHomeworkNew redirect={redirect} studentData={studentData} homeWorkId={homeWorkId} />}
+      )}
+      {isredirect && (
+        <EvaluateHomeworkNew
+          redirect={redirect}
+          studentData={studentData}
+          homeWorkId={homeWorkId}
+        />
+      )}
     </Layout>
   );
 });

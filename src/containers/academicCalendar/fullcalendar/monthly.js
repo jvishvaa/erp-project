@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState  } from 'react';
 import Button from '@material-ui/core/Button';
 import moment from 'moment';
 import FullCalendar, { filterEventStoreDefs } from '@fullcalendar/react'; // must go before plugins
@@ -56,7 +56,9 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
   };
 
   useEffect(() => {
-    if (isDay === false) {
+
+
+    // if (isDay === false) {
       if (!filtered) {
         let params = {
           start_date: startDate,
@@ -76,7 +78,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
               eventsArray.push({
                 start: items?.start || items?.date,
                 end: items?.end,
-                title: items?.info?.name || items?.holidays,
+                title: items?.info?.name || items?.gradewise_holidays[0]?.holiday_name,
                 color:
                   items?.info?.type_name === 'Examination'
                     ? '#F0485B'
@@ -85,7 +87,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
                       : items?.type?.name === 'Holiday'
                         ? '#308143'
                         : '#BD78F9',
-                extendedProps: items,
+                extendedProps: res.data.result,
                 id: items?.id,
               });
             });
@@ -117,7 +119,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
               eventsArray.push({
                 start: items?.start || items?.date,
                 end: items?.end,
-                title: items?.info?.name || items?.holidays,
+                title: items?.info?.name || items?.gradewise_holidays[0]?.holiday_name,
                 color:
                   items?.info?.type_name === 'Examination'
                     ? '#F0485B'
@@ -126,7 +128,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
                       : items?.type?.name === 'Holiday'
                         ? '#308143'
                         : '#BD78F9',
-                extendedProps: params,
+                extendedProps: res.data.result,
                 id: items?.id,
               });
             });
@@ -136,7 +138,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
             // setAlert('error', 'Something Wrong!');
           });
       }
-    }
+    // }
   }, [endDate, isCreateClassOpen, filtered, counter]);
 
   const getEvent = (info) => {
@@ -202,6 +204,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
           right: 'dayGridMonth,timeGridWeek,day',
         }}
         dayHeaderFormat={{ weekday: 'long' }}
+        counter={counter}
         customButtons={{
           myCustomButton: {
             text: 'Calendar',
@@ -220,6 +223,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
         viewDidMount={getView}
         dayMaxEventRows={4}
         extendedProps={filterData}
+        content={filterData}
       // allDaySlot={false}
       // eventMinHeight={30}
       />
@@ -321,10 +325,10 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color='primary'>
+            <Button onClick={handleClose} color='primary' variant='contained'>
               Cancel
             </Button>
-            <Button onClick={jumpDate} color='primary' autoFocus>
+            <Button onClick={jumpDate} color='primary' autoFocus >
               Submit
             </Button>
           </DialogActions>
