@@ -56,6 +56,16 @@ export default {
   timeTable: {
     tableData: '/academic/time_table/',
     editTableData: '/academic/assign_class_periods/',
+    getPeriodData: "/period/teacher_retrieve_period_details/",
+    createtimeTable: '/period/timetable/',
+    timeTableList: '/period/timetable/',
+    gettimeTable: '/period/period/',
+    deletetimeTable: '/period/timetable/',
+    edittimeTable: '/period/timetable/',
+    periodTypes: '/period/period_type/',
+    deletePeriod: '/period/period/',
+    editPeriod: '/period/period/',
+    collidingPeriod: 'period/deactivate_period/'
   },
   communicationRoles: {
     roles: '/academic/booked-appointment-role-list/',
@@ -151,6 +161,8 @@ export default {
     completeData: '/academic/list_admin_homework/',
     createConfig: '/academic/homework-admin-configuration/',
     hwDelete: '/academic/',
+    upload: '/academic/upload-homework/',
+    HwSubmittedDetail: '/academic/homework-submitted-data/',
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',
@@ -590,6 +602,9 @@ export default {
     SaveNotes: `${baseUdaan}/instructors/learning_notes/`,
     getDetailedVisualReport: `${baseUdaan}/assessment/detailed_visual_report/`,
   },
+  classworkReport: {
+    tableData: '/academic/teacher_classwork_report/',
+  },
   reportCard: {
     listCategory: '/assessment/get-category-mapping/',
     categoryAssessmentMapping: '/assessment/add_report_category_assessment_mapping/',
@@ -629,6 +644,32 @@ export default {
     studentRefer: '/erp_user/student_refferal/',
   },
 
+  period: {
+    getDate: '/period/calendar/',
+    periodType: '/period/period_type/',
+    paticipantsList: 'period/participants-list/',
+    createPeriod: '/period/create-period/',
+    getAttendance: "/period/<period-id>/attendance-list/",
+    updateAttendance: "/period/<period-id>/update-attendance/",
+    updateAttendanceStudent: "/period/<period-id>/update-attendance_by_student/",
+    getSubject: '/erp_user/sub-sec-list/',
+    getTopicDetails: '/period/topic-content/',
+    createPeriodAPI: '/period/create-period-classwork/',
+    confirmAttendance: '/period/',
+    retrieveTeacherDetails:'/period/teacher_retrieve_period_details/',
+    retrieveStudentDetails:'/period/student_retrieve_period_details/',
+    retrieveVolumeDetails: `${baseURLCentral}/lesson_plan/list-volume/`,
+  },
+
+  lessonPlanTabs: {
+    topicData: '/period/topic-content/',
+    previousData: 'period/<tempfile-id>/custom-resource/',
+    postData: 'academic/upload-question-file/',
+    postData2: 'period/custom-resource/',
+    getData2: 'period/<file-id>/custom-resource/',
+    confirmAttendance: '/period/',
+    getCwDetails: '/period/<period_classowrk_id>/get-update-period-classwork/'
+  },
   connectionPod: {
     getStudentList: '/course_extend/students_list/',
     getTeacherList: '/course_extend/teachers_list/',

@@ -357,6 +357,8 @@ import Observationarea from 'containers/observation/observation-area';
 import Observationreport from 'containers/observation/observation-report';
 import UserLevelTable from 'containers/user-management/User-Level/tableUserLevel';
 import ERPSystemConfig from 'containers/master-management/erp-system-config';
+import AcademicCalendar from 'containers/academicCalendar/index';
+import AcadCalendar from 'containers/academicCalendar/fullcalendar/acadCalendar';
 function App({ alert, isMsAPI }) {
   useEffect(() => {
   isMsAPI();
@@ -1689,6 +1691,13 @@ function App({ alert, isMsAPI }) {
 
                           <Route exact path='/online-class/connection-pod'>
                             {({ match }) => <ConnectionPod match={match} />}
+                          </Route>
+                          <Route path='/academic-calendar'>
+                            {({ match }) => <AcademicCalendar match={match} />}
+                          </Route>
+
+                          <Route path='/acad-calendar'>
+                            {({ match }) => <AcadCalendar match={match} />}
                           </Route>
                           <Route path='*'>
                             <ErrorBoundary404 HomeButton={true} />

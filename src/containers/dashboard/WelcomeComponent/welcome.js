@@ -33,7 +33,15 @@ const useStyles = makeStyles((theme) => ({
   },
   refreshIcon: {
     cursor: 'pointer'
-  }
+  },
+  outlined: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    background: '#fff',
+    color: theme.palette.secondary.main,
+    fontSize: '14px',
+    fontWeight: 'bold',
+    padding: '4px 16px !important',
+  },
 }));
 
 const WelcomeComponent = () => {
@@ -66,6 +74,10 @@ const WelcomeComponent = () => {
 
   const studentrefer = () => {
     history.push('/studentrefer')
+  }
+
+  const academicView = () => {
+    history.push('/acad-calendar');
   }
 
   return (
@@ -103,6 +115,9 @@ const WelcomeComponent = () => {
           : ''}
       </>
         : ''}
+        <Button className={classes.outlined} color='secondary' onClick={academicView}>
+            Academic View
+      </Button>
     </Box>
   );
 };

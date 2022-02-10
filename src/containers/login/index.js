@@ -54,7 +54,7 @@ function Copyright() {
 
 function SignIn({ history, setTheme }) {
   if (localStorage.getItem('userDetails') && localStorage.getItem('navigationData'))
-    history.push('/dashboard');
+    history.push('/acad-calendar');
   const theme = useTheme();
   const classes = useStyles();
   const [loading, setLoading] = useState(false);

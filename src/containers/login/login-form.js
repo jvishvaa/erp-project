@@ -63,7 +63,7 @@ function LoginForm(props) {
         if (response?.isLogin) {
           // history.push('/profile');
           isMsAPI();
-          history.push('/dashboard');
+          history.push('/acad-calendar');
         } else {
           setAlert('error', response?.message);
           setDisableLogin(false);

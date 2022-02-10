@@ -1,0 +1,116 @@
+.customCalendar{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+    .tableData{
+        min-width: 7vw;
+        min-height: 100px;
+        height: 8vw;
+        width: 14vw;
+        max-width: 14vw;
+        border: 1px solid #E0E0E0;
+    }
+}
+.calenderContainer{
+    .btnAreaCalendar{
+        display: flex;
+    }
+  .fc-toolbar-chunk{
+      width: 30%;
+      div{
+          display: flex;
+          width: 100%;
+          justify-content: space-evenly;
+      }
+      .fc-button-group{
+          width: 50%;
+          float: right;
+      }
+  }
+  .sub-name{
+    margin: auto;
+}
+.custom-view{
+    overflow: auto;
+}
+.fc-timegrid-slots{
+    tbody{
+        tr{
+            height: 40px;
+        }
+    }
+}
+.colorArea{
+    .colorDiv{
+        height: 20px;
+        width: 20px;
+    }
+}
+.greenMark{
+    position: absolute;
+    height: 8px;
+    width: 8px;
+    background: #5EE871;
+    border-radius: 10px;
+    top: -3px;
+    left: -3px;
+}
+.redMark{
+    position: absolute;
+    height: 8px;
+    width: 8px;
+    background: #E53D2F;
+    border-radius: 10px;
+    top: -3px;
+    left: -3px;
+}
+}
+.wholeCalender{
+    width: 100%;
+}
+.customTableRow{
+    width: 100%;
+}
+.celldiv{
+    width: 100%;
+}
+.holiday_card{
+    width: 90%;
+    margin: 0 auto;
+    border-radius: 5px;
+    background: #228B22;
+    color: white;
+    font-weight: 600;
+    margin-top: 4%;
+}
+.comp_card{
+    width: 90%;
+    margin: 0 auto;
+    border-radius: 5px;
+    background: #FF8C00;
+    color: white;
+    font-weight: 600;
+    margin-top: 4%;
+}
+.exam_card{
+    width: 90%;
+    margin: 0 auto;
+    border-radius: 5px;
+    background: #FF1493;
+    color: white;
+    font-weight: 600;
+    margin-top: 4%;
+}
+.misc_card{
+    width: 90%;
+    margin: 0 auto;
+    border-radius: 5px;
+    background: #8A2BE2;
+    color: white;
+    font-weight: 600;
+    margin-top: 4%;
+}
+.stats-view {
+    margin-left: 20px;
+}
