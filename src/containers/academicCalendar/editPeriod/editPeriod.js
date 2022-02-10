@@ -446,6 +446,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
             openParticipate={openParticipate}
             setOpenParticipate={setOpenParticipate}
             date={date}
+            periodName={periodName}
           />
         );
       default:
