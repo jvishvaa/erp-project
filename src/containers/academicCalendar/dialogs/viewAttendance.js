@@ -152,7 +152,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
     const confirmData = { is_attendance_confirmed : true }
     axiosInstance
       .put(
-        `${endpoints.period.confirmAttendance}${periodId}/confirm-attendance`, confirmData)
+        `${endpoints.period.confirmAttendance}${periodId}/confirm-attendance/`, confirmData)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
