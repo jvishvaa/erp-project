@@ -35,6 +35,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
     setIsCreateClassOpen((prevState) => !prevState);
   };
 
+
   const { user_level: userLevel = 5 } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
 
@@ -95,6 +96,11 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
           })
           .catch((error) => {
             // setAlert('error', 'Something Wrong!');
+            let eventsArray = [];
+            eventsArray.push({
+              extendedProps: null,
+            });
+            setEvents(eventsArray)
           });
       }
       else {
@@ -136,15 +142,20 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
           })
           .catch((error) => {
             // setAlert('error', 'Something Wrong!');
+            let eventsArray = [];
+            eventsArray.push({
+              extendedProps: null,
+            });
+            setEvents(eventsArray)
           });
       }
     // }
   }, [endDate, isCreateClassOpen, filtered, counter]);
 
   const getEvent = (info) => {
-    info.jsEvent.preventDefault();
+    // info.jsEvent.preventDefault();
     const cal = calendarRef.current.getApi();
-    cal.changeView('day', info?.event?.extendedProps?.date);
+    cal.changeView('day', info?.event?._instance?.range?.start);
   };
 
   const getView = (e) => {

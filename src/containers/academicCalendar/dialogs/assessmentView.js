@@ -9,13 +9,15 @@ import endpoints from 'config/endpoints';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
 import Loader from '../../../components/loader/loader';
-
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 
 const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, isAssessment, assessmentId, questionPaperId }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
 
   const [assesmentData, setAssessmentData] = useState([]);
+  const [isDownload, setIsDownload] = useState(false)
+  const [takeTestAlert, setTakeTestAlert] = useState(false)
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectedPaper, setSelectedPaper] = useState(null);
   useEffect(() => {
@@ -58,6 +60,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', 'success assigned the Question paper');
+          setIsDownload(true)
           setLoading(false);
         } else {
           setAlert('error', result?.data?.message);
@@ -69,6 +72,12 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
         setLoading(false);
       })
   };
+  const handleTestOpen = () => {
+    setTakeTestAlert(true)
+  }
+  const handleTakeTest = () => {
+    setTakeTestAlert(false)
+  }
   const handleTest = () => {
     history.push(`/assessment/${periodData?.test_details[0]?.question_paper_id}/${periodData?.test_details[0]?.id}/attempt/`)
   }
@@ -109,7 +118,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
                 renderInput={(params) => (
                   <TextField
                     {...params}
-                    label='Assign Question Paper'
+                    label='Assign Test'
                     variant='outlined'
                   />
                 )}
@@ -117,6 +126,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
             </div>
             <div style={{ width: '73%' }}>
               <Button
+                variant='contained'
                 style={{
                   color: 'grey',
                   // width: '159%',
@@ -130,28 +140,30 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
                 onClick={assignQuestion}
               >
                 {' '}
-                Assign Question{' '}
+                Assign Test{' '}
               </Button>
             </div>
-            <div>
-              <Button
-                variant='contained'
-                style={{
-                  color: 'grey',
-                  width: '100%',
-                  background: '#fff',
-                  borderRadius: '5px',
-                  border: '1px solid #f5f0f0',
-                  fontWeight: '700',
-                  width: '129%',
-                  margin: '5px',
-                }}
-                onClick={viewQuestion}
-              >
-                Download Question Paper
-                <GetAppIcon style={{marginLeft: 20, color: "blue"}} />
-              </Button>
-            </div>
+            {isDownload && (
+              <div>
+                <Button
+                  variant='contained'
+                  style={{
+                    color: 'grey',
+                    width: '100%',
+                    background: '#fff',
+                    borderRadius: '5px',
+                    border: '1px solid #f5f0f0',
+                    fontWeight: '700',
+                    width: '129%',
+                    margin: '5px',
+                  }}
+                  onClick={viewQuestion}
+                >
+                  Download Question Paper
+                  <GetAppIcon style={{ marginLeft: 20, color: "blue" }} />
+                </Button>
+              </div>
+            )}
           </div>
           <div className='submission'>
             <div>
@@ -235,10 +247,26 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
                 width: '250%',
                 margin: '5px',
               }}
-              onClick={handleTest}
+              onClick={handleTestOpen}
             >
               Take Test
             </Button>
+            <Dialog open={takeTestAlert} onClose={handleTakeTest}>
+              <DialogTitle id='draggable-dialog-title'>Are you sure you want to give the test.</DialogTitle>
+              <DialogActions>
+                <Button onClick={handleTakeTest} className='labelColor cancelButton'>
+                  Cancel
+                </Button>
+                <Button
+                  color='primary'
+                  variant='contained'
+                  style={{ color: 'white' }}
+                  onClick={handleTest}
+                >
+                  Confirm
+                </Button>
+              </DialogActions>
+            </Dialog>
           </div>
         </div>
       )}

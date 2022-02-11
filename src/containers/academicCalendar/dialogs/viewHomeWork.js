@@ -247,7 +247,7 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
                                       marginRight: '10px',
                                     }}
                                   />
-                                  {row?.first_name}
+                                  {row?.first_name} {row?.last_name}
                                   <br />
                                   Erp id: {row?.submitted_by}
                                 </div>

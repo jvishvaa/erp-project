@@ -40,9 +40,11 @@ const CreateHomeWorkDialog = (props) => {
           setQuestions(res?.data?.data?.hw_questions)
           setPentool(res?.data?.data?.hw_questions[0]?.is_pen_editor_enable);
           setUpload(res?.data?.data?.hw_questions[0]?.is_attachment_enable)
+      //   setLoading(false);
       })
       .catch((err) => {
         console.log(err);
+      //   setLoading(false);
       });
     }
   },[props?.homeworkDetails?.homework_id])
