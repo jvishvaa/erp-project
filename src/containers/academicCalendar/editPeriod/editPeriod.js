@@ -622,9 +622,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             {isOngoing ? (
                               'Ongoing'
                             ) : (
-                              <p onClick={joinStudentClass}>
-                                { periodData?.attendance_details?.is_present ? "Ongoing" : "Join Class"}
-                              </p>
+                              <p onClick={joinStudentClass}>Join Class</p>
                             )}
                           </Button>
                           {currTime < class_StartTime && currDate === classDate && (
@@ -725,7 +723,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             <h3>Attendence</h3>
                           </div>
                           <div className='notyet'>
-                            <h5>Not Yet</h5>
+                            <h5>{periodData?.attendance_details?.is_present ? "Present" : "Not yet"}</h5>
                           </div>
                         </div>
                       )}
