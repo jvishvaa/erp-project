@@ -314,7 +314,7 @@ const handleSearch = () => {
     const confirmData = { is_cp_confirmed : true }
     axiosInstance
       .put(
-        `${endpoints.period.confirmAttendance}${id}/confirm-attendance`, confirmData)
+        `${endpoints.period.confirmAttendance}${id}/confirm-attendance/`, confirmData)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);

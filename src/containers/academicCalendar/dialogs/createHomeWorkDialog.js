@@ -6,12 +6,15 @@ import { Button, TextField, Divider, Checkbox } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import RemoveIcon from '@material-ui/icons/Remove';
 import NewQuestionCard from './NewQuestionCard';
+import axiosInstance from 'config/axios';
 const CreateHomeWorkDialog = (props) => {
   const [reset, setReset] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [periodId, setPeriodId] = useState();
   const [pentool, setPentool] = useState(false);
+  const [upload, setUpload] = useState(false)
+  const [isEdit, setIsEdit] = useState(false)
   const inputArr = {
     question: "",
     attachments: [],
@@ -20,6 +23,30 @@ const CreateHomeWorkDialog = (props) => {
     penTool: false,
   };
   const [questions, setQuestions] = useState([inputArr]);
+  useEffect(() => {
+    let homework_id = props?.homeworkDetails?.homework_id;
+    if(homework_id){
+      setIsEdit(true)
+      axiosInstance
+      .get(`academic/${homework_id}/hw-questions/?hw_status=1`)
+      .then((res) => {
+        let array = res?.data?.data?.hw_questions.forEach((item)=>{
+            item["attachments"] = item["question_files"];
+            delete item["question_files"];
+            item["penTool"] = item.is_pen_editor_enable
+        })
+          setTitle(res?.data?.data?.homework_name)
+          setDescription(res?.data?.data?.description)
+          setQuestions(res?.data?.data?.hw_questions)
+          setPentool(res?.data?.data?.hw_questions[0]?.is_pen_editor_enable);
+          setUpload(res?.data?.data?.hw_questions[0]?.is_attachment_enable)
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    }
+  },[props?.homeworkDetails?.homework_id])
+
   const handleClose = () => {
     setQuestions([{
       question: "",
@@ -88,13 +115,13 @@ const CreateHomeWorkDialog = (props) => {
             fontSize: '18px',
           }}
         >
-          <b>Create Home Work</b>
+          {isEdit ? <b> Edit Home Work</b> : <b> Create Home Work</b>}
         </div>
         <div style={{ cursor: 'pointer' }} onClick={props.onClose}>
           <CloseIcon />
         </div>
       </div>
-      <Divider style={{marginRight:'2%', marginLeft:'2%'}} />
+      <Divider style={{ marginRight: '2%', marginLeft: '2%' }} />
       <div
         container
         style={{
@@ -106,7 +133,7 @@ const CreateHomeWorkDialog = (props) => {
           paddingRight: '4%',
         }}
       >
-        Create
+        {isEdit ? <b> Edit </b> : <b> Create </b>}
         <div>
           <div style={{ marginTop: '3%' }}>
             <TextField
@@ -199,7 +226,11 @@ const CreateHomeWorkDialog = (props) => {
             borderRadius: '2px',
           }}
         >
-          <Checkbox value='checkedA' />
+          <Checkbox
+            value={upload}
+            checked={upload}
+            onChange={(e) => setUpload(e.target.checked)}
+          />
           <CloudUploadIcon />
           Upload File
         </div>
@@ -213,7 +244,11 @@ const CreateHomeWorkDialog = (props) => {
             borderRadius: '2px',
           }}
         >
-          <Checkbox value={pentool} checked={pentool} onChange={(e) => setPentool(e.target.checked)} />
+          <Checkbox
+            value={pentool}
+            checked={pentool}
+            onChange={(e) => setPentool(e.target.checked)}
+          />
           <CreateIcon />
           Use Pen Tool
         </div>
@@ -235,7 +270,7 @@ const CreateHomeWorkDialog = (props) => {
             style={{ padding: '5px', width: '250px' }}
             onClick={handleCreateHW}
           >
-            Create HomeWork
+            {isEdit ? <b> Save HomeWork</b> : <b> Create HomeWork</b>}
           </Button>
         </div>
         <div>

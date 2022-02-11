@@ -719,6 +719,7 @@ const LessonPlanTabs = ({
               style={{ padding: '5px', marginTop: '25%', background: '#d5d2d2' }}
             >
               <Button
+                variant='contained'
                 size='small'
                 onClick={(event) => {
                   handleTopicCompleted();
@@ -734,6 +735,7 @@ const LessonPlanTabs = ({
                 Topic Completed
               </Button>
               <Button
+                variant='contained'
                 size='small'
                 onClick={handlePartiallyCompleted}
                 style={{
@@ -761,7 +763,7 @@ const LessonPlanTabs = ({
         ) : (
           data?.status !== 2 && (
             <div style={{ padding: '5px', marginTop: '25%', background: '#d5d2d2' }}>
-              <Button size='small' onClick={handleComplete} style={{ marginLeft: '43%' }}>
+              <Button size='small' onClick={handleComplete} style={{ marginLeft: '43%' }} variant='contained'>
                 {' '}
                 Mark Completed{' '}
               </Button>

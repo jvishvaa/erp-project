@@ -6,6 +6,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import axiosInstance from 'config/axios';
 import { useHistory } from 'react-router-dom';
 import endpoints from 'config/endpoints';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
 import Loader from '../../../components/loader/loader';
 
@@ -134,6 +135,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
             </div>
             <div>
               <Button
+                variant='contained'
                 style={{
                   color: 'grey',
                   width: '100%',
@@ -147,6 +149,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
                 onClick={viewQuestion}
               >
                 Download Question Paper
+                <GetAppIcon style={{marginLeft: 20, color: "blue"}} />
               </Button>
             </div>
           </div>
@@ -221,6 +224,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
         <div className='assignedTest'>
           <div>
             <Button
+              variant='contained'
               style={{
                 color: 'grey',
                 width: '100%',

@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
-import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 import './acadCalendar.scss';
 import Divider from '@material-ui/core/Divider';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import { parseJSON } from 'date-fns';
-import axios from 'config/axios';
-import endpoints from 'config/endpoints';
 import Noimage from 'assets/images/not-found.png';
-import CreateClass from '../dialogs/createClass';
-import AddIcon from '@material-ui/icons/Add';
-import { SwipeableDrawer } from '@material-ui/core';
-// import createClass from '../dialogs/createClass';
 
 const useStyles = makeStyles({
   root: {
@@ -43,59 +35,42 @@ const useStyles = makeStyles({
   },
 });
 
-let events = [
-  { title: 'event 1', url1: 'avik', color: '#BD78F9', date: '2022-01-01' },
-  { title: 'event overlap', url1: 'avik', color: '#tomato', date: '2022-01-16' },
-  {
-    title: 'event 2',
-    date: '2022-01-12',
-    url1: 'avvfvfd',
-    eventColor: '#ff0000',
-    color: '#257e4a',
-  },
-  {
-    title: 'BCH237',
-    start: '2022-01-18T08:30:00',
-    end: '2022-01-19T09:30:00',
-    extendedProps: {
-      department: 'BioChemistry',
-    },
-    description: 'Lecture',
-    color: 'tomato',
-  },
-  {
-    title: 'BCH237',
-    start: '2022-01-18T10:30:00',
-    end: '2022-01-18T11:30:00',
-    extendedProps: {
-      department: 'BioChemistry',
-    },
-    description: 'Lecture',
-    color: 'tomato',
-  },
-];
-
 const Cards = withRouter(({ props, history }) => {
+  const { defs } = props?.eventStore;
   const classes = useStyles();
   const [todayData, setTodayData] = useState([]);
   const [createClassClicked, setIsCreateClassClicked] = useState(false);
   const [isCreateClassOpen, setIsCreateClassOpen] = useState(false);
+  const [filterData, setFilterData] = useState('');
 
   const { user_level: userLevel = 5 } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
+  let data;
 
+  useEffect(() => {
+    setTodayData([])
+    if (defs) {
+      fetchData();
+    }
+  }, [defs]);
 
-  // let dailyData = JSON.parse(sessionStorage.getItem('dailyData'))
+  let dataToday = [];
 
-  // useEffect(() => {
-  //   setTodayData(dailyData)
-  // } , [dailyData])
+  const fetchData = () => {
+    Object.keys(defs).map((each, index) => {
+      if (index === 0) {
+        dataToday = Object.values(defs[each]?.extendedProps)
+
+      }
+    });
+    setTodayData(dataToday)
+  };
 
   const toggleCreateClass = () => {
     setIsCreateClassOpen((prevState) => !prevState);
   };
   const redirectMe = (data) => {
-    if(data?.info?.type_name === 'Break'){
+    if (data?.info?.type_name === 'Break') {
       return;
     }
     if (data?.info?.type_id > 0) {
@@ -110,22 +85,21 @@ const Cards = withRouter(({ props, history }) => {
   //   setIsCreateClassClicked(true);
   // };
 
-  useEffect(() => {
-    axios({
-      method: 'get',
-      url: `${endpoints.period.getDate}`,
-      params: {
-        start_date: moment(props?.dateProfile?.activeRange?.start).format('YYYY-MM-DD'),
-        end_date: moment(props?.dateProfile?.activeRange?.start).format('YYYY-MM-DD'),
-      },
-    })
-      .then((res) => {
-        setTodayData(res.data.result);
-      })
-      .catch((error) => {
-        // setAlert('error', 'Something Wrong!');
-      });
-  }, [props.dateProfile.activeRange.start]);
+  // useEffect(() => {
+  //   axios({
+  //     method: 'get',
+  //     url: `${endpoints.period.getDate}`,
+  //     params: {
+  //       start_date: moment(props?.dateProfile?.activeRange?.start).format('YYYY-MM-DD'),
+  //       end_date: moment(props?.dateProfile?.activeRange?.start).format('YYYY-MM-DD'),
+  //     },
+  //   })
+  //     .then((res) => {
+  //       setTodayData(res.data.result);
+  //     })
+  //     .catch((error) => {
+  //     });
+  // }, [props.dateProfile.activeRange.start]);
 
   return (
     <div className='period-cards'>
@@ -414,24 +388,6 @@ const Cards = withRouter(({ props, history }) => {
           </div>
         </>
       )}
-      {/* <div style={{ margin: '5% 42%', padding: '10px' }}>
-        <button
-          style={{ padding: '10px', borderRadius: '5px' }}
-          onClick={toggleCreateClass}
-        >
-          <AddIcon style={{ color: 'black', fontSize: 'small', marginRight: '10px' }} />
-          Add Extra Class
-        </button>
-      </div>
-      <SwipeableDrawer
-        anchor='right'
-        open={isCreateClassOpen}
-        onClose={toggleCreateClass}
-        onOpen={toggleCreateClass}
-        style={{ padding: '20px' }}
-      >
-        <CreateClass toggleCreateClass={toggleCreateClass} isCreateClassOpen={isCreateClassOpen} date={moment(props?.dateProfile?.activeRange?.start).format('YYYY-MM-DD')} />
-      </SwipeableDrawer> */}
     </div>
   );
 });

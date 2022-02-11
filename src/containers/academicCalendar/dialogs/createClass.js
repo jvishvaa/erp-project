@@ -619,6 +619,7 @@ const CreateClass = ({
                 // defaultValue={TodayDate}
                 onChange={handleDateClass}
                 // className={classes.textField}
+                inputProps={{ min: date }}
                 InputLabelProps={{
                   shrink: true,
                 }}

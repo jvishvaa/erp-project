@@ -63,11 +63,20 @@ export default function NewQuestionCard(props) {
   };
 
   useEffect(() => {
-    setQuestion("");
-    setAttachmentPreviews([])
-    setAttachments([])
-    setshowPrev(0)
+    if(props?.reset){
+        setQuestion("");
+        setAttachmentPreviews([])
+        setAttachments([])
+        setshowPrev(0)
+    }
   }, [props?.reset])
+
+  useEffect(() => {
+    setQuestion(props?.question?.question);
+    setAttachmentPreviews(props?.question?.attachments || [])
+    setAttachments(props?.question?.attachments || [])
+    setshowPrev(0)
+  }, [])
 
   useEffect(() => {
     if (firstUpdate.current) {

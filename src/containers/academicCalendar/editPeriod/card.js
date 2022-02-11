@@ -187,6 +187,7 @@ export default function Cards({
           <Button
             size='small'
             color='primary'
+            variant='contained'
             onClick={handleAssign}
             style={{ backgroundColor: '#4a90e2', width: '10%', borderRadius: '5px' }}
           >
@@ -246,6 +247,7 @@ function PeriodCard(props) {
                     paddingRight: 20,
                     backgroundColor: '#4a90e2',
                   }}
+                  variant='contained'
                   size='small'
                   className={classes.buttoncss}
                   onClick={(e) => {
