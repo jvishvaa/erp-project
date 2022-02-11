@@ -101,7 +101,7 @@ const CreateClassWork = ({ openClassWork, setOpenClassWork }) => {
       >
         <div>
           <Button
-            // variant="contained"
+            variant="contained"
             color='primary'
             style={{ padding: '5px', width: '150px' }}
             // onClick={handleClose}
@@ -111,7 +111,7 @@ const CreateClassWork = ({ openClassWork, setOpenClassWork }) => {
         </div>
         <div>
           <Button
-            // variant="contained"
+            variant="contained"
             color='primary'
             style={{ padding: '5px', width: '150px', marginLeft: '-5%' }}
             // onClick={handleClose}

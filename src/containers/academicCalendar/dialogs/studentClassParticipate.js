@@ -12,6 +12,7 @@ const StudentClassParticipate = ({
   openParticipate,
   setOpenParticipate,
   date,
+  periodName
 }) => {
   const [studentData, setStudentData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -65,7 +66,7 @@ const StudentClassParticipate = ({
             alignItems: 'center',
           }}
         >
-          <h4 style={{ color: 'rgb(111 115 138)' }}>Subject : Math</h4>
+          <h4 style={{ color: 'rgb(111 115 138)' }}>Subject: {periodName}</h4>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <h4>{date}</h4>
             <CloseIcon

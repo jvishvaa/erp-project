@@ -108,6 +108,7 @@ const EditDiaryDialog = ({ isStudent, lesson, onClose, setOpen, periodId }) => {
           <div style={{ display: 'flex' }}>
             <div style={{}}>
               <Button
+                variant='contained'
                 onClick={() => handleBulkDownloads(lesson?.documents)}
                 style={{ width: '200px', backgroundColor: '#576dc5' }}
                 className='bulkDownloadIconViewMore'

@@ -108,7 +108,7 @@ const CreateHomeWork = ({ openStudentDialog, setStudentDialog }) => {
         </DialogContent>
         <DialogActions>
           <Button
-            // variant="contained"
+            variant="contained"
             color='primary'
             style={{ padding: '5px', width: '150px' }}
           // onClick={handleClose}
@@ -116,7 +116,7 @@ const CreateHomeWork = ({ openStudentDialog, setStudentDialog }) => {
             Cancel
           </Button>
           <Button
-            // variant="contained"
+            variant="contained"
             color='primary'
             style={{ padding: '5px', width: '150px' }}
           // onClick={handleClose}

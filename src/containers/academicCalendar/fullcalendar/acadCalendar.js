@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from 'react';
+import React, { useContext, useState, useEffect, } from 'react';
 import Layout from '../../Layout';
 import './acadCalendar.scss';
 import MyCalendar from './monthly';
@@ -364,7 +364,7 @@ const AcadCalendar = () => {
           </AccordionDetails>
         </Accordion>
         <div className='stats-view'>
-          <Button className={classes.outlined} color='secondary' onClick={statsView}>
+          <Button className={classes.outlined} color='secondary' variant='contained' onClick={statsView}>
             Stats View
           </Button>
         </div>
