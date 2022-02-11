@@ -6,10 +6,16 @@ import Card from './card';
 import axios from 'axios';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
-import apiRequest from '../../../config/apiRequest'
-import endpoints from '../../../config/endpoints'
+import apiRequest from '../../../config/apiRequest';
+import endpoints from '../../../config/endpoints';
 
-export default function AddTopic({ setPeriodUI, periodId, uniqueIdd, setUniqueIdd, setAssignedTopic }) {
+export default function AddTopic({
+  setPeriodUI,
+  periodId,
+  uniqueIdd,
+  setUniqueIdd,
+  setAssignedTopic,
+}) {
   const [selectedVolume, setSelectedVolume] = useState(null);
   const [selectedChapter, setSelectedChapter] = useState(null);
   const [volumesList, setVolumesList] = useState([]);
@@ -25,7 +31,7 @@ export default function AddTopic({ setPeriodUI, periodId, uniqueIdd, setUniqueId
     if (selectedVolume) {
       fetchChaptersList();
     }
-  }, [selectedVolume,selectedChapter]);
+  }, [selectedVolume, selectedChapter]);
 
   const fetchVolumes = () => {
     axios
@@ -47,9 +53,7 @@ export default function AddTopic({ setPeriodUI, periodId, uniqueIdd, setUniqueId
   };
   const fetchChaptersList = () => {
     axiosInstance
-      .get(
-        `/period/${periodId}/chapters-list/?volume=${selectedVolume.id}`
-      )
+      .get(`/period/${periodId}/chapters-list/?volume=${selectedVolume.id}`)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           const lists = result.data?.result?.chapter_list;
@@ -101,7 +105,7 @@ export default function AddTopic({ setPeriodUI, periodId, uniqueIdd, setUniqueId
             renderInput={(params) => (
               <TextField
                 {...params}
-                label='Subject'
+                label='Chapter'
                 variant='outlined'
                 size='small'
                 style={{ background: '#fff', borderRadius: '10px' }}
@@ -110,8 +114,17 @@ export default function AddTopic({ setPeriodUI, periodId, uniqueIdd, setUniqueId
           />
         </Box>
       </div>
-      {isCard && <Card setPeriodUI={setPeriodUI} chapterId={isCard} periodId={periodId} selectedChapter={selectedChapter} setAssignedTopic={setAssignedTopic} uniqueIdd={uniqueIdd}
-        setUniqueIdd={setUniqueIdd} />}
+      {isCard && (
+        <Card
+          setPeriodUI={setPeriodUI}
+          chapterId={isCard}
+          periodId={periodId}
+          selectedChapter={selectedChapter}
+          setAssignedTopic={setAssignedTopic}
+          uniqueIdd={uniqueIdd}
+          setUniqueIdd={setUniqueIdd}
+        />
+      )}
     </>
   );
 }

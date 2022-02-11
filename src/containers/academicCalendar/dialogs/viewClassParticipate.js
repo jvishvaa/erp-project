@@ -181,7 +181,7 @@ const StyledTableRow = withStyles((theme) => ({
 
 const debounce = (fn, delay) => {
   let timeoutId;
-  return function(...args) {
+  return function (...args) {
     clearInterval(timeoutId);
     timeoutId = setTimeout(() => fn.apply(this, args), delay);
   };
@@ -192,7 +192,7 @@ const ViewClassParticipate = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const [open, setOpen] = React.useState(false);
-  const [confirmBox,setConfirmBox] = useState(false)
+  const [confirmBox, setConfirmBox] = useState(false)
   const [selectedValue, setSelectedValue] = React.useState('Hello');
   const [loading, setLoading] = useState(false);
   const [checkedPresent, setCheckedPresent] = useState(false);
@@ -231,25 +231,25 @@ const ViewClassParticipate = withRouter(({ history, ...props }) => {
       });
   };
 
-const handleSearch = () => {
+  const handleSearch = () => {
     axiosInstance
-    .get(`/period/${id}/attendance-list/?name=${searchName}`)
-    .then((res) => {
-      if (res.data.status_code === 200) {
-        setClassParticipant(res?.data?.result?.results);
-        setTotalGenre(res?.data?.result?.count);
-        setAlert('success', res?.data?.message);
-        setCount(res?.data?.result?.count);
-      } else {
-        setAlert('error', res?.data?.message);
-      }
-    })
-    .catch((err) => {
-      setAlert('error', err?.message);
-    });
+      .get(`/period/${id}/attendance-list/?name=${searchName}`)
+      .then((res) => {
+        if (res.data.status_code === 200) {
+          setClassParticipant(res?.data?.result?.results);
+          setTotalGenre(res?.data?.result?.count);
+          setAlert('success', res?.data?.message);
+          setCount(res?.data?.result?.count);
+        } else {
+          setAlert('error', res?.data?.message);
+        }
+      })
+      .catch((err) => {
+        setAlert('error', err?.message);
+      });
   };
-  
-  
+
+
   const debounceCallback = useCallback(
     debounce(value => {
       setIsNewSearch(true);
@@ -257,12 +257,12 @@ const handleSearch = () => {
     []
   );
 
-  useEffect(()=> {
+  useEffect(() => {
     setIsNewSearch(false);
-    if (isNewSearch){
-    handleSearch();
+    if (isNewSearch) {
+      handleSearch();
     }
-  },[isNewSearch])
+  }, [isNewSearch])
 
   useEffect(() => {
     handleStudentList();
@@ -275,7 +275,7 @@ const handleSearch = () => {
   const handleSearchBar = (event) => {
     let search = event.target.value;
     setSearchName(event.target.value);
-    if(search.length) {
+    if (search.length) {
       debounceCallback(search);
     }
     else {
@@ -305,13 +305,13 @@ const handleSearch = () => {
     setConfirmBox(false);
   }
 
-  const dialogeClose = () =>{
+  const dialogeClose = () => {
     setConfirmBox(!confirmBox)
   }
 
   const confirmAttendance = () => {
     setLoading(true);
-    const confirmData = { is_cp_confirmed : true }
+    const confirmData = { is_cp_confirmed: true }
     axiosInstance
       .put(
         `${endpoints.period.confirmAttendance}${id}/confirm-attendance/`, confirmData)
@@ -343,7 +343,7 @@ const handleSearch = () => {
                 Class Participation
               </Typography>
             </Grid>
-            <Grid item xs={6} justify='center' style={{display:"flex",flexDirection:"flex-end"}} className={classes.navcontent}>
+            <Grid item xs={7} justify='center' style={{ display: "flex", flexDirection: "flex-end" }} className={classes.navcontent}>
               <div className={classes.search}>
                 <div className={classes.searchIcon}>
                   <SearchIcon />
@@ -358,12 +358,12 @@ const handleSearch = () => {
                   onChange={handleSearchBar}
                 />
               </div>
-              <Button onClick={()=> setConfirmBox(!confirmBox)} size='small'>
+            </Grid>
+            <Grid item xs={2} className={classes.closebutton}>
+              <Button onClick={() => setConfirmBox(!confirmBox)} size='small' variant='contained' color='primary'>
                 Confirm
               </Button>
-            </Grid>
-            <Grid item xs={3} className={classes.closebutton}>
-              <CloseIcon onClick={handleback} style={{ cursor: 'pointer' }} />
+              <CloseIcon onClick={handleback} style={{ cursor: 'pointer', marginLeft: '30px' }} />
             </Grid>
           </Grid>
         </div>
@@ -492,10 +492,10 @@ const handleSearch = () => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={dialogeClose} color="primary">
+          <Button onClick={dialogeClose} variant='contained' color='primary'>
             Cancel
           </Button>
-          <Button onClick={handleConfirmSubmit} color="primary">
+          <Button onClick={handleConfirmSubmit} variant='contained' color='primary'>
             Confirm
           </Button>
         </DialogActions>

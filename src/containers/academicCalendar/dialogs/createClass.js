@@ -638,6 +638,9 @@ const CreateClass = ({
                   value={duration}
                   fullWidth
                   onChange={handleDuration}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                   inputProps={{
                     maxLength: 5,
                   }}

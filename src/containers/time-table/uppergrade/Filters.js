@@ -115,7 +115,7 @@ const Filters = (props) => {
       setShowAddPeriodButton(true);
       props.handlePassData(
         selectedAcademicYear?.id,
-        gradeDisplay?.id,
+        gradeDisplay?.grade_id,
         sectionDisplay?.id,
         selectedBranch?.id,
         selectedAcademicYear?.session_year,
