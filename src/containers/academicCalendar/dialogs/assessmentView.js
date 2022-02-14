@@ -10,7 +10,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
 import Loader from '../../../components/loader/loader';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
-
+import { handleDownloadPdf } from 'utility-functions';
 const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, isAssessment, assessmentId, questionPaperId }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -83,11 +83,24 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
   }
   const viewQuestion = () => {
     axiosInstance
-      .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${selectedPaper?.id}`)
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          // handle download part
+      .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${selectedPaper?.id}`, {
+        responseType: 'blob',
+      })
+      .then((response) => {
+        const {
+          headers = {},
+          message = 'Cannot download question paper',
+          data = '',
+        } = response || {};
+        const contentType = headers['content-type'] || '';
+        if (contentType === 'application/pdf') {
+          handleDownloadPdf(data, selectedPaper?.test_name);
+        } else {
+          setAlert('info', message);
         }
+      })
+      .catch((error) => {
+        setAlert(error?.message);
       });
   };
 
@@ -157,7 +170,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
                     width: '129%',
                     margin: '5px',
                   }}
-                  onClick={viewQuestion}
+                  onClick={() => viewQuestion()}
                 >
                   Download Question Paper
                   <GetAppIcon style={{ marginLeft: 20, color: "blue" }} />
