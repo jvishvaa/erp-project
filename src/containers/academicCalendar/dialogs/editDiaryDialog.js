@@ -41,44 +41,41 @@ const EditDiaryDialog = ({ isStudent, lesson, onClose, setOpen, periodId }) => {
       </div>
       <Divider />
       <FormControl fullWidth>
-        <TextField
-          multiline
-          rows={6}
-          style={{ marginLeft: '5%', marginRight: '5%', marginTop: '5%' }}
-          id='outlined-basic'
-          label='Details of Classwork'
-          variant='outlined'
-          InputLabelProps={{
-            shrink: true,
-          }}
-          disabled
-          margin='dense'
-          defaultValue={lesson?.message}
-        />
-      </FormControl>
-      <FormControl fullWidth>
-        <TextField
-          multiline
-          style={{ marginTop: 20, marginLeft: '5%', marginRight: '5%' }}
-          id='outlined-basic'
-          rows={4}
-          label='Tool Used'
-          variant='outlined'
-          margin='dense'
-          InputLabelProps={{
-            shrink: true,
-          }}
-          disabled
-          defaultValue={lesson?.title}
-        />
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'row',
-            padding: '20px',
-          }}
-        >
-          <div style={{ display: "flex" }}>
+        <div>
+          <TextField
+            multiline
+            rows={6}
+            style={{ marginLeft: '5%', marginRight: '5%', marginTop: '5%', width: "55vw" }}
+            id='outlined-basic'
+            label='Details of Classwork'
+            variant='outlined'
+            InputLabelProps={{
+              shrink: true,
+            }}
+            disabled
+            margin='dense'
+            defaultValue={lesson?.message}
+          />
+        </div>
+
+        <FormControl fullWidth>
+          <div>
+            <TextField
+              multiline
+              style={{ marginTop: 20, marginLeft: '5%', marginRight: '5%', width: "55vw" }}
+              id='outlined-basic'
+              rows={4}
+              label='Tool Used'
+              variant='outlined'
+              margin='dense'
+              InputLabelProps={{
+                shrink: true,
+              }}
+              disabled
+              defaultValue={lesson?.title}
+            />
+          </div>
+          <div style={{ display: 'flex', flexDirection: "row", overflowY: 'hidden', marginLeft: "45px" }}>
             {lesson?.documents?.map((image, index) => (
               <>
                 <p style={{ fontSize: "15px", fontWeight: "900px" }}>File: {index + 1}</p>
@@ -105,59 +102,67 @@ const EditDiaryDialog = ({ isStudent, lesson, onClose, setOpen, periodId }) => {
               </>
             ))}
           </div>
-          <div style={{ display: 'flex' }}>
-            <div style={{}}>
-              <Button
-                variant='contained'
-                onClick={() => handleBulkDownloads(lesson?.documents)}
-                style={{ width: '200px', backgroundColor: '#576dc5' }}
-                className='bulkDownloadIconViewMore'
+        </FormControl >
+      </FormControl>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          padding: '20px',
+        }}
+      >
+        <div style={{ display: 'flex' }}>
+          <div style={{}}>
+            <Button
+              variant='contained'
+              onClick={() => handleBulkDownloads(lesson?.documents)}
+              style={{ width: '206px', backgroundColor: '#576dc5' }}
+              className='bulkDownloadIconViewMore'
+            >
+              Download
+            </Button>
+          </div>
+          <div>
+            {isStudent ? (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  // marginBottom: 15,
+                  // marginTop: 20,
+                }}
               >
-                Download Attachments
-              </Button>
-            </div>
-            <div>
-              {isStudent ? (
-                <div
+                <Button
+                  variant='contained'
                   style={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    // marginBottom: 15,
-                    // marginTop: 20,
+                    backgroundColor: '#3780DE',
+                    color: 'white',
+                    padding: '7px 30px',
+                    width: '150px',
                   }}
+                  onClick={handleEditDairy}
                 >
-                  <Button
-                    variant='contained'
-                    style={{
-                      backgroundColor: '#3780DE',
-                      color: 'white',
-                      padding: '7px 30px',
-                      width: '150px',
-                    }}
-                    onClick={handleEditDairy}
-                  >
-                    Edit
-                  </Button>
-                </div>
-              ) : null}
-              <SwipeableDrawer
-                anchor='right'
-                open={editDiaryOpen}
+                  Edit
+                </Button>
+              </div>
+            ) : null}
+            <SwipeableDrawer
+              anchor='right'
+              open={editDiaryOpen}
+              onClose={handleEditDairy}
+              onOpen={handleEditDairy}
+              style={{ padding: '20px' }}
+            >
+              <EditDiary
                 onClose={handleEditDairy}
-                onOpen={handleEditDairy}
-                style={{ padding: '20px' }}
-              >
-                <EditDiary
-                  onClose={handleEditDairy}
-                  lesson={lesson}
-                  updateDiary={onClose}
-                  periodId={periodId}
-                />
-              </SwipeableDrawer>
-            </div>
+                lesson={lesson}
+                updateDiary={onClose}
+                periodId={periodId}
+              />
+            </SwipeableDrawer>
           </div>
         </div>
-      </FormControl >
+      </div>
       {/* </> */}
     </div >
   );

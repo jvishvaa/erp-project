@@ -17,6 +17,9 @@ export default {
   auth: {
     login: '/auth/login/',
   },
+  checkAcademicView: {
+    isAcademicView: '/period/period-erp-system-config/'
+  },
   academics: {
     subjects: '/erp_user/subject/',
     branches: '/erp_user/branch/',

@@ -195,9 +195,12 @@ const TimeTable = (props) => {
 
   const periodTypeList = async () => {
     const data = await getPeriodTypes();
-    setLectureList(data?.result);
-    setPeriodType(data?.result[1])
-    setperiodTypeId(data?.result[1]?.id)
+    if(data?.status_code === 200){
+      setLectureList(data?.result);
+      setPeriodType(data?.result[1])
+      setperiodTypeId(data?.result[1]?.id)
+    }
+    
   };
 
   useEffect(() => {
@@ -239,7 +242,7 @@ const TimeTable = (props) => {
         },
       })
       .then((res) => {
-        setSubject(res?.data?.result);
+        setSubject(res.data.result);
       })
       .catch((error) => {
         setAlert('error', "can't fetch subjects");
@@ -272,13 +275,13 @@ const TimeTable = (props) => {
       }else{
          createPeriodAPI()
       }
-    }else if(periodType?.type === "Break"){
+    }else if(periodType?.type === "Competitions"){
       if(days.length === 0 || !assignedTeacherID){
         setAlert('Warning', 'Please Fill all Fields');
       }else{
          createPeriodAPI()
       }
-    }else if(periodType?.type === "Miscellaneous event"){
+    }else if(periodType?.type === "Miscellaneous Event"){
       if(days.length === 0 && !assignedTeacherID){
         setAlert('Warning', 'Please Select All Fields');
       }else{
@@ -400,7 +403,7 @@ const TimeTable = (props) => {
                   </div>
                 </MuiPickersUtilsProvider>
               </div>
-              {(periodType?.type === "Lecture" || periodType?.type === "Examination" || periodType?.type === "Break" || periodType?.type ==="Miscellaneous event" )&& <div className={classes.formTextFields}>
+              {(periodType?.type === "Lecture" || periodType?.type === "Examination" || periodType?.type === "Competitions" || periodType?.type ==="Miscellaneous Event" )&& <div className={classes.formTextFields}>
                 <Autocomplete
                   fullWidth
                   id='combo-box-demo'

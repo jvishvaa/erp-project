@@ -231,7 +231,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
         >
           <b onClick={handleEdit}>
             Edit
-            <span style={{ visibility: disabled ? 'visible' : 'hidden' }}>Enabled</span>
+            <span style={{ visibility: disabled ? 'visible' : 'hidden' }}> Enabled</span>
           </b>
         </div>
         <div
@@ -353,7 +353,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
         <DialogTitle id="form-dialog-title" >Confirmation</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Do you really want to lock the attendanc for period {periodId} ?
+            Do you really want to lock the attendance for period {periodId} ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

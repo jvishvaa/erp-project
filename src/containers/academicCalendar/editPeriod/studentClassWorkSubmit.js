@@ -189,7 +189,7 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
     return size / 1024 / 1024 > 25 ? false : true;
   };
 
-  const handleSubmit = async () => {   
+  const handleSubmit = async () => {
     setLoading(true);
     let payload = {
       online_class_id: online_class_id, //To do import online class id as prop
@@ -207,12 +207,12 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
         setAlert('success', result?.data?.message);
         handleback();
       } else {
-        setAlert('error', 'Something Went Wrong'); 
-        setLoading(false);      
+        setAlert('error', 'Something Went Wrong');
+        setLoading(false);
       }
     } catch (error) {
-      setAlert('error', error.message);  
-      setLoading(false);   
+      setAlert('error', error.message);
+      setLoading(false);
     }
   };
 
@@ -222,25 +222,24 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
 
   useEffect(() => {
     handleStudentClassworkData();
-    if(online_class_id && class_date){
+    if (online_class_id && class_date) {
       apiRequest('get', `/oncls/v1/oncls-classwork/?online_class_id=${online_class_id}&date=${class_date}`)
-      .then((response) => {
-        if (response.data.status_code === 200) {
-          // setStudentClassWork(response?.data);
-          setFilePath(response?.data.data);
-        } else {
-          // console.log('t')
-        }
-      })
-      .catch((e) => {
-        setAlert('error', e.message);
-      });
+        .then((response) => {
+          if (response.data.status_code === 200) {
+            setFilePath(response?.data.data);
+          } else {
+            // console.log('t')
+          }
+        })
+        .catch((e) => {
+          setAlert('error', e.message);
+        });
     }
   }, []);
 
   return (
     <div className={classes.root}>
-    {loading && <Loader />} 
+      {loading && <Loader />}
       <Layout>
         <Grid container xs={12} alignItems='center' justifyContent='center' spacing={3}>
           <Grid item xs={12}>
@@ -262,7 +261,7 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
                   Class Work{' '}
                 </h3>
               </div>
-              <CloseIcon onClick={handleback} style={{ cursor: 'pointer', marginTop : '9px' }} />
+              <CloseIcon onClick={handleback} style={{ cursor: 'pointer', marginTop: '9px' }} />
             </div>
           </Grid>
           <Grid item xs={11}>
@@ -294,7 +293,7 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
                       <VisibilityIcon
                         style={{ float: 'right', width: '4%' }}
                         onClick={() => {
-                          const fileSrc = `${endpoints.discussionForum.s3}/${value}`;
+                          const fileSrc = `${endpoints.lessonPlan.s3}${value}`;
                           openPreview({
                             currentAttachmentIndex: 0,
                             attachmentsArray: [
