@@ -121,7 +121,7 @@ const CreateClass = ({
   const [periodName, setPeriodName] = useState();
   const [periodDate, setPeriodDate] = useState();
 
-  let date = moment().format("YYYY-MM-DD")
+  let date = moment().format('YYYY-MM-DD');
 
   const handleDateClass = (e) => {
     setPeriodDate(e.target.value);
@@ -165,7 +165,8 @@ const CreateClass = ({
       setSelectedBranch(ids);
       setSelectedbranchIds(selectedId);
       callApi(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
+        `${endpoints.academics.grades}?session_year=${
+          selectedAcademicYear?.id
         }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
         'gradeList'
       );
@@ -189,7 +190,8 @@ const CreateClass = ({
       setSelectedGrade(ids);
       setSelectedGradeIds(selectedId);
       callApi(
-        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
+        `${endpoints.academics.sections}?session_year=${
+          selectedAcademicYear?.id
         }&branch_id=${selectedbranchIds}&grade_id=${selectedId.toString()}&module_id=${moduleId}`,
         'section'
       );
@@ -277,7 +279,6 @@ const CreateClass = ({
       .catch((error) => {
         setAlert('error', error?.message);
         setLoading(false);
-
       });
   };
 
@@ -298,7 +299,6 @@ const CreateClass = ({
       .catch((error) => {
         setAlert('error', error?.message);
         setLoading(false);
-
       });
   };
 
@@ -322,7 +322,6 @@ const CreateClass = ({
       .catch((error) => {
         setAlert('error', error?.message);
         setLoading(false);
-
       });
   };
 
@@ -353,7 +352,6 @@ const CreateClass = ({
   useEffect(() => {
     if (!selectAll) {
       if (selectedSection.length > 0) {
-
         axiosInstance
           .get(
             `${endpoints.period.paticipantsList}?page=${pageno}&section_mappings=${selectedSectionIds}`
@@ -406,8 +404,8 @@ const CreateClass = ({
                   selected: selectAll
                     ? true
                     : selectedUsers.length
-                      ? selectedUsers[pageno - 1].selected.includes(items.user_id)
-                      : false,
+                    ? selectedUsers[pageno - 1].selected.includes(items.user_id)
+                    : false,
                 });
               });
 
@@ -491,6 +489,10 @@ const CreateClass = ({
   ];
 
   const handleCreateClass = () => {
+    if (!periodDate) {
+      setAlert('warning', 'Please select Date ');
+      return;
+    } 
     if (selectedSection.length === 0) {
       setAlert('warning', 'All Fields Required');
     }
@@ -597,7 +599,12 @@ const CreateClass = ({
         <div style={{ padding: 5 }}>
           <div className={classes.root}>
             <div
-              style={{ display: 'flex', justifyContent: 'column', paddingLeft: '20px', cursor: 'pointer' }}
+              style={{
+                display: 'flex',
+                justifyContent: 'column',
+                paddingLeft: '20px',
+                cursor: 'pointer',
+              }}
             >
               <MuiPickersUtilsProvider utils={DateFnsUtils} style={{ margin: '0px' }}>
                 <KeyboardTimePicker
@@ -632,7 +639,7 @@ const CreateClass = ({
                 <TextField
                   variant='outlined'
                   size='small'
-                  id='eventname'
+                  // id='eventname'
                   label='Duration (min)'
                   type='number'
                   value={duration}
@@ -650,7 +657,7 @@ const CreateClass = ({
                 <TextField
                   variant='outlined'
                   size='small'
-                  id='eventname'
+                  // id='eventname'
                   label='Period Name'
                   value={periodName}
                   fullWidth
