@@ -697,12 +697,6 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           >
                             <span
                               className='countdownTimerWrapper teacherBatchCardLable'
-                              style={{
-                                position: 'absolute',
-                                fontSize: '10px',
-                                top: '20%',
-                                left: '48.5%',
-                              }}
                             >
                               <Countdown
                                 date={new Date(periodDetails?.start)}
