@@ -47,7 +47,7 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
 
   const handleStudentWork = (quiz) => {
     history.push({
-      pathname: `/erp-online-class/${data?.online_class_id}/${quiz?.test_id}/pre-quiz`,
+      pathname: `/erp-online-class/${data?.online_class_id}/${quiz?.question_paper_id}/pre-quiz`,
     });
   };
 
