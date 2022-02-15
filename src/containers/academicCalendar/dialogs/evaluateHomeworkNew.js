@@ -127,6 +127,7 @@ const EvaluateHomeworkOld = withRouter(
           'error',
           `Please evaluate all the attachments ${currentQuestion.corrected_submission.length} < ${collatedSubmissionFiles.length}`
         );
+        setLoading(false);
         return;
       }
       const { id, ...reqData } = currentQuestion;

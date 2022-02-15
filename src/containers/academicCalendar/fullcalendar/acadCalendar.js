@@ -36,7 +36,9 @@ const AcadCalendar = () => {
   const classes = useStyles();
   const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
+  const user_level = userData?.user_level;
+  const isStudent = user_level == 13 ? true : false;
   const [accordianOpen, setAccordianOpen] = useState(false);
   const [selectedRoles, setSelectedRoles] = useState(null);
   const [roleList, setRoleList] = useState([]);
@@ -58,7 +60,8 @@ const AcadCalendar = () => {
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [selectedSubjectIds, setSelectedSubjectIds] = useState([]);
   const [filtered, setFiltered] = useState(false);
-  const [ counter , setCounter ] = useState(1)
+  const [counter, setCounter] = useState(1)
+
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -88,6 +91,8 @@ const AcadCalendar = () => {
 
   const handleGrade = (event = {}, value = []) => {
     setSelectedGrade([]);
+    setSelectedSubject([]);
+    setSelectedSection([]);
     if (value?.length) {
       value =
         value.filter(({ grade_id }) => grade_id === 'all').length === 1
@@ -99,8 +104,7 @@ const AcadCalendar = () => {
       setSelectedGrade(ids);
       setSelectedGradeIds(selectedId);
       callApi(
-        `${endpoints.academics.sections}?session_year=${
-          selectedAcademicYear?.id
+        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
         }&branch_id=${selectedbranchIds}&grade_id=${selectedId.toString()}&module_id=${moduleId}`,
         'section'
       );
@@ -108,22 +112,23 @@ const AcadCalendar = () => {
   };
 
   const handleSection = (event = {}, value = []) => {
+    setSelectedSection([])
+    console.log(value);
     if (value?.length) {
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.section_id);
       setSelectedSection(ids);
       setSelectedSectionIds(selectedId);
       callApi(
-        `${
-          endpoints.academics.subjects
-        }?branch=${selectedbranchIds}&grade=${selectedGradeIds}&session_year=${
-          selectedAcademicYear?.id
+        `${endpoints.academics.subjects
+        }?branch=${selectedbranchIds}&grade=${selectedGradeIds}&session_year=${selectedAcademicYear?.id
         }&section=${selectedId.toString()}&module_id=${moduleId}`,
         'subject'
       );
     }
   };
   const handleSubject = (event = {}, value = []) => {
+    setSelectedSubject([])
     if (value?.length) {
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.subject__id);
@@ -184,14 +189,14 @@ const AcadCalendar = () => {
     }
   }, []);
 
-  useEffect( () => {
-    if(moduleId && selectedAcademicYear?.id){
-    callApi(
-      `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
-      'branchList'
-    );
+  useEffect(() => {
+    if (moduleId && selectedAcademicYear?.id) {
+      callApi(
+        `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
+        'branchList'
+      );
     }
-  }, [ selectedAcademicYear , moduleId ]);
+  }, [selectedAcademicYear, moduleId]);
 
   const clearfilter = () => {
     setSelectedBranch([]);
@@ -218,6 +223,7 @@ const AcadCalendar = () => {
 
   return (
     <Layout className='acadyearCalendarContainer'>
+      {isStudent ? "" : (
       <Grid
         id
         item
@@ -369,18 +375,21 @@ const AcadCalendar = () => {
           </Button>
         </div>
       </Grid>
+      )}
       <div className='calenderContainer'>
         {filtered ? (
           <MyCalendar
             selectedGrade={selectedGradeIds}
             selectedSubject={selectedSubjectIds}
             acadyear={selectedAcademicYear}
-            filtered = {filtered}
-            setFiltered = {setFiltered}
+            filtered={filtered}
+            setFiltered={setFiltered}
             counter={counter}
           />
         ) : (
-          <MyCalendar />
+          <MyCalendar 
+          erpConfig={userData?.erp_config}
+          />
         )}
       </div>
       {loading && <Loader />}

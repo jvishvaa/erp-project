@@ -669,9 +669,9 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                               className='countdownTimerWrapper teacherBatchCardLable'
                               style={{
                                 position: 'absolute',
-                                top: '90px',
-                                left: '653px',
-                                fontSize: '15px',
+                                fontSize: '10px',
+                                top: '20%',
+                                left: '48.5%',
                               }}
                             >
                               <Countdown
@@ -687,6 +687,12 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                 </Box>
               </Paper>
             </Box>
+            {/* <ArrowBackIcon
+              style={{ size: 'small', marginLeft: '15px', cursor: 'pointer' }}
+              onClick={() => {
+                history.goBack();
+              }}
+            /> */}
           </div>
           {!isStudent ? (
             <div className='attendence'>
@@ -896,8 +902,8 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                       whiteSpace: 'nowrap',
                                     }}
                                   >
-                                    {`Class work ${index + 1}`} <br />
-                                    class work
+                                    {`Class work`} <br />
+                                    <p style={{ fontSize: 'x-small'}}>class work</p>
                                   </div>
                                   <div
                                     style={{ fontSize: '11px', whiteSpace: 'nowrap' }}
@@ -947,28 +953,6 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                     {each?.pending}
                                   </div>
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                  <div
-                                    style={{
-                                      fontSize: '11px',
-                                      color: 'grey',
-                                      cursor: 'pointer',
-                                    }}
-                                    onClick={viewClassWork}
-                                  >
-                                    Evaluated
-                                  </div>
-                                  <div
-                                    style={{
-                                      background: 'grey',
-                                      borderRadius: '20px',
-                                      textAlign: 'center',
-                                      width: '30px',
-                                    }}
-                                  >
-                                    {''}
-                                  </div>
-                                </div>
                                 <div>
                                   <EditIcon
                                     style={{ cursor: 'pointer' }}
@@ -991,6 +975,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                             ?.classwork_details[0]?.period_classwork_id
                                         }
                                         topicId={uniqueIdd}
+                                      // handleCreate={(obj) => submitHomework(obj)}
                                       />
                                     </SwipeableDrawer>
                                   </Grid>{' '}
@@ -1018,8 +1003,8 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                       whiteSpace: 'nowrap',
                                     }}
                                   >
-                                    {`Class work ${index + 1}`} <br />
-                                    Quiz
+                                    {`Class work`} <br />
+                                    <p style={{ fontSize: 'x-small'}}>Quiz </p>
                                   </div>
                                   <div
                                     style={{ fontSize: '11px', whiteSpace: 'nowrap' }}
@@ -1034,7 +1019,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                     }}
                                     onClick={viewClassWork}
                                   >
-                                    Submitted
+                                    Attended
                                   </div>
                                   <div
                                     style={{
@@ -1069,27 +1054,6 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                     {each?.pending}
                                   </div>
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                  <div
-                                    style={{
-                                      fontSize: '11px',
-                                      color: 'grey',
-                                      cursor: 'pointer',
-                                    }}
-                                    onClick={viewClassWork}
-                                  >
-                                    Evaluated
-                                  </div>
-                                  <div
-                                    style={{
-                                      background: 'grey',
-                                      borderRadius: '20px',
-                                      textAlign: 'center',
-                                      width: '30px',
-                                    }}
-                                  >
-                                    {''}
-                                  </div>
                                   {index === 0 ? (
                                     <div
                                       onClick={() => {
@@ -1103,14 +1067,17 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                         style={{
                                           display: 'flex',
                                           flexWrap: 'wrap',
-                                          fontSize: '8px',
-                                          background: '#014b7e',
-                                          color: 'white',
+                                          fontSize: '9px',
+                                          background: '#E2EEFE',
+                                          color: '#3680DE',
                                           marginTop: '10px',
-                                          marginRight: '-16px',
+                                          // marginRight: '-16px',
                                           padding: '1px 0px',
                                           position: 'absolute',
                                           right: '33px',
+                                          fontWeight: '900',
+                                          borderRadius: '0px',
+                                          width: '22%',
                                         }}
                                       >
                                         Launch Quiz
@@ -1119,7 +1086,6 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                   ) : (
                                     ''
                                   )}
-                                </div>
                               </div>
                             </paper>
                           </div>

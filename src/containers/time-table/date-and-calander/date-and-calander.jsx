@@ -107,6 +107,8 @@ const DateAndCalander = (props) => {
   const [collidingMsg,setCollidingMsg] = useState()
   const [isEdit,setIsEdit] = useState(false)
   const [selectedItem , setSelectedItem] = useState()
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails'));
+
 
 
 
@@ -148,9 +150,9 @@ const DateAndCalander = (props) => {
           ? firstDateOfWeek + 6
           : firstDateOfWeek;
       let setConvertDate = convert(currDate.setDate(setDate));
-      let pType = item?.period_type_name === "Examination"? 'Exam':'Lecture'
+      let pType = item?.period_type_name === "Examination"? 'Exam': item?.period_type_name
       let subName = item?.subject_name
-      let title = item?.period_type === 3 || item?.period_type === 5 ? item?.period_type_name : subName ? `${pType} : ${subName}` : `${pType}`
+      let title = (item?.period_type === 3 || item?.period_type === 2) ? subName ? `${pType} : ${subName}` : `${pType}` : item?.period_type_name
       let tempObj = {
         title: title,
         start: setConvertDate + 'T' + item?.start_time,
@@ -430,18 +432,19 @@ let data = await collidingPeriod(payload);
     <>
       {showTableView && (
         <>
-        <Button
+        {(user_level === 1 || user_level === 8 || user_level === 10) && <Button
           color='primary'
           style={{marginBottom:'10px'}}
           variant='contained'
           onClick={createNewTable}
         >
           Create New Timetable
-        </Button>
+        </Button>}
         { TimeTableList?.length && <TableViews 
           TimeTableList={TimeTableList} 
           handleView={handleTimeTable} 
           handleOperation={handleOperation}
+          user_level = {user_level}
         />}
         </>
       )}
@@ -486,7 +489,7 @@ let data = await collidingPeriod(payload);
             <>
             <div style={{display:'flex'}}>
              <Grid item xs={2} sm={2} md={2}>
-             {timeTableEvents?.length && <Button
+             {timeTableEvents?.length && (user_level === 1 || user_level === 8 || user_level === 10) && <Button
               color='primary'
               variant='contained'
               style = {{marginLeft : '17%'}}
@@ -499,14 +502,14 @@ let data = await collidingPeriod(payload);
             </Button>}
             </Grid>
             <Grid item xs={2} sm={2} md={2} style={{marginLeft : '72%'}}>
-            <Button
+            {(user_level === 1 || user_level === 8 || user_level === 10) && <Button
               color='primary'
               // className={classes.addperiodbutton}
               variant='contained'
               onClick={() => handleOpenNewPeriod()}
             >
               Add Period
-            </Button>
+            </Button>}
             </Grid>
            </div>
             </>
@@ -729,6 +732,7 @@ let data = await collidingPeriod(payload);
           section_mappingId={props.section_mappingId}
           ttId={ttId}
           selectedTableId={selectedTable?.status}
+          user_level = {user_level}
         />
       )}
 

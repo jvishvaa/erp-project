@@ -11,6 +11,8 @@ import Typography from '@material-ui/core/Typography';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { connect } from 'react-redux';
 import { login, aolLogin, isMsAPI } from '../../redux/actions';
+import axiosInstance from 'config/axios';
+import endpoints from 'config/endpoints';
 
 function LoginForm(props) {
   const { onLogin, isMsAPI, aolOnLogin, setLoading, history } = props;
@@ -39,7 +41,30 @@ function LoginForm(props) {
   //       console.log(error);
   //     });
   // };
-
+  const fetchERPSystemConfig = async (status) => {
+    let data = await JSON.parse(localStorage.getItem('userDetails')) || {};
+    const { branch } = data?.role_details;
+    let payload = [];
+    const result = axiosInstance
+      .get(endpoints.checkAcademicView.isAcademicView)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          if (res?.data?.result == 'True') {
+            return true;
+          } else if (res?.data?.result == 'False') {
+            return false;
+          } else if (res?.data?.result.length > 0) {
+            branch.forEach((element) => {
+              if (res.data.result[0].toString().includes(element.id)) {
+                payload.push(element.id);
+              }
+            });
+            return payload;
+          }
+        }
+      });
+    return result;
+  };
   const handleLogin = () => {
     // UdaanLogin();
     if (erpSearch !== null) {
@@ -54,16 +79,34 @@ function LoginForm(props) {
         }
       });
     } else if (username && password) {
+      setDisableLogin(true);
       const params = {
         username,
         password,
       };
-      setDisableLogin(true);
       onLogin(params).then((response) => {
         if (response?.isLogin) {
           // history.push('/profile');
           isMsAPI();
-          history.push('/acad-calendar');
+          fetchERPSystemConfig(response?.isLogin).then((res) => {
+            let erpConfig;
+            if(res === true || res.length > 0) {
+              erpConfig = res;
+              history.push('/acad-calendar');
+            } else if(res === false) {
+              erpConfig = res;
+              history.push('/dashboard');
+            } else {
+              erpConfig = res;
+              history.push('/dashboard');
+            }
+            let userData = JSON.parse(localStorage.getItem('userDetails'));
+            userData['erp_config'] = erpConfig;
+            localStorage.setItem(
+              'userDetails',
+              JSON.stringify(userData)
+            );
+          });
         } else {
           setAlert('error', response?.message);
           setDisableLogin(false);

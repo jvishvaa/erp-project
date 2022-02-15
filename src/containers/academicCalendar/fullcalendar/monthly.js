@@ -20,7 +20,7 @@ import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CreateClass from '../dialogs/createClass';
 
-const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFiltered, counter }) => {
+const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFiltered, counter, erpConfig }) => {
   const [startDate, setStartDate] = useState([]);
   const [endDate, setEndDate] = useState([]);
   const [events, setEvents] = useState([]);
@@ -38,7 +38,6 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
 
   const { user_level: userLevel = 5 } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
-
   const handleDateClick = (e) => {
     const cal = calendarRef.current.getApi();
     cal.changeView('day', e?.dateStr);
@@ -64,8 +63,8 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
         let params = {
           start_date: startDate,
           end_date: endDate,
+          branch: erpConfig?.length > 0 ? erpConfig.toString() : ''
         }
-
         setFilterData(params)
         axios({
           method: 'get',
@@ -150,7 +149,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
           });
       }
     // }
-  }, [endDate, isCreateClassOpen, filtered, counter]);
+  }, [endDate, isCreateClassOpen, filtered, counter, erpConfig]);
 
   const getEvent = (info) => {
     // info.jsEvent.preventDefault();

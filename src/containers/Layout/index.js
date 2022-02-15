@@ -61,6 +61,7 @@ const Layout = ({ children, history }) => {
   let token = JSON.parse(localStorage.getItem('userDetails'))?.token || '';
 
   let userId = JSON.stringify(localStorage.getItem('userDetails')) || {};
+  const {erp_config} = JSON.parse(localStorage.getItem('userDetails'));
   var CryptoJS = require('crypto-js');
 
   var erp_details = CryptoJS.AES.encrypt(
@@ -856,12 +857,25 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Teacher Time Table': {
-        history.push('/time-table/teacher-view');
-        break;
+        if(erp_config === 'true' || erp_config?.length > 0){
+          history.push('/time-table/teacher-view');
+          break;
+        }
+        else {
+          history.push('/timetable/teacherview')
+          break;
+        }
       }
       case 'Student Time Table': {
-        history.push('/time-table/student-view');
-        break;
+        if(erp_config === 'true' || erp_config?.length > 0)
+        {
+          history.push('/time-table/student-view');
+          break;
+        }
+        else {
+          history.push('/timetable/studentview');
+          break;
+        }
       }
       case 'Book Appointment': {
         history.push('/appointments');

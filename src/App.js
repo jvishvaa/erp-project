@@ -359,6 +359,7 @@ import UserLevelTable from 'containers/user-management/User-Level/tableUserLevel
 import ERPSystemConfig from 'containers/master-management/erp-system-config';
 import AcademicCalendar from 'containers/academicCalendar/index';
 import AcadCalendar from 'containers/academicCalendar/fullcalendar/acadCalendar';
+import TimeTableOld from './containers/time-table-old/index';
 function App({ alert, isMsAPI }) {
   useEffect(() => {
   isMsAPI();
@@ -393,8 +394,14 @@ function App({ alert, isMsAPI }) {
                           <Route path='/time-table/student-view'>
                             {({ match }) => <TimeTable match={match} />}
                           </Route>
+                          <Route path='/timetable/studentview'>
+                            {({ match }) => <TimeTableOld match={match} />}
+                          </Route>
                           <Route path='/time-table/teacher-view'>
                             {({ match }) => <TimeTable match={match} />}
+                          </Route>
+                          <Route path='/timetable/teacherview'>
+                            {({ match }) => <TimeTableOld match={match} />}
                           </Route>
                           <Route path='/griviences/admin-view'>
                             {({ match }) => <Griviences match={match} />}

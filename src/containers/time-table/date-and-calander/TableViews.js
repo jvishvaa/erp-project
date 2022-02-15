@@ -85,7 +85,6 @@ const [selectedItem , setSelectedItem] = useState()
 
   
   const handleEdit = (e,value) => {
-    debugger
     setSelectedItem(value)
  setIsEdit(true)
     // history.push(`/user-management/edit-user/${id}`);
@@ -175,16 +174,18 @@ const [selectedItem , setSelectedItem] = useState()
                     {items && items.status === 'deleted' ? (
                       'Restore'
                     ) : items.active === true ? (
-                      <IconButton
+                      <>
+                      {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10) && <IconButton
                         aria-label='deactivate'
                         // onClick={() => handleDeactivate()}
                         onClick={() => props.handleOperation('deActive', items)}
                         title='Deactivate'
                       >
                         <BlockIcon style={{ color: themeContext.palette.primary.main }} />
-                      </IconButton>
-                    ) : (
-                      <button
+                      </IconButton>}
+                  </>  ) : (
+                      <>
+                      {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10) && <button
                         type='submit'
                         title='Activate'
                         // onClick={() => handleStatusChange(items.userId, i, '1')}
@@ -200,18 +201,19 @@ const [selectedItem , setSelectedItem] = useState()
                         }}
                       >
                         A
-                      </button>
+                      </button>}
+                      </>
                     )}
                     {items && items?.is_delete == false ? (
                       <>
-                        <IconButton
+                        {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10) && <IconButton
                           title='Delete'
                           onClick={() => props.handleOperation('delete', items)}
                         >
                           <DeleteOutlinedIcon
                             style={{ color: themeContext.palette.primary.main }}
                           />
-                        </IconButton>
+                        </IconButton>}
                         <IconButton
                           //   title='Edit'
                           title='view'
@@ -222,11 +224,11 @@ const [selectedItem , setSelectedItem] = useState()
                             style={{ color: themeContext.palette.primary.main }}
                           />
                         </IconButton>{' '}
-                        <IconButton title='Edit' onClick={(e) => props.handleOperation('edit', items)}>
+                        {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10) && <IconButton title='Edit' onClick={(e) => props.handleOperation('edit', items)}>
                        <EditOutlinedIcon
                          style={{ color: themeContext.palette.primary.main }}
                        />
-                     </IconButton>
+                     </IconButton>}
                       </>
                     ) : (
                       ''

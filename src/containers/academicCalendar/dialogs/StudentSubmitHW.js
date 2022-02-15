@@ -387,10 +387,10 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                 // style={{ background: 'white' }}
                 type='text'
                 fullWidth
-                value={resultdata?.subject_name || 'Subject'}
+                value={resultdata?.homework?.subject?.subject_slag || 'Subject'}
                 disabled
                 InputProps={{
-                  endAdornment: <div style={{ width: '70px' }}>{moment(resultdata?.date).format("Do MMM")}</div>,
+                  endAdornment: <div style={{ width: '70px' }}>{moment(resultdata?.homework?.class_date).format("Do MMM")}</div>,
                 }}
                 //   onChange={(e) => { setError(false); setDescription(e.target.value) }}
                 // multiline
@@ -420,12 +420,12 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
           <div>
             <div>
               <TextField
-                label='Instruction'
+                label='Description'
                 style={{ background: 'white' }}
                 type='text'
                 fullWidth
                 disabled
-                value={instruction || 'Instruction'}
+                value={instruction || 'Description'}
                 //   onChange={(e) => { setError(false); setDescription(e.target.value) }}
                 multiline
                 rows={2}

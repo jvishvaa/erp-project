@@ -294,7 +294,7 @@ const handleSubject = (e,value) => {
               </div>
             </MuiPickersUtilsProvider>
           </div>
-          { (selectedLectureType?.type === "Lecture" || selectedLectureType?.type === "Examination" || selectedLectureType?.type === "Break" || selectedLectureType?.type ==="Miscellaneous") &&<div className={classes.formTextFields}>
+          { (selectedLectureType?.type === "Lecture" || selectedLectureType?.type === "Examination" || selectedLectureType?.type === "Competitions" || selectedLectureType?.type ==="Miscellaneous Event") &&<div className={classes.formTextFields}>
             <Autocomplete
               fullWidth
               id='combo-box-demo'
@@ -357,7 +357,7 @@ const handleSubject = (e,value) => {
           >
             Close
           </Button>
-          {isEdit && props?.selectedTableId === 1 && (
+          {isEdit && props?.selectedTableId === 1 && (props?.user_level === 1 || props?.user_level === 8 ||props?.user_level === 10) && (
             <Button
               onClick={handleEdit}
               color='primary'
@@ -379,7 +379,7 @@ const handleSubject = (e,value) => {
               Save
             </Button>
           )}
-          {props?.selectedTableId == 1 && <Button
+          {props?.selectedTableId == 1 && (props?.user_level === 1 || props?.user_level === 8 ||props?.user_level === 10) && <Button
             onClick={() => {
               setConfirmMessage('delete');
               setOpenModal(true);
