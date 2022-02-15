@@ -19,7 +19,7 @@ export default function ConfirmPopOver({
       case 'publish':
         return 'Are you sure you want to publish ?';
       case 'active':
-        return 'Are u sure want to deactivate existing timetable and activate this timetable ?';
+        return 'Are you sure want to deactivate existing timetable and activate this timetable ?';
       case 'deActive':
         return 'Are you sure you want to deactivate ?';
       case 'custom':
@@ -49,7 +49,7 @@ export default function ConfirmPopOver({
         <Button onClick={handleCloseModal} className='labelColor cancelButton'>
           Cancel
         </Button>
-        {operation === "custom" ?<Button
+        {operation === "custom" ? <Button
           color='primary'
           onClick={() => {
             submit();
@@ -65,7 +65,7 @@ export default function ConfirmPopOver({
           }}
         >
           Submit
-        </Button> }
+        </Button>}
       </DialogActions>
     </Dialog>
   );

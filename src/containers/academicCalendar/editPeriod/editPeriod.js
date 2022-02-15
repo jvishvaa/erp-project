@@ -147,7 +147,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const user_id = userData?.user_id;
   const user_level = userData?.user_level;
   const isStudent = user_level == 13 ? true : false;
-  const [attFlag,setAttFlag] = useState(false)
+  const [attFlag, setAttFlag] = useState(false)
   const [currTime, setCurrTime] = useState(new Date());
   const [currDate, setCurrDate] = useState();
   const [classDate, setClassDate] = useState();
@@ -189,6 +189,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
       history.push({
         pathname: `/academic-calendar/view-participate/${id}`,
         periodId: id,
+        cpConfirm : periodData?.is_cp_confirm
       });
     }
   };
@@ -261,14 +262,24 @@ const EditPeriod = withRouter(({ history, ...props }) => {
 
   const handleClass = () => {
     setLoading(true);
+    let user_id;
+    if(isStudent) {
+      user_id= 13;
+    } else {
+      user_id= 11;
+    }
     apiRequest(
       'get',
-      `/oncls/v1/retrieve_zoom_link_by_user_level/?online_class_id=${periodData.online_class_id}&user_level_id=11`
+      `/oncls/v1/retrieve_zoom_link_by_user_level/?online_class_id=${periodData.online_class_id}&user_level_id=${user_id}`
     )
       .then((result) => {
         if (result?.data?.status_code === 200) {
           const url = result.data?.result;
-          window.open(url.start_url, '_blank');
+          if(isStudent){
+            window.open(url.join_url, '_blank');
+          }else{
+            window.open(url.start_url, '_blank');
+          }
         } else {
           setAlert('error', result?.data?.message);
         }
@@ -278,6 +289,9 @@ const EditPeriod = withRouter(({ history, ...props }) => {
         setAlert('error', error?.message);
         setLoading(false);
       });
+      if(isStudent && !periodData?.attendance_details?.is_present) {
+        joinStudentClass();
+      }
   };
 
   useEffect(() => {
@@ -317,7 +331,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
         });
     }
     setRefresh(false);
-  }, [history, refresh, isDairyCreated, isClassWorkOpen,attFlag]);
+  }, [history, refresh, isDairyCreated, isClassWorkOpen, attFlag]);
 
   const submitHomework = (reqObj) => {
     let obj = {
@@ -535,7 +549,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           variant='contained'
                           className={classes.ongoingClass}
                           onClick={handleClass}
-                          // style={{ width: '250px' }}
+                        // style={{ width: '250px' }}
                         >
                           Ongoing
                         </Button>
@@ -642,7 +656,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                               currTime < class_StartTime || currDate !== classDate
                             }
                           >
-                            <p onClick={joinStudentClass}>Join Class</p>
+                            <p>Join Class</p>
                           </Button>
                           {currTime < class_StartTime && currDate === classDate && (
                             <p
@@ -669,12 +683,6 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                               >
                                 <span
                                   className='countdownTimerWrapper teacherBatchCardLable'
-                                  style={{
-                                    position: 'absolute',
-                                    fontSize: '10px',
-                                    top: '20%',
-                                    left: '48.5%',
-                                  }}
                                 >
                                   <Countdown
                                     date={new Date(periodDetails?.start)}
@@ -684,26 +692,6 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                               </Typography>
                             </div>
                           )}
-                        </div>
-                      )}
-                      {currTime >= class_StartTime && currDate === classDate && (
-                        // <Grid item md={12} xs={12}>
-                        <div>
-                          <Typography
-                            style={{
-                              font: 'normal normal normal 16px/18px Raleway',
-                              borderRadius: '7px',
-                            }}
-                          >
-                            <span
-                              className='countdownTimerWrapper teacherBatchCardLable'
-                            >
-                              <Countdown
-                                date={new Date(periodDetails?.start)}
-                                renderer={renderer}
-                              ></Countdown>
-                            </span>
-                          </Typography>
                         </div>
                       )}
                     </div>
@@ -790,8 +778,8 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           {value?.status === 2
                             ? 'Completed'
                             : value?.status === 1
-                            ? 'Partially completed'
-                            : 'Not completed'}
+                              ? 'Partially completed'
+                              : 'Not completed'}
                           {/* <CheckIcon style={{ fontSize: 'large', color: '#53e24a' }} /> */}
                         </div>
                       </AccordionSummary>
@@ -1002,7 +990,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                             ?.classwork_details[0]?.period_classwork_id
                                         }
                                         topicId={uniqueIdd}
-                                        // handleCreate={(obj) => submitHomework(obj)}
+                                      // handleCreate={(obj) => submitHomework(obj)}
                                       />
                                     </SwipeableDrawer>
                                   </Grid>{' '}
@@ -1393,6 +1381,8 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                 <StudentHwCwStats
                   data={periodData}
                   hwData={periodData?.homework_details}
+                  periodDetails={periodDetails?.ongoing_status}
+                  
                 />
               )}
             </div>

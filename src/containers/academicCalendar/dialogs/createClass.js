@@ -553,7 +553,12 @@ const CreateClass = ({
             handleClear();
             setLoading(false);
           } else {
-            setAlert('error', result?.data?.message);
+            if ("period already allocated" === result?.data?.message. slice(0, 24)){
+              setAlert('error',"Tutor Already Occupied")
+            }
+            else{
+              setAlert('error', result?.data?.message);
+            }
             setLoading(false);
           }
         })

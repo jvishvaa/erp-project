@@ -277,49 +277,98 @@ const Cards = withRouter(({ props, history }) => {
                             marginLeft: 'auto',
                           }}
                         >
-                          <div
-                            style={{
-                              margin: 'auto',
-                              minWidth: '25%',
-                              position: 'relative',
-                              border: '1px solid #E1E0E1',
-                            }}
-                          >
-                            <div className='greenMark'></div>
-                            <p
+                          {val?.student_period_data?.period_classwork.length > 0 ? (
+                            <div
                               style={{
-                                textAlign: 'center',
-                                background: '#c5ffc5',
-                                fontSize: '15px',
-                                fontWeight: '600',
-                              }}
-                            >
-                              CW
-                            </p>
-                          </div>
-                          <div
-                            style={{
-                              margin: 'auto',
-                              minWidth: '25%',
-                              position: 'relative',
-                              border: '1px solid #E1E0E1',
-                            }}
-                          >
-                            <div className='redMark'></div>
-                            <p
-                              style={{
-                                textAlign: 'center',
                                 margin: 'auto',
-                                // color: '#3EA45F',
-                                minWidth: '70%',
-                                fontSize: '15px',
-                                fontWeight: '600',
-                                background: '#ff8f8f',
+                                minWidth: '25%',
+                                position: 'relative',
+                                border: '1px solid #E1E0E1',
                               }}
                             >
-                              HW
-                            </p>
-                          </div>
+                              <div className='greenMark'></div>
+                              <p
+                                style={{
+                                  textAlign: 'center',
+                                  background: '#c5ffc5',
+                                  fontSize: '15px',
+                                  fontWeight: '600',
+                                }}
+                              >
+                                CW
+                              </p>
+                            </div>
+                          ) : (
+                            <div
+                              style={{
+                                margin: 'auto',
+                                minWidth: '25%',
+                                position: 'relative',
+                                border: '1px solid #E1E0E1',
+                              }}
+                            >
+                              <div className='redMark'></div>
+                              <p
+                                style={{
+                                  textAlign: 'center',
+                                  background: '#ff8f8f',
+                                  fontSize: '15px',
+                                  fontWeight: '600',
+                                }}
+                              >
+                                CW
+                              </p>
+                            </div>
+                          )}
+                          {val?.student_period_data?.period_homework.length > 0 ? (
+                            <div
+                              style={{
+                                margin: 'auto',
+                                minWidth: '25%',
+                                position: 'relative',
+                                border: '1px solid #E1E0E1',
+                              }}
+                            >
+                              <div className='greenMark'></div>
+                              <p
+                                style={{
+                                  textAlign: 'center',
+                                  margin: 'auto',
+                                  // color: '#3EA45F',
+                                  minWidth: '70%',
+                                  fontSize: '15px',
+                                  fontWeight: '600',
+                                  background: '#c5ffc5',
+                                }}
+                              >
+                                HW
+                              </p>
+                            </div>
+                          ) : (
+                            <div
+                              style={{
+                                margin: 'auto',
+                                minWidth: '25%',
+                                position: 'relative',
+                                border: '1px solid #E1E0E1',
+                              }}
+                            >
+                              <div className='redMark'></div>
+                              <p
+                                style={{
+                                  textAlign: 'center',
+                                  margin: 'auto',
+                                  // color: '#3EA45F',
+                                  minWidth: '70%',
+                                  fontSize: '15px',
+                                  fontWeight: '600',
+                                  background: '#ff8f8f',
+                                }}
+                              >
+                                HW
+                              </p>
+                            </div>
+                          )}
                           {val?.student_period_data?.period_attendance === true ? (
                             <div
                               style={{
