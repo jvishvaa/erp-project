@@ -113,13 +113,13 @@ export default function Cards({
         topic_id: uniqueIdd,
       })
       .then((result) => {
-        if (result?.data?.status_code === 200) {         
+        if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
           setTopicResult(result?.data?.result);
           setAssignedTopic(result?.data?.result?.id);
           setPeriodUI('lessonPlanTabs');
         } else if (result?.data?.status_code === 404) {
-          setAlert('error', result?.data?.message);       
+          setAlert('error', result?.data?.message);
         }
         setLoading(false);
       })
@@ -142,12 +142,12 @@ export default function Cards({
     axiosInstance
       .get(`/period/lp-topic-view/?chapter=${selectedChapter?.id}&period_id=${periodId}`)
       .then((result) => {
-        if (result?.data?.status_code === 200) {        
+        if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
           const lists = result.data?.result;
           setPeriosLists(lists);
         } else {
-          setAlert('error', result?.data?.message);    
+          setAlert('error', result?.data?.message);
         }
         setLoading(false);
       })
@@ -246,8 +246,10 @@ function PeriodCard(props) {
                     paddingLeft: 20,
                     paddingRight: 20,
                     backgroundColor: '#4a90e2',
+                    color: 'white',
                   }}
                   variant='contained'
+                  color='white'
                   size='small'
                   className={classes.buttoncss}
                   onClick={(e) => {
@@ -257,7 +259,7 @@ function PeriodCard(props) {
                 >
                   {' '}
                   <AddCircleOutlineIcon
-                    style={{ width: '30%', marginRight: '20%' }}
+                    style={{ width: '30%', marginRight: '20%', color: 'white' }}
                   />{' '}
                   {isAdded ? 'Added' : 'Add'}
                 </Button>

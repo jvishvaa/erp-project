@@ -857,7 +857,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Teacher Time Table': {
-        if(erp_config === 'true' || erp_config?.length > 0){
+        if(erp_config === true || erp_config?.length > 0){
           history.push('/time-table/teacher-view');
           break;
         }
@@ -867,7 +867,7 @@ const Layout = ({ children, history }) => {
         }
       }
       case 'Student Time Table': {
-        if(erp_config === 'true' || erp_config?.length > 0)
+        if(erp_config === true || erp_config?.length > 0)
         {
           history.push('/time-table/student-view');
           break;

@@ -357,7 +357,7 @@ const handleSubject = (e,value) => {
           >
             Close
           </Button>
-          {isEdit && props?.selectedTableId === 1 && (props?.user_level === 1 || props?.user_level === 8 ||props?.user_level === 10) && (
+          {isEdit && props?.selectedTableId === 1 && (props?.user_level === 1 || props?.user_level === 8 ||props?.user_level === 10) && props?.teacherView && (
             <Button
               onClick={handleEdit}
               color='primary'
@@ -379,7 +379,7 @@ const handleSubject = (e,value) => {
               Save
             </Button>
           )}
-          {props?.selectedTableId == 1 && (props?.user_level === 1 || props?.user_level === 8 ||props?.user_level === 10) && <Button
+          {props?.selectedTableId == 1 && (props?.user_level === 1 || props?.user_level === 8 ||props?.user_level === 10) && props?.teacherView && <Button
             onClick={() => {
               setConfirmMessage('delete');
               setOpenModal(true);

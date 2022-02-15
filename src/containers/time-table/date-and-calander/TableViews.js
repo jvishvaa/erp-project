@@ -175,7 +175,7 @@ const [selectedItem , setSelectedItem] = useState()
                       'Restore'
                     ) : items.active === true ? (
                       <>
-                      {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10) && <IconButton
+                      {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10) && props?.teacherView && <IconButton
                         aria-label='deactivate'
                         // onClick={() => handleDeactivate()}
                         onClick={() => props.handleOperation('deActive', items)}
@@ -185,7 +185,7 @@ const [selectedItem , setSelectedItem] = useState()
                       </IconButton>}
                   </>  ) : (
                       <>
-                      {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10) && <button
+                      {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10) && props?.teacherView && <button
                         type='submit'
                         title='Activate'
                         // onClick={() => handleStatusChange(items.userId, i, '1')}
@@ -206,7 +206,7 @@ const [selectedItem , setSelectedItem] = useState()
                     )}
                     {items && items?.is_delete == false ? (
                       <>
-                        {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10) && <IconButton
+                        {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10) && props?.teacherView && <IconButton
                           title='Delete'
                           onClick={() => props.handleOperation('delete', items)}
                         >
@@ -224,7 +224,7 @@ const [selectedItem , setSelectedItem] = useState()
                             style={{ color: themeContext.palette.primary.main }}
                           />
                         </IconButton>{' '}
-                        {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10) && <IconButton title='Edit' onClick={(e) => props.handleOperation('edit', items)}>
+                        {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10) && props?.teacherView && <IconButton title='Edit' onClick={(e) => props.handleOperation('edit', items)}>
                        <EditOutlinedIcon
                          style={{ color: themeContext.palette.primary.main }}
                        />
