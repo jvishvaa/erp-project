@@ -116,7 +116,7 @@ const EditDiaryDialog = ({ isStudent, lesson, onClose, setOpen, periodId }) => {
             <Button
               variant='contained'
               onClick={() => handleBulkDownloads(lesson?.documents)}
-              style={{ width: '206px', backgroundColor: '#576dc5' }}
+              style={{ width: '206px', backgroundColor: '#576dc5', color: 'white' }}
               className='bulkDownloadIconViewMore'
             >
               Download
@@ -127,7 +127,7 @@ const EditDiaryDialog = ({ isStudent, lesson, onClose, setOpen, periodId }) => {
               <div
                 style={{
                   display: 'flex',
-                  justifyContent: 'center',
+                  justifyContent: "space-around",
                   // marginBottom: 15,
                   // marginTop: 20,
                 }}
@@ -139,6 +139,7 @@ const EditDiaryDialog = ({ isStudent, lesson, onClose, setOpen, periodId }) => {
                     color: 'white',
                     padding: '7px 30px',
                     width: '150px',
+                    marginLeft: "20px"
                   }}
                   onClick={handleEditDairy}
                 >

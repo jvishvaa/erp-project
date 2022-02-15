@@ -11,6 +11,7 @@ import { AlertNotificationContext } from '../../.././context-api/alert-context/a
 import Loader from '../../../components/loader/loader';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import { handleDownloadPdf } from 'utility-functions';
+import useStyles from 'containers/assessment/view-assessment/questionPaperCard/useStyles';
 const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, isAssessment, assessmentId, questionPaperId }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -20,6 +21,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
   const [takeTestAlert, setTakeTestAlert] = useState(false)
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectedPaper, setSelectedPaper] = useState(null);
+  const classes = useStyles();
   useEffect(() => {
     handleFetch();
   }, []);
@@ -46,7 +48,11 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
         })
     }
   };
-
+  function extractContent(s) {
+    const span = document.createElement('span');
+    span.innerHTML = s;
+    return span.textContent || span.innerText;
+  }
   const assignQuestion = () => {
     if (!selectedPaper?.test_name) {
       setAlert('error', "Please Select Question Paper Name")
@@ -83,24 +89,11 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
   }
   const viewQuestion = () => {
     axiosInstance
-      .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${selectedPaper?.id}`, {
-        responseType: 'blob',
-      })
-      .then((response) => {
-        const {
-          headers = {},
-          message = 'Cannot download question paper',
-          data = '',
-        } = response || {};
-        const contentType = headers['content-type'] || '';
-        if (contentType === 'application/pdf') {
-          handleDownloadPdf(data, selectedPaper?.test_name);
-        } else {
-          setAlert('info', message);
+      .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${selectedPaper?.id}`)
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          // handle download part
         }
-      })
-      .catch((error) => {
-        setAlert(error?.message);
       });
   };
 
@@ -170,7 +163,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
                     width: '129%',
                     margin: '5px',
                   }}
-                  onClick={() => viewQuestion()}
+                  onClick={viewQuestion}
                 >
                   Download Question Paper
                   <GetAppIcon style={{ marginLeft: 20, color: "blue" }} />
@@ -246,24 +239,61 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
           </div>
         </div>
       ) : (
-        <div className='assignedTest'>
+        <div >
           <div>
             <Button
               variant='contained'
               style={{
                 color: 'grey',
-                width: '100%',
+                left: "350px",
+                // width: '100%',
                 background: '#fff',
                 borderRadius: '5px',
                 border: '1px solid #f5f0f0',
                 fontWeight: '700',
-                width: '250%',
+                // width: '250%',
                 margin: '5px',
               }}
               onClick={handleTestOpen}
             >
               Take Test
             </Button>
+            <Paper elevation={3} className={classes.paper} style={{ width: "28%", float: "right", marginRight: "1%" }}>
+              {periodData?.test_details?.map((item, key) => (
+                <div className={classes.cardWrapper}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <div>
+                      <h3>Test Details</h3>
+                      <h4 className={classes.cardTitleHeading}> Test Name -&nbsp;
+                        {item.test_name}</h4>
+                    </div>
+                    <h4 className={classes.cardDescription}>
+                    </h4>
+                  </div>
+                  <div className={classes.cardEasyWrapper}>
+                    <div>
+                      <div className={classes.cardAttemptedTextRed}>
+                        Instructions-&nbsp;
+                        {extractContent(item.instructions)}
+                      </div>
+                      <div className={classes.cardAttemptedTextRed}>
+                        Test Duration - &nbsp;
+                        {item.test_duration}min
+                        {/* {testDate.slice(11, 16)} */}
+                      </div>
+                      <div className={classes.cardAttemptedTextRed}>
+                        Start Time - &nbsp;
+                        {item.test_start_datetime.slice(11, 16)}
+                      </div>
+                      <div className={classes.cardAttemptedTextRed}>
+                        Date - &nbsp;
+                        {item.test_start_datetime.slice(0, 10)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </Paper>
             <Dialog open={takeTestAlert} onClose={handleTakeTest}>
               <DialogTitle id='draggable-dialog-title'>Are you sure you want to give the test.</DialogTitle>
               <DialogActions>
