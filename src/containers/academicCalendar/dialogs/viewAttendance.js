@@ -70,7 +70,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ViewAttendence = withRouter(({ history, ...props }) => {
-  const { periodId, online_class_id, date,grade,section,periodName } = props?.location?.state;
+  const { periodId, online_class_id, date, grade, section, periodName } =
+    props?.location?.state;
   const classes = useStyles();
   const [checkedPresent, setCheckedPresent] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -82,6 +83,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = useState(false);
+  const [enablehandler, setEnablehandler] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -94,7 +96,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
   const handleConfirmSubmit = () => {
     confirmAttendance();
     setOpen(false);
-  }
+  };
 
   const studentList = () => {
     setLoading(true);
@@ -110,10 +112,8 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
           setStudentData(result);
           setTotalGenre(result?.data?.result?.count);
           setCount(result?.data?.result?.count);
-
         } else {
           setAlert('error', result?.data?.message);
-
         }
         setLoading(false);
       })
@@ -134,10 +134,8 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
           setCheckedPresent(!checkedPresent);
-
         } else {
           setAlert('error', result?.data?.message);
-
         }
         setLoading(false);
       })
@@ -149,18 +147,18 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
 
   const confirmAttendance = () => {
     setLoading(true);
-    const confirmData = { is_attendance_confirmed : true }
+    const confirmData = { is_attendance_confirmed: true };
     axiosInstance
       .put(
-        `${endpoints.period.confirmAttendance}${periodId}/confirm-attendance/`, confirmData)
+        `${endpoints.period.confirmAttendance}${periodId}/confirm-attendance/?is_attendance_confirm=True`
+      )
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
           setCheckedPresent(!checkedPresent);
-
+          attendanceConfirm();
         } else {
           setAlert('error', result?.data?.message);
-
         }
         setLoading(false);
       })
@@ -169,14 +167,35 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
         setLoading(false);
       });
   };
+  const attendanceConfirm = () => {
+    console.log('aaa2', periodId);
+    axiosInstance
+      .get(`/period/teacher_retrieve_period_details/?period_id=${periodId}`)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setEnablehandler(res?.data?.result?.is_attendance_confirm);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
+  useEffect(() => {
+    attendanceConfirm();
+  }, [enablehandler]);
   useEffect(() => {
     studentList();
   }, [history, checkedPresent, pageNumber]);
 
   const handleExcel = () => {
     setLoading(true);
-    apiRequest('get', `/oncls/v1/oncls-attendeelist/?online_class_id=${online_class_id}&class_date=${date}&type=excel&page_number=${pageNumber}&page_size=${limit}`, null, 'arraybuffer')
+    apiRequest(
+      'get',
+      `/oncls/v1/oncls-attendeelist/?online_class_id=${online_class_id}&class_date=${date}&type=excel&page_number=${pageNumber}&page_size=${limit}`,
+      null,
+      'arraybuffer'
+    )
       .then((res) => {
         const blob = new Blob([res.data], {
           type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
@@ -184,8 +203,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
         FileSaver.saveAs(blob, 'user_list.xls');
         setLoading(false);
       })
-      .catch((error) => setAlert('error', 'Something Wrong!')
-      );
+      .catch((error) => setAlert('error', 'Something Wrong!'));
   };
 
   const handleback = () => {
@@ -206,16 +224,18 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
           justifyContent: 'space-between',
           alignItems: window.innerWidth < 500 ? 'left' : 'center',
           flexDirection: window.innerWidth < 500 ? 'column' : 'row',
-          marginTop: "-30px"
+          marginTop: '-30px',
         }}
       >
         <div style={{ marginTop: '20px' }}>
-          <span style={{ fontSize: "20px" }}>
+          <span style={{ fontSize: '20px' }}>
             <b>Attendance</b>
           </span>
           <br />
           <span>
-            <b>{grade} {section} - {periodName}</b>
+            <b>
+              {grade} {section} - {periodName}
+            </b>
           </span>
         </div>
         <div onClick={handleExcel} style={{ marginTop: '20px', cursor: 'pointer' }}>
@@ -238,7 +258,9 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
           onClick={handleEdit}
           style={{ marginTop: '20px', visibility: disabled ? 'visible' : 'hidden' }}
         >
-          <Button variant="contained" color="primary" onClick={handleClickOpen}>Confirm</Button>
+          <Button variant='contained' color='primary' onClick={handleClickOpen}>
+            Confirm
+          </Button>
         </div>
         <CloseIcon onClick={handleback} style={{ cursor: 'pointer' }} />
       </div>
@@ -349,24 +371,23 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
           </Grid>
         </Grid>
       </Grid>
-      <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-        <DialogTitle id="form-dialog-title" >Confirmation</DialogTitle>
+      <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
+        <DialogTitle id='form-dialog-title'>Confirmation</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Do you really want to lock the attendance for period {periodId} ?
+            Do you really want to lock the attendanc for period {periodId} ?
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary" variant='contained'>
+          <Button onClick={handleClose} color='primary' variant='contained'>
             Cancel
           </Button>
-          <Button onClick={handleConfirmSubmit} color="primary" variant='contained'>
+          <Button onClick={handleConfirmSubmit} color='primary' variant='contained'>
             Confirm
           </Button>
         </DialogActions>
       </Dialog>
     </Layout>
-
   );
 });
 export default ViewAttendence;

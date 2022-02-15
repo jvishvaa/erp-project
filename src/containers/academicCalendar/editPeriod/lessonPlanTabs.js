@@ -729,6 +729,7 @@ const LessonPlanTabs = ({
                   color: 'black',
                   backgroundColor: '#4a90e2',
                   marginRight: '16px',
+                  color: 'white',
                 }}
               >
                 {' '}
@@ -741,6 +742,7 @@ const LessonPlanTabs = ({
                 style={{
                   color: 'black',
                   backgroundColor: '#4a90e2',
+                  color: 'white',
                 }}
               >
                 {' '}

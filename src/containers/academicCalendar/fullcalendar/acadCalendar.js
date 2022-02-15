@@ -83,12 +83,12 @@ const AcadCalendar = () => {
     setGradeList([]);
     setSelectedbranchIds(value?.branch?.id);
     setSelectedBranch(value);
-    if(value !== null) {
-      callApi(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`,
-        'gradeList'
-      );
-    }
+    if (value !== null){
+        callApi(
+          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`,
+          'gradeList'
+        );
+     }
   };
 
   const handleGrade = (event = {}, value = []) => {

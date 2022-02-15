@@ -147,7 +147,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const user_id = userData?.user_id;
   const user_level = userData?.user_level;
   const isStudent = user_level == 13 ? true : false;
-
+  const [attFlag,setAttFlag] = useState(false)
   const [currTime, setCurrTime] = useState(new Date());
   const [currDate, setCurrDate] = useState();
   const [classDate, setClassDate] = useState();
@@ -316,7 +316,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
         });
     }
     setRefresh(false);
-  }, [history, refresh, isDairyCreated, isClassWorkOpen]);
+  }, [history, refresh, isDairyCreated, isClassWorkOpen,attFlag]);
 
   const submitHomework = (reqObj) => {
     let obj = {
@@ -326,7 +326,10 @@ const EditPeriod = withRouter(({ history, ...props }) => {
     };
     if (periodData?.homework_details?.homework_list.length) {
       axiosInstance
-        .put(`/academic/${periodData?.homework_details?.homework_list[0]?.homework_id}/update-hw/`, obj)
+        .put(
+          `/academic/${periodData?.homework_details?.homework_list[0]?.homework_id}/update-hw/`,
+          obj
+        )
         .then((result) => {
           if (result.data.status_code === 200 || result.data.status_code === 201) {
             setAlert('success', result.data.message);
@@ -396,6 +399,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
         if (response?.data?.status_code === 200) {
           setAlert('success', response.data?.message);
           setLoading(false);
+          setAttFlag(!attFlag);
         }
       })
       .catch((e) => {
@@ -530,12 +534,12 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           variant='contained'
                           className={classes.ongoingClass}
                           onClick={handleClass}
-                        // style={{ width: '250px' }}
+                          // style={{ width: '250px' }}
                         >
                           Ongoing
                         </Button>
                       ) : (
-                        <div>
+                        <div >
                           <Button
                             variant='contained'
                             className={classes.JoinClassButton}
@@ -560,35 +564,33 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                               you can Host class at {class_StartTime}
                             </p>
                           )}
+                          {currTime >= class_StartTime && currDate === classDate && (
+                            // <Grid item md={12} xs={12}>
+                            <div>
+                              <Typography
+                                style={{
+                                  font: 'normal normal normal 16px/18px Raleway',
+                                  borderRadius: '7px',
+                                  textAlign: 'center'
+                                }}
+                              >
+                                <span
+                                  className='countdownTimerWrapper teacherBatchCardLable'
+
+                                >
+                                  <Countdown
+                                    date={new Date(periodDetails?.start)}
+                                    renderer={renderer}
+                                  ></Countdown>
+                                </span>
+                              </Typography>
+                            </div>
+                          )}
                         </div>
                       )}
                       {/* </div> */}
-                      {currTime >= class_StartTime && currDate === classDate && (
-                        // <Grid item md={12} xs={12}>
-                        <div>
-                          <Typography
-                            style={{
-                              font: 'normal normal normal 16px/18px Raleway',
-                              borderRadius: '7px',
-                            }}
-                          >
-                            <span
-                              className='countdownTimerWrapper teacherBatchCardLable'
-                              style={{
-                                position: 'absolute',
-                                fontSize: '10px',
-                                top: '20%',
-                                left: '48.5%',
-                              }}
-                            >
-                              <Countdown
-                                date={new Date(periodDetails?.start)}
-                                renderer={renderer}
-                              ></Countdown>
-                            </span>
-                          </Typography>
-                        </div>
-                      )}
+
+
                     </div>
                   ) : (
                     <div className='classDetails'>
@@ -625,11 +627,11 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           variant='contained'
                           className={classes.ongoingClass}
                           onClick={handleClass}
-                          // style={{ width: '250px' }}
+                        // style={{ width: '250px' }}
                         >
                           Ongoing
                         </Button>
-                      ) : 
+                      ) : (
                         <div>
                           <Button
                             variant='contained'
@@ -639,7 +641,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                               currTime < class_StartTime || currDate !== classDate
                             }
                           >
-                              <p onClick={joinStudentClass}>Join Class</p>
+                            <p onClick={joinStudentClass}>Join Class</p>
                           </Button>
                           {currTime < class_StartTime && currDate === classDate && (
                             <p
@@ -654,8 +656,35 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                               you can Join class at {class_StartTime}
                             </p>
                           )}
+                          {currTime >= class_StartTime && currDate === classDate && (
+                            // <Grid item md={12} xs={12}>
+                            <div>
+                              <Typography
+                                style={{
+                                  font: 'normal normal normal 16px/18px Raleway',
+                                  borderRadius: '7px',
+                                  textAlign: 'center'
+                                }}
+                              >
+                                <span
+                                  className='countdownTimerWrapper teacherBatchCardLable'
+                                  style={{
+                                    position: 'absolute',
+                                    fontSize: '10px',
+                                    top: '20%',
+                                    left: '48.5%',
+                                  }}
+                                >
+                                  <Countdown
+                                    date={new Date(periodDetails?.start)}
+                                    renderer={renderer}
+                                  ></Countdown>
+                                </span>
+                              </Typography>
+                            </div>
+                          )}
                         </div>
-                      }
+                      )}
                       {currTime >= class_StartTime && currDate === classDate && (
                         // <Grid item md={12} xs={12}>
                         <div>
@@ -724,17 +753,20 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                 <Paper>
                   <Box p={2} style={{ cursor: 'pointer' }}>
                     <div className='att11'>
-                        <div className='presentWrapper'>
-                          <div style={{ width: '20%', color: 'black' }}>
-                            <h3>Attendence</h3>
-                          </div>
-                          {periodData?.attendance_details?.is_present ?
-                          <div className='attendOnline'>
-                           <h5>Present</h5> 
-                          </div> : <div className='notyet'>
-                           <h5>Not Yet</h5> 
-                          </div> }
+                      <div className='presentWrapper'>
+                        <div style={{ width: '20%', color: 'black' }}>
+                          <h3>Attendence</h3>
                         </div>
+                        {periodData?.attendance_details?.is_present ? (
+                          <div className='attendOnline'>
+                            <h5>Present</h5>
+                          </div>
+                        ) : (
+                          <div className='notyet'>
+                            <h5>Not Yet</h5>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </Box>
                 </Paper>
@@ -763,8 +795,8 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           {value?.status === 2
                             ? 'Completed'
                             : value?.status === 1
-                              ? 'Partially completed'
-                              : 'Not completed'}
+                            ? 'Partially completed'
+                            : 'Not completed'}
                           {/* <CheckIcon style={{ fontSize: 'large', color: '#53e24a' }} /> */}
                         </div>
                       </AccordionSummary>
@@ -903,7 +935,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                     }}
                                   >
                                     {`Class work`} <br />
-                                    <p style={{ fontSize: 'x-small'}}>class work</p>
+                                    <p style={{ fontSize: 'x-small' }}>class work</p>
                                   </div>
                                   <div
                                     style={{ fontSize: '11px', whiteSpace: 'nowrap' }}
@@ -975,7 +1007,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                             ?.classwork_details[0]?.period_classwork_id
                                         }
                                         topicId={uniqueIdd}
-                                      // handleCreate={(obj) => submitHomework(obj)}
+                                        // handleCreate={(obj) => submitHomework(obj)}
                                       />
                                     </SwipeableDrawer>
                                   </Grid>{' '}
@@ -1004,7 +1036,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                     }}
                                   >
                                     {`Class work`} <br />
-                                    <p style={{ fontSize: 'x-small'}}>Quiz </p>
+                                    <p style={{ fontSize: 'x-small' }}>Quiz </p>
                                   </div>
                                   <div
                                     style={{ fontSize: '11px', whiteSpace: 'nowrap' }}
@@ -1054,12 +1086,12 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                     {each?.pending}
                                   </div>
                                 </div>
+                                <div>
                                   {index === 0 ? (
                                     <div
                                       onClick={() => {
                                         joinQuiz(index);
                                       }}
-                                      style={{ cursor: 'pointer', color: 'tomato' }}
                                     >
                                       <Button
                                         variant='contained'
@@ -1070,14 +1102,14 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                           fontSize: '9px',
                                           background: '#E2EEFE',
                                           color: '#3680DE',
-                                          marginTop: '10px',
+                                          marginTop: '21px',
                                           // marginRight: '-16px',
                                           padding: '1px 0px',
                                           position: 'absolute',
-                                          right: '33px',
+                                          right: '16px',
                                           fontWeight: '900',
                                           borderRadius: '0px',
-                                          width: '22%',
+                                          width: '14%',
                                         }}
                                       >
                                         Launch Quiz
@@ -1086,6 +1118,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                   ) : (
                                     ''
                                   )}
+                                </div>
                               </div>
                             </paper>
                           </div>
@@ -1203,7 +1236,9 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                               onClose={toggleHomeWorkDrawer}
                               style={{ width: '70%' }}
                               handleCreate={(obj) => submitHomework(obj)}
-                              homeworkDetails={periodData?.homework_details?.homework_list[0]}
+                              homeworkDetails={
+                                periodData?.homework_details?.homework_list[0]
+                              }
                             />
                           </SwipeableDrawer>
                         </Grid>
@@ -1311,7 +1346,10 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                       </div>
                                     </div>
                                     <div>
-                                      <EditIcon style={{ cursor: "pointer" }} onClick={toggleHomeWorkDrawer} />
+                                      <EditIcon
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={toggleHomeWorkDrawer}
+                                      />
                                     </div>
                                   </div>
                                 </paper>

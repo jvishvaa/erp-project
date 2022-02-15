@@ -29,9 +29,9 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
       pathname: `/academic-calendar/submit-home-work/${id}`,
       state: {
         homeworkId: id,
-        homeworkdata : data?.homework_details?.homework_list[0]
+        homeworkdata: data?.homework_details?.homework_list[0]
       }
-      
+
     });
   };
 
@@ -52,14 +52,14 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
   };
 
   const handleViewSubmittedWork = (id) => {
-      if (id === undefined) return;
+    if (id === undefined) return;
     history.push({
       pathname: `/academic-calendar/submit-home-work/${id}`,
-      state:{
+      state: {
         homeworkId: data?.homework_details?.homework_list[0].id,
-        homeworkdata : data?.homework_details?.homework_list[0]
+        homeworkdata: data?.homework_details?.homework_list[0]
       }
-     
+
     });
   };
 
@@ -74,8 +74,8 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
         );
       case 'evaluated':
         return <div onClick={() => handleViewSubmittedWork(firstData?.id)}>
-            Evaluated HomeWork
-          </div>
+          Evaluated HomeWork
+        </div>
       default:
         return (
           <div onClick={() => handleSudentSubmitHW(firstData?.id)}>Submit Home Work</div>
@@ -85,7 +85,7 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
   const handleViewSubmittedClassWork = (id) => {
     history.push({
       pathname: `/academic-calendar/submit-class-work/${id}`,
-      state:  {
+      state: {
         classWorkId: id,
         online_class_id: data?.online_class_id,
         class_date: data?.date
@@ -134,7 +134,7 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
                         </Typography>
                       )}
                       <Typography style={{ fontSize: '0.97rem', fontWeight: 'bold' }}>
-                        Quiz Addition
+                        Quiz
                       </Typography>
                     </Grid>
                     {index === 0 ? (
