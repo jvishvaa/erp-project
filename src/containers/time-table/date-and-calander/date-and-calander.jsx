@@ -432,7 +432,7 @@ let data = await collidingPeriod(payload);
     <>
       {showTableView && (
         <>
-        {(user_level === 1 || user_level === 8 || user_level === 10) && <Button
+        {(user_level === 1 || user_level === 8 || user_level === 10) && props?.teacherView && <Button
           color='primary'
           style={{marginBottom:'10px'}}
           variant='contained'
@@ -445,6 +445,7 @@ let data = await collidingPeriod(payload);
           handleView={handleTimeTable} 
           handleOperation={handleOperation}
           user_level = {user_level}
+          teacherView = {props?.teacherView}
         />}
         </>
       )}
@@ -489,7 +490,7 @@ let data = await collidingPeriod(payload);
             <>
             <div style={{display:'flex'}}>
              <Grid item xs={2} sm={2} md={2}>
-             {timeTableEvents?.length && (user_level === 1 || user_level === 8 || user_level === 10) && <Button
+             {timeTableEvents?.length && (user_level === 1 || user_level === 8 || user_level === 10) && props?.teacherView && <Button
               color='primary'
               variant='contained'
               style = {{marginLeft : '17%'}}
@@ -502,7 +503,7 @@ let data = await collidingPeriod(payload);
             </Button>}
             </Grid>
             <Grid item xs={2} sm={2} md={2} style={{marginLeft : '72%'}}>
-            {(user_level === 1 || user_level === 8 || user_level === 10) && <Button
+            {(user_level === 1 || user_level === 8 || user_level === 10) && props?.teacherView &&<Button
               color='primary'
               // className={classes.addperiodbutton}
               variant='contained'
@@ -733,6 +734,7 @@ let data = await collidingPeriod(payload);
           ttId={ttId}
           selectedTableId={selectedTable?.status}
           user_level = {user_level}
+          teacherView={props?.teacherView}
         />
       )}
 
