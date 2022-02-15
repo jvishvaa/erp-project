@@ -92,7 +92,7 @@ function ClassWorkSubmit() {
                     marginLeft: 10,
                   }}
                   onClick={() => {
-                    const fileSrc = `${endpoints.discussionForum.s3}/${file}`;
+                    const fileSrc = `${endpoints.lessonPlan.s3erp}/homework/${file}`;
                     openPreview({
                       currentAttachmentIndex: 0,
                       attachmentsArray: [
@@ -264,7 +264,7 @@ function ClassWorkSubmit() {
                       <VisibilityIcon
                         style={{ float: 'right', width: '4%' }}
                         onClick={() => {
-                          const fileSrc = `${endpoints.discussionForum.s3}/${value}`;
+                          const fileSrc = `${endpoints.lessonPlan.s3erp}/homework/${value}`;
                           openPreview({
                             currentAttachmentIndex: 0,
                             attachmentsArray: [
