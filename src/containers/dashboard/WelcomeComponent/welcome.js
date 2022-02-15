@@ -94,7 +94,7 @@ const WelcomeComponent = () => {
   const showAcadViewAsPerErpConfig = () => {
     let userData = JSON.parse(localStorage.getItem('userDetails'));
     if(userData?.erpConfig === false) {
-      setShowButton(false);
+      setShowButton(true);
     }
   }
 
@@ -144,9 +144,9 @@ const WelcomeComponent = () => {
       ) : (
         ''
       )}
-      {showButton ? <Button className={classes.outlined} color='secondary' onClick={academicView}>
+      {showButton ? '' : <Button className={classes.outlined} color='secondary' onClick={academicView}>
             Academic View
-      </Button> : '' }
+      </Button> }
     </Box>
   );
 };
