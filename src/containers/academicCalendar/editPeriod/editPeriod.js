@@ -166,6 +166,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
         grade: grade,
         section: section,
         periodName: periodName,
+        is_att_confirm: periodData?.is_attendance_confirm
       },
     });
   };

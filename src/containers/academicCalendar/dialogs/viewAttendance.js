@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const ViewAttendence = withRouter(({ history, ...props }) => {
-  const { periodId, online_class_id, date, grade, section, periodName } =
+  const { periodId, online_class_id, date, grade, section, periodName, is_att_confirm} =
     props?.location?.state;
   const classes = useStyles();
   const [checkedPresent, setCheckedPresent] = useState(false);
@@ -243,7 +243,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
           <br />
           <span>Verify</span>
         </div>
-        <div
+        { is_att_confirm ? '' : <div
           style={{
             marginTop: '30px',
             cursor: 'pointer',
@@ -253,7 +253,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
             Edit
             <span style={{ visibility: disabled ? 'visible' : 'hidden' }}> Enabled</span>
           </b>
-        </div>
+        </div> }
         <div
           onClick={handleEdit}
           style={{ marginTop: '20px', visibility: disabled ? 'visible' : 'hidden' }}
