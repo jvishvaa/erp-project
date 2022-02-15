@@ -120,7 +120,7 @@ const CreateClass = ({
   const [subjectList, setSubjectList] = useState([]);
   const [periodName, setPeriodName] = useState();
   const [periodDate, setPeriodDate] = useState();
-
+  const [sectionId, setSectionId] = useState('');
   let date = moment().format('YYYY-MM-DD');
 
   const handleDateClass = (e) => {
@@ -202,6 +202,8 @@ const CreateClass = ({
     if (value?.length) {
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.section_id);
+      const sectionid = value.map((each) => each?.id)
+      setSectionId(sectionid)
       setSelectedSection(ids);
       setSelectedSectionIds(selectedId);
     }
@@ -354,7 +356,7 @@ const CreateClass = ({
       if (selectedSection.length > 0) {
         axiosInstance
           .get(
-            `${endpoints.period.paticipantsList}?page=${pageno}&section_mappings=${selectedSectionIds}`
+            `${endpoints.period.paticipantsList}?page=${pageno}&section_mappings=${sectionId}`
           )
           .then((result) => {
             if (result?.data?.status_code === 200) {
