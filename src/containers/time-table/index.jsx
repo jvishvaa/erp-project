@@ -239,11 +239,11 @@ const TimeTable = (props) => {
   };
   const callingSubjectAPI = () => {
     axiosInstance
-      .get(`/assessment/subjects-list/?section_mapping=${section_mappingId}`, {
-        params: {
-          grade: gradeID,
-          session_year: acadamicYearID,
-        },
+      .get(`/erp_user/v2/mapped-subjects-list/?section_mapping=${section_mappingId}`, {
+        // params: {
+        //   grade: gradeID,
+        //   session_year: acadamicYearID,
+        // },
       })
       .then((res) => {
         setSubject(res.data.result);
