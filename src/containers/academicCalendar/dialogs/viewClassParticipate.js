@@ -189,6 +189,8 @@ const debounce = (fn, delay) => {
 
 const ViewClassParticipate = withRouter(({ history, ...props }) => {
   const { id } = useParams();
+  const  cpConfirm  = props?.location?.cpConfirm;
+  const [confirmData,setConfirmData] = useState(cpConfirm)
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const [open, setOpen] = React.useState(false);
@@ -311,15 +313,14 @@ const ViewClassParticipate = withRouter(({ history, ...props }) => {
 
   const confirmAttendance = () => {
     setLoading(true);
-    const confirmData = { is_cp_confirmed: true }
     axiosInstance
       .put(
-        `${endpoints.period.confirmAttendance}${id}/confirm-attendance/`, confirmData)
+        `${endpoints.period.confirmAttendance}${id}/confirm-attendance/?is_cp_confirm=True`)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
           setCheckedPresent(!checkedPresent);
-
+          setConfirmData(!confirmData)
         } else {
           setAlert('error', result?.data?.message);
 
@@ -360,9 +361,10 @@ const ViewClassParticipate = withRouter(({ history, ...props }) => {
               </div>
             </Grid>
             <Grid item xs={2} className={classes.closebutton}>
-              <Button onClick={() => setConfirmBox(!confirmBox)} size='small' variant='contained' color='primary'>
+              {!confirmData &&
+              (<Button onClick={() => setConfirmBox(!confirmBox)} size='small' variant='contained' color='primary'>
                 Confirm
-              </Button>
+              </Button>)}
               <CloseIcon onClick={handleback} style={{ cursor: 'pointer', marginLeft: '30px' }} />
             </Grid>
           </Grid>
@@ -482,6 +484,7 @@ const ViewClassParticipate = withRouter(({ history, ...props }) => {
           flagprop={updateFlag}
           studentRemark={remark}
           handlestudentRemark={setStudentRemark}
+          cpConfirm={confirmData}
         />
       </Grid>
       <Dialog open={confirmBox} onClose={dialogeClose} aria-labelledby="form-dialog-title">
