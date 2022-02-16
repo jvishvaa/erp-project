@@ -42,6 +42,11 @@ const CreateClassWorkDialog = (props) => {
   // const [filesError, setFilesError] = useState(false);
   const [description, setDescription] = React.useState('');
   const [quizDesc, setQuizDesc] = useState();
+  const [isQuestionpaper,setIsQuestionPaper] = useState(false)
+  const [questionData, setQuestionData] = useState([]);
+
+  const [selectedQp, setSelectedQp] = useState();
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -135,6 +140,30 @@ const CreateClassWorkDialog = (props) => {
     }
   };
 
+  const handleQPSelect = (event, value) => {
+    setSelectedQuiz(value);
+    if (value) {
+      setSelectedQp(value?.question_paper_id);
+    }
+    const QuestionsInQP = JSON.parse(localStorage.getItem('isMsAPI'))
+      ? '/mp_quiz/mpq_questions/'
+      : endpoints.questionPaper.QuestionsInQP;
+    axiosInstance
+      .get(
+        `${QuestionsInQP}?question_paper=${value?.question_paper_id}&lobby_identifier=${props?.onlineClass_id}&question_paper_list=1`
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setQuestionData(result?.data?.result);
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+  };
+
   const handleAssign = () => {
     if (quizDesc || selectedQuiz) {
       let obj1 = {
@@ -165,6 +194,12 @@ const CreateClassWorkDialog = (props) => {
       TopicContentView();
     }
   }, []);
+
+  const isValidPaper = () => {
+    const { questions = [] } = { ...questionData } || {};
+     let flag =  questions.every(({ question_type = 0 }) => question_type === 1) && selectedQp
+    return flag
+  };
 
   return (
     <>
@@ -299,7 +334,7 @@ const CreateClassWorkDialog = (props) => {
               size='small'
               options={quizData || []}
               getOptionLabel={(option) => option.test_name}
-              onChange={handleClick}
+              onChange={handleQPSelect}
               style={{ width: 350 }}
               renderInput={(params) => (
                 <TextField
@@ -340,8 +375,11 @@ const CreateClassWorkDialog = (props) => {
                   color='#9E9E9E'
                   style={{ padding: '5px', width: '250px' }}
                   onClick={handleAssign}
-                >
-                  Assign
+                  disabled={!isValidPaper()}
+                  >
+                  {isValidPaper()
+                ? 'Assign'
+                : 'Please select a question paper with single choice questions only'}
                 </Button>
               </div>
               <div>

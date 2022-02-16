@@ -189,7 +189,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
       history.push({
         pathname: `/academic-calendar/view-participate/${id}`,
         periodId: id,
-        cpConfirm : periodData?.is_cp_confirm
+        cpConfirm: periodData?.is_cp_confirm
       });
     }
   };
@@ -263,10 +263,10 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const handleClass = () => {
     setLoading(true);
     let user_id;
-    if(isStudent) {
-      user_id= 13;
+    if (isStudent) {
+      user_id = 13;
     } else {
-      user_id= 11;
+      user_id = 11;
     }
     apiRequest(
       'get',
@@ -275,9 +275,9 @@ const EditPeriod = withRouter(({ history, ...props }) => {
       .then((result) => {
         if (result?.data?.status_code === 200) {
           const url = result.data?.result;
-          if(isStudent){
+          if (isStudent) {
             window.open(url.join_url, '_blank');
-          }else{
+          } else {
             window.open(url.start_url, '_blank');
           }
         } else {
@@ -289,9 +289,9 @@ const EditPeriod = withRouter(({ history, ...props }) => {
         setAlert('error', error?.message);
         setLoading(false);
       });
-      if(isStudent && !periodData?.attendance_details?.is_present) {
-        joinStudentClass();
-      }
+    if (isStudent && !periodData?.attendance_details?.is_present) {
+      joinStudentClass();
+    }
   };
 
   useEffect(() => {
@@ -499,7 +499,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   };
   return (
     <Layout>
-      {loading && <Loader />}
+      {/* {loading && <Loader />} */}
       <div className='container' style={{ minHeight: '650px' }}>
         <ArrowBackIcon
           style={{ size: 'small', marginLeft: '15px', cursor: 'pointer' }}
@@ -892,6 +892,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             periodId={id}
                             onClose={toggleClassWorkDrawer}
                             // periodId={history?.location?.state?.data?.id}
+                            onlineClass_id = {periodData?.online_class_id}
                             topicId={uniqueIdd}
                             style={{ width: '70%' }}
                           />
@@ -1143,6 +1144,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             periodId={id}
                             onClose={toggleClassWorkDrawer}
                             topicId={uniqueIdd}
+                            onlineClass_id = {periodData?.online_class_id}
                             style={{ width: '70%' }}
                           />
                         </SwipeableDrawer>
@@ -1172,6 +1174,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             onClose={toggleClassWorkDrawer}
                             periodId={id}
                             topicId={uniqueIdd}
+                            onlineClass_id = {periodData?.online_class_id}
                             style={{ width: '70%' }}
                           />
                         </SwipeableDrawer>
@@ -1382,7 +1385,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                   data={periodData}
                   hwData={periodData?.homework_details}
                   periodDetails={periodDetails?.ongoing_status}
-                  
+
                 />
               )}
             </div>

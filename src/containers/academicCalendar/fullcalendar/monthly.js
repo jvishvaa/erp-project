@@ -106,7 +106,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
         let params = {
           start_date: startDate,
           end_date: endDate,
-          subject: selectedSubject.toString(),
+          subject_mapping: selectedSubject.toString(),
           grade: selectedGrade.toString()
         }
 
