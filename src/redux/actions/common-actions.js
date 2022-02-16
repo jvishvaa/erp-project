@@ -15,10 +15,11 @@ export const uploadFile = async (file) => {
 export const commonActions = {
   ACADEMIC_YEAR_LIST: 'ACADEMIC_YEAR_LIST',
   MS_API: 'MS_API',
-  SELECTED_YEAR: 'SELECTED_YEAR'
+  SELECTED_YEAR: 'SELECTED_YEAR',
+  ERP_CONFIG: 'ERP_CONFIG'
 };
 
-const { ACADEMIC_YEAR_LIST,SELECTED_YEAR, MS_API } = commonActions;
+const { ACADEMIC_YEAR_LIST,SELECTED_YEAR, MS_API, ERP_CONFIG } = commonActions;
 
 const getDefaultYear = (data) =>{
   return data.filter(({is_current_session=false}) =>Boolean(is_current_session))[0] 
@@ -73,3 +74,36 @@ export const isMsAPI = () => (dispatch)  =>{
       dispatch({ type: MS_API, payload: false });
     });
 };
+
+export const erpConfig = () => (dispatch) => {
+  let data = JSON.parse(localStorage.getItem('userDetails')) || {};
+    const { branch } = data?.role_details;
+    let result = [];
+    axiosInstance
+      .get(endpoints.checkAcademicView.isAcademicView)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          if (res?.data?.result == 'True') {
+            data['erp_config']=true
+            localStorage.setItem('userDetails', JSON.stringify(data)); 
+            dispatch({ type: ERP_CONFIG, payload: true });
+          } else if (res?.data?.result == 'False') {
+            data['erp_config']=false
+            localStorage.setItem('userDetails', JSON.stringify(data)); 
+            dispatch({ type: ERP_CONFIG, payload: false });
+          } else if (res?.data?.result.length > 0) {
+            branch.forEach((element) => {
+              if (res.data.result[0].toString().includes(element.id)) {
+                result.push(element.id);
+              }
+            });
+            data['erp_config']=result
+            localStorage.setItem('userDetails', JSON.stringify(data)) 
+            dispatch({ type: ERP_CONFIG, payload: result });
+          }
+        }
+      })
+      .catch(() => {
+      dispatch({ type: ERP_CONFIG, payload: false });
+    });
+}
