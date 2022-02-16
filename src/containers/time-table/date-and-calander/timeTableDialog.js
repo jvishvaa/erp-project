@@ -117,8 +117,7 @@ const TimeTableDialog = (props) => {
     if (data.status_code === 200) {
       setAlert('success', data.message);
       handleCancel()
-      let d = props?.getTTList(props?.selectedItem?.section_mapping_id)
-      console.log(d,'dd')
+      return props?.getTTList(props?.section_mappingId)
       // ttList(props.section_mappingId);
     } else {
       setAlert('warning', data?.response?.data?.developer_msg);

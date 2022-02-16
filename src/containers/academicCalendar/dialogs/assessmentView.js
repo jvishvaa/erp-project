@@ -294,23 +294,26 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
       ) : (
         <div >
           <div>
-            <Button
-              variant='contained'
-              style={{
-                color: 'grey',
-                left: "350px",
-                // width: '100%',
-                background: '#fff',
-                borderRadius: '5px',
-                border: '1px solid #f5f0f0',
-                fontWeight: '700',
-                // width: '250%',
-                margin: '5px',
-              }}
-              onClick={handleTestOpen}
-            >
-              Take Test
-            </Button>
+            {periodData?.test_details?.map((item, key) => (
+              <Button
+                variant='contained'
+                style={{
+                  color: 'grey',
+                  left: "350px",
+                  // width: '100%',
+                  background: '#fff',
+                  borderRadius: '5px',
+                  border: '1px solid #f5f0f0',
+                  fontWeight: '700',
+                  // width: '250%',
+                  margin: '5px',
+                }}
+                disabled={item?.submitted}
+                onClick={handleTestOpen}
+              >
+                {item?.submitted ? "Test Completed" : "Take Test"}
+              </Button>
+            ))}
             <Paper elevation={3} className={classes.paper} style={{ width: "28%", float: "right", marginRight: "1%" }}>
               {periodData?.test_details?.map((item, key) => (
                 <div className={classes.cardWrapper}>

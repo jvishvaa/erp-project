@@ -764,9 +764,10 @@ let data = await collidingPeriod(payload);
        setIsEdit = {setIsEdit}
        getTTList = {ttList}
        gradeName = {props?.grade_Name}
+       section_mappingId = {props.section_mappingId}  
       />}
       {loading && <Loader />}
-    </>
+    </> 
   );
 };
 
