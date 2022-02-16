@@ -1025,7 +1025,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                     style={{ fontSize: '11px', whiteSpace: 'nowrap' }}
                                   ></div>
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '-20px' }}>
                                   <div
                                     style={{
                                       fontSize: '11px',
@@ -1047,7 +1047,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                     {each?.submitted}
                                   </div>
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '-20px' }}>
                                   <div
                                     style={{
                                       fontSize: '11px',
