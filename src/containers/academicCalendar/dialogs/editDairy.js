@@ -51,7 +51,7 @@ const EditDairy = ({ lesson, onClose, periodId, updateDiary }) => {
     }
   }, [storeData]);
   const handleImageChange = (event) => {
-    let fileType = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+    let fileType = ['image/jpeg', 'image/jpg', 'image/png'];
     let selectedFileType = event.target.files[0]?.type;
     if (!fileType.includes(selectedFileType)) {
       setAlert('error', 'File Type not supported');

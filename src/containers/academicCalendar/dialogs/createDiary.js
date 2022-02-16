@@ -255,7 +255,7 @@ const CreateDiary = (props, { lesson }) => {
               type='file'
               style={{ display: 'none' }}
               id='raised-button-file'
-              accept='image/*, .pdf'
+              accept='image/*'
               onChange={handleImageChange}
             />
             Add Document
