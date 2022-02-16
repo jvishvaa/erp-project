@@ -73,6 +73,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
   const { periodId, online_class_id, date, grade, section, periodName, is_att_confirm} =
     props?.location?.state;
   const classes = useStyles();
+  const [attConfirmData,setAttConfirmData] = useState(is_att_confirm)
   const [checkedPresent, setCheckedPresent] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [studentData, setStudentData] = useState({});
@@ -157,6 +158,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
           setAlert('success', result?.data?.message);
           setCheckedPresent(!checkedPresent);
           attendanceConfirm();
+          setAttConfirmData(!attConfirmData)
         } else {
           setAlert('error', result?.data?.message);
         }
@@ -243,7 +245,7 @@ const ViewAttendence = withRouter(({ history, ...props }) => {
           <br />
           <span>Verify</span>
         </div>
-        { is_att_confirm ? '' : <div
+        { attConfirmData ? '' : <div
           style={{
             marginTop: '30px',
             cursor: 'pointer',

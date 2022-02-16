@@ -440,17 +440,17 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
                         <TableCell className={classes.tableCell}>
                           {limit * (page - 1) + index + 1}
                         </TableCell>
-                        {selectedReportType?.id === 1 && (
+                        {selectedReportType?.id === 1 || selectedReportType?.id === 12 && (
                           <TableCell className={classes.tableCell}>
                             {rowData?.section_name}
                           </TableCell>
                         )}
-                        {selectedReportType?.id === 1 && (
+                        {selectedReportType?.id === 1 || selectedReportType?.id === 12 && (
                           <TableCell className={classes.tableCell}>
                             {rowData?.class_average}
                           </TableCell>
                         )}
-                        {selectedReportType?.id === 1 && (
+                        {selectedReportType?.id === 1 || selectedReportType?.id === 12 && (
                           <TableCell className={classes.tableCell}>
                             <div className={classes.teacherNameParent}>
                               {rowData?.teacher_name?.map((obj) => {

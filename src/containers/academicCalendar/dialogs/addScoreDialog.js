@@ -142,7 +142,8 @@ const AddScoreDialog = (props) => {
     flagprop,
     studentRemark,
     handlestudentRemark,
-    homeWorkId
+    homeWorkId,
+    cpConfirm
   } = props;
 
   const handleChange = (e) => {
@@ -182,6 +183,8 @@ const AddScoreDialog = (props) => {
 
   const studentRemarkUpdate = () => {
     setLoading(true);
+    if(!cpConfirm){
+    setLoading(false);
     axiosInstance
       .put(`/period/${periodId}/update-attendance/`, {
         erp_id: studentId,
@@ -199,8 +202,13 @@ const AddScoreDialog = (props) => {
         setLoading(false);
       })
       .catch((error) => {
+        console.log('error', error?.message);
         setLoading(false);
       });
+    }else{
+      setLoading(false);
+      setAlert('error',"Remarks and score has been already locked")
+    }
   };
   const handleClose = () => {
     onClose(selectedValue);

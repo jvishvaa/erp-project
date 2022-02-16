@@ -136,10 +136,33 @@ const CreateClass = ({
   };
 
   const handleDuration = (e) => {
-    setDuration(e.target.value);
+    const re = /^[0-9]+$/g;
+    if (
+      (e.target.value === '' || re.test(e.target.value)) &&
+      e.target.value.length <= 3
+    ) {
+      setDuration(e.target.value);
+    }
   };
+
+  const validateClassTime = (time) => {
+    let isValidTime = false;
+    const CLASS_HOURS = time.getHours();
+    const CLASS_MINUTES = time.getMinutes();
+    if (CLASS_HOURS >= 6 && CLASS_HOURS <= 22) {
+      isValidTime = true;
+      if (CLASS_HOURS === 22 && CLASS_MINUTES > 30) isValidTime = false;
+    }
+    return isValidTime;
+  };
+
   const handleTimeChange = (date) => {
-    setSelectedTime(date);
+    if (validateClassTime(date)) {
+      setSelectedTime(date);
+    } else {
+      setAlert('error', 'Class must be between 06:00AM - 10:30PM');
+    }
+    
   };
 
   const handleAcademicYear = (event, value) => {
@@ -159,14 +182,16 @@ const CreateClass = ({
   const handleBranch = (event = {}, value = []) => {
     setSelectedBranch([]);
     setGradeList([]);
+    setSelectedSection([]);
+    setSelectedTacher([]);
+    setSelectedSubject([]);
     if (value?.length) {
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.branch?.id);
       setSelectedBranch(ids);
       setSelectedbranchIds(selectedId);
       callApi(
-        `${endpoints.academics.grades}?session_year=${
-          selectedAcademicYear?.id
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
         }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
         'gradeList'
       );
@@ -179,6 +204,10 @@ const CreateClass = ({
 
   const handleGrade = (event = {}, value = []) => {
     setSelectedGrade([]);
+    setGradeList([]);
+    setSelectedSection([]);
+    setSelectedTacher([]);
+    setSelectedSubject([]);
     if (value?.length) {
       value =
         value.filter(({ grade_id }) => grade_id === 'all').length === 1
@@ -190,8 +219,7 @@ const CreateClass = ({
       setSelectedGrade(ids);
       setSelectedGradeIds(selectedId);
       callApi(
-        `${endpoints.academics.sections}?session_year=${
-          selectedAcademicYear?.id
+        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
         }&branch_id=${selectedbranchIds}&grade_id=${selectedId.toString()}&module_id=${moduleId}`,
         'section'
       );
@@ -199,6 +227,9 @@ const CreateClass = ({
   };
 
   const handleSection = (event = {}, value = []) => {
+    setSelectedSection([]);
+    setSelectedTacher([]);
+    setSelectedSubject([]);
     if (value?.length) {
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.section_id);
@@ -406,8 +437,8 @@ const CreateClass = ({
                   selected: selectAll
                     ? true
                     : selectedUsers.length
-                    ? selectedUsers[pageno - 1].selected.includes(items.user_id)
-                    : false,
+                      ? selectedUsers[pageno - 1].selected.includes(items.user_id)
+                      : false,
                 });
               });
 
@@ -494,7 +525,7 @@ const CreateClass = ({
     if (!periodDate) {
       setAlert('warning', 'Please select Date ');
       return;
-    } 
+    }
     if (selectedSection.length === 0) {
       setAlert('warning', 'All Fields Required');
     }
@@ -553,7 +584,12 @@ const CreateClass = ({
             handleClear();
             setLoading(false);
           } else {
-            setAlert('error', result?.data?.message);
+            if ("period already allocated" === result?.data?.message.slice(0, 24)) {
+              setAlert('error', "Tutor Already Occupied")
+            }
+            else {
+              setAlert('error', result?.data?.message);
+            }
             setLoading(false);
           }
         })
@@ -651,7 +687,7 @@ const CreateClass = ({
                     shrink: true,
                   }}
                   inputProps={{
-                    maxLength: 5,
+                    maxLength: 3,
                   }}
                 />
               </Grid>

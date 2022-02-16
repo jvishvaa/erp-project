@@ -14,6 +14,7 @@ function MpQuizSocketStatus(props) {
     [window.WebSocket.CONNECTING]: 'connecting',
   };
   const [isWebview, setisWebview] = useState(false)
+  const { erp_config } = JSON.parse(localStorage.getItem('userDetails'));
  
 
 useEffect(() => {
@@ -24,10 +25,16 @@ useEffect(() => {
   }
 })
   const handleGoHomeRedirection=()=>{
-    {roleId==0?
-      props.history.push('/erp-online-class-teacher-view') :
-      props.history.push('/erp-online-class-student-view') 
+    if (erp_config === true || erp_config?.length > 0) {
+      props.history.push('/acad-calendar')
+    }else{
+      {roleId==0?
+        props.history.push('/erp-online-class-teacher-view') :
+        props.history.push('/erp-online-class-student-view') 
+      }
     }
+
+   
   }
 
   return (

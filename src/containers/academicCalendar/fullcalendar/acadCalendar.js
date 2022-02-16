@@ -133,7 +133,7 @@ const AcadCalendar = () => {
     setSelectedSubject([])
     if (value?.length) {
       const ids = value.map((el) => el);
-      const selectedId = value.map((el) => el?.subject__id);
+      const selectedId = value.map((el) => el?.id);
       setSelectedSubject(ids);
       setSelectedSubjectIds(selectedId);
     }

@@ -53,8 +53,16 @@ function Copyright() {
 }
 
 function SignIn({ history, setTheme }) {
-  if (localStorage.getItem('userDetails') && localStorage.getItem('navigationData'))
-    history.push('/acad-calendar');
+  if (localStorage.getItem('userDetails') && localStorage.getItem('navigationData')) {
+    const { erp_config } = JSON.parse(localStorage.getItem('userDetails'));
+    if (erp_config === true || erp_config?.length > 0) {
+      history.push('/acad-calendar');
+    } else if (erp_config === false) {
+      history.push('/dashboard');
+    } else {
+      history.push('/dashboard');
+    }
+  }
   const theme = useTheme();
   const classes = useStyles();
   const [loading, setLoading] = useState(false);
@@ -103,7 +111,7 @@ function SignIn({ history, setTheme }) {
   let isLoggedOut = null;
   isLoggedOut = localStorage.getItem('loggedOut');
   useEffect(() => {
-    if (isLoggedOut === "412") {
+    if (isLoggedOut === '412') {
       setAlert('error', 'Login Expired. Please Login Again!');
       localStorage.clear();
     }

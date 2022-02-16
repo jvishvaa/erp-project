@@ -12,7 +12,7 @@ import Loader from '../../../components/loader/loader';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import { handleDownloadPdf } from 'utility-functions';
 import useStyles from 'containers/assessment/view-assessment/questionPaperCard/useStyles';
-const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, isAssessment, assessmentId, questionPaperId }) => {
+const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, isAssessment, assessmentId, questionPaperId, teacherAssessment }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
 
@@ -68,6 +68,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
           setAlert('success', 'success assigned the Question paper');
           setIsDownload(true)
           setLoading(false);
+          window.location.reload();
         } else {
           setAlert('error', result?.data?.message);
           setLoading(false);
@@ -89,11 +90,24 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
   }
   const viewQuestion = () => {
     axiosInstance
-      .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${selectedPaper?.id}`)
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          // handle download part
+      .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${periodData?.assessment_details?.assessment_list[0]?.id}`, {
+        responseType: 'blob',
+      })
+      .then((response) => {
+        const {
+          headers = {},
+          message = 'Cannot download question paper',
+          data = '',
+        } = response || {};
+        const contentType = headers['content-type'] || '';
+        if (contentType === 'application/pdf') {
+          handleDownloadPdf(data, selectedPaper?.test_name);
+        } else {
+          setAlert('info', message);
         }
+      })
+      .catch((error) => {
+        setAlert(error?.message);
       });
   };
 
@@ -103,71 +117,110 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
         <div className='assignedQuestionPaper' style={{ position: 'absolute', left: '25vw' }}>
           {loading && <Loader />}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <div style={{ width: '188%' }}>
-              <Autocomplete
-                id='assess'
-                onChange={(event, value) => {
-                  setSelectedPaper(value);
-                }}
-                value={selectedPaper?.test_name}
-                options={assesmentData || []}
-                // value={}
-                getOptionLabel={(option) => option?.test_name || ''}
-                style={{
-                  width: '74%',
-                  padding: '10px 15px',
-                  // position: 'absolute',
-                  // left: '-41%',
-                  marginTop: '30px',
-                }}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    label='Assign Test'
-                    variant='outlined'
+            {!periodData?.assessment_details?.assessment_list[0] && !teacherAssessment ? (
+              <>
+                <div style={{ width: '188%' }}>
+                  <Autocomplete
+                    id='assess'
+                    onChange={(event, value) => {
+                      setSelectedPaper(value);
+                    }}
+                    value={selectedPaper?.test_name}
+                    options={assesmentData || []}
+                    // value={}
+                    getOptionLabel={(option) => option?.test_name || ''}
+                    style={{
+                      width: '74%',
+                      padding: '10px 15px',
+                      // position: 'absolute',
+                      // left: '-41%',
+                      marginTop: '30px',
+                    }}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        label='Assign Test'
+                        variant='outlined'
+                      />
+                    )}
                   />
-                )}
-              />
-            </div>
-            <div style={{ width: '73%' }}>
-              <Button
-                variant='contained'
-                style={{
-                  color: 'grey',
-                  // width: '159%',
-                  background: '#fff',
-                  borderRadius: '5px',
-                  border: '1px solid #f5f0f0',
-                  fontWeight: '700',
-                  width: '175%',
-                  margin: '5px',
-                }}
-                onClick={assignQuestion}
-              >
-                {' '}
-                Assign Test{' '}
-              </Button>
-            </div>
-            {isDownload && (
+                </div>
+                <div style={{ width: '73%' }}>
+                  <Button
+                    variant='contained'
+                    style={{
+                      color: 'grey',
+                      // width: '159%',
+                      background: '#fff',
+                      borderRadius: '5px',
+                      border: '1px solid #f5f0f0',
+                      fontWeight: '700',
+                      width: '175%',
+                      margin: '5px',
+                    }}
+                    onClick={assignQuestion}
+                  >
+                    {' '}
+                    Assign Test{' '}
+                  </Button>
+                </div>
+              </>
+            ) : (
               <div>
-                <Button
-                  variant='contained'
-                  style={{
-                    color: 'grey',
-                    width: '100%',
-                    background: '#fff',
-                    borderRadius: '5px',
-                    border: '1px solid #f5f0f0',
-                    fontWeight: '700',
-                    width: '129%',
-                    margin: '5px',
-                  }}
-                  onClick={viewQuestion}
-                >
-                  Download Question Paper
-                  <GetAppIcon style={{ marginLeft: 20, color: "blue" }} />
-                </Button>
+                <Paper elevation={3} className={classes.paper} style={{ width: "127%", float: "right", marginRight: "-30%" }}>
+                  <div className={classes.cardWrapper}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <div>
+                        <h3>Test Details</h3>
+                        <h4 className={classes.cardTitleHeading}> Test Name -&nbsp;
+                          {periodData?.assessment_details?.assessment_list[0]?.test_name}
+                        </h4>
+                      </div>
+                      <h4 className={classes.cardDescription}>
+                      </h4>
+                    </div>
+                    <div className={classes.cardEasyWrapper}>
+                      <div>
+                        <div className={classes.cardAttemptedTextRed}>
+                          Instructions-&nbsp;
+                          {extractContent(periodData?.assessment_details?.assessment_list[0]?.instructions)}
+                        </div>
+                        <div className={classes.cardAttemptedTextRed}>
+                          Test Duration - &nbsp;
+                          {periodData?.assessment_details?.assessment_list[0]?.test_duration}min
+                        </div>
+                        <div className={classes.cardAttemptedTextRed}>
+                          Start Time - &nbsp;
+                          {periodData?.assessment_details?.assessment_list[0]?.test_start_datetime.slice(11, 16)}
+                        </div>
+                        <div className={classes.cardAttemptedTextRed}>
+                          Date - &nbsp;
+                          {periodData?.assessment_details?.assessment_list[0]?.test_start_datetime.slice(0, 10)}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Paper>
+                <div>
+                  <Button
+                    variant='contained'
+                    style={{
+                      color: 'grey',
+                      width: '100%',
+                      background: '#fff',
+                      borderRadius: '5px',
+                      border: '1px solid #f5f0f0',
+                      fontWeight: '700',
+                      width: '129%',
+                      margin: '5px',
+                    }}
+                    onClick={viewQuestion}
+                  >
+                    Download Question Paper
+                    <GetAppIcon style={{ marginLeft: 20, color: "blue" }} />
+                  </Button>
+                </div>
               </div>
             )}
           </div>
