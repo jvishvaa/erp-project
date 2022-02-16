@@ -662,6 +662,7 @@ export default {
     retrieveTeacherDetails:'/period/teacher_retrieve_period_details/',
     retrieveStudentDetails:'/period/student_retrieve_period_details/',
     retrieveVolumeDetails: `${baseURLCentral}/lesson_plan/list-volume/`,
+    periodV2 : 'period/calendar-v2/',
   },
 
   lessonPlanTabs: {

@@ -185,6 +185,7 @@ const AddScoreDialog = (props) => {
     setLoading(true);
     if(!cpConfirm){
     setLoading(false);
+    if(studentScore > 0 && studentScore <= 10){
     axiosInstance
       .put(`/period/${periodId}/update-attendance/`, {
         erp_id: studentId,
@@ -204,7 +205,9 @@ const AddScoreDialog = (props) => {
       .catch((error) => {
         console.log('error', error?.message);
         setLoading(false);
-      });
+      });}else{
+        setAlert("error","Please enter marks between 0 to 10")
+      }
     }else{
       setLoading(false);
       setAlert('error',"Remarks and score has been already locked")

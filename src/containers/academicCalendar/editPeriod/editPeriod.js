@@ -892,6 +892,10 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             onClose={toggleClassWorkDrawer}
                             // periodId={history?.location?.state?.data?.id}
                             onlineClass_id={periodData?.online_class_id}
+                            allTopicID={topicDetails?.map((vv) => {
+                              return vv?.topic_id
+                            })
+                            }
                             topicId={uniqueIdd}
                             style={{ width: '70%' }}
                           />
@@ -1143,6 +1147,10 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             periodId={id}
                             onClose={toggleClassWorkDrawer}
                             topicId={uniqueIdd}
+                            allTopicID={topicDetails?.map((vv) => {
+                              return vv?.topic_id
+                            })
+                            }
                             onlineClass_id={periodData?.online_class_id}
                             style={{ width: '70%' }}
                           />
@@ -1173,6 +1181,10 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             onClose={toggleClassWorkDrawer}
                             periodId={id}
                             topicId={uniqueIdd}
+                            allTopicID={topicDetails?.map((vv) => {
+                              return vv?.topic_id
+                            })
+                            }
                             onlineClass_id={periodData?.online_class_id}
                             style={{ width: '70%' }}
                           />

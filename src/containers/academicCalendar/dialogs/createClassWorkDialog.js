@@ -42,7 +42,6 @@ const CreateClassWorkDialog = (props) => {
   // const [filesError, setFilesError] = useState(false);
   const [description, setDescription] = React.useState('');
   const [quizDesc, setQuizDesc] = useState();
-  const [isQuestionpaper,setIsQuestionPaper] = useState(false)
   const [questionData, setQuestionData] = useState([]);
 
   const [selectedQp, setSelectedQp] = useState();
@@ -81,9 +80,18 @@ const CreateClassWorkDialog = (props) => {
 
   const TopicContentView = () => {
     setLoading(true);
+    let params = ""
+    if (props?.topicId) {
+      params = props?.topicId + ","
+    }
+    if (props?.allTopicID) {
+      params += props?.allTopicID?.join(",")
+    }
+
     axiosInstance
       .get(
-        `${endpoints.lessonPlanTabs.topicData}?topic_id=${props?.topicId}`
+        `${endpoints.lessonPlanTabs.topicData}?topic_id=${params}`
+        // `${endpoints.lessonPlanTabs.topicData}?topic_id=${props?.allTopicID.join(",")}`
       )
       .then((result) => {
         if (result?.data?.status_code === 200) {
@@ -190,14 +198,14 @@ const CreateClassWorkDialog = (props) => {
   };
 
   useEffect(() => {
-    if (props?.topicId) {
+    if (props?.topicId || props?.allTopicID?.length > 0) {
       TopicContentView();
     }
   }, []);
 
   const isValidPaper = () => {
     const { questions = [] } = { ...questionData } || {};
-     let flag =  questions.every(({ question_type = 0 }) => question_type === 1) && selectedQp
+    let flag = questions.every(({ question_type = 0 }) => question_type === 1) && selectedQp
     return flag
   };
 
@@ -376,10 +384,10 @@ const CreateClassWorkDialog = (props) => {
                   style={{ padding: '5px', width: '250px' }}
                   onClick={handleAssign}
                   disabled={!isValidPaper()}
-                  >
+                >
                   {isValidPaper()
-                ? 'Assign'
-                : 'Please select a question paper with single choice questions only'}
+                    ? 'Assign'
+                    : 'Please select a question paper with single choice questions only'}
                 </Button>
               </div>
               <div>

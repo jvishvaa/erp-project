@@ -123,7 +123,7 @@ useEffect(() => {
           const { online_class_info:onlineClassInfo }= data
           const { tutor_details:tutorDetails }= onlineClassInfo || {}
           const {email: tutorEmailId } =tutorDetails ||{}
-          if(currentUserEmail === tutorEmailId){
+          if((currentUserEmail === tutorEmailId)|| roleDetails?.user_level === 8){
             setIsOneOfTheHosts(true)
           }
           // setPreQuizInfo(result.data.result);
@@ -257,6 +257,7 @@ const handleCreateLobby = ()=>{
           }
           history.push(url);
           setCreateLobby(false);
+          //
         } else {
           setIsUuid(false);
         }
