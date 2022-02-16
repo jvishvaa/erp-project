@@ -22,9 +22,9 @@ import CreateClass from '../dialogs/createClass';
 import Divider from '@material-ui/core/Divider';
 import CloseIcon from '@material-ui/icons/Close';
 import { IconButton, Typography } from '@material-ui/core';
+import { connect, useSelector } from 'react-redux';
 
-
-const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFiltered, counter, erpConfig }) => {
+const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFiltered, counter, erpConfig ,selectedBranch }) => {
   const [startDate, setStartDate] = useState([]);
   const [endDate, setEndDate] = useState([]);
   const [events, setEvents] = useState([]);
@@ -43,6 +43,10 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
   const toggleCreateClass = () => {
     setIsCreateClassOpen((prevState) => !prevState);
   };
+
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const branchIds =
     JSON.parse(localStorage.getItem('userDetails'))?.role_details?.branch || {};
@@ -200,7 +204,8 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
         start_date: startDate,
         end_date: endDate,
         subject_mapping: selectedSubject.toString(),
-        grade: selectedGrade.toString()
+        grade: selectedGrade.toString(),
+        acad_session: selectedBranch?.id
       }
 
       setFilterData(params)

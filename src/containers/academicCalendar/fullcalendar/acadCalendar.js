@@ -387,6 +387,7 @@ const AcadCalendar = () => {
             filtered={filtered}
             setFiltered={setFiltered}
             counter={counter}
+            selectedBranch={selectedBranch}
           />
         ) : (
           <MyCalendar 
