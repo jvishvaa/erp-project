@@ -64,11 +64,14 @@ const CreateCwEditDialoge = (props) => {
     const TopicContentView = () => {
         let params = ""
         if (props?.topicId) {
-            params = props?.topicId + ","
-        }
-        if (props?.allTopicID) {
-            params += props?.allTopicID.join(",")
-        }
+            params = props?.topicId
+          }
+          if (props?.topicId === null && props?.allTopicID?.length > 0) {
+            params += props?.allTopicID?.join(",")
+          }
+          if (props?.topicId && props?.allTopicID?.length > 0) {
+            params +=  "," + props?.allTopicID?.join(",")
+          }
         axiosInstance
             .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${params}`)
             .then((result) => {
