@@ -116,7 +116,7 @@ const AdjustFeeType = ({
 
   useEffect(() => {
     if (currFeePlanValue && currFeePlanValue.value) {
-      const filteredStuList = studentList.filter((student, index) => +student.fee_plan_name.id === +currFeePlanValue.value)
+      const filteredStuList = studentList.filter((student, index) => +student.fee_plan_name?.id === +currFeePlanValue?.value)
       setAdjustTableList(filteredStuList)
     }
   }, [studentList, currFeePlanValue])
