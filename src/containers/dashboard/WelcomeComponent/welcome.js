@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const WelcomeComponent = () => {
+const WelcomeComponent = ({ erp_config }) => {
   const classes = useStyles();
   const [showButton,setShowButton] = useState(false);
   const { welcomeDetails = {}, setReports } = useDashboardContext();
@@ -80,7 +80,6 @@ const WelcomeComponent = () => {
     ) {
       setCheckOrigin(true);
     }
-    showAcadViewAsPerErpConfig();
   }, []);
 
   const studentrefer = () => {
@@ -89,13 +88,6 @@ const WelcomeComponent = () => {
 
   const academicView = () => {
     history.push('/acad-calendar');
-  }
-
-  const showAcadViewAsPerErpConfig = () => {
-    let userData = JSON.parse(localStorage.getItem('userDetails'));
-    if(userData?.erpConfig === false) {
-      setShowButton(true);
-    }
   }
 
   return (
@@ -144,9 +136,9 @@ const WelcomeComponent = () => {
       ) : (
         ''
       )}
-      {showButton ? '' : <Button className={classes.outlined} color='secondary' onClick={academicView}>
+      {erp_config ? <Button className={classes.outlined} color='secondary' onClick={academicView}>
             Academic View
-      </Button> }
+      </Button> : '' }
     </Box>
   );
 };

@@ -12,7 +12,7 @@ import Loader from '../../../components/loader/loader';
 import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
 import { handleDownloadPdf } from 'utility-functions';
 import useStyles from 'containers/assessment/view-assessment/questionPaperCard/useStyles';
-const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, isAssessment, assessmentId, questionPaperId }) => {
+const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, isAssessment, assessmentId, questionPaperId, teacherAssessment }) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
 
@@ -20,12 +20,11 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
   const [isDownload, setIsDownload] = useState(false)
   const [takeTestAlert, setTakeTestAlert] = useState(false)
   const { setAlert } = useContext(AlertNotificationContext);
-  const [isTrueAssessment, setIsTrueAssessment] = useState(false)
   const [selectedPaper, setSelectedPaper] = useState(null);
   const classes = useStyles();
   useEffect(() => {
     handleFetch();
-  }, [isTrueAssessment]);
+  }, []);
 
   const handleFetch = () => {
     if (periodId) {
@@ -68,8 +67,8 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
         if (result?.data?.status_code === 200) {
           setAlert('success', 'success assigned the Question paper');
           setIsDownload(true)
-          setIsTrueAssessment(true)
           setLoading(false);
+          window.location.reload();
         } else {
           setAlert('error', result?.data?.message);
           setLoading(false);
@@ -118,7 +117,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
         <div className='assignedQuestionPaper' style={{ position: 'absolute', left: '25vw' }}>
           {loading && <Loader />}
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {!periodData?.assessment_details?.assessment_list[0] ? (
+            {!periodData?.assessment_details?.assessment_list[0] && !teacherAssessment ? (
               <>
                 <div style={{ width: '188%' }}>
                   <Autocomplete

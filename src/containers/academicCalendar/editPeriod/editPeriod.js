@@ -126,7 +126,6 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const periodName = periodDetails?.subject?.name;
   const [openParticipate, setOpenParticipate] = useState(false);
   const [loading, setLoading] = useState(false);
-
   const [state, setState] = React.useState({
     top: false,
     left: false,
@@ -892,7 +891,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             periodId={id}
                             onClose={toggleClassWorkDrawer}
                             // periodId={history?.location?.state?.data?.id}
-                            onlineClass_id = {periodData?.online_class_id}
+                            onlineClass_id={periodData?.online_class_id}
                             topicId={uniqueIdd}
                             style={{ width: '70%' }}
                           />
@@ -1144,7 +1143,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             periodId={id}
                             onClose={toggleClassWorkDrawer}
                             topicId={uniqueIdd}
-                            onlineClass_id = {periodData?.online_class_id}
+                            onlineClass_id={periodData?.online_class_id}
                             style={{ width: '70%' }}
                           />
                         </SwipeableDrawer>
@@ -1174,7 +1173,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             onClose={toggleClassWorkDrawer}
                             periodId={id}
                             topicId={uniqueIdd}
-                            onlineClass_id = {periodData?.online_class_id}
+                            onlineClass_id={periodData?.online_class_id}
                             style={{ width: '70%' }}
                           />
                         </SwipeableDrawer>
@@ -1397,6 +1396,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
               periodId={id}
               assessmentSubmitted={periodData?.assessment_details}
               periodData={periodData}
+              teacherAssessment={periodData?.assessment_details?.is_assesssment_assign}
               assessmentId={periodData?.test_details?.id}
               questionPaperId={periodData?.test_details?.question_paper_id}
               isAssessment={periodData?.test_details?.submitted}
