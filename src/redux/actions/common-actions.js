@@ -76,6 +76,11 @@ export const isMsAPI = () => (dispatch)  =>{
 };
 
 export const erpConfig = () => (dispatch) => {
+  let { token = null } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  if (!token) {
+    return;
+  }
+  dispatch({ type: ERP_CONFIG, payload: false });
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
     const { branch } = data?.role_details;
     let result = [];

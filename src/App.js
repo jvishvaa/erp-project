@@ -360,7 +360,7 @@ import ERPSystemConfig from 'containers/master-management/erp-system-config';
 import AcademicCalendar from 'containers/academicCalendar/index';
 import AcadCalendar from 'containers/academicCalendar/fullcalendar/acadCalendar';
 import TimeTableOld from './containers/time-table-old/index';
-function App({ alert, isMsAPI }) {
+function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
   isMsAPI();
   erpConfig();
