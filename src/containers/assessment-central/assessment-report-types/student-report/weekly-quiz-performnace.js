@@ -190,9 +190,9 @@ const StudentReport = (
 
 
   const getUsersData = () => {
-    axiosInstance
+     axiosInstance
       .get(`${endpoints.assessmentReportTypes.weeklyQuizPerformance
-        }?date_gte=${startDate}&date_lte=${endDate}&academic_session=3`)
+        }?date_gte=${startDate}&date_lte=${endDate}&academic_session=${selectedAcademicYear?.id}`)
       .then(response => {
         setStudentIndivisualReport(response?.data);
         settestdata(response?.data)
@@ -286,14 +286,14 @@ const StudentReport = (
               {/* <TableRow> */}
               {testData.map((repos) => (<>
                 <TableRow>
-                  <TableCell>{repos.id}</TableCell>
-                  <TableCell>{repos.question_paper__grade__grade_name}</TableCell>
-                  <TableCell>{repos.question_paper__subjects}</TableCell>
-                  <TableCell>{repos.question_paper__paper_name}</TableCell>
-                  <TableCell>{repos.question_paper__section[0].A}</TableCell>
-                  <TableCell>{repos.test_date}</TableCell>
-                  <TableCell>{repos.test_details.total_attemped}</TableCell>
-                  <TableCell>{repos.test_details.total_marks_obtained}</TableCell>
+                  <TableCell>{repos?.id}</TableCell>
+                  <TableCell>{repos?.question_paper__grade__grade_name}</TableCell>
+                  <TableCell>{repos?.question_paper__subjects}</TableCell>
+                  <TableCell>{repos?.question_paper__paper_name}</TableCell>
+                  <TableCell>{repos &&  repos?.test_details &&  repos?.test_details?.total_marks_obtained}</TableCell>
+                  <TableCell>{repos?.test_date}</TableCell>
+                  <TableCell>{repos?.test_details.total_attemped}</TableCell>
+                  <TableCell>{repos?.test_details.total_marks_obtained}</TableCell>
                 </TableRow>
               </>))}
             </TableBody>
