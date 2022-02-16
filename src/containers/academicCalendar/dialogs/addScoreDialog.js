@@ -185,15 +185,14 @@ const AddScoreDialog = (props) => {
     setLoading(true);
     if(!cpConfirm){
     setLoading(false);
-    if(studentScore > 0 && studentScore <= 10){
+    if(studentScore >= 0 && studentScore <= 10){
     axiosInstance
       .put(`/period/${periodId}/update-attendance/`, {
         erp_id: studentId,
         cp_remarks: studentRemark,
-        cp_marks: parseFloat(studentScore),
+        cp_marks: parseFloat(studentScore).toFixed(1),
       })
       .then((result) => {
-
         if (result?.data?.status_code === 200) {
           setAlert('success', result.data.message);
           flagprop();
