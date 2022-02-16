@@ -371,13 +371,13 @@ const AcadCalendar = () => {
             </Grid>
           </AccordionDetails>
         </Accordion>
+      </Grid>
+        )}
         <div className='stats-view'>
           <Button className={classes.outlined} color='secondary' variant='contained' onClick={statsView}>
             Stats View
           </Button>
         </div>
-      </Grid>
-      )}
       <div className='calenderContainer'>
         {filtered ? (
           <MyCalendar
