@@ -96,7 +96,7 @@ const studentCwHwStats = withRouter(({ history, data, hwData, periodDetails }) =
     <>
       <div className='classParticipationWrapper'>
         {loading && <Loader />}
-        {data?.classwork_details?.assigned && periodDetails === 'On going...' ? (
+        {data?.classwork_details?.assigned ? (
           <Accordion style={{ width: '100%', cursor: 'pointer' }}>
             <AccordionSummary
               expandIcon={<ExpandMoreIcon />}
@@ -154,7 +154,7 @@ const studentCwHwStats = withRouter(({ history, data, hwData, periodDetails }) =
                   </>
                 ))}
                 <Divider />
-                {data?.classwork_details?.classwork_details?.map((item) => (
+                {periodDetails === 'On going...' && data?.classwork_details?.classwork_details?.map((item) => (
                   <>
                     <Grid item xs={9}>
                       <Typography style={{ fontSize: '0.97rem', fontWeight: 'bold' }}>

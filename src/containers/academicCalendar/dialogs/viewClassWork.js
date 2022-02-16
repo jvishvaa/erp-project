@@ -190,7 +190,7 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
             centered
           >
             <Tab
-              label={`Attended (${submittedData?.length})`}
+              label={`Submitted (${submittedData?.length})`}
               style={{ color: 'black !important' }}
               {...a11yProps(0)}
             />
