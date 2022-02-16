@@ -86,7 +86,6 @@ function LoginForm(props) {
       };
       onLogin(params).then((response) => {
         if (response?.isLogin) {
-          // history.push('/profile');
           isMsAPI();
           fetchERPSystemConfig(response?.isLogin).then((res) => {
             let erpConfig;

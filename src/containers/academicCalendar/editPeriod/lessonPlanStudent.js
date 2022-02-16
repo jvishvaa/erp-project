@@ -87,11 +87,11 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
 
 
   let ids = [];
-  if (upcomingTopicId){
-  upcomingTopicId.forEach((topic) => {
-    ids.push(topic?.topic_id)
-  });
-}
+  if (upcomingTopicId) {
+    upcomingTopicId.forEach((topic) => {
+      ids.push(topic?.topic_id)
+    });
+  }
 
   const concaticatedIds = ids.join(',');
 
@@ -101,7 +101,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
     axiosInstance
       .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${concaticatedIds}`)
       .then((result) => {
-        if (result?.data?.status_code === 200) {       
+        if (result?.data?.status_code === 200) {
           const FilesData = result.data?.result;
           setFilesData(FilesData);
           FilesData.filter((tabs) => {
@@ -110,10 +110,10 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
             }
           });
         } else {
-          setAlert('error', result?.data?.message);         
+          setAlert('error', result?.data?.message);
         }
         setLoading(false);
-      })     
+      })
       .catch((error) => {
         setAlert('error', error?.message);
         setLoading(false);
@@ -134,7 +134,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
 
   return (
     <div className={classes.root} style={{ minHeight: '300px' }}>
-    {loading && <Loader />} 
+      {loading && <Loader />}
       <AppBar position='static'>
         <Tabs
           value={value}
@@ -213,7 +213,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
                         component={() => (
                           <VisibilityIcon
                             onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3}${data}`;
+                              const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
                               openPreview({
                                 currentAttachmentIndex: 0,
                                 attachmentsArray: [
@@ -271,7 +271,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
                         component={() => (
                           <VisibilityIcon
                             onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3}${data}`;
+                              const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
                               openPreview({
                                 currentAttachmentIndex: 0,
                                 attachmentsArray: [
@@ -329,7 +329,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
                         component={() => (
                           <VisibilityIcon
                             onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3}${data}`;
+                              const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
                               openPreview({
                                 currentAttachmentIndex: 0,
                                 attachmentsArray: [
@@ -387,7 +387,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
                         component={() => (
                           <VisibilityIcon
                             onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3}${data}`;
+                              const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
                               openPreview({
                                 currentAttachmentIndex: 0,
                                 attachmentsArray: [
@@ -445,7 +445,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
                         component={() => (
                           <VisibilityIcon
                             onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3}${data}`;
+                              const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
                               openPreview({
                                 currentAttachmentIndex: 0,
                                 attachmentsArray: [
@@ -503,7 +503,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
                         component={() => (
                           <VisibilityIcon
                             onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3}${data}`;
+                              const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
                               openPreview({
                                 currentAttachmentIndex: 0,
                                 attachmentsArray: [
@@ -561,7 +561,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId }) => {
                         component={() => (
                           <VisibilityIcon
                             onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3}${data}`;
+                              const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
                               openPreview({
                                 currentAttachmentIndex: 0,
                                 attachmentsArray: [
