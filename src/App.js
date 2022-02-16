@@ -305,7 +305,7 @@ import TermsAndCondition from 'containers/login/TermsAndCondition/termsAndCondit
 import EditStoreTransactionDetails from 'containers/Finance/src/components/Finance/StorePaymentRequests/editStoreTransactionDetails';
 import ShippingAmountAtStudent from 'containers/Finance/src/components/Inventory/Student/shippingAtStudent';
 // import { isMsAPI } from './utility-functions/index';
-import { isMsAPI } from './redux/actions';
+import { isMsAPI, erpConfig } from './redux/actions';
 import AssessmentReportTable from 'containers/assessment-central/assesment-report-card/index';
 import ConnectionPod from 'components/connection-pod/index.jsx';
 
@@ -360,9 +360,10 @@ import ERPSystemConfig from 'containers/master-management/erp-system-config';
 import AcademicCalendar from 'containers/academicCalendar/index';
 import AcadCalendar from 'containers/academicCalendar/fullcalendar/acadCalendar';
 import TimeTableOld from './containers/time-table-old/index';
-function App({ alert, isMsAPI }) {
+function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
   isMsAPI();
+  erpConfig();
   }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
   return (
@@ -1732,6 +1733,7 @@ const mapDispatchToProps = (dispatch) => ({
     error: (message) => dispatch(alertActions.error(message)),
   },
   isMsAPI: () => dispatch(isMsAPI()),
+  erpConfig: () => dispatch(erpConfig()),
 });
 const mapStateToProps = (state) => {
   return {

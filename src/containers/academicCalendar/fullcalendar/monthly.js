@@ -99,7 +99,8 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
           start_date: moment(e.event.start).format('YYYY-MM-DD'),
           end_date: moment(e.event.start).format('YYYY-MM-DD'),
           subject_mapping: selectedSubject.toString(),
-          grade: selectedGrade.toString()
+          grade: selectedGrade.toString(),
+          acad_session: selectedBranch?.id
         }
         axios({
           method: 'get',

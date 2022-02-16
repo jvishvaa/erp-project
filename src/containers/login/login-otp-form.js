@@ -31,7 +31,6 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
       setOtp(otpValue);
     }
   };
-
   const fetchERPSystemConfig = async (status) => {
     let data = await JSON.parse(localStorage.getItem('userDetails')) || {};
     const { branch } = data?.role_details;

@@ -82,10 +82,13 @@ const CreateClassWorkDialog = (props) => {
     setLoading(true);
     let params = ""
     if (props?.topicId) {
-      params = props?.topicId + ","
+      params = props?.topicId
     }
-    if (props?.allTopicID) {
+    if (props?.topicId === null && props?.allTopicID?.length > 0) {
       params += props?.allTopicID?.join(",")
+    }
+    if (props?.topicId && props?.allTopicID?.length > 0) {
+      params +=  "," + props?.allTopicID?.join(",")
     }
 
     axiosInstance
