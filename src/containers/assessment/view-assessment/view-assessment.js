@@ -62,9 +62,9 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const [testDate, setTestDate] = useState();
   const { setAlert } = useContext(AlertNotificationContext);
   const query = new URLSearchParams(window.location.search);
-  useEffect(()=>{
-    localStorage.setItem('is_retest',  query.get('status') === '2');
-  },[])
+  useEffect(() => {
+    localStorage.setItem('is_retest', query.get('status') === '2');
+  }, [])
 
   const fetchQuestionPapers = () => {
     setLoading(true);
@@ -148,12 +148,15 @@ const ViewAssessments = ({ history, ...restProps }) => {
 
   useEffect(
     () =>
-      history.push(
-        `/assessment/?${generateQueryParamSting({ page, info: showInfo, status })}`
-      ),
+      // history.push(
+      //   `/assessment/?${generateQueryParamSting({ page, info: showInfo, status })}`
+      // ),
+      history.push(`/acad-calendar`),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [showInfo, page, status]
+    // [showInfo, page, status]
+    [] //showInfo, page, status
   );
+
 
   const handleCloseInfo = () => {
     setShowInfo(undefined);
@@ -208,7 +211,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
                   md={showInfo ? 6 : 4}
                   xs={12}
                   key={index}
-                  // onClick={() => handleShowInfo(qp)}
+                // onClick={() => handleShowInfo(qp)}
                 >
                   <QuestionPaperCard
                     {...(qp || {})}
