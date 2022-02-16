@@ -892,7 +892,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             onClose={toggleClassWorkDrawer}
                             // periodId={history?.location?.state?.data?.id}
                             onlineClass_id={periodData?.online_class_id}
-                            allTopicID={topicDetails?.map((vv) => {
+                            allTopicID={topicDetails.map((vv) => {
                               return vv?.topic_id
                             })
                             }
@@ -994,6 +994,10 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                             ?.classwork_details[0]?.period_classwork_id
                                         }
                                         topicId={uniqueIdd}
+                                        allTopicID={topicDetails.map((vv) => {
+                                          return vv?.topic_id
+                                        })
+                                        }
                                       // handleCreate={(obj) => submitHomework(obj)}
                                       />
                                     </SwipeableDrawer>

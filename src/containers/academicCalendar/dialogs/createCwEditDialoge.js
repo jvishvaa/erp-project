@@ -62,8 +62,15 @@ const CreateCwEditDialoge = (props) => {
     };
 
     const TopicContentView = () => {
+        let params = ""
+        if (props?.topicId) {
+            params = props?.topicId + ","
+        }
+        if (props?.allTopicID) {
+            params += props?.allTopicID.join(",")
+        }
         axiosInstance
-            .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${props?.topicId}`)
+            .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${params}`)
             .then((result) => {
                 if (result?.data?.status_code === 200) {
                     const filesData = result.data?.result;
@@ -178,7 +185,7 @@ const CreateCwEditDialoge = (props) => {
     };
 
     useEffect(() => {
-        if (props?.topicId) {
+        if (props?.topicId || props?.allTopicID?.length > 0) {
             TopicContentView();
         }
     }, []);
