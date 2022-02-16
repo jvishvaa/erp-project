@@ -111,7 +111,7 @@ const CreateClass = ({
   const [usersRow, setUsersRow] = useState([]);
   const [completeData, setCompleteData] = useState([]);
   const [selectAllObj, setSelectAllObj] = useState([]);
-  const [selectedTime, setSelectedTime] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState();
   const [duration, setDuration] = useState([]);
   const [selectedPeriod, setSelectedPeriod] = useState();
   const [teacherList, setTeacherList] = useState([]);
@@ -522,10 +522,6 @@ const CreateClass = ({
   ];
 
   const handleCreateClass = () => {
-    if(!validateClassTime(selectedTime)){
-      setAlert('error', 'Class must be between 06:00AM - 10:30PM');
-      return;
-    }
     if (!periodDate) {
       setAlert('warning', 'Please select Date ');
       return;
