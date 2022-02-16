@@ -204,7 +204,7 @@ const StudentReport = (
   }
 
   return (
-      <div>
+    <div>
       <CommonBreadcrumbs
         componentName='Assessment'
         isAcademicYearVisible={true}
@@ -290,8 +290,8 @@ const StudentReport = (
                   <TableCell>{repos?.question_paper__grade__grade_name}</TableCell>
                   <TableCell>{repos?.question_paper__subjects}</TableCell>
                   <TableCell>{repos?.question_paper__paper_name}</TableCell>
-                  <TableCell>{repos &&  repos?.test_details &&  repos?.test_details?.total_marks_obtained}</TableCell>
-                  <TableCell>{repos?.test_date}</TableCell>
+                  <TableCell>{repos &&  repos?.question_paper__section && repos?.question_paper__section[0] &&  repos?.question_paper__section[0]?.discription}</TableCell>
+                  <TableCell>{moment(repos?.test_date).format("DD-MM-YYYY")}</TableCell>
                   <TableCell>{repos?.test_details.total_attemped}</TableCell>
                   <TableCell>{repos?.test_details.total_marks_obtained}</TableCell>
                 </TableRow>
@@ -300,7 +300,7 @@ const StudentReport = (
           </Table>
         </TableContainer>
       </div>
-      </div>
+    </div>
   );
 }
 export default StudentReport;
