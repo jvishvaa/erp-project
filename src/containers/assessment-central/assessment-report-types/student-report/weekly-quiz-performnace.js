@@ -288,7 +288,7 @@ const StudentReport = (
                 <TableRow>
                   <TableCell>{repos?.id}</TableCell>
                   <TableCell>{repos?.question_paper__grade__grade_name}</TableCell>
-                  <TableCell>{repos?.question_paper__subjects}</TableCell>
+                  <TableCell>{repos?.question_paper__subjects__subject_name}</TableCell>
                   <TableCell>{repos?.question_paper__paper_name}</TableCell>
                   <TableCell>{repos &&  repos?.question_paper__section && repos?.question_paper__section[0] &&  repos?.question_paper__section[0]?.discription}</TableCell>
                   <TableCell>{moment(repos?.test_date).format("DD-MM-YYYY")}</TableCell>
