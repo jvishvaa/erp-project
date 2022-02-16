@@ -55,7 +55,7 @@ function Copyright() {
 function SignIn({ history, setTheme }) {
   if (localStorage.getItem('userDetails') && localStorage.getItem('navigationData')) {
     const { erp_config } = JSON.parse(localStorage.getItem('userDetails'));
-    if (erp_config === true || erp_config.length > 0) {
+    if (erp_config === true || erp_config?.length > 0) {
       history.push('/acad-calendar');
     } else if (erp_config === false) {
       history.push('/dashboard');
