@@ -1,0 +1,125 @@
+@import '../../../assets/styles/variables';
+@import '../../../assets/styles/mixins';
+
+.create__class {
+  width: 100%;
+  margin: 0 auto;
+
+  .creatingOnlineClassTag {
+    background: #e0e0e0;
+    color: rgb(140, 140, 140);
+    width: 100%;
+    font-size: 1rem;
+    padding: 6px 16px;
+    border-radius: 10px;
+    text-align: center;
+  }
+
+  .breadcrumb-container-create {
+    width: 95%;
+    margin: 20px auto 30px auto;
+  }
+
+  // button {
+  //   color: white;
+  // }
+
+  .create-class-form-container {
+    // background-color: #fff;
+    .create-class-form {
+      width: 95%;
+      margin: 0 auto;
+    }
+  }
+
+  .create-class-container {
+    padding: 20px 0px;
+    // margin-top: 20px !important;
+
+    .create__class-textfield {
+      width: 100%;
+    }
+  }
+  
+  .alert__email {
+    display: inline-block;
+    color: red;
+    padding: 5px;
+    text-transform: capitalize;
+  }
+
+  #time-picker {
+    pointer-events: none !important;
+  }
+
+  .MuiTextField-root {
+    width: 100%;
+  }
+
+  .co_host-title {
+    margin: 0 !important;
+  }
+
+  .btn-addmore {
+    margin-left: 0px;
+  }
+
+  .horizontal-line {
+    margin: 20px auto 20px auto;
+  }
+
+  .horizontal-line-last {
+    margin: 40px auto 20px auto;
+  }
+}
+
+.wholeCreateContainer {
+  .swipe-container {
+    display: none;
+  }
+}
+
+.MuiPickersTimePickerToolbar-toolbarAmpmLeftPadding h2,
+.MuiPickersTimePickerToolbar-toolbarAmpmLeftPadding h6 {
+  color: white !important;
+}
+
+.MuiPickersTimePickerToolbar-toolbarAmpmLeftPadding
+  .MuiPickersToolbarText-toolbarBtnSelected {
+  color: rgb(204, 204, 204) !important;
+}
+
+.my__swipable {
+  .MuiPaper-elevation16 {
+    z-index: 9999 !important;
+    width: 70%;
+  }
+}
+
+.styled__table {
+  @include styledTable;
+}
+
+@media only screen and(max-width:600px) {
+  .create__class {
+    .create-class-form-container {
+      .create-class-form {
+        width: 92%;
+      }
+    }
+
+    .create-class-container {
+      padding: 10px 0px;
+    }
+  }
+
+  .my__swipable {
+    .MuiPaper-elevation16 {
+      width: 85%;
+    }
+  }
+}
+
+.reminderDialog .MuiDialog-paperScrollPaper {
+  border-radius: 10px;
+}

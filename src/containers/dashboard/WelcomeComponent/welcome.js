@@ -6,7 +6,7 @@ import { useDashboardContext } from '../dashboard-context';
 import SyncIcon from '@material-ui/icons/Refresh';
 import { useHistory } from 'react-router';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
-import './Styles.css'
+import './Styles.css';
 
 const useStyles = makeStyles((theme) => ({
   greeting: {
@@ -24,25 +24,39 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: 2,
   },
   mainHeading: {
-    ['@media only screen and (min-width: 600px)']: { // eslint-disable-line no-useless-computed-key
-      display: 'flex', alignItems: 'center', flexDirection: 'column'
+    ['@media only screen and (min-width: 600px)']: {
+      // eslint-disable-line no-useless-computed-key
+      display: 'flex',
+      alignItems: 'center',
+      flexDirection: 'column',
     },
-    ['@media only screen and (min-width: 1024px)']: { // eslint-disable-line no-useless-computed-key
-      display: 'flex', alignItems: 'center', flexDirection: 'row'
+    ['@media only screen and (min-width: 1024px)']: {
+      // eslint-disable-line no-useless-computed-key
+      display: 'flex',
+      alignItems: 'center',
+      flexDirection: 'row',
     },
   },
   refreshIcon: {
-    cursor: 'pointer'
-  }
+    cursor: 'pointer',
+  },
+  outlined: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    background: '#fff',
+    color: theme.palette.secondary.main,
+    fontSize: '14px',
+    fontWeight: 'bold',
+    padding: '4px 16px !important',
+  },
 }));
 
-const WelcomeComponent = () => {
+const WelcomeComponent = ({ erp_config }) => {
   const classes = useStyles();
+  const [showButton,setShowButton] = useState(false);
   const { welcomeDetails = {}, setReports } = useDashboardContext();
   const { greeting, name, userRole, userLevel } = welcomeDetails;
 
   const getAllReport = () => {
-
     // let button = document.getElementById('refreshButton')
     // button.classList.add("refresh");
     // setTimeout(() => {
@@ -51,25 +65,39 @@ const WelcomeComponent = () => {
     // }, 2000);
 
     setReports((prev) => ({ ...prev, refreshAll: true }));
-  }
+  };
 
   const history = useHistory();
   const [checkOrigin, setCheckOrigin] = useState(false);
 
-
   useEffect(() => {
     const origin = window.location.origin;
-    if (origin.indexOf("orchids.") > -1 || origin.indexOf("dev.") > -1 || origin.indexOf("qa.") > -1 || origin.indexOf("localhost") > -1) {
-      setCheckOrigin(true)
+    if (
+      origin.indexOf('orchids.') > -1 ||
+      origin.indexOf('dev.') > -1 ||
+      origin.indexOf('qa.') > -1 ||
+      origin.indexOf('localhost') > -1
+    ) {
+      setCheckOrigin(true);
     }
   }, []);
 
   const studentrefer = () => {
-    history.push('/studentrefer')
+    history.push('/studentrefer');
+  };
+
+  const academicView = () => {
+    history.push('/acad-calendar');
   }
 
   return (
-    <Box mb={1} className={classes.mainHeading} display='flex' alignItems='flex-end' style={{ justifyContent: 'space-between' }}>
+    <Box
+      mb={1}
+      className={classes.mainHeading}
+      display='flex'
+      alignItems='flex-end'
+      style={{ justifyContent: 'space-between' }}
+    >
       <div style={{ display: 'flex' }}>
         <Typography variant='subtitle1' color='secondary'>
           {greeting},
@@ -94,15 +122,23 @@ const WelcomeComponent = () => {
           />
         </div>
       )} */}
-      {checkOrigin ? <>
-        {welcomeDetails.userLevel === 13 ?
-          <Button onClick={studentrefer} style={{ marginLeft: '20px' }}>
-            <GroupAddIcon style={{ marginRight: '5px' }} />
-            <h4>Orchids Ambassador Program</h4>
-          </Button>
-          : ''}
-      </>
-        : ''}
+      {checkOrigin ? (
+        <>
+          {welcomeDetails.userLevel === 13 ? (
+            <Button onClick={studentrefer} style={{ marginLeft: '20px' }}>
+              <GroupAddIcon style={{ marginRight: '5px' }} />
+              <h4>Orchids Ambassador Program</h4>
+            </Button>
+          ) : (
+            ''
+          )}
+        </>
+      ) : (
+        ''
+      )}
+      {erp_config ? <Button className={classes.outlined} color='secondary' onClick={academicView}>
+            Academic View
+      </Button> : '' }
     </Box>
   );
 };
