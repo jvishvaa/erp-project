@@ -161,8 +161,7 @@ const SidebarCounterPanel = (props) => {
           'success',
           isAutoSubmit ? 'Test timed out! Thanks for taking the test.' : `${message}`
         );
-        // props.history.push(`/assessment/?info=${assessmentId}`);
-        props.history.go(-2)
+        props.history.push(`/assessment/?info=${assessmentId}`);
         exitFullScreen();
       }
       else {

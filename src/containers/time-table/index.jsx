@@ -111,14 +111,14 @@ const TimeTable = (props) => {
         ) {
           item.child_module.forEach((item) => {
             if (
-              location.pathname === '/time-table/student-view' &&
+              location.pathname === '/timetable/studentview' &&
               item.child_name === 'Student Time Table'
             ) {
               setModuleId(item?.child_id);
               setTeacherView(false);
               setOpenCloseTable(false);
             } else if (
-              location.pathname === '/time-table/teacher-view' &&
+              location.pathname === '/timetable/teacherview' &&
               item.child_name === 'Teacher Time Table'
             ) {
               setModuleId(item?.child_id);
