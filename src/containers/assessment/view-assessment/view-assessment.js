@@ -151,7 +151,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
       // history.push(
       //   `/assessment/?${generateQueryParamSting({ page, info: showInfo, status })}`
       // ),
-      history.push(`/acad-calendar`),
+      history.go(-2),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     // [showInfo, page, status]
     [] //showInfo, page, status

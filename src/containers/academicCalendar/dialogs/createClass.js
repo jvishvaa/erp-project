@@ -583,6 +583,9 @@ const CreateClass = ({
             toggleCreateClass();
             handleClear();
             setLoading(false);
+            setSelectAll(true)
+            selectionArray = [];
+            setSelectedUsers([])
           } else {
             if ("period already allocated" === result?.data?.message.slice(0, 24)) {
               setAlert('error', "Tutor Already Occupied")
