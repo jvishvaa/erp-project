@@ -359,7 +359,8 @@ import UserLevelTable from 'containers/user-management/User-Level/tableUserLevel
 import ERPSystemConfig from 'containers/master-management/erp-system-config';
 import AcademicCalendar from 'containers/academicCalendar/index';
 import AcadCalendar from 'containers/academicCalendar/fullcalendar/acadCalendar';
-import TimeTableOld from './containers/time-table-old/index';
+// import TimeTableOld from './containers/time-table-old/index';
+import TimeTableCheck from 'containers/timetable/index';
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
   isMsAPI();
@@ -392,17 +393,17 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route path='/user-management'>
                             {({ match }) => <UserManagement match={match} />}
                           </Route>
-                          <Route path='/time-table/student-view'>
+                          {/* <Route path='/time-table/student-view'>
                             {({ match }) => <TimeTable match={match} />}
-                          </Route>
+                          </Route> */}
                           <Route path='/timetable/studentview'>
-                            {({ match }) => <TimeTableOld match={match} />}
+                            {({ match }) => <TimeTableCheck match={match} />}
                           </Route>
-                          <Route path='/time-table/teacher-view'>
+                          {/* <Route path='/time-table/teacher-view'>
                             {({ match }) => <TimeTable match={match} />}
-                          </Route>
+                          </Route> */}
                           <Route path='/timetable/teacherview'>
-                            {({ match }) => <TimeTableOld match={match} />}
+                            {({ match }) => <TimeTableCheck match={match} />}
                           </Route>
                           <Route path='/griviences/admin-view'>
                             {({ match }) => <Griviences match={match} />}

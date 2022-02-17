@@ -857,25 +857,25 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Teacher Time Table': {
-        if(erp_config === true || erp_config?.length > 0){
-          history.push('/time-table/teacher-view');
-          break;
-        }
-        else {
+        // if(erp_config === true || erp_config?.length > 0){
+        //   history.push('/time-table/teacher-view');
+        //   break;
+        // }
+        // else {
           history.push('/timetable/teacherview')
           break;
-        }
+        // }
       }
       case 'Student Time Table': {
-        if(erp_config === true || erp_config?.length > 0)
-        {
-          history.push('/time-table/student-view');
-          break;
-        }
-        else {
+        // if(erp_config === true || erp_config?.length > 0)
+        // {
+        //   history.push('/time-table/student-view');
+        //   break;
+        // }
+        // else {
           history.push('/timetable/studentview');
           break;
-        }
+        // }
       }
       case 'Book Appointment': {
         history.push('/appointments');
