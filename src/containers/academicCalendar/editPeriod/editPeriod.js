@@ -225,7 +225,14 @@ const EditPeriod = withRouter(({ history, ...props }) => {
     setIsDrawerOpen((prevState) => !prevState);
   };
   const toggleClassWorkDrawer = () => {
-    setIsClassWorkOpen((prevState) => !prevState);
+    if (periodDetails?.ongoing_status === 'Completed') {
+      setIsClassWorkOpen((prevState) => prevState);
+      setAlert('warning', "Class Completed Not Able to Create a Class")
+      return;
+    }
+    else {
+      setIsClassWorkOpen((prevState) => !prevState);
+    }
   };
   const toggleHomeWorkDrawer = () => {
     setIsHomeWorkOpen((prevState) => !prevState);
@@ -1115,6 +1122,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           </div>
                         ))}
                       </div>
+                      {periodData?.classwork_details?.classwork_details?.length >= 1 && periodData?.classwork_details?.quiz_list?.length >= 1 ? "" :
                       <div
                         style={{
                           display: 'flex',
@@ -1137,6 +1145,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           </Button>
                         </div>
                       </div>
+                      }
                       <Grid container className='swipe-container'>
                         <SwipeableDrawer
                           className='my__swipable'

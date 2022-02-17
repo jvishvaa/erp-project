@@ -9,16 +9,31 @@ import endpoints from 'config/endpoints';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
 import Loader from '../../../components/loader/loader';
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core';
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from '@material-ui/core';
 import { handleDownloadPdf } from 'utility-functions';
 import useStyles from 'containers/assessment/view-assessment/questionPaperCard/useStyles';
-const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, isAssessment, assessmentId, questionPaperId, teacherAssessment }) => {
+const Assessmentview = ({
+  periodId,
+  assessmentSubmitted,
+  periodData,
+  isStudent,
+  isAssessment,
+  assessmentId,
+  questionPaperId,
+  teacherAssessment,
+}) => {
   const history = useHistory();
   const [loading, setLoading] = useState(false);
 
   const [assesmentData, setAssessmentData] = useState([]);
-  const [isDownload, setIsDownload] = useState(false)
-  const [takeTestAlert, setTakeTestAlert] = useState(false)
+  const [isDownload, setIsDownload] = useState(false);
+  const [takeTestAlert, setTakeTestAlert] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectedPaper, setSelectedPaper] = useState(null);
   const classes = useStyles();
@@ -36,16 +51,15 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
           if (result?.data?.status_code === 200) {
             setAlert('success', result?.data?.message);
             setAssessmentData(result?.data?.result);
-          }
-          else {
-            setAlert('error', result?.data?.message)
+          } else {
+            setAlert('error', result?.data?.message);
           }
           setLoading(false);
         })
         .catch((err) => {
-          setAlert('error', err?.message)
+          setAlert('error', err?.message);
           setLoading(false);
-        })
+        });
     }
   };
   function extractContent(s) {
@@ -55,7 +69,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
   }
   const assignQuestion = () => {
     if (!selectedPaper?.test_name) {
-      setAlert('error', "Please Select Question Paper Name")
+      setAlert('error', 'Please Select Question Paper Name');
       return;
     }
     setLoading(true);
@@ -66,7 +80,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', 'success assigned the Question paper');
-          setIsDownload(true)
+          setIsDownload(true);
           setLoading(false);
           window.location.reload();
         } else {
@@ -75,24 +89,29 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
         }
       })
       .catch((err) => {
-        setAlert('error', err?.message)
+        setAlert('error', err?.message);
         setLoading(false);
-      })
+      });
   };
   const handleTestOpen = () => {
-    setTakeTestAlert(true)
-  }
+    setTakeTestAlert(true);
+  };
   const handleTakeTest = () => {
-    setTakeTestAlert(false)
-  }
+    setTakeTestAlert(false);
+  };
   const handleTest = () => {
-    history.push(`/assessment/${periodData?.test_details[0]?.question_paper_id}/${periodData?.test_details[0]?.id}/attempt/`)
-  }
+    history.push(
+      `/assessment/${periodData?.test_details[0]?.question_paper_id}/${periodData?.test_details[0]?.id}/attempt/`
+    );
+  };
   const viewQuestion = () => {
     axiosInstance
-      .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${periodData?.assessment_details?.assessment_list[0]?.id}`, {
-        responseType: 'blob',
-      })
+      .get(
+        `${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${periodData?.assessment_details?.assessment_list[0]?.id}`,
+        {
+          responseType: 'blob',
+        }
+      )
       .then((response) => {
         const {
           headers = {},
@@ -114,9 +133,9 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
   return (
     <>
       {isStudent ? (
-        <div className='assignedQuestionPaper' style={{ position: 'absolute', left: '25vw' }}>
+        <div className='assignedQuestionPaper' style={{ width: '25vw' }}>
           {loading && <Loader />}
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', width: '50%' }}>
             {!periodData?.assessment_details?.assessment_list[0] && !teacherAssessment ? (
               <>
                 <div style={{ width: '188%' }}>
@@ -138,11 +157,7 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
                     }}
                     filterSelectedOptions
                     renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        label='Assign Test'
-                        variant='outlined'
-                      />
+                      <TextField {...params} label='Assign Test' variant='outlined' />
                     )}
                   />
                 </div>
@@ -168,35 +183,53 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
               </>
             ) : (
               <div>
-                <Paper elevation={3} className={classes.paper} style={{ width: "127%", float: "right", marginRight: "-30%" }}>
+                <Paper
+                  elevation={3}
+                  className={classes.paper}
+                  style={{ width: '127%', float: 'right', marginRight: '-30%' }}
+                >
                   <div className={classes.cardWrapper}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                       <div>
                         <h3>Test Details</h3>
-                        <h4 className={classes.cardTitleHeading}> Test Name -&nbsp;
+                        <h4 className={classes.cardTitleHeading}>
+                          {' '}
+                          Test Name -&nbsp;
                           {periodData?.assessment_details?.assessment_list[0]?.test_name}
                         </h4>
                       </div>
-                      <h4 className={classes.cardDescription}>
-                      </h4>
+                      <h4 className={classes.cardDescription}></h4>
                     </div>
                     <div className={classes.cardEasyWrapper}>
                       <div>
                         <div className={classes.cardAttemptedTextRed}>
                           Instructions-&nbsp;
-                          {extractContent(periodData?.assessment_details?.assessment_list[0]?.instructions)}
+                          {extractContent(
+                            periodData?.assessment_details?.assessment_list[0]
+                              ?.instructions
+                          )}
                         </div>
                         <div className={classes.cardAttemptedTextRed}>
                           Test Duration - &nbsp;
-                          {periodData?.assessment_details?.assessment_list[0]?.test_duration}min
+                          {
+                            periodData?.assessment_details?.assessment_list[0]
+                              ?.test_duration
+                          }
+                          min
                         </div>
                         <div className={classes.cardAttemptedTextRed}>
                           Start Time - &nbsp;
-                          {periodData?.assessment_details?.assessment_list[0]?.test_start_datetime.slice(11, 16)}
+                          {periodData?.assessment_details?.assessment_list[0]?.test_start_datetime.slice(
+                            11,
+                            16
+                          )}
                         </div>
                         <div className={classes.cardAttemptedTextRed}>
                           Date - &nbsp;
-                          {periodData?.assessment_details?.assessment_list[0]?.test_start_datetime.slice(0, 10)}
+                          {periodData?.assessment_details?.assessment_list[0]?.test_start_datetime.slice(
+                            0,
+                            10
+                          )}
                         </div>
                       </div>
                     </div>
@@ -212,13 +245,13 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
                       borderRadius: '5px',
                       border: '1px solid #f5f0f0',
                       fontWeight: '700',
-                      width: '129%',
-                      margin: '5px',
+                      width: '235%',
+                      margin: '13px',
                     }}
                     onClick={viewQuestion}
                   >
                     Download Question Paper
-                    <GetAppIcon style={{ marginLeft: 20, color: "blue" }} />
+                    <GetAppIcon style={{ marginLeft: 20, color: 'blue' }} />
                   </Button>
                 </div>
               </div>
@@ -292,14 +325,14 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
           </div>
         </div>
       ) : (
-        <div >
+        <div>
           <div>
             {periodData?.test_details?.map((item, key) => (
               <Button
                 variant='contained'
                 style={{
                   color: 'grey',
-                  left: "350px",
+                  left: '350px',
                   // width: '100%',
                   background: '#fff',
                   borderRadius: '5px',
@@ -311,20 +344,26 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
                 disabled={item?.submitted}
                 onClick={handleTestOpen}
               >
-                {item?.submitted ? "Test Completed" : "Take Test"}
+                {item?.submitted ? 'Test Completed' : 'Take Test'}
               </Button>
             ))}
-            <Paper elevation={3} className={classes.paper} style={{ width: "28%", float: "right", marginRight: "1%" }}>
+            <Paper
+              elevation={3}
+              className={classes.paper}
+              style={{ width: '28%', float: 'right', marginRight: '1%' }}
+            >
               {periodData?.test_details?.map((item, key) => (
                 <div className={classes.cardWrapper}>
                   <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                     <div>
                       <h3>Test Details</h3>
-                      <h4 className={classes.cardTitleHeading}> Test Name -&nbsp;
-                        {item.test_name}</h4>
+                      <h4 className={classes.cardTitleHeading}>
+                        {' '}
+                        Test Name -&nbsp;
+                        {item.test_name}
+                      </h4>
                     </div>
-                    <h4 className={classes.cardDescription}>
-                    </h4>
+                    <h4 className={classes.cardDescription}></h4>
                   </div>
                   <div className={classes.cardEasyWrapper}>
                     <div>
@@ -351,7 +390,9 @@ const Assessmentview = ({ periodId, assessmentSubmitted, periodData, isStudent, 
               ))}
             </Paper>
             <Dialog open={takeTestAlert} onClose={handleTakeTest}>
-              <DialogTitle id='draggable-dialog-title'>Are you sure you want to give the test.</DialogTitle>
+              <DialogTitle id='draggable-dialog-title'>
+                Are you sure you want to give the test.
+              </DialogTitle>
               <DialogActions>
                 <Button onClick={handleTakeTest} className='labelColor cancelButton'>
                   Cancel
