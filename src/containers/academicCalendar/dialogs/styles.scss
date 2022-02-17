@@ -1,0 +1,197 @@
+@import '../../../assets/styles/variables';
+
+.home-question-container {
+  width: 100%;
+  overflow: hidden;
+  box-sizing: content-box;
+  position: relative;
+  .question-card {
+    // border: 2px solid $primary-color;
+    .file-upload-input {
+      display: none;
+    }
+    .question-ctrls-container {
+      .question-ctrl-inner-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 20%;
+        &.max-attachments {
+          .question-ctrl-label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.8rem;
+            color: $secondary-color;
+            padding-right: 1rem;
+          }
+        }
+        .question-ctrl {
+          width: 60%;
+          display: flex;
+          justify-content: space-around;
+          .MuiFormControlLabel-label {
+            font-size: 1rem;
+          }
+          &.MuiFormControlLabel-labelPlacementStart {
+            font-size: 1rem;
+            margin-left: -10%;
+            .MuiSwitch-root {
+              margin-right: 20%;
+            }
+          }
+        }
+      }
+      .question-ctrl-outer-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-left: 2.5%;
+        margin-right: 2.5%;
+      }
+    }
+    .MuiBadge-root {
+      .MuiBadge-badge {
+        color: #ffffff;
+      }
+    }
+  }
+  .question-btn-container {
+    .question-btn-inner-container {
+      margin: 20px 0;
+      .btn {
+        width: 100%;
+      }
+    }
+  }
+  // .attachments-container {
+  //   &.with-margin {
+  //     width: 95%;
+  //     margin: 20px auto;
+  //   }
+  //   .header {
+  //     margin: 1rem 0;
+  //   }
+  .attachments-grid {
+    width: 100%;
+    .attachments-list-outer-container {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      .prev-btn,
+      .next-btn {
+        width: 45px;
+      }
+      .attachments-list {
+        &::-webkit-scrollbar {
+          display: none;
+        }
+        scroll-behavior: smooth;
+        // flex-grow: 1;
+        // overflow-x: auto;
+        overflow: hidden;
+        display: flex;
+        margin: 1rem 0;
+        width: calc(100% - 90px);
+        .attachment {
+          flex-shrink: 0;
+          width: 150px;
+        }
+      }
+    }
+  }
+  // }
+}
+.question-cntrl-file-upload {
+  margin-left: 2rem !important;
+}
+.question-ctrls-inner{
+  margin-left: 2.5% !important;
+}
+// box-sizing: content-box;
+// overflow: hidden;
+// width: fit-content;
+// position: absolute;
+// top: 0;
+// bottom: 0;
+// left: 0;
+// right: -17px; /* Increase/Decrease this value for cross-browser compatibility */
+// overflow-y: scroll;
+
+
+.attachments-grid {
+  width: 100%;
+  .attachments-list-outer-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    .prev-btn,
+    .next-btn {
+      width: 45px;
+    }
+    .attachments-list {
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      scroll-behavior: smooth;
+      // flex-grow: 1;
+      // overflow-x: auto;
+      overflow: hidden;
+      display: flex;
+      margin: 1rem 0;
+      width: calc(100% - 90px);
+      .attachment {
+        flex-shrink: 0;
+        width: 100px;
+        height: 70px;
+      }
+    }
+  }
+}
+
+.RemoveExtra-image {
+  overflow: hidden;
+  position: relative;
+}
+
+.file-card-container {
+  position: relative;
+  height: 100%;
+  &:hover {
+    .overlay-container {
+      opacity: 1;
+    }
+  }
+  .overlay-container {
+    padding: 0.5rem;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    transition: 0.3s ease;
+    .overlay {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      background-color: rgba($color: #000000, $alpha: 0.5);
+      .action-buttons {
+        margin: auto 0;
+      }
+    }
+  }
+
+  .video-file {
+    padding: 0.5rem;
+    width: 100%;
+  }
+  .audio-file {
+    padding: 0.5rem;
+    width: 100%;
+  }
+}

@@ -11,9 +11,7 @@ deploy_dev:
       - pwd
       - sudo chmod 777 -R /home/gitlab-runner/ 
       - sudo npm cache clean --force
-      - sudo npm install -g serve
-      - sudo npm install -g forever
-      - sudo service uwsgi stop
+
     variables:
       GIT_STRATEGY: clone
     stage: deploy
@@ -51,9 +49,7 @@ deploy_qa:
       - whoami
       - pwd
       - sudo chmod 777 -R /home/gitlab-runner/ 
-      - sudo npm cache clean --force
-      - sudo npm install -g serve
-      - sudo npm install -g forever
+
     variables:
       GIT_STRATEGY: clone
     stage: deploy
@@ -190,9 +186,7 @@ deploy_finance-integration2:
       - whoami
       - pwd
       - sudo chmod 777 -R /home/gitlab-runner/ 
-#      - sudo npm cache clean --force
-      - sudo npm install -g serve
-      - sudo npm install -g forever
+
     variables:
       GIT_STRATEGY: clone
     stage: deploy
