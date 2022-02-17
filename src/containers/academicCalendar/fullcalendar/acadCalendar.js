@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect, } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import Layout from '../../Layout';
 import './acadCalendar.scss';
 import MyCalendar from './monthly';
@@ -29,6 +29,14 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '14px',
     fontWeight: 'bold',
     padding: '4px 16px !important',
+    '&:hover': {
+      border: `1px solid ${theme.palette.primary.main}`,
+      background: '#fff',
+      color: theme.palette.secondary.main,
+      fontSize: '14px',
+      fontWeight: 'bold',
+      padding: '4px 16px !important',
+    },
   },
 }));
 
@@ -60,8 +68,7 @@ const AcadCalendar = () => {
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [selectedSubjectIds, setSelectedSubjectIds] = useState([]);
   const [filtered, setFiltered] = useState(false);
-  const [counter, setCounter] = useState(1)
-
+  const [counter, setCounter] = useState(1);
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -83,12 +90,12 @@ const AcadCalendar = () => {
     setGradeList([]);
     setSelectedbranchIds(value?.branch?.id);
     setSelectedBranch(value);
-    if (value !== null){
-        callApi(
-          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`,
-          'gradeList'
-        );
-     }
+    if (value !== null) {
+      callApi(
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`,
+        'gradeList'
+      );
+    }
   };
 
   const handleGrade = (event = {}, value = []) => {
@@ -106,7 +113,8 @@ const AcadCalendar = () => {
       setSelectedGrade(ids);
       setSelectedGradeIds(selectedId);
       callApi(
-        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
+        `${endpoints.academics.sections}?session_year=${
+          selectedAcademicYear?.id
         }&branch_id=${selectedbranchIds}&grade_id=${selectedId.toString()}&module_id=${moduleId}`,
         'section'
       );
@@ -114,7 +122,7 @@ const AcadCalendar = () => {
   };
 
   const handleSection = (event = {}, value = []) => {
-    setSelectedSection([])
+    setSelectedSection([]);
     console.log(value);
     if (value?.length) {
       const ids = value.map((el) => el);
@@ -122,15 +130,17 @@ const AcadCalendar = () => {
       setSelectedSection(ids);
       setSelectedSectionIds(selectedId);
       callApi(
-        `${endpoints.academics.subjects
-        }?branch=${selectedbranchIds}&grade=${selectedGradeIds}&session_year=${selectedAcademicYear?.id
+        `${
+          endpoints.academics.subjects
+        }?branch=${selectedbranchIds}&grade=${selectedGradeIds}&session_year=${
+          selectedAcademicYear?.id
         }&section=${selectedId.toString()}&module_id=${moduleId}`,
         'subject'
       );
     }
   };
   const handleSubject = (event = {}, value = []) => {
-    setSelectedSubject([])
+    setSelectedSubject([]);
     if (value?.length) {
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.id);
@@ -209,7 +219,7 @@ const AcadCalendar = () => {
     setSelectedGradeIds([]);
     setSelectedSubjectIds([]);
     setSelectedSectionIds([]);
-    setFiltered(false)
+    setFiltered(false);
   };
 
   const statsView = () => {
@@ -220,164 +230,172 @@ const AcadCalendar = () => {
 
   const handleFilter = () => {
     setFiltered(true);
-    setCounter(counter + 1)
+    setCounter(counter + 1);
   };
 
   return (
     <Layout className='acadyearCalendarContainer'>
-      {isStudent ? "" : (
-      <Grid
-        id
-        item
-        sm={8}
-        md={10}
-        xs={9}
-        style={{
-          margin: '0 auto',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        <Accordion expanded={accordianOpen}>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls='panel1a-content'
-            id='panel1a-header'
-            onClick={() => setAccordianOpen(!accordianOpen)}
-          >
-            <Typography variant='h6' color='primary'>
-              Filter
-            </Typography>
-          </AccordionSummary>
-          <AccordionDetails>
-            <Grid container spacing={3}>
-              <Grid item md={4} sm={4} xs={12}>
-                <Autocomplete
-                  // multiple
-                  style={{ width: '100%' }}
-                  size='small'
-                  //onChange={(e) => setSelectedBranch(e.target.value)}
-                  onChange={handleBranch}
-                  id='branch_id'
-                  className='dropdownIcon'
-                  value={selectedBranch || []}
-                  options={branchList || []}
-                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
-                  getOptionSelected={(option, value) =>
-                    option?.branch?.id == value?.branch?.id
-                  }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Branch'
-                      placeholder='Select Branch'
-                    />
-                  )}
-                />
+      {isStudent ? (
+        ''
+      ) : (
+        <Grid
+          id
+          item
+          sm={8}
+          md={10}
+          xs={9}
+          style={{
+            margin: '0 auto',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Accordion expanded={accordianOpen}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls='panel1a-content'
+              id='panel1a-header'
+              onClick={() => setAccordianOpen(!accordianOpen)}
+            >
+              <Typography variant='h6' color='primary'>
+                Filter
+              </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Grid container spacing={3}>
+                <Grid item md={4} sm={4} xs={12}>
+                  <Autocomplete
+                    // multiple
+                    style={{ width: '100%' }}
+                    size='small'
+                    //onChange={(e) => setSelectedBranch(e.target.value)}
+                    onChange={handleBranch}
+                    id='branch_id'
+                    className='dropdownIcon'
+                    value={selectedBranch || []}
+                    options={branchList || []}
+                    getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                    getOptionSelected={(option, value) =>
+                      option?.branch?.id == value?.branch?.id
+                    }
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Branch'
+                        placeholder='Select Branch'
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item md={4} xs={12} sm={3}>
+                  <Autocomplete
+                    //key={clearKey}
+                    multiple
+                    size='small'
+                    onChange={handleGrade}
+                    id='create__class-branch'
+                    options={gradeList}
+                    className='dropdownIcon'
+                    getOptionLabel={(option) => option?.grade__grade_name}
+                    filterSelectedOptions
+                    value={selectedGrade}
+                    renderInput={(params) => (
+                      <TextField
+                        className='create__class-textfield'
+                        {...params}
+                        variant='outlined'
+                        label='Grades'
+                        placeholder='Select Grades'
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item md={4} sm={4} xs={12}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    multiple
+                    fullWidth
+                    size='small'
+                    onChange={handleSection}
+                    id='role_id'
+                    className='dropdownIcon'
+                    value={selectedSection}
+                    options={sectionList}
+                    getOptionLabel={(option) => option?.section__section_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Section'
+                        placeholder='Section'
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item md={4} sm={3} xs={3}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    multiple
+                    fullWidth
+                    size='small'
+                    onChange={handleSubject}
+                    id='role_id'
+                    className='dropdownIcon'
+                    value={selectedSubject}
+                    options={subjectList}
+                    getOptionLabel={(option) => option?.subject__subject_name}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Subject'
+                        placeholder='Subject'
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item md={2} sm={3} xs={3} ml={4}>
+                  <Button
+                    style={{ marginTop: '5px' }}
+                    variant='contained'
+                    color='primary'
+                    fullWidth={true}
+                    onClick={handleFilter}
+                  >
+                    Filter
+                  </Button>
+                </Grid>
+                <Grid item md={3} sm={3} xs={3}>
+                  <Button
+                    style={{ marginTop: '5px' }}
+                    variant='contained'
+                    color='primary'
+                    onClick={clearfilter}
+                    fullWidth={true}
+                  >
+                    Clear
+                  </Button>
+                </Grid>
               </Grid>
-              <Grid item md={4} xs={12} sm={3}>
-                <Autocomplete
-                  //key={clearKey}
-                  multiple
-                  size='small'
-                  onChange={handleGrade}
-                  id='create__class-branch'
-                  options={gradeList}
-                  className='dropdownIcon'
-                  getOptionLabel={(option) => option?.grade__grade_name}
-                  filterSelectedOptions
-                  value={selectedGrade}
-                  renderInput={(params) => (
-                    <TextField
-                      className='create__class-textfield'
-                      {...params}
-                      variant='outlined'
-                      label='Grades'
-                      placeholder='Select Grades'
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item md={4} sm={4} xs={12}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  multiple
-                  fullWidth
-                  size='small'
-                  onChange={handleSection}
-                  id='role_id'
-                  className='dropdownIcon'
-                  value={selectedSection}
-                  options={sectionList}
-                  getOptionLabel={(option) => option?.section__section_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Section'
-                      placeholder='Section'
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item md={4} sm={3} xs={3}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  multiple
-                  fullWidth
-                  size='small'
-                  onChange={handleSubject}
-                  id='role_id'
-                  className='dropdownIcon'
-                  value={selectedSubject}
-                  options={subjectList}
-                  getOptionLabel={(option) => option?.subject__subject_name}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Subject'
-                      placeholder='Subject'
-                    />
-                  )}
-                />
-              </Grid>
-              <Grid item md={2} sm={3} xs={3} ml={4}>
-                <Button
-                  style={{ marginTop: '5px' }}
-                  variant='contained'
-                  color='primary'
-                  fullWidth={true}
-                  onClick={handleFilter}
-                >
-                  Filter
-                </Button>
-              </Grid>
-              <Grid item md={3} sm={3} xs={3}>
-                <Button
-                  style={{ marginTop: '5px' }}
-                  variant='contained'
-                  color='primary'
-                  onClick={clearfilter}
-                  fullWidth={true}
-                >
-                  Clear
-                </Button>
-              </Grid>
-            </Grid>
-          </AccordionDetails>
-        </Accordion>
+            </AccordionDetails>
+          </Accordion>
         </Grid>
       )}
-        <div className='stats-view'>
-          <Button className={classes.outlined} color='secondary' variant='contained' onClick={statsView}>
-            Stats View
-          </Button>
-        </div>
+      <div className='stats-view'>
+        <Button
+          className={classes.outlined}
+          color='secondary'
+          variant='contained'
+          onClick={statsView}
+          style={{ position: 'absolute', top: '89px', right: '131px' }}
+        >
+          Stats View
+        </Button>
+      </div>
       <div className='calenderContainer'>
         {filtered ? (
           <MyCalendar
@@ -390,9 +408,7 @@ const AcadCalendar = () => {
             selectedBranch={selectedBranch}
           />
         ) : (
-          <MyCalendar 
-          erpConfig={userData?.erp_config}
-          />
+          <MyCalendar erpConfig={userData?.erp_config} />
         )}
       </div>
       {loading && <Loader />}
