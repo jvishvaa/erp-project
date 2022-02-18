@@ -222,16 +222,20 @@ const PrincipalDashboard = () => {
               avatar={MenuBookIcon}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          { window.location.href.slice(8,10) == "qa" || window.location.href.slice(8,11) == "dev" || window.location.href.slice(8,27) == "orchids.letseduvate" ? 
+          (<Grid item xs={12} md={6}>
             <ReportStatsWidget title='Blog Report' data={blogReport} avatar={WebAsset} />
-          </Grid>
-          <Grid item xs={12} md={6}>
+          </Grid>) : 
+          ("")}
+          { window.location.href.slice(8,10) == "qa" || window.location.href.slice(8,11) == "dev" || window.location.href.slice(8,27) == "orchids.letseduvate" ? 
+          (<Grid item xs={12} md={6}>
             <ReportStatsWidget
               title='Discussion Forum Report'
               data={discussionReport}
               avatar={ForumIcon}
             />
-          </Grid>
+          </Grid>) :
+          ("")}
         </Grid>
         <Grid item xs={12} md={6}>
           <ReportStatsWidget

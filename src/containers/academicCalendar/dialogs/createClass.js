@@ -162,7 +162,7 @@ const CreateClass = ({
     } else {
       setAlert('error', 'Class must be between 06:00AM - 10:30PM');
     }
-    
+
   };
 
   const handleAcademicYear = (event, value) => {
@@ -586,15 +586,11 @@ const CreateClass = ({
             setSelectAll(true)
             selectionArray = [];
             setSelectedUsers([])
-          } else {
-            if ("period already allocated" === result?.data?.message.slice(0, 24)) {
-              setAlert('error', "Tutor Already Occupied")
-            }
-            else {
-              setAlert('error', result?.data?.message);
-            }
-            setLoading(false);
           }
+          else {
+            setAlert('error', result?.data?.message);
+          }
+          setLoading(false);
         })
         .catch((error) => {
           setAlert('error', error?.message);

@@ -61,7 +61,7 @@ const Layout = ({ children, history }) => {
   let token = JSON.parse(localStorage.getItem('userDetails'))?.token || '';
 
   let userId = JSON.stringify(localStorage.getItem('userDetails')) || {};
-  const {erp_config} = JSON.parse(localStorage.getItem('userDetails'));
+  const erp_config = JSON.parse(localStorage.getItem('userDetails'))?.erp_config;
   var CryptoJS = require('crypto-js');
 
   var erp_details = CryptoJS.AES.encrypt(
