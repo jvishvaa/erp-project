@@ -35,11 +35,13 @@ export default function StudentRightDashboard(props) {
                 <SocialMedia />
               </Hidden>
             </Grid> */}
-          <Grid item xs={12}>
+            { window.location.href.slice(8,10) == "qa" || window.location.href.slice(8,11) == "dev" || window.location.href.slice(8,27) == "orchids.letseduvate" ? 
+          (<Grid item xs={12}>
             <Hidden xsDown>
               <MediaOrchadioCard />
             </Hidden>
-          </Grid>
+          </Grid>) :
+          ("")}
         </Grid>
       </Grid>
     </Grid>
