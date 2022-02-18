@@ -39,17 +39,17 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
       .get(endpoints.checkAcademicView.isAcademicView)
       .then((res) => {
         if (res?.data?.status_code === 200) {
-          if (res?.data?.result == 'True') {
+          if (res?.data?.result[0] == 'True') {
             return true;
-          } else if (res?.data?.result == 'False') {
+          } else if (res?.data?.result[0] == 'False') {
             return false;
-          } else if (res?.data?.result.length > 0) {
-            branch.forEach((element) => {
-              if (res.data.result[0].toString().includes(element.id)) {
-                payload.push(element.id);
-              }
-            });
-            return payload;
+          } else if (res?.data?.result[0]) {
+            let resData = res?.data?.result[0]
+          
+            const selectedId = branch?.map((el) => el?.id);
+            let checkData = resData?.some(item => selectedId.includes(Number(item)))
+            console.log(checkData, "check");
+            return checkData;
           }
         }
       });

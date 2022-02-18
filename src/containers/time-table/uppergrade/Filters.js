@@ -129,7 +129,6 @@ const Filters = (props) => {
       // props.handleAutoComplete(false)
     }
   };
-  console.log('filters12', selectedBranch, gradeDisplay, sectionDisplay);
 
   const handleClearData = (data) => {
     if (data === 'clear') {
