@@ -227,7 +227,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const toggleClassWorkDrawer = () => {
     if (periodDetails?.ongoing_status === 'Completed') {
       setIsClassWorkOpen((prevState) => prevState);
-      setAlert('warning', "Class Completed Not Able to Create a Class")
+      setAlert('warning', "Class Completed so not Able to Create a Class")
       return;
     }
     else {
@@ -1123,28 +1123,28 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                         ))}
                       </div>
                       {periodData?.classwork_details?.classwork_details?.length >= 1 && periodData?.classwork_details?.quiz_list?.length >= 1 ? "" :
-                      <div
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'flex-end ',
-                        }}
-                      >
                         <div
                           style={{
-                            padding: '0px 5px',
-                            padding: '0px 0px',
-                            margin: '1px 46px 20px 20px',
+                            display: 'flex',
+                            justifyContent: 'flex-end ',
                           }}
                         >
-                          <Button
-                            variant='contained'
-                            className={classes.classAddSection}
-                            onClick={toggleClassWorkDrawer}
+                          <div
+                            style={{
+                              padding: '0px 5px',
+                              padding: '0px 0px',
+                              margin: '1px 46px 20px 20px',
+                            }}
                           >
-                            + Add class Work
-                          </Button>
+                            <Button
+                              variant='contained'
+                              className={classes.classAddSection}
+                              onClick={toggleClassWorkDrawer}
+                            >
+                              + Add class Work
+                            </Button>
+                          </div>
                         </div>
-                      </div>
                       }
                       <Grid container className='swipe-container'>
                         <SwipeableDrawer
