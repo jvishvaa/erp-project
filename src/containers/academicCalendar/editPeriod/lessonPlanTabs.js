@@ -15,6 +15,7 @@ import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRoun
 import axiosInstance from 'config/axios';
 import { AttachmentPreviewerContext } from './../../../components/attachment-previewer/attachment-previewer-contexts/attachment-previewer-contexts';
 import endpoints from '../../../config/endpoints';
+import './editPeriod.scss'
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
 
 function TabPanel(props) {
@@ -305,10 +306,14 @@ const LessonPlanTabs = ({
               >
                 {file.media_file.map((data) => {
                   const name = data.split('/')[data.split('/').length - 1];
+                  const fileNewName = name.split('.')[name.split('.').length - 2];
+                  const exten = '.' + name.split('.')[name.split('.').length - 1];
+                  const newFileName = name + '.' + exten;
                   return (
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p style={{ marginRight: 30 }}>{name}</p>
+                      <p className='fileName' title={name|| ''}>{fileNewName}</p>
+                      <p className='fileNameext' title={name|| ''}>{exten}</p>
                       <SvgIcon
                         component={() => (
                           <VisibilityIcon
@@ -364,10 +369,14 @@ const LessonPlanTabs = ({
               >
                 {file.media_file.map((data) => {
                   const name = data.split('/')[data.split('/').length - 1];
+                  const fileNewName = name.split('.')[name.split('.').length - 2];
+                  const exten = '.' + name.split('.')[name.split('.').length - 1];
+                  const newFileName = name + '.' + exten;
                   return (
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p style={{ marginRight: 30 }}>{name}</p>
+                      <p className='fileName' title={name|| ''}>{fileNewName}</p>
+                      <p className='fileNameext' title={name|| ''}>{exten}</p>
                       <SvgIcon
                         component={() => (
                           <VisibilityIcon
@@ -422,10 +431,14 @@ const LessonPlanTabs = ({
               >
                 {file.media_file.map((data) => {
                   const name = data.split('/')[data.split('/').length - 1];
+                  const fileNewName = name.split('.')[name.split('.').length - 2];
+                  const exten = '.' + name.split('.')[name.split('.').length - 1];
+                  const newFileName = name + '.' + exten;
                   return (
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p style={{ marginRight: 30 }}>{name}</p>
+                      <p className='fileName' title={name|| ''}>{fileNewName}</p>
+                      <p className='fileNameext' title={name|| ''}>{exten}</p>                      
                       <SvgIcon
                         component={() => (
                           <VisibilityIcon
@@ -480,10 +493,14 @@ const LessonPlanTabs = ({
               >
                 {file.media_file.map((data) => {
                   const name = data.split('/')[data.split('/').length - 1];
+                  const fileNewName = name.split('.')[name.split('.').length - 2];
+                  const exten = '.' + name.split('.')[name.split('.').length - 1];
+                  const newFileName = name + '.' + exten;
                   return (
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p style={{ marginRight: 30 }}>{name}</p>
+                      <p className='fileName' title={name|| ''}>{fileNewName}</p>
+                      <p className='fileNameext' title={name|| ''}>{exten}</p>
                       <SvgIcon
                         component={() => (
                           <VisibilityIcon
@@ -538,10 +555,15 @@ const LessonPlanTabs = ({
               >
                 {file.media_file.map((data) => {
                   const name = data.split('/')[data.split('/').length - 1];
+                  const fileNewName = name.split('.')[name.split('.').length - 2];
+                  const exten = '.' + name.split('.')[name.split('.').length - 1];
+                  const newFileName = name + '.' + exten;
+                 
                   return (
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p style={{ marginRight: 30 }}>{name}</p>
+                      <p className='fileName' title={name|| ''}>{fileNewName}</p>
+                      <p className='fileNameext' title={name|| ''}>{exten}</p>
                       <SvgIcon
                         component={() => (
                           <VisibilityIcon
@@ -598,10 +620,14 @@ const LessonPlanTabs = ({
               >
                 {file.media_file.map((data) => {
                   const name = data.split('/')[data.split('/').length - 1];
+                  const fileNewName = name.split('.')[name.split('.').length - 2];
+                  const exten = '.' + name.split('.')[name.split('.').length - 1];
+                  const newFileName = name + '.' + exten;
                   return (
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p style={{ marginRight: 30 }}>{name}</p>
+                      <p className='fileName' title={name|| ''}>{fileNewName}</p>
+                      <p className='fileNameext' title={name|| ''}>{exten}</p>
                       <SvgIcon
                         component={() => (
                           <VisibilityIcon
@@ -647,10 +673,14 @@ const LessonPlanTabs = ({
               /* <div style={{ display: 'flex', height: 50 }}> */
             }
             const name = data.split('/')[data.split('/').length - 1];
+            const fileNewName = name.split('.')[name.split('.').length - 2];
+            const exten = '.' + name.split('.')[name.split('.').length - 1];
+            const newFileName = name + '.' + exten;
             return (
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                <p style={{ marginRight: 30 }}>{name}</p>
+                <p className='fileName' title={name|| ''}>{fileNewName}</p>
+                <p className='fileNameext' title={name|| ''}>{exten}</p>
                 <SvgIcon
                   component={() => (
                     <VisibilityIcon
