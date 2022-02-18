@@ -107,7 +107,7 @@ const DateAndCalander = (props) => {
   const [collidingMsg,setCollidingMsg] = useState()
   const [isEdit,setIsEdit] = useState(false)
   const [selectedItem , setSelectedItem] = useState()
-  const { user_level } = JSON.parse(localStorage.getItem('userDetails'));
+  const { user_level,is_superuser } = JSON.parse(localStorage.getItem('userDetails'));
 
 
 
@@ -432,7 +432,7 @@ let data = await collidingPeriod(payload);
     <>
       {showTableView && (
         <>
-        {(user_level === 1 || user_level === 8 || user_level === 10) && props?.teacherView && <Button
+        {(user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) && props?.teacherView && <Button
           color='primary'
           style={{marginBottom:'10px'}}
           variant='contained'
@@ -446,6 +446,7 @@ let data = await collidingPeriod(payload);
           handleOperation={handleOperation}
           user_level = {user_level}
           teacherView = {props?.teacherView}
+          is_superuser = {is_superuser}
         />}
         </>
       )}
@@ -490,7 +491,7 @@ let data = await collidingPeriod(payload);
             <>
             <div style={{display:'flex'}}>
              <Grid item xs={2} sm={2} md={2}>
-             {timeTableEvents?.length && (user_level === 1 || user_level === 8 || user_level === 10) && props?.teacherView && <Button
+             {timeTableEvents?.length && (user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) && props?.teacherView && <Button
               color='primary'
               variant='contained'
               style = {{marginLeft : '17%'}}
@@ -503,7 +504,7 @@ let data = await collidingPeriod(payload);
             </Button>}
             </Grid>
             <Grid item xs={2} sm={2} md={2} style={{marginLeft : '72%'}}>
-            {(user_level === 1 || user_level === 8 || user_level === 10) && props?.teacherView &&<Button
+            {(user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) && props?.teacherView &&<Button
               color='primary'
               // className={classes.addperiodbutton}
               variant='contained'
@@ -734,6 +735,7 @@ let data = await collidingPeriod(payload);
           ttId={ttId}
           selectedTableId={selectedTable?.status}
           user_level = {user_level}
+          is_superuser = {is_superuser}
           teacherView={props?.teacherView}
         />
       )}
@@ -762,9 +764,10 @@ let data = await collidingPeriod(payload);
        setIsEdit = {setIsEdit}
        getTTList = {ttList}
        gradeName = {props?.grade_Name}
+       section_mappingId = {props.section_mappingId}  
       />}
       {loading && <Loader />}
-    </>
+    </> 
   );
 };
 

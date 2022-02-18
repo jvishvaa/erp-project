@@ -40,7 +40,7 @@ const CreateDiary = (props, { lesson }) => {
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
   const handleImageChange = (event) => {
-    let fileType = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+    let fileType = ['image/jpeg', 'image/jpg', 'image/png'];
     let selectedFileType = event.target.files[0]?.type;
     if (!fileType.includes(selectedFileType)) {
       setAlert('error', 'File Type not supported');
@@ -217,20 +217,20 @@ const CreateDiary = (props, { lesson }) => {
               margin='dense'
             />
           </div>
+          <div style={{ display: 'flex', flexDirection: "row", overflowY: 'hidden' }}>
+            {filePath?.length > 0 &&
+              filePath?.map((file, i) => (
+                <FileRow
+                  key={`homework_student_question_attachment_${i}`}
+                  file={file}
+                  index={i}
+                  onClose={() => removeFileHandler(i, file)}
+                />
+              ))}
+          </div>
         </FormControl>
       </FormControl>
       <div style={{ width: '40%' }}>
-        <div style={{ display: 'flex' }}>
-          {filePath?.length > 0 &&
-            filePath?.map((file, i) => (
-              <FileRow
-                key={`homework_student_question_attachment_${i}`}
-                file={file}
-                index={i}
-                onClose={() => removeFileHandler(i, file)}
-              />
-            ))}
-        </div>
         <div>
           <Button
             startIcon={
@@ -255,7 +255,7 @@ const CreateDiary = (props, { lesson }) => {
               type='file'
               style={{ display: 'none' }}
               id='raised-button-file'
-              accept='image/*, .pdf'
+              accept='image/*'
               onChange={handleImageChange}
             />
             Add Document

@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState  } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import Button from '@material-ui/core/Button';
 import moment from 'moment';
 import FullCalendar, { filterEventStoreDefs } from '@fullcalendar/react'; // must go before plugins
@@ -19,21 +19,37 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CreateClass from '../dialogs/createClass';
+import Divider from '@material-ui/core/Divider';
+import CloseIcon from '@material-ui/icons/Close';
+import { IconButton, Typography } from '@material-ui/core';
+import { connect, useSelector } from 'react-redux';
 
-const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFiltered, counter, erpConfig }) => {
+const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFiltered, counter, erpConfig ,selectedBranch }) => {
   const [startDate, setStartDate] = useState([]);
   const [endDate, setEndDate] = useState([]);
   const [events, setEvents] = useState([]);
   const [open, setOpen] = React.useState(false);
+  const [openMonth, setOpenMonth] = React.useState(false);
   const [openEvent, setOpenEvent] = React.useState(false);
   const [calRef, setCalRef] = useState([]);
   const [jumpTo, setJumpTo] = useState();
   const [isDay, setIsDay] = useState(false);
   const [isCreateClassOpen, setIsCreateClassOpen] = useState(false);
-  const [ filterData , setFilterData ] = useState([])
+  const [filterData, setFilterData] = useState([])
+  const [isMonth, setIsMonth] = useState(false)
+  const [viewCal, setViewCal] = useState('')
+  const [periodDataEach, setPeriodDataEach] = useState([])
+  const [dialogDate, setDialogDate] = useState()
   const toggleCreateClass = () => {
     setIsCreateClassOpen((prevState) => !prevState);
   };
+
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+
+  const branchIds =
+    JSON.parse(localStorage.getItem('userDetails'))?.role_details?.branch || {};
 
 
   const { user_level: userLevel = 5 } =
@@ -43,12 +59,74 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
     cal.changeView('day', e?.dateStr);
   };
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handleEventClick = (e) => {
+    if(e?.start) {
+    const cal = calendarRef.current.getApi();
+    cal.changeView('day', e?.start);
+    setOpenMonth(false)
+    } else {
+      const cal = calendarRef.current.getApi();
+      cal.changeView('day', e?.date);
+      setOpenMonth(false)
+    }
   };
+
+  const handleClickOpenMonth = (e) => {
+    setOpenMonth(true);
+    setDialogDate(moment(e.event.start).format('DD-MM-YYYY'))
+    if (e.event.start) {
+      if (!filtered) {
+        let params = {
+          start_date: moment(e.event.start).format('YYYY-MM-DD'),
+          end_date: moment(e.event.start).format('YYYY-MM-DD'),
+          branch: (branchIds.map((el) => el?.id)).toString()
+        }
+        axios({
+          method: 'get',
+          url: `${endpoints.period.getDate}`,
+          params: params,
+        })
+          .then((res) => {
+            console.log(res);
+            setPeriodDataEach(res.data.result)
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+      }
+      else {
+        let params = {
+          start_date: moment(e.event.start).format('YYYY-MM-DD'),
+          end_date: moment(e.event.start).format('YYYY-MM-DD'),
+          subject_mapping: selectedSubject.toString(),
+          grade: selectedGrade.toString(),
+          acad_session: selectedBranch?.id
+        }
+        axios({
+          method: 'get',
+          url: `${endpoints.period.getDate}`,
+          params: params,
+        })
+          .then((res) => {
+            setPeriodDataEach(res.data.result)
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+      }
+    }
+
+  };
+
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleCloseMonth = () => {
+    setOpenMonth(false);
+    setDialogDate()
+    setPeriodDataEach([])
   };
 
   const handleOpenEvent = () => {
@@ -56,41 +134,60 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
   };
 
   useEffect(() => {
-
-
-    // if (isDay === false) {
-      if (!filtered) {
-        let params = {
-          start_date: startDate,
-          end_date: endDate,
-          branch: erpConfig?.length > 0 ? erpConfig.toString() : ''
-        }
-        setFilterData(params)
+    if (!filtered) {
+      let params = {
+        start_date: startDate,
+        end_date: endDate,
+        branch: (branchIds.map((el) => el?.id)).toString()
+      }
+      setFilterData(params)
+      if (params?.end_date.length != 0) {
         axios({
           method: 'get',
-          url: `${endpoints.period.getDate}`,
+          url: isMonth ? `${endpoints.period.periodV2}` : `${endpoints.period.getDate}`,
           params: params,
         })
           .then((res) => {
             // setEvents(res.data.result);
             let eventsArray = [];
-            res.data.result.forEach((items, index) => {
-              eventsArray.push({
-                start: items?.start || items?.date,
-                end: items?.end,
-                title: items?.info?.name || items?.gradewise_holidays[0]?.holiday_name,
-                color:
-                  items?.info?.type_name === 'Examination'
-                    ? '#F0485B'
-                    : items?.info?.type_name === 'Lecture'
-                      ? '#A7A09B'
-                      : items?.type?.name === 'Holiday'
-                        ? '#308143'
-                        : '#BD78F9',
-                extendedProps: res.data.result,
-                id: items?.id,
+            if (isMonth) {
+              res.data.result && res.data.result.forEach((items, index) => {
+                eventsArray.push({
+                  start: items?.date,
+                  // end: items?.end,
+                  title: items?.info?.name || items?.total_periods ? 'periods ' + items?.total_periods : items?.total_holidays ? "holiday " + items?.total_holidays : '',
+                  color:
+                    items?.info?.type_name === 'Examination'
+                      ? '#F0485B'
+                      : items?.info?.type_name === 'Lecture'
+                        ? '#A7A09B'
+                        : items?.type?.name === 'Holiday'
+                          ? '#308143'
+                          : items?.total_holidays ? '#308143' : items?.total_periods ? '#A7A09B' : '#BD78F9',
+                  extendedProps: res.data.result,
+                  id: items?.index,
+                });
               });
-            });
+            }
+            if (!isMonth) {
+              res.data.result && res.data.result.forEach((items, index) => {
+                eventsArray.push({
+                  start: items?.start || items?.date,
+                  end: items?.end,
+                  title: items?.info?.name || items?.gradewise_holidays[0]?.holiday_name,
+                  color:
+                    items?.info?.type_name === 'Examination'
+                      ? '#F0485B'
+                      : items?.info?.type_name === 'Lecture'
+                        ? '#A7A09B'
+                        : items?.type?.name === 'Holiday'
+                          ? '#308143'
+                          : '#BD78F9',
+                  extendedProps: res.data.result,
+                  id: items?.id,
+                });
+              });
+            }
             setEvents(eventsArray);
           })
           .catch((error) => {
@@ -102,41 +199,64 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
             setEvents(eventsArray)
           });
       }
-      else {
-        let params = {
-          start_date: startDate,
-          end_date: endDate,
-          subject: selectedSubject.toString(),
-          grade: selectedGrade.toString()
-        }
+    }
+    else {
+      let params = {
+        start_date: startDate,
+        end_date: endDate,
+        subject_mapping: selectedSubject.toString(),
+        grade: selectedGrade.toString(),
+        acad_session: selectedBranch?.id
+      }
 
-        setFilterData(params)
-
+      setFilterData(params)
+      if (params?.start_date) {
         axios({
           method: 'get',
-          url: `${endpoints.period.getDate}`,
+          url: isMonth ? `${endpoints.period.periodV2}` : `${endpoints.period.getDate}`,
           params: params,
         })
           .then((res) => {
             // setEvents(res.data.result);
             let eventsArray = [];
-            res.data.result.forEach((items, index) => {
-              eventsArray.push({
-                start: items?.start || items?.date,
-                end: items?.end,
-                title: items?.info?.name || items?.gradewise_holidays[0]?.holiday_name,
-                color:
-                  items?.info?.type_name === 'Examination'
-                    ? '#F0485B'
-                    : items?.info?.type_name === 'Lecture'
-                      ? '#A7A09B'
-                      : items?.type?.name === 'Holiday'
-                        ? '#308143'
-                        : '#BD78F9',
-                extendedProps: res.data.result,
-                id: items?.id,
+            if (isMonth) {
+              res.data.result && res.data.result.forEach((items, index) => {
+                eventsArray.push({
+                  start: items?.date,
+                  // end: items?.end,
+                  title: items?.info?.name || items?.total_periods ? 'periods ' + items?.total_periods : items?.total_holidays ? "holiday " + items?.total_holidays : '',
+                  color:
+                    items?.info?.type_name === 'Examination'
+                      ? '#F0485B'
+                      : items?.info?.type_name === 'Lecture'
+                        ? '#A7A09B'
+                        : items?.type?.name === 'Holiday'
+                          ? '#308143'
+                          : items?.total_holidays ? '#308143' : items?.total_periods ? '#A7A09B' : '#BD78F9',
+                  extendedProps: res.data.result,
+                  id: items?.index,
+                });
               });
-            });
+            }
+            if (!isMonth) {
+              res.data.result.forEach((items, index) => {
+                eventsArray.push({
+                  start: items?.start || items?.date,
+                  end: items?.end,
+                  title: items?.info?.name || items?.gradewise_holidays[0]?.holiday_name,
+                  color:
+                    items?.info?.type_name === 'Examination'
+                      ? '#F0485B'
+                      : items?.info?.type_name === 'Lecture'
+                        ? '#A7A09B'
+                        : items?.type?.name === 'Holiday'
+                          ? '#308143'
+                          : '#BD78F9',
+                  extendedProps: res.data.result,
+                  id: items?.id,
+                });
+              });
+            }
             setEvents(eventsArray);
           })
           .catch((error) => {
@@ -148,8 +268,9 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
             setEvents(eventsArray)
           });
       }
+    }
     // }
-  }, [endDate, isCreateClassOpen, filtered, counter, erpConfig]);
+  }, [endDate, isCreateClassOpen, filtered, counter, viewCal]);
 
   const getEvent = (info) => {
     // info.jsEvent.preventDefault();
@@ -158,6 +279,12 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
   };
 
   const getView = (e) => {
+    setViewCal(e.view.type)
+    if (e.view.type === 'dayGridMonth') {
+      setIsMonth(true)
+    } else {
+      setIsMonth(false)
+    }
     if (e.view.type === 'day') {
       setIsDay(true);
     } else {
@@ -207,7 +334,7 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
         dateClick={handleDateClick}
         ref={calendarRef}
         // eventContent={RenderEventContent}
-        eventClick={getEvent}
+        eventClick={handleClickOpenMonth}
         headerToolbar={{
           left: 'today myCustomButton',
           center: 'prev,title,next',
@@ -344,6 +471,47 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
           </DialogActions>
         </Dialog>
       </>
+
+      <>
+        <Dialog
+          open={openMonth}
+          onClose={handleCloseMonth}
+          aria-labelledby='alert-dialog-title'
+          aria-describedby='alert-dialog-description'
+        >
+          <DialogTitle id='alert-dialog-title' ><div style={{display: 'flex' , justifyContent: 'space-between'}}><div style={{fontSize: '15px' , margin: 'auto 0' }} >{dialogDate}</div> <IconButton onClick={handleCloseMonth} style={{fontSize: '15px'}} ><CloseIcon /></IconButton> </div></DialogTitle>
+          <DialogContent style={{minWidth: '450px' , paddingBottom: '5%'}} >
+            <div style={{overflowX: 'hidden' , overflowY: 'auto' , height:'400px' }} >
+            <div style={{display: 'flex' , justifyContent: 'space-between'}} >
+              <div style={{fontSize: '15px' , fontWeight: '600'}} >
+                Event Start Date
+              </div>
+              <div style={{fontSize: '15px' , fontWeight: '600'}}>
+                Event Time
+              </div>
+            </div>
+            <Divider />
+            <div>
+              {periodDataEach && periodDataEach.map((item) => (
+                <>
+                <div style={{display: 'flex' , justifyContent: 'space-between' , margin: '2% 0' , cursor: 'pointer' }} onClick={() => handleEventClick(item)} >
+                <div>
+                  <div>{item?.info?.name ? item?.info?.name : item?.gradewise_holidays[0]?.holiday_name}</div>
+                </div>
+                <div>
+                <div>{item?.start ? moment(item?.start).format('hh:mm a') : item?.date }</div>
+              </div>
+              </div>
+              <Divider />
+              </>
+              ))}
+            </div>
+            </div>
+          </DialogContent>
+         
+        </Dialog>
+      </>
+
       <CreateClass
         toggleCreateClass={toggleCreateClass}
         isCreateClassOpen={isCreateClassOpen}

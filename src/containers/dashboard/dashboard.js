@@ -19,7 +19,7 @@ const DefaultDashboard = React.lazy(() => import('./DefaultDashboard/defaultDash
 
 const Dashboard = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
-  const username = JSON.parse(localStorage.getItem('userDetails')) || [];
+  const { username, erp_config} = JSON.parse(localStorage.getItem('userDetails')) || [];
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -78,7 +78,7 @@ const Dashboard = () => {
 
   return (
     <Box px={3} mt={1}>
-      <WelcomeComponent />
+      <WelcomeComponent erp_config={erp_config}/>
       <Suspense fallback={<Loading />}>
         {isMsAPIKey ? renderRoleDashboard() : <DefaultDashboard />}
         {/* {true ? renderRoleDashboard() : <DefaultDashboard />} */}

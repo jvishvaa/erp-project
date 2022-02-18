@@ -142,7 +142,8 @@ const AddScoreDialog = (props) => {
     flagprop,
     studentRemark,
     handlestudentRemark,
-    homeWorkId
+    homeWorkId,
+    cpConfirm
   } = props;
 
   const handleChange = (e) => {
@@ -182,14 +183,16 @@ const AddScoreDialog = (props) => {
 
   const studentRemarkUpdate = () => {
     setLoading(true);
+    if(!cpConfirm){
+    setLoading(false);
+    if(studentScore >= 0 && studentScore <= 10){
     axiosInstance
       .put(`/period/${periodId}/update-attendance/`, {
         erp_id: studentId,
         cp_remarks: studentRemark,
-        cp_marks: parseFloat(studentScore),
+        cp_marks: parseFloat(studentScore).toFixed(1),
       })
       .then((result) => {
-
         if (result?.data?.status_code === 200) {
           setAlert('success', result.data.message);
           flagprop();
@@ -199,8 +202,15 @@ const AddScoreDialog = (props) => {
         setLoading(false);
       })
       .catch((error) => {
+        console.log('error', error?.message);
         setLoading(false);
-      });
+      });}else{
+        setAlert("error","Please enter marks between 0 to 10")
+      }
+    }else{
+      setLoading(false);
+      setAlert('error',"Remarks and score has been already locked")
+    }
   };
   const handleClose = () => {
     onClose(selectedValue);

@@ -100,7 +100,7 @@ const TimeTable = (props) => {
   const [getTTFlag, setGetTTFlag] = useState(false);
   const [isTimeTable, setIsTimeTable] = useState(false);
   const [showFilter, setShowFilter] = useState(true);
-  const [periodType,setPeriodType] = useState()
+  const [periodType, setPeriodType] = useState()
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -111,14 +111,14 @@ const TimeTable = (props) => {
         ) {
           item.child_module.forEach((item) => {
             if (
-              location.pathname === '/time-table/student-view' &&
+              location.pathname === '/timetable/studentview' &&
               item.child_name === 'Student Time Table'
             ) {
               setModuleId(item?.child_id);
               setTeacherView(false);
               setOpenCloseTable(false);
             } else if (
-              location.pathname === '/time-table/teacher-view' &&
+              location.pathname === '/timetable/teacherview' &&
               item.child_name === 'Teacher Time Table'
             ) {
               setModuleId(item?.child_id);
@@ -152,7 +152,7 @@ const TimeTable = (props) => {
   const handleChangeMultipleDays = (event, value) => {
     if (value?.length) {
       setDays(value);
-    }else{
+    } else {
       setDays([])
     }
     console.log(days, 'selected days');
@@ -187,7 +187,7 @@ const TimeTable = (props) => {
       section_id: section_ID,
     });
   };
-  
+
   const handleClickAPI = () => {
     // setFilterChange(true)
     setIsTimeTable(true)
@@ -195,16 +195,16 @@ const TimeTable = (props) => {
 
   const periodTypeList = async () => {
     const data = await getPeriodTypes();
-    if(data?.status_code === 200){
+    if (data?.status_code === 200) {
       setLectureList(data?.result);
       setPeriodType(data?.result[1])
       setperiodTypeId(data?.result[1]?.id)
     }
-    
+
   };
 
   useEffect(() => {
-    if(section_mappingId){
+    if (section_mappingId) {
       callingSubjectAPI();
       callingTeachersAPI();
     }
@@ -229,17 +229,21 @@ const TimeTable = (props) => {
   };
 
   const handleCloseNewPeriod = () => {
-    setDays([])
-
+    setIsTimeTable([]);
+    setDays([]);
+    setPeriodType(lectureList[1]);
+    setperiodTypeId(lectureList[1]?.id);
     setOpenNewPeriod(false);
+    setselectedStartTime(new Date('0'));
+    setselectedEndTime(new Date('0'));
   };
   const callingSubjectAPI = () => {
     axiosInstance
-      .get(`/assessment/subjects-list/?section_mapping=${section_mappingId}`, {
-        params: {
-          grade: gradeID,
-          session_year: acadamicYearID,
-        },
+      .get(`/erp_user/v2/mapped-subjects-list/?section_mapping=${section_mappingId}`, {
+        // params: {
+        //   grade: gradeID,
+        //   session_year: acadamicYearID,
+        // },
       })
       .then((res) => {
         setSubject(res.data.result);
@@ -262,35 +266,35 @@ const TimeTable = (props) => {
         setAlert('error', "can't fetch teachers list");
       });
   };
-  const addPeriod =  () => {
+  const addPeriod = () => {
     if (periodType?.type === "Lecture") {
-      if(!assignedTeacherID || !sectionIdOption || days.length === 0){
+      if (!assignedTeacherID || !sectionIdOption || days.length === 0) {
         setAlert('Warning', 'Please Fill all Fields');
-      }else{
-         createPeriodAPI()
+      } else {
+        createPeriodAPI()
       }
-    } else if(periodType?.type === "Examination"){
-      if(days.length === 0){
+    } else if (periodType?.type === "Examination") {
+      if (days.length === 0) {
         setAlert('Warning', 'Please Select Days');
-      }else{
-         createPeriodAPI()
+      } else {
+        createPeriodAPI()
       }
-    }else if(periodType?.type === "Competitions"){
-      if(days.length === 0 || !assignedTeacherID){
+    } else if (periodType?.type === "Competitions") {
+      if (days.length === 0 || !assignedTeacherID) {
         setAlert('Warning', 'Please Fill all Fields');
-      }else{
-         createPeriodAPI()
+      } else {
+        createPeriodAPI()
       }
-    }else if(periodType?.type === "Miscellaneous Event"){
-      if(days.length === 0 && !assignedTeacherID){
+    } else if (periodType?.type === "Miscellaneous Event") {
+      if (days.length === 0 && !assignedTeacherID) {
         setAlert('Warning', 'Please Select All Fields');
-      }else{
-         createPeriodAPI()
+      } else {
+        createPeriodAPI()
       }
     }
   };
 
-  const createPeriodAPI = async() =>{
+  const createPeriodAPI = async () => {
     let obj = {
       period_type_id: periodTypeId,
       start_time: `${moment(selectedStartTime).format('HH:mm:00')}`,
@@ -403,7 +407,7 @@ const TimeTable = (props) => {
                   </div>
                 </MuiPickersUtilsProvider>
               </div>
-              {(periodType?.type === "Lecture" || periodType?.type === "Examination" || periodType?.type === "Competitions" || periodType?.type ==="Miscellaneous Event" )&& <div className={classes.formTextFields}>
+              {(periodType?.type === "Lecture" || periodType?.type === "Examination" || periodType?.type === "Competitions" || periodType?.type === "Miscellaneous Event") && <div className={classes.formTextFields}>
                 <Autocomplete
                   fullWidth
                   id='combo-box-demo'
@@ -521,23 +525,23 @@ const TimeTable = (props) => {
               <span class='dot'> </span>
               <div className='table-header-data'>{sectinName}</div>
             </div> */}
-            <div className='date-container'>  
+            <div className='date-container'>
               {isTimeTable &&
-                  <DateAndCalander
-                    openNewPeriod={openNewPeriod}
-                    grade_ID={gradeID}
-                    grade_Name = {gradeName}
-                    teacherView={teacherView}
-                    section_mappingId={section_mappingId}
-                    ttId={handlettID}
-                    getTTFlag={getTTFlag}
-                    setGetTTFlag={setGetTTFlag}
-                    handlePassOpenNewPeriod={handlePassOpenNewPeriod}
-                    isTimeTable = {isTimeTable}
-                    HideAutocomplete = {(value)=>setShowFilter(!value)}
-                  />
+                <DateAndCalander
+                  openNewPeriod={openNewPeriod}
+                  grade_ID={gradeID}
+                  grade_Name={gradeName}
+                  teacherView={teacherView}
+                  section_mappingId={section_mappingId}
+                  ttId={handlettID}
+                  getTTFlag={getTTFlag}
+                  setGetTTFlag={setGetTTFlag}
+                  handlePassOpenNewPeriod={handlePassOpenNewPeriod}
+                  isTimeTable={isTimeTable}
+                  HideAutocomplete={(value) => setShowFilter(!value)}
+                />
               }
-              {!isTimeTable && <NoFilterData selectfilter={true}/>}
+              {!isTimeTable && <NoFilterData selectfilter={true} />}
 
             </div>
 

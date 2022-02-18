@@ -20,7 +20,7 @@ import { AlertNotificationContext } from '../../.././context-api/alert-context/a
 import apiRequest from '../../../config/apiRequest';
 import Loader from '../../../components/loader/loader';
 
-const studentCwHwStats = withRouter(({ history, data, hwData }) => {
+const studentCwHwStats = withRouter(({ history, data, hwData, periodDetails }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
   const handleSudentSubmitHW = (id) => {
@@ -109,10 +109,7 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
               <Typography
                 style={{ color: 'black', fontSize: '1rem', marginLeft: '30px' }}
               >
-                Submit Class Work (
-                {data?.classwork_details?.classwork_details?.length +
-                  data?.classwork_details?.quiz_details?.length}
-                )
+                Submit Class Work
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
@@ -157,7 +154,7 @@ const studentCwHwStats = withRouter(({ history, data, hwData }) => {
                   </>
                 ))}
                 <Divider />
-                {data?.classwork_details?.classwork_details?.map((item) => (
+                {periodDetails === 'On going...' && data?.classwork_details?.classwork_details?.map((item) => (
                   <>
                     <Grid item xs={9}>
                       <Typography style={{ fontSize: '0.97rem', fontWeight: 'bold' }}>

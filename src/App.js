@@ -305,7 +305,7 @@ import TermsAndCondition from 'containers/login/TermsAndCondition/termsAndCondit
 import EditStoreTransactionDetails from 'containers/Finance/src/components/Finance/StorePaymentRequests/editStoreTransactionDetails';
 import ShippingAmountAtStudent from 'containers/Finance/src/components/Inventory/Student/shippingAtStudent';
 // import { isMsAPI } from './utility-functions/index';
-import { isMsAPI } from './redux/actions';
+import { isMsAPI, erpConfig } from './redux/actions';
 import AssessmentReportTable from 'containers/assessment-central/assesment-report-card/index';
 import ConnectionPod from 'components/connection-pod/index.jsx';
 
@@ -359,10 +359,12 @@ import UserLevelTable from 'containers/user-management/User-Level/tableUserLevel
 import ERPSystemConfig from 'containers/master-management/erp-system-config';
 import AcademicCalendar from 'containers/academicCalendar/index';
 import AcadCalendar from 'containers/academicCalendar/fullcalendar/acadCalendar';
-import TimeTableOld from './containers/time-table-old/index';
-function App({ alert, isMsAPI }) {
+// import TimeTableOld from './containers/time-table-old/index';
+import TimeTableCheck from 'containers/timetable/index';
+function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
   isMsAPI();
+  erpConfig();
   }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
   return (
@@ -391,17 +393,17 @@ function App({ alert, isMsAPI }) {
                           <Route path='/user-management'>
                             {({ match }) => <UserManagement match={match} />}
                           </Route>
-                          <Route path='/time-table/student-view'>
+                          {/* <Route path='/time-table/student-view'>
                             {({ match }) => <TimeTable match={match} />}
-                          </Route>
+                          </Route> */}
                           <Route path='/timetable/studentview'>
-                            {({ match }) => <TimeTableOld match={match} />}
+                            {({ match }) => <TimeTableCheck match={match} />}
                           </Route>
-                          <Route path='/time-table/teacher-view'>
+                          {/* <Route path='/time-table/teacher-view'>
                             {({ match }) => <TimeTable match={match} />}
-                          </Route>
+                          </Route> */}
                           <Route path='/timetable/teacherview'>
-                            {({ match }) => <TimeTableOld match={match} />}
+                            {({ match }) => <TimeTableCheck match={match} />}
                           </Route>
                           <Route path='/griviences/admin-view'>
                             {({ match }) => <Griviences match={match} />}
@@ -1732,6 +1734,7 @@ const mapDispatchToProps = (dispatch) => ({
     error: (message) => dispatch(alertActions.error(message)),
   },
   isMsAPI: () => dispatch(isMsAPI()),
+  erpConfig: () => dispatch(erpConfig()),
 });
 const mapStateToProps = (state) => {
   return {
