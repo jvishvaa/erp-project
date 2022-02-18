@@ -1225,7 +1225,9 @@ const CreateClassForm = (props) => {
               <hr className='horizontal-line' />
               <Grid container className='create-class-container' spacing={2}>
                 <Grid item xs={12}>
-                  <h2 className='co_host-title'>Co-Host</h2>
+                  <h2 className='co_host-title' style={{ textAlign: 'initial' }}>
+                    Co-Host
+                  </h2>
                 </Grid>
 
                 <Grid item xs={11} sm={5}>
