@@ -438,7 +438,8 @@ const LessonPlanTabs = ({
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
                       <p className='fileName' title={name|| ''}>{fileNewName}</p>
-                      <p className='fileNameext' title={name|| ''}>{exten}</p>                      <SvgIcon
+                      <p className='fileNameext' title={name|| ''}>{exten}</p>                      
+                      <SvgIcon
                         component={() => (
                           <VisibilityIcon
                             onClick={() => {
