@@ -106,7 +106,7 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
 
       getChapter(value?.subject_id);
       setFilterData({ ...filterData, subject: value });
-      getUsersData(value);
+      getUsersData(filterData, value);
     }
   };
 
@@ -293,12 +293,12 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Circular' &&
+          item.parent_modules === 'Assessment' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Teacher Circular') {
+            if (item.child_name === 'Individual Student Report') {
               setModuleId(item.child_id);
             }
           });
@@ -311,8 +311,10 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
 
 
   useEffect(() => {
-    getBranch(selectedAcademicYear?.id)
-  }, []);
+    if (moduleId) {
+      getBranch(selectedAcademicYear?.id)
+    }
+  }, [moduleId]);
   const getERP = (branchId, gradeId, sectionId) => {
     setIsLoading(true);
     const {
@@ -338,11 +340,10 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
       });
   };
 
-  function getUsersData(subjectId) {
+  function getUsersData(value, subj) {
+    console.log(value, "iop")
     axiosInstance
-      .get(`${endpoints.assessmentReportTypes.individualStudentReport}?subject=${subjectId})
-        // }?subjects=9`)
-
+      .get(`${endpoints.assessmentReportTypes.individualStudentReport}?session_year=${value?.branch?.session_year?.id}&branch_id=${value?.branch?.branch?.id}&grade_id=${value?.grade?.grade_id}&subject=${subj?.subject_id}`)
       .then(response => {
         setStudentIndivisualReport(response?.data);
       })
@@ -357,7 +358,7 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
       <CommonBreadcrumbs
         componentName='Assessment'
         isAcademicYearVisible={true}
-        childComponentName='Indivisiual Student Reports'
+        childComponentName='Individual Student Reports'
       />
       <Grid
         container
@@ -446,7 +447,7 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
                   <TableRow>
                     <TableCell>{repos.test__test_name}</TableCell>
                     <TableCell>{repos.correct_answer}</TableCell>
-                    <TableCell>{repos.total_mark}</TableCell>
+                    <TableCell>{repos.test__total_mark}</TableCell>
                     <TableCell>{repos.wrong_answer}</TableCell>
                     <TableCell>{repos.marks_obtained}</TableCell>
                     <TableCell>{repos.marks_percentage}</TableCell>
