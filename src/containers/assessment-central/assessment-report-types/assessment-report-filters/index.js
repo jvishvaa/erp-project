@@ -105,7 +105,7 @@ const AssessmentReportFilters = ({
         status_code: status = 400,
       } = await getReportCardStatus();
       setMappingList(result);
-    } catch (err) {}
+    } catch (err) { }
   };
 
   useEffect(() => {
@@ -139,7 +139,7 @@ const AssessmentReportFilters = ({
         }
         setLoading(false);
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   const handleDateChange = (name, date) => {
@@ -231,7 +231,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   function getGrade(acadId, branchId) {
@@ -249,7 +249,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   function getSection(acadId, branchId, gradeId) {
@@ -267,7 +267,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   function getSubject(acadMappingId, gradeId) {
@@ -285,7 +285,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   function getTest(branchId, gradeId, subjectId) {
@@ -303,7 +303,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   function getChapter(subjectId) {
@@ -319,7 +319,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   function getTopic(chapterId, isCentral) {
@@ -339,7 +339,7 @@ const AssessmentReportFilters = ({
             });
           }
         })
-        .catch((error) => {});
+        .catch((error) => { });
     } else {
       axiosInstance
         .get(`${endpoints.assessmentErp.topicList}?chapter=${chapterId}`)
@@ -353,7 +353,7 @@ const AssessmentReportFilters = ({
             });
           }
         })
-        .catch((error) => {});
+        .catch((error) => { });
     }
   }
 
@@ -561,8 +561,7 @@ const AssessmentReportFilters = ({
     if (selectedReportType?.id === 1 && isFilter) {
       try {
         const { data } = await axiosInstance.get(
-          `${
-            endpoints.assessmentReportTypes.reportDowloadSectionWise
+          `${endpoints.assessmentReportTypes.reportDowloadSectionWise
           }?test=${JSON.stringify(filterData.test?.id)}`,
           {
             responseType: 'arraybuffer',
@@ -579,8 +578,7 @@ const AssessmentReportFilters = ({
     if (selectedReportType?.id === 2 && isFilter) {
       try {
         const { data } = await axiosInstance.get(
-          `${
-            endpoints.assessmentReportTypes.reportDownloadTopicWise
+          `${endpoints.assessmentReportTypes.reportDownloadTopicWise
           }?test=${JSON.stringify(filterData.test?.id)}`,
           {
             responseType: 'arraybuffer',
@@ -597,8 +595,7 @@ const AssessmentReportFilters = ({
     if (selectedReportType?.id === 3 && isFilter) {
       try {
         const { data } = await axiosInstance.get(
-          `${
-            endpoints.assessmentReportTypes.reportDownloadClassAverage
+          `${endpoints.assessmentReportTypes.reportDownloadClassAverage
           }?test=${JSON.stringify(filterData.test?.id)}`,
           {
             responseType: 'arraybuffer',
@@ -615,10 +612,8 @@ const AssessmentReportFilters = ({
     if (selectedReportType?.id === 4 && isFilter) {
       try {
         const { data } = await axiosInstance.get(
-          `${
-            endpoints.assessmentReportTypes.reportDownloadTopicStudentAverage
-          }?test=${JSON.stringify(filterData.test?.id)}&section_mapping=${
-            filterData.section?.id
+          `${endpoints.assessmentReportTypes.reportDownloadTopicStudentAverage
+          }?test=${JSON.stringify(filterData.test?.id)}&section_mapping=${filterData.section?.id
           }&topic=${filterData.topic?.id}`,
           {
             responseType: 'arraybuffer',
@@ -673,10 +668,8 @@ const AssessmentReportFilters = ({
       try {
         // http://localhost:8000/qbox/assessment/download-report-consolidate/?section_mapping=5&test=90&subject_id=3
         const { data } = await axiosInstance.get(
-          `${endpoints.assessmentReportTypes.reportConsolidated}?section_mapping=${
-            filterData.section?.id
-          }&test=${JSON.stringify(filterData.test?.id)}&subject_id=${
-            filterData?.subject?.subject_id
+          `${endpoints.assessmentReportTypes.reportConsolidated}?section_mapping=${filterData.section?.id
+          }&test=${JSON.stringify(filterData.test?.id)}&subject_id=${filterData?.subject?.subject_id
           }`,
           {
             responseType: 'arraybuffer',
@@ -722,6 +715,24 @@ const AssessmentReportFilters = ({
         FileSaver.saveAs(blob, `weeklyTeacherReport_EachGrade${new Date()}.xls`);
       } catch (error) {
         setAlert('error', 'Failed to download report');
+      }
+    }
+    if (selectedReportType?.id === 13) {
+      console.log(filterData, "dwa")
+      try {
+        const { data } = await axiosInstance.get(
+          `${endpoints.assessmentReportTypes.downloadReportTestReport
+          }?academic_year=${selectedAcademicYear?.id}&branch_id=${filterData?.branch?.id}&grade_id=${filterData?.grade?.acad_session__branch_id}&subject_id=${filterData?.subject?.subject_id}&start_date=${startDate}&end_date=${endDate}`,
+          {
+            responseType: 'arraybuffer',
+          }
+        );
+        const blob = new Blob([data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+        FileSaver.saveAs(blob, `Consolidated Report Assessment${new Date()}.xls`);
+      } catch (error) {
+        setAlert('error', 'Failed to download attendee list');
       }
     }
   };
@@ -813,27 +824,27 @@ const AssessmentReportFilters = ({
           selectedReportType?.id === 6 ||
           selectedReportType?.id === 7 ||
           selectedReportType?.id === 8) && (
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleSection}
-              id='section'
-              value={filterData.section || {}}
-              options={dropdownData.section || []}
-              getOptionLabel={(option) => option?.section__section_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Section'
-                  placeholder='Section'
-                />
-              )}
-            />
-          </Grid>
-        )}
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleSection}
+                id='section'
+                value={filterData.section || {}}
+                options={dropdownData.section || []}
+                getOptionLabel={(option) => option?.section__section_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Section'
+                    placeholder='Section'
+                  />
+                )}
+              />
+            </Grid>
+          )}
         {selectedReportType?.id !== 5 &&
           selectedReportType?.id !== 11 &&
           selectedReportType?.id !== 7 && (
@@ -862,7 +873,8 @@ const AssessmentReportFilters = ({
           selectedReportType?.id !== 7 &&
           selectedReportType?.id !== 9 &&
           selectedReportType?.id !== 10 &&
-          selectedReportType?.id !== 11 && (
+          selectedReportType?.id !== 11 &&
+          selectedReportType?.id !== 13 && (
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
                 style={{ width: '100%' }}
@@ -930,7 +942,6 @@ const AssessmentReportFilters = ({
         )}
 
         {selectedReportType?.id === 11 && <Weeklyassesmentreport />}
-
         {/* {selectedReportType?.id === 7 && (
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
             <Autocomplete
@@ -954,50 +965,51 @@ const AssessmentReportFilters = ({
           </Grid>
         )} */}
 
-        {selectedReportType?.id === 7 && (
-          <MuiPickersUtilsProvider utils={MomentUtils}>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <KeyboardDatePicker
-                size='small'
-                color='primary'
-                // disableToolbar
-                variant='dialog'
-                format='YYYY-MM-DD'
-                margin='none'
-                id='date-picker-start-date'
-                label='Start date'
-                value={startDate}
-                onChange={(event, date) => {
-                  handleDateChange('startDate', date);
-                }}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-                style={{ marginTop: -6 }}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <KeyboardDatePicker
-                size='small'
-                // disableToolbar
-                variant='dialog'
-                format='YYYY-MM-DD'
-                margin='none'
-                id='date-picker-end-date'
-                name='endDate'
-                label='End date'
-                value={endDate}
-                onChange={(event, date) => {
-                  handleDateChange('endDate', date);
-                }}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
+        {selectedReportType?.id === 7 ||
+          selectedReportType?.id == 13 && (
+            <MuiPickersUtilsProvider utils={MomentUtils}>
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <KeyboardDatePicker
+                  size='small'
+                  color='primary'
+                  // disableToolbar
+                  variant='dialog'
+                  format='YYYY-MM-DD'
+                  margin='none'
+                  id='date-picker-start-date'
+                  label='Start date'
+                  value={startDate}
+                  onChange={(event, date) => {
+                    handleDateChange('startDate', date);
+                  }}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
+                  style={{ marginTop: -6 }}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <KeyboardDatePicker
+                  size='small'
+                  // disableToolbar
+                  variant='dialog'
+                  format='YYYY-MM-DD'
+                  margin='none'
+                  id='date-picker-end-date'
+                  name='endDate'
+                  label='End date'
+                  value={endDate}
+                  onChange={(event, date) => {
+                    handleDateChange('endDate', date);
+                  }}
+                  KeyboardButtonProps={{
+                    'aria-label': 'change date',
+                  }}
                 // style={{ marginTop: -6 }}
-              />
-            </Grid>
-          </MuiPickersUtilsProvider>
-        )}
+                />
+              </Grid>
+            </MuiPickersUtilsProvider>
+          )}
         {selectedReportType?.id === 9 && (
           <MuiPickersUtilsProvider utils={MomentUtils}>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
@@ -1037,7 +1049,7 @@ const AssessmentReportFilters = ({
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
                 }}
-                // style={{ marginTop: -6 }}
+              // style={{ marginTop: -6 }}
               />
             </Grid>
           </MuiPickersUtilsProvider>
@@ -1081,7 +1093,7 @@ const AssessmentReportFilters = ({
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
                 }}
-                // style={{ marginTop: -6 }}
+              // style={{ marginTop: -6 }}
               />
             </Grid>
           </MuiPickersUtilsProvider>
@@ -1165,11 +1177,12 @@ const AssessmentReportFilters = ({
           </Grid>
         )}
         {selectedReportType?.id === 6 ||
-        selectedReportType?.id === 7 ||
-        selectedReportType?.id === 8 ||
-        selectedReportType?.id === 9 ||
-        selectedReportType?.id === 10 ||
-        selectedReportType?.id === 11 ? null : (
+          selectedReportType?.id === 7 ||
+          selectedReportType?.id === 8 ||
+          selectedReportType?.id === 9 ||
+          selectedReportType?.id === 10 ||
+          selectedReportType?.id === 11 ||
+          selectedReportType?.id === 13 ? null : (
           <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
             <Button
               variant='contained'
@@ -1180,9 +1193,9 @@ const AssessmentReportFilters = ({
                 selectedReportType?.id === 5
                   ? handlePreview
                   : () => {
-                      setSelectedERP([]);
-                      handleFilter();
-                    }
+                    setSelectedERP([]);
+                    handleFilter();
+                  }
               }
             >
               {selectedReportType?.id === 5 ? 'Preview' : 'Filter'}
