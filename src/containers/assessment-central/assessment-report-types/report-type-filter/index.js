@@ -44,6 +44,10 @@ const reportTypes = [
     id: 12,
     type: 'Consolidated Subject Assessment Report',
   },
+  {
+    id: 13,
+    type: 'Consolidated Assessment Report',
+  },
 ];
 
 const ReportTypeFilter = ({
