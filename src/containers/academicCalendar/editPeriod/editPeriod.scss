@@ -123,3 +123,21 @@
 .reminderDialog .MuiDialog-paperScrollPaper {
   border-radius: 10px;
 }
+
+
+.fileName{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 100px;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+.fileNameext{
+  margin-right: 30px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}

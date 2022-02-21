@@ -82,32 +82,34 @@ export const erpConfig = () => (dispatch) => {
   }
   dispatch({ type: ERP_CONFIG, payload: false });
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
-    const { branch } = data?.role_details;
-    let result = [];
-    axiosInstance
-      .get(endpoints.checkAcademicView.isAcademicView)
-      .then((res) => {
-        if (res?.data?.status_code === 200) {
-          if (res?.data?.result == 'True') {
-            data['erp_config']=true
-            localStorage.setItem('userDetails', JSON.stringify(data)); 
-            dispatch({ type: ERP_CONFIG, payload: true });
-          } else if (res?.data?.result == 'False') {
-            data['erp_config']=false
-            localStorage.setItem('userDetails', JSON.stringify(data)); 
-            dispatch({ type: ERP_CONFIG, payload: false });
-          } else if (res?.data?.result.length > 0) {
-            branch.forEach((element) => {
-              if (res.data.result[0].toString().includes(element.id)) {
-                result.push(element.id);
-              }
-            });
-            data['erp_config']=result
-            localStorage.setItem('userDetails', JSON.stringify(data)) 
-            dispatch({ type: ERP_CONFIG, payload: result });
-          }
+  const branch = data?.role_details?.branch;
+  let result = [];
+  axiosInstance
+    .get(endpoints.checkAcademicView.isAcademicView)
+    .then((res) => {
+      if (res?.data?.status_code === 200) {
+        if (res?.data?.result[0] == 'True') {
+          data['erp_config'] = true
+          localStorage.setItem('userDetails', JSON.stringify(data));
+          dispatch({ type: ERP_CONFIG, payload: true });
+        } else if (res?.data?.result[0] == 'False') {
+          data['erp_config'] = false
+          localStorage.setItem('userDetails', JSON.stringify(data));
+          dispatch({ type: ERP_CONFIG, payload: false });
+        } else if (res?.data?.result[0]) {
+          console.log(res.data.result[0], "  branchhh data ");
+          console.log(branch, "  branchhh ");
+          let resData = res?.data?.result[0]
+          
+          const selectedId = branch?.map((el) => el?.id);
+          let checkData = resData?.some(item => selectedId.includes(Number(item)))
+          console.log(checkData, "check");
+          data['erp_config'] = checkData
+          localStorage.setItem('userDetails', JSON.stringify(data))
+          dispatch({ type: ERP_CONFIG, payload: result });
         }
-      })
+      }
+    })
       .catch(() => {
       dispatch({ type: ERP_CONFIG, payload: false });
     });
