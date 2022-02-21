@@ -107,6 +107,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const { id } = useParams();
   const grade = history?.location?.state?.data?.grade?.name;
   const section = history?.location?.state?.data?.section?.name;
+  const subject = history?.location?.state?.data?.subject?.id;
   const classes = useStyles({});
   const [periodUI, setPeriodUI] = useState(null);
   const [uniqueIdd, setUniqueIdd] = useState(null);
@@ -345,6 +346,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
       ...reqObj,
       period_id: id,
       date: date,
+      subject: subject,
     };
     if (periodData?.homework_details?.homework_list.length) {
       axiosInstance
