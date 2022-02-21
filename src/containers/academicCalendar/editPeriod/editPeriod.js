@@ -227,7 +227,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const toggleClassWorkDrawer = () => {
     if (periodDetails?.ongoing_status === 'Completed') {
       setIsClassWorkOpen((prevState) => prevState);
-      setAlert('warning', "Class Completed So Not Able to Create a ClassWork")
+      setAlert('warning', "Not able to Assign Classwork as class is completed")
       return;
     }
     else {
