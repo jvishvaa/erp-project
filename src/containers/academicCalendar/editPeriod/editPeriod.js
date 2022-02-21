@@ -207,10 +207,11 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const handleClassWork = () => {
     setOpenClassWork(!openClassWork);
   };
-  const handleViewHomeWork = (id) => {
+  const handleViewHomeWork = (HW_id) => {
     history.push({
-      pathname: `/academic-calendar/view-home-work/${id}`,
-      homeworkId: id,
+      pathname: `/academic-calendar/view-home-work/${HW_id}`,
+      homeworkId: HW_id,
+      period_id: id,
     });
   };
 
