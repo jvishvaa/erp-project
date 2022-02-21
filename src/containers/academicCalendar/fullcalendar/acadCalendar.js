@@ -391,7 +391,7 @@ const AcadCalendar = () => {
           color='secondary'
           variant='contained'
           onClick={statsView}
-          style={{ position: 'relative', bottom: '46px', right: '170px' }}
+          style={isStudent ? { marginTop: '30px', marginLeft: '12px' } : { position: 'relative', bottom: '46px', right: '170px' }}
         >
           Stats View
         </Button>
