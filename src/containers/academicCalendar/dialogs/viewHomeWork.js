@@ -122,7 +122,7 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
   const callSubmittedDetail = () => {
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.homework.HwSubmittedDetail}?homework=${homeWorkId}`)
+      .get(`${endpoints.homework.HwSubmittedDetail}?homework=${homeWorkId}&period_id=${history?.location?.period_id}`)
       .then((result) => {
         if (result?.data?.status_code === 200 || result?.data?.status_code === 201) {
           setAlert('success', result?.data?.message);
