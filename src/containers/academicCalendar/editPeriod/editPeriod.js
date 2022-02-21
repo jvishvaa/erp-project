@@ -107,6 +107,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const { id } = useParams();
   const grade = history?.location?.state?.data?.grade?.name;
   const section = history?.location?.state?.data?.section?.name;
+  const subject = history?.location?.state?.data?.subject?.id;
   const classes = useStyles({});
   const [periodUI, setPeriodUI] = useState(null);
   const [uniqueIdd, setUniqueIdd] = useState(null);
@@ -207,10 +208,11 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const handleClassWork = () => {
     setOpenClassWork(!openClassWork);
   };
-  const handleViewHomeWork = (id) => {
+  const handleViewHomeWork = (HW_id) => {
     history.push({
-      pathname: `/academic-calendar/view-home-work/${id}`,
-      homeworkId: id,
+      pathname: `/academic-calendar/view-home-work/${HW_id}`,
+      homeworkId: HW_id,
+      period_id: id,
     });
   };
 
@@ -227,7 +229,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const toggleClassWorkDrawer = () => {
     if (periodDetails?.ongoing_status === 'Completed') {
       setIsClassWorkOpen((prevState) => prevState);
-      setAlert('warning', "Class Completed So Not Able to Create a ClassWork")
+      setAlert('warning', "Not able to Assign Classwork as class is completed")
       return;
     }
     else {
@@ -344,6 +346,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
       ...reqObj,
       period_id: id,
       date: date,
+      subject: subject,
     };
     if (periodData?.homework_details?.homework_list.length) {
       axiosInstance
