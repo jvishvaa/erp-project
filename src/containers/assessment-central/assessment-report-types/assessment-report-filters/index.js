@@ -722,7 +722,7 @@ const AssessmentReportFilters = ({
       try {
         const { data } = await axiosInstance.get(
           `${endpoints.assessmentReportTypes.downloadReportTestReport
-          }?academic_year=${selectedAcademicYear?.id}&branch_id=${filterData?.branch?.id}&grade_id=${filterData?.grade?.grade_id}&subject_id=${filterData?.subject?.subject_id}&start_date=${startDate}&end_date=${endDate}`,
+          }?academic_year=${selectedAcademicYear?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${filterData?.grade?.grade_id}&subject_id=${filterData?.subject?.subject_id}&start_date=${startDate}&end_date=${endDate}`,
           {
             responseType: 'arraybuffer',
           }
