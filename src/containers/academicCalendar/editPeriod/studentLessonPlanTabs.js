@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LessonPlanTabs = ({
+const StudentLessonPlanTabs = ({
   data,
   setPeriodUI,
   periodId,
@@ -204,29 +204,28 @@ const LessonPlanTabs = ({
       .post(`${endpoints.lessonPlanTabs.postData}`, formData)
       .then((res) => {
         if (res?.data?.data) {
-          let uploadedFiles = res?.data?.data;
           if (!uploadedData.length) {
             axiosInstance
               .post(`${endpoints.lessonPlanTabs.postData2}`, {
                 topic_id: upcomingTopicId,
-                my_files: res?.data?.data,
+                my_files: [res?.data?.data],
               })
               .then((response) => {
                 setFileId(response?.data?.result?.id);
               })
               .catch((err) => {
-                // console.log('File Upload Error');
+                console.log('File Upload Error');
               });
           } else {
             axiosInstance
               .put(`${endpoints.lessonPlanTabs.getData2.replace('<file-id>', fileId)}`, {
-                my_files: [...uploadedData, ...uploadedFiles],
+                my_files: [...uploadedData, res?.data?.data],
               })
               .then((response) => {
                 previousUploadedFiles(fileId);
               })
               .catch((err) => {
-                // console.log('File Upload Error');
+                console.log('File Upload Error');
               });
           }
         }
@@ -240,9 +239,9 @@ const LessonPlanTabs = ({
         <Tabs
           value={value}
           onChange={handleChange}
-          size='small'
           variant="scrollable"
           scrollButtons="auto"
+          size='small'
           aria-label='simple tabs example'
           style={{ backgroundColor: 'white' }}
         >
@@ -261,13 +260,13 @@ const LessonPlanTabs = ({
             <>
               <Tab
                 label='Question Paper'
-                {...a11yProps('0')}
+                {...a11yProps('QP')}
                 size='small'
                 style={{ minWidth: 54, fontSize: '15px' }}
               />
               <Tab
-                label='My Files'
-                {...a11yProps('1')}
+                label='My File'
+                {...a11yProps('MF')}
                 size='small'
                 style={{ minWidth: 54, fontSize: '15px' }}
               />
@@ -275,75 +274,21 @@ const LessonPlanTabs = ({
         </Tabs>
       </AppBar>
       {filesData.filter((tempData) => tempData.document_type).map((tabs, i) => {
-        if (tabs?.document_type) {
-          if (tabs.document_type !== 'my_files') {
-            console.log("DEBUG the value of rest tabs is: ", i)
-            return <TabPanel value={value} index={i} className={classes.tab}>
-              <div>
-                <div
-                  style={{
-                    display: 'flex',
-                    height: '80%',
-                    width: '100%',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    whiteSpace: 'nowrap',
-                    flexDirection: 'column',
-                  }}
-                >
-                  {tabs?.media_file?.map((data) => {
-                    const name = data.split('/')[data.split('/').length - 1];
-                    const fileNewName = name.split('.')[name.split('.').length - 2];
-                    const exten = '.' + name.split('.')[name.split('.').length - 1];
-                    const newFileName = name + '.' + exten;
-                    return (
-                      <div style={{ display: 'flex', flexDirection: 'row' }}>
-                        <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                        <p className='fileName' title={name || ''}>{fileNewName}</p>
-                        <p className='fileNameext' title={name || ''}>{exten}</p>
-                        <SvgIcon
-                          component={() => (
-                            <VisibilityIcon
-                              onClick={() => {
-                                const fileSrc = `${endpoints.lessonPlan.s3}${data}`;
-                                openPreview({
-                                  currentAttachmentIndex: 0,
-                                  attachmentsArray: [
-                                    {
-                                      src: fileSrc,
-                                      name: name.split('.')[name.split('.').length - 2],
-                                      extension:
-                                        '.' + name.split('.')[name.split('.').length - 1],
-                                    },
-                                  ],
-                                });
-                              }}
-                              color='primary'
-                            />
-                          )}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className='attachment-material'>
-                <IconButton
-                  fontSize='small'
-                  id='file-icon'
-                  disableRipple
-                  component='label'
-                ></IconButton>
-              </div>
-            </TabPanel>
-          } else {
-            console.log("DEBUG the value of tab my files is: ", i)
-            return <TabPanel value={value} index={i} className={classes.tab}>
-              <div style={{ height: '200' }}>
-                {uploadedData?.map((data) => {
-                  {
-                    /* <div style={{ display: 'flex', height: 50 }}> */
-                  }
+        if (tabs?.document_type && tabs?.media_file.length > 0) {
+          return <TabPanel value={value} index={i} className={classes.tab}>
+            <div>
+              <div
+                style={{
+                  display: 'flex',
+                  height: '80%',
+                  width: '100%',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                  flexDirection: 'column',
+                }}
+              >
+                {tabs?.media_file?.map((data) => {
                   const name = data.split('/')[data.split('/').length - 1];
                   const fileNewName = name.split('.')[name.split('.').length - 2];
                   const exten = '.' + name.split('.')[name.split('.').length - 1];
@@ -357,7 +302,7 @@ const LessonPlanTabs = ({
                         component={() => (
                           <VisibilityIcon
                             onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3erp}homework/${data}`;
+                              const fileSrc = `${endpoints.lessonPlan.s3}${data}`;
                               openPreview({
                                 currentAttachmentIndex: 0,
                                 attachmentsArray: [
@@ -374,124 +319,24 @@ const LessonPlanTabs = ({
                           />
                         )}
                       />
-                      {/* <a style={{ paddingTop: '6px' }} href={`https://d3ka3pry54wyko.cloudfront.net/${data}`}>{data.split('/')[data.split('/').length - 1]}</a> */}
-                      {/* {uploadedata} */}
-                      {/* </div> */}
                     </div>
                   );
                 })}
               </div>
-              {data?.status !== 2 && (
-                <div className='attachment-material'>
-                  <IconButton
-                    fontSize='small'
-                    id='file-icon'
-                    disableRipple
-                    component='label'
-                    className={classes.attachmentIconhover}
-                  >
-                    <AttachmentIcon fontSize='small' />
-                    <input
-                      type='file'
-                      accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
-                      onChange={(e) => {
-                        uploadFileHandler3(e);
-                      }}
-                    // className={classes.fileInput}
-                    />
-                  </IconButton>
-                  <Button
-                    variant='contained'
-                    color='secondary'
-                    // className={classes.button}
-                    startIcon={<AddCircleOutlineRoundedIcon />}
-                    onClick={handleUpload}
-                  >
-                    Upload
-                  </Button>
-                </div>
-              )}
-            </TabPanel>
-          }
+            </div>
+            <div className='attachment-material'>
+              <IconButton
+                fontSize='small'
+                id='file-icon'
+                disableRipple
+                component='label'
+              ></IconButton>
+            </div>
+          </TabPanel>
         }
       })}
-      {filesData.length === 0 && <TabPanel value={value} index={1} className={classes.tab}>
-        <div style={{ height: '200' }}>
-          {uploadedData?.map((data) => {
-            {
-              /* <div style={{ display: 'flex', height: 50 }}> */
-            }
-            const name = data.split('/')[data.split('/').length - 1];
-            const fileNewName = name.split('.')[name.split('.').length - 2];
-            const exten = '.' + name.split('.')[name.split('.').length - 1];
-            const newFileName = name + '.' + exten;
-            return (
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                <p className='fileName' title={name || ''}>{fileNewName}</p>
-                <p className='fileNameext' title={name || ''}>{exten}</p>
-                <SvgIcon
-                  component={() => (
-                    <VisibilityIcon
-                      onClick={() => {
-                        const fileSrc = `${endpoints.lessonPlan.s3erp}homework/${data}`;
-                        openPreview({
-                          currentAttachmentIndex: 0,
-                          attachmentsArray: [
-                            {
-                              src: fileSrc,
-                              name: name.split('.')[name.split('.').length - 2],
-                              extension:
-                                '.' + name.split('.')[name.split('.').length - 1],
-                            },
-                          ],
-                        });
-                      }}
-                      color='primary'
-                    />
-                  )}
-                />
-                {/* <a style={{ paddingTop: '6px' }} href={`https://d3ka3pry54wyko.cloudfront.net/${data}`}>{data.split('/')[data.split('/').length - 1]}</a> */}
-                {/* {uploadedata} */}
-                {/* </div> */}
-              </div>
-            );
-          })}
-        </div>
-        {data?.status !== 2 && (
-          <div className='attachment-material'>
-            <IconButton
-              fontSize='small'
-              id='file-icon'
-              disableRipple
-              component='label'
-              className={classes.attachmentIconhover}
-            >
-              <AttachmentIcon fontSize='small' />
-              <input
-                type='file'
-                accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
-                onChange={(e) => {
-                  uploadFileHandler3(e);
-                }}
-              // className={classes.fileInput}
-              />
-            </IconButton>
-            <Button
-              variant='contained'
-              color='secondary'
-              // className={classes.button}
-              startIcon={<AddCircleOutlineRoundedIcon />}
-              onClick={handleUpload}
-            >
-              Upload
-            </Button>
-          </div>
-        )}
-      </TabPanel>}
     </div>
   );
 };
 
-export default LessonPlanTabs;
-
+export default StudentLessonPlanTabs;

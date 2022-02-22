@@ -60,11 +60,15 @@ const EditPeriodDialog = (props) => {
   const [openModal, setOpenModal] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState();
 
+useEffect(() => {
+  callingSubjectAPI();
+  callingTeachersAPI();
+  periodTypeList();
+},[])
+
+
   useEffect(() => {
     setopenPeriod(props.isPeriodOpen);
-    callingSubjectAPI();
-    callingTeachersAPI();
-    periodTypeList();
     setSelectedTeacher({
       user_id: props?.periodDetails?.teacher_id,
       name: props?.periodDetails?.teacher_name,
@@ -140,13 +144,13 @@ const EditPeriodDialog = (props) => {
   };
   const callingSubjectAPI = () => {
     axiosInstance
-      .get('/erp_user/subjects-list/', {
-        params: {
-          grade: gradeID,
-        },
+      .get(`/erp_user/v2/mapped-subjects-list/?section_mapping=${props?.section_mappingId}`, {
+        // params: {
+        //   grade: gradeID,
+        // },
       })
       .then((res) => {
-        setSubject(res.data.data.results);
+        setSubject(res.data.result);
       })
       .catch((error) => {
         setAlert('error', "can't fetch subjects");
@@ -154,10 +158,10 @@ const EditPeriodDialog = (props) => {
   };
   const callingTeachersAPI = () => {
     axiosInstance
-      .get('/academic/teachers-list/', {
-        params: {
-          grade: gradeID,
-        },
+      .get(`/academic/teachers-list/?section_mapping=${props?.section_mappingId}`, {
+        // params: {
+        //   grade: gradeID,
+        // },
       })
       .then((res) => {
         setAssignedTeacher(res.data.result);

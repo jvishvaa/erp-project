@@ -797,6 +797,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           <AccordionDetails>
                             <LessonPlanTabs
                               // filesData = {filesData}
+                              periodId={id}
                               data={value}
                               TopicId={value?.topic_id}
                               isAccordian={accordianOpen}
@@ -1359,12 +1360,14 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                         {each.evaluated}
                                       </div>
                                     </div>
-                                    <div>
-                                      <EditIcon
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={toggleHomeWorkDrawer}
-                                      />
-                                    </div>
+                                    {each.evaluated ? null : (
+                                      <div>
+                                        <EditIcon
+                                          style={{ cursor: 'pointer' }}
+                                          onClick={toggleHomeWorkDrawer}
+                                        />
+                                      </div>
+                                    )}
                                   </div>
                                 </paper>
                               </div>
