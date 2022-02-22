@@ -95,7 +95,7 @@ const LessonPlanTabs = ({
 
   const TopicContentView = (topicId) => {
     axiosInstance
-      .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${topicId}`)
+      .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${topicId}&period_id=${periodId}`)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           const FilesData = result.data?.result;
@@ -204,11 +204,12 @@ const LessonPlanTabs = ({
       .post(`${endpoints.lessonPlanTabs.postData}`, formData)
       .then((res) => {
         if (res?.data?.data) {
+          let uploadedFiles = res?.data?.data;
           if (!uploadedData.length) {
             axiosInstance
               .post(`${endpoints.lessonPlanTabs.postData2}`, {
                 topic_id: upcomingTopicId,
-                my_files: [res?.data?.data],
+                my_files: res?.data?.data,
               })
               .then((response) => {
                 setFileId(response?.data?.result?.id);
@@ -219,7 +220,7 @@ const LessonPlanTabs = ({
           } else {
             axiosInstance
               .put(`${endpoints.lessonPlanTabs.getData2.replace('<file-id>', fileId)}`, {
-                my_files: [...uploadedData, res?.data?.data],
+                my_files: [...uploadedData, ...uploadedFiles],
               })
               .then((response) => {
                 previousUploadedFiles(fileId);
