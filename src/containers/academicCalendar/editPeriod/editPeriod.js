@@ -983,10 +983,11 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                   </div>
                                 </div>
                                 <div>
+                                {periodDetails?.ongoing_status === 'Completed' ? '' :
                                   <EditIcon
                                     style={{ cursor: 'pointer' }}
                                     onClick={handleEditClassWork}
-                                  />
+                                  /> }
                                   <Grid container className='swipe-container'>
                                     <SwipeableDrawer
                                       className='my__swipable'
