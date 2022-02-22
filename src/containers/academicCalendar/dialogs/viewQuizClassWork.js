@@ -144,10 +144,9 @@ const ViewQuizClassWork = withRouter(({ history, ...props }) => {
   };
   const getPendingList = () => {
     setLoading(true);
-    const user = JSON.parse(localStorage.getItem('userDetails'));
-    axios
+    axiosInstance
       .get(
-        `${baseURLMPQ}/qbox/multi-player-quiz/quiz-attended-details/?qp_id=${quizId}&start_time=${start_time}&end_time=${end_time}&date=${date}&teacher_id=${user?.user_id}`
+        `${endpoints.period.pendingListmpquiz}?period_id=${periodId}`
       )
       .then((result) => {
         if (result?.status === 200) {
@@ -301,9 +300,9 @@ const ViewQuizClassWork = withRouter(({ history, ...props }) => {
                                   marginRight: '10px',
                                 }}
                               />
-                              {row?.participant_firstname}
+                              {row?.name}
                               <br />
-                              {row?.participant_username}
+                              {row?.erp_id}
                             </div>
                           </StyledTableCell>
                         </div>
