@@ -178,7 +178,7 @@ const ViewQuizClassWork = withRouter(({ history, ...props }) => {
             }}
           >
             <span style={{ paddingLeft: 40, paddingTop: 10 }}>
-              <b>View Class Work</b>
+              <b>View Quiz Class Work</b>
             </span>
             <div>
               <CloseIcon
