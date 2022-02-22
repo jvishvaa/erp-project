@@ -290,10 +290,14 @@ const StudentLessonPlanTabs = ({
               >
                 {tabs?.media_file?.map((data) => {
                   const name = data.split('/')[data.split('/').length - 1];
+                  const fileNewName = name.split('.')[name.split('.').length - 2];
+                  const exten = '.' + name.split('.')[name.split('.').length - 1];
+                  const newFileName = name + '.' + exten;
                   return (
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p style={{ marginRight: 30 }}>{name}</p>
+                      <p className='fileName' title={name || ''}>{fileNewName}</p>
+                      <p className='fileNameext' title={name || ''}>{exten}</p>
                       <SvgIcon
                         component={() => (
                           <VisibilityIcon
