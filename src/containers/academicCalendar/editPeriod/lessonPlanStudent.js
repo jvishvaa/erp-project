@@ -70,7 +70,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-const LessonPlanTabsStudent = ({ upcomingTopicId, topicDetails, periodDetails, id }) => {
+const LessonPlanTabsStudent = ({ upcomingTopicId, topicDetails, periodDetails, period_id }) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
   const [topicId, setTopicId] = useState(null);
@@ -96,7 +96,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId, topicDetails, periodDetails, i
   const TopicContentView = (concaticatedIds) => {
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${concaticatedIds}&period_id=${id}`)
+      .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${concaticatedIds}&period_id=${period_id}`)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           const FilesData = result.data?.result;
