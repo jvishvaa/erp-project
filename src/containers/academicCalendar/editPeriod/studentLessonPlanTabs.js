@@ -95,7 +95,7 @@ const StudentLessonPlanTabs = ({
 
   const TopicContentView = (topicId) => {
     axiosInstance
-      .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${topicId}`)
+      .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${topicId}&period_id=${periodId}`)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           const FilesData = result.data?.result;
@@ -273,7 +273,7 @@ const StudentLessonPlanTabs = ({
             </>}
         </Tabs>
       </AppBar>
-      {filesData.map((tabs, i) => {
+      {filesData.filter((tempData) => tempData.document_type).map((tabs, i) => {
         if (tabs?.document_type && tabs?.media_file.length > 0) {
           return <TabPanel value={value} index={i} className={classes.tab}>
             <div>

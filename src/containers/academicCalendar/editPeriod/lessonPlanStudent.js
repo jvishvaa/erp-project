@@ -96,7 +96,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId, topicDetails, periodDetails })
   const TopicContentView = (concaticatedIds) => {
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${concaticatedIds}`)
+      .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${concaticatedIds}&period_id=${topicDetails[0]?.period}`)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           const FilesData = result.data?.result;
@@ -164,6 +164,7 @@ const LessonPlanTabsStudent = ({ upcomingTopicId, topicDetails, periodDetails })
                       <AccordionDetails>
                         <LessonPlanTabs
                           // filesData = {filesData}
+                          periodId={value?.period}
                           data={value}
                           TopicId={value?.topic_id}
                           isAccordian={accordianOpen}
