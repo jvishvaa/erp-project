@@ -341,8 +341,9 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
   };
 
   function getUsersData(value, subj) {
+    console.log(value, "iop")
     axiosInstance
-      .get(`${endpoints.assessmentReportTypes.individualStudentReport}?session_year=${value?.branch?.session_year?.id}&branch_id=${value?.branch?.id}&grade_id=${value?.grade?.acad_session__branch_id}&subject=${subj?.subject_id}`)
+      .get(`${endpoints.assessmentReportTypes.individualStudentReport}?session_year=${value?.branch?.session_year?.id}&branch_id=${value?.branch?.branch?.id}&grade_id=${value?.grade?.grade_id}&subject=${subj?.subject_id}`)
       .then(response => {
         setStudentIndivisualReport(response?.data);
       })
@@ -446,7 +447,7 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
                   <TableRow>
                     <TableCell>{repos.test__test_name}</TableCell>
                     <TableCell>{repos.correct_answer}</TableCell>
-                    <TableCell>{repos.total_mark}</TableCell>
+                    <TableCell>{repos.test__total_mark}</TableCell>
                     <TableCell>{repos.wrong_answer}</TableCell>
                     <TableCell>{repos.marks_obtained}</TableCell>
                     <TableCell>{repos.marks_percentage}</TableCell>
