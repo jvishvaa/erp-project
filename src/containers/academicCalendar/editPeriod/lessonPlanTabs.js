@@ -95,7 +95,7 @@ const LessonPlanTabs = ({
 
   const TopicContentView = (topicId) => {
     axiosInstance
-      .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${topicId}&period_id=${periodId}`)
+      .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${topicId}`)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           const FilesData = result.data?.result;
@@ -209,7 +209,7 @@ const LessonPlanTabs = ({
             axiosInstance
               .post(`${endpoints.lessonPlanTabs.postData2}`, {
                 topic_id: upcomingTopicId,
-                my_files: res?.data?.data,
+                my_files: [res?.data?.data],
               })
               .then((response) => {
                 setFileId(response?.data?.result?.id);
