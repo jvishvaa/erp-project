@@ -815,6 +815,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                               // filesData = {filesData}
                               periodId={id}
                               data={value}
+                              upcomingTopicId={value?.topic_id}
                               TopicId={value?.topic_id}
                               isAccordian={accordianOpen}
                               checkid={'accordian'}
@@ -836,7 +837,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
           <div className='secondRow'>
             <div className='topic'>
               <Box p={2}>
-                {isStudent && <LessonPlanTabsStudent upcomingTopicId={topicDetails} />}
+                {isStudent && <LessonPlanTabsStudent upcomingTopicId={topicDetails} periodDetails={periodDetails} topicDetails={topicDetails} period_id={id}/>}
                 <Paper>{renderPeriodsUI()}</Paper>
               </Box>
             </div>
