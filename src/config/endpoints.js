@@ -1,7 +1,7 @@
 import ENVCONFIG from './config';
 
 const {
-  apiGateway: { baseURLCentral, baseUdaan },
+  apiGateway: { baseURLCentral, baseUdaan, baseURLMPQ },
   s3: { BUCKET: s3BUCKET, ERP_BUCKET },
 } = ENVCONFIG;
 
@@ -663,7 +663,8 @@ export default {
     retrieveStudentDetails:'/period/student_retrieve_period_details/',
     retrieveVolumeDetails: `${baseURLCentral}/lesson_plan/list-volume/`,
     periodV2 : 'period/calendar-v2/',
-    pendingListmpquiz : '/period/mpq-quiz-pending-list/'
+    pendingListmpquiz : '/period/mpq-quiz-pending-list/',
+    fetchSubmittedQuizList: `${baseURLMPQ}/qbox/multi-player-quiz/quiz-attended-details/`
   },
 
   lessonPlanTabs: {
