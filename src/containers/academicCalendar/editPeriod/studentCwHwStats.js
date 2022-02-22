@@ -19,6 +19,8 @@ import { DataUsageSharp } from '@material-ui/icons';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
 import apiRequest from '../../../config/apiRequest';
 import Loader from '../../../components/loader/loader';
+import moment from 'moment';
+
 
 const studentCwHwStats = withRouter(({ history, data, hwData, periodDetails }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -61,6 +63,17 @@ const studentCwHwStats = withRouter(({ history, data, hwData, periodDetails }) =
       }
 
     });
+  };
+
+  const isLessthanToday = () => {
+    let currt = moment().startOf('day');
+    // let currt = moment(new Date(),'h:mm:ss a');
+
+    let perddate = moment(history?.location?.state?.data?.end, "YYYY-MM-DD");
+    if (history?.location?.state?.data?.ongoing_status?.toLowerCase() == "completed" && perddate < currt) {
+      return true
+    }
+    return false
   };
 
   const showAsPerStatus = (data) => {
@@ -178,7 +191,8 @@ const studentCwHwStats = withRouter(({ history, data, hwData, periodDetails }) =
                         </Typography>
                       ) : item?.evaluated ? (
                         ''
-                      ) : (
+                      ) : !isLessthanToday()?
+                       (
                         <Typography
                           style={{
                             color: 'red',
@@ -194,7 +208,9 @@ const studentCwHwStats = withRouter(({ history, data, hwData, periodDetails }) =
                         >
                           Submit
                         </Typography>
-                      )}
+                        )
+                        :''
+                        }
                     </Grid>
                   </>
                 ))}
