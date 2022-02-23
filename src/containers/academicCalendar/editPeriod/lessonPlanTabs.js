@@ -15,7 +15,6 @@ import AddCircleOutlineRoundedIcon from '@material-ui/icons/AddCircleOutlineRoun
 import axiosInstance from 'config/axios';
 import { AttachmentPreviewerContext } from './../../../components/attachment-previewer/attachment-previewer-contexts/attachment-previewer-contexts';
 import endpoints from '../../../config/endpoints';
-import './editPeriod.scss'
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
 
 function TabPanel(props) {
@@ -24,8 +23,8 @@ function TabPanel(props) {
     <div
       role='tabpanel'
       hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
+      id={`scrollable-auto-tabpanel-${index}`}
+      aria-labelledby={`scrollable-auto-tab-${index}`}
       {...other}
     >
       {value === index && (
@@ -80,7 +79,7 @@ const LessonPlanTabs = ({
 }) => {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
-  const [filesData, setFilesData] = React.useState(null);
+  const [filesData, setFilesData] = React.useState([]);
   const [uploadedData, setUploadedData] = React.useState([]);
   const [addbtnStatus, setAddbtnStatus] = React.useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -186,6 +185,7 @@ const LessonPlanTabs = ({
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
+          window.location.reload();
         } else if (result?.data?.status_code === 404) {
           setAlert('error', result?.data?.message);
         }
@@ -201,10 +201,12 @@ const LessonPlanTabs = ({
   const handleUpload = () => {
     const formData = new FormData();
     formData.append('file', selectedFiles3);
+    const exten = '.' + selectedFiles3?.name.split('.')[selectedFiles3?.name.split('.').length - 1];
     axiosInstance
       .post(`${endpoints.lessonPlanTabs.postData}`, formData)
       .then((res) => {
         if (res?.data?.data) {
+          let uploadedFiles = res?.data?.data;
           if (!uploadedData.length) {
             axiosInstance
               .post(`${endpoints.lessonPlanTabs.postData2}`, {
@@ -218,9 +220,15 @@ const LessonPlanTabs = ({
                 // console.log('File Upload Error');
               });
           } else {
+            let my_file;
+            if (exten === '.pdf') {
+              my_file = [...uploadedData, ...uploadedFiles];
+            } else {
+              my_file = [...uploadedData, uploadedFiles]
+            }
             axiosInstance
               .put(`${endpoints.lessonPlanTabs.getData2.replace('<file-id>', fileId)}`, {
-                my_files: [...uploadedData, res?.data?.data],
+                my_files: my_file,
               })
               .then((response) => {
                 previousUploadedFiles(fileId);
@@ -235,139 +243,114 @@ const LessonPlanTabs = ({
   };
 
   return (
-    <div className={classes.root} style={{ minHeight: isAccordian ? '300px' : '300px' }}>
+    <div className={classes.root} style={{ minHeight: isAccordian ? '300px' : '300px', width: '800px' }}>
       <AppBar position='static'>
         <Tabs
           value={value}
           onChange={handleChange}
           size='small'
+          variant="scrollable"
+          scrollButtons="auto"
           aria-label='simple tabs example'
           style={{ backgroundColor: 'white' }}
         >
-          <Tab
-            label='Teacher Material'
-            {...a11yProps(0)}
-            size='small'
-            style={{ minWidth: 54, fontSize: '15px' }}
-          />
-          <Tab
-            label='PPT'
-            {...a11yProps(1)}
-            size='small'
-            style={{ minWidth: 54, fontSize: '15px' }}
-          />
-          <Tab
-            label='Videos'
-            {...a11yProps(2)}
-            size='small'
-            style={{ minWidth: 54, fontSize: '15px' }}
-          />
-          <Tab
-            label='Audio'
-            {...a11yProps(3)}
-            size='small'
-            style={{ minWidth: 54, fontSize: '15px' }}
-          />
-          <Tab
-            label='Activity Sheet'
-            {...a11yProps(4)}
-            size='small'
-            style={{ minWidth: 54, fontSize: '15px' }}
-          />
-          <Tab
-            label='Question Paper'
-            {...a11yProps(5)}
-            size='small'
-            style={{ minWidth: 54, fontSize: '15px' }}
-          />
-          <Tab
-            label='My File'
-            {...a11yProps(6)}
-            size='small'
-            style={{ minWidth: 54, fontSize: '15px' }}
-          />
+          {filesData.map((tabs, i) => {
+            if (tabs?.document_type) {
+              return <Tab
+                label={tabs.document_type}
+                key={tabs.document_type}
+                {...a11yProps(i)}
+                size='small'
+                style={{ minWidth: 54, fontSize: '15px' }}
+              />
+            }
+          })}
+          {filesData.length === 0 &&
+            <>
+              <Tab
+                label='Question Paper'
+                {...a11yProps('0')}
+                size='small'
+                style={{ minWidth: 54, fontSize: '15px' }}
+              />
+              <Tab
+                label='My Files'
+                {...a11yProps('1')}
+                size='small'
+                style={{ minWidth: 54, fontSize: '15px' }}
+              />
+            </>}
         </Tabs>
       </AppBar>
-      <TabPanel value={value} index={0} className={classes.tab}>
-        <div>
-          {filesData
-            ?.filter((file) => file.document_type === 'Teacher_Reading_Material')
-            .map((file) => (
-              <div
-                style={{
-                  display: 'flex',
-                  height: '80%',
-                  width: '100%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  flexDirection: 'column',
-                }}
-              >
-                {file.media_file.map((data) => {
-                  const name = data.split('/')[data.split('/').length - 1];
-                  const fileNewName = name.split('.')[name.split('.').length - 2];
-                  const exten = '.' + name.split('.')[name.split('.').length - 1];
-                  const newFileName = name + '.' + exten;
-                  return (
-                    <div style={{ display: 'flex', flexDirection: 'row' }}>
-                      <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p className='fileName' title={name|| ''}>{fileNewName}</p>
-                      <p className='fileNameext' title={name|| ''}>{exten}</p>
-                      <SvgIcon
-                        component={() => (
-                          <VisibilityIcon
-                            onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
-                              openPreview({
-                                currentAttachmentIndex: 0,
-                                attachmentsArray: [
-                                  {
-                                    src: fileSrc,
-
-                                    name: name.split('.')[name.split('.').length - 2],
-                                    extension:
-                                      '.' + name.split('.')[name.split('.').length - 1],
-                                  },
-                                ],
-                              });
-                            }}
-                            color='primary'
-                          />
-                        )}
-                      />
-                    </div>
-                  );
-                })}
+      {filesData.filter((tempData) => tempData.document_type).map((tabs, i) => {
+        if (tabs?.document_type) {
+          if (tabs.document_type !== 'my_files') {
+            console.log("DEBUG the value of rest tabs is: ", i)
+            return <TabPanel value={value} index={i} className={classes.tab}>
+              <div>
+                <div
+                  style={{
+                    display: 'flex',
+                    height: '80%',
+                    width: '100%',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                    flexDirection: 'column',
+                  }}
+                >
+                  {tabs?.media_file?.map((data) => {
+                    const name = data.split('/')[data.split('/').length - 1];
+                    const fileNewName = name.split('.')[name.split('.').length - 2];
+                    const exten = '.' + name.split('.')[name.split('.').length - 1];
+                    const newFileName = name + '.' + exten;
+                    return (
+                      <div style={{ display: 'flex', flexDirection: 'row' }}>
+                        <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
+                        <p className='fileName' title={name || ''}>{fileNewName}</p>
+                        <p className='fileNameext' title={name || ''}>{exten}</p>
+                        <SvgIcon
+                          component={() => (
+                            <VisibilityIcon
+                              onClick={() => {
+                                const fileSrc = `${endpoints.lessonPlan.s3}${data}`;
+                                openPreview({
+                                  currentAttachmentIndex: 0,
+                                  attachmentsArray: [
+                                    {
+                                      src: fileSrc,
+                                      name: name.split('.')[name.split('.').length - 2],
+                                      extension:
+                                        '.' + name.split('.')[name.split('.').length - 1],
+                                    },
+                                  ],
+                                });
+                              }}
+                              color='primary'
+                            />
+                          )}
+                        />
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            ))}
-        </div>
-        <div className='attachment-material'>
-          <IconButton
-            fontSize='small'
-            id='file-icon'
-            disableRipple
-            component='label'
-          ></IconButton>
-        </div>
-      </TabPanel>
-      <TabPanel value={value} index={1} className={classes.tab}>
-        <div>
-          {filesData
-            ?.filter((file) => file.document_type === 'PPT')
-            .map((file) => (
-              <div
-                style={{
-                  display: 'flex',
-                  height: '80%',
-                  width: '100%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  flexDirection: 'column',
-                }}
-              >
-                {file.media_file.map((data) => {
+              <div className='attachment-material'>
+                <IconButton
+                  fontSize='small'
+                  id='file-icon'
+                  disableRipple
+                  component='label'
+                ></IconButton>
+              </div>
+            </TabPanel>
+          } else {
+            return <TabPanel value={value} index={i} className={classes.tab}>
+              <div style={{ height: '200' }}>
+                {uploadedData?.map((data) => {
+                  {
+                    /* <div style={{ display: 'flex', height: 50 }}> */
+                  }
                   const name = data.split('/')[data.split('/').length - 1];
                   const fileNewName = name.split('.')[name.split('.').length - 2];
                   const exten = '.' + name.split('.')[name.split('.').length - 1];
@@ -375,13 +358,13 @@ const LessonPlanTabs = ({
                   return (
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p className='fileName' title={name|| ''}>{fileNewName}</p>
-                      <p className='fileNameext' title={name|| ''}>{exten}</p>
+                      <p className='fileName' title={name || ''}>{fileNewName}</p>
+                      <p className='fileNameext' title={name || ''}>{exten}</p>
                       <SvgIcon
                         component={() => (
                           <VisibilityIcon
                             onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
+                              const fileSrc = `${endpoints.lessonPlan.s3erp}homework/${data}`;
                               openPreview({
                                 currentAttachmentIndex: 0,
                                 attachmentsArray: [
@@ -398,275 +381,48 @@ const LessonPlanTabs = ({
                           />
                         )}
                       />
+                      {/* <a style={{ paddingTop: '6px' }} href={`https://d3ka3pry54wyko.cloudfront.net/${data}`}>{data.split('/')[data.split('/').length - 1]}</a> */}
+                      {/* {uploadedata} */}
+                      {/* </div> */}
                     </div>
                   );
                 })}
               </div>
-            ))}
-        </div>
-        <div className='attachment-material'>
-          <IconButton
-            fontSize='small'
-            id='file-icon'
-            disableRipple
-            component='label'
-          ></IconButton>
-        </div>
-      </TabPanel>
-      <TabPanel value={value} index={2} className={classes.tab}>
-        <div>
-          {filesData
-            ?.filter((file) => file.document_type === 'Video')
-            .map((file) => (
-              <div
-                style={{
-                  display: 'flex',
-                  height: '80%',
-                  width: '100%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  flexDirection: 'column',
-                }}
-              >
-                {file.media_file.map((data) => {
-                  const name = data.split('/')[data.split('/').length - 1];
-                  const fileNewName = name.split('.')[name.split('.').length - 2];
-                  const exten = '.' + name.split('.')[name.split('.').length - 1];
-                  const newFileName = name + '.' + exten;
-                  return (
-                    <div style={{ display: 'flex', flexDirection: 'row' }}>
-                      <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p className='fileName' title={name|| ''}>{fileNewName}</p>
-                      <p className='fileNameext' title={name|| ''}>{exten}</p>                      
-                      <SvgIcon
-                        component={() => (
-                          <VisibilityIcon
-                            onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
-                              openPreview({
-                                currentAttachmentIndex: 0,
-                                attachmentsArray: [
-                                  {
-                                    src: fileSrc,
-                                    name: name.split('.')[name.split('.').length - 2],
-                                    extension:
-                                      '.' + name.split('.')[name.split('.').length - 1],
-                                  },
-                                ],
-                              });
-                            }}
-                            color='primary'
-                          />
-                        )}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-        </div>
-        <div className='attachment-material'>
-          <IconButton
-            fontSize='small'
-            id='file-icon'
-            disableRipple
-            component='label'
-          ></IconButton>
-        </div>
-      </TabPanel>
-      <TabPanel value={value} index={3} className={classes.tab}>
-        <div>
-          {filesData
-            ?.filter((file) => file.document_type === 'Audio')
-            .map((file) => (
-              <div
-                style={{
-                  display: 'flex',
-                  height: '80%',
-                  width: '100%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  flexDirection: 'column',
-                }}
-              >
-                {file.media_file.map((data) => {
-                  const name = data.split('/')[data.split('/').length - 1];
-                  const fileNewName = name.split('.')[name.split('.').length - 2];
-                  const exten = '.' + name.split('.')[name.split('.').length - 1];
-                  const newFileName = name + '.' + exten;
-                  return (
-                    <div style={{ display: 'flex', flexDirection: 'row' }}>
-                      <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p className='fileName' title={name|| ''}>{fileNewName}</p>
-                      <p className='fileNameext' title={name|| ''}>{exten}</p>
-                      <SvgIcon
-                        component={() => (
-                          <VisibilityIcon
-                            onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
-                              openPreview({
-                                currentAttachmentIndex: 0,
-                                attachmentsArray: [
-                                  {
-                                    src: fileSrc,
-                                    name: name.split('.')[name.split('.').length - 2],
-                                    extension:
-                                      '.' + name.split('.')[name.split('.').length - 1],
-                                  },
-                                ],
-                              });
-                            }}
-                            color='primary'
-                          />
-                        )}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-        </div>
-        <div className='attachment-material'>
-          <IconButton
-            fontSize='small'
-            id='file-icon'
-            disableRipple
-            component='label'
-          ></IconButton>
-        </div>
-      </TabPanel>
-      <TabPanel value={value} index={4} className={classes.tab}>
-        <div>
-          {filesData
-            ?.filter((file) => file.document_type === 'Activity_Sheet')
-            .map((file) => (
-              <div
-                style={{
-                  display: 'flex',
-                  height: '80%',
-                  width: '100%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  flexDirection: 'column',
-                }}
-              >
-                {file.media_file.map((data) => {
-                  const name = data.split('/')[data.split('/').length - 1];
-                  const fileNewName = name.split('.')[name.split('.').length - 2];
-                  const exten = '.' + name.split('.')[name.split('.').length - 1];
-                  const newFileName = name + '.' + exten;
-                 
-                  return (
-                    <div style={{ display: 'flex', flexDirection: 'row' }}>
-                      <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p className='fileName' title={name|| ''}>{fileNewName}</p>
-                      <p className='fileNameext' title={name|| ''}>{exten}</p>
-                      <SvgIcon
-                        component={() => (
-                          <VisibilityIcon
-                            onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
-                              openPreview({
-                                currentAttachmentIndex: 0,
-                                attachmentsArray: [
-                                  {
-                                    src: fileSrc,
-                                    name: name.split('.')[name.split('.').length - 2],
-                                    extension:
-                                      '.' + name.split('.')[name.split('.').length - 1],
-                                  },
-                                ],
-                              });
-                            }}
-                            color='primary'
-                          />
-                        )}
-                      />
-                      {/* <a style={{ paddingTop: '6px' }} href={`https://d2r9gkgplfhsr2.cloudfront.net/${data}`}>{data.split('/')[data.split('/').length - 1]}</a> */}
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-        </div>
-        <div className='attachment-material'>
-          <IconButton
-            fontSize='small'
-            id='file-icon'
-            disableRipple
-            component='label'
-          // className={classes.attachmentIcon}
-          ></IconButton>
-        </div>
-      </TabPanel>
-      <TabPanel value={value} index={5} className={classes.tab}>
-        <div>
-          {filesData
-            ?.filter((file) => file.document_type === 'Question_Paper')
-            .map((file) => (
-              <div
-                style={{
-                  display: 'flex',
-                  height: '80%',
-                  width: '100%',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                  whiteSpace: 'nowrap',
-                  flexDirection: 'column',
-                }}
-              >
-                {file.media_file.map((data) => {
-                  const name = data.split('/')[data.split('/').length - 1];
-                  const fileNewName = name.split('.')[name.split('.').length - 2];
-                  const exten = '.' + name.split('.')[name.split('.').length - 1];
-                  const newFileName = name + '.' + exten;
-                  return (
-                    <div style={{ display: 'flex', flexDirection: 'row' }}>
-                      <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p className='fileName' title={name|| ''}>{fileNewName}</p>
-                      <p className='fileNameext' title={name|| ''}>{exten}</p>
-                      <SvgIcon
-                        component={() => (
-                          <VisibilityIcon
-                            onClick={() => {
-                              const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
-                              openPreview({
-                                currentAttachmentIndex: 0,
-                                attachmentsArray: [
-                                  {
-                                    src: fileSrc,
-                                    name: name.split('.')[name.split('.').length - 2],
-                                    extension:
-                                      '.' + name.split('.')[name.split('.').length - 1],
-                                  },
-                                ],
-                              });
-                            }}
-                            color='primary'
-                          />
-                        )}
-                      />
-                      {/* <a style={{ paddingTop: '6px' }} href={`https://d2r9gkgplfhsr2.cloudfront.net/${data}`}>{data.split('/')[data.split('/').length - 1]}</a> */}
-                    </div>
-                  );
-                })}
-              </div>
-            ))}
-        </div>
-        <div className='attachment-material'>
-          <IconButton
-            fontSize='small'
-            id='file-icon'
-            disableRipple
-            component='label'
-          // className={classes.attachmentIcon}
-          ></IconButton>
-        </div>
-      </TabPanel>
-      <TabPanel value={value} index={6}>
+              {data?.status !== 2 && (
+                <div className='attachment-material'>
+                  <IconButton
+                    fontSize='small'
+                    id='file-icon'
+                    disableRipple
+                    component='label'
+                    className={classes.attachmentIconhover}
+                  >
+                    <AttachmentIcon fontSize='small' />
+                    <input
+                      type='file'
+                      accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
+                      onChange={(e) => {
+                        uploadFileHandler3(e);
+                      }}
+                    // className={classes.fileInput}
+                    />
+                  </IconButton>
+                  <Button
+                    variant='contained'
+                    color='secondary'
+                    // className={classes.button}
+                    startIcon={<AddCircleOutlineRoundedIcon />}
+                    onClick={handleUpload}
+                  >
+                    Upload
+                  </Button>
+                </div>
+              )}
+            </TabPanel>
+          }
+        }
+      })}
+      {filesData.length === 0 && <TabPanel value={value} index={1} className={classes.tab}>
         <div style={{ height: '200' }}>
           {uploadedData?.map((data) => {
             {
@@ -679,8 +435,8 @@ const LessonPlanTabs = ({
             return (
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                <p className='fileName' title={name|| ''}>{fileNewName}</p>
-                <p className='fileNameext' title={name|| ''}>{exten}</p>
+                <p className='fileName' title={name || ''}>{fileNewName}</p>
+                <p className='fileNameext' title={name || ''}>{exten}</p>
                 <SvgIcon
                   component={() => (
                     <VisibilityIcon
@@ -728,7 +484,6 @@ const LessonPlanTabs = ({
               // className={classes.fileInput}
               />
             </IconButton>
-
             <Button
               variant='contained'
               color='secondary'
@@ -740,7 +495,7 @@ const LessonPlanTabs = ({
             </Button>
           </div>
         )}
-      </TabPanel>
+      </TabPanel>}
       <div>
         {markCompleted ? (
           <>
@@ -808,3 +563,4 @@ const LessonPlanTabs = ({
 };
 
 export default LessonPlanTabs;
+

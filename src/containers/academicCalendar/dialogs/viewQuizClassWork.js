@@ -17,18 +17,23 @@ import {
   TableRow,
   TableContainer,
   SvgIcon,
-  Button
 } from '@material-ui/core';
-import ViewClassworkFiles from './viewClassworkFiles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import CloseIcon from '@material-ui/icons/Close';
 import Layout from '../../Layout';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import apiRequest from '../../../config/apiRequest'
+import apiRequest from '../../../config/apiRequest';
 import axiosInstance from '../../../config/axios';
 import { AlertNotificationContext } from '../../../../src/context-api/alert-context/alert-state';
 import { AttachmentPreviewerContext } from '../../../components/attachment-previewer/attachment-previewer-contexts';
 import Loader from '../../../components/loader/loader';
+import endpoints from '../../../config/endpoints';
+import ENVCONFIG from '../../../config/config';
+import axios from 'axios';
+
+const {
+  apiGateway: { baseURLMPQ },
+} = ENVCONFIG;
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -95,8 +100,8 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.text.primary,
   },
 }));
-const ViewClassWork = withRouter(({ history, ...props }) => {
-  const { periodId, online_class_id, date } = props?.location?.state;
+const ViewQuizClassWork = withRouter(({ history, ...props }) => {
+  const { periodId, online_class_id, quizId } = props?.location?.state;
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
   const classes = useStyles();
@@ -105,8 +110,6 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
   const [pendingData, setPendingData] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
-  const [viewFiles,setviewFiles] = useState(false)
-  const [submittedFiles,setSubmittedFiles] = useState()
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -116,19 +119,18 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
     getPendingList();
   }, []);
 
-
-const handleViewFiles = (row) => {
-  setviewFiles(true)
-  setSubmittedFiles(row?.submitted_files)
-}
-
   const getSubmittedList = () => {
     setLoading(true);
-    apiRequest('get', `/oncls/v1/classwork-submitted-list/?date=${date}&online_class_id=${online_class_id}`)
+    const user = JSON.parse(localStorage.getItem('userDetails'));
+    axios
+      .get(
+        // `${baseURLMPQ}/qbox/multi-player-quiz/quiz-attended-details/?qp_id=${quizId}&start_time=${start_time}&end_time=${end_time}&date=${date}&teacher_id=${user?.user_id}`
+        `${endpoints.period.fetchSubmittedQuizList}?qp_id=${quizId}&online_class_id=${online_class_id}&teacher_id=${user?.user_id}`
+        )
       .then((result) => {
         if (result?.status === 200) {
           setAlert('success', result?.data?.message);
-          setSubmittedData(result?.data);
+          setSubmittedData(result?.data?.result);
         } else {
           setAlert('error', result?.data?.message);
         }
@@ -139,21 +141,18 @@ const handleViewFiles = (row) => {
         setLoading(false);
       });
   };
-
   const getPendingList = () => {
     setLoading(true);
     axiosInstance
       .get(
-        `/period/classwork_submitted_pending_list/?date=${date}&online_class_id=${online_class_id}&period_id=${periodId}`
+        `${endpoints.period.pendingListmpquiz}?period_id=${periodId}&online_class_id=${online_class_id}`
       )
       .then((result) => {
         if (result?.status === 200) {
           setAlert('success', 'Pending data fetched successfully');
           setPendingData(result?.data);
-
         } else {
           setAlert('error', result?.data?.message);
-
         }
         setLoading(false);
       })
@@ -178,7 +177,7 @@ const handleViewFiles = (row) => {
             }}
           >
             <span style={{ paddingLeft: 40, paddingTop: 10 }}>
-              <b>View Class Work</b>
+              <b>View Quiz Class Work</b>
             </span>
             <div>
               <CloseIcon
@@ -188,11 +187,11 @@ const handleViewFiles = (row) => {
             </div>
           </div>
         </Grid>
-        <AppBar position='static' style={{ width:"95%",margin:"auto" }}>
+        <AppBar position='static' style={{ width: '95%', margin: 'auto' }}>
           <Tabs
             value={value}
             onChange={handleChange}
-            indicatorColor='primary' 
+            indicatorColor='primary'
             textColor='primary'
             style={{ background: 'white' }}
             variant='fullWidth'
@@ -200,7 +199,7 @@ const handleViewFiles = (row) => {
             centered
           >
             <Tab
-              label={`Submitted (${submittedData?.length})`}
+              label={`Attended (${submittedData?.length})`}
               style={{ color: 'black !important' }}
               {...a11yProps(0)}
             />
@@ -220,12 +219,12 @@ const handleViewFiles = (row) => {
                       <AccountCircleIcon style={{ visibility: 'hidden' }} />
                       Student Name
                     </StyledTableCell>
-                    <StyledTableCell align='right'>Submitted At</StyledTableCell>
-                    <StyledTableCell align='right'>Uploaded File</StyledTableCell>
+                    <StyledTableCell align='right'>Attended At</StyledTableCell>
+                    <StyledTableCell align='right'>Score</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {submittedData.map((row) => (
+                  {submittedData.length > 0 && submittedData.map((row) => (
                     <>
                       <div style={{ margin: 5, background: 'red' }}></div>
                       <StyledTableRow key={row.name}>
@@ -254,27 +253,18 @@ const handleViewFiles = (row) => {
                                   marginRight: '10px',
                                 }}
                               />
-                              {row.student_name}
+                              {row?.participant_firstname}
                               <br />
-                              {row.erp_id}
+                              {row?.participant_username}
                             </div>
                           </StyledTableCell>
                         </div>
                         <StyledTableCell align='right'>
-                          {row.uploaded_at.slice(0, 10)} {row.uploaded_at.slice(11, 19)}
+                          {row?.joined_quiz_at.slice(0, 10)}{' '}
+                          {row?.joined_quiz_at.slice(11, 19)}
                         </StyledTableCell>
-                        <StyledTableCell align='right' style={{width:'300px', overflowX:'auto'}}>
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            <p style={{color:'blue'}} onClick={()=>handleViewFiles(row)}>Files ({row?.submitted_files?.length})</p>
-                           
-                          </div>
+                        <StyledTableCell align='right'>
+                          {row?.total_score}
                         </StyledTableCell>
                       </StyledTableRow>
                     </>
@@ -324,9 +314,7 @@ const handleViewFiles = (row) => {
           </TabPanel>
         </Grid>
       </Grid>
-      {viewFiles && <ViewClassworkFiles openModal={viewFiles} setOpenModal={setviewFiles} files = {submittedFiles}/>}
-
     </Layout>
   );
 });
-export default ViewClassWork;
+export default ViewQuizClassWork;

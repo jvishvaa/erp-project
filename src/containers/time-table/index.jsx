@@ -255,9 +255,9 @@ const TimeTable = (props) => {
   const callingTeachersAPI = () => {
     axiosInstance
       .get(`/academic/teachers-list/?section_mapping=${section_mappingId}`, {
-        params: {
-          grade: gradeID,
-        },
+        // params: {
+        //   grade: gradeID,
+        // },
       })
       .then((res) => {
         setAssignedTeacher(res.data.result);

@@ -7,6 +7,7 @@ import ViewHomeWork from './dialogs/viewHomeWork.js';
 import ViewClassParticipate from './dialogs/viewClassParticipate.js';
 import StudentSubmitHw from './dialogs/StudentSubmitHW';
 import StudentCwSubmit from './editPeriod/studentClassWorkSubmit';
+import ViewQuizClassWork from './dialogs/viewQuizClassWork';
 const RoutesIndex = () => {
   const match = useRouteMatch();
 
@@ -35,6 +36,9 @@ const RoutesIndex = () => {
         </Route>
         <Route path={`${match.url}/submit-class-work/:classWorkId`} exact>
           {({ match, history }) => <StudentCwSubmit match={match} history={history} />}
+        </Route>
+        <Route path={`${match.url}/view-quiz-class-work`} exact>
+          {({ match, history }) => <ViewQuizClassWork match={match} history={history} />}
         </Route>
       </Switch>
     </>
