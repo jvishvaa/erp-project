@@ -102,8 +102,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 const ViewQuizClassWork = withRouter(({ history, ...props }) => {
   const { periodId, online_class_id, quizId } = props?.location?.state;
-  const start_time = start?.split('T')[1];
-  const end_time = end?.split('T')[1];
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
   const classes = useStyles();
