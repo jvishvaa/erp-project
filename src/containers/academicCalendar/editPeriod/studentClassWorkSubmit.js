@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StudentCwSubmit = withRouter(({ history, ...props }) => {
-  const { classWorkId, online_class_id, class_date } = props?.location?.state;
+  const { classWorkId, online_class_id, class_date ,submitted} = props?.location?.state;
   const classes = useStyles();
   const [studentClasswork, setStudentClassWork] = useState('');
   const { setAlert } = useContext(AlertNotificationContext);
@@ -376,6 +376,9 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
                   Submit Class Work
                 </Button>
               )}
+              {submitted && <Button variant='contained' color='secondary' onClick={handleSubmit}>
+                  Update Class Work
+                </Button>}
             </Paper>
           </Grid>
         </Grid>
