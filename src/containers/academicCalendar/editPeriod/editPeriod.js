@@ -42,6 +42,7 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import Loader from '../../../components/loader/loader';
 import EditIcon from '@material-ui/icons/Edit';
 import CreateCwEditDialoge from '../dialogs/createCwEditDialoge';
+import ViewQuizClassWork from '../dialogs/viewQuizClassWork';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -105,6 +106,7 @@ const useStyles = makeStyles((theme) => ({
 
 const EditPeriod = withRouter(({ history, ...props }) => {
   const { id } = useParams();
+  const {start, end}= history?.location?.state?.data;
   const grade = history?.location?.state?.data?.grade?.name;
   const section = history?.location?.state?.data?.section?.name;
   const subject = history?.location?.state?.data?.subject?.id;
@@ -204,6 +206,17 @@ const EditPeriod = withRouter(({ history, ...props }) => {
       },
     });
   };
+
+  const viewQuizClassWork = () => {
+    history.push({
+      pathname: '/academic-calendar/view-quiz-class-work',
+      state: {
+        periodId: id,
+        online_class_id: periodData?.online_class_id,
+        quizId: periodData?.classwork_details?.quiz_list[0]?.question_paper_id,
+      },
+    });
+  }
 
   const handleClassWork = () => {
     setOpenClassWork(!openClassWork);
@@ -797,7 +810,9 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           <AccordionDetails>
                             <LessonPlanTabs
                               // filesData = {filesData}
+                              periodId={id}
                               data={value}
+                              upcomingTopicId={value?.topic_id}
                               TopicId={value?.topic_id}
                               isAccordian={accordianOpen}
                               checkid={'accordian'}
@@ -819,7 +834,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
           <div className='secondRow'>
             <div className='topic'>
               <Box p={2}>
-                {isStudent && <LessonPlanTabsStudent upcomingTopicId={topicDetails} />}
+                {isStudent && <LessonPlanTabsStudent upcomingTopicId={topicDetails} periodDetails={periodDetails} topicDetails={topicDetails} period_id={id}/>}
                 <Paper>{renderPeriodsUI()}</Paper>
               </Box>
             </div>
@@ -983,10 +998,11 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                   </div>
                                 </div>
                                 <div>
+                                {periodDetails?.ongoing_status === 'Completed' ? '' :
                                   <EditIcon
                                     style={{ cursor: 'pointer' }}
                                     onClick={handleEditClassWork}
-                                  />
+                                  /> }
                                   <Grid container className='swipe-container'>
                                     <SwipeableDrawer
                                       className='my__swipable'
@@ -1029,7 +1045,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                               >
                                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                                   <div
-                                    onClick={viewClassWork}
+                                    onClick={viewQuizClassWork}
                                     style={{
                                       fontWeight: '900',
                                       cursor: 'pointer',
@@ -1050,7 +1066,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                       color: 'green',
                                       cursor: 'pointer',
                                     }}
-                                    onClick={viewClassWork}
+                                    onClick={viewQuizClassWork}
                                   >
                                     Attended
                                   </div>
@@ -1072,7 +1088,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                       color: 'red',
                                       cursor: 'pointer',
                                     }}
-                                    onClick={viewClassWork}
+                                    onClick={viewQuizClassWork}
                                   >
                                     Pending
                                   </div>
@@ -1358,12 +1374,14 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                         {each.evaluated}
                                       </div>
                                     </div>
-                                    <div>
-                                      <EditIcon
-                                        style={{ cursor: 'pointer' }}
-                                        onClick={toggleHomeWorkDrawer}
-                                      />
-                                    </div>
+                                    {each.evaluated ? null : (
+                                      <div>
+                                        <EditIcon
+                                          style={{ cursor: 'pointer' }}
+                                          onClick={toggleHomeWorkDrawer}
+                                        />
+                                      </div>
+                                    )}
                                   </div>
                                 </paper>
                               </div>

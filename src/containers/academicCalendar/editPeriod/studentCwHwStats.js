@@ -9,6 +9,8 @@ import {
   Card,
   CardContent,
 } from '@material-ui/core';
+import EditIcon from '@material-ui/icons/Edit';
+import IconButton from '@material-ui/core/IconButton';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Divider from '@material-ui/core/Divider';
@@ -19,6 +21,8 @@ import { DataUsageSharp } from '@material-ui/icons';
 import { AlertNotificationContext } from '../../.././context-api/alert-context/alert-state';
 import apiRequest from '../../../config/apiRequest';
 import Loader from '../../../components/loader/loader';
+import moment from 'moment';
+
 
 const studentCwHwStats = withRouter(({ history, data, hwData, periodDetails }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -63,6 +67,17 @@ const studentCwHwStats = withRouter(({ history, data, hwData, periodDetails }) =
     });
   };
 
+  const isLessthanToday = () => {
+    let currt = moment().startOf('day');
+    // let currt = moment(new Date(),'h:mm:ss a');
+
+    let perddate = moment(history?.location?.state?.data?.end, "YYYY-MM-DD");
+    if (history?.location?.state?.data?.ongoing_status?.toLowerCase() == "completed" && perddate < currt) {
+      return true
+    }
+    return false
+  };
+
   const showAsPerStatus = (data) => {
     const firstData = data[0];
     switch (firstData?.status) {
@@ -88,7 +103,8 @@ const studentCwHwStats = withRouter(({ history, data, hwData, periodDetails }) =
       state: {
         classWorkId: id,
         online_class_id: data?.online_class_id,
-        class_date: data?.date
+        class_date: data?.date,
+        submitted: data?.classwork_details?.classwork_details[0]?.submitted
       }
     });
   };
@@ -154,50 +170,49 @@ const studentCwHwStats = withRouter(({ history, data, hwData, periodDetails }) =
                   </>
                 ))}
                 <Divider />
-                {periodDetails === 'On going...' && data?.classwork_details?.classwork_details?.map((item) => (
-                  <>
-                    <Grid item xs={9}>
-                      <Typography style={{ fontSize: '0.97rem', fontWeight: 'bold' }}>
-                        Class Work - Addition Worksheet
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={3}>
-                      {item?.submitted ? (
-                        <Typography
-                          style={{
-                            color: 'red',
-                            fontSize: '0.70rem',
-                            padding: '0px',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            justifyContent: 'center',
-                          }}
-                          onClick={() => handleViewSubmittedClassWork(item?.period_classwork_id)}
-                        >
-                          View Submitted Class work
+                {(periodDetails === 'On going...' || !isLessthanToday()) &&
+                  data?.classwork_details?.classwork_details?.map((item) => (
+                    <>
+                      <Grid item xs={9}>
+                        <Typography style={{ fontSize: '0.97rem', fontWeight: 'bold' }}>
+                          Class Work - Addition Worksheet
                         </Typography>
-                      ) : item?.evaluated ? (
-                        ''
-                      ) : (
-                        <Typography
-                          style={{
-                            color: 'red',
-                            fontSize: '0.70rem',
-                            padding: '0px',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            justifyContent: 'center',
-                          }}
-                          onClick={(e) =>
-                            handleStudentClassWork(item?.period_classwork_id)
-                          }
-                        >
-                          Submit
-                        </Typography>
-                      )}
-                    </Grid>
-                  </>
-                ))}
+                      </Grid>
+                      <Grid item xs={3}>
+                        {item?.submitted ? (
+                          <IconButton
+                          style={{marginTop:'-14px'}}
+                            onClick={() =>
+                              handleViewSubmittedClassWork(item?.period_classwork_id)
+                            }
+                            title='Edit classwork'
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        ) : 
+                        item?.evaluated ? (
+                          ''
+                        ) : 
+                         (
+                          <Typography
+                            style={{
+                              color: 'red',
+                              fontSize: '0.70rem',
+                              padding: '0px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              justifyContent: 'center',
+                            }}
+                            onClick={(e) =>
+                              handleStudentClassWork(item?.period_classwork_id)
+                            }
+                          >
+                            Submit
+                          </Typography>
+                        )}
+                      </Grid>
+                    </>
+                  ))}
               </Grid>
             </AccordionDetails>
           </Accordion>
