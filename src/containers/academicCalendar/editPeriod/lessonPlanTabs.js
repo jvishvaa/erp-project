@@ -200,6 +200,7 @@ const LessonPlanTabs = ({
   const handleUpload = () => {
     const formData = new FormData();
     formData.append('file', selectedFiles3);
+    const exten = '.' + selectedFiles3?.name.split('.')[selectedFiles3?.name.split('.').length - 1];
     axiosInstance
       .post(`${endpoints.lessonPlanTabs.postData}`, formData)
       .then((res) => {
@@ -218,9 +219,15 @@ const LessonPlanTabs = ({
                 // console.log('File Upload Error');
               });
           } else {
+            let my_file;
+            if (exten === '.pdf') {
+              my_file = [...uploadedData, ...uploadedFiles];
+            } else {
+              my_file = [...uploadedData, uploadedFiles]
+            }
             axiosInstance
               .put(`${endpoints.lessonPlanTabs.getData2.replace('<file-id>', fileId)}`, {
-                my_files: [...uploadedData, ...uploadedFiles],
+                my_files: my_file,
               })
               .then((response) => {
                 previousUploadedFiles(fileId);
@@ -305,7 +312,7 @@ const LessonPlanTabs = ({
                           component={() => (
                             <VisibilityIcon
                               onClick={() => {
-                                const fileSrc = `${endpoints.lessonPlan.s3}${data}`;
+                                const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
                                 openPreview({
                                   currentAttachmentIndex: 0,
                                   attachmentsArray: [
