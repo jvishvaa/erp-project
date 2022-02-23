@@ -17,7 +17,9 @@ import {
   TableRow,
   TableContainer,
   SvgIcon,
+  Button
 } from '@material-ui/core';
+import ViewClassworkFiles from './viewClassworkFiles';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import CloseIcon from '@material-ui/icons/Close';
 import Layout from '../../Layout';
@@ -103,6 +105,8 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
   const [pendingData, setPendingData] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
+  const [viewFiles,setviewFiles] = useState(false)
+  const [submittedFiles,setSubmittedFiles] = useState()
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -111,6 +115,12 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
     getSubmittedList();
     getPendingList();
   }, []);
+
+
+const handleViewFiles = (row) => {
+  setviewFiles(true)
+  setSubmittedFiles(row?.submitted_files)
+}
 
   const getSubmittedList = () => {
     setLoading(true);
@@ -253,7 +263,7 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
                         <StyledTableCell align='right'>
                           {row.uploaded_at.slice(0, 10)} {row.uploaded_at.slice(11, 19)}
                         </StyledTableCell>
-                        <StyledTableCell align='right'>
+                        <StyledTableCell align='right' style={{width:'300px', overflowX:'auto'}}>
                           <div
                             style={{
                               display: 'flex',
@@ -262,24 +272,8 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
                               cursor: 'pointer',
                             }}
                           >
-                            <a
-                              className='underlineRemove'
-                              onClick={() => {
-                                const fileSrc = row.submitted_files[0];
-                                openPreview({
-                                  currentAttachmentIndex: 0,
-                                  attachmentsArray: [
-                                    {
-                                      src: fileSrc,
-                                      name: `demo`,
-                                      extension: '.png',
-                                    },
-                                  ],
-                                });
-                              }}
-                            >
-                              <SvgIcon component={() => <VisibilityIcon />} />
-                            </a>
+                            <p style={{color:'blue'}} onClick={()=>handleViewFiles(row)}>Files ({row?.submitted_files?.length})</p>
+                           
                           </div>
                         </StyledTableCell>
                       </StyledTableRow>
@@ -330,6 +324,8 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
           </TabPanel>
         </Grid>
       </Grid>
+      {viewFiles && <ViewClassworkFiles openModal={viewFiles} setOpenModal={setviewFiles} files = {submittedFiles}/>}
+
     </Layout>
   );
 });
