@@ -185,6 +185,7 @@ const LessonPlanTabs = ({
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
+          window.location.reload();
         } else if (result?.data?.status_code === 404) {
           setAlert('error', result?.data?.message);
         }
@@ -496,6 +497,68 @@ const LessonPlanTabs = ({
           </div>
         )}
       </TabPanel>}
+      <div>
+        {markCompleted ? (
+          <>
+            <div
+              className='addTopic'
+              style={{ padding: '5px', marginTop: '25%', background: '#d5d2d2' }}
+            >
+              <Button
+                variant='contained'
+                size='small'
+                onClick={(event) => {
+                  handleTopicCompleted();
+                  addbtnState();
+                }}
+                style={{
+                  color: 'black',
+                  backgroundColor: '#4a90e2',
+                  marginRight: '16px',
+                  color: 'white',
+                }}
+              >
+                {' '}
+                Topic Completed
+              </Button>
+              <Button
+                variant='contained'
+                size='small'
+                onClick={handlePartiallyCompleted}
+                style={{
+                  color: 'black',
+                  backgroundColor: '#4a90e2',
+                  color: 'white',
+                }}
+              >
+                {' '}
+                Partially Completed{' '}
+              </Button>
+              {addbtnStatus && checkid === 'default' && (
+                <Button
+                  variant='contained'
+                  color='secondary'
+                  // className={classes.button}
+                  style={{ marginLeft: '650px', backgroundColor: '#4a90e2' }}
+                  startIcon={<AddCircleOutlineRoundedIcon />}
+                  onClick={handleAddTopic}
+                >
+                  Add Topic
+                </Button>
+              )}
+            </div>
+          </>
+        ) : (
+          data?.status !== 2 && (
+            <div style={{ padding: '5px', marginTop: '25%', background: '#d5d2d2' }}>
+              <Button size='small' onClick={handleComplete} style={{ marginLeft: '43%' }} variant='contained'>
+                {' '}
+                Mark Completed{' '}
+              </Button>
+            </div>
+          )
+        )}
+      </div>
     </div>
   );
 };
