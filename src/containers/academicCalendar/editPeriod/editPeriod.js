@@ -213,10 +213,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
       state: {
         periodId: id,
         online_class_id: periodData?.online_class_id,
-        date: date,
         quizId: periodData?.classwork_details?.quiz_list[0]?.question_paper_id,
-        start: start,
-        end: end
       },
     });
   }
