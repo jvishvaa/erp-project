@@ -101,7 +101,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const ViewQuizClassWork = withRouter(({ history, ...props }) => {
-  const { periodId, online_class_id, date, quizId, start, end } = props?.location?.state;
+  const { periodId, online_class_id, quizId } = props?.location?.state;
   const start_time = start?.split('T')[1];
   const end_time = end?.split('T')[1];
   const { openPreview, closePreview } =
@@ -127,7 +127,7 @@ const ViewQuizClassWork = withRouter(({ history, ...props }) => {
     axios
       .get(
         // `${baseURLMPQ}/qbox/multi-player-quiz/quiz-attended-details/?qp_id=${quizId}&start_time=${start_time}&end_time=${end_time}&date=${date}&teacher_id=${user?.user_id}`
-        `${endpoints.period.fetchSubmittedQuizList}?qp_id=${quizId}&start_time=${start_time}&end_time=${end_time}&date=${date}&teacher_id=${user?.user_id}`
+        `${endpoints.period.fetchSubmittedQuizList}?qp_id=${quizId}&online_class_id=${online_class_id}&teacher_id=${user?.user_id}`
         )
       .then((result) => {
         if (result?.status === 200) {
@@ -147,7 +147,7 @@ const ViewQuizClassWork = withRouter(({ history, ...props }) => {
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.period.pendingListmpquiz}?period_id=${periodId}`
+        `${endpoints.period.pendingListmpquiz}?period_id=${periodId}&online_class_id=${online_class_id}`
       )
       .then((result) => {
         if (result?.status === 200) {
