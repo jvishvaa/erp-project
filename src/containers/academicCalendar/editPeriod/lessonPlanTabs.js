@@ -313,7 +313,7 @@ const LessonPlanTabs = ({
                           component={() => (
                             <VisibilityIcon
                               onClick={() => {
-                                const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
+                                const fileSrc = `${endpoints.lessonPlan.s3}${data}`;
                                 openPreview({
                                   currentAttachmentIndex: 0,
                                   attachmentsArray: [
