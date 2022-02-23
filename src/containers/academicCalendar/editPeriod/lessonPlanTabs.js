@@ -345,7 +345,6 @@ const LessonPlanTabs = ({
               </div>
             </TabPanel>
           } else {
-            console.log("DEBUG the value of tab my files is: ", i)
             return <TabPanel value={value} index={i} className={classes.tab}>
               <div style={{ height: '200' }}>
                 {uploadedData?.map((data) => {
