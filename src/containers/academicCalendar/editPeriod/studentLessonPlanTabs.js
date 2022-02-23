@@ -95,7 +95,7 @@ const StudentLessonPlanTabs = ({
 
   const TopicContentView = (topicId) => {
     axiosInstance
-      .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${topicId}`)
+      .get(`${endpoints.lessonPlanTabs.topicData}?topic_id=${topicId}&period_id=${periodId}`)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           const FilesData = result.data?.result;
@@ -273,7 +273,7 @@ const StudentLessonPlanTabs = ({
             </>}
         </Tabs>
       </AppBar>
-      {filesData.map((tabs, i) => {
+      {filesData.filter((tempData) => tempData.document_type).map((tabs, i) => {
         if (tabs?.document_type && tabs?.media_file.length > 0) {
           return <TabPanel value={value} index={i} className={classes.tab}>
             <div>
@@ -290,10 +290,14 @@ const StudentLessonPlanTabs = ({
               >
                 {tabs?.media_file?.map((data) => {
                   const name = data.split('/')[data.split('/').length - 1];
+                  const fileNewName = name.split('.')[name.split('.').length - 2];
+                  const exten = '.' + name.split('.')[name.split('.').length - 1];
+                  const newFileName = name + '.' + exten;
                   return (
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
                       <InsertDriveFileIcon style={{ height: 60, width: 60 }} />
-                      <p style={{ marginRight: 30 }}>{name}</p>
+                      <p className='fileName' title={name || ''}>{fileNewName}</p>
+                      <p className='fileNameext' title={name || ''}>{exten}</p>
                       <SvgIcon
                         component={() => (
                           <VisibilityIcon

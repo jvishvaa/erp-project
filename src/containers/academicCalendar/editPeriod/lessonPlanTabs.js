@@ -204,6 +204,7 @@ const LessonPlanTabs = ({
       .post(`${endpoints.lessonPlanTabs.postData}`, formData)
       .then((res) => {
         if (res?.data?.data) {
+          let uploadedFiles = res?.data?.data;
           if (!uploadedData.length) {
             axiosInstance
               .post(`${endpoints.lessonPlanTabs.postData2}`, {
@@ -219,7 +220,7 @@ const LessonPlanTabs = ({
           } else {
             axiosInstance
               .put(`${endpoints.lessonPlanTabs.getData2.replace('<file-id>', fileId)}`, {
-                my_files: [...uploadedData, res?.data?.data],
+                my_files: [...uploadedData, ...uploadedFiles],
               })
               .then((response) => {
                 previousUploadedFiles(fileId);
