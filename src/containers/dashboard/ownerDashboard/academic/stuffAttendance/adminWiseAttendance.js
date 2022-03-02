@@ -178,7 +178,7 @@ const StuffTypeAdminWiseStuffAttendance = (props) => {
         `${endpoints.staff.staffStats}?role_id=${roleIds}&acad_session_id=${acad_session_id}`,
         {
           headers: {
-            'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+            'X-DTS-Host': window.location.host,
           },
         }
       )

@@ -137,7 +137,7 @@ const OwnerDashboard = () => {
     const getAttendanceReport = (params) => {
         axios.get(`${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`, {
             headers: {
-                'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+                'X-DTS-Host': window.location.host,
                 Authorization: `Bearer ${token}`
             }
         })
@@ -150,7 +150,7 @@ const OwnerDashboard = () => {
     const getAttendanceReportOverview = (params) => {
         axios.get(`${endpoints.ownerDashboard.getStudentAttendance}?session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`, {
             headers: {
-                'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+                'X-DTS-Host': window.location.host,
                 Authorization: `Bearer ${token}`
             }
         })
@@ -165,7 +165,7 @@ const OwnerDashboard = () => {
         const Acad_id = branchList?.map((el) => el?.id);
         axios.get(`${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}&date_range_type=today`, {
             headers: {
-                'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+                'X-DTS-Host': window.location.host,
                 Authorization: `Bearer ${token}`
             }
         })
@@ -179,7 +179,7 @@ const OwnerDashboard = () => {
         const Acad_id = branchList?.map((el) => el?.id);
         axios.get(`${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}`, {
             headers: {
-                'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+                'X-DTS-Host': window.location.host,
                 Authorization: `Bearer ${token}`
             }
         })
@@ -196,7 +196,7 @@ const OwnerDashboard = () => {
         const Acad_id = branchList?.map((el) => el?.id);
         axios.get(`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${Acad_id}`, {
             headers: {
-                'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+                'X-DTS-Host': window.location.host,
                 Authorization: `Bearer ${token}`
             }
         })
@@ -220,7 +220,7 @@ const OwnerDashboard = () => {
         axios.get(`${endpoints.ownerDashboard.getAllBranchCurr}?branch_id=${selectedBranchId}`,
             {
                 headers: {
-                    'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+                    'X-DTS-Host': window.location.host,
                     Authorization: `Bearer ${token}`
                 }
             }

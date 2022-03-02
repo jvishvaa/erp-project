@@ -322,7 +322,7 @@ const FinanceOwnerDashboard = (props) => {
   const getCurriculumReport = (branch, acad) => {
     axios.get(`${endpoints.ownerDashboard.getCurrReport}?branch_id=${branch}&acad_session_id=${acad}`, {
       headers: {
-        'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+        'X-DTS-Host': window.location.host,
         Authorization: `Bearer ${token}`
       }
     })
@@ -339,7 +339,7 @@ const FinanceOwnerDashboard = (props) => {
   const getStudentReport = (branch, year) => {
     axios.get(`${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}`, {
       headers: {
-        'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+        'X-DTS-Host': window.location.host,
         Authorization: `Bearer ${token}`
       }
     })
@@ -356,7 +356,7 @@ const FinanceOwnerDashboard = (props) => {
   const getTestScore = (acad) => {
     axios.get(`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${acad}`, {
       headers: {
-        'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+        'X-DTS-Host': window.location.host,
         Authorization: `Bearer ${token}`
       }
     })

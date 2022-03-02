@@ -227,7 +227,7 @@ const ReportTab = () => {
     const getTestSection = (each) => {
         axios.get(`${endpoints.ownerDashboard.getTestSection}?academic_session=${history?.location?.state?.payload?.acadId}&grade=${each}`, {
             headers: {
-                'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+                'X-DTS-Host': window.location.host,
                 Authorization: `Bearer ${token}`
             }
         })
@@ -243,7 +243,7 @@ const ReportTab = () => {
     const TestData = async (each) => {
         await axios.get(`${endpoints.ownerDashboard.getTestData}?academic_session=${history?.location?.state?.payload?.acadId}&grade=${each}`, {
             headers: {
-                'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+                'X-DTS-Host': window.location.host,
                 Authorization: `Bearer ${token}`
             }
         })
@@ -259,7 +259,7 @@ const ReportTab = () => {
     const getCwSection = (each) => {
         axios.get(`${endpoints.ownerDashboard.getCwSection}?acad_session_id=${history?.location?.state?.payload?.acadId}&grade_id=${each}`, {
             headers: {
-                'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+                'X-DTS-Host': window.location.host,
                 Authorization: `Bearer ${token}`
             }
         })
@@ -276,7 +276,7 @@ const ReportTab = () => {
     const getHwSection = (each) => {
         axios.get(`${endpoints.ownerDashboard.getHwSection}?acad_session=${history?.location?.state?.payload?.acadId}&grade_id=${each}`, {
             headers: {
-                'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+                'X-DTS-Host': window.location.host,
                 Authorization: `Bearer ${token}`
             }
         })
@@ -292,7 +292,7 @@ const ReportTab = () => {
     const getCpSection = (each) => {
         axios.get(`${endpoints.ownerDashboard.getCpSection}?acad_session=${history?.location?.state?.payload?.acadId}&grade=${each}`, {
             headers: {
-                'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+                'X-DTS-Host': window.location.host,
                 Authorization: `Bearer ${token}`
             }
         })
@@ -309,7 +309,7 @@ const ReportTab = () => {
     const CPData = async (each) => {
         await axios.get(`${endpoints.ownerDashboard.getCPData}?acad_session=${history?.location?.state?.payload?.acadId}&grade=${each}`, {
           headers: {
-            'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+            'X-DTS-Host': window.location.host,
             Authorization: `Bearer ${token}`
           }
         })
