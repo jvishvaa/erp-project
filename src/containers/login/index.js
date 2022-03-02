@@ -71,6 +71,7 @@ function SignIn({ history, setTheme }) {
   const searchParams = new URLSearchParams(window.location.search);
   const redirectionToken = searchParams.get('redirect_key'); //token
   const online_class_id = +searchParams.get('online_class_id');
+  const user_level = +searchParams.get('user_level');
   const question_paper_id = +searchParams.get('question_paper_id');
   const redirectionView = +searchParams.get('wb_view'); // 1-android , 2-ios
   const pathIdentifier = +searchParams.get('path_value'); // 1-view-orchadio , 2-manage-orchadio
@@ -93,6 +94,7 @@ function SignIn({ history, setTheme }) {
         JSON.stringify({
           ...redirectionDetails,
           token: redirectionToken,
+          user_level: user_level,
         })
       );
       if (pathIdentifier === 1) {
