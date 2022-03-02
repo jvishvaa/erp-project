@@ -435,7 +435,8 @@ const FeesSectionStatus = (props) => {
                             </Typography>
                             <ArrowForwardIosIcon />
                             <Typography variant='h6' className={clsx(classes.textBold, classes.colorBlue)}>
-                                {gradeId}
+                                {/* {gradeId} */}
+                                Grade-wise Fee Details
                             </Typography>
                         </div>
                     </Grid>

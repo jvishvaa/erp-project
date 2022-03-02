@@ -1840,7 +1840,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route path='/fees-status-branch-wise-details/:branchId/'>
                             {({ match }) => <FeesStatusBranchWise match={match} />}
                           </Route>
-                          <Route path='/fees-section-status/:branchId/:gradeId/'>
+                          <Route path='/fees-section-status/:branchId'>
                             {({ match }) => <FeesSectionStatus match={match} />}
                           </Route>
                           <Route path='/trasaction-details/:branchId/:branchName'>

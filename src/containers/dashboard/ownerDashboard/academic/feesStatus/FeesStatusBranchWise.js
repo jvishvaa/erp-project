@@ -33,10 +33,11 @@ import {
     ExpandMore as ExpandMoreIcon,
     ArrowBack as ArrowBackIcon,
     ArrowForward as ArrowForwardIcon,
-    ArrowForwardIos as ArrowForwardIosIcon,
+    // ArrowForwardIos as ArrowForwardIosIcon,
     PersonSharp as PersonSharpIcon,
     MonetizationOn as MonetizationOnIcon
 } from '@material-ui/icons';
+import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 // import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import { withRouter, useHistory } from 'react-router-dom';
 import Layout from '../../../../Layout';
@@ -356,6 +357,16 @@ const FeesStatusBranchWise = (props) => {
         })
     }
 
+    const handleAllGradeRoute = () => {
+            history.push({
+                pathname: `/fees-section-status/${branchId}`,
+                state: {
+                    branch: historyBranch.branchName
+                  
+                }
+            })
+    }
+
     return (
         <Layout>
             <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
@@ -390,7 +401,7 @@ const FeesStatusBranchWise = (props) => {
                                     <div style={{ width: '80%' }}>
                                         <Typography> <b>Fees</b></Typography>
                                     </div>
-                                    <div style={{ width: '20%' }}>
+                                    <div style={{ width: '20%', textAlign:'right' }}>
                                         {/* <Autocomplete
                                             fullWidth
                                             size='small'
@@ -413,7 +424,7 @@ const FeesStatusBranchWise = (props) => {
                                                 />
                                             )}
                                         /> */}
-                                        <FormControl fullWidth variant='outlined' margin='dense'>
+                                        {/* <FormControl fullWidth variant='outlined' margin='dense'>
                                             <InputLabel id='subject'>Grade </InputLabel>
                                             <Select
                                                 labelId='subject'
@@ -433,7 +444,8 @@ const FeesStatusBranchWise = (props) => {
                                                         );
                                                     })}
                                             </Select>
-                                        </FormControl>
+                                        </FormControl> */}
+                                      <ArrowForwardIosIcon style={{cursor:'pointer'}} onClick={() => handleAllGradeRoute() } fontSize='small'/>
                                     </div>
                                 </div>
                                 <Divider />
