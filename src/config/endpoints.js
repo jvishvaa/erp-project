@@ -1,7 +1,7 @@
 import ENVCONFIG from './config';
 
 const {
-  apiGateway: { baseURLCentral, baseUdaan, baseURLMPQ },
+  apiGateway: { baseURLCentral, baseUdaan, baseURLMPQ , msReportsUrl , baseFinanceURL , baseURL},
   s3: { BUCKET: s3BUCKET, ERP_BUCKET },
 } = ENVCONFIG;
 
@@ -675,6 +675,69 @@ export default {
     getData2: 'period/<file-id>/custom-resource/',
     confirmAttendance: '/period/',
     getCwDetails: '/period/<period_classowrk_id>/get-update-period-classwork/'
+  },
+  staff: {
+    staffStats: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-role-staff-wise-stats/`,
+    staffAttandance : `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-wise-stats/`,
+    staffWiseStates: `${msReportsUrl}/api/acad_performance/v1/staff_att/staff-wise-stats/`,
+    staffRoleStates: `${msReportsUrl}/api/acad_performance/v1/staff_att/role-wise-stats/`,
+  },
+  ownerDashboard:{
+    // gradeWiseStudentAttendanceState : `${`https://tiny-newt-42.loca.lt`}/api/acad_performance/v1/attendance/grade-wise-stats/`,
+    gradeWiseStudentAttendanceState : `${msReportsUrl}/api/acad_performance/v1/attendance/grade-wise-stats/`,
+    subjectWiseStudentAttendanceState : `${msReportsUrl}/api/acad_performance/v1/attendance/subject-wise-stats/`,
+    studentWiseStudentAttendanceState : `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-stats/`,
+    studentWiseMoreAbsentStudentAttendanceState : `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-absence-stats/`,
+    subjectWiseTestStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/test/subject-wise-stats/`,
+    studentWiseTestStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/test/student-wise-stats/`,
+    subjectWiseHomeworkStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/homework/subject-wise-stats/`,
+    studentWiseHomeworkStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/homework/student-wise-stats/`,
+    subjectWiseClassworkStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/classwork/subject-wise-stats/`,
+    studentWiseClassworkStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/classwork/student-wise-stats/`,
+    subjectWiseClassParticipationStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/class_part/subject-wise-stats/`,
+    studentWiseClassParticipationStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/class_part/student-wise-stats/`,
+
+
+    //curriculumReport
+    curriculumGradeReport:`${msReportsUrl}/api/acad_performance/v1/curriculum-stats-grade/`,
+    curriculumGradeSubjectReport:`${msReportsUrl}/api/acad_performance/v1/curriculum-stats-section/`,
+    curriculumGradeList:`${baseURL}/assessment/subjects-list/`,
+    curriculumChapterList: `${msReportsUrl}/api/acad_performance/v1/academic-topic-status/`,
+    subjectListGradeFilter:`${baseURL}/academic/lesson-plan-subjects/`,
+    sectionCheckTableData: `${msReportsUrl}/acad_performance/v1/academic-topic-status/`,
+
+    // feesStatus
+    getTotalReceiptStatus: `${baseFinanceURL}/apiV1/today-wise-fees--list/`,
+    getFeesForAllBranch: `${baseFinanceURL}/apiV1/branch-wise-fees--list/`,
+    feesDetailsStudentWise:`${baseFinanceURL}/apiV1/student-wise-fees--list/`,
+    typeFeesData: `${baseFinanceURL}/apiV1/fee-type-fees/`,
+    transactionAllType: `${baseFinanceURL}/apiV1/today-all-transactions-list/`,
+
+    // student attendance
+    getStudentAttendance : `${msReportsUrl}/api/acad_performance/v1/attendance/branch-wise-stats/`,
+    getStaffDetails: `${msReportsUrl}/api/acad_performance/v1/staff_att/all-staff-stats/`,
+    getFinanceDetails: `${baseFinanceURL}/apiV1/session-wise-fees--list/`,
+    getAvgTest : `${msReportsUrl}/api/acad_performance/v1/student_report/combined-branch-wise-stats/`,
+    getCurrReport : `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-branch/`,
+    getAllBranchCurr : `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-branch-all/`,
+    getPaymentType: `${baseFinanceURL}/apiV1/fee-types-list/`,
+    subTabData: `${baseFinanceURL}/apiV1/fee-type-fees/`,
+    transactionDetailsTab:`${baseFinanceURL}/apiV1/all_payment_types/`,
+    gradeListFeesDetails: `${baseFinanceURL}/apiV1/grade-wise-fees--list/`,
+    sectionListFeesDetails: `${baseFinanceURL}/apiV1/section-wise-fees--list/`,
+    getTestData : `${msReportsUrl}/api/acad_performance/v1/test/grade-stats/`,
+    getCWData : `${msReportsUrl}/api/acad_performance/v1/classwork/branch-wise-stats/`,
+    getHWData : `${msReportsUrl}/api/acad_performance/v1/homework/grade-wise-stats/`,
+    getCPData : `${msReportsUrl}/api/acad_performance/v1/class_part/grade-stats/`,
+    getRecentTransaction : `${baseFinanceURL}/apiV1/today-recent-transactions/`,
+
+    // section wise report
+
+    getTestSection : `${msReportsUrl}/api/acad_performance/v1/test/grade-wise-stats/`,
+    getCwSection : `${msReportsUrl}/api/acad_performance/v1/classwork/branch-wise-stats/`,
+    getHwSection : `${msReportsUrl}/api/acad_performance/v1/homework/grade-wise-stats/`,
+    getCpSection : `${msReportsUrl}/api/acad_performance/v1/class_part/grade-wise-stats/`,
+    
   },
   connectionPod: {
     getStudentList: '/course_extend/students_list/',
