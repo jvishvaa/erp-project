@@ -50,9 +50,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const WelcomeComponent = ({ erp_config }) => {
+const WelcomeComponent = ({ erp_config, checkOldorNew, oldDash }) => {
   const classes = useStyles();
-  const [showButton,setShowButton] = useState(false);
+  const [showButton, setShowButton] = useState(false);
   const { welcomeDetails = {}, setReports } = useDashboardContext();
   const { greeting, name, userRole, userLevel } = welcomeDetails;
 
@@ -91,29 +91,37 @@ const WelcomeComponent = ({ erp_config }) => {
   }
 
   return (
-    <Box
-      mb={1}
-      className={classes.mainHeading}
-      display='flex'
-      alignItems='flex-end'
-      style={{ justifyContent: 'space-between' }}
-    >
-      <div style={{ display: 'flex' }}>
-        <Typography variant='subtitle1' color='secondary'>
-          {greeting},
-        </Typography>
-        <Typography variant='h6' color='secondary' className={classes.greeting_user}>
-          {name || 'Buddy'}
-        </Typography>
-        <Typography
-          variant='caption'
-          color='textSecondary'
-          className={classes.greeting_user_role}
-        >
-          ({userRole})
-        </Typography>
+    <>
+    {welcomeDetails?.userLevel === 1 || welcomeDetails?.userLevel ===  4 || welcomeDetails?.userLevel ===  8 || welcomeDetails?.userLevel ===  10 ? 
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1%' }} >
+        {erp_config ? <Button className={classes.outlined} color='secondary' onClick={checkOldorNew}  >
+          {oldDash ? <> New View </> : <>  Old View </>}
+        </Button> : ''}
       </div>
-      {/* {userLevel === 13 ? '' : (
+      : '' }
+      <Box
+        mb={1}
+        className={classes.mainHeading}
+        display='flex'
+        alignItems='flex-end'
+        style={{ justifyContent: 'space-between' }}
+      >
+        <div style={{ display: 'flex' }}>
+          <Typography variant='subtitle1' color='secondary'>
+            {greeting},
+          </Typography>
+          <Typography variant='h6' color='secondary' className={classes.greeting_user}>
+            {name || 'Buddy'}
+          </Typography>
+          <Typography
+            variant='caption'
+            color='textSecondary'
+            className={classes.greeting_user_role}
+          >
+            ({userRole})
+          </Typography>
+        </div>
+        {/* {userLevel === 13 ? '' : (
         <div>
           <SyncIcon
             id="refreshButton"
@@ -122,24 +130,29 @@ const WelcomeComponent = ({ erp_config }) => {
           />
         </div>
       )} */}
-      {checkOrigin ? (
-        <>
-          {welcomeDetails.userLevel === 13 ? (
-            <Button onClick={studentrefer} style={{ marginLeft: '20px' }}>
-              <GroupAddIcon style={{ marginRight: '5px' }} />
-              <h4>Orchids Ambassador Program</h4>
-            </Button>
-          ) : (
-            ''
-          )}
-        </>
-      ) : (
-        ''
-      )}
-      {erp_config ? <Button className={classes.outlined} color='secondary' onClick={academicView}>
-            Academic View
-      </Button> : '' }
-    </Box>
+        {checkOrigin ? (
+          <>
+            {welcomeDetails.userLevel === 13 ? (
+              <Button onClick={studentrefer} style={{ marginLeft: '20px' }}>
+                <GroupAddIcon style={{ marginRight: '5px' }} />
+                <h4>Orchids Ambassador Program</h4>
+              </Button>
+            ) : (
+              ''
+            )}
+          </>
+        ) : (
+          ''
+        )}
+        {welcomeDetails?.userLevel === 1 || welcomeDetails?.userLevel ===  4 || welcomeDetails?.userLevel === 8 || welcomeDetails?.userLevel === 10 ? '' :
+          <>
+            {erp_config ? <Button className={classes.outlined} color='secondary' onClick={academicView}>
+              Academic View
+            </Button> : ''}
+          </> 
+        }
+      </Box>
+    </>
   );
 };
 
