@@ -95,6 +95,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
   },
+  attendanceCard: {
+    height: '100%',
+  },
   colorBlue: {
     color: 'blue',
   },
@@ -259,7 +262,10 @@ const StuffTypeWiseStuffAttendance = (props) => {
                         <CardContent>
                           <Grid container spacing={2} justifyContent='center'>
                             <Grid item xs={3}>
-                              <Card elevation={0}>
+                              <Card
+                                elevation={0}
+                                className={clsx(classes.attendanceCard)}
+                              >
                                 <CardContent>
                                   <Typography variant='body1'>Total Staff</Typography>
                                   <Typography
@@ -272,7 +278,10 @@ const StuffTypeWiseStuffAttendance = (props) => {
                               </Card>
                             </Grid>
                             <Grid item xs={3}>
-                              <Card elevation={1}>
+                              <Card
+                                elevation={1}
+                                className={clsx(classes.attendanceCard)}
+                              >
                                 <CardContent className={clsx(classes.cardContantFlex)}>
                                   <span
                                     className={clsx(
@@ -292,7 +301,10 @@ const StuffTypeWiseStuffAttendance = (props) => {
                               </Card>
                             </Grid>
                             <Grid item xs={3}>
-                              <Card elevation={1}>
+                              <Card
+                                elevation={1}
+                                className={clsx(classes.attendanceCard)}
+                              >
                                 <CardContent className={clsx(classes.cardContantFlex)}>
                                   <span
                                     className={clsx(
@@ -312,7 +324,10 @@ const StuffTypeWiseStuffAttendance = (props) => {
                               </Card>
                             </Grid>
                             <Grid item xs={3}>
-                              <Card elevation={1}>
+                              <Card
+                                elevation={1}
+                                className={clsx(classes.attendanceCard)}
+                              >
                                 <CardContent className={clsx(classes.cardContantFlex)}>
                                   <span
                                     className={clsx(
@@ -338,7 +353,7 @@ const StuffTypeWiseStuffAttendance = (props) => {
                             <Grid item xs={6}>
                               <div className={clsx(classes.absentDiv)}>
                                 <span style={{ fontSize: '1rem' }}>
-                                  Absentfor more than 3 continuous days.
+                                  Absent for more than 3 continuous days.
                                 </span>
                                 <span
                                   style={{
