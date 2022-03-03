@@ -358,13 +358,13 @@ const FeesStatusBranchWise = (props) => {
     }
 
     const handleAllGradeRoute = () => {
-            history.push({
-                pathname: `/fees-section-status/${branchId}`,
-                state: {
-                    branch: historyBranch.branchName
-                  
-                }
-            })
+        history.push({
+            pathname: `/fees-section-status/${branchId}`,
+            state: {
+                branch: historyBranch.branchName
+
+            }
+        })
     }
 
     return (
@@ -401,7 +401,7 @@ const FeesStatusBranchWise = (props) => {
                                     <div style={{ width: '80%' }}>
                                         <Typography> <b>Fees</b></Typography>
                                     </div>
-                                    <div style={{ width: '20%', textAlign:'right' }}>
+                                    <div style={{ width: '20%', textAlign: 'right' }}>
                                         {/* <Autocomplete
                                             fullWidth
                                             size='small'
@@ -445,7 +445,7 @@ const FeesStatusBranchWise = (props) => {
                                                     })}
                                             </Select>
                                         </FormControl> */}
-                                      <ArrowForwardIosIcon style={{cursor:'pointer'}} onClick={() => handleAllGradeRoute() } fontSize='small'/>
+                                        <ArrowForwardIosIcon style={{ cursor: 'pointer' }} onClick={() => handleAllGradeRoute()} fontSize='small' />
                                     </div>
                                 </div>
                                 <Divider />
@@ -562,7 +562,6 @@ const FeesStatusBranchWise = (props) => {
                         <Card elevation={1}>
                             <CardContent style={{ padding: '0' }}>
                                 <div
-                                    onClick={() => handleRoute()}
                                     style={{
                                         borderRadius: '4px 4px 0 0',
                                         // backgroundColor: 'lightblue',
@@ -592,6 +591,11 @@ const FeesStatusBranchWise = (props) => {
                                                     <Typography className={clsx(classes.numberTransaction)} >
                                                         {totalCollected?.no_of_transaction} transaction done Today
                                                     </Typography>
+                                                    <div style={{ color: 'blue', marginLeft: "58%", textAlign: "center", cursor: "pointer", fontSize: "14px" }} onClick={() => handleRoute()}>
+                                                        <p>View All
+                                                            <ArrowForwardIosIcon style={{ fontSize: '12px' }} />
+                                                        </p>
+                                                    </div>
                                                 </CardContent>
                                             </Card>
                                         </Grid>
