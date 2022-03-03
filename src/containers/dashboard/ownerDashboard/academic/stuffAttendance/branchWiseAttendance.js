@@ -152,7 +152,7 @@ const BranchWiseStuffAttendance = (props) => {
     const payload = {
       academic_year: selectedAcademicYear,
       branchName: data.branch_name,
-      acad_session_id:data.acadsession__id
+      acad_session_id: data.acadsession__id,
     };
     history.push({
       pathname: `/staff-attendance-report/staff-type-wise/${data?.branch_id}`,
@@ -331,9 +331,16 @@ const BranchWiseStuffAttendance = (props) => {
                                   </span>
                                   <div>
                                     <Typography variant='h6'>
-                                      {(each.attendance_details.total_present /
+                                      {each.total_people < 1
+                                        ? 0
+                                        : (each.attendance_details.total_present /
+                                            each.total_people) *
+                                          100}
+                                      {/* {Number.isNaN((each.attendance_details.total_present /
                                         each.total_people) *
-                                        100}
+                                        100) ? 0: (each.attendance_details.total_present /
+                                          each.total_people) *
+                                          100} */}
                                     </Typography>
                                     <Typography variant='body1'>
                                       % {each.branch_name} Staff Present

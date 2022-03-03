@@ -131,18 +131,18 @@ const StuffTypeAdminWiseStuffAttendance = (props) => {
   const [expanded, setExpanded] = useState(true);
   const [branchName, setBranchName] = useState(history.location.state.payload.branchName);
   const [adminData, setAdminData] = useState([]);
-  const [userName,setUserName] = useState(history.location.state.payload.erp_user_name);
+  const [userName, setUserName] = useState(history.location.state.payload.erp_user_name);
   const [academicYearData, setAcademicYearData] = useState(
     history.location.state.payload.academic_year
   );
   const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
   const {
     match: {
-      params: { roleName,branchId },
+      params: { roleName, branchId },
     },
   } = props;
 
-  const {roleIds,acad_session_id} = history.location.state.payload
+  const { roleIds, acad_session_id } = history.location.state.payload;
 
   let dateToday = moment().format('YYYY-MM-DD');
 
@@ -157,16 +157,16 @@ const StuffTypeAdminWiseStuffAttendance = (props) => {
   const handleClick = (each) => {
     const payload = {
       branchName: branchName,
-      userName: userName
+      userName: userName,
     };
-    console.log(payload,branchId,each.erp_user_id);
+    console.log(payload, branchId, each.erp_user_id);
     history.push({
       pathname: `/staff-attendance-report/staff-details/${branchId}/${each.erp_user_id}`,
       state: {
         payload: payload,
       },
     });
-  }
+  };
 
   const handleVolumeChange = (event) => {
     setVolume(event.target.value);
@@ -175,7 +175,7 @@ const StuffTypeAdminWiseStuffAttendance = (props) => {
   const getGradeWiseState = () => {
     axiosInstance
       .get(
-        `${endpoints.staff.staffStats}?role_id=${roleIds}&acad_session_id=${acad_session_id}`,
+        `${endpoints.staff.staffStats}?role_id=${roleIds}&acad_session_id=${acad_session_id}&date_range_type=${date}`,
         {
           headers: {
             'X-DTS-Host': window.location.host,
@@ -250,8 +250,8 @@ const StuffTypeAdminWiseStuffAttendance = (props) => {
                 }
               />
             </Grid>
-            <Grid item xs={2} >
-              {/* <TextField
+            <Grid item xs={2}>
+              <TextField
                 label='Date'
                 type='date'
                 variant='outlined'
@@ -263,14 +263,14 @@ const StuffTypeAdminWiseStuffAttendance = (props) => {
                   shrink: true,
                 }}
                 onChange={(e) => handleDateClass(e.target.value)}
-              /> */}
-              <Autocomplete
+              />
+              {/* <Autocomplete
                   disabled
                   id="combo-box-demo"
                   getOptionLabel={(option) => option.title}
                   style={{ width: 140 }}
                   renderInput={(params) => <TextField {...params} label="Today Date" variant="outlined" />}
-                />
+                /> */}
             </Grid>
             <Grid item xs={12}>
               <TableContainer component={Paper}>
@@ -301,10 +301,7 @@ const StuffTypeAdminWiseStuffAttendance = (props) => {
                             {each.percentage_present}
                           </TableCell>
                           <TableCell>
-                            <IconButton
-                              onClick={() => handleClick(each)
-                              }
-                            >
+                            <IconButton onClick={() => handleClick(each)}>
                               <ArrowForwardIcon />
                             </IconButton>
                           </TableCell>

@@ -114,35 +114,6 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'lightpink',
   },
 }));
-const arr = [
-  {
-    stuffTypeId: 1,
-    stuffTypeName: 'Admin',
-    totalStuff: 26,
-    present: 25,
-    absent: 1,
-    persent: 96,
-    moreAbsent: 4,
-  },
-  {
-    stuffTypeId: 2,
-    stuffTypeName: 'Teacher',
-    totalStuff: 26,
-    present: 25,
-    absent: 1,
-    persent: 96,
-    moreAbsent: 4,
-  },
-  {
-    stuffTypeId: 3,
-    stuffTypeName: 'Other Stuff',
-    totalStuff: 26,
-    present: 25,
-    absent: 1,
-    persent: 96,
-    moreAbsent: 4,
-  },
-];
 
 const StuffTypeWiseStuffAttendance = (props) => {
   const classes = useStyles();
@@ -152,9 +123,6 @@ const StuffTypeWiseStuffAttendance = (props) => {
   const [loading, setloading] = useState(true);
   const [branchName, setBranchName] = useState(history.location.state.payload.branchName);
   const [branchData, setBranchData] = useState([]);
-  const [academicYearData, setAcademicYearData] = useState(
-    history.location.state.payload.academic_year
-  );
   const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
   const {
     match: {
@@ -162,7 +130,7 @@ const StuffTypeWiseStuffAttendance = (props) => {
     },
   } = props;
 
-  const {acad_session_id} = history.location.state.payload
+  const { acad_session_id } = history.location.state.payload;
 
   let dateToday = moment().format('YYYY-MM-DD');
 
@@ -201,7 +169,7 @@ const StuffTypeWiseStuffAttendance = (props) => {
       erp_user_name: erpUser.erp_user__roles__role_name,
       branchName: branchName,
       roleIds: erpUser?.erp_user__roles_id,
-      acad_session_id:acad_session_id
+      acad_session_id: acad_session_id,
     };
     history.push({
       pathname: `/stuff-attendance-report/${erpUser.erp_user__roles__role_name.toLowerCase()}/${branchId}`,
@@ -212,7 +180,6 @@ const StuffTypeWiseStuffAttendance = (props) => {
   };
 
   useEffect(() => {
-    setAcademicYearData(history.location.state.payload.academic_year);
     getGradeWiseState();
   }, [date]);
 
@@ -246,7 +213,7 @@ const StuffTypeWiseStuffAttendance = (props) => {
               </div>
             </Grid>
             <Grid item xs={2}>
-              {/* <TextField
+              <TextField
                 label='Date'
                 type='date'
                 variant='outlined'
@@ -258,8 +225,8 @@ const StuffTypeWiseStuffAttendance = (props) => {
                   shrink: true,
                 }}
                 onChange={(e) => handleDateClass(e)}
-              /> */}
-              <Autocomplete
+              />
+              {/* <Autocomplete
                 disabled
                 id='combo-box-demo'
                 getOptionLabel={(option) => option.title}
@@ -267,7 +234,7 @@ const StuffTypeWiseStuffAttendance = (props) => {
                 renderInput={(params) => (
                   <TextField {...params} label='Today Date' variant='outlined' />
                 )}
-              />
+              /> */}
             </Grid>
             {branchData.length > 0 ? (
               <>
