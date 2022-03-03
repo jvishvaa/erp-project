@@ -365,7 +365,7 @@ const ConnectionPodFn = (props) => {
   }, []);
 
   useEffect(() => {
-    var paramPath = `?page_size=${10}&page=${1}&class_status=${1}&role_differ=${userLevel}`;
+    var paramPath = `?page_size=${10}&page=${1}&class_status=${1}&role_differ=${userLevel}&session_year=${selectedYear?.id}`;
     setLoading(true);
     WSAPI('get', `${WSENDPOINT.WORKSHOP.retrieveworkshop}${paramPath}`)
       .then((res) => {
