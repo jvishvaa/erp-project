@@ -350,7 +350,7 @@ const StuffTypeWiseStuffAttendance = (props) => {
                                 </CardContent>
                               </Card>
                             </Grid>
-                            <Grid item xs={6}>
+                            {/* <Grid item xs={6}>
                               <div className={clsx(classes.absentDiv)}>
                                 <span style={{ fontSize: '1rem' }}>
                                   Absent for more than 3 continuous days.
@@ -365,7 +365,7 @@ const StuffTypeWiseStuffAttendance = (props) => {
                                   {each.moreAbsent}
                                 </span>
                               </div>
-                            </Grid>
+                            </Grid> */}
                           </Grid>
                         </CardContent>
                       </Card>
