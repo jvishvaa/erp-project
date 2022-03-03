@@ -84,6 +84,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
   const [calssNameWise, setClassName] = useState('');
   const [bulkDataDisplay, setBulkDataDisplay] = useState([]);
   const [bulkData, setBulkData] = useState([]);
+  const [HWstatus, setStatus] = useState();
 
   //submitted files
   const [submittedFiles, setSubmittedFiles] = useState([])
@@ -137,7 +138,6 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
     // list.push(filePath);
     // setBulkDataDisplay(list);
     // bulkData.push(filePath);
-
     const final = Object.assign({}, filePath);
     if (file.type === 'application/pdf') {
       setAttachments((prevState) => [...prevState, final]);
@@ -158,9 +158,10 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
     let status ;
     if(homeworkdata?.status === "un-opened"){
       status = 1
+      setStatus(1)
     }else if(homeworkdata?.hw_status){
-      status = homeworkdata?.hw_status
-
+      status = homeworkdata?.hw_status; 
+        setStatus(homeworkdata?.hw_status);
     }
     axiosInstance
       .get(
@@ -254,8 +255,8 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
           const filePath = await uploadFile(fd);
           const final = Object.assign({}, filePath);
           if (file.type === 'application/pdf') {
-            setAttachments((prevState) => [...prevState, final]);
-            setAttachmentPreviews((prevState) => [...prevState, final]);
+            setAttachments((prevState) => [...prevState, ...filePath]);
+            setAttachmentPreviews((prevState) => [...prevState, ...filePath]);
           } else {
             setAttachments((prevState) => [...prevState, filePath]);
             setAttachmentPreviews((prevState) => [...prevState, filePath]);
@@ -337,18 +338,33 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
       comment: '',
     };
     if (attachments.length !== 0) {
-      axiosInstance
-        .post(`${endpoints.homeworkStudent.submitHomework}`, requestData)
-        .then((result) => {
-          if (result.data.status_code === 201) {
-            setAlert('success', result.data.message);
-            //   handleHomeworkCancel();
-            history.goBack()
-          } else setAlert('error', result.data.message);
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-        });
+        if (HWstatus === 1) {
+          axiosInstance
+            .post(`${endpoints.homeworkStudent.submitHomework}`, requestData)
+            .then((result) => {
+              if (result.data.status_code === 201) {
+                setAlert('success', result.data.message);
+                //   handleHomeworkCancel();
+                history.goBack();
+              } else setAlert('error', result.data.message);
+            })
+            .catch((error) => {
+              setAlert('error', error.message);
+            });
+        }else{
+            axiosInstance.put(`${endpoints.homeworkStudent.hwupdate}${homeWorkId}/update-hw/`, requestData)
+          .then(result => {
+            if (result.data.status_code === 200) {
+              setAlert('success', result.data.message);
+              history.goBack();
+            }
+            else
+              setAlert('error', result.data.message);
+          })
+          .catch(error => {
+            setAlert('error', error.message);
+          })
+        }
     } else setAlert('error', 'No file attached!');
   };
 
