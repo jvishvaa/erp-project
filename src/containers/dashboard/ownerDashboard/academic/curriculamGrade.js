@@ -289,7 +289,7 @@ const CurriculumCompletion = (props) => {
             </Grid>
           </Grid>
           <div className='button-grade-scroll'>
-            <Typography style={{ fontWeight: '600', padding: '2%' }}>View Gradewide {'>'}</Typography>
+            <Typography style={{ fontWeight: '600', padding: '2%' }}>View Gradewise {'>'}</Typography>
             <div className='button-container'>
               {tableData &&
                 tableData.map((each, index) => {

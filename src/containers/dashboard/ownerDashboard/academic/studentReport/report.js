@@ -403,7 +403,7 @@ const StudentReport = (props) => {
                                           <TableCell>
                                             {eachdetails?.below_threshold}
                                           </TableCell>
-                                          <TableCell>{`${Math.round(eachdetails?.avg_score)}%`}</TableCell>
+                                          <TableCell>{ eachdetails?.avg_score > 0 ? <>{`${Math.round(eachdetails?.avg_score)}%`} </> : <>0%</> }</TableCell>
                                           <TableCell>
                                             <IconButton size='small'>
                                               <ArrowForwardIcon />
@@ -422,7 +422,7 @@ const StudentReport = (props) => {
                                       <TableCell>
                                         {hwdata?.no_stud_below_threshold}
                                       </TableCell>
-                                      <TableCell>{`${Math.round(hwdata?.avg_marks)}%`}</TableCell>
+                                      <TableCell> { hwdata?.avg_marks > 0 ? <>{`${Math.round(hwdata?.avg_marks)}%`} </> : <>0%</> }</TableCell>
                                       <TableCell>
                                         <IconButton size='small'>
                                           <ArrowForwardIcon />
@@ -439,7 +439,7 @@ const StudentReport = (props) => {
                                       <TableCell>
                                         {cwdata?.students_below_threshold}
                                       </TableCell>
-                                      <TableCell>{`${Math.round(cwdata?.avg_marks)}%`}</TableCell>
+                                      <TableCell>{ cwdata?.avg_marks > 0 ? <>{`${Math.round(cwdata?.avg_marks)}%`}</> : <>0%</> }</TableCell>
                                       <TableCell>
                                         <IconButton size='small'>
                                           <ArrowForwardIcon />
@@ -457,7 +457,7 @@ const StudentReport = (props) => {
                                           <TableCell>
                                             {eachdetails?.below_threshold}
                                           </TableCell>
-                                          <TableCell>{`${Math.round(eachdetails?.avg_score)}%`}</TableCell>
+                                          <TableCell>{eachdetails?.avg_score > 0 ? <> {`${Math.round(eachdetails?.avg_score)}%`} </> : <>0%</> } </TableCell>
                                           <TableCell>
                                             <IconButton size='small'>
                                               <ArrowForwardIcon />
@@ -481,7 +481,7 @@ const StudentReport = (props) => {
             </Grid>
           </Grid>
           <div className='button-grade-scroll'>
-              <Typography style={{fontWeight: '600' , padding: '2%'}}>View Gradewide {'>'}</Typography>
+              <Typography style={{fontWeight: '600' , padding: '2%'}}>View Gradewise {'>'}</Typography>
               <div className='button-container'>
                 {gradeList &&
                   gradeList.map((each, index) => {
