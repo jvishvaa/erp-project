@@ -49,6 +49,7 @@ const OwnerDashboard = () => {
     const [filteredBranchIds , setFilteredBranchIds ] = useState([])
     const [ selectedBranchId , setSelectedBranchId ] = useState([])
     const [ branchData , setBranchData ] = useState([])
+    const [ branchCounter , setBranchCounter ] = useState(false)
 
     
 
@@ -243,9 +244,11 @@ const OwnerDashboard = () => {
             console.log(ids);
             setBranchList(ids)
             setSelectedBranchId (selectedId);
+            setBranchCounter(true)
         }
         if(value?.length === 0){
             getBranches()
+            setBranchCounter(false)
         }
     };
 
@@ -309,6 +312,7 @@ const OwnerDashboard = () => {
                 recentTransCounter={recentTransCounter}
                 branchData={branchData}
                 getBranches={getBranches}
+                branchCounter={branchCounter}
                 />
 
             </Grid>

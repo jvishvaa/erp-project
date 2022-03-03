@@ -422,7 +422,7 @@ const FinanceOwnerDashboard = (props) => {
                       // onClick={() => setAcademicPerformanceDetailsOpen(true)}
                     onClick={() => history.push('/staff-attendance-report/branch-wise')}
                     >
-                      <b>Today's Attendance Overview :</b> All Branch
+                      <b>Today's Attendance Overview :</b> {props?.branchCounter ? '' : <>All Branch</>}
                     </Typography>
                   }
                 action ={
@@ -587,7 +587,7 @@ const FinanceOwnerDashboard = (props) => {
                       onClick={() => user_level != 10 ? history.push('/fees-table-status') : ''}
                       className={clsx(classes.cardtopicStyle)}
                     >
-                      <b>Fee Status Overview :</b> All Branch
+                      <b>Fee Status Overview :</b> {props?.branchCounter ? '' : <>All Branch</>}
                     </Typography>
                   }
                   action ={
@@ -803,7 +803,7 @@ const FinanceOwnerDashboard = (props) => {
                           onClick={() => setAcademicPerformanceDetailsOpen(true)}
                         // onClick={() => history.push('/finance-owner/academic-performance')}
                         >
-                          <b>Academic Performance : </b> All Branch
+                          <b>Academic Performance : </b> {props?.branchCounter ? '' : <>All Branch</>}
                         </Typography>
                       }
                       action ={
@@ -936,7 +936,7 @@ const FinanceOwnerDashboard = (props) => {
                       // className={clsx(classes.clickable)}
                       onClick={() => history.push('/staff-attendance-report/branch-wise')}
                       >
-                        <b>Staff Details :</b> All Branch
+                        <b>Staff Details :</b> {props?.branchCounter ? '' : <>All Branch</>}
                       </Typography>
                     }
                     action ={
@@ -1103,7 +1103,7 @@ const FinanceOwnerDashboard = (props) => {
                                       variant='body2'
                                       className={clsx(classes.textBold)}
                                     >
-                                      {`${Math.round(curriculumData ? curriculumData && curriculumData[0]?.percentage_completed : '')}%`}
+                                      {`${Math.round(curriculumData ? curriculumData && curriculumData[0]?.percentage_completed : <>0%</>)}%`}
                                     </Typography>
                                   </div>
                               </div>
@@ -1129,7 +1129,7 @@ const FinanceOwnerDashboard = (props) => {
                                     variant='body2'
                                     className={clsx(classes.textBold)}
                                   >
-                                      {`${Math.round(testScoreData?.overall_avg)}%`}
+                                      { testScoreData?.overall_avg > 0 ? <>{`${Math.round(testScoreData?.overall_avg)}%`} </> : <>0%</>}
                                   </Typography>
                                   <Typography variant='caption'>Av. Score</Typography>
                                 </div>
@@ -1152,7 +1152,7 @@ const FinanceOwnerDashboard = (props) => {
                                     variant='body2'
                                     className={clsx(classes.textBold)}
                                   >
-                                    {`${Math.round(studentReportData?.total_avg)}%`}
+                                    { studentReportData?.total_avg > 0 ?<> {`${Math.round(studentReportData?.total_avg)}%`}</> : <>0%</> }
                                   </Typography>
                                   <Typography variant='caption'>
                                     Av. Attendance
