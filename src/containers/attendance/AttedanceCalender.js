@@ -128,6 +128,7 @@ const AttedanceCalender = () => {
   const [moduleId, setModuleId] = useState('');
   const [ holidayId , setHolidayid ] = useState('')
   const [ holidayData , setHolidayData ] = useState('')
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
 
   let path = window.location.pathname;
   console.log(path, 'path');
@@ -274,6 +275,7 @@ const AttedanceCalender = () => {
               params: {
                 start_date: formatDate,
                 erp_id: userName[0],
+                session_year: sessionYear?.id,
               },
             })
             .then((res) => {
@@ -308,6 +310,7 @@ const AttedanceCalender = () => {
                 start_date: history?.location?.state?.payload?.startDate,
                 end_date: history?.location?.state?.payload?.endDate,
                 erp_id: userName,
+                session_year: sessionYear?.id,
               },
             })
             .then((res) => {
@@ -697,6 +700,7 @@ const AttedanceCalender = () => {
         params: {
           start_date: formatDate,
           erp_id: userName,
+          session_year: sessionYear?.id,
         },
       })
       .then((res) => {
@@ -729,7 +733,7 @@ const AttedanceCalender = () => {
     if (counter === 2) {
       axiosInstance
         .get(
-          `academic/student_calender/?start_date=${startDate}&end_date=${endDate}&erp_id=${userName}`
+          `academic/student_calender/?start_date=${startDate}&end_date=${endDate}&erp_id=${userName}&session_year=${sessionYear?.id}`
       
         )
         .then((res) => {
@@ -771,6 +775,7 @@ const AttedanceCalender = () => {
             start_date: startDate,
             end_date: endDate,
             erp_id: userName,
+            session_year: sessionYear?.id
           },
         })
         .then((res) => {
@@ -944,7 +949,7 @@ const AttedanceCalender = () => {
   const handleDeleteHoliday = (data) => {
     axiosInstance
     .get(
-      `${endpoints.academics.getHoliday}?holiday_id=${holidayId}`
+      `${endpoints.academics.getHoliday}?holiday_id=${holidayId}&session_year=${sessionYear?.id}`
     )
     .then((res) => {
       console.log(res, 'holiday');
