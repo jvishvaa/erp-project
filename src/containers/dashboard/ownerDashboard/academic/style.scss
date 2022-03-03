@@ -1,0 +1,38 @@
+.whole-subject-curr{
+    .MuiAccordionSummary-content{
+        display: flex;
+        justify-content: space-between;
+    }
+}
+    #blue{
+        .MuiSvgIcon-root{
+        color: #0bb100 !important;
+        }
+    }
+
+    .whole-report-curr{
+        .tabPaneltest{
+            background: white;
+            border: 1px solid #EEEEEE;
+        }
+    }
+
+    .button-grade-scroll{
+        min-height: 350px;
+        max-height: 350px;
+        overflow-x: auto;
+        width: 25%;
+        border-radius: 7px;
+        border: 1px solid #a9a9a9;
+        .button-container{
+            display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+        }
+        .button-area-div{
+            margin: 2%;
+        }
+        .grade-button-hover{
+            background: #a7a7a7;
+        }
+    }

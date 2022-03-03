@@ -68,9 +68,15 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
           isMsAPI();
           fetchERPSystemConfig(response?.isLogin).then((res) => {
             let erpConfig;
+            let userData = JSON.parse(localStorage.getItem('userDetails'));
             if(res === true || res.length > 0) {
               erpConfig = res;
-              history.push('/acad-calendar');
+              if(userData?.user_level === 11 || userData?.user_level ===  13){
+                history.push('/acad-calendar');
+                console.log(userData?.user_level , "level");
+                } else {
+                history.push('/dashboard');
+                }
             } else if(res === false) {
               erpConfig = res;
               history.push('/dashboard');
@@ -78,7 +84,6 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
               erpConfig = res;
               history.push('/dashboard');
             }
-            let userData = JSON.parse(localStorage.getItem('userDetails'));
             userData['erp_config'] = erpConfig;
             localStorage.setItem(
               'userDetails',
