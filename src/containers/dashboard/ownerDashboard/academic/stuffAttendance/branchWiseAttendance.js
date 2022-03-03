@@ -113,6 +113,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
   },
+  attendanceCard: {
+    height: '100%',
+  },
 }));
 
 const BranchWiseStuffAttendance = (props) => {
@@ -214,9 +217,9 @@ const BranchWiseStuffAttendance = (props) => {
           <Grid container spacing={3} justifyContent='space-between'>
             <Grid item xs={6}>
               <div className={clsx(classes.breadcrumb)}>
-              <IconButton size='small' onClick={() => history.goBack()}>
-                <ArrowBackIcon />
-              </IconButton>
+                <IconButton size='small' onClick={() => history.goBack()}>
+                  <ArrowBackIcon />
+                </IconButton>
                 <Typography variant='h6' className={clsx(classes.textBold)}>
                   Dashboard
                 </Typography>
@@ -264,7 +267,10 @@ const BranchWiseStuffAttendance = (props) => {
                         <CardContent>
                           <Grid container spacing={2} justifyContent='center'>
                             <Grid item xs={3}>
-                              <Card elevation={0}>
+                              <Card
+                                elevation={0}
+                                className={clsx(classes.attendanceCard)}
+                              >
                                 <CardContent>
                                   <Typography variant='body1'>Total Staff</Typography>
                                   <Typography
@@ -277,7 +283,10 @@ const BranchWiseStuffAttendance = (props) => {
                               </Card>
                             </Grid>
                             <Grid item xs={3}>
-                              <Card elevation={1}>
+                              <Card
+                                elevation={1}
+                                className={clsx(classes.attendanceCard)}
+                              >
                                 <CardContent className={clsx(classes.cardContantFlex)}>
                                   <span
                                     className={clsx(
@@ -297,7 +306,10 @@ const BranchWiseStuffAttendance = (props) => {
                               </Card>
                             </Grid>
                             <Grid item xs={3}>
-                              <Card elevation={1}>
+                              <Card
+                                elevation={1}
+                                className={clsx(classes.attendanceCard)}
+                              >
                                 <CardContent className={clsx(classes.cardContantFlex)}>
                                   <span
                                     className={clsx(
@@ -317,7 +329,10 @@ const BranchWiseStuffAttendance = (props) => {
                               </Card>
                             </Grid>
                             <Grid item xs={3}>
-                              <Card elevation={1}>
+                              <Card
+                                elevation={1}
+                                className={clsx(classes.attendanceCard)}
+                              >
                                 <CardContent className={clsx(classes.cardContantFlex)}>
                                   <span
                                     className={clsx(
@@ -349,10 +364,10 @@ const BranchWiseStuffAttendance = (props) => {
                                 </CardContent>
                               </Card>
                             </Grid>
-                            <Grid item xs={6}>
+                            {/* <Grid item xs={6}>
                               <div className={clsx(classes.absentDiv)}>
                                 <span style={{ fontSize: '1rem' }}>
-                                  Absentfor more than 3 continuous days.
+                                  Absent for more than 3 continuous days.
                                 </span>
                                 <span
                                   style={{
@@ -364,7 +379,7 @@ const BranchWiseStuffAttendance = (props) => {
                                   {each.moreAbsent}
                                 </span>
                               </div>
-                            </Grid>
+                            </Grid> */}
                           </Grid>
                         </CardContent>
                       </Card>

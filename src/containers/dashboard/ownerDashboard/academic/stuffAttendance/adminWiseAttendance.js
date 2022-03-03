@@ -281,7 +281,7 @@ const StuffTypeAdminWiseStuffAttendance = (props) => {
                       <TableCell>Name</TableCell>
                       <TableCell>Present</TableCell>
                       <TableCell>Absent</TableCell>
-                      <TableCell>ABSENT FOR MORE THAN 3 DAYS</TableCell>
+                      {/* <TableCell>ABSENT FOR MORE THAN 3 DAYS</TableCell> */}
                       <TableCell></TableCell>
                     </TableRow>
                   </TableHead>
@@ -297,9 +297,9 @@ const StuffTypeAdminWiseStuffAttendance = (props) => {
                           <TableCell className={clsx(classes.colorRed)}>
                             {each.total_absent}
                           </TableCell>
-                          <TableCell className={clsx(classes.colorRed)}>
+                          {/* <TableCell className={clsx(classes.colorRed)}>
                             {each.percentage_present}
-                          </TableCell>
+                          </TableCell> */}
                           <TableCell>
                             <IconButton onClick={() => handleClick(each)}>
                               <ArrowForwardIcon />
