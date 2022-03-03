@@ -200,14 +200,14 @@ const ConnectionPodFn = (props) => {
   };
 
   const filterWorkShop = () => {
-    var paramPath = `?page_size=${limit}&page=${page}&class_status=${classStatus}&role_differ=${userLevel}`;
+    var paramPath = `?page_size=${limit}&page=${page}&class_status=${classStatus}&role_differ=${userLevel}&session_year=${selectedAcademicYear?.id}`;
     if (dateRangeTechPer[0] && dateRangeTechPer[1]) {
       const sd = dateRangeTechPer[0].format('YYYY-MM-DD');
       const ed = dateRangeTechPer[1].format('YYYY-MM-DD');
       paramPath += `&start_date=${sd}&end_date=${ed}`;
     }
     if (selectedBranch.length) {
-      paramPath += `&session_year=${selectedAcademicYear?.id}&branch=${selectedBranch.map((obj) => obj.id)}`;
+      paramPath += `&branch=${selectedBranch.map((obj) => obj.id)}`;
     }
     if (selectedGrade.length) {
       paramPath += `&grade=${selectedGrade.map((obj) => obj.id)}`;
