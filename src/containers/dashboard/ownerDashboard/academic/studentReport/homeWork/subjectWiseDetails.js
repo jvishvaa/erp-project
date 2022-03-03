@@ -150,7 +150,7 @@ const SubjectWiseDetails = (props) => {
   } = history.location.state;
   useEffect(() => {
     getAllSubjects({
-      session_year: selectedAcademicYear.is, //hardcore
+      session_year: selectedAcademicYear.id, //hardcore
       grade: gradeId,
     });
     getSubjectWiseStat({
