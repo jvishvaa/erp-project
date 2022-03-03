@@ -730,7 +730,7 @@ const FinanceOwnerDashboard = (props) => {
                 >
 
                 </CardHeader>
-                <CardContent style={{minHeight: '250px' , display : 'flex'}} >
+                <CardContent style={{minHeight: '250px' , display : 'flex' , maxHeight: '300px' , overflow: 'auto' }} >
                   {props?.recentTransCounter ? 
                   <Grid container spacing={3} alignItems='center'>
                     {props?.recentTrans && props?.recentTrans?.map((each, index) => {
@@ -769,7 +769,7 @@ const FinanceOwnerDashboard = (props) => {
                           </Grid>
                         </Grid>
                        
-                    <Grid item xs={12}
+                    {/* <Grid item xs={12}
                       className={clsx(classes.viewButtonAlign)}
                     >
                       <Button
@@ -781,7 +781,7 @@ const FinanceOwnerDashboard = (props) => {
                         View All <DeleteIcon style={{ color: 'black' }} />
                       </Button>
 
-                    </Grid>
+                    </Grid> */}
                     </>
                       )
                     })}
