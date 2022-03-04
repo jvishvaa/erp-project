@@ -157,7 +157,7 @@ const FeesTableStatus = (props) => {
   // console.log(selectedBranchId.toString(),'Branch---->')
 
   const { session_year: sessionYearId = '' } =
-  JSON.parse(sessionStorage.getItem('acad_session')) || {};
+    JSON.parse(sessionStorage.getItem('acad_session')) || {};
 
   // console.log(sessionYearId,'YEARPPPPPPP')
 
@@ -177,7 +177,12 @@ const FeesTableStatus = (props) => {
   };
 
   useEffect(() => {
-    feesStatusAllBranch({ academic_year: sessionYearId, branch: selectedBranchId.toString() });
+    if (history?.location?.state?.filter === true) {
+      const branchIds = history?.location?.state?.branch.map((el) => el?.branch?.id)
+      feesStatusAllBranch({ academic_year: sessionYearId, branch: branchIds.toString() })
+    } else {
+      feesStatusAllBranch({ academic_year: sessionYearId, branch: selectedBranchId.toString() });
+    }
     setLoading(true);
   }, []);
 
@@ -195,13 +200,12 @@ const FeesTableStatus = (props) => {
       });
   };
 
-  const handleRote = (branchName,branchId) => {
-    console.log(branchName,branchId,'Room')
+  const handleRote = (branchName, branchId) => {
     history.push({
       pathname: `/fees-status-branch-wise-details/${branchId}`,
       state: {
-        branchName:branchName,
-        branchId:branchId
+        branchName: branchName,
+        branchId: branchId
       }
     })
     // history.push(`/fees-status-branch-wise-details/${branchId}`)
@@ -223,6 +227,7 @@ const FeesTableStatus = (props) => {
               <ArrowForwardIosIcon />
             </div>
           </Grid>
+          <ArrowBackIcon onClick={() => history.goBack()} />
           <Grid item xs={6}>
             {/* <OutlinedInput
               margin='dense'
@@ -267,7 +272,7 @@ const FeesTableStatus = (props) => {
                         <TableCell className={clsx(classes.colorYellow)}><b>{each?.no_of_admission}</b></TableCell>
                         <TableCell>
                           <IconButton size='large'
-                            onClick={() => handleRote(each.branch_name,each?.branch)}
+                            onClick={() => handleRote(each.branch_name, each?.branch)}
                           >
                             <ArrowCircleRightIcon />
                           </IconButton>

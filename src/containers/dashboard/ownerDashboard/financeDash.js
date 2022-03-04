@@ -303,6 +303,7 @@ const FinanceOwnerDashboard = (props) => {
 
 
 
+
   const handleChange = (each ,value) => (e, isExpanded) => {
     const testclick = document.querySelectorAll('#branchWise');
     console.log(isExpanded, 'each');
@@ -407,6 +408,31 @@ const FinanceOwnerDashboard = (props) => {
 
   }
 
+  const staffRedirect = () => {
+      history.push({
+        pathname: '/staff-attendance-report/branch-wise',
+        state: {
+          acadId : props?.branchList
+        }
+      })
+  }
+
+  const feeredirect = () => {
+  if(user_level != 10 ){
+    if(props?.branchCounter === true){
+      history.push({
+        pathname: '/fees-table-status',
+        state : {
+          branch : props?.branchList,
+          filter: true
+        }
+      }) 
+    } else {
+      history.push('/fees-table-status')
+    }
+  }
+  }
+
   return (
     <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
       <Grid item container spacing={2} >
@@ -419,10 +445,18 @@ const FinanceOwnerDashboard = (props) => {
                     <Typography
                       // variant='h5'
                       className={clsx(classes.clickable, classes.cardtopicStyle)}
+                      style={{display : 'flex'}}
                       // onClick={() => setAcademicPerformanceDetailsOpen(true)}
                     onClick={() => history.push('/staff-attendance-report/branch-wise')}
                     >
-                      <b>Today's Attendance Overview :</b> {props?.branchCounter ? '' : <>All Branch</>}
+                      <b>Today's Attendance Overview :</b> {props?.branchCounter ? <div style={{display : 'flex'}} >
+                      {props?.selectedBranch && props?.selectedBranch?.map((item) => (
+                        <div style={{margin : '0 5px'}} >
+                          {item?.branch?.branch_name}
+                        </div>
+                      ))}
+                      
+                      </div> : <>All Branch</>}
                     </Typography>
                   }
                 action ={
@@ -583,11 +617,21 @@ const FinanceOwnerDashboard = (props) => {
                   title={
                     <Typography
                       // variant='h5'
+                      style={{display : 'flex'}}
                       className={clsx(classes.clickable)}
-                      onClick={() => user_level != 10 ? history.push('/fees-table-status') : ''}
+                      // onClick={() => user_level != 10 ? history.push('/fees-table-status') : ''}
+                      onClick={feeredirect }
+                      
                       className={clsx(classes.cardtopicStyle)}
                     >
-                      <b>Fee Status Overview :</b> {props?.branchCounter ? '' : <>All Branch</>}
+                      <b>Fee Status Overview :</b> {props?.branchCounter ? <div style={{display : 'flex'}} >
+                      {props?.selectedBranch && props?.selectedBranch?.map((item) => (
+                        <div style={{margin : '0 5px'}} >
+                          {item?.branch?.branch_name}
+                        </div>
+                      ))}
+                      
+                      </div>  : <>All Branch</>}
                     </Typography>
                   }
                   action ={
@@ -799,11 +843,19 @@ const FinanceOwnerDashboard = (props) => {
                       title={
                         <Typography
                           // variant='h5'
+                      style={{display : 'flex'}}
                           className={clsx(classes.clickable, classes.cardtopicStyle)}
                           onClick={() => setAcademicPerformanceDetailsOpen(true)}
                         // onClick={() => history.push('/finance-owner/academic-performance')}
                         >
-                          <b>Academic Performance : </b> {props?.branchCounter ? '' : <>All Branch</>}
+                          <b>Academic Performance : </b> {props?.branchCounter ? <div style={{display : 'flex'}} >
+                      {props?.selectedBranch && props?.selectedBranch?.map((item) => (
+                        <div style={{margin : '0 5px'}} >
+                          {item?.branch?.branch_name}
+                        </div>
+                      ))}
+                      
+                      </div>  : <>All Branch</>}
                         </Typography>
                       }
                       action ={
@@ -934,9 +986,18 @@ const FinanceOwnerDashboard = (props) => {
                         className={clsx(classes.clickable,classes.cardtopicStyle)}
                       // variant='h5'
                       // className={clsx(classes.clickable)}
-                      onClick={() => history.push('/staff-attendance-report/branch-wise')}
+                      // onClick={() => history.push('/staff-attendance-report/branch-wise')}
+                      onClick={staffRedirect}
+                      style={{display : 'flex'}}
                       >
-                        <b>Staff Details :</b> {props?.branchCounter ? '' : <>All Branch</>}
+                        <b>Staff Details :</b> {props?.branchCounter ? <div style={{display : 'flex'}} >
+                      {props?.selectedBranch && props?.selectedBranch?.map((item) => (
+                        <div style={{margin : '0 5px'}} >
+                          {item?.branch?.branch_name}
+                        </div>
+                      ))}
+                      
+                      </div>  : <>All Branch</>}
                       </Typography>
                     }
                     action ={

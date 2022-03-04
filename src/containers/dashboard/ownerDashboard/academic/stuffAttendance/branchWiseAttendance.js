@@ -138,6 +138,8 @@ const BranchWiseStuffAttendance = (props) => {
     },
   } = props;
 
+
+
   let dateToday = moment().format('YYYY-MM-DD');
 
   const handleDateClass = (e) => {
@@ -193,8 +195,9 @@ const BranchWiseStuffAttendance = (props) => {
   };
 
   useEffect(() => {
+    const acadId = history?.location?.state?.acadId?.map((el) => el?.id) 
     getData({
-      session_year_id: selectedAcademicYear.id,
+      acad_session_id: acadId.toString(),
       date_range_type: date,
       page: currentPage,
       page_size: 5,
