@@ -143,20 +143,37 @@ const OwnerDashboard = () => {
   let date = moment().format('YYYY-MM-DD');
 
   const getAttendanceReport = (params) => {
-    axios
-      .get(
-        `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`,
-        {
-          headers: {
-            'X-DTS-Host': window.location.host,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((res) => {
-        setStudentAttendance(res.data.result);
-      })
-      .catch(() => {});
+    if (branchCounter === true) {
+      axios
+        .get(
+          `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`,
+          {
+            headers: {
+              'X-DTS-Host': window.location.host,
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          setStudentAttendance(res.data.result);
+        })
+        .catch(() => {});
+    } else {
+      axios
+        .get(
+          `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}`,
+          {
+            headers: {
+              'X-DTS-Host': window.location.host,
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((res) => {
+          setStudentAttendance(res.data.result);
+        })
+        .catch(() => {});
+    }
   };
 
   const getAttendanceReportOverview = (params) => {
