@@ -468,18 +468,18 @@ const FeesStatusBranchWise = (props) => {
                                     <Grid style={{ margin: '5px' }} container spacing={2}>
 
 
-                                        <Grid item xs={3}>
+                                        <Grid item xs={4}>
                                             <Card elevation={1}>
                                                 <CardContent>
-                                                    <Typography variant='body1' className={clsx(classes.textCenter, classes.textFontSmall)}>Overview of All Grades</Typography>
-                                                    <Typography variant='h6' className={clsx(classes.textBold, classes.colorRed, classes.textCenter)}>
+                                                    <Typography variant='h6' className={clsx(classes.textBold, classes.colorRed)}>
                                                         {totalOverView}
                                                     </Typography>
+                                                    <Typography variant='body1' className={clsx(classes.textFontSmall)}>Total Fees All Grades</Typography>
                                                 </CardContent>
                                             </Card>
                                         </Grid>
                                         {/* <Grid container> */}
-                                        <Grid item xs={3}>
+                                        <Grid item xs={4}>
                                             <Grid item xs={12}>
                                                 <Card elevation={1}
                                                 >
@@ -504,7 +504,7 @@ const FeesStatusBranchWise = (props) => {
                                         </Grid>
 
                                         {/* </Grid> */}
-                                        <Grid item xs={3}>
+                                        <Grid item xs={4}>
                                             <Grid item xs={12}>
                                                 <Card elevation={1}
                                                 // className={clsx(classes.cardContantFlexCustom)}
@@ -522,13 +522,13 @@ const FeesStatusBranchWise = (props) => {
                                                         </span>
                                                         <div>
                                                             <Typography variant='h6'> <b>{fessData[0]?.paid}</b> </Typography>
-                                                            <Typography variant='body1' className={clsx(classes.textFontSmall)}>By Cash</Typography>
+                                                            <Typography variant='body1' className={clsx(classes.textFontSmall)}>Paid</Typography>
                                                         </div>
                                                     </CardContent>
                                                 </Card>
                                             </Grid>
                                         </Grid>
-                                        <Grid item xs={3}>
+                                        {/* <Grid item xs={3}>
                                             <Grid item xs={12}>
                                                 <Card elevation={1}
                                                 // className={clsx(classes.cardContantFlexCustom)}
@@ -551,7 +551,7 @@ const FeesStatusBranchWise = (props) => {
                                                     </CardContent>
                                                 </Card>
                                             </Grid>
-                                        </Grid>
+                                        </Grid> */}
                                     </Grid>
 
                                 </div>
