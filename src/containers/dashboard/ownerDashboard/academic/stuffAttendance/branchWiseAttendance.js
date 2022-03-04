@@ -138,8 +138,6 @@ const BranchWiseStuffAttendance = (props) => {
     },
   } = props;
 
-
-
   let dateToday = moment().format('YYYY-MM-DD');
 
   const handleDateClass = (e) => {
@@ -195,7 +193,7 @@ const BranchWiseStuffAttendance = (props) => {
   };
 
   useEffect(() => {
-    const acadId = history?.location?.state?.acadId?.map((el) => el?.id) 
+    const acadId = history?.location?.state?.acadId?.map((el) => el?.id);
     getData({
       acad_session_id: acadId.toString(),
       date_range_type: date,
@@ -351,9 +349,11 @@ const BranchWiseStuffAttendance = (props) => {
                                     <Typography variant='h6'>
                                       {each.total_people < 1
                                         ? 0
-                                        : (each.attendance_details.total_present /
-                                            each.total_people) *
-                                          100}
+                                        : Math.round(
+                                            (each.attendance_details.total_present /
+                                              each.total_people) *
+                                              100
+                                          )}
                                       {/* {Number.isNaN((each.attendance_details.total_present /
                                         each.total_people) *
                                         100) ? 0: (each.attendance_details.total_present /
