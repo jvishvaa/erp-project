@@ -1164,7 +1164,8 @@ const FinanceOwnerDashboard = (props) => {
                                       variant='body2'
                                       className={clsx(classes.textBold)}
                                     >
-                                      {curriculumData ?  `${Math.round(curriculumData[0]?.percentage_completed)}%` : <>0%</>}
+                                    
+                                      {curriculumData.length > 0 ? `${Math.round(curriculumData[0]?.percentage_completed)}%` : <>0%</>}
                                     </Typography>
                                   </div>
                               </div>
