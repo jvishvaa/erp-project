@@ -313,6 +313,7 @@ const OwnerDashboard = () => {
                 branchData={branchData}
                 getBranches={getBranches}
                 branchCounter={branchCounter}
+                selectedBranch={selectedBranch}
                 />
 
             </Grid>

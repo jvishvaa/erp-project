@@ -303,6 +303,7 @@ const FinanceOwnerDashboard = (props) => {
 
 
 
+
   const handleChange = (each ,value) => (e, isExpanded) => {
     const testclick = document.querySelectorAll('#branchWise');
     console.log(isExpanded, 'each');
@@ -407,6 +408,31 @@ const FinanceOwnerDashboard = (props) => {
 
   }
 
+  const staffRedirect = () => {
+      history.push({
+        pathname: '/staff-attendance-report/branch-wise',
+        state: {
+          acadId : props?.branchList
+        }
+      })
+  }
+
+  const feeredirect = () => {
+  if(user_level != 10 ){
+    if(props?.branchCounter === true){
+      history.push({
+        pathname: '/fees-table-status',
+        state : {
+          branch : props?.branchList,
+          filter: true
+        }
+      }) 
+    } else {
+      history.push('/fees-table-status')
+    }
+  }
+  }
+
   return (
     <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
       <Grid item container spacing={2} >
@@ -419,10 +445,18 @@ const FinanceOwnerDashboard = (props) => {
                     <Typography
                       // variant='h5'
                       className={clsx(classes.clickable, classes.cardtopicStyle)}
+                      style={{display : 'flex'}}
                       // onClick={() => setAcademicPerformanceDetailsOpen(true)}
-                    onClick={() => history.push('/staff-attendance-report/branch-wise')}
+                    onClick={staffRedirect}
                     >
-                      <b>Today's Attendance Overview :</b> {props?.branchCounter ? '' : <>All Branch</>}
+                      <b>Today's Attendance Overview :</b> {props?.branchCounter ? <div style={{display : 'flex'}} >
+                      {props?.selectedBranch && props?.selectedBranch?.map((item) => (
+                        <div style={{margin : '0 5px'}} >
+                          {item?.branch?.branch_name}
+                        </div>
+                      ))}
+                      
+                      </div> : <>All Branch</>}
                     </Typography>
                   }
                 action ={
@@ -506,7 +540,7 @@ const FinanceOwnerDashboard = (props) => {
                       )
                       )}
 
-                    {props?.studentAttendance?.total_avg ?
+                    
                       <Grid item xs={3}>
                         <div
                           className={clsx(
@@ -525,7 +559,7 @@ const FinanceOwnerDashboard = (props) => {
                             <Typography
                               className={clsx(classes.fontDesign)}
                               variant='body2'>
-                              <b>Total : {props?.studentAttendance ? props?.studentAttendance?.total_avg : ''}</b>
+                              <b>Total : {props?.studentAttendance ? props?.studentAttendance?.total_strength : ''}</b>
                             </Typography>
                             <Typography
                               className={clsx(classes.fontDesign, classes.fontColor3)}
@@ -535,7 +569,7 @@ const FinanceOwnerDashboard = (props) => {
                             <Typography
                               className={clsx(classes.fontDesign, classes.fontColor2)}
                               variant='caption'>
-                              <b>Absent : {props?.studentAttendance ? props?.studentAttendance?.total_strength : ''}</b>
+                              <b>Absent : {props?.studentAttendance ? props?.studentAttendance?.total_strength - props?.studentAttendance?.total_present : ''}</b>
                             </Typography>
                           </div>
                           <div className={clsx(classes.cuirularButton)}>
@@ -567,7 +601,7 @@ const FinanceOwnerDashboard = (props) => {
                           </div>
                         </div>
                       </Grid>
-                      : ''}
+                 
 
                   </Grid>
                   : <Grid style={{display : 'flex' , justifyContent: 'center'}} ><Typography style={{fontWeight: '600'}} >No Data</Typography></Grid> }
@@ -583,11 +617,21 @@ const FinanceOwnerDashboard = (props) => {
                   title={
                     <Typography
                       // variant='h5'
+                      style={{display : 'flex'}}
                       className={clsx(classes.clickable)}
-                      onClick={() => user_level != 10 ? history.push('/fees-table-status') : ''}
+                      // onClick={() => user_level != 10 ? history.push('/fees-table-status') : ''}
+                      onClick={feeredirect }
+                      
                       className={clsx(classes.cardtopicStyle)}
                     >
-                      <b>Fee Status Overview :</b> {props?.branchCounter ? '' : <>All Branch</>}
+                      <b>Fee Status Overview :</b> {props?.branchCounter ? <div style={{display : 'flex'}} >
+                      {props?.selectedBranch && props?.selectedBranch?.map((item) => (
+                        <div style={{margin : '0 5px'}} >
+                          {item?.branch?.branch_name}
+                        </div>
+                      ))}
+                      
+                      </div>  : <>All Branch</>}
                     </Typography>
                   }
                   action ={
@@ -799,11 +843,19 @@ const FinanceOwnerDashboard = (props) => {
                       title={
                         <Typography
                           // variant='h5'
+                      style={{display : 'flex'}}
                           className={clsx(classes.clickable, classes.cardtopicStyle)}
                           onClick={() => setAcademicPerformanceDetailsOpen(true)}
                         // onClick={() => history.push('/finance-owner/academic-performance')}
                         >
-                          <b>Academic Performance : </b> {props?.branchCounter ? '' : <>All Branch</>}
+                          <b>Academic Performance : </b> {props?.branchCounter ? <div style={{display : 'flex'}} >
+                      {props?.selectedBranch && props?.selectedBranch?.map((item) => (
+                        <div style={{margin : '0 5px'}} >
+                          {item?.branch?.branch_name}
+                        </div>
+                      ))}
+                      
+                      </div>  : <>All Branch</>}
                         </Typography>
                       }
                       action ={
@@ -820,7 +872,7 @@ const FinanceOwnerDashboard = (props) => {
                     <CardContent style={{minHeight: '180px' , display: 'flex' , justifyContent: 'center'}} >
                       {props?.acadCounter ? 
                       <Grid container spacing={3} alignItems='center'>
-                      {props?.currBranch ? 
+                      
                         <Grid item xs={12} style={{ borderRadius: '5px', backgroundColor: '#ffd4d9' }}>
                           <div className={clsx(classes.absentGrid)}>
                             <div style={{ width: '53%' }}>
@@ -842,7 +894,7 @@ const FinanceOwnerDashboard = (props) => {
                             </div>
                             <div style={{ width: '13%', display: 'flex', fontWeight: 'bolder' }}>
                               <Typography style={{ fontSize: '15px' }}>
-                                <b>{`${Math.round(props?.currBranch[0]?.percentage_completed)}%`}</b>
+                                <b>{props?.currBranch?.length > 0 ? <> {`${Math.round(props?.currBranch[0]?.percentage_completed)}%`}</>: <>0%</> }</b>
                               </Typography>
                               <IconButton aria-label="delete" size="small">
                                 <DeleteIcon fontSize="inherit" />
@@ -850,8 +902,8 @@ const FinanceOwnerDashboard = (props) => {
                             </div>
                           </div>
                         </Grid>
-                        : '' }
-                        {props?.avgTest?.overall_avg ?
+                       
+                       
                           <Grid item xs={12} style={{ borderRadius: '5px', backgroundColor: '#b3f5e6', marginTop: '5px' }}>
                             <div className={clsx(classes.absentGrid)}>
                               <div style={{ width: '53%' }}>
@@ -874,7 +926,7 @@ const FinanceOwnerDashboard = (props) => {
                               </div>
                               <div style={{ width: '13%', display: 'flex', fontWeight: 'bolder' }}>
                                 <Typography style={{ fontSize: '15px' }}>
-                                  <b>{`${Math.round(props?.avgTest?.overall_avg)}%`}</b>
+                                  <b>{props?.avgTest ? <> {`${Math.round(props?.avgTest?.overall_avg)}%`} </> : <>0%</> }</b>
                                 </Typography>
                                 <IconButton aria-label="delete" size="small">
                                   <DeleteIcon fontSize="inherit" />
@@ -882,8 +934,8 @@ const FinanceOwnerDashboard = (props) => {
                               </div>
                             </div>
                           </Grid>
-                          : ''}
-                        {props?.studentAttendanceOverview?.total_avg ?
+                       
+                        
                           <Grid item xs={12} style={{ borderRadius: '5px', backgroundColor: '#fff2cc', marginTop: '5px' }}>
                             <div className={clsx(classes.absentGrid)}>
                               <div style={{ width: '53%' }}>
@@ -907,7 +959,7 @@ const FinanceOwnerDashboard = (props) => {
                                 <Typography
                                   className={clsx(classes.customTextSize)}
                                 >
-                                  <b> {`${Math.round(props?.studentAttendanceOverview?.total_avg)}%`} </b>
+                                  <b> {props?.studentAttendanceOverview ? <> {`${Math.round(props?.studentAttendanceOverview?.total_avg)}%`} </> : <>0%</> }</b>
                                 </Typography>
                                 <IconButton aria-label="delete" size="small">
                                   <DeleteIcon fontSize="inherit" />
@@ -915,7 +967,7 @@ const FinanceOwnerDashboard = (props) => {
                               </div>
                             </div>
                           </Grid>
-                          : ''}
+                       
 
                       </Grid>
                       : <Grid style={{display : 'flex' , justifyContent: 'center' , margin: 'auto'}}><Typography style={{fontWeight: '600'}}>No Data</Typography></Grid>}
@@ -934,9 +986,18 @@ const FinanceOwnerDashboard = (props) => {
                         className={clsx(classes.clickable,classes.cardtopicStyle)}
                       // variant='h5'
                       // className={clsx(classes.clickable)}
-                      onClick={() => history.push('/staff-attendance-report/branch-wise')}
+                      // onClick={() => history.push('/staff-attendance-report/branch-wise')}
+                      onClick={staffRedirect}
+                      style={{display : 'flex'}}
                       >
-                        <b>Staff Details :</b> {props?.branchCounter ? '' : <>All Branch</>}
+                        <b>Staff Details :</b> {props?.branchCounter ? <div style={{display : 'flex'}} >
+                      {props?.selectedBranch && props?.selectedBranch?.map((item) => (
+                        <div style={{margin : '0 5px'}} >
+                          {item?.branch?.branch_name}
+                        </div>
+                      ))}
+                      
+                      </div>  : <>All Branch</>}
                       </Typography>
                     }
                     action ={
@@ -964,9 +1025,9 @@ const FinanceOwnerDashboard = (props) => {
                                 <b>Overall Attendance</b>
                               </Typography>
                             </div>
-                            <div style={{ width: '50%', paddingLeft: '10px', fontSize: '15px', textAlign: 'center' }}>
+                            {/* <div style={{ width: '50%', paddingLeft: '10px', fontSize: '15px', textAlign: 'center' }}>
                               Absent for more than 3 continuous day
-                            </div>
+                            </div> */}
                           </div>
                         </Grid>
                       </Grid>
@@ -996,11 +1057,11 @@ const FinanceOwnerDashboard = (props) => {
                             </Typography>
 
                           </div>
-                          <div style={{ width: '33%' }}>
+                          {/* <div style={{ width: '33%' }}>
                             <Button disabled style={{ height: '50%', backgroundColor: '#ffd4d9' }}>
                               {item?.total_absent}
                             </Button>
-                          </div>
+                          </div> */}
                         </div>
                       </Grid>
                       ))}
@@ -1103,7 +1164,8 @@ const FinanceOwnerDashboard = (props) => {
                                       variant='body2'
                                       className={clsx(classes.textBold)}
                                     >
-                                      {`${Math.round(curriculumData ? curriculumData && curriculumData[0]?.percentage_completed : <>0%</>)}%`}
+                                    
+                                      {curriculumData.length > 0 ? `${Math.round(curriculumData[0]?.percentage_completed)}%` : <>0%</>}
                                     </Typography>
                                   </div>
                               </div>
