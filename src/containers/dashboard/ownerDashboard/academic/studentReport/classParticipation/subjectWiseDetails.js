@@ -185,7 +185,7 @@ const SubjectWiseDetails = (props) => {
 
   useEffect(() => {
     getAllSubjects({
-      session_year: selectedAcademicYear.id, //hardcore
+      session_year: acad_session,
       grade: gradeId,
     });
   }, []);
