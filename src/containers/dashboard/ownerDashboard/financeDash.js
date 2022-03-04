@@ -447,7 +447,7 @@ const FinanceOwnerDashboard = (props) => {
                       className={clsx(classes.clickable, classes.cardtopicStyle)}
                       style={{display : 'flex'}}
                       // onClick={() => setAcademicPerformanceDetailsOpen(true)}
-                    onClick={() => history.push('/staff-attendance-report/branch-wise')}
+                    onClick={staffRedirect}
                     >
                       <b>Today's Attendance Overview :</b> {props?.branchCounter ? <div style={{display : 'flex'}} >
                       {props?.selectedBranch && props?.selectedBranch?.map((item) => (
@@ -540,7 +540,7 @@ const FinanceOwnerDashboard = (props) => {
                       )
                       )}
 
-                    {props?.studentAttendance?.total_avg ?
+                    
                       <Grid item xs={3}>
                         <div
                           className={clsx(
@@ -601,7 +601,7 @@ const FinanceOwnerDashboard = (props) => {
                           </div>
                         </div>
                       </Grid>
-                      : ''}
+                 
 
                   </Grid>
                   : <Grid style={{display : 'flex' , justifyContent: 'center'}} ><Typography style={{fontWeight: '600'}} >No Data</Typography></Grid> }
