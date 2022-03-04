@@ -44,7 +44,7 @@ import Loader from 'components/loader/loader';
 // import Loader from '../../components/loader/loader';
 // import axiosInstance from '../../config/axios';
 // import endpoints from '../../config/endpoints';
-// import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import Layout from '../../../../Layout';
 import clsx from 'clsx';
 import moment from 'moment';
@@ -121,6 +121,7 @@ const useStyles = makeStyles((theme) => ({
 const StuffTypeWiseStuffAttendance = (props) => {
   const classes = useStyles();
   const history = useHistory();
+  const { setAlert } = useContext(AlertNotificationContext);
   const [volume, setVolume] = React.useState('');
   const [expanded, setExpanded] = useState(true);
   const [loading, setloading] = useState(true);
@@ -174,12 +175,16 @@ const StuffTypeWiseStuffAttendance = (props) => {
       roleIds: erpUser?.erp_user__roles_id,
       acad_session_id: acad_session_id,
     };
-    history.push({
-      pathname: `/stuff-attendance-report/${erpUser.erp_user__roles__role_name.toLowerCase()}/${branchId}`,
-      state: {
-        payload: payload,
-      },
-    });
+    if (erpUser?.erp_user__roles_id?.length > 0) {
+      history.push({
+        pathname: `/stuff-attendance-report/${erpUser.erp_user__roles__role_name.toLowerCase()}/${branchId}`,
+        state: {
+          payload: payload,
+        },
+      });
+    } else {
+      setAlert('error', 'Can not go further');
+    }
   };
 
   useEffect(() => {
