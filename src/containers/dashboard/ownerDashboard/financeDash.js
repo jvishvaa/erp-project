@@ -287,7 +287,7 @@ const FinanceOwnerDashboard = (props) => {
   const [expanded, setExpanded] = useState(true);
   const [volume, setVolume] = React.useState('');
   const [isAcad, setIsAcad] = useState(false);
-  const [curriculumData, setCurriculumData] = useState();
+  const [curriculumData, setCurriculumData] = useState([]);
   const [ studentReportData , setStudentReportData ] = useState();
   const [ testScoreData , setTestScoreData ] = useState();
   const [loading, setLoading] = useState(false);
