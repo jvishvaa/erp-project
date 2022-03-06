@@ -146,7 +146,7 @@ const StudentWiseDetails = (props) => {
   useEffect(() => {
     getStudentWiseStat({
       subject_id: subjectId,
-      sectionmapping_id: sectionId,
+      section_mapping_id: sectionId,
     });
   }, []);
 
