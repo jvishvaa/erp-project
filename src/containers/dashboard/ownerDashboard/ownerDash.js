@@ -29,6 +29,7 @@ import moment from 'moment';
 import axiosInstance from 'config/axios';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
+import apiRequest from '../StudentDashboard/config/apiRequest';
 
 const OwnerDashboard = () => {
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -144,31 +145,33 @@ const OwnerDashboard = () => {
 
   const getAttendanceReport = (params) => {
     if (branchCounter === true) {
-      axios
-        .get(
-          `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`,
-          {
-            headers: {
-              'X-DTS-Host': window.location.host,
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
+      // axios
+      //   .get(
+      //     `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`,
+      //     {
+      //       headers: {
+      //         'X-DTS-Host': window.location.host,
+      //         Authorization: `Bearer ${token}`,
+      //       },
+      //     }
+      //   )
+      apiRequest('get',`${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}` , null , null , true , 5000)
         .then((res) => {
           setStudentAttendance(res.data.result);
         })
         .catch(() => {});
     } else {
-      axios
-        .get(
-          `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}`,
-          {
-            headers: {
-              'X-DTS-Host': window.location.host,
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
+      // axios
+      //   .get(
+      //     `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}`,
+      //     {
+      //       headers: {
+      //         'X-DTS-Host': window.location.host,
+      //         Authorization: `Bearer ${token}`,
+      //       },
+      //     }
+      //   )
+        apiRequest('get',  `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}` , null , null , true , 5000)
         .then((res) => {
           setStudentAttendance(res.data.result);
         })
@@ -177,16 +180,17 @@ const OwnerDashboard = () => {
   };
 
   const getAttendanceReportOverview = (params) => {
-    axios
-      .get(
-        `${endpoints.ownerDashboard.getStudentAttendance}?session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`,
-        {
-          headers: {
-            'X-DTS-Host': window.location.host,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+    // axios
+    //   .get(
+    //     `${endpoints.ownerDashboard.getStudentAttendance}?session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`,
+    //     {
+    //       headers: {
+    //         'X-DTS-Host': window.location.host,
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //     }
+    //   )
+      apiRequest('get',`${endpoints.ownerDashboard.getStudentAttendance}?session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`,null , null , true , 5000)
       .then((res) => {
         setStudentAttendanceOverview(res.data.result);
         // setStudentAttendance(res.data.result)
@@ -197,28 +201,30 @@ const OwnerDashboard = () => {
   const getStaffDetails = (params) => {
     const Acad_id = branchList?.map((el) => el?.id);
     if (branchCounter === true) {
-      axios
-        .get(
-          `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}&date_range_type=today`,
-          {
-            headers: {
-              'X-DTS-Host': window.location.host,
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
+      // axios
+      //   .get(
+      //     `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}&date_range_type=today`,
+      //     {
+      //       headers: {
+      //         'X-DTS-Host': window.location.host,
+      //         Authorization: `Bearer ${token}`,
+      //       },
+      //     }
+      //   )
+        apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}&date_range_type=today` , null , null , true , 5000)
         .then((res) => {
           setRoleWiseAttendance(res.data.result);
         })
         .catch(() => {});
     } else {
-      axios
-        .get(`${endpoints.ownerDashboard.getStaffDetails}?date_range_type=today`, {
-          headers: {
-            'X-DTS-Host': window.location.host,
-            Authorization: `Bearer ${token}`,
-          },
-        })
+      // axios
+      //   .get(`${endpoints.ownerDashboard.getStaffDetails}?date_range_type=today`, {
+      //     headers: {
+      //       'X-DTS-Host': window.location.host,
+      //       Authorization: `Bearer ${token}`,
+      //     },
+      //   })
+        apiRequest('get',`${endpoints.ownerDashboard.getStaffDetails}?date_range_type=today` , null , null , true , 5000)
         .then((res) => {
           setRoleWiseAttendance(res.data.result);
         })
@@ -228,13 +234,14 @@ const OwnerDashboard = () => {
 
   const getStaffDetailsOverAll = (params) => {
     const Acad_id = branchList?.map((el) => el?.id);
-    axios
-      .get(`${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}`, {
-        headers: {
-          'X-DTS-Host': window.location.host,
-          Authorization: `Bearer ${token}`,
-        },
-      })
+    // axios
+    //   .get(`${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}`, {
+    //     headers: {
+    //       'X-DTS-Host': window.location.host,
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+      apiRequest('get' ,`${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}` , null , null , true , 5000 )
       .then((res) => {
         // setRoleWiseAttendance(res.data.result)
         console.log(res, 'staffover');
@@ -245,13 +252,14 @@ const OwnerDashboard = () => {
 
   const getAvgScore = (params) => {
     const Acad_id = branchList?.map((el) => el?.id);
-    axios
-      .get(`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${Acad_id}`, {
-        headers: {
-          'X-DTS-Host': window.location.host,
-          Authorization: `Bearer ${token}`,
-        },
-      })
+    // axios
+    //   .get(`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${Acad_id}`, {
+    //     headers: {
+    //       'X-DTS-Host': window.location.host,
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+      apiRequest('get',`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${Acad_id}` , null , null , true , 5000 )
       .then((res) => {
         console.log(res, 'student');
         setAvgTest(res.data.result);
@@ -272,13 +280,14 @@ const OwnerDashboard = () => {
   };
 
   const getCurrReport = (params) => {
-    axios
-      .get(`${endpoints.ownerDashboard.getAllBranchCurr}?branch_id=${selectedBranchId}`, {
-        headers: {
-          'X-DTS-Host': window.location.host,
-          Authorization: `Bearer ${token}`,
-        },
-      })
+    // axios
+    //   .get(`${endpoints.ownerDashboard.getAllBranchCurr}?branch_id=${selectedBranchId}`, {
+    //     headers: {
+    //       'X-DTS-Host': window.location.host,
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+      apiRequest('get',`${endpoints.ownerDashboard.getAllBranchCurr}?branch_id=${selectedBranchId}` , null , null , true , 5000 )
       .then((res) => {
         console.log(res, 'currbranch');
         setCurrBranch(res.data.result);
