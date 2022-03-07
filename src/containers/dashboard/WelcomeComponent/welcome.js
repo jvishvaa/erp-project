@@ -109,11 +109,11 @@ const WelcomeComponent = ({ erp_config , isMsAPIKey , changeView}) => {
           Calendar View
         </Button> : ''}
         </> }
-        { welcomeDetails?.userLevel === 4 && checkDev === true ?   <>
+        
         {erp_config ? <Button className={classes.outlined} style={{margin: '0 2%'}} color='secondary' onClick={() => changeView(1)}  >
           Stats View
         </Button> : ''}
-        </> : ''}
+     
         { checkDev === true ? <>
         {erp_config ? <Button className={classes.outlined} style={{margin: '0 2%'}} color='secondary' onClick={() => changeView(2)}  >
           Stats View V2
