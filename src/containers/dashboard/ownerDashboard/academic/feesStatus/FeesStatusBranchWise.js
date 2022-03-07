@@ -472,7 +472,8 @@ const FeesStatusBranchWise = (props) => {
                                             <Card elevation={1}>
                                                 <CardContent>
                                                     <Typography variant='h6' className={clsx(classes.textBold, classes.colorRed)}>
-                                                        {totalOverView}
+                                                        {/* {totalOverView} */}
+                                                        {fessData[0]?.totalfees}
                                                     </Typography>
                                                     <Typography variant='body1' className={clsx(classes.textFontSmall)}>Total Fees All Grades</Typography>
                                                 </CardContent>

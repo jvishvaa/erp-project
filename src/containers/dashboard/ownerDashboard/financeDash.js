@@ -649,8 +649,9 @@ const FinanceOwnerDashboard = (props) => {
                       </Grid>
                     </Grid>
                   ) : (
-                    <Grid style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography style={{ fontWeight: '600' }}>No Data</Typography>
+                    <Grid style={{ display: 'flex', justifyContent: 'center', flexDirection:'column',alignItems:'center' }}>
+                      <Typography style={{fontSize: '1.2rem'}}>☹️</Typography>
+                      <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                     </Grid>
                   )}
                 </CardContent>
@@ -836,10 +837,11 @@ const FinanceOwnerDashboard = (props) => {
                     </Grid>
                   ) : (
                     <Grid
-                      style={{ minHeight: '180px', textAlign: 'center', display: 'flex' }}
+                      style={{ minHeight: '180px', textAlign: 'center', display: 'flex',flexDirection:'column', alignItems:'center', justifyContent:'center' }}
                     >
-                      <Typography style={{ margin: 'auto', fontWeight: '600' }}>
-                        No Data
+                       <Typography style={{fontSize: '1.2rem'}}>☹️</Typography>
+                      <Typography style={{ fontWeight: '600' }}>
+                        No Records
                       </Typography>
                     </Grid>
                   )}
@@ -939,9 +941,13 @@ const FinanceOwnerDashboard = (props) => {
                         display: 'flex',
                         justifyContent: 'center',
                         margin: 'auto',
+                        alignItems:'center',
+                        flexDirection:'column'
+
                       }}
                     >
-                      <Typography style={{ fontWeight: '600' }}>No Data</Typography>
+                      <Typography style={{fontSize: '1.2rem'}}>☹️</Typography>
+                      <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                     </Grid>
                   )}
                 </CardContent>
@@ -1162,9 +1168,12 @@ const FinanceOwnerDashboard = (props) => {
                             display: 'flex',
                             justifyContent: 'center',
                             margin: 'auto',
+                            flexDirection:'column',
+                            alignItems:'center'
                           }}
                         >
-                          <Typography style={{ fontWeight: '600' }}>No Data</Typography>
+                           <Typography style={{fontSize: '1.2rem'}}>☹️</Typography>
+                          <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                         </Grid>
                       )}
                     </CardContent>
@@ -1298,9 +1307,12 @@ const FinanceOwnerDashboard = (props) => {
                           display: 'flex',
                           justifyContent: 'center',
                           margin: 'auto',
+                          alignItems:'center',
+                          flexDirection:'column'
                         }}
                       >
-                        <Typography style={{ fontWeight: '600' }}>No Data</Typography>
+                         <Typography style={{fontSize: '1.2rem'}}>☹️</Typography>
+                        <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                       </Grid>
                     )}
                   </CardContent>
