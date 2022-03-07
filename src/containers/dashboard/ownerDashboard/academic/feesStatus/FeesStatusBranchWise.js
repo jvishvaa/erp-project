@@ -496,7 +496,7 @@ const FeesStatusBranchWise = (props) => {
                                                             <MonetizationOnIcon fontSize="small" style={{ color: 'white' }} />
                                                         </span>
                                                         <div>
-                                                            <Typography variant='h6'> <b>{fessData[0]?.outstanding}</b> </Typography>
+                                                            <Typography variant='h6'> <b>{Math.round(fessData[0]?.outstanding)}</b> </Typography>
                                                             <Typography variant='body1' className={clsx(classes.textFontSmall)}>Total Outstanding</Typography>
                                                         </div>
                                                     </CardContent>
@@ -522,7 +522,7 @@ const FeesStatusBranchWise = (props) => {
                                                             <MonetizationOnIcon fontSize="small" style={{ color: 'white' }} />
                                                         </span>
                                                         <div>
-                                                            <Typography variant='h6'> <b>{fessData[0]?.paid}</b> </Typography>
+                                                            <Typography variant='h6'> <b>{Math.round(fessData[0]?.paid)}</b> </Typography>
                                                             <Typography variant='body1' className={clsx(classes.textFontSmall)}>Paid</Typography>
                                                         </div>
                                                     </CardContent>
@@ -587,7 +587,7 @@ const FeesStatusBranchWise = (props) => {
                                                 <CardContent>
                                                     <Typography variant='body1' className={clsx(classes.textCenter)}>Total Fee Collected</Typography>
                                                     <Typography variant='h6' className={clsx(classes.textBold, classes.colorRed, classes.textCenter)}>
-                                                        ₹ {totalCollected?.total_fee_collected}
+                                                        ₹ {Math.round(totalCollected?.total_fee_collected)}
                                                     </Typography>
                                                     <Typography className={clsx(classes.numberTransaction)} >
                                                         {totalCollected?.no_of_transaction} transaction done Today
@@ -616,7 +616,7 @@ const FeesStatusBranchWise = (props) => {
                                                             <MonetizationOnIcon fontSize="small" style={{ color: 'white' }} />
                                                         </span>
                                                         <div>
-                                                            <Typography variant='h6'> <b>₹ {totalCollected?.Cash}</b> </Typography>
+                                                            <Typography variant='h6'> <b>₹ {Math.round(totalCollected?.Cash)}</b> </Typography>
                                                             <Typography variant='body1' className={clsx(classes.textFontSmall, classes.colorBlue, classes.textColorBlue)}>By Cash</Typography>
                                                         </div>
                                                     </CardContent>
@@ -638,7 +638,7 @@ const FeesStatusBranchWise = (props) => {
                                                             <MonetizationOnIcon fontSize="small" style={{ color: 'white' }} />
                                                         </span>
                                                         <div>
-                                                            <Typography variant='h6'><b>₹ {totalCollected?.Cheque}</b> </Typography>
+                                                            <Typography variant='h6'><b>₹ {Math.round(totalCollected?.Cheque)}</b> </Typography>
                                                             <Typography variant='body1' className={clsx(classes.textFontSmall, classes.colorBlue, classes.textColorPurpel)}>Bank Cheque</Typography>
                                                         </div>
                                                     </CardContent>
@@ -662,7 +662,7 @@ const FeesStatusBranchWise = (props) => {
                                                             <MonetizationOnIcon fontSize="small" style={{ color: 'white' }} />
                                                         </span>
                                                         <div>
-                                                            <Typography variant='h6'><b>₹{totalCollected?.bbps}</b></Typography>
+                                                            <Typography variant='h6'><b>₹{Math.round(totalCollected?.bbps)}</b></Typography>
                                                             <Typography variant='body1' className={clsx(classes.textFontSmall, classes.colorBlue, classes.textColorLightBlue)}>Bank Deposit</Typography>
                                                         </div>
                                                     </CardContent>
@@ -684,7 +684,7 @@ const FeesStatusBranchWise = (props) => {
                                                             <MonetizationOnIcon fontSize="small" style={{ color: 'white' }} />
                                                         </span>
                                                         <div>
-                                                            <Typography variant='h6'><b>₹{totalCollected?.Swipe}</b> </Typography>
+                                                            <Typography variant='h6'><b>₹{Math.round(totalCollected?.Swipe)}</b> </Typography>
                                                             <Typography variant='body1' className={clsx(classes.textFontSmall, classes.colorBlue, classes.textColorGreen)}>Debit/Credit Card</Typography>
                                                         </div>
                                                     </CardContent>
@@ -706,7 +706,7 @@ const FeesStatusBranchWise = (props) => {
                                                             <MonetizationOnIcon fontSize="small" style={{ color: 'white' }} />
                                                         </span>
                                                         <div>
-                                                            <Typography variant='h6'><b>₹{totalCollected?.Online}</b></Typography>
+                                                            <Typography variant='h6'><b>₹{Math.round(totalCollected?.Online)}</b></Typography>
                                                             <Typography variant='body1' className={clsx(classes.textFontSmall, classes.colorBlue, classes.textColorYellow)}>UPI Transfer</Typography>
                                                         </div>
                                                     </CardContent>
@@ -728,7 +728,7 @@ const FeesStatusBranchWise = (props) => {
                                                             <MonetizationOnIcon fontSize="small" style={{ color: 'white' }} />
                                                         </span>
                                                         <div>
-                                                            <Typography variant='h6'><b>₹{totalCollected?.Internet}</b></Typography>
+                                                            <Typography variant='h6'><b>₹{Math.round(totalCollected?.Internet)}</b></Typography>
                                                             <Typography variant='body1' className={clsx(classes.textFontSmall, classes.textColorRed)}>Internet Banking</Typography>
                                                         </div>
                                                     </CardContent>
