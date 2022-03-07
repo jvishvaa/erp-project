@@ -787,7 +787,7 @@ const FinanceOwnerDashboard = (props) => {
                                   classes.customTextSize
                                 )}
                               >
-                                ₹ {props?.financeData ? props?.financeData?.paid : ''}
+                                ₹ { props?.financeData ? props?.financeData?.paid : ''}
                               </Typography>
                             </div>
                           </CardContent>
@@ -818,7 +818,7 @@ const FinanceOwnerDashboard = (props) => {
                               >
                                 ₹{' '}
                                 {props?.financeData
-                                  ? props?.financeData?.outstanding
+                                  ? Math.round(props?.financeData?.outstanding)
                                   : ''}
                               </Typography>
                             </div>
