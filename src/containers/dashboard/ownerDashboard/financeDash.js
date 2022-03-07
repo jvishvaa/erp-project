@@ -585,9 +585,14 @@ const FinanceOwnerDashboard = (props) => {
                             >
                               <b>
                                 Total :{' '}
-                                {props?.studentAttendance
+                                {/* {props?.studentAttendance
                                   ? props?.studentAttendance?.total_strength
-                                  : ''}
+                                  : ''} */}
+                                {isNaN(
+                                  props?.studentAttendance?.total_strength
+                                )
+                                  ? 0
+                                  : Math.round(props?.studentAttendance?.total_strength)}
                               </b>
                             </Typography>
                             <Typography
@@ -596,9 +601,12 @@ const FinanceOwnerDashboard = (props) => {
                             >
                               <b>
                                 Present :{' '}
-                                {props?.studentAttendance
-                                  ? props?.studentAttendance?.total_present
-                                  : ''}
+                                {isNaN(
+                                  props?.studentAttendance?.total_present
+                                  
+                                  ) 
+                                  ? 0
+                                  : Math.round(props?.studentAttendance?.total_present)}
                               </b>
                             </Typography>
                             <Typography
@@ -607,10 +615,16 @@ const FinanceOwnerDashboard = (props) => {
                             >
                               <b>
                                 Absent :{' '}
-                                {props?.studentAttendance
+                                {/* {props?.studentAttendance
                                   ? props?.studentAttendance?.total_strength -
-                                    props?.studentAttendance?.total_present
-                                  : ''}
+                                  props?.studentAttendance?.total_present
+                                  : ''} */}
+
+                                {isNaN(
+                                  props?.studentAttendance?.total_strength - props?.studentAttendance?.total_present
+                                )
+                                  ? 0
+                                  : Math.round(props?.studentAttendance?.total_strength - props?.studentAttendance?.total_present)}
                               </b>
                             </Typography>
                           </div>
@@ -637,7 +651,11 @@ const FinanceOwnerDashboard = (props) => {
                                   component='div'
                                   color='text.secondary'
                                 >
-                                  {`${Math.round(props?.studentAttendance?.total_avg)}%`}
+                                  {isNaN(
+                                    props?.studentAttendance?.total_avg
+                                  )
+                                    ? 0
+                                    : Math.round(props?.studentAttendance?.total_avg)}%
                                 </Typography>
                               </Box>
                             </Box>
@@ -649,8 +667,8 @@ const FinanceOwnerDashboard = (props) => {
                       </Grid>
                     </Grid>
                   ) : (
-                    <Grid style={{ display: 'flex', justifyContent: 'center', flexDirection:'column',alignItems:'center' }}>
-                      <Typography style={{fontSize: '1.2rem'}}>☹️</Typography>
+                    <Grid style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+                      <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
                       <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                     </Grid>
                   )}
@@ -837,9 +855,9 @@ const FinanceOwnerDashboard = (props) => {
                     </Grid>
                   ) : (
                     <Grid
-                      style={{ minHeight: '180px', textAlign: 'center', display: 'flex',flexDirection:'column', alignItems:'center', justifyContent:'center' }}
+                      style={{ minHeight: '180px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
                     >
-                       <Typography style={{fontSize: '1.2rem'}}>☹️</Typography>
+                      <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
                       <Typography style={{ fontWeight: '600' }}>
                         No Records
                       </Typography>
@@ -941,12 +959,12 @@ const FinanceOwnerDashboard = (props) => {
                         display: 'flex',
                         justifyContent: 'center',
                         margin: 'auto',
-                        alignItems:'center',
-                        flexDirection:'column'
+                        alignItems: 'center',
+                        flexDirection: 'column'
 
                       }}
                     >
-                      <Typography style={{fontSize: '1.2rem'}}>☹️</Typography>
+                      <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
                       <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                     </Grid>
                   )}
@@ -964,7 +982,7 @@ const FinanceOwnerDashboard = (props) => {
                           style={{ display: 'flex' }}
                           className={clsx(classes.clickable, classes.cardtopicStyle)}
                           onClick={() => setAcademicPerformanceDetailsOpen(true)}
-                          // onClick={() => history.push('/finance-owner/academic-performance')}
+                        // onClick={() => history.push('/finance-owner/academic-performance')}
                         >
                           <b>Academic Performance : </b>{' '}
                           {props?.branchCounter ? (
@@ -1168,11 +1186,11 @@ const FinanceOwnerDashboard = (props) => {
                             display: 'flex',
                             justifyContent: 'center',
                             margin: 'auto',
-                            flexDirection:'column',
-                            alignItems:'center'
+                            flexDirection: 'column',
+                            alignItems: 'center'
                           }}
                         >
-                           <Typography style={{fontSize: '1.2rem'}}>☹️</Typography>
+                          <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
                           <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                         </Grid>
                       )}
@@ -1307,11 +1325,11 @@ const FinanceOwnerDashboard = (props) => {
                           display: 'flex',
                           justifyContent: 'center',
                           margin: 'auto',
-                          alignItems:'center',
-                          flexDirection:'column'
+                          alignItems: 'center',
+                          flexDirection: 'column'
                         }}
                       >
-                         <Typography style={{fontSize: '1.2rem'}}>☹️</Typography>
+                        <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
                         <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                       </Grid>
                     )}
