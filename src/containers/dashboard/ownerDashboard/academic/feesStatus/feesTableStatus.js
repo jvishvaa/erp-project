@@ -217,6 +217,9 @@ const FeesTableStatus = (props) => {
         <Grid container spacing={3} justifyContent='space-between'>
           <Grid item xs={12}>
             <div className={clsx(classes.breadcrumb)}>
+              <IconButton size='small'>
+                <ArrowBackIcon onClick={() => history.goBack()} />
+              </IconButton>
               <Typography variant='h6' className={clsx(classes.textBold)}>
                 Dashboard
               </Typography>
@@ -227,7 +230,6 @@ const FeesTableStatus = (props) => {
               <ArrowForwardIosIcon />
             </div>
           </Grid>
-          <ArrowBackIcon onClick={() => history.goBack()} />
           <Grid item xs={6}>
             {/* <OutlinedInput
               margin='dense'
