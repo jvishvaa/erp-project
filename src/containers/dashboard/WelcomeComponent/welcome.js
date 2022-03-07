@@ -7,6 +7,7 @@ import SyncIcon from '@material-ui/icons/Refresh';
 import { useHistory } from 'react-router';
 import GroupAddIcon from '@material-ui/icons/GroupAdd';
 import './Styles.css';
+import {isDeveloper} from 'components/utils/checkDeveloper';
 
 const useStyles = makeStyles((theme) => ({
   greeting: {
@@ -50,11 +51,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const WelcomeComponent = ({ erp_config, checkOldorNew, oldDash }) => {
+const WelcomeComponent = ({ erp_config , isMsAPIKey , changeView}) => {
   const classes = useStyles();
   const [showButton, setShowButton] = useState(false);
   const { welcomeDetails = {}, setReports } = useDashboardContext();
   const { greeting, name, userRole, userLevel } = welcomeDetails;
+  const [ isDev , setIsDev ] = useState()
 
   const getAllReport = () => {
     // let button = document.getElementById('refreshButton')
@@ -80,7 +82,12 @@ const WelcomeComponent = ({ erp_config, checkOldorNew, oldDash }) => {
     ) {
       setCheckOrigin(true);
     }
+    
   }, []);
+
+  const checkDev = isDeveloper();
+
+  console.log(checkDev);
 
   const studentrefer = () => {
     history.push('/studentrefer');
@@ -90,15 +97,31 @@ const WelcomeComponent = ({ erp_config, checkOldorNew, oldDash }) => {
     history.push('/acad-calendar');
   }
 
+
+
   return (
     <>
+   
     {welcomeDetails?.userLevel === 1 || welcomeDetails?.userLevel ===  4 || welcomeDetails?.userLevel ===  8 || welcomeDetails?.userLevel ===  10 ? 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1%' }} >
-        {erp_config ? <Button className={classes.outlined} color='secondary' onClick={checkOldorNew}  >
-          {oldDash ? <> New View </> : <>  Old View </>}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1%' , width: '30%' , float: 'right' }} >
+      { welcomeDetails?.userLevel === 4 ? '' :  <>
+        {erp_config ? <Button className={classes.outlined} style={{margin: '0 2%'}} color='secondary' onClick={academicView}  >
+          Calendar View
         </Button> : ''}
+        </> }
+        
+        {erp_config ? <Button className={classes.outlined} style={{margin: '0 2%'}} color='secondary' onClick={() => changeView(1)}  >
+          Stats View
+        </Button> : ''}
+     
+        { checkDev === true ? <>
+        {erp_config ? <Button className={classes.outlined} style={{margin: '0 2%'}} color='secondary' onClick={() => changeView(2)}  >
+          Stats View V2
+        </Button> : ''}
+        </> : '' }
       </div>
       : '' }
+     
       <Box
         mb={1}
         className={classes.mainHeading}

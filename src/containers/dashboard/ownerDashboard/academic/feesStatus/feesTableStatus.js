@@ -217,6 +217,9 @@ const FeesTableStatus = (props) => {
         <Grid container spacing={3} justifyContent='space-between'>
           <Grid item xs={12}>
             <div className={clsx(classes.breadcrumb)}>
+              <IconButton size='small'>
+                <ArrowBackIcon onClick={() => history.goBack()} />
+              </IconButton>
               <Typography variant='h6' className={clsx(classes.textBold)}>
                 Dashboard
               </Typography>
@@ -227,7 +230,6 @@ const FeesTableStatus = (props) => {
               <ArrowForwardIosIcon />
             </div>
           </Grid>
-          <ArrowBackIcon onClick={() => history.goBack()} />
           <Grid item xs={6}>
             {/* <OutlinedInput
               margin='dense'
@@ -266,10 +268,10 @@ const FeesTableStatus = (props) => {
                     return (
                       <TableRow key={index}>
                         <TableCell className={clsx(classes.clickable)} onClick={() => history.push(`/fees-status-branch-wise-details/${each?.branch}`)}>{each.branch_name}</TableCell>
-                        <TableCell className={clsx(classes.colorBlue)} > <b> ₹{each?.totalfees}</b></TableCell>
-                        <TableCell className={clsx(classes.colorGreen)} ><b>  ₹{each?.paid}</b></TableCell>
-                        <TableCell className={clsx(classes.colorRed)}><b>  ₹ {each?.outstanding}</b></TableCell>
-                        <TableCell className={clsx(classes.colorYellow)}><b>{each?.no_of_admission}</b></TableCell>
+                        <TableCell className={clsx(classes.colorBlue)} > <b> ₹{Math.round(each?.totalfees)}</b></TableCell>
+                        <TableCell className={clsx(classes.colorGreen)} ><b>  ₹{Math.round(each?.paid)}</b></TableCell>
+                        <TableCell className={clsx(classes.colorRed)}><b>  ₹ {Math.round(each?.outstanding)}</b></TableCell>
+                        <TableCell className={clsx(classes.colorYellow)}><b>{Math.round(each?.no_of_admission)}</b></TableCell>
                         <TableCell>
                           <IconButton size='large'
                             onClick={() => handleRote(each.branch_name, each?.branch)}
