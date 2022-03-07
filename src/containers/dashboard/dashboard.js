@@ -15,6 +15,7 @@ const TeacherDashboard = React.lazy(() => import('./TeacherDashboard/teacherDash
 const StudentDashboard = React.lazy(() => import('./StudentDashboard/studentDashboard'));
 const AdminDashboard = React.lazy(() => import('./AdminDashboard/adminDashboard'));
 const OwnerDashboard = React.lazy(() => import('./ownerDashboard/ownerDash'));
+
 const PrincipalDashboard = React.lazy(() =>
   import('./PrincipalDashboard/principalDashboard')
 );
@@ -24,6 +25,7 @@ const Dashboard = () => {
   const [oldDash, setOldDash] = useState(false)
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
   const { username, erp_config } = JSON.parse(localStorage.getItem('userDetails')) || [];
+  const [buttonCounter, setButtonCounter] = useState(1)
   const checkOldorNew = () => {
     if (!oldDash) {
       setOldDash(true)
@@ -69,16 +71,24 @@ const Dashboard = () => {
   const isMsAPIKey = useSelector((state) => state.commonFilterReducer?.isMsAPIKey);
   const is_erp = useSelector((state) => state.commonFilterReducer?.erpConFigKey);
   const getDashboardChoice = (dash1, dash2) => {
-    if (erp_config && isDev) {
-      return oldDash ? dash1 : dash2
+    if (erp_config) {
+     if(buttonCounter === 1 ){
+       return dash1
+     } 
+     if(buttonCounter === 2 ){
+      return dash2
+     }
     } else {
       return dash1;
     }
   }
-
-  useEffect(() => {
-    renderRoleDashboard()
-  }, [oldDash])
+  const changeView = ( e ) => {
+    console.log(e, "ctn");
+    setButtonCounter(e)
+  }
+    useEffect(() => {
+      renderRoleDashboard()
+    }, [buttonCounter])
   const renderRoleDashboard = () => {
     switch (userLevel) {
       case 1:
@@ -101,7 +111,7 @@ const Dashboard = () => {
   };
   return (
     <Box px={3} mt={1}>
-      <WelcomeComponent erp_config={erp_config} checkOldorNew={checkOldorNew} oldDash={oldDash} />
+      <WelcomeComponent erp_config={erp_config} isMsAPIKey={isMsAPIKey} changeView={changeView} />
       <Suspense fallback={<Loading />}>
         {isMsAPIKey ? renderRoleDashboard() : <DefaultDashboard />}
         {/* {true ? renderRoleDashboard() : <DefaultDashboard />} */}

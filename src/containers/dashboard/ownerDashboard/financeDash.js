@@ -858,9 +858,15 @@ const FinanceOwnerDashboard = (props) => {
                       style={{ minHeight: '180px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
                     >
                       <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                      {user_level != 10 ? (
                       <Typography style={{ fontWeight: '600' }}>
                         No Records
                       </Typography>
+                      ) : (
+                        <Typography style={{ fontWeight: '600' }}>
+                        Access Denied
+                      </Typography>
+                      )}
                     </Grid>
                   )}
                 </CardContent>
@@ -875,6 +881,7 @@ const FinanceOwnerDashboard = (props) => {
                     </Typography>
                   }
                   action={
+                    user_level != 10 ? (
                     <Button
                       className={clsx(classes.viewButton)}
                       aria-label='view all'
@@ -882,6 +889,7 @@ const FinanceOwnerDashboard = (props) => {
                     >
                       <RefreshIcon style={{ color: 'blue' }} />
                     </Button>
+                    ) : ''
                   }
                 ></CardHeader>
                 <CardContent
@@ -965,7 +973,11 @@ const FinanceOwnerDashboard = (props) => {
                       }}
                     >
                       <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                      {user_level != 10 ? (
                       <Typography style={{ fontWeight: '600' }}>No Records</Typography>
+                      ) : (
+                      <Typography style={{ fontWeight: '600' }}>Access Denied</Typography>
+                      )}
                     </Grid>
                   )}
                 </CardContent>
