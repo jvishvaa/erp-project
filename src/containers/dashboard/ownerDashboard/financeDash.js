@@ -502,6 +502,9 @@ const FinanceOwnerDashboard = (props) => {
                 />
                 <Divider />
                 <CardContent>
+                <>
+                  { props?.progress1?.attendence ? <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}><CircularProgress /></div> :
+                  <>
                   {props?.todayCounter ? (
                     <Grid container spacing={2}>
                       {props?.roleWiseAttendance?.length > 0 &&
@@ -675,6 +678,8 @@ const FinanceOwnerDashboard = (props) => {
                       <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                     </Grid>
                   )}
+                  </>}
+                  </>
                 </CardContent>
               </Card>
             </Grid>
@@ -739,6 +744,8 @@ const FinanceOwnerDashboard = (props) => {
                 />
                 <Divider />
                 <CardContent>
+                <>
+                  {props?.progress1?.feeStatus ? <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}><CircularProgress /></div>: <>
                   {props?.financeData?.totalfees ? (
                     <Grid container spacing={3} alignItems='center'>
                       <Grid item xs={12}>
@@ -872,6 +879,8 @@ const FinanceOwnerDashboard = (props) => {
                       )}
                     </Grid>
                   )}
+                  </>}
+                  </>
                 </CardContent>
               </Card>
               {/* </Grid> */}
@@ -903,6 +912,8 @@ const FinanceOwnerDashboard = (props) => {
                     overflow: 'auto',
                   }}
                 >
+                  <>
+                  {props?.progress1?.tranction ? <div style={{display:'flex', alignItems:'center', justifyContent:'center', width: '100%'}}><CircularProgress /></div>: <>
                   {props?.recentTransCounter ? (
                     <Grid container spacing={3} alignItems='center'>
                       {props?.recentTrans &&
@@ -982,7 +993,8 @@ const FinanceOwnerDashboard = (props) => {
                       <Typography style={{ fontWeight: '600' }}>Access Denied</Typography>
                       )}
                     </Grid>
-                  )}
+                  )}</>}
+                  </>
                 </CardContent>
               </Card>
             </Grid>
@@ -1048,6 +1060,8 @@ const FinanceOwnerDashboard = (props) => {
                         justifyContent: 'center',
                       }}
                     >
+                      <>
+                      {props?.progress1?.academic ? <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}><CircularProgress /></div>: <>
                       {props?.acadCounter ? (
                         <Grid container spacing={3} alignItems='center'>
                           <Grid
@@ -1208,7 +1222,8 @@ const FinanceOwnerDashboard = (props) => {
                           <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
                           <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                         </Grid>
-                      )}
+                      )}</> }
+                      </>
                     </CardContent>
                   </Card>
                 </Card>
@@ -1276,6 +1291,8 @@ const FinanceOwnerDashboard = (props) => {
                       justifyContent: 'center',
                     }}
                   >
+                    <>
+                    {props?.progress1?.staffDetails ? <CircularProgress/> : <> 
                     {props?.staffOverAll[0] ? (
                       <Grid
                         container
@@ -1348,6 +1365,8 @@ const FinanceOwnerDashboard = (props) => {
                         <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                       </Grid>
                     )}
+                    </> }
+                    </>
                   </CardContent>
                   {/* </Card> */}
                   {/* </Grid> */}

@@ -103,7 +103,7 @@ const WelcomeComponent = ({ erp_config , isMsAPIKey , changeView}) => {
     <>
    
     {welcomeDetails?.userLevel === 1 || welcomeDetails?.userLevel ===  4 || welcomeDetails?.userLevel ===  8 || welcomeDetails?.userLevel ===  10 ? 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1%' , width: '30%' , float: 'right' }} >
+      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1%' , width: '45%' , float: 'right' }} >
       { welcomeDetails?.userLevel === 4 ? '' :  <>
         {erp_config ? <Button className={classes.outlined} style={{margin: '0 2%'}} color='secondary' onClick={academicView}  >
           Calendar View
