@@ -216,7 +216,6 @@ function Row(props) {
                 .then((res) => {
                     setSubTable(res.data)
                     setLoading(false)
-                    console.log(res.data)
                 })
                 .catch((err) => {
                     console.log(err);
