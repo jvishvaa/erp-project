@@ -714,12 +714,12 @@ export default {
     transactionAllType: `${baseFinanceURL}/apiV1/today-all-transactions-list/`,
 
     // student attendance
-    getStudentAttendance : `${msReportsUrl}/api/acad_performance/v1/attendance/branch-wise-stats/`,
-    getStaffDetails: `${msReportsUrl}/api/acad_performance/v1/staff_att/all-staff-stats/`,
+    getStudentAttendance : `/api/acad_performance/v1/attendance/branch-wise-stats/`,
+    getStaffDetails: `/api/acad_performance/v1/staff_att/all-staff-stats/`,
     getFinanceDetails: `${baseFinanceURL}/apiV1/session-wise-fees--list/`,
-    getAvgTest : `${msReportsUrl}/api/acad_performance/v1/student_report/combined-branch-wise-stats/`,
+    getAvgTest : `/api/acad_performance/v1/student_report/combined-branch-wise-stats/`,
     getCurrReport : `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-branch/`,
-    getAllBranchCurr : `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-branch-all/`,
+    getAllBranchCurr : `/api/acad_performance/v1/curriculum-stats-branch-all/`,
     getPaymentType: `${baseFinanceURL}/apiV1/fee-types-list/`,
     subTabData: `${baseFinanceURL}/apiV1/fee-type-fees/`,
     transactionDetailsTab:`${baseFinanceURL}/apiV1/all_payment_types/`,
