@@ -27,7 +27,6 @@ function LoginForm(props) {
   const urlParams = new URLSearchParams(window.location.search);
   const erpSearch = urlParams.get('erp');
   const [disableLogin, setDisableLogin] = useState(false);
-
   // const UdaanLogin = () => {
   //   axiosInstance
   //     .post(endpoints.sureLearning.login, {
@@ -43,7 +42,7 @@ function LoginForm(props) {
   // };
   const fetchERPSystemConfig = async (status) => {
     let data = await JSON.parse(localStorage.getItem('userDetails')) || {};
-    const { branch } = data?.role_details;
+    const branch  = data?.role_details?.branch;
     let payload = [];
     const result = axiosInstance
       .get(endpoints.checkAcademicView.isAcademicView)
@@ -55,10 +54,10 @@ function LoginForm(props) {
             return false;
           } else if (res?.data?.result[0]) {
             let resData = res?.data?.result[0]
-            const selectedId = branch?.map((el) => el?.id);
-            let checkData = resData?.some(item => selectedId.includes(Number(item)))
-            console.log(checkData, "check");
-              return checkData;
+          const selectedId = branch?.map((el) => el?.id);
+          let checkData = resData?.some(item => selectedId.includes(Number(item)))
+          console.log(checkData, "check");
+            return checkData;
           }
         }
       });
@@ -89,9 +88,15 @@ function LoginForm(props) {
           isMsAPI();
           fetchERPSystemConfig(response?.isLogin).then((res) => {
             let erpConfig;
+            let userData = JSON.parse(localStorage.getItem('userDetails'));
             if(res === true || res.length > 0) {
               erpConfig = res;
+              if(userData?.user_level !== 4 ){
               history.push('/acad-calendar');
+              console.log(userData?.user_level , "level");
+              } else {
+              history.push('/dashboard');
+              }
             } else if(res === false) {
               erpConfig = res;
               history.push('/dashboard');
@@ -99,7 +104,6 @@ function LoginForm(props) {
               erpConfig = res;
               history.push('/dashboard');
             }
-            let userData = JSON.parse(localStorage.getItem('userDetails'));
             userData['erp_config'] = erpConfig;
             localStorage.setItem(
               'userDetails',

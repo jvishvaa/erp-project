@@ -361,6 +361,38 @@ import AcademicCalendar from 'containers/academicCalendar/index';
 import AcadCalendar from 'containers/academicCalendar/fullcalendar/acadCalendar';
 // import TimeTableOld from './containers/time-table-old/index';
 import TimeTableCheck from 'containers/timetable/index';
+
+import CurriculumCompletionSubject from 'containers/dashboard/ownerDashboard/academic/curriculamSubject';
+import CurriculumCompletionSection from 'containers/dashboard/ownerDashboard/academic/curruculamSection';
+
+import CurriculumCompletion from 'containers/dashboard/ownerDashboard/academic/curriculamGrade'
+import StudentReportDash from 'containers/dashboard/ownerDashboard/academic/studentReport/report'
+import TestSubjectWiseDetails from 'containers/dashboard/ownerDashboard/academic/studentReport/test/subjectWiseDetails';
+import ClassWorkSubjectWiseDetails from 'containers/dashboard/ownerDashboard/academic/studentReport/classWork/subjectWiseDetails';
+import HomeWorkSubjectWiseDetails from 'containers/dashboard/ownerDashboard/academic/studentReport/homeWork/subjectWiseDetails';
+import ClassParticipationSubjectWiseDetails from 'containers/dashboard/ownerDashboard/academic/studentReport/classParticipation/subjectWiseDetails';
+import TestStudentWiseDetails from 'containers/dashboard/ownerDashboard/academic/studentReport/test/studentWiseDetails';
+import ClassWorkStudentWiseDetails from 'containers/dashboard/ownerDashboard/academic/studentReport/classWork/studentWiseDetails';
+import HomeWorkStudentWiseDetails from 'containers/dashboard/ownerDashboard/academic/studentReport/homeWork/studentWiseDetails';
+import ClassParticipationStudentWiseDetails from 'containers/dashboard/ownerDashboard/academic/studentReport/classParticipation/studentWiseDetails';
+import ReportTab from 'containers/dashboard/ownerDashboard/academic/studentReport/reportTab';
+import AttendanceGrade from 'containers/dashboard/ownerDashboard/academic/attendance/attendanceReport';
+import SubjectWiseAttendanceDetails from 'containers/dashboard/ownerDashboard/academic/attendance/subjectWiseDetails';
+import StudentWiseAttendanceDetails from 'containers/dashboard/ownerDashboard/academic/attendance/studentWiseDetails';
+import StudentWiseAttendanceDetailsMoreAbsent from 'containers/dashboard/ownerDashboard/academic/attendance/studentWiseDetailsMoreAbsent';
+import StuffAttendanceBranchWise from 'containers/dashboard/ownerDashboard/academic/stuffAttendance/branchWiseAttendance';
+import StuffAttendanceStuffTypeWise from 'containers/dashboard/ownerDashboard/academic/stuffAttendance/stuffTypeWiseAttendance';
+import StuffAttendanceAdminWise from 'containers/dashboard/ownerDashboard/academic/stuffAttendance/adminWiseAttendance';
+import StuffAttendanceTeacherWise from 'containers/dashboard/ownerDashboard/academic/stuffAttendance/teacherWiseAttendance';
+import StuffAttendanceOtherStuffWise from 'containers/dashboard/ownerDashboard/academic/stuffAttendance/otherStuffWiseAttendance';
+import StuffAttendancDetails from 'containers/dashboard/ownerDashboard/academic/stuffAttendance/stuffDetails';
+import FeesTableStatus from 'containers/dashboard/ownerDashboard/academic/feesStatus/feesTableStatus';
+import FeesSectionStatus from 'containers/dashboard/ownerDashboard/academic/feesStatus/FeesSectionStatus';
+import TransactionDetails from 'containers/dashboard/ownerDashboard/academic/feesStatus/TransactionDetails';
+import FeesStatusBranchWise from 'containers/dashboard/ownerDashboard/academic/feesStatus/FeesStatusBranchWise';
+import GradeWiseFeesDetails from 'containers/dashboard/ownerDashboard/academic/feesStatus/GradeWiseFeesDetails';
+
+
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
   isMsAPI();
@@ -1708,6 +1740,118 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route path='/acad-calendar'>
                             {({ match }) => <AcadCalendar match={match} />}
                           </Route>
+
+                          <Route path='/curriculum-completion/:branchId'>
+                            {({ match }) => <CurriculumCompletion match={match} />}
+                          </Route>
+
+                          <Route path='/curriculum-completion-subject/:branchId/:gradeId'>
+                            {({ match }) => <CurriculumCompletionSubject match={match} />}
+                          </Route>
+
+                          <Route path='/curriculum-completion-section/:branchId/:gradeId/:subjectId'>
+                            {({ match }) => <CurriculumCompletionSection match={match} />}
+                          </Route>
+
+                          <Route path='/student-report-dash/:branchId'>
+                            {({ match }) => <StudentReportDash match={match} />}
+                          </Route>
+
+                          <Route path='/student-report/test-subject-wise/:branchId/:gradeId/:sectionId'>
+                            {({ match }) => <TestSubjectWiseDetails match={match} />}
+                          </Route>
+
+                          <Route path='/student-report/test-student-wise/:branchId/:gradeId/:sectionId/:subjectId/:testId'>
+                            {({ match }) => <TestStudentWiseDetails match={match} />}
+                          </Route>
+
+                          <Route path='/student-report/classwork-subject-wise/:branchId/:gradeId/:sectionId'>
+                            {({ match }) => <ClassWorkSubjectWiseDetails match={match} />}
+                          </Route>
+
+                          <Route path='/student-report/classwork-student-wise/:branchId/:gradeId/:sectionId/:subjectId'>
+                            {({ match }) => <ClassWorkStudentWiseDetails match={match} />}
+                          </Route>
+
+                          <Route path='/student-report/homework-subject-wise/:branchId/:gradeId/:sectionId'>
+                            {({ match }) => <HomeWorkSubjectWiseDetails match={match} />}
+                          </Route>
+
+                          <Route path='/student-report/homework-student-wise/:branchId/:gradeId/:sectionId/:subjectId'>
+                            {({ match }) => <HomeWorkStudentWiseDetails match={match} />}
+                          </Route>
+
+                          <Route path='/student-report/classparticipation-subject-wise/:branchId/:gradeId/:sectionId'>
+                            {({ match }) => <ClassParticipationSubjectWiseDetails match={match} />}
+                          </Route>
+
+                          <Route path='/student-report/classparticipation-student-wise/:branchId/:gradeId/:sectionId/:subjectId'>
+                            {({ match }) => <ClassParticipationStudentWiseDetails match={match} />}
+                          </Route>
+
+                          <Route path='/student-report/report-tab'>
+                            {({ match }) => <ReportTab match={match} />}
+                          </Route>
+
+                          <Route path='/attendance-report/:branchId'>
+                            {({ match }) => <AttendanceGrade match={match} />}
+                          </Route>
+
+                          <Route path='/student-attendance-report/subject-wise/:branchId/:gradeId/:sectionId'>
+                            {({ match }) => <SubjectWiseAttendanceDetails match={match} />}
+                          </Route>
+
+                          <Route path='/student-attendance-report/student-wise/:branchId/:gradeId/:sectionId/:subjectId'>
+                            {({ match }) => <StudentWiseAttendanceDetails match={match} />}
+                          </Route>
+
+                          <Route path='/student-attendance-report/student-wise-more-absent/:branchId/:gradeId/:sectionId/:subjectId'>
+                            {({ match }) => <StudentWiseAttendanceDetailsMoreAbsent match={match} />}
+                          </Route>
+
+                          <Route path='/staff-attendance-report/branch-wise'>
+                            {({ match }) => <StuffAttendanceBranchWise match={match} />}
+                          </Route>
+
+                          <Route path='/staff-attendance-report/staff-type-wise/:branchId'>
+                            {({ match }) => <StuffAttendanceStuffTypeWise match={match} />}
+                          </Route>
+
+                          <Route path='/stuff-attendance-report/:roleName/:branchId'>
+                            {({ match }) => <StuffAttendanceAdminWise match={match} />}
+                          </Route>
+
+                          <Route path='/stuff-attendance-report/teacher-wise/:branchId/:stuffTypeID'>
+                            {({ match }) => <StuffAttendanceTeacherWise match={match} />}
+                          </Route>
+
+                          <Route path='/stuff-attendance-report/other-stuff-wise/:branchId/:stuffTypeID'>
+                            {({ match }) => <StuffAttendanceOtherStuffWise match={match} />}
+                          </Route>
+                          <Route path='/staff-attendance-report/staff-details/:branchId/:erpId'>
+                            {({ match }) => <StuffAttendancDetails match={match} />}
+                          </Route>
+
+                          {/* Fees routes--> */}
+
+                          <Route path='/fees-table-status'>
+                            {({ match }) => <FeesTableStatus match={match} />}
+                          </Route>
+                          <Route path='/fees-status-branch-wise-details/:branchId/'>
+                            {({ match }) => <FeesStatusBranchWise match={match} />}
+                          </Route>
+                          <Route path='/fees-section-status/:branchId'>
+                            {({ match }) => <FeesSectionStatus match={match} />}
+                          </Route>
+                          <Route path='/trasaction-details/:branchId/:branchName'>
+                            {({ match }) => <TransactionDetails match={match} />}
+                          </Route>
+                          <Route path='/grade-wise-fees-details'>
+                            {({ match }) => <GradeWiseFeesDetails match={match} />}
+                          </Route>
+
+
+
                           <Route path='*'>
                             <ErrorBoundary404 HomeButton={true} />
                           </Route>

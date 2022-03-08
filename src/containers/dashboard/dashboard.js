@@ -7,20 +7,32 @@ import { useSelector } from 'react-redux';
 import WelcomeComponent from './WelcomeComponent/welcome';
 import { useDashboardContext } from './dashboard-context';
 import axiosInstance from 'config/axios';
+import { useHistory } from 'react-router';
 import endpoints from 'config/endpoints';
 import axios from 'axios';
+import { isDeveloper } from 'components/utils/checkDeveloper';
 const TeacherDashboard = React.lazy(() => import('./TeacherDashboard/teacherDashboard'));
 const StudentDashboard = React.lazy(() => import('./StudentDashboard/studentDashboard'));
 const AdminDashboard = React.lazy(() => import('./AdminDashboard/adminDashboard'));
+const OwnerDashboard = React.lazy(() => import('./ownerDashboard/ownerDash'));
+
 const PrincipalDashboard = React.lazy(() =>
   import('./PrincipalDashboard/principalDashboard')
 );
 const DefaultDashboard = React.lazy(() => import('./DefaultDashboard/defaultDashboard'));
-
 const Dashboard = () => {
+  const history = useHistory();
+  const [oldDash, setOldDash] = useState(false)
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
-  const { username, erp_config} = JSON.parse(localStorage.getItem('userDetails')) || [];
-
+  const { username, erp_config } = JSON.parse(localStorage.getItem('userDetails')) || [];
+  const [buttonCounter, setButtonCounter] = useState(1)
+  const checkOldorNew = () => {
+    if (!oldDash) {
+      setOldDash(true)
+    } else {
+      setOldDash(false)
+    }
+  }
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -46,39 +58,60 @@ const Dashboard = () => {
         }
       });
     }
+    if (history?.location?.state?.oldView) {
+      if (history?.location?.state?.oldView === true) {
+        setOldDash(true)
+      }
+    }
   }, []);
-
   const {
     welcomeDetails: { userLevel = 5 },
   } = useDashboardContext();
-
+  const isDev = isDeveloper();
   const isMsAPIKey = useSelector((state) => state.commonFilterReducer?.isMsAPIKey);
-
-  const renderRoleDashboard = () => {
-    if (!isMsAPIKey) {
-      return <DefaultDashboard />;
+  const is_erp = useSelector((state) => state.commonFilterReducer?.erpConFigKey);
+  const getDashboardChoice = (dash1, dash2) => {
+    if (erp_config) {
+     if(buttonCounter === 1 ){
+       return dash1
+     } 
+     if(buttonCounter === 2 ){
+      return dash2
+     }
+    } else {
+      return dash1;
     }
+  }
+  const changeView = ( e ) => {
+    console.log(e, "ctn");
+    setButtonCounter(e)
+  }
+    useEffect(() => {
+      renderRoleDashboard()
+    }, [buttonCounter])
+  const renderRoleDashboard = () => {
     switch (userLevel) {
       case 1:
-        return <AdminDashboard />;
+        const GetDashboard = getDashboardChoice(AdminDashboard, OwnerDashboard);
+        return <GetDashboard />;
+      case 4:
+        const GetOwnerDashboard = getDashboardChoice(AdminDashboard, OwnerDashboard);
+        return <GetOwnerDashboard />;
       case 8:
-        return <PrincipalDashboard />;
+        const GetPrincipalDashboard = getDashboardChoice(PrincipalDashboard, OwnerDashboard);
+        return <GetPrincipalDashboard />;
+      case 11: return <TeacherDashboard />;
+      case 13: return <StudentDashboard />; // to be replaced with student dashboard
+      case 5: return <DefaultDashboard />;
       case 10:
-        return <PrincipalDashboard />;
-      case 11:
-        return <TeacherDashboard />;
-      case 13:
-        return <StudentDashboard />; // to be replaced with student dashboard
-      case 5:
-        return <DefaultDashboard />;
-      default:
-        return <DefaultDashboard />;
+        const GetCoordiDashboard = getDashboardChoice(PrincipalDashboard, OwnerDashboard);
+        return <GetCoordiDashboard />;
+      default: return <DefaultDashboard />;
     }
   };
-
   return (
     <Box px={3} mt={1}>
-      <WelcomeComponent erp_config={erp_config}/>
+      <WelcomeComponent erp_config={erp_config} isMsAPIKey={isMsAPIKey} changeView={changeView} />
       <Suspense fallback={<Loading />}>
         {isMsAPIKey ? renderRoleDashboard() : <DefaultDashboard />}
         {/* {true ? renderRoleDashboard() : <DefaultDashboard />} */}
@@ -86,5 +119,4 @@ const Dashboard = () => {
     </Box>
   );
 };
-
 export default Dashboard;
