@@ -283,6 +283,9 @@ const Appbar = ({ children, history, ...props }) => {
     })
     dispatch(currentSelectedYear(acdemicCurrentYear))
     sessionStorage.setItem('acad_session', JSON.stringify(acdemicCurrentYear));
+    if(window.location.pathname.includes('academic-calendar')){
+      history.push('/')
+    }
     window.location.reload();
   };
 
