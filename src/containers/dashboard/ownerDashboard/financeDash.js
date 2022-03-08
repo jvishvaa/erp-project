@@ -350,7 +350,7 @@ const FinanceOwnerDashboard = (props) => {
     //       },
     //     }
     //   )
-    apiRequest('get',`${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}` , null ,null , true , 5000)
+    apiRequest('get',`${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}` , null ,null , true , 10000)
       .then((res) => {
         console.log(res, 'stureport');
         setStudentReportData(res.data.result);
@@ -369,7 +369,7 @@ const FinanceOwnerDashboard = (props) => {
     //       Authorization: `Bearer ${token}`,
     //     },
     //   })
-      apiRequest('get',`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${acad}` , null ,null , true ,5000)
+      apiRequest('get',`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${acad}` , null ,null , true ,10000)
       .then((res) => {
         console.log(res, 'avgport');
         setTestScoreData(res.data.result);
