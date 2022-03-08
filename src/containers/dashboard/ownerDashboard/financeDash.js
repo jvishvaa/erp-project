@@ -51,6 +51,7 @@ import Loading from '../../../components/loader/loader';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import apiRequest from '../StudentDashboard/config/apiRequest';
 
 // import Box from '@mui/material/Box';
 // import Box from '@material-ui/core/CircularProgress';
@@ -339,16 +340,17 @@ const FinanceOwnerDashboard = (props) => {
   };
 
   const getStudentReport = (branch, year) => {
-    axios
-      .get(
-        `${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}`,
-        {
-          headers: {
-            'X-DTS-Host': window.location.host,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+    // axios
+    //   .get(
+    //     `${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}`,
+    //     {
+    //       headers: {
+    //         'X-DTS-Host': window.location.host,
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //     }
+    //   )
+    apiRequest('get',`${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}` , null ,null , true , 10000)
       .then((res) => {
         console.log(res, 'stureport');
         setStudentReportData(res.data.result);
@@ -360,13 +362,14 @@ const FinanceOwnerDashboard = (props) => {
   };
 
   const getTestScore = (acad) => {
-    axios
-      .get(`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${acad}`, {
-        headers: {
-          'X-DTS-Host': window.location.host,
-          Authorization: `Bearer ${token}`,
-        },
-      })
+    // axios
+    //   .get(`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${acad}`, {
+    //     headers: {
+    //       'X-DTS-Host': window.location.host,
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+      apiRequest('get',`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${acad}` , null ,null , true ,10000)
       .then((res) => {
         console.log(res, 'avgport');
         setTestScoreData(res.data.result);
