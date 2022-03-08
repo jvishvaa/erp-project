@@ -471,7 +471,7 @@ const FinanceOwnerDashboard = (props) => {
                             size='small'
                             // icon={props?.selectedBranch?.length}
                             avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
-                            label={'branch selected'}
+                            label={' Branch Selected'}
                           />
                         </Tooltip>
                       ) : (
@@ -704,7 +704,7 @@ const FinanceOwnerDashboard = (props) => {
                             size='small'
                             // icon={props?.selectedBranch?.length}
                             avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
-                            label={'branch selected'}
+                            label={' Branch Selected'}
                           />
                         </Tooltip>
                       ) : (
@@ -1011,7 +1011,7 @@ const FinanceOwnerDashboard = (props) => {
                                 size='small'
                                 // icon={props?.selectedBranch?.length}
                                 avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
-                                label={'branch selected'}
+                                label={' Branch Selected'}
                               />
                             </Tooltip>
                           ) : (
@@ -1239,7 +1239,7 @@ const FinanceOwnerDashboard = (props) => {
                               size='small'
                               // icon={props?.selectedBranch?.length}
                               avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
-                              label={'branch selected'}
+                              label={' Branch Selected'}
                             />
                           </Tooltip>
                         ) : (
