@@ -164,7 +164,7 @@ const GradeWiseFeesDetails = (props) => {
     const [section, setSection] = useState([])
     const [studentWiseDetails, setStudentWiseDetails] = useState(null);
 
-    const [propsData,setPropsData] = useState([]);
+    const [propsData, setPropsData] = useState([]);
     const {
         match: {
             params: { branchId },
@@ -174,14 +174,14 @@ const GradeWiseFeesDetails = (props) => {
     let dateToday = moment().format('YYYY-MM-DD');
 
     const { session_year: sessionYearId = '' } =
-    JSON.parse(sessionStorage.getItem('acad_session')) || {};
+        JSON.parse(sessionStorage.getItem('acad_session')) || {};
 
 
-    useEffect(() =>{
+    useEffect(() => {
         // console.log(history.location.state,'Lamp')
         setPropsData(history?.location?.state)
 
-    },[history])
+    }, [history])
 
     useEffect(() => {
         fetchFilterGradeList()
@@ -261,27 +261,27 @@ const GradeWiseFeesDetails = (props) => {
 
     useEffect(() => {
         setLoading(true)
-        let url =`${endpoints.ownerDashboard.feesDetailsStudentWise}?academic_year=${sessionYearId}&grade=${history?.location?.state?.gradeId}&section=${history?.location?.state?.sectionId}&branch=${history?.location?.state?.branchId}`
+        let url = `${endpoints.ownerDashboard.feesDetailsStudentWise}?academic_year=${sessionYearId}&grade=${history?.location?.state?.gradeId}&section=${history?.location?.state?.sectionId}&branch=${history?.location?.state?.branchId}`
         // if(gradeId.length !== 0) url += `grade=${gradeId}`;
         axiosInstance
-          .get(url)
-          .then((result) => {
-            //   console.log(result,'check')
-            if (result.status === 200) {
-                // console.log(result.data, 'bottle')
-                setStudentWiseDetails(result.data)
+            .get(url)
+            .then((result) => {
+                //   console.log(result,'check')
+                if (result.status === 200) {
+                    // console.log(result.data, 'bottle')
+                    setStudentWiseDetails(result.data)
+                    setLoading(false)
+
+                } else {
+                    setAlert('error', result.data?.message || result.data?.msg);
+                    setLoading(false)
+                }
+            })
+            .catch((error) => {
+                setAlert('error', error.message);
                 setLoading(false)
-             
-            } else {
-              setAlert('error', result.data?.message || result.data?.msg);
-              setLoading(false)
-            }
-          })
-          .catch((error) => {
-            setAlert('error', error.message);
-            setLoading(false)
-          });
-    },[gradeId])
+            });
+    }, [gradeId])
 
     // const gradeWiseFeesDetails = async (params = {}) => {
     //     let url =`${endpoints.ownerDashboard.feesDetailsStudentWise}`
@@ -425,7 +425,7 @@ const GradeWiseFeesDetails = (props) => {
                             <Table>
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell>ROLL NO.</TableCell>
+                                        <TableCell>ERP NO</TableCell>
                                         <TableCell>NAME</TableCell>
                                         <TableCell>TOTAL FEES</TableCell>
                                         <TableCell>PAID</TableCell>

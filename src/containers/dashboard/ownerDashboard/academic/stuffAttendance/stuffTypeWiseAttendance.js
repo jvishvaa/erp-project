@@ -44,7 +44,7 @@ import Loader from 'components/loader/loader';
 // import Loader from '../../components/loader/loader';
 // import axiosInstance from '../../config/axios';
 // import endpoints from '../../config/endpoints';
-// import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import Layout from '../../../../Layout';
 import clsx from 'clsx';
 import moment from 'moment';
@@ -95,6 +95,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
   },
+  attendanceCard: {
+    height: '100%',
+  },
   colorBlue: {
     color: 'blue',
   },
@@ -118,6 +121,7 @@ const useStyles = makeStyles((theme) => ({
 const StuffTypeWiseStuffAttendance = (props) => {
   const classes = useStyles();
   const history = useHistory();
+  const { setAlert } = useContext(AlertNotificationContext);
   const [volume, setVolume] = React.useState('');
   const [expanded, setExpanded] = useState(true);
   const [loading, setloading] = useState(true);
@@ -171,12 +175,16 @@ const StuffTypeWiseStuffAttendance = (props) => {
       roleIds: erpUser?.erp_user__roles_id,
       acad_session_id: acad_session_id,
     };
-    history.push({
-      pathname: `/stuff-attendance-report/${erpUser.erp_user__roles__role_name.toLowerCase()}/${branchId}`,
-      state: {
-        payload: payload,
-      },
-    });
+    if (erpUser?.erp_user__roles_id?.length > 0) {
+      history.push({
+        pathname: `/stuff-attendance-report/${erpUser.erp_user__roles__role_name.toLowerCase()}/${branchId}`,
+        state: {
+          payload: payload,
+        },
+      });
+    } else {
+      setAlert('error', 'Can not go further');
+    }
   };
 
   useEffect(() => {
@@ -196,6 +204,9 @@ const StuffTypeWiseStuffAttendance = (props) => {
           <Grid container spacing={3} justifyContent='space-between'>
             <Grid item xs={6}>
               <div className={clsx(classes.breadcrumb)}>
+              <IconButton size='small' onClick={() => history.goBack()}>
+                <ArrowBackIcon />
+              </IconButton>
                 <Typography variant='h6' className={clsx(classes.textBold)}>
                   Dashboard
                 </Typography>
@@ -259,7 +270,10 @@ const StuffTypeWiseStuffAttendance = (props) => {
                         <CardContent>
                           <Grid container spacing={2} justifyContent='center'>
                             <Grid item xs={3}>
-                              <Card elevation={0}>
+                              <Card
+                                elevation={0}
+                                className={clsx(classes.attendanceCard)}
+                              >
                                 <CardContent>
                                   <Typography variant='body1'>Total Staff</Typography>
                                   <Typography
@@ -272,7 +286,10 @@ const StuffTypeWiseStuffAttendance = (props) => {
                               </Card>
                             </Grid>
                             <Grid item xs={3}>
-                              <Card elevation={1}>
+                              <Card
+                                elevation={1}
+                                className={clsx(classes.attendanceCard)}
+                              >
                                 <CardContent className={clsx(classes.cardContantFlex)}>
                                   <span
                                     className={clsx(
@@ -292,7 +309,10 @@ const StuffTypeWiseStuffAttendance = (props) => {
                               </Card>
                             </Grid>
                             <Grid item xs={3}>
-                              <Card elevation={1}>
+                              <Card
+                                elevation={1}
+                                className={clsx(classes.attendanceCard)}
+                              >
                                 <CardContent className={clsx(classes.cardContantFlex)}>
                                   <span
                                     className={clsx(
@@ -312,7 +332,10 @@ const StuffTypeWiseStuffAttendance = (props) => {
                               </Card>
                             </Grid>
                             <Grid item xs={3}>
-                              <Card elevation={1}>
+                              <Card
+                                elevation={1}
+                                className={clsx(classes.attendanceCard)}
+                              >
                                 <CardContent className={clsx(classes.cardContantFlex)}>
                                   <span
                                     className={clsx(
@@ -335,10 +358,10 @@ const StuffTypeWiseStuffAttendance = (props) => {
                                 </CardContent>
                               </Card>
                             </Grid>
-                            <Grid item xs={6}>
+                            {/* <Grid item xs={6}>
                               <div className={clsx(classes.absentDiv)}>
                                 <span style={{ fontSize: '1rem' }}>
-                                  Absentfor more than 3 continuous days.
+                                  Absent for more than 3 continuous days.
                                 </span>
                                 <span
                                   style={{
@@ -350,7 +373,7 @@ const StuffTypeWiseStuffAttendance = (props) => {
                                   {each.moreAbsent}
                                 </span>
                               </div>
-                            </Grid>
+                            </Grid> */}
                           </Grid>
                         </CardContent>
                       </Card>

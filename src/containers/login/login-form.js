@@ -91,7 +91,7 @@ function LoginForm(props) {
             let userData = JSON.parse(localStorage.getItem('userDetails'));
             if(res === true || res.length > 0) {
               erpConfig = res;
-              if(userData?.user_level === 11 || userData?.user_level ===  13){
+              if(userData?.user_level !== 4 ){
               history.push('/acad-calendar');
               console.log(userData?.user_level , "level");
               } else {

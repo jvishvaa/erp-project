@@ -194,6 +194,7 @@ function Row(props) {
     const [subTable, setSubTable] = useState([]);
     const [grade, setGrade] = useState(null)
     const [propsData, setPropsData] = useState([]);
+    const [gradeName,setGradeName] = useState('')
 
     const { session_year: sessionYearId = '' } =
         JSON.parse(sessionStorage.getItem('acad_session')) || {};
@@ -202,12 +203,12 @@ function Row(props) {
         setPropsData(history?.location?.state)
     }, [history])
 
-    const handleOpen = (e) => {
-        // console.log(e,'Laptop')
+    const handleOpen = (e,name) => {
         if (open === true) {
             setOpen(!open)
         } else {
             setGrade(e)
+            setGradeName(name)
             setLoading(true)
             setOpen(!open)
             axiosInstance
@@ -215,7 +216,6 @@ function Row(props) {
                 .then((res) => {
                     setSubTable(res.data)
                     setLoading(false)
-                    console.log(res.data)
                 })
                 .catch((err) => {
                     console.log(err);
@@ -232,7 +232,7 @@ function Row(props) {
             state: {
                 branchId: branchId,
                 branchName: propsData?.branch,
-                gradeName: gradeId,
+                gradeName: gradeName,
                 gradeId: grade,
                 sectionId: id,
                 sectionName: name,
@@ -260,9 +260,9 @@ function Row(props) {
                 <TableCell component="th" scope="row">
                     <b>{row.grade_name}</b>
                 </TableCell>
-                <TableCell align="right" style={{ color: '#4180e7' }} ><b>{row.totalfees}</b></TableCell>
-                <TableCell align="right" style={{ color: '#08cf39' }}><b>{row.paid}</b></TableCell>
-                <TableCell align="right" style={{ color: '#ff3573' }}><b>{row.outstanding}</b></TableCell>
+                <TableCell align="right" style={{ color: '#4180e7' }} ><b>{Math.round(row.totalfees)}</b></TableCell>
+                <TableCell align="right" style={{ color: '#08cf39' }}><b>{Math.round(row.paid)}</b></TableCell>
+                <TableCell align="right" style={{ color: '#ff3573' }}><b>{Math.round(row.outstanding)}</b></TableCell>
                 <TableCell align="right">
                     <Box>
                         <LinearProgressWithLabel value={Math.round(row?.percentage)} />
@@ -272,7 +272,7 @@ function Row(props) {
                     <IconButton
                         aria-label="expand row"
                         size="small"
-                        onClick={() => handleOpen(row.grade)}
+                        onClick={() => handleOpen(row?.grade, row?.grade_name)}
                     // onClick ={handleOpen(e)}
                     >
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -309,14 +309,14 @@ function Row(props) {
                                             </TableCell>
 
                                             <TableCell style={{ textAlign: 'left', color: '#4180e7' }}>
-                                                <b>{historyRow?.totalfees}</b>
+                                                <b>{Math.round(historyRow?.totalfees)}</b>
                                             </TableCell>
                                             {/* <TableCell></TableCell> */}
                                             <TableCell style={{ textAlign: 'left', color: '#08cf39' }}>
-                                                <b>{historyRow?.paid}</b>
+                                                <b>{Math.round(historyRow?.paid)}</b>
                                             </TableCell>
                                             {/* <TableCell></TableCell> */}
-                                            <TableCell style={{ textAlign: 'left', color: '#ff3573' }}> <b>{historyRow?.outstanding}</b></TableCell>
+                                            <TableCell style={{ textAlign: 'left', color: '#ff3573' }}> <b>{Math.round(historyRow?.outstanding)}</b></TableCell>
                                             {/* <TableCell></TableCell> */}
                                             {/* <TableCell></TableCell> */}
                                             <TableCell style={{ textAlign: 'left' }}>
