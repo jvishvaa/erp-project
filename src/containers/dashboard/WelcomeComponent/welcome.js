@@ -114,11 +114,11 @@ const WelcomeComponent = ({ erp_config , isMsAPIKey , changeView}) => {
           Stats View
         </Button> : ''}
      
-        { checkDev === true ? <>
+        {/* { checkDev === true ? <> */}
         {erp_config ? <Button className={classes.outlined} style={{margin: '0 2%'}} color='secondary' onClick={() => changeView(2)}  >
           Stats View V2
         </Button> : ''}
-        </> : '' }
+        {/* </> : '' } */}
       </div>
       : '' }
      
