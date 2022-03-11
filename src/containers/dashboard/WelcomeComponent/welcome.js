@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const WelcomeComponent = ({ erp_config , isMsAPIKey , changeView}) => {
+const WelcomeComponent = ({ erp_config , isMsAPIKey , changeView , buttonCounter}) => {
   const classes = useStyles();
   const [showButton, setShowButton] = useState(false);
   const { welcomeDetails = {}, setReports } = useDashboardContext();
@@ -105,20 +105,20 @@ const WelcomeComponent = ({ erp_config , isMsAPIKey , changeView}) => {
     {welcomeDetails?.userLevel === 1 || welcomeDetails?.userLevel ===  4 || welcomeDetails?.userLevel ===  8 || welcomeDetails?.userLevel ===  10 ? 
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '1%' , width: '45%' , float: 'right' }} >
       { welcomeDetails?.userLevel === 4 ? '' :  <>
-        {erp_config ? <Button className={classes.outlined} style={{margin: '0 2%'}} color='secondary' onClick={academicView}  >
+        {erp_config ? <Button className={classes.outlined} style={{margin: '0 2%' }} color='secondary' onClick={academicView}  >
           Calendar View
         </Button> : ''}
         </> }
         
-        {erp_config ? <Button className={classes.outlined} style={{margin: '0 2%'}} color='secondary' onClick={() => changeView(1)}  >
+        {erp_config ? <Button className={classes.outlined} style={{margin: '0 2%', background: buttonCounter === 1 ?  '#e2e8ff' : 'white' }} color='secondary' onClick={() => changeView(1)}  >
           Stats View
         </Button> : ''}
      
-        { checkDev === true ? <>
-        {erp_config ? <Button className={classes.outlined} style={{margin: '0 2%'}} color='secondary' onClick={() => changeView(2)}  >
+        {/* { checkDev === true ? <> */}
+        {erp_config ? <Button className={classes.outlined} style={{margin: '0 2%' , background: buttonCounter === 1 ? 'white' : '#e2e8ff'}} color='secondary' onClick={() => changeView(2)}  >
           Stats View V2
         </Button> : ''}
-        </> : '' }
+        {/* </> : '' } */}
       </div>
       : '' }
      
