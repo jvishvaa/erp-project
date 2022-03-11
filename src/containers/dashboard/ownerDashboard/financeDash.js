@@ -311,7 +311,7 @@ const FinanceOwnerDashboard = (props) => {
     setExpanded(isExpanded ? value : false);
     getCurriculumReport(each?.branch?.id, each?.id);
     getStudentReport(each?.branch?.id, each?.session_year?.id);
-    getTestScore(each?.id);
+    // getTestScore(each?.id);
   };
 
   const AcadPerformanceClick = () => {
@@ -387,7 +387,7 @@ const FinanceOwnerDashboard = (props) => {
         props?.branchList[0]?.branch?.id,
         props?.branchList[0]?.session_year?.id
       );
-      getTestScore(props?.branchList[0]?.id);
+      // getTestScore(props?.branchList[0]?.id);
     }
   }, [props?.branchList]);
 
@@ -1067,7 +1067,7 @@ const FinanceOwnerDashboard = (props) => {
                           <Grid
                             item
                             xs={12}
-                            style={{ borderRadius: '5px', backgroundColor: '#ffd4d9' }}
+                            style={{ borderRadius: '5px', backgroundColor: '#ffd4d9' , minHeight: '75px' }}
                           >
                             <div className={clsx(classes.absentGrid)}>
                               <div style={{ width: '53%' }}>
@@ -1111,7 +1111,7 @@ const FinanceOwnerDashboard = (props) => {
                             </div>
                           </Grid>
 
-                          <Grid
+                          {/* <Grid
                             item
                             xs={12}
                             style={{
@@ -1160,7 +1160,7 @@ const FinanceOwnerDashboard = (props) => {
                                 </IconButton>
                               </div>
                             </div>
-                          </Grid>
+                          </Grid> */}
 
                           <Grid
                             item
@@ -1169,6 +1169,7 @@ const FinanceOwnerDashboard = (props) => {
                               borderRadius: '5px',
                               backgroundColor: '#fff2cc',
                               marginTop: '5px',
+                              minHeight: '75px'
                             }}
                           >
                             <div className={clsx(classes.absentGrid)}>
@@ -1195,7 +1196,7 @@ const FinanceOwnerDashboard = (props) => {
                                           props?.studentAttendanceOverview?.total_avg
                                         )
                                           ? 0
-                                          : Math.round(props?.studentAttendanceOverview?.total_avg)}
+                                          : `${Math.round(props?.studentAttendanceOverview?.total_avg)}%`}
                                       </>
                                     ) : (
                                       <>0%</>
@@ -1437,7 +1438,7 @@ const FinanceOwnerDashboard = (props) => {
                           {expanded && (
                             <AccordionDetails>
                               <div style={{ width: '100%' }}>
-                                <Grid container spacing={2}>
+                                <Grid container spacing={2} style={{width : '150%'}} >
                                   {loading ? (
                                     <Loading />
                                   ) : (
@@ -1476,7 +1477,7 @@ const FinanceOwnerDashboard = (props) => {
                                         </div>
                                       </Grid>
 
-                                      <Grid
+                                      {/* <Grid
                                         item
                                         xs={4}
                                         onClick={() => handleStudentreport(each)}
@@ -1516,7 +1517,7 @@ const FinanceOwnerDashboard = (props) => {
                                             </Typography>
                                           </div>
                                         </div>
-                                      </Grid>
+                                      </Grid> */}
                                       <Grid
                                         item
                                         xs={4}

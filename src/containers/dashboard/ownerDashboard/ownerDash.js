@@ -105,7 +105,7 @@ const [progress1, setProgress1] = useState(initialState);
   };
 
   const handleAcadRefresh = () => {
-    getAvgScore();
+    // getAvgScore();
     getCurrReport();
     getAttendanceReportOverview();
     setAcadCounter(true);
