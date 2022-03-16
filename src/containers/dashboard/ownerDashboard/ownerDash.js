@@ -107,7 +107,7 @@ const [progress1, setProgress1] = useState(initialState);
     if(selectedBranchId.length == 1) {
       getFinanceReport();
     } else {
-      setAlert('error','Please select at least or at most one branch');
+      setAlert('error','Please select a branch (max 1 branch)');
     }
   };
 
@@ -126,7 +126,7 @@ const [progress1, setProgress1] = useState(initialState);
       getrecenttransaction();
       setRecentTransCounter(true);
     } else {
-      setAlert('error','Please select at least or at most one branch');
+      setAlert('error','Please select a branch (max 1 branch)');
     }
   };
 
