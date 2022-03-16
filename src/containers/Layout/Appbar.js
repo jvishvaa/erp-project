@@ -25,6 +25,7 @@ import { logout } from '../../redux/actions';
 import { throttle, debounce } from 'throttle-debounce';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 
 import logoMobile from '../../assets/images/logo_mobile.png';
 import SearchBar from './SearchBar';
@@ -337,7 +338,7 @@ const Appbar = ({ children, history, ...props }) => {
                     <img
                       src={centralSchoolLogo}
                       alt='logo'
-                      style={{ maxHeight: '38px', maxWidth: '38px', objectFit: 'fill' }}
+                      style={{ maxHeight: '38px', maxWidth: '38px', objectFit: 'fill' , fontSize: '12px'}}
                     />
                   </IconButton>
                 </Grid>
@@ -357,7 +358,7 @@ const Appbar = ({ children, history, ...props }) => {
                   </FormControl>
                   <div>
                   <IconButton onClick={handleFinance}  style={{padding : '1%'}} >
-                    <AttachMoneyIcon />
+                    <MonetizationOnIcon />
                   </IconButton>
                   </div>
                 </Grid>
@@ -439,7 +440,7 @@ const Appbar = ({ children, history, ...props }) => {
           )}
           {isMobile ? null : <SearchBar />}
           <div style={{ display: 'flex' }}>
-            {isMobile ? null : <div className={classes.grow} >
+            {isMobile ? null : <div className={classes.grow} style={{ margin: '0' }} >
               <FormControl variant="standard" sx={{ m: 1, minWidth: 100 }}>
                 <Select
                   labelId="demo-simple-select-label"
@@ -458,8 +459,8 @@ const Appbar = ({ children, history, ...props }) => {
             {userData?.user_level == 1 || userData?.user_level == 25 || userData?.user_level == 13 || userData?.is_superuser == true ? <>
               {apps?.finance == true ? <>
                 {isMobile ? null :
-                  <IconButton className={classes.grow} style={{ margin: '0px 50px 0px 0px' }} onClick={handleFinance}>
-                    <AttachMoneyIcon />
+                  <IconButton className={classes.grow} style={{ margin: '0' }} onClick={handleFinance}>
+                    <MonetizationOnIcon />
                   </IconButton>
                 }
               </> : <></>}
