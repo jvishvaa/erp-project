@@ -24,6 +24,7 @@ import axiosInstance from '../../config/axios';
 import { logout } from '../../redux/actions';
 import { throttle, debounce } from 'throttle-debounce';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 
 import logoMobile from '../../assets/images/logo_mobile.png';
 import SearchBar from './SearchBar';
@@ -63,6 +64,9 @@ const Appbar = ({ children, history, ...props }) => {
   // const [moduleId, setModuleId] = useState(); 
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  let userData = JSON.parse(localStorage.getItem('userDetails'));
+  let apps = JSON.parse(localStorage.getItem('apps'));
+
 
   const { role_details: roleDetails } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -161,6 +165,14 @@ const Appbar = ({ children, history, ...props }) => {
     }
   }, [isLogout]);
 
+  const handleFinance = () => {
+    if (window.location.host === 'qa.olvorchidnaigaon.letseduvate.com' || window.location.host === 'localhost:3001') {
+      window.open(`https://uidev.erpfinance.letseduvate.com/sso/${token}`, "_blank")
+    } else {
+      window.open(`https://revamp.finance.letseduvate.com/sso/${token}`, "_blank")
+    }
+  }
+
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
     <Menu
@@ -197,6 +209,7 @@ const Appbar = ({ children, history, ...props }) => {
       </MenuItem>
     </Menu>
   );
+
   const AppBarProfileIcon = ({ imageSrc = '' }) => {
     const [isBrokenImg, setIsBrokenImg] = useState(false);
 
@@ -269,7 +282,7 @@ const Appbar = ({ children, history, ...props }) => {
     if (academicYearlist && acdemicCurrentYear) {
       setAcademicYear(acdemicCurrentYear?.session_year)
     }
-  }, [acdemicCurrentYear,academicYearlist])
+  }, [acdemicCurrentYear, academicYearlist])
 
 
   const handleChange = (event) => {
@@ -328,7 +341,7 @@ const Appbar = ({ children, history, ...props }) => {
                     />
                   </IconButton>
                 </Grid>
-                <Grid item xs={6} style={{ textAlign: 'center', paddingTop: 10 }}>
+                <Grid item xs={6} style={{ textAlign: 'center', paddingTop: 10 , display: 'flex' }}>
                   <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
                     <Select
                       labelId="demo-simple-select-label"
@@ -342,7 +355,13 @@ const Appbar = ({ children, history, ...props }) => {
                       )}
                     </Select>
                   </FormControl>
+                  <div>
+                  <IconButton onClick={handleFinance}  style={{padding : '1%'}} >
+                    <AttachMoneyIcon />
+                  </IconButton>
+                  </div>
                 </Grid>
+              
               </Grid>
 
               <div className={classes.sectionMobile}>
@@ -421,7 +440,6 @@ const Appbar = ({ children, history, ...props }) => {
           {isMobile ? null : <SearchBar />}
           <div style={{ display: 'flex' }}>
             {isMobile ? null : <div className={classes.grow} >
-
               <FormControl variant="standard" sx={{ m: 1, minWidth: 100 }}>
                 <Select
                   labelId="demo-simple-select-label"
@@ -437,6 +455,15 @@ const Appbar = ({ children, history, ...props }) => {
               </FormControl>
 
             </div>}
+            {userData?.user_level == 1 || userData?.user_level == 25 || userData?.user_level == 13 || userData?.is_superuser == true ? <>
+              {apps?.finance == true ? <>
+                {isMobile ? null :
+                  <IconButton className={classes.grow} style={{ margin: '0px 50px 0px 0px' }} onClick={handleFinance}>
+                    <AttachMoneyIcon />
+                  </IconButton>
+                }
+              </> : <></>}
+            </> : <></>}
 
 
             <div className={classes.sectionDesktop}>
