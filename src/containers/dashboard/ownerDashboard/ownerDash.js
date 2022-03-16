@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import MenuBookIcon from '@material-ui/icons/MenuBook';
 import SpellcheckIcon from '@material-ui/icons/Spellcheck';
 import OndemandVideoIcon from '@material-ui/icons/OndemandVideo';
@@ -30,6 +30,7 @@ import axiosInstance from 'config/axios';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import apiRequest from '../StudentDashboard/config/apiRequest';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 
 const OwnerDashboard = () => {
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -59,6 +60,8 @@ const OwnerDashboard = () => {
   const [selectedBranchId, setSelectedBranchId] = useState([]);
   const [branchData, setBranchData] = useState([]);
   const [branchCounter, setBranchCounter] = useState(false);
+  const { setAlert } = useContext(AlertNotificationContext);
+  
 
   const initialState = {
     attendence: false, 
@@ -101,7 +104,11 @@ const [progress1, setProgress1] = useState(initialState);
     setTodayCounter(true);
   };
   const handleFeeRefresh = () => {
-    getFinanceReport();
+    if(selectedBranchId.length == 1) {
+      getFinanceReport();
+    } else {
+      setAlert('error','Please select at least or at most one branch');
+    }
   };
 
   const handleAcadRefresh = () => {
@@ -115,8 +122,12 @@ const [progress1, setProgress1] = useState(initialState);
   };
 
   const handlerecent = () => {
-    getrecenttransaction();
-    setRecentTransCounter(true);
+    if(selectedBranchId.length == 1) {
+      getrecenttransaction();
+      setRecentTransCounter(true);
+    } else {
+      setAlert('error','Please select at least or at most one branch');
+    }
   };
 
   const getrecenttransaction = () => {
