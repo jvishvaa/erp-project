@@ -168,9 +168,9 @@ const Appbar = ({ children, history, ...props }) => {
 
   const handleFinance = () => {
     if (window.location.host === 'qa.olvorchidnaigaon.letseduvate.com' || window.location.host === 'localhost:3001') {
-      window.open(`https://uidev.erpfinance.letseduvate.com/sso/${token}`, "_blank")
+      window.open(`https://uidev.erpfinance.letseduvate.com/sso/${token}/#/auth/login`, "_blank")
     } else {
-      window.open(`https://revamp.finance.letseduvate.com/sso/${token}`, "_blank")
+      window.open(`https://revamp.finance.letseduvate.com/sso/${token}/#/auth/login`, "_blank")
     }
   }
 
