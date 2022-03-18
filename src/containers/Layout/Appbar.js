@@ -32,6 +32,9 @@ import SearchBar from './SearchBar';
 import AppSearchBarUseStyles from './AppSearchBarUseStyles';
 import { fetchAcademicYearList } from '../../redux/actions/common-actions'
 import { currentSelectedYear } from '../../redux/actions/common-actions'
+import ENVCONFIG from 'config/config';
+
+
 // import { Autocomplete } from '@material-ui/lab';
 import './styles.scss';
 // import { Item } from 'semantic-ui-react';
@@ -167,11 +170,9 @@ const Appbar = ({ children, history, ...props }) => {
   }, [isLogout]);
 
   const handleFinance = () => {
-    if (window.location.host === 'qa.olvorchidnaigaon.letseduvate.com' || window.location.host === 'localhost:3001') {
-      window.open(`https://uidev.erpfinance.letseduvate.com/sso/${token}#/auth/login`, "_blank")
-    } else {
-      window.open(`https://revamp.finance.letseduvate.com/sso/${token}#/auth/login`, "_blank")
-    }
+
+      window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/${token}#/auth/login`, "_blank")
+
   }
 
   const mobileMenuId = 'primary-search-account-menu-mobile';

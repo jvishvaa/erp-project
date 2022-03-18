@@ -19,6 +19,7 @@ const local = {
     msOriginUrl: 'https://dev.classes.letseduvate.com',
     msReportsUrl: 'https://dev.reports.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
+    finance: 'https://uidev.erpfinance.letseduvate.com',
   },
 };
 const dev = {
@@ -38,6 +39,7 @@ const dev = {
     msOriginUrl: 'https://dev.classes.letseduvate.com',
     msReportsUrl: 'https://dev.reports.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
+    finance: 'https://uidev.erpfinance.letseduvate.com',
   },
 };
 
@@ -60,6 +62,7 @@ const qa = {
     msOriginUrl: 'https://qa.classes.letseduvate.com',
     msReportsUrl: 'https://qa.reports.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
+    finance: 'https://uidev.erpfinance.letseduvate.com',
   },
 };
 
@@ -99,6 +102,7 @@ const prod = {
     msOriginUrl: 'https://classes.letseduvate.com',
     msReportsUrl: 'https://reports.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
+    finance: 'https://revamp.finance.letseduvate.com',
   },
 };
 
