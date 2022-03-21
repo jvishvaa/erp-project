@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '70vh',
     width: '100%',
   },
-  textEffect : {
+  textEffect: {
     fontSize: '16px',
     fontWeight: 'bold',
     color: theme.palette.secondary.main,
@@ -105,37 +105,43 @@ const AllBooksPage = () => {
     return subDomain;
   };
 
+  // useEffect(() => {
+  //   setLoading(true);
+  //   axiosInstance
+  //     .get(
+  //       `${endpoints.ibook.studentBook
+  //       }?domain_name=${getDomainName()}&book_status=1&page=${pageNo}&page_size=${limit}`
+  //     )
+  //     .then((result) => {
+  //       if (result.data.status_code === 200) {
+  //         setBooksData(result.data.result.result);
+  //         setTotalPages(Math.ceil(result.data.result.count / limit));
+
+  //         console.log(Math.ceil(result.data.result.count / limit), 'pagination');
+  //         if (result?.data.result?.result[0]?.path === 'prod/ibooks/') {
+  //           // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/prod/ibooks/');
+  //           // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/');
+  //           setBookImage('https://d3ka3pry54wyko.cloudfront.net/');
+
+  //         }
+  //         setLoading(false);
+  //       } else {
+  //         setLoading(false);
+  //         setAlert('error', result.data.message);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false);
+  //       setAlert('error', error.message);
+  //     });
+  // }, [pageNo]);
+
   useEffect(() => {
-    setLoading(true);
-    axiosInstance
-      .get(
-        `${
-          endpoints.ibook.studentBook
-        }?domain_name=${getDomainName()}&page=${pageNo}&page_size=${limit}`
-      )
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setBooksData(result.data.result.result);
-          setTotalPages(Math.ceil(result.data.result.count / limit));
-
-          console.log(Math.ceil(result.data.result.count / limit), 'pagination');
-          if (result?.data.result?.result[0]?.path === 'prod/ibooks/') {
-            // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/prod/ibooks/');
-            // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/');
-            setBookImage('https://d3ka3pry54wyko.cloudfront.net/');
-
-          }
-          setLoading(false);
-        } else {
-          setLoading(false);
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
-  }, [pageNo]);
+    console.log(branch);
+    if(branch !== ''){
+      getEbook(acadmicYear , branch , grade , subject , volume)
+    }
+  },[pageNo])
   const handlePagination = (event, page) => {
     setPageNo(page);
   };
@@ -144,8 +150,8 @@ const AllBooksPage = () => {
     // history.push(
     //   `/intelligent-book/${item?.id}/${item?.book_uid}/${item?.local_storage_id}/${item?.path}`
     // );
-   
-    console.log('item111',item)
+
+    console.log('item111', item)
 
     const path = item?.path.split("/")
 
@@ -169,19 +175,22 @@ const AllBooksPage = () => {
     getEbook(acad, branch, grade, sub, vol);
   };
 
+ 
+
   const getEbook = (acad, branch, grade, subject, vol) => {
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
-    const filterGrade = `${grade ? `&grade=[${grade?.central_grade}]` : ''}`;
+    const filterGrade = `${grade ? `&grade=${grade?.central_grade}` : ''}`;
     const filterSubject = `${subject ? `&subject=${subject?.central_subject}` : ''}`;
     const filterVolumes = `${vol ? `&volume=${vol?.id}` : ''}`;
+    if ( branch != undefined ){
 
+    
     setLoading(true);
     axiosInstance
       .get(
-        `${
-          endpoints.ibook.studentBook
-        }?domain_name=${getDomainName()}&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`
+        `${endpoints.ibook.studentBook
+        }?domain_name=${getDomainName()}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -197,6 +206,9 @@ const AllBooksPage = () => {
         setLoading(false);
         setAlert('error', error.message);
       });
+    } else{
+      setBooksData([])
+    }
   };
 
   const handleClose = () => {
@@ -230,6 +242,7 @@ const AllBooksPage = () => {
             }
             spacing={5}
           >
+            {booksData?.length > 0 ? <>
             {booksData &&
               booksData.map((item, index) => {
                 return (
@@ -282,7 +295,7 @@ const AllBooksPage = () => {
 
                                 <Grid item md={12} xs={12}>
                                   <Typography
-                                  color="secondary"
+                                    color="secondary"
                                     style={{
                                       fontSize: '9px',
                                       margin: '10px 0',
@@ -302,7 +315,7 @@ const AllBooksPage = () => {
                                       height: '25px',
                                       fontSize: '15px',
                                       borderRadius: '6px',
-                                      color : "white"
+                                      color: "white"
                                     }}
                                     onClick={() => handleBookOpen(item)}
                                   >
@@ -318,6 +331,7 @@ const AllBooksPage = () => {
                   </Grid>
                 );
               })}
+              </> : ''}
           </Grid>
         </Paper>
 
@@ -326,7 +340,7 @@ const AllBooksPage = () => {
           open={open}
           // onClose={handleClose}
           style={{ zIndex: '10000' }}
-          // TransitionComponent={Transition}
+        // TransitionComponent={Transition}
         >
           <Grid container>
             <Grid item sm={12}>
@@ -366,7 +380,7 @@ const AllBooksPage = () => {
           </Grid>
         </Dialog>
 
-        {booksData && (
+        {booksData?.length > 0 && (
           <Grid item xs={12} md={12} style={{ textAlign: 'center' }}>
             {/* <Pagination
               onChange={handlePagination}
@@ -382,6 +396,7 @@ const AllBooksPage = () => {
             />
           </Grid>
         )}
+        
       </Layout>
     </>
   );
