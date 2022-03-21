@@ -137,9 +137,8 @@ const AllBooksPage = () => {
   // }, [pageNo]);
 
   useEffect(() => {
-
-
-    if(branch != ''){
+    console.log(branch);
+    if(branch !== ''){
       getEbook(acadmicYear , branch , grade , subject , volume)
     }
   },[pageNo])
@@ -176,13 +175,17 @@ const AllBooksPage = () => {
     getEbook(acad, branch, grade, sub, vol);
   };
 
+ 
+
   const getEbook = (acad, branch, grade, subject, vol) => {
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     const filterGrade = `${grade ? `&grade=${grade?.central_grade}` : ''}`;
     const filterSubject = `${subject ? `&subject=${subject?.central_subject}` : ''}`;
     const filterVolumes = `${vol ? `&volume=${vol?.id}` : ''}`;
+    if ( branch != undefined ){
 
+    
     setLoading(true);
     axiosInstance
       .get(
@@ -203,6 +206,9 @@ const AllBooksPage = () => {
         setLoading(false);
         setAlert('error', error.message);
       });
+    } else{
+      setBooksData([])
+    }
   };
 
   const handleClose = () => {
@@ -374,7 +380,7 @@ const AllBooksPage = () => {
           </Grid>
         </Dialog>
 
-        {booksData && (
+        {booksData?.length > 0 && (
           <Grid item xs={12} md={12} style={{ textAlign: 'center' }}>
             {/* <Pagination
               onChange={handlePagination}
