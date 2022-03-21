@@ -105,36 +105,44 @@ const AllBooksPage = () => {
     return subDomain;
   };
 
+  // useEffect(() => {
+  //   setLoading(true);
+  //   axiosInstance
+  //     .get(
+  //       `${endpoints.ibook.studentBook
+  //       }?domain_name=${getDomainName()}&book_status=1&page=${pageNo}&page_size=${limit}`
+  //     )
+  //     .then((result) => {
+  //       if (result.data.status_code === 200) {
+  //         setBooksData(result.data.result.result);
+  //         setTotalPages(Math.ceil(result.data.result.count / limit));
+
+  //         console.log(Math.ceil(result.data.result.count / limit), 'pagination');
+  //         if (result?.data.result?.result[0]?.path === 'prod/ibooks/') {
+  //           // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/prod/ibooks/');
+  //           // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/');
+  //           setBookImage('https://d3ka3pry54wyko.cloudfront.net/');
+
+  //         }
+  //         setLoading(false);
+  //       } else {
+  //         setLoading(false);
+  //         setAlert('error', result.data.message);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setLoading(false);
+  //       setAlert('error', error.message);
+  //     });
+  // }, [pageNo]);
+
   useEffect(() => {
-    setLoading(true);
-    axiosInstance
-      .get(
-        `${endpoints.ibook.studentBook
-        }?domain_name=${getDomainName()}&book_status=1&page=${pageNo}&page_size=${limit}`
-      )
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setBooksData(result.data.result.result);
-          setTotalPages(Math.ceil(result.data.result.count / limit));
 
-          console.log(Math.ceil(result.data.result.count / limit), 'pagination');
-          if (result?.data.result?.result[0]?.path === 'prod/ibooks/') {
-            // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/prod/ibooks/');
-            // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/');
-            setBookImage('https://d3ka3pry54wyko.cloudfront.net/');
 
-          }
-          setLoading(false);
-        } else {
-          setLoading(false);
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
-  }, [pageNo]);
+    if(branch != ''){
+      getEbook(acadmicYear , branch , grade , subject , volume)
+    }
+  },[pageNo])
   const handlePagination = (event, page) => {
     setPageNo(page);
   };
@@ -228,6 +236,7 @@ const AllBooksPage = () => {
             }
             spacing={5}
           >
+            {booksData?.length > 0 ? <>
             {booksData &&
               booksData.map((item, index) => {
                 return (
@@ -316,6 +325,7 @@ const AllBooksPage = () => {
                   </Grid>
                 );
               })}
+              </> : ''}
           </Grid>
         </Paper>
 
@@ -380,6 +390,7 @@ const AllBooksPage = () => {
             />
           </Grid>
         )}
+        
       </Layout>
     </>
   );
