@@ -457,7 +457,7 @@ const Appbar = ({ children, history, ...props }) => {
               </FormControl>
 
             </div>}
-            {userData?.user_level == 1 || userData?.user_level == 25 || userData?.user_level == 13 || userData?.is_superuser == true ? <>
+            {userData?.user_level == 1 || userData?.user_level == 25 || userData?.user_level == 13 ? <>
               {apps?.finance == true ? <>
                 {isMobile ? null :
                   <IconButton className={classes.grow} style={{ margin: '0' }} onClick={handleFinance}>
