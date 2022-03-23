@@ -953,7 +953,7 @@ const FinanceOwnerDashboard = (props) => {
                                     variant='body2'
                                     className={clsx(classes.transactionTextDesignLeft)}
                                   >
-                                    <b>₹ {each?.amount} </b>
+                                    <b>₹ {Math.round(each?.amount).toLocaleString()} </b>
                                   </Typography>
                                 </Grid>
                               </Grid>
