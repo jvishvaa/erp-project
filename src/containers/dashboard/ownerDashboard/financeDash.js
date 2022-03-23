@@ -762,7 +762,7 @@ const FinanceOwnerDashboard = (props) => {
                               marginLeft: '10px',
                             }}
                           >
-                            ₹ {props?.financeData ? props?.financeData?.totalfees : ''}
+                            ₹ {props?.financeData ? Math.round(props?.financeData?.totalfees).toLocaleString() : ''}
                           </b>
                         </Typography>
                         {/* <Typography
@@ -797,7 +797,7 @@ const FinanceOwnerDashboard = (props) => {
                                   classes.customTextSize
                                 )}
                               >
-                                ₹ { props?.financeData ? props?.financeData?.paid : ''}
+                                ₹ { props?.financeData ? Math.round(props?.financeData?.paid).toLocaleString() : ''}
                               </Typography>
                             </div>
                           </CardContent>
@@ -828,7 +828,7 @@ const FinanceOwnerDashboard = (props) => {
                               >
                                 ₹{' '}
                                 {props?.financeData
-                                  ? Math.round(props?.financeData?.outstanding)
+                                  ? Math.round(props?.financeData?.outstanding).toLocaleString()
                                   : ''}
                               </Typography>
                             </div>
@@ -855,7 +855,7 @@ const FinanceOwnerDashboard = (props) => {
                                 )}
                               >
                                 {props?.financeData
-                                  ? props?.financeData?.no_of_admission
+                                  ? Math.round(props?.financeData?.no_of_admission).toLocaleString()
                                   : ''}
                               </Typography>
                             </div>
