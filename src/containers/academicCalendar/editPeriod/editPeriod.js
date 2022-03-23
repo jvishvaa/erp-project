@@ -11,7 +11,6 @@ import {
   AccordionDetails,
   SvgIcon,
 } from '@material-ui/core';
-import Button from '@material-ui/core/Button';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import './academicStyles.scss';
 import AddTopic from './addTopic';
@@ -43,6 +42,14 @@ import Loader from '../../../components/loader/loader';
 import EditIcon from '@material-ui/icons/Edit';
 import CreateCwEditDialoge from '../dialogs/createCwEditDialoge';
 import ViewQuizClassWork from '../dialogs/viewQuizClassWork';
+import { Button, IconButton } from '@material-ui/core';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import CloseIcon from '@material-ui/icons/Close';
+
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -106,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
 
 const EditPeriod = withRouter(({ history, ...props }) => {
   const { id } = useParams();
-  const {start, end}= history?.location?.state?.data;
+  const { start, end } = history?.location?.state?.data;
   const grade = history?.location?.state?.data?.grade?.name;
   const section = history?.location?.state?.data?.section?.name;
   const subject = history?.location?.state?.data?.subject?.id;
@@ -149,11 +156,18 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const user_id = userData?.user_id;
   const user_level = userData?.user_level;
   const isStudent = user_level == 13 ? true : false;
-  const [attFlag, setAttFlag] = useState(false)
+  const [attFlag, setAttFlag] = useState(false);
   const [currTime, setCurrTime] = useState(new Date());
   const [currDate, setCurrDate] = useState();
   const [classDate, setClassDate] = useState();
   const [editCw, setEditCw] = useState(false);
+  const [openDelete, setOpenDelete] = React.useState(false);
+  const [cancelData, setCancelData] = useState()
+
+  useEffect(() => {
+    setCancelData(history?.location?.state?.data)
+  }, [history])
+
   const [class_StartTime, setClassStartTime] = useState(
     history?.location?.state?.data?.start
   );
@@ -168,7 +182,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
         grade: grade,
         section: section,
         periodName: periodName,
-        is_att_confirm: periodData?.is_attendance_confirm
+        is_att_confirm: periodData?.is_attendance_confirm,
       },
     });
   };
@@ -191,7 +205,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
       history.push({
         pathname: `/academic-calendar/view-participate/${id}`,
         periodId: id,
-        cpConfirm: periodData?.is_cp_confirm
+        cpConfirm: periodData?.is_cp_confirm,
       });
     }
   };
@@ -245,7 +259,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
   const toggleClassWorkDrawer = () => {
     if (periodDetails?.ongoing_status === 'Completed') {
       setIsClassWorkOpen((prevState) => prevState);
-      setAlert('warning', "Not able to Assign Classwork as class is completed")
+      setAlert('warning', 'Not able to Assign Classwork as class is completed');
       return;
     }
     else {
@@ -448,6 +462,35 @@ const EditPeriod = withRouter(({ history, ...props }) => {
       });
   };
 
+  const cancelPeriod = (e) => {
+    console.log(history.location.state.data, "his");
+    // console.log(val)
+    setOpenDelete(true)
+    // e.stopPropagation();
+    // setCancelData(val)
+  }
+
+  const cancelPeriodTrue = () => {
+    axiosInstance
+      .patch(`/period/${cancelData?.info?.id}/cancel-period/`)
+      .then((res) => {
+        setAlert('success' , 'Period Cancelled')
+        console.log(res);
+        handleCloseDelete()
+        history.push('/acad-calendar')
+        // setPeriodDataEach(res.data.result)
+      })
+      .catch((error) => {
+        setAlert('error' , 'Failed to Cancel Period')
+        console.log(error);
+      })
+  }
+
+  const handleCloseDelete = () => {
+    setOpenDelete(false);
+    setCancelData('')
+  };
+
   const handleEditClassWork = () => {
     setEditCw(!editCw);
   };
@@ -526,12 +569,26 @@ const EditPeriod = withRouter(({ history, ...props }) => {
     <Layout>
       {/* {loading && <Loader />} */}
       <div className='container' style={{ minHeight: '650px' }}>
-        <ArrowBackIcon
-          style={{ size: 'small', marginLeft: '15px', cursor: 'pointer' }}
-          onClick={() => {
-            history.goBack();
-          }}
-        />
+        <div style={{ display: 'flex', justifyContent: 'space-between' }} >
+          <div>
+            <ArrowBackIcon
+              style={{ size: 'small', marginLeft: '15px', cursor: 'pointer' }}
+              onClick={() => {
+                history.goBack();
+              }}
+            />
+          </div>
+          <div>
+            {isStudent ? '' :
+              <Button
+                variant='contained'
+                color='primary'
+                onClick={(e) => cancelPeriod(e)} style={{ display: 'flex', fontSize: '12px' }} >
+               Cancel Period
+              </Button>
+            }
+          </div>
+        </div>
         <div className='initialRow'>
           <div className='onlineClass'>
             <Box p={2}>
@@ -611,13 +668,10 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                 style={{
                                   font: 'normal normal normal 16px/18px Raleway',
                                   borderRadius: '7px',
-                                  textAlign: 'center'
+                                  textAlign: 'center',
                                 }}
                               >
-                                <span
-                                  className='countdownTimerWrapper teacherBatchCardLable'
-
-                                >
+                                <span className='countdownTimerWrapper teacherBatchCardLable'>
                                   <Countdown
                                     date={new Date(periodDetails?.start)}
                                     renderer={renderer}
@@ -629,8 +683,6 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                         </div>
                       )}
                       {/* </div> */}
-
-
                     </div>
                   ) : (
                     <div className='classDetails'>
@@ -703,12 +755,10 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                 style={{
                                   font: 'normal normal normal 16px/18px Raleway',
                                   borderRadius: '7px',
-                                  textAlign: 'center'
+                                  textAlign: 'center',
                                 }}
                               >
-                                <span
-                                  className='countdownTimerWrapper teacherBatchCardLable'
-                                >
+                                <span className='countdownTimerWrapper teacherBatchCardLable'>
                                   <Countdown
                                     date={new Date(periodDetails?.start)}
                                     renderer={renderer}
@@ -837,7 +887,14 @@ const EditPeriod = withRouter(({ history, ...props }) => {
           <div className='secondRow'>
             <div className='topic'>
               <Box p={2}>
-                {isStudent && <LessonPlanTabsStudent upcomingTopicId={topicDetails} periodDetails={periodDetails} topicDetails={topicDetails} period_id={id}/>}
+                {isStudent && (
+                  <LessonPlanTabsStudent
+                    upcomingTopicId={topicDetails}
+                    periodDetails={periodDetails}
+                    topicDetails={topicDetails}
+                    period_id={id}
+                  />
+                )}
                 <Paper>{renderPeriodsUI()}</Paper>
               </Box>
             </div>
@@ -921,9 +978,8 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             // periodId={history?.location?.state?.data?.id}
                             onlineClass_id={periodData?.online_class_id}
                             allTopicID={topicDetails.map((vv) => {
-                              return vv?.topic_id
-                            })
-                            }
+                              return vv?.topic_id;
+                            })}
                             topicId={uniqueIdd}
                             style={{ width: '70%' }}
                           />
@@ -1001,11 +1057,14 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                   </div>
                                 </div>
                                 <div>
-                                {periodDetails?.ongoing_status === 'Completed' ? '' :
-                                  <EditIcon
-                                    style={{ cursor: 'pointer' }}
-                                    onClick={handleEditClassWork}
-                                  /> }
+                                  {periodDetails?.ongoing_status === 'Completed' ? (
+                                    ''
+                                  ) : (
+                                    <EditIcon
+                                      style={{ cursor: 'pointer' }}
+                                      onClick={handleEditClassWork}
+                                    />
+                                  )}
                                   <Grid container className='swipe-container'>
                                     <SwipeableDrawer
                                       className='my__swipable'
@@ -1024,9 +1083,8 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                         }
                                         topicId={uniqueIdd}
                                         allTopicID={topicDetails.map((vv) => {
-                                          return vv?.topic_id
-                                        })
-                                        }
+                                          return vv?.topic_id;
+                                        })}
                                       // handleCreate={(obj) => submitHomework(obj)}
                                       />
                                     </SwipeableDrawer>
@@ -1062,7 +1120,13 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                     style={{ fontSize: '11px', whiteSpace: 'nowrap' }}
                                   ></div>
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '-20px' }}>
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    marginLeft: '-20px',
+                                  }}
+                                >
                                   <div
                                     style={{
                                       fontSize: '11px',
@@ -1084,7 +1148,13 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                                     {each?.submitted}
                                   </div>
                                 </div>
-                                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '-20px' }}>
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    marginLeft: '-20px',
+                                  }}
+                                >
                                   <div
                                     style={{
                                       fontSize: '11px',
@@ -1144,7 +1214,10 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                           </div>
                         ))}
                       </div>
-                      {periodData?.classwork_details?.classwork_details?.length >= 1 && periodData?.classwork_details?.quiz_list?.length >= 1 ? "" :
+                      {periodData?.classwork_details?.classwork_details?.length >= 1 &&
+                        periodData?.classwork_details?.quiz_list?.length >= 1 ? (
+                        ''
+                      ) : (
                         <div
                           style={{
                             display: 'flex',
@@ -1158,16 +1231,16 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                               margin: '1px 46px 20px 20px',
                             }}
                           >
-                            <Button
-                              variant='contained'
-                              className={classes.classAddSection}
-                              onClick={toggleClassWorkDrawer}
-                            >
-                              + Add class Work
-                            </Button>
+                              <Button
+                                variant='contained'
+                                className={classes.classAddSection}
+                                onClick={toggleClassWorkDrawer}
+                              >
+                                + Add class Work
+                              </Button>
                           </div>
                         </div>
-                      }
+                      )}
                       <Grid container className='swipe-container'>
                         <SwipeableDrawer
                           className='my__swipable'
@@ -1185,7 +1258,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             allTopicID={topicDetails?.map((vv) => {
                               return vv?.topic_id
                             })
-                            }
+                          }
                             onlineClass_id={periodData?.online_class_id}
                             style={{ width: '70%' }}
                           />
@@ -1219,7 +1292,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                             allTopicID={topicDetails?.map((vv) => {
                               return vv?.topic_id
                             })
-                            }
+                          }
                             onlineClass_id={periodData?.online_class_id}
                             style={{ width: '70%' }}
                           />
@@ -1433,7 +1506,6 @@ const EditPeriod = withRouter(({ history, ...props }) => {
                   data={periodData}
                   hwData={periodData?.homework_details}
                   periodDetails={periodDetails?.ongoing_status}
-
                 />
               )}
             </div>
@@ -1453,6 +1525,27 @@ const EditPeriod = withRouter(({ history, ...props }) => {
           </div>
         )}
       </div>
+      <Dialog
+        open={openDelete}
+        onClose={handleCloseDelete}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Cancel Period"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are You Sure You Want To Cancel Period {cancelData?.info?.name} ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDelete} color="primary">
+            Disagree
+          </Button>
+          <Button onClick={cancelPeriodTrue} color="primary" autoFocus>
+            Agree
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Layout>
   );
 });
