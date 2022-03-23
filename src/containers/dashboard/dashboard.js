@@ -31,10 +31,16 @@ const Dashboard = () => {
   const history = useHistory();
   const [oldDash, setOldDash] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
-  const [buttonCounter, setButtonCounter] = useState(1);
   const { erp, username, erp_config } =
     JSON.parse(localStorage.getItem('userDetails')) || [];
-
+  const [buttonCounter, setButtonCounter] = useState(2)
+  const checkOldorNew = () => {
+    if (!oldDash) {
+      setOldDash(true)
+    } else {
+      setOldDash(false)
+    }
+  }
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -128,11 +134,7 @@ const Dashboard = () => {
 
   return (
     <Box px={3} mt={1}>
-      <WelcomeComponent
-        erp_config={erp_config}
-        isMsAPIKey={isMsAPIKey}
-        changeView={changeView}
-      />
+      <WelcomeComponent erp_config={erp_config} isMsAPIKey={isMsAPIKey} changeView={changeView} buttonCounter={buttonCounter} />
       <Suspense fallback={<Loading />}>
         {isMsAPIKey ? renderRoleDashboard() : <DefaultDashboard />}
         {/* {true ? renderRoleDashboard() : <DefaultDashboard />} */}

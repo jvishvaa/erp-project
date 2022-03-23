@@ -51,6 +51,7 @@ import Loading from '../../../components/loader/loader';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
 import RefreshIcon from '@material-ui/icons/Refresh';
+import apiRequest from '../StudentDashboard/config/apiRequest';
 
 // import Box from '@mui/material/Box';
 // import Box from '@material-ui/core/CircularProgress';
@@ -310,7 +311,7 @@ const FinanceOwnerDashboard = (props) => {
     setExpanded(isExpanded ? value : false);
     getCurriculumReport(each?.branch?.id, each?.id);
     getStudentReport(each?.branch?.id, each?.session_year?.id);
-    getTestScore(each?.id);
+    // getTestScore(each?.id);
   };
 
   const AcadPerformanceClick = () => {
@@ -339,16 +340,17 @@ const FinanceOwnerDashboard = (props) => {
   };
 
   const getStudentReport = (branch, year) => {
-    axios
-      .get(
-        `${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}`,
-        {
-          headers: {
-            'X-DTS-Host': window.location.host,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+    // axios
+    //   .get(
+    //     `${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}`,
+    //     {
+    //       headers: {
+    //         'X-DTS-Host': window.location.host,
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //     }
+    //   )
+    apiRequest('get',`${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}` , null ,null , true , 10000)
       .then((res) => {
         console.log(res, 'stureport');
         setStudentReportData(res.data.result);
@@ -360,13 +362,14 @@ const FinanceOwnerDashboard = (props) => {
   };
 
   const getTestScore = (acad) => {
-    axios
-      .get(`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${acad}`, {
-        headers: {
-          'X-DTS-Host': window.location.host,
-          Authorization: `Bearer ${token}`,
-        },
-      })
+    // axios
+    //   .get(`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${acad}`, {
+    //     headers: {
+    //       'X-DTS-Host': window.location.host,
+    //       Authorization: `Bearer ${token}`,
+    //     },
+    //   })
+      apiRequest('get',`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${acad}` , null ,null , true ,10000)
       .then((res) => {
         console.log(res, 'avgport');
         setTestScoreData(res.data.result);
@@ -384,7 +387,7 @@ const FinanceOwnerDashboard = (props) => {
         props?.branchList[0]?.branch?.id,
         props?.branchList[0]?.session_year?.id
       );
-      getTestScore(props?.branchList[0]?.id);
+      // getTestScore(props?.branchList[0]?.id);
     }
   }, [props?.branchList]);
 
@@ -471,7 +474,7 @@ const FinanceOwnerDashboard = (props) => {
                             size='small'
                             // icon={props?.selectedBranch?.length}
                             avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
-                            label={'branch selected'}
+                            label={' Branch Selected'}
                           />
                         </Tooltip>
                       ) : (
@@ -499,6 +502,9 @@ const FinanceOwnerDashboard = (props) => {
                 />
                 <Divider />
                 <CardContent>
+                <>
+                  { props?.progress1?.attendence ? <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}><CircularProgress /></div> :
+                  <>
                   {props?.todayCounter ? (
                     <Grid container spacing={2}>
                       {props?.roleWiseAttendance?.length > 0 &&
@@ -672,6 +678,8 @@ const FinanceOwnerDashboard = (props) => {
                       <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                     </Grid>
                   )}
+                  </>}
+                  </>
                 </CardContent>
               </Card>
             </Grid>
@@ -704,7 +712,7 @@ const FinanceOwnerDashboard = (props) => {
                             size='small'
                             // icon={props?.selectedBranch?.length}
                             avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
-                            label={'branch selected'}
+                            label={' Branch Selected'}
                           />
                         </Tooltip>
                       ) : (
@@ -736,6 +744,8 @@ const FinanceOwnerDashboard = (props) => {
                 />
                 <Divider />
                 <CardContent>
+                <>
+                  {props?.progress1?.feeStatus ? <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}><CircularProgress /></div>: <>
                   {props?.financeData?.totalfees ? (
                     <Grid container spacing={3} alignItems='center'>
                       <Grid item xs={12}>
@@ -869,6 +879,8 @@ const FinanceOwnerDashboard = (props) => {
                       )}
                     </Grid>
                   )}
+                  </>}
+                  </>
                 </CardContent>
               </Card>
               {/* </Grid> */}
@@ -900,6 +912,8 @@ const FinanceOwnerDashboard = (props) => {
                     overflow: 'auto',
                   }}
                 >
+                  <>
+                  {props?.progress1?.tranction ? <div style={{display:'flex', alignItems:'center', justifyContent:'center', width: '100%'}}><CircularProgress /></div>: <>
                   {props?.recentTransCounter ? (
                     <Grid container spacing={3} alignItems='center'>
                       {props?.recentTrans &&
@@ -979,7 +993,8 @@ const FinanceOwnerDashboard = (props) => {
                       <Typography style={{ fontWeight: '600' }}>Access Denied</Typography>
                       )}
                     </Grid>
-                  )}
+                  )}</>}
+                  </>
                 </CardContent>
               </Card>
             </Grid>
@@ -1011,7 +1026,7 @@ const FinanceOwnerDashboard = (props) => {
                                 size='small'
                                 // icon={props?.selectedBranch?.length}
                                 avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
-                                label={'branch selected'}
+                                label={' Branch Selected'}
                               />
                             </Tooltip>
                           ) : (
@@ -1045,12 +1060,14 @@ const FinanceOwnerDashboard = (props) => {
                         justifyContent: 'center',
                       }}
                     >
+                      <>
+                      {props?.progress1?.academic ? <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}><CircularProgress /></div>: <>
                       {props?.acadCounter ? (
                         <Grid container spacing={3} alignItems='center'>
                           <Grid
                             item
                             xs={12}
-                            style={{ borderRadius: '5px', backgroundColor: '#ffd4d9' }}
+                            style={{ borderRadius: '5px', backgroundColor: '#ffd4d9' , minHeight: '75px' }}
                           >
                             <div className={clsx(classes.absentGrid)}>
                               <div style={{ width: '53%' }}>
@@ -1094,7 +1111,7 @@ const FinanceOwnerDashboard = (props) => {
                             </div>
                           </Grid>
 
-                          <Grid
+                          {/* <Grid
                             item
                             xs={12}
                             style={{
@@ -1143,7 +1160,7 @@ const FinanceOwnerDashboard = (props) => {
                                 </IconButton>
                               </div>
                             </div>
-                          </Grid>
+                          </Grid> */}
 
                           <Grid
                             item
@@ -1152,6 +1169,7 @@ const FinanceOwnerDashboard = (props) => {
                               borderRadius: '5px',
                               backgroundColor: '#fff2cc',
                               marginTop: '5px',
+                              minHeight: '75px'
                             }}
                           >
                             <div className={clsx(classes.absentGrid)}>
@@ -1178,7 +1196,7 @@ const FinanceOwnerDashboard = (props) => {
                                           props?.studentAttendanceOverview?.total_avg
                                         )
                                           ? 0
-                                          : Math.round(props?.studentAttendanceOverview?.total_avg)}
+                                          : `${Math.round(props?.studentAttendanceOverview?.total_avg)}%`}
                                       </>
                                     ) : (
                                       <>0%</>
@@ -1205,7 +1223,8 @@ const FinanceOwnerDashboard = (props) => {
                           <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
                           <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                         </Grid>
-                      )}
+                      )}</> }
+                      </>
                     </CardContent>
                   </Card>
                 </Card>
@@ -1239,7 +1258,7 @@ const FinanceOwnerDashboard = (props) => {
                               size='small'
                               // icon={props?.selectedBranch?.length}
                               avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
-                              label={'branch selected'}
+                              label={' Branch Selected'}
                             />
                           </Tooltip>
                         ) : (
@@ -1273,6 +1292,8 @@ const FinanceOwnerDashboard = (props) => {
                       justifyContent: 'center',
                     }}
                   >
+                    <>
+                    {props?.progress1?.staffDetails ? <CircularProgress/> : <> 
                     {props?.staffOverAll[0] ? (
                       <Grid
                         container
@@ -1345,6 +1366,8 @@ const FinanceOwnerDashboard = (props) => {
                         <Typography style={{ fontWeight: '600' }}>No Records</Typography>
                       </Grid>
                     )}
+                    </> }
+                    </>
                   </CardContent>
                   {/* </Card> */}
                   {/* </Grid> */}
@@ -1415,7 +1438,7 @@ const FinanceOwnerDashboard = (props) => {
                           {expanded && (
                             <AccordionDetails>
                               <div style={{ width: '100%' }}>
-                                <Grid container spacing={2}>
+                                <Grid container spacing={2} style={{width : '150%'}} >
                                   {loading ? (
                                     <Loading />
                                   ) : (
@@ -1454,7 +1477,7 @@ const FinanceOwnerDashboard = (props) => {
                                         </div>
                                       </Grid>
 
-                                      <Grid
+                                      {/* <Grid
                                         item
                                         xs={4}
                                         onClick={() => handleStudentreport(each)}
@@ -1494,7 +1517,7 @@ const FinanceOwnerDashboard = (props) => {
                                             </Typography>
                                           </div>
                                         </div>
-                                      </Grid>
+                                      </Grid> */}
                                       <Grid
                                         item
                                         xs={4}

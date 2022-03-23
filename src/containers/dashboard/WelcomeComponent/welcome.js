@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
+const WelcomeComponent = ({ erp_config , isMsAPIKey , changeView , buttonCounter}) => {
   const classes = useStyles();
   const [showButton, setShowButton] = useState(false);
   const { welcomeDetails = {}, setReports } = useDashboardContext();
