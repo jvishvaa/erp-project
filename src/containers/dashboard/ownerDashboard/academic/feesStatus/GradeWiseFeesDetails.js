@@ -439,9 +439,9 @@ const GradeWiseFeesDetails = (props) => {
                                             <TableRow key={index}>
                                                 <TableCell >{each.erp}</TableCell>
                                                 <TableCell className={clsx(classes.colorBlue)} ><b>{each.name}</b></TableCell>
-                                                <TableCell className={clsx(classes.colorGreen)} ><b>{isNaN(each?.totalfees) ? 0 : Math.round(each?.totalfees).toLocaleString()}</b></TableCell>
-                                                <TableCell className={clsx(classes.colorRed)}><b>{isNaN(each?.paid) ? 0 : Math.round(each?.paid).toLocaleString()}</b></TableCell>
-                                                <TableCell className={clsx(classes.colorYellow)}><b>{isNaN(each.outstanding) ? 0 : Math.round(each.outstanding).toLocaleString()}</b></TableCell>
+                                                <TableCell className={clsx(classes.colorGreen)} ><b> ₹ {isNaN(each?.totalfees) ? 0 : Math.round(each?.totalfees).toLocaleString()}</b></TableCell>
+                                                <TableCell className={clsx(classes.colorRed)}><b>₹ {isNaN(each?.paid) ? 0 : Math.round(each?.paid).toLocaleString()}</b></TableCell>
+                                                <TableCell className={clsx(classes.colorYellow)}><b>₹ {isNaN(each.outstanding) ? 0 : Math.round(each.outstanding).toLocaleString()}</b></TableCell>
                                                 <TableCell></TableCell>
                                             </TableRow>
                                         )

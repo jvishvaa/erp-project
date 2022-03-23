@@ -261,13 +261,13 @@ function Row(props) {
           <b>{row.grade_name}</b>
         </TableCell>
         <TableCell align='right' style={{ color: '#4180e7' }}>
-          <b>{isNaN(row?.totalfees) ? 0 : Math.round(row?.totalfees).toLocaleString()}</b>
+          <b>₹ {isNaN(row?.totalfees) ? 0 : Math.round(row?.totalfees).toLocaleString()}</b>
         </TableCell>
         <TableCell align='right' style={{ color: '#08cf39' }}>
-          <b>{isNaN(row?.paid) ? 0 : Math.round(row?.paid).toLocaleString()}</b>
+          <b>₹ {isNaN(row?.paid) ? 0 : Math.round(row?.paid).toLocaleString()}</b>
         </TableCell>
         <TableCell align='right' style={{ color: '#ff3573' }}>
-          <b>{isNaN(row?.outstanding) ? 0 : Math.round(row?.outstanding).toLocaleString()}</b>
+          <b>₹ {isNaN(row?.outstanding) ? 0 : Math.round(row?.outstanding).toLocaleString()}</b>
         </TableCell>
         <TableCell align='right'>
           <Box>
@@ -308,16 +308,16 @@ function Row(props) {
                       </TableCell>
 
                       <TableCell style={{ textAlign: 'left', color: '#4180e7' }}>
-                        <b>{isNaN(historyRow?.totalfees) ? 0 : Math.round(historyRow?.totalfees).toLocaleString()}</b>
+                        <b> ₹ {isNaN(historyRow?.totalfees) ? 0 : Math.round(historyRow?.totalfees).toLocaleString()}</b>
                       </TableCell>
                       {/* <TableCell></TableCell> */}
                       <TableCell style={{ textAlign: 'left', color: '#08cf39' }}>
-                        <b>{isNaN(historyRow?.paid) ? 0 : Math.round(historyRow?.paid).toLocaleString()}</b>
+                        <b> ₹ {isNaN(historyRow?.paid) ? 0 : Math.round(historyRow?.paid).toLocaleString()}</b>
                       </TableCell>
                       {/* <TableCell></TableCell> */}
                       <TableCell style={{ textAlign: 'left', color: '#ff3573' }}>
                         {' '}
-                        <b>{isNaN(historyRow?.outstanding) ? 0 : Math.round(historyRow?.outstanding).toLocaleString()}</b>
+                        <b>₹ {isNaN(historyRow?.outstanding) ? 0 : Math.round(historyRow?.outstanding).toLocaleString()}</b>
                       </TableCell>
                       {/* <TableCell></TableCell> */}
                       {/* <TableCell></TableCell> */}
