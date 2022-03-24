@@ -50,7 +50,7 @@ function TeacherDashboard() {
       .get(`${endpoints.teacherDashboardTwo.gradeSectionDetails}?acad_session_id=1`, {
         headers: {
           // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
-          'X-DTS-HOST' : window.location.host,
+          'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
       })
@@ -112,7 +112,7 @@ function TeacherDashboard() {
       .get(`${endpoints.teacherDashboardTwo.curriculumDetails}`, {
         headers: {
           // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
-          'X-DTS-HOST' : window.location.host,
+          'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
       })
@@ -131,7 +131,7 @@ function TeacherDashboard() {
       .get(`${endpoints.teacherDashboardTwo.attendanceDetails}`, {
         headers: {
           // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
-          'X-DTS-HOST' : window.location.host,
+          'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
       })
@@ -150,7 +150,7 @@ function TeacherDashboard() {
       .get(`${endpoints.teacherDashboardTwo.branchDetails}?acad_session=${acadId}`, {
         headers: {
           // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
-          'X-DTS-HOST' : window.location.host,
+          'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
       })
@@ -215,9 +215,9 @@ function TeacherDashboard() {
                     <Grid container direction='column'>
                       <Grid item xs={12}>
                         <TodayAttendance attendanceDetail={attendanceDetail} />
-                        {/* <Grid item xs={12}>
+                        <Grid item xs={12}>
                           <Overview recentSubmissionDetail={recentSubmissionDetail} />
-                        </Grid> */}
+                        </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
@@ -229,9 +229,9 @@ function TeacherDashboard() {
                       <Grid item xs={12}>
                         <CurriculumCompletionNew curriculumDetail={curriculumDetail} />
                       </Grid>
-                      {/* <Grid item xs={12}>
+                      <Grid item xs={12}>
                         <TrainingReportNew />
-                      </Grid> */}
+                      </Grid>
                     </Grid>
                   </Grid>
                 </Grid>
