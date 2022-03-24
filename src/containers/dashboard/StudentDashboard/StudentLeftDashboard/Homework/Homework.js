@@ -127,7 +127,7 @@ const useStyles = makeStyles(() => ({
   
 }));
 
-const Homework = (props) => {
+const Homework = ({sessionYear}) => {
   const classes = useStyles();
   const [homeworkArr, setHomeworkArr] = React.useState([]);
   const [isEnabled, setIsEnabled] = React.useState(false);
@@ -156,7 +156,8 @@ const Homework = (props) => {
   }
   
   const gethomeworkData = () => {
-    apiRequest('get', endpoints.dashboard.student.homeworks, null, null, true, 5000)
+    apiRequest('get', 
+    `${endpoints.dashboard.student.homeworks}?session_year=${sessionYear?.id}` , null, null, true, 5000)
       .then((result) => {
         if (result.data.status_code === 200) {
           setIsEnabled(result?.data?.data?.is_enabled);

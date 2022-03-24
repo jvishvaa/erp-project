@@ -79,7 +79,8 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
         let params = {
           start_date: moment(e.event.start).format('YYYY-MM-DD'),
           end_date: moment(e.event.start).format('YYYY-MM-DD'),
-          branch: (branchIds.map((el) => el?.id)).toString()
+          branch: (branchIds.map((el) => el?.id)).toString(),
+          session_year: selectedAcademicYear?.id
         }
         axios({
           method: 'get',
@@ -138,7 +139,8 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
       let params = {
         start_date: startDate,
         end_date: endDate,
-        branch: (branchIds.map((el) => el?.id)).toString()
+        branch: (branchIds.map((el) => el?.id)).toString(),
+        session_year : selectedAcademicYear?.id
       }
       setFilterData(params)
       if (params?.end_date.length != 0) {

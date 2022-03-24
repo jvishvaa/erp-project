@@ -53,7 +53,7 @@ const CircularList = () => {
   const [chapterSearch, setChapterSearch] = useState();
   const [periodColor, setPeriodColor] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
   const [grade, setGrade] = useState();
   const [branch, setBranch] = useState();
   const [section, setSection] = useState();
@@ -155,7 +155,7 @@ const CircularList = () => {
             'YYYY-MM-DD'
           )}&page=${page}&page_size=${limit}&role_id=${
             role_details?.role_id
-          }&module_id=${moduleId}&module_name=Student Circular`
+          }&module_id=${moduleId}&module_name=Student Circular&academic_year=${sessionYear?.id}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
@@ -271,6 +271,7 @@ const CircularList = () => {
                         setEditData={setEditData}
                         deleteFlag={deleteFlag}
                         setDeleteFlag={setDeleteFlag}
+                        sessionYear = {sessionYear}
                       />
                     </Grid>
                   ))}

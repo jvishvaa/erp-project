@@ -50,6 +50,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const [page, setPageNumber] = useState(+getSearchParams(restProps).page || 1);
   const [totalCount, setTotalCount] = useState(0);
   const [status, setStatus] = useState(+getSearchParams(restProps).status || 0);
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
   // const [questionPaperInfoObj, setQuestionPaperInfoObj] = useState();
 
   // const { containerRef } = React.useContext(ContainerContext);
@@ -72,8 +73,8 @@ const ViewAssessments = ({ history, ...restProps }) => {
     const statusId = status === 0 ? 2 : 1;
 
     const params = [0, 1].includes(status)
-      ? `?user=${user}&page=${page}&page_size=${9}&status=${statusId}`
-      : `?page=${page}&page_size=${9}`;
+      ? `?user=${user}&page=${page}&page_size=${9}&status=${statusId}&session_year=${sessionYear?.id}`
+      : `?page=${page}&page_size=${9}&session_year=${sessionYear?.id}`;
 
     const endpoint = [0, 1].includes(status)
       ? endpoints.assessment.questionPaperList

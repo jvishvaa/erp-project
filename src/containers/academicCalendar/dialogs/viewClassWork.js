@@ -287,7 +287,7 @@ const handleViewFiles = (row) => {
             <TableContainer component={Paper}>
               <Table className={classes.table} aria-label='customized table'>
                 <TableBody>
-                  {pendingData?.map((row) => (
+                  {pendingData.length && pendingData?.map((row) => (
                     <>
                       <div style={{ margin: 5, background: 'red' }}></div>
                       <StyledTableRow key={row.name}>

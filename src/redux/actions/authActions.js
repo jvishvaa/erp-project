@@ -67,6 +67,10 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
           'navigationData',
           JSON.stringify(actualData.result.navigation_data)
         );
+        localStorage.setItem(
+          'apps',
+          JSON.stringify(response?.data?.result?.apps)
+        );
         const result = { isLogin: true, message: actualData.message };
         return result;
       }

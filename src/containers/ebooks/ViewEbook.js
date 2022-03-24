@@ -75,6 +75,7 @@ class ViewEbook extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      sessionYear: JSON.parse(sessionStorage.getItem('acad_session')),
       data: [],
       central_grade: [],
       tabValue: 0,
@@ -99,7 +100,7 @@ class ViewEbook extends Component {
   handleCentralGradeId = () => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     axiosInstance
-      .get(endpoints.ebook.getCentralGrade, {
+      .get(`${endpoints.ebook.getCentralGrade}?session_year=${this.state.sessionYear?.id}`, {
         headers: {
           Authorization: 'Bearer ' + token,
         },

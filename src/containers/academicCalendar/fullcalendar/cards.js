@@ -33,6 +33,16 @@ const useStyles = makeStyles({
     margin: 8,
     fontWeight: 600,
   },
+  cancelled: {
+    fontSize: '35px',
+    position: 'relative',
+    right: '40%',
+    color: 'white',
+    fontWeight: '600',
+  },
+  cancelCard: {
+    background: '#858585'
+  }
 });
 
 const Cards = withRouter(({ props, history }) => {
@@ -42,6 +52,9 @@ const Cards = withRouter(({ props, history }) => {
   const [createClassClicked, setIsCreateClassClicked] = useState(false);
   const [isCreateClassOpen, setIsCreateClassOpen] = useState(false);
   const [filterData, setFilterData] = useState('');
+ 
+
+
 
   const { user_level: userLevel = 5 } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -70,6 +83,7 @@ const Cards = withRouter(({ props, history }) => {
     setIsCreateClassOpen((prevState) => !prevState);
   };
   const redirectMe = (data) => {
+    if(data?.status != 1){
     if (data?.info?.type_name === 'Break') {
       return;
     }
@@ -79,7 +93,11 @@ const Cards = withRouter(({ props, history }) => {
         state: { data: data },
       });
     }
+  }
   };
+
+ 
+
 
   // const handleCreateClass = () => {
   //   setIsCreateClassClicked(true);
@@ -123,7 +141,7 @@ const Cards = withRouter(({ props, history }) => {
                 <Card
                   className={classes.root}
                   onClick={() => redirectMe(val)}
-                  className='daily-card'
+                  className={val?.status == 1 ? `${classes.cancelCard}` : 'daily-card'}
                   style={{ width: '75%', margin: '1% 0' }}
                 >
                   <div
@@ -152,7 +170,7 @@ const Cards = withRouter(({ props, history }) => {
                       color='textSecondary'
                       gutterBottom
                     >
-                      {val?.ongoing_status}
+                     {val?.status != 1 ? <> {val?.ongoing_status} </> : '' }
                     </Typography>
                   </div>
                   <Divider />
@@ -264,6 +282,12 @@ const Cards = withRouter(({ props, history }) => {
                     ) : (
                       ''
                     )}
+
+                    {val?.status == 1 ? <>
+                    <div className={classes.cancelled} >
+                      Cancelled
+                    </div>
+                    </> : ''}
 
                     {/* student side classwork and homework */}
 
@@ -424,7 +448,12 @@ const Cards = withRouter(({ props, history }) => {
                       ' '
                     )}
 
-                    {val?.info?.name ? (
+                    {/* <div>
+                      <Button onClick={(e) => cancelPeriod(e , val)} > Cancel </Button>
+                    </div> */}
+                 
+
+                    {val?.info?.name && val?.status != 1 ? (
                       <div style={{ margin: 'auto 1px', height: '25px' }}>
                         <ArrowForwardIosIcon />
                       </div>
@@ -437,6 +466,7 @@ const Cards = withRouter(({ props, history }) => {
           </div>
         </>
       )}
+
     </div>
   );
 });

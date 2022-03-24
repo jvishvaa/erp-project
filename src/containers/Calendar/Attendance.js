@@ -165,7 +165,7 @@ const Attendance = () => {
     let userName = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
     axiosInstance
       .get(
-        `${endpoints.academics.singleStudentAttendance}?start_date=${startDate}&end_date=${endDate}&erp_id=${userName}&page=${pageNumber}&page_size=${limit}`
+        `${endpoints.academics.singleStudentAttendance}?start_date=${startDate}&end_date=${endDate}&erp_id=${userName}&page=${pageNumber}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`
       )
       .then((res) => {
         setLoading(false);
@@ -234,7 +234,7 @@ const Attendance = () => {
     let userName = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
     axiosInstance
       .get(
-        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName}&page=${pageNumber}&page_size=${limit}`
+        `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName}&page=${pageNumber}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`
       )
       // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
       .then((res) => {
@@ -424,7 +424,7 @@ const Attendance = () => {
       console.log(userName[0], 'userName');
       axiosInstance
         .get(
-          `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName[0]}&page=${page}&page_size=${limit}`
+          `${endpoints.academics.singleStudentAttendance}?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&erp_id=${userName[0]}&page=${page}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`
         )
         // .get(`${endpoints.academics.singleStudentAttendance}?start_date=${d1}&end_date=${d2}&erp_id=${d3}`)
         .then((res) => {

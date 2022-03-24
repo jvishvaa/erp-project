@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from 'react';
 import {
   Grid,
@@ -281,6 +280,7 @@ const transaction = [
 const FinanceOwnerDashboard = (props) => {
   const classes = useStyles();
   const history = useHistory();
+  console.log(props);
 
   const [academicPerformanceDetailsOpen, setAcademicPerformanceDetailsOpen] =
     useState(false);
@@ -303,6 +303,8 @@ const FinanceOwnerDashboard = (props) => {
 
   const handleChange = (each, value) => (e, isExpanded) => {
     const testclick = document.querySelectorAll('#branchWise');
+    console.log(isExpanded, 'each');
+    console.log(each, 'ind');
     setClicked(true);
     setLoading(true);
     setExpanded(isExpanded ? value : false);
@@ -327,6 +329,7 @@ const FinanceOwnerDashboard = (props) => {
         }
       )
       .then((res) => {
+        console.log(res, 'currreport');
         setCurriculumData(res.data.result);
         setLoading(false);
       })
@@ -348,6 +351,7 @@ const FinanceOwnerDashboard = (props) => {
     //   )
     apiRequest('get', `${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}`, null, null, true, 10000)
       .then((res) => {
+        console.log(res, 'stureport');
         setStudentReportData(res.data.result);
         setLoading(false);
       })
@@ -397,6 +401,7 @@ const FinanceOwnerDashboard = (props) => {
   };
 
   const handleStudentreport = (each) => {
+    // console.log("hit");
     history.push(`/student-report-dash/${each?.branch?.id}`);
   };
 
@@ -417,28 +422,6 @@ const FinanceOwnerDashboard = (props) => {
       pathname: '/staff-attendance-report/branch-wise',
       state: {
         acadId: props?.branchList,
-      },
-    });
-  };
-
-  const handleRouteTransaction = (data) => {
-    const branchName = data.map((item) => {
-      return (
-        item?.branch?.branch_name
-      )
-    })
-
-    const branchId = data.map((item) => {
-      return (
-        item?.branch?.id
-      )
-    })
-
-
-    history.push({
-      pathname: `/trasaction-details/${branchId}/${branchName}`,
-      state: {
-        branchName: branchName,
       },
     });
   };
@@ -778,7 +761,7 @@ const FinanceOwnerDashboard = (props) => {
                                   marginLeft: '10px',
                                 }}
                               >
-                                ₹ {props?.financeData ? props?.financeData?.totalfees : ''}
+                                ₹ {props?.financeData ? Math.round(props?.financeData?.totalfees).toLocaleString() : ''}
                               </b>
                             </Typography>
                             {/* <Typography
@@ -813,7 +796,7 @@ const FinanceOwnerDashboard = (props) => {
                                       classes.customTextSize
                                     )}
                                   >
-                                    ₹ {props?.financeData ? props?.financeData?.paid : ''}
+                                    ₹ {props?.financeData ? Math.round(props?.financeData?.paid).toLocaleString() : ''}
                                   </Typography>
                                 </div>
                               </CardContent>
@@ -844,7 +827,7 @@ const FinanceOwnerDashboard = (props) => {
                                   >
                                     ₹{' '}
                                     {props?.financeData
-                                      ? Math.round(props?.financeData?.outstanding)
+                                      ? Math.round(props?.financeData?.outstanding).toLocaleString()
                                       : ''}
                                   </Typography>
                                 </div>
@@ -871,7 +854,7 @@ const FinanceOwnerDashboard = (props) => {
                                     )}
                                   >
                                     {props?.financeData
-                                      ? props?.financeData?.no_of_admission
+                                      ? Math.round(props?.financeData?.no_of_admission).toLocaleString()
                                       : ''}
                                   </Typography>
                                 </div>
@@ -969,7 +952,7 @@ const FinanceOwnerDashboard = (props) => {
                                         variant='body2'
                                         className={clsx(classes.transactionTextDesignLeft)}
                                       >
-                                        <b>₹ {each?.amount} </b>
+                                        <b>₹ {Math.round(each?.amount).toLocaleString()} </b>
                                       </Typography>
                                     </Grid>
                                   </Grid>
