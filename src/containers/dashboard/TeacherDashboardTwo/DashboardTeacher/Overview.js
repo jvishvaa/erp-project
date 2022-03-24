@@ -164,7 +164,7 @@ function Overview({ recentSubmissionDetail }) {
               </div>
             );
           })}
-          <Typography
+          {/* <Typography
             onClick={homeworkClassWork}
             style={{
               position: 'relative',
@@ -186,7 +186,7 @@ function Overview({ recentSubmissionDetail }) {
                 marginTop: '5px',
               }}
             />
-          </Typography>
+          </Typography> */}
         </CardContent>
       </Card>
     </div>

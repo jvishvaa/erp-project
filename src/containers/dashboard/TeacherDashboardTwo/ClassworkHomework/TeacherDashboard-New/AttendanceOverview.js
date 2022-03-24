@@ -69,7 +69,11 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
     let present = [];
     let absent = [];
 
-    data.forEach((element) => {
+    let data1 = data.sort(function(a, b) { 
+      return a.month_name - b.month_name
+    });
+
+    data1.forEach((element) => {
       present.push(element.present);
       absent.push(element.absent);
     });
