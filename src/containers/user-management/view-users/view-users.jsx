@@ -4,7 +4,7 @@
 
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-nested-ternary */
-import React, { useContext, useState, useEffect,useCallback } from 'react';
+import React, { useContext, useState, useEffect, useCallback } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles, useTheme, withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -51,11 +51,18 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import ViewUserCard from '../../../components/view-user-card';
 import { CSVLink } from 'react-csv';
 import FileSaver from 'file-saver';
-import { connect, useSelector } from 'react-redux';     
+import { connect, useSelector } from 'react-redux';
 import './styles.scss';
-import { Tooltip, Accordion, AccordionSummary, Typography,AccordionDetails } from '@material-ui/core';
+import {
+  Tooltip,
+  Accordion,
+  AccordionSummary,
+  Typography,
+  AccordionDetails,
+} from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import Loader from '../../../components/loader/loader';
+import RestoreIcon from '@material-ui/icons/Restore';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -124,7 +131,7 @@ const useStyles = makeStyles((theme) => ({
 
 const debounce = (fn, delay) => {
   let timeoutId;
-  return function(...args) {
+  return function (...args) {
     clearInterval(timeoutId);
     timeoutId = setTimeout(() => fn.apply(this, args), delay);
   };
@@ -170,9 +177,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [excelData] = useState([]);
   const [classStatus, setClassStatus] = useState(1);
   const [loading, setLoading] = useState(false);
-  const [isClicked, setIsClicked]= useState(false);
+  const [isClicked, setIsClicked] = useState(false);
   const [status, setStatus] = useState(false);
-
+  const [restoreAlert, setRestoreAlert] = useState(false);
+  const [restoreIndex, setRestoreIndex] = useState(null);
+  const [restoreId, setRestoreId] = useState(null);
+  const [restoreStatus, setRestoreStatus] = useState(null);
 
   const headers = [
     { label: 'ERP ID', key: 'erp_id' },
@@ -279,19 +289,19 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     const rolesId = [];
     const gradesId = [];
     if (selectedRoles && selectedRoles !== 'All') {
-      selectedRoles.map((each,key) => {
+      selectedRoles.map((each, key) => {
         rolesId.push(each.id);
-      })
+      });
     }
     let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}`;
-    if(classStatus && classStatus != 1 && classStatus != 0) {
+    if (classStatus && classStatus != 1 && classStatus != 0) {
       let status = classStatus - 1;
-      getUserListUrl+= `&status=${status.toString()}`; 
+      getUserListUrl += `&status=${status.toString()}`;
     }
     if (rolesId && rolesId.length > 0 && selectedRoles !== 'All') {
       getUserListUrl += `&role=${rolesId.toString()}`;
     }
-    if (selectedBranch && selectedBranch!==null) {
+    if (selectedBranch && selectedBranch !== null) {
       getUserListUrl += `&branch_id=${selectedBranch?.id.toString()}`;
     }
     if (gradeIds.length > 0 && !selectedGrades.includes('All')) {
@@ -344,7 +354,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     setSelectedRoles(null);
     setSelectedBranch(null);
     setSelectedGrades([]);
-    setClassStatus(1)
+    setClassStatus(1);
     setCurrentPage(1);
     setIsNewSearch(true);
   };
@@ -354,30 +364,30 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     const rolesId = [];
     const gradesId = [];
     if (selectedRoles && selectedRoles !== 'All') {
-      selectedRoles.map((each,i) => {
+      selectedRoles.map((each, i) => {
         rolesId.push(each.id);
-      })
+      });
     }
-    if(selectedGrades && selectedGrades !== 'All') {
-      selectedGrades.map((each,i) => {
-        gradesId.push(each.id)
-      })
+    if (selectedGrades && selectedGrades !== 'All') {
+      selectedGrades.map((each, i) => {
+        gradesId.push(each.id);
+      });
     }
     let getUserListUrl = `communication/erp-user-info-excel/?module_id=${moduleId}`;
     if (rolesId.length > 0 && selectedRoles !== 'All') {
-      rolesId.map((each,i) => { 
+      rolesId.map((each, i) => {
         getUserListUrl += `&role=${each.toString()}`;
-      })
+      });
     }
     // /*
     if (gradesId.length > 0 && selectedGrades !== 'All') {
-      gradesId.map((each,i) => { 
+      gradesId.map((each, i) => {
         getUserListUrl += `&grade=${each.toString()}`;
-      })
+      });
     }
-    if(classStatus && classStatus != 1 && classStatus != 0) {
+    if (classStatus && classStatus != 1 && classStatus != 0) {
       let status = classStatus - 1;
-      getUserListUrl+= `&status=${status.toString()}`; 
+      getUserListUrl += `&status=${status.toString()}`;
     }
     // */
     // if (gradeIds.length && !selectedGrades.includes('All')) {
@@ -401,7 +411,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   };
 
   const debounceCallback = useCallback(
-    debounce(value => {
+    debounce((value) => {
       setIsNewSearch(true);
     }, 500),
     []
@@ -410,20 +420,19 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const handleTextSearch = (e) => {
     let search = e.target.value;
     setSearchText(e.target.value);
-    if(search.length > 1) {
+    if (search.length > 1) {
       debounceCallback(search);
-    }
-    else {
+    } else {
       setIsNewSearch(false);
     }
   };
 
-  const handleDeactivate = async (id,index,status) => {
+  const handleDeactivate = async (id, index, status) => {
     setDeactivateId(id);
     setDeactivateIndex(index);
-    setDeactivateStatus(status)
+    setDeactivateStatus(status);
     setDeactivateAlert(true);
-  }
+  };
   const handleStatusChange = async (id, index, sendstatus) => {
     try {
       const request = {
@@ -444,8 +453,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         const active = !usersData[index].active;
         const newData = { ...tempGroupData[index], active };
         tempGroupData.splice(index, 1, newData);
-        setLoading(true)
-        setStatus(true)
+        setStatus(true);
         setUsersData(tempGroupData);
       } else {
         setAlert('error', statusChange.data.message);
@@ -454,6 +462,47 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       setAlert('error', error.message);
     }
   };
+
+  // Restore User handler
+  const handleRestore = async (id, index, status) => {
+    setRestoreId(id);
+    setRestoreIndex(index);
+    setRestoreStatus(status);
+    setRestoreAlert(true);
+  };
+
+  // Restore User API Call
+  const handleRestoreConfirm = async () => {
+    try {
+      const request = {
+        status: restoreStatus,
+      };
+      const restored = await axiosInstance.put(
+        `${endpoints.communication.userStatusChange}${restoreId}/restore-user/`,
+        request,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (restored.status === 200) {
+        setAlert('success', restored.data.message);
+        const tempGroupData = JSON.parse(JSON.stringify(usersData));
+        const active = true;
+        const newData = { ...tempGroupData[restoreIndex], active };
+        tempGroupData.splice(restoreIndex, 1);
+        setUsersData(tempGroupData);
+        setRestoreAlert(false);
+      } else {
+        setAlert('error', restored.data.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+    }
+  };
+
   const handleDelete = async (id, index, status) => {
     setDeleteId(id);
     setDeleteIndex(index);
@@ -482,7 +531,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         tempGroupData.splice(deactivateIndex, 1, newData);
         setUsersData(tempGroupData);
         setDeactivateId(null);
-        setLoading(true)
+        setLoading(true);
         setStatus(true);
         setDeactivateIndex(null);
         setDeactivateStatus(null);
@@ -493,7 +542,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     } catch (error) {
       setAlert('error', error.message);
     }
-  }
+  };
   const handleDeleteConfirm = async () => {
     try {
       const statusChange = await axiosInstance.delete(
@@ -513,7 +562,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         setLoading(true);
         setStatus(true);
         setDeleteIndex(null);
-        setDeleteStatus(null)
+        setDeleteStatus(null);
         setDeleteAlert(false);
       } else {
         setAlert('error', statusChange.data.message);
@@ -527,14 +576,15 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     setDeleteIndex(null);
     setDeleteStatus(null);
     setDeleteAlert(false);
+    setRestoreAlert(false);
   };
 
   const handleDeactivateCancel = () => {
-        setDeactivateId(null);
-        setDeactivateIndex(null);
-        setDeactivateStatus(null);
-        setDeactivateAlert(false);
-  }
+    setDeactivateId(null);
+    setDeactivateIndex(null);
+    setDeactivateStatus(null);
+    setDeactivateAlert(false);
+  };
   const handleEdit = (id) => {
     history.push(`/user-management/edit-user/${id}`);
   };
@@ -566,12 +616,11 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   // }, [selectedYear]);
 
   useEffect(() => {
-    if(status){
+    if (status) {
       setStatus(false);
-      setLoading(true);
-      getUsersData()
+      getUsersData();
     }
-  },[status])
+  }, [status]);
 
   useEffect(() => {
     if (selectedBranch) {
@@ -626,181 +675,180 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         componentName='User Management'
         childComponentName='View Users'
       />
-      <div className="filter-container">
-      {loading && <Loader />}
-      <Grid container sm={12} spacing={3} alignItems='center'>
-      <Grid item sm={11} md={11} xs={11}>
-                  <FormControl
-                    variant='outlined'
-                    className={'searchViewUser'}
-                    fullWidth
-                    size='small'
-                  >
-                    <InputLabel>Search</InputLabel>
-                    <OutlinedInput
-                      endAdornment={<SearchOutlined color='primary' />}
-                      placeholder='Search users ..'
-                      label='Search'
-                      value={searchText}
-                      onChange={handleTextSearch}
+      <div className='filter-container'>
+        {loading && <Loader />}
+        <Grid container sm={12} spacing={3} alignItems='center'>
+          <Grid item sm={11} md={11} xs={11}>
+            <FormControl
+              variant='outlined'
+              className={'searchViewUser'}
+              fullWidth
+              size='small'
+            >
+              <InputLabel>Search</InputLabel>
+              <OutlinedInput
+                endAdornment={<SearchOutlined color='primary' />}
+                placeholder='Search users ..'
+                label='Search'
+                value={searchText}
+                onChange={handleTextSearch}
+              />
+            </FormControl>
+          </Grid>
+          <Grid item sm={2} md={2} xs={2}>
+            <Tooltip title='Create User' placement='bottom' arrow>
+              <IconButton
+                className='create-user-button'
+                // onClick={() => {
+                //   history.push('/user-management/create-user')
+                // }}
+              >
+                <AddIcon style={{ color: '#ffffff' }} />
+              </IconButton>
+            </Tooltip>
+          </Grid>
+
+          <Grid item sm={8} md={9} xs={9}>
+            <Accordion expanded={accordianOpen}>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls='panel1a-content'
+                id='panel1a-header'
+                onClick={() => setAccordianOpen(!accordianOpen)}
+              >
+                <Typography variant='h6' color='primary'>
+                  Filter
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Grid container spacing={3}>
+                  <Grid item md={4} sm={4} xs={12}>
+                    <Autocomplete
+                      style={{ width: '100%' }}
+                      multiple
+                      fullWidth
+                      size='small'
+                      onChange={(event, value) => {
+                        setSelectedRoles(value);
+                      }}
+                      id='role_id'
+                      className='dropdownIcon'
+                      value={selectedRoles?.role_name}
+                      options={roleList}
+                      getOptionLabel={(option) => option?.role_name}
+                      filterSelectedOptions
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant='outlined'
+                          label='Role'
+                          placeholder='Select Role'
+                        />
+                      )}
                     />
-                  </FormControl>
-                </Grid>
-                <Grid item sm={2} md={2} xs={2} >
-                  <Tooltip title='Create User' placement='bottom' arrow>
-                    <IconButton
-                      className='create-user-button'
-                      // onClick={() => {
-                      //   history.push('/user-management/create-user')
-                      // }}
+                  </Grid>
+                  <Grid item md={4} sm={4} xs={12}>
+                    <Autocomplete
+                      style={{ width: '100%' }}
+                      size='small'
+                      //onChange={(e) => setSelectedBranch(e.target.value)}
+                      onChange={handleBranch}
+                      id='branch_id'
+                      className='dropdownIcon'
+                      value={selectedBranch}
+                      options={branchList}
+                      getOptionLabel={(option) => option?.branch_name}
+                      filterSelectedOptions
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          variant='outlined'
+                          label='Branch'
+                          placeholder='Select Branch'
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item md={4} xs={12} sm={3}>
+                    <Autocomplete
+                      //key={clearKey}
+                      multiple
+                      size='small'
+                      onChange={handleGrade}
+                      id='create__class-branch'
+                      options={gradeList}
+                      className='dropdownIcon'
+                      getOptionLabel={(option) => option?.grade__grade_name}
+                      filterSelectedOptions
+                      value={selectedGrades}
+                      renderInput={(params) => (
+                        <TextField
+                          className='create__class-textfield'
+                          {...params}
+                          variant='outlined'
+                          label='Grades'
+                          placeholder='Select Grades'
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item md={4} sm={3} xs={3}>
+                    <FormControl fullWidth margin='dense' variant='outlined'>
+                      <InputLabel>Status</InputLabel>
+                      <Select
+                        value={classStatus || 1}
+                        label='Status'
+                        name='statusTypeFilter'
+                        onChange={(eve) => {
+                          setClassStatus(eve.target.value);
+                        }}
+                      >
+                        <MenuItem value={'1'}>All</MenuItem>
+                        <MenuItem value={'2'}>Active</MenuItem>
+                        <MenuItem value={'3'}>Deactive</MenuItem>
+                        <MenuItem value={'4'}>Deleted</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item md={2} sm={3} xs={3} ml={4}>
+                    <Button
+                      style={{ marginTop: '5px' }}
+                      variant='contained'
+                      color='primary'
+                      onClick={() => getUsersData()}
+                      fullWidth={true}
                     >
-                      <AddIcon style={{ color: '#ffffff' }} />
-                    </IconButton>
-                  </Tooltip>
+                      View
+                    </Button>
+                  </Grid>
+                  <Grid item md={3} sm={3} xs={3}>
+                    <Button
+                      style={{ marginTop: '5px' }}
+                      variant='contained'
+                      color='primary'
+                      onClick={handleExcel}
+                      fullWidth={true}
+                    >
+                      Download
+                    </Button>
+                  </Grid>
+                  <Grid item md={3} sm={3} xs={3}>
+                    <Button
+                      style={{ marginTop: '5px' }}
+                      variant='contained'
+                      color='primary'
+                      onClick={handleResetFilters}
+                      fullWidth={true}
+                    >
+                      Clear
+                    </Button>
+                  </Grid>
                 </Grid>
-                
-                <Grid item sm={8} md={9} xs={9}>  
-                <Accordion expanded={accordianOpen}>
-                  <AccordionSummary
-                    expandIcon={<ExpandMoreIcon />}
-                    aria-controls='panel1a-content'
-                    id='panel1a-header'
-                    onClick={() => setAccordianOpen(!accordianOpen)}
-                  >
-                    <Typography variant='h6' color='primary'>
-                      Filter
-                    </Typography>
-                  </AccordionSummary>
-                  <AccordionDetails>
-                    <Grid container spacing={3}>
-                          <Grid item md={4} sm={4} xs={12}>
-                            <Autocomplete
-                            style={{ width: '100%' }}
-                              multiple
-                              fullWidth
-                              size='small'
-                              onChange={(event, value) => {
-                                setSelectedRoles(value);
-                              }}
-                              id='role_id'
-                              className='dropdownIcon'
-                              value={selectedRoles?.role_name}
-                              options={roleList}
-                              getOptionLabel={(option) => option?.role_name}
-                              filterSelectedOptions
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  variant='outlined'
-                                  label='Role'
-                                  placeholder='Select Role'
-                                />
-                              )}
-                            />
-                          </Grid>
-                          <Grid item md={4} sm={4} xs={12}>
-                            <Autocomplete
-                              style={{ width: '100%' }}
-                              size='small'
-                              //onChange={(e) => setSelectedBranch(e.target.value)}
-                              onChange={handleBranch}
-                              id='branch_id'
-                              className='dropdownIcon'
-                              value={selectedBranch}
-                              options={branchList}
-                              getOptionLabel={(option) => option?.branch_name}
-                              filterSelectedOptions
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  variant='outlined'
-                                  label='Branch'
-                                  placeholder='Select Branch'
-                                />
-                              )}
-                            />
-                          </Grid>
-                          <Grid item md={4} xs={12} sm={3}>
-                            <Autocomplete
-                              //key={clearKey}
-                              multiple
-                              size='small'
-                              onChange={handleGrade}
-                              id='create__class-branch'
-                              options={gradeList}
-                              className='dropdownIcon'
-                              getOptionLabel={(option) => option?.grade__grade_name}
-                              filterSelectedOptions
-                              value={selectedGrades}
-                              renderInput={(params) => (
-                                <TextField
-                                  className='create__class-textfield'
-                                  {...params}
-                                  variant='outlined'
-                                  label='Grades'
-                                  placeholder='Select Grades'
-                                />
-                              )}
-                            />
-                          </Grid>
-                          <Grid item md={4} sm={3} xs={3}>
-                            <FormControl fullWidth margin='dense' variant='outlined'>
-                              <InputLabel>Status</InputLabel>
-                              <Select
-                                value={classStatus || 1}
-                                label='Status'
-                                name='statusTypeFilter'
-                                onChange={(eve) => {
-                                  setClassStatus(eve.target.value);
-                                }}
-                              >
-                                <MenuItem value={'1'}>All</MenuItem>
-                                <MenuItem value={'2'}>Active</MenuItem>
-                                <MenuItem value={'3'}>Deactive</MenuItem>
-                                <MenuItem value={'4'}>Deleted</MenuItem>
-                              </Select>
-                            </FormControl>
-                          </Grid>
-                          <Grid item md={2} sm={3} xs={3} ml={4}>
-                            <Button
-                              style={{ marginTop: '5px' }}
-                              variant='contained'
-                              color='primary'
-                              onClick={() => getUsersData()}
-                              fullWidth={true}
-                            >
-                              View
-                            </Button>
-                          </Grid>
-                          <Grid item md={3} sm={3} xs={3}>
-                            <Button
-                              style={{ marginTop: '5px' }}
-                              variant='contained'
-                              color='primary'
-                              onClick={handleExcel}
-                              fullWidth={true}
-                            >
-                              Download
-                            </Button>
-                          </Grid>
-                          <Grid item md={3} sm={3} xs={3}>
-                            <Button
-                              style={{ marginTop: '5px' }}
-                              variant='contained'
-                              color='primary'
-                              onClick={handleResetFilters}
-                              fullWidth={true}
-                            >
-                              Clear
-                            </Button>
-                          </Grid>
-                </Grid>
-                          </AccordionDetails>
-                          </Accordion>
-                </Grid>
-                
-                </Grid>
-        </div>
+              </AccordionDetails>
+            </Accordion>
+          </Grid>
+        </Grid>
+      </div>
       <div className='view-users-page'>
         <Dialog open={deactivateAlert} onClose={handleDeleteCancel}>
           <DialogTitle id='draggable-dialog-title'>Deactivate User</DialogTitle>
@@ -816,7 +864,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             <Button
               color='primary'
               variant='contained'
-              style={{ color: 'white' }}  
+              style={{ color: 'white' }}
               onClick={handleDeactivateUser}
             >
               Confirm
@@ -839,6 +887,29 @@ const ViewUsers = withRouter(({ history, ...props }) => {
               variant='contained'
               style={{ color: 'white' }}
               onClick={handleDeleteConfirm}
+            >
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        {/* Resore user Dialog Box */}
+        <Dialog open={restoreAlert} onClose={handleDeleteCancel}>
+          <DialogTitle id='draggable-dialog-title'>Restore User</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Are you sure you want to restore this user ?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleRestoreConfirm}
             >
               Confirm
             </Button>
@@ -893,9 +964,17 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                         }}
                         className={classes.tableCell}
                       >
-                        {items && items.status === 'deleted' ?
-                        'Restore' : items.status === 'active' ?
-                        <IconButton
+                        {items && items.status === 'deleted' ? (
+                          <IconButton
+                            title='Restore'
+                            onClick={() => handleRestore(items.userId, i, '1')}
+                          >
+                            <RestoreIcon
+                              style={{ color: themeContext.palette.primary.main }}
+                            />
+                          </IconButton>
+                        ) : items.status === 'active' ? (
+                          <IconButton
                             aria-label='deactivate'
                             onClick={() => handleDeactivate(items.userId, i, '2')}
                             title='Deactivate'
@@ -903,7 +982,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                             <BlockIcon
                               style={{ color: themeContext.palette.primary.main }}
                             />
-                          </IconButton> : (
+                          </IconButton>
+                        ) : (
                           <button
                             type='submit'
                             title='Activate'
@@ -920,22 +1000,29 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                           >
                             A
                           </button>
-                        )
-                       }
-                       {items && items.status !== 'deleted' ? 
-                       <><IconButton
-                       title='Delete'
-                       onClick={() => handleDelete(items.userId, i, '3')}
-                     >
-                       <DeleteOutlinedIcon
-                         style={{ color: themeContext.palette.primary.main }}
-                       />
-                      </IconButton>
-                       <IconButton title='Edit' onClick={() => handleEdit(items.userId)}>
-                       <EditOutlinedIcon
-                         style={{ color: themeContext.palette.primary.main }}
-                       />
-                     </IconButton> </> : ''}
+                        )}
+                        {items && items.status !== 'deleted' ? (
+                          <>
+                            <IconButton
+                              title='Delete'
+                              onClick={() => handleDelete(items.userId, i, '3')}
+                            >
+                              <DeleteOutlinedIcon
+                                style={{ color: themeContext.palette.primary.main }}
+                              />
+                            </IconButton>
+                            <IconButton
+                              title='Edit'
+                              onClick={() => handleEdit(items.userId)}
+                            >
+                              <EditOutlinedIcon
+                                style={{ color: themeContext.palette.primary.main }}
+                              />
+                            </IconButton>{' '}
+                          </>
+                        ) : (
+                          ''
+                        )}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -968,6 +1055,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   onEdit={handleEdit}
                   onDelete={(userId) => {
                     handleDelete(userId, i);
+                  }}
+                  onRestore={(userId) => {
+                    handleRestore(userId, i, '1');
                   }}
                   onStatusChange={(userId, status) => {
                     handleStatusChange(userId, i, status);
