@@ -52,6 +52,7 @@ const GeneralDairyFilter = ({
   setPeriodData,
   isTeacher,
   showSubjectDropDown,
+  sessionYear,
   // studentModuleId,
   // setCurrentTab,
   setViewMore,
@@ -187,7 +188,7 @@ const GeneralDairyFilter = ({
     setActiveTab(tab);
     if (tab === 2 && !isTeacher) {
       axiosInstance
-        .get(`${endpoints.dailyDairy.chapterList}?module_id=${moduleId}`)
+        .get(`${endpoints.dailyDairy.chapterList}?module_id=${moduleId}&session_year=${sessionYear?.id}`)
         .then((res) => {
           if (res.data.status_code === 200) {
             setSubjectDropdown(res.data.result);

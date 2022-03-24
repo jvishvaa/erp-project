@@ -62,6 +62,8 @@ const GeneralDairyList = () => {
   const [startDate, setSDate] = useState([]);
   const [endDate, setEDate] = useState([]);
   const [deleteFlag, setDeleteFlag] = useState(false);
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
+
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -150,12 +152,12 @@ const GeneralDairyList = () => {
           subjects.id
         }&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format(
           'YYYY-MM-DD'
-        )}${activeTab !== 0 ? '&dairy_type=' + activeTab : ''}`
+        )}&session_year=${sessionYear?.id}${activeTab !== 0 ? '&dairy_type=' + activeTab : ''}`
       : `${
           endpoints.generalDairy.dairyList
         }?module_id=${studentModuleId}&page=${page}&page_size=${limit}&start_date=${startDate.format(
           'YYYY-MM-DD'
-        )}&end_date=${endDate.format('YYYY-MM-DD')}${
+        )}&end_date=${endDate.format('YYYY-MM-DD')}&session_year=${sessionYear?.id}${
           activeTab !== 0 ? '&dairy_type=' + activeTab : ''
         }`;
     axiosInstance
@@ -195,6 +197,7 @@ const GeneralDairyList = () => {
           handleDairyList={handleDairyList}
           setPeriodData={setPeriodData}
           isTeacher={isTeacher}
+          sessionYear = {sessionYear}
           showSubjectDropDown={showSubjectDropDown}
           studentModuleId={studentModuleId}
           // pageup={page}

@@ -21,7 +21,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import cardAttachment from '../../../assets/images/cardAttachment.svg'
 import { SvgIcon, Divider } from '@material-ui/core';
-const CircularCard = ({ lesson, period, setPeriodDataForView, setViewMoreData, setViewMore, setLoading, index, periodColor, setPeriodColor, setSelectedIndex, setEditData, deleteFlag, setDeleteFlag }) => {
+const CircularCard = ({ lesson, period, setPeriodDataForView, setViewMoreData, setViewMore, setLoading, index, periodColor, setPeriodColor, setSelectedIndex, setEditData, deleteFlag, setDeleteFlag ,sessionYear}) => {
 
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -93,7 +93,7 @@ const CircularCard = ({ lesson, period, setPeriodDataForView, setViewMoreData, s
 
   const handleViewMore = () => {
     setLoading(true)
-    axiosInstance.get(`${endpoints.circular.viewMoreCircularData}?circular_id=${period.id}`)
+    axiosInstance.get(`${endpoints.circular.viewMoreCircularData}?circular_id=${period.id}&academic_year=${sessionYear?.id}`)
       .then(result => {
         if (result.data.status_code === 200) {
           setLoading(false);
