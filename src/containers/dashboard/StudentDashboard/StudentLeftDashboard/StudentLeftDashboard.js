@@ -14,6 +14,8 @@ import IconMobile from '../StudentRightDashboard/IconMobile';
 
 const StudentLeftDashboard = (props) => {
 
+const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
+
   return (
     <Grid container spacing={1}>
       <Grid container xs={12} sm={12} md={12} style={{ display: "flex", margin: '5px' }} spacing={2}>
@@ -21,7 +23,7 @@ const StudentLeftDashboard = (props) => {
           <Certificate />
         </Grid>
         <Grid item xs={12} sm={6} md={6} spacing={4}>
-          <Homework />
+          <Homework sessionYear={sessionYear} />
         </Grid>
       </Grid>
       <Grid container xs={12} sm={12} md={12} style={{ display: "flex" }} spacing={2}>
@@ -29,7 +31,7 @@ const StudentLeftDashboard = (props) => {
           <OnlineClass />
         </Grid>
         <Grid item xs={12} sm={6} md={6} spacing={4}>
-          <Assessment />
+          <Assessment sessionYear={sessionYear} />
         </Grid>
         <Hidden smUp>
         <Grid item xs={12}>

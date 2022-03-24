@@ -68,6 +68,7 @@ export default function MediaControlCard() {
     const [hasLiked, setHasLiked] = React.useState(false);
     const [likeCount, setLikeCount] = React.useState(0);
     const [isEnabled, setIsEnabled] = React.useState(false);
+    const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
 
     //references
     const audioPlayer = useRef();
@@ -75,7 +76,7 @@ export default function MediaControlCard() {
     const handleLikeButton = () => {
         apiRequest(
             'put',
-            `${endpoints?.dashboard?.student?.likedsongorchadio}${mediaData[currentAudioId]?.id}/orchido-like/`
+            `${endpoints?.dashboard?.student?.likedsongorchadio}${mediaData[currentAudioId]?.id}&session_year=${sessionYear?.id}/orchido-like/`
         )
             .then((res) => {
                 if (hasLiked) {
@@ -96,7 +97,7 @@ export default function MediaControlCard() {
     useEffect(() => {
         apiRequest(
             'get',
-            `${endpoints?.dashboard?.student?.orchadioapi}`,
+            `${endpoints?.dashboard?.student?.orchadioapi}?session_year=${sessionYear?.id}`,
             null,
             null,
             true,
@@ -126,7 +127,7 @@ export default function MediaControlCard() {
     const fetchMoreAudio = async (pageNumber) => {
         const response = await apiRequest(
             'get',
-            `${endpoints.dashboard.student.orchadioapi}?page_number=${pageNumber}`,
+            `${endpoints.dashboard.student.orchadioapi}?page_number=${pageNumber}&session_year=${sessionYear?.id}`,
             null,
             null,
             true,

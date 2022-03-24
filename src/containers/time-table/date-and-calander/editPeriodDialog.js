@@ -59,6 +59,7 @@ const EditPeriodDialog = (props) => {
   const [selectedLectureType, setSelectedLectureType] = useState();
   const [openModal, setOpenModal] = useState(false);
   const [confirmMessage, setConfirmMessage] = useState();
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
 
 useEffect(() => {
   callingSubjectAPI();
@@ -145,9 +146,9 @@ useEffect(() => {
   const callingSubjectAPI = () => {
     axiosInstance
       .get(`/erp_user/v2/mapped-subjects-list/?section_mapping=${props?.section_mappingId}`, {
-        // params: {
-        //   grade: gradeID,
-        // },
+        params: {
+          session_year: sessionYear?.id,
+        },
       })
       .then((res) => {
         setSubject(res.data.result);
@@ -159,9 +160,9 @@ useEffect(() => {
   const callingTeachersAPI = () => {
     axiosInstance
       .get(`/academic/teachers-list/?section_mapping=${props?.section_mappingId}`, {
-        // params: {
-        //   grade: gradeID,
-        // },
+        params: {
+          session_year: sessionYear?.id,
+        },
       })
       .then((res) => {
         setAssignedTeacher(res.data.result);

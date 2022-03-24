@@ -101,6 +101,7 @@ const TimeTable = (props) => {
   const [isTimeTable, setIsTimeTable] = useState(false);
   const [showFilter, setShowFilter] = useState(true);
   const [periodType, setPeriodType] = useState()
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -239,11 +240,10 @@ const TimeTable = (props) => {
   };
   const callingSubjectAPI = () => {
     axiosInstance
-      .get(`/erp_user/v2/mapped-subjects-list/?section_mapping=${section_mappingId}`, {
-        // params: {
-        //   grade: gradeID,
-        //   session_year: acadamicYearID,
-        // },
+      .get(`/erp_user/v2/mapped-subjects-list/?section_mapping=${section_mappingId}&session_year=${sessionYear?.id}`, {
+        params: {
+          session_year: acadamicYearID,
+        },
       })
       .then((res) => {
         setSubject(res.data.result);
@@ -255,9 +255,9 @@ const TimeTable = (props) => {
   const callingTeachersAPI = () => {
     axiosInstance
       .get(`/academic/teachers-list/?section_mapping=${section_mappingId}`, {
-        // params: {
-        //   grade: gradeID,
-        // },
+        params: {
+          session_year: acadamicYearID,
+        },
       })
       .then((res) => {
         setAssignedTeacher(res.data.result);

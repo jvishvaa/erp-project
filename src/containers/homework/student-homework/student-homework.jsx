@@ -113,11 +113,12 @@ const StudentHomework = withRouter(({ history, ...props }) => {
   const [moduleId, setModuleId] = useState();
   const [homeworkTimelineDisplay, setHomeworkTimelineDisplay] = useState(true);
   const [displayRatingBox, setDisplayRatingBox] = useState(false);
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
 
   const getTableDetails = async () => {
     try {
       const result = await axiosInstance.get(
-        `${endpoints.homeworkStudent.getStudentSubjects}?module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}`
+        `${endpoints.homeworkStudent.getStudentSubjects}?module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}&session_year=${sessionYear?.id}`
       );
       if (result.data.status_code === 200) {
         setStudentHomeworkData(result.data.data);

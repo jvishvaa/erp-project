@@ -120,7 +120,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'nowrap',
   }
 }));
-export default function Assessment(item) {
+export default function Assessment({sessionYear}) {
   const classes = useStyles();
   const matches960 = useMediaQuery('(max-width: 960px)');
   const [assessmentArr, setAssessmentArr] = React.useState([]);
@@ -129,7 +129,7 @@ export default function Assessment(item) {
 
   const nextpagehandler = () => {
     let url = nextPage.split('page=')[1]
-    apiRequest('get', `${endpoints.dashboard.student.assessments}?page=${url}` ,null, null, true, 5000)
+    apiRequest('get', `${endpoints.dashboard.student.assessments}?page=${url}&session_year=${sessionYear?.id}&status=2` ,null, null, true, 5000)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAssessmentArr([...assessmentArr, ...result?.data?.result?.results]);
@@ -142,7 +142,7 @@ export default function Assessment(item) {
   };
   
   const getAssessmentData = () => {
-    apiRequest('get', endpoints.dashboard.student.assessments, null, null, true, 5000  )
+    apiRequest('get', `${endpoints.dashboard.student.assessments}?session_year=${sessionYear?.id}&status=2`, null, null, true, 5000  )
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setIsEnabled(result?.data?.is_enabled)
