@@ -500,7 +500,7 @@ const FeesStatusBranchWise = (props) => {
                             className={clsx(classes.textBold, classes.colorRed)}
                           >
                             {/* {totalOverView} */}
-                            {fessData[0]?.totalfees}
+                            ₹ {fessData[0]?.totalfees ? Math.round(fessData[0]?.totalfees).toLocaleString() : 0}
                           </Typography>
                           <Typography
                             variant='body1'
@@ -533,9 +533,9 @@ const FeesStatusBranchWise = (props) => {
                               <Typography variant='h6'>
                                 
                                 <b>
-                                    {isNaN(fessData[0]?.outstanding)
+                                ₹ {isNaN(fessData[0]?.outstanding)
                                     ? 0
-                                    : Math.round(fessData[0]?.outstanding)}
+                                    : Math.round(fessData[0]?.outstanding).toLocaleString()}
                                 </b>
                               </Typography>
                               <Typography
@@ -575,9 +575,9 @@ const FeesStatusBranchWise = (props) => {
                               <Typography variant='h6'>
                                 {' '}
                                 <b>
-                                  {isNaN(fessData[0]?.paid)
+                                ₹ {isNaN(fessData[0]?.paid)
                                     ? 0
-                                    : Math.round(fessData[0]?.paid)}
+                                    : Math.round(fessData[0]?.paid).toLocaleString()}
                                 </b>{' '}
                               </Typography>
                               <Typography
@@ -663,7 +663,7 @@ const FeesStatusBranchWise = (props) => {
                               classes.textCenter
                             )}
                           >
-                            ₹ {Math.round(totalCollected?.total_fee_collected)}
+                            ₹ {isNaN(totalCollected?.total_fee_collected) ? 0 : Math.round(totalCollected?.total_fee_collected).toLocaleString()}
                           </Typography>
                           <Typography className={clsx(classes.numberTransaction)}>
                             {totalCollected?.no_of_transaction} transaction done Today
@@ -710,7 +710,7 @@ const FeesStatusBranchWise = (props) => {
                             <div>
                               <Typography variant='h6'>
                                 {' '}
-                                <b>₹ {Math.round(totalCollected?.Cash)}</b>{' '}
+                                <b>₹ {isNaN(totalCollected?.Cash) ? 0 : Math.round(totalCollected?.Cash).toLocaleString()}</b>{' '}
                               </Typography>
                               <Typography
                                 variant='body1'
@@ -747,7 +747,7 @@ const FeesStatusBranchWise = (props) => {
                             </span>
                             <div>
                               <Typography variant='h6'>
-                                <b>₹ {Math.round(totalCollected?.Cheque)}</b>{' '}
+                                <b>₹ {isNaN(totalCollected?.Cheque) ? 0 : Math.round(totalCollected?.Cheque).toLocaleString()}</b>{' '}
                               </Typography>
                               <Typography
                                 variant='body1'
@@ -788,7 +788,7 @@ const FeesStatusBranchWise = (props) => {
                             </span>
                             <div>
                               <Typography variant='h6'>
-                                <b>₹{Math.round(totalCollected?.bbps)}</b>
+                                <b>₹{isNaN(totalCollected?.bbps) ? 0 : Math.round(totalCollected?.bbps).toLocaleString()}</b>
                               </Typography>
                               <Typography
                                 variant='body1'
@@ -825,7 +825,7 @@ const FeesStatusBranchWise = (props) => {
                             </span>
                             <div>
                               <Typography variant='h6'>
-                                <b>₹{Math.round(totalCollected?.Swipe)}</b>{' '}
+                                <b>₹{isNaN(totalCollected?.Swipe) ? 0 : Math.round(totalCollected?.Swipe).toLocaleString()}</b>{' '}
                               </Typography>
                               <Typography
                                 variant='body1'
@@ -864,7 +864,7 @@ const FeesStatusBranchWise = (props) => {
                             </span>
                             <div>
                               <Typography variant='h6'>
-                                <b>₹{Math.round(totalCollected?.Online)}</b>
+                                <b>₹{isNaN(totalCollected?.Online) ? 0 : Math.round(totalCollected?.Online).toLocaleString()}</b>
                               </Typography>
                               <Typography
                                 variant='body1'
@@ -901,7 +901,7 @@ const FeesStatusBranchWise = (props) => {
                             </span>
                             <div>
                               <Typography variant='h6'>
-                                <b>₹{Math.round(totalCollected?.Internet)}</b>
+                                <b>₹{isNaN(totalCollected?.Internet) ? 0 : Math.round(totalCollected?.Internet).toLocaleString()}</b>
                               </Typography>
                               <Typography
                                 variant='body1'
