@@ -391,7 +391,8 @@ import FeesSectionStatus from 'containers/dashboard/ownerDashboard/academic/fees
 import TransactionDetails from 'containers/dashboard/ownerDashboard/academic/feesStatus/TransactionDetails';
 import FeesStatusBranchWise from 'containers/dashboard/ownerDashboard/academic/feesStatus/FeesStatusBranchWise';
 import GradeWiseFeesDetails from 'containers/dashboard/ownerDashboard/academic/feesStatus/GradeWiseFeesDetails';
-
+import TeacherDashboard from 'containers/dashboard/TeacherDashboardTwo/DashboardTeacher/TeacherDashboard';
+import TeacherDash from './containers/dashboard/TeacherDashboardTwo/index';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -1849,7 +1850,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route path='/grade-wise-fees-details'>
                             {({ match }) => <GradeWiseFeesDetails match={match} />}
                           </Route>
-
+                          <Route path='/teacherdash'>
+                            {({ match }) => <TeacherDashboard match={match} />}
+                          </Route>
+                          <Route path='/teacherdashboards'>
+                            {({ match }) => <TeacherDash match={match} />}
+                          </Route>
 
 
                           <Route path='*'>

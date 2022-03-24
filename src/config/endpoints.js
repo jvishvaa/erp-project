@@ -1,7 +1,14 @@
 import ENVCONFIG from './config';
 
 const {
-  apiGateway: { baseURLCentral, baseUdaan, baseURLMPQ , msReportsUrl , baseFinanceURL , baseURL},
+  apiGateway: {
+    baseURLCentral,
+    baseUdaan,
+    msReportsUrl,
+    baseFinanceURL,
+    baseURL,
+    baseURLMPQ,
+  },
   s3: { BUCKET: s3BUCKET, ERP_BUCKET },
 } = ENVCONFIG;
 
@@ -18,7 +25,7 @@ export default {
     login: '/auth/login/',
   },
   checkAcademicView: {
-    isAcademicView: '/period/period-erp-system-config/'
+    isAcademicView: '/period/period-erp-system-config/',
   },
   academics: {
     subjects: '/erp_user/subject/',
@@ -40,7 +47,7 @@ export default {
     teacherAttendanceData: '/erp_user/erpuser-attendance-erp/',
     teacherAttendanceSent: '/erp_user/erpuser-attendance/',
     getTeacherAttendanceData: '/erp_user/erpuser-attendance-monthly-reports/',
-    getStudentCountReportData: '/erp_user/grade-section-wise-student-count/'
+    getStudentCountReportData: '/erp_user/grade-section-wise-student-count/',
   },
   appBar: {
     schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,
@@ -59,7 +66,7 @@ export default {
   timeTable: {
     tableData: '/academic/time_table/',
     editTableData: '/academic/assign_class_periods/',
-    getPeriodData: "/period/teacher_retrieve_period_details/",
+    getPeriodData: '/period/teacher_retrieve_period_details/',
     createtimeTable: '/period/timetable/',
     timeTableList: '/period/timetable/',
     gettimeTable: '/period/period/',
@@ -68,7 +75,7 @@ export default {
     periodTypes: '/period/period_type/',
     deletePeriod: '/period/period/',
     editPeriod: '/period/period/',
-    collidingPeriod: 'period/deactivate_period/'
+    collidingPeriod: 'period/deactivate_period/',
   },
   communicationRoles: {
     roles: '/academic/booked-appointment-role-list/',
@@ -115,6 +122,7 @@ export default {
     PreQuiz: '/mp_quiz/online-class-details/',
     downloadOnlineClass_EXCEL: '/erp_user/online-class-list-date-wise/',
     periodDetails: '/erp_user/rstoc/',
+    options: 'erp_user/edxstream-allowed/',
   },
   masterManagement: {
     subjects: '/erp_user/subjects-list/',
@@ -200,7 +208,6 @@ export default {
     getSignatureList: '/erp_user/principle-signature/',
     // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     s3: 'https://d3ka3pry54wyko.cloudfront.net/',
-
   },
 
   coordinatorTeacherHomeworkApi: {
@@ -235,11 +242,11 @@ export default {
     periodCompletedStatus: '/academic/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
     overviewSynopsis: `/academic/list-lesson-overview/`,
-    // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
-    // s3: ERP_BUCKET,
     s3: 'https://d2r9gkgplfhsr2.cloudfront.net/',
     s3erp: 'https://d3ka3pry54wyko.cloudfront.net/',
-    lessonFeedback: `${baseURLCentral}/lesson_plan/lessonplan-feedback/`
+    // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+    // s3: ERP_BUCKET,
+    lessonFeedback: `${baseURLCentral}/lesson_plan/lessonplan-feedback/`,
   },
   aol: {
     cardData: '/erp_user/teacher_online_class/v3/',
@@ -287,7 +294,6 @@ export default {
     replyToAnswer: '/academic/create-answer-replay/',
     // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
     s3: 'https://d3ka3pry54wyko.cloudfront.net',
-
     deletePost: '/academic/',
   },
   circular: {
@@ -376,7 +382,7 @@ export default {
     getGrievenceErpList: '/academic/greivance-reply-list/',
   },
   studentViewBatchesApi: {
-    onclsAcessCheck: "/academic/onine_class_access_blocker_check/",
+    onclsAcessCheck: '/academic/onine_class_access_blocker_check/',
     getBatchesApi: '/erp_user/student_online_class/v3/',
     rejetBatchApi: '/erp_user/mark_attendance/',
   },
@@ -428,7 +434,6 @@ export default {
     deleteAssessmentTest: '/assessment/',
     // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
     s3: 'https://d3ka3pry54wyko.cloudfront.net',
-
     examTypeList: '/assessment/exam-type-list/',
     downloadAssessmentPdf: '/assessment/test1/'
   },
@@ -462,10 +467,10 @@ export default {
     reportPdf: '/assessment/download-report-pdf/',
     weeklyStudentReport: '/assessment/download-report-student-report/',
     reportConsolidated: '/assessment/download-report-consolidate/',
-    individualQuizTeacherReport:'/assessment/download-report-individual-teacher/',
+    individualQuizTeacherReport: '/assessment/download-report-individual-teacher/',
     weeklyTeacherReportEachGrade:'/assessment/download-report-teacher-grade-section-wise/',
-    individualStudentReport:'/assessment/individual-student-report/',
-    weeklyQuizPerformance:'/assessment/weekly-quiz-performance-report/',
+    individualStudentReport: '/assessment/individual-student-report/',
+    weeklyQuizPerformance: '/assessment/weekly-quiz-performance-report/',
     assessmentRetest: '/assessment/retake-assessment-permission/',
     downloadReportTestReport: '/assessment/download-report-test-report/',
   },
@@ -478,14 +483,13 @@ export default {
     observationArea: '/teacher_observation/observation-area/',
     observationReport: '/teacher_observation/observation-report/',
     observationData: '/teacher_observation/observation-data/',
-    observationTeacherDetail: '/teacher_observation/observation-report-get/'
+    observationTeacherDetail: '/teacher_observation/observation-report-get/',
   },
   publish: {
     ebook: `erp_user/publication/`,
     update_delete: `erp_user/update-destroy-publication/`,
     // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
     s3: 'https://d3ka3pry54wyko.cloudfront.net',
-
   },
   assessmentApis: {
     gradesList: `/academic/sm-grades-list/`,
@@ -555,32 +559,108 @@ export default {
     AddParticipants: '/academic/branch_students/',
     // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
     s3: 'https://d3ka3pry54wyko.cloudfront.net',
-
   },
-  observation: {
-    observationGet: '/teacher_observation/observation-area/',
-  },
-
-  observationName: {
-    observationGet: '/teacher_observation/observation/',
-    observationArea: '/teacher_observation/observation-area/',
-    observationReport: '/teacher_observation/observation-report/',
-    observationData: '/teacher_observation/observation-data/',
-  },
-
   homeworkReport: {
     branchWiseData: '/academic/teacher_homework_report/',
     subjectList: '/academic/fetch_subjects/',
   },
-  classworkReport: {
-    tableData: '/academic/teacher_classwork_report/',
+  ownerDashboard: {
+    // gradeWiseStudentAttendanceState : `${`https://tiny-newt-42.loca.lt`}/api/acad_performance/v1/attendance/grade-wise-stats/`,
+    gradeWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/grade-wise-stats/`,
+    subjectWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/subject-wise-stats/`,
+    studentWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-stats/`,
+    studentWiseMoreAbsentStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-absence-stats/`,
+    subjectWiseTestStudentReportStat: `${msReportsUrl}/api/acad_performance/v1/test/subject-wise-stats/`,
+    studentWiseTestStudentReportStat: `${msReportsUrl}/api/acad_performance/v1/test/student-wise-stats/`,
+    subjectWiseHomeworkStudentReportStat: `${msReportsUrl}/api/acad_performance/v1/homework/subject-wise-stats/`,
+    studentWiseHomeworkStudentReportStat: `${msReportsUrl}/api/acad_performance/v1/homework/student-wise-stats/`,
+    subjectWiseClassworkStudentReportStat: `${msReportsUrl}/api/acad_performance/v1/classwork/subject-wise-stats/`,
+    studentWiseClassworkStudentReportStat: `${msReportsUrl}/api/acad_performance/v1/classwork/student-wise-stats/`,
+    subjectWiseClassParticipationStudentReportStat: `${msReportsUrl}/api/acad_performance/v1/class_part/subject-wise-stats/`,
+    studentWiseClassParticipationStudentReportStat: `${msReportsUrl}/api/acad_performance/v1/class_part/student-wise-stats/`,
+
+    //curriculumReport
+    curriculumGradeReport: `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-grade/`,
+    curriculumGradeSubjectReport: `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-section/`,
+    curriculumGradeList: `${baseURL}/assessment/subjects-list/`,
+    curriculumChapterList: `${msReportsUrl}/api/acad_performance/v1/academic-topic-status/`,
+    subjectListGradeFilter: `${baseURL}/academic/lesson-plan-subjects/`,
+    sectionCheckTableData: `${msReportsUrl}/acad_performance/v1/academic-topic-status/`,
+
+    // feesStatus
+    getTotalReceiptStatus: `${baseFinanceURL}/apiV1/today-wise-fees--list/`,
+    getFeesForAllBranch: `${baseFinanceURL}/apiV1/branch-wise-fees--list/`,
+    feesDetailsStudentWise: `${baseFinanceURL}/apiV1/student-wise-fees--list/`,
+    typeFeesData: `${baseFinanceURL}/apiV1/fee-type-fees/`,
+    transactionAllType: `${baseFinanceURL}/apiV1/today-all-transactions-list/`,
+
+    // student attendance
+    getStudentAttendance: `/api/acad_performance/v1/attendance/branch-wise-stats/`,
+    getStaffDetails: `/api/acad_performance/v1/staff_att/all-staff-stats/`,
+    getFinanceDetails: `${baseFinanceURL}/apiV1/session-wise-fees--list/`,
+    getAvgTest: `/api/acad_performance/v1/student_report/combined-branch-wise-stats/`,
+    getCurrReport: `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-branch/`,
+    getAllBranchCurr: `/api/acad_performance/v1/curriculum-stats-branch-all/`,
+    getPaymentType: `${baseFinanceURL}/apiV1/fee-types-list/`,
+    subTabData: `${baseFinanceURL}/apiV1/fee-type-fees/`,
+    transactionDetailsTab: `${baseFinanceURL}/apiV1/all_payment_types/`,
+    gradeListFeesDetails: `${baseFinanceURL}/apiV1/grade-wise-fees--list/`,
+    sectionListFeesDetails: `${baseFinanceURL}/apiV1/section-wise-fees--list/`,
+    getTestData: `${msReportsUrl}/api/acad_performance/v1/test/grade-stats/`,
+    getCWData: `${msReportsUrl}/api/acad_performance/v1/classwork/branch-wise-stats/`,
+    getHWData: `${msReportsUrl}/api/acad_performance/v1/homework/grade-wise-stats/`,
+    getCPData: `${msReportsUrl}/api/acad_performance/v1/class_part/grade-stats/`,
+    getRecentTransaction: `${baseFinanceURL}/apiV1/today-recent-transactions/`,
+
+    // section wise report
+
+    getTestSection: `${msReportsUrl}/api/acad_performance/v1/test/grade-wise-stats/`,
+    getCwSection: `${msReportsUrl}/api/acad_performance/v1/classwork/branch-wise-stats/`,
+    getHwSection: `${msReportsUrl}/api/acad_performance/v1/homework/grade-wise-stats/`,
+    getCpSection: `${msReportsUrl}/api/acad_performance/v1/class_part/grade-wise-stats/`,
+  },
+  teacherDashboard: {
+    gradeSectionAggregated: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/grade-section-aggregated-topic-stats/`,
+    tableData: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/chapter-wise-topics-completion-stats/`,
+    gradeSectionSubject: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/grade-section-subject-details-by-branch/`,
+    cwHWTeacherDashboard: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/homework-classwork-details-grade-subject-wise/`,
+    pendingHWdata: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/pending-cw-students/`,
+    submittedHWdata: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/submitted-cw-files/`,
+    fileHwData: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/submitted-cw-files/`,
+  },
+  teacherDashboardTwo: {
+    teacherOverview: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/branch-wise-hw-cw-status/`,
+    branchDetails: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/branch-wise-student-attendance/`,
+    attendanceDetails: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/attendance-today/`,
+    curriculumDetails: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/curriculum-completion-overview/`,
+    yearlyAttendance: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/teacher-yearly-attendance/`,
+    monthlyAttendance: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/teacher-monthwise-attendance/`,
   },
   sureLearning: {
+    base: `${baseUdaan}`,
     login: `${baseUdaan}/authenticate/erp_login/`,
     branch: `${baseUdaan}/courses/user_logged_in_details/`,
     volume: `${baseUdaan}/courses/get_volumes/`,
+    principalAllViewCourse: `${baseUdaan}/instructors/courses_list/`,
+    sendOTP: `${baseUdaan}/instructors/otp_sending/`,
+    verifyOTP: `${baseUdaan}/instructors/otp_verification/`,
+    getBranchList: `${baseUdaan}/instructors/get_branches/`,
+    submitTeacherAttendance: `${baseUdaan}/instructors/create_teacher_attendance/`,
+    getClassList: `${baseUdaan}/instructors/create_trainer_class_initiate/`,
+    getTeacherListFromBranch: `${baseUdaan}/instructors/retrieve_branch_wise_teacher_attendance/`,
+    sendDataToMail: `${baseUdaan}/assessment/get_user_assessment_details/`,
+    getCourseDetails: `${baseUdaan}/courses/`,
+    classInitiationFormSubmit: `${baseUdaan}/instructors/create_trainer_class_initiate/`,
+    finishMCQTest: `${baseUdaan}/courses/applicant_quiz_details/`,
+    isChapterComplete: `${baseUdaan}/courses/is_chapter_completed/`,
+    scheduleOnlineClassApi: `${baseUdaan}/instructors/create_class/`,
+    getInstructureCourses: `${baseUdaan}/instructors/instructors_course_complete_details/`,
+    getResourceFolder: `${baseUdaan}/courses/retrive_resources_folders/`,
+    GetAllResources: `${baseUdaan}/courses/roles_wise_data_retrive/`,
+    approveResources: `${baseUdaan}/courses/approve_resource/`,
     filterSubject: `${baseUdaan}/courses/retrieve_in_house_user_courses_role_wise/`,
     applicantQuizDetails: `${baseUdaan}/courses/applicant_quiz_details/`,
+    retriveBranches: `${baseUdaan}/authenticate/RetrieveBranch/`,
     subjectMap: `${baseUdaan}/courses/list_grade_subject_mapping/`,
     EnrolledSelfCources: `${baseUdaan}/courses/list_teacher_self_enrolled_courses/?is_training_course=true`,
     EnrollForSelfCources: `${baseUdaan}/courses/create_list_teacher_training_courses/`,
@@ -603,6 +683,31 @@ export default {
     sendNotificationAPI: `${baseUdaan}/courses/send_notification/`,
     LearningVideos: `${baseUdaan}/courses/create_learning_module/`,
     SaveNotes: `${baseUdaan}/instructors/learning_notes/`,
+    getDetailedVisualReport: `${baseUdaan}/assessment/detailed_visual_report/`,
+    enrollCouresListApi: `${baseUdaan}/courses/create_retrieve_users_self_courses/`,
+    principalCompletedViewCourse: `${baseUdaan}/instructors/instructors_course_complete_details/`,
+    principalAllViewCourse: `${baseUdaan}/instructors/courses_list/`,
+    apiToFinishMcqTest: `${baseUdaan}/courses/applicant_quiz_details/`,
+    assignTheTeachers: `${baseUdaan}/instructors/assign_applicants/`,
+    assignTeacherCoursesListAPI: `${baseUdaan}/instructors/instructor_courses_list/`,
+    assignTeacherRoleList: `${baseUdaan}/instructors/retrieve_role_positions/ `,
+    courseSubCategoryListApi: `${baseUdaan}/courses/categories/`,
+    assignTeacherCoursesListAPI: `${baseUdaan}/instructors/instructor_courses_list/`,
+    branchWiseTeachers: `${baseUdaan}/instructors/branch_wise_teachers/`,
+    ReducePendingHours: `${baseUdaan}/instructors/duration_extension/`,
+    reassignTheTeachers: `${baseUdaan}/instructors/reassign_applicant_list/`,
+    principalviewBranches: `${baseUdaan}/instructors/get_branches/`,
+    AssessmentReviewApi: `${baseUdaan}/assessment/upload_user_assessment_details/`,
+    getAssessmentScores: `${baseUdaan}/assessment/get_user_assessment_details/`,
+    AssessmentReviewApi: `${baseUdaan}/assessment/upload_user_assessment_details/`,
+    uploadReviewMarksApi: `${baseUdaan}/assessment/`,
+    userReportApi: `${baseUdaan}/assessment/course_wise_report_list_of_users/`,
+    courseWiseReportExcelApi: `${baseUdaan}/assessment/course_wise_report_excel/`,
+    getRoleRegistration: `${baseUdaan}/user_management/role_based_auth/roles_list/`,
+    getBranchNamesApi: `${baseUdaan}/instructors/get_branches/`,
+    courseListApi: `${baseUdaan}/courses/course_filter/`,
+    getVisualReportSearchAPI: `${baseUdaan}/assessment/branch_wise_visual_report/`,
+    getBranchWiseVisualReport: `${baseUdaan}/assessment/branch_wise_teacher_visual_report/`,
     getDetailedVisualReport: `${baseUdaan}/assessment/detailed_visual_report/`,
   },
   classworkReport: {
@@ -652,93 +757,38 @@ export default {
     periodType: '/period/period_type/',
     paticipantsList: 'period/participants-list/',
     createPeriod: '/period/create-period/',
-    getAttendance: "/period/<period-id>/attendance-list/",
-    updateAttendance: "/period/<period-id>/update-attendance/",
-    updateAttendanceStudent: "/period/<period-id>/update-attendance_by_student/",
+    getAttendance: '/period/<period-id>/attendance-list/',
+    updateAttendance: '/period/<period-id>/update-attendance/',
+    updateAttendanceStudent: '/period/<period-id>/update-attendance_by_student/',
     getSubject: '/erp_user/sub-sec-list/',
     getTopicDetails: '/period/topic-content/',
     createPeriodAPI: '/period/create-period-classwork/',
     confirmAttendance: '/period/',
-    retrieveTeacherDetails:'/period/teacher_retrieve_period_details/',
-    retrieveStudentDetails:'/period/student_retrieve_period_details/',
+    retrieveTeacherDetails: '/period/teacher_retrieve_period_details/',
+    retrieveStudentDetails: '/period/student_retrieve_period_details/',
     retrieveVolumeDetails: `${baseURLCentral}/lesson_plan/list-volume/`,
-    periodV2 : 'period/calendar-v2/',
-    pendingListmpquiz : '/period/mpq-quiz-pending-list/',
-    fetchSubmittedQuizList: `${baseURLMPQ}/qbox/multi-player-quiz/quiz-attended-details/`
+    periodV2: 'period/calendar-v2/',
+    pendingListmpquiz: '/period/mpq-quiz-pending-list/',
+    fetchSubmittedQuizList: `${baseURLMPQ}/qbox/multi-player-quiz/quiz-attended-details/`,
   },
 
   lessonPlanTabs: {
     topicData: '/period/topic-content/',
     previousData: 'period/<tempfile-id>/custom-resource/',
     postData: 'academic/upload-question-file/',
+    uploadData: '/academic/dairy-upload/',
     postData2: 'period/custom-resource/',
     getData2: 'period/<file-id>/custom-resource/',
     confirmAttendance: '/period/',
-    getCwDetails: '/period/<period_classowrk_id>/get-update-period-classwork/'
+    getCwDetails: '/period/<period_classowrk_id>/get-update-period-classwork/',
   },
   staff: {
     staffStats: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-role-staff-wise-stats/`,
-    staffAttandance : `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-wise-stats/`,
+    staffAttandance: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-wise-stats/`,
     staffWiseStates: `${msReportsUrl}/api/acad_performance/v1/staff_att/staff-wise-stats/`,
     staffRoleStates: `${msReportsUrl}/api/acad_performance/v1/staff_att/role-wise-stats/`,
   },
-  ownerDashboard:{
-    // gradeWiseStudentAttendanceState : `${`https://tiny-newt-42.loca.lt`}/api/acad_performance/v1/attendance/grade-wise-stats/`,
-    gradeWiseStudentAttendanceState : `${msReportsUrl}/api/acad_performance/v1/attendance/grade-wise-stats/`,
-    subjectWiseStudentAttendanceState : `${msReportsUrl}/api/acad_performance/v1/attendance/subject-wise-stats/`,
-    studentWiseStudentAttendanceState : `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-stats/`,
-    studentWiseMoreAbsentStudentAttendanceState : `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-absence-stats/`,
-    subjectWiseTestStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/test/subject-wise-stats/`,
-    studentWiseTestStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/test/student-wise-stats/`,
-    subjectWiseHomeworkStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/homework/subject-wise-stats/`,
-    studentWiseHomeworkStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/homework/student-wise-stats/`,
-    subjectWiseClassworkStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/classwork/subject-wise-stats/`,
-    studentWiseClassworkStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/classwork/student-wise-stats/`,
-    subjectWiseClassParticipationStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/class_part/subject-wise-stats/`,
-    studentWiseClassParticipationStudentReportStat : `${msReportsUrl}/api/acad_performance/v1/class_part/student-wise-stats/`,
 
-
-    //curriculumReport
-    curriculumGradeReport:`${msReportsUrl}/api/acad_performance/v1/curriculum-stats-grade/`,
-    curriculumGradeSubjectReport:`${msReportsUrl}/api/acad_performance/v1/curriculum-stats-section/`,
-    curriculumGradeList:`${baseURL}/assessment/subjects-list/`,
-    curriculumChapterList: `${msReportsUrl}/api/acad_performance/v1/academic-topic-status/`,
-    subjectListGradeFilter:`${baseURL}/academic/lesson-plan-subjects/`,
-    sectionCheckTableData: `${msReportsUrl}/acad_performance/v1/academic-topic-status/`,
-
-    // feesStatus
-    getTotalReceiptStatus: `${baseFinanceURL}/apiV1/today-wise-fees--list/`,
-    getFeesForAllBranch: `${baseFinanceURL}/apiV1/branch-wise-fees--list/`,
-    feesDetailsStudentWise:`${baseFinanceURL}/apiV1/student-wise-fees--list/`,
-    typeFeesData: `${baseFinanceURL}/apiV1/fee-type-fees/`,
-    transactionAllType: `${baseFinanceURL}/apiV1/today-all-transactions-list/`,
-
-    // student attendance
-    getStudentAttendance : `/api/acad_performance/v1/attendance/branch-wise-stats/`,
-    getStaffDetails: `/api/acad_performance/v1/staff_att/all-staff-stats/`,
-    getFinanceDetails: `${baseFinanceURL}/apiV1/session-wise-fees--list/`,
-    getAvgTest : `/api/acad_performance/v1/student_report/combined-branch-wise-stats/`,
-    getCurrReport : `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-branch/`,
-    getAllBranchCurr : `/api/acad_performance/v1/curriculum-stats-branch-all/`,
-    getPaymentType: `${baseFinanceURL}/apiV1/fee-types-list/`,
-    subTabData: `${baseFinanceURL}/apiV1/fee-type-fees/`,
-    transactionDetailsTab:`${baseFinanceURL}/apiV1/all_payment_types/`,
-    gradeListFeesDetails: `${baseFinanceURL}/apiV1/grade-wise-fees--list/`,
-    sectionListFeesDetails: `${baseFinanceURL}/apiV1/section-wise-fees--list/`,
-    getTestData : `${msReportsUrl}/api/acad_performance/v1/test/grade-stats/`,
-    getCWData : `${msReportsUrl}/api/acad_performance/v1/classwork/branch-wise-stats/`,
-    getHWData : `${msReportsUrl}/api/acad_performance/v1/homework/grade-wise-stats/`,
-    getCPData : `${msReportsUrl}/api/acad_performance/v1/class_part/grade-stats/`,
-    getRecentTransaction : `${baseFinanceURL}/apiV1/today-recent-transactions/`,
-
-    // section wise report
-
-    getTestSection : `${msReportsUrl}/api/acad_performance/v1/test/grade-wise-stats/`,
-    getCwSection : `${msReportsUrl}/api/acad_performance/v1/classwork/branch-wise-stats/`,
-    getHwSection : `${msReportsUrl}/api/acad_performance/v1/homework/grade-wise-stats/`,
-    getCpSection : `${msReportsUrl}/api/acad_performance/v1/class_part/grade-wise-stats/`,
-    
-  },
   connectionPod: {
     getStudentList: '/course_extend/students_list/',
     getTeacherList: '/course_extend/teachers_list/',

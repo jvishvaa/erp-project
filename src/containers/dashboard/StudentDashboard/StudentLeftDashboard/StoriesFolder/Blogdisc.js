@@ -135,7 +135,8 @@ const Blogdisc = (props) => {
                   role_branch={blogandd?.author?.branch}
                   time={blogandd?.relative_time}
                   // data={ReactHtmlParser(blogandd.description)}
-                  data={extractContent(blogandd?.description)}
+                  // data={extractContent(blogandd?.description)}
+                  data={blogandd?.description}
                   img={blogandd?.media_content?.images}
                   blogtitle={blogandd?.title}
                   likes={blogandd?.action_counts?.likes_count}
