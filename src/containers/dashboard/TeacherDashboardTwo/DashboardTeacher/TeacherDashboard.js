@@ -229,9 +229,9 @@ function TeacherDashboard() {
                       <Grid item xs={12}>
                         <CurriculumCompletionNew curriculumDetail={curriculumDetail} />
                       </Grid>
-                      <Grid item xs={12}>
+                      {/* <Grid item xs={12}>
                         <TrainingReportNew />
-                      </Grid>
+                      </Grid> */}
                     </Grid>
                   </Grid>
                 </Grid>
