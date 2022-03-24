@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useContext, useState, useEffect } from 'react';
 import {
   Grid,
@@ -350,7 +349,7 @@ const FinanceOwnerDashboard = (props) => {
     //       },
     //     }
     //   )
-    apiRequest('get',`${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}` , null ,null , true , 10000)
+    apiRequest('get', `${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}`, null, null, true, 10000)
       .then((res) => {
         console.log(res, 'stureport');
         setStudentReportData(res.data.result);
@@ -369,7 +368,7 @@ const FinanceOwnerDashboard = (props) => {
     //       Authorization: `Bearer ${token}`,
     //     },
     //   })
-      apiRequest('get',`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${acad}` , null ,null , true ,10000)
+    apiRequest('get', `${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${acad}`, null, null, true, 10000)
       .then((res) => {
         console.log(res, 'avgport');
         setTestScoreData(res.data.result);
@@ -502,183 +501,183 @@ const FinanceOwnerDashboard = (props) => {
                 />
                 <Divider />
                 <CardContent>
-                <>
-                  { props?.progress1?.attendence ? <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}><CircularProgress /></div> :
                   <>
-                  {props?.todayCounter ? (
-                    <Grid container spacing={2}>
-                      {props?.roleWiseAttendance?.length > 0 &&
-                        props?.roleWiseAttendance.map((each, index) => (
-                          <Grid item xs={3}>
-                            <div
-                              className={clsx(classes.detailsDiv, classes.applyBorder)}
-                            >
-                              <div>
-                                <Typography
-                                  className={clsx(classes.roleStyle)}
-                                  variant='body2'
-                                >
-                                  <b>{each.role_name}</b>
-                                </Typography>
-                                <Typography
-                                  className={clsx(classes.fontDesign)}
-                                  variant='body2'
-                                >
-                                  <b>Total : {each?.total_people}</b>
-                                </Typography>
-                                <Typography
-                                  className={clsx(classes.fontDesign, classes.fontColor3)}
-                                  variant='body2'
-                                >
-                                  <b>Present : {each?.total_present}</b>
-                                </Typography>
-                                <Typography
-                                  className={clsx(classes.fontDesign, classes.fontColor2)}
-                                  variant='caption'
-                                >
-                                  <b>Absent : {each?.total_absent}</b>
-                                </Typography>
-                              </div>
-                              <div className={clsx(classes.cuirularButton)}>
-                                <Box
-                                  sx={{ position: 'relative', display: 'inline-flex' }}
-                                >
-                                  <CircularProgress
-                                    variant='determinate'
-                                    value={each?.percentage_present}
-                                  />
-                                  <Box
-                                    sx={{
-                                      top: 0,
-                                      left: 0,
-                                      bottom: 0,
-                                      right: 0,
-                                      position: 'absolute',
-                                      display: 'flex',
-                                      alignItems: 'center',
-                                      justifyContent: 'center',
-                                    }}
+                    {props?.progress1?.attendence ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CircularProgress /></div> :
+                      <>
+                        {props?.todayCounter ? (
+                          <Grid container spacing={2}>
+                            {props?.roleWiseAttendance?.length > 0 &&
+                              props?.roleWiseAttendance.map((each, index) => (
+                                <Grid item xs={3}>
+                                  <div
+                                    className={clsx(classes.detailsDiv, classes.applyBorder)}
                                   >
-                                    <Typography
-                                      variant='caption'
-                                      component='div'
-                                      color='text.secondary'
-                                    >
-                                      {`${Math.round(each?.percentage_present)}%`}
-                                    </Typography>
-                                  </Box>
-                                </Box>
-                                <IconButton size='small'>
-                                  <ArrowRightAltIcon />
-                                </IconButton>
-                              </div>
-                            </div>
-                          </Grid>
-                        ))}
+                                    <div>
+                                      <Typography
+                                        className={clsx(classes.roleStyle)}
+                                        variant='body2'
+                                      >
+                                        <b>{each.role_name}</b>
+                                      </Typography>
+                                      <Typography
+                                        className={clsx(classes.fontDesign)}
+                                        variant='body2'
+                                      >
+                                        <b>Total : {each?.total_people}</b>
+                                      </Typography>
+                                      <Typography
+                                        className={clsx(classes.fontDesign, classes.fontColor3)}
+                                        variant='body2'
+                                      >
+                                        <b>Present : {each?.total_present}</b>
+                                      </Typography>
+                                      <Typography
+                                        className={clsx(classes.fontDesign, classes.fontColor2)}
+                                        variant='caption'
+                                      >
+                                        <b>Absent : {each?.total_absent}</b>
+                                      </Typography>
+                                    </div>
+                                    <div className={clsx(classes.cuirularButton)}>
+                                      <Box
+                                        sx={{ position: 'relative', display: 'inline-flex' }}
+                                      >
+                                        <CircularProgress
+                                          variant='determinate'
+                                          value={each?.percentage_present}
+                                        />
+                                        <Box
+                                          sx={{
+                                            top: 0,
+                                            left: 0,
+                                            bottom: 0,
+                                            right: 0,
+                                            position: 'absolute',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                          }}
+                                        >
+                                          <Typography
+                                            variant='caption'
+                                            component='div'
+                                            color='text.secondary'
+                                          >
+                                            {`${Math.round(each?.percentage_present)}%`}
+                                          </Typography>
+                                        </Box>
+                                      </Box>
+                                      <IconButton size='small'>
+                                        <ArrowRightAltIcon />
+                                      </IconButton>
+                                    </div>
+                                  </div>
+                                </Grid>
+                              ))}
 
-                      <Grid item xs={3}>
-                        <div className={clsx(classes.detailsDiv, classes.applyBorder)}>
-                          <div>
-                            <Typography
-                              className={clsx(classes.roleStyle)}
-                              variant='body2'
-                            >
-                              <b>Students</b>
-                            </Typography>
-                            <Typography
-                              className={clsx(classes.fontDesign)}
-                              variant='body2'
-                            >
-                              <b>
-                                Total :{' '}
-                                {/* {props?.studentAttendance
+                            <Grid item xs={3}>
+                              <div className={clsx(classes.detailsDiv, classes.applyBorder)}>
+                                <div>
+                                  <Typography
+                                    className={clsx(classes.roleStyle)}
+                                    variant='body2'
+                                  >
+                                    <b>Students</b>
+                                  </Typography>
+                                  <Typography
+                                    className={clsx(classes.fontDesign)}
+                                    variant='body2'
+                                  >
+                                    <b>
+                                      Total :{' '}
+                                      {/* {props?.studentAttendance
                                   ? props?.studentAttendance?.total_strength
                                   : ''} */}
-                                {isNaN(
-                                  props?.studentAttendance?.total_strength
-                                )
-                                  ? 0
-                                  : Math.round(props?.studentAttendance?.total_strength)}
-                              </b>
-                            </Typography>
-                            <Typography
-                              className={clsx(classes.fontDesign, classes.fontColor3)}
-                              variant='body2'
-                            >
-                              <b>
-                                Present :{' '}
-                                {isNaN(
-                                  props?.studentAttendance?.total_present
-                                  
-                                  ) 
-                                  ? 0
-                                  : Math.round(props?.studentAttendance?.total_present)}
-                              </b>
-                            </Typography>
-                            <Typography
-                              className={clsx(classes.fontDesign, classes.fontColor2)}
-                              variant='caption'
-                            >
-                              <b>
-                                Absent :{' '}
-                                {/* {props?.studentAttendance
+                                      {isNaN(
+                                        props?.studentAttendance?.total_strength
+                                      )
+                                        ? 0
+                                        : Math.round(props?.studentAttendance?.total_strength)}
+                                    </b>
+                                  </Typography>
+                                  <Typography
+                                    className={clsx(classes.fontDesign, classes.fontColor3)}
+                                    variant='body2'
+                                  >
+                                    <b>
+                                      Present :{' '}
+                                      {isNaN(
+                                        props?.studentAttendance?.total_present
+
+                                      )
+                                        ? 0
+                                        : Math.round(props?.studentAttendance?.total_present)}
+                                    </b>
+                                  </Typography>
+                                  <Typography
+                                    className={clsx(classes.fontDesign, classes.fontColor2)}
+                                    variant='caption'
+                                  >
+                                    <b>
+                                      Absent :{' '}
+                                      {/* {props?.studentAttendance
                                   ? props?.studentAttendance?.total_strength -
                                   props?.studentAttendance?.total_present
                                   : ''} */}
 
-                                {isNaN(
-                                  props?.studentAttendance?.total_strength - props?.studentAttendance?.total_present
-                                )
-                                  ? 0
-                                  : Math.round(props?.studentAttendance?.total_strength - props?.studentAttendance?.total_present)}
-                              </b>
-                            </Typography>
-                          </div>
-                          <div className={clsx(classes.cuirularButton)}>
-                            <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-                              <CircularProgress
-                                variant='determinate'
-                                value={props?.studentAttendance?.total_avg}
-                              />
-                              <Box
-                                sx={{
-                                  top: 0,
-                                  left: 0,
-                                  bottom: 0,
-                                  right: 0,
-                                  position: 'absolute',
-                                  display: 'flex',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                }}
-                              >
-                                <Typography
-                                  variant='caption'
-                                  component='div'
-                                  color='text.secondary'
-                                >
-                                  {isNaN(
-                                    props?.studentAttendance?.total_avg
-                                  )
-                                    ? 0
-                                    : Math.round(props?.studentAttendance?.total_avg)}%
-                                </Typography>
-                              </Box>
-                            </Box>
-                            <IconButton size='small'>
-                              <ArrowRightAltIcon />
-                            </IconButton>
-                          </div>
-                        </div>
-                      </Grid>
-                    </Grid>
-                  ) : (
-                    <Grid style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
-                      <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
-                      <Typography style={{ fontWeight: '600' }}>No Records</Typography>
-                    </Grid>
-                  )}
-                  </>}
+                                      {isNaN(
+                                        props?.studentAttendance?.total_strength - props?.studentAttendance?.total_present
+                                      )
+                                        ? 0
+                                        : Math.round(props?.studentAttendance?.total_strength - props?.studentAttendance?.total_present)}
+                                    </b>
+                                  </Typography>
+                                </div>
+                                <div className={clsx(classes.cuirularButton)}>
+                                  <Box sx={{ position: 'relative', display: 'inline-flex' }}>
+                                    <CircularProgress
+                                      variant='determinate'
+                                      value={props?.studentAttendance?.total_avg}
+                                    />
+                                    <Box
+                                      sx={{
+                                        top: 0,
+                                        left: 0,
+                                        bottom: 0,
+                                        right: 0,
+                                        position: 'absolute',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                      }}
+                                    >
+                                      <Typography
+                                        variant='caption'
+                                        component='div'
+                                        color='text.secondary'
+                                      >
+                                        {isNaN(
+                                          props?.studentAttendance?.total_avg
+                                        )
+                                          ? 0
+                                          : Math.round(props?.studentAttendance?.total_avg)}%
+                                      </Typography>
+                                    </Box>
+                                  </Box>
+                                  <IconButton size='small'>
+                                    <ArrowRightAltIcon />
+                                  </IconButton>
+                                </div>
+                              </div>
+                            </Grid>
+                          </Grid>
+                        ) : (
+                          <Grid style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+                            <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                            <Typography style={{ fontWeight: '600' }}>No Records</Typography>
+                          </Grid>
+                        )}
+                      </>}
                   </>
                 </CardContent>
               </Card>
@@ -744,142 +743,142 @@ const FinanceOwnerDashboard = (props) => {
                 />
                 <Divider />
                 <CardContent>
-                <>
-                  {props?.progress1?.feeStatus ? <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}><CircularProgress /></div>: <>
-                  {props?.financeData?.totalfees ? (
-                    <Grid container spacing={3} alignItems='center'>
-                      <Grid item xs={12}>
-                        <Typography
-                          // variant='h6'
-                          // style={{ textAlign: 'end' }}
-                          className={clsx(classes.textBold, classes.textAlignCenter)}
-                        >
-                          Total Fee{' '}
-                          <b
-                            style={{
-                              color: '#628fef',
-                              fontWeight: '800',
-                              marginLeft: '10px',
-                            }}
-                          >
-                            ₹ {props?.financeData ? Math.round(props?.financeData?.totalfees).toLocaleString() : ''}
-                          </b>
-                        </Typography>
-                        {/* <Typography
+                  <>
+                    {props?.progress1?.feeStatus ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CircularProgress /></div> : <>
+                      {props?.financeData?.totalfees ? (
+                        <Grid container spacing={3} alignItems='center'>
+                          <Grid item xs={12}>
+                            <Typography
+                              // variant='h6'
+                              // style={{ textAlign: 'end' }}
+                              className={clsx(classes.textBold, classes.textAlignCenter)}
+                            >
+                              Total Fee{' '}
+                              <b
+                                style={{
+                                  color: '#628fef',
+                                  fontWeight: '800',
+                                  marginLeft: '10px',
+                                }}
+                              >
+                                ₹ {props?.financeData ? Math.round(props?.financeData?.totalfees).toLocaleString() : ''}
+                              </b>
+                            </Typography>
+                            {/* <Typography
                         // variant='h5'
                         color='primary'
                         className={clsx(classes.textBold)}
                       >
                         ₹ 170,00,000
                       </Typography> */}
-                      </Grid>
+                          </Grid>
 
-                      <Grid item xs={4}>
-                        <Card elevation={0}>
-                          <CardContent className={clsx(classes.cardContant)}>
-                            <Typography
-                              // variant='body2'
-                              // className={classes.textAlignCenter,classes.cus}
-                              className={clsx(
-                                classes.textAlignCenter,
-                                classes.customTextSize
-                              )}
-                            >
-                              Total Collected
-                            </Typography>
-                            <div className={clsx(classes.lookALikeButton)}>
-                              <Typography
-                                variant='body2'
-                                className={clsx(
-                                  classes.textAlignCenter,
-                                  classes.textBold,
-                                  classes.colorGreen,
-                                  classes.customTextSize
-                                )}
-                              >
-                                ₹ { props?.financeData ? Math.round(props?.financeData?.paid).toLocaleString() : ''}
-                              </Typography>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Card elevation={0}>
-                          <CardContent className={clsx(classes.cardContant)}>
-                            <Typography
-                              variant='body2'
-                              // className={classes.textAlignCenter}
-                              className={clsx(
-                                classes.customTextSize,
-                                classes.textAlignCenter
-                              )}
-                            >
-                              Total Pending
-                            </Typography>
-                            <div className={clsx(classes.lookALikeButton)}>
-                              <Typography
-                                variant='body2'
-                                className={clsx(
-                                  classes.textAlignCenter,
-                                  classes.textBold,
-                                  classes.colorRed,
-                                  classes.customTextSize
-                                )}
-                              >
-                                ₹{' '}
-                                {props?.financeData
-                                  ? Math.round(props?.financeData?.outstanding).toLocaleString()
-                                  : ''}
-                              </Typography>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </Grid>
-                      <Grid item xs={4}>
-                        <Card elevation={0}>
-                          <CardContent className={clsx(classes.cardContant)}>
-                            <Typography
-                              variant='body2'
-                              className={classes.textAlignCenter}
-                            >
-                              Total Admissions
-                            </Typography>
-                            <div className={clsx(classes.lookALikeButton)}>
-                              <Typography
-                                variant='body2'
-                                className={clsx(
-                                  classes.textAlignCenter,
-                                  classes.textBold,
-                                  classes.colorYellow,
-                                  classes.customTextSize
-                                )}
-                              >
-                                {props?.financeData
-                                  ? Math.round(props?.financeData?.no_of_admission).toLocaleString()
-                                  : ''}
-                              </Typography>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      </Grid>
-                    </Grid>
-                  ) : (
-                    <Grid
-                      style={{ minHeight: '180px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
-                    >
-                      <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
-                      {user_level != 10 ? (
-                      <Typography style={{ fontWeight: '600' }}>
-                        No Records
-                      </Typography>
+                          <Grid item xs={4}>
+                            <Card elevation={0}>
+                              <CardContent className={clsx(classes.cardContant)}>
+                                <Typography
+                                  // variant='body2'
+                                  // className={classes.textAlignCenter,classes.cus}
+                                  className={clsx(
+                                    classes.textAlignCenter,
+                                    classes.customTextSize
+                                  )}
+                                >
+                                  Total Collected
+                                </Typography>
+                                <div className={clsx(classes.lookALikeButton)}>
+                                  <Typography
+                                    variant='body2'
+                                    className={clsx(
+                                      classes.textAlignCenter,
+                                      classes.textBold,
+                                      classes.colorGreen,
+                                      classes.customTextSize
+                                    )}
+                                  >
+                                    ₹ {props?.financeData ? Math.round(props?.financeData?.paid).toLocaleString() : ''}
+                                  </Typography>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </Grid>
+                          <Grid item xs={4}>
+                            <Card elevation={0}>
+                              <CardContent className={clsx(classes.cardContant)}>
+                                <Typography
+                                  variant='body2'
+                                  // className={classes.textAlignCenter}
+                                  className={clsx(
+                                    classes.customTextSize,
+                                    classes.textAlignCenter
+                                  )}
+                                >
+                                  Total Pending
+                                </Typography>
+                                <div className={clsx(classes.lookALikeButton)}>
+                                  <Typography
+                                    variant='body2'
+                                    className={clsx(
+                                      classes.textAlignCenter,
+                                      classes.textBold,
+                                      classes.colorRed,
+                                      classes.customTextSize
+                                    )}
+                                  >
+                                    ₹{' '}
+                                    {props?.financeData
+                                      ? Math.round(props?.financeData?.outstanding).toLocaleString()
+                                      : ''}
+                                  </Typography>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </Grid>
+                          <Grid item xs={4}>
+                            <Card elevation={0}>
+                              <CardContent className={clsx(classes.cardContant)}>
+                                <Typography
+                                  variant='body2'
+                                  className={classes.textAlignCenter}
+                                >
+                                  Total Admissions
+                                </Typography>
+                                <div className={clsx(classes.lookALikeButton)}>
+                                  <Typography
+                                    variant='body2'
+                                    className={clsx(
+                                      classes.textAlignCenter,
+                                      classes.textBold,
+                                      classes.colorYellow,
+                                      classes.customTextSize
+                                    )}
+                                  >
+                                    {props?.financeData
+                                      ? Math.round(props?.financeData?.no_of_admission).toLocaleString()
+                                      : ''}
+                                  </Typography>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </Grid>
+                        </Grid>
                       ) : (
-                        <Typography style={{ fontWeight: '600' }}>
-                        Access Denied
-                      </Typography>
+                        <Grid
+                          style={{ minHeight: '180px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                        >
+                          <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                          {user_level != 10 ? (
+                            <Typography style={{ fontWeight: '600' }}>
+                              No Records
+                            </Typography>
+                          ) : (
+                            <Typography style={{ fontWeight: '600' }}>
+                              Access Denied
+                            </Typography>
+                          )}
+                        </Grid>
                       )}
-                    </Grid>
-                  )}
-                  </>}
+                    </>}
                   </>
                 </CardContent>
               </Card>
@@ -894,13 +893,13 @@ const FinanceOwnerDashboard = (props) => {
                   }
                   action={
                     user_level != 10 ? (
-                    <Button
-                      className={clsx(classes.viewButton)}
-                      aria-label='view all'
-                      onClick={props.handlerecent}
-                    >
-                      <RefreshIcon style={{ color: 'blue' }} />
-                    </Button>
+                      <Button
+                        className={clsx(classes.viewButton)}
+                        aria-label='view all'
+                        onClick={props.handlerecent}
+                      >
+                        <RefreshIcon style={{ color: 'blue' }} />
+                      </Button>
                     ) : ''
                   }
                 ></CardHeader>
@@ -913,52 +912,52 @@ const FinanceOwnerDashboard = (props) => {
                   }}
                 >
                   <>
-                  {props?.progress1?.tranction ? <div style={{display:'flex', alignItems:'center', justifyContent:'center', width: '100%'}}><CircularProgress /></div>: <>
-                  {props?.recentTransCounter ? (
-                    <Grid container spacing={3} alignItems='center'>
-                      {props?.recentTrans &&
-                        props?.recentTrans?.map((each, index) => {
-                          return (
-                            <>
-                              <Grid
-                                item
-                                xs={12}
-                                className={clsx(classes.transactionTable)}
-                              >
-                                <Grid item md={1}>
-                                  <MonetizationOnIcon />
-                                </Grid>
-                                <Grid item md={8}>
-                                  <Typography
-                                    variant='body2'
-                                    className={clsx(classes.transactionTextDesign)}
+                    {props?.progress1?.tranction ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}><CircularProgress /></div> : <>
+                      {props?.recentTransCounter ? (
+                        <Grid container spacing={3} alignItems='center'>
+                          {props?.recentTrans &&
+                            props?.recentTrans?.map((each, index) => {
+                              return (
+                                <>
+                                  <Grid
+                                    item
+                                    xs={12}
+                                    className={clsx(classes.transactionTable)}
                                   >
-                                    Deposition in the bank <b>{each?.mode}</b>
-                                  </Typography>
-                                  <Typography
-                                    variant='body2'
-                                    className={clsx(classes.transactionTextDesign)}
-                                  >
-                                    Branch Name {each?.branch}
-                                  </Typography>
-                                </Grid>
-                                <Grid item md={3}>
-                                  <Typography
-                                    variant='body2'
-                                    className={clsx(classes.transactionTextDesignGray)}
-                                  >
-                                    {each?.date}
-                                  </Typography>
-                                  <Typography
-                                    variant='body2'
-                                    className={clsx(classes.transactionTextDesignLeft)}
-                                  >
-                                    <b>₹ {Math.round(each?.amount).toLocaleString()} </b>
-                                  </Typography>
-                                </Grid>
-                              </Grid>
+                                    <Grid item md={1}>
+                                      <MonetizationOnIcon />
+                                    </Grid>
+                                    <Grid item md={8}>
+                                      <Typography
+                                        variant='body2'
+                                        className={clsx(classes.transactionTextDesign)}
+                                      >
+                                        Deposition in the bank <b>{each?.mode}</b>
+                                      </Typography>
+                                      <Typography
+                                        variant='body2'
+                                        className={clsx(classes.transactionTextDesign)}
+                                      >
+                                        Branch Name {each?.branch}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid item md={3}>
+                                      <Typography
+                                        variant='body2'
+                                        className={clsx(classes.transactionTextDesignGray)}
+                                      >
+                                        {each?.date}
+                                      </Typography>
+                                      <Typography
+                                        variant='body2'
+                                        className={clsx(classes.transactionTextDesignLeft)}
+                                      >
+                                        <b>₹ {Math.round(each?.amount).toLocaleString()} </b>
+                                      </Typography>
+                                    </Grid>
+                                  </Grid>
 
-                              {/* <Grid item xs={12}
+                                  {/* <Grid item xs={12}
                       className={clsx(classes.viewButtonAlign)}
                     >
                       <Button
@@ -971,29 +970,29 @@ const FinanceOwnerDashboard = (props) => {
                       </Button>
 
                     </Grid> */}
-                            </>
-                          );
-                        })}
-                    </Grid>
-                  ) : (
-                    <Grid
-                      style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                        margin: 'auto',
-                        alignItems: 'center',
-                        flexDirection: 'column'
-
-                      }}
-                    >
-                      <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
-                      {user_level != 10 ? (
-                      <Typography style={{ fontWeight: '600' }}>No Records</Typography>
+                                </>
+                              );
+                            })}
+                        </Grid>
                       ) : (
-                      <Typography style={{ fontWeight: '600' }}>Access Denied</Typography>
-                      )}
-                    </Grid>
-                  )}</>}
+                        <Grid
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            margin: 'auto',
+                            alignItems: 'center',
+                            flexDirection: 'column'
+
+                          }}
+                        >
+                          <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                          {user_level != 10 ? (
+                            <Typography style={{ fontWeight: '600' }}>No Records</Typography>
+                          ) : (
+                            <Typography style={{ fontWeight: '600' }}>Access Denied</Typography>
+                          )}
+                        </Grid>
+                      )}</>}
                   </>
                 </CardContent>
               </Card>
@@ -1061,57 +1060,57 @@ const FinanceOwnerDashboard = (props) => {
                       }}
                     >
                       <>
-                      {props?.progress1?.academic ? <div style={{display:'flex', alignItems:'center', justifyContent:'center'}}><CircularProgress /></div>: <>
-                      {props?.acadCounter ? (
-                        <Grid container spacing={3} alignItems='center'>
-                          <Grid
-                            item
-                            xs={12}
-                            style={{ borderRadius: '5px', backgroundColor: '#ffd4d9' , minHeight: '75px' }}
-                          >
-                            <div className={clsx(classes.absentGrid)}>
-                              <div style={{ width: '53%' }}>
-                                <Typography
-                                  variant='body2'
-                                  className={clsx(classes.customTextSize)}
-                                >
-                                  Curriculum Completion
-                                </Typography>
-                              </div>
-                              <div style={{ width: '33%', textAlign: 'center' }}>
-                                <Typography variant='body2'>
-                                  ------------------
-                                </Typography>
-                              </div>
-                              <div
-                                style={{
-                                  width: '13%',
-                                  display: 'flex',
-                                  fontWeight: 'bolder',
-                                }}
+                        {props?.progress1?.academic ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CircularProgress /></div> : <>
+                          {props?.acadCounter ? (
+                            <Grid container spacing={3} alignItems='center'>
+                              <Grid
+                                item
+                                xs={12}
+                                style={{ borderRadius: '5px', backgroundColor: '#ffd4d9', minHeight: '75px' }}
                               >
-                                <Typography style={{ fontSize: '15px' }}>
-                                  <b>
-                                    {props?.currBranch?.length > 0 ? (
-                                      <>
-                                        {' '}
-                                        {`${Math.round(
-                                          props?.currBranch[0]?.percentage_completed
-                                        )}%`}
-                                      </>
-                                    ) : (
-                                      <>0%</>
-                                    )}
-                                  </b>
-                                </Typography>
-                                <IconButton aria-label='delete' size='small'>
-                                  <DeleteIcon fontSize='inherit' />
-                                </IconButton>
-                              </div>
-                            </div>
-                          </Grid>
+                                <div className={clsx(classes.absentGrid)}>
+                                  <div style={{ width: '53%' }}>
+                                    <Typography
+                                      variant='body2'
+                                      className={clsx(classes.customTextSize)}
+                                    >
+                                      Curriculum Completion
+                                    </Typography>
+                                  </div>
+                                  <div style={{ width: '33%', textAlign: 'center' }}>
+                                    <Typography variant='body2'>
+                                      ------------------
+                                    </Typography>
+                                  </div>
+                                  <div
+                                    style={{
+                                      width: '13%',
+                                      display: 'flex',
+                                      fontWeight: 'bolder',
+                                    }}
+                                  >
+                                    <Typography style={{ fontSize: '15px' }}>
+                                      <b>
+                                        {props?.currBranch?.length > 0 ? (
+                                          <>
+                                            {' '}
+                                            {`${Math.round(
+                                              props?.currBranch[0]?.percentage_completed
+                                            )}%`}
+                                          </>
+                                        ) : (
+                                          <>0%</>
+                                        )}
+                                      </b>
+                                    </Typography>
+                                    <IconButton aria-label='delete' size='small'>
+                                      <DeleteIcon fontSize='inherit' />
+                                    </IconButton>
+                                  </div>
+                                </div>
+                              </Grid>
 
-                          {/* <Grid
+                              {/* <Grid
                             item
                             xs={12}
                             style={{
@@ -1162,68 +1161,68 @@ const FinanceOwnerDashboard = (props) => {
                             </div>
                           </Grid> */}
 
-                          <Grid
-                            item
-                            xs={12}
-                            style={{
-                              borderRadius: '5px',
-                              backgroundColor: '#fff2cc',
-                              marginTop: '5px',
-                              minHeight: '75px'
-                            }}
-                          >
-                            <div className={clsx(classes.absentGrid)}>
-                              <div style={{ width: '53%' }}>
-                                <Typography
-                                  variant='body2'
-                                  className={clsx(classes.customTextSize)}
-                                >
-                                  Student Attendance Report
-                                </Typography>
-                              </div>
-                              <div style={{ width: '33%', textAlign: 'center' }}>
-                                <Typography variant='body2'>
-                                  ------------------
-                                </Typography>
-                              </div>
-                              <div style={{ width: '13%', display: 'flex' }}>
-                                <Typography className={clsx(classes.customTextSize)}>
-                                  <b>
-                                    {' '}
-                                    {props?.studentAttendanceOverview ? (
-                                      <>
-                                        {isNaN(
-                                          props?.studentAttendanceOverview?.total_avg
-                                        )
-                                          ? 0
-                                          : `${Math.round(props?.studentAttendanceOverview?.total_avg)}%`}
-                                      </>
-                                    ) : (
-                                      <>0%</>
-                                    )}
-                                  </b>
-                                </Typography>
-                                <IconButton aria-label='delete' size='small'>
-                                  <DeleteIcon fontSize='inherit' />
-                                </IconButton>
-                              </div>
-                            </div>
-                          </Grid>
-                        </Grid>
-                      ) : (
-                        <Grid
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            margin: 'auto',
-                            flexDirection: 'column',
-                            alignItems: 'center'
-                          }}
-                        >
-                          <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
-                          <Typography style={{ fontWeight: '600' }}>No Records</Typography>
-                        </Grid>
-                      )}</> }
+                              <Grid
+                                item
+                                xs={12}
+                                style={{
+                                  borderRadius: '5px',
+                                  backgroundColor: '#fff2cc',
+                                  marginTop: '5px',
+                                  minHeight: '75px'
+                                }}
+                              >
+                                <div className={clsx(classes.absentGrid)}>
+                                  <div style={{ width: '53%' }}>
+                                    <Typography
+                                      variant='body2'
+                                      className={clsx(classes.customTextSize)}
+                                    >
+                                      Student Attendance Report
+                                    </Typography>
+                                  </div>
+                                  <div style={{ width: '33%', textAlign: 'center' }}>
+                                    <Typography variant='body2'>
+                                      ------------------
+                                    </Typography>
+                                  </div>
+                                  <div style={{ width: '13%', display: 'flex' }}>
+                                    <Typography className={clsx(classes.customTextSize)}>
+                                      <b>
+                                        {' '}
+                                        {props?.studentAttendanceOverview ? (
+                                          <>
+                                            {isNaN(
+                                              props?.studentAttendanceOverview?.total_avg
+                                            )
+                                              ? 0
+                                              : `${Math.round(props?.studentAttendanceOverview?.total_avg)}%`}
+                                          </>
+                                        ) : (
+                                          <>0%</>
+                                        )}
+                                      </b>
+                                    </Typography>
+                                    <IconButton aria-label='delete' size='small'>
+                                      <DeleteIcon fontSize='inherit' />
+                                    </IconButton>
+                                  </div>
+                                </div>
+                              </Grid>
+                            </Grid>
+                          ) : (
+                            <Grid
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                margin: 'auto',
+                                flexDirection: 'column',
+                                alignItems: 'center'
+                              }}
+                            >
+                              <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                              <Typography style={{ fontWeight: '600' }}>No Records</Typography>
+                            </Grid>
+                          )}</>}
                       </>
                     </CardContent>
                   </Card>
@@ -1293,80 +1292,80 @@ const FinanceOwnerDashboard = (props) => {
                     }}
                   >
                     <>
-                    {props?.progress1?.staffDetails ? <CircularProgress/> : <> 
-                    {props?.staffOverAll[0] ? (
-                      <Grid
-                        container
-                        spacing={3}
-                        alignItems='center'
-                        style={{ overflowX: 'auto', maxHeight: '300px' }}
-                      >
-                        <Grid item sm={12} xs={12}>
-                          <Grid item xs={12}>
-                            <div className={clsx(classes.absentGrid)}>
-                              <div style={{ width: '50%' }}>
-                                <Typography className={clsx(classes.customTextSize)}>
-                                  <b>Overall Attendance</b>
-                                </Typography>
-                              </div>
-                              {/* <div style={{ width: '50%', paddingLeft: '10px', fontSize: '15px', textAlign: 'center' }}>
+                      {props?.progress1?.staffDetails ? <CircularProgress /> : <>
+                        {props?.staffOverAll[0] ? (
+                          <Grid
+                            container
+                            spacing={3}
+                            alignItems='center'
+                            style={{ overflowX: 'auto', maxHeight: '300px' }}
+                          >
+                            <Grid item sm={12} xs={12}>
+                              <Grid item xs={12}>
+                                <div className={clsx(classes.absentGrid)}>
+                                  <div style={{ width: '50%' }}>
+                                    <Typography className={clsx(classes.customTextSize)}>
+                                      <b>Overall Attendance</b>
+                                    </Typography>
+                                  </div>
+                                  {/* <div style={{ width: '50%', paddingLeft: '10px', fontSize: '15px', textAlign: 'center' }}>
                               Absent for more than 3 continuous day
                             </div> */}
-                            </div>
-                          </Grid>
-                        </Grid>
-                        {props?.staffOverAll &&
-                          props?.staffOverAll?.map((item) => (
-                            <Grid item xs={12}>
-                              <div className={clsx(classes.absentGrid)}>
-                                <div style={{ width: '33%' }}>
-                                  <Typography
-                                    variant='body2'
-                                    // className={classes.textAlignCenter}
-                                    className={clsx(
-                                      classes.customTextSize,
-                                      classes.customLeftText
-                                    )}
-                                  >
-                                    {item?.role_name}
-                                  </Typography>
                                 </div>
-                                <div style={{ width: '33%' }}>
-                                  <Typography
-                                    variant='body2'
-                                    className={clsx(
-                                      classes.textAlignCenter,
-                                      classes.textBold,
-                                      classes.colorGreen
-                                    )}
-                                  >
-                                    <b>{`${Math.round(item?.percentage_present)}%`}</b>
-                                  </Typography>
-                                </div>
-                                {/* <div style={{ width: '33%' }}>
+                              </Grid>
+                            </Grid>
+                            {props?.staffOverAll &&
+                              props?.staffOverAll?.map((item) => (
+                                <Grid item xs={12}>
+                                  <div className={clsx(classes.absentGrid)}>
+                                    <div style={{ width: '33%' }}>
+                                      <Typography
+                                        variant='body2'
+                                        // className={classes.textAlignCenter}
+                                        className={clsx(
+                                          classes.customTextSize,
+                                          classes.customLeftText
+                                        )}
+                                      >
+                                        {item?.role_name}
+                                      </Typography>
+                                    </div>
+                                    <div style={{ width: '33%' }}>
+                                      <Typography
+                                        variant='body2'
+                                        className={clsx(
+                                          classes.textAlignCenter,
+                                          classes.textBold,
+                                          classes.colorGreen
+                                        )}
+                                      >
+                                        <b>{`${Math.round(item?.percentage_present)}%`}</b>
+                                      </Typography>
+                                    </div>
+                                    {/* <div style={{ width: '33%' }}>
                             <Button disabled style={{ height: '50%', backgroundColor: '#ffd4d9' }}>
                               {item?.total_absent}
                             </Button>
                           </div> */}
-                              </div>
-                            </Grid>
-                          ))}
-                      </Grid>
-                    ) : (
-                      <Grid
-                        style={{
-                          display: 'flex',
-                          justifyContent: 'center',
-                          margin: 'auto',
-                          alignItems: 'center',
-                          flexDirection: 'column'
-                        }}
-                      >
-                        <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
-                        <Typography style={{ fontWeight: '600' }}>No Records</Typography>
-                      </Grid>
-                    )}
-                    </> }
+                                  </div>
+                                </Grid>
+                              ))}
+                          </Grid>
+                        ) : (
+                          <Grid
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'center',
+                              margin: 'auto',
+                              alignItems: 'center',
+                              flexDirection: 'column'
+                            }}
+                          >
+                            <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                            <Typography style={{ fontWeight: '600' }}>No Records</Typography>
+                          </Grid>
+                        )}
+                      </>}
                     </>
                   </CardContent>
                   {/* </Card> */}
@@ -1438,7 +1437,7 @@ const FinanceOwnerDashboard = (props) => {
                           {expanded && (
                             <AccordionDetails>
                               <div style={{ width: '100%' }}>
-                                <Grid container spacing={2} style={{width : '150%'}} >
+                                <Grid container spacing={2} style={{ width: '150%' }} >
                                   {loading ? (
                                     <Loading />
                                   ) : (

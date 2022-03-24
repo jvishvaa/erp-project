@@ -197,54 +197,57 @@ const AdminDashboard = () => {
   } = reports || {};
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} md={8}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <DashFilterWidget />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <ReportStatsWidget
-              title='Attendance Report'
-              data={attendanceReport}
-              avatar={SpellcheckIcon}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <ReportStatsWidget
-              title='Classwork Report'
-              data={classworkReport}
-              avatar={OndemandVideoIcon}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <ReportStatsWidget
-              title='Homework Report'
-              data={homeworkReport}
-              avatar={MenuBookIcon}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <ReportStatsWidget
-              title='Role Report'
-              data={roleReport}
-              avatar={AssignmentIndIcon}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <ReportStatsWidget
-              title='Referral Report'
-              data={referralReport}
-              avatar={MenuBookIcon}
-            />
-          </Grid>
+    <Grid container>
+      <Grid container xs={12} sm={9} md={9} spacing={2}>
+        <Grid item xs={12} sm={6} md={6}>
+          <DashFilterWidget />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6}>
+          <ReportStatsWidget
+            title='Attendance Report'
+            data={attendanceReport}
+            avatar={SpellcheckIcon}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6}>
+          <ReportStatsWidget
+            title='Classwork Report'
+            data={classworkReport}
+            avatar={OndemandVideoIcon}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6}>
+          <ReportStatsWidget
+            title='Homework Report'
+            data={homeworkReport}
+            avatar={MenuBookIcon}
+          />
+        </Grid>
+        {/* <Grid item xs={12} md={6}>
+          <ReportStatsWidget
+            title='Login Report'
+            data={loginReport}
+            avatar={MenuBookIcon}
+          />
+        </Grid> */}
+        <Grid item xs={12} sm={6} md={6}>
+          <ReportStatsWidget
+            title='Role Report'
+            data={roleReport}
+            avatar={AssignmentIndIcon}
+          />
+        </Grid>
+        <Grid item xs={12} sm={6} md={6}>
+          <ReportStatsWidget
+            title='Referral Report'
+            data={referralReport}
+            avatar={GroupAddIcon}
+          />
         </Grid>
       </Grid>
-      <Grid item xs={0} md={4}>
-        <Grid container spacing={2}>
-          <Grid item xs={0} sm={12} md={12}>
-            <StudentRightDashboard />
-          </Grid>
+      <Grid container xs={0} sm={3} md={3}>
+        <Grid item style={{ marginLeft: "5px"}}>
+          <StudentRightDashboard />
         </Grid>
       </Grid>
     </Grid>

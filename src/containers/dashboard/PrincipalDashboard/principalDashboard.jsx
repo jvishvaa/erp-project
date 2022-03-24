@@ -195,47 +195,31 @@ const PrincipalDashboard = () => {
   } = reports || {};
 
   return (
-    <Grid container spacing={2}>
-      <Grid item xs={12} sm={8} md={8} spacing={2}>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <DashFilterWidget />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <ReportStatsWidget
-              title='Attendance Report'
-              data={attendanceReport}
-              avatar={SpellcheckIcon}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <ReportStatsWidget
-              title='Classwork Report'
-              data={classworkReport}
-              avatar={OndemandVideoIcon}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <ReportStatsWidget
-              title='Homework Report'
-              data={homeworkReport}
-              avatar={MenuBookIcon}
-            />
-          </Grid>
-          { window.location.href.slice(8,10) == "qa" || window.location.href.slice(8,11) == "dev" || window.location.href.slice(8,27) == "orchids.letseduvate" ? 
-          (<Grid item xs={12} md={6}>
-            <ReportStatsWidget title='Blog Report' data={blogReport} avatar={WebAsset} />
-          </Grid>) : 
-          ("")}
-          { window.location.href.slice(8,10) == "qa" || window.location.href.slice(8,11) == "dev" || window.location.href.slice(8,27) == "orchids.letseduvate" ? 
-          (<Grid item xs={12} md={6}>
-            <ReportStatsWidget
-              title='Discussion Forum Report'
-              data={discussionReport}
-              avatar={ForumIcon}
-            />
-          </Grid>) :
-          ("")}
+    <Grid container spacing={1}>
+      <Grid container xs={12} sm={9} md={9} spacing={1}>
+        <Grid item xs={12} md={6}>
+          <DashFilterWidget />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <ReportStatsWidget
+            title='Attendance Report'
+            data={attendanceReport}
+            avatar={SpellcheckIcon}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <ReportStatsWidget
+            title='Classwork Report'
+            data={classworkReport}
+            avatar={OndemandVideoIcon}
+          />
+        </Grid>
+        <Grid item xs={12} md={6}>
+          <ReportStatsWidget
+            title='Homework Report'
+            data={homeworkReport}
+            avatar={MenuBookIcon}
+          />
         </Grid>
         <Grid item xs={12} md={6}>
           <ReportStatsWidget
@@ -246,7 +230,7 @@ const PrincipalDashboard = () => {
         </Grid>
       </Grid>
 
-      <Grid item xs={0} md={4}>
+      <Grid item xs={0} md={3}>
         <Grid container>
           <Grid item>
             <StudentRightDashboard />
