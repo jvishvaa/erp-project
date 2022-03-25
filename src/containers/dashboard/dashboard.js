@@ -33,7 +33,7 @@ const Dashboard = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
   const { erp, username, erp_config } =
     JSON.parse(localStorage.getItem('userDetails')) || [];
-  const [buttonCounter, setButtonCounter] = useState(2)
+  const [buttonCounter, setButtonCounter] = useState(1)
   const checkOldorNew = () => {
     if (!oldDash) {
       setOldDash(true)
