@@ -206,9 +206,9 @@ function TeacherDashboard() {
               Dashboard
             </Typography>
             <Grid container spacing={2}>
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <TodayClass branchdetail={branchDetail} />
-              </Grid>
+              </Grid> */}
               <Grid item xs={12}>
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
