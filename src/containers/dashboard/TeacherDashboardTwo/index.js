@@ -29,7 +29,7 @@ const RoutesIndex = () => {
             <HomeworkClassworkTwo match={match} history={history} />
           )}
         </Route>
-        <Route path={`${match.url}/curriculum/:branchId`} exact>
+        <Route path={`${match.url}/curriculum`} exact>
           {({ match, history }) => (
             <CurriculumCompletionDetails match={match} history={history} />
           )}

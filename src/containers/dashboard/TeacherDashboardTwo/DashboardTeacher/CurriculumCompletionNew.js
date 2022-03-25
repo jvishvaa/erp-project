@@ -42,7 +42,7 @@ function CurriculumCompletionNew({ curriculumDetail }) {
   const history = useHistory();
   const curriculumDetailsHandler = (branchId, acadId) => {
     history.push({
-      pathname: `./teacherdashboards/curriculum/${branchId}`,
+      pathname: `./teacherdashboards/curriculum`,
       state: {
         branchIdMain: branchId,
         acadIdMain: acadId,
