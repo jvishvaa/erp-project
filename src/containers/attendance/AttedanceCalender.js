@@ -752,12 +752,15 @@ const AttedanceCalender = () => {
           setStudentDataAll(null);
           console.log(error);
         });
-
-        axiosInstance
-        .get(
-          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${startDate}&end_date=${endDate}&branch=${studentDetails?.role_details?.branch[0]?.id}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
-        )
-        .then((res) => {
+        
+        let branchIds = studentDetails?.role_details?.branch?.map((branch)=>[branch.id])
+        let gradesId = studentDetails?.role_details?.grades?.map((grade)=>[grade?.grade_id])
+        
+                axiosInstance
+                .get(
+                  `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${startDate}&end_date=${endDate}&branch=${branchIds}&grade=${gradesId}`
+                )
+                .then((res) => {
           console.log(res, 'holiday');
           setHolidayDetails(res.data.holiday_detail);
         })
