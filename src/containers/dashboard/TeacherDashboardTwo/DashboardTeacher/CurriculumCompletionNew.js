@@ -40,9 +40,18 @@ const useStyles = makeStyles((theme) => ({
 
 function CurriculumCompletionNew({ curriculumDetail }) {
   const history = useHistory();
-  const curriculumDetailsHandler = () => {
-    history.push('./teacherdashboards/curriculum_Completion_Details');
+  const curriculumDetailsHandler = (branchId, acadId) => {
+    history.push({
+      pathname: `./teacherdashboards/curriculum/${branchId}`,
+      state: {
+        branchIdMain: branchId,
+        acadIdMain: acadId,
+      },
+    });
+    // const curriculumDetailsHandler = (id) => {
+    //   history.push(`/teacherdashboards/curriculum/${id}`);
   };
+
   // const rows = curriculumDetail;
   const classes = useStyles();
   return (
@@ -116,7 +125,9 @@ function CurriculumCompletionNew({ curriculumDetail }) {
                   {curriculumDetail?.map((row) => (
                     <>
                       <TableRow
-                        onClick={curriculumDetailsHandler}
+                        onClick={() =>
+                          curriculumDetailsHandler(row?.branch_id, row?.acad_session_id)
+                        }
                         key={row?.branch_name}
                         style={{
                           backgroundColor: '#F6F7F8',

@@ -201,7 +201,7 @@ function TeacherDashboard() {
         }}
       >
         <Grid container spacing={2}>
-          <Grid item container xs={9} spacing={2}>
+          <Grid item xs={9}>
             <Typography style={{ fontWeight: '1000', fontSize: '16px' }}>
               Dashboard
             </Typography>
@@ -229,9 +229,9 @@ function TeacherDashboard() {
                       <Grid item xs={12}>
                         <CurriculumCompletionNew curriculumDetail={curriculumDetail} />
                       </Grid>
-                      {/* <Grid item xs={12}>
+                      <Grid item xs={12}>
                         <TrainingReportNew />
-                      </Grid> */}
+                      </Grid>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -239,7 +239,7 @@ function TeacherDashboard() {
             </Grid>
           </Grid>
           {/* RH SIDE code below */}
-          <Grid item container xs={3} spacing={1}>
+          <Grid item xs={3}>
             <StudentRightDashboard />
           </Grid>
         </Grid>

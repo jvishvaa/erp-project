@@ -51,7 +51,14 @@ const TodayClass = withRouter(({ history, branchdetail }) => {
           <Typography
             style={{ marginBottom: '10px', fontWeight: '1000', fontSize: '12px' }}
           >
-            Today's Classes<span>{rows.total_classes}</span>
+            Today's Classes
+            <span>
+              (
+              {rows.reduce((acc, i) => {
+                return acc + i.total_classes;
+              }, 0)}
+              )
+            </span>
           </Typography>
 
           <Grid
