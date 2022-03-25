@@ -200,7 +200,7 @@ function TeacherDashboard() {
           sessionYearId: sessionYearId,
         }}
       >
-        <Grid container spacing={2}>
+        <Grid container spacing={1}>
           <Grid item xs={9}>
             <Typography style={{ fontWeight: '1000', fontSize: '16px' }}>
               Dashboard
@@ -239,7 +239,7 @@ function TeacherDashboard() {
             </Grid>
           </Grid>
           {/* RH SIDE code below */}
-          <Grid item xs={3}>
+          <Grid item xs={3} sm={3} md={3}>
             <StudentRightDashboard />
           </Grid>
         </Grid>

@@ -580,12 +580,16 @@ const EditPeriod = withRouter(({ history, ...props }) => {
           </div>
           <div>
             {isStudent ? '' :
+            <>
+            { cancelData?.ongoing_status == "Completed" ? '' :  
               <Button
                 variant='contained'
                 color='primary'
                 onClick={(e) => cancelPeriod(e)} style={{ display: 'flex', fontSize: '12px' }} >
                Cancel Period
               </Button>
+            }
+              </>
             }
           </div>
         </div>
