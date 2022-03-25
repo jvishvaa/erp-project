@@ -165,12 +165,16 @@ if(isWebview){
 }else{
    url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`
 }
-  
+if(redirectionView === 2){
+  history.push(url)
+} else{
   let link = document.createElement('a')
   link.href = url
   link.target = '_blank'
   link.click()
   link.remove()
+} 
+  
 }
 
 const [isUuid, setIsUuid] = useState(true); 
