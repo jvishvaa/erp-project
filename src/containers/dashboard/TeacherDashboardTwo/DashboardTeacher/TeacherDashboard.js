@@ -49,7 +49,7 @@ function TeacherDashboard() {
     axios
       .get(`${endpoints.teacherDashboardTwo.gradeSectionDetails}?acad_session_id=1`, {
         headers: {
-          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -91,7 +91,7 @@ function TeacherDashboard() {
     axiosInstance
       .get(`${endpoints.teacherDashboardTwo.teacherOverview}?acad_session=${acadId}`, {
         headers: {
-          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -111,7 +111,7 @@ function TeacherDashboard() {
     axios
       .get(`${endpoints.teacherDashboardTwo.curriculumDetails}`, {
         headers: {
-          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -130,7 +130,7 @@ function TeacherDashboard() {
     axios
       .get(`${endpoints.teacherDashboardTwo.attendanceDetails}`, {
         headers: {
-          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -149,7 +149,7 @@ function TeacherDashboard() {
     axios
       .get(`${endpoints.teacherDashboardTwo.branchDetails}?acad_session=${acadId}`, {
         headers: {
-          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },

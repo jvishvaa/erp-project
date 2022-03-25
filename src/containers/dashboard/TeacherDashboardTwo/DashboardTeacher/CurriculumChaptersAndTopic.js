@@ -310,7 +310,7 @@ const ChapterAndTopics = (props) => {
               onClick={handleBack}
               style={{ fontSize: 'larger', cursor: 'pointer' }}
             />
-            Back to curriculam Completion
+            Back to Curriculum Completion
           </div>
         </Grid>
         <Grid xs={12} container direction='row' style={{ padding: '5px' }}></Grid>
