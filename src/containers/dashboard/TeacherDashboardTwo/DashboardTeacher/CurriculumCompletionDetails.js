@@ -116,7 +116,7 @@ const CurriculumCompletionDetails = (props) => {
 
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
-  const [selectedGradeIds, setSelectedGradeIds] = useState([]);
+  const [selectedGradeIds, setSelectedGradeIds] = useState();
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [sectionId, setSectionId] = useState('');
 
@@ -126,7 +126,7 @@ const CurriculumCompletionDetails = (props) => {
   const [subjectId, setSubjectId] = useState();
 
   // const { setAlert } = useContext(AlertNotificationContext);
-  const [selectedSectionIds, setSelectedSectionIds] = useState([]);
+  const [selectedSectionIds, setSelectedSectionIds] = useState();
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -151,21 +151,21 @@ const CurriculumCompletionDetails = (props) => {
       },
     });
   };
-  const acadIdGenerator = () => {
-    axiosInstance
-      .get(
-        `${endpoints.academics.branches}?session_year=${ctx.sessionYearId}&module_id=${ctx.moduleId}`
-      )
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          setAcadId(result.data.data.results[1].id);
-          dataList(result.data.data.results[1].id);
-        }
-      })
-      .catch((error) => {
-        console.log('error');
-      });
-  };
+  // const acadIdGenerator = () => {
+  //   axiosInstance
+  //     .get(
+  //       `${endpoints.academics.branches}?session_year=${ctx.sessionYearId}&module_id=${ctx.moduleId}`
+  //     )
+  //     .then((result) => {
+  //       if (result?.data?.status_code === 200) {
+  //         setAcadId(result.data.data.results[1].id);
+  //         dataList(result.data.data.results[1].id);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       console.log('error');
+  //     });
+  // };
 
   const handleBranch = () => {
     setGradeList([]);
@@ -245,9 +245,9 @@ const CurriculumCompletionDetails = (props) => {
   useEffect(() => {
     handleBranch();
   }, [ctx.moduleId]);
-  useEffect(() => {
-    acadIdGenerator();
-  }, []);
+  // useEffect(() => {
+  //   acadIdGenerator();
+  // }, []);
 
   const [periodDate, setPeriodDate] = useState();
   const handleDateClass = (e) => {
@@ -288,9 +288,11 @@ const CurriculumCompletionDetails = (props) => {
       });
   };
 
-  // useEffect(() => {
-  //   dataList();
-  // }, []);
+  useEffect(() => {
+    if(selectedGradeIds && selectedSectionIds && props?.history?.location?.state?.acadIdMain){
+      dataList();
+    }
+  }, [selectedGradeIds,selectedSectionIds,props?.history?.location?.state?.acadIdMain]);
 
   return (
     <Layout>
