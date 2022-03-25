@@ -194,6 +194,18 @@ const useStyles = makeStyles((theme) => ({
   customLeftText: {
     textAlign: 'left',
   },
+  finhide: {
+    flexWrap: 'wrap'
+  },
+  acadHide: {
+    margin: '1%',
+    minWidth: '98%'
+  },
+  acadnot: {
+    margin: '1% 0',
+    minWidth: '100%'
+  }
+
   // customBorder: {
   //   borderLeft:'2px solid grey',
   //   borderRight:'2px solid grey',
@@ -682,282 +694,284 @@ const FinanceOwnerDashboard = (props) => {
                 </CardContent>
               </Card>
             </Grid>
-            <Grid item xs={6}>
-              {/* <Grid item xs={12}> */}
-              <Card>
-                <CardHeader
-                  style={{ cursor: 'pointer' }}
-                  title={
-                    <Typography
-                      // variant='h5'
-                      style={{ display: 'flex' }}
-                      className={clsx(classes.clickable)}
-                      // onClick={() => user_level != 10 ? history.push('/fees-table-status') : ''}
-                      onClick={feeredirect}
-                      className={clsx(classes.cardtopicStyle)}
-                    >
-                      <b>Fee Status Overview :</b>{' '}
-                      {props?.branchCounter ? (
-                        <Tooltip
-                          title={
-                            props?.selectedBranch &&
-                            props?.selectedBranch?.map(
-                              (item) => item?.branch?.branch_name + ' '
-                            )
-                          }
-                        >
-                          <Chip
-                            variant='outlined'
-                            size='small'
-                            // icon={props?.selectedBranch?.length}
-                            avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
-                            label={' Branch Selected'}
-                          />
-                        </Tooltip>
-                      ) : (
-                        // <div style={{ display: 'flex' }}>
-                        //   {props?.selectedBranch &&
-                        //     props?.selectedBranch?.map((item) => (
-                        //       <div style={{ margin: '0 5px' }}>
-                        //         {item?.branch?.branch_name}
-                        //       </div>
-                        //     ))}
-                        // </div>
-                        <>All Branch</>
-                      )}
-                    </Typography>
-                  }
-                  action={
-                    user_level != 10 ? (
-                      <Button
-                        className={clsx(classes.viewButton)}
-                        aria-label='view all'
-                        onClick={props.handleFeeRefresh}
+            <div style={{display : 'flex', width: '100%'}} >
+            {user_level == 10 ? '' :
+              <Grid item xs={6} style={{margin: '10px'}} >
+                {/* <Grid item xs={12}> */}
+                <Card>
+                  <CardHeader
+                    style={{ cursor: 'pointer' }}
+                    title={
+                      <Typography
+                        // variant='h5'
+                        style={{ display: 'flex' }}
+                        className={clsx(classes.clickable)}
+                        // onClick={() => user_level != 10 ? history.push('/fees-table-status') : ''}
+                        onClick={feeredirect}
+                        className={clsx(classes.cardtopicStyle)}
                       >
-                        <RefreshIcon style={{ color: 'blue' }} />
-                      </Button>
-                    ) : (
-                      ''
-                    )
-                  }
-                />
-                <Divider />
-                <CardContent>
-                  <>
-                    {props?.progress1?.feeStatus ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CircularProgress /></div> : <>
-                      {props?.financeData?.totalfees ? (
-                        <Grid container spacing={3} alignItems='center'>
-                          <Grid item xs={12}>
-                            <Typography
-                              // variant='h6'
-                              // style={{ textAlign: 'end' }}
-                              className={clsx(classes.textBold, classes.textAlignCenter)}
-                            >
-                              Total Fee{' '}
-                              <b
-                                style={{
-                                  color: '#628fef',
-                                  fontWeight: '800',
-                                  marginLeft: '10px',
-                                }}
+                        <b>Fee Status Overview :</b>{' '}
+                        {props?.branchCounter ? (
+                          <Tooltip
+                            title={
+                              props?.selectedBranch &&
+                              props?.selectedBranch?.map(
+                                (item) => item?.branch?.branch_name + ' '
+                              )
+                            }
+                          >
+                            <Chip
+                              variant='outlined'
+                              size='small'
+                              // icon={props?.selectedBranch?.length}
+                              avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
+                              label={' Branch Selected'}
+                            />
+                          </Tooltip>
+                        ) : (
+                          // <div style={{ display: 'flex' }}>
+                          //   {props?.selectedBranch &&
+                          //     props?.selectedBranch?.map((item) => (
+                          //       <div style={{ margin: '0 5px' }}>
+                          //         {item?.branch?.branch_name}
+                          //       </div>
+                          //     ))}
+                          // </div>
+                          <>All Branch</>
+                        )}
+                      </Typography>
+                    }
+                    action={
+                      user_level != 10 ? (
+                        <Button
+                          className={clsx(classes.viewButton)}
+                          aria-label='view all'
+                          onClick={props.handleFeeRefresh}
+                        >
+                          <RefreshIcon style={{ color: 'blue' }} />
+                        </Button>
+                      ) : (
+                        ''
+                      )
+                    }
+                  />
+                  <Divider />
+                  <CardContent>
+                    <>
+                      {props?.progress1?.feeStatus ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}><CircularProgress /></div> : <>
+                        {props?.financeData?.totalfees ? (
+                          <Grid container spacing={3} alignItems='center'>
+                            <Grid item xs={12}>
+                              <Typography
+                                // variant='h6'
+                                // style={{ textAlign: 'end' }}
+                                className={clsx(classes.textBold, classes.textAlignCenter)}
                               >
-                                ₹ {props?.financeData ? Math.round(props?.financeData?.totalfees).toLocaleString() : ''}
-                              </b>
-                            </Typography>
-                            {/* <Typography
+                                Total Fee{' '}
+                                <b
+                                  style={{
+                                    color: '#628fef',
+                                    fontWeight: '800',
+                                    marginLeft: '10px',
+                                  }}
+                                >
+                                  ₹ {props?.financeData ? Math.round(props?.financeData?.totalfees).toLocaleString() : ''}
+                                </b>
+                              </Typography>
+                              {/* <Typography
                         // variant='h5'
                         color='primary'
                         className={clsx(classes.textBold)}
                       >
                         ₹ 170,00,000
                       </Typography> */}
-                          </Grid>
+                            </Grid>
 
-                          <Grid item xs={4}>
-                            <Card elevation={0}>
-                              <CardContent className={clsx(classes.cardContant)}>
-                                <Typography
-                                  // variant='body2'
-                                  // className={classes.textAlignCenter,classes.cus}
-                                  className={clsx(
-                                    classes.textAlignCenter,
-                                    classes.customTextSize
-                                  )}
-                                >
-                                  Total Collected
-                                </Typography>
-                                <div className={clsx(classes.lookALikeButton)}>
+                            <Grid item xs={4}>
+                              <Card elevation={0}>
+                                <CardContent className={clsx(classes.cardContant)}>
                                   <Typography
-                                    variant='body2'
+                                    // variant='body2'
+                                    // className={classes.textAlignCenter,classes.cus}
                                     className={clsx(
                                       classes.textAlignCenter,
-                                      classes.textBold,
-                                      classes.colorGreen,
                                       classes.customTextSize
                                     )}
                                   >
-                                    ₹ {props?.financeData ? Math.round(props?.financeData?.paid).toLocaleString() : ''}
+                                    Total Collected
                                   </Typography>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          </Grid>
-                          <Grid item xs={4}>
-                            <Card elevation={0}>
-                              <CardContent className={clsx(classes.cardContant)}>
-                                <Typography
-                                  variant='body2'
-                                  // className={classes.textAlignCenter}
-                                  className={clsx(
-                                    classes.customTextSize,
-                                    classes.textAlignCenter
-                                  )}
-                                >
-                                  Total Pending
-                                </Typography>
-                                <div className={clsx(classes.lookALikeButton)}>
+                                  <div className={clsx(classes.lookALikeButton)}>
+                                    <Typography
+                                      variant='body2'
+                                      className={clsx(
+                                        classes.textAlignCenter,
+                                        classes.textBold,
+                                        classes.colorGreen,
+                                        classes.customTextSize
+                                      )}
+                                    >
+                                      ₹ {props?.financeData ? Math.round(props?.financeData?.paid).toLocaleString() : ''}
+                                    </Typography>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </Grid>
+                            <Grid item xs={4}>
+                              <Card elevation={0}>
+                                <CardContent className={clsx(classes.cardContant)}>
                                   <Typography
                                     variant='body2'
+                                    // className={classes.textAlignCenter}
                                     className={clsx(
-                                      classes.textAlignCenter,
-                                      classes.textBold,
-                                      classes.colorRed,
-                                      classes.customTextSize
+                                      classes.customTextSize,
+                                      classes.textAlignCenter
                                     )}
                                   >
-                                    ₹{' '}
-                                    {props?.financeData
-                                      ? Math.round(props?.financeData?.outstanding).toLocaleString()
-                                      : ''}
+                                    Total Pending
                                   </Typography>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          </Grid>
-                          <Grid item xs={4}>
-                            <Card elevation={0}>
-                              <CardContent className={clsx(classes.cardContant)}>
-                                <Typography
-                                  variant='body2'
-                                  className={classes.textAlignCenter}
-                                >
-                                  Total Admissions
-                                </Typography>
-                                <div className={clsx(classes.lookALikeButton)}>
+                                  <div className={clsx(classes.lookALikeButton)}>
+                                    <Typography
+                                      variant='body2'
+                                      className={clsx(
+                                        classes.textAlignCenter,
+                                        classes.textBold,
+                                        classes.colorRed,
+                                        classes.customTextSize
+                                      )}
+                                    >
+                                      ₹{' '}
+                                      {props?.financeData
+                                        ? Math.round(props?.financeData?.outstanding).toLocaleString()
+                                        : ''}
+                                    </Typography>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </Grid>
+                            <Grid item xs={4}>
+                              <Card elevation={0}>
+                                <CardContent className={clsx(classes.cardContant)}>
                                   <Typography
                                     variant='body2'
-                                    className={clsx(
-                                      classes.textAlignCenter,
-                                      classes.textBold,
-                                      classes.colorYellow,
-                                      classes.customTextSize
-                                    )}
+                                    className={classes.textAlignCenter}
                                   >
-                                    {props?.financeData
-                                      ? Math.round(props?.financeData?.no_of_admission).toLocaleString()
-                                      : ''}
+                                    Total Admissions
                                   </Typography>
-                                </div>
-                              </CardContent>
-                            </Card>
+                                  <div className={clsx(classes.lookALikeButton)}>
+                                    <Typography
+                                      variant='body2'
+                                      className={clsx(
+                                        classes.textAlignCenter,
+                                        classes.textBold,
+                                        classes.colorYellow,
+                                        classes.customTextSize
+                                      )}
+                                    >
+                                      {props?.financeData
+                                        ? Math.round(props?.financeData?.no_of_admission).toLocaleString()
+                                        : ''}
+                                    </Typography>
+                                  </div>
+                                </CardContent>
+                              </Card>
+                            </Grid>
                           </Grid>
-                        </Grid>
-                      ) : (
-                        <Grid
-                          style={{ minHeight: '180px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                        ) : (
+                          <Grid
+                            style={{ minHeight: '180px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                          >
+                            <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                            {user_level != 10 ? (
+                              <Typography style={{ fontWeight: '600' }}>
+                                No Records
+                              </Typography>
+                            ) : (
+                              <Typography style={{ fontWeight: '600' }}>
+                                Access Denied
+                              </Typography>
+                            )}
+                          </Grid>
+                        )}
+                      </>}
+                    </>
+                  </CardContent>
+                </Card>
+                {/* </Grid> */}
+                <Card>
+                  <CardHeader
+                    style={{ backgroundColor: '#d6dfe7' }}
+                    title={
+                      <Typography className={clsx(classes.cardtopicStyle)}>
+                        <b> Recent Transaction </b>
+                      </Typography>
+                    }
+                    action={
+                      user_level != 10 ? (
+                        <Button
+                          className={clsx(classes.viewButton)}
+                          aria-label='view all'
+                          onClick={props.handlerecent}
                         >
-                          <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
-                          {user_level != 10 ? (
-                            <Typography style={{ fontWeight: '600' }}>
-                              No Records
-                            </Typography>
-                          ) : (
-                            <Typography style={{ fontWeight: '600' }}>
-                              Access Denied
-                            </Typography>
-                          )}
-                        </Grid>
-                      )}
-                    </>}
-                  </>
-                </CardContent>
-              </Card>
-              {/* </Grid> */}
-              <Card>
-                <CardHeader
-                  style={{ backgroundColor: '#d6dfe7' }}
-                  title={
-                    <Typography className={clsx(classes.cardtopicStyle)}>
-                      <b> Recent Transaction </b>
-                    </Typography>
-                  }
-                  action={
-                    user_level != 10 ? (
-                      <Button
-                        className={clsx(classes.viewButton)}
-                        aria-label='view all'
-                        onClick={props.handlerecent}
-                      >
-                        <RefreshIcon style={{ color: 'blue' }} />
-                      </Button>
-                    ) : ''
-                  }
-                ></CardHeader>
-                <CardContent
-                  style={{
-                    minHeight: '250px',
-                    display: 'flex',
-                    maxHeight: '300px',
-                    overflow: 'auto',
-                  }}
-                >
-                  <>
-                    {props?.progress1?.tranction ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}><CircularProgress /></div> : <>
-                      {props?.recentTransCounter ? (
-                        <Grid container spacing={3} alignItems='center'>
-                          {props?.recentTrans &&
-                            props?.recentTrans?.map((each, index) => {
-                              return (
-                                <>
-                                  <Grid
-                                    item
-                                    xs={12}
-                                    className={clsx(classes.transactionTable)}
-                                  >
-                                    <Grid item md={1}>
-                                      <MonetizationOnIcon />
+                          <RefreshIcon style={{ color: 'blue' }} />
+                        </Button>
+                      ) : ''
+                    }
+                  ></CardHeader>
+                  <CardContent
+                    style={{
+                      minHeight: '250px',
+                      display: 'flex',
+                      maxHeight: '300px',
+                      overflow: 'auto',
+                    }}
+                  >
+                    <>
+                      {props?.progress1?.tranction ? <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}><CircularProgress /></div> : <>
+                        {props?.recentTransCounter ? (
+                          <Grid container spacing={3} alignItems='center'>
+                            {props?.recentTrans &&
+                              props?.recentTrans?.map((each, index) => {
+                                return (
+                                  <>
+                                    <Grid
+                                      item
+                                      xs={12}
+                                      className={clsx(classes.transactionTable)}
+                                    >
+                                      <Grid item md={1}>
+                                        <MonetizationOnIcon />
+                                      </Grid>
+                                      <Grid item md={8}>
+                                        <Typography
+                                          variant='body2'
+                                          className={clsx(classes.transactionTextDesign)}
+                                        >
+                                          Deposition in the bank <b>{each?.mode}</b>
+                                        </Typography>
+                                        <Typography
+                                          variant='body2'
+                                          className={clsx(classes.transactionTextDesign)}
+                                        >
+                                          Branch Name {each?.branch}
+                                        </Typography>
+                                      </Grid>
+                                      <Grid item md={3}>
+                                        <Typography
+                                          variant='body2'
+                                          className={clsx(classes.transactionTextDesignGray)}
+                                        >
+                                          {each?.date}
+                                        </Typography>
+                                        <Typography
+                                          variant='body2'
+                                          className={clsx(classes.transactionTextDesignLeft)}
+                                        >
+                                          <b>₹ {Math.round(each?.amount).toLocaleString()} </b>
+                                        </Typography>
+                                      </Grid>
                                     </Grid>
-                                    <Grid item md={8}>
-                                      <Typography
-                                        variant='body2'
-                                        className={clsx(classes.transactionTextDesign)}
-                                      >
-                                        Deposition in the bank <b>{each?.mode}</b>
-                                      </Typography>
-                                      <Typography
-                                        variant='body2'
-                                        className={clsx(classes.transactionTextDesign)}
-                                      >
-                                        Branch Name {each?.branch}
-                                      </Typography>
-                                    </Grid>
-                                    <Grid item md={3}>
-                                      <Typography
-                                        variant='body2'
-                                        className={clsx(classes.transactionTextDesignGray)}
-                                      >
-                                        {each?.date}
-                                      </Typography>
-                                      <Typography
-                                        variant='body2'
-                                        className={clsx(classes.transactionTextDesignLeft)}
-                                      >
-                                        <b>₹ {Math.round(each?.amount).toLocaleString()} </b>
-                                      </Typography>
-                                    </Grid>
-                                  </Grid>
 
-                                  {/* <Grid item xs={12}
+                                    {/* <Grid item xs={12}
                       className={clsx(classes.viewButtonAlign)}
                     >
                       <Button
@@ -970,35 +984,36 @@ const FinanceOwnerDashboard = (props) => {
                       </Button>
 
                     </Grid> */}
-                                </>
-                              );
-                            })}
-                        </Grid>
-                      ) : (
-                        <Grid
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            margin: 'auto',
-                            alignItems: 'center',
-                            flexDirection: 'column'
+                                  </>
+                                );
+                              })}
+                          </Grid>
+                        ) : (
+                          <Grid
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'center',
+                              margin: 'auto',
+                              alignItems: 'center',
+                              flexDirection: 'column'
 
-                          }}
-                        >
-                          <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
-                          {user_level != 10 ? (
-                            <Typography style={{ fontWeight: '600' }}>No Records</Typography>
-                          ) : (
-                            <Typography style={{ fontWeight: '600' }}>Access Denied</Typography>
-                          )}
-                        </Grid>
-                      )}</>}
-                  </>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item container spacing={2} xs={6}>
-              <Grid item xs={12}>
+                            }}
+                          >
+                            <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                            {user_level != 10 ? (
+                              <Typography style={{ fontWeight: '600' }}>No Records</Typography>
+                            ) : (
+                              <Typography style={{ fontWeight: '600' }}>Access Denied</Typography>
+                            )}
+                          </Grid>
+                        )}</>}
+                    </>
+                  </CardContent>
+                </Card>
+              </Grid>
+            }
+            <div style={{display: 'flex' , justifyContent: 'space-between' , width: '50%' }} className={user_level == 10 ? '' : `${classes.finhide}` }  >
+              <Grid item xs={12} style={{minWidth: '100%' , margin: '1% 0' }} > 
                 <Card>
                   <Card>
                     <CardHeader
@@ -1228,7 +1243,7 @@ const FinanceOwnerDashboard = (props) => {
                   </Card>
                 </Card>
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} className={user_level == 10 ? `${classes.acadHide}` : `${classes.acadnot}`} >
                 <Card>
                   {/* <Grid item xs={12}> */}
                   {/* <Card> */}
@@ -1372,7 +1387,8 @@ const FinanceOwnerDashboard = (props) => {
                   {/* </Grid> */}
                 </Card>
               </Grid>
-            </Grid>
+            </div>
+            </div>
           </>
         ) : isAcad ? (
           <>
