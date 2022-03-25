@@ -255,10 +255,14 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
       status.style.color = 'green';
       statusTag.style.backgroundColor = 'green';
       status.innerHTML = '<b>Present</b>';
-    } else {
+    } else if (attendanceDetail?.attendence_status === 'absent'){
       status.style.color = 'red';
       statusTag.style.backgroundColor = 'red';
       status.innerHTML = '<b>Absent</b>';
+    } else {
+      status.style.color = 'black';
+      statusTag.style.backgroundColor = 'grey';
+      status.innerHTML = '<b>Not Available</b>';
     }
   };
 
@@ -302,7 +306,7 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
               <div
                 style={{
                   display: 'flex',
-                  minWidth: '265px',
+                  minWidth: '275px',
                   justifyContent: 'space-between',
                 }}
               >

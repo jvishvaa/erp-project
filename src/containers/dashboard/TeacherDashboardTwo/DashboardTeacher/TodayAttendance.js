@@ -18,10 +18,14 @@ function TodayAttendance({ attendanceDetail }) {
       Text.style.color = 'green';
       element.style.backgroundColor = 'green';
       Text.innerHTML = '<b>Present</b>';
-    } else {
+    } else if (attendanceDetail?.attendence_status === 'absent'){
       Text.style.color = 'red';
       element.style.backgroundColor = 'red';
       Text.innerHTML = '<b>Absent</b>';
+    } else{
+      Text.style.color = 'black';
+      element.style.backgroundColor = 'grey';
+      Text.innerHTML = '<b>Not Available</b>';
     }
   });
   const viewAttendanceHandler = () => {
