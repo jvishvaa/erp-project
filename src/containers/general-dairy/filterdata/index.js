@@ -379,7 +379,8 @@ const GeneralDairyFilter = ({
           activeTab,
           page,
           filterData.subject,
-          moduleId
+          moduleId,
+          filterData?.year
         );
       }
     } else if (userDetails?.personal_info?.role !== 'SuperUser' && !isTeacher) {
@@ -395,7 +396,8 @@ const GeneralDairyFilter = ({
         activeTab,
         page,
         filterData.subject,
-        moduleId
+        moduleId,
+        filterData?.year
       );
     }
   };
