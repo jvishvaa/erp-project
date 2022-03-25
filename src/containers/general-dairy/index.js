@@ -114,7 +114,9 @@ const GeneralDairyList = () => {
     endDate,
     activeTab,
     page,
-    subjects
+    subjects,
+    moduleId,
+    academic_year
   ) => {
     setLoading(true);
     setPeriodData([]);
@@ -140,7 +142,7 @@ const GeneralDairyList = () => {
     const diaryUrl = isTeacher
       ? `${
           endpoints.generalDairy.dairyList
-        }?module_id=${teacherModuleId}&session_year=${selectedAcademicYear?.id}&branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format(
+        }?module_id=${teacherModuleId}&session_year=${academic_year?.id}&branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format(
           'YYYY-MM-DD'
         )}&end_date=${endDate.format('YYYY-MM-DD')}${
           activeTab !== 0 ? '&dairy_type=' + activeTab : ''
@@ -273,7 +275,6 @@ const GeneralDairyList = () => {
                     setViewMore={setViewMore}
                     periodDataForView={periodDataForView}
                     setSelectedIndex={setSelectedIndex}
-                    setSelectedIndex={setSelectedIndex}
                   />
                 </Grid>
               )}
@@ -283,7 +284,6 @@ const GeneralDairyList = () => {
                     viewMoreData={viewMoreData}
                     setViewMore={setViewMore}
                     periodDataForView={periodDataForView}
-                    setSelectedIndex={setSelectedIndex}
                     setSelectedIndex={setSelectedIndex}
                   />
                 </Grid>
