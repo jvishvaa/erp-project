@@ -36,9 +36,11 @@ const useStyles = makeStyles({
   cancelled: {
     fontSize: '35px',
     position: 'relative',
-    right: '40%',
+    right: '10%',
     color: 'white',
     fontWeight: '600',
+    display: 'flex',
+    alignItems: 'center',
   },
   cancelCard: {
     background: '#858585'
