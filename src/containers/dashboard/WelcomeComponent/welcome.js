@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const WelcomeComponent = ({ erp_config , isMsAPIKey , changeView , buttonCounter}) => {
+const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
   const classes = useStyles();
   const [showButton, setShowButton] = useState(false);
   const { welcomeDetails = {}, setReports } = useDashboardContext();
@@ -145,20 +145,43 @@ const WelcomeComponent = ({ erp_config , isMsAPIKey , changeView , buttonCounter
             ''
           )}
 
-          {/* { checkDev === true ? <> */}
-          {erp_config ? (
-            <Button
-              className={classes.outlined}
-              style={{ margin: '0 2%' }}
-              color='secondary'
-              onClick={() => changeView(2)}
-            >
-              Stats View V2
-            </Button>
+          {welcomeDetails?.userLevel == 11 ? (
+            <>
+              {checkDev === true ? (
+                <>
+                  {erp_config ? (
+                    <Button
+                      className={classes.outlined}
+                      style={{ margin: '0 2%' }}
+                      color='secondary'
+                      onClick={() => changeView(2)}
+                    >
+                      Stats View V2
+                    </Button>
+                  ) : (
+                    ''
+                  )}
+                </>
+              ) : (
+                ''
+              )}
+            </>
           ) : (
-            ''
+            <>
+              {erp_config ? (
+                <Button
+                  className={classes.outlined}
+                  style={{ margin: '0 2%' }}
+                  color='secondary'
+                  onClick={() => changeView(2)}
+                >
+                  Stats View V2
+                </Button>
+              ) : (
+                ''
+              )}
+            </>
           )}
-          {/* </> : '' } */}
         </div>
       ) : (
         ''
@@ -208,7 +231,7 @@ const WelcomeComponent = ({ erp_config , isMsAPIKey , changeView , buttonCounter
         ) : (
           ''
         )}
-        {welcomeDetails?.userLevel === 1 ||
+        {/* {welcomeDetails?.userLevel === 1 ||
         welcomeDetails?.userLevel === 4 ||
         welcomeDetails?.userLevel === 8 ||
         welcomeDetails?.userLevel === 10 ||
@@ -239,7 +262,7 @@ const WelcomeComponent = ({ erp_config , isMsAPIKey , changeView , buttonCounter
               ''
             )}
           </>
-        )}
+        )} */}
       </Box>
     </>
   );

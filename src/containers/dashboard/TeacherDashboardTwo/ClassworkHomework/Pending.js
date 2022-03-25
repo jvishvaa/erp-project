@@ -60,7 +60,8 @@ function Submitted({ section, subject, date }) {
         `${endpoints.teacherDashboard.pendingHWdata}?section_mapping=${section}&subject=${subject}`,
         {
           headers: {
-            'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            'X-DTS-HOST': window.location.host,
             Authorization: `Bearer ${token}`,
           },
         }

@@ -277,7 +277,8 @@ class HomeworkClasswork extends React.Component {
         `${endpoints.teacherDashboard.cwHWTeacherDashboard}?acad_session=122&page_size=20&grade_id=59&end_date=2022-03-25&start_date=2022-02-28&branch_id=111&subject_id=${subjectID}&section_id=68`,
         {
           headers: {
-            'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            'X-DTS-HOST': window.location.host,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -558,8 +559,7 @@ class HomeworkClasswork extends React.Component {
                           style={{
                             backgroundColor:
                               tableVal === rowIndex ? '#FFFFFF' : '#EBF2FE',
-                            borderLeft :
-                              tableVal === rowIndex ? '15px solid #4093D4' : "",  
+                            borderLeft: tableVal === rowIndex ? '15px solid #4093D4' : '',
                           }}
                         >
                           {row?.grade_name} {row?.section_name} {row?.subject_name}

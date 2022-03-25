@@ -117,7 +117,6 @@ const CustomColorCheckbox = withStyles({
   checked: {},
 })((props) => <Checkbox {...props} />);
 
-
 function Row(props) {
   const classes = useStyles();
   const { row } = props;
@@ -126,27 +125,27 @@ function Row(props) {
     setOpen(!open);
   };
 
-  const [check, setCheck] = useState(null)
+  const [check, setCheck] = useState(null);
 
   const checkList = (list) => {
     let count = 0;
     list.forEach((data) => {
       if (data === true) {
-        count += 1
+        count += 1;
       }
-    })
+    });
     if (count === list.length) {
-      return 0   // all true
+      return 0; // all true
     } else if (count === 0) {
-      return 1   //all false
+      return 1; //all false
     } else {
-      return 2   // yellow
+      return 2; // yellow
     }
-  }
+  };
   useEffect(() => {
-    let datacheck = checkList(row?.periodstudymaterial__status)
+    let datacheck = checkList(row?.periodstudymaterial__status);
     setCheck(datacheck);
-  })
+  });
 
   return (
     <React.Fragment>
@@ -163,13 +162,12 @@ function Row(props) {
             <CustomColorCheckbox
               defaultChecked
               disabled
-            // className={classes.checkbox}
+              // className={classes.checkbox}
             />
-          ) : (check === 1 ?
-            <CancelIcon style={{ color: '#FE8083' }} /> :
-            (
-              <CheckCircleIcon style={{ color: '#FFC258' }} />
-            )
+          ) : check === 1 ? (
+            <CancelIcon style={{ color: '#FE8083' }} />
+          ) : (
+            <CheckCircleIcon style={{ color: '#FFC258' }} />
           )}
         </TableCell>
         <TableCell>
@@ -200,37 +198,36 @@ function Row(props) {
                   </TableRow> */}
                 </TableHead>
                 <TableBody>
-                  {row?.subject_mapping__subject__chapter__topic__topic_name.map((data, index) => (
-                    <TableRow>
+                  {row?.subject_mapping__subject__chapter__topic__topic_name.map(
+                    (data, index) => (
+                      <TableRow>
+                        <TableCell className={classes.textLeft} style={{ width: '50%' }}>
+                          {/* {data.subject_mapping__subject__chapter__chapter_name} */}
+                          {data}
+                          {/* subject_mapping__subject__chapter__topic__topic_name */}
+                        </TableCell>
 
-                      <TableCell className={classes.textLeft} style={{ width: '50%' }}>
-                        {/* {data.subject_mapping__subject__chapter__chapter_name} */}
-                        {data}
-                        {/* subject_mapping__subject__chapter__topic__topic_name */}
-                      </TableCell>
-
-                      <TableCell style={{ width: '23%' }}>
-                        {/* {data.completed_Date} */}
-                      </TableCell>
-                      {/* {row?.periodstudymaterial__status.map((data, index) => ( */}
-                      <TableCell>
-                        {row?.periodstudymaterial__status[index] ? (
-                          <CustomColorCheckbox
-                            defaultChecked
-                            disabled
-                            // color="success"
-                            className={classes.checkbox}
-                          />
-                        ) : (
-                          <CancelIcon style={{ color: '#FE8083' }} />
-                        )}
-                      </TableCell>
-                      {/* ))} */}
-                      <TableCell></TableCell>
-
-                    </TableRow>
-                  ))}
-
+                        <TableCell style={{ width: '23%' }}>
+                          {/* {data.completed_Date} */}
+                        </TableCell>
+                        {/* {row?.periodstudymaterial__status.map((data, index) => ( */}
+                        <TableCell>
+                          {row?.periodstudymaterial__status[index] ? (
+                            <CustomColorCheckbox
+                              defaultChecked
+                              disabled
+                              // color="success"
+                              className={classes.checkbox}
+                            />
+                          ) : (
+                            <CancelIcon style={{ color: '#FE8083' }} />
+                          )}
+                        </TableCell>
+                        {/* ))} */}
+                        <TableCell></TableCell>
+                      </TableRow>
+                    )
+                  )}
                 </TableBody>
               </Table>
             </Box>
@@ -249,19 +246,17 @@ const ChapterAndTopics = (props) => {
   const tabledataList = () => {
     axios
       .get(
-        `${endpoints.teacherDashboard.tableData}?grade_id=${props.history.location.state.gradeId}&section_id=${props.history.location.state.sectionId}&acad_session_id=${props.history.location.state.acadSessionId}&subject_id=${props.history.location.state.subjectId}`,
-        // `${endpoints.teacherDashboard.tableData}?grade_id=${props.history.location.state.gradeId}&section_id=3&acad_session_id=${props.history.location.state.acadSessionId}&subject_id=9`,
+        // `${endpoints.teacherDashboard.tableData}?grade_id=${props.history.location.state.gradeId}&section_id=${props.history.location.state.sectionId}&acad_session_id=${props.history.location.state.acadSessionId}&subject_id={props.history.location.state.subjectId}`,
+        `${endpoints?.teacherDashboard?.tableData}?grade_id=${props?.history?.location?.state?.gradeId}&section_id=${props?.history?.location?.state?.sectionId}&acad_session_id=${props?.history?.location?.state?.acadSessionId}&subject_id=${props?.history?.location?.state?.subjectId}`,
         {
           headers: {
-            // "X-DTS-HOST": "dev.olvorchidnaigaon.letseduvate.com",
-            "X-DTS-HOST": window.location.host,
-            "Authorization": `Bearer ${token}`
-          }
+            'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            Authorization: `Bearer ${token}`,
+          },
         }
       )
       .then((result) => {
         setTableData(result?.data?.result);
-
 
         // if (result?.data?.status_code === 200) {
         //   setStudentData(result);
@@ -277,10 +272,8 @@ const ChapterAndTopics = (props) => {
   };
 
   useEffect(() => {
-    tabledataList()
-  }, [])
-
-
+    tabledataList();
+  }, []);
 
   const [periodDate, setPeriodDate] = useState();
   const handleDateClass = (e) => {
@@ -319,11 +312,12 @@ const ChapterAndTopics = (props) => {
             Back to curriculam Completion
           </div>
         </Grid>
+        <Grid xs={12} container direction='row' style={{ padding: '5px' }}></Grid>
         <Grid xs={12} container direction='row' style={{ padding: '5px' }}>
-
-        </Grid>
-        <Grid xs={12} container direction='row' style={{ padding: '5px' }}>
-          <Grid xs={2}>Grade And Section : {props.history.location.state.gradeId}/{props.history.location.state.sectionId}</Grid>
+          <Grid xs={2}>
+            Grade And Section : {props?.history?.location?.state?.gradeId}/
+            {props?.history?.location?.state?.sectionId}
+          </Grid>
           <Grid xs={2}>Test : Maths Quiz 1</Grid>
           <Grid xs={2}>Date Range : Jan 15</Grid>
         </Grid>
@@ -344,7 +338,10 @@ const ChapterAndTopics = (props) => {
             </TableHead>
             <TableBody>
               {tableData.map((row) => (
-                <Row key={row.subject_mapping__subject__chapter__chapter_name} row={row} />
+                <Row
+                  key={row.subject_mapping__subject__chapter__chapter_name}
+                  row={row}
+                />
               ))}
             </TableBody>
           </Table>
