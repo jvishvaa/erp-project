@@ -247,11 +247,11 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
   //***********Today attendance log TimeLine***************
 
   const TodayAttendance = () => {
-    let attendanceDetail = props?.location?.state?.attendanceDetail?.attendence_status;
+    let attendanceDetail = props?.location?.state?.attendanceDetail;
     let statusTag = document.getElementById('statusTag');
     let status = document.getElementById('status');
 
-    if (attendanceDetail?.attendence_status === 'present') {
+    if (attendanceDetail?.attendence_status === "present") {
       status.style.color = 'green';
       statusTag.style.backgroundColor = 'green';
       status.innerHTML = '<b>Present</b>';

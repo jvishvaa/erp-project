@@ -68,23 +68,23 @@ function Overview({ recentSubmissionDetail }) {
                         style={{
                           fontSize: '12px',
                           position: 'relative',
-                          right: '-19px',
                           color: 'black',
+                          top: '25%', 
                         }}
                       >
                         {item.branch_name}
                       </Typography>
-                      <Grid style={{ marginRight: '70px', marginLeft: '100px' }}>
+                      <Grid style={{ marginRight: '48px', marginLeft: '111px' }}>
                         <CirclePercentage
-                          height='40px'
-                          width='40px'
+                          height='50px'
+                          width='50px'
                           percent={item?.total_hw_percent}
                         />
                       </Grid>
                       <Grid>
                         <CirclePercentage
-                          height='40px'
-                          width='40px'
+                          height='50px'
+                          width='50px'
                           percent={item?.total_cw_percent}
                         />
                       </Grid>
