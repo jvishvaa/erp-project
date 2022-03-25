@@ -250,7 +250,8 @@ const ChapterAndTopics = (props) => {
         `${endpoints?.teacherDashboard?.tableData}?grade_id=${props?.history?.location?.state?.gradeId}&section_id=${props?.history?.location?.state?.sectionId}&acad_session_id=${props?.history?.location?.state?.acadSessionId}&subject_id=${props?.history?.location?.state?.subjectId}`,
         {
           headers: {
-            'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            'X-DTS-HOST': window.location.host,
             Authorization: `Bearer ${token}`,
           },
         }
