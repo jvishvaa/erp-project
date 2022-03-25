@@ -28,89 +28,7 @@ import { connect, useSelector } from 'react-redux';
 import FilterDetailsContext from '../store/filter-data';
 import axiosInstance from '../../../../config/axios';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
-
-const data = [
-  {
-    testType: 'English',
-    subjectName: '88',
-    totalTest: 70,
-    avgScore: '78%',
-    grade: 'Grade 1',
-    section: 'Section A',
-  },
-  {
-    testType: 'Hindi',
-    subjectName: '98',
-    totalTest: 70,
-    avgScore: '78%',
-    grade: 'Grade 2',
-    section: 'Section B',
-  },
-  {
-    testType: 'Maths',
-    subjectName: '79',
-    totalTest: 70,
-    avgScore: '78%',
-    grade: 'Grade 1',
-    section: 'Section C',
-  },
-  {
-    testType: 'English',
-    subjectName: '46',
-    totalTest: 70,
-    avgScore: '78%',
-    grade: 'Grade 4',
-    section: 'Section A',
-  },
-  {
-    testType: 'Science',
-    subjectName: '97',
-    totalTest: 70,
-    avgScore: '78%',
-    grade: 'Grade 1',
-    section: 'Section A',
-  },
-  {
-    testType: 'Social',
-    subjectName: '99',
-    totalTest: 70,
-    avgScore: '78%',
-    grade: 'Grade 2',
-    section: 'Section A',
-  },
-  {
-    testType: 'Math Quiz 1',
-    subjectName: '100',
-    totalTest: 70,
-    avgScore: '78%',
-    grade: 'Grade 1',
-    section: 'Section A',
-  },
-];
-
-const subj = [
-  { title: 'Maths', vol: '1' },
-  { title: 'English', vol: '2' },
-  { title: 'Hindi', vol: '3' },
-  { title: 'Science', vol: '4' },
-  { title: 'Lab', vol: '5' },
-];
-
-const test = [
-  { title: 'Test1', vol: '1' },
-  { title: 'Test2', vol: '2' },
-  { title: 'Test3', vol: '3' },
-  { title: 'Test4', vol: '4' },
-  { title: 'Test5', vol: '5' },
-];
-
-const section = [
-  { title: 'Grade A', vol: '1', subject: 'Maths' },
-  { title: 'Grade B', vol: '2', subject: 'Science' },
-  { title: 'Grade C', vol: '3', subject: 'English' },
-  { title: 'Grade D', vol: '4', subject: 'Hindi' },
-  { title: 'Grade E', vol: '5', subject: 'Socail Science' },
-];
+import { useParams, withRouter } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   gradeDiv: {
@@ -184,12 +102,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CurriculumCompletionDetails = () => {
+const CurriculumCompletionDetails = (props) => {
+  const { branchId } = useParams();
   const dashBoard = () => {
     history.push({
       pathname: `/dashboard`,
-      counter:2,
-    })
+      counter: 2,
+    });
   };
   const [moduleId, setModuleId] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -221,26 +140,26 @@ const CurriculumCompletionDetails = () => {
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const chapterTopicHandler = () => {
-    // history.push('./chapter_Topics');
     history.push({
       pathname: './chapter_Topics',
       state: {
         gradeId: selectedGradeIds,
         sectionId: selectedSectionIds,
-        acadSessionId: acadId,
-        subject_id: subjectId,
+        acadSessionId: props?.history?.location?.state?.acadIdMain,
+        subjectId: subjectId,
+        branchId: props?.history?.location?.state?.branchIdMain,
       },
     });
   };
   const acadIdGenerator = () => {
     axiosInstance
-      .get(`${endpoints.academics.branches}?session_year=${ctx.sessionYearId}&module_id=${ctx.moduleId}`)
+      .get(
+        `${endpoints.academics.branches}?session_year=${ctx.sessionYearId}&module_id=${ctx.moduleId}`
+      )
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          let acadIdArr = result.data.data.results.map((i) => {
-            return i.id;})
-          setAcadId(acadIdArr);
-          dataList(acadIdArr);
+          setAcadId(result.data.data.results[1].id);
+          dataList(result.data.data.results[1].id);
         }
       })
       .catch((error) => {
@@ -253,8 +172,7 @@ const CurriculumCompletionDetails = () => {
     setSelectedSection([]);
     setSelectedSubject([]);
     callApi(
-      `${endpoints.academics.grades}?session_year=${ctx.sessionYearId
-      }&branch_id=${2}&module_id=${ctx.moduleId}`,
+      `${endpoints.academics.grades}?session_year=${ctx.sessionYearId}&branch_id=${props?.history?.location?.state?.branchIdMain}&module_id=${ctx.moduleId}`,
       'gradeList'
     );
   };
@@ -267,14 +185,14 @@ const CurriculumCompletionDetails = () => {
     setSelectedGrade(ids);
     setSelectedGradeIds(selectedId);
     callApi(
-      `${endpoints.academics.sections}?session_year=${ctx.sessionYearId
-      }&branch_id=${2}&grade_id=${selectedId?.toString()}&module_id=${ctx.moduleId}`,
+      `${endpoints.academics.sections}?session_year=${ctx.sessionYearId}&branch_id=${
+        props?.history?.location?.state?.branchIdMain
+      }&grade_id=${selectedId?.toString()}&module_id=${ctx.moduleId}`,
       'section'
     );
   };
 
   const handleSection = (event = {}, value = []) => {
-    // console.log('aaaaa', value);
     const ids = value;
     const selectedId = value?.section_id;
     const sectionid = value?.id;
@@ -282,8 +200,10 @@ const CurriculumCompletionDetails = () => {
     setSelectedSection(ids);
     setSelectedSectionIds(selectedId);
     callApi(
-      `${endpoints.academics.subjects}?session_year=${ctx.sessionYearId
-      }&branch=${2}&grade=${selectedId?.toString()}&section=${selectedId?.toString()}&module_id=${ctx.moduleId
+      `${endpoints.academics.subjects}?session_year=${ctx.sessionYearId}&branch=${
+        props?.history?.location?.state?.branchIdMain
+      }&grade=${selectedId?.toString()}&section=${selectedId?.toString()}&module_id=${
+        ctx.moduleId
       }`,
       'subject'
     );
@@ -292,7 +212,7 @@ const CurriculumCompletionDetails = () => {
   const handleSubject = (event = {}, value = []) => {
     setSelectedSubject(value);
     setSubjectId(value?.subject__id);
-    dataList(acadId);
+    dataList();
     // pendingInfo();
   };
 
@@ -335,13 +255,16 @@ const CurriculumCompletionDetails = () => {
   };
   let date = moment().format('YYYY-MM-DD');
 
-  const dataList = (...acadId) => {
+  const dataList = () => {
     setLoading(true);
     axios
       .get(
         // `dev.reports.letseduvate.com/api/acad_performance/v1/teacher-dashboard/chapter-wise-topics-completion-stats/?grade_id=2,3&acad_session_id=102&date_range_type=2022-03-10`,
-        `${endpoints.teacherDashboard.gradeSectionAggregated
-        }?grade_id=${selectedGradeIds?.toString()}&section_id=${selectedSectionIds}&acad_session_id=${acadId}`,
+        `${
+          endpoints.teacherDashboard.gradeSectionAggregated
+        }?grade_id=${selectedGradeIds?.toString()}&section_id=${selectedSectionIds}&acad_session_id=${
+          props?.history?.location?.state?.acadIdMain
+        }`,
         {
           headers: {
             // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
@@ -373,12 +296,9 @@ const CurriculumCompletionDetails = () => {
     <Layout>
       {loading && <Loader />}
       <div style={{ marginLeft: '1%', marginTop: '1%' }}>
-        <ArrowBackIcon
-          style={{ cursor: 'pointer' }}
-          onClick={dashBoard}
-        />
+        <ArrowBackIcon style={{ cursor: 'pointer' }} onClick={dashBoard} />
       </div>
-      <div style={{marginTop:"-2%", marginLeft:"-1%"}}>
+      <div style={{ marginTop: '-2%', marginLeft: '-1%' }}>
         <CommonBreadcrumbs
           componentName='Dashboard'
           childComponentName='Curriculum Completion'
@@ -390,7 +310,7 @@ const CurriculumCompletionDetails = () => {
         direction='row'
         justifyContent='space-between'
         alignItems='center'
-        style={{ padding: 15, marginTop:"-2%" }}
+        style={{ padding: 15, marginTop: '-2%' }}
       >
         <Grid
           container

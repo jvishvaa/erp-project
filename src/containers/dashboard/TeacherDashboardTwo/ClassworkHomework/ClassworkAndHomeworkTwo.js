@@ -1,4 +1,4 @@
-import React, { useState,useEffect,useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   Paper,
   Grid,
@@ -97,11 +97,9 @@ const useStyles = makeStyles((theme) => ({
 
 const ClassworkAndHomeworkTwo = () => {
   const classes = useStyles();
-  const [tableData,setTableData] = useState([])
+  const [tableData, setTableData] = useState([]);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
-
-
 
   const dataList = () => {
     setLoading(true);
@@ -112,7 +110,8 @@ const ClassworkAndHomeworkTwo = () => {
         `${endpoints.teacherDashboard.cwHWTeacherDashboard}?acad_session=122&page_size=20&grade_id=59&end_date=2022-03-25&start_date=2022-02-28&branch_id=111&subject_id=101&section_id=68`,
         {
           headers: {
-            'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            'X-DTS-HOST': window.location.host,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -120,8 +119,8 @@ const ClassworkAndHomeworkTwo = () => {
       .then((result) => {
         console.log('sideright', result?.data?.result);
         if (result?.data?.status_code === 200) {
-          setTableData(result?.data?.result,);
-          setAlert('success', result?.data?.message)
+          setTableData(result?.data?.result);
+          setAlert('success', result?.data?.message);
         } else {
           setAlert('error', result?.data?.message);
         }
@@ -131,11 +130,11 @@ const ClassworkAndHomeworkTwo = () => {
         setAlert('error', error?.message);
         setLoading(false);
       });
-  }
+  };
 
-  useEffect(()=>{
-    dataList()
-  },[])
+  useEffect(() => {
+    dataList();
+  }, []);
 
   const data = [
     {

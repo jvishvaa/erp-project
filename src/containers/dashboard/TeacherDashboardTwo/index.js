@@ -6,7 +6,7 @@ import HomeworkClasswork from './ClassworkHomework/ClassworkAndHomework';
 import HomeworkClassworkTwo from './ClassworkHomework/ClassworkAndHomeworkTwo';
 import CurriculumCompletionDetails from './DashboardTeacher/CurriculumCompletionDetails';
 import ChapterAndTopics from './DashboardTeacher/CurriculumChaptersAndTopic';
-import AttendanceOverview from './ClassworkHomework/TeacherDashboard-New/AttendanceOverview'
+import AttendanceOverview from './ClassworkHomework/TeacherDashboard-New/AttendanceOverview';
 const RoutesIndex = () => {
   const match = useRouteMatch();
 
@@ -21,15 +21,15 @@ const RoutesIndex = () => {
         <Route path={`${match.url}/slide3`} exact>
           {({ match, history }) => <ClassworkThree match={match} history={history} />}
         </Route>
-        {/* <Route path={`${match.url}/homework_Classwork`} exact>
+        <Route path={`${match.url}/homework_Classwork`} exact>
           {({ match, history }) => <HomeworkClasswork match={match} history={history} />}
-        </Route> */}
-        {/* <Route path={`${match.url}/homework_Classwork_two`} exact>
+        </Route>
+        <Route path={`${match.url}/homework_Classwork_two`} exact>
           {({ match, history }) => (
             <HomeworkClassworkTwo match={match} history={history} />
           )}
-        </Route> */}
-        <Route path={`${match.url}/curriculum_Completion_Details`} exact>
+        </Route>
+        <Route path={`${match.url}/curriculum/:branchId`} exact>
           {({ match, history }) => (
             <CurriculumCompletionDetails match={match} history={history} />
           )}
