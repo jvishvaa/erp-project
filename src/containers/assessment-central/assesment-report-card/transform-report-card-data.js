@@ -262,8 +262,12 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
   // );
   const subjectAnnMarks = annualDetails?.subject_annual_marks || {};
   const annualData = generateAnnualDetails(subjectAnnMarks)
+  let isAnnualData;
+  if (annualData) {
+    isAnnualData = annualData;
+  }
   const semOneLength = semesterOneSubjectWiseMarks?.length || 0;
-  const finalAnnResult = annualData?.length || 0;
+  const finalAnnResult = isAnnualData?.length || 0;
   const semTwoLength = semesterTwoSubjectWiseMarks?.length || 0;
   //To check if semester 2 is not present and if present the number of subjects are not equal
   if (semOneLength !== semTwoLength) {
@@ -277,20 +281,18 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
         ...transformedSemTwo,
       ];
     }
-    // if (finalAnnResult !== semOneLength) {
-    //   if (semOneLength > finalAnnResult) {
-    //     const diff = semOneLength - finalAnnResult;
-    //     let transformedAnn = Array.from({ length: diff }, () =>
-    //       Array.from({ length: semesterOneSubjectWiseMarks[0].length }, () => null)
-    //     );
-    //     console.log(transformedAnn, "trans")
-    //     let finalAnnMarks = [
-    //       annualData,
-    //       ...transformedAnn,
-    //     ]
-    //     console.log(finalAnnMarks, "final")
-    //   }
-    // }
+    if (finalAnnResult !== semOneLength) {
+      if (semOneLength > finalAnnResult) {
+        const diff = semOneLength - finalAnnResult;
+        let transformedAnn = Array.from({ length: diff }, () =>
+          Array.from({ length: 4 }, () => null)
+        );
+        isAnnualData = [
+          ...isAnnualData,
+          ...transformedAnn,
+        ]
+      }
+    }
     else {
       //Logic need to be written if required
     }
@@ -301,10 +303,11 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
       subjectsList[index],
       ...semesterOneSubject,
       ...semesterTwoSubjectWiseMarks[index],
-      annualData ? annualData[index][0] : '',
-      annualData ? annualData[index][1] : '',
-      annualData ? annualData[index][2] : '',
-      annualData ? annualData[index][3] : '',
+      ...isAnnualData[index]
+      // annualData ? annualData[index][0] : '',
+      // annualData ? annualData[index][1] : '',
+      // annualData ? annualData[index][2] : '',
+      // annualData ? annualData[index][3] : '',
       // '', // (T1+T2)/2
       // '', // Annual Grade
       // '', // Annual OSR
@@ -314,10 +317,11 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
       subjectsList[index],
       ...semesterOneSubject,
       ...semesterTwoSubjectWiseMarks[index],
-      annualData ? annualData[index] : '',
-      annualData ? annualData[index] : '',
-      annualData ? annualData[index] : '',
-      annualData ? annualData[index] : '',
+      ...isAnnualData[index]
+      // annualData ? annualData[index] : '',
+      // annualData ? annualData[index] : '',
+      // annualData ? annualData[index] : '',
+      // annualData ? annualData[index] : '',
       // '', // (T1+T2)/2
       // '', // Annual Grade
       // '', // Annual OSR
