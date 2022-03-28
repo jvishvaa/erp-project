@@ -44,6 +44,7 @@ function TeacherDashboard() {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState();
   const [sessionYearId, setSessionYearId] = useState();
+  const [ acadId , setAcadId ] = useState();
   const ctx = useContext(FilterDetailsContext);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -81,6 +82,7 @@ function TeacherDashboard() {
           let acadIdArr = result.data.data.results.map((i) => {
             return i.id;
           });
+          setAcadId(acadIdArr);
           overviewDetails(acadIdArr);
           branchDetails(acadIdArr);
         }
@@ -220,7 +222,7 @@ function TeacherDashboard() {
                       <Grid item xs={12}>
                         <TodayAttendance attendanceDetail={attendanceDetail} />
                         <Grid item xs={12}>
-                          <Overview recentSubmissionDetail={recentSubmissionDetail} />
+                          <Overview recentSubmissionDetail={recentSubmissionDetail} overviewDetails={overviewDetails} acadId={acadId} />
                         </Grid>
                       </Grid>
                     </Grid>
@@ -231,7 +233,7 @@ function TeacherDashboard() {
                         <AssessmentNew gradesectionDetail={gradesectionDetail} />
                       </Grid> */}
                       <Grid item xs={12}>
-                        <CurriculumCompletionNew curriculumDetail={curriculumDetail} />
+                        <CurriculumCompletionNew curriculumDetail={curriculumDetail} curriculumDetails={curriculumDetails} />
                       </Grid>
                       {/* <Grid item xs={12}>
                         <TrainingReportNew />
