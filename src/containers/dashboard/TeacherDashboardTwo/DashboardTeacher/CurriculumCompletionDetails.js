@@ -116,7 +116,7 @@ const CurriculumCompletionDetails = (props) => {
 
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
-  const [selectedGradeIds, setSelectedGradeIds] = useState();
+  const [selectedGradeIds, setSelectedGradeIds] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [sectionId, setSectionId] = useState('');
 
@@ -126,11 +126,13 @@ const CurriculumCompletionDetails = (props) => {
   const [subjectId, setSubjectId] = useState();
 
   // const { setAlert } = useContext(AlertNotificationContext);
-  const [selectedSectionIds, setSelectedSectionIds] = useState();
+  const [selectedSectionIds, setSelectedSectionIds] = useState([]);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
   const ctx = useContext(FilterDetailsContext);
+
+  const volumeArr = [{ volume: 'volume1' }, { volume: 'volume2' }];
 
   const classes = useStyles();
   const history = useHistory();
@@ -151,28 +153,13 @@ const CurriculumCompletionDetails = (props) => {
       },
     });
   };
-  // const acadIdGenerator = () => {
-  //   axiosInstance
-  //     .get(
-  //       `${endpoints.academics.branches}?session_year=${ctx.sessionYearId}&module_id=${ctx.moduleId}`
-  //     )
-  //     .then((result) => {
-  //       if (result?.data?.status_code === 200) {
-  //         setAcadId(result.data.data.results[1].id);
-  //         dataList(result.data.data.results[1].id);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log('error');
-  //     });
-  // };
 
   const handleBranch = () => {
     setGradeList([]);
     setSelectedSection([]);
     setSelectedSubject([]);
     callApi(
-      `${endpoints.academics.grades}?session_year=${ctx.sessionYearId}&branch_id=${props?.history?.location?.state?.branchIdMain}&module_id=${ctx.moduleId}`,
+      `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${props?.history?.location?.state?.branchIdMain}&module_id=${ctx.moduleId}`,
       'gradeList'
     );
   };
@@ -185,7 +172,9 @@ const CurriculumCompletionDetails = (props) => {
     setSelectedGrade(ids);
     setSelectedGradeIds(selectedId);
     callApi(
-      `${endpoints.academics.sections}?session_year=${ctx.sessionYearId}&branch_id=${
+      `${endpoints.academics.sections}?session_year=${
+        selectedAcademicYear?.id
+      }&branch_id=${
         props?.history?.location?.state?.branchIdMain
       }&grade_id=${selectedId?.toString()}&module_id=${ctx.moduleId}`,
       'section'
@@ -200,9 +189,9 @@ const CurriculumCompletionDetails = (props) => {
     setSelectedSection(ids);
     setSelectedSectionIds(selectedId);
     callApi(
-      `${endpoints.academics.subjects}?session_year=${ctx.sessionYearId}&branch=${
+      `${endpoints.academics.subjects}?session_year=${selectedAcademicYear?.id}&branch=${
         props?.history?.location?.state?.branchIdMain
-      }&grade=${selectedId?.toString()}&section=${selectedId?.toString()}&module_id=${
+      }&grade=${selectedGradeIds}&section=${selectedId?.toString()}&module_id=${
         ctx.moduleId
       }`,
       'subject'
@@ -245,9 +234,6 @@ const CurriculumCompletionDetails = (props) => {
   useEffect(() => {
     handleBranch();
   }, [ctx.moduleId]);
-  // useEffect(() => {
-  //   acadIdGenerator();
-  // }, []);
 
   const [periodDate, setPeriodDate] = useState();
   const handleDateClass = (e) => {
@@ -288,11 +274,9 @@ const CurriculumCompletionDetails = (props) => {
       });
   };
 
-  useEffect(() => {
-    if(selectedGradeIds && selectedSectionIds && props?.history?.location?.state?.acadIdMain){
-      dataList();
-    }
-  }, [selectedGradeIds,selectedSectionIds,props?.history?.location?.state?.acadIdMain]);
+  // useEffect(() => {
+  //   dataList();
+  // }, []);
 
   return (
     <Layout>
@@ -324,6 +308,20 @@ const CurriculumCompletionDetails = (props) => {
           lg={12}
           spacing={1}
         >
+          {/* <Grid item xs={12} md={2} spacing={1}>
+            <Autocomplete
+              id='combo-box-demo'
+              size='small'
+              // value={volume}
+              // onChange={handleGrade}
+              options={volumeArr || []}
+              getOptionLabel={(option) => option?.volume || ''}
+              // getOptionSelected={(option, value) => option?.id == value?.id}
+              renderInput={(params) => (
+                <TextField {...params} label='Volume' variant='outlined' />
+              )}
+            />
+          </Grid> */}
           <Grid item xs={12} md={2} spacing={1}>
             <Autocomplete
               id='combo-box-demo'
@@ -356,7 +354,7 @@ const CurriculumCompletionDetails = (props) => {
               )}
             />
           </Grid>
-          <Grid item xs={12} md={3} spacing={1}>
+          <Grid item xs={12} md={2} spacing={1}>
             <Autocomplete
               id='subject'
               size='small'
@@ -384,6 +382,8 @@ const CurriculumCompletionDetails = (props) => {
                 borderRadius: '5px',
                 paddingTop: '5px',
                 width: '100%',
+                // position: 'relative',
+                // left: '200px',
               }}
               id='date'
               // label='Till Date'

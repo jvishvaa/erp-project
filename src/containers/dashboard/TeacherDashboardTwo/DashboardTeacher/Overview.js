@@ -29,7 +29,7 @@ function Overview({ recentSubmissionDetail }) {
           <Typography
             style={{ marginBottom: '10px', fontWeight: '1000', fontSize: '12px' }}
           >
-            Overview of Home Work and Class Work
+            Today's Overview
           </Typography>
           <Grid style={{ display: 'flex' }}>
             <Typography
@@ -69,12 +69,12 @@ function Overview({ recentSubmissionDetail }) {
                           fontSize: '12px',
                           position: 'relative',
                           color: 'black',
-                          top: '25%', 
+                          top: '25%',
                         }}
                       >
                         {item.branch_name}
                       </Typography>
-                      <Grid style={{ marginRight: '48px', marginLeft: '111px' }}>
+                      <Grid style={{ marginRight: '40px', marginLeft: '121px' }}>
                         <CirclePercentage
                           height='50px'
                           width='50px'
@@ -103,14 +103,14 @@ function Overview({ recentSubmissionDetail }) {
                         style={{
                           display: 'flex',
                           flexDirection: 'column',
-                          marginLeft: '54px',
+                          width: '350px',
                         }}
                       >
                         <Typography style={{ color: '#4DC41B', fontSize: '12px' }}>
-                          Submitted
+                          Students Submitted
                         </Typography>
                         <Typography style={{ color: '#F2A127', fontSize: '12px' }}>
-                          Pending
+                          Students Pending
                         </Typography>
                         <Typography style={{ color: '#3A90E6', fontSize: '12px' }}>
                           Evaluated
@@ -123,8 +123,8 @@ function Overview({ recentSubmissionDetail }) {
                           style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            marginLeft: '40px',
-                            marginRight: '70px',
+                            marginLeft: '47px',
+                            // marginRight: '70px',
                           }}
                         >
                           <Typography style={{ fontSize: '12px' }}>
@@ -145,8 +145,8 @@ function Overview({ recentSubmissionDetail }) {
                           style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            marginLeft: '20px',
-                            marginRight: '20px',
+                            marginLeft: '5px',
+                            // marginRight: '20px',
                           }}
                         >
                           <Typography style={{ fontSize: '12px' }}>
