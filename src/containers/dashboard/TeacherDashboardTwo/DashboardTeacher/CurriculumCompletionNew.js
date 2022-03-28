@@ -15,6 +15,9 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import { useHistory } from 'react-router-dom';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
+import RefreshIcon from '@material-ui/icons/Refresh';
+import { IconButton } from '@material-ui/core';
+
 
 // function createData(name, a, b, c) {
 //   return { name, a, b, c };
@@ -38,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function CurriculumCompletionNew({ curriculumDetail }) {
+function CurriculumCompletionNew({ curriculumDetail , curriculumDetails }) {
   const history = useHistory();
   const curriculumDetailsHandler = (branchId, acadId) => {
     history.push({
@@ -60,11 +63,16 @@ function CurriculumCompletionNew({ curriculumDetail }) {
         style={{ minWidth: '100%', border: '2px solid whitesmoke', marginBottom: '10px' }}
       >
         <CardContent>
+          <div style={{display: 'flex' , justifyContent: 'space-between'}} >
           <Typography
-            style={{ marginBottom: '10px', fontWeight: '1000', fontSize: '12px' }}
+            style={{ marginBottom: '10px', fontWeight: '1000', fontSize: '12px' , margin: 'auto 0' }}
           >
             Curriculum Completion
           </Typography>
+          <IconButton style={{width: '12%' , borderRadius: '10px'}}  onClick={curriculumDetails} >
+            <RefreshIcon />
+          </IconButton>
+          </div>
           {/* <Card style={{ minWidth: '100%', border: '2px solid whitesmoke' }}>
             <CardContent> */}
           <Grid

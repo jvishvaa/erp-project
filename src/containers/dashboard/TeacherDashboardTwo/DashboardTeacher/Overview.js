@@ -14,8 +14,11 @@ import CirclePercentage from './CirclePercentage';
 import apiRequest from '../../../../config/apiRequest';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { useHistory } from 'react-router-dom';
+import { IconButton } from '@material-ui/core';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
-function Overview({ recentSubmissionDetail }) {
+
+function Overview({ recentSubmissionDetail, overviewDetails, acadId }) {
   const history = useHistory();
   const homeworkClassWork = () => {
     history.push('./teacherdashboards/homework_Classwork');
@@ -26,11 +29,16 @@ function Overview({ recentSubmissionDetail }) {
         style={{ minWidth: '100%', border: '2px solid whitesmoke', marginBottom: '10px' }}
       >
         <CardContent>
-          <Typography
-            style={{ marginBottom: '10px', fontWeight: '1000', fontSize: '12px' }}
-          >
-            Today's Overview of Home Work & Class Work
-          </Typography>
+          <div style={{display: 'flex' , justifyContent: 'space-between' , margin: 'auto 0'}} >
+            <Typography
+              style={{ marginBottom: '10px', fontWeight: '1000', fontSize: '12px' , margin: 'auto 0'}}
+            >
+              Today's Overview of Home Work & Class Work
+            </Typography>
+            <IconButton style={{width: '12%' , borderRadius: '10px'}} onClick={() => overviewDetails(acadId)} >
+              <RefreshIcon />
+            </IconButton>
+          </div>
           <Grid style={{ display: 'flex' }}>
             <Typography
               style={{ marginRight: '40px', fontSize: '12px', fontWeight: 800 }}
