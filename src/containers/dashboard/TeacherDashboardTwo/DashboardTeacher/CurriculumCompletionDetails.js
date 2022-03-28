@@ -29,6 +29,7 @@ import FilterDetailsContext from '../store/filter-data';
 import axiosInstance from '../../../../config/axios';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useParams, withRouter } from 'react-router-dom';
+import NoFilterData from 'components/noFilteredData/noFilterData';
 
 const useStyles = makeStyles((theme) => ({
   gradeDiv: {
@@ -201,7 +202,9 @@ const CurriculumCompletionDetails = (props) => {
   const handleSubject = (event = {}, value = []) => {
     setSelectedSubject(value);
     setSubjectId(value?.subject__id);
-    dataList();
+    if(value?.subject__id){
+      dataList(value?.subject__id);
+    }
     // pendingInfo();
   };
 
@@ -241,7 +244,7 @@ const CurriculumCompletionDetails = (props) => {
   };
   let date = moment().format('YYYY-MM-DD');
 
-  const dataList = () => {
+  const dataList = (subjectId) => {
     setLoading(true);
     axios
       .get(
@@ -250,10 +253,10 @@ const CurriculumCompletionDetails = (props) => {
           endpoints.teacherDashboard.gradeSectionAggregated
         }?grade_id=${selectedGradeIds?.toString()}&section_id=${selectedSectionIds}&acad_session_id=${
           props?.history?.location?.state?.acadIdMain
-        }`,
+        }&subject_id=${subjectId}`,
         {
           headers: {
-            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
             'X-DTS-HOST': window.location.host,
             Authorization: `Bearer ${token}`,
           },
@@ -407,6 +410,7 @@ const CurriculumCompletionDetails = (props) => {
         <div className={clsx(classes.textBold)}>All grades and section</div>
       </div>
       <div style={{ padding: '0px 20px' }}>
+        {curriculumData.length === 0? <div style={{height:'200px',justifyContent:'center',  marginTop:'70px'}} ><NoFilterData data={'No Data Found'}/></div> :
         <TableContainer component={Paper}>
           <Table>
             <TableHead style={{ background: '#ebf2fe' }}>
@@ -428,30 +432,30 @@ const CurriculumCompletionDetails = (props) => {
                     scope='row'
                     className={clsx(classes.textLeft)}
                   >
-                    <b>{item.subject_mapping__section_mapping__grade__grade_name}</b>
+                    <b>{item.period__subject_mapping__section_mapping__grade__grade_name}</b>
                     {'\u00A0'}-{'\u00A0'}
-                    {item.subject_mapping__section_mapping__section__section_name}{' '}
+                    {item.period__subject_mapping__section_mapping__section__section_name}{' '}
                     {'\u00A0'}
                     {'\u00A0'}
                     {'\u00A0'}
-                    {item.subject_mapping__subject__subject_name}
+                    {item.period__subject_mapping__subject__subject_name}
                   </TableCell>
                   <TableCell align='right'>{item.total_topics}</TableCell>
                   <TableCell align='right'>{item.total_completed}</TableCell>
                   <TableCell align='right'>
                     {item.percentage_completed ? item.percentage_completed : '0'}
                   </TableCell>
-                  <TableCell align='left'>
+                  {/* <TableCell align='left'>
                     <ArrowForwardIosIcon
                       style={{ cursor: 'pointer' }}
                       onClick={chapterTopicHandler}
                     />
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer>}
       </div>
     </Layout>
   );

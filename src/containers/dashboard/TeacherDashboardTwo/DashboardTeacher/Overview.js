@@ -40,7 +40,7 @@ function Overview({ recentSubmissionDetail }) {
             <Typography
               style={{
                 marginLeft: '38px',
-                marginRight: '40px',
+                marginRight: '31px',
                 fontSize: '12px',
                 fontWeight: 800,
               }}
@@ -123,7 +123,7 @@ function Overview({ recentSubmissionDetail }) {
                           style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            marginLeft: '47px',
+                            marginLeft: '37px',
                             // marginRight: '70px',
                           }}
                         >
@@ -145,7 +145,7 @@ function Overview({ recentSubmissionDetail }) {
                           style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            marginLeft: '5px',
+                            marginLeft: '-5px',
                             // marginRight: '20px',
                           }}
                         >
