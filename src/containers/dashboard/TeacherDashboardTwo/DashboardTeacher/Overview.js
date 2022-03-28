@@ -33,7 +33,7 @@ function Overview({ recentSubmissionDetail, overviewDetails, acadId }) {
             <Typography
               style={{ marginBottom: '10px', fontWeight: '1000', fontSize: '12px' , margin: 'auto 0'}}
             >
-              Today's Overview
+              Today's Overview of Home Work & Class Work
             </Typography>
             <IconButton style={{width: '12%' , borderRadius: '10px'}} onClick={() => overviewDetails(acadId)} >
               <RefreshIcon />
@@ -115,10 +115,10 @@ function Overview({ recentSubmissionDetail, overviewDetails, acadId }) {
                         }}
                       >
                         <Typography style={{ color: '#4DC41B', fontSize: '12px' }}>
-                          Students Submitted
+                          Submitted
                         </Typography>
                         <Typography style={{ color: '#F2A127', fontSize: '12px' }}>
-                          Students Pending
+                          Pending
                         </Typography>
                         <Typography style={{ color: '#3A90E6', fontSize: '12px' }}>
                           Evaluated

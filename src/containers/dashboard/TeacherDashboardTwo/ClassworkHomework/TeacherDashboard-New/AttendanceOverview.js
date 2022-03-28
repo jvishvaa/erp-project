@@ -260,13 +260,17 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
       statusTag.style.backgroundColor = 'red';
       status.innerHTML = '<b>Absent</b>';
     } else if (attendanceDetail?.attendence_status === 'halfday'){
-      status.style.color = 'paleyellow';
-      statusTag.style.backgroundColor = 'paleyellow';
-      status.innerHTML = '<b>halfday</b>';
+      status.style.color = 'blue';
+      statusTag.style.backgroundColor = 'blue';
+      status.innerHTML = '<b>Half Day</b>';
     } else if (attendanceDetail?.attendence_status === 'holiday'){
       status.style.color = '#DAB5FF';
       statusTag.style.backgroundColor = '#DAB5FF';
-      status.innerHTML = '<b>holiday</b>';
+      status.innerHTML = '<b>Holiday</b>';
+    }else if (attendanceDetail?.attendence_status === 'late'){
+      status.style.color = '#DAB5FF';
+      statusTag.style.backgroundColor = '#DAB5FF';
+      status.innerHTML = '<b>Late</b>';
     }else {
       status.style.color = 'black';
       statusTag.style.backgroundColor = 'grey';

@@ -162,7 +162,7 @@ function CurriculumCompletionNew({ curriculumDetail , curriculumDetails }) {
                           }}
                           align='right'
                         >
-                          {row?.overall_branch_completion_percentage}
+                          {row?.overall_branch_completion_percentage}%
                         </TableCell>
                         <TableCell
                           style={{
