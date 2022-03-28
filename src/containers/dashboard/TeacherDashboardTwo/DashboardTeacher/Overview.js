@@ -29,7 +29,7 @@ function Overview({ recentSubmissionDetail }) {
           <Typography
             style={{ marginBottom: '10px', fontWeight: '1000', fontSize: '12px' }}
           >
-            Today's Overview
+            Today's Overview of Home Work & Class Work
           </Typography>
           <Grid style={{ display: 'flex' }}>
             <Typography
@@ -107,10 +107,10 @@ function Overview({ recentSubmissionDetail }) {
                         }}
                       >
                         <Typography style={{ color: '#4DC41B', fontSize: '12px' }}>
-                          Students Submitted
+                          Submitted
                         </Typography>
                         <Typography style={{ color: '#F2A127', fontSize: '12px' }}>
-                          Students Pending
+                          Pending
                         </Typography>
                         <Typography style={{ color: '#3A90E6', fontSize: '12px' }}>
                           Evaluated

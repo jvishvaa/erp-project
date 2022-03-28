@@ -172,6 +172,11 @@ const CurriculumCompletionDetails = (props) => {
     const selectedId = value?.grade_id;
     setSelectedGrade(ids);
     setSelectedGradeIds(selectedId);
+    setSectionList([])  //clear List
+    setSubjectList([])
+    setSelectedSection([])
+    setSelectedSubject([])
+    setCurriculumData([])
     callApi(
       `${endpoints.academics.sections}?session_year=${
         selectedAcademicYear?.id
@@ -189,6 +194,9 @@ const CurriculumCompletionDetails = (props) => {
     setSectionId(sectionid);
     setSelectedSection(ids);
     setSelectedSectionIds(selectedId);
+    setSubjectList([]) //clear
+    setSelectedSubject([])
+    setCurriculumData([])
     callApi(
       `${endpoints.academics.subjects}?session_year=${selectedAcademicYear?.id}&branch=${
         props?.history?.location?.state?.branchIdMain
@@ -202,6 +210,7 @@ const CurriculumCompletionDetails = (props) => {
   const handleSubject = (event = {}, value = []) => {
     setSelectedSubject(value);
     setSubjectId(value?.subject__id);
+    setCurriculumData([]);
     if(value?.subject__id){
       dataList(value?.subject__id);
     }
@@ -238,10 +247,18 @@ const CurriculumCompletionDetails = (props) => {
     handleBranch();
   }, [ctx.moduleId]);
 
-  const [periodDate, setPeriodDate] = useState();
+  const [periodDate, setPeriodDate] = useState(moment().format('YYYY-MM-DD'));
   const handleDateClass = (e) => {
     setPeriodDate(e.target.value);
   };
+
+  useEffect(()=>{
+    let acadId = props?.history?.location?.state?.acadIdMain;
+    if(periodDate && selectedGradeIds && selectedSectionIds && acadId && subjectId){
+      dataList(subjectId)
+    }
+  },[periodDate])
+
   let date = moment().format('YYYY-MM-DD');
 
   const dataList = (subjectId) => {
@@ -253,7 +270,7 @@ const CurriculumCompletionDetails = (props) => {
           endpoints.teacherDashboard.gradeSectionAggregated
         }?grade_id=${selectedGradeIds?.toString()}&section_id=${selectedSectionIds}&acad_session_id=${
           props?.history?.location?.state?.acadIdMain
-        }&subject_id=${subjectId}`,
+        }&subject_id=${subjectId}&date_range_type=${periodDate}`,
         {
           headers: {
             // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
@@ -376,7 +393,7 @@ const CurriculumCompletionDetails = (props) => {
               )}
             />
           </Grid>
-          <Grid item xs={12} md={3}></Grid>
+          <Grid item xs={12} md={4}></Grid>
           <Grid item xs={12} md={2} spacing={1}>
             <TextField
               style={{
@@ -387,6 +404,7 @@ const CurriculumCompletionDetails = (props) => {
                 width: '100%',
                 // position: 'relative',
                 // left: '200px',
+                paddingLeft: '10px'
               }}
               id='date'
               // label='Till Date'
@@ -394,7 +412,7 @@ const CurriculumCompletionDetails = (props) => {
               size='small'
               defaultValue={date}
               onChange={handleDateClass}
-              inputProps={{ min: date }}
+              inputProps={{ max: date }}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -420,7 +438,7 @@ const CurriculumCompletionDetails = (props) => {
                 </TableCell>
                 <TableCell align='right'>Total Topics</TableCell>
                 <TableCell align='right'>Completed Topics</TableCell>
-                <TableCell align='right'>Avg. Completion</TableCell>
+                <TableCell align='right'>Completion Percentage</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
@@ -443,7 +461,7 @@ const CurriculumCompletionDetails = (props) => {
                   <TableCell align='right'>{item.total_topics}</TableCell>
                   <TableCell align='right'>{item.total_completed}</TableCell>
                   <TableCell align='right'>
-                    {item.percentage_completed ? item.percentage_completed : '0'}
+                    {item.percentage_completed ? item.percentage_completed : '0'}%
                   </TableCell>
                   {/* <TableCell align='left'>
                     <ArrowForwardIosIcon
