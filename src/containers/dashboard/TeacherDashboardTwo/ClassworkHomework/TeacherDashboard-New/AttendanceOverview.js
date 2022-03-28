@@ -218,14 +218,14 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
     ],
   };
 
-  let todayStr = new Date().toISOString().replace(/T.*$/, ''); // YYYY-MM-DD of today
-  const initial_events = [
-    {
-      id: 2,
-      title: 'A',
-      start: todayStr + 'T12:00:00',
-    },
-  ];
+  // let todayStr = new Date().toISOString().replace(/T.*$/, ''); // YYYY-MM-DD of today
+  // const initial_events = [
+  //   {
+  //     id: 2,
+  //     title: 'A',
+  //     start: todayStr + 'T12:00:00',
+  //   },
+  // ];
   //***********Today attendance log TimeLine***************
   // useEffect(() => {
   //   let start = 8;
@@ -259,7 +259,15 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
       status.style.color = 'red';
       statusTag.style.backgroundColor = 'red';
       status.innerHTML = '<b>Absent</b>';
-    } else {
+    } else if (attendanceDetail?.attendence_status === 'halfday'){
+      status.style.color = 'paleyellow';
+      statusTag.style.backgroundColor = 'paleyellow';
+      status.innerHTML = '<b>halfday</b>';
+    } else if (attendanceDetail?.attendence_status === 'holiday'){
+      status.style.color = '#DAB5FF';
+      statusTag.style.backgroundColor = '#DAB5FF';
+      status.innerHTML = '<b>holiday</b>';
+    }else {
       status.style.color = 'black';
       statusTag.style.backgroundColor = 'grey';
       status.innerHTML = '<b>Not Available</b>';

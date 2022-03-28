@@ -169,8 +169,8 @@ function CurriculumCompletionNew({ curriculumDetail }) {
                           >
                             {row?.min_completion_grade}({row?.min_completion_subject})
                           </Grid>
-                          <Grid style={{ color: '#4DC41B', fontWeight: '1000' }}>
-                            {row?.min_completion_subject_percentage}
+                          <Grid style={{ color: '#E51A1A', fontWeight: '1000' }}>
+                            {row?.min_completion_subject_percentage}%
                           </Grid>
                         </TableCell>
                         <TableCell
@@ -186,8 +186,8 @@ function CurriculumCompletionNew({ curriculumDetail }) {
                           >
                             {row?.max_completion_grade}({row?.max_completion_subject})
                           </Grid>
-                          <Grid style={{ color: '#E51A1A', fontWeight: '1000' }}>
-                            {row?.max_completion_subject_percentage}
+                          <Grid style={{ color: '#4DC41B', fontWeight: '1000' }}>
+                            {row?.max_completion_subject_percentage}%
                           </Grid>
                         </TableCell>
                       </TableRow>
