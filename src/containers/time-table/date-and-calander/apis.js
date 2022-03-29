@@ -1,6 +1,7 @@
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 
+const session_year = JSON.parse(sessionStorage.getItem('acad_session'))?.id
 function createParams(params) {
     return `?${Object.entries(params)
       .filter(([key, value]) => value !== undefined)
@@ -21,7 +22,7 @@ function createParams(params) {
 
   export const getTTList = async (section_mapping) => {
     if (!section_mapping) return;
-    const params = createParams({ section_mapping });
+    const params = createParams({ section_mapping, session_year });
     try {        
       const { data = {} } = await axiosInstance.get(
         `${endpoints.timeTable.timeTableList}${params}`
@@ -34,7 +35,7 @@ function createParams(params) {
 
   export const getTimeTable = async (tt) => {
     if (!tt) return;
-    const params = createParams({ tt });
+    const params = createParams({ tt,session_year });
     try {        
       const { data = {} } = await axiosInstance.get(
         `${endpoints.timeTable.gettimeTable}${params}`
@@ -82,9 +83,10 @@ function createParams(params) {
   };
 
   export const getPeriodTypes = async () => {
+    const params = createParams({session_year });
     try {        
       const { data = {} } = await axiosInstance.get(
-        endpoints.timeTable.periodTypes
+        `${endpoints.timeTable.periodTypes}${params}`
       );
       return data ; 
     } catch (e) {

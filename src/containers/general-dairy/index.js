@@ -62,6 +62,8 @@ const GeneralDairyList = () => {
   const [startDate, setSDate] = useState([]);
   const [endDate, setEDate] = useState([]);
   const [deleteFlag, setDeleteFlag] = useState(false);
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
+
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -112,7 +114,9 @@ const GeneralDairyList = () => {
     endDate,
     activeTab,
     page,
-    subjects
+    subjects,
+    moduleId,
+    academic_year
   ) => {
     setLoading(true);
     setPeriodData([]);
@@ -138,7 +142,7 @@ const GeneralDairyList = () => {
     const diaryUrl = isTeacher
       ? `${
           endpoints.generalDairy.dairyList
-        }?module_id=${teacherModuleId}&session_year=${selectedAcademicYear?.id}&branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format(
+        }?module_id=${teacherModuleId}&session_year=${academic_year?.id}&branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format(
           'YYYY-MM-DD'
         )}&end_date=${endDate.format('YYYY-MM-DD')}${
           activeTab !== 0 ? '&dairy_type=' + activeTab : ''
@@ -150,12 +154,12 @@ const GeneralDairyList = () => {
           subjects.id
         }&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format(
           'YYYY-MM-DD'
-        )}${activeTab !== 0 ? '&dairy_type=' + activeTab : ''}`
+        )}&session_year=${sessionYear?.id}${activeTab !== 0 ? '&dairy_type=' + activeTab : ''}`
       : `${
           endpoints.generalDairy.dairyList
         }?module_id=${studentModuleId}&page=${page}&page_size=${limit}&start_date=${startDate.format(
           'YYYY-MM-DD'
-        )}&end_date=${endDate.format('YYYY-MM-DD')}${
+        )}&end_date=${endDate.format('YYYY-MM-DD')}&session_year=${sessionYear?.id}${
           activeTab !== 0 ? '&dairy_type=' + activeTab : ''
         }`;
     axiosInstance
@@ -195,6 +199,7 @@ const GeneralDairyList = () => {
           handleDairyList={handleDairyList}
           setPeriodData={setPeriodData}
           isTeacher={isTeacher}
+          sessionYear = {sessionYear}
           showSubjectDropDown={showSubjectDropDown}
           studentModuleId={studentModuleId}
           // pageup={page}
@@ -270,7 +275,6 @@ const GeneralDairyList = () => {
                     setViewMore={setViewMore}
                     periodDataForView={periodDataForView}
                     setSelectedIndex={setSelectedIndex}
-                    setSelectedIndex={setSelectedIndex}
                   />
                 </Grid>
               )}
@@ -280,7 +284,6 @@ const GeneralDairyList = () => {
                     viewMoreData={viewMoreData}
                     setViewMore={setViewMore}
                     periodDataForView={periodDataForView}
-                    setSelectedIndex={setSelectedIndex}
                     setSelectedIndex={setSelectedIndex}
                   />
                 </Grid>

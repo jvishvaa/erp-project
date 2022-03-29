@@ -66,13 +66,14 @@ const StudentHomeWorkReport = () => {
     moment().subtract(6, 'days'),
     moment(),
   ]);
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
   useEffect(() => {
     callApiReportData();
   }, [startDate, endDate]);
   const callApiReportData = () => {
     axiosInstance
       .get(
-        `/academic/student_homework_report/?start_date=${startDate}&end_date=${endDate}`
+        `/academic/student_homework_report/?start_date=${startDate}&end_date=${endDate}&session_year=${sessionYear?.id}`
       )
       .then((res) => {
         console.log(res, 'student-homework');

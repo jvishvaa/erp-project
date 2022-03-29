@@ -179,6 +179,7 @@ function ViewOrchadio() {
   const [pageNumber, setPageNumber] = React.useState(1)
   const limit = 5;
   const [totalPages, setTotalPages] = React.useState('')
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
   const [startDate, setStartDate] = React.useState(
     moment(new Date()).format('YYYY-MM-DD')
   );
@@ -370,7 +371,7 @@ function ViewOrchadio() {
       console.log(data, 'data');
       // url = `${endpoints.orchadio.GetRadioProgram}`;
       axios
-      .get(`${endpoints.orchadio.GetRadioProgram}?page_number=${pageNumber}&page_size=${limit}`)
+      .get(`${endpoints.orchadio.GetRadioProgram}?page_number=${pageNumber}&page_size=${limit}&session_year=${sessionYear?.id}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
@@ -396,7 +397,7 @@ function ViewOrchadio() {
       // Liked
       // url = `${endpoints.orchadio.GetRadioProgram}?category_type=1`;
       axios
-      .get(`${endpoints.orchadio.GetRadioProgram}?category_type=1&page_number=${pageNumber}&page_size=${limit}`)
+      .get(`${endpoints.orchadio.GetRadioProgram}?category_type=1&page_number=${pageNumber}&page_size=${limit}&session_year=${sessionYear?.id}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
@@ -425,7 +426,7 @@ function ViewOrchadio() {
       // url = `${endpoints.orchadio.GetRadioProgram}?category_type=1`;
       // url = `${endpoints.orchadio.GetRadioProgram}?is_deleted=True`;
       axios
-      .get(`${endpoints.orchadio.GetRadioProgram}?is_deleted=True&page_number=${pageNumber}&page_size=${limit}`)
+      .get(`${endpoints.orchadio.GetRadioProgram}?is_deleted=True&page_number=${pageNumber}&page_size=${limit}&session_year=${sessionYear?.id}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
@@ -495,7 +496,7 @@ function ViewOrchadio() {
   const handleFilter = () => {
     axios
       .get(
-        `${endpoints.orchadio.GetRadioProgram}?is_deleted=True&start_date=${startDate}&end_date=${endDate}`
+        `${endpoints.orchadio.GetRadioProgram}?is_deleted=True&start_date=${startDate}&end_date=${endDate}&session_year=${sessionYear?.id}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {

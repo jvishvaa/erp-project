@@ -104,6 +104,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 const ViewClassWork = withRouter(({ history, ...props }) => {
   const { homeWorkId } = useParams();
+  const {period_id} = props?.location?.state
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
   const classes = useStyles();
@@ -122,7 +123,7 @@ const ViewClassWork = withRouter(({ history, ...props }) => {
   const callSubmittedDetail = () => {
     setLoading(true);
     axiosInstance
-      .get(`${endpoints.homework.HwSubmittedDetail}?homework=${homeWorkId}&period_id=${history?.location?.period_id}`)
+      .get(`${endpoints.homework.HwSubmittedDetail}?homework=${homeWorkId}&period_id=${period_id}`)
       .then((result) => {
         if (result?.data?.status_code === 200 || result?.data?.status_code === 201) {
           setAlert('success', result?.data?.message);

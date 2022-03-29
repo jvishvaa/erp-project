@@ -7,10 +7,17 @@ import Box from '@material-ui/core/Box';
 import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
 import BlockOutlined from '@material-ui/icons/BlockOutlined';
+import RestoreIcon from '@material-ui/icons/Restore';
 import useStyles from './useStyles';
 
-const ViewUserCard = ({ user, onEdit, onDelete, onStatusChange }) => {
+const ViewUserCard = ({ user, onEdit, onRestore, onDelete, onStatusChange }) => {
+  const userStatus = user.active
+    ? user.status === 'deleted'
+      ? 'Deleted'
+      : 'Activated'
+    : 'Deactivated';
   const classes = useStyles();
+
   return (
     <Paper className={classes.root}>
       <Grid container spacing={3}>
@@ -58,7 +65,9 @@ const ViewUserCard = ({ user, onEdit, onDelete, onStatusChange }) => {
                 color='secondary'
                 align='right'
               >
-                {user.active ? 'Active' : 'Deactivated'}
+                <div style={{ color: userStatus === 'Activated' ? 'green' : 'red' }}>
+                  {userStatus}
+                </div>
               </Typography>
             </Box>
           </Grid>
@@ -86,7 +95,7 @@ const ViewUserCard = ({ user, onEdit, onDelete, onStatusChange }) => {
               </Typography>
             </Box>
           </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={6} className={classes.textRight}>
             <Box>
               <Typography
                 className={classes.title}
@@ -116,55 +125,78 @@ const ViewUserCard = ({ user, onEdit, onDelete, onStatusChange }) => {
           <Divider />
         </Grid>
         <Grid item container>
-          <Grid item xs={4} style={{ display: 'flex', alignItems: 'center' }}>
-            {user.active ? (
-              <IconButton
-                aria-label='deactivate'
-                onClick={() => onStatusChange(user.userId, '2')}
-                title='Deactivate'
-              >
-                <BlockOutlined color='primary' />
-              </IconButton>
-            ) : (
-              <button
-                className='group_view_activate_button group_view_button'
-                title='Activate'
-                type='submit'
-                onClick={() => onStatusChange(user.userId, '1')}
+          {userStatus === 'Deleted' ? (
+            <Grid item xs={12}>
+              <Box
                 style={{
-                  borderRadius: '50%',
-                  backgroundColor: 'green',
-                  border: 0,
-                  width: '30px',
-                  height: '30px',
-                  color: '#ffffff',
-                  cursor: 'pointer',
+                  width: '100%',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
                 }}
               >
-                A
-              </button>
-            )}
-          </Grid>
-          <Grid item xs={4}>
-            <Box style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-              <IconButton
-                onClick={() => {
-                  onEdit(user.userId);
-                }}
-              >
-                <EditOutlinedIcon color='primary' />
-              </IconButton>
-            </Box>
-          </Grid>
-          <Grid item xs={4} className={classes.textRight}>
-            <IconButton
-              onClick={() => {
-                onDelete(user.userId);
-              }}
-            >
-              <DeleteOutlineIcon color='primary' />
-            </IconButton>
-          </Grid>
+                <IconButton
+                  title='Restore'
+                  // onClick={() => handleRestore(user.userId, i, '1')}
+                  onClick={() => onRestore(user.userId)}
+                >
+                  <RestoreIcon color='primary' />
+                </IconButton>
+              </Box>
+            </Grid>
+          ) : (
+            <>
+              <Grid item xs={4} style={{ display: 'flex', alignItems: 'center' }}>
+                {user.active ? (
+                  <IconButton
+                    aria-label='deactivate'
+                    onClick={() => onStatusChange(user.userId, '2')}
+                    title='Deactivate'
+                  >
+                    <BlockOutlined color='primary' />
+                  </IconButton>
+                ) : (
+                  <button
+                    className='group_view_activate_button group_view_button'
+                    title='Activate'
+                    type='submit'
+                    onClick={() => onStatusChange(user.userId, '1')}
+                    style={{
+                      borderRadius: '50%',
+                      backgroundColor: 'green',
+                      border: 0,
+                      width: '30px',
+                      height: '30px',
+                      color: '#ffffff',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    A
+                  </button>
+                )}
+              </Grid>
+              <Grid item xs={4}>
+                <Box style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+                  <IconButton
+                    onClick={() => {
+                      onEdit(user.userId);
+                    }}
+                  >
+                    <EditOutlinedIcon color='primary' />
+                  </IconButton>
+                </Box>
+              </Grid>
+              <Grid item xs={4} className={classes.textRight}>
+                <IconButton
+                  onClick={() => {
+                    onDelete(user.userId);
+                  }}
+                >
+                  <DeleteOutlineIcon color='primary' />
+                </IconButton>
+              </Grid>
+            </>
+          )}
         </Grid>
       </Grid>
     </Paper>
