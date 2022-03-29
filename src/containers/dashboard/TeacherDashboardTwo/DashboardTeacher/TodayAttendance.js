@@ -22,7 +22,19 @@ function TodayAttendance({ attendanceDetail }) {
       Text.style.color = 'red';
       element.style.backgroundColor = 'red';
       Text.innerHTML = '<b>Absent</b>';
-    } else{
+    } else if (attendanceDetail?.attendence_status === 'halfday'){
+      Text.style.color = 'blue';
+      element.style.backgroundColor = 'blue';
+      Text.innerHTML = '<b>Half Day</b>';
+    } else if (attendanceDetail?.attendence_status === 'holiday'){
+      Text.style.color = '#DAB5FF';
+      element.style.backgroundColor = '#DAB5FF';
+      Text.innerHTML = '<b>Holiday</b>';
+    } else if (attendanceDetail?.attendence_status === 'late'){
+      Text.style.color = '#DAB5FF';
+      element.style.backgroundColor = '#DAB5FF';
+      Text.innerHTML = '<b>Late</b>';
+    } else {
       Text.style.color = 'black';
       element.style.backgroundColor = 'grey';
       Text.innerHTML = '<b>Not Available</b>';

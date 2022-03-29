@@ -30,6 +30,7 @@ import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
 // import axiosInstance from '../../../../config/axios';
 import FilterDetailsContext from '../store/filter-data';
+import { connect, useSelector } from 'react-redux';
 
 function TeacherDashboard() {
   // const [studentDetail, setStudentDetail] = useState({});
@@ -43,13 +44,17 @@ function TeacherDashboard() {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState();
   const [sessionYearId, setSessionYearId] = useState();
+  const [ acadId , setAcadId ] = useState();
   const ctx = useContext(FilterDetailsContext);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const gradeSectionDetails = () => {
     axios
       .get(`${endpoints.teacherDashboardTwo.gradeSectionDetails}?acad_session_id=1`, {
         headers: {
-          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -69,7 +74,7 @@ function TeacherDashboard() {
   const acadIdGenerator = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.branches}?session_year=${ctx.sessionYearId}&module_id=${ctx.moduleId}`
+        `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${ctx.moduleId}`
       )
       .then((result) => {
         if (result?.data?.status_code === 200) {
@@ -77,6 +82,7 @@ function TeacherDashboard() {
           let acadIdArr = result.data.data.results.map((i) => {
             return i.id;
           });
+          setAcadId(acadIdArr);
           overviewDetails(acadIdArr);
           branchDetails(acadIdArr);
         }
@@ -91,7 +97,7 @@ function TeacherDashboard() {
     axiosInstance
       .get(`${endpoints.teacherDashboardTwo.teacherOverview}?acad_session=${acadId}`, {
         headers: {
-          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -111,7 +117,7 @@ function TeacherDashboard() {
     axios
       .get(`${endpoints.teacherDashboardTwo.curriculumDetails}`, {
         headers: {
-          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -130,7 +136,7 @@ function TeacherDashboard() {
     axios
       .get(`${endpoints.teacherDashboardTwo.attendanceDetails}`, {
         headers: {
-          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -149,7 +155,7 @@ function TeacherDashboard() {
     axios
       .get(`${endpoints.teacherDashboardTwo.branchDetails}?acad_session=${acadId}`, {
         headers: {
-          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -158,7 +164,7 @@ function TeacherDashboard() {
         if (result?.data?.status_code === 200) {
           setBranchDetail(result?.data?.result);
           setBranchId(result.data.result[0].branch_id);
-          setSessionYearId(result.data.result[0].session_year_id);
+          setSessionYearId(selectedAcademicYear?.id);
         }
       })
       .catch((error) => {
@@ -200,7 +206,7 @@ function TeacherDashboard() {
           sessionYearId: sessionYearId,
         }}
       >
-        <Grid container spacing={1}>
+        <Grid container spacing={2}>
           <Grid item xs={9}>
             <Typography style={{ fontWeight: '1000', fontSize: '16px' }}>
               Dashboard
@@ -216,7 +222,7 @@ function TeacherDashboard() {
                       <Grid item xs={12}>
                         <TodayAttendance attendanceDetail={attendanceDetail} />
                         <Grid item xs={12}>
-                          <Overview recentSubmissionDetail={recentSubmissionDetail} />
+                          <Overview recentSubmissionDetail={recentSubmissionDetail} overviewDetails={overviewDetails} acadId={acadId} />
                         </Grid>
                       </Grid>
                     </Grid>
@@ -227,7 +233,7 @@ function TeacherDashboard() {
                         <AssessmentNew gradesectionDetail={gradesectionDetail} />
                       </Grid> */}
                       <Grid item xs={12}>
-                        <CurriculumCompletionNew curriculumDetail={curriculumDetail} />
+                        <CurriculumCompletionNew curriculumDetail={curriculumDetail} curriculumDetails={curriculumDetails} />
                       </Grid>
                       {/* <Grid item xs={12}>
                         <TrainingReportNew />
@@ -239,10 +245,11 @@ function TeacherDashboard() {
             </Grid>
           </Grid>
           {/* RH SIDE code below */}
-          <Grid item xs={3} sm={3} md={3}>
+          <Grid item xs={3}>
             <StudentRightDashboard />
           </Grid>
         </Grid>
+        <Grid></Grid>
       </FilterDetailsContext.Provider>
     </>
   );

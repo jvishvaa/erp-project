@@ -99,7 +99,8 @@ function Submitted({ section, subject, date }) {
         `${endpoints.teacherDashboard.fileHwData}?section_mapping=2&subject=9&date=2022-02-01&erp=2101430143_OLV`,
         {
           headers: {
-            'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            'X-DTS-HOST': window.location.host,
             Authorization: `Bearer ${token}`,
           },
         }

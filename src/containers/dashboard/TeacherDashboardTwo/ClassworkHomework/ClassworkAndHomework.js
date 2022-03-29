@@ -307,7 +307,9 @@ class HomeworkClasswork extends React.Component {
     axios
       .get(`${endpoints.teacherDashboard.gradeSectionSubject}?branch_id=111`, {
         headers: {
-          'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          'X-DTS-HOST': window.location.host,
+
           Authorization: `Bearer ${token}`,
         },
       })

@@ -14,8 +14,11 @@ import CirclePercentage from './CirclePercentage';
 import apiRequest from '../../../../config/apiRequest';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { useHistory } from 'react-router-dom';
+import { IconButton } from '@material-ui/core';
+import RefreshIcon from '@material-ui/icons/Refresh';
 
-function Overview({ recentSubmissionDetail }) {
+
+function Overview({ recentSubmissionDetail, overviewDetails, acadId }) {
   const history = useHistory();
   const homeworkClassWork = () => {
     history.push('./teacherdashboards/homework_Classwork');
@@ -26,11 +29,16 @@ function Overview({ recentSubmissionDetail }) {
         style={{ minWidth: '100%', border: '2px solid whitesmoke', marginBottom: '10px' }}
       >
         <CardContent>
-          <Typography
-            style={{ marginBottom: '10px', fontWeight: '1000', fontSize: '12px' }}
-          >
-            Overview of Home Work and Class Work
-          </Typography>
+          <div style={{display: 'flex' , justifyContent: 'space-between' , margin: 'auto 0'}} >
+            <Typography
+              style={{ marginBottom: '10px', fontWeight: '1000', fontSize: '12px' , margin: 'auto 0'}}
+            >
+              Today's Overview of Home Work & Class Work
+            </Typography>
+            <IconButton style={{width: '12%' , borderRadius: '10px'}} onClick={() => overviewDetails(acadId)} >
+              <RefreshIcon />
+            </IconButton>
+          </div>
           <Grid style={{ display: 'flex' }}>
             <Typography
               style={{ marginRight: '40px', fontSize: '12px', fontWeight: 800 }}
@@ -40,7 +48,7 @@ function Overview({ recentSubmissionDetail }) {
             <Typography
               style={{
                 marginLeft: '38px',
-                marginRight: '40px',
+                marginRight: '31px',
                 fontSize: '12px',
                 fontWeight: 800,
               }}
@@ -69,12 +77,12 @@ function Overview({ recentSubmissionDetail }) {
                           fontSize: '12px',
                           position: 'relative',
                           color: 'black',
-                          top: '25%', 
+                          top: '25%',
                         }}
                       >
                         {item.branch_name}
                       </Typography>
-                      <Grid style={{ marginRight: '48px', marginLeft: '111px' }}>
+                      <Grid style={{ marginRight: '40px', marginLeft: '121px' }}>
                         <CirclePercentage
                           height='50px'
                           width='50px'
@@ -103,7 +111,7 @@ function Overview({ recentSubmissionDetail }) {
                         style={{
                           display: 'flex',
                           flexDirection: 'column',
-                          marginLeft: '54px',
+                          width: '350px',
                         }}
                       >
                         <Typography style={{ color: '#4DC41B', fontSize: '12px' }}>
@@ -123,8 +131,8 @@ function Overview({ recentSubmissionDetail }) {
                           style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            marginLeft: '40px',
-                            marginRight: '70px',
+                            marginLeft: '37px',
+                            // marginRight: '70px',
                           }}
                         >
                           <Typography style={{ fontSize: '12px' }}>
@@ -145,8 +153,8 @@ function Overview({ recentSubmissionDetail }) {
                           style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            marginLeft: '20px',
-                            marginRight: '20px',
+                            marginLeft: '-5px',
+                            // marginRight: '20px',
                           }}
                         >
                           <Typography style={{ fontSize: '12px' }}>

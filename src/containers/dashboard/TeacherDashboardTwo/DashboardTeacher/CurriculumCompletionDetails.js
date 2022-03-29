@@ -29,6 +29,7 @@ import FilterDetailsContext from '../store/filter-data';
 import axiosInstance from '../../../../config/axios';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useParams, withRouter } from 'react-router-dom';
+import NoFilterData from 'components/noFilteredData/noFilterData';
 
 const useStyles = makeStyles((theme) => ({
   gradeDiv: {
@@ -116,7 +117,7 @@ const CurriculumCompletionDetails = (props) => {
 
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
-  const [selectedGradeIds, setSelectedGradeIds] = useState();
+  const [selectedGradeIds, setSelectedGradeIds] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [sectionId, setSectionId] = useState('');
 
@@ -126,11 +127,13 @@ const CurriculumCompletionDetails = (props) => {
   const [subjectId, setSubjectId] = useState();
 
   // const { setAlert } = useContext(AlertNotificationContext);
-  const [selectedSectionIds, setSelectedSectionIds] = useState();
+  const [selectedSectionIds, setSelectedSectionIds] = useState([]);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
   const ctx = useContext(FilterDetailsContext);
+
+  const volumeArr = [{ volume: 'volume1' }, { volume: 'volume2' }];
 
   const classes = useStyles();
   const history = useHistory();
@@ -151,28 +154,13 @@ const CurriculumCompletionDetails = (props) => {
       },
     });
   };
-  // const acadIdGenerator = () => {
-  //   axiosInstance
-  //     .get(
-  //       `${endpoints.academics.branches}?session_year=${ctx.sessionYearId}&module_id=${ctx.moduleId}`
-  //     )
-  //     .then((result) => {
-  //       if (result?.data?.status_code === 200) {
-  //         setAcadId(result.data.data.results[1].id);
-  //         dataList(result.data.data.results[1].id);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       console.log('error');
-  //     });
-  // };
 
   const handleBranch = () => {
     setGradeList([]);
     setSelectedSection([]);
     setSelectedSubject([]);
     callApi(
-      `${endpoints.academics.grades}?session_year=${ctx.sessionYearId}&branch_id=${props?.history?.location?.state?.branchIdMain}&module_id=${ctx.moduleId}`,
+      `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${props?.history?.location?.state?.branchIdMain}&module_id=${ctx.moduleId}`,
       'gradeList'
     );
   };
@@ -184,8 +172,15 @@ const CurriculumCompletionDetails = (props) => {
     const selectedId = value?.grade_id;
     setSelectedGrade(ids);
     setSelectedGradeIds(selectedId);
+    setSectionList([])  //clear List
+    setSubjectList([])
+    setSelectedSection([])
+    setSelectedSubject([])
+    setCurriculumData([])
     callApi(
-      `${endpoints.academics.sections}?session_year=${ctx.sessionYearId}&branch_id=${
+      `${endpoints.academics.sections}?session_year=${
+        selectedAcademicYear?.id
+      }&branch_id=${
         props?.history?.location?.state?.branchIdMain
       }&grade_id=${selectedId?.toString()}&module_id=${ctx.moduleId}`,
       'section'
@@ -199,10 +194,13 @@ const CurriculumCompletionDetails = (props) => {
     setSectionId(sectionid);
     setSelectedSection(ids);
     setSelectedSectionIds(selectedId);
+    setSubjectList([]) //clear
+    setSelectedSubject([])
+    setCurriculumData([])
     callApi(
-      `${endpoints.academics.subjects}?session_year=${ctx.sessionYearId}&branch=${
+      `${endpoints.academics.subjects}?session_year=${selectedAcademicYear?.id}&branch=${
         props?.history?.location?.state?.branchIdMain
-      }&grade=${selectedId?.toString()}&section=${selectedId?.toString()}&module_id=${
+      }&grade=${selectedGradeIds}&section=${selectedId?.toString()}&module_id=${
         ctx.moduleId
       }`,
       'subject'
@@ -212,7 +210,10 @@ const CurriculumCompletionDetails = (props) => {
   const handleSubject = (event = {}, value = []) => {
     setSelectedSubject(value);
     setSubjectId(value?.subject__id);
-    dataList();
+    setCurriculumData([]);
+    if(value?.subject__id){
+      dataList(value?.subject__id);
+    }
     // pendingInfo();
   };
 
@@ -245,17 +246,22 @@ const CurriculumCompletionDetails = (props) => {
   useEffect(() => {
     handleBranch();
   }, [ctx.moduleId]);
-  // useEffect(() => {
-  //   acadIdGenerator();
-  // }, []);
 
-  const [periodDate, setPeriodDate] = useState();
+  const [periodDate, setPeriodDate] = useState(moment().format('YYYY-MM-DD'));
   const handleDateClass = (e) => {
     setPeriodDate(e.target.value);
   };
+
+  useEffect(()=>{
+    let acadId = props?.history?.location?.state?.acadIdMain;
+    if(periodDate && selectedGradeIds && selectedSectionIds && acadId && subjectId){
+      dataList(subjectId)
+    }
+  },[periodDate])
+
   let date = moment().format('YYYY-MM-DD');
 
-  const dataList = () => {
+  const dataList = (subjectId) => {
     setLoading(true);
     axios
       .get(
@@ -264,10 +270,10 @@ const CurriculumCompletionDetails = (props) => {
           endpoints.teacherDashboard.gradeSectionAggregated
         }?grade_id=${selectedGradeIds?.toString()}&section_id=${selectedSectionIds}&acad_session_id=${
           props?.history?.location?.state?.acadIdMain
-        }`,
+        }&subject_id=${subjectId}&date_range_type=${periodDate}`,
         {
           headers: {
-            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
             'X-DTS-HOST': window.location.host,
             Authorization: `Bearer ${token}`,
           },
@@ -288,11 +294,9 @@ const CurriculumCompletionDetails = (props) => {
       });
   };
 
-  useEffect(() => {
-    if(selectedGradeIds && selectedSectionIds && props?.history?.location?.state?.acadIdMain){
-      dataList();
-    }
-  }, [selectedGradeIds,selectedSectionIds,props?.history?.location?.state?.acadIdMain]);
+  // useEffect(() => {
+  //   dataList();
+  // }, []);
 
   return (
     <Layout>
@@ -324,6 +328,20 @@ const CurriculumCompletionDetails = (props) => {
           lg={12}
           spacing={1}
         >
+          {/* <Grid item xs={12} md={2} spacing={1}>
+            <Autocomplete
+              id='combo-box-demo'
+              size='small'
+              // value={volume}
+              // onChange={handleGrade}
+              options={volumeArr || []}
+              getOptionLabel={(option) => option?.volume || ''}
+              // getOptionSelected={(option, value) => option?.id == value?.id}
+              renderInput={(params) => (
+                <TextField {...params} label='Volume' variant='outlined' />
+              )}
+            />
+          </Grid> */}
           <Grid item xs={12} md={2} spacing={1}>
             <Autocomplete
               id='combo-box-demo'
@@ -356,7 +374,7 @@ const CurriculumCompletionDetails = (props) => {
               )}
             />
           </Grid>
-          <Grid item xs={12} md={3} spacing={1}>
+          <Grid item xs={12} md={2} spacing={1}>
             <Autocomplete
               id='subject'
               size='small'
@@ -375,7 +393,7 @@ const CurriculumCompletionDetails = (props) => {
               )}
             />
           </Grid>
-          <Grid item xs={12} md={3}></Grid>
+          <Grid item xs={12} md={4}></Grid>
           <Grid item xs={12} md={2} spacing={1}>
             <TextField
               style={{
@@ -384,6 +402,9 @@ const CurriculumCompletionDetails = (props) => {
                 borderRadius: '5px',
                 paddingTop: '5px',
                 width: '100%',
+                // position: 'relative',
+                // left: '200px',
+                paddingLeft: '10px'
               }}
               id='date'
               // label='Till Date'
@@ -391,7 +412,7 @@ const CurriculumCompletionDetails = (props) => {
               size='small'
               defaultValue={date}
               onChange={handleDateClass}
-              inputProps={{ min: date }}
+              inputProps={{ max: date }}
               InputLabelProps={{
                 shrink: true,
               }}
@@ -407,6 +428,7 @@ const CurriculumCompletionDetails = (props) => {
         <div className={clsx(classes.textBold)}>All grades and section</div>
       </div>
       <div style={{ padding: '0px 20px' }}>
+        {curriculumData.length === 0? <div style={{height:'200px',justifyContent:'center',  marginTop:'70px'}} ><NoFilterData data={'No Data Found'}/></div> :
         <TableContainer component={Paper}>
           <Table>
             <TableHead style={{ background: '#ebf2fe' }}>
@@ -416,7 +438,7 @@ const CurriculumCompletionDetails = (props) => {
                 </TableCell>
                 <TableCell align='right'>Total Topics</TableCell>
                 <TableCell align='right'>Completed Topics</TableCell>
-                <TableCell align='right'>Avg. Completion</TableCell>
+                <TableCell align='right'>Completion Percentage</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             </TableHead>
@@ -428,30 +450,30 @@ const CurriculumCompletionDetails = (props) => {
                     scope='row'
                     className={clsx(classes.textLeft)}
                   >
-                    <b>{item.subject_mapping__section_mapping__grade__grade_name}</b>
+                    <b>{item.period__subject_mapping__section_mapping__grade__grade_name}</b>
                     {'\u00A0'}-{'\u00A0'}
-                    {item.subject_mapping__section_mapping__section__section_name}{' '}
+                    {item.period__subject_mapping__section_mapping__section__section_name}{' '}
                     {'\u00A0'}
                     {'\u00A0'}
                     {'\u00A0'}
-                    {item.subject_mapping__subject__subject_name}
+                    {item.period__subject_mapping__subject__subject_name}
                   </TableCell>
                   <TableCell align='right'>{item.total_topics}</TableCell>
                   <TableCell align='right'>{item.total_completed}</TableCell>
                   <TableCell align='right'>
-                    {item.percentage_completed ? item.percentage_completed : '0'}
+                    {item.percentage_completed ? item.percentage_completed : '0'}%
                   </TableCell>
-                  <TableCell align='left'>
+                  {/* <TableCell align='left'>
                     <ArrowForwardIosIcon
                       style={{ cursor: 'pointer' }}
                       onClick={chapterTopicHandler}
                     />
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               ))}
             </TableBody>
           </Table>
-        </TableContainer>
+        </TableContainer>}
       </div>
     </Layout>
   );
