@@ -64,13 +64,13 @@ const OwnerDashboard = () => {
   
 
   const initialState = {
-    attendence: false, 
+    attendence: false,
     tranction: false,
     feeStatus: false,
     academic: false,
     staffDetails: false,
-}
-const [progress1, setProgress1] = useState(initialState);
+  }
+  const [progress1, setProgress1] = useState(initialState);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -132,8 +132,8 @@ const [progress1, setProgress1] = useState(initialState);
 
   const getrecenttransaction = () => {
     setProgress1(prevState => ({
-        ...prevState,
-        tranction: true
+      ...prevState,
+      tranction: true
     }))
     axios
       .get(
@@ -146,7 +146,7 @@ const [progress1, setProgress1] = useState(initialState);
         // setFinanceData(res.data)
         // setRoleWiseAttendance(res.data.result)
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   const getBranches = () => {
@@ -162,7 +162,7 @@ const [progress1, setProgress1] = useState(initialState);
           setSelectedBranchId(ids);
           setBranchData(res.data.data.results);
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   };
 
@@ -170,8 +170,8 @@ const [progress1, setProgress1] = useState(initialState);
 
   const getAttendanceReport = (params) => {
     setProgress1(prevState => ({
-        ...prevState,
-        attendence: true
+      ...prevState,
+      attendence: true
     }))
     if (branchCounter === true) {
       // axios
@@ -184,12 +184,12 @@ const [progress1, setProgress1] = useState(initialState);
       //       },
       //     }
       //   )
-      apiRequest('get',`${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}` , null , null , true , 10000)
+      apiRequest('get', `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`, null, null, true, 10000)
         .then((res) => {
           setStudentAttendance(res.data.result);
           setProgress1(initialState)
         })
-        .catch(() => {});
+        .catch(() => { });
     } else {
       // axios
       //   .get(
@@ -201,19 +201,19 @@ const [progress1, setProgress1] = useState(initialState);
       //       },
       //     }
       //   )
-        apiRequest('get',  `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}` , null , null , true , 10000)
+      apiRequest('get', `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}`, null, null, true, 10000)
         .then((res) => {
           setStudentAttendance(res.data.result);
           setProgress1(initialState)
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   };
 
   const getAttendanceReportOverview = (params) => {
     setProgress1(prevState => ({
-        ...prevState,
-        academic: true
+      ...prevState,
+      academic: true
     }))
     // axios
     //   .get(
@@ -225,19 +225,19 @@ const [progress1, setProgress1] = useState(initialState);
     //       },
     //     }
     //   )
-      apiRequest('get',`${endpoints.ownerDashboard.getStudentAttendance}?session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`,null , null , true , 10000)
+    apiRequest('get', `${endpoints.ownerDashboard.getStudentAttendance}?session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`, null, null, true, 10000)
       .then((res) => {
         setStudentAttendanceOverview(res.data.result);
         setProgress1(initialState)
         // setStudentAttendance(res.data.result)
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   const getStaffDetails = (params) => {
     setProgress1(prevState => ({
-        ...prevState,
-        attendence: true
+      ...prevState,
+      attendence: true
     }))
     const Acad_id = branchList?.map((el) => el?.id);
     if (branchCounter === true) {
@@ -251,12 +251,12 @@ const [progress1, setProgress1] = useState(initialState);
       //       },
       //     }
       //   )
-        apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}&date_range_type=today` , null , null , true , 10000)
+      apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}&date_range_type=today`, null, null, true, 10000)
         .then((res) => {
           setRoleWiseAttendance(res.data.result);
           setProgress1(initialState)
         })
-        .catch(() => {});
+        .catch(() => { });
     } else {
       // axios
       //   .get(`${endpoints.ownerDashboard.getStaffDetails}?date_range_type=today`, {
@@ -265,19 +265,19 @@ const [progress1, setProgress1] = useState(initialState);
       //       Authorization: `Bearer ${token}`,
       //     },
       //   })
-        apiRequest('get',`${endpoints.ownerDashboard.getStaffDetails}?date_range_type=today` , null , null , true , 10000)
+      apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?date_range_type=today`, null, null, true, 10000)
         .then((res) => {
           setRoleWiseAttendance(res.data.result);
           setProgress1(initialState)
         })
-        .catch(() => {});
+        .catch(() => { });
     }
   };
 
   const getStaffDetailsOverAll = (params) => {
     setProgress1(prevState => ({
-        ...prevState,
-        staffDetails: true
+      ...prevState,
+      staffDetails: true
     }))
     const Acad_id = branchList?.map((el) => el?.id);
     // axios
@@ -287,20 +287,20 @@ const [progress1, setProgress1] = useState(initialState);
     //       Authorization: `Bearer ${token}`,
     //     },
     //   })
-      apiRequest('get' ,`${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}` , null , null , true , 10000 )
+    apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}`, null, null, true, 10000)
       .then((res) => {
         // setRoleWiseAttendance(res.data.result)
         console.log(res, 'staffover');
         setProgress1(initialState);
         setStaffOverall(res.data.result);
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   const getAvgScore = (params) => {
     setProgress1(prevState => ({
-        ...prevState,
-        academic: true
+      ...prevState,
+      academic: true
     }))
     const Acad_id = branchList?.map((el) => el?.id);
     // axios
@@ -310,18 +310,18 @@ const [progress1, setProgress1] = useState(initialState);
     //       Authorization: `Bearer ${token}`,
     //     },
     //   })
-      apiRequest('get',`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${Acad_id}` , null , null , true , 10000 )
+    apiRequest('get', `${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${Acad_id}`, null, null, true, 10000)
       .then((res) => {
         console.log(res, 'student');
         setAvgTest(res.data.result);
         setProgress1(initialState)
       })
-      .catch(() => {});
+      .catch(() => { });
   };
   const getFinanceReport = (params) => {
     setProgress1(prevState => ({
-        ...prevState,
-        feeStatus: true
+      ...prevState,
+      feeStatus: true
     }))
     axios
       .get(
@@ -333,13 +333,13 @@ const [progress1, setProgress1] = useState(initialState);
         setProgress1(initialState)
         // setRoleWiseAttendance(res.data.result)
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   const getCurrReport = (params) => {
     setProgress1(prevState => ({
-        ...prevState,
-        academic: true
+      ...prevState,
+      academic: true
     }))
     // axios
     //   .get(`${endpoints.ownerDashboard.getAllBranchCurr}?branch_id=${selectedBranchId}`, {
@@ -348,7 +348,7 @@ const [progress1, setProgress1] = useState(initialState);
     //       Authorization: `Bearer ${token}`,
     //     },
     //   })
-      apiRequest('get',`${endpoints.ownerDashboard.getAllBranchCurr}?branch_id=${selectedBranchId}` , null , null , true , 10000 )
+    apiRequest('get', `${endpoints.ownerDashboard.getAllBranchCurr}?branch_id=${selectedBranchId}`, null, null, true, 10000)
       .then((res) => {
         console.log(res, 'currbranch');
         setCurrBranch(res.data.result);
@@ -356,7 +356,7 @@ const [progress1, setProgress1] = useState(initialState);
         // setFinanceData(res.data)
         // setRoleWiseAttendance(res.data.result)
       })
-      .catch(() => {});
+      .catch(() => { });
   };
 
   const handleBranch = (event = {}, value = []) => {
@@ -377,7 +377,7 @@ const [progress1, setProgress1] = useState(initialState);
   };
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={1}>
       {/* <Grid container xs={12} sm={8} md={8} spacing={1}>
                 <AttendanceOverviewDashboard/>
             </Grid> */}
@@ -421,7 +421,7 @@ const [progress1, setProgress1] = useState(initialState);
         </Grid>
         <Grid item xs={7}></Grid>
       </Grid>
-      <Grid container xs={12} sm={8} md={8} spacing={1}>
+      <Grid container xs={12} sm={9} md={9} spacing={1}>
         <FinanceOwnerDashboard
           roleWiseAttendance={roleWiseAttendance}
           financeData={financeData}
@@ -448,7 +448,7 @@ const [progress1, setProgress1] = useState(initialState);
           progress1={progress1}
         />
       </Grid>
-      <Grid container xs={0} sm={4} md={4}>
+      <Grid container xs={0} sm={3} md={3}>
         <Grid item style={{ marginLeft: '5px' }}>
           <StudentRightDashboard />
         </Grid>

@@ -52,6 +52,7 @@ const GeneralDairyFilter = ({
   setPeriodData,
   isTeacher,
   showSubjectDropDown,
+  sessionYear,
   // studentModuleId,
   // setCurrentTab,
   setViewMore,
@@ -187,7 +188,7 @@ const GeneralDairyFilter = ({
     setActiveTab(tab);
     if (tab === 2 && !isTeacher) {
       axiosInstance
-        .get(`${endpoints.dailyDairy.chapterList}?module_id=${moduleId}`)
+        .get(`${endpoints.dailyDairy.chapterList}?module_id=${moduleId}&session_year=${sessionYear?.id}`)
         .then((res) => {
           if (res.data.status_code === 200) {
             setSubjectDropdown(res.data.result);
@@ -378,7 +379,8 @@ const GeneralDairyFilter = ({
           activeTab,
           page,
           filterData.subject,
-          moduleId
+          moduleId,
+          filterData?.year
         );
       }
     } else if (userDetails?.personal_info?.role !== 'SuperUser' && !isTeacher) {
@@ -394,7 +396,8 @@ const GeneralDairyFilter = ({
         activeTab,
         page,
         filterData.subject,
-        moduleId
+        moduleId,
+        filterData?.year
       );
     }
   };

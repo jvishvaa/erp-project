@@ -17,15 +17,15 @@ const useStyles = makeStyles((theme) => ({
 export default function StudentRightDashboard(props) {
   const classes = useStyles();
   return (
-    <Grid container spacing={3} className={classes.fixed}>
+    <Grid container spacing={2} className={classes.fixed}>
       <Grid item>
-        <Grid container spacing={3}>
+        <Grid container>
           <Grid item xs={11}>
             <Hidden xsDown>
               <Announcement />
             </Hidden>
           </Grid>
-          <Grid item xs={11}>
+          <Grid item xs={11} style={{ marginTop: '10px' }}>
             <Hidden xsDown>
               <Calendar />
             </Hidden>
@@ -35,13 +35,13 @@ export default function StudentRightDashboard(props) {
                 <SocialMedia />
               </Hidden>
             </Grid> */}
-            { window.location.href.slice(8,10) == "qa" || window.location.href.slice(8,11) == "dev" || window.location.href.slice(8,27) == "orchids.letseduvate" ? 
-          (<Grid item xs={12}>
-            <Hidden xsDown>
-              <MediaOrchadioCard />
-            </Hidden>
-          </Grid>) :
-          ("")}
+          {window.location.href.slice(8, 10) == "qa" || window.location.href.slice(8, 11) == "dev" || window.location.href.slice(8, 27) == "orchids.letseduvate" || window.location.href.slice(7, 12) == "local" ?
+            (<Grid item xs={11} style={{ marginTop: '5px' }}>
+              <Hidden xsDown>
+                <MediaOrchadioCard />
+              </Hidden>
+            </Grid>) :
+            ("")}
         </Grid>
       </Grid>
     </Grid>

@@ -44,6 +44,7 @@ const GeneralDairyStudentList = () => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [periodColor, setPeriodColor] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
 
   const handlePagination = (event, page) => {
     setPage(page);
@@ -63,7 +64,7 @@ const GeneralDairyStudentList = () => {
       .get(
         `${endpoints.generalDairy.dairyList}?page=${page}&start_date=${startDate.format(
           'YYYY-MM-DD'
-        )}&end_date=${endDate.format('YYYY-MM-DD')}&dairy_type=${currentTab}`
+        )}&end_date=${endDate.format('YYYY-MM-DD')}&dairy_type=${currentTab}&session_year=${sessionYear?.id}`
       )
       // axiosInstance.get(`${endpoints.generalDairy.dairyList}?start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}`)
       // axiosInstance.get(`${endpoints.generalDairy.dairyList}?grades=${gradeId}&sections=${sectionIds}`)

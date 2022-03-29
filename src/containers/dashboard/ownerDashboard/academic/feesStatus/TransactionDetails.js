@@ -385,9 +385,9 @@ const TransactionDetails = (props) => {
 
 
                                                 </TableCell>
-                                                <TableCell> <b>{each.name}</b></TableCell>
-                                                <TableCell> <b>{each.amount}</b></TableCell>
-                                                <TableCell> <b>{each.date}</b></TableCell>
+                                                <TableCell> <b>{each?.name}</b></TableCell>
+                                                <TableCell> <b>₹ {isNaN(each?.amount) ? 0 : Math.round(each.amount).toLocaleString()}</b></TableCell>
+                                                <TableCell> <b>{each?.date}</b></TableCell>
                                                 {/* <TableCell> <b>{each.time}</b></TableCell> */}
                                             </TableRow>
 

@@ -190,13 +190,16 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
   };
 
   const handleSubmit = async () => {
-    setLoading(true);
     let payload = {
       online_class_id: online_class_id, //To do import online class id as prop
     };
     if (filePath?.length) {
       payload['submitted_files'] = filePath;
+    }else{
+      setAlert('error', 'Please Upload atleast 1 File !');
+      return ;
     }
+    setLoading(true);
     try {
       const result = await apiRequest('post', '/oncls/v1/submit-classwork/', payload)
       if (result?.data?.status_code === 200) {
@@ -207,7 +210,7 @@ const StudentCwSubmit = withRouter(({ history, ...props }) => {
         setAlert('success', result?.data?.message);
         handleback();
       } else {
-        setAlert('error', 'Something Went Wrong');
+        setAlert('error', 'Something Went Wrong!');
         setLoading(false);
       }
     } catch (error) {
