@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function CurriculumCompletionNew({ curriculumDetail , curriculumDetails }) {
+function CurriculumCompletionNew({ curriculumDetail, curriculumDetails }) {
   const history = useHistory();
   const curriculumDetailsHandler = (branchId, acadId) => {
     history.push({
@@ -63,15 +63,15 @@ function CurriculumCompletionNew({ curriculumDetail , curriculumDetails }) {
         style={{ minWidth: '100%', border: '2px solid whitesmoke', marginBottom: '10px' }}
       >
         <CardContent>
-          <div style={{display: 'flex' , justifyContent: 'space-between'}} >
-          <Typography
-            style={{ marginBottom: '10px', fontWeight: '1000', fontSize: '12px' , margin: 'auto 0' }}
-          >
-            Curriculum Completion
-          </Typography>
-          <IconButton style={{width: '12%' , borderRadius: '10px'}}  onClick={curriculumDetails} >
-            <RefreshIcon />
-          </IconButton>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }} >
+            <Typography
+              style={{ marginBottom: '10px', fontWeight: '1000', fontSize: '12px', margin: 'auto 0' }}
+            >
+              Curriculum Completion
+            </Typography>
+            <IconButton style={{ width: '12%', borderRadius: '10px' }} onClick={curriculumDetails} >
+              <RefreshIcon />
+            </IconButton>
           </div>
           {/* <Card style={{ minWidth: '100%', border: '2px solid whitesmoke' }}>
             <CardContent> */}
@@ -81,179 +81,187 @@ function CurriculumCompletionNew({ curriculumDetail , curriculumDetails }) {
             direction='column'
             style={{ border: '2px solid whitesmoke' }}
           >
-            <TableContainer component={Paper} style={{ fontSize: '12px' }}>
-              <Table className={classes.table} aria-label='simple table'>
-                <TableHead>
-                  <TableRow>
-                    <TableCell
-                      style={{
-                        lineHeight: '0.7rem',
-                        fontSize: '12px',
-                        padding: '7px',
-                      }}
-                      align='right'
-                    >
-                      Branch Details
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        lineHeight: '0.7rem',
-                        fontSize: '12px',
-                        padding: '7px',
-                      }}
-                      align='right'
-                    >
-                      Overall
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        lineHeight: '0.7rem',
-                        fontSize: '12px',
-                        padding: '7px',
-                        color: '#E51A1A',
-                      }}
-                      align='right'
-                    >
-                      Lowest
-                    </TableCell>
-                    <TableCell
-                      style={{
-                        lineHeight: '0.7rem',
-                        fontSize: '12px',
-                        padding: '7px',
-                        color: '#4DC41B',
-                      }}
-                      align='right'
-                    >
-                      Highest
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {curriculumDetail?.map((row) => (
-                    <>
-                      <TableRow
-                        onClick={() =>
-                          curriculumDetailsHandler(row?.branch_id, row?.acad_session_id)
-                        }
-                        key={row?.branch_name}
+            {curriculumDetail?.length != 0 ? <>
+              <TableContainer component={Paper} style={{ fontSize: '12px' }}>
+                <Table className={classes.table} aria-label='simple table'>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
                         style={{
-                          backgroundColor: '#F6F7F8',
-                          marginBottom: '30px !important',
-                          cursor: 'pointer',
+                          lineHeight: '0.7rem',
+                          fontSize: '12px',
+                          padding: '7px',
                         }}
+                        align='right'
                       >
-                        <TableCell
-                          style={{
-                            lineHeight: '0.7rem',
-                            fontSize: '12px',
-                            padding: '7px',
-                          }}
-                          component='th'
-                          scope='row'
-                        >
-                          {row.branch_name}
-                        </TableCell>
-                        <TableCell
-                          style={{
-                            lineHeight: '0.7rem',
-                            fontSize: '12px',
-                            padding: '7px',
-                          }}
-                          align='right'
-                        >
-                          {row?.overall_branch_completion_percentage}%
-                        </TableCell>
-                        <TableCell
-                          style={{
-                            lineHeight: '0.7rem',
-                            fontSize: '12px',
-                            padding: '7px',
-                          }}
-                          align='right'
-                        >
-                          <Grid
-                            style={{ fontSize: '9px', position: 'relative', top: '-4px' }}
-                          >
-                            {row?.min_completion_grade}({row?.min_completion_subject})
-                          </Grid>
-                          <Grid style={{ color: '#E51A1A', fontWeight: '1000' }}>
-                            {row?.min_completion_subject_percentage}%
-                          </Grid>
-                        </TableCell>
-                        <TableCell
-                          style={{
-                            lineHeight: '0.7rem',
-                            fontSize: '12px',
-                            padding: '7px',
-                          }}
-                          align='right'
-                        >
-                          <Grid
-                            style={{ fontSize: '9px', position: 'relative', top: '-4px' }}
-                          >
-                            {row?.max_completion_grade}({row?.max_completion_subject})
-                          </Grid>
-                          <Grid style={{ color: '#4DC41B', fontWeight: '1000' }}>
-                            {row?.max_completion_subject_percentage}%
-                          </Grid>
-                        </TableCell>
-                      </TableRow>
-                      {/* //empty row for margin and gapping */}
-                      <TableRow
-                        key={row.name}
+                        Branch Details
+                      </TableCell>
+                      <TableCell
                         style={{
-                          backgroundColor: 'white',
-                          marginBottom: '30px !important',
+                          lineHeight: '0.7rem',
+                          fontSize: '12px',
+                          padding: '7px',
                         }}
+                        align='right'
                       >
-                        <TableCell
+                        Overall
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          lineHeight: '0.7rem',
+                          fontSize: '12px',
+                          padding: '7px',
+                          color: '#E51A1A',
+                        }}
+                        align='right'
+                      >
+                        Lowest
+                      </TableCell>
+                      <TableCell
+                        style={{
+                          lineHeight: '0.7rem',
+                          fontSize: '12px',
+                          padding: '7px',
+                          color: '#4DC41B',
+                        }}
+                        align='right'
+                      >
+                        Highest
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {curriculumDetail?.map((row) => (
+                      <>
+                        <TableRow
+                          onClick={() =>
+                            curriculumDetailsHandler(row?.branch_id, row?.acad_session_id)
+                          }
+                          key={row?.branch_name}
                           style={{
-                            lineHeight: '0.7rem',
-                            fontSize: '12px',
-                            padding: '7px',
+                            backgroundColor: '#F6F7F8',
+                            marginBottom: '30px !important',
+                            cursor: 'pointer',
                           }}
-                          component='th'
-                          scope='row'
                         >
-                          {''}
-                        </TableCell>
-                        <TableCell
+                          <TableCell
+                            style={{
+                              lineHeight: '0.7rem',
+                              fontSize: '12px',
+                              padding: '7px',
+                            }}
+                            component='th'
+                            scope='row'
+                          >
+                            {row.branch_name}
+                          </TableCell>
+                          <TableCell
+                            style={{
+                              lineHeight: '0.7rem',
+                              fontSize: '12px',
+                              padding: '7px',
+                            }}
+                            align='right'
+                          >
+                            {row?.overall_branch_completion_percentage}%
+                          </TableCell>
+                          <TableCell
+                            style={{
+                              lineHeight: '0.7rem',
+                              fontSize: '12px',
+                              padding: '7px',
+                            }}
+                            align='right'
+                          >
+                            <Grid
+                              style={{ fontSize: '9px', position: 'relative', top: '-4px' }}
+                            >
+                              {row?.min_completion_grade}({row?.min_completion_subject})
+                            </Grid>
+                            <Grid style={{ color: '#E51A1A', fontWeight: '1000' }}>
+                              {row?.min_completion_subject_percentage}%
+                            </Grid>
+                          </TableCell>
+                          <TableCell
+                            style={{
+                              lineHeight: '0.7rem',
+                              fontSize: '12px',
+                              padding: '7px',
+                            }}
+                            align='right'
+                          >
+                            <Grid
+                              style={{ fontSize: '9px', position: 'relative', top: '-4px' }}
+                            >
+                              {row?.max_completion_grade}({row?.max_completion_subject})
+                            </Grid>
+                            <Grid style={{ color: '#4DC41B', fontWeight: '1000' }}>
+                              {row?.max_completion_subject_percentage}%
+                            </Grid>
+                          </TableCell>
+                        </TableRow>
+                        {/* //empty row for margin and gapping */}
+                        <TableRow
+                          key={row.name}
                           style={{
-                            lineHeight: '0.7rem',
-                            fontSize: '12px',
-                            padding: '7px',
+                            backgroundColor: 'white',
+                            marginBottom: '30px !important',
                           }}
-                          align='right'
                         >
-                          {''}
-                        </TableCell>
-                        <TableCell
-                          style={{
-                            lineHeight: '0.7rem',
-                            fontSize: '12px',
-                            padding: '7px',
-                          }}
-                          align='right'
-                        >
-                          {''}
-                        </TableCell>
-                        <TableCell
-                          style={{
-                            lineHeight: '0.7rem',
-                            fontSize: '12px',
-                            padding: '7px',
-                          }}
-                          align='right'
-                        >
-                          {''}
-                        </TableCell>
-                      </TableRow>
-                    </>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
+                          <TableCell
+                            style={{
+                              lineHeight: '0.7rem',
+                              fontSize: '12px',
+                              padding: '7px',
+                            }}
+                            component='th'
+                            scope='row'
+                          >
+                            {''}
+                          </TableCell>
+                          <TableCell
+                            style={{
+                              lineHeight: '0.7rem',
+                              fontSize: '12px',
+                              padding: '7px',
+                            }}
+                            align='right'
+                          >
+                            {''}
+                          </TableCell>
+                          <TableCell
+                            style={{
+                              lineHeight: '0.7rem',
+                              fontSize: '12px',
+                              padding: '7px',
+                            }}
+                            align='right'
+                          >
+                            {''}
+                          </TableCell>
+                          <TableCell
+                            style={{
+                              lineHeight: '0.7rem',
+                              fontSize: '12px',
+                              padding: '7px',
+                            }}
+                            align='right'
+                          >
+                            {''}
+                          </TableCell>
+                        </TableRow>
+                      </>
+                    ))}
+
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </> :
+              <Grid style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center' }}>
+              <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+              <Typography style={{ fontWeight: '600' }}>No Records</Typography>
+            </Grid>
+            }
           </Grid>
           {/* </CardContent>
           </Card> */}
