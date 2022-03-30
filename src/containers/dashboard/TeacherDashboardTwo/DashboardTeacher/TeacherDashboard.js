@@ -83,7 +83,7 @@ function TeacherDashboard() {
             return i.id;
           });
           setAcadId(acadIdArr);
-          overviewDetails(acadIdArr);
+          // overviewDetails(acadIdArr);
           branchDetails(acadIdArr);
         }
       })
@@ -176,7 +176,7 @@ function TeacherDashboard() {
     acadIdGenerator();
     // branchDetails();
     attendanceDetails();
-    curriculumDetails();
+    // curriculumDetails();
     // overviewDetails();
   }, []);
   useEffect(() => {
