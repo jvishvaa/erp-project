@@ -81,7 +81,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
     const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
     setLoading(true);
 
-    let urlGrade = `?branch_id=${databranch}&page_size=${limit}&page_number=${gradePageNumber}`;
+    let urlGrade = `?acad_session=${acadSessionId}&page_size=${limit}&page_number=${gradePageNumber}`;
     if (selectedGradeIds) {
       urlGrade += `&grade_id=${selectedGradeIds}`;
     }
@@ -95,8 +95,8 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
     axios
       .get(`${endpoints.teacherDashboard.gradeSectionSubject}${urlGrade}`, {
         headers: {
-          // 'X-DTS-HOST': window.location.host,
-          'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+          'X-DTS-HOST': window.location.host,
+          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
           Authorization: `Bearer ${token}`,
         },
       })
@@ -254,8 +254,8 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
     axios
       .get(`${endpoints.teacherDashboard.cwHWTeacherDashboard}${url}`, {
         headers: {
-          // 'X-DTS-HOST': window.location.host,
-          'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+          'X-DTS-HOST': window.location.host,
+          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
           Authorization: `Bearer ${token}`,
         },
       })
@@ -385,8 +385,8 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
         `${endpoints.teacherDashboard.classWorkTeacherDash}?acad_session_id=${acadSessionId}&grade_id=${grade}&section_id=${section}&subject_id=${subject}&start_date=${cwstartdate}&end_date=${cwEndDate}&page_size=${limit}&page_number=${cwPageNumber}`, //&start_date=2021-02-28&subject_id=9
         {
           headers: {
-            // 'X-DTS-HOST': window.location.host,
-            'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+            'X-DTS-HOST': window.location.host,
+            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
             Authorization: `Bearer ${token}`,
           },
         }
@@ -677,7 +677,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
                         </div>
                       ))}
                     {!homework &&
-                      classworkData?.classwork_details.map((item) => (
+                      classworkData?.classwork_details?.map((item) => (
                         <div
                           style={{
                             display: 'flex',
