@@ -38,7 +38,6 @@ const AssessmentReportFilters = ({
   setPage,
   setSelectedERP,
   pageSize,
-  setLoading,
   setIsPreview,
   setReportCardData,
   filterData,
