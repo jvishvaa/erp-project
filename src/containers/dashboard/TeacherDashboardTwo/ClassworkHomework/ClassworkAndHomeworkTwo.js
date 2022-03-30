@@ -186,6 +186,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
       setSelectedSectionIds([])
       setSubjectId()
       setGradePageNumber(1)
+      setSelectedSection([])
       const selectedsecctionId = value?.section_id;
       const sectionid = value?.id;
       setSectionId(sectionid);
@@ -202,6 +203,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
       setSelectedSubject([]);
       setSelectedSectionIds([]);
       setSubjectId();
+      setSelectedSection([])
     }
   };
 
