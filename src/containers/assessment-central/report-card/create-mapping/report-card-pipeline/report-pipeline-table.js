@@ -47,6 +47,7 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const reportCardClasses = reportCardStyles();
   const history = useHistory();
+  const [currPipeId, setCurrPipeId] = useState();
   const [mappingList, setMappingList] = useState();
   const [statusIndex, setStatusIndex] = useState(null);
   const [totalPages, setTotalPages] = useState(0);
@@ -67,7 +68,8 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
     setDeleteIndex(null);
     setDeleteAlert(false);
   };
-  const handleDeleteOpen = () => {
+  const handleDeleteOpen = (pipelineId) => {
+    setCurrPipeId(pipelineId)
     setDeleteAlert(true);
   };
   const deleteReportCardPipeline = async (pipelineId) => {
@@ -91,7 +93,7 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
       <Grid container spacing={2}>
         {status === '2' && (
           <Grid item xs={4}>
-            <IconButton onClick={handleDeleteOpen}>
+            <IconButton onClick={() => handleDeleteOpen(pipelineId)}>
               <DeleteOutlineIcon />
             </IconButton>
           </Grid>
@@ -129,7 +131,7 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
                 color='primary'
                 variant='contained'
                 style={{ color: 'white' }}
-                onClick={() => deleteReportCardPipeline(pipelineId)}>
+                onClick={() => deleteReportCardPipeline(currPipeId)}>
                 Confirm
               </Button>
             </DialogActions>
