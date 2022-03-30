@@ -20,9 +20,13 @@ import RefreshIcon from '@material-ui/icons/Refresh';
 
 function Overview({ recentSubmissionDetail, overviewDetails, acadId }) {
   const history = useHistory();
-  const homeworkClassWork = () => {
-    history.push('./teacherdashboards/homework_Classwork');
+  const homeworkClassWork = (data) => {
+    history.push({
+      pathname: './teacherdashboards/homework_Classwork_two',
+      state: { data: data },
+    });
   };
+
   return (
     <div>
       <Card
@@ -168,6 +172,19 @@ function Overview({ recentSubmissionDetail, overviewDetails, acadId }) {
                         </Grid>
                       </div>
                     </AccordionDetails>
+                    <div onClick={() => homeworkClassWork(item)} style={{ textAlign: 'end', padding: '5px' }}>
+                    <b style={{cursor:"pointer",}}>View all</b>
+                    <ArrowForwardIosIcon
+                      size='small'
+                      style={{
+                        marginTop: 10,
+                        fontSize: 13,
+                        position: 'relative',
+                        top: '2px',
+                      }}
+                    />
+                  </div>
+
                   </Accordion>
                 </div>
               );
@@ -178,29 +195,6 @@ function Overview({ recentSubmissionDetail, overviewDetails, acadId }) {
               <Typography style={{ fontWeight: '600' }}>No Records</Typography>
             </Grid>
           }
-          {/* <Typography
-            onClick={homeworkClassWork}
-            style={{
-              position: 'relative',
-              left: '361px',
-              fontSize: '12px',
-              fontWeight: '800',
-              top: '14px',
-              cursor: 'pointer',
-            }}
-          >
-            View all
-            <ArrowForwardIosIcon
-              size='small'
-              style={{
-                height: '12px',
-                width: '12 px',
-                color: 'black',
-                marginLeft: '-5px',
-                marginTop: '5px',
-              }}
-            />
-          </Typography> */}
         </CardContent>
       </Card>
     </div>

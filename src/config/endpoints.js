@@ -627,6 +627,7 @@ export default {
     pendingHWdata: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/pending-cw-students/`,
     submittedHWdata: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/submitted-cw-files/`,
     fileHwData: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/submitted-cw-files/`,
+    classWorkTeacherDash: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/grade-section-subject-classwork-details-by-branch/`,
   },
   teacherDashboardTwo: {
     teacherOverview: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/branch-wise-hw-cw-status/`,
