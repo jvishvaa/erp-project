@@ -24,7 +24,7 @@ import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/picker
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 import Weeklyassesmentreport from '../student-report/weekly-quiz-performnace';
-
+import Loading from '../../../../components/loader/loader'
 let url = '';
 const AssessmentReportFilters = ({
   widerWidth,
@@ -51,7 +51,7 @@ const AssessmentReportFilters = ({
   );
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
-
+  const [previewButton, setPreviewButton] = useState(false);
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [dropdownData, setDropdownData] = useState({
@@ -64,6 +64,7 @@ const AssessmentReportFilters = ({
     topic: [],
     erp: [],
   });
+  const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(null);
   const [mappingList, setMappingList] = useState([]);
   const [downloadTestId, setDownloadTestId] = useState(null);
@@ -130,18 +131,19 @@ const AssessmentReportFilters = ({
   }, [selectedReportType?.id, moduleId]);
 
   const fetchReportCardData = (params) => {
-    setIsLoading(true);
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.assessmentReportTypes.reportCardData}${params}`)
       .then((result) => {
         if (result?.data?.status === 200) {
           setReportCardData(result?.data?.result);
           setIsPreview(true);
-          setIsLoading(false);
+          setPreviewButton(true);
+          setLoading(false);
         }
         setLoading(false);
       })
-      .catch((error) => { });
+      .catch((error) => { setLoading(false); });
   };
 
   const handleDateChange = (name, date) => {
@@ -776,6 +778,7 @@ const AssessmentReportFilters = ({
           margin: isMobile ? '10px 0px -10px 0px' : '-20px 0px 20px 8px',
         }}
       >
+        {loading ? <Loading message='Please Wait While Report Card is Generating...' /> : null}
         {selectedReportType?.id !== 11 && (
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
             <Autocomplete
@@ -1190,6 +1193,7 @@ const AssessmentReportFilters = ({
               variant='contained'
               size='medium'
               color='primary'
+              disabled={loading}
               style={{ color: 'white', width: '100%' }}
               onClick={
                 selectedReportType?.id === 5
