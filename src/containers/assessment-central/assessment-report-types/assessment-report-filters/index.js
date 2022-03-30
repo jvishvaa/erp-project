@@ -130,12 +130,14 @@ const AssessmentReportFilters = ({
   }, [selectedReportType?.id, moduleId]);
 
   const fetchReportCardData = (params) => {
+    setIsLoading(true);
     axiosInstance
       .get(`${endpoints.assessmentReportTypes.reportCardData}${params}`)
       .then((result) => {
         if (result?.data?.status === 200) {
           setReportCardData(result?.data?.result);
           setIsPreview(true);
+          setIsLoading(false);
         }
         setLoading(false);
       })
@@ -1223,7 +1225,7 @@ const AssessmentReportFilters = ({
             <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
               <Box style={{ display: 'flex', justifyContent: 'space-around' }}>
                 <CircularProgress size={26} thickness={4} />
-                <Typography color='secondary'>Fetching ERP's</Typography>
+                <Typography color='secondary'>Fetching Details</Typography>
               </Box>
             </Grid>
           )}
