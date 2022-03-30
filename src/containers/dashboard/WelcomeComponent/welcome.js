@@ -231,7 +231,7 @@ const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
         ) : (
           ''
         )}
-        {/* {welcomeDetails?.userLevel === 1 ||
+        {welcomeDetails?.userLevel === 1 ||
         welcomeDetails?.userLevel === 4 ||
         welcomeDetails?.userLevel === 8 ||
         welcomeDetails?.userLevel === 10 ||
@@ -250,19 +250,8 @@ const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
             ) : (
               ''
             )}
-            {erp_config ? (
-              <Button
-                className={classes.outlined}
-                color='secondary'
-                onClick={teacherDashboardV2}
-              >
-                Dashboard V2
-              </Button>
-            ) : (
-              ''
-            )}
           </>
-        )} */}
+        )}
       </Box>
     </>
   );
