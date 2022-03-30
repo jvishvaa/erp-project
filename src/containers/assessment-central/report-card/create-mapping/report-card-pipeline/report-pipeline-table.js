@@ -33,6 +33,11 @@ import { AlertNotificationContext } from '../../../../../context-api/alert-conte
 import { reportPipelineTableColumns as columns } from './report-card-constants';
 import { isSuccess, getPipelineConfig } from '../../report-card-utils';
 import Pagination from '../../../../../components/PaginationComponent';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 
 const pageSize = 10;
 const ReportPipelineTable = ({ setLoading, moduleId }) => {
@@ -47,7 +52,9 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [updateFlag, setUpdateFlag] = useState(false);
-
+  const [deleteAlert, setDeleteAlert] = useState(false);
+  const [deleteId, setDeleteId] = useState(null);
+  const [deleteIndex, setDeleteIndex] = useState(null);
   const [filterData, setFilterData] = useState({
     branch: '',
     grade: '',
@@ -55,7 +62,14 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
     subject: '',
     status: '',
   });
-
+  const handleDeleteCancel = () => {
+    setDeleteId(null);
+    setDeleteIndex(null);
+    setDeleteAlert(false);
+  };
+  const handleDeleteOpen = () => {
+    setDeleteAlert(true);
+  };
   const deleteReportCardPipeline = async (pipelineId) => {
     setLoading(true);
     try {
@@ -66,8 +80,9 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
       setAlert(isSuccesful ? 'success' : 'error', message);
       if (isSuccesful) {
         setUpdateFlag((prev) => !prev);
+        setDeleteAlert(false)
       }
-    } catch (err) {}
+    } catch (err) { }
     setLoading(false);
   };
 
@@ -76,7 +91,7 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
       <Grid container spacing={2}>
         {status === '2' && (
           <Grid item xs={4}>
-            <IconButton onClick={() => deleteReportCardPipeline(pipelineId)}>
+            <IconButton onClick={handleDeleteOpen}>
               <DeleteOutlineIcon />
             </IconButton>
           </Grid>
@@ -85,7 +100,6 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
           <IconButton
             disabled={status !== '2'}
             title={status === '2' ? 'View' : 'Can`t be viewed'}
-            title='View'
             onClick={() => history.push('/assessment-reports/?report-card=true')}
           >
             {status !== '2' ? (
@@ -95,6 +109,32 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
             )}
           </IconButton>
         </Grid>
+        <Paper>
+          <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
+            <DialogTitle
+              id='draggable-dialog-title'
+            >
+              Delete Pipeline
+            </DialogTitle>
+            <DialogContent>
+              <DialogContentText>
+                Are you sure you want to delete ?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
+                Cancel
+              </Button>
+              <Button
+                color='primary'
+                variant='contained'
+                style={{ color: 'white' }}
+                onClick={() => deleteReportCardPipeline(pipelineId)}>
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </Paper>
       </Grid>
     );
   };
@@ -125,7 +165,7 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
             padding: '1px',
             whiteSpace: 'nowrap',
             fontSize: '14px',
-            textTransform:'capitalize'
+            textTransform: 'capitalize'
           }}
         >
           {status}
@@ -211,7 +251,7 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
       setTotalPages(totalPages);
       const isSuccesful = isSuccess(status);
       setAlert(isSuccesful ? 'success' : 'error', message);
-    } catch (err) {}
+    } catch (err) { }
     setLoading(false);
   };
 
