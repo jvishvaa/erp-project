@@ -66,7 +66,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
   const [totalGradeSecSub, setTotalGradeSecSub] = useState(0);
   const [gradePageNumber, setGradePageNumber] = useState(1);
 
-  const [totalCwRecord,setTotalCwRecord] = useState(0)
+  const [totalCwRecord, setTotalCwRecord] = useState(0)
   const [cwPageNumber, setCwPageNumber] = useState(1);
 
 
@@ -133,15 +133,14 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
 
   useEffect(() => {
     gradeSectionSubjectList();
-  }, [selectedGradeIds, subjectId, selectedSectionIds,sectionList,gradePageNumber,startDate,endDate]);
+  }, [selectedGradeIds, subjectId, selectedSectionIds, sectionList, gradePageNumber, startDate, endDate]);
 
   const handleBranch = () => {
     setGradeList([]);
     setSelectedSection([]);
     setSelectedSubject([]);
     callApi(
-      `${
-        endpoints.academics.grades
+      `${endpoints.academics.grades
       }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&module_id=${2}`,
       'gradeList'
     );
@@ -161,8 +160,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
       setSelectedGrade(value);
       setSelectedGradeIds(selectedId);
       callApi(
-        `${
-          endpoints.academics.sections
+        `${endpoints.academics.sections
         }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&grade_id=${selectedId?.toString()}&module_id=${2}`,
         'section'
       );
@@ -193,8 +191,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
       setSelectedSection(value);
       setSelectedSectionIds(selectedsecctionId);
       callApi(
-        `${
-          endpoints.academics.subjects
+        `${endpoints.academics.subjects
         }?session_year=${sessionYearIDDDD}&branch=${databranch}&grade=${selectedGradeIds?.toString()}&section=${selectedsecctionId.toString()}&module_id=${2}`,
         'subject'
       );
@@ -312,13 +309,13 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
     if (rowGrade && rowSubject && rowSection && homework) {
       homeWorkList(rowGrade, rowSubject, rowSection, startDate, endDate);
     }
-  }, [pageNumber, rowSubject,rowSection,rowGrade,homework]);
+  }, [pageNumber, rowSubject, rowSection, rowGrade, homework]);
 
   useEffect(() => {
     if (rowGrade && rowSubject && rowSection && !homework) {
       classWorkList(rowGrade, rowSubject, rowSection, startDate, endDate);
     }
-  }, [cwPageNumber, rowSubject,rowSection,rowGrade,homework]);
+  }, [cwPageNumber, rowSubject, rowSection, rowGrade, homework]);
 
   const handleDateChange = (newValue) => {
     setIndvalue(0);
@@ -368,7 +365,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
         selectedSubjectvalue: selectedSubject,
       },
     });
-   
+
   };
 
   const classWorkList = (
@@ -563,14 +560,14 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
           <span style={{ textAlign: 'right' }}>
             {endDate
               ? `${moment(startDate).format('MM/DD/YYYY')} to ${moment(endDate).format(
-                  'MM/DD/YYYY'
-                )}`
+                'MM/DD/YYYY'
+              )}`
               : `${moment(date).format('MM/DD/YYYY')}`}
           </span>
         </Grid>
       </div>
       <div style={{ overflowX: 'scroll', marginTop: 15 }}>
-        <div style={{ minWidth: 768,backgroundColor:"rgb(235, 242, 254)" }}>
+        <div style={{ minWidth: 768, backgroundColor: "rgb(235, 242, 254)" }}>
           <div
             style={{
               display: 'flex',
@@ -586,14 +583,14 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
             <div style={{ flex: homework ? 1 : 4, textAlign: 'center' }}>
               <b>Date</b>
             </div>
-            <div style={{ flex: homework ? 1 : 4, textAlign: 'center',color:"#4DC41B" }}>
+            <div style={{ flex: homework ? 1 : 4, textAlign: 'center', color: "#4DC41B" }}>
               <b>Total Submitted</b>
             </div>
-            <div style={{ flex: homework ? 1 : 4, textAlign: 'center',color:"#F2A127" }}>
+            <div style={{ flex: homework ? 1 : 4, textAlign: 'center', color: "#F2A127" }}>
               <b>Total Pending</b>
             </div>
             {homework && (
-              <div style={{ flex: 1, textAlign: 'center',color:"#3A90E6" }}>
+              <div style={{ flex: 1, textAlign: 'center', color: "#3A90E6" }}>
                 <b>Total Evaluated</b>
               </div>
             )}
@@ -617,7 +614,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
                       borderBottom: '1px solid transparent',
                       background: indvalue == i ? 'white' : '#EBF2FE',
                       borderLeft: indvalue == i ? '8px solid #4093D4' : '',
-                      cursor:"pointer"
+                      cursor: "pointer"
                     }}
                   >
                     <b>{item.section_mapping__grade__grade_name}</b>
@@ -640,8 +637,8 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
             >
               <div>
                 {(homework && tableData?.length === 0) ||
-                (!homework && classworkData?.classwork_details?.length === 0) ? (
-                  <div style={{ marginTop: '10%',marginBottom : '10%' }}>
+                  (!homework && classworkData?.classwork_details?.length === 0) ? (
+                  <div style={{ marginTop: '10%', marginBottom: '10%' }}>
                     <NoFilterData data='No Data Found' />
                   </div>
                 ) : (
@@ -655,9 +652,9 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
                               justifyContent: 'space-between',
                               padding: '20px 16px 20px 0',
                               borderBottom: '1px solid #D7E0E7',
-                              // cursor: 'pointer',
+                              cursor: 'pointer',
                             }}
-                            // onClick={() => homeworkfileopener(item)}
+                            onClick={() => homeworkfileopener(item)}
                           >
                             <div style={{ flex: 1, textAlign: 'center' }}>
                               {item.uploaded_at__date}
@@ -695,7 +692,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
                             borderBottom: '1px solid #D7E0E7',
                             // cursor: 'pointer',
                           }}
-                          // onClick={() => classworkfileopener()}
+                        // onClick={() => classworkfileopener()}
                         >
                           <div style={{ flex: 1, textAlign: 'center' }}>{item.date}</div>
                           <div style={{ flex: 1, textAlign: 'center' }}>
