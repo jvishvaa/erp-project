@@ -133,7 +133,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
 
   useEffect(() => {
     gradeSectionSubjectList();
-  }, [selectedGradeIds, subjectId, selectedSectionIds, homework,sectionList,gradePageNumber,startDate,endDate]);
+  }, [selectedGradeIds, subjectId, selectedSectionIds,sectionList,gradePageNumber,startDate,endDate]);
 
   const handleBranch = () => {
     setGradeList([]);
@@ -309,17 +309,16 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
   };
 
   useEffect(() => {
-    if (rowGrade && rowSubject && rowSection) {
+    if (rowGrade && rowSubject && rowSection && homework) {
       homeWorkList(rowGrade, rowSubject, rowSection, startDate, endDate);
     }
-  },[pageNumber,rowSubject])
+  }, [pageNumber, rowSubject,rowSection,rowGrade,homework]);
 
   useEffect(() => {
-    if (rowGrade && rowSubject && rowSection) {
+    if (rowGrade && rowSubject && rowSection && !homework) {
       classWorkList(rowGrade, rowSubject, rowSection, startDate, endDate);
     }
-  },[cwPageNumber,rowSubject])
-
+  }, [cwPageNumber, rowSubject,rowSection,rowGrade,homework]);
 
   const handleDateChange = (newValue) => {
     setIndvalue(0);
@@ -520,7 +519,11 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
           }}
         >
           <Grid
-            onClick={() => setHomework(true)}
+            onClick={() => {
+              setHomework(true)
+              // setIndvalue(0)
+              setPageNumber(1)
+            }}
             xs={6}
             style={{
               background: homework ? '#4093D4' : 'white',
@@ -533,7 +536,11 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
           </Grid>
           <Grid
             xs={6}
-            onClick={() => setHomework(false)}
+            onClick={() => {
+              setHomework(false)
+              // setIndvalue(0)
+              setCwPageNumber(1)
+            }}
             style={{
               background: homework ? 'white' : '#4093D4',
               color: homework ? 'black' : 'white',
@@ -563,7 +570,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
         </Grid>
       </div>
       <div style={{ overflowX: 'scroll', marginTop: 15 }}>
-        <div style={{ minWidth: 768 }}>
+        <div style={{ minWidth: 768,backgroundColor:"rgb(235, 242, 254)" }}>
           <div
             style={{
               display: 'flex',
@@ -579,14 +586,14 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
             <div style={{ flex: homework ? 1 : 4, textAlign: 'center' }}>
               <b>Date</b>
             </div>
-            <div style={{ flex: homework ? 1 : 4, textAlign: 'center' }}>
+            <div style={{ flex: homework ? 1 : 4, textAlign: 'center',color:"#4DC41B" }}>
               <b>Total Submitted</b>
             </div>
-            <div style={{ flex: homework ? 1 : 4, textAlign: 'center' }}>
+            <div style={{ flex: homework ? 1 : 4, textAlign: 'center',color:"#F2A127" }}>
               <b>Total Pending</b>
             </div>
             {homework && (
-              <div style={{ flex: 1, textAlign: 'center' }}>
+              <div style={{ flex: 1, textAlign: 'center',color:"#3A90E6" }}>
                 <b>Total Evaluated</b>
               </div>
             )}
@@ -646,7 +653,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
                             style={{
                               display: 'flex',
                               justifyContent: 'space-between',
-                              padding: '20px 0',
+                              padding: '20px 16px 20px 0',
                               borderBottom: '1px solid #D7E0E7',
                               // cursor: 'pointer',
                             }}
@@ -706,31 +713,33 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
                   </>
                 )}
               </div>
-              {(homework && tableData?.length > 0) && <Grid container justify='center'>
-                  <Pagination
+              {homework && tableData?.length > 0 && (
+                <Grid container justify='center'>
+                  {totalRecords > 10 && <Pagination
                     totalPages={Math.ceil(totalRecords / limit)}
                     currentPage={pageNumber}
                     setCurrentPage={setPageNumber}
-                  />
+                  />}
                 </Grid>
-              }
-              {(!homework && classworkData?.classwork_details?.length > 0) && <Grid container justify='center'>
-                  <Pagination
+              )}
+              {!homework && classworkData?.classwork_details?.length > 0 && (
+                <Grid container justify='center'>
+                  {totalCwRecord > 10 && <Pagination
                     totalPages={Math.ceil(totalCwRecord / limit)}
                     currentPage={cwPageNumber}
                     setCurrentPage={setCwPageNumber}
-                  />
+                  />}
                 </Grid>
-              }
+              )}
             </div>
           </div>
         </div>
         <Grid container justify='center'>
-          <Pagination
+          {totalGradeSecSub > 10 && <Pagination
             totalPages={Math.ceil(totalGradeSecSub / limit)}
             currentPage={gradePageNumber}
             setCurrentPage={setGradePageNumber}
-          />
+          />}
         </Grid>
       </div>
     </Layout>
