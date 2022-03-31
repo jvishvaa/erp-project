@@ -23,6 +23,7 @@ import { handleDownloadPdf } from '../../../../../src/utility-functions';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
+import apiRequest from 'containers/dashboard/StudentDashboard/config/apiRequest';
 import Weeklyassesmentreport from '../student-report/weekly-quiz-performnace';
 import Loading from '../../../../components/loader/loader'
 let url = '';
@@ -131,8 +132,7 @@ const AssessmentReportFilters = ({
 
   const fetchReportCardData = (params) => {
     setLoading(true);
-    axiosInstance
-      .get(`${endpoints.assessmentReportTypes.reportCardData}${params}`)
+    apiRequest('get', `${endpoints.assessmentReportTypes.reportCardData}${params}`, null, null, false, 10000)
       .then((result) => {
         if (result?.data?.status === 200) {
           setReportCardData(result?.data?.result);
@@ -142,7 +142,11 @@ const AssessmentReportFilters = ({
         }
         setLoading(false);
       })
-      .catch((error) => { setLoading(false); });
+
+      .catch((error) => {
+        setAlert('error', "Error While Fetching Report Card")
+        setLoading(false);
+      });
   };
 
   const handleDateChange = (name, date) => {
