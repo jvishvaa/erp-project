@@ -10,6 +10,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
@@ -32,29 +33,16 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: 'pink',
   },
 }));
-const datafile = [
-  { HomeWork: 'HW Title 1', HWDate: '2 Jan 2022' },
-  { HomeWork: 'HW Title 2', HWDate: '2 Feb 2022' },
-  { HomeWork: 'HW Title 3', HWDate: '2 March 2022' },
-];
+
 function ModalPending(props) {
   const classes = useStyles();
-
-  // useEffect(() => {
-  //   setPendingData(props?.row?.not_submitted_list);
-  //   console.log('ModalPending', pendingData);
-  // }, []);
+  // console.log('ModalPending', props);
 
   return (
     <div>
       <div>
         <div>
-          {/* <Button variant='outlined' color='primary'>
-            <Avatar aria-label='recipe' className={classes.avatar}>
-              3
-            </Avatar>
-            Pending 3 more tasks
-          </Button> */}
+
           <Dialog
             open={props?.open}
             onClose={props?.handleClose}
@@ -66,7 +54,7 @@ function ModalPending(props) {
                 <div style={{ display: 'flex' }}>
                   <div>
                     <Avatar aria-label='recipe' className={classes.avatar}>
-                      R
+                      <AccountCircleIcon />
                     </Avatar>
                   </div>
                   <div
@@ -77,13 +65,22 @@ function ModalPending(props) {
                       marginLeft: '10px',
                     }}
                   >
-                    <div style={{ color: '#4768A1', fontSize: 'small' }}>
-                      {props?.row?.name}
-                    </div>
-                    <div style={{ color: '#4768A1', fontSize: 'small' }}>
-                      {' '}
-                      {props?.row?.erp}
-                    </div>
+                    {props?.index1 ? (
+                      <>
+                        <div style={{ color: '#4768A1', fontSize: 'small' }}>Details</div>
+                        <div style={{ color: '#4768A1', fontSize: 'small' }}> {''}</div>
+                      </>
+                    ) : (
+                      <>
+                        <div style={{ color: '#4768A1', fontSize: 'small' }}>
+                          {props?.row?.name}
+                        </div>
+                        <div style={{ color: '#4768A1', fontSize: 'small' }}>
+                          {' '}
+                          {props?.row?.erp}
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
                 <hr style={{ width: '300px' }} />
@@ -105,21 +102,42 @@ function ModalPending(props) {
                   </div>
                 </div>
 
-                {props?.row?.not_submitted_list.map((data) => {
-                  return (
-                    <>
-                      <div style={{ display: 'flex', borderBottom: '1px solid #E8E8E8' }}>
-                        <div style={{ width: 20 }}>
-                          {/* <p style={{ fontSize: 'small' }}>{row?.not_submitted_list[0].title_name}</p> */}
-                          <p style={{ fontSize: 'small' }}>{data.title_name}</p>
+                {props?.index1
+                  ? props?.col?.map((data) => {
+
+                    return (
+                      <>
+                        <div
+                          style={{ display: 'flex', borderBottom: '1px solid #E8E8E8' }}
+                        >
+                          <div style={{ width: 20 }}>
+                            {/* <p style={{ fontSize: 'small' }}>{row?.not_submitted_list[0].title_name}</p> */}
+                            <p style={{ fontSize: 'small' }}>{data.homework_name}</p>
+                          </div>
+                          <div style={{ marginLeft: '120px' }}>
+                            <p style={{ fontSize: 'small' }}>{data.uploaded_at}</p>
+                          </div>
                         </div>
-                        <div style={{ marginLeft: '120px' }}>
-                          <p style={{ fontSize: 'small' }}>{data.date}</p>
+                      </>
+                    );
+                  })
+                  : props?.row?.not_submitted_list.map((data) => {
+                    return (
+                      <>
+                        <div
+                          style={{ display: 'flex', borderBottom: '1px solid #E8E8E8' }}
+                        >
+                          <div style={{ width: 20 }}>
+                            {/* <p style={{ fontSize: 'small' }}>{row?.not_submitted_list[0].title_name}</p> */}
+                            <p style={{ fontSize: 'small' }}>{data.title_name}</p>
+                          </div>
+                          <div style={{ marginLeft: '120px' }}>
+                            <p style={{ fontSize: 'small' }}>{data.date}</p>
+                          </div>
                         </div>
-                      </div>
-                    </>
-                  );
-                })}
+                      </>
+                    );
+                  })}
               </DialogContentText>
             </DialogContent>
           </Dialog>
