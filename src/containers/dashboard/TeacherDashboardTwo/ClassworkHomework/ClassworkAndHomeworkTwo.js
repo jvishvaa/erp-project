@@ -425,7 +425,12 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
       />
       <KeyboardBackspaceIcon
         style={{ cursor: 'pointer', marginLeft: 40 }}
-        onClick={() => history.goBack()}
+        onClick={() =>
+          history.push({
+            pathname: `/dashboard`,
+            counter: 2,
+          })
+        }
       />
       <Grid
         xs={12}

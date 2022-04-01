@@ -88,7 +88,7 @@ function Overview({ recentSubmissionDetail, overviewDetails, acadId }) {
                         <Grid
                           style={{ display: 'flex', justifyContent: 'space-between' }}
                         >
-                          <div style={{ width: 110 }}>
+                          <div style={{ width: '110px' }}>
                             <Typography
                               style={{
                                 fontSize: '12px',

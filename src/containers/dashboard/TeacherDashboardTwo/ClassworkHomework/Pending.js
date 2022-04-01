@@ -119,10 +119,10 @@ function Pending(props) {
     axios
       .get(
         subjectChangedfilterOn
-          ? `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${selectedSectionIds}&subject=${subjectmappingId}&date=${props?.Date2}`
+          ? `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&date=${props?.Date2}`
           : `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${Number(
               props?.dataincoming?.detail?.section_mapping_id
-            )}&subject=${props?.subjectId2}&date=${props?.Date2}`,
+            )}&subject_id=${props?.subjectId2}&date=${props?.Date2}`,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
@@ -155,10 +155,10 @@ function Pending(props) {
     axios
       .get(
         subjectChangedfilterOn
-          ? `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${selectedSectionIds}&erp_id=${id}&date=${props?.Date2}`
+          ? `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&erp_id=${id}&date=${props?.Date2}`
           : `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${Number(
-              props?.dataincoming?.detail?.section_mapping
-            )}&erp_id=${id}&date=${props?.Date2}`,
+              props?.dataincoming?.detail?.section_mapping_id
+            )}&subject_id=${props?.subjectId2}&erp_id=${id}&date=${props?.Date2}`,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
