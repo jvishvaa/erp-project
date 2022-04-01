@@ -221,7 +221,7 @@ const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
                 color='secondary'
                 onClick={academicView}
               >
-                Academic View
+                Calendar View
               </Button>
             ) : (
               ''
