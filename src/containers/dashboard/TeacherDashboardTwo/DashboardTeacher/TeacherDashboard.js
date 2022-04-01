@@ -44,7 +44,7 @@ function TeacherDashboard() {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState();
   const [sessionYearId, setSessionYearId] = useState();
-  const [ acadId , setAcadId ] = useState();
+  const [acadId, setAcadId] = useState();
   const ctx = useContext(FilterDetailsContext);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -54,7 +54,7 @@ function TeacherDashboard() {
     axios
       .get(`${endpoints.teacherDashboardTwo.gradeSectionDetails}?acad_session_id=1`, {
         headers: {
-          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -97,7 +97,7 @@ function TeacherDashboard() {
     axiosInstance
       .get(`${endpoints.teacherDashboardTwo.teacherOverview}?acad_session=${acadId}`, {
         headers: {
-          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -117,7 +117,7 @@ function TeacherDashboard() {
     axios
       .get(`${endpoints.teacherDashboardTwo.curriculumDetails}`, {
         headers: {
-          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -136,7 +136,7 @@ function TeacherDashboard() {
     axios
       .get(`${endpoints.teacherDashboardTwo.attendanceDetails}`, {
         headers: {
-          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -155,7 +155,7 @@ function TeacherDashboard() {
     axios
       .get(`${endpoints.teacherDashboardTwo.branchDetails}?acad_session=${acadId}`, {
         headers: {
-          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -207,7 +207,7 @@ function TeacherDashboard() {
         }}
       >
         <Grid container spacing={2}>
-          <Grid item xs={9}>
+          <Grid item xs={8}>
             <Typography style={{ fontWeight: '1000', fontSize: '16px' }}>
               Dashboard
             </Typography>
@@ -222,7 +222,11 @@ function TeacherDashboard() {
                       <Grid item xs={12}>
                         <TodayAttendance attendanceDetail={attendanceDetail} />
                         <Grid item xs={12}>
-                          <Overview recentSubmissionDetail={recentSubmissionDetail} overviewDetails={overviewDetails} acadId={acadId} />
+                          <Overview
+                            recentSubmissionDetail={recentSubmissionDetail}
+                            overviewDetails={overviewDetails}
+                            acadId={acadId}
+                          />
                         </Grid>
                       </Grid>
                     </Grid>
@@ -233,7 +237,10 @@ function TeacherDashboard() {
                         <AssessmentNew gradesectionDetail={gradesectionDetail} />
                       </Grid> */}
                       <Grid item xs={12}>
-                        <CurriculumCompletionNew curriculumDetail={curriculumDetail} curriculumDetails={curriculumDetails} />
+                        <CurriculumCompletionNew
+                          curriculumDetail={curriculumDetail}
+                          curriculumDetails={curriculumDetails}
+                        />
                       </Grid>
                       {/* <Grid item xs={12}>
                         <TrainingReportNew />
@@ -245,7 +252,7 @@ function TeacherDashboard() {
             </Grid>
           </Grid>
           {/* RH SIDE code below */}
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <StudentRightDashboard />
           </Grid>
         </Grid>
