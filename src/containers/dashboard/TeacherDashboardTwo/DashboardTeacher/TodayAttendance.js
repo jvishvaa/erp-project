@@ -96,7 +96,7 @@ function TodayAttendance({ attendanceDetail }) {
             onClick={viewAttendanceHandler}
             style={{
               position: 'relative',
-              left: '316px',
+              left: '315px',
               fontSize: '12px',
               fontWeight: '800',
               top: '14px',
