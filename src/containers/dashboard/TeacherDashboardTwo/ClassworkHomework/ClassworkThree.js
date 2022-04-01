@@ -309,6 +309,7 @@ function ClassworkThree(props) {
   // };
   const dateUpdatefun = (event) => {
     setDefaultDate(event.target.value);
+    setSubjectChangedfilterOn(true);
   };
 
   const datapass = {
