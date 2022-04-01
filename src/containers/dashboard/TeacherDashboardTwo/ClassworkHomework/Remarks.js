@@ -26,7 +26,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import NoFilterData from 'components/noFilteredData/noFilterData';
-import { FilterContext } from './ClassworkThree'
+import { FilterContext } from './ClassworkThree';
 
 // import { dataPropsContext } from './Details';
 import moment from 'moment';
@@ -44,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 function Remarks(props) {
   // console.log('debugrema', props);
   const [tableData, setTableData] = useState([]);
@@ -58,8 +57,12 @@ function Remarks(props) {
   const [mainData, setMainData] = useState([]);
   const dataincoming = props.dataincoming;
 
-  const { selectedSectionIds, subjectChangedfilterOn, subjectmappingId, defaultdate } = useContext(FilterContext)
-
+  const {
+    selectedSectionIds,
+    subjectChangedfilterOn,
+    subjectmappingId,
+    defaultdate,
+  } = useContext(FilterContext);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -81,12 +84,9 @@ function Remarks(props) {
   const UpdatedHwlist = () => {
     axios
       .get(
-        // `${endpoints.teacherDashboard.submittedHWalldata}?homework=1163&period_id=421`,
-        (subjectChangedfilterOn)
-          ?
-          `${endpoints.teacherDashboard.submittedHWalldata}?subject_mapping_id=${subjectmappingId}&date=${defaultdate}`
-          :
-          `${endpoints.teacherDashboard.submittedHWalldata}?homework=${props?.dataincoming?.detail?.homework_id}&period_id=${props?.dataincoming?.detail?.period_id}`,
+        subjectChangedfilterOn
+          ? `${endpoints.teacherDashboard.submittedHWalldata}?subject_mapping_id=${subjectmappingId}&date=${defaultdate}`
+          : `${endpoints.teacherDashboard.submittedHWalldata}?homework=${props?.dataincoming?.detail?.homework_id}&period_id=${props?.dataincoming?.detail?.period_id}`,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
@@ -96,9 +96,7 @@ function Remarks(props) {
         }
       )
       .then((result) => {
-        if (result?.data?.evaluated_list)
-          setTableData(result?.data?.evaluated_list);
-
+        if (result?.data?.evaluated_list) setTableData(result?.data?.evaluated_list);
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -179,13 +177,12 @@ function Remarks(props) {
           <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>
               {tableData.map((data, index) => {
-
                 return (
                   <TableBody>
                     <TableRow
                       // key=bonnie
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    // onClick={assessmentHandler}
+                      // onClick={assessmentHandler}
                     >
                       <TableCell
                         style={{ display: 'flex', justifyContent: 'flex-start' }}

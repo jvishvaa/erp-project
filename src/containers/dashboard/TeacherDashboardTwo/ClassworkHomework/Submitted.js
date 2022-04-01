@@ -60,8 +60,12 @@ function Submitted(props) {
   const dataincoming = props.dataincoming;
   const [indexphotos, setindexphotos] = useState(null);
 
-
-  const { selectedSectionIds, subjectChangedfilterOn, subjectmappingId, defaultdate } = useContext(FilterContext)
+  const {
+    selectedSectionIds,
+    subjectChangedfilterOn,
+    subjectmappingId,
+    defaultdate,
+  } = useContext(FilterContext);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -82,16 +86,15 @@ function Submitted(props) {
   const pendingList = () => {
     axios
       .get(
-        // `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=2&subject=9&date=2022-02-01`,
-        (subjectChangedfilterOn)
-          ?
-          `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
-            selectedSectionIds)}&subject=${subjectmappingId}&date=${props?.Date2}`
-          :
-          `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
-            props?.dataincoming?.detail?.section_mapping
-          )}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date
-          }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
+        subjectChangedfilterOn
+          ? `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
+              selectedSectionIds
+            )}&subject=${subjectmappingId}&date=${props?.Date2}`
+          : `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
+              props?.dataincoming?.detail?.section_mapping
+            )}&subject=${props?.subjectId2}&date=${
+              props?.dataincoming?.detail?.date
+            }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
@@ -102,8 +105,6 @@ function Submitted(props) {
       )
       .then((result) => {
         setTableData(result?.data?.result?.result);
-
-
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -114,13 +115,9 @@ function Submitted(props) {
   const UpdatedHwlist = () => {
     axios
       .get(
-        // `${endpoints.teacherDashboard.submittedHWalldata}?homework=1163&period_id=421`,
-        (subjectChangedfilterOn)
-          ?
-          `${endpoints.teacherDashboard.submittedHWalldata}?subject_mapping_id=${subjectmappingId}&date=${props?.Date2}`
-          :
-          `${endpoints.teacherDashboard.submittedHWalldata}?homework=${props?.dataincoming?.detail?.homework_id}&period_id=${props?.dataincoming?.detail?.period_id}`
-        ,
+        subjectChangedfilterOn
+          ? `${endpoints.teacherDashboard.submittedHWalldata}?subject_mapping_id=${subjectmappingId}&date=${props?.Date2}`
+          : `${endpoints.teacherDashboard.submittedHWalldata}?homework=${props?.dataincoming?.detail?.homework_id}&period_id=${props?.dataincoming?.detail?.period_id}`,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
@@ -131,11 +128,9 @@ function Submitted(props) {
       )
       .then((result) => {
         setPendingData(result?.data?.un_submitted_list);
-        if (result?.data?.submitted_list)
-          setTableData(result?.data?.submitted_list);
+        if (result?.data?.submitted_list) setTableData(result?.data?.submitted_list);
         setIndex(result?.data?.un_submitted_list?.length);
         parsedData(result?.data?.un_submitted_list);
-
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -144,13 +139,11 @@ function Submitted(props) {
   };
 
   const parsedData = (data) => {
-
     const obj = {};
     data.forEach((item) => {
       obj[item.id] = item;
     });
     setOutput(obj);
-
   };
   // var dataSubmitted = {
   //   name: mainData.first_name,
@@ -162,14 +155,9 @@ function Submitted(props) {
   const fileList = (erpid) => {
     axios
       .get(
-        // https://dev.reports.letseduvate.com/api/acad_performance/v1/teacher-dashboard/submitted-cw-files/?section_mapping=2&subject=9&date=2022-02-01&erp=2101430143_OLV
-        // `${endpoints.teacherDashboard.fileHwData}?section_mapping=2&subject=9&date=2022-02-01&erp=2101430143_OLV`,
-        //selectedSectionIds, subjectChangedfilterOn, subjectmappingId
-        (subjectChangedfilterOn)
-          ?
-          `${endpoints.teacherDashboard.fileHwData}?section_mapping=${selectedSectionIds}&subject=${subjectmappingId}&date=${props?.Date2}&erp=${erpid}`
-          :
-          `${endpoints.teacherDashboard.fileHwData}?section_mapping=${props?.selectedSectionIds2}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date}&erp=${erpid}`,
+        subjectChangedfilterOn
+          ? `${endpoints.teacherDashboard.fileHwData}?section_mapping=${selectedSectionIds}&subject=${subjectmappingId}&date=${props?.Date2}&erp=${erpid}`
+          : `${endpoints.teacherDashboard.fileHwData}?section_mapping=${props?.selectedSectionIds2}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date}&erp=${erpid}`,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
@@ -180,13 +168,6 @@ function Submitted(props) {
       )
       .then((result) => {
         setFileData(result?.data?.result);
-
-        // if (result?.data?.status_code === 200) {
-        //   setStudentData(result);
-        // } else {
-        //   setAlert('error', result?.data?.message);
-        // }
-        // setLoading(false);
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -206,9 +187,8 @@ function Submitted(props) {
   //   fileList();
   // }, [on]);
   const handleClickOn = (erpid, index) => {
-
     setOn(true);
-    setindexphotos(index)
+    setindexphotos(index);
     if (!dataincoming?.hwcwstatus) {
       fileList(erpid);
     }
@@ -250,7 +230,6 @@ function Submitted(props) {
           <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>
               {tableData?.map((data, index) => {
-
                 let interval = Math.trunc(
                   moment.duration(moment() - moment(data.submitted_at)).asDays()
                 );
@@ -259,7 +238,7 @@ function Submitted(props) {
                     <TableRow
                       // key=bonnie
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    // onClick={assessmentHandler}
+                      // onClick={assessmentHandler}
                     >
                       <TableCell
                         style={{ display: 'flex', justifyContent: 'flex-start' }}
@@ -396,7 +375,9 @@ function Submitted(props) {
                             >
                               {interval > 30
                                 ? `${Math.trunc(interval / 30)} Month Ago`
-                                : `${interval} Days ago`}
+                                : interval > 0
+                                ? `${interval} Days ago`
+                                : 'Today'}
                             </Typography>
                           ) : (
                             <Typography
@@ -475,41 +456,43 @@ function Submitted(props) {
               <p style={{ color: 'white' }}>Click to View</p>
             </div>
             {dataincoming && dataincoming?.hwcwstatus
-              ? tableData && tableData[indexphotos]?.uploaded_file?.map((file, index) => {
-                const filename = file.split('/')[3];
+              ? tableData &&
+                tableData[indexphotos]?.uploaded_file?.map((file, index) => {
+                  const filename = file.split('/')[3];
 
-                return (
-                  <div>
-                    <Card
-                      style={{ display: 'flex' }}
-                      onClick={() =>
-                        inputImage(
-                          `${endpoints.lessonPlan.s3erp}homework/${file}`
-                        )
-                      }
-                    >
-                      <FileCopyIcon />
-                      <p>{filename}</p>
-                    </Card>
-                  </div>
-                );
-                // <div><Card style={{ display: 'flex' }} onClick={setInd(index)}><FileCopyIcon /><p>{file.title}</p></Card></div>)
-              })
-              : fileData.length && fileData.map((file, index) => {
-                const filename = file.split('/')[6];
-                return (
-                  <div>
-                    <Card
-                      style={{ display: 'flex' }}
-                      onClick={() => inputImage(`${endpoints.discussionForum.s3}${file}`)}
-                    >
-                      <FileCopyIcon />
-                      <p>{filename}</p>
-                    </Card>
-                  </div>
-                );
-                // <div><Card style={{ display: 'flex' }} onClick={setInd(index)}><FileCopyIcon /><p>{file.title}</p></Card></div>)
-              })}
+                  return (
+                    <div>
+                      <Card
+                        style={{ display: 'flex' }}
+                        onClick={() =>
+                          inputImage(`${endpoints.lessonPlan.s3erp}homework/${file}`)
+                        }
+                      >
+                        <FileCopyIcon />
+                        <p>{filename}</p>
+                      </Card>
+                    </div>
+                  );
+                  // <div><Card style={{ display: 'flex' }} onClick={setInd(index)}><FileCopyIcon /><p>{file.title}</p></Card></div>)
+                })
+              : fileData.length &&
+                fileData.map((file, index) => {
+                  const filename = file.split('/')[6];
+                  return (
+                    <div>
+                      <Card
+                        style={{ display: 'flex' }}
+                        onClick={() =>
+                          inputImage(`${endpoints.discussionForum.s3}${file}`)
+                        }
+                      >
+                        <FileCopyIcon />
+                        <p>{filename}</p>
+                      </Card>
+                    </div>
+                  );
+                  // <div><Card style={{ display: 'flex' }} onClick={setInd(index)}><FileCopyIcon /><p>{file.title}</p></Card></div>)
+                })}
           </div>
           <div
             style={{

@@ -19,7 +19,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
-import Loader from "../../../../components/loader/loader"
+import Loader from '../../../../components/loader/loader';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import axiosInstance from '../../../../config/axios';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
@@ -29,6 +29,7 @@ import './date-picker-style.scss';
 import { useHistory } from 'react-router-dom';
 import NoFilterData from 'components/noFilteredData/noFilterData';
 import Pagination from 'components/PaginationComponent';
+import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 
 const ClassworkAndHomeworkTwo = ({ props }) => {
   const history = useHistory();
@@ -66,9 +67,8 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
   const [totalGradeSecSub, setTotalGradeSecSub] = useState(0);
   const [gradePageNumber, setGradePageNumber] = useState(1);
 
-  const [totalCwRecord, setTotalCwRecord] = useState(0)
+  const [totalCwRecord, setTotalCwRecord] = useState(0);
   const [cwPageNumber, setCwPageNumber] = useState(1);
-
 
   let date = moment().format('YYYY-MM-DD');
 
@@ -104,12 +104,13 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
         if (result?.data?.status_code === 200) {
           let gradeSecSub = result?.data?.result;
           setGradeSectionList(gradeSecSub);
-          setTotalGradeSecSub(result?.data?.total_count_of_data)
-          setRowGrade(gradeSecSub[0]?.section_mapping__grade__id)
-          setRowSection(gradeSecSub[0]?.section_mapping__section__id)
-          setRowSubject(gradeSecSub[0]?.subjects__id)
-          setPageNumber(1)
-          setCwPageNumber(1)
+          setTotalGradeSecSub(result?.data?.total_count_of_data);
+          setRowGrade(gradeSecSub[0]?.section_mapping__grade__id);
+          setRowSection(gradeSecSub[0]?.section_mapping__section__id);
+          setRowSubject(gradeSecSub[0]?.subjects__id);
+          setPageNumber(1);
+          setCwPageNumber(1);
+          setIndvalue(0);
           homeWorkList(
             gradeSecSub[0]?.section_mapping__grade__id,
             gradeSecSub[0]?.subjects__id,
@@ -133,14 +134,23 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
 
   useEffect(() => {
     gradeSectionSubjectList();
-  }, [selectedGradeIds, subjectId, selectedSectionIds, sectionList, gradePageNumber, startDate, endDate]);
+  }, [
+    selectedGradeIds,
+    subjectId,
+    selectedSectionIds,
+    sectionList,
+    gradePageNumber,
+    startDate,
+    endDate,
+  ]);
 
   const handleBranch = () => {
     setGradeList([]);
     setSelectedSection([]);
     setSelectedSubject([]);
     callApi(
-      `${endpoints.academics.grades
+      `${
+        endpoints.academics.grades
       }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&module_id=${2}`,
       'gradeList'
     );
@@ -149,18 +159,19 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
   const handleGrade = (event = {}, value = []) => {
     if (value) {
       setSectionList([]);
-      setSelectedSectionIds([])
-      setSubjectList([])
-      setSubjectId()
-      setSelectedSubject([])
-      setSelectedGradeIds([])
-      setGradePageNumber(1)
+      setSelectedSectionIds([]);
+      setSubjectList([]);
+      setSubjectId();
+      setSelectedSubject([]);
+      setSelectedGradeIds([]);
+      setGradePageNumber(1);
       // const ids = value;
       const selectedId = value?.grade_id;
       setSelectedGrade(value);
       setSelectedGradeIds(selectedId);
       callApi(
-        `${endpoints.academics.sections
+        `${
+          endpoints.academics.sections
         }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&grade_id=${selectedId?.toString()}&module_id=${2}`,
         'section'
       );
@@ -179,19 +190,20 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
     // setSectionList([])
     // setSubjectId()
     if (value) {
-      setSubjectList([])
-      setSelectedSubject([])
-      setSelectedSectionIds([])
-      setSubjectId()
-      setGradePageNumber(1)
-      setSelectedSection([])
+      setSubjectList([]);
+      setSelectedSubject([]);
+      setSelectedSectionIds([]);
+      setSubjectId();
+      setGradePageNumber(1);
+      setSelectedSection([]);
       const selectedsecctionId = value?.section_id;
       const sectionid = value?.id;
       setSectionId(sectionid);
       setSelectedSection(value);
       setSelectedSectionIds(selectedsecctionId);
       callApi(
-        `${endpoints.academics.subjects
+        `${
+          endpoints.academics.subjects
         }?session_year=${sessionYearIDDDD}&branch=${databranch}&grade=${selectedGradeIds?.toString()}&section=${selectedsecctionId.toString()}&module_id=${2}`,
         'subject'
       );
@@ -200,14 +212,14 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
       setSelectedSubject([]);
       setSelectedSectionIds([]);
       setSubjectId();
-      setSelectedSection([])
+      setSelectedSection([]);
     }
   };
 
   const handleSubject = (event = {}, value = []) => {
     setSelectedSubject(value);
     setSubjectId(value?.subject__id);
-    setGradePageNumber(1)
+    setGradePageNumber(1);
     // pendingInfo();
     // pendingDetails(sectionId, value?.subject__id, periodDate);
   };
@@ -281,11 +293,11 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
 
   const handleClick = (item, i) => {
     setIndvalue(i);
-    setPageNumber(1)
-    setCwPageNumber(1)
-    setRowGrade(item?.section_mapping__grade__id)
-    setRowSection(item?.section_mapping__section__id)
-    setRowSubject(item?.subjects__id)
+    setPageNumber(1);
+    setCwPageNumber(1);
+    setRowGrade(item?.section_mapping__grade__id);
+    setRowSection(item?.section_mapping__section__id);
+    setRowSubject(item?.subjects__id);
     // homework &&
     //   homeWorkList(
     //     item?.section_mapping__grade__id,
@@ -346,7 +358,6 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
   };
 
   const classworkfileopener = () => {
-
     // setIsWorkDetail(true);
     // sethwcwdetails(data);
     history.push({
@@ -365,7 +376,6 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
         selectedSubjectvalue: selectedSubject,
       },
     });
-
   };
 
   const classWorkList = (
@@ -393,7 +403,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
         if (result?.data?.status_code === 200) {
           setClassworkData(result?.data?.result);
           setAlert('success', result?.data?.message);
-          setTotalCwRecord(result?.data?.result?.total_count)
+          setTotalCwRecord(result?.data?.result?.total_count);
         } else {
           setAlert('error', result?.data?.message);
         }
@@ -406,13 +416,16 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
   };
   // useEffect(() => endDate && gradeSectionSubjectList(), [startDate, endDate]);
 
-
   return (
     <Layout>
       {loading && <Loader />}
       <CommonBreadcrumbs
         componentName='Dashboard'
         childComponentName='Homework And Classwork'
+      />
+      <KeyboardBackspaceIcon
+        style={{ cursor: 'pointer', marginLeft: 40 }}
+        onClick={() => history.goBack()}
       />
       <Grid
         xs={12}
@@ -517,9 +530,9 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
         >
           <Grid
             onClick={() => {
-              setHomework(true)
+              setHomework(true);
               // setIndvalue(0)
-              setPageNumber(1)
+              setPageNumber(1);
             }}
             xs={6}
             style={{
@@ -534,9 +547,9 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
           <Grid
             xs={6}
             onClick={() => {
-              setHomework(false)
+              setHomework(false);
               // setIndvalue(0)
-              setCwPageNumber(1)
+              setCwPageNumber(1);
             }}
             style={{
               background: homework ? 'white' : '#4093D4',
@@ -560,14 +573,14 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
           <span style={{ textAlign: 'right' }}>
             {endDate
               ? `${moment(startDate).format('MM/DD/YYYY')} to ${moment(endDate).format(
-                'MM/DD/YYYY'
-              )}`
+                  'MM/DD/YYYY'
+                )}`
               : `${moment(date).format('MM/DD/YYYY')}`}
           </span>
         </Grid>
       </div>
       <div style={{ overflowX: 'scroll', marginTop: 15 }}>
-        <div style={{ minWidth: 768, backgroundColor: "rgb(235, 242, 254)" }}>
+        <div style={{ minWidth: 768, backgroundColor: 'rgb(235, 242, 254)' }}>
           <div
             style={{
               display: 'flex',
@@ -583,14 +596,18 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
             <div style={{ flex: homework ? 1 : 4, textAlign: 'center' }}>
               <b>Date</b>
             </div>
-            <div style={{ flex: homework ? 1 : 4, textAlign: 'center', color: "#4DC41B" }}>
+            <div
+              style={{ flex: homework ? 1 : 4, textAlign: 'center', color: '#4DC41B' }}
+            >
               <b>Total Submitted</b>
             </div>
-            <div style={{ flex: homework ? 1 : 4, textAlign: 'center', color: "#F2A127" }}>
+            <div
+              style={{ flex: homework ? 1 : 4, textAlign: 'center', color: '#F2A127' }}
+            >
               <b>Total Pending</b>
             </div>
             {homework && (
-              <div style={{ flex: 1, textAlign: 'center', color: "#3A90E6" }}>
+              <div style={{ flex: 1, textAlign: 'center', color: '#3A90E6' }}>
                 <b>Total Evaluated</b>
               </div>
             )}
@@ -614,7 +631,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
                       borderBottom: '1px solid transparent',
                       background: indvalue == i ? 'white' : '#EBF2FE',
                       borderLeft: indvalue == i ? '8px solid #4093D4' : '',
-                      cursor: "pointer"
+                      cursor: 'pointer',
                     }}
                   >
                     <b>{item.section_mapping__grade__grade_name}</b>
@@ -637,7 +654,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
             >
               <div>
                 {(homework && tableData?.length === 0) ||
-                  (!homework && classworkData?.classwork_details?.length === 0) ? (
+                (!homework && classworkData?.classwork_details?.length === 0) ? (
                   <div style={{ marginTop: '10%', marginBottom: '10%' }}>
                     <NoFilterData data='No Data Found' />
                   </div>
@@ -692,7 +709,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
                             borderBottom: '1px solid #D7E0E7',
                             // cursor: 'pointer',
                           }}
-                        // onClick={() => classworkfileopener()}
+                          // onClick={() => classworkfileopener()}
                         >
                           <div style={{ flex: 1, textAlign: 'center' }}>{item.date}</div>
                           <div style={{ flex: 1, textAlign: 'center' }}>
@@ -712,31 +729,37 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
               </div>
               {homework && tableData?.length > 0 && (
                 <Grid container justify='center'>
-                  {totalRecords > 10 && <Pagination
-                    totalPages={Math.ceil(totalRecords / limit)}
-                    currentPage={pageNumber}
-                    setCurrentPage={setPageNumber}
-                  />}
+                  {totalRecords > 10 && (
+                    <Pagination
+                      totalPages={Math.ceil(totalRecords / limit)}
+                      currentPage={pageNumber}
+                      setCurrentPage={setPageNumber}
+                    />
+                  )}
                 </Grid>
               )}
               {!homework && classworkData?.classwork_details?.length > 0 && (
                 <Grid container justify='center'>
-                  {totalCwRecord > 10 && <Pagination
-                    totalPages={Math.ceil(totalCwRecord / limit)}
-                    currentPage={cwPageNumber}
-                    setCurrentPage={setCwPageNumber}
-                  />}
+                  {totalCwRecord > 10 && (
+                    <Pagination
+                      totalPages={Math.ceil(totalCwRecord / limit)}
+                      currentPage={cwPageNumber}
+                      setCurrentPage={setCwPageNumber}
+                    />
+                  )}
                 </Grid>
               )}
             </div>
           </div>
         </div>
         <Grid container justify='center'>
-          {totalGradeSecSub > 10 && <Pagination
-            totalPages={Math.ceil(totalGradeSecSub / limit)}
-            currentPage={gradePageNumber}
-            setCurrentPage={setGradePageNumber}
-          />}
+          {totalGradeSecSub > 10 && (
+            <Pagination
+              totalPages={Math.ceil(totalGradeSecSub / limit)}
+              currentPage={gradePageNumber}
+              setCurrentPage={setGradePageNumber}
+            />
+          )}
         </Grid>
       </div>
     </Layout>
