@@ -781,7 +781,7 @@ const AssessmentReportFilters = ({
           margin: isMobile ? '10px 0px -10px 0px' : '-20px 0px 20px 8px',
         }}
       >
-        {loading ? <Loading message='Please Wait While Report Card is Generating...' /> : null}
+        {loading ? <Loading message='Please Wait While Report Card is Being Generated...' /> : null}
         {selectedReportType?.id !== 11 && (
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
             <Autocomplete
