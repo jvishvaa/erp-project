@@ -363,7 +363,7 @@ function ClassworkThree(props) {
 
   useEffect(() => {
     displayDetails();
-  }, [sectionId, selectedSectionIds, defaultdate, selectedGradeIds]);
+  }, [sectionId, selectedSectionIds, defaultdate, selectedGradeIds, subjectmappingId]);
 
   const classWorkTotal = classworkData[0]?.classwork_details?.total;
 
