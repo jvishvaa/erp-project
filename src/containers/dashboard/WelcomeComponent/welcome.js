@@ -100,10 +100,10 @@ const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
   return (
     <>
       {welcomeDetails?.userLevel === 1 ||
-      welcomeDetails?.userLevel === 4 ||
-      welcomeDetails?.userLevel === 8 ||
-      welcomeDetails?.userLevel === 10 ||
-      welcomeDetails?.userLevel === 11 ? (
+        welcomeDetails?.userLevel === 4 ||
+        welcomeDetails?.userLevel === 8 ||
+        welcomeDetails?.userLevel === 10 ||
+        welcomeDetails?.userLevel === 11 ? (
         <div
           style={{
             display: 'flex',
@@ -145,43 +145,19 @@ const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
             ''
           )}
 
-          {welcomeDetails?.userLevel == 11 ? (
-            <>
-              {checkDev === true ? (
-                <>
-                  {erp_config ? (
-                    <Button
-                      className={classes.outlined}
-                      style={{ margin: '0 2%' }}
-                      color='secondary'
-                      onClick={() => changeView(2)}
-                    >
-                      Stats View V2
-                    </Button>
-                  ) : (
-                    ''
-                  )}
-                </>
-              ) : (
-                ''
-              )}
-            </>
+          {erp_config ? (
+            <Button
+              className={classes.outlined}
+              style={{ margin: '0 2%' }}
+              color='secondary'
+              onClick={() => changeView(2)}
+            >
+              Stats View V2
+            </Button>
           ) : (
-            <>
-              {erp_config ? (
-                <Button
-                  className={classes.outlined}
-                  style={{ margin: '0 2%' }}
-                  color='secondary'
-                  onClick={() => changeView(2)}
-                >
-                  Stats View V2
-                </Button>
-              ) : (
-                ''
-              )}
-            </>
+            ''
           )}
+
         </div>
       ) : (
         ''
@@ -232,10 +208,10 @@ const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
           ''
         )}
         {welcomeDetails?.userLevel === 1 ||
-        welcomeDetails?.userLevel === 4 ||
-        welcomeDetails?.userLevel === 8 ||
-        welcomeDetails?.userLevel === 10 ||
-        welcomeDetails?.userLevel === 11 ? (
+          welcomeDetails?.userLevel === 4 ||
+          welcomeDetails?.userLevel === 8 ||
+          welcomeDetails?.userLevel === 10 ||
+          welcomeDetails?.userLevel === 11 ? (
           ''
         ) : (
           <>
