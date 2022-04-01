@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
@@ -24,7 +24,12 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
-
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+// import { dataPropsContext } from './Details';
+import NoFilterData from 'components/noFilteredData/noFilterData';
+import moment from 'moment';
+import { FilterContext } from './ClassworkThree';
+import ModalPending from './ModalPending';
 const useStyles = makeStyles((theme) => ({
   modal: {
     display: 'flex',
@@ -39,16 +44,28 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function Submitted({ section, subject, date }) {
+function Submitted(props) {
+  // console.log('debugSub', props);
   const [tableData, setTableData] = useState([]);
+  const [pendingData, setPendingData] = useState([]);
   const [fileData, setFileData] = useState([]);
   const [tableIndex, setIndex] = useState(null);
+  const [output, setOutput] = useState({});
   const classes = useStyles();
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [open, setOpen] = React.useState(false);
   const [on, setOn] = React.useState(false);
   const [popup, setPopup] = useState([]);
+  const [mainData, setMainData] = useState([]);
+  const dataincoming = props.dataincoming;
+  const [indexphotos, setindexphotos] = useState(null);
 
+  const {
+    selectedSectionIds,
+    subjectChangedfilterOn,
+    subjectmappingId,
+    defaultdate,
+  } = useContext(FilterContext);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -65,55 +82,92 @@ function Submitted({ section, subject, date }) {
   const handleCl = () => {
     setOn(false);
   };
+
   const pendingList = () => {
     axios
       .get(
-        `${endpoints.teacherDashboard.submittedHWdata}?section_mapping=${section}&subject=${subject}`,
+        subjectChangedfilterOn
+          ? `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
+              selectedSectionIds
+            )}&subject=${subjectmappingId}&date=${props?.Date2}`
+          : `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
+              props?.dataincoming?.detail?.section_mapping
+            )}&subject=${props?.subjectId2}&date=${
+              props?.dataincoming?.detail?.date
+            }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
         {
           headers: {
-            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
             'X-DTS-HOST': window.location.host,
+            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
             Authorization: `Bearer ${token}`,
           },
         }
       )
       .then((result) => {
         setTableData(result?.data?.result?.result);
-        setIndex(result?.data?.result?.total_students);
-        // if (result?.data?.status_code === 200) {
-        //   setStudentData(result);
-        // } else {
-        //   setAlert('error', result?.data?.message);
-        // }
-        // setLoading(false);
       })
       .catch((error) => {
         // setAlert('error', error?.message);
         // setLoading(false);
       });
   };
-  const fileList = () => {
+
+  const UpdatedHwlist = () => {
     axios
       .get(
-        // https://dev.reports.letseduvate.com/api/acad_performance/v1/teacher-dashboard/submitted-cw-files/?section_mapping=2&subject=9&date=2022-02-01&erp=2101430143_OLV
-        `${endpoints.teacherDashboard.fileHwData}?section_mapping=2&subject=9&date=2022-02-01&erp=2101430143_OLV`,
+        subjectChangedfilterOn
+          ? `${endpoints.teacherDashboard.submittedHWalldata}?subject_mapping_id=${subjectmappingId}&date=${props?.Date2}`
+          : `${endpoints.teacherDashboard.submittedHWalldata}?homework=${props?.dataincoming?.detail?.homework_id}&period_id=${props?.dataincoming?.detail?.period_id}`,
         {
           headers: {
-            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
             'X-DTS-HOST': window.location.host,
+            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((result) => {
+        setPendingData(result?.data?.un_submitted_list);
+        if (result?.data?.submitted_list) setTableData(result?.data?.submitted_list);
+        setIndex(result?.data?.un_submitted_list?.length);
+        parsedData(result?.data?.un_submitted_list);
+      })
+      .catch((error) => {
+        // setAlert('error', error?.message);
+        // setLoading(false);
+      });
+  };
+
+  const parsedData = (data) => {
+    const obj = {};
+    data.forEach((item) => {
+      obj[item.id] = item;
+    });
+    setOutput(obj);
+  };
+  // var dataSubmitted = {
+  //   name: mainData.first_name,
+  //   erp: mainData.erp_id,
+  //   // time: mainData.submitted_at,
+  //   // files: mainData.uploaded_file,
+  // }
+
+  const fileList = (erpid) => {
+    axios
+      .get(
+        subjectChangedfilterOn
+          ? `${endpoints.teacherDashboard.fileHwData}?section_mapping=${selectedSectionIds}&subject=${subjectmappingId}&date=${props?.Date2}&erp=${erpid}`
+          : `${endpoints.teacherDashboard.fileHwData}?section_mapping=${props?.selectedSectionIds2}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date}&erp=${erpid}`,
+        {
+          headers: {
+            'X-DTS-HOST': window.location.host,
+            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
             Authorization: `Bearer ${token}`,
           },
         }
       )
       .then((result) => {
         setFileData(result?.data?.result);
-
-        // if (result?.data?.status_code === 200) {
-        //   setStudentData(result);
-        // } else {
-        //   setAlert('error', result?.data?.message);
-        // }
-        // setLoading(false);
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -122,15 +176,22 @@ function Submitted({ section, subject, date }) {
   };
 
   useEffect(() => {
-    pendingList();
-  }, [section, subject]);
+    if (dataincoming.hwcwstatus) {
+      UpdatedHwlist();
+    } else {
+      pendingList();
+    }
+  }, [props?.Date2, defaultdate, subjectmappingId]);
 
   // useEffect(() => {
   //   fileList();
   // }, [on]);
-  const handleClickOn = () => {
+  const handleClickOn = (erpid, index) => {
     setOn(true);
-    fileList();
+    setindexphotos(index);
+    if (!dataincoming?.hwcwstatus) {
+      fileList(erpid);
+    }
   };
 
   useEffect(() => {
@@ -138,147 +199,236 @@ function Submitted({ section, subject, date }) {
   }, [open]);
   let inputRef = useRef(null);
   const [Ind, setInd] = useState(0);
-  let inputImage = (ing) => {
-    inputRef.current.src = ing;
+  let inputImage = (img) => {
+    inputRef.current.src = img;
   };
+
   return (
     <>
       <Grid container>
         <Typography style={{ fontSize: '10px', fontWeight: '700' }}>
-          {tableIndex} studens (submitted)
+          Student List
         </Typography>
       </Grid>
-      <Grid
-        container
-        xs={12}
-        direction='row'
-        justifyContent='space-between'
-        alignItems='center'
-        style={{ border: '1px solid #E8E8E8', paddingRight: '20px', paddingLeft: '20px' }}
-      >
-        <TableContainer>
-          <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-            {tableData?.map((data, index) => {
-              return (
-                <TableBody>
-                  <TableRow
-                    // key=bonnie
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    // onClick={assessmentHandler}
-                  >
-                    <TableCell style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                      <Avatar
-                        style={{ height: '40px', paddingRight: '' }}
-                        aria-label='recipe'
-                      >
-                        3
-                      </Avatar>
-                      <Grid item style={{ marginLeft: '10px' }}>
-                        <Typography style={{ fontSize: '12px' }}>{data.name}</Typography>
-                        <Typography style={{ fontSize: '12px' }}>{data.erp}</Typography>
-                      </Grid>
-                    </TableCell>
-                    <TableCell
-                      style={{ color: '#061B2E', paddingRight: '50px', height: '22px ' }}
+      {tableData && tableData?.length === 0 ? (
+        <div style={{ height: 400, margin: 'auto', marginTop: '70px' }}>
+          <NoFilterData data={'No Data Found'} />
+        </div>
+      ) : (
+        <Grid
+          container
+          xs={12}
+          direction='row'
+          justifyContent='space-between'
+          alignItems='center'
+          style={{
+            border: '1px solid #E8E8E8',
+            paddingRight: '20px',
+            paddingLeft: '20px',
+          }}
+        >
+          <TableContainer>
+            <Table sx={{ minWidth: 650 }} aria-label='simple table'>
+              {tableData?.map((data, index) => {
+                let interval = Math.trunc(
+                  moment.duration(moment() - moment(data.submitted_at)).asDays()
+                );
+                return (
+                  <TableBody>
+                    <TableRow
+                      // key=bonnie
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      // onClick={assessmentHandler}
                     >
-                      <Grid
-                        item
+                      <TableCell
+                        style={{ display: 'flex', justifyContent: 'flex-start' }}
+                      >
+                        <Avatar
+                          style={{ height: '40px', paddingRight: '' }}
+                          aria-label='recipe'
+                        >
+                          <AccountCircleIcon />
+                        </Avatar>
+                        <Grid item style={{ marginLeft: '10px' }}>
+                          {dataincoming?.hwcwstatus ? (
+                            <>
+                              <Typography style={{ fontSize: '12px' }}>
+                                {data.first_name} {data.last_name}
+                              </Typography>
+                              <Typography style={{ fontSize: '12px' }}>
+                                {data.erp_id}
+                              </Typography>
+                            </>
+                          ) : (
+                            <>
+                              <Typography style={{ fontSize: '12px' }}>
+                                {data.name}
+                              </Typography>
+                              <Typography style={{ fontSize: '12px' }}>
+                                {data.erp}
+                              </Typography>
+                            </>
+                          )}
+                        </Grid>
+                      </TableCell>
+                      <TableCell
                         style={{
-                          border: '1px solid #FFC4C4',
-                          borderRadius: '5px',
-                          color: '#E33535',
-                          padding: '2px 10px',
-                          width: 'maxContent',
+                          color: '#061B2E',
+                          paddingRight: '50px',
+                          height: '22px ',
                         }}
                       >
-                        <Typography onClick={() => handleOpen(index)}>
-                          <span
+                        {dataincoming?.hwcwstatus ? (
+                          output[data.submitted_by] ? (
+                            <Grid
+                              item
+                              style={{
+                                border: '1px solid #FFC4C4',
+
+                                // border: !dataincoming.hwcwstatus
+                                //   ? '1px solid #FFC4C4'
+                                //   : 'none',
+                                borderRadius: '5px',
+                                color: '#E33535',
+                                padding: '2px 10px',
+                                width: 'maxContent',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              <Typography onClick={() => handleOpen(index)}>
+                                <>
+                                  <span
+                                    style={{
+                                      fontSize: '12px',
+                                      paddingRight: '8px',
+                                      fontWeight: '800',
+                                      borderRadius: '57%',
+                                      backgroundColor: '#FFC4C4',
+                                      padding: '5px 8px',
+                                      marginRight: '15px',
+                                      width: 'maxContent',
+                                    }}
+                                  >
+                                    {output[data.submitted_by].length}
+                                  </span>
+                                  <span style={{ fontSize: '12px' }}>Pending Tests</span>
+                                </>
+                              </Typography>
+                            </Grid>
+                          ) : (
+                            ''
+                          )
+                        ) : (
+                          <Grid
+                            item
                             style={{
-                              fontSize: '12px',
-                              paddingRight: '8px',
-                              fontWeight: '800',
-                              borderRadius: '57%',
-                              backgroundColor: '#FFC4C4',
-                              padding: '5px 8px',
-                              marginRight: '15px',
+                              border: '1px solid #FFC4C4',
+
+                              // border: !dataincoming.hwcwstatus
+                              //   ? '1px solid #FFC4C4'
+                              //   : 'none',
+                              borderRadius: '5px',
+                              color: '#E33535',
+                              padding: '2px 10px',
                               width: 'maxContent',
+                              cursor: 'pointer',
                             }}
                           >
-                            {data.not_submitted_count}
-                          </span>
-                          <span style={{ fontSize: '12px' }}>
-                            Pending {data.not_submitted_count} more Tests
-                          </span>
-                        </Typography>
-                      </Grid>
-                    </TableCell>
-                    <TableCell style={{ paddingRight: '15rem' }}></TableCell>
-                    <TableCell align='right' style={{ color: '#061B2E', height: '22px' }}>
-                      <Grid container direction='row' alignItems='center'>
-                        <Typography
-                          style={{
-                            fontSize: '10px',
-                            paddingRight: '40px',
-                            paddingLeft: '10px',
-                            width: 'maxContent',
-                          }}
-                        >
-                          2 days ago
-                        </Typography>
-                      </Grid>
-                    </TableCell>
-                    <TableCell align='right' style={{ color: '#061B2E', height: '22px' }}>
-                      <Grid container direction='row' alignItems='center'>
-                        <Typography
-                          onClick={handleClickOn}
-                          style={{
-                            fontSize: '12px',
-                            paddingRight: '40px',
-                            paddingLeft: '10px',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                          }}
-                        >
-                          <PictureAsPdfIcon style={{ marginRight: 10 }} />
-                          Files
-                        </Typography>
-                        {/* <Dialog
-                          open={on}
-                          onClose={handleCl}
-                          aria-labelledby='alert-dialog-title'
-                          aria-describedby='alert-dialog-description'
-                        >
-                          {fileData.map((data, index) => {
-                            console.log('Files', data[index]);
-                            console.log('Files1', data);
-                            console.log('K', `${endpoints.lessonPlan.s3erp}`);
-
-                            return (
+                            <Typography onClick={() => handleOpen(index)}>
                               <>
-                                <img
-                                  src={`${endpoints.lessonPlan.s3erp}${data}`}
-                                  alt='random image'
-                                ></img>
+                                <span
+                                  style={{
+                                    fontSize: '12px',
+                                    paddingRight: '8px',
+                                    fontWeight: '800',
+                                    borderRadius: '57%',
+                                    backgroundColor: '#FFC4C4',
+                                    padding: '5px 8px',
+                                    marginRight: '15px',
+                                    width: 'maxContent',
+                                  }}
+                                >
+                                  {data.not_submitted_count}
+                                </span>
+                                <span style={{ fontSize: '12px' }}>
+                                  Pending {data.not_submitted_count} more Tests
+                                </span>
                               </>
-                            );
-                          })} */}
-
-                        {/* <DialogActions>
-                            <Button onClick={handleCl} color='primary' autoFocus>
-                              Close
-                            </Button>
-                          </DialogActions>
-                        </Dialog> */}
-                      </Grid>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              );
-            })}
-          </Table>
-        </TableContainer>
-      </Grid>
+                            </Typography>
+                          </Grid>
+                        )}
+                      </TableCell>
+                      <TableCell style={{ paddingRight: '15rem' }}></TableCell>
+                      <TableCell
+                        align='right'
+                        style={{ color: '#061B2E', height: '22px' }}
+                      >
+                        <Grid container direction='row' alignItems='center'>
+                          {dataincoming?.hwcwstatus ? (
+                            <Typography
+                              style={{
+                                fontSize: '10px',
+                                paddingRight: '40px',
+                                paddingLeft: '10px',
+                                width: 'maxContent',
+                              }}
+                            >
+                              {interval > 30
+                                ? `${Math.trunc(interval / 30)} Month Ago`
+                                : interval > 0
+                                ? `${interval} Days ago`
+                                : 'Today'}
+                            </Typography>
+                          ) : (
+                            <Typography
+                              style={{
+                                fontSize: '10px',
+                                paddingRight: '40px',
+                                paddingLeft: '10px',
+                                width: 'maxContent',
+                              }}
+                            >
+                              {data.not_submitted_list.length > 0
+                                ? data.not_submitted_list[0].date
+                                : ''}
+                            </Typography>
+                          )}
+                        </Grid>
+                      </TableCell>
+                      <TableCell
+                        align='right'
+                        style={{ color: '#061B2E', height: '22px' }}
+                      >
+                        <Grid container direction='row' alignItems='center'>
+                          <Typography
+                            onClick={() => {
+                              const erp = dataincoming?.hwcwstatus
+                                ? data.erp_id
+                                : data.erp;
+                              return handleClickOn(erp, index);
+                            }}
+                            style={{
+                              fontSize: '12px',
+                              paddingRight: '40px',
+                              paddingLeft: '10px',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <PictureAsPdfIcon style={{ marginRight: 10 }} />
+                            Files
+                          </Typography>
+                        </Grid>
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                );
+              })}
+            </Table>
+          </TableContainer>
+        </Grid>
+      )}
       <Dialog
         open={on}
         onClose={handleCl}
@@ -289,7 +439,7 @@ function Submitted({ section, subject, date }) {
         <div
           style={{
             height: '100%',
-            width: '80rem',
+            width: '70rem',
             margin: 'auto',
             display: 'flex',
           }}
@@ -299,26 +449,50 @@ function Submitted({ section, subject, date }) {
               backgroundColor: 'grey',
               height: '400px',
               width: '20%',
+              cursor: 'pointer',
             }}
           >
             <div>
               <p style={{ color: 'white' }}>Click to View</p>
             </div>
-            {fileData.map((file, index) => {
-              const filename = file.split('/')[6];
-              return (
-                <div>
-                  <Card
-                    style={{ display: 'flex' }}
-                    onClick={() => inputImage(`${endpoints.lessonPlan.s3erp}${file}`)}
-                  >
-                    <FileCopyIcon />
-                    <p>{filename}</p>
-                  </Card>
-                </div>
-              );
-              // <div><Card style={{ display: 'flex' }} onClick={setInd(index)}><FileCopyIcon /><p>{file.title}</p></Card></div>)
-            })}
+            {dataincoming && dataincoming?.hwcwstatus
+              ? tableData &&
+                tableData[indexphotos]?.uploaded_file?.map((file, index) => {
+                  const filename = file.split('/')[3];
+
+                  return (
+                    <div>
+                      <Card
+                        style={{ display: 'flex' }}
+                        onClick={() =>
+                          inputImage(`${endpoints.lessonPlan.s3erp}homework/${file}`)
+                        }
+                      >
+                        <FileCopyIcon />
+                        <p>{filename}</p>
+                      </Card>
+                    </div>
+                  );
+                  // <div><Card style={{ display: 'flex' }} onClick={setInd(index)}><FileCopyIcon /><p>{file.title}</p></Card></div>)
+                })
+              : fileData.length &&
+                fileData.map((file, index) => {
+                  const filename = file.split('/')[6];
+                  return (
+                    <div>
+                      <Card
+                        style={{ display: 'flex' }}
+                        onClick={() =>
+                          inputImage(`${endpoints.discussionForum.s3}${file}`)
+                        }
+                      >
+                        <FileCopyIcon />
+                        <p>{filename}</p>
+                      </Card>
+                    </div>
+                  );
+                  // <div><Card style={{ display: 'flex' }} onClick={setInd(index)}><FileCopyIcon /><p>{file.title}</p></Card></div>)
+                })}
           </div>
           <div
             style={{
@@ -330,13 +504,19 @@ function Submitted({ section, subject, date }) {
             }}
           >
             <img src='' ref={inputRef}></img>
+            {/* <img src='https://d3ka3pry54wyko.cloudfront.net/0/None/2022-03-25 14:01:45.279983/Screenshot 2022-03-15 at 11.21.00 AM.png'></img> */}
           </div>
         </div>
       </Dialog>
-      {open && (
+      {tableData && tableData?.length === 0 ? (
+        <div style={{ height: 400, margin: 'auto', marginTop: '70px' }}>
+          <NoFilterData data={'No Data Found'} />
+        </div>
+      ) : (
         <ModalSubmitted
-          index1={tableIndex}
+          index1={dataincoming?.hwcwstatus}
           row={tableData[popup]}
+          col={pendingData}
           open={open}
           handleClose={handleClose}
         />
