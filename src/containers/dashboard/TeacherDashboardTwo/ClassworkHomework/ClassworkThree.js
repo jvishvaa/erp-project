@@ -19,7 +19,7 @@ import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2'
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
-
+import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
 
 import { useHistory } from 'react-router-dom';
 export const FilterContext = createContext();
@@ -177,8 +177,7 @@ function ClassworkThree(props) {
   const [rowSubject, setrowSubject] = useState();
   const [rowSection, setRowSection] = useState();
   const [updatedGrade, setUpdatedGrade] = useState('red');
-  const [subjectmappingId, setSubjectmappingId] = useState(null)
-
+  const [subjectmappingId, setSubjectmappingId] = useState(null);
 
   const [urlhwId, seturlhwID] = useState(
     props?.history?.location?.state?.detail?.homework_id
@@ -191,8 +190,6 @@ function ClassworkThree(props) {
   // const [filteredSection, setFilteredSection] = useState('');
   // const [filteredSubject, setFilteredSubject] = useState('');
   // const [filteredDate, setFilteredDate] = useState('');
-
-
 
   const [status, setStatus] = useState({
     pending: false,
@@ -210,17 +207,16 @@ function ClassworkThree(props) {
   };
   const dataincoming = props?.history?.location?.state;
 
-
   const handleBranch = () => {
     // setGradeList([]);
     // setSelectedSection([]);
     // setSelectedSubject([]);
     callApi(
-      `${endpoints.academics.grades
+      `${
+        endpoints.academics.grades
       }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&module_id=${2}`,
       'gradeList'
     );
-
   };
 
   const handleGrade = (event = {}, value = []) => {
@@ -231,13 +227,12 @@ function ClassworkThree(props) {
     setSelectedGradeIds(selectedId);
 
     callApi(
-      `${endpoints.academics.sections
+      `${
+        endpoints.academics.sections
       }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&grade_id=${selectedId?.toString()}&module_id=${2}`,
       'section'
     );
   };
-
-
 
   const handleSection = (event = {}, value = []) => {
     // setSectionList([])
@@ -254,7 +249,8 @@ function ClassworkThree(props) {
       setSelectedSection(value);
       setSelectedSectionIds(selectedsecctionId);
       callApi(
-        `${endpoints.academics.subjects
+        `${
+          endpoints.academics.subjects
         }?session_year=${sessionYearIDDDD}&branch=${databranch}&grade=${selectedGradeIds?.toString()}&section=${selectedsecctionId.toString()}&module_id=${2}`,
         'subject'
       );
@@ -266,17 +262,15 @@ function ClassworkThree(props) {
     }
   };
 
-
   const handleSubject = (event = {}, value = []) => {
     setSelectedSubject(value);
 
     setSubjectId(value?.subject__id);
     setSubjectmappingId(value?.id);
-    setSubjectChangedfilterOn(true)
+    setSubjectChangedfilterOn(true);
     // pendingInfo();
     // pendingDetails(sectionId, value?.subject__id, periodDate);
   };
-
 
   function callApi(api, key) {
     axiosInstance
@@ -315,10 +309,14 @@ function ClassworkThree(props) {
   // };
   const dateUpdatefun = (event) => {
     setDefaultDate(event.target.value);
-
   };
 
-  const datapass = { selectedSectionIds, subjectChangedfilterOn, subjectmappingId, defaultdate }
+  const datapass = {
+    selectedSectionIds,
+    subjectChangedfilterOn,
+    subjectmappingId,
+    defaultdate,
+  };
 
   const displayDetails = () => {
     return (
@@ -364,7 +362,6 @@ function ClassworkThree(props) {
 
   useEffect(() => {
     displayDetails();
-
   }, [sectionId, selectedSectionIds, defaultdate, selectedGradeIds]);
 
   const classWorkTotal = classworkData[0]?.classwork_details?.total;
@@ -390,6 +387,10 @@ function ClassworkThree(props) {
             )
           }
         />
+        <KeyboardBackspaceIcon
+          style={{ cursor: 'pointer', marginLeft: 40 }}
+          onClick={() => history.goBack()}
+        />
         <Grid
           xs={12}
           container
@@ -414,7 +415,6 @@ function ClassworkThree(props) {
               />
             </Grid>
             <Grid item xs={12} md={3} spacing={2}>
-
               <Autocomplete
                 id='combo-box-demo'
                 size='small'
@@ -453,8 +453,6 @@ function ClassworkThree(props) {
               defaultValue={defaultdate}
               value={defaultdate || moment().format('YYYY-MM-DD')}
               onChange={dateUpdatefun}
-
-
               className={classes.textField}
               InputLabelProps={{
                 shrink: true,
@@ -508,21 +506,56 @@ function ClassworkThree(props) {
               /> */}
             </Grid>
             <Grid item>
-              <Grid container justifyContent='center' alignItems='center' style={{ padding: '12px' }}>
+              <Grid
+                container
+                justifyContent='center'
+                alignItems='center'
+                style={{ padding: '12px' }}
+              >
                 <Grid item>
                   <Typography style={{ fontSize: '12px', paddingRight: '15px' }}>
                     Actions:{' '}
                   </Typography>
                 </Grid>
-                <Grid item className={classes.pending} onClick={pendingClick} style={{ backgroundColor: status.pending ? '#4093D4' : 'white', color: !status.pending ? '#4093D4' : 'white', padding: '8px' }}>
+                <Grid
+                  item
+                  className={classes.pending}
+                  onClick={pendingClick}
+                  style={{
+                    backgroundColor: status.pending ? '#4093D4' : 'white',
+                    color: !status.pending ? '#4093D4' : 'white',
+                    padding: '8px',
+                  }}
+                >
                   <span style={{ fontSize: '14px', padding: '5px' }}>Pending</span>
                 </Grid>
-                <Grid item className={classes.pending} onClick={submittedClick} style={{ backgroundColor: status.submitted ? '#4093D4' : 'white', color: !status.submitted ? '#4093D4' : 'white', padding: '8px' }}>
+                <Grid
+                  item
+                  className={classes.pending}
+                  onClick={submittedClick}
+                  style={{
+                    backgroundColor: status.submitted ? '#4093D4' : 'white',
+                    color: !status.submitted ? '#4093D4' : 'white',
+                    padding: '8px',
+                  }}
+                >
                   <span style={{ fontSize: '14px', padding: '5px' }}>Submitted</span>
                 </Grid>
                 {dataincoming?.hwcwstatus && (
-                  <Grid item className={classes.pending} onClick={remarksClick} style={{ backgroundColor: status.remarks ? '#4093D4' : 'white', color: !status.remarks ? '#4093D4' : 'white', padding: '8px' }}>
-                    <span style={{ fontSize: '14px', padding: '5px' }}> Remark and Score</span>
+                  <Grid
+                    item
+                    className={classes.pending}
+                    onClick={remarksClick}
+                    style={{
+                      backgroundColor: status.remarks ? '#4093D4' : 'white',
+                      color: !status.remarks ? '#4093D4' : 'white',
+                      padding: '8px',
+                    }}
+                  >
+                    <span style={{ fontSize: '14px', padding: '5px' }}>
+                      {' '}
+                      Remark and Score
+                    </span>
                   </Grid>
                 )}
               </Grid>
@@ -530,7 +563,6 @@ function ClassworkThree(props) {
           </Grid>
 
           {displayDetails()}
-
         </Grid>
         {/* </dataPropsContext.Provider> */}
       </>

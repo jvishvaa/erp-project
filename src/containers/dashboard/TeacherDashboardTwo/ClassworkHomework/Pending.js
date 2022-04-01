@@ -20,9 +20,8 @@ import TableRow from '@material-ui/core/TableRow';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import NoFilterData from 'components/noFilteredData/noFilterData';
 import Pagination from 'components/PaginationComponent';
-import { FilterContext } from './ClassworkThree'
+import { FilterContext } from './ClassworkThree';
 // import { dataPropsContext } from './Details';
-
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -52,24 +51,22 @@ function Pending(props) {
   const classes = useStyles();
   const dataincoming = props.dataincoming;
 
-
-  const { selectedSectionIds, subjectChangedfilterOn, subjectmappingId, defaultdate } = useContext(FilterContext)
+  const {
+    selectedSectionIds,
+    subjectChangedfilterOn,
+    subjectmappingId,
+    defaultdate,
+  } = useContext(FilterContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
-
-
 
   // let output = {};
   const pendingList = () => {
     if (dataincoming?.hwcwstatus) {
       axios
         .get(
-          // `${endpoints.teacherDashboard.submittedHWalldata}?homework=1163&period_id=421`,
-          (subjectChangedfilterOn)
-            ?
-            `${endpoints.teacherDashboard.submittedHWalldata}?subject_mapping_id=${subjectmappingId}&date=${props?.Date2}`
-            :
-            `${endpoints.teacherDashboard.submittedHWalldata}?homework=${props?.dataincoming?.detail?.homework_id}&period_id=${props?.dataincoming?.detail?.period_id}`,
-          // `${endpoints.teacherDashboard.submittedHWalldata}?homework=${urlhwId}&period_id=${urlperiodId}`,
+          subjectChangedfilterOn
+            ? `${endpoints.teacherDashboard.submittedHWalldata}?subject_mapping_id=${subjectmappingId}&date=${props?.Date2}`
+            : `${endpoints.teacherDashboard.submittedHWalldata}?homework=${props?.dataincoming?.detail?.homework_id}&period_id=${props?.dataincoming?.detail?.period_id}`,
           {
             headers: {
               'X-DTS-HOST': window.location.host,
@@ -79,7 +76,6 @@ function Pending(props) {
           }
         )
         .then((result) => {
-
           if (result?.data?.un_submitted_list)
             setTableData(result?.data?.un_submitted_list);
           popUpList();
@@ -94,15 +90,13 @@ function Pending(props) {
     } else {
       axios
         .get(
-          // `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=2&subject=9&date=2022-02-01`,
-          (subjectChangedfilterOn)
-            ?
-            `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${selectedSectionIds}&subject=${subjectmappingId}&date=${props?.Date2}`
-            :
-            `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${Number(
-              props?.dataincoming?.detail?.section_mapping
-            )}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date
-            }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
+          subjectChangedfilterOn
+            ? `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${selectedSectionIds}&subject=${subjectmappingId}&date=${props?.Date2}`
+            : `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${Number(
+                props?.dataincoming?.detail?.section_mapping
+              )}&subject=${props?.subjectId2}&date=${
+                props?.dataincoming?.detail?.date
+              }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
           {
             headers: {
               'X-DTS-HOST': window.location.host,
@@ -114,8 +108,6 @@ function Pending(props) {
         .then((result) => {
           setTableData(result?.data?.result?.result);
           setIndex(result?.data?.result?.total_students);
-
-
         })
         .catch((error) => {
           // setAlert('error', error?.message);
@@ -126,14 +118,11 @@ function Pending(props) {
   const popUpList = () => {
     axios
       .get(
-        // `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=2&subject=9&date=2022-02-01`,
-        (subjectChangedfilterOn)
-          ?
-          `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${selectedSectionIds}&subject=${subjectmappingId}&date=${props?.Date2}`
-          :
-          `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${Number(
-            props?.dataincoming?.detail?.section_mapping_id
-          )}&subject=${props?.subjectId2}&date=${props?.Date2}`,
+        subjectChangedfilterOn
+          ? `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${selectedSectionIds}&subject=${subjectmappingId}&date=${props?.Date2}`
+          : `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${Number(
+              props?.dataincoming?.detail?.section_mapping_id
+            )}&subject=${props?.subjectId2}&date=${props?.Date2}`,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
@@ -143,7 +132,6 @@ function Pending(props) {
         }
       )
       .then((result) => {
-
         setModalData(result?.data?.result);
         // setIdMain(result?.data?.result?.id);
         // popUpListData(result?.data?.result?.id);
@@ -156,26 +144,21 @@ function Pending(props) {
   };
 
   const parsedData = (data) => {
-
     const obj = {};
     data.forEach((item) => {
       obj[item.id] = item;
     });
     setOutput(obj);
-
   };
 
   const popUpListData = (id) => {
     axios
       .get(
-        // `${endpoints.teacherDashboard.HWPendingData}?section_mapping=859&erp_id=${id}&date=2022-03-23`,
-        (subjectChangedfilterOn)
-          ?
-          `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${selectedSectionIds}&erp_id=${id}&date=${props?.Date2}`
-          :
-          `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${Number(
-            props?.dataincoming?.detail?.section_mapping
-          )}&erp_id=${id}&date=${props?.Date2}`,
+        subjectChangedfilterOn
+          ? `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${selectedSectionIds}&erp_id=${id}&date=${props?.Date2}`
+          : `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${Number(
+              props?.dataincoming?.detail?.section_mapping
+            )}&erp_id=${id}&date=${props?.Date2}`,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
@@ -185,7 +168,6 @@ function Pending(props) {
         }
       )
       .then((result) => {
-
         setDataLast(result?.data?.result);
         // setPopup(modalData);
         // setIndex(result?.data?.result?.total_students);
@@ -201,7 +183,6 @@ function Pending(props) {
   }, [props?.Date2, defaultdate, subjectmappingId]);
 
   const handleOpen = (data) => {
-
     if (dataincoming?.hwcwstatus) {
       popUpListData(data);
       setOpen(true);
@@ -218,8 +199,6 @@ function Pending(props) {
   const handleClose = () => {
     setOpen(false);
   };
-
-
 
   return (
     <>
@@ -251,13 +230,12 @@ function Pending(props) {
         .filter((tempData) => tempData.document_type)
         .map((tabs, i) => { */}
               {tableData?.map((data, index) => {
-
                 return (
                   <TableBody>
                     <TableRow
                       // key=bonnie
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    // onClick={assessmentHandler}
+                      // onClick={assessmentHandler}
                     >
                       <TableCell
                         style={{ display: 'flex', justifyContent: 'flex-start' }}
