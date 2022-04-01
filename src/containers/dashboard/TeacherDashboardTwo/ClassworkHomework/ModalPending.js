@@ -11,6 +11,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import moment from 'moment';
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: 345,
@@ -42,7 +43,6 @@ function ModalPending(props) {
     <div>
       <div>
         <div>
-
           <Dialog
             open={props?.open}
             onClose={props?.handleClose}
@@ -104,40 +104,41 @@ function ModalPending(props) {
 
                 {props?.index1
                   ? props?.col?.map((data) => {
-
-                    return (
-                      <>
-                        <div
-                          style={{ display: 'flex', borderBottom: '1px solid #E8E8E8' }}
-                        >
-                          <div style={{ width: 20 }}>
-                            {/* <p style={{ fontSize: 'small' }}>{row?.not_submitted_list[0].title_name}</p> */}
-                            <p style={{ fontSize: 'small' }}>{data.homework_name}</p>
+                      return (
+                        <>
+                          <div
+                            style={{ display: 'flex', borderBottom: '1px solid #E8E8E8' }}
+                          >
+                            <div style={{ width: 20 }}>
+                              {/* <p style={{ fontSize: 'small' }}>{row?.not_submitted_list[0].title_name}</p> */}
+                              <p style={{ fontSize: 'small' }}>{data.homework_name}</p>
+                            </div>
+                            <div style={{ marginLeft: '120px' }}>
+                              <p style={{ fontSize: 'small' }}>
+                                {moment(data.uploaded_at).format('DD-MM-YYYY')}
+                              </p>
+                            </div>
                           </div>
-                          <div style={{ marginLeft: '120px' }}>
-                            <p style={{ fontSize: 'small' }}>{data.uploaded_at}</p>
-                          </div>
-                        </div>
-                      </>
-                    );
-                  })
+                        </>
+                      );
+                    })
                   : props?.row?.not_submitted_list.map((data) => {
-                    return (
-                      <>
-                        <div
-                          style={{ display: 'flex', borderBottom: '1px solid #E8E8E8' }}
-                        >
-                          <div style={{ width: 20 }}>
-                            {/* <p style={{ fontSize: 'small' }}>{row?.not_submitted_list[0].title_name}</p> */}
-                            <p style={{ fontSize: 'small' }}>{data.title_name}</p>
+                      return (
+                        <>
+                          <div
+                            style={{ display: 'flex', borderBottom: '1px solid #E8E8E8' }}
+                          >
+                            <div style={{ width: 20 }}>
+                              {/* <p style={{ fontSize: 'small' }}>{row?.not_submitted_list[0].title_name}</p> */}
+                              <p style={{ fontSize: 'small' }}>{data.title_name}</p>
+                            </div>
+                            <div style={{ marginLeft: '120px' }}>
+                              <p style={{ fontSize: 'small' }}>{data.date}</p>
+                            </div>
                           </div>
-                          <div style={{ marginLeft: '120px' }}>
-                            <p style={{ fontSize: 'small' }}>{data.date}</p>
-                          </div>
-                        </div>
-                      </>
-                    );
-                  })}
+                        </>
+                      );
+                    })}
               </DialogContentText>
             </DialogContent>
           </Dialog>
