@@ -16,8 +16,8 @@ import DNDFileUpload from '../../../../../components/dnd-file-upload';
 import { handleDownloadExcel } from '../../../../../utility-functions';
 
 const termsList = [
-  { id: '1', semester: 'Semester I' },
-  // { id: '2', semester: 'Semester II' },
+  // { id: '1', semester: 'Semester I' },
+  { id: '2', semester: 'Semester II' },
   // { id: '3', semester: 'Semester III' },
   // { id: '4', semester: 'Semester IV' },
 ];
@@ -251,7 +251,7 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
         section: [],
         subject: [],
       }));
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const fetchGrades = async (branchId) => {
@@ -263,28 +263,28 @@ const MarksUpload = ({ setLoading, isMobile, widerWidth }) => {
         section: [],
         subject: [],
       }));
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const fetchSection = async (branchId, gradeId) => {
     try {
       const section = await getSection(moduleId, academicYearId, branchId, gradeId);
       setDropdownData((prev) => ({ ...prev, section }));
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const fetchSubject = async (branchId, gradeId) => {
     try {
       const subject = await getSubject(moduleId, academicYearId, branchId, gradeId);
       setDropdownData((prev) => ({ ...prev, subject }));
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const fetchPersonalityTraits = async () => {
     try {
       const traits = await getPersonalityTraits();
       setDropdownData((prev) => ({ ...prev, traits }));
-    } catch (err) {}
+    } catch (err) { }
   };
 
   const handleBranch = (event, branch) => {
