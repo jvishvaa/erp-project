@@ -19,22 +19,22 @@ const getSubjectWiseMarks = (marks, categoryKeys) => {
 const generateSemesterMarks = (subjectWiseMarks, categoryKeys, isAirVisible = true) => {
   return isAirVisible
     ? Object.values(subjectWiseMarks).map(
-        ({ air = '', grade = '', osr = '', total = '', marks = {} }) => [
-          ...getSubjectWiseMarks(marks, categoryKeys),
-          total,
-          grade,
-          osr,
-          air,
-        ]
-      )
+      ({ air = '', grade = '', osr = '', total = '', marks = {} }) => [
+        ...getSubjectWiseMarks(marks, categoryKeys),
+        total,
+        grade,
+        osr,
+        air,
+      ]
+    )
     : Object.values(subjectWiseMarks).map(
-        ({ grade = '', osr = '', total = '', marks = {} }) => [
-          ...getSubjectWiseMarks(marks, categoryKeys),
-          total,
-          grade,
-          osr,
-        ]
-      );
+      ({ grade = '', osr = '', total = '', marks = {} }) => [
+        ...getSubjectWiseMarks(marks, categoryKeys),
+        total,
+        grade,
+        osr,
+      ]
+    );
 };
 
 const generateCategoryRowLength = (scholastic, coScholastic) => {
@@ -48,8 +48,8 @@ const generateCategoryRowLength = (scholastic, coScholastic) => {
     scholasticCategoryMapLength === coScholasticCategoryMapLength
       ? scholasticCategoryMapLength
       : scholasticCategoryMapLength > coScholasticCategoryMapLength
-      ? scholasticCategoryMapLength - coScholasticCategoryMapLength
-      : coScholasticCategoryMapLength - scholasticCategoryMapLength;
+        ? scholasticCategoryMapLength - coScholasticCategoryMapLength
+        : coScholasticCategoryMapLength - scholasticCategoryMapLength;
 
   return categoryRowLength || 1;
 };
@@ -154,7 +154,35 @@ const generateSemesterOneTwo = (termDetails) => {
 
   return { semesterOne, semesterTwo };
 };
+// const generateAnnualReport = (annualDetails = {}) => {
+//   const transformedAnnualDetails = Object.values(annualDetails).map(
+//     ({
+//       annual_grade: annualGrade = '',
+//       subject_annual_marks: subjectAnnualMarks = {},
+//       annual_total: annualTotal = '',
+//     }) => ({
+//       annualGrade,
+//       subjectAnnualMarks,
+//       annualTotal
+//     })
+//   );
+//   const [annualFinalDetail = {}] = transformedAnnualDetails || [];
 
+//   return { annualFinalDetail };
+// }
+
+const generateAnnualDetails = (subject_annual_marks) => {
+  if (subject_annual_marks) {
+    return Object.values(subject_annual_marks).map(
+      ({ annual_total_subject_marks = '', annual_subject_grade = '', annual_subject_osr = '', annual_subject_air = '' }) => [
+        annual_total_subject_marks,
+        annual_subject_grade,
+        annual_subject_osr,
+        annual_subject_air,
+      ]
+    )
+  }
+}
 /*transforming categoryMap as per usage*/
 const generateCategoryMap = (categoryMap = {}, isAirVisible = true) => {
   const transformedCategoryType = Object.entries(categoryMap).map(
@@ -210,11 +238,12 @@ const generateCategoryMap = (categoryMap = {}, isAirVisible = true) => {
 };
 
 /*transforming termDetails as per usage*/
-const generateTermDetails = (termDetails, categoryKeys, isAirVisible = true) => {
+const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisible = true) => {
   const { semesterOne = {}, semesterTwo = {} } = generateSemesterOneTwo(termDetails);
+  // const { annualFinalDetail = {} } = generateAnnualReport(annualDetails)
   const { subjectMarks: subjectMarksSemesterOne = {} } = semesterOne || {};
   const { subjectMarks: subjectMarksSemesterTwo = {} } = semesterTwo || {};
-
+  // const { subjectAnnualMarks: subjectAnnualMarks = {} } = annualFinalDetail || {};
   let subjectsList = Object.keys(subjectMarksSemesterOne);
   let semesterOneSubjectWiseMarks = generateSemesterMarks(
     subjectMarksSemesterOne,
@@ -226,8 +255,19 @@ const generateTermDetails = (termDetails, categoryKeys, isAirVisible = true) => 
     categoryKeys,
     isAirVisible
   );
-
+  // let semesterFinalSubjectWiseMarks = generateSemesterMarks(
+  //   subjectAnnualMarks,
+  //   categoryKeys,
+  //   isAirVisible
+  // );
+  const subjectAnnMarks = annualDetails?.subject_annual_marks || {};
+  const annualData = generateAnnualDetails(subjectAnnMarks)
+  let isAnnualData;
+  if (annualData) {
+    isAnnualData = annualData;
+  }
   const semOneLength = semesterOneSubjectWiseMarks?.length || 0;
+  const finalAnnResult = isAnnualData?.length || 0;
   const semTwoLength = semesterTwoSubjectWiseMarks?.length || 0;
   //To check if semester 2 is not present and if present the number of subjects are not equal
   if (semOneLength !== semTwoLength) {
@@ -240,30 +280,52 @@ const generateTermDetails = (termDetails, categoryKeys, isAirVisible = true) => 
         ...semesterTwoSubjectWiseMarks,
         ...transformedSemTwo,
       ];
-    } else {
+    }
+    if (finalAnnResult !== semOneLength) {
+      if (semOneLength > finalAnnResult) {
+        const diff = semOneLength - finalAnnResult;
+        let transformedAnn = Array.from({ length: diff }, () =>
+          Array.from({ length: 4 }, () => null)
+        );
+        isAnnualData = [
+          ...isAnnualData,
+          ...transformedAnn,
+        ]
+      }
+    }
+    else {
       //Logic need to be written if required
     }
   }
-  //
   //Joining rows of both sems
   const semesterMarks = isAirVisible
     ? semesterOneSubjectWiseMarks.map((semesterOneSubject, index) => [
-        subjectsList[index],
-        ...semesterOneSubject,
-        ...semesterTwoSubjectWiseMarks[index],
-        '', // (T1+T2)/2
-        '', // Annual Grade
-        '', // Annual OSR
-        '', // Annual AIR
-      ])
+      subjectsList[index],
+      ...semesterOneSubject,
+      ...semesterTwoSubjectWiseMarks[index],
+      ...isAnnualData[index]
+      // annualData ? annualData[index][0] : '',
+      // annualData ? annualData[index][1] : '',
+      // annualData ? annualData[index][2] : '',
+      // annualData ? annualData[index][3] : '',
+      // '', // (T1+T2)/2
+      // '', // Annual Grade
+      // '', // Annual OSR
+      // '', // Annual AIR
+    ])
     : semesterOneSubjectWiseMarks.map((semesterOneSubject, index) => [
-        subjectsList[index],
-        ...semesterOneSubject,
-        ...semesterTwoSubjectWiseMarks[index],
-        '', // (T1+T2)/2
-        '', // Annual Grade
-        '', // Annual OSR
-      ]);
+      subjectsList[index],
+      ...semesterOneSubject,
+      ...semesterTwoSubjectWiseMarks[index],
+      ...isAnnualData[index]
+      // annualData ? annualData[index] : '',
+      // annualData ? annualData[index] : '',
+      // annualData ? annualData[index] : '',
+      // annualData ? annualData[index] : '',
+      // '', // (T1+T2)/2
+      // '', // Annual Grade
+      // '', // Annual OSR
+    ]);
 
   return semesterMarks;
 };
@@ -327,6 +389,7 @@ const getTableHeaderRow = (tableType, categoryRowLength, isAirVisible = true) =>
 
 const generateTermDetailsSummaryRow = (
   termDetails,
+  annualDetails,
   categoryRowLength,
   isAirVisible = true
 ) => {
@@ -345,48 +408,48 @@ const generateTermDetailsSummaryRow = (
 
   return isAirVisible
     ? [
-        { value: 'Total' },
-        {
-          value: outOfTotalSemOne ? `Out of ${outOfTotalSemOne}` : '',
-          colSpan: categoryRowLength,
-        },
-        { value: totalMarksSemOne },
-        { value: finalGradeSemOne },
-        { value: '' }, //total sem-1 marks
-        { value: '' }, //total sem-1 grade
-        {
-          value: outOfTotalSemTwo ? `Out of ${outOfTotalSemTwo}` : '',
-          colSpan: categoryRowLength,
-        },
-        { value: totalMarksSemTwo },
-        { value: finalGradeSemTwo },
-        { value: '' }, //total sem-2 marks
-        { value: '' }, //total sem-2 grade
-        { value: '' },
-        { value: '' },
-        { value: '' },
-        { value: '' },
-      ]
+      { value: 'Total' },
+      {
+        value: outOfTotalSemOne ? `Out of ${outOfTotalSemOne}` : '',
+        colSpan: categoryRowLength,
+      },
+      { value: totalMarksSemOne },
+      { value: finalGradeSemOne },
+      { value: '' }, //total sem-1 marks
+      { value: '' }, //total sem-1 grade
+      {
+        value: outOfTotalSemTwo ? `Out of ${outOfTotalSemTwo}` : '',
+        colSpan: categoryRowLength,
+      },
+      { value: totalMarksSemTwo },
+      { value: finalGradeSemTwo },
+      { value: '' }, //total sem-2 marks
+      { value: '' }, //total sem-2 grade
+      { value: annualDetails?.annual_total },
+      { value: annualDetails?.annual_grade },
+      { value: '' },
+      { value: '' },
+    ]
     : [
-        { value: 'Total' },
-        {
-          value: outOfTotalSemOne ? `Out of ${outOfTotalSemOne}` : '',
-          colSpan: categoryRowLength,
-        },
-        { value: totalMarksSemOne },
-        { value: finalGradeSemOne },
-        { value: '' }, //total sem-1 marks
-        {
-          value: outOfTotalSemTwo ? `Out of ${outOfTotalSemTwo}` : '',
-          colSpan: categoryRowLength,
-        },
-        { value: totalMarksSemTwo },
-        { value: finalGradeSemTwo },
-        { value: '' }, //total sem-2 marks
-        { value: '' },
-        { value: '' },
-        { value: '' },
-      ];
+      { value: 'Total' },
+      {
+        value: outOfTotalSemOne ? `Out of ${outOfTotalSemOne}` : '',
+        colSpan: categoryRowLength,
+      },
+      { value: totalMarksSemOne },
+      { value: finalGradeSemOne },
+      { value: '' }, //total sem-1 marks
+      {
+        value: outOfTotalSemTwo ? `Out of ${outOfTotalSemTwo}` : '',
+        colSpan: categoryRowLength,
+      },
+      { value: totalMarksSemTwo },
+      { value: finalGradeSemTwo },
+      { value: '' }, //total sem-2 marks
+      { value: '' },
+      { value: '' },
+      { value: '' },
+    ];
 };
 
 const getOverallRemark = (termDetails) => {
@@ -406,14 +469,16 @@ const generateObservationTableHeaders = (traits = {}) => {
 const generatePersonalityTraits = (scholastic, coScholastic) => {
   const scholasticTermDetails = scholastic['term_details'] || [];
   const coScholasticTermDetails = coScholastic['term_details'] || [];
-
+  const annualCoScholasticTermDetails = coScholastic['annual_details'] || [];
+  const annualScholasticTermDetails = scholastic['annual_details'] || [];
   const categoryRowLength = generateCategoryRowLength(scholastic, coScholastic);
 
   const { semesterOne: scholasticSemOne = {}, semesterTwo: scholasticSemTwo = {} } =
     generateSemesterOneTwo(scholasticTermDetails);
   const { semesterOne: coScholasticSemOne = {}, semesterTwo: coScholasticSemTwo = {} } =
     generateSemesterOneTwo(coScholasticTermDetails);
-
+  const { trait_data: traitAnnual = {} } = annualCoScholasticTermDetails || {};
+  const { trait_data: traitAnnualData = {} } = annualScholasticTermDetails || {};
   const { traitData: scholasticSemOneTraitData = [] } = scholasticSemOne || {};
   const { traitData: scholasticSemTwoTraitData = [] } = scholasticSemTwo || {};
   const { traitData: coScholasticSemOneTraitData = [] } = coScholasticSemOne || {};
@@ -428,7 +493,9 @@ const generatePersonalityTraits = (scholastic, coScholastic) => {
     scholasticSemTwoTraitData.length >= coScholasticSemTwoTraitData.length
       ? scholasticSemTwoTraitData
       : coScholasticSemTwoTraitData;
-
+  const annualTrait =
+    traitAnnual.length >= traitAnnualData.length
+      ? traitAnnual : traitAnnualData;
   const maxLength =
     semOneTrait.length >= semTwoTrait.length ? semOneTrait.length : semTwoTrait.length;
 
@@ -437,7 +504,7 @@ const generatePersonalityTraits = (scholastic, coScholastic) => {
     { value: semOneTrait?.[index]?.['trait_grade'] || '', colspan: 1 },
     { value: semTwoTrait?.[index]?.['trait_name'] || '', colspan: 4 + categoryRowLength },
     { value: semTwoTrait?.[index]?.['trait_grade'] || '', colspan: 1 },
-    { value: '', colspan: 3 },
+    { value: annualTrait?.[index]?.['trait_grade'] || '', colspan: 3 }
   ]);
 
   personalityTraits.unshift([

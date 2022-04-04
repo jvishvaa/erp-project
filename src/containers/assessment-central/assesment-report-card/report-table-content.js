@@ -46,6 +46,7 @@ const ReportTableContent = (props) => {
     category_map_list: categoryMapList = [],
     category_map: categoryMap = {},
     term_details: termDetails = {},
+    annual_details: annualDetails = {},
     grade_scale: gradeScale = {},
   } = Data || {};
 
@@ -58,10 +59,10 @@ const ReportTableContent = (props) => {
   } = generateCategoryMap(categoryMap, isAirVisible) || {};
 
   const semesterMarks =
-    generateTermDetails(termDetails, categoryKeys, isAirVisible) || [];
+    generateTermDetails(termDetails, annualDetails, categoryKeys, isAirVisible) || [];
 
   const termDetailsSummary =
-    generateTermDetailsSummaryRow(termDetails, categoryRow?.length, isAirVisible) || [];
+    generateTermDetailsSummaryRow(termDetails, annualDetails, categoryRow?.length, isAirVisible) || [];
 
   const tableHeaderRow = getTableHeaderRow(TableType, categoryRow?.length, isAirVisible);
   const totalColspan = tableHeaderRow.reduce(
