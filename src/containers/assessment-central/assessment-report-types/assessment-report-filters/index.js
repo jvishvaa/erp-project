@@ -23,8 +23,9 @@ import { handleDownloadPdf } from '../../../../../src/utility-functions';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
+import apiRequest from 'containers/dashboard/StudentDashboard/config/apiRequest';
 import Weeklyassesmentreport from '../student-report/weekly-quiz-performnace';
-
+import Loading from '../../../../components/loader/loader'
 let url = '';
 const AssessmentReportFilters = ({
   widerWidth,
@@ -38,7 +39,6 @@ const AssessmentReportFilters = ({
   setPage,
   setSelectedERP,
   pageSize,
-  setLoading,
   setIsPreview,
   setReportCardData,
   filterData,
@@ -51,7 +51,7 @@ const AssessmentReportFilters = ({
   );
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
-
+  const [previewButton, setPreviewButton] = useState(false);
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [dropdownData, setDropdownData] = useState({
@@ -64,6 +64,7 @@ const AssessmentReportFilters = ({
     topic: [],
     erp: [],
   });
+  const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(null);
   const [mappingList, setMappingList] = useState([]);
   const [downloadTestId, setDownloadTestId] = useState(null);
@@ -130,16 +131,22 @@ const AssessmentReportFilters = ({
   }, [selectedReportType?.id, moduleId]);
 
   const fetchReportCardData = (params) => {
-    axiosInstance
-      .get(`${endpoints.assessmentReportTypes.reportCardData}${params}`)
+    setLoading(true);
+    apiRequest('get', `${endpoints.assessmentReportTypes.reportCardData}${params}`, null, null, false, 10000)
       .then((result) => {
         if (result?.data?.status === 200) {
           setReportCardData(result?.data?.result);
           setIsPreview(true);
+          setPreviewButton(true);
+          setLoading(false);
         }
         setLoading(false);
       })
-      .catch((error) => { });
+
+      .catch((error) => {
+        setAlert('error', "Error While Fetching Report Card")
+        setLoading(false);
+      });
   };
 
   const handleDateChange = (name, date) => {
@@ -774,6 +781,7 @@ const AssessmentReportFilters = ({
           margin: isMobile ? '10px 0px -10px 0px' : '-20px 0px 20px 8px',
         }}
       >
+        {loading ? <Loading message='Please Wait While Report Card is Being Generated...' /> : null}
         {selectedReportType?.id !== 11 && (
           <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
             <Autocomplete
@@ -1188,6 +1196,7 @@ const AssessmentReportFilters = ({
               variant='contained'
               size='medium'
               color='primary'
+              disabled={loading}
               style={{ color: 'white', width: '100%' }}
               onClick={
                 selectedReportType?.id === 5
@@ -1223,7 +1232,7 @@ const AssessmentReportFilters = ({
             <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
               <Box style={{ display: 'flex', justifyContent: 'space-around' }}>
                 <CircularProgress size={26} thickness={4} />
-                <Typography color='secondary'>Fetching ERP's</Typography>
+                <Typography color='secondary'>Fetching Details</Typography>
               </Box>
             </Grid>
           )}
