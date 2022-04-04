@@ -214,7 +214,7 @@ function Remarks(props) {
                             width: 'maxContent',
                           }}
                         >
-                          <Typography>''</Typography>
+                          <Typography></Typography>
                         </Grid>
                       </TableCell>
                       <TableCell style={{ paddingRight: '15rem' }}></TableCell>
