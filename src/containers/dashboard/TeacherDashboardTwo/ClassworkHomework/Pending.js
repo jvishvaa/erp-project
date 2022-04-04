@@ -90,13 +90,14 @@ function Pending(props) {
     } else {
       axios
         .get(
-          subjectChangedfilterOn
-            ? `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${selectedSectionIds}&subject=${subjectmappingId}&date=${props?.Date2}`
-            : `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${Number(
-                props?.dataincoming?.detail?.section_mapping
-              )}&subject=${props?.subjectId2}&date=${
-                props?.dataincoming?.detail?.date
-              }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
+          (subjectChangedfilterOn)
+            ?
+            `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&date=${props?.Date2}`
+            :
+            `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${Number(
+              props?.dataincoming?.detail?.section_mapping
+            )}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date
+            }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
           {
             headers: {
               'X-DTS-HOST': window.location.host,
@@ -106,8 +107,12 @@ function Pending(props) {
           }
         )
         .then((result) => {
-          setTableData(result?.data?.result?.result);
-          setIndex(result?.data?.result?.total_students);
+          if (result?.data?.status_code === 200) {
+            setTableData(result?.data?.result?.result);
+            setIndex(result?.data?.result?.total_students);
+          } else {
+            setTableData([]);
+          }
         })
         .catch((error) => {
           // setAlert('error', error?.message);
@@ -118,11 +123,13 @@ function Pending(props) {
   const popUpList = () => {
     axios
       .get(
-        subjectChangedfilterOn
-          ? `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&date=${props?.Date2}`
-          : `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${Number(
-              props?.dataincoming?.detail?.section_mapping_id
-            )}&subject_id=${props?.subjectId2}&date=${props?.Date2}`,
+        (subjectChangedfilterOn)
+          ?
+          `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&date=${props?.Date2}`
+          :
+          `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${Number(
+            props?.dataincoming?.detail?.section_mapping_id
+          )}&subject_id=${props?.subjectId2}&date=${props?.Date2}`,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
@@ -133,8 +140,6 @@ function Pending(props) {
       )
       .then((result) => {
         setModalData(result?.data?.result);
-        // setIdMain(result?.data?.result?.id);
-        // popUpListData(result?.data?.result?.id);
         parsedData(result?.data?.result);
       })
       .catch((error) => {
@@ -154,11 +159,13 @@ function Pending(props) {
   const popUpListData = (id) => {
     axios
       .get(
-        subjectChangedfilterOn
-          ? `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&erp_id=${id}&date=${props?.Date2}`
-          : `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${Number(
-              props?.dataincoming?.detail?.section_mapping_id
-            )}&subject_id=${props?.subjectId2}&erp_id=${id}&date=${props?.Date2}`,
+        (subjectChangedfilterOn)
+          ?
+          `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&erp_id=${id}&date=${props?.Date2}`
+          :
+          `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${Number(
+            props?.dataincoming?.detail?.section_mapping_id
+          )}&subject_id=${props?.subjectId2}&erp_id=${id}&date=${props?.Date2}`,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
@@ -169,8 +176,6 @@ function Pending(props) {
       )
       .then((result) => {
         setDataLast(result?.data?.result);
-        // setPopup(modalData);
-        // setIndex(result?.data?.result?.total_students);
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -235,7 +240,7 @@ function Pending(props) {
                     <TableRow
                       // key=bonnie
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      // onClick={assessmentHandler}
+                    // onClick={assessmentHandler}
                     >
                       <TableCell
                         style={{ display: 'flex', justifyContent: 'flex-start' }}
@@ -300,7 +305,7 @@ function Pending(props) {
                           </>
                         ) : (
                           <>
-                            {output[data.id] && (
+                            {output[data.id] && output[data.id].hw_pending_count > 0 && (
                               <Grid
                                 item
                                 style={{
@@ -361,18 +366,15 @@ function Pending(props) {
           </TableContainer>
         </Grid>
       )}
-      {/* {(dataLast || tableData.length > 0) && ( */}
       {tableData && tableData?.length === 0 ? (
         <div style={{ height: 400, margin: 'auto', marginTop: '70px' }}>
-          <NoFilterData data={'No Data Found'} />
+          {/* <NoFilterData data={'No Data Found'} /> */}
         </div>
       ) : (
         <ModalPending
           index1={dataincoming?.hwcwstatus}
-          // key1={index}
           row={tableData[popup]}
           col={dataLast}
-          // row={dataincoming.hwcwstatus ? dataLast : tableData[popup]}
           open={open}
           handleClose={handleClose}
         />

@@ -149,8 +149,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
     setSelectedSection([]);
     setSelectedSubject([]);
     callApi(
-      `${
-        endpoints.academics.grades
+      `${endpoints.academics.grades
       }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&module_id=${2}`,
       'gradeList'
     );
@@ -170,8 +169,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
       setSelectedGrade(value);
       setSelectedGradeIds(selectedId);
       callApi(
-        `${
-          endpoints.academics.sections
+        `${endpoints.academics.sections
         }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&grade_id=${selectedId?.toString()}&module_id=${2}`,
         'section'
       );
@@ -202,8 +200,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
       setSelectedSection(value);
       setSelectedSectionIds(selectedsecctionId);
       callApi(
-        `${
-          endpoints.academics.subjects
+        `${endpoints.academics.subjects
         }?session_year=${sessionYearIDDDD}&branch=${databranch}&grade=${selectedGradeIds?.toString()}&section=${selectedsecctionId.toString()}&module_id=${2}`,
         'subject'
       );
@@ -578,8 +575,8 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
           <span style={{ textAlign: 'right' }}>
             {endDate
               ? `${moment(startDate).format('MM/DD/YYYY')} to ${moment(endDate).format(
-                  'MM/DD/YYYY'
-                )}`
+                'MM/DD/YYYY'
+              )}`
               : `${moment(date).format('MM/DD/YYYY')}`}
           </span>
         </Grid>
@@ -659,7 +656,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
             >
               <div>
                 {(homework && tableData?.length === 0) ||
-                (!homework && classworkData?.classwork_details?.length === 0) ? (
+                  (!homework && classworkData?.classwork_details?.length === 0) ? (
                   <div style={{ marginTop: '10%', marginBottom: '10%' }}>
                     <NoFilterData data='No Data Found' />
                   </div>
@@ -714,7 +711,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
                             borderBottom: '1px solid #D7E0E7',
                             // cursor: 'pointer',
                           }}
-                          // onClick={() => classworkfileopener()}
+                        // onClick={() => classworkfileopener(item)}
                         >
                           <div style={{ flex: 1, textAlign: 'center' }}>{item.date}</div>
                           <div style={{ flex: 1, textAlign: 'center' }}>
