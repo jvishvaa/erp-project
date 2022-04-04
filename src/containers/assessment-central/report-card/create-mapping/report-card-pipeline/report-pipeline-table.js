@@ -111,8 +111,15 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
             )}
           </IconButton>
         </Grid>
-        <Paper>
-          <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
+        <Grid>
+          <Dialog open={deleteAlert}
+            hideBackdrop
+            PaperProps={{
+              elevation: 0,
+              sx: {
+                border: "solid 1px gray"
+              }
+            }} onClose={handleDeleteCancel} >
             <DialogTitle
               id='draggable-dialog-title'
             >
@@ -136,7 +143,7 @@ const ReportPipelineTable = ({ setLoading, moduleId }) => {
               </Button>
             </DialogActions>
           </Dialog>
-        </Paper>
+        </Grid>
       </Grid>
     );
   };
