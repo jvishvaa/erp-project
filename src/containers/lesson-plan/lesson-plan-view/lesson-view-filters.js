@@ -111,13 +111,29 @@ const LessonViewFilters = ({
 
   const handleAcademicYear = (event, value) => {
     setFilterData({ ...filterData, year: '',volume : '',branch : '',grade: '', subject: '', chapter: '',board: '', module: '', keyconcept: '' });
+    setBranchDropdown([])
+    setSubjectDropdown([]);
+    setChapterDropdown([]);
+    setGradeDropdown([])
+    setBoardDropdown([])
+    setSelectedBoardId([])
+    setModuleDropdown([])
+    setKeyConceptDropdown([])
     if (value) {
       setFilterData({ ...filterData, year: value, volume : '',branch : '',grade: '', subject: '', chapter: '',board: '', module: '', keyconcept: '' });
+      setBranchDropdown([])
     }
   };
 
   const handleVolume = (event, value) => {
     setFilterData({ ...filterData, volume: '',branch : '',grade: '', subject: '', chapter: '',board: '', module: '', keyconcept: ''});
+    setSubjectDropdown([]);
+    setChapterDropdown([]);
+    setGradeDropdown([])
+    setBoardDropdown([])
+    setSelectedBoardId([])
+    setModuleDropdown([])
+    setKeyConceptDropdown([])
     if (value) {
       setFilterData({ ...filterData, volume: value ,branch : '',grade: '', subject: '', chapter: '',board: '', module: '', keyconcept: '' });
     }
@@ -162,6 +178,13 @@ const LessonViewFilters = ({
   }
   const handleBranch = (event, value) => {
     setFilterData({ ...filterData, branch: '', grade: '', subject: '', chapter: '',board: '', module: '', keyconcept: '', });
+    setSubjectDropdown([]);
+    setChapterDropdown([]);
+    setGradeDropdown([])
+    setBoardDropdown([])
+    setSelectedBoardId([])
+    setModuleDropdown([])
+    setKeyConceptDropdown([])
     setOverviewSynopsis([]);
     if (value) {
       setFilterData({
@@ -172,6 +195,14 @@ const LessonViewFilters = ({
         chapter: '',
         board: '', module: '', keyconcept: '',
       });
+      setSubjectDropdown([]);
+    setChapterDropdown([]);
+    setGradeDropdown([])
+    setBoardDropdown([])
+    setSelectedBoardId([])
+    setModuleDropdown([])
+    setKeyConceptDropdown([])
+    setOverviewSynopsis([]);
       axiosInstance
         .get(
           `${endpoints.communication.grades}?session_year=${erpYear?.id}&branch_id=${
@@ -207,9 +238,20 @@ const LessonViewFilters = ({
 
   const handleGrade = (event, value) => {
     setFilterData({ ...filterData, grade: '', subject: '', chapter: '',board: '', module: '', keyconcept: '', });
+    setChapterDropdown([]);
+    setBoardDropdown([])
+    setSelectedBoardId([])
+    setModuleDropdown([])
+    setKeyConceptDropdown([])
     setOverviewSynopsis([]);
     if (value && filterData.branch) {
-      setFilterData({ ...filterData, grade: value, subject: '', chapter: '',board: '', module: '', keyconcept: '', });
+    setFilterData({ ...filterData, grade: value, subject: '', chapter: '',board: '', module: '', keyconcept: '', });
+    setChapterDropdown([]);
+    setBoardDropdown([])
+    setSelectedBoardId([])
+    setModuleDropdown([])
+    setKeyConceptDropdown([])
+    setOverviewSynopsis([]);
       axiosInstance
         .get(
           `${endpoints.lessonPlan.gradeSubjectMappingList}?session_year=${
@@ -241,12 +283,20 @@ const LessonViewFilters = ({
   };
 
   const handleSubject = (event, value) => {
-    console.log(value, 'subject valu');
     setFilterData({ ...filterData, subject: '', chapter: '', board: '', module: '', keyconcept: ''});
+    setChapterDropdown([]);
+    setSelectedBoardId([])
+    setModuleDropdown([])
+    setKeyConceptDropdown([])
     setOverviewSynopsis([]);
     if (filterData.grade && filterData.year && filterData.volume && value) {
       setLoading(true)
       setFilterData({ ...filterData, subject: value, chapter: '', board: '', module: '', keyconcept: '' });
+      setChapterDropdown([]);
+    setSelectedBoardId([])
+    setModuleDropdown([])
+    setKeyConceptDropdown([])
+    setOverviewSynopsis([]);
       if (
         value &&
         filterData.branch &&
@@ -452,10 +502,12 @@ const LessonViewFilters = ({
 const handleModule = (event = {}, value = []) => {
   setLoading(true)
   setFilterData({ ...filterData, module: '',chapter: '', keyconcept: ''});
+  setKeyConceptDropdown([])
   setOverviewSynopsis([]);
   if (value) {
     setLoading(true)
-    setSelectedModuleId(value)
+    setSelectedModuleId(value?.id)
+    setKeyConceptDropdown([])
     setFilterData({ ...filterData, chapter: '', module: value, keyconcept: '' });
       axiosInstance
         .get(
@@ -463,7 +515,7 @@ const handleModule = (event = {}, value = []) => {
             filterData?.subject?.subject_id
           }&volume=${filterData.volume.id}&academic_year=${
             filterData.year.id
-          }&grade_id=${filterData.grade.grade_id}&branch_id=${filterData.branch.id}&board=${selectedBoardId}`
+          }&grade_id=${filterData.grade.grade_id}&branch_id=${filterData.branch.id}&board=${selectedBoardId}&module_id=${value?.id}`
         )
         .then((result) => {
           if (result?.data?.status_code === 200) {
@@ -490,8 +542,13 @@ const handleModule = (event = {}, value = []) => {
 
 const handleBoard = (event = {}, values = []) => {
   setFilterData({ ...filterData, board: '', module: '',chapter: '', keyconcept: ''});
-  setOverviewSynopsis([]);
-  if (values) {
+  setChapterDropdown([]);
+    setKeyConceptDropdown([])
+    setModuleDropdown([])
+    setOverviewSynopsis([]);
+  if (values.length > 0) {
+    setChapterDropdown([]);
+    setKeyConceptDropdown([])
     setLoading(true)
     const ids = values.map((el) => el);
     const selectedId = values.map((el) => el?.id)
