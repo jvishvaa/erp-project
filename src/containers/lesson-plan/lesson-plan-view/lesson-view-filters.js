@@ -361,9 +361,7 @@ const LessonViewFilters = ({
         }
         else {
             setLoading(false)
-            setChapterDropdown([]);
             setKeyConceptDropdown([]);
-
         }
   };
 
