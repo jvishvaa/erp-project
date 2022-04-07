@@ -110,16 +110,16 @@ const LessonViewFilters = ({
   }, [location.pathname]);
 
   const handleAcademicYear = (event, value) => {
-    setFilterData({ ...filterData, year: '' });
+    setFilterData({ ...filterData, year: '',volume : '',branch : '',grade: '', subject: '', chapter: '',board: '', module: '', keyconcept: '' });
     if (value) {
-      setFilterData({ ...filterData, year: value });
+      setFilterData({ ...filterData, year: value, volume : '',branch : '',grade: '', subject: '', chapter: '',board: '', module: '', keyconcept: '' });
     }
   };
 
   const handleVolume = (event, value) => {
-    setFilterData({ ...filterData, volume: '' });
+    setFilterData({ ...filterData, volume: '',branch : '',grade: '', subject: '', chapter: '',board: '', module: '', keyconcept: ''});
     if (value) {
-      setFilterData({ ...filterData, volume: value });
+      setFilterData({ ...filterData, volume: value ,branch : '',grade: '', subject: '', chapter: '',board: '', module: '', keyconcept: '' });
     }
   };
 
@@ -319,7 +319,7 @@ const LessonViewFilters = ({
 
   const handleFilter = () => {
     setSelectedIndex(-1);
-    if (filterData.chapter) {
+    if (filterData.chapter && filterData.keyconcept) {
       handlePeriodList(filterData.chapter?.id,filterData.keyconcept?.id);
       setFilterDataDown(filterData);
       axiosInstance
@@ -346,7 +346,7 @@ const LessonViewFilters = ({
           }
         });
     } else {
-      setAlert('warning', 'Please select a chapter!');
+      setAlert('warning', 'Please select chapter and Key Concept !');
       setFilterDataDown({});
     }
   };
