@@ -51,6 +51,7 @@ const LessonPlan = () => {
   const [centralGradeName, setCentralGradeName] = useState('');
   const [centralSubjectName, setCentralSubjectName] = useState('');
   const [openFeed, setOpenFeed] = React.useState(false);
+  const [topicId,setTopicId] = useState()
 
   const handleClickOpenFeed = () => {
     setOpenFeed(true);
@@ -66,20 +67,14 @@ const LessonPlan = () => {
     setPage(page);
   };
 
-  const handlePeriodList = (searchChapter) => {
+  const handlePeriodList = (searchChapter,topicId) => {
     setLoading(true);
     setPeriodData([]);
+    setTopicId(topicId)
     setChapterSearch(searchChapter);
     axiosInstance
       .get(
-        `${endpoints.lessonPlan.periodData}?chapter=${searchChapter}&page=${page}&page_size=${limit}`,
-        {
-          headers: {
-            // 'x-api-key': 'vikash@12345#1231',
-        Authorization: 'Bearer ' + token
-
-          },
-        }
+        `${endpoints.lessonPlan.periodData}?chapter=${searchChapter}&topic_id=${topicId}&page=${page}&page_size=${limit}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
@@ -104,7 +99,7 @@ const LessonPlan = () => {
   };
 
   useEffect(() => {
-    if (page && chapterSearch) handlePeriodList(chapterSearch);
+    if (page && chapterSearch) handlePeriodList(chapterSearch,topicId);
   }, [page]);
 
   const sortPeriodsAsPerNumber =(periodArray=[])=>{
