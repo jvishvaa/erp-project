@@ -103,6 +103,13 @@ const Dashboard = () => {
     }
   }, [history]);
 
+
+  useEffect(()=> {
+    if(history?.location?.state?.stateView){
+      setButtonCounter(2);
+    }
+  },[])
+
   const renderRoleDashboard = () => {
     switch (userLevel) {
       case 1:

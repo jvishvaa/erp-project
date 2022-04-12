@@ -218,7 +218,17 @@ const BranchWiseStuffAttendance = (props) => {
           <Grid container spacing={3} justifyContent='space-between'>
             <Grid item xs={6}>
               <div className={clsx(classes.breadcrumb)}>
-                <IconButton size='small' onClick={() => history.goBack()}>
+                <IconButton
+                  size='small'
+                  onClick={() =>
+                    history.push({
+                      pathname: '/dashboard',
+                      state: {
+                        stateView: '2',
+                      },
+                    })
+                  }
+                >
                   <ArrowBackIcon />
                 </IconButton>
                 <Typography variant='h6' className={clsx(classes.textBold)}>
