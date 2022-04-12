@@ -231,7 +231,7 @@ const ReportTab = () => {
         `${endpoints.ownerDashboard.getTestSection}?academic_session=${history?.location?.state?.payload?.acadId}&grade=${each}`,
         {
           headers: {
-            'X-DTS-Host': "dev.olvorchidnaigaon.letseduvate.com",
+            'X-DTS-Host': window.location.host,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -251,7 +251,7 @@ const ReportTab = () => {
         `${endpoints.ownerDashboard.getTestData}?academic_session=${history?.location?.state?.payload?.acadId}&grade=${each}`,
         {
           headers: {
-            'X-DTS-Host': "dev.olvorchidnaigaon.letseduvate.com",
+            'X-DTS-Host': window.location.host,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -271,7 +271,7 @@ const ReportTab = () => {
         `${endpoints.ownerDashboard.getCwSection}?acad_session_id=${history?.location?.state?.payload?.acadId}&grade_id=${each}`,
         {
           headers: {
-            'X-DTS-Host': "dev.olvorchidnaigaon.letseduvate.com",
+            'X-DTS-Host': window.location.host,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -292,7 +292,7 @@ const ReportTab = () => {
         `${endpoints.ownerDashboard.getHwSection}?acad_session=${history?.location?.state?.payload?.acadId}&grade_id=${each}`,
         {
           headers: {
-            'X-DTS-Host': "dev.olvorchidnaigaon.letseduvate.com",
+            'X-DTS-Host': window.location.host,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -312,7 +312,7 @@ const ReportTab = () => {
         `${endpoints.ownerDashboard.getCpSection}?acad_session=${history?.location?.state?.payload?.acadId}&grade=${each}`,
         {
           headers: {
-            'X-DTS-Host': "dev.olvorchidnaigaon.letseduvate.com",
+            'X-DTS-Host': window.location.host,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -333,7 +333,7 @@ const ReportTab = () => {
         `${endpoints.ownerDashboard.getCPData}?acad_session=${history?.location?.state?.payload?.acadId}&grade=${each}`,
         {
           headers: {
-            'X-DTS-Host': "dev.olvorchidnaigaon.letseduvate.com",
+            'X-DTS-Host': window.location.host,
             Authorization: `Bearer ${token}`,
           },
         }

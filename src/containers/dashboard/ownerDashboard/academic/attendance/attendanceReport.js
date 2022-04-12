@@ -165,7 +165,7 @@ const AttendanceReport = (props) => {
       .get(`${endpoints.ownerDashboard.gradeWiseStudentAttendanceState}`, {
         params: { ...params },
         headers: {
-          'X-DTS-Host': "dev.olvorchidnaigaon.letseduvate.com",
+          'X-DTS-Host': window.location.host,
         },
       })
       .then((res) => {
@@ -322,7 +322,7 @@ const AccordionLable = ({ data, acad_session_id, branchId }) => {
       .get(`${endpoints.ownerDashboard.gradeWiseStudentAttendanceState}`, {
         params: { ...params },
         headers: {
-          'X-DTS-Host': "dev.olvorchidnaigaon.letseduvate.com",
+          'X-DTS-Host': window.location.host,
         },
       })
       .then((res) => {

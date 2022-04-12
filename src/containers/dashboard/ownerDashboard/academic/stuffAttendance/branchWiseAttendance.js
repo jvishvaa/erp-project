@@ -175,7 +175,7 @@ const BranchWiseStuffAttendance = (props) => {
       .get(`${endpoints.staff.staffAttandance}`, {
         params: { ...params },
         headers: {
-          'X-DTS-Host': "dev.olvorchidnaigaon.letseduvate.com",
+          'X-DTS-Host': window.location.host,
         },
       })
       .then((res) => {

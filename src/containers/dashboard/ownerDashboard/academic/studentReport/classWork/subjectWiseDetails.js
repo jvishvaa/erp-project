@@ -174,7 +174,7 @@ const SubjectWiseDetails = (props) => {
       .get(`${endpoints.ownerDashboard.subjectWiseClassworkStudentReportStat}`, {
         params: { ...params },
         headers: {
-          'X-DTS-Host': "dev.olvorchidnaigaon.letseduvate.com",
+          'X-DTS-Host': window.location.host,
           // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
         },
       })
