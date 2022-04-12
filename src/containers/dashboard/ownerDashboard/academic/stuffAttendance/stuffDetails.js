@@ -130,7 +130,7 @@ const StuffDetails = (props) => {
         `${endpoints.staff.staffWiseStates}?erpuser_id=${erpId}&branch_id=${branchId}`,
         {
           headers: {
-            'X-DTS-Host': window.location.host,
+            'X-DTS-Host': "dev.olvorchidnaigaon.letseduvate.com",
           },
         }
       )
