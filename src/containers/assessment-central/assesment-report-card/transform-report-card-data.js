@@ -281,9 +281,19 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
         ...transformedSemTwo,
       ];
     }
-    if (finalAnnResult !== semOneLength) {
+    if ((finalAnnResult !== semOneLength) || (finalAnnResult !== semTwoLength)) {
       if (semOneLength > finalAnnResult) {
         const diff = semOneLength - finalAnnResult;
+        let transformedAnn = Array.from({ length: diff }, () =>
+          Array.from({ length: 4 }, () => null)
+        );
+        isAnnualData = [
+          ...isAnnualData,
+          ...transformedAnn,
+        ]
+      }
+      else if (semTwoLength > finalAnnResult) {
+        const diff = semTwoLength - finalAnnResult;
         let transformedAnn = Array.from({ length: diff }, () =>
           Array.from({ length: 4 }, () => null)
         );
@@ -303,7 +313,7 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
       subjectsList[index],
       ...semesterOneSubject,
       ...semesterTwoSubjectWiseMarks[index],
-      ...isAnnualData[index]
+      ...isAnnualData[index] || ''
       // annualData ? annualData[index][0] : '',
       // annualData ? annualData[index][1] : '',
       // annualData ? annualData[index][2] : '',
@@ -317,7 +327,7 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
       subjectsList[index],
       ...semesterOneSubject,
       ...semesterTwoSubjectWiseMarks[index],
-      ...isAnnualData[index]
+      ...isAnnualData[index] || ""
       // annualData ? annualData[index] : '',
       // annualData ? annualData[index] : '',
       // annualData ? annualData[index] : '',
