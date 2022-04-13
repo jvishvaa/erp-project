@@ -199,7 +199,9 @@ const Filter = ({ handleFilter, clearFilter }) => {
             onChange={(event, value) => {
               if (value) {
                 withAxiosInstance(
-                  `${endpoints.ebook.EbookMappedGrade}?branch_id=${selectedBranch.branch.id}&session_year=${selectedAcademicYear?.id}&grade_id=${value.erp_grade}`,
+                  `${endpoints.ebook.EbookMappedGrade}?branch_id=${selectedBranch.branch.id}&session_year=${selectedAcademicYear?.id}&grade_id=${value.erp_grade}&module_id=${
+                    getModuleInfo('Ebook View').id
+                  }`,
                   'subject'
                 );
               }

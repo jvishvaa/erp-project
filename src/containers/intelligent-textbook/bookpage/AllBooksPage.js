@@ -68,6 +68,7 @@ const AllBooksPage = () => {
   const [grade, setGrade] = useState('');
   const [subject, setSubject] = useState('');
   const [volume, setVolume] = useState('');
+  // const [board, setBoard] = useState('');
 
   const [open, setOpen] = useState(false);
   const [bookImage, setBookImage] = useState(
@@ -166,31 +167,31 @@ const AllBooksPage = () => {
 
   };
 
-  const handleFilter = (acad, branch, grade, sub, vol) => {
+  const handleFilter = (acad, branch, grade, sub, vol, board, moduleId, chapter, keyConcept) => {
     setAcadmicYear(acad);
     setBranch(branch);
     setGrade(grade);
     setSubject(sub);
     setVolume(vol);
-    getEbook(acad, branch, grade, sub, vol);
+    getEbook(acad, branch, grade, sub, vol,board, moduleId,chapter, keyConcept);
   };
 
- 
-
-  const getEbook = (acad, branch, grade, subject, vol) => {
+  const getEbook = (acad, branch, grade, subject, vol, board, moduleId, chapter, keyConcept) => {
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     const filterGrade = `${grade ? `&grade=${grade?.central_grade}` : ''}`;
     const filterSubject = `${subject ? `&subject=${subject?.central_subject}` : ''}`;
     const filterVolumes = `${vol ? `&volume=${vol?.id}` : ''}`;
+    const filterBoard = `${board ? `&board_id=${board}` : ''}`;
+    const filterModule = `${moduleId ? `&lt_module=${moduleId?.id}` : ''}`;
+    const filterChapter = `${chapter ? `&chapter_id=${chapter?.id}` : ''}`;
+    const filterKeyConcept = `${keyConcept ? `&key_concept_id=${keyConcept?.id}` : ''}`
     if ( branch != undefined ){
-
-    
     setLoading(true);
     axiosInstance
       .get(
         `${endpoints.ibook.studentBook
-        }?domain_name=${getDomainName()}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`
+        }?domain_name=${getDomainName()}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterBoard}${filterModule}${filterChapter}${filterKeyConcept}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
