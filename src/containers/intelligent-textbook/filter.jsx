@@ -181,7 +181,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
       setSelectedBoard(ids)
       setSelectedBoardId(selectedId)
         axios
-        .get(`${endpoints.ibook.moduleMapped}?volume=${volumeId}&academic_year=${academicYearId}&board=${selectedId}&grade_subject=${gradeSubjectId}`, {
+        .get(`${endpoints.ibook.moduleMapped}?volume=${volumeId}&academic_year=${academicYearId}&board=${selectedId}&grade_subject=${gradeSubjectId}&page_size=100`, {
           headers: {
             'x-api-key': 'vikash@12345#1231',
           }
@@ -256,7 +256,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
       setLoading(true)
       setSelectedChapterList(value)
       axios
-      .get(`${endpoints.ibook.keyConceptMapped}?chapter=${value?.id}`,{
+      .get(`${endpoints.ibook.keyConceptMapped}?chapter=${value?.id}&page_size=100`,{
         headers: {
           'x-api-key': 'vikash@12345#1231',
         }
