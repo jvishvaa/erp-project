@@ -277,11 +277,8 @@ const ViewClassParticipate = withRouter(({ history, ...props }) => {
   const handleSearchBar = (event) => {
     let search = event.target.value;
     setSearchName(event.target.value);
-    if (search.length>0) {
+    if (search.length) {
       debounceCallback(search);
-    }
-    if(search.length == 0){
-      handleStudentList();
     }
     else {
       setIsNewSearch(false);
