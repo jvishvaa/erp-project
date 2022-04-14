@@ -454,6 +454,22 @@ const FinanceOwnerDashboard = (props) => {
     }
   };
 
+  const handleBranchRoute = (data) => {
+    history.push({
+      pathname: `/curriculum-completion-branchWise`,
+      state: {
+        branchData: data,
+        module_id: props?.moduleId,
+      }
+    })
+  }
+
+  useEffect(()=> {
+    if(history?.location?.state?.stateView === "StudentDetails"){
+      setAcademicPerformanceDetailsOpen(true);
+    }
+  },[])
+
   return (
     <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
       <Grid item container spacing={2}>
