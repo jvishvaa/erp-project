@@ -230,6 +230,7 @@ const BranchAcadTable = () => {
       setLoading(true)
       let url = `${endpoints.masterManagement.branchMappingTable}?page=${page}&page_size=${limit}&module_id=${moduleId}&session_year=${searchYear}`;
       if (searchBranch) url += `&branch_name=${searchBranch}`;
+      if (searchYear) {
       axiosInstance
         .get(url)
         .then((result) => {
@@ -243,6 +244,9 @@ const BranchAcadTable = () => {
         .catch((error) => {
           setAlert('error', error.response.data.message || error.response.data.msg);
         });
+      }else{
+        setLoading(false)
+      }
     }
   }, [moduleId, goBackFlag, delFlag, searchYear, searchBranch, page]);
 
