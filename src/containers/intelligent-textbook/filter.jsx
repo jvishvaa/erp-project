@@ -166,7 +166,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
       }`,
       'branch'
     );
-    ApiCal();
+    // ApiCal();
   }, []);
 
 
@@ -289,6 +289,11 @@ const Filter = ({ handleFilter, clearFilter }) => {
     setSelectedVolume('');
     setGradeList([]);
     setSubjectList([]);
+    setBoardList([]);
+    setModuleList([]);
+    setChapterList([]);
+    setKeyConceptList([]);
+    setVolumeList([]);
     setSelectedBranch('');
     setSelectedGrade('');
     setSelectedSubject('');
@@ -319,6 +324,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                   'grade'
                 );
               }
+              
               setSelectedBranch(value)
               setSelectedGrade('');
               setSelectedSubject('');
@@ -327,6 +333,13 @@ const Filter = ({ handleFilter, clearFilter }) => {
               setSelectedModule('');
               setSelectedChapterList('');
               setSelectedKeyConcept('')
+              setGradeList([]);
+              setSubjectList([]);
+              setVolumeList([]);
+              setBoardList([]);
+              setModuleList([]);
+              setChapterList([]);
+              setKeyConceptList([]);
             }}
             id='branch_id'
             options={branchList}
@@ -351,7 +364,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                 setGradeId(value?.erp_grade)
                 setGradeSubjectId(value?.central_gs_mapping)
                 withAxiosInstance(
-                  `${endpoints.ibook.ibookMappedGrade}?branch_id=${selectedBranch.branch.id}&session_year=${selectedAcad?.id}&grade_id=${value.erp_grade}`,
+                  `${endpoints.ibook.ibookMappedGrade}?branch_id=${selectedBranch?.branch?.id}&session_year=${selectedAcad?.id}&grade_id=${value.erp_grade}`,
                   'subject'
                 );
               }
@@ -388,6 +401,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
               if(value){
                 setSubjectId(value?.subject_id_name?.[0]?.erp_subject_id)
                 setSelectedSubject(value);
+                ApiCal();
               }
               setSelectedSubject(value)
               setSelectedVolume('')
