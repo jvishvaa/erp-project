@@ -105,8 +105,9 @@ const BranchAcadTable = () => {
   const [desc, setDesc] = useState('');
   const [delFlag, setDelFlag] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
-  const [searchYear, setSearchYear] = useState('');
-  const [yearDisplay, setYearDisplay] = useState([]);
+  const session_year = JSON.parse(sessionStorage.getItem('acad_session'))
+  const [searchYear, setSearchYear] = useState(session_year?.id);
+  const [yearDisplay, setYearDisplay] = useState(session_year);
   const [academicYearList, setAcademicYearList] = useState([]);
   const [searchBranch, setSearchBranch] = useState('');
   const [loading, setLoading] = useState(false);
@@ -234,6 +235,7 @@ const BranchAcadTable = () => {
       axiosInstance
         .get(url)
         .then((result) => {
+          setLoading(false)
           if (result.data.status_code === 200) {
             setTotalCount(result.data.data?.count);
             setBranches(result.data.data?.results);
@@ -242,6 +244,7 @@ const BranchAcadTable = () => {
           }
         })
         .catch((error) => {
+          setLoading(false)
           setAlert('error', error.response.data.message || error.response.data.msg);
         });
       }else{
