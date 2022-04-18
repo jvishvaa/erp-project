@@ -171,11 +171,11 @@ const Filter = ({ handleFilter, clearFilter }) => {
 
 
   const handleBoard = (event,value) => {
-   setSelectedKeyConcept('')
-   setSelectedModule('')
-   setSelectedBoard('')
-   setSelectedChapterList('')
-    if(value){
+    setSelectedKeyConcept('')
+    setSelectedModule('')
+    setSelectedBoard('')
+    setSelectedChapterList('')
+    if(value?.length !== 0){
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.id)
       setSelectedBoard(ids)
@@ -203,6 +203,10 @@ const Filter = ({ handleFilter, clearFilter }) => {
           setModuleList([])
         })
 
+    }else {
+      setModuleList([])
+      setChapterList([])
+      setKeyConceptList([])
     }
   }
 
@@ -238,6 +242,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
     } else {
       setLoading(false)
       setChapterList([])
+      setKeyConceptList([])
     }
 
   }
@@ -375,6 +380,12 @@ const Filter = ({ handleFilter, clearFilter }) => {
               setSelectedModule('');
               setSelectedChapterList('');
               setSelectedKeyConcept('');
+              setSubjectList([]);
+              setVolumeList([]);
+              setBoardList([]);
+              setModuleList([]);
+              setChapterList([]);
+              setKeyConceptList([]);
             }}
             className='dropdownIcon'
             style={{ width: '100%' }}
@@ -409,6 +420,11 @@ const Filter = ({ handleFilter, clearFilter }) => {
               setSelectedModule('')
               setSelectedChapterList('')
               setSelectedKeyConcept('')
+              setVolumeList([]);
+              setBoardList([]);
+              setModuleList([]);
+              setChapterList([]);
+              setKeyConceptList([]);
             }}
             className='dropdownIcon'
             style={{ width: '100%' }}
@@ -446,6 +462,10 @@ const Filter = ({ handleFilter, clearFilter }) => {
               setSelectedChapterList('')
               setSelectedKeyConcept('')
               setSelectedVolume('')
+              setBoardList([]);
+              setModuleList([]);
+              setChapterList([]);
+              setKeyConceptList([]);
               if(value){
                 setLoading(true)
                 setVolumeId(value?.id)
