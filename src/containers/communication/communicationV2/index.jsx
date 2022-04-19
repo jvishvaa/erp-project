@@ -47,7 +47,6 @@ import MessageIcon from '@material-ui/icons/Message';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import DeleteIcon from '@material-ui/icons/Delete';
 import BorderColorIcon from '@material-ui/icons/BorderColor';
-import NestedMenuItem from 'material-ui-nested-menu-item';
 import { DataGrid } from '@material-ui/data-grid';
 import CreateAnouncement from './CreateAnnouncement';
 import endpoints from 'config/endpoints';
@@ -257,7 +256,7 @@ const NewCommunication = () => {
   const getGrade = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&module_id=${moduleId}` //moduleId hardcore for right now
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -304,7 +303,7 @@ const NewCommunication = () => {
   const getSection = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&grade_id=${selectedGradeId}&module_id=${moduleId}` //module id hardcorded right now
+        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&grade_id=${selectedGradeId}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -360,17 +359,14 @@ const NewCommunication = () => {
     return initialValue;
   }, {});
 
-  // Edit: to add it in the array format instead
   const dateWiseEvents = Object.keys(Output)
-    .sort()
     .map((date) => {
       return {
         date,
         events: Output[date],
       };
-    });
-
-  console.log('debugdate', dateWiseEvents);
+    })
+    .sort((a, b) => new Date(a.date) - new Date(b.date));
 
   function extractContent(s) {
     const span = document.createElement('span');
@@ -770,7 +766,6 @@ const NewCommunication = () => {
                   dialogData?.attachments.map((item, index, arr) => {
                     const extension = item.split('.')[item.split('.').length - 1];
                     const name = item.split('.')[item.split('.').length - 2];
-                    // console.log('debugfile', name);
                     return (
                       <div
                         style={{
@@ -795,7 +790,6 @@ const NewCommunication = () => {
                                 style={{ width: 30, height: 30 }}
                                 onClick={() => {
                                   const fileSrc = `${endpoints.lessonPlan.s3erp}announcement/${item}`;
-                                  console.log('debugfilesrc', fileSrc);
                                   openPreview({
                                     currentAttachmentIndex: 0,
                                     attachmentsArray: [

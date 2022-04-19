@@ -17,7 +17,7 @@ import {
   Drawer,
   useMediaQuery,
   useTheme,
-  Divider,	
+  Divider,
   IconButton,
 } from '@material-ui/core';
 import clsx from 'clsx';
@@ -35,8 +35,8 @@ import {
 import Footer from '../footer/index';
 import AppSearchBarUseStyles from './AppSearchBarUseStyles';
 import ENVCONFIG from 'config/config';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';	
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';	
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import logo from '../../assets/images/logo.png';
 // import { isMsAPI } from '../../utility-functions/index';
 
@@ -485,7 +485,7 @@ const Layout = ({ children, history }) => {
       case 'Create Test': {
         history.push('/assesment');
         break;
-      } 
+      }
       case 'View Attendance': {
         history.push('/teacher-attendance-verify');
         break;
@@ -498,7 +498,7 @@ const Layout = ({ children, history }) => {
         history.push('/assessment');
         break;
       }
-      case 'Individual Student Report':{
+      case 'Individual Student Report': {
         history.push('/assessment-student-report');
         break;
       }
@@ -866,8 +866,8 @@ const Layout = ({ children, history }) => {
         //   break;
         // }
         // else {
-          history.push('/timetable/teacherview')
-          break;
+        history.push('/timetable/teacherview')
+        break;
         // }
       }
       case 'Student Time Table': {
@@ -877,8 +877,8 @@ const Layout = ({ children, history }) => {
         //   break;
         // }
         // else {
-          history.push('/timetable/studentview');
-          break;
+        history.push('/timetable/studentview');
+        break;
         // }
       }
       case 'Book Appointment': {
@@ -1019,61 +1019,61 @@ const Layout = ({ children, history }) => {
       >
         {isMobile ? <div className={classes.appBarSpacer} /> : null}
         {isMobile ? <SearchBar /> : null}
-        {isMobile ? null : (	
-          <div	
-            style={{	
-              paddingBottom: 10,	
-              background: '#fafafa',	
-              display: 'flex',	
-              alignItems: 'center',	
-              justifyContent: 'space-between',	
-            }}	
-          >	
-            <img src={logo} alt='logo' style={{ height: '36px', paddingLeft: '15px' }} />	
-            <IconButton onClick={() => setDrawerOpen((prevState) => !prevState)}>	
-              {themeContext.direction === 'rtl' ? (	
-                <ChevronRightIcon />	
-              ) : (	
-                <ChevronLeftIcon />	
-              )}	
-            </IconButton>	
-          </div>	
-        )}	
+        {isMobile ? null : (
+          <div
+            style={{
+              paddingBottom: 10,
+              background: '#fafafa',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}
+          >
+            <img src={logo} alt='logo' style={{ height: '36px', paddingLeft: '15px' }} />
+            <IconButton onClick={() => setDrawerOpen((prevState) => !prevState)}>
+              {themeContext.direction === 'rtl' ? (
+                <ChevronRightIcon />
+              ) : (
+                <ChevronLeftIcon />
+              )}
+            </IconButton>
+          </div>
+        )}
         <Divider />
         <List>
           <ListItem
             className={classes.menuControlContainer}
             onClick={() => setDrawerOpen((prevState) => !prevState)}
           >
-            {drawerOpen ? null : (	
-              <>	
-                <ListItemIcon className={classes.menuItemIcon}>	
-                  <MenuIcon />	
-                </ListItemIcon>	
-              </>	
+            {drawerOpen ? null : (
+              <>
+                <ListItemIcon className={classes.menuItemIcon}>
+                  <MenuIcon />
+                </ListItemIcon>
+              </>
             )}
             {/* <ListItemText className='menu-item-text'>Menu</ListItemText> */}
           </ListItem>
           {drawerOpen
             ? navigationData &&
-              navigationData.length > 0 && (
-                <DrawerMenu
-                  superUser={superUser}
-                  drawerOpen={drawerOpen}
-                  navigationItems={navigationData}
-                  onClick={handleRouting}
-                  // flag={flag}
-                />
-              )
+            navigationData.length > 0 && (
+              <DrawerMenu
+                superUser={superUser}
+                drawerOpen={drawerOpen}
+                navigationItems={navigationData}
+                onClick={handleRouting}
+              // flag={flag}
+              />
+            )
             : navigationData &&
-              navigationData.length > 0 && (
-                <DrawerMenu
-                  superUser={superUser}
-                  navigationItems={navigationData}
-                  onClick={handleOpen}
-                  drawerOpen={drawerOpen}
-                />
-              )}
+            navigationData.length > 0 && (
+              <DrawerMenu
+                superUser={superUser}
+                navigationItems={navigationData}
+                onClick={handleOpen}
+                drawerOpen={drawerOpen}
+              />
+            )}
         </List>
       </Drawer>
     );

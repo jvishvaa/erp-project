@@ -183,7 +183,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
     axiosInstance
       .get(
         `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
-        }&branch_id=${selectedBranchId}&module_id=${moduleId}` //moduleId hardcore for right now
+        }&branch_id=${selectedBranchId}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
