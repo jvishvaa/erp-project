@@ -153,7 +153,7 @@ const StuffTypeWiseStuffAttendance = (props) => {
         `${endpoints.staff.staffRoleStates}?acad_session_id=${acad_session_id}&date_range_type=${date}`,
         {
           headers: {
-            'X-DTS-Host': window.location.host,
+            'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
           },
         }
       )

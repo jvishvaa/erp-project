@@ -335,7 +335,7 @@ const FinanceOwnerDashboard = (props) => {
         `${endpoints.ownerDashboard.getCurrReport}?branch_id=${branch}&acad_session_id=${acad}`,
         {
           headers: {
-            'X-DTS-Host': window.location.host,
+            'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
             Authorization: `Bearer ${token}`,
           },
         }
@@ -356,7 +356,7 @@ const FinanceOwnerDashboard = (props) => {
     //     `${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}`,
     //     {
     //       headers: {
-    //         'X-DTS-Host': window.location.host,
+    //         'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
     //         Authorization: `Bearer ${token}`,
     //       },
     //     }
@@ -376,7 +376,7 @@ const FinanceOwnerDashboard = (props) => {
     // axios
     //   .get(`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${acad}`, {
     //     headers: {
-    //       'X-DTS-Host': window.location.host,
+    //       'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
     //       Authorization: `Bearer ${token}`,
     //     },
     //   })

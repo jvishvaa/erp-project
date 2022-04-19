@@ -216,7 +216,7 @@ const StudentReport = (props) => {
   const TestData = async (each) => {
     await axios.get(`${endpoints.ownerDashboard.getTestData}?academic_session=${acadId}&grade=${each}`, {
       headers: {
-        'X-DTS-Host': window.location.host,
+        'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
         Authorization: `Bearer ${token}`
       }
     })
@@ -230,7 +230,7 @@ const StudentReport = (props) => {
   const CwData = async (each) => {
     await axios.get(`${endpoints.ownerDashboard.getCWData}?acad_session_id=${acadId}&grade_id=${each}`, {
       headers: {
-        'X-DTS-Host': window.location.host,
+        'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
         Authorization: `Bearer ${token}`
       }
     })
@@ -247,7 +247,7 @@ const StudentReport = (props) => {
   const HwData = async (each) => {
     await axios.get(`${endpoints.ownerDashboard.getHWData}?acad_session=${acadId}&grade_id=${each}`, {
       headers: {
-        'X-DTS-Host': window.location.host,
+        'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
         Authorization: `Bearer ${token}`
       }
     })
@@ -263,7 +263,7 @@ const StudentReport = (props) => {
   const CPData = async (each) => {
     await axios.get(`${endpoints.ownerDashboard.getCPData}?acad_session=${acadId}&grade=${each}`, {
       headers: {
-        'X-DTS-Host': window.location.host,
+        'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
         Authorization: `Bearer ${token}`
       }
     })
