@@ -721,10 +721,10 @@ const FinanceOwnerDashboard = (props) => {
                       <Typography
                         // variant='h5'
                         style={{ display: 'flex' }}
-                        className={clsx(classes.clickable)}
+                        className={clsx(classes.clickable,classes.cardtopicStyle)}
                         // onClick={() => user_level != 10 ? history.push('/fees-table-status') : ''}
                         onClick={feeredirect}
-                        className={clsx(classes.cardtopicStyle)}
+                        // className={clsx(classes.cardtopicStyle)}
                       >
                         <b>Fee Status Overview :</b>{' '}
                         {props?.branchCounter ? (
