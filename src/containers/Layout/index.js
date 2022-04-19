@@ -221,6 +221,10 @@ const Layout = ({ children, history }) => {
         history.push('/publications');
         break;
       }
+      case 'Announcement': {
+        history.push('/comm_dashboard');
+        break;
+      }
       case 'Send Message': {
         history.push('/communication/sendmessage');
         break;

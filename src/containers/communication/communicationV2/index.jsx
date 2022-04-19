@@ -370,6 +370,8 @@ const NewCommunication = () => {
       };
     });
 
+  console.log('debugdate', dateWiseEvents);
+
   function extractContent(s) {
     const span = document.createElement('span');
     span.innerHTML = s;
