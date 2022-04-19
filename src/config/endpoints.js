@@ -103,7 +103,11 @@ export default {
   },
   announcementNew: {
     uploadingFile: '/announcement/upload-announcement-file/',
-    inbox: '/announcement/inbox/',
+    inbox: '/announcement/v2/inbox/',
+    getAnnouncemenetCategory: '/announcement/announcement-category/',
+    getMembersData: `/announcement/members/`,
+    createAnnouncement: '/announcement/create/',
+    publish: 'announcement/v2/announcement-update'
   },
   onlineClass: {
     // batchList: '/erp_user/batch-student-list/',

@@ -18,6 +18,7 @@ import {
   IconButton,
 } from '@material-ui/core';
 // import IconButton from '@material-ui/core/IconButton';
+import { Autocomplete } from '@material-ui/lab';
 import Popover from '@material-ui/core/Popover';
 import Button from '@material-ui/core/Button';
 import ListItem from '@material-ui/core/ListItem';
@@ -51,6 +52,8 @@ import { DataGrid } from '@material-ui/data-grid';
 import CreateAnouncement from './CreateAnnouncement';
 import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
+import { connect, useSelector } from 'react-redux';
+import FilterFramesIcon from '@material-ui/icons/FilterFrames';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -64,54 +67,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
-
-// const rows = [
-//   {
-//     date: '11/04/2022',
-//     id: '001',
-//     description: 'DANCE COMPETITION',
-//     imageurl:
-//       'https://lp-cms-production.imgix.net/2019-06/9483508eeee2b78a7356a15ed9c337a1-bengaluru-bangalore.jpg',
-//     details:
-//       'There will be Dance Competition on 28th March 2022. Students interested should register with their respective class representatives. There is no entry fee.Note: All the dress should be arranged by the students themselves.',
-//   },
-//   {
-//     date: '12/04/2022',
-//     id: '002',
-//     description: 'HOLIDAY',
-//     details:
-//       'There will be Dance Competition on 28th March 2022. Students interested should register with their respective class representatives. There is no entry fee.Note: All the dress should be arranged by the students themselves.',
-//   },
-//   {
-//     date: '10/04/2022',
-//     id: '003',
-//     description: 'LOST',
-//     details:
-//       'There will be Dance Competition on 28th March 2023. Students interested should register with their respective class representatives.Veniam, illo, aperiam voluptatum magni et asperiores',
-//   },
-//   {
-//     date: '12/04/2022',
-//     id: '003',
-//     description: 'Found',
-//     details:
-//       'There will be Dance Competition on 28th March 2023. Students interested should register with their respective class representatives.Veniam, illo, aperiam voluptatum magni et asperiores',
-//   },
-//   {
-//     date: '11/04/2022',
-//     id: '003',
-//     description: 'LOST',
-//     details:
-//       'There will be Dance Competition on 28th March 2023. Students interested should register with their respective class representatives.Veniam, illo, aperiam voluptatum magni et asperiores',
-//   },
-//   {
-//     date: '11/04/2022',
-//     id: '003',
-//     description: 'Holiday',
-//     details:
-//       'There will be Dance Competition on 28th March 2023. Students interested should register with their respective class representatives.Veniam, illo, aperiam voluptatum magni et asperiores',
-//   },
-// ];
 const columns = [
   { field: 'id', headerName: '', width: 90 },
   { field: 'section', headerName: '', width: 90 },
@@ -129,13 +84,25 @@ const NewCommunication = () => {
   const [onClickIndex, setOnClickIndex] = useState(1);
   const [dialogData, setDialogData] = useState([]);
   const [openPublish, setOpenPublish] = useState(false);
+  const [filterOn, setFilterOn] = useState(false);
   const currentDate = moment(new Date()).format('DD/MM/YYYY');
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuPosition, setMenuPosition] = useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [rows, setRows]= useState([]);
-  console.log('debug1', rows)
+  const [rows, setRows] = useState([]);
+  const [defaultdate, setDefaultDate] = useState(moment().format('YYYY-MM-DD'));
+  const [branchList, setBranchList] = useState([]);
+  const [selectedbranchListData, setSelectedbranchListData] = useState();
+  const [gradeList, setGradeList] = useState([]);
+  const [selectedGradeListData, setSelectedGradeListData] = useState([]);
+  const [selectedGradeId, setSelectedGradeId] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
+  const [selectedSectionListData, setSelectedSectionListData] = useState([]);
+  const [selectedSectionId, setSelectedSectionId] = useState([]);
+  const [selectedSectionMappingId, setSelectedSectionMappingId] = useState([]);
 
+  const branches = JSON.parse(localStorage.getItem('userDetails'))?.role_details?.branch;
+  const branchId = branches.map((item) => item.id);
   const handleRightClick = (event) => {
     if (menuPosition) {
       return;
@@ -149,8 +116,6 @@ const NewCommunication = () => {
   const handleItemClick = (event) => {
     // setMenuPosition(null);
   };
-
-  // console.log('Debug', currentDate);
 
   const handleClose = () => {
     setHeaderOpen(false);
@@ -167,68 +132,220 @@ const NewCommunication = () => {
   };
 
   const userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
-const rowsData = () => {
-  axiosInstance
-    .get(`${endpoints.announcementNew.inbox}`, {
-      headers: {
-        'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com', 
-        // 'X-DTS-HOST': window.location.host,
-        Authorization: `Bearer ${userToken}`,
-      },
-    })
-    .then((result) => {
-      if (result?.data?.status_code === 200) {
-        console.log('debug api data', result?.data?.data);
-        setRows(result?.data?.data);
-        // setBranchId(result.data.result[0].branch_id);
-        // setSessionYearId(selectedAcademicYear?.id);
+  const rowsData = (filterOn) => {
+    let url = '';
+    let baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}`;
+    if (filterOn && selectedSectionMappingId.length > 0) {
+      if (onClickIndex == 1) {
+        url = `${endpoints.announcementNew.inbox}?${baseurl}`;
       }
-    })
-    .catch((error) => {
-      // setAlert('error', error?.message);
-      // setLoading(false);
-    });
-};
+      if (onClickIndex == 2) {
+        url = `${endpoints.announcementNew.inbox}?is_draft=True&${baseurl}`;
+      }
+      if (onClickIndex == 3) {
+        url = `${endpoints.announcementNew.inbox}?is_sent=True&${baseurl}`;
+      }
+    } else {
+      if (onClickIndex == 1) {
+        url = `${endpoints.announcementNew.inbox}`;
+      }
+      if (onClickIndex == 2) {
+        url = `${endpoints.announcementNew.inbox}?is_draft=True`;
+      }
+      if (onClickIndex == 3) {
+        url = `${endpoints.announcementNew.inbox}?is_sent=True`;
+      }
+    }
 
-useEffect(() => {
-  rowsData();
-}, [])
+    axiosInstance
+      .get(`${url}`, {
+        headers: {
+          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          'X-DTS-HOST': window.location.host,
+          Authorization: `Bearer ${userToken}`,
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setRows(result?.data?.data);
+          // setFilterOn(false);
+        }
+      })
+      .catch((error) => {
+        // setAlert('error', error?.message);
+        // setLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    rowsData();
+  }, [onClickIndex]);
+
+  const dateUpdatefun = (event) => {
+    setDefaultDate(event.target.value);
+  };
+
+  const getBranch = () => {
+    axiosInstance
+      .get(
+        `${endpoints.academics.branches}?session_year=${
+          selectedAcademicYear?.id
+        }&module_id=${2}` //module id hardcorded right now
+      )
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          const allBranchData = res?.data?.data?.results.map((item) => item.branch);
+          setBranchList(allBranchData);
+        } else {
+          setBranchList([]);
+        }
+      });
+  };
+
+  const getGrade = () => {
+    axiosInstance
+      .get(
+        `${endpoints.academics.grades}?session_year=${
+          selectedAcademicYear?.id
+        }&branch_id=${branchId}&module_id=${2}` //moduleId hardcore for right now
+      )
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setGradeList(res?.data?.data);
+        } else {
+          setBranchList([]);
+        }
+      });
+  };
+
+  const handleGrade = (e, value) => {
+    if (value?.length) {
+      const data = value.map((el) => el);
+      const ids = value.map((el) => el.grade_id);
+      setSelectedSectionId([]);
+      setSectionList([]);
+      setSelectedSectionMappingId([]);
+      setSelectedSectionListData([]);
+      setSelectedGradeListData(data);
+      setSelectedGradeId(ids);
+    } else {
+      setSelectedSectionId([]);
+      setSectionList([]);
+      setSelectedSectionMappingId([]);
+      setSelectedSectionListData([]);
+      setSelectedGradeListData([]);
+      setSelectedGradeId([]);
+    }
+  };
+
+  const handleSection = (e, value) => {
+    if (value?.length) {
+      const data = value.map((el) => el);
+      const ids = value.map((el) => el.section_id);
+      const sectionMappingIds = value.map((el) => el.id);
+      setSelectedSectionId(ids);
+      setSelectedSectionListData(data);
+      setSelectedSectionMappingId(sectionMappingIds);
+    } else {
+      setSelectedSectionListData([]);
+    }
+  };
+
+  const getSection = () => {
+    axiosInstance
+      .get(
+        `${endpoints.academics.sections}?session_year=${
+          selectedAcademicYear?.id
+        }&branch_id=${branchId}&grade_id=${selectedGradeId}&module_id=${2}` //module id hardcorded right now
+      )
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setSectionList(res?.data?.data);
+        } else {
+          setSectionList([]);
+        }
+      });
+  };
+
+  useEffect(() => {
+    getBranch();
+    getGrade();
+    getSection();
+  }, [selectedGradeId]);
+
+  const updatePublish = (id) => {
+    const params = {
+      is_draft: false,
+    };
+    axiosInstance
+      .patch(`${endpoints.announcementNew.publish}/${id}/`, params)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          handleClose();
+          rowsData();
+        } else {
+          setSectionList([]);
+        }
+      });
+  };
+
+  const updateDelete = (id) => {
+    axiosInstance.delete(`${endpoints.announcementNew.publish}/${id}/`).then((res) => {
+      if (res?.data?.status_code === 200) {
+        handleClose();
+        rowsData();
+      } else {
+        setSectionList([]);
+      }
+    });
+  };
 
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
-
- 
-
-  // var date = moment(yourdate).format('MM/DD/YYYY');
   const Output = rows.reduce((initialValue, data) => {
-    console.log('debug data in reduce', data)
-    console.log('debug initialValue in reduce', initialValue)
-    // const date = data.date;
-    const date = moment(data.created_time).format('MM/DD/YYYY')
+    const date = moment(data.created_time).format('MM/DD/YYYY');
     if (!initialValue[date]) {
-      console.log("DEBUG empty")
       initialValue[date] = [];
     }
     initialValue[date].push(data);
     return initialValue;
   }, {});
 
-  console.log('Debug Output after reduce', Output);
   // Edit: to add it in the array format instead
   const dateWiseEvents = Object.keys(Output)
-    // .sort()
+    .sort()
     .map((date) => {
-      console.log('debugdate', date)
-      console.log('debugevent', Output[date])
       return {
         date,
         events: Output[date],
       };
     });
-    
-  console.log('Debug dateWiseEvents', dateWiseEvents);
+
+  function extractContent(s) {
+    const span = document.createElement('span');
+    span.innerHTML = s;
+    return span.textContent || span.innerText;
+  }
+
+  const resolveRole = (type) => {
+    switch (type) {
+      case 11:
+        return 'Teacher';
+      case 13:
+        return 'Student';
+      case 1:
+        return 'Super Admin';
+      case 8:
+        return 'Principal';
+      default:
+        return '--';
+    }
+  };
 
   return (
     <Layout>
@@ -252,11 +369,15 @@ useEffect(() => {
                   cursor: 'pointer',
                 }}
               >
-                <Typography onClick={handleRightClick}>Filters</Typography>
+                <Typography
+                  onClick={handleRightClick}
+                  style={{ display: 'flex', alignItems: 'center' }}
+                >
+                  Filters <FilterFramesIcon />
+                </Typography>
               </div>
             </div>
-            {dateWiseEvents.reverse().map((announcement) => {
-              console.log("DEBUG", announcement.date);
+            {dateWiseEvents?.reverse().map((announcement) => {
               return (
                 <>
                   <div
@@ -267,23 +388,23 @@ useEffect(() => {
                       fontSize: '16px',
                     }}
                   >
-                    {announcement.date == moment(new Date()).format('DD/MM/YYYY')
+                    {announcement?.date == moment(new Date()).format('MM/DD/YYYY')
                       ? 'Today, '
-                      : announcement.date ==
-                        moment().subtract(1, 'days').format('DD/MM/YYYY')
+                      : announcement?.date ==
+                        moment().subtract(1, 'days').format('MM/DD/YYYY')
                       ? 'Yesterday, '
                       : ''}
-                    {announcement.date}
+                    {announcement?.date}
                   </div>
                   <div>
                     <Paper>
-                      {announcement.events.map((item) => (
+                      {announcement?.events.map((item) => (
                         <Grid
                           container
                           style={{
                             height: '40px',
                             marginBottom: '5px',
-                            borderLeft: '5px solid red',
+                            borderLeft: '5px solid #F96C00',
                             cursor: 'pointer',
                             display: 'flex',
                           }}
@@ -310,7 +431,7 @@ useEffect(() => {
                                 fontSize: '14px',
                               }}
                             >
-                              {item.title}
+                              {item?.title}
                             </Typography>
                           </Grid>
                           <Grid
@@ -339,7 +460,7 @@ useEffect(() => {
                                 paddingLeft: '20px',
                               }}
                             >
-                              {item?.content}
+                              {extractContent(item?.content)}
                             </Typography>
                           </Grid>
                           {onClickIndex !== 1 && (
@@ -377,9 +498,9 @@ useEffect(() => {
                                     paddingRight: '10px',
                                   }}
                                 >
-                                  <MessageIcon />
+                                  {/* <MessageIcon />
                                   <WhatsAppIcon />
-                                  <MailIcon />
+                                  <MailIcon /> */}
                                 </div>
                               )}
                             </Grid>
@@ -431,7 +552,7 @@ useEffect(() => {
             </ListItem>
           </List>
           <Divider />
-          <List>
+          <List dense={true}>
             <ListItem button>
               <ListItemIcon>
                 <EventIcon style={{ color: '#7852CC' }} />
@@ -463,11 +584,12 @@ useEffect(() => {
               <ListItemText primary='General' style={{ color: '#464D57' }} />
             </ListItem>
           </List>
-          <div style={{ height: '80px' }}></div>
+          <div style={{ height: '30px' }}></div>
           <Button
             variant='contained'
             color='primary'
-            size='large'
+            size='medium'
+            style={{ marginLeft: '17px', borderRadius: 20 }}
             // className={classes.button}
             startIcon={<AddIcon />}
             onClick={() => setOpenModal(true)}
@@ -501,10 +623,10 @@ useEffect(() => {
             borderLeft: '5px solid blue',
             margin: openPublish ? '1% 4%' : '0px',
             backgroundColor: '#EAEFF6',
-            width: '65vw'
+            width: '65vw',
           }}
         >
-          <DialogContentText style={{ width: '100%'}}>
+          <DialogContentText style={{ width: '100%' }}>
             <Grid container>
               <Grid
                 item
@@ -522,10 +644,10 @@ useEffect(() => {
                     style={{
                       color: 'black',
                       fontWeight: 'bold',
-                      width: '100%'
+                      width: '100%',
                     }}
                   >
-                    {dialogData.created_user}
+                    {dialogData?.created_user}
                   </Typography>
                 </div>
                 <div>
@@ -535,7 +657,7 @@ useEffect(() => {
                       fontSize: '12px',
                     }}
                   >
-                    {moment(dialogData.created_time).format('MM/DD/YYYY')}
+                    {moment(dialogData?.created_time).format('MM/DD/YYYY')}
                   </Typography>
                   <Typography
                     style={{
@@ -543,12 +665,12 @@ useEffect(() => {
                       fontSize: '12px',
                     }}
                   >
-                    {moment(dialogData.created_time).format('hh:mm:ss a')}
+                    {moment(dialogData?.created_time).format('hh:mm:ss a')}
                   </Typography>
                 </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap' }}>
-                  {['Teachers', 'Students', 'Coordinators'].map(
-                    (item) => (
+                  {dialogData?.role?.map((item) => {
+                    return (
                       <span
                         style={{
                           background: '#EBEBEB 0% 0% no-repeat padding-box',
@@ -561,14 +683,14 @@ useEffect(() => {
                           padding: '5px',
                         }}
                       >
-                        {item}
+                        {resolveRole(item)}
                       </span>
-                    )
-                  )}
+                    );
+                  })}
                 </div>
               </Grid>
-              <Grid item xs={8} sm={8} md={8} style={{width: '100%'}}>
-                <div>{dialogData.title}</div>
+              <Grid item xs={8} sm={8} md={8} style={{ width: '100%' }}>
+                <div>{dialogData?.title}</div>
                 <div style={{ margin: '10px 0' }}>
                   <Typography
                     style={{
@@ -576,14 +698,15 @@ useEffect(() => {
                       fontSize: '12px',
                     }}
                   >
-                    {dialogData.content}
+                    {extractContent(dialogData?.content)}
                   </Typography>
                 </div>
-                {dialogData.imageurl && (
+                {dialogData.attachments && (
                   <div style={{ padding: 10, display: 'flex', justifyContent: 'center' }}>
                     <img
                       style={{ width: '80%', height: '80%' }}
-                      src={dialogData.attachments[0]}
+                      src={`${endpoints.lessonPlan.s3erp}announcement/${dialogData?.attachments[0]}`}
+                      alt='image not available'
                     />
                   </div>
                 )}
@@ -608,16 +731,16 @@ useEffect(() => {
                   >
                     <IconButton
                       title='Delete'
-                      // onClick={}
+                      onClick={() => updateDelete(dialogData?.id)}
                     >
                       <DeleteIcon style={{ color: '#FF006F' }} />
                     </IconButton>
-                    <IconButton
+                    {/* <IconButton
                       title='Edit'
                       // onClick={}
                     >
                       <BorderColorIcon style={{ color: '#536476' }} />
-                    </IconButton>
+                    </IconButton> */}
                   </div>
                 ) : (
                   <>
@@ -628,7 +751,7 @@ useEffect(() => {
                         marginRight: 5,
                       }}
                     >
-                      Total {dialogData.total_members} Receipients
+                      Total {dialogData?.total_members} Receipients
                     </Typography>
                     <CancelIcon
                       style={{
@@ -654,7 +777,12 @@ useEffect(() => {
             <Button autoFocus onClick={handleClose} variant='contained' color='default'>
               Cancel
             </Button>
-            <Button autoFocus variant='contained' color='primary'>
+            <Button
+              autoFocus
+              variant='contained'
+              color='primary'
+              onClick={() => updatePublish(dialogData?.id)}
+            >
               Publish
             </Button>
           </DialogActions>
@@ -687,13 +815,23 @@ useEffect(() => {
             </ListItemIcon>
             <ListItemText primary='Publish' style={{ color: '#7852CC' }} />
           </ListItem>
-          <ListItem>
+          {/* <ListItem
+            onClick={() => {
+              setOpenPublish(true);
+              setHeaderOpen(true);
+            }}
+          >
             <ListItemIcon>
               <BorderColorIcon style={{ color: '#EF005A' }} />
             </ListItemIcon>
             <ListItemText primary='Edit' style={{ color: '#EF005A' }} />
-          </ListItem>
-          <ListItem>
+          </ListItem> */}
+          <ListItem
+            onClick={() => {
+              setOpenPublish(true);
+              setHeaderOpen(true);
+            }}
+          >
             <ListItemIcon>
               <DeleteIcon style={{ color: '#EF005A' }} />
             </ListItemIcon>
@@ -707,15 +845,18 @@ useEffect(() => {
         onClose={() => setMenuPosition(null)}
         anchorReference='anchorPosition'
         anchorPosition={menuPosition}
+        style={{ width: '25vw' }}
       >
         <MenuItem onClick={handleItemClick}>
           <form className={classes.container} noValidate>
             <TextField
               id='date'
-              label='Birthday'
+              label='Select Date'
               type='date'
               display='none'
-              defaultValue='2017-05-24'
+              defaultValue={defaultdate}
+              value={defaultdate || moment().format('YYYY-MM-DD')}
+              onChange={dateUpdatefun}
               // className={classes.textField}
               InputLabelProps={{
                 shrink: true,
@@ -723,34 +864,64 @@ useEffect(() => {
             />
           </form>
         </MenuItem>
-        <NestedMenuItem
-          label='Select by Grade'
-          parentMenuOpen={!!menuPosition}
-          onClick={handleItemClick}
-        >
-          <MenuItem onClick={handleItemClick}>Grade 1</MenuItem>
-          <MenuItem onClick={handleItemClick}>Grade 2</MenuItem>
-          <NestedMenuItem
-            label='Grade 3'
-            parentMenuOpen={!!menuPosition}
-            onClick={handleItemClick}
-          >
-            <MenuItem onClick={handleItemClick}>
-              Sub Grade 1{' '}
-              <Checkbox
-                color='primary'
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
-              />
-            </MenuItem>
-            <MenuItem onClick={handleItemClick}>
-              Sub Grade 2{' '}
-              <Checkbox
-                color='primary'
-                inputProps={{ 'aria-label': 'secondary checkbox' }}
-              />
-            </MenuItem>
-          </NestedMenuItem>
-        </NestedMenuItem>
+
+        <MenuItem>
+          <Grid xs={12} md={12} lg={12} item>
+            <b>Grade</b>
+            <Autocomplete
+              multiple
+              size='small'
+              onChange={handleGrade}
+              value={selectedGradeListData}
+              id='message_log-smsType'
+              className='multiselect_custom_autocomplete'
+              options={gradeList || []}
+              limitTags='2'
+              getOptionLabel={(option) => option.grade__grade_name || {}}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  className='message_log-textfield'
+                  {...params}
+                  variant='outlined'
+                  // label={'Choose Branch'}
+                  placeholder={'Choose Grade'}
+                />
+              )}
+            />
+          </Grid>
+        </MenuItem>
+        <MenuItem>
+          <Grid xs={12} md={12} lg={12} item>
+            <b>Section</b>
+            <Autocomplete
+              multiple
+              size='small'
+              onChange={handleSection}
+              value={selectedSectionListData}
+              id='message_log-smsType'
+              className='multiselect_custom_autocomplete'
+              options={sectionList || []}
+              limitTags='2'
+              getOptionLabel={(option) => option.section__section_name}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  className='message_log-textfield'
+                  {...params}
+                  variant='outlined'
+                  placeholder={'Choose Sections'}
+                />
+              )}
+            />
+          </Grid>
+        </MenuItem>
+        <MenuItem>
+          <Button variant='contained' color='primary' onClick={() => rowsData(true)}>
+            {' '}
+            Apply
+          </Button>
+        </MenuItem>
       </Menu>
     </Layout>
   );
