@@ -20,7 +20,6 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
   const handleRemove = (item, i) => {
     const removedList = files.filter((z) => z != item);
     setFiles(removedList);
-    console.log('files', files);
   };
   const handleUpload = () => {
     const formData = new FormData();
@@ -124,7 +123,9 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
                   >
                     {item?.path}
                   </div>
-                  <div style={{ flex: 2, textAlign: 'center' }}>{item?.size}</div>
+                  <div style={{ flex: 2, textAlign: 'center' }}>
+                    {Math.ceil(item?.size / 1024)}kb
+                  </div>
                   <div style={{ flex: 2, textAlign: 'center' }}>{item?.type}</div>
                   <div style={{ flex: 1, textAlign: 'right' }}>
                     <HighlightOffIcon

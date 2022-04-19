@@ -41,17 +41,20 @@ const useStyles = makeStyles(() => ({
 }));
 
 const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
-  console.log('Debug Called');
   const fileUploadInput = useRef(null);
   const classes = useStyles();
   const [openUpload, setOpenUpload] = useState(false);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [uploadFiles, setuploadedFiles] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+
+  const [moduleId, setModuleId] = useState('')
 
   const [userLevelList, setUserLevelList] = useState([]);
   const [selectedUserLevelData, setSelectedUserLevelData] = useState([]);
@@ -76,6 +79,8 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
   const [selectedAnnouncementId, setSelectedAnnouncementId] = useState();
 
   const [memberList, setMemberList] = useState([]);
+  const [memberCount, setMemberCount] = useState();
+
 
   const [title, setTitle] = useState();
   const [content, setContent] = useState();
@@ -101,13 +106,34 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
     setSelectedAnnouncementId();
 
     setMemberList([]);
+    setMemberCount()
 
     setTitle();
     // setContent()
 
     setTextEditorContent('');
-    setuploadedFiles();
+    setuploadedFiles([]);
   };
+
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Online Class' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Create Class') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
+
 
   const getUserLevel = () => {
     axios
@@ -136,7 +162,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
     axiosInstance
       .get(
         `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id
-        }&module_id=${2}` //module id hardcorded right now
+        }&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -149,14 +175,15 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
   };
 
   const handleFiles = (files) => {
-    setuploadedFiles(files);
+    // setuploadedFiles(files);
+    setuploadedFiles(((pre) => [...pre, ...files]))
   };
 
   const getGrade = () => {
     axiosInstance
       .get(
         `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
-        }&branch_id=${selectedBranchId}&module_id=${2}` //moduleId hardcore for right now
+        }&branch_id=${selectedBranchId}&module_id=${moduleId}` //moduleId hardcore for right now
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -177,7 +204,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
     axiosInstance
       .get(
         `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
-        }&branch_id=${selectedBranchId}&grade_id=${selectedGradeId}&module_id=${2}`
+        }&branch_id=${selectedBranchId}&grade_id=${selectedGradeId}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -230,10 +257,6 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
 
   useEffect(() => {
     getUserLevel();
-    // getAnnouncementType();
-    // getBranch();
-    // getGrade();
-    // getSection();
   }, []);
 
   const handleUserLevel = (e, value) => {
@@ -315,16 +338,19 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
     axiosInstance.get(`${endpoints.announcementNew.getMembersData}${url}`).then((res) => {
       if (res?.data?.status_code === 200) {
         setMemberList(res?.data?.members);
+        setMemberCount(res?.data?.count)
       }
     });
   };
 
   useEffect(() => {
-    getMember();
+    if ((selectedBranchId || selectedUserLevelId) || (selectedSectionId && openModal)) {
+      getMember();
+    }
   }, [
-    selectedUserLevelData,
+    // selectedUserLevelData,
     selectedbranchListData,
-    selectedGradeListData,
+    // selectedGradeListData,
     selectedSectionListData,
   ]);
 
@@ -345,83 +371,61 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
   };
 
   const handlePublish = (isDraft) => {
-    let payLoad = {
-      branch_id: selectedBranchId.toString() || '',
-      // "section_mapping_id" : selectedSectionMappingId.toString() || "",
-      role_id: selectedUserLevelId.toString() || '',
-      title: title || '',
-      content: textEditorContent || '',
-      // "attachments" : uploadFiles || [],
-      category: selectedAnnouncementId,
-      members: memberList || [],
-    };
-    if (isDraft) {
-      payLoad['is_draft'] = true;
+    if (!textEditorContent) {
+      setAlert('warning', 'Please add description')
     }
-    if (uploadFiles?.length > 0) {
-      payLoad['attachments'] = uploadFiles || [];
+    if (!title) {
+      setAlert('warning', 'Please add title');
     }
-    if (isStudentIncluded) {
-      payLoad['section_mapping_id'] = selectedSectionMappingId.toString() || '';
+    if (!selectedAnnouncementId) {
+      setAlert('warning', 'Please select announcement category');
     }
-    axiosInstance
-      .post(`${endpoints.announcementNew.createAnnouncement}`, payLoad)
-      .then((res) => {
-        if (res?.data?.status_code === 200) {
-          setAlert('success', res?.data?.message);
-          handleCloseModal();
-          console.log('uploaded announcement', res);
-        } else {
-          setAlert('error', res?.data?.message);
-        }
-      });
+    if (isStudentIncluded && !selectedSectionMappingId.length > 0) {
+      setAlert('warning', 'Please select sections');
+    }
+    if (isStudentIncluded && !selectedGradeId.length > 0) {
+      setAlert('warning', 'Please select grade');
+    }
+    if (!selectedBranchId) {
+      setAlert('warning', 'Please select branch');
+    }
+    if (!selectedUserLevelId.length > 0) {
+      setAlert('warning', 'Please select user level');
+    }
+
+    if (selectedBranchId && selectedUserLevelId.length > 0 && title && textEditorContent && selectedAnnouncementId) {
+      let payLoad = {
+        branch_id: selectedBranchId.toString() || '',
+        // "section_mapping_id" : selectedSectionMappingId.toString() || "",
+        role_id: selectedUserLevelId.toString() || '',
+        title: title || '',
+        content: textEditorContent || '',
+        // "attachments" : uploadFiles || [],
+        category: selectedAnnouncementId,
+        members: memberList || [],
+      };
+      if (isDraft) {
+        payLoad['is_draft'] = true;
+      }
+      if (uploadFiles?.length > 0) {
+        payLoad['attachments'] = uploadFiles || [];
+      }
+      if (isStudentIncluded) {
+        payLoad['section_mapping_id'] = selectedSectionMappingId.toString() || '';
+      }
+      axiosInstance
+        .post(`${endpoints.announcementNew.createAnnouncement}`, payLoad)
+        .then((res) => {
+          if (res?.data?.status_code === 200) {
+            setAlert('success', res?.data?.message);
+            handleCloseModal();
+          } else {
+            setAlert('error', res?.data?.message);
+          }
+        });
+    }
   };
 
-  const handleFileUpload = async (file) => {
-    // debugger;
-    // setLoading(true);
-    // if (!file) {
-    //   return null;
-    // }
-    // const isValid = FileValidators(file);
-    // !isValid?.isValid && isValid?.msg && setAlert('error', isValid?.msg);
-    // if (isValid?.isValid) {
-    //   try {
-    //     if (
-    //       file.name.toLowerCase().lastIndexOf('.pdf') > 0 ||
-    //       file.name.toLowerCase().lastIndexOf('.jpeg') > 0 ||
-    //       file.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
-    //       file.name.toLowerCase().lastIndexOf('.png') > 0 ||
-    //       file.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
-    //       file.name.toLowerCase().lastIndexOf('.mp4') > 0
-    //     ) {
-    //       setLoading(false);
-    //       const fd = new FormData();
-    //       fd.append('file', file);
-    //       setFileUploadInProgress(true);
-    //       const filePath = await uploadFile(fd);
-    //       const final = Object.assign({}, filePath);
-    //       if (file.type === 'application/pdf') {
-    //         setAttachments((prevState) => [...prevState, final]);
-    //         setAttachmentPreviews((prevState) => [...prevState, final]);
-    //       } else {
-    //         setAttachments((prevState) => [...prevState, filePath]);
-    //         setAttachmentPreviews((prevState) => [...prevState, filePath]);
-    //       }
-    //       setFileUploadInProgress(false);
-    //       setAlert('success', 'File uploaded successfully');
-    //       setSizeValied('');
-    //     } else {
-    //       setLoading(false);
-    //       setAlert('error', 'Please upload valid file');
-    //     }
-    //   } catch (e) {
-    //     setFileUploadInProgress(false);
-    //     setLoading(false);
-    //     setAlert('error', 'File upload failed');
-    //   }
-    // }
-  };
 
   return (
     <Dialog
@@ -480,27 +484,6 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
             </Grid>
             <Grid xs={12} md={6} lg={6} item>
               <b>Branch</b>
-              {/* <Autocomplete
-                multiple
-                size='small'
-                onChange={handleBranch}
-                value={selectedbranchListData}
-                id='message_log-smsType'
-                className='multiselect_custom_autocomplete'
-                options={branchList  || []}
-                limitTags='2'
-                getOptionLabel={(option) => option.branch_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    // label={'Choose Branch'}
-                    placeholder={'Choose Branch'}
-                  />
-                )}
-              /> */}
               <Autocomplete
                 id='combo-box-demo'
                 size='small'
@@ -569,36 +552,14 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
 
             <Typography>
               Total Members{' '}
-              {memberList.length > 0 ? memberList.reduce((sum, item) => sum + item) : '0'}
+              {memberCount ? memberCount : '0'}
             </Typography>
 
-            {/* <hr style={{ marginTop: '25px', marginBottom: '20px' }} /> */}
             <Grid md={12} lg={12} item>
               <hr />
             </Grid>
             <Grid xs={12} md={6} lg={6} item>
               <b>Announcement category</b>
-              {/* <Autocomplete
-                multiple
-                size='small'
-                onChange={handleAnnouncementType}
-                value={selectedAnnouncementListData}
-                id='message_log-smsType'
-                className='multiselect_custom_autocomplete'
-                options={announcementList || []}
-                limitTags='2'
-                getOptionLabel={(option) => option.category_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    className='message_log-textfield'
-                    {...params}
-                    variant='outlined'
-                    // label={'Choose category'}
-                    placeholder={'Choose category'}
-                  />
-                )}
-              /> */}
               <Autocomplete
                 id='combo-box-demo'
                 size='small'
@@ -656,9 +617,9 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
           }}
         >
           <div>{uploadFiles?.length > 0 ? uploadFiles?.length : '0'} File Attached</div>
-          <div onClick={() => setOpenUpload(true)}>
+          <div style={{ cursor: 'pointer' }} onClick={() => setOpenUpload(true)}>
             <PublishIcon
-              style={{ position: 'relative', top: '6px', cursor: 'pointer' }}
+              style={{ position: 'relative', top: '6px', }}
             //   onClick={() => fileUploadInput.current.click()}
             />
             Upload
@@ -722,7 +683,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
           onClick={() => handlePublish(true)}
           variant='contained'
           autoFocus
-          color='primary'
+        // color='primary'
         >
           Save as Draft
         </Button>

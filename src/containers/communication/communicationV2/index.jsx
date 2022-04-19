@@ -54,6 +54,12 @@ import endpoints from 'config/endpoints';
 import axiosInstance from 'config/axios';
 import { connect, useSelector } from 'react-redux';
 import FilterFramesIcon from '@material-ui/icons/FilterFrames';
+import NoFilterData from 'components/noFilteredData/noFilterData';
+import { useTheme } from '@material-ui/core/styles';
+import { SvgIcon } from '@material-ui/core';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import { AttachmentPreviewerContext } from './../../../components/attachment-previewer/attachment-previewer-contexts/attachment-previewer-contexts';
+import './announcement.scss';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -65,18 +71,25 @@ const useStyles = makeStyles((theme) => ({
     marginRight: theme.spacing(1),
     width: 200,
   },
+  root: {
+    maxWidth: 400,
+    flexGrow: 1,
+  },
+  header: {
+    display: 'flex',
+    alignItems: 'center',
+    height: 50,
+    paddingLeft: theme.spacing(4),
+    backgroundColor: theme.palette.background.default,
+  },
+  img: {
+    height: 255,
+    maxWidth: 400,
+    overflow: 'hidden',
+    display: 'block',
+    width: '100%',
+  },
 }));
-
-const columns = [
-  { field: 'id', headerName: '', width: 90 },
-  { field: 'section', headerName: '', width: 90 },
-];
-
-const graderows = [
-  { id: 1, section: 'Section A' },
-  { id: 2, section: 'Section B' },
-  { id: 3, section: 'Section C' },
-];
 
 const NewCommunication = () => {
   const classes = useStyles();
@@ -100,6 +113,8 @@ const NewCommunication = () => {
   const [selectedSectionListData, setSelectedSectionListData] = useState([]);
   const [selectedSectionId, setSelectedSectionId] = useState([]);
   const [selectedSectionMappingId, setSelectedSectionMappingId] = useState([]);
+  const [activeStep, setActiveStep] = React.useState(0);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   const branches = JSON.parse(localStorage.getItem('userDetails'))?.role_details?.branch;
   const branchId = branches.map((item) => item.id);
@@ -116,6 +131,23 @@ const NewCommunication = () => {
   const handleItemClick = (event) => {
     // setMenuPosition(null);
   };
+  // const classes = useStyles();
+  const theme = useTheme();
+  const [moduleId, setModuleId] = useState('');
+
+  const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  };
+  let tutorialSteps;
+  let maxSteps;
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const { openPreview, closePreview } =
+    React.useContext(AttachmentPreviewerContext) || {};
 
   const handleClose = () => {
     setHeaderOpen(false);
@@ -130,6 +162,24 @@ const NewCommunication = () => {
   const handlePopOverClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Online Class' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Create Class') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
 
   const userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
   const selectedAcademicYear = useSelector(
@@ -192,9 +242,7 @@ const NewCommunication = () => {
   const getBranch = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.branches}?session_year=${
-          selectedAcademicYear?.id
-        }&module_id=${2}` //module id hardcorded right now
+        `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}` //module id hardcorded right now
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -209,9 +257,7 @@ const NewCommunication = () => {
   const getGrade = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.grades}?session_year=${
-          selectedAcademicYear?.id
-        }&branch_id=${branchId}&module_id=${2}` //moduleId hardcore for right now
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&module_id=${moduleId}` //moduleId hardcore for right now
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -258,9 +304,7 @@ const NewCommunication = () => {
   const getSection = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.sections}?session_year=${
-          selectedAcademicYear?.id
-        }&branch_id=${branchId}&grade_id=${selectedGradeId}&module_id=${2}` //module id hardcorded right now
+        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&grade_id=${selectedGradeId}&module_id=${moduleId}` //module id hardcorded right now
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -338,6 +382,12 @@ const NewCommunication = () => {
         return 'Teacher';
       case 13:
         return 'Student';
+      case 26:
+        return 'Operation Manager';
+      case 28:
+        return 'Transport Incharge';
+      case 12:
+        return 'Parent';
       case 1:
         return 'Super Admin';
       case 8:
@@ -377,141 +427,147 @@ const NewCommunication = () => {
                 </Typography>
               </div>
             </div>
-            {dateWiseEvents?.reverse().map((announcement) => {
-              return (
-                <>
-                  <div
-                    style={{
-                      // marginLeft: '20px',
-                      padding: '10px 0',
-                      fontWeight: 'bold',
-                      fontSize: '16px',
-                    }}
-                  >
-                    {announcement?.date == moment(new Date()).format('MM/DD/YYYY')
-                      ? 'Today, '
-                      : announcement?.date ==
-                        moment().subtract(1, 'days').format('MM/DD/YYYY')
-                      ? 'Yesterday, '
-                      : ''}
-                    {announcement?.date}
-                  </div>
-                  <div>
-                    <Paper>
-                      {announcement?.events.map((item) => (
-                        <Grid
-                          container
-                          style={{
-                            height: '40px',
-                            marginBottom: '5px',
-                            borderLeft: '5px solid #F96C00',
-                            cursor: 'pointer',
-                            display: 'flex',
-                          }}
-                        >
+            {dateWiseEvents.length === 0 ? (
+              <div style={{ marginTop: '30px' }}>
+                <NoFilterData data={'No Data Found for this Section & Date'} />
+              </div>
+            ) : (
+              dateWiseEvents?.reverse().map((announcement) => {
+                return (
+                  <>
+                    <div
+                      style={{
+                        // marginLeft: '20px',
+                        padding: '10px 0',
+                        fontWeight: 'bold',
+                        fontSize: '16px',
+                      }}
+                    >
+                      {announcement?.date == moment(new Date()).format('MM/DD/YYYY')
+                        ? 'Today, '
+                        : announcement?.date ==
+                          moment().subtract(1, 'days').format('MM/DD/YYYY')
+                        ? 'Yesterday, '
+                        : ''}
+                      {announcement?.date}
+                    </div>
+                    <div>
+                      <Paper>
+                        {announcement?.events.map((item) => (
                           <Grid
-                            item
-                            xs={2}
-                            sm={2}
-                            md={2}
+                            container
                             style={{
+                              height: '40px',
+                              marginBottom: '5px',
+                              borderLeft: '5px solid #F96C00',
+                              cursor: 'pointer',
                               display: 'flex',
-                              // justifyContent: 'center',
-                              alignItems: 'center',
                             }}
                           >
-                            <Typography
-                              style={{
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                                whiteSpace: 'nowrap',
-                                color: 'black',
-                                fontWeight: 'bold',
-                                paddingLeft: '20px',
-                                fontSize: '14px',
-                              }}
-                            >
-                              {item?.title}
-                            </Typography>
-                          </Grid>
-                          <Grid
-                            item
-                            xs={onClickIndex === 1 ? 10 : 9}
-                            sm={onClickIndex === 1 ? 10 : 9}
-                            md={onClickIndex === 1 ? 10 : 9}
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                            }}
-                            onClick={() => {
-                              setHeaderOpen(true);
-                              setDialogData(item);
-                            }}
-                          >
-                            <Typography
-                              style={{
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                                whiteSpace: 'nowrap',
-                                color: '#7F92A3',
-                                // height: '25px',
-                                fontSize: '14px',
-                                paddingLeft: '20px',
-                              }}
-                            >
-                              {extractContent(item?.content)}
-                            </Typography>
-                          </Grid>
-                          {onClickIndex !== 1 && (
                             <Grid
                               item
-                              xs={1}
-                              sm={1}
-                              md={1}
+                              xs={2}
+                              sm={2}
+                              md={2}
                               style={{
                                 display: 'flex',
-                                width: '90px!important',
-                                justifyContent: 'flex-end',
+                                // justifyContent: 'center',
                                 alignItems: 'center',
                               }}
                             >
-                              {onClickIndex === 2 && (
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    paddingRight: '10px',
-                                  }}
-                                  onClick={(event) => {
-                                    setDialogData(item);
-                                    return handlePopOverClick(event);
-                                  }}
-                                >
-                                  <MoreHorizIcon />
-                                </div>
-                              )}
-                              {onClickIndex === 3 && (
-                                <div
-                                  style={{
-                                    display: 'flex',
-                                    // justifyContent: 'space-evenly',
-                                    paddingRight: '10px',
-                                  }}
-                                >
-                                  {/* <MessageIcon />
+                              <Typography
+                                style={{
+                                  textOverflow: 'ellipsis',
+                                  overflow: 'hidden',
+                                  whiteSpace: 'nowrap',
+                                  color: 'black',
+                                  fontWeight: 'bold',
+                                  paddingLeft: '20px',
+                                  fontSize: '14px',
+                                }}
+                              >
+                                {item?.title}
+                              </Typography>
+                            </Grid>
+                            <Grid
+                              item
+                              xs={onClickIndex === 1 ? 10 : 9}
+                              sm={onClickIndex === 1 ? 10 : 9}
+                              md={onClickIndex === 1 ? 10 : 9}
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                              }}
+                              onClick={() => {
+                                setHeaderOpen(true);
+                                setDialogData(item);
+                              }}
+                            >
+                              <Typography
+                                style={{
+                                  textOverflow: 'ellipsis',
+                                  overflow: 'hidden',
+                                  whiteSpace: 'nowrap',
+                                  color: '#7F92A3',
+                                  // height: '25px',
+                                  fontSize: '14px',
+                                  paddingLeft: '20px',
+                                }}
+                              >
+                                {extractContent(item?.content)}
+                              </Typography>
+                            </Grid>
+                            {onClickIndex !== 1 && (
+                              <Grid
+                                item
+                                xs={1}
+                                sm={1}
+                                md={1}
+                                style={{
+                                  display: 'flex',
+                                  width: '90px!important',
+                                  justifyContent: 'flex-end',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                {onClickIndex === 2 && (
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      paddingRight: '10px',
+                                    }}
+                                    onClick={(event) => {
+                                      setDialogData(item);
+                                      return handlePopOverClick(event);
+                                    }}
+                                  >
+                                    <MoreHorizIcon />
+                                  </div>
+                                )}
+                                {onClickIndex === 3 && (
+                                  <div
+                                    style={{
+                                      display: 'flex',
+                                      // justifyContent: 'space-evenly',
+                                      paddingRight: '10px',
+                                    }}
+                                  >
+                                    {/* <MessageIcon />
                                   <WhatsAppIcon />
                                   <MailIcon /> */}
-                                </div>
-                              )}
-                            </Grid>
-                          )}
-                        </Grid>
-                      ))}
-                    </Paper>
-                  </div>
-                </>
-              );
-            })}
+                                  </div>
+                                )}
+                              </Grid>
+                            )}
+                          </Grid>
+                        ))}
+                      </Paper>
+                    </div>
+                  </>
+                );
+              })
+            )}
           </div>
         </Grid>
         <Grid item xs={3} sm={3} md={3} spacing={2}>
@@ -528,28 +584,32 @@ const NewCommunication = () => {
               </ListItemIcon>
               <ListItemText primary='Inbox' style={{ color: '#464D57' }} />
             </ListItem>
-            <ListItem
-              button
-              onClick={() => {
-                setOnClickIndex(2);
-              }}
-            >
-              <ListItemIcon>
-                <MailIcon style={{ color: '#464D57' }} />
-              </ListItemIcon>
-              <ListItemText primary='Draft' style={{ color: '#464D57' }} />
-            </ListItem>
-            <ListItem
-              button
-              onClick={() => {
-                setOnClickIndex(3);
-              }}
-            >
-              <ListItemIcon>
-                <SendIcon style={{ color: '#464D57' }} />
-              </ListItemIcon>
-              <ListItemText primary='Sent' style={{ color: '#464D57' }} />
-            </ListItem>
+            {userLevel !== 12 && userLevel !== 13 && (
+              <>
+                <ListItem
+                  button
+                  onClick={() => {
+                    setOnClickIndex(2);
+                  }}
+                >
+                  <ListItemIcon>
+                    <MailIcon style={{ color: '#464D57' }} />
+                  </ListItemIcon>
+                  <ListItemText primary='Draft' style={{ color: '#464D57' }} />
+                </ListItem>
+                <ListItem
+                  button
+                  onClick={() => {
+                    setOnClickIndex(3);
+                  }}
+                >
+                  <ListItemIcon>
+                    <SendIcon style={{ color: '#464D57' }} />
+                  </ListItemIcon>
+                  <ListItemText primary='Sent' style={{ color: '#464D57' }} />
+                </ListItem>
+              </>
+            )}
           </List>
           <Divider />
           <List dense={true}>
@@ -585,21 +645,24 @@ const NewCommunication = () => {
             </ListItem>
           </List>
           <div style={{ height: '30px' }}></div>
-          <Button
-            variant='contained'
-            color='primary'
-            size='medium'
-            style={{ marginLeft: '17px', borderRadius: 20 }}
-            // className={classes.button}
-            startIcon={<AddIcon />}
-            onClick={() => setOpenModal(true)}
-          >
-            Create New
-          </Button>
+          {userLevel !== 12 && userLevel !== 13 && (
+            <Button
+              variant='contained'
+              color='primary'
+              size='medium'
+              style={{ marginLeft: '17px', borderRadius: 20 }}
+              // className={classes.button}
+              startIcon={<AddIcon />}
+              onClick={() => setOpenModal(true)}
+            >
+              Create New
+            </Button>
+          )}
         </Grid>
       </Grid>
       <Dialog
         maxWidth={'md'}
+        fullWidth={true}
         open={headerOpen}
         onClose={handleClose}
         aria-describedby='alert-dialog-description'
@@ -620,10 +683,10 @@ const NewCommunication = () => {
         )}
         <DialogContent
           style={{
-            borderLeft: '5px solid blue',
+            borderLeft: '5px solid #F96C00',
             margin: openPublish ? '1% 4%' : '0px',
             backgroundColor: '#EAEFF6',
-            width: '65vw',
+            // width: '65vw',
           }}
         >
           <DialogContentText style={{ width: '100%' }}>
@@ -701,15 +764,55 @@ const NewCommunication = () => {
                     {extractContent(dialogData?.content)}
                   </Typography>
                 </div>
-                {dialogData.attachments && (
-                  <div style={{ padding: 10, display: 'flex', justifyContent: 'center' }}>
-                    <img
-                      style={{ width: '80%', height: '80%' }}
-                      src={`${endpoints.lessonPlan.s3erp}announcement/${dialogData?.attachments[0]}`}
-                      alt='image not available'
-                    />
-                  </div>
-                )}
+                {dialogData?.attachments &&
+                  dialogData?.attachments.map((item, index, arr) => {
+                    const extension = item.split('.')[item.split('.').length - 1];
+                    const name = item.split('.')[item.split('.').length - 2];
+                    // console.log('debugfile', name);
+                    return (
+                      <div
+                        style={{
+                          display: 'flex',
+                          background: 'white',
+                          margin: '10px',
+                          justifyContent: 'space-between',
+                        }}
+                      >
+                        <div style={{ fontSize: 16, fontWeight: 'bold' }}>{name}</div>
+                        <div
+                          className='announcementsrc'
+                          style={{
+                            paddingLeft: 15,
+                            display: 'flex',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <SvgIcon
+                            component={() => (
+                              <VisibilityIcon
+                                style={{ width: 30, height: 30 }}
+                                onClick={() => {
+                                  const fileSrc = `${endpoints.lessonPlan.s3erp}announcement/${item}`;
+                                  console.log('debugfilesrc', fileSrc);
+                                  openPreview({
+                                    currentAttachmentIndex: 0,
+                                    attachmentsArray: [
+                                      {
+                                        src: fileSrc,
+                                        name: fileSrc,
+                                        extension: `.${extension}`,
+                                      },
+                                    ],
+                                  });
+                                }}
+                                color='primary'
+                              />
+                            )}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
               </Grid>
               <Grid
                 item
