@@ -101,6 +101,10 @@ export default {
     userStatusChange: '/erp_user/',
     getMessages: '/communication/email-sms-logs/',
   },
+  announcementNew: {
+    uploadingFile: '/announcement/upload-announcement-file/',
+    inbox: '/announcement/inbox/',
+  },
   onlineClass: {
     // batchList: '/erp_user/batch-student-list/',
     batchList: '/aol/batch_shuffle/',
