@@ -205,7 +205,7 @@ const CurriculumCompletionSubject = (props) => {
       .get(`${endpoints.ownerDashboard.curriculumGradeList}`, {
         params: { ...params },
         headers: {
-          'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+          'X-DTS-Host': window.location.host,
           // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
         },
       })
@@ -240,7 +240,7 @@ const CurriculumCompletionSubject = (props) => {
       .get(`${endpoints.ownerDashboard.subjectListGradeFilter}?session_year=${selectedAcademicYear?.id}&branch=${branchId}&grade=${gradeId}`, {
         params: { ...params },
         headers: {
-          'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+          'X-DTS-Host': window.location.host,
           // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
         },
       })
@@ -278,7 +278,7 @@ const CurriculumCompletionSubject = (props) => {
       .get(`${endpoints.ownerDashboard.curriculumGradeReport}`, {
         params: { ...params },
         headers: {
-          'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+          'X-DTS-Host': window.location.host,
           // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
         },
       })
@@ -315,7 +315,7 @@ const CurriculumCompletionSubject = (props) => {
       .get(`${endpoints.ownerDashboard.curriculumGradeSubjectReport}`, {
         params: { ...params },
         headers: {
-          'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
+          'X-DTS-Host': window.location.host,
           // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
         },
       })
