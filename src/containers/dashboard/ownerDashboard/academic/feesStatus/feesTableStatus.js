@@ -127,14 +127,12 @@ const useStyles = makeStyles((theme) => ({
   },
   colorYellow: {
     color: '#f89910',
-    fontWeight: '900'
-
+    fontWeight: '900',
   },
   clickable: {
     cursor: 'pointer',
   },
 }));
-
 
 const FeesTableStatus = (props) => {
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -178,10 +176,13 @@ const FeesTableStatus = (props) => {
 
   useEffect(() => {
     if (history?.location?.state?.filter === true) {
-      const branchIds = history?.location?.state?.branch.map((el) => el?.branch?.id)
-      feesStatusAllBranch({ academic_year: sessionYearId, branch: branchIds.toString() })
+      const branchIds = history?.location?.state?.branch.map((el) => el?.branch?.id);
+      feesStatusAllBranch({ academic_year: sessionYearId, branch: branchIds.toString() });
     } else {
-      feesStatusAllBranch({ academic_year: sessionYearId, branch: selectedBranchId.toString() });
+      feesStatusAllBranch({
+        academic_year: sessionYearId,
+        branch: selectedBranchId.toString(),
+      });
     }
     setLoading(true);
   }, []);
@@ -192,7 +193,7 @@ const FeesTableStatus = (props) => {
         params: { ...params },
       })
       .then((res) => {
-        setLoading(false)
+        setLoading(false);
         setFeesStatus(res.data);
       })
       .catch((err) => {
@@ -205,11 +206,11 @@ const FeesTableStatus = (props) => {
       pathname: `/fees-status-branch-wise-details/${branchId}`,
       state: {
         branchName: branchName,
-        branchId: branchId
-      }
-    })
+        branchId: branchId,
+      },
+    });
     // history.push(`/fees-status-branch-wise-details/${branchId}`)
-  }
+  };
 
   return (
     <Layout>
@@ -218,7 +219,16 @@ const FeesTableStatus = (props) => {
           <Grid item xs={12}>
             <div className={clsx(classes.breadcrumb)}>
               <IconButton size='small'>
-                <ArrowBackIcon onClick={() => history.goBack()} />
+                <ArrowBackIcon
+                  onClick={() =>
+                    history.push({
+                      pathname: '/dashboard',
+                      state: {
+                        stateView: '2',
+                      },
+                    })
+                  }
+                />
               </IconButton>
               <Typography variant='h6' className={clsx(classes.textBold)}>
                 Dashboard
@@ -267,20 +277,39 @@ const FeesTableStatus = (props) => {
                   {feesStatus?.map((each, index) => {
                     return (
                       <TableRow key={index}>
-                        <TableCell className={clsx(classes.clickable)} onClick={() => history.push(`/fees-status-branch-wise-details/${each?.branch}`)}>{each.branch_name}</TableCell>
-                        <TableCell className={clsx(classes.colorBlue)} > <b> ₹{Math.round(each?.totalfees).toLocaleString()}</b></TableCell>
-                        <TableCell className={clsx(classes.colorGreen)} ><b>  ₹{Math.round(each?.paid).toLocaleString()}</b></TableCell>
-                        <TableCell className={clsx(classes.colorRed)}><b>  ₹ {Math.round(each?.outstanding).toLocaleString()}</b></TableCell>
-                        <TableCell className={clsx(classes.colorYellow)}><b>{Math.round(each?.no_of_admission).toLocaleString()}</b></TableCell>
+                        <TableCell
+                          className={clsx(classes.clickable)}
+                          onClick={() =>
+                            history.push(
+                              `/fees-status-branch-wise-details/${each?.branch}`
+                            )
+                          }
+                        >
+                          {each.branch_name}
+                        </TableCell>
+                        <TableCell className={clsx(classes.colorBlue)}>
+                          {' '}
+                          <b> ₹{Math.round(each?.totalfees).toLocaleString()}</b>
+                        </TableCell>
+                        <TableCell className={clsx(classes.colorGreen)}>
+                          <b> ₹{Math.round(each?.paid).toLocaleString()}</b>
+                        </TableCell>
+                        <TableCell className={clsx(classes.colorRed)}>
+                          <b> ₹ {Math.round(each?.outstanding).toLocaleString()}</b>
+                        </TableCell>
+                        <TableCell className={clsx(classes.colorYellow)}>
+                          <b>{Math.round(each?.no_of_admission).toLocaleString()}</b>
+                        </TableCell>
                         <TableCell>
-                          <IconButton size='large'
+                          <IconButton
+                            size='large'
                             onClick={() => handleRote(each.branch_name, each?.branch)}
                           >
                             <ArrowCircleRightIcon />
                           </IconButton>
                         </TableCell>
                       </TableRow>
-                    )
+                    );
                   })}
                 </TableBody>
               </Table>
