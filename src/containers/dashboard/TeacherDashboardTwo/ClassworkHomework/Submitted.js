@@ -25,7 +25,6 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-// import { dataPropsContext } from './Details';
 import NoFilterData from 'components/noFilteredData/noFilterData';
 import moment from 'moment';
 import { FilterContext } from './ClassworkThree';
@@ -45,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Submitted(props) {
-  // console.log('debugSub', props);
   const [tableData, setTableData] = useState([]);
   const [pendingData, setPendingData] = useState([]);
   const [fileData, setFileData] = useState([]);
@@ -59,6 +57,8 @@ function Submitted(props) {
   const [mainData, setMainData] = useState([]);
   const dataincoming = props.dataincoming;
   const [indexphotos, setindexphotos] = useState(null);
+  const [modalData, setModalData] = useState([]);
+  const [dataLast, setDataLast] = useState([]);
 
   const {
     selectedSectionIds,
@@ -70,9 +70,15 @@ function Submitted(props) {
     setOpen(true);
   };
 
+
   const handleOpen = (data) => {
-    setOpen(true);
-    setPopup(data);
+    if (dataincoming?.hwcwstatus) {
+      popUpListData(data);
+      setOpen(true);
+    } else {
+      setOpen(true);
+      setPopup(data);
+    }
   };
 
   const handleClose = () => {
@@ -88,13 +94,12 @@ function Submitted(props) {
       .get(
         subjectChangedfilterOn
           ? `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
-              selectedSectionIds
-            )}&subject=${subjectmappingId}&date=${props?.Date2}`
+            selectedSectionIds
+          )}&subject=${subjectmappingId}&date=${props?.Date2}`
           : `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
-              props?.dataincoming?.detail?.section_mapping
-            )}&subject=${props?.subjectId2}&date=${
-              props?.dataincoming?.detail?.date
-            }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
+            props?.dataincoming?.detail?.section_mapping
+          )}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date
+          }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
@@ -127,30 +132,21 @@ function Submitted(props) {
         }
       )
       .then((result) => {
-        setPendingData(result?.data?.un_submitted_list);
-        if (result?.data?.submitted_list) setTableData(result?.data?.submitted_list);
-        setIndex(result?.data?.un_submitted_list?.length);
-        parsedData(result?.data?.un_submitted_list);
+
+        if (result?.data?.status_code === 200) {
+          setPendingData(result?.data?.un_submitted_list);
+          if (result?.data?.submitted_list) setTableData(result?.data?.submitted_list);
+          setIndex(result?.data?.un_submitted_list?.length);
+        } else {
+          setTableData([])
+        }
+        popUpList();
       })
       .catch((error) => {
         // setAlert('error', error?.message);
         // setLoading(false);
       });
   };
-
-  const parsedData = (data) => {
-    const obj = {};
-    data.forEach((item) => {
-      obj[item.id] = item;
-    });
-    setOutput(obj);
-  };
-  // var dataSubmitted = {
-  //   name: mainData.first_name,
-  //   erp: mainData.erp_id,
-  //   // time: mainData.submitted_at,
-  //   // files: mainData.uploaded_file,
-  // }
 
   const fileList = (erpid) => {
     axios
@@ -175,6 +171,73 @@ function Submitted(props) {
       });
   };
 
+  const popUpList = () => {
+    axios
+      .get(
+        (subjectChangedfilterOn)
+          ?
+          `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&date=${props?.Date2}`
+          :
+          `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${Number(
+            props?.dataincoming?.detail?.section_mapping_id
+          )}&subject_id=${props?.subjectId2}&date=${props?.Date2}`,
+        {
+          headers: {
+            'X-DTS-HOST': window.location.host,
+            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((result) => {
+        setModalData(result?.data?.result);
+        parsedData(result?.data?.result);
+      })
+      .catch((error) => {
+        // setAlert('error', error?.message);
+        // setLoading(false);
+      });
+  };
+
+  const popUpListData = (id) => {
+    axios
+      .get(
+        (subjectChangedfilterOn)
+          ?
+          `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&erp_id=${id}&date=${props?.Date2}`
+          :
+          `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${Number(
+            props?.dataincoming?.detail?.section_mapping_id
+          )}&subject_id=${props?.subjectId2}&erp_id=${id}&date=${props?.Date2}`,
+        {
+          headers: {
+            'X-DTS-HOST': window.location.host,
+            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((result) => {
+
+        setDataLast(result?.data?.result);
+
+      })
+      .catch((error) => {
+        // setAlert('error', error?.message);
+        // setLoading(false);
+      });
+  };
+
+  const parsedData = (data) => {
+
+    const obj = {};
+    data.forEach((item) => {
+      obj[item.id] = item;
+    });
+    setOutput(obj);
+
+  };
+
   useEffect(() => {
     if (dataincoming.hwcwstatus) {
       UpdatedHwlist();
@@ -183,9 +246,6 @@ function Submitted(props) {
     }
   }, [props?.Date2, defaultdate, subjectmappingId]);
 
-  // useEffect(() => {
-  //   fileList();
-  // }, [on]);
   const handleClickOn = (erpid, index) => {
     setOn(true);
     setindexphotos(index);
@@ -236,9 +296,8 @@ function Submitted(props) {
                 return (
                   <TableBody>
                     <TableRow
-                      // key=bonnie
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      // onClick={assessmentHandler}
+                    // onClick={assessmentHandler}
                     >
                       <TableCell
                         style={{ display: 'flex', justifyContent: 'flex-start' }}
@@ -279,24 +338,18 @@ function Submitted(props) {
                         }}
                       >
                         {dataincoming?.hwcwstatus ? (
-                          output[data.submitted_by] ? (
-                            <Grid
-                              item
-                              style={{
-                                border: '1px solid #FFC4C4',
-
-                                // border: !dataincoming.hwcwstatus
-                                //   ? '1px solid #FFC4C4'
-                                //   : 'none',
-                                borderRadius: '5px',
-                                color: '#E33535',
-                                padding: '2px 10px',
-                                width: 'maxContent',
-                                cursor: 'pointer',
-                              }}
-                            >
-                              <Typography onClick={() => handleOpen(index)}>
-                                <>
+                          <>
+                            {output[data.id] && output[data.id].hw_pending_count > 0 && (
+                              <Grid
+                                item
+                                style={{
+                                  border: '1px solid #FFC4C4',
+                                  borderRadius: '5px',
+                                  color: '#E33535',
+                                  padding: '2px 10px',
+                                }}
+                              >
+                                <Typography onClick={() => handleOpen(data.id)}>
                                   <span
                                     style={{
                                       fontSize: '12px',
@@ -306,27 +359,24 @@ function Submitted(props) {
                                       backgroundColor: '#FFC4C4',
                                       padding: '5px 8px',
                                       marginRight: '15px',
-                                      width: 'maxContent',
                                     }}
                                   >
-                                    {output[data.submitted_by].length}
+                                    {dataincoming?.hwcwstatus
+                                      ? output[data.id].hw_pending_count
+                                      : data.not_submitted_count}
                                   </span>
-                                  <span style={{ fontSize: '12px' }}>Pending Tests</span>
-                                </>
-                              </Typography>
-                            </Grid>
-                          ) : (
-                            ''
-                          )
+                                  <span style={{ fontSize: '12px' }}>
+                                    Pending {output[data.id].hw_pending_count} more Tests
+                                  </span>
+                                </Typography>
+                              </Grid>
+                            )}
+                          </>
                         ) : (
                           <Grid
                             item
                             style={{
                               border: '1px solid #FFC4C4',
-
-                              // border: !dataincoming.hwcwstatus
-                              //   ? '1px solid #FFC4C4'
-                              //   : 'none',
                               borderRadius: '5px',
                               color: '#E33535',
                               padding: '2px 10px',
@@ -376,8 +426,8 @@ function Submitted(props) {
                               {interval > 30
                                 ? `${Math.trunc(interval / 30)} Month Ago`
                                 : interval > 0
-                                ? `${interval} Days ago`
-                                : 'Today'}
+                                  ? `${interval} Days ago`
+                                  : 'Today'}
                             </Typography>
                           ) : (
                             <Typography
@@ -457,42 +507,40 @@ function Submitted(props) {
             </div>
             {dataincoming && dataincoming?.hwcwstatus
               ? tableData &&
-                tableData[indexphotos]?.uploaded_file?.map((file, index) => {
-                  const filename = file.split('/')[3];
+              tableData[indexphotos]?.uploaded_file?.map((file, index) => {
+                const filename = file.split('/')[3];
 
-                  return (
-                    <div>
-                      <Card
-                        style={{ display: 'flex' }}
-                        onClick={() =>
-                          inputImage(`${endpoints.lessonPlan.s3erp}homework/${file}`)
-                        }
-                      >
-                        <FileCopyIcon />
-                        <p>{filename}</p>
-                      </Card>
-                    </div>
-                  );
-                  // <div><Card style={{ display: 'flex' }} onClick={setInd(index)}><FileCopyIcon /><p>{file.title}</p></Card></div>)
-                })
+                return (
+                  <div>
+                    <Card
+                      style={{ display: 'flex' }}
+                      onClick={() =>
+                        inputImage(`${endpoints.lessonPlan.s3erp}homework/${file}`)
+                      }
+                    >
+                      <FileCopyIcon />
+                      <p>{filename}</p>
+                    </Card>
+                  </div>
+                );
+              })
               : fileData.length &&
-                fileData.map((file, index) => {
-                  const filename = file.split('/')[6];
-                  return (
-                    <div>
-                      <Card
-                        style={{ display: 'flex' }}
-                        onClick={() =>
-                          inputImage(`${endpoints.discussionForum.s3}${file}`)
-                        }
-                      >
-                        <FileCopyIcon />
-                        <p>{filename}</p>
-                      </Card>
-                    </div>
-                  );
-                  // <div><Card style={{ display: 'flex' }} onClick={setInd(index)}><FileCopyIcon /><p>{file.title}</p></Card></div>)
-                })}
+              fileData.map((file, index) => {
+                const filename = file.split('/')[6];
+                return (
+                  <div>
+                    <Card
+                      style={{ display: 'flex' }}
+                      onClick={() =>
+                        inputImage(`${endpoints.discussionForum.s3}${file}`)
+                      }
+                    >
+                      <FileCopyIcon />
+                      <p>{filename}</p>
+                    </Card>
+                  </div>
+                );
+              })}
           </div>
           <div
             style={{
@@ -504,19 +552,19 @@ function Submitted(props) {
             }}
           >
             <img src='' ref={inputRef}></img>
-            {/* <img src='https://d3ka3pry54wyko.cloudfront.net/0/None/2022-03-25 14:01:45.279983/Screenshot 2022-03-15 at 11.21.00 AM.png'></img> */}
+
           </div>
         </div>
       </Dialog>
       {tableData && tableData?.length === 0 ? (
         <div style={{ height: 400, margin: 'auto', marginTop: '70px' }}>
-          <NoFilterData data={'No Data Found'} />
+          {/* <NoFilterData data={'No Data Found'} /> */}
         </div>
       ) : (
-        <ModalSubmitted
+        <ModalPending
           index1={dataincoming?.hwcwstatus}
           row={tableData[popup]}
-          col={pendingData}
+          col={dataLast}
           open={open}
           handleClose={handleClose}
         />
