@@ -95,11 +95,14 @@ function TodayAttendance({ attendanceDetail }) {
           <Typography
             onClick={viewAttendanceHandler}
             style={{
-              position: 'relative',
-              left: '315px',
+              // position: 'relative',
+              // left: '361px',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'center',
+              marginTop: 10,
               fontSize: '12px',
               fontWeight: '800',
-              top: '14px',
               cursor: 'pointer',
             }}
           >
@@ -107,11 +110,10 @@ function TodayAttendance({ attendanceDetail }) {
             <ArrowForwardIosIcon
               size='small'
               style={{
-                height: '12px',
-                width: '12 px',
+                height: '14px',
+                width: '14px',
                 color: 'black',
-                marginLeft: '-5px',
-                marginTop: '5px',
+                marginLeft: '5px',
               }}
             />
           </Typography>

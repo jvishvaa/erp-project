@@ -28,7 +28,6 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import NoFilterData from 'components/noFilteredData/noFilterData';
 import { FilterContext } from './ClassworkThree';
 
-// import { dataPropsContext } from './Details';
 import moment from 'moment';
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -45,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Remarks(props) {
-  // console.log('debugrema', props);
   const [tableData, setTableData] = useState([]);
   const [fileData, setFileData] = useState([]);
   const [tableIndex, setIndex] = useState(null);
@@ -96,7 +94,13 @@ function Remarks(props) {
         }
       )
       .then((result) => {
-        if (result?.data?.evaluated_list) setTableData(result?.data?.evaluated_list);
+        if (result?.data?.status_code === 200) {
+          if (result?.data?.evaluated_list) {
+            setTableData(result?.data?.evaluated_list);
+          } else {
+            setTableData([])
+          }
+        }
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -108,14 +112,8 @@ function Remarks(props) {
     UpdatedHwlist();
   }, [props?.Date2, defaultdate, subjectmappingId]);
 
-  // useEffect(() => {
-  //   fileList();
-  // }, [on]);
   const handleClickOn = () => {
     setOn(true);
-    // {dataincoming.hwcwstatus?
-    //   setFileData()
-    //   :
   };
 
   useEffect(() => {
@@ -129,8 +127,6 @@ function Remarks(props) {
   return (
     <>
       <Grid container>
-        {/* <Typography style={{ fontSize: '10px', fontWeight: '700' }}> */}
-        {/* Student List */}
         <Grid
           item
           xs={12}
@@ -138,8 +134,6 @@ function Remarks(props) {
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            // backgroundColor: 'green',
-            // width: 700,
           }}
         >
           <Grid xs={6} md={6}>
@@ -180,9 +174,8 @@ function Remarks(props) {
                 return (
                   <TableBody>
                     <TableRow
-                      // key=bonnie
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                      // onClick={assessmentHandler}
+                    // onClick={assessmentHandler}
                     >
                       <TableCell
                         style={{ display: 'flex', justifyContent: 'flex-start' }}
@@ -221,7 +214,7 @@ function Remarks(props) {
                             width: 'maxContent',
                           }}
                         >
-                          <Typography>''</Typography>
+                          <Typography></Typography>
                         </Grid>
                       </TableCell>
                       <TableCell style={{ paddingRight: '15rem' }}></TableCell>
