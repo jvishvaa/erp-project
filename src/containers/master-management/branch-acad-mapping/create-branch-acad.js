@@ -55,8 +55,9 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
       })
       .catch((error) => {
         setLoading(false);
-        setAlert('error', error.response.data.message || error.response.data.msg);
-      });
+        if((error.response.data.message ||  error.response.data.msg) == "non_field_errors: The fields session_year, branch must make a unique set.")
+          setAlert('error', "Branch is Already Mapped");
+        });
   };
 
   const handleAcademicYear = (event, value) => {
