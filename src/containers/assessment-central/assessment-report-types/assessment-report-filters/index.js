@@ -160,6 +160,7 @@ const AssessmentReportFilters = ({
   const handlePreview = () => {
     setLoading(true);
     let paramObj = {
+      session_year_id: selectedAcademicYear?.id,
       acad_session: filterData.branch?.id,
       erp: filterData.erp?.erp_id,
       grade: filterData.grade?.grade_id,
