@@ -287,10 +287,10 @@ const OwnerDashboard = () => {
     //       Authorization: `Bearer ${token}`,
     //     },
     //   })
-    apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}`, null, null, true, 10000)
+    apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}&staff_details_type=1`, null, null, true, 10000)
       .then((res) => {
         // setRoleWiseAttendance(res.data.result)
-        console.log(res, 'staffover');
+        // console.log(res, 'staffover');
         setProgress1(initialState);
         setStaffOverall(res.data.result);
       })
