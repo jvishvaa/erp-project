@@ -368,6 +368,9 @@ export default {
     listBooksBookmarks: 'academic/list-books-bookmarks/',
     listBooksHighlight: 'academic/list-books-highlight/',
     ibookMappedGrade: '/academic/ibook_mapped_grades/',
+    moduleMapped:`${baseURLCentral}/lesson_plan/lt-module/`,
+    chapterMapped:`${baseURLCentral}/lesson_plan/chapter/`,
+    keyConceptMapped: `${baseURLCentral}/assessment/topic/`
   },
   email: {
     email: '/academic/email/',

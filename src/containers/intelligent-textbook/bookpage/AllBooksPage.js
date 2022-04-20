@@ -68,6 +68,11 @@ const AllBooksPage = () => {
   const [grade, setGrade] = useState('');
   const [subject, setSubject] = useState('');
   const [volume, setVolume] = useState('');
+  const [board, setBoard] = useState('');
+  const [moduleId,setModuleId] = useState('');
+  const [chapter, setChapter] = useState('');
+  const [keyConcept,setKeyConcept] = useState('');
+
 
   const [open, setOpen] = useState(false);
   const [bookImage, setBookImage] = useState(
@@ -137,9 +142,10 @@ const AllBooksPage = () => {
   // }, [pageNo]);
 
   useEffect(() => {
-    console.log(branch);
-    if(branch !== ''){
-      getEbook(acadmicYear , branch , grade , subject , volume)
+
+
+    if(branch != ''){
+      getEbook(acadmicYear , branch , grade , subject , volume, board,moduleId,chapter,keyConcept)
     }
   },[pageNo])
   const handlePagination = (event, page) => {
@@ -166,48 +172,52 @@ const AllBooksPage = () => {
 
   };
 
-  const handleFilter = (acad, branch, grade, sub, vol) => {
+  const handleFilter = (acad, branch, grade, sub, vol, board, moduleId, chapter, keyConcept) => {
     setAcadmicYear(acad);
     setBranch(branch);
     setGrade(grade);
     setSubject(sub);
     setVolume(vol);
-    getEbook(acad, branch, grade, sub, vol);
+    setBoard(board);
+    setModuleId(moduleId);
+    setChapter(chapter);
+    setKeyConcept(keyConcept);
+    getEbook(acad, branch, grade, sub, vol,board, moduleId,chapter, keyConcept);
   };
 
- 
-
-  const getEbook = (acad, branch, grade, subject, vol) => {
+  const getEbook = (acad, branch, grade, subject, vol, board, moduleId, chapter, keyConcept) => {
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     const filterGrade = `${grade ? `&grade=${grade?.central_grade}` : ''}`;
     const filterSubject = `${subject ? `&subject=${subject?.central_subject}` : ''}`;
     const filterVolumes = `${vol ? `&volume=${vol?.id}` : ''}`;
-    if ( branch != undefined ){
-
-    
-    setLoading(true);
-    axiosInstance
-      .get(
-        `${endpoints.ibook.studentBook
-        }?domain_name=${getDomainName()}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`
-      )
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setBooksData(result.data.result.result);
-          setTotalPages(Math.ceil(result.data.result.count / limit));
+    const filterBoard = `${board?.length !== 0 ? `&board_id=${board}` : ''}`;
+    const filterModule = `${moduleId?.length !== 0 ? `&lt_module=${moduleId?.id}` : ''}`;
+    const filterChapter = `${chapter?.length !== 0 ? `&chapter_id=${chapter?.id}` : ''}`;
+    const filterKeyConcept = `${keyConcept?.length !== 0 ? `&key_concept_id=${keyConcept?.id}` : ''}`
+    if(branch || grade || subject || vol || board || moduleId || chapter || keyConcept){
+      setLoading(true);
+      axiosInstance
+        .get(
+          `${endpoints.ibook.studentBook
+          }?domain_name=${getDomainName()}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterBoard}${filterModule}${filterChapter}${filterKeyConcept}`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setBooksData(result.data.result.result);
+            setTotalPages(Math.ceil(result.data.result.count / limit));
+            setLoading(false);
+          } else {
+            setLoading(false);
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
           setLoading(false);
-        } else {
-          setLoading(false);
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', error.message);
-      });
+          setAlert('error', error.message);
+        });
     } else{
-      setBooksData([])
+      setLoading(false)
     }
   };
 
