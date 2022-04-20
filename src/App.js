@@ -343,7 +343,7 @@ import Workshop from './components/Workshop';
 import LearningVideos from 'containers/sure-learning/MyNotes/learningAll';
 import EachLearn from 'containers/sure-learning/MyNotes/eachLearn';
 import WalletBulk from 'containers/Finance/src/components/Finance/NegativeBalanceAdjust/walletbulkupload';
-import  ExtraAmtAdjust  from 'containers/Finance/src/components/Finance/NegativeBalanceAdjust/negativeBalanceAdjust';
+import ExtraAmtAdjust from 'containers/Finance/src/components/Finance/NegativeBalanceAdjust/negativeBalanceAdjust';
 import StudentReport from 'containers/assessment-central/assessment-report-types/student-report/student-report';
 import WeeklyQuizPerformance from 'containers/assessment-central/assessment-report-types/student-report/weekly-quiz-performnace';
 import HolidayMark from 'containers/attendance/holidaymark';
@@ -393,11 +393,12 @@ import FeesStatusBranchWise from 'containers/dashboard/ownerDashboard/academic/f
 import GradeWiseFeesDetails from 'containers/dashboard/ownerDashboard/academic/feesStatus/GradeWiseFeesDetails';
 import TeacherDashboard from 'containers/dashboard/TeacherDashboardTwo/DashboardTeacher/TeacherDashboard';
 import TeacherDash from './containers/dashboard/TeacherDashboardTwo/index';
+import NewCommunication from './containers/communication/communicationV2/index';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
-  isMsAPI();
-  erpConfig();
+    isMsAPI();
+    erpConfig();
   }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
   return (
@@ -1359,13 +1360,13 @@ function App({ alert, isMsAPI, erpConfig }) {
                             )}
                           </Route>
                           <Route exact path='/teacher-attendance'>
-                            {({ match }) => <TeacherAttendance match={match}  />}
+                            {({ match }) => <TeacherAttendance match={match} />}
                           </Route>
                           <Route exact path='/teacher-attendance-verify'>
-                            {({ match }) => <TeacherAttendanceVerify match={match}  />}
+                            {({ match }) => <TeacherAttendanceVerify match={match} />}
                           </Route>
                           <Route exact path='/observation-area'>
-                            {({ match }) => <Observation match={match}  />}
+                            {({ match }) => <Observation match={match} />}
                           </Route>
                           <Route path='/observation'>
                             {({ match }) => <Observationarea match={match} />}
@@ -1679,7 +1680,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                             {({ match }) => <One match={match} />}
                           </Route>
 
-                          
+
 
                           <Route exact path='/allchapterContentUnit'>
                             {({ match }) => <Unit match={match} />}
@@ -1709,19 +1710,19 @@ function App({ alert, isMsAPI, erpConfig }) {
 
                           <Route path='/walletbulkupload'>
                             {({ match }) => <WalletBulk match={match} />}
-                          </Route> 
+                          </Route>
 
                           <Route path='/studentrefer'>
                             {({ match }) => <StudentRefer match={match} />}
-                          </Route> 
+                          </Route>
 
                           <Route path='/successrefer'>
                             {({ match }) => <ReferSuccess match={match} />}
-                          </Route> 
+                          </Route>
 
                           <Route path='/holidaymarking'>
                             {({ match }) => <HolidayMark match={match} />}
-                          </Route> 
+                          </Route>
 
                           <Route path='/student_count_report'>
                             {({ match }) => <StudentCountReport match={match} />}
@@ -1856,6 +1857,10 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route path='/teacherdashboards'>
                             {({ match }) => <TeacherDash match={match} />}
                           </Route>
+                          <Route path='/comm_dashboard'>
+                            {({ match }) => <NewCommunication match={match} />}
+                          </Route>
+
 
 
                           <Route path='*'>
