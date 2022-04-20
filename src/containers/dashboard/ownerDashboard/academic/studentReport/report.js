@@ -326,7 +326,14 @@ const StudentReport = (props) => {
         <Grid container spacing={3}>
           <Grid item xs={12}>
             <div className={clsx(classes.breadcrumb)}>
-              <IconButton size='small' onClick={() => history.goBack()} >
+              <IconButton size='small' onClick={() =>
+                    history.push({
+                      pathname: '/dashboard',
+                      state: {
+                        stateView: 'StudentDetails',
+                      },
+                    })
+                  } >
                 <ArrowBackIcon />
               </IconButton>
               <Typography variant='h6' className={clsx(classes.textBold)}>

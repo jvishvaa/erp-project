@@ -454,6 +454,22 @@ const FinanceOwnerDashboard = (props) => {
     }
   };
 
+  const handleBranchRoute = (data) => {
+    history.push({
+      pathname: `/curriculum-completion-branchWise`,
+      state: {
+        branchData: data,
+        module_id: props?.moduleId,
+      }
+    })
+  }
+
+  useEffect(()=> {
+    if(history?.location?.state?.stateView === "StudentDetails"){
+      setAcademicPerformanceDetailsOpen(true);
+    }
+  },[])
+
   return (
     <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
       <Grid item container spacing={2}>
@@ -705,10 +721,10 @@ const FinanceOwnerDashboard = (props) => {
                       <Typography
                         // variant='h5'
                         style={{ display: 'flex' }}
-                        className={clsx(classes.clickable)}
+                        className={clsx(classes.clickable,classes.cardtopicStyle)}
                         // onClick={() => user_level != 10 ? history.push('/fees-table-status') : ''}
                         onClick={feeredirect}
-                        className={clsx(classes.cardtopicStyle)}
+                        // className={clsx(classes.cardtopicStyle)}
                       >
                         <b>Fee Status Overview :</b>{' '}
                         {props?.branchCounter ? (
