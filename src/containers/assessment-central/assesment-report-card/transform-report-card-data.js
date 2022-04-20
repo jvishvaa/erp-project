@@ -244,7 +244,8 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
   const { subjectMarks: subjectMarksSemesterOne = {} } = semesterOne || {};
   const { subjectMarks: subjectMarksSemesterTwo = {} } = semesterTwo || {};
   // const { subjectAnnualMarks: subjectAnnualMarks = {} } = annualFinalDetail || {};
-  let subjectsList = Object.keys(subjectMarksSemesterOne);
+  let subjectsList = subjectMarksSemesterOne ? Object.keys(subjectMarksSemesterOne) : Object.keys(subjectMarksSemesterTwo);
+  let subjectsListCo = subjectMarksSemesterTwo ? Object.keys(subjectMarksSemesterTwo) : Object.keys(subjectMarksSemesterOne);
   let semesterOneSubjectWiseMarks = generateSemesterMarks(
     subjectMarksSemesterOne,
     categoryKeys,
@@ -281,9 +282,31 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
         ...transformedSemTwo,
       ];
     }
-    if (finalAnnResult !== semOneLength) {
+    else {
+      if (subjectMarksSemesterTwo) {
+        const diff = semTwoLength - semOneLength;
+        let transformedSemOne = Array.from({ length: diff }, () =>
+          Array.from({ length: semesterTwoSubjectWiseMarks[0].length }, () => null)
+        );
+        semesterOneSubjectWiseMarks = [
+          ...semesterOneSubjectWiseMarks,
+          ...transformedSemOne,
+        ];
+      }
+    }
+    if ((finalAnnResult !== semOneLength) || (finalAnnResult !== semTwoLength)) {
       if (semOneLength > finalAnnResult) {
         const diff = semOneLength - finalAnnResult;
+        let transformedAnn = Array.from({ length: diff }, () =>
+          Array.from({ length: 4 }, () => null)
+        );
+        isAnnualData = [
+          ...isAnnualData,
+          ...transformedAnn,
+        ]
+      }
+      else if (semTwoLength > finalAnnResult) {
+        const diff = semTwoLength - finalAnnResult;
         let transformedAnn = Array.from({ length: diff }, () =>
           Array.from({ length: 4 }, () => null)
         );
@@ -300,10 +323,10 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
   //Joining rows of both sems
   const semesterMarks = isAirVisible
     ? semesterOneSubjectWiseMarks.map((semesterOneSubject, index) => [
-      subjectsList[index],
+      subjectsList[index] || subjectsListCo[index] || '',
       ...semesterOneSubject,
-      ...semesterTwoSubjectWiseMarks[index],
-      ...isAnnualData[index]
+      ...semesterTwoSubjectWiseMarks[index] || '',
+      ...isAnnualData[index] || ''
       // annualData ? annualData[index][0] : '',
       // annualData ? annualData[index][1] : '',
       // annualData ? annualData[index][2] : '',
@@ -314,10 +337,10 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
       // '', // Annual AIR
     ])
     : semesterOneSubjectWiseMarks.map((semesterOneSubject, index) => [
-      subjectsList[index],
+      subjectsList[index] || subjectsListCo[index] || '',
       ...semesterOneSubject,
-      ...semesterTwoSubjectWiseMarks[index],
-      ...isAnnualData[index]
+      ...semesterTwoSubjectWiseMarks[index] || '',
+      ...isAnnualData[index] || ""
       // annualData ? annualData[index] : '',
       // annualData ? annualData[index] : '',
       // annualData ? annualData[index] : '',
