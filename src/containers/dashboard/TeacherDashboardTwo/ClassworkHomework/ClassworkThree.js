@@ -212,8 +212,7 @@ function ClassworkThree(props) {
     // setSelectedSection([]);
     // setSelectedSubject([]);
     callApi(
-      `${
-        endpoints.academics.grades
+      `${endpoints.academics.grades
       }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&module_id=${2}`,
       'gradeList'
     );
@@ -227,8 +226,7 @@ function ClassworkThree(props) {
     setSelectedGradeIds(selectedId);
 
     callApi(
-      `${
-        endpoints.academics.sections
+      `${endpoints.academics.sections
       }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&grade_id=${selectedId?.toString()}&module_id=${2}`,
       'section'
     );
@@ -249,8 +247,7 @@ function ClassworkThree(props) {
       setSelectedSection(value);
       setSelectedSectionIds(selectedsecctionId);
       callApi(
-        `${
-          endpoints.academics.subjects
+        `${endpoints.academics.subjects
         }?session_year=${sessionYearIDDDD}&branch=${databranch}&grade=${selectedGradeIds?.toString()}&section=${selectedsecctionId.toString()}&module_id=${2}`,
         'subject'
       );
@@ -320,6 +317,7 @@ function ClassworkThree(props) {
   };
 
   const displayDetails = () => {
+
     return (
       <FilterContext.Provider value={datapass}>
         <Grid style={{ width: '100%' }}>
@@ -363,7 +361,7 @@ function ClassworkThree(props) {
 
   useEffect(() => {
     displayDetails();
-  }, [sectionId, selectedSectionIds, defaultdate, selectedGradeIds, subjectmappingId]);
+  }, [sectionId, selectedSectionIds, defaultdate, selectedGradeIds, subjectmappingId, subjectId]);
 
   const classWorkTotal = classworkData[0]?.classwork_details?.total;
 
@@ -485,26 +483,7 @@ function ClassworkThree(props) {
             alignItems='center'
           >
             <Grid item style={{ paddingLeft: 15 }}>
-              {/* <TextField
-                id='input-with-icon-textfield'
-                placeholder='Search'
-                variant='outlined'
-                margin='dense'
-                size='small'
-                style={{
-                  width: 250,
-                  backgroundColor: 'white',
-                  borderRadius: 5,
-                  transform: 'scaleY(0.8)',
-                }}
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position='start' style={{ pointerEvents: 'none' }}>
-                      <Search />
-                    </InputAdornment>
-                  ),
-                }}
-              /> */}
+
             </Grid>
             <Grid item>
               <Grid
