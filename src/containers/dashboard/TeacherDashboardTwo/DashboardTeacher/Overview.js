@@ -54,65 +54,102 @@ function Overview({ recentSubmissionDetail, overviewDetails, acadId }) {
           </div>
           {recentSubmissionDetail?.length != 0 ? (
             <>
-              <Grid style={{ display: 'flex' }}>
+              <Grid
+                style={{
+                  display: 'flex',
+                  backgroundColor: '#F3F3F3',
+                  justifyContent: 'space-around',
+                }}
+              >
                 <Typography
-                  style={{ marginRight: '40px', fontSize: '12px', fontWeight: 800 }}
+                  style={{
+                    marginLeft: '-30px',
+                    fontSize: '12px',
+                    fontWeight: 800,
+                    color: '#8A8A8A',
+                  }}
                 >
                   Branch Details
                 </Typography>
-                <Typography
+                <div
                   style={{
-                    marginLeft: '38px',
-                    marginRight: '31px',
-                    fontSize: '12px',
-                    fontWeight: 800,
+                    display: 'flex',
+                    justifyContent: 'space-around',
+                    // marginLeft: '30px',
                   }}
                 >
-                  Home Work
-                </Typography>
-                <Typography
-                  style={{ marginRight: '40px', fontSize: '12px', fontWeight: 800 }}
-                >
-                  Class Work
-                </Typography>
+                  <Typography
+                    style={{
+                      marginLeft: '25px',
+                      marginRight: '50px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      color: '#8A8A8A',
+                    }}
+                  >
+                    Home Work
+                  </Typography>
+                  <Typography
+                    style={{
+                      marginRight: '10px',
+                      fontSize: '12px',
+                      fontWeight: 800,
+                      color: '#8A8A8A',
+                    }}
+                  >
+                    Class Work
+                  </Typography>
+                </div>
               </Grid>
               {recentSubmissionDetail.map((item) => {
                 return (
                   <div>
-                    <Accordion style={{ backgroundColor: '#F3F3F3' }}>
+                    <Accordion style={{}}>
                       <AccordionSummary
+                        style={{ padding: 0 }}
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls='panel1a-content'
                         id='panel1a-header'
                       >
                         <Grid
-                          style={{ display: 'flex', justifyContent: 'space-between' }}
+                          style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            width: '100%',
+                          }}
                         >
-                          <div style={{ width: '110px' }}>
+                          <div style={{ width: '160px' }}>
                             <Typography
                               style={{
-                                fontSize: '12px',
+                                fontSize: '13px',
                                 position: 'relative',
                                 color: 'black',
                                 top: '25%',
                                 textOverflow: 'ellipsis',
                                 overflow: 'hidden',
+                                fontWeight: 'bold',
+                                paddingLeft: 25,
                               }}
                             >
                               {item.branch_name}
                             </Typography>
                           </div>
                           <div
-                            style={{ display: 'flex', justifyContent: 'space-between' }}
+                            style={{
+                              display: 'flex',
+                              justifyContent: 'space-around',
+                              minWidth: '45%',
+                            }}
                           >
-                            <Grid style={{ marginRight: '40px', marginLeft: '30px' }}>
+                            <Grid>
                               <CirclePercentage
+                                style={{ margin: '0 auto' }}
                                 height='50px'
                                 width='50px'
                                 percent={item?.total_hw_percent}
                               />
                             </Grid>
-                            <Grid>
+                            <Grid style={{ marginLeft: 40 }}>
                               <CirclePercentage
                                 height='50px'
                                 width='50px'
@@ -123,74 +160,141 @@ function Overview({ recentSubmissionDetail, overviewDetails, acadId }) {
                         </Grid>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <div
+                        <Grid
+                          container
                           style={{
                             display: 'flex',
-                            flexDirection: 'row',
                           }}
                         >
                           <Grid
                             item
-                            container
+                            xs={12}
+                            md={5}
                             style={{
                               display: 'flex',
                               flexDirection: 'column',
-                              width: '350px',
+                              textAlign: 'right',
+                              paddingRight: 5,
                             }}
                           >
-                            <Typography style={{ color: '#4DC41B', fontSize: '12px' }}>
+                            <Typography
+                              style={{
+                                color: '#4DC41B',
+                                fontSize: '12px',
+                                paddingBottom: 2,
+                              }}
+                            >
                               Submitted
                             </Typography>
-                            <Typography style={{ color: '#F2A127', fontSize: '12px' }}>
+                            <Typography
+                              style={{
+                                color: '#F2A127',
+                                fontSize: '12px',
+                                paddingBottom: 2,
+                              }}
+                            >
                               Pending
                             </Typography>
-                            <Typography style={{ color: '#3A90E6', fontSize: '12px' }}>
+                            <Typography
+                              style={{
+                                color: '#3A90E6',
+                                fontSize: '12px',
+                                paddingBottom: 2,
+                              }}
+                            >
                               Evaluated
                             </Typography>
                           </Grid>
-                          <Grid item container>
-                            <Grid
-                              item
-                              container
+
+                          <Grid
+                            item
+                            md={3}
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              textAlign: 'center',
+                            }}
+                          >
+                            <Typography
                               style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                marginLeft: '37px',
-                                // marginRight: '70px',
+                                fontSize: '12px',
+                                backgroundColor: '#F1F4F6',
+                                paddingBottom: 2,
+                                marginBottom: '1px solid black',
+                                borderRadius: 2,
                               }}
                             >
-                              <Typography style={{ fontSize: '12px' }}>
-                                {item?.total_hw_submitted}
-                              </Typography>
-                              <Typography style={{ fontSize: '12px' }}>
-                                {item?.total_hw_pending}
-                              </Typography>
-                              <Typography style={{ fontSize: '12px' }}>
-                                {item?.total_hw_evaluated}
-                              </Typography>
-                            </Grid>
-                          </Grid>
-                          <Grid item container>
-                            <Grid
-                              item
-                              container
+                              {item?.total_hw_submitted}
+                            </Typography>
+                            <Typography
                               style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                marginLeft: '-5px',
-                                // marginRight: '20px',
+                                fontSize: '12px',
+                                backgroundColor: '#F1F4F6',
+                                paddingBottom: 2,
+                                marginBottom: '1px solid black',
+                                borderRadius: 2,
                               }}
                             >
-                              <Typography style={{ fontSize: '12px' }}>
-                                {item.total_cw_submitted}
-                              </Typography>
-                              <Typography style={{ fontSize: '12px' }}>
-                                {item.total_cw_pending}
-                              </Typography>
-                              <Typography style={{ fontSize: '12px' }}></Typography>
-                            </Grid>
+                              {item?.total_hw_pending}
+                            </Typography>
+                            <Typography
+                              style={{
+                                fontSize: '12px',
+                                backgroundColor: '#F1F4F6',
+                                paddingBottom: 2,
+                                marginBottom: '1px solid black',
+                                borderRadius: 2,
+                              }}
+                            >
+                              {item?.total_hw_evaluated}
+                            </Typography>
                           </Grid>
-                        </div>
+
+                          <Grid
+                            item
+                            md={3}
+                            style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              textAlign: 'center',
+                              marginLeft: 2,
+                            }}
+                          >
+                            <Typography
+                              style={{
+                                fontSize: '12px',
+                                backgroundColor: '#F1F4F6',
+                                paddingBottom: 2,
+                                marginBottom: '1px solid black',
+                                borderRadius: 2,
+                              }}
+                            >
+                              {item.total_cw_submitted}
+                            </Typography>
+                            <Typography
+                              style={{
+                                fontSize: '12px',
+                                backgroundColor: '#F1F4F6',
+                                paddingBottom: 2,
+                                marginBottom: '1px solid black',
+                                borderRadius: 2,
+                              }}
+                            >
+                              {item.total_cw_pending}
+                            </Typography>
+                            <Typography
+                              style={{
+                                fontSize: '12px',
+                                backgroundColor: '#F1F4F6',
+                                paddingBottom: 2,
+                                marginBottom: '1px solid black',
+                                borderRadius: 2,
+                              }}
+                            >
+
+                            </Typography>
+                          </Grid>
+                        </Grid>
                       </AccordionDetails>
                       <div
                         onClick={() => homeworkClassWork(item)}
