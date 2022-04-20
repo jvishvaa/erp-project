@@ -114,6 +114,8 @@ const useStyles = makeStyles((theme) => ({
 const EditPeriod = withRouter(({ history, ...props }) => {
   const { id } = useParams();
   const { start, end } = history?.location?.state?.data;
+  const periodEnd = `${moment(end).format('YYYY-MM-DD')}`
+  const TodayDate = `${moment(new Date()).format('YYYY-MM-DD')}`
   const grade = history?.location?.state?.data?.grade?.name;
   const section = history?.location?.state?.data?.section?.name;
   const subject = history?.location?.state?.data?.subject?.id;
@@ -547,7 +549,7 @@ const EditPeriod = withRouter(({ history, ...props }) => {
         return (
           <>
             <Box p={23}>
-              {periodDetails?.ongoing_status !== 'Completed' && !isStudent && (
+              {TodayDate === periodEnd && !isStudent && (
                 <>
                   <h4> Select a Topic to teach in this period</h4>
                   <Button
