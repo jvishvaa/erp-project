@@ -101,7 +101,8 @@ const Filter = ({ handleFilter, clearFilter }) => {
     setSelectedBranch('');
     setSelectedGrade('');
     setSelectedSubject('');
-    setSelectedBoard('');
+    setSelectedBoard([]);
+    setSelectedBoardId([])
   }, [clearFilter]);
 
   function ApiCal() {
@@ -302,10 +303,11 @@ const Filter = ({ handleFilter, clearFilter }) => {
     setSelectedBranch('');
     setSelectedGrade('');
     setSelectedSubject('');
-    setSelectedBoard('');
+    setSelectedBoard([]);
     setSelectedModule('');
     setSelectedChapterList('')
     setSelectedKeyConcept('')
+    setSelectedBoardId([])
   }
 
   return (

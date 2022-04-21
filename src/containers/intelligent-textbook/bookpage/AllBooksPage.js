@@ -173,6 +173,7 @@ const AllBooksPage = () => {
   };
 
   const handleFilter = (acad, branch, grade, sub, vol, board, moduleId, chapter, keyConcept) => {
+    // console.log(board, 'Checking')
     setAcadmicYear(acad);
     setBranch(branch);
     setGrade(grade);
@@ -195,7 +196,7 @@ const AllBooksPage = () => {
     const filterModule = `${moduleId?.length !== 0 ? `&lt_module=${moduleId?.id}` : ''}`;
     const filterChapter = `${chapter?.length !== 0 ? `&chapter_id=${chapter?.id}` : ''}`;
     const filterKeyConcept = `${keyConcept?.length !== 0 ? `&key_concept_id=${keyConcept?.id}` : ''}`
-    if(branch || grade || subject || vol || board || moduleId || chapter || keyConcept){
+    if(branch || grade || subject || vol || moduleId || chapter || keyConcept){
       setLoading(true);
       axiosInstance
         .get(
@@ -206,6 +207,7 @@ const AllBooksPage = () => {
           if (result.data.status_code === 200) {
             setBooksData(result.data.result.result);
             setTotalPages(Math.ceil(result.data.result.count / limit));
+            // setAlert('success',result.data.message)
             setLoading(false);
           } else {
             setLoading(false);
@@ -217,6 +219,7 @@ const AllBooksPage = () => {
           setAlert('error', error.message);
         });
     } else{
+      // setAlert('error',"Please Select the Filters")
       setLoading(false)
       setBooksData([])
       setTotalPages('')
