@@ -403,6 +403,9 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
     if (!title) {
       setAlert('warning', 'Please add title');
     }
+    if(title.length > 50){
+      setAlert('warning', 'Please enter Title within 50 Characters');
+    }
     if (!selectedAnnouncementId) {
       setAlert('warning', 'Please select announcement category');
     }
@@ -419,7 +422,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
       setAlert('warning', 'Please select user level');
     }
 
-    if (selectedBranchId && selectedUserLevelId.length > 0 && title && textEditorContent && selectedAnnouncementId) {
+    if (selectedBranchId && selectedUserLevelId.length > 0 && title && title.length<50 && textEditorContent && selectedAnnouncementId) {
       let payLoad = {
         branch_id: selectedBranchId.toString() || '',
         // "section_mapping_id" : selectedSectionMappingId.toString() || "",
