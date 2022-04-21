@@ -218,6 +218,8 @@ const AllBooksPage = () => {
         });
     } else{
       setLoading(false)
+      setBooksData([])
+      setTotalPages('')
     }
   };
 
@@ -296,8 +298,14 @@ const AllBooksPage = () => {
                                 ></Grid>
                                 <Grid item md={12} xs={12}>
                                   <Typography
-                                    title='wings'
                                     className={classes.textEffect}
+                                    style={{
+                                      overflow: 'hidden',
+                                      whiteSpace: 'nowrap',
+                                      textOverflow: 'ellipsis',
+                                      cursor:'pointer'
+                                    }}
+                                    title={item?.book_name || ''}
                                   >
                                     {item.book_name}
                                   </Typography>
