@@ -229,7 +229,7 @@ class ViewEbook extends Component {
     }
   };
 
-  getEbook = (acad, branch, grade, subject, vol) => {
+  getEbook = (acad, branch, grade, subject, vol,customGrade) => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
     const hostSplitArray = host.split('.');
@@ -250,7 +250,15 @@ class ViewEbook extends Component {
     const domainTobeSent = subDomain;
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
-    const filterGrade = `${grade ? `&grade=[${grade?.central_grade}]` : ''}`;
+    let filterGrade
+    if(customGrade){
+       filterGrade = `${grade ? `&grade=[${customGrade}]` : ''}`;
+
+    }else {
+       filterGrade = `${grade ? `&grade=[${grade?.central_grade}]` : ''}`;
+
+    }
+    // const filterGrade = `${grade ? `&grade=[${grade?.central_grade}]` : ''}`;
 
     const filterSubject = `${subject ? `&subject=${subject}` : ''}`;
     const filterVolumes = `${vol ? `&volume=${vol?.id}` : ''}`;
@@ -304,14 +312,14 @@ class ViewEbook extends Component {
       });
   };
 
-  handleFilter = (acad, branch, grade, sub, vol) => {
+  handleFilter = (acad, branch, grade, sub, vol, customGrade) => {
     this.state.pageNo = 1;
     this.state.acadmicYear = acad;
     this.state.selectedBranch = branch;
     this.state.selectedGrade = grade;
     this.state.selectedSubject = sub.central_subject;
     this.state.selectedVolume = vol;
-    this.getEbook(acad, branch, grade, sub.central_subject, vol);
+    this.getEbook(acad, branch, grade, sub.central_subject, vol,customGrade);
   };
 
   handleClearFilter = () => {

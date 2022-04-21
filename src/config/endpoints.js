@@ -101,6 +101,14 @@ export default {
     userStatusChange: '/erp_user/',
     getMessages: '/communication/email-sms-logs/',
   },
+  announcementNew: {
+    uploadingFile: '/announcement/upload-announcement-file/',
+    inbox: '/announcement/v2/inbox/',
+    getAnnouncemenetCategory: '/announcement/announcement-category/',
+    getMembersData: `/announcement/members/`,
+    createAnnouncement: '/announcement/create/',
+    publish: 'announcement/v2/announcement-update'
+  },
   onlineClass: {
     // batchList: '/erp_user/batch-student-list/',
     batchList: '/aol/batch_shuffle/',
@@ -360,6 +368,9 @@ export default {
     listBooksBookmarks: 'academic/list-books-bookmarks/',
     listBooksHighlight: 'academic/list-books-highlight/',
     ibookMappedGrade: '/academic/ibook_mapped_grades/',
+    moduleMapped:`${baseURLCentral}/lesson_plan/lt-module/`,
+    chapterMapped:`${baseURLCentral}/lesson_plan/chapter/`,
+    keyConceptMapped: `${baseURLCentral}/assessment/topic/`
   },
   email: {
     email: '/academic/email/',

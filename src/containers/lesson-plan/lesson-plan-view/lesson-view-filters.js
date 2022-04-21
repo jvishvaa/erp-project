@@ -461,7 +461,8 @@ const LessonViewFilters = ({
         }
         return {};
       });
-      axiosInstance
+      if(erp_year && erp_year?.id){
+        axiosInstance
         .get(
           `${endpoints.communication.branches}?session_year=${
             erp_year?.id
@@ -481,6 +482,10 @@ const LessonViewFilters = ({
         .catch((error) => {
           setAlert('error', error.message);
         });
+      }else{
+        setAlert('error', `No Data Found For The Academic Year ${filterData.year?.session_year}`)
+      }
+      
     }
   }, [filterData.year, academicYear]);
 
