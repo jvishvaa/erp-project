@@ -62,7 +62,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
   const isStudentIncluded = selectedUserLevelId.includes(13);
 
   const [branchList, setBranchList] = useState([]);
-  const [selectedbranchListData, setSelectedbranchListData] = useState();
+  const [selectedbranchListData, setSelectedbranchListData] = useState({});
   const [selectedBranchId, setSelectedBranchId] = useState('');
 
   const [gradeList, setGradeList] = useState([]);
@@ -265,13 +265,35 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
       const ids = value.map((el) => el.id);
       setSelectedUserLevelData(data);
       setSelectedUserLevelId(ids);
+      setSelectedGradeId([]);
+      setGradeList([]);
+      setSelectedGradeListData([]);
+      setSelectedSectionId([]);
+      setSectionList([]);
+      setSelectedSectionMappingId([]);
+      setSelectedSectionListData([]);
+      setMemberCount()
+      setBranchList([])
+      setSelectedBranchId('')
+      setSelectedbranchListData(null)
     } else {
       setSelectedUserLevelData([]);
       setSelectedUserLevelId([]);
+      setSelectedGradeId([]);
+      setGradeList([]);
+      setSelectedGradeListData([]);
+      setSelectedSectionId([]);
+      setSectionList([]);
+      setSelectedSectionMappingId([]);
+      setSelectedSectionListData([]);
+      setMemberCount()
+      setBranchList([])
+      setSelectedBranchId('')
+      setSelectedbranchListData(null)
     }
   };
 
-  const handleBranch = (e, value = []) => {
+  const handleBranch = (e, value) => {
     if (value) {
       // const data = value.map((el) => el);
       // const ids = value.map((el)=> el.id)
@@ -284,6 +306,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
       setSelectedSectionListData([]);
       setSelectedbranchListData(value);
       setSelectedBranchId(value.id);
+      setMemberCount()
     } else {
       setSelectedbranchListData();
       setSelectedBranchId('');
@@ -294,6 +317,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
       setSectionList([]);
       setSelectedSectionMappingId([]);
       setSelectedSectionListData([]);
+      setMemberCount()
     }
   };
 
@@ -307,6 +331,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
       setSelectedSectionListData([]);
       setSelectedGradeListData(data);
       setSelectedGradeId(ids);
+      setMemberCount()
     } else {
       setSelectedSectionId([]);
       setSectionList([]);
@@ -314,6 +339,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
       setSelectedSectionListData([]);
       setSelectedGradeListData([]);
       setSelectedGradeId([]);
+      setMemberCount()
     }
   };
 
@@ -594,9 +620,9 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
         <b style={{ marginTop: '10px' }}>Main Body</b>
         <MyTinyEditor
           id='Editor'
-          //description={description}
+          //description={Description}
           content={textEditorContent}
-          placeholder='description...'
+          placeholder='Description...'
           handleEditorChange={handleEditorChange}
           onChange={(e) => setContent(e.target.value)}
           //   handleEditorChange={handleEditorChange}

@@ -88,6 +88,13 @@ const useStyles = makeStyles((theme) => ({
     display: 'block',
     width: '100%',
   },
+  listItem: {
+    '&.active': {
+      color: 'white !important',
+      backgroundColor: "#4185F4" ,
+      borderRadius: '20px', 
+    },
+  },
 }));
 
 const NewCommunication = () => {
@@ -213,7 +220,7 @@ const NewCommunication = () => {
     axiosInstance
       .get(`${url}`, {
         headers: {
-          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
           'X-DTS-HOST': window.location.host,
           Authorization: `Bearer ${userToken}`,
         },
@@ -231,8 +238,10 @@ const NewCommunication = () => {
   };
 
   useEffect(() => {
-    rowsData();
-  }, [onClickIndex]);
+    if (moduleId) {
+      rowsData();
+    }
+  }, [onClickIndex, moduleId]);
 
   const dateUpdatefun = (event) => {
     setDefaultDate(event.target.value);
@@ -315,10 +324,12 @@ const NewCommunication = () => {
   };
 
   useEffect(() => {
-    getBranch();
-    getGrade();
-    getSection();
-  }, [selectedGradeId]);
+    if (moduleId) {
+      getBranch();
+      getGrade();
+      getSection();
+    }
+  }, [selectedGradeId, moduleId]);
 
   const updatePublish = (id) => {
     const params = {
@@ -409,21 +420,23 @@ const NewCommunication = () => {
               <div style={{ paddingTop: '10px', color: '#347394', fontSize: '20px' }}>
                 Announcements
               </div>
-              <div
-                style={{
-                  paddingTop: '10px',
-                  color: '#347394',
-                  fontSize: '20px',
-                  cursor: 'pointer',
-                }}
-              >
-                <Typography
-                  onClick={handleRightClick}
-                  style={{ display: 'flex', alignItems: 'center' }}
+              {userLevel !== 12 && userLevel !== 13 && (
+                <div
+                  style={{
+                    paddingTop: '10px',
+                    color: '#347394',
+                    fontSize: '20px',
+                    cursor: 'pointer',
+                  }}
                 >
-                  Filters <FilterFramesIcon />
-                </Typography>
-              </div>
+                  <Typography
+                    onClick={handleRightClick}
+                    style={{ display: 'flex', alignItems: 'center' }}
+                  >
+                    Filters <FilterFramesIcon />
+                  </Typography>
+                </div>
+              )}
             </div>
             {dateWiseEvents.length === 0 ? (
               <div style={{ marginTop: '30px' }}>
@@ -572,6 +585,7 @@ const NewCommunication = () => {
           <div style={{ height: '80px' }}></div>
           <List dense={true}>
             <ListItem
+            className={` ${classes.listItem} ${onClickIndex == 1 && 'active'}`} 
               button
               onClick={() => {
                 setOnClickIndex(1);
@@ -585,6 +599,7 @@ const NewCommunication = () => {
             {userLevel !== 12 && userLevel !== 13 && (
               <>
                 <ListItem
+                className={` ${classes.listItem} ${onClickIndex == 2 && 'active'}`} 
                   button
                   onClick={() => {
                     setOnClickIndex(2);
@@ -596,6 +611,7 @@ const NewCommunication = () => {
                   <ListItemText primary='Draft' style={{ color: '#464D57' }} />
                 </ListItem>
                 <ListItem
+                className={` ${classes.listItem} ${onClickIndex == 3 && 'active'}`} 
                   button
                   onClick={() => {
                     setOnClickIndex(3);
