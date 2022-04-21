@@ -434,7 +434,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
         payLoad['is_draft'] = true;
       }
       if (uploadFiles?.length > 0) {
-        payLoad['attachments'] = uploadFiles || [];
+        payLoad['attachments'] = uploadFiles.flat(1) || [];
       }
       if (isStudentIncluded) {
         payLoad['section_mapping_id'] = selectedSectionMappingId.toString() || '';
