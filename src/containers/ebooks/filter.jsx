@@ -22,6 +22,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
   );
   const [selectedBranch, setSelectedBranch] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('');
+  const [customGrade, setCustomGrade] = useState('')
   const [selectedSubject, setSelectedSubject] = useState('');
   const [loading, setLoading] = useState(false);
   const [volumeList, setVolumeList] = useState([]);
@@ -38,6 +39,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
     setSelectedBranch('');
     setSelectedGrade('');
     setSelectedSubject('');
+    setSelectedVolume('')
   }, [clearFilter]);
 
   function ApiCal() {
@@ -118,6 +120,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
     setSelectedBranch('');
     setSelectedGrade('');
     setSelectedSubject('');
+    
   }
 
   return (
@@ -175,6 +178,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                   'grade'
                 );
               }
+              setSelectedVolume('');
               setSelectedGrade('');
               setSelectedSubject('');
             }}
@@ -199,10 +203,13 @@ const Filter = ({ handleFilter, clearFilter }) => {
             onChange={(event, value) => {
               if (value) {
                 withAxiosInstance(
-                  `${endpoints.ebook.EbookMappedGrade}?branch_id=${selectedBranch.branch.id}&session_year=${selectedAcademicYear?.id}&grade_id=${value.erp_grade}`,
+                  `${endpoints.ebook.EbookMappedGrade}?branch_id=${selectedBranch.branch.id}&session_year=${selectedAcademicYear?.id}&grade_id=${value.erp_grade}&module_id=${
+                    getModuleInfo('Ebook View').id
+                  }`,
                   'subject'
                 );
               }
+              setSelectedVolume('');
               setSelectedGrade(value);
               setSelectedSubject('');
             }}
@@ -228,7 +235,12 @@ const Filter = ({ handleFilter, clearFilter }) => {
           <Autocomplete
             size='small'
             onChange={(event, value) => {
-              setSelectedSubject(value);
+              setSelectedVolume('');
+              if(value){
+                let subject = value?.central_grade
+                setSelectedSubject(value);
+                setCustomGrade(subject)
+              }
             }}
             className='dropdownIcon'
             style={{ width: '100%' }}
@@ -262,6 +274,8 @@ const Filter = ({ handleFilter, clearFilter }) => {
             className='dropdownIcon'
             onChange={(event, value) => {
               setSelectedVolume(value);
+              // setSelectedSubject(value);
+
             }}
             id='volume_id'
             options={volumeList}
@@ -305,7 +319,8 @@ const Filter = ({ handleFilter, clearFilter }) => {
                     selectedBranch?.branch?.id,
                     selectedGrade,
                     selectedSubject,
-                    selectedVolume
+                    selectedVolume,
+                    customGrade
                   )
                 }
               >
