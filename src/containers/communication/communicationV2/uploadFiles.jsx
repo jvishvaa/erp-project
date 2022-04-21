@@ -49,7 +49,7 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
   };
 
   const fileConf = {
-    fileTypes: 'image/jpeg,image/png,.pdf,',
+    fileTypes: 'image/jpeg,image/png,.pdf,video/mp4,audio/mpeg',
     types: 'images,pdf,mp3,mp4',
     initialValue: '',
   };
