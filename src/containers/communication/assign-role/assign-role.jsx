@@ -339,6 +339,10 @@ const AssignRole = (props) => {
     }
   };
 
+  useEffect(() => {
+    displayUsersList();
+  },[pageno]);
+
   const handleFilterCheck = () => {
     if (
       selectedYear ||
