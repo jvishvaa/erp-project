@@ -139,6 +139,21 @@ const LessonViewFilters = ({
     }
   };
 
+useEffect(() => {
+  if(window.location.host === 'olvorchidnaigaon.letseduvate.com'){
+    let data = [{
+      board_name: "CBSE",
+      created_at: "2022-01-21T14:04:23.009232Z",
+      created_by: null,
+      id: 1,
+      is_delete: false ,
+      updated_at: "2022-02-07T09:57:46.185808Z",
+      updated_by: null}]
+    if(filterData?.subject) handleBoard('',data)
+  }
+ 
+},[filterData?.subject])
+
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -728,7 +743,7 @@ const handleBoard = (event = {}, values = []) => {
           )}
         />
       </Grid>
-      <Grid
+      {(window.location.host !== 'olvorchidnaigaon.letseduvate.com') && <Grid
         item
         xs={12}
         sm={4}
@@ -750,7 +765,7 @@ const handleBoard = (event = {}, values = []) => {
             <TextField {...params} variant='outlined' label='Board' placeholder='Board' />
           )}
         />
-      </Grid>
+      </Grid>}
       <Grid
         item
         xs={12}
