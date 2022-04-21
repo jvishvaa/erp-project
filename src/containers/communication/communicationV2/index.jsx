@@ -238,10 +238,8 @@ const NewCommunication = () => {
   };
 
   useEffect(() => {
-    if (moduleId) {
-      rowsData();
-    }
-  }, [onClickIndex, moduleId]);
+    rowsData();
+  }, [onClickIndex]);
 
   const dateUpdatefun = (event) => {
     setDefaultDate(event.target.value);

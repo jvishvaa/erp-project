@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
@@ -8,45 +8,61 @@ import DNDFileUpload from 'components/dnd-file-upload';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from './../../../context-api/alert-context/alert-state';
+import Loader from './../../../components/loader/loader';
 
 const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
   const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
+  const [filenames,setFilenames] = useState([])
 
-  const handleClose = () => {
-    setOpenUpload(false);
-    setFiles([]);
+  const handleClose = (Submit) => {
+    if(Submit){
+      setOpenUpload(false);
+      handleFiles(files)
+      setFilenames([])
+      setFiles([])
+    }else{
+      handleFiles([])
+      setOpenUpload(false);
+      setFilenames([])
+      setFiles([])
+    }
   };
   const handleRemove = (item, i) => {
-    const removedList = files.filter((z) => z != item);
-    setFiles(removedList);
+    files.splice(i, 1);
+    const removeName = filenames.filter((z) => z != item);
+    setFiles(files);
+    setFilenames(removeName)
   };
-  const handleUpload = () => {
+  const handleUpload = (e) => {
+    setLoading(true);
     const formData = new FormData();
-    for (let j = 0; j < files.length; j++) {
-      formData.append('file', files[j]);
-    }
     formData.append('branch_id', branchId);
+    formData.append('file', e)
 
     if (branchId) {
       axiosInstance
         .post(`${endpoints.announcementNew.uploadingFile}`, formData)
         .then((res) => {
           if (res.status === 200) {
-            handleFiles(res?.data?.data);
             setAlert('success', res?.data?.message);
+            setFiles((pre)=>[...pre,res?.data?.data])
+            setFilenames((pre)=>[...pre,(res?.data?.data[0]).split("/")])
           } else {
             setAlert('error', res?.data?.message);
           }
+          setLoading(false);
         })
         .catch((e) => {
           // setAlert('error',e.response.message)
         });
-      handleClose();
     } else {
-      setAlert('error', 'Please select Branch');
+      setAlert('warning', 'Please select Branch');
+      setLoading(false)
     }
   };
+
 
   const fileConf = {
     fileTypes: 'image/jpeg,image/png,.pdf,video/mp4,audio/mpeg',
@@ -55,10 +71,11 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
   };
   return (
     <div>
+      {loading && <Loader />}
       <Dialog
         // fullScreen={true}
         open={openUpload}
-        onClose={handleClose}
+        onClose={()=>handleClose}
         aria-labelledby='responsive-dialog-title'
         fullWidth={true}
         maxWidth='sm'
@@ -70,7 +87,7 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
             Upload File
           </Typography>
           <HighlightOffIcon
-            onClick={handleClose}
+            onClick={()=>handleClose(false)}
             style={{ cursor: 'pointer', paddingRight: 15, fontSize: '50px' }}
           />
         </Grid>
@@ -80,7 +97,7 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
             value={fileConf.initialValue}
             handleChange={(e) => {
               if (e) {
-                setFiles((prev) => [...prev, e]);
+                handleUpload(e);
               }
             }}
             fileType={fileConf.fileTypes}
@@ -97,13 +114,12 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
             }}
           >
             <div style={{ flex: 5, textAlign: 'left' }}>Name</div>
-            <div style={{ flex: 2, textAlign: 'center' }}>Size</div>
-            <div style={{ flex: 2, textAlign: 'center' }}>Type</div>
+            <div style={{ flex: 2, textAlign: 'center',paddingRight: 25 }}>Type</div>
             <div style={{ flex: 1, textAlign: 'center' }}></div>
           </div>
           <div style={{ maxHeight: '250px', overflowY: 'scroll' }}>
-            {files &&
-              files.map((item, index) => (
+            {filenames &&
+              filenames?.map((item, index) => (
                 <div
                   style={{
                     display: 'flex',
@@ -121,12 +137,11 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
                       textOverflow: 'ellipsis',
                     }}
                   >
-                    {item?.path}
+                    {item[2]}
                   </div>
                   <div style={{ flex: 2, textAlign: 'center' }}>
-                    {Math.ceil(item?.size / 1024)}kb
-                  </div>
-                  <div style={{ flex: 2, textAlign: 'center' }}>{item?.type}</div>
+                    {item[2].split(".")[1]}
+                    </div>
                   <div style={{ flex: 1, textAlign: 'right' }}>
                     <HighlightOffIcon
                       onClick={() => handleRemove(item, index)}
@@ -145,7 +160,7 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
         >
           <Button
             variant='contained'
-            onClick={handleClose}
+            onClick={()=>handleClose(false)}
             style={{ padding: '5px 30px', marginRight: 10 }}
           >
             Cancel
@@ -154,7 +169,7 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
             variant='contained'
             color='primary'
             style={{ padding: '5px 40px', marginLeft: 10 }}
-            onClick={handleUpload}
+            onClick={()=>handleClose(true)}
           >
             Submit
           </Button>
