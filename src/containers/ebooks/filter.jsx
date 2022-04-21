@@ -233,9 +233,12 @@ const Filter = ({ handleFilter, clearFilter }) => {
           <Autocomplete
             size='small'
             onChange={(event, value) => {
-              let subject = value?.central_grade
-              setSelectedSubject(value);
-              setCustomGrade(subject)
+              setSelectedVolume('');
+              if(value){
+                let subject = value?.central_grade
+                setSelectedSubject(value);
+                setCustomGrade(subject)
+              }
             }}
             className='dropdownIcon'
             style={{ width: '100%' }}
