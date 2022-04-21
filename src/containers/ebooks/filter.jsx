@@ -178,6 +178,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                   'grade'
                 );
               }
+              setSelectedVolume('');
               setSelectedGrade('');
               setSelectedSubject('');
             }}
@@ -208,6 +209,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                   'subject'
                 );
               }
+              setSelectedVolume('');
               setSelectedGrade(value);
               setSelectedSubject('');
             }}
@@ -233,9 +235,12 @@ const Filter = ({ handleFilter, clearFilter }) => {
           <Autocomplete
             size='small'
             onChange={(event, value) => {
-              let subject = value?.central_grade
-              setSelectedSubject(value);
-              setCustomGrade(subject)
+              setSelectedVolume('');
+              if(value){
+                let subject = value?.central_grade
+                setSelectedSubject(value);
+                setCustomGrade(subject)
+              }
             }}
             className='dropdownIcon'
             style={{ width: '100%' }}
