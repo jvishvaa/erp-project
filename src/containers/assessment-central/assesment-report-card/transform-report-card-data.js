@@ -36,6 +36,35 @@ const generateSemesterMarks = (subjectWiseMarks, categoryKeys, isAirVisible = tr
       ]
     );
 };
+const generateSemestertwoMarks = (subjectWiseMarks, categoryKeys, isAirVisible) => {
+  // return 
+  // isAirVisible
+  // ?
+  let fd = {}
+  for (let i in subjectWiseMarks) {
+    if (isAirVisible) {
+      const { air = '', grade = '', osr = '', total = '', marks = {} } = subjectWiseMarks[i]
+      fd[i] = [
+        ...getSubjectWiseMarks(marks, categoryKeys),
+        total,
+        grade,
+        osr,
+        air
+      ]
+    }
+    else {
+      const { grade = '', osr = '', total = '', marks = {} } = subjectWiseMarks[i]
+      fd[i] = [
+        ...getSubjectWiseMarks(marks, categoryKeys),
+        total,
+        grade,
+        osr,
+      ]
+    }
+  }
+  return fd
+
+};
 
 const generateCategoryRowLength = (scholastic, coScholastic) => {
   const scholasticCategoryMapLength = Object.entries(
@@ -154,34 +183,41 @@ const generateSemesterOneTwo = (termDetails) => {
 
   return { semesterOne, semesterTwo };
 };
-// const generateAnnualReport = (annualDetails = {}) => {
-//   const transformedAnnualDetails = Object.values(annualDetails).map(
-//     ({
-//       annual_grade: annualGrade = '',
-//       subject_annual_marks: subjectAnnualMarks = {},
-//       annual_total: annualTotal = '',
-//     }) => ({
-//       annualGrade,
-//       subjectAnnualMarks,
-//       annualTotal
-//     })
-//   );
-//   const [annualFinalDetail = {}] = transformedAnnualDetails || [];
 
-//   return { annualFinalDetail };
-// }
-
-const generateAnnualDetails = (subject_annual_marks) => {
-  if (subject_annual_marks) {
-    return Object.values(subject_annual_marks).map(
-      ({ annual_total_subject_marks = '', annual_subject_grade = '', annual_subject_osr = '', annual_subject_air = '' }) => [
+const generateAnnualDetails = (subject_annual_marks, isAirVisible) => {
+  let fd = {};
+  for (let i in subject_annual_marks) {
+    if (isAirVisible) {
+      const { annual_total_subject_marks = '', annual_subject_grade = '', annual_subject_osr = '', annual_subject_air = '' } = subject_annual_marks[i]
+      fd[i] = [
         annual_total_subject_marks,
         annual_subject_grade,
         annual_subject_osr,
         annual_subject_air,
       ]
-    )
+    }
+    else {
+      const { annual_total_subject_marks = '', annual_subject_grade = '', annual_subject_osr = '' } = subject_annual_marks[i]
+      fd[i] = [
+        annual_total_subject_marks,
+        annual_subject_grade,
+        annual_subject_osr,
+      ]
+    }
   }
+  return fd
+
+
+  // if (subject_annual_marks) {
+  //   return Object.values(subject_annual_marks).map(
+  //     ({ annual_total_subject_marks = '', annual_subject_grade = '', annual_subject_osr = '', annual_subject_air = '' }) => [
+  //       annual_total_subject_marks,
+  //       annual_subject_grade,
+  //       annual_subject_osr,
+  //       annual_subject_air,
+  //     ]
+  //   )
+  // }
 }
 /*transforming categoryMap as per usage*/
 const generateCategoryMap = (categoryMap = {}, isAirVisible = true) => {
@@ -251,7 +287,7 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
     categoryKeys,
     isAirVisible
   );
-  let semesterTwoSubjectWiseMarks = generateSemesterMarks(
+  let semesterTwoSubjectWiseMarks = generateSemestertwoMarks(
     subjectMarksSemesterTwo,
     categoryKeys,
     isAirVisible
@@ -262,31 +298,41 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
   //   isAirVisible
   // );
   const subjectAnnMarks = annualDetails?.subject_annual_marks || {};
-  const annualData = generateAnnualDetails(subjectAnnMarks)
+  let annualData = generateAnnualDetails(subjectAnnMarks, isAirVisible)
   let isAnnualData;
   if (annualData) {
     isAnnualData = annualData;
   }
+  let isFinalAnnualData;
+  if (annualData) {
+    isFinalAnnualData = annualData;
+  }
   const semOneLength = semesterOneSubjectWiseMarks?.length || 0;
-  const finalAnnResult = isAnnualData?.length || 0;
-  const semTwoLength = semesterTwoSubjectWiseMarks?.length || 0;
+  const finalAnnResult = Object.keys(isAnnualData)?.length || 0;
+  const semTwoLength = Object.keys(semesterTwoSubjectWiseMarks).length || 0;
   //To check if semester 2 is not present and if present the number of subjects are not equal
   if (semOneLength !== semTwoLength) {
     if (semOneLength > semTwoLength) {
       const diff = semOneLength - semTwoLength;
-      let transformedSemTwo = Array.from({ length: diff }, () =>
-        Array.from({ length: semesterOneSubjectWiseMarks[0].length }, () => null)
-      );
+      let transformedSemTwo =
+        subjectsList.map((item) => {
+          if (item in semesterTwoSubjectWiseMarks) {
+            return semesterTwoSubjectWiseMarks[item]
+          } else {
+            return Array.from({ length: semesterOneSubjectWiseMarks[0].length }, () => null)
+          }
+        })
+
       semesterTwoSubjectWiseMarks = [
-        ...semesterTwoSubjectWiseMarks,
         ...transformedSemTwo,
+        // ...transformedSemTwo,
       ];
     }
     else {
       if (subjectMarksSemesterTwo) {
         const diff = semTwoLength - semOneLength;
         let transformedSemOne = Array.from({ length: diff }, () =>
-          Array.from({ length: semesterTwoSubjectWiseMarks[0].length }, () => null)
+          Array.from({ length: 10 }, () => null)
         );
         semesterOneSubjectWiseMarks = [
           ...semesterOneSubjectWiseMarks,
@@ -294,61 +340,56 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
         ];
       }
     }
-    if ((finalAnnResult !== semOneLength) || (finalAnnResult !== semTwoLength)) {
-      if (semOneLength > finalAnnResult) {
-        const diff = semOneLength - finalAnnResult;
-        let transformedAnn = Array.from({ length: diff }, () =>
-          Array.from({ length: 4 }, () => null)
-        );
-        isAnnualData = [
-          ...isAnnualData,
-          ...transformedAnn,
-        ]
-      }
-      else if (semTwoLength > finalAnnResult) {
-        const diff = semTwoLength - finalAnnResult;
-        let transformedAnn = Array.from({ length: diff }, () =>
-          Array.from({ length: 4 }, () => null)
-        );
-        isAnnualData = [
-          ...isAnnualData,
-          ...transformedAnn,
-        ]
-      }
-    }
-    else {
-      //Logic need to be written if required
-    }
+    // if ((finalAnnResult !== semOneLength) || (finalAnnResult !== semTwoLength)) {
+    // if (semOneLength > finalAnnResult) {
+    // const diff = semOneLength - finalAnnResult;
+
   }
+  if (subjectsList.length > 0) {
+    let transformedAnn =
+      subjectsList.map((item) => {
+        if (item in isAnnualData) {
+          return isAnnualData[item]
+        } else {
+          return Array.from({ length: isAirVisible ? 4 : 3 }, () => null)
+        }
+      })
+    isAnnualData = [
+      ...transformedAnn,
+    ]
+  } else {
+    let transformedAnn =
+      subjectsListCo.map((item) => {
+        if (item in isAnnualData) {
+          return isAnnualData[item]
+        } else {
+          return Array.from({ length: isAirVisible ? 4 : 3 }, () => null)
+        }
+      })
+    isAnnualData = [
+      ...transformedAnn,
+    ]
+  }
+  const semTwoData = Object.values(semesterTwoSubjectWiseMarks).map((item) => item)
+  const annualDataFinal = Object.values(isAnnualData).map((item) => item)
   //Joining rows of both sems
   const semesterMarks = isAirVisible
     ? semesterOneSubjectWiseMarks.map((semesterOneSubject, index) => [
       subjectsList[index] || subjectsListCo[index] || '',
       ...semesterOneSubject,
-      ...semesterTwoSubjectWiseMarks[index] || '',
+      ...semTwoData[index] || '',
       ...isAnnualData[index] || ''
-      // annualData ? annualData[index][0] : '',
-      // annualData ? annualData[index][1] : '',
-      // annualData ? annualData[index][2] : '',
-      // annualData ? annualData[index][3] : '',
-      // '', // (T1+T2)/2
-      // '', // Annual Grade
-      // '', // Annual OSR
-      // '', // Annual AIR
+      // ...annualDataFinal[index] || isAnnualData[index] || '',
+      // ...isAnnualData[index] || ''
     ])
     : semesterOneSubjectWiseMarks.map((semesterOneSubject, index) => [
       subjectsList[index] || subjectsListCo[index] || '',
       ...semesterOneSubject,
-      ...semesterTwoSubjectWiseMarks[index] || '',
-      ...isAnnualData[index] || ""
-      // annualData ? annualData[index] : '',
-      // annualData ? annualData[index] : '',
-      // annualData ? annualData[index] : '',
-      // annualData ? annualData[index] : '',
-      // '', // (T1+T2)/2
-      // '', // Annual Grade
-      // '', // Annual OSR
-    ]);
+      ...semTwoData[index] || '',
+      // isAirVisible ? annualDataFinal[index] || isAnnualData[index] : '',
+      ...isAnnualData[index] || ''
+      // ...annualDataFinal[index] || '',
+    ])
 
   return semesterMarks;
 };
