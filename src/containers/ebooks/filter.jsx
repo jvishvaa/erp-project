@@ -178,6 +178,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                   'grade'
                 );
               }
+              setSelectedVolume('');
               setSelectedGrade('');
               setSelectedSubject('');
             }}
@@ -208,6 +209,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                   'subject'
                 );
               }
+              setSelectedVolume('');
               setSelectedGrade(value);
               setSelectedSubject('');
             }}
