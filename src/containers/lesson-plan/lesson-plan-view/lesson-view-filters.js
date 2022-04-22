@@ -141,18 +141,13 @@ const LessonViewFilters = ({
 
 useEffect(() => {
   if(window.location.host === 'olvorchidnaigaon.letseduvate.com'){
-    let data = [{
-      board_name: "CBSE",
-      created_at: "2022-01-21T14:04:23.009232Z",
-      created_by: null,
-      id: 1,
-      is_delete: false ,
-      updated_at: "2022-02-07T09:57:46.185808Z",
-      updated_by: null}]
-    if(filterData?.subject) handleBoard('',data)
+    if(filterData?.subject && boardDropdown.length > 0){
+      let data =  boardDropdown?.filter((item) => item?.board_name === "CBSE");
+      handleBoard('',data)
+    }
   }
  
-},[filterData?.subject])
+},[filterData?.subject,boardDropdown])
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -323,6 +318,9 @@ useEffect(() => {
           .get('academic/get-board-list/')
           .then((result) => {
             if (result?.data?.status_code === 200) {
+              if(window.location.host === 'olvorchidnaigaon.letseduvate.com'){
+                setBoardDropdown(result?.data?.result)
+              }
               setLoading(false)
               setBoardDropdown(result?.data?.result)
             } else {
