@@ -196,7 +196,7 @@ const AllBooksPage = () => {
     const filterModule = `${moduleId?.length !== 0 ? `&lt_module=${moduleId?.id}` : ''}`;
     const filterChapter = `${chapter?.length !== 0 ? `&chapter_id=${chapter?.id}` : ''}`;
     const filterKeyConcept = `${keyConcept?.length !== 0 ? `&key_concept_id=${keyConcept?.id}` : ''}`
-    if(branch || grade || subject || vol || moduleId || chapter || keyConcept){
+    if(branch || grade || subject || vol || moduleId?.length > 0 || chapter?.length >0 || keyConcept?.length >0){
       setLoading(true);
       axiosInstance
         .get(
