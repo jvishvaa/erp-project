@@ -139,6 +139,16 @@ const LessonViewFilters = ({
     }
   };
 
+useEffect(() => {
+  if(window.location.host === 'olvorchidnaigaon.letseduvate.com'){
+    if(filterData?.subject && boardDropdown.length > 0){
+      let data =  boardDropdown?.filter((item) => item?.board_name === "CBSE");
+      handleBoard('',data)
+    }
+  }
+ 
+},[filterData?.subject,boardDropdown])
+
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -308,6 +318,9 @@ const LessonViewFilters = ({
           .get('academic/get-board-list/')
           .then((result) => {
             if (result?.data?.status_code === 200) {
+              if(window.location.host === 'olvorchidnaigaon.letseduvate.com'){
+                setBoardDropdown(result?.data?.result)
+              }
               setLoading(false)
               setBoardDropdown(result?.data?.result)
             } else {
@@ -728,7 +741,7 @@ const handleBoard = (event = {}, values = []) => {
           )}
         />
       </Grid>
-      <Grid
+      {(window.location.host !== 'olvorchidnaigaon.letseduvate.com') && <Grid
         item
         xs={12}
         sm={4}
@@ -750,7 +763,7 @@ const handleBoard = (event = {}, values = []) => {
             <TextField {...params} variant='outlined' label='Board' placeholder='Board' />
           )}
         />
-      </Grid>
+      </Grid>}
       <Grid
         item
         xs={12}
