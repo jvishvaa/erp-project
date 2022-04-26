@@ -99,6 +99,9 @@ class CreateUser extends Component {
   };
 
   onSubmitUserDetails = (details) => {
+    var number = details.contact.toString();
+    details.contact = number;
+    this.setState((prevState) => ({ user: { ...prevState.user, ...details } }));
     const { showParentForm, showGuardianForm } = this.state;
     this.setState((prevState) => ({ user: { ...prevState.user, ...details } }));
     if (showParentForm || showGuardianForm) {
@@ -109,6 +112,12 @@ class CreateUser extends Component {
   };
 
   onSubmitGuardianDetails = (details) => {
+    var father_no = details.father_mobile.toString();
+    details.father_mobile = father_no;
+    var guardian_no = details.guardian_mobile.toString();
+    details.guardian_mobile = guardian_no;
+    var mother_no = details.mother_mobile.toString();
+    details.mother_mobile = mother_no;
     this.setState(
       (prevState) => ({
         user: { ...prevState.user, parent: { ...prevState.user.parent, ...details } },

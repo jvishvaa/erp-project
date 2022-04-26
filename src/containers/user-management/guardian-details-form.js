@@ -212,7 +212,14 @@ const GuardianDetailsForm = ({
                     name='father_mobile'
                     onChange={formik.handleChange}
                     // inputProps={{ maxLength: 11 }}
-                    // inputProps={{ pattern: { min: 5, max: 15 } }}
+                    type='number'
+                    onInput={(e) => {
+                      e.target.value = Math.max(0, parseInt(e.target.value))
+                        .toString()
+                        .slice(0, 15);
+                    }}
+                    min={0}
+                    inputProps={{ pattern: { min: 5, max: 15 } }}
                     placeholder='Ex: 995656xxxx'
                     value={formik.values.father_mobile}
                     label='Mobile no.'
@@ -372,6 +379,13 @@ const GuardianDetailsForm = ({
                     // inputProps={{ maxLength: 11 }}
                     // inputProps={{ pattern: { min: 5, max: 15 } }}
                     placeholder='Ex: 995656xxxx'
+                    type='number'
+                    onInput={(e) => {
+                      e.target.value = Math.max(0, parseInt(e.target.value))
+                        .toString()
+                        .slice(0, 15);
+                    }}
+                    min={0}
                     onChange={formik.handleChange}
                     value={formik.values.mother_mobile}
                     label='Mobile no.'
@@ -524,6 +538,13 @@ const GuardianDetailsForm = ({
                     name='guardian_mobile'
                     onChange={formik.handleChange}
                     value={formik.values.guardian_mobile}
+                    type='number'
+                    onInput={(e) => {
+                      e.target.value = Math.max(0, parseInt(e.target.value))
+                        .toString()
+                        .slice(0, 15);
+                    }}
+                    min={0}
                     // inputProps={{ maxLength: 11 }}
                     // inputProps={{ pattern: { min: 5, max: 15 } }}
                     placeholder='Ex: 995656xxxx'
