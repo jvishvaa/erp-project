@@ -519,9 +519,10 @@ const AccessBlocker = () => {
   };
 
   const handleClearAll = () => {
+    setFile(null);
     fileRef.current.value = null;
     // setSelectedAcadmeicYear();
-    setSelectedBranch();
+    setSelectedBranch([]);
   };
 
   const handleClearAllList = () => {
@@ -595,6 +596,7 @@ const AccessBlocker = () => {
               addDataToExcel(result.data.data);
             }
             setUploadFlag(false);
+            setFile(null);
             fileRef.current.value = null;
             setSelectedBranch([]);
             // setSelectedAcadmeicYear([]);
