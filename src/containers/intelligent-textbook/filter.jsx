@@ -291,7 +291,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
   }
 
   function handleClear() {
-    handleFilter();
+    // handleFilter();
     setSelectedVolume('');
     setGradeList([]);
     setSubjectList([]);
