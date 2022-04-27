@@ -600,7 +600,7 @@ const AccessBlocker = () => {
             // setSelectedAcadmeicYear([]);
           })
           .catch((error) => {
-            setAlert('error', 'Something Wrong!');
+            setAlert('error', 'Uploaded Format is Incorrect !');
             setUploadFlag(false);
           });
       } else {
@@ -707,7 +707,7 @@ const AccessBlocker = () => {
               </Box>
             </Grid>
             <Grid sm={2} xs={6}>
-              <StyledClearButton onClick={handleClearAll}>Clear All</StyledClearButton>
+              <StyledClearButton onClick={handleClearAll} style={{fontWeight: '600'}} >Clear All</StyledClearButton>
             </Grid>
             <Grid sm={2} xs={6}>
               <StyledButton onClick={handleFileUpload}>Upload</StyledButton>
@@ -871,7 +871,7 @@ const AccessBlocker = () => {
             </div>
             <div className="filterArea" >
             <Grid sm={2} xs={6}>
-              <StyledClearButton onClick={handleClearAllList}>Clear All</StyledClearButton>
+              <StyledClearButton onClick={handleClearAllList} style={{fontWeight: '600'}} >Clear All</StyledClearButton>
             </Grid>
             <Grid sm={2} xs={6}>
               <StyledButton onClick={filterBlockList} >Filter</StyledButton>

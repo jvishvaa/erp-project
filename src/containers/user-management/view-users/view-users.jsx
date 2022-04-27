@@ -699,9 +699,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             <Tooltip title='Create User' placement='bottom' arrow>
               <IconButton
                 className='create-user-button'
-                // onClick={() => {
-                //   history.push('/user-management/create-user')
-                // }}
+                onClick={() => {
+                  history.push('/user-management/create-user')
+                }}
               >
                 <AddIcon style={{ color: '#ffffff' }} />
               </IconButton>
