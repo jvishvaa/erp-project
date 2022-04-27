@@ -62,7 +62,7 @@ const AllBooksPage = () => {
   const [totalPages, setTotalPages] = useState('');
   const [pageNo, setPageNo] = useState(1);
   const limit = 8;
-  const [clearFilter, setclearFilter] = useState('');
+  const [clearFilter, setclearFilter] = useState(false);
   const [acadmicYear, setAcadmicYear] = useState('');
   const [branch, setBranch] = useState('');
   const [grade, setGrade] = useState('');
@@ -72,8 +72,6 @@ const AllBooksPage = () => {
   const [moduleId,setModuleId] = useState('');
   const [chapter, setChapter] = useState('');
   const [keyConcept,setKeyConcept] = useState('');
-
-
   const [open, setOpen] = useState(false);
   const [bookImage, setBookImage] = useState(
     // 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/ibooks/'
@@ -214,6 +212,10 @@ const AllBooksPage = () => {
       setBooksData([])
       setTotalPages('')
       return;
+    } else if(!board?.length > 0){
+      setAlert('warning', "Please Select Board")
+      setBooksData([])
+      setTotalPages('')
     }
     else if(branch || grade || subject || vol || moduleId?.length > 0 || chapter?.length >0 || keyConcept?.length >0){
       setLoading(true);
@@ -245,6 +247,10 @@ const AllBooksPage = () => {
     }
   };
 
+  useEffect(()=>{
+    setBooksData([])
+    setTotalPages('')
+  },[clearFilter])
   const handleClose = () => {
     setOpen(false);
   };
@@ -262,7 +268,7 @@ const AllBooksPage = () => {
             />
           </Grid>
           <Grid item md={12} xs={12} style={{ margin: '10px 0px' }}>
-            <Filter handleFilter={handleFilter} clearFilter={clearFilter} />
+            <Filter handleFilter={handleFilter} clearFilter={clearFilter} setclearFilter={setclearFilter}/>
           </Grid>
         </Grid>
 
