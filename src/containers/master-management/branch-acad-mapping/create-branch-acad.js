@@ -62,7 +62,6 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
     }else{
       setAlert('Warning', "Please Select All Fields");
     }
-    
   };
 
   const handleAcademicYear = (event, value) => {
@@ -130,7 +129,7 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            style={{ width: '100%' }}
+            style={{ width: '100%',fontWeight : '700' }}
             className='cancelButton labelColor'
             size='medium'
             onClick={handleGoBack}
