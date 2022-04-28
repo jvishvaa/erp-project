@@ -59,6 +59,8 @@ import { SvgIcon } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { AttachmentPreviewerContext } from './../../../components/attachment-previewer/attachment-previewer-contexts/attachment-previewer-contexts';
 import './announcement.scss';
+import { AlertNotificationContext } from './../../../context-api/alert-context/alert-state';
+import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -106,8 +108,9 @@ const NewCommunication = () => {
   const [filterOn, setFilterOn] = useState(false);
   const currentDate = moment(new Date()).format('DD/MM/YYYY');
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElAnnouncementType, setAnchorElAnnouncementType] = useState(null);
   const [menuPosition, setMenuPosition] = useState(false);
-  const [openModal, setOpenModal] = useState(false);
+  const [openModalAnnouncement, setOpenModalAnnouncement] = useState(false);
   const [rows, setRows] = useState([]);
   const [defaultdate, setDefaultDate] = useState(moment().format('YYYY-MM-DD'));
   const [branchList, setBranchList] = useState([]);
@@ -121,6 +124,7 @@ const NewCommunication = () => {
   const [selectedSectionMappingId, setSelectedSectionMappingId] = useState([]);
   const [activeStep, setActiveStep] = React.useState(0);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [announcementType, setAnnouncementType] = useState({});
 
   const branches = JSON.parse(localStorage.getItem('userDetails'))?.role_details?.branch;
   const branchId = branches.map((item) => item.id);
@@ -161,12 +165,28 @@ const NewCommunication = () => {
     setAnchorEl(null);
   };
 
+  const handleCloseAnnouncement = (cancel = true, type = {}) => {
+    setAnchorElAnnouncementType(null);
+    if (!cancel) {
+      setOpenModalAnnouncement(true);
+      setAnnouncementType(type);
+    }
+  };
+
+  const setPage = (index) => {
+    setOnClickIndex(index);
+  };
+
   const handlePopOverClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handlePopOverClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleAnnouncmentClick = (event) => {
+    setAnchorElAnnouncementType(event.currentTarget);
   };
 
   useEffect(() => {
@@ -359,6 +379,9 @@ const NewCommunication = () => {
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popover' : undefined;
 
+  const openAnnouncement = Boolean(anchorElAnnouncementType);
+  const idAnnouncementType = openAnnouncement ? 'simple-popover' : undefined;
+
   const Output = rows.reduce((initialValue, data) => {
     const date = moment(data.created_time).format('MM/DD/YYYY');
     if (!initialValue[date]) {
@@ -431,7 +454,7 @@ const NewCommunication = () => {
                     onClick={handleRightClick}
                     style={{ display: 'flex', alignItems: 'center' }}
                   >
-                    Filters <FilterFramesIcon />
+                    Filters <FilterFramesIcon style={{marginLeft:10}}/>
                   </Typography>
                 </div>
               )}
@@ -658,17 +681,106 @@ const NewCommunication = () => {
           </List>
           <div style={{ height: '30px' }}></div>
           {userLevel !== 12 && userLevel !== 13 && (
-            <Button
-              variant='contained'
-              color='primary'
-              size='medium'
-              style={{ marginLeft: '17px', borderRadius: 20 }}
-              // className={classes.button}
-              startIcon={<AddIcon />}
-              onClick={() => setOpenModal(true)}
-            >
-              Create New
-            </Button>
+            <div>
+              <Button
+                aria-describedby={idAnnouncementType}
+                variant='contained'
+                color='primary'
+                style={{
+                  marginLeft: '17px',
+                  borderRadius: anchorElAnnouncementType ? '50%' : '18px',
+                  padding: anchorElAnnouncementType ? '18px' : '',
+                  marginTop: anchorElAnnouncementType ? '-18px' : '',
+                }}
+                onClick={handleAnnouncmentClick}
+              >
+                {anchorElAnnouncementType ? <CloseIcon /> : '+ Create New  '}
+              </Button>
+              <Popover
+                id={idAnnouncementType}
+                open={openAnnouncement}
+                anchorEl={anchorElAnnouncementType}
+                onClose={handleCloseAnnouncement}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left',
+                }}
+                transformOrigin={{
+                  vertical: 'bottom',
+                  horizontal: 'left',
+                }}
+              >
+                <List dense={true}>
+                  <ListItem
+                    button
+                    onClick={() =>
+                      handleCloseAnnouncement(false, { id: 2, category_name: 'Event' })
+                    }
+                  >
+                    <ListItemIcon>
+                      <EventIcon style={{ color: '#7852CC' }} />
+                    </ListItemIcon>
+                    <ListItemText primary='Event' style={{ color: '#7852CC' }} />
+                  </ListItem>
+                  <ListItem
+                    button
+                    onClick={() =>
+                      handleCloseAnnouncement(false, {
+                        id: 3,
+                        category_name: 'Exam',
+                      })
+                    }
+                  >
+                    <ListItemIcon>
+                      <EventNoteIcon style={{ color: '#EF005A' }} />
+                    </ListItemIcon>
+                    <ListItemText primary='Exam' style={{ color: '#EF005A' }} />
+                  </ListItem>
+                  <ListItem
+                    button
+                    onClick={() =>
+                      handleCloseAnnouncement(false, {
+                        id: 1,
+                        category_name: 'Holiday',
+                      })
+                    }
+                  >
+                    <ListItemIcon>
+                      <BeachAccessIcon style={{ color: '#F96C00' }} />
+                    </ListItemIcon>
+                    <ListItemText primary='Holiday' style={{ color: '#F96C00' }} />
+                  </ListItem>
+                  <ListItem
+                    button
+                    onClick={() =>
+                      handleCloseAnnouncement(false, {
+                        id: 5,
+                        category_name: 'TimeTable',
+                      })
+                    }
+                  >
+                    <ListItemIcon>
+                      <InsertInvitationIcon style={{ color: '#62A7EB' }} />
+                    </ListItemIcon>
+                    <ListItemText primary='Time Table' style={{ color: '#62A7EB' }} />
+                  </ListItem>
+                  <ListItem
+                    button
+                    onClick={() =>
+                      handleCloseAnnouncement(false, {
+                        id: 4,
+                        category_name: 'General',
+                      })
+                    }
+                  >
+                    <ListItemIcon>
+                      <SubjectIcon style={{ color: '#464D57' }} />
+                    </ListItemIcon>
+                    <ListItemText primary='General' style={{ color: '#464D57' }} />
+                  </ListItem>
+                </List>
+              </Popover>
+            </div>
           )}
         </Grid>
       </Grid>
@@ -952,7 +1064,12 @@ const NewCommunication = () => {
           </ListItem>
         </List>
       </Popover>
-      <CreateAnouncement openModal={openModal} setOpenModal={setOpenModal} />
+      <CreateAnouncement
+        openModalAnnouncement={openModalAnnouncement}
+        setOpenModalAnnouncement={setOpenModalAnnouncement}
+        setPage={setPage}
+        announcementType={announcementType}
+      />
       <Menu
         open={!!menuPosition}
         onClose={() => setMenuPosition(null)}
