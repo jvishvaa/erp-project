@@ -232,7 +232,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
             setUploadFlag(false);
             history.push('/user-management/bulk-upload');
           } else {
-            setAlert('error', result.data.deion);
+            setAlert('error', result.data.deion || 'Uploaded Format is Incorrect');
             setUploadFlag(false);
           }
         })
@@ -451,7 +451,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
           <Button
             variant='contained'
             className='canceButton labelColor'
-            style={{ width: '100%' }}
+            style={{ width: '100%' , fontWeight: '600' }}
             size='medium'
             onClick={handleClearAll}
           >
