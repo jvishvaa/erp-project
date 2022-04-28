@@ -197,13 +197,13 @@ const CourseCard = ({
               </IconButton>
               {showPeriodIndex === index && showMenu ? (
                 <div
-                  className='tooltip'
-                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                  // className='tooltip'
+                  className={` ${classes.optionMenu}`}
                 >
                   <span className={` ${classes.tooltiptext} tooltiptext `}>
-                    <div className='tooltip' onClick={(e) => handleClick(e)}>
+                    <Button variant= "contained" color = 'primary' className={`${classes.deleteButton}`} onClick={(e) => handleClick(e)}>
                       Delete
-                    </div>
+                    </Button>
                     <div
                       onClick={() => handleStatus(period)}
                       style={{ marginTop: '5px' }}
