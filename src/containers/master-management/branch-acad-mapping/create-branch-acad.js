@@ -8,7 +8,7 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 
 const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList }) => {
   const { setAlert } = useContext(AlertNotificationContext);
-  const [branch, setBranch] = useState([]);
+  const [branch, setBranch] = useState();
   const [branchList, setBranchList] = useState([]);
   const [academicYear, setAcademicYear] = useState([]);
   const themeContext = useTheme();
@@ -35,8 +35,9 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setLoading(true);
-    axiosInstance
+    if(branch && academicYear.length > 0){
+      setLoading(true);
+      axiosInstance
       .post(endpoints.masterManagement.branchMapping, {
         session_year_id: academicYear.map((value) => value?.id),
         branch_id: branch?.id,
@@ -58,6 +59,10 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
         if((error.response.data.message ||  error.response.data.msg) == "non_field_errors: The fields session_year, branch must make a unique set.")
           setAlert('error', "Branch is Already Mapped");
         });
+    }else{
+      setAlert('Warning', "Please Select All Fields");
+    }
+    
   };
 
   const handleAcademicYear = (event, value) => {
