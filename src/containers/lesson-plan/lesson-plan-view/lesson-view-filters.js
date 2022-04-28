@@ -140,7 +140,7 @@ const LessonViewFilters = ({
   };
 
 useEffect(() => {
-  if(window.location.host === 'olvorchidnaigaon.letseduvate.com'){
+  if(window.location.host !== 'orchids.letseduvate.com'){
     if(filterData?.subject && boardDropdown.length > 0){
       let data =  boardDropdown?.filter((item) => item?.board_name === "CBSE");
       handleBoard('',data)
@@ -318,7 +318,7 @@ useEffect(() => {
           .get('academic/get-board-list/')
           .then((result) => {
             if (result?.data?.status_code === 200) {
-              if(window.location.host === 'olvorchidnaigaon.letseduvate.com'){
+              if(window.location.host !== 'orchids.letseduvate.com'){
                 setBoardDropdown(result?.data?.result)
               }
               setLoading(false)
@@ -741,7 +741,7 @@ const handleBoard = (event = {}, values = []) => {
           )}
         />
       </Grid>
-      {(window.location.host !== 'olvorchidnaigaon.letseduvate.com') && <Grid
+      {(window.location.host === 'orchids.letseduvate.com') && <Grid
         item
         xs={12}
         sm={4}
