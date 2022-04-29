@@ -490,12 +490,12 @@ const CurriculumCompletionDetails = (props) => {
                     <TableCell align='right'>
                       {item.percentage_completed ? item.percentage_completed : '0'}%
                     </TableCell>
-                    {/* <TableCell align='left'>
+                    <TableCell align='left'>
                     <ArrowForwardIosIcon
                       style={{ cursor: 'pointer' }}
                       onClick={chapterTopicHandler}
                     />
-                  </TableCell> */}
+                  </TableCell>
                   </TableRow>
                 ))}
               </TableBody>

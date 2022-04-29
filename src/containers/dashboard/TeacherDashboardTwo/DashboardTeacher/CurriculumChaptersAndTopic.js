@@ -314,7 +314,7 @@ const ChapterAndTopics = (props) => {
           </div>
         </Grid>
         <Grid xs={12} container direction='row' style={{ padding: '5px' }}></Grid>
-        <Grid xs={12} container direction='row' style={{ padding: '5px' }}>
+        <Grid xs={12} container direction='row' style={{ padding: '5px', fontWeight:800 }}>
           <Grid xs={2}>
             Grade And Section : {props?.history?.location?.state?.gradeId}/
             {props?.history?.location?.state?.sectionId}
