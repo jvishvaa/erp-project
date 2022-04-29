@@ -714,7 +714,7 @@ const NewCommunication = () => {
                   <ListItem
                     button
                     onClick={() =>
-                      handleCloseAnnouncement(false, { id: 2, category_name: 'Event' })
+                      handleCloseAnnouncement(false, { id: 3, category_name: 'Event' })
                     }
                   >
                     <ListItemIcon>
@@ -726,7 +726,7 @@ const NewCommunication = () => {
                     button
                     onClick={() =>
                       handleCloseAnnouncement(false, {
-                        id: 3,
+                        id: 2,
                         category_name: 'Exam',
                       })
                     }
