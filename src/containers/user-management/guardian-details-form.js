@@ -211,9 +211,6 @@ const GuardianDetailsForm = ({
                     id='father_mobile'
                     name='father_mobile'
                     onChange={formik.handleChange}
-<<<<<<< HEAD
-                    // inputProps={{ maxLength: 11 }}
-=======
                     inputProps={{ maxLength: 11 }}
                     type='number'
                     // onInput={(e) => {
@@ -222,7 +219,6 @@ const GuardianDetailsForm = ({
                     //     .slice(0, 15);
                     // }}
                     min={0}
->>>>>>> 4f70738af... phone number limit upto 10
                     // inputProps={{ pattern: { min: 5, max: 15 } }}
                     placeholder='Ex: 995656xxxx'
                     value={formik.values.father_mobile}
