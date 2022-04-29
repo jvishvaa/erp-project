@@ -42,9 +42,14 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
       })
       .then((result) => {
         if (result.data?.status_code > 199 && result.data?.status_code < 300) {
-          setLoading(false);
-          handleGoBack();
-          setAlert('success', result.data?.message || result.data?.msg);
+          if (result?.data?.result) {
+            setLoading(false);
+            handleGoBack();
+            setAlert('success', result.data?.message || result.data?.msg);
+          } else {
+            setLoading(false);
+            setAlert('warning', result.data?.message || result.data?.msg);
+          }
         } else {
           setLoading(false);
           setAlert('error', result.data?.message || result.data?.msg);
@@ -439,7 +444,7 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            style={{ width: '100%' }}
+            style={{ width: '100%', fontWeight: '700' }}
             className='cancelButton labelColor'
             size='medium'
             onClick={handleGoBack}
