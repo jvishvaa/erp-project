@@ -15,7 +15,7 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   useEffect(() => {
-    if (moduleId && academicYear.length > 0) {
+    if (moduleId && academicYear?.length > 0) {
       let url = `${endpoints.masterManagement.branchList}?module_id=${moduleId}`;
       axiosInstance
         .get(url)
