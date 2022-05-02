@@ -42,9 +42,8 @@ function Pending(props) {
   const [output, setOutput] = useState({});
   const classes = useStyles();
   const dataincoming = props.dataincoming;
-  console.log('treefindpending', dataincoming);
 
-  const { selectedSectionIds, subjectChangedfilterOn, subjectmappingId, defaultdate } = useContext(FilterContext)
+  const { selectedSectionIds, subjectChangedfilterOn, subjectmappingId, defaultdate } = useContext(FilterContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const pendingList = () => {
@@ -139,13 +138,11 @@ function Pending(props) {
   };
 
   const parsedData = (data) => {
-    console.log('ParsedData', data);
     const obj = {};
     data.forEach((item) => {
       obj[item.id] = item;
     });
     setOutput(obj);
-    console.log('Filtered', output);
   };
 
   const popUpListData = (id) => {
@@ -168,8 +165,6 @@ function Pending(props) {
       )
       .then((result) => {
         setDataLast(result?.data?.result);
-        // setPopup(modalData);
-        // setIndex(result?.data?.result?.total_students);
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -182,7 +177,6 @@ function Pending(props) {
   }, [props?.Date2, defaultdate, subjectmappingId]);
 
   const handleOpen = (data) => {
-    console.log('tree4', data);
     if (dataincoming?.hwcwstatus) {
       popUpListData(data);
       setOpen(true);

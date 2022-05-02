@@ -419,7 +419,6 @@ const NewCommunication = () => {
     return initialValue;
   }, {});
 
-  // Edit: to add it in the array format instead
   const dateWiseEvents = Object.keys(Output)
     .map((date) => {
       return {
