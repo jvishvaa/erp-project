@@ -15,7 +15,7 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   useEffect(() => {
-    if (moduleId) {
+    if (moduleId && academicYear.length > 0) {
       let url = `${endpoints.masterManagement.branchList}?module_id=${moduleId}`;
       axiosInstance
         .get(url)
@@ -31,19 +31,22 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
           setAlert('error', error.response.data.message || error.response.data.msg);
         });
     }
-  }, [moduleId]);
+  }, [moduleId, academicYear]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if(branch && academicYear.length > 0){
-      setLoading(true);
-      axiosInstance
+    if (!academicYear.length > 0) {
+      setAlert('error', "Please select Session Year");
+      return;
+    }
+    setLoading(true);
+    axiosInstance
       .post(endpoints.masterManagement.branchMapping, {
         session_year_id: academicYear.map((value) => value?.id),
         branch_id: branch?.id,
       })
       .then((result) => {
-        if (result.data.status_code >= 200 && result.data.status_code <= 299) {
+        if (result.data.status_code === 200) {
           setAcademicYear([]);
           setBranch('');
           setLoading(false);
@@ -51,17 +54,14 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
           handleGoBack();
         } else {
           setLoading(false);
-          setAlert('error', result.data.msg || result.data.message);
+          setAlert('error', result.data.data.err_msg || result.data.message);
         }
       })
       .catch((error) => {
         setLoading(false);
-        if((error.response.data.message ||  error.response.data.msg) == "non_field_errors: The fields session_year, branch must make a unique set.")
+        if ((error.response.data.message || error.response.data.msg) == "non_field_errors: The fields session_year, branch must make a unique set.")
           setAlert('error', "Branch is Already Mapped");
-        });
-    }else{
-      setAlert('Warning', "Please Select All Fields");
-    }
+      });
   };
 
   const handleAcademicYear = (event, value) => {
@@ -71,7 +71,16 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
 
   const handleBranch = (event, value) => {
     setBranch('');
-    if (value) setBranch(value);
+    if (academicYear.length > 0) {
+      if (value)
+        setBranch(value);
+      else {
+        setBranchList([])
+      }
+    }
+    else {
+      setBranchList([])
+    }
   };
 
   return (
@@ -109,9 +118,9 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
               style={{ width: '100%' }}
               id='branch'
               name='branch'
-              options={branchList}
+              options={branchList || []}
               value={branch}
-              getOptionLabel={(option) => option?.branch_name}
+              getOptionLabel={(option) => option?.branch_name || {}}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -129,7 +138,7 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            style={{ width: '100%',fontWeight : '700' }}
+            style={{ width: '100%', fontWeight: '700' }}
             className='cancelButton labelColor'
             size='medium'
             onClick={handleGoBack}

@@ -28,11 +28,11 @@ const useStyles = makeStyles((theme) => ({
     boxShadow: 'none',
   },
   attachmentbuttondoc: {
-    borderRadius: '10px',
-    background: 'none',
+    borderRadius: "10px",
+    background: "none",
     border: `1px solid ${theme.palette.primary.main}`,
     color: theme.palette.secondary.main,
-  },
+  }
 }));
 
 const CreateCourse = () => {
@@ -554,6 +554,17 @@ const CreateCourse = () => {
 
   const handleSubmit = () => {
     const isAol = aolHostURL === endpoints.aolConfirmURL;
+    const flagTitle = data.every(element => element.title.length !== 0)
+    const flagDescription = data.every(element => element.description.length !== 0)
+    if (!flagTitle) {
+      setAlert('error', "Please Fill the Title")
+      return;
+    }
+    if (!flagDescription) {
+      setAlert('error', "Please Fill the Description")
+      return;
+    }
+
     axiosInstance
       .post(`${endpoints.onlineCourses.createCourse}`, {
         course_name: title,
@@ -600,8 +611,8 @@ const CreateCourse = () => {
         setAlert(
           'error',
           error.response?.data?.message ||
-            error.response?.data?.msg ||
-            error.response?.data?.description
+          error.response?.data?.msg ||
+          error.response?.data?.description
         );
         setGradeDropdown([]);
       });
@@ -726,8 +737,8 @@ const CreateCourse = () => {
             Boolean(gradeKey)
               ? 'Period Details'
               : Boolean(courseKey)
-              ? 'Edit Course'
-              : 'Create Course'
+                ? 'Edit Course'
+                : 'Create Course'
           }
           childComponentNameNext={!Boolean(gradeKey) && nextToggle && 'Periods'}
         />
@@ -958,14 +969,14 @@ const CreateCourse = () => {
                 <div style={{ display: 'flex' }}>
                   {filePath?.length > 0
                     ? filePath?.map((file, i) => (
-                        <FileRow
-                          name='File'
-                          key={`homework_student_question_attachment_${i}`}
-                          file={file}
-                          index={i}
-                          onClose={() => removeFileHandler(i, 'doc')}
-                        />
-                      ))
+                      <FileRow
+                        name='File'
+                        key={`homework_student_question_attachment_${i}`}
+                        file={file}
+                        index={i}
+                        onClose={() => removeFileHandler(i, 'doc')}
+                      />
+                    ))
                     : null}
                 </div>
 
