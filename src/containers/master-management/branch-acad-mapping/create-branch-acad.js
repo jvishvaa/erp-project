@@ -71,7 +71,7 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
 
   const handleBranch = (event, value) => {
     setBranch('');
-    if (academicYear.length > 0) {
+    if (academicYear?.length > 0) {
       if (value)
         setBranch(value);
       else {
