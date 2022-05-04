@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Layout from 'containers/Layout';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -17,7 +17,6 @@ import {
   Checkbox,
   IconButton,
 } from '@material-ui/core';
-// import IconButton from '@material-ui/core/IconButton';
 import { Autocomplete } from '@material-ui/lab';
 import Popover from '@material-ui/core/Popover';
 import Button from '@material-ui/core/Button';
@@ -60,6 +59,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import { AttachmentPreviewerContext } from './../../../components/attachment-previewer/attachment-previewer-contexts/attachment-previewer-contexts';
 import './announcement.scss';
 import { AlertNotificationContext } from './../../../context-api/alert-context/alert-state';
+import logo from './filter.png';
 import CloseIcon from '@material-ui/icons/Close';
 
 const useStyles = makeStyles((theme) => ({
@@ -93,14 +93,15 @@ const useStyles = makeStyles((theme) => ({
   listItem: {
     '&.active': {
       color: 'white !important',
-      backgroundColor: "#4185F4" ,
-      borderRadius: '20px', 
+      backgroundColor: '#4185F4',
+      borderRadius: '20px',
     },
   },
 }));
 
 const NewCommunication = () => {
   const classes = useStyles();
+
   const [headerOpen, setHeaderOpen] = useState(false);
   const [onClickIndex, setOnClickIndex] = useState(1);
   const [dialogData, setDialogData] = useState([]);
@@ -122,11 +123,13 @@ const NewCommunication = () => {
   const [selectedSectionListData, setSelectedSectionListData] = useState([]);
   const [selectedSectionId, setSelectedSectionId] = useState([]);
   const [selectedSectionMappingId, setSelectedSectionMappingId] = useState([]);
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [categorylist, setCategoryList] = useState([]);
+  const [category, setCategory] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [announcementType, setAnnouncementType] = useState({});
-
+  const [announcementList, setAnnouncementList] = useState([]);
   const branches = JSON.parse(localStorage.getItem('userDetails'))?.role_details?.branch;
+  const { setAlert } = useContext(AlertNotificationContext);
   const branchId = branches.map((item) => item.id);
   const handleRightClick = (event) => {
     if (menuPosition) {
@@ -141,20 +144,11 @@ const NewCommunication = () => {
   const handleItemClick = (event) => {
     // setMenuPosition(null);
   };
-  // const classes = useStyles();
+
   const theme = useTheme();
   const [moduleId, setModuleId] = useState('');
 
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
-
-  const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-  };
-  let tutorialSteps;
-  let maxSteps;
-  const handleBack = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep - 1);
-  };
 
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
@@ -214,7 +208,12 @@ const NewCommunication = () => {
 
   const rowsData = (filterOn) => {
     let url = '';
-    let baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}`;
+    let baseurl = '';
+    if (category == null) {
+      baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}`;
+    } else {
+      baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}&is_category=${category}`;
+    }
     if (filterOn && selectedSectionMappingId.length > 0) {
       if (onClickIndex == 1) {
         url = `${endpoints.announcementNew.inbox}?${baseurl}`;
@@ -226,14 +225,26 @@ const NewCommunication = () => {
         url = `${endpoints.announcementNew.inbox}?is_sent=True&${baseurl}`;
       }
     } else {
-      if (onClickIndex == 1) {
-        url = `${endpoints.announcementNew.inbox}`;
-      }
-      if (onClickIndex == 2) {
-        url = `${endpoints.announcementNew.inbox}?is_draft=True`;
-      }
-      if (onClickIndex == 3) {
-        url = `${endpoints.announcementNew.inbox}?is_sent=True`;
+      if (category > 0) {
+        if (onClickIndex == 1) {
+          url = `${endpoints.announcementNew.inbox}?is_category=${category}`;
+        }
+        if (onClickIndex == 2) {
+          url = `${endpoints.announcementNew.inbox}?is_draft=True&is_category=${category}`;
+        }
+        if (onClickIndex == 3) {
+          url = `${endpoints.announcementNew.inbox}?is_sent=True&is_category=${category}`;
+        }
+      } else {
+        if (onClickIndex == 1) {
+          url = `${endpoints.announcementNew.inbox}`;
+        }
+        if (onClickIndex == 2) {
+          url = `${endpoints.announcementNew.inbox}?is_draft=True`;
+        }
+        if (onClickIndex == 3) {
+          url = `${endpoints.announcementNew.inbox}?is_sent=True`;
+        }
       }
     }
 
@@ -248,18 +259,34 @@ const NewCommunication = () => {
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setRows(result?.data?.data);
-          // setFilterOn(false);
+          let message =
+            onClickIndex == 1 ? 'Inbox' : onClickIndex == 2 ? 'Drafts' : ' Sent';
+          setAlert('success', `Successfully fetched ${message} `);
         }
       })
       .catch((error) => {
         // setAlert('error', error?.message);
         // setLoading(false);
+        setAlert('error', error?.message);
       });
   };
 
   useEffect(() => {
     rowsData();
-  }, [onClickIndex]);
+  }, [onClickIndex, category]);
+
+  useEffect(() => {
+    axiosInstance
+      .get(`${endpoints.announcementNew.getAnnouncemenetCategory}`)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setAnnouncementList(res?.data?.data);
+          setCategoryList(res?.data?.data);
+        } else {
+          setAnnouncementList([]);
+        }
+      });
+  }, []);
 
   const dateUpdatefun = (event) => {
     setDefaultDate(event.target.value);
@@ -268,7 +295,7 @@ const NewCommunication = () => {
   const getBranch = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}` //module id hardcorded right now
+        `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -358,6 +385,7 @@ const NewCommunication = () => {
       .then((res) => {
         if (res?.data?.status_code === 200) {
           handleClose();
+          setOnClickIndex(3);
           rowsData();
         } else {
           setSectionList([]);
@@ -427,9 +455,26 @@ const NewCommunication = () => {
     }
   };
 
+  const resolveColor = (eventType) => {
+    switch (eventType) {
+      case 'Event':
+        return '#7852CC';
+      case 'Exam':
+        return '#EF005A';
+      case 'Holiday':
+        return '#F96C00';
+      case 'TimeTable':
+        return '#62A7EB';
+      case 'General':
+        return '#464D57';
+      default:
+        return '#464D57';
+    }
+  };
+
   return (
     <Layout>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} style={{ backgroundColor: '#F6FAFD' }}>
         <Grid item xs={9} sm={9} md={9} spacing={3}>
           <div style={{ padding: '0 20px' }}>
             <div
@@ -454,7 +499,13 @@ const NewCommunication = () => {
                     onClick={handleRightClick}
                     style={{ display: 'flex', alignItems: 'center' }}
                   >
-                    Filters <FilterFramesIcon style={{marginLeft:10}}/>
+                    {/* Filters <FilterFramesIcon /> */}
+                    Filters{' '}
+                    <img
+                      src={logo}
+                      alt=''
+                      style={{ height: '12px', width: '12px', marginLeft: '10px' }}
+                    ></img>
                   </Typography>
                 </div>
               )}
@@ -484,14 +535,16 @@ const NewCommunication = () => {
                       {announcement?.date}
                     </div>
                     <div>
-                      <Paper>
-                        {announcement?.events.map((item) => (
+                      {announcement?.events.map((item) => (
+                        <Paper>
                           <Grid
                             container
                             style={{
                               height: '40px',
                               marginBottom: '5px',
-                              borderLeft: '5px solid #F96C00',
+                              borderLeft: `5px solid ${resolveColor(
+                                item?.category__category_name
+                              )}`,
                               cursor: 'pointer',
                               display: 'flex',
                             }}
@@ -512,7 +565,7 @@ const NewCommunication = () => {
                                   textOverflow: 'ellipsis',
                                   overflow: 'hidden',
                                   whiteSpace: 'nowrap',
-                                  color: 'black',
+                                  color: `${resolveColor(item?.category__category_name)}`,
                                   fontWeight: 'bold',
                                   paddingLeft: '20px',
                                   fontSize: '14px',
@@ -593,8 +646,8 @@ const NewCommunication = () => {
                               </Grid>
                             )}
                           </Grid>
-                        ))}
-                      </Paper>
+                        </Paper>
+                      ))}
                     </div>
                   </>
                 );
@@ -602,11 +655,11 @@ const NewCommunication = () => {
             )}
           </div>
         </Grid>
-        <Grid item xs={3} sm={3} md={3} spacing={2}>
+        <Grid item xs={2} sm={2} md={2} spacing={2}>
           <div style={{ height: '80px' }}></div>
           <List dense={true}>
             <ListItem
-            className={` ${classes.listItem} ${onClickIndex == 1 && 'active'}`} 
+              className={` ${classes.listItem} ${onClickIndex == 1 && 'active'}`}
               button
               onClick={() => {
                 setOnClickIndex(1);
@@ -615,12 +668,12 @@ const NewCommunication = () => {
               <ListItemIcon>
                 <InboxIcon style={{ color: '#464D57' }} />
               </ListItemIcon>
-              <ListItemText primary='Inbox' style={{ color: '#464D57' }} />
+              <ListItemText primary='Inbox' />
             </ListItem>
             {userLevel !== 12 && userLevel !== 13 && (
               <>
                 <ListItem
-                className={` ${classes.listItem} ${onClickIndex == 2 && 'active'}`} 
+                  className={` ${classes.listItem} ${onClickIndex == 2 && 'active'}`}
                   button
                   onClick={() => {
                     setOnClickIndex(2);
@@ -629,10 +682,10 @@ const NewCommunication = () => {
                   <ListItemIcon>
                     <MailIcon style={{ color: '#464D57' }} />
                   </ListItemIcon>
-                  <ListItemText primary='Draft' style={{ color: '#464D57' }} />
+                  <ListItemText primary='Draft' />
                 </ListItem>
                 <ListItem
-                className={` ${classes.listItem} ${onClickIndex == 3 && 'active'}`} 
+                  className={` ${classes.listItem} ${onClickIndex == 3 && 'active'}`}
                   button
                   onClick={() => {
                     setOnClickIndex(3);
@@ -641,45 +694,52 @@ const NewCommunication = () => {
                   <ListItemIcon>
                     <SendIcon style={{ color: '#464D57' }} />
                   </ListItemIcon>
-                  <ListItemText primary='Sent' style={{ color: '#464D57' }} />
+                  <ListItemText primary='Sent' />
                 </ListItem>
               </>
             )}
           </List>
           <Divider />
           <List dense={true}>
-            <ListItem button>
-              <ListItemIcon>
-                <EventIcon style={{ color: '#7852CC' }} />
-              </ListItemIcon>
-              <ListItemText primary='Event' style={{ color: '#7852CC' }} />
-            </ListItem>
-            <ListItem button>
-              <ListItemIcon>
-                <EventNoteIcon style={{ color: '#EF005A' }} />
-              </ListItemIcon>
-              <ListItemText primary='Exam' style={{ color: '#EF005A' }} />
-            </ListItem>
-            <ListItem button>
-              <ListItemIcon>
-                <BeachAccessIcon style={{ color: '#F96C00' }} />
-              </ListItemIcon>
-              <ListItemText primary='Holiday' style={{ color: '#F96C00' }} />
-            </ListItem>
-            <ListItem button>
-              <ListItemIcon>
-                <InsertInvitationIcon style={{ color: '#62A7EB' }} />
-              </ListItemIcon>
-              <ListItemText primary='Time Table' style={{ color: '#62A7EB' }} />
-            </ListItem>
-            <ListItem button>
-              <ListItemIcon>
-                <SubjectIcon style={{ color: '#464D57' }} />
-              </ListItemIcon>
-              <ListItemText primary='General' style={{ color: '#464D57' }} />
-            </ListItem>
+            {announcementList.map((item) => (
+              <ListItem button onClick={() => setCategory(item?.id)}>
+                <ListItemIcon>
+                  {item?.category_name === 'Event' ? (
+                    <EventIcon style={{ color: '#7852CC' }} />
+                  ) : (
+                    ''
+                  )}
+                  {item?.category_name === 'Exam' ? (
+                    <EventNoteIcon style={{ color: '#EF005A' }} />
+                  ) : (
+                    ''
+                  )}
+                  {item?.category_name === 'Holiday' ? (
+                    <BeachAccessIcon style={{ color: '#F96C00' }} />
+                  ) : (
+                    ''
+                  )}
+                  {item?.category_name === 'General' ? (
+                    <SubjectIcon style={{ color: '#464D57' }} />
+                  ) : (
+                    ''
+                  )}
+                  {item?.category_name === 'TimeTable' ? (
+                    <InsertInvitationIcon style={{ color: '#62A7EB' }} />
+                  ) : (
+                    ''
+                  )}
+                </ListItemIcon>
+                <ListItemText
+                  style={{
+                    color: `${resolveColor(item?.category_name)}`,
+                  }}
+                  primary={item?.category_name}
+                />
+              </ListItem>
+            ))}
           </List>
-          <div style={{ height: '30px' }}></div>
+          <div style={{ height: '20px' }}></div>
           {userLevel !== 12 && userLevel !== 13 && (
             <div>
               <Button
@@ -711,73 +771,51 @@ const NewCommunication = () => {
                 }}
               >
                 <List dense={true}>
-                  <ListItem
-                    button
-                    onClick={() =>
-                      handleCloseAnnouncement(false, { id: 3, category_name: 'Event' })
-                    }
-                  >
-                    <ListItemIcon>
-                      <EventIcon style={{ color: '#7852CC' }} />
-                    </ListItemIcon>
-                    <ListItemText primary='Event' style={{ color: '#7852CC' }} />
-                  </ListItem>
-                  <ListItem
-                    button
-                    onClick={() =>
-                      handleCloseAnnouncement(false, {
-                        id: 2,
-                        category_name: 'Exam',
-                      })
-                    }
-                  >
-                    <ListItemIcon>
-                      <EventNoteIcon style={{ color: '#EF005A' }} />
-                    </ListItemIcon>
-                    <ListItemText primary='Exam' style={{ color: '#EF005A' }} />
-                  </ListItem>
-                  <ListItem
-                    button
-                    onClick={() =>
-                      handleCloseAnnouncement(false, {
-                        id: 1,
-                        category_name: 'Holiday',
-                      })
-                    }
-                  >
-                    <ListItemIcon>
-                      <BeachAccessIcon style={{ color: '#F96C00' }} />
-                    </ListItemIcon>
-                    <ListItemText primary='Holiday' style={{ color: '#F96C00' }} />
-                  </ListItem>
-                  <ListItem
-                    button
-                    onClick={() =>
-                      handleCloseAnnouncement(false, {
-                        id: 5,
-                        category_name: 'TimeTable',
-                      })
-                    }
-                  >
-                    <ListItemIcon>
-                      <InsertInvitationIcon style={{ color: '#62A7EB' }} />
-                    </ListItemIcon>
-                    <ListItemText primary='Time Table' style={{ color: '#62A7EB' }} />
-                  </ListItem>
-                  <ListItem
-                    button
-                    onClick={() =>
-                      handleCloseAnnouncement(false, {
-                        id: 4,
-                        category_name: 'General',
-                      })
-                    }
-                  >
-                    <ListItemIcon>
-                      <SubjectIcon style={{ color: '#464D57' }} />
-                    </ListItemIcon>
-                    <ListItemText primary='General' style={{ color: '#464D57' }} />
-                  </ListItem>
+                  {announcementList.map((item) => (
+                    <ListItem
+                      button
+                      onClick={() =>
+                        handleCloseAnnouncement(false, {
+                          id: item?.id,
+                          category_name: item?.category_name,
+                        })
+                      }
+                    >
+                      <ListItemIcon>
+                        {item?.category_name === 'Event' ? (
+                          <EventIcon style={{ color: '#7852CC' }} />
+                        ) : (
+                          ''
+                        )}
+                        {item?.category_name === 'Exam' ? (
+                          <EventNoteIcon style={{ color: '#EF005A' }} />
+                        ) : (
+                          ''
+                        )}
+                        {item?.category_name === 'Holiday' ? (
+                          <BeachAccessIcon style={{ color: '#F96C00' }} />
+                        ) : (
+                          ''
+                        )}
+                        {item?.category_name === 'General' ? (
+                          <SubjectIcon style={{ color: '#464D57' }} />
+                        ) : (
+                          ''
+                        )}
+                        {item?.category_name === 'TimeTable' ? (
+                          <InsertInvitationIcon style={{ color: '#62A7EB' }} />
+                        ) : (
+                          ''
+                        )}
+                      </ListItemIcon>
+                      <ListItemText
+                        style={{
+                          color: `${resolveColor(item?.category_name)}`,
+                        }}
+                        primary={item?.category_name}
+                      />
+                    </ListItem>
+                  ))}
                 </List>
               </Popover>
             </div>
@@ -807,7 +845,7 @@ const NewCommunication = () => {
         )}
         <DialogContent
           style={{
-            borderLeft: '5px solid #F96C00',
+            borderLeft: `5px solid ${resolveColor(dialogData?.category__category_name)}`,
             margin: openPublish ? '1% 4%' : '0px',
             backgroundColor: '#EAEFF6',
             // width: '65vw',
@@ -960,12 +998,6 @@ const NewCommunication = () => {
                     >
                       <DeleteIcon style={{ color: '#FF006F' }} />
                     </IconButton>
-                    {/* <IconButton
-                      title='Edit'
-                      // onClick={}
-                    >
-                      <BorderColorIcon style={{ color: '#536476' }} />
-                    </IconButton> */}
                   </div>
                 ) : (
                   <>
@@ -1040,17 +1072,7 @@ const NewCommunication = () => {
             </ListItemIcon>
             <ListItemText primary='Publish' style={{ color: '#7852CC' }} />
           </ListItem>
-          {/* <ListItem
-            onClick={() => {
-              setOpenPublish(true);
-              setHeaderOpen(true);
-            }}
-          >
-            <ListItemIcon>
-              <BorderColorIcon style={{ color: '#EF005A' }} />
-            </ListItemIcon>
-            <ListItemText primary='Edit' style={{ color: '#EF005A' }} />
-          </ListItem> */}
+
           <ListItem
             onClick={() => {
               setOpenPublish(true);

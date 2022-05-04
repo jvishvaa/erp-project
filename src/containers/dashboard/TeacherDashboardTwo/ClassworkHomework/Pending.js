@@ -2,12 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Avatar from '@material-ui/core/Avatar';
-import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
 import ModalPending from './ModalPending';
 import endpoints from '../../../../config/endpoints';
 import axios from '../../../../config/axios';
@@ -15,13 +10,10 @@ import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import NoFilterData from 'components/noFilteredData/noFilterData';
-import Pagination from 'components/PaginationComponent';
-import { FilterContext } from './ClassworkThree';
-// import { dataPropsContext } from './Details';
+import { FilterContext } from './ClassworkThree'
 
 const useStyles = makeStyles((theme) => ({
   modal: {
@@ -38,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Pending(props) {
-  // console.log('debugPending', props);
+  console.log('debugPending', props);
   const [open, setOpen] = React.useState(false);
   const [tableData, setTableData] = useState([]);
   const [modalData, setModalData] = useState([]);
@@ -51,22 +43,18 @@ function Pending(props) {
   const classes = useStyles();
   const dataincoming = props.dataincoming;
 
-  const {
-    selectedSectionIds,
-    subjectChangedfilterOn,
-    subjectmappingId,
-    defaultdate,
-  } = useContext(FilterContext);
+  const { selectedSectionIds, subjectChangedfilterOn, subjectmappingId, defaultdate } = useContext(FilterContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
-  // let output = {};
   const pendingList = () => {
     if (dataincoming?.hwcwstatus) {
       axios
         .get(
-          subjectChangedfilterOn
-            ? `${endpoints.teacherDashboard.submittedHWalldata}?subject_mapping_id=${subjectmappingId}&date=${props?.Date2}`
-            : `${endpoints.teacherDashboard.submittedHWalldata}?homework=${props?.dataincoming?.detail?.homework_id}&period_id=${props?.dataincoming?.detail?.period_id}`,
+          (subjectChangedfilterOn)
+            ?
+            `${endpoints.teacherDashboard.submittedHWalldata}?subject_mapping_id=${subjectmappingId}&date=${props?.Date2}`
+            :
+            `${endpoints.teacherDashboard.submittedHWalldata}?homework=${props?.dataincoming?.detail?.homework_id}&period_id=${props?.dataincoming?.detail?.period_id}`,
           {
             headers: {
               'X-DTS-HOST': window.location.host,
@@ -107,6 +95,7 @@ function Pending(props) {
           }
         )
         .then((result) => {
+
           if (result?.data?.status_code === 200) {
             setTableData(result?.data?.result?.result);
             setIndex(result?.data?.result?.total_students);
@@ -205,6 +194,7 @@ function Pending(props) {
     setOpen(false);
   };
 
+
   return (
     <>
       <Grid container>
@@ -231,16 +221,11 @@ function Pending(props) {
         >
           <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>
-              {/* {filesData
-        .filter((tempData) => tempData.document_type)
-        .map((tabs, i) => { */}
               {tableData?.map((data, index) => {
                 return (
                   <TableBody>
                     <TableRow
-                      // key=bonnie
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    // onClick={assessmentHandler}
                     >
                       <TableCell
                         style={{ display: 'flex', justifyContent: 'flex-start' }}
@@ -368,7 +353,7 @@ function Pending(props) {
       )}
       {tableData && tableData?.length === 0 ? (
         <div style={{ height: 400, margin: 'auto', marginTop: '70px' }}>
-          {/* <NoFilterData data={'No Data Found'} /> */}
+          <NoFilterData data={'No Data Found'} />
         </div>
       ) : (
         <ModalPending
