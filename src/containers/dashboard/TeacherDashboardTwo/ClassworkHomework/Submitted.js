@@ -53,10 +53,11 @@ function Submitted(props) {
   console.log('treefind', dataincoming);
 
   const {
-    selectedSectionIds,
+
     subjectChangedfilterOn,
     subjectmappingId,
     defaultdate,
+    sectionId
   } = useContext(FilterContext);
   const handleClickOpen = () => {
     setOpen(true);
@@ -86,7 +87,7 @@ function Submitted(props) {
       .get(
         subjectChangedfilterOn
           ? `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
-            selectedSectionIds
+            sectionId
           )}&subject=${subjectmappingId}&date=${props?.Date2}`
           : `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
             props?.dataincoming?.detail?.section_mapping
@@ -145,8 +146,8 @@ function Submitted(props) {
     axios
       .get(
         subjectChangedfilterOn
-          ? `${endpoints.teacherDashboard.fileHwData}?section_mapping=${selectedSectionIds}&subject=${subjectmappingId}&date=${props?.Date2}&erp=${erpid}`
-          : `${endpoints.teacherDashboard.fileHwData}?section_mapping=${props?.selectedSectionIds2}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date}&erp=${erpid}`,
+          ? `${endpoints.teacherDashboard.fileHwData}?section_mapping=${sectionId}&subject=${subjectmappingId}&date=${props?.Date2}&erp=${erpid}`
+          : `${endpoints.teacherDashboard.fileHwData}?section_mapping=${props?.sectionId2}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date}&erp=${erpid}`,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
@@ -171,7 +172,7 @@ function Submitted(props) {
 
         (subjectChangedfilterOn)
           ?
-          `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&date=${props?.Date2}`
+          `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${sectionId}&subject_id=${subjectmappingId}&date=${props?.Date2}`
           :
           `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${Number(
             props?.dataincoming?.detail?.section_mapping_id
@@ -204,7 +205,7 @@ function Submitted(props) {
 
         (subjectChangedfilterOn)
           ?
-          `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&erp_id=${id}&date=${props?.Date2}`
+          `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${sectionId}&subject_id=${subjectmappingId}&erp_id=${id}&date=${props?.Date2}`
           :
           `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${Number(
             props?.dataincoming?.detail?.section_mapping_id

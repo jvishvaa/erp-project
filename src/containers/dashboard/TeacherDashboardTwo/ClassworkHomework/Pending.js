@@ -43,7 +43,7 @@ function Pending(props) {
   const classes = useStyles();
   const dataincoming = props.dataincoming;
 
-  const { selectedSectionIds, subjectChangedfilterOn, subjectmappingId, defaultdate } = useContext(FilterContext);
+  const { sectionId, subjectChangedfilterOn, subjectmappingId, defaultdate } = useContext(FilterContext)
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const pendingList = () => {
@@ -80,7 +80,7 @@ function Pending(props) {
         .get(
           (subjectChangedfilterOn)
             ?
-            `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&date=${props?.Date2}`
+            `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${sectionId}&subject_id=${subjectmappingId}&date=${props?.Date2}`
             :
             `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${Number(
               props?.dataincoming?.detail?.section_mapping
@@ -114,7 +114,7 @@ function Pending(props) {
       .get(
         (subjectChangedfilterOn)
           ?
-          `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&date=${props?.Date2}`
+          `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${sectionId}&subject_id=${subjectmappingId}&date=${props?.Date2}`
           :
           `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${Number(
             props?.dataincoming?.detail?.section_mapping_id
@@ -150,7 +150,7 @@ function Pending(props) {
       .get(
         (subjectChangedfilterOn)
           ?
-          `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&erp_id=${id}&date=${props?.Date2}`
+          `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${sectionId}&subject_id=${subjectmappingId}&erp_id=${id}&date=${props?.Date2}`
           :
           `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${Number(
             props?.dataincoming?.detail?.section_mapping_id
