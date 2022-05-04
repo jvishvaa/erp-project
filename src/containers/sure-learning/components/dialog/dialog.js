@@ -69,7 +69,7 @@ export default function CustomizedDialogs(props) {
         </DialogTitle>
         <DialogContent dividers>
           <Typography gutterBottom style={{display: 'flex' , justifyContent: 'center'}} >
-           Test On : {ReactHtmlParser(props.item?.course_wise_videos[0]?.description)}
+           Test On : {ReactHtmlParser(props.item?.course_wise_videos[0]?.title)}
           </Typography>
           <Typography gutterBottom style={{display: 'flex' , justifyContent: 'center'}} > 
           Marks Scored : {props.item?.course_wise_videos[0]?.marks_scored}

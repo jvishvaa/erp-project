@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Grid, Button, Typography,withStyles } from '@material-ui/core';
+import { Grid, Button, Typography, withStyles } from '@material-ui/core';
 import Dialog from '@material-ui/core/Dialog';
 
 import MuiDialogTitle from '@material-ui/core/DialogTitle';
@@ -8,7 +8,7 @@ import MuiDialogActions from '@material-ui/core/DialogActions';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import ReactHtmlParser from 'react-html-parser';
-import unfiltered from '../../../../assets/images/unfiltered.svg';
+import NoFilterData from 'components/noFilteredData/noFilterData';
 import { SvgIcon } from '@material-ui/core';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import CommonBreadcrumbs from '../../../../components/common-breadcrumbs/breadcrumbs';
@@ -17,15 +17,14 @@ import endpoints from 'config/endpoints';
 import axios from 'axios';
 import { Link, useHistory } from 'react-router-dom';
 import './videoviewer.scss';
-
-
-
+import { HighlightOff } from '@material-ui/icons';
+import PropTypes from "prop-types";
 
 const styles = (theme) => ({
   root: {
     margin: 0,
     padding: theme.spacing(2),
-    width: 500
+    width: 500,
   },
   closeButton: {
     position: 'absolute',
@@ -44,9 +43,9 @@ const DialogTitle = withStyles(styles)((props) => {
   const { children, classes, onClose, ...other } = props;
   return (
     <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
+      <Typography variant='h6'>{children}</Typography>
       {onClose ? (
-        <IconButton aria-label="close" className={classes.closeButton} onClick={onClose}>
+        <IconButton aria-label='close' className={classes.closeButton} onClick={onClose}>
           <CloseIcon />
         </IconButton>
       ) : null}
@@ -56,7 +55,7 @@ const DialogTitle = withStyles(styles)((props) => {
 
 const DialogContent = withStyles((theme) => ({
   root: {
-    padding: theme.spacing(2),
+    padding: theme.spacing(3),
   },
 }))(MuiDialogContent);
 const StyledButton1 = withStyles((theme) => ({
@@ -65,7 +64,7 @@ const StyledButton1 = withStyles((theme) => ({
     color: '#FFFFFF',
     padding: '8px 15px',
     '&:hover': {
-      backgroundColor: theme.palette.primary.main,
+      backgroundColor: '#09458b',
     },
   },
 }))(Button);
@@ -75,21 +74,21 @@ const DialogActions = withStyles((theme) => ({
     padding: theme.spacing(1),
   },
 }))(MuiDialogActions);
-const TressreVideoViewer = () => {
+const TressreVideoViewer = ({ classes }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [data, setData] = useState([]);
   const [moduleId, setModuleId] = useState('');
   const history = useHistory();
-  const [vedioDetail,setVedioDetail] = useState('');
+  const [vedioDetail, setVedioDetail] = useState('');
   const [open, setOpen] = React.useState(false);
   const [dTitle, setDTitle] = React.useState(true);
   const handleBack = () => {
     history.push('/tressureBox');
   };
   const handleClickOpen = (item) => {
-    console.log(item.title,'item')
-    setDTitle(item.title)
-    setVedioDetail(item.text)
+    console.log(item.title, 'item');
+    setDTitle(item.title);
+    setVedioDetail(item.text);
     setOpen(true);
   };
   const handleClose = () => {
@@ -116,7 +115,7 @@ const TressreVideoViewer = () => {
       axios
         .get(
           endpoints.sureLearning.TressureBoxVedio +
-            sessionStorage.getItem('tressureBoxid'),
+          sessionStorage.getItem('tressureBoxid'),
           {
             headers: {
               Authorization: `Bearer ${udaanToken}`,
@@ -125,14 +124,13 @@ const TressreVideoViewer = () => {
           }
         )
         .then((res) => {
-          if(res.data.length > 0) {
+          if (res.data.length > 0) {
             console.log(res.data[0].file, 'tressureBoxid');
             setAlert('success', 'Data Fetched Successfully');
             setData(res.data);
-          }else {
+          } else {
             setAlert('warning', 'There is no data');
           }
-          
         })
         .catch((error) => {
           setAlert('error', 'some thing went wrong');
@@ -142,18 +140,18 @@ const TressreVideoViewer = () => {
 
   return (
     <Layout>
-      <div>
-        <CommonBreadcrumbs
-          componentName='Sure Learning'
-          childComponentName='Treasure Box'
-          isAcademicYearVisible={true}
-        />
-        <Grid container spacing={4} style={{ marginTop: '5px', marginLeft: '15px' }}>
-          <Grid item md={2} xs={12}>
+      <CommonBreadcrumbs
+        componentName='Sure Learning'
+        childComponentName='Treasure Box'
+        isAcademicYearVisible={true}
+      />
+      <div style={{ padding: '0 0 0 20px' }}>
+        <Grid container spacing={3} className='tressureVedios-container'>
+          <Grid item xs={12}>
             <Button
               variant='contained'
               size='medium'
-              style={{ width: '100%' }}
+              // style={{ width: '100%' }}
               className='cancelButton labelColor'
               // onClick={history.push('/subjectTrain')}
               onClick={handleBack}
@@ -161,65 +159,62 @@ const TressreVideoViewer = () => {
               Back
             </Button>
           </Grid>
-        </Grid>
-
-        <Grid
-          container
-          direction='row'
-          justify='center'
-          style={{ paddingTop: '20px' }}
-          id='container'
-        >
           {data[0] ? (
             <>
               {data.map((item) => {
                 return (
-                  <div id='videobox'>
+                  <Grid item>
                     <video width='320' height='240' controls>
                       <source src={item.file} type='video/mp4' />
                     </video>
                     <Typography variant='h5'>
                       <strong>{item.title}</strong>
                     </Typography>
-                    <StyledButton1 onClick={()=>handleClickOpen(item)}>Vedio Details</StyledButton1>
+                    <StyledButton1
+                      color="primary"
+                      variant="contained"
+                      onClick={() => handleClickOpen(item)}>
+                      Vedio Details
+                    </StyledButton1>
                     {/* <div>{extractContent(item.text)}</div> */}
-                  </div>
+                  </Grid>
                 );
               })}
             </>
           ) : (
-            <div className='noDataIMG' style={{ width: '100%' }}>
-              <SvgIcon
-                component={() => (
-                  <img style={{ paddingLeft: '380px' }} src={unfiltered} />
-                )}
-              />
-              <p style={{ paddingLeft: '440px' }}>NO DATA FOUND </p>
-            </div>
+            <Grid xs={12}>
+              <NoFilterData data={'NO DATA FOUND'} />
+            </Grid>
           )}
-
-          <Dialog
-          width={700}
-          style={{marginTop: '50px'}}
-            onClose={handleClose}
-            aria-labelledby='customized-dialog-title'
-            open={open}
-          >
-            <DialogTitle id='customized-dialog-title' onClose={handleClose}>
-              {dTitle}
-            </DialogTitle>
-            <DialogContent dividers>
-              <Typography
-                gutterBottom
-                style={{ display: 'flex', justifyContent: 'center' }}
-              >
-                {ReactHtmlParser(vedioDetail)}</Typography>
-              
-            </DialogContent>
-          </Dialog>
         </Grid>
       </div>
+      <Dialog
+        maxWidth='md'
+        style={{ marginTop: '50px' }}
+        // onClose={handleClose}
+        aria-labelledby='customized-dialog-title'
+        open={open}
+      >
+        <DialogTitle id='customized-dialog-title'>{dTitle}</DialogTitle>
+        <DialogContent dividers>
+          <div style={{ position: 'absolute', right: 0, top: 5 }}>
+            <IconButton onClick={() => handleClose()}>
+              <HighlightOff />
+            </IconButton>
+          </div>
+          <Typography
+            gutterBottom
+            style={{ display: 'flex', justifyContent: 'center', flexDirection: 'column' }}
+          >
+            {ReactHtmlParser(vedioDetail)}
+          </Typography>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 };
-export default TressreVideoViewer;
+
+TressreVideoViewer.propTypes = {
+  classes: PropTypes.instanceOf(Object).isRequired,
+};
+export default withStyles(styles)(TressreVideoViewer);

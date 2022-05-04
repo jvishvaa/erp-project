@@ -43,7 +43,7 @@ const Calendar = ({ meetingData, wibenarData, onlineClassData, allMeetingsFuncti
       color: '#FFFFFF',
       padding: '8px 15px',
       '&:hover': {
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: '#09458b',
       },
     },
   }))(Button);

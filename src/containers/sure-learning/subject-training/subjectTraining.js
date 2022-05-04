@@ -23,7 +23,7 @@ import axios from 'axios';
 import MediaCard from '../components/volumecards';
 import './subject-traning.scss';
 import { setSeconds } from 'date-fns';
-import unfiltered from '../../../assets/images/unfiltered.svg';
+import NoFilterData from 'components/noFilteredData/noFilterData';
 
 const useStyles = makeStyles((theme) => ({
   FeedbackFormDialog: {
@@ -156,12 +156,14 @@ const StyledClearButton = withStyles((theme) => ({
     padding: '8px 15px',
     marginLeft: '20px',
     '&:hover': {
-      backgroundColor: '#E2E2E2 !important',
+      backgroundColor: 'lightgray !important',
     },
   },
 }))(Button);
 
 const SubjectTraining = () => {
+  const { erp, username, erp_config } =
+    JSON.parse(localStorage.getItem('userDetails')) || [];
   const history = useHistory();
   const classes = useStyles({});
   const fileRef = useRef();
@@ -283,14 +285,17 @@ const SubjectTraining = () => {
   };
 
   const startTrain = (id) => {
-    console.log('volume',id.id,id,id.to_show);
+    console.log('volume', id.id, id, id.to_show);
     if (allVolumes && allVolumes.length) {
       allVolumes.forEach((con, index) => {
         if (con.id === id.id && index > 0) {
           console.log(index - 1, 'index');
           let int = index - 1;
           console.log(allVolumes[int], 'prev typ');
-          console.log(allVolumes[index - 1].is_completed, 'allVolumes[index - 1].is_completed');
+          console.log(
+            allVolumes[index - 1].is_completed,
+            'allVolumes[index - 1].is_completed'
+          );
           if (allVolumes[index - 1].is_completed) {
             history.push({
               pathname: '/allsubjectchapters',
@@ -323,7 +328,19 @@ const SubjectTraining = () => {
     console.log(selectedGrade, 'grade');
     console.log(selectedVolume, 'volume');
     console.log(selectedSubject, 'subject');
-    if (selectedGrade || selectedVolume || selectedSubject) {
+    if (!selectedGrade) {
+      setAlert('error', 'Select grade !');
+      return;
+    }
+    if (!selectedSubject) {
+      setAlert('error', 'Select subject !');
+      return;
+    }
+    if (!selectedVolume) {
+      setAlert('error', 'Select volume !');
+      return;
+    }
+    if (selectedGrade && selectedVolume && selectedSubject) {
       axios
         .get(
           `${endpoints.sureLearning.filterSubject}?subject=${selectedSubject?.subject_fk?.id}&grade=${selectedGrade?.id}&subject_training=true&volume_id=${selectedVolume?.id}`,
@@ -343,8 +360,15 @@ const SubjectTraining = () => {
         .catch((error) => {
           setAlert('error', 'Something Wrong!');
         });
+    } else {
+      setAlert('error', 'Select grade and subject and volume!');
     }
   };
+
+  function udaanTeacherRegisterFormOpen() {
+    // setOpen(true);
+    history.push('/sure-learning-access');
+  }
 
   return (
     <Layout className='accessBlockerContainer'>
@@ -356,6 +380,19 @@ const SubjectTraining = () => {
         />
 
         <div className='listcontainer'>
+          {erp_config ? (
+            <Button
+              variant='contained'
+              color='primary'
+              className={classes.filters}
+              style={{ margin: '0 2%' }}
+              onClick={udaanTeacherRegisterFormOpen}
+            >
+              Sure Learning Access 
+            </Button>
+          ) : (
+            ''
+          )}
           <div className='filterStudent'>
             <Grid item md={3} xs={12} style={{ margin: '0 20px' }}>
               <Autocomplete
@@ -447,15 +484,20 @@ const SubjectTraining = () => {
                 <StyledClearButton onClick={handleClearAllList}>
                   Clear All
                 </StyledClearButton>
-                <StyledButton className={classes.filters} onClick={handleSubjectTrain}>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  className={classes.filters}
+                  onClick={handleSubjectTrain}
+                >
                   Filter
-                </StyledButton>
+                </Button>
               </Grid>
               {/* <Grid md={2} sm={2} xs={6}>
               <StyledButton onClick={handleFilter}>Filter</StyledButton>
             </Grid>*/}
               <Grid md={2} sm={2} xs={6} className={classes.FeedbackFormDialog}>
-                <FeedbackFormDialog type='Induction training' />
+                <FeedbackFormDialog type='Subject training' />
               </Grid>
               <Grid md={6} sm={2} xs={6} />
             </div>
@@ -467,12 +509,7 @@ const SubjectTraining = () => {
               </Grid>
             ) : (
               <div className={classes.periodDataUnavailable}>
-                <SvgIcon
-                  component={() => (
-                    <img style={{ paddingLeft: '380px' }} src={unfiltered} />
-                  )}
-                />
-                <p style={{ paddingLeft: '440px' }}>NO DATA FOUND </p>
+                <NoFilterData data={'NO DATA FOUND'} />
               </div>
             )}
           </Paper>

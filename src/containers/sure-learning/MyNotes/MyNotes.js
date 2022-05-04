@@ -190,12 +190,12 @@ function MyNotes() {
     setOpen(false);
   };
   const handleClickOpen = (item) => {
-    let vedio=item.learning_module.video
-    let text=item.learning_module.text
-    console.log('item',vedio)
-    console.log('item',text)
-    sessionStorage.setItem('itemVedio',vedio)
-    sessionStorage.setItem('itemText',text)
+    let vedio = item.learning_module.video;
+    let text = item.learning_module.text;
+    console.log('item', vedio);
+    console.log('item', text);
+    sessionStorage.setItem('itemVedio', vedio);
+    sessionStorage.setItem('itemText', text);
     setUpdatedDate(item);
     setOpen(true);
   };
@@ -321,7 +321,7 @@ function MyNotes() {
                   onClose={handleClose}
                   aria-labelledby='customized-dialog-title'
                   open={open}
-                  style={{ height:'90%',marginTop: '65px'}}
+                  style={{ height: '90%', marginTop: '65px' }}
                   fullWidth
                   maxWidth='md'
                 >
@@ -364,6 +364,14 @@ function MyNotes() {
                                   <Grid item md={2} xs={6}>
                                     {/* //  href={`${urls.downloadNotesApi}?notes_id=${item.id}`} */}
                                     <Button
+                                      variant='contained'
+                                      color='primary'
+                                      startIcon={<CloudDownloadIcon />}
+                                      onClick={() => downloadFunction()}
+                                    >
+                                      Download
+                                    </Button>
+                                    {/* <Button
                                       variant='outlined'
                                       //   color="primary"
                                       style={{ fontSize: '18px', color: 'white' }}
@@ -373,7 +381,7 @@ function MyNotes() {
                                       <CloudDownloadIcon
                                         style={{ fontSize: '18px', color: 'white' }}
                                       />
-                                    </Button>
+                                    </Button> */}
                                   </Grid>
                                 </Grid>
                               </AccordionSummary>
@@ -426,7 +434,8 @@ function MyNotes() {
                         >
                           <Typography variant='h5'>About Video :</Typography>
                           <Divider className={classes.divider} />
-                          &nbsp;&nbsp; <b>{ReactHtmlParser(sessionStorage.getItem('itemText'))}</b>
+                          &nbsp;&nbsp;{' '}
+                          <b>{ReactHtmlParser(sessionStorage.getItem('itemText'))}</b>
                         </Paper>
                       </Grid>
                     </Grid>

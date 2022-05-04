@@ -10,8 +10,8 @@ import {
   Input,
   Typography,
 } from '@material-ui/core';
-import unfiltered from '../../../../assets/images/unfiltered.svg';
-import {  SvgIcon } from '@material-ui/core';
+import NoFilterData from 'components/noFilteredData/noFilterData';
+import { SvgIcon } from '@material-ui/core';
 import CommonBreadcrumbs from '../../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../../Layout';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
@@ -154,7 +154,7 @@ const AllChapters = () => {
     const isAllComplete = chapterList
       ? !chapterList.some((element) => element.is_completed === false)
       : false;
-console .log(isAllComplete,'isAllComplete')
+    console.log(isAllComplete, 'isAllComplete');
     if (isAllComplete === true) {
       setCertificateBtn(false);
 
@@ -208,17 +208,13 @@ console .log(isAllComplete,'isAllComplete')
         }
       )
       .then((res) => {
-
-        if(res.data.length > 0) {
+        if (res.data.length > 0) {
           console.log(res, 'course details');
-        setChapterList(res.data);
+          setChapterList(res.data);
           setAlert('success', 'Data Fetched Successfully');
-         
-        }else {
+        } else {
           setAlert('warning', 'There is no Notifications');
         }
-      
-       
       })
       .catch((error) => {
         console.log(error);
@@ -228,7 +224,6 @@ console .log(isAllComplete,'isAllComplete')
   const chapters = [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}];
 
   const handleChaplerDetails = (eachChapter) => {
-
     if (chapterList && chapterList.length) {
       chapterList.forEach((con, index) => {
         if (con.id === eachChapter.id && index > 0) {
@@ -256,17 +251,9 @@ console .log(isAllComplete,'isAllComplete')
           });
           sessionStorage.setItem('content_id', eachChapter.id);
           sessionStorage.setItem('BreadCrumb', 'Induction Training');
-
         }
       });
     }
-
-
-
-
-
-
-    
   };
 
   const getCardColor = (index) => {
@@ -315,76 +302,73 @@ console .log(isAllComplete,'isAllComplete')
             flexDirection: 'row',
             flexWrap: 'wrap',
             justifyContent: 'center',
+            margin: '0 0 15px',
           }}
         >
-
-{chapterList[0]?
+          {chapterList[0] ? (
             <>
-            {chapterList &&
-            chapterList.map((eachChapter, index) => {
-              return (
-                <Card
-                  style={{
-                    backgroundColor: getCardColor(index),
-                    marginLeft: '20px',
-                    marginTop: '20px',
-                    maxWidth: '200px',
-                  }}
-                  className={classes.cards}
-                >
-                  <CardContent>
-                    <Typography
+              {chapterList &&
+                chapterList.map((eachChapter, index) => {
+                  return (
+                    <Card
                       style={{
-                        textAlign: 'center',
-                        color: 'white',
+                        backgroundColor: getCardColor(index),
+                        marginLeft: '20px',
+                        marginTop: '20px',
+                        maxWidth: '200px',
                       }}
+                      className={classes.cards}
                     >
-                      {' '}
-                      {eachChapter.title}
-                    </Typography>
-                  </CardContent>
+                      <CardContent>
+                        <Typography
+                          style={{
+                            textAlign: 'center',
+                            color: 'white',
+                          }}
+                        >
+                          {' '}
+                          {eachChapter.title}
+                        </Typography>
+                      </CardContent>
 
-                  <CardActions style={{ display: 'flex', justifyContent: 'center' }}>
-                    <Typography
-                      onClick={() => handleChaplerDetails(eachChapter)}
-                      color='primary'
-                      style={{ fontWeight: 'bold', color: 'Black', cursor: 'pointer' }}
-                    >
-                      Click me
-                    </Typography>
-                    {/* <StyledButton  size='small'>Click here</StyledButton> */}
-                  </CardActions>
-                  {eachChapter.is_completed ? (
-                    <CardContent style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography style={{ color: 'white' }}>Completed</Typography>
-                    </CardContent>
-                  ) : (
-                    <CardContent style={{ display: 'flex', justifyContent: 'center' }}>
-                      <Typography style={{ color: 'white' }}>Not Completed</Typography>
-                    </CardContent>
-                  )}
-                </Card>
-              );
-            })}
-              </> :  <div className="noDataIMG" style={{width: '100%'}} >
-                <SvgIcon
-                  component={() => (
-                    <img style={{ paddingLeft: '380px' }} src={unfiltered} />
-                  )}
-                />
-                <p style={{ paddingLeft: '440px' }}>NO DATA FOUND </p>
-              </div> }
-
-
-
-
-
-
-
-
-
-
-          
+                      <CardActions style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Typography
+                          onClick={() => handleChaplerDetails(eachChapter)}
+                          color='primary'
+                          style={{
+                            fontWeight: 'bold',
+                            color: 'Black',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          Click me
+                        </Typography>
+                        {/* <StyledButton  size='small'>Click here</StyledButton> */}
+                      </CardActions>
+                      {eachChapter.is_completed ? (
+                        <CardContent
+                          style={{ display: 'flex', justifyContent: 'center' }}
+                        >
+                          <Typography style={{ color: 'white' }}>Completed</Typography>
+                        </CardContent>
+                      ) : (
+                        <CardContent
+                          style={{ display: 'flex', justifyContent: 'center' }}
+                        >
+                          <Typography style={{ color: 'white' }}>
+                            Not Completed
+                          </Typography>
+                        </CardContent>
+                      )}
+                    </Card>
+                  );
+                })}
+            </>
+          ) : (
+            <div className='noDataIMG' style={{ width: '100%' }}>
+              <NoFilterData data={'NO DATA FOUND'} />
+            </div>
+          )}
         </div>
       </div>
       {openFeedback && <Feedback open={openFeedback} onDialogClose={setOpenFeedback} />}

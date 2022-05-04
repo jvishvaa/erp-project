@@ -39,7 +39,7 @@ import TableRow from '@material-ui/core/TableRow';
 //import exportFromJSON from 'export-from-json';
 import { CSVLink } from 'react-csv';
 import TablePagination from '@material-ui/core/TablePagination';
-import unfiltered from '../../../assets/images/unfiltered.svg';
+import NoFilterData from 'components/noFilteredData/noFilterData';
 
 import MediaCard from '../components/volumecards';
 import './induction-training.scss';
@@ -175,7 +175,7 @@ const StyledClearButton = withStyles((theme) => ({
     padding: '8px 15px',
     marginLeft: '20px',
     '&:hover': {
-      backgroundColor: '#E2E2E2 !important',
+      backgroundColor: 'lightgray !important',
     },
   },
 }))(Button);
@@ -331,7 +331,6 @@ const InductionFilter = (props) => {
               state: volume,
               module: 'inductionTraining',
             });
-            
           } else {
             setAlert('warning', 'please complete previous chapter');
           }
@@ -344,7 +343,6 @@ const InductionFilter = (props) => {
             state: volume,
             module: 'inductionTraining',
           });
-          
         }
       });
     }
@@ -459,9 +457,14 @@ const InductionFilter = (props) => {
                 <StyledClearButton onClick={handleClearAllList}>
                   Clear All
                 </StyledClearButton>
-                <StyledButton className={classes.filters} onClick={handleFilter}>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  className={classes.filters}
+                  onClick={handleFilter}
+                >
                   Filter
-                </StyledButton>
+                </Button>
               </Grid>
               {/* <Grid md={2} sm={2} xs={6}>
               <StyledButton onClick={handleFilter}>Filter</StyledButton>
@@ -479,12 +482,7 @@ const InductionFilter = (props) => {
               </Grid>
             ) : (
               <div className={classes.periodDataUnavailable}>
-                <SvgIcon
-                  component={() => (
-                    <img style={{ paddingLeft: '380px' }} src={unfiltered} />
-                  )}
-                />
-                <p style={{ paddingLeft: '440px' }}>NO DATA FOUND </p>
+                <NoFilterData data={'NO DATA FOUND'} />
               </div>
             )}
           </Paper>
