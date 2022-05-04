@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-// import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
 import {
   Paper,
   Grid,
-  Typography,
   makeStyles,
   TableCell,
   TableBody,
@@ -15,7 +13,6 @@ import {
   TextField,
 } from '@material-ui/core';
 import Button from '@material-ui/core/Button';
-
 import Layout from 'containers/Layout';
 import { ArrowForwardIos as ArrowForwardIosIcon } from '@material-ui/icons';
 import clsx from 'clsx';
@@ -43,9 +40,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    // '&::before': {
-    //   backgroundColor: 'black',
-    // },
   },
 
   cardContantFlex: {
@@ -128,7 +122,7 @@ const CurriculumCompletionDetails = (props) => {
   const [subjectList, setSubjectList] = useState([]);
   const [subjectId, setSubjectId] = useState();
 
-  // const { setAlert } = useContext(AlertNotificationContext);
+
   const [selectedSectionIds, setSelectedSectionIds] = useState([]);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -168,13 +162,13 @@ const CurriculumCompletionDetails = (props) => {
   };
 
   const handleGrade = (event = {}, value = []) => {
-    // setSelectedGrade([]);
+  
 
     const ids = value;
     const selectedId = value?.grade_id;
     setSelectedGrade(ids);
     setSelectedGradeIds(selectedId);
-    setSectionList([]); //clear List
+    setSectionList([]); 
     setSubjectList([]);
     setSelectedSection([]);
     setSelectedSubject([]);
@@ -216,7 +210,7 @@ const CurriculumCompletionDetails = (props) => {
     if (value?.subject__id) {
       dataList(value?.subject__id);
     }
-    // pendingInfo();
+  
   };
   const clearFilterHandler = () => {
     setSelectedGrade([]);
@@ -229,9 +223,7 @@ const CurriculumCompletionDetails = (props) => {
     handleBranch();
   };
 
-  // const pendingInfo = () => {
-  //   pendingDetails(sectionId, subjectId, periodDate);
-  // };
+ 
 
   function callApi(api, key) {
     axiosInstance
@@ -285,7 +277,7 @@ const CurriculumCompletionDetails = (props) => {
         }&subject_id=${subjectId}&date_range_type=${periodDate}`,
         {
           headers: {
-            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
             'X-DTS-HOST': window.location.host,
             Authorization: `Bearer ${token}`,
           },
@@ -306,9 +298,7 @@ const CurriculumCompletionDetails = (props) => {
       });
   };
 
-  // useEffect(() => {
-  //   dataList();
-  // }, []);
+
 
   return (
     <Layout>
@@ -333,27 +323,14 @@ const CurriculumCompletionDetails = (props) => {
         <Grid
           container
           direction='row'
-          // justifyContent='space-between'
+        
           xs={12}
           sm={12}
           md={12}
           lg={12}
           spacing={1}
         >
-          {/* <Grid item xs={12} md={2} spacing={1}>
-            <Autocomplete
-              id='combo-box-demo'
-              size='small'
-              // value={volume}
-              // onChange={handleGrade}
-              options={volumeArr || []}
-              getOptionLabel={(option) => option?.volume || ''}
-              // getOptionSelected={(option, value) => option?.id == value?.id}
-              renderInput={(params) => (
-                <TextField {...params} label='Volume' variant='outlined' />
-              )}
-            />
-          </Grid> */}
+          
           <Grid item xs={12} md={2} spacing={1}>
             <Autocomplete
               id='combo-box-demo'
@@ -395,10 +372,10 @@ const CurriculumCompletionDetails = (props) => {
               value={selectedSubject || []}
               options={subjectList || []}
               getOptionLabel={(option) =>
-                option?.subject_subject_name || option?.subject_subject_name || ''
+                option?.subject__subject_name || option?.subject__subject_name || ''
               }
               getOptionSelected={(option, value) =>
-                option?.subject_subject_name == value?.subject_subject_name
+                option?.subject__subject_name == value?.subject__subject_name
               }
               renderInput={(params) => (
                 <TextField {...params} label='Subject' variant='outlined' />
@@ -413,13 +390,11 @@ const CurriculumCompletionDetails = (props) => {
                 border: '1px solid black',
                 borderRadius: '5px',
                 paddingTop: '5px',
-                width: '100%',
-                // position: 'relative',
-                // left: '200px',
+                width: '100%',              
                 paddingLeft: '10px',
               }}
               id='date'
-              // label='Till Date'
+           
               type='date'
               size='small'
               defaultValue={date}
@@ -475,27 +450,29 @@ const CurriculumCompletionDetails = (props) => {
                       scope='row'
                       className={clsx(classes.textLeft)}
                     >
-                      <b>{item.period_subject_mappingsection_mappinggrade_grade_name}</b>
+                      <b>
+                        {item.period__subject_mapping__section_mapping__grade__grade_name}
+                      </b>
                       {'\u00A0'}-{'\u00A0'}
                       {
-                        item.period_subject_mappingsection_mappingsection_section_name
+                        item.period__subject_mapping__section_mapping__section__section_name
                       }{' '}
                       {'\u00A0'}
                       {'\u00A0'}
                       {'\u00A0'}
-                      {item.period_subject_mappingsubject_subject_name}
+                      {item.period__subject_mapping__subject__subject_name}
                     </TableCell>
                     <TableCell align='right'>{item.total_topics}</TableCell>
                     <TableCell align='right'>{item.total_completed}</TableCell>
                     <TableCell align='right'>
                       {item.percentage_completed ? item.percentage_completed : '0'}%
                     </TableCell>
-                    {/* <TableCell align='left'>
-                    <ArrowForwardIosIcon
-                      style={{ cursor: 'pointer' }}
-                      onClick={chapterTopicHandler}
-                    />
-                  </TableCell> */}
+                    <TableCell align='left'>
+                      <ArrowForwardIosIcon
+                        style={{ cursor: 'pointer' }}
+                        onClick={chapterTopicHandler}
+                      />
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
