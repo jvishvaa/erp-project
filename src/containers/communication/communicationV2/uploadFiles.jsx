@@ -9,19 +9,24 @@ import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from './../../../context-api/alert-context/alert-state';
 import Loader from './../../../components/loader/loader';
+import ConfirmModal from 'containers/assessment-central/assesment-card/confirm-modal';
 
 const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const [filenames,setFilenames] = useState([])
-
+  const [openModalFinal,setOpenModalFinal] = useState(false)
+  const [filesToDelete,setFilesToDelete] = useState()
+  const [idToDelete,setIdToDelete] = useState()
+ 
   const handleClose = (Submit) => {
     if(Submit){
       setOpenUpload(false);
       handleFiles(files)
       setFilenames([])
       setFiles([])
+      setAlert('success','File submitted successfully')
     }else{
       handleFiles([])
       setOpenUpload(false);
@@ -29,9 +34,9 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
       setFiles([])
     }
   };
-  const handleRemove = (item, i) => {
-    files.splice(i, 1);
-    const removeName = filenames.filter((z) => z != item);
+  const handleRemove = () => {
+    files.splice(idToDelete, 1);
+    const removeName = filenames.filter((z) => z != filesToDelete);
     setFiles(files);
     setFilenames(removeName)
   };
@@ -71,7 +76,7 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
   };
   return (
     <div>
-      {loading && <Loader />}
+      
       <Dialog
         // fullScreen={true}
         open={openUpload}
@@ -80,6 +85,7 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
         fullWidth={true}
         maxWidth='sm'
       >
+        {loading && <Loader />}
         <Grid item container justifyContent='space-between' alignItems='center' xs={12}>
           <Typography
             style={{ color: '#676767', paddingLeft: 15, fontWeight: 600, fontSize: 25 }}
@@ -144,7 +150,12 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
                     </div>
                   <div style={{ flex: 1, textAlign: 'right' }}>
                     <HighlightOffIcon
-                      onClick={() => handleRemove(item, index)}
+                      onClick={() => {
+                        setOpenModalFinal(true)
+                        setFilesToDelete(item)
+                        setIdToDelete(index)
+                      }
+                      }
                       style={{ cursor: 'pointer', fontSize: '30px' }}
                     />
                   </div>
@@ -174,6 +185,11 @@ const UploadFiles = ({ openUpload, setOpenUpload, handleFiles, branchId }) => {
             Submit
           </Button>
         </Grid>
+        <ConfirmModal
+          submit={handleRemove}
+          openModal={openModalFinal}
+          setOpenModal = {setOpenModalFinal}
+        />
       </Dialog>
     </div>
   );
