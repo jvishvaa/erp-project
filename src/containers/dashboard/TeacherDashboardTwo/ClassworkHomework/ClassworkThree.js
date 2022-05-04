@@ -460,10 +460,7 @@ function ClassworkThree(props) {
           </div>
         </Grid>
       </>
-      {/* <Details section={section} subject={subject} date={date} /> */}
-      {/* <Details hworcw={props} /> */}
       <>
-        {/* <dataPropsContext.Provider value={dataincoming}> */}
         <Grid
           container
           style={{
