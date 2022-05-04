@@ -725,6 +725,23 @@ export default {
     getVisualReportSearchAPI: `${baseUdaan}/assessment/branch_wise_visual_report/`,
     getBranchWiseVisualReport: `${baseUdaan}/assessment/branch_wise_teacher_visual_report/`,
     getDetailedVisualReport: `${baseUdaan}/assessment/detailed_visual_report/`,
+    leadTeachersAPI: `${baseUdaan}/instructors/retrieve_assign_lead_teachers/`,
+    leadTeacherRoleAPI: `${baseUdaan}/instructors/teachers_roles/`,
+    updatePositionMapping: `${baseUdaan}/instructors/`,
+    userLogin: `${baseUdaan}/authenticate/login/`,
+    verifyotp: `${baseUdaan}/authenticate/verifyotp/`,
+    sendOtp: `${baseUdaan}/authenticate/sendotp/`,
+    getBranchNames: `${baseUdaan}/authenticate/RetrieveBranch/`,
+    nonOrchidsregistration: `${baseUdaan}/authenticate/non_orchids_registration/`,
+    subjectSelector_Webinar: `${baseUdaan}/courses/list_grade_subject_mapping/`,
+    categoryTypeApiList: `${baseUdaan}/courses/list_create_coursetype/`,
+    getSchoolListApi: `${baseUdaan}/authenticate/schools/`,
+    consolidatedReportSendMailApi: `${baseUdaan}/assessment/send_excel_of_report_in_mail/`,
+    weeklyReportDownloadApi: `${baseUdaan}/courses/sure-learning-weekly-report/`,
+    asssignTeachesLeadApi: `${baseUdaan}/instructors/lead_teachers_user_list/`,
+    leadTeachersListApi: `${baseUdaan}/instructors/lead_teachers_list/`,
+
+
   },
   classworkReport: {
     tableData: '/academic/teacher_classwork_report/',

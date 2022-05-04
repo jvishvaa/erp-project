@@ -1,0 +1,39 @@
+.mce-notification-inner {
+    display: none !important;
+}
+.tox-notifications-container {
+    display: none !important;
+}
+.mce-notification.mce-in{
+    opacity: 0 !important;
+}   
+/* .mce-in{
+    display: none !important;   
+} */
+/* .mce-widget {
+    display: none !important;   
+}
+.mce-has-close{
+    display: none !important; 
+}
+.mce-notification-warning{
+    display: none !important;   
+}
+ .mce-notification {
+    display: none !important;   
+}
+.mce-notification.mce-has-close {
+    display: none !important;   
+} */
+/* #mceu_84{
+    display: none !important;    
+}
+#mceu_85{
+    display: none !important;   
+}
+#mceu_132{
+    display: none !important; 
+}
+#mceu_133{
+    display: none !important; 
+} */

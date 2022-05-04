@@ -29,7 +29,7 @@ import MediaCard from './cards.js';
 import axiosInstance from '../../../config/axios';
 import endpoints from 'config/endpoints';
 import axios from 'axios';
-import unfiltered from '../../../assets/images/unfiltered.svg';
+import NoFilterData from 'components/noFilteredData/noFilterData';
 import { SvgIcon } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -502,7 +502,7 @@ const AllchapterSubjectContent = () => {
                           backgroundColor: getCardColor(index),
                           marginLeft: '20px',
                           marginTop: '20px',
-                          cursor: 'pointer',
+                          // cursor: 'pointer',
                         }}
                         className={classes.cards}
                         id='iconCard'
@@ -611,7 +611,7 @@ const AllchapterSubjectContent = () => {
                           backgroundColor: getCardColor(index),
                           marginLeft: '20px',
                           marginTop: '20px',
-                          cursor: 'pointer',
+                          // cursor: 'pointer',
                         }}
                         className={classes.cards}
                         id='iconCard'
@@ -665,12 +665,7 @@ const AllchapterSubjectContent = () => {
             </>
           ) : (
             <div className='noDataIMG' style={{ width: '100%' }}>
-              <SvgIcon
-                component={() => (
-                  <img style={{ paddingLeft: '380px' }} src={unfiltered} />
-                )}
-              />
-              <p style={{ paddingLeft: '440px' }}>NO DATA FOUND </p>
+             <NoFilterData data = {'NO DATA FOUND'} />
             </div>
           )}
         </div>

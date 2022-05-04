@@ -155,7 +155,7 @@ function AssignedCoursesByCordinator() {
       <div>
         <CommonBreadcrumbs
           componentName='Sure Learning'
-          childComponentName='Self Driven Courses'
+          childComponentName='Self Courses'
           isAcademicYearVisible={true}
         />
 
