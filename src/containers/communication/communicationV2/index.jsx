@@ -168,7 +168,7 @@ const NewCommunication = () => {
   };
 
   const setPage = (index) => {
-    // setOnClickIndex(3);
+    setOnClickIndex(index);
   };
 
   const handlePopOverClick = (event) => {

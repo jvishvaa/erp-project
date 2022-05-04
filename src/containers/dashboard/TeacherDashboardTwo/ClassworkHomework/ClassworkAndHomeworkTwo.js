@@ -365,12 +365,12 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
     history.push({
       pathname: './slide3',
       state: {
-        detail: classworkData[0],
+        detail: item,
         hwcwstatus: homework,
         databranch: databranch,
-        selectedGradeIds1: selectedGradeIds,
-        selectedSectionIds1: selectedSectionIds,
-        subjectId1: subjectId,
+        selectedGradeIds1: rowGrade,
+        selectedSectionIds1: rowSection,
+        subjectId1: rowSubject,
         startDate1: startDate,
         endDate1: endDate,
         selectedGradevalue: selectedGrade,
