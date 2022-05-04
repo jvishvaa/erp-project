@@ -61,8 +61,6 @@ const OwnerDashboard = () => {
   const [branchData, setBranchData] = useState([]);
   const [branchCounter, setBranchCounter] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
-  
-
   const initialState = {
     attendence: false,
     tranction: false,

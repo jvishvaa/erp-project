@@ -3,26 +3,16 @@ import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Avatar from '@material-ui/core/Avatar';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
-import ModalSubmitted from './ModalSubmitted';
 import endpoints from '../../../../config/endpoints';
 import axios from '../../../../config/axios';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import NoFilterData from 'components/noFilteredData/noFilterData';
@@ -44,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Submitted(props) {
+  console.log('debugSub', props);
   const [tableData, setTableData] = useState([]);
   const [pendingData, setPendingData] = useState([]);
   const [fileData, setFileData] = useState([]);
@@ -59,6 +50,7 @@ function Submitted(props) {
   const [indexphotos, setindexphotos] = useState(null);
   const [modalData, setModalData] = useState([]);
   const [dataLast, setDataLast] = useState([]);
+  console.log('treefind', dataincoming);
 
   const {
     selectedSectionIds,
@@ -70,8 +62,8 @@ function Submitted(props) {
     setOpen(true);
   };
 
-
   const handleOpen = (data) => {
+    console.log('tree4', data);
     if (dataincoming?.hwcwstatus) {
       popUpListData(data);
       setOpen(true);
@@ -143,10 +135,11 @@ function Submitted(props) {
         popUpList();
       })
       .catch((error) => {
-        // setAlert('error', error?.message);
         // setLoading(false);
       });
   };
+
+
 
   const fileList = (erpid) => {
     axios
@@ -164,6 +157,7 @@ function Submitted(props) {
       )
       .then((result) => {
         setFileData(result?.data?.result);
+        // setLoading(false);
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -174,6 +168,7 @@ function Submitted(props) {
   const popUpList = () => {
     axios
       .get(
+
         (subjectChangedfilterOn)
           ?
           `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&date=${props?.Date2}`
@@ -184,14 +179,18 @@ function Submitted(props) {
         {
           headers: {
             'X-DTS-HOST': window.location.host,
-            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
             Authorization: `Bearer ${token}`,
           },
         }
       )
       .then((result) => {
+        console.log('PendingHWList1', result?.data?.result);
         setModalData(result?.data?.result);
+
         parsedData(result?.data?.result);
+        // setPopup(modalData);
+        // setIndex(result?.data?.result?.total_students);
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -202,6 +201,7 @@ function Submitted(props) {
   const popUpListData = (id) => {
     axios
       .get(
+
         (subjectChangedfilterOn)
           ?
           `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&erp_id=${id}&date=${props?.Date2}`
@@ -212,15 +212,16 @@ function Submitted(props) {
         {
           headers: {
             'X-DTS-HOST': window.location.host,
-            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
             Authorization: `Bearer ${token}`,
           },
         }
       )
       .then((result) => {
-
+        console.log('PendingHWList2', result?.data?.result);
         setDataLast(result?.data?.result);
-
+        // setPopup(modalData);
+        // setIndex(result?.data?.result?.total_students);
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -229,13 +230,13 @@ function Submitted(props) {
   };
 
   const parsedData = (data) => {
-
+    console.log('ParsedData', data);
     const obj = {};
     data.forEach((item) => {
       obj[item.id] = item;
     });
     setOutput(obj);
-
+    console.log('Filtered', obj);
   };
 
   useEffect(() => {
@@ -247,6 +248,7 @@ function Submitted(props) {
   }, [props?.Date2, defaultdate, subjectmappingId]);
 
   const handleClickOn = (erpid, index) => {
+    console.log('ERP', erpid);
     setOn(true);
     setindexphotos(index);
     if (!dataincoming?.hwcwstatus) {
@@ -257,12 +259,12 @@ function Submitted(props) {
   useEffect(() => {
     console.log('a');
   }, [open]);
-  let inputRef = useRef(null);
+  let inputRef = useRef();
   const [Ind, setInd] = useState(0);
   let inputImage = (img) => {
     inputRef.current.src = img;
   };
-
+  console.log('Submitted1', tableData);
   return (
     <>
       <Grid container>
@@ -290,12 +292,14 @@ function Submitted(props) {
           <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>
               {tableData?.map((data, index) => {
+                console.log('Submitted', data);
                 let interval = Math.trunc(
                   moment.duration(moment() - moment(data.submitted_at)).asDays()
                 );
                 return (
                   <TableBody>
                     <TableRow
+                      // key=bonnie
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     // onClick={assessmentHandler}
                     >
@@ -509,7 +513,7 @@ function Submitted(props) {
               ? tableData &&
               tableData[indexphotos]?.uploaded_file?.map((file, index) => {
                 const filename = file.split('/')[3];
-
+                console.log('HWfile', file);
                 return (
                   <div>
                     <Card
@@ -523,6 +527,7 @@ function Submitted(props) {
                     </Card>
                   </div>
                 );
+
               })
               : fileData.length &&
               fileData.map((file, index) => {
@@ -540,6 +545,7 @@ function Submitted(props) {
                     </Card>
                   </div>
                 );
+
               })}
           </div>
           <div
@@ -551,8 +557,7 @@ function Submitted(props) {
               justifyContent: 'center',
             }}
           >
-            <img src='' ref={inputRef}></img>
-
+            <img ref={inputRef}></img>
           </div>
         </div>
       </Dialog>
@@ -563,8 +568,10 @@ function Submitted(props) {
       ) : (
         <ModalPending
           index1={dataincoming?.hwcwstatus}
+          // key1={index}
           row={tableData[popup]}
           col={dataLast}
+          // row={dataincoming.hwcwstatus ? dataLast : tableData[popup]}
           open={open}
           handleClose={handleClose}
         />

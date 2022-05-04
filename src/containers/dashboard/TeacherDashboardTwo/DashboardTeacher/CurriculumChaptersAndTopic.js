@@ -250,7 +250,7 @@ const ChapterAndTopics = (props) => {
         `${endpoints?.teacherDashboard?.tableData}?grade_id=${props?.history?.location?.state?.gradeId}&section_id=${props?.history?.location?.state?.sectionId}&acad_session_id=${props?.history?.location?.state?.acadSessionId}&subject_id=${props?.history?.location?.state?.subjectId}`,
         {
           headers: {
-            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
             'X-DTS-HOST': window.location.host,
             Authorization: `Bearer ${token}`,
           },
@@ -314,7 +314,7 @@ const ChapterAndTopics = (props) => {
           </div>
         </Grid>
         <Grid xs={12} container direction='row' style={{ padding: '5px' }}></Grid>
-        <Grid xs={12} container direction='row' style={{ padding: '5px' }}>
+        <Grid xs={12} container direction='row' style={{ padding: '5px', fontWeight:800 }}>
           <Grid xs={2}>
             Grade And Section : {props?.history?.location?.state?.gradeId}/
             {props?.history?.location?.state?.sectionId}

@@ -46,9 +46,17 @@ const useStyles = makeStyles((theme) => ({
       fill: `${theme.palette.secondary.main} !important`,
     },
 
+    '& .tox .tox-toolbar__group ': {
+      justifyContent: `flex-end !important`,
+    },
+
+    '& .tox .tox-toolbar__primary ': {
+      justifyContent: `flex-end !important`,
+    },
+
     '& .tox-toolbar__primary': {
       background: 'none !important',
-      margin: '1% 0 -2% 37% !important',
+      margin: '1% 0 -2% 0% !important',
       marginBottom: '1px !important',
 
       [theme.breakpoints.down('sm')]: {

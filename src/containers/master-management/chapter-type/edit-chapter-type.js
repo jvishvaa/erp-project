@@ -16,7 +16,7 @@ const EditChapterType = ({ id, category, handleGoBack, setLoading }) => {
     setLoading(true);
     let request = {};
     if (categoryName !== '' && categoryName !== category) {
-      request['chapter_name'] = categoryName;
+      request['chapter_name'] = categoryName.trim();
       axiosInstance
         .put(`${endpoints.masterManagement.editChapter}${id}/edit-chapter/`, request)
         .then((result) => {
@@ -32,7 +32,7 @@ const EditChapterType = ({ id, category, handleGoBack, setLoading }) => {
         })
         .catch((error) => {
           setLoading(false);
-          setAlert('error', error.message);
+          setAlert('error', error?.response?.data?.message || 'Something Went Wrong');
         });
     } else {
       setLoading(false);
