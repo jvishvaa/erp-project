@@ -216,10 +216,10 @@ const GuardianDetailsForm = ({
                     onInput={(e) => {
                       e.target.value = Math.max(0, parseInt(e.target.value))
                         .toString()
-                        .slice(0, 15);
+                        .slice(0, 10);
                     }}
                     min={0}
-                    inputProps={{ pattern: { min: 5, max: 15 } }}
+                    inputProps={{ pattern: { min: 10, max: 10 } }}
                     placeholder='Ex: 995656xxxx'
                     value={formik.values.father_mobile}
                     label='Mobile no.'
@@ -380,13 +380,13 @@ const GuardianDetailsForm = ({
                     id='mother_mobile'
                     name='mother_mobile'
                     // inputProps={{ maxLength: 11 }}
-                    // inputProps={{ pattern: { min: 5, max: 15 } }}
+                    inputProps={{ pattern: { min: 10, max: 10 } }}
                     placeholder='Ex: 995656xxxx'
                     type='number'
                     onInput={(e) => {
                       e.target.value = Math.max(0, parseInt(e.target.value))
                         .toString()
-                        .slice(0, 15);
+                        .slice(0, 10);
                     }}
                     min={0}
                     onChange={formik.handleChange}
@@ -548,11 +548,11 @@ const GuardianDetailsForm = ({
                     onInput={(e) => {
                       e.target.value = Math.max(0, parseInt(e.target.value))
                         .toString()
-                        .slice(0, 15);
+                        .slice(0, 10);
                     }}
                     min={0}
                     // inputProps={{ maxLength: 11 }}
-                    // inputProps={{ pattern: { min: 5, max: 15 } }}
+                    inputProps={{ pattern: { min: 10, max: 10 } }}
                     placeholder='Ex: 995656xxxx'
                     label='Mobile no.'
                   />
