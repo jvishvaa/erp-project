@@ -275,8 +275,14 @@ const UserDetailsForm = ({
             id='contact'
             name='contact'
             // inputProps={{ maxLength: 11 }}
-            // inputProps={{ pattern: { min: 10, max: 10 } }}
-            inputProps={{maxLength:10}}
+            type='number'
+            onInput={(e) => {
+              e.target.value = Math.max(0, parseInt(e.target.value))
+                .toString()
+                .slice(0, 10);
+            }}
+            min={0}
+            inputProps={{ pattern: { min: 10, max: 10 } }}
             onChange={formik.handleChange}
             value={formik.values.contact}
             label='Mobile no.'

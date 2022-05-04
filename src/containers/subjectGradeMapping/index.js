@@ -58,10 +58,11 @@ const Subjectgrade = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = React.useState();
+  
 
   const [modules] = React.useState(modulesArray);
   // const [selectedModule, selectModule] = React.useState(modulesArray[0])
-  const [selectedModule, selectModule] = React.useState();
+  const [selectedModule, selectModule] = React.useState(null);
 
   React.useEffect(() => {
     if (NavData && NavData.length) {
@@ -359,6 +360,11 @@ const Subjectgrade = (props) => {
   };
 
   const submit = () => {
+    if (selectedYear === null || branchValue === null || gradeValue === null || subjectUpdateValue === null || selectedModule === null || centralGradeValue === null || centralGradeValue === null || centralSubValue === null )  {
+      // setErrorMessage('Please select all the fields');
+      setAlert('error', 'Please select all the fields');
+      return;
+    }
     const { key: moduleKey, value } = selectedModule;
     let body = {
       branch: branchValue && branchValue.branch.id,
