@@ -212,7 +212,14 @@ const GuardianDetailsForm = ({
                     name='father_mobile'
                     onChange={formik.handleChange}
                     // inputProps={{ maxLength: 11 }}
-                    // inputProps={{ pattern: { min: 5, max: 15 } }}
+                    type='number'
+                    onInput={(e) => {
+                      e.target.value = Math.max(0, parseInt(e.target.value))
+                        .toString()
+                        .slice(0, 10);
+                    }}
+                    min={0}
+                    inputProps={{ pattern: { min: 10, max: 10 } }}
                     placeholder='Ex: 995656xxxx'
                     value={formik.values.father_mobile}
                     label='Mobile no.'
@@ -294,6 +301,7 @@ const GuardianDetailsForm = ({
                     id='mother_first_name'
                     name='mother_first_name'
                     onChange={formik.handleChange}
+                    inputProps={{ maxLength: 20 }}
                     value={formik.values.mother_first_name}
                     label='First name'
                   />
@@ -311,6 +319,7 @@ const GuardianDetailsForm = ({
                     id='mother_middle_name'
                     name='mother_middle_name'
                     onChange={formik.handleChange}
+                    inputProps={{ maxLength: 20 }}
                     value={formik.values.mother_middle_name}
                     label='Middle name'
                   />
@@ -327,6 +336,7 @@ const GuardianDetailsForm = ({
                   <OutlinedInput
                     id='mother_last_name'
                     name='mother_last_name'
+                    inputProps={{ maxLength: 20 }}
                     onChange={formik.handleChange}
                     value={formik.values.mother_last_name}
                     label='Last name'
@@ -370,8 +380,15 @@ const GuardianDetailsForm = ({
                     id='mother_mobile'
                     name='mother_mobile'
                     // inputProps={{ maxLength: 11 }}
-                    // inputProps={{ pattern: { min: 5, max: 15 } }}
+                    inputProps={{ pattern: { min: 10, max: 10 } }}
                     placeholder='Ex: 995656xxxx'
+                    type='number'
+                    onInput={(e) => {
+                      e.target.value = Math.max(0, parseInt(e.target.value))
+                        .toString()
+                        .slice(0, 10);
+                    }}
+                    min={0}
                     onChange={formik.handleChange}
                     value={formik.values.mother_mobile}
                     label='Mobile no.'
@@ -447,6 +464,7 @@ const GuardianDetailsForm = ({
                     onChange={formik.handleChange}
                     value={formik.values.guardian_first_name}
                     label='First name'
+                    inputProps={{ maxLength: 20 }}
                   />
                   <FormHelperText style={{ color: 'red' }}>
                     {formik.errors.guardian_first_name
@@ -461,6 +479,7 @@ const GuardianDetailsForm = ({
                   <OutlinedInput
                     id='guardian_middle_name'
                     name='guardian_middle_name'
+                    inputProps={{ maxLength: 20 }}
                     onChange={formik.handleChange}
                     value={formik.values.guardian_middle_name}
                     label='Middle name'
@@ -479,6 +498,7 @@ const GuardianDetailsForm = ({
                     id='guardian_last_name'
                     name='guardian_last_name'
                     onChange={formik.handleChange}
+                    inputProps={{ maxLength: 20 }}
                     value={formik.values.guardian_last_name}
                     label='Last name'
                   />
@@ -524,8 +544,15 @@ const GuardianDetailsForm = ({
                     name='guardian_mobile'
                     onChange={formik.handleChange}
                     value={formik.values.guardian_mobile}
+                    type='number'
+                    onInput={(e) => {
+                      e.target.value = Math.max(0, parseInt(e.target.value))
+                        .toString()
+                        .slice(0, 10);
+                    }}
+                    min={0}
                     // inputProps={{ maxLength: 11 }}
-                    // inputProps={{ pattern: { min: 5, max: 15 } }}
+                    inputProps={{ pattern: { min: 10, max: 10 } }}
                     placeholder='Ex: 995656xxxx'
                     label='Mobile no.'
                   />

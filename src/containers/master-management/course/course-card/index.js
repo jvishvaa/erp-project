@@ -224,7 +224,10 @@ const CourseCard = ({ index, cData, setData, setNoPeriods, gradeKey }) => {
                     style={{ display: 'none' }}
                     id='raised-button-file'
                     accept='image/*'
-                    onChange={handleImageChange}
+                    onChange={(e) => {
+                      handleImageChange(e);
+                      e.target.value = null;
+                    }}
                   />
                   Add Document
                 </Button>

@@ -341,7 +341,7 @@ const AssignRole = (props) => {
 
   useEffect(() => {
     displayUsersList();
-  },[pageno]);
+  },[pageno,clearAllActive]);
 
   const handleFilterCheck = () => {
     if (

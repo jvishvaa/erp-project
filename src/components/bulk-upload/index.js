@@ -207,7 +207,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const handleClearAll = () => {
     setBranchDisplay('');
     setBranch(null);
-    setBranchList([]);
+    // setBranchList([]);
     setBranchCode('');
     fileRef.current.value = null;
   };
