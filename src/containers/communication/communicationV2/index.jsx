@@ -828,7 +828,7 @@ const NewCommunication = () => {
         open={headerOpen}
         onClose={handleClose}
         aria-describedby='alert-dialog-description'
-        style={{ backgroundColor: 'rgba(50, 43, 47, 0.63)' }}
+        style={{ backgroundColor: 'rgba(50, 43, 47, 0.63)', marginTop: '5%' }}
       >
         {openPublish && (
           <DialogTitle

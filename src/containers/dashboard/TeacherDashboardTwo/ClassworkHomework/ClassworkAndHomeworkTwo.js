@@ -39,13 +39,11 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
   const [loading, setLoading] = useState(false);
   const [homework, setHomework] = useState(true);
   const { setAlert } = useContext(AlertNotificationContext);
-
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [selectedGradeIds, setSelectedGradeIds] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [sectionId, setSectionId] = useState('');
-
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
   const [subjectList, setSubjectList] = useState([]);
@@ -55,7 +53,6 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
   const [rowGrade, setRowGrade] = useState();
   const [rowSection, setRowSection] = useState();
   const [rowSubject, setRowSubject] = useState();
-
   const [classworkData, setClassworkData] = useState([]);
 
   const [dateRangeTechPer, setDateRangeTechPer] = useState([]);

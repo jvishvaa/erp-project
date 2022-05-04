@@ -33,11 +33,11 @@ import ConfirmModal from 'containers/assessment-central/assesment-card/confirm-m
 
 const useStyles = makeStyles(() => ({
   paper: {
-    minWidth: '825px',
-    minHeight: '400px',
+    // minWidth: '825px',
+    // minHeight: '400px',
     padding: '10px',
-    maxHeight: '550px',
-    marginLeft: '100px',
+    // maxHeight: '550px',
+    marginLeft: window.innerWidth > 768 ? '100px' : "0",
     marginTop: '50px',
   },
   Check: {
@@ -47,7 +47,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, announcementType , setPage }) => {
+const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, announcementType, setPage }) => {
   const fileUploadInput = useRef(null);
   const classes = useStyles();
   const [openUpload, setOpenUpload] = useState(false);
@@ -56,7 +56,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
   const { setAlert } = useContext(AlertNotificationContext);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [loading, setLoading] = useState(false);
-  const [openEditUpload,setOpenEditUpload] = useState(false)
+  const [openEditUpload, setOpenEditUpload] = useState(false)
 
 
 
@@ -93,16 +93,16 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
 
   const [textEditorContent, setTextEditorContent] = useState('');
 
-  const [fileToFilter,setFileToFilter] = useState([])
+  const [fileToFilter, setFileToFilter] = useState([])
 
-  const [openModalFinal,setopenModalFinal] = useState(false)
+  const [openModalFinal, setopenModalFinal] = useState(false)
 
-  const [fileToDelete,setFileToDelete] = useState()
+  const [fileToDelete, setFileToDelete] = useState()
 
-  const handleEditFileClose = () =>{
+  const handleEditFileClose = () => {
     setOpenEditUpload(false)
   }
-  const handleEditFileOpen = () =>{
+  const handleEditFileOpen = () => {
     setOpenEditUpload(true)
   }
 
@@ -378,7 +378,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
   ]);
 
   useEffect(() => {
-    if (selectedSectionListData.length>0 && selectedBranchId) {
+    if (selectedSectionListData.length > 0 && selectedBranchId) {
       getMember();
     }
   }, [
@@ -398,11 +398,11 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
   }
 
   const handleFilterClose = (status) => {
-    if(status){
+    if (status) {
       setuploadedFiles(fileToFilter)
-      setAlert('success','Files saved successfully')
+      setAlert('success', 'Files saved successfully')
     }
-    if(!status){
+    if (!status) {
       setFileToFilter(uploadFiles)
     }
     handleEditFileClose()
@@ -415,7 +415,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
     if (!title) {
       setAlert('warning', 'Please add title');
     }
-    if(title?.length > 50){
+    if (title?.length > 50) {
       setAlert('warning', 'Please enter Title within 50 Characters');
     }
     if (isStudentIncluded && !selectedSectionMappingId.length > 0) {
@@ -434,7 +434,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
       setAlert('warning', 'No members for announcement');
     }
 
-    if (selectedBranchId && selectedUserLevelId.length > 0 && title && title.length<50 && textEditorContent && announcementType?.id && memberList.length > 0) {
+    if (selectedBranchId && selectedUserLevelId.length > 0 && title && title.length < 50 && textEditorContent && announcementType?.id && memberList.length > 0) {
       let payLoad = {
         branch_id: selectedBranchId.toString() || '',
         // "section_mapping_id" : selectedSectionMappingId.toString() || "",
@@ -478,26 +478,26 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
       open={openModalAnnouncement}
       onClose={handleCloseModal}
       maxWidth='lg'
-      //   aria-labelledby='draggable-dialog-title'
+    //   aria-labelledby='draggable-dialog-title'
     >
       {loading && <Loader />}
       <Grid
-      xs={12}
+        xs={12}
       >
-        <Grid container justifyContent='space-between' alignItems='center' style={{fontSize:20,marginBottom:10}}>
-          <div style={{display:'flex',alignItems:'center'}}>
-            { announcementType?.category_name === "Event" && (<EventIcon style={{ color: '#7852CC',marginRight:10 }} />)}
-            { announcementType?.category_name === "Exam" && (<EventNoteIcon style={{ color: '#EF005A',marginRight:10 }} />)}
-            { announcementType?.category_name === "Holiday" && (<BeachAccessIcon style={{ color: '#F96C00',marginRight:10 }} />)}
-            { announcementType?.category_name === "TimeTable" && (<InsertInvitationIcon style={{ color: '#62A7EB',marginRight:10 }} />)}
-            { announcementType?.category_name === "General" && (<SubjectIcon style={{ color: '#464D57',marginRight:10 }} />)}
+        <Grid container justifyContent='space-between' alignItems='center' style={{ fontSize: 20, marginBottom: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {announcementType?.category_name === "Event" && (<EventIcon style={{ color: '#7852CC', marginRight: 10 }} />)}
+            {announcementType?.category_name === "Exam" && (<EventNoteIcon style={{ color: '#EF005A', marginRight: 10 }} />)}
+            {announcementType?.category_name === "Holiday" && (<BeachAccessIcon style={{ color: '#F96C00', marginRight: 10 }} />)}
+            {announcementType?.category_name === "TimeTable" && (<InsertInvitationIcon style={{ color: '#62A7EB', marginRight: 10 }} />)}
+            {announcementType?.category_name === "General" && (<SubjectIcon style={{ color: '#464D57', marginRight: 10 }} />)}
             {announcementType?.category_name}
           </div>
           <CancelOutlinedIcon
             style={{
               position: 'relative',
               top: '6px',
-              color:'black',
+              color: 'black',
               cursor: 'pointer',
               marginTop: "-7px",
             }}
@@ -507,10 +507,10 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
       </Grid>
       <hr style={{ marginBottom: '10px' }} />
       <DialogContent>
-        <div style={{height :'50vh'}}>
+        <div style={{ height: '50vh' }}>
           <Grid container spacing={1}>
             <Grid xs={12} md={6} lg={6} item>
-            <Grid style={{marginBottom:5}}><b >Choose User Level</b></Grid>
+              <Grid style={{ marginBottom: 5 }}><b >Choose User Level</b></Grid>
               <Autocomplete
                 multiple
                 size='small'
@@ -534,7 +534,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
               />
             </Grid>
             <Grid xs={12} md={6} lg={6} item>
-              <Grid style={{marginBottom:5}}><b>Branch</b></Grid>
+              <Grid style={{ marginBottom: 5 }}><b>Branch</b></Grid>
               <Autocomplete
                 id='combo-box-demo'
                 size='small'
@@ -550,7 +550,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
             </Grid>
             {isStudentIncluded && (
               <Grid xs={12} md={6} lg={6} item>
-                <Grid style={{marginBottom:5}}><b>Grade</b></Grid>
+                <Grid style={{ marginBottom: 5 }}><b>Grade</b></Grid>
                 <Autocomplete
                   multiple
                   size='small'
@@ -576,7 +576,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
             )}
             {isStudentIncluded && (
               <Grid xs={12} md={6} lg={6} item>
-                <Grid style={{marginBottom:5}}><b>Section</b></Grid>
+                <Grid style={{ marginBottom: 5 }}><b>Section</b></Grid>
                 <Autocomplete
                   multiple
                   size='small'
@@ -602,11 +602,11 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
             )}
 
             <Grid container>
-              <Grid xs={12} md={6} lg={6} item style={{padding : '0 5px',margin:'10px 0px'}}>
-                <Grid container justifyContent='space-between' alignItems='center' style={{border:'1px solid #d3cbcb',padding:7,borderRadius:8}}>
+              <Grid xs={12} md={6} lg={6} item style={{ padding: '0 5px', margin: '10px 0px' }}>
+                <Grid container justifyContent='space-between' alignItems='center' style={{ border: '1px solid #d3cbcb', padding: 7, borderRadius: 8 }}>
                   <Typography>
                     Total {memberCount ? memberCount : '0'} members selected
-                  </Typography> 
+                  </Typography>
                   {/* <div style={{color :'#576DC5',textDecoration:'underline',cursor:'pointer'}}>
                     Select particular member
                   </div> */}
@@ -622,7 +622,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
               <hr />
             </Grid>
             <Grid xs={12} md={6} lg={6} item>
-            <Grid style={{marginBottom:5}}><b>Title</b></Grid>
+              <Grid style={{ marginBottom: 5 }}><b>Title</b></Grid>
               <TextField
                 style={{ display: 'grid' }}
                 id='outlined-basic'
@@ -631,52 +631,52 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
                 variant='outlined'
                 onChange={(e) => setTitle(e.target.value)}
               />
-              <div style={{color:'#E60C38',display:'flex',justifyContent:"flex-end",fontSize:13,fontWeight:600,marginTop:5}}>
+              <div style={{ color: '#E60C38', display: 'flex', justifyContent: "flex-end", fontSize: 13, fontWeight: 600, marginTop: 5 }}>
                 Max. 50 Characters
               </div>
             </Grid>
           </Grid>
 
-        <Grid style={{marginBottom:5,marginTop: '5px'}}><b>Main Body</b></Grid>
-        <MyTinyEditor
-          id='Editor'
-          //description={Description}
-          content={textEditorContent}
-          // placeholder='Description...'
-          handleEditorChange={handleEditorChange}
-          onChange={(e) => setContent(e.target.value)}
-          //   handleEditorChange={handleEditorChange}
-          //   setOpenEditor={openEditor}
-          height='150px'
-          isShowToolBar='fontselect fontsizeselect bold italic aligncenter underline bullist numlist file image customInsertButton'
-        />
-        <Grid style={{marginBottom:5,marginTop: '20px'}}><b>Upload attachment</b></Grid>
-        <div
-          style={{
-            height: '40px',
-            width: '50%',
-            border: '1px solid #bbb8b8',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '10px',
-            marginBottom:10
-          }}
-        >
-          <div>{uploadFiles?.length > 0 ? uploadFiles?.length : '0'} File Attached</div>
-          <div style={{ cursor: 'pointer' }} onClick={() => setOpenUpload(true)}>
-            <PublishIcon
-              style={{ position: 'relative', top: '6px', }}
-            //   onClick={() => fileUploadInput.current.click()}
-            />
-            Upload
+          <Grid style={{ marginBottom: 5, marginTop: '5px' }}><b>Main Body</b></Grid>
+          <MyTinyEditor
+            id='Editor'
+            //description={Description}
+            content={textEditorContent}
+            // placeholder='Description...'
+            handleEditorChange={handleEditorChange}
+            onChange={(e) => setContent(e.target.value)}
+            //   handleEditorChange={handleEditorChange}
+            //   setOpenEditor={openEditor}
+            height='150px'
+            isShowToolBar='fontselect fontsizeselect bold italic aligncenter underline bullist numlist file image customInsertButton'
+          />
+          <Grid style={{ marginBottom: 5, marginTop: '20px' }}><b>Upload attachment</b></Grid>
+          <div
+            style={{
+              height: '40px',
+              width: '50%',
+              border: '1px solid #bbb8b8',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '10px',
+              marginBottom: 10
+            }}
+          >
+            <div>{uploadFiles?.length > 0 ? uploadFiles?.length : '0'} File Attached</div>
+            <div style={{ cursor: 'pointer' }} onClick={() => setOpenUpload(true)}>
+              <PublishIcon
+                style={{ position: 'relative', top: '6px' }}
+              //   onClick={() => fileUploadInput.current.click()}
+              />
+              Upload
+            </div>
           </div>
-        </div>
-        {fileToFilter.length>0 && (<span style={{textDecoration : 'underline',margin:"5px",cursor:'pointer'}} onClick={()=>{handleEditFileOpen()}}>
-          View all files
-        </span>)}
-        <div style={{height:'20px',width : '100%'}}></div>
-        {/* <div
+          {fileToFilter.length > 0 && (<span style={{ textDecoration: 'underline', margin: "5px", cursor: 'pointer' }} onClick={() => { handleEditFileOpen() }}>
+            View all files
+          </span>)}
+          <div style={{ height: '20px', width: '100%' }}></div>
+          {/* <div
           classes={{ Check: classes.Check }}
           style={{
             display: 'flex',
@@ -709,7 +709,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
             Intimate via Email
           </div>
         </div> */}
-        {/* <input
+          {/* <input
           className='file-upload-input'
           type='file'
           name='attachments'
@@ -722,13 +722,13 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
           }}
           ref={fileUploadInput}
         /> */}
-        {/* 
+          {/* 
         <Typography gutterBottom>
           Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna,
           vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla
           non metus auctor fringilla.
         </Typography> */}
-                </div>
+        </div>
 
       </DialogContent>
       <DialogActions style={{ justifyContent: 'center' }}>
@@ -759,7 +759,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
       <Dialog
         // fullScreen={true}
         open={openEditUpload}
-        onClose={()=>handleEditFileClose}
+        onClose={() => handleEditFileClose}
         aria-labelledby='responsive-dialog-title'
         fullWidth={true}
         maxWidth='sm'
@@ -771,13 +771,13 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
             All Uploaded Files
           </Typography>
           <HighlightOffIcon
-            onClick={()=>handleFilterClose(false)}
+            onClick={() => handleFilterClose(false)}
             style={{ cursor: 'pointer', paddingRight: 20, fontSize: '50px' }}
           />
         </Grid>
         <hr />
-       <div style={{padding:"0 20px"}}>
-       <div
+        <div style={{ padding: "0 20px" }}>
+          <div
             style={{
               display: 'flex',
               padding: '10px 25px',
@@ -788,11 +788,11 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
             }}
           >
             <div style={{ flex: 5, textAlign: 'left' }}>Name</div>
-            <div style={{ flex: 2, textAlign: 'center',paddingRight: 25 }}>Type</div>
+            <div style={{ flex: 2, textAlign: 'center', paddingRight: 25 }}>Type</div>
             <div style={{ flex: 1, textAlign: 'center' }}></div>
           </div>
           <div style={{ maxHeight: '250px', overflowY: 'scroll' }}>
-            {fileToFilter?.length>0 &&
+            {fileToFilter?.length > 0 &&
               fileToFilter.flat(1)?.map((item, index) => (
                 <div
                   style={{
@@ -815,7 +815,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
                   </div>
                   <div style={{ flex: 2, textAlign: 'center' }}>
                     {item.split(".")[2]}
-                    </div>
+                  </div>
                   <div style={{ flex: 1, textAlign: 'right' }}>
                     <HighlightOffIcon
                       onClick={() => {
@@ -829,7 +829,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
                 </div>
               ))}
           </div>
-       </div>
+        </div>
         <Grid
           container
           xs={12}
@@ -838,7 +838,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
         >
           <Button
             variant='contained'
-            onClick={()=>handleFilterClose(false)}
+            onClick={() => handleFilterClose(false)}
             style={{ padding: '5px 30px', marginRight: 10 }}
           >
             Cancel
@@ -847,7 +847,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
             variant='contained'
             color='primary'
             style={{ padding: '5px 40px', marginLeft: 10 }}
-            onClick={()=>handleFilterClose(true)}
+            onClick={() => handleFilterClose(true)}
           >
             Save
           </Button>
@@ -855,8 +855,8 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
         <ConfirmModal
           submit={handleFilter}
           openModal={openModalFinal}
-          setOpenModal = {setopenModalFinal}
-          />
+          setOpenModal={setopenModalFinal}
+        />
       </Dialog>
     </Dialog>
   );
