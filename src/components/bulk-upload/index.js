@@ -207,6 +207,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
   const handleClearAll = () => {
     setBranchDisplay('');
     setBranch(null);
+    setFile('')
     // setBranchList([]);
     setBranchCode('');
     fileRef.current.value = null;
@@ -451,7 +452,7 @@ const BulkUpload = ({ onUploadSuccess }) => {
           <Button
             variant='contained'
             className='canceButton labelColor'
-            style={{ width: '100%' , fontWeight: '600' }}
+            style={{ width: '100%', fontWeight: '600' }}
             size='medium'
             onClick={handleClearAll}
           >

@@ -332,7 +332,7 @@ const generateTermDetails = (termDetails, annualDetails, categoryKeys, isAirVisi
       if (subjectMarksSemesterTwo) {
         const diff = semTwoLength - semOneLength;
         let transformedSemOne = Array.from({ length: diff }, () =>
-          Array.from({ length: 10 }, () => null)
+          Array.from({ length: isAirVisible ? 10 : 9 }, () => null)
         );
         semesterOneSubjectWiseMarks = [
           ...semesterOneSubjectWiseMarks,
