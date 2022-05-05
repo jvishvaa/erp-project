@@ -1,0 +1,129 @@
+
+.resource-details-parent-containers {
+  position: relative;
+  width: 65rem;
+  // width: 30%;
+  // height: 10%;
+  .all-tabs {
+    position: sticky;
+    top: 0px;
+    background-color: #fff;
+    z-index: 999;
+    padding: 10px;
+    .CustomerDetailsFrom-title {
+      // margin: 0 0 25px;
+    //   color: $color-primary;
+    //   font-size: $header-font;
+    }
+  }
+
+  .attendance-form {
+    // padding: 0 15px;
+    //  height: 56vh;
+    overflow: auto;
+    .customer-basic-details-from,
+    .customer-address-from {
+      height: 60vh;
+    }
+    .customer-basic-details-from {
+      display: flex;
+      flex-wrap: wrap;
+      .additioal-info {
+        display: 'flex';
+        flex-direction: 'row';
+        justify-content: 'space-between';
+        flex-wrap: 'wrap';
+        .marks,
+        .grade,
+        .participation {
+          width: '15%';
+        }
+      }
+      .marks-field,
+      .skill-level-field {
+        width: 60%;
+        @media screen and (max-width: 650px) {
+          width: 100%;
+        }
+      }
+      .image-field-section {
+        width: 30%;
+        margin-left: 3%;
+        height: 100px;
+        @media screen and (max-width: 650px) {
+          width: 100%;
+        }
+      }
+
+      .certificate-switch {
+        width: 30%;
+        margin-left: 3%;
+        @media screen and (max-width: 650px) {
+          width: 100%;
+        }
+      }
+    }
+    .customer-address-from {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      .billing-address {
+        width: 49%;
+        padding: 1%;
+      }
+      .shipping-address {
+        width: 49%;
+        padding: 1%;
+      }
+    }
+  }
+  .divider-2 {
+    margin-top: 15px;
+    margin-left: 7px;
+    margin-bottom: 5px;
+  }
+  .header-2 {
+    margin-top: 30px;
+    margin-left: 7px;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  .action-button {
+    position: sticky;
+    bottom: 0px;
+    background-color: #fff;
+    z-index: 999;
+    padding: 15px;
+    .action-all-buttons {
+      display: flex;
+      justify-content: flex-end;
+      flex-grow: 1;
+      .action-button-cancel {
+        margin: 0 10px 0 0;
+        text-transform: none;
+        // color: $color-primary;
+        background-color: #fff;
+      }
+      .action-button-cancel:hover {
+        margin: 0 10px 0 0;
+        text-transform: none;
+        color: #fff;
+        background-color: #014b7e;
+      }
+      .action-button-back {
+        text-transform: none;
+      }
+      .action-button-next {
+        margin: 0 0 0 10px;
+        text-transform: none;
+        // background-color: $color-primary;
+      }
+      .action-button-next:hover {
+        margin: 0 0 0 10px;
+        text-transform: none;
+        background-color: #fff;
+        // color: $color-primary !important;
+      }
+    }
+  }
+}

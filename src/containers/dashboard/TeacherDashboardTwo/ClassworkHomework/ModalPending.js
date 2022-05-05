@@ -6,8 +6,6 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import moment from 'moment';
@@ -82,19 +80,18 @@ function ModalPending(props) {
                   </div>
                 </div>
                 <hr style={{ width: '400px' }} />
-                <div style={{ display: 'flex', BorderBottom: '1px solid black', justifyContent: 'space-around' }}>
+                <div style={{ display: 'flex', BorderBottom: '1px solid black', justifyContent: 'space-between' }}>
                   <div style={{ minWidth: 160 }}>
-                    <b style={{ color: '#E33535', fontSize: 'small', marginLeft: 10 }}>
+                    <b style={{ color: '#E33535', fontSize: 'small' }}>
                       Pending Class Work's
                     </b>
                   </div>
                   <div
                     style={{
-                      minWidth: 160,
+                      marginLeft: '32px',
                       marginTop: '7px',
                       color: '#E33535',
                       fontSize: 'small',
-                      marginLeft: 110,
                     }}
                   >
                     <b>Date</b>
@@ -106,12 +103,12 @@ function ModalPending(props) {
                     return (
                       <>
                         <div
-                          style={{ display: 'flex', borderBottom: '1px solid #E8E8E8', justifyContent: 'space-around' }}
+                          style={{ display: 'flex', borderBottom: '1px solid #E8E8E8', justifyContent: 'space-between' }}
                         >
-                          <div style={{ minWidth: 160, marginLeft: 20 }}>
+                          <div>
                             <p style={{ fontSize: 'small' }}>{data.homework_name}</p>
                           </div>
-                          <div style={{ minWidth: 160, marginLeft: 50 }}>
+                          <div>
                             <p style={{ fontSize: 'small' }}>{moment(data.uploaded_at).format('DD-MM-YYYY')}</p>
                           </div>
                         </div>
@@ -122,12 +119,12 @@ function ModalPending(props) {
                     return (
                       <>
                         <div
-                          style={{ display: 'flex', borderBottom: '1px solid #E8E8E8' }}
+                          style={{ display: 'flex', borderBottom: '1px solid #E8E8E8', justifyContent: 'space-between' }}
                         >
-                          <div style={{ width: 20 }}>
+                          <div>
                             <p style={{ fontSize: 'small' }}>{data.title_name}</p>
                           </div>
-                          <div style={{ marginLeft: '120px' }}>
+                          <div>
                             <p style={{ fontSize: 'small' }}>{data.date}</p>
                           </div>
                         </div>

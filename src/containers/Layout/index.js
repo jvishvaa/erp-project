@@ -954,10 +954,10 @@ const Layout = ({ children, history }) => {
         history.push('/View_notification');
         break;
       }
-      case 'Report': {
-        history.push('/Teacher-report');
-        break;
-      }
+      // case 'Report': {
+      //   history.push('/Teacher-report');
+      //   break;
+      // }
       case 'Blogs': {
         history.push('/blogSureLearning');
         break;
@@ -971,6 +971,28 @@ const Layout = ({ children, history }) => {
         history.push('/assignedCoursesByCordinator');
         break;
       }
+
+      case 'All/Completed Courses': {
+        history.push('/sure_learning/completed_courses');
+        break;
+      }
+
+      case 'Class Intitiation Form': {
+        history.push('/sure_learning/class_initiation_form');
+        break;
+      }
+      case 'Intiate Class': {
+        history.push('/sure_learning/initiate_class');
+        break;
+      }
+      case 'Resource': {
+        history.push('/sure_learning/resources');
+        break;
+      }
+      case 'Assessment Scores': {
+        history.push('/sure_learning/assessment_report');
+        break;
+      }
       case 'Class Section Wise Strength': {
         history.push('/student_count_report');
         break;
@@ -981,6 +1003,58 @@ const Layout = ({ children, history }) => {
       }
       case 'Assign User Level': {
         history.push('/user-level-table');
+        break;
+      }
+      case 'Trainee Courses': {
+        history.push('/sure-learning-trainee-courses');
+        break;
+      }
+      case 'Assign Trainee': {
+        history.push('/sure-learning-assign-teacher');
+        break;
+      }
+      case 'Reassign Trainee': {
+        history.push('/sure-learning-re-assign-teacher');
+        break;
+      }
+      case 'Assessment Review': {
+        history.push('/sure-learning-assessment-review');
+        break;
+      }
+      case 'Report': {
+        history.push('/sure-learning-course-wise-user-report');
+        break;
+      }
+      case 'Branch wise Report': {
+        history.push('/sure-learning-branch-level-detailed-report');
+        break;
+      }
+      case 'Enroll Self Courses': {
+        history.push('/enrollTrainingfCourses');
+        break;
+      }
+      case 'Self Courses': {
+        history.push('/assignedCoursesByCordinator');
+        break;
+      }
+      case 'Assign Lead Teacher': {
+        history.push('/sure-learning-assign-lead-teacher');
+        break;
+      }
+      case 'Consolidated Report': {
+        history.push('/sure-learning-consolidated-report');
+        break;
+      }
+      case 'Weekly Report': {
+        history.push('/sure-learning-weekly-report');
+        break;
+      }
+      case 'Assign Teacher': {
+        history.push('/sure-learning/assign-teacher');
+        break;
+      }
+      case 'Enroll for sure learning': {
+        history.push('/sure-learning-access');
         break;
       }
       default:

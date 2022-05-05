@@ -123,7 +123,7 @@ function ViewInhouseAllMeetings({
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell float="left">S.No</TableCell>
+                        <TableCell float="left">S.No.</TableCell>
                         <TableCell float="left">Topic</TableCell>
                         <TableCell float="left">Course Name </TableCell>
                         <TableCell float="left">Trainer Name</TableCell>

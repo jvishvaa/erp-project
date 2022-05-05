@@ -3,7 +3,6 @@ import {
   Button,
   Dialog,
   DialogActions,
-  DialogTitle,
   Typography,
   DialogContent,
   makeStyles,
@@ -12,7 +11,6 @@ import {
   Checkbox,
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import AddBoxIcon from '@material-ui/icons/AddBox';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import PublishIcon from '@material-ui/icons/Publish';
 // import TinyMce from '../../../components/TinyMCE/tinyMce';
@@ -23,15 +21,25 @@ import axiosInstance from '../../../config/axios';
 import { useSelector } from 'react-redux';
 import axios from 'axios';
 import { AlertNotificationContext } from './../../../context-api/alert-context/alert-state';
+import Loader from './../../../components/loader/loader';
+import EventIcon from '@material-ui/icons/Event';
+import EventNoteIcon from '@material-ui/icons/EventNote';
+import BeachAccessIcon from '@material-ui/icons/BeachAccess';
+import InsertInvitationIcon from '@material-ui/icons/InsertInvitation';
+import SubjectIcon from '@material-ui/icons/Subject';
+import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import ConfirmModal from 'containers/assessment-central/assesment-card/confirm-modal';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+
 
 const useStyles = makeStyles(() => ({
   paper: {
-    minWidth: '825px',
-    minHeight: '400px',
+    // minWidth: '825px',
+    // minHeight: '400px',
     padding: '10px',
-    maxHeight: '550px',
-    marginLeft: '100px',
-    marginTop: '50px',
+    // maxHeight: '550px',
+    // marginLeft: window.innerWidth > 768 ? '100px' : "0",
+    // marginTop: '50px',
   },
   Check: {
     display: 'flex',
@@ -40,7 +48,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
+const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, announcementType, setPage }) => {
   const fileUploadInput = useRef(null);
   const classes = useStyles();
   const [openUpload, setOpenUpload] = useState(false);
@@ -48,6 +56,9 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
   const [uploadFiles, setuploadedFiles] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [loading, setLoading] = useState(false);
+  const [openEditUpload, setOpenEditUpload] = useState(false)
+  const setMobileView = useMediaQuery('(min-width:960px)');
 
 
   const selectedAcademicYear = useSelector(
@@ -74,10 +85,6 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
   const [selectedSectionId, setSelectedSectionId] = useState([]);
   const [selectedSectionMappingId, setSelectedSectionMappingId] = useState([]);
 
-  const [announcementList, setAnnouncementList] = useState([]);
-  const [selectedAnnouncementListData, setselectedAnnouncementListData] = useState();
-  const [selectedAnnouncementId, setSelectedAnnouncementId] = useState();
-
   const [memberList, setMemberList] = useState([]);
   const [memberCount, setMemberCount] = useState();
 
@@ -87,8 +94,21 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
 
   const [textEditorContent, setTextEditorContent] = useState('');
 
+  const [fileToFilter, setFileToFilter] = useState([])
+
+  const [openModalFinal, setopenModalFinal] = useState(false)
+
+  const [fileToDelete, setFileToDelete] = useState()
+
+  const handleEditFileClose = () => {
+    setOpenEditUpload(false)
+  }
+  const handleEditFileOpen = () => {
+    setOpenEditUpload(true)
+  }
+
   const handleCloseModal = () => {
-    setOpenModal(false);
+    setOpenModalAnnouncement(false);
     setSelectedUserLevelData([]);
     setSelectedUserLevelId([]);
 
@@ -102,8 +122,6 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
     setSelectedSectionId([]);
     setSelectedSectionMappingId([]);
 
-    setselectedAnnouncementListData();
-    setSelectedAnnouncementId();
 
     setMemberList([]);
     setMemberCount()
@@ -113,6 +131,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
 
     setTextEditorContent('');
     setuploadedFiles([]);
+    setFileToFilter([])
   };
 
 
@@ -136,6 +155,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
 
 
   const getUserLevel = () => {
+    setLoading(true);
     axios
       .get(`${endpoints.userManagement.userLevelList}`, {
         headers: {
@@ -149,6 +169,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
         } else {
           setUserLevelList([]);
         }
+        setLoading(false);
       });
   };
 
@@ -159,6 +180,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
   }, [selectedUserLevelData]);
 
   const getBranch = () => {
+    setLoading(true);
     axiosInstance
       .get(
         `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id
@@ -171,15 +193,18 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
         } else {
           setBranchList([]);
         }
+        setLoading(false);
       });
   };
 
   const handleFiles = (files) => {
     // setuploadedFiles(files);
-    setuploadedFiles(((pre) => [...pre, ...files]))
+    setuploadedFiles((pre) => [...pre, ...files]);
+    setFileToFilter((pre) => [...pre, ...files]);
   };
 
   const getGrade = () => {
+    setLoading(true);
     axiosInstance
       .get(
         `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
@@ -191,6 +216,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
         } else {
           setBranchList([]);
         }
+        setLoading(false);
       });
   };
 
@@ -201,6 +227,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
   }, [selectedbranchListData]);
 
   const getSection = () => {
+    setLoading(true);
     axiosInstance
       .get(
         `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
@@ -212,6 +239,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
         } else {
           setSectionList([]);
         }
+        setLoading(false);
       });
   };
 
@@ -225,35 +253,6 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
     }
   }, [selectedGradeListData]);
 
-  const getAnnouncementType = () => {
-    axiosInstance
-      .get(`${endpoints.announcementNew.getAnnouncemenetCategory}`)
-      .then((res) => {
-        if (res?.data?.status_code === 200) {
-          // const allBranchData = res?.data?.data?.results.map((item)=>item.branch)
-          setAnnouncementList(res?.data?.data);
-        } else {
-          setAnnouncementList([]);
-        }
-      });
-  };
-
-  useEffect(() => {
-    if (
-      selectedbranchListData &&
-      selectedSectionListData.length > 0 &&
-      selectedUserLevelData.length > 0 &&
-      selectedGradeListData.length > 0
-    ) {
-      getAnnouncementType();
-    } else if (
-      selectedbranchListData &&
-      selectedUserLevelData.length > 0 &&
-      !isStudentIncluded
-    ) {
-      getAnnouncementType();
-    }
-  }, [selectedSectionListData, selectedbranchListData]);
 
   useEffect(() => {
     getUserLevel();
@@ -351,8 +350,10 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
       setSelectedSectionId(ids);
       setSelectedSectionListData(data);
       setSelectedSectionMappingId(sectionMappingIds);
+      setMemberCount()
     } else {
       setSelectedSectionListData([]);
+      setMemberCount()
     }
   };
 
@@ -370,31 +371,43 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
   };
 
   useEffect(() => {
-    if ((selectedBranchId || selectedUserLevelId) || (selectedSectionId && openModal)) {
+    if (selectedBranchId) {
       getMember();
     }
   }, [
-    // selectedUserLevelData,
     selectedbranchListData,
-    // selectedGradeListData,
+  ]);
+
+  useEffect(() => {
+    if (selectedSectionListData.length > 0 && selectedBranchId) {
+      getMember();
+    }
+  }, [
     selectedSectionListData,
   ]);
 
-  const handleAnnouncementType = (e, value) => {
-    if (value) {
-      setSelectedAnnouncementId(value.id);
-      setselectedAnnouncementListData(value);
-    } else {
-      setSelectedAnnouncementId();
-      setselectedAnnouncementListData();
-    }
-  };
 
   const handleEditorChange = (content, editor) => {
     content = content.replace(/&nbsp;/g, '');
     //  editor?.getContent({ format: 'text' })
     setTextEditorContent(content);
   };
+
+  const handleFilter = () => {
+    const removeFile = fileToFilter.filter((z) => z != fileToDelete);
+    setFileToFilter(removeFile)
+  }
+
+  const handleFilterClose = (status) => {
+    if (status) {
+      setuploadedFiles(fileToFilter)
+      setAlert('success', 'Files saved successfully')
+    }
+    if (!status) {
+      setFileToFilter(uploadFiles)
+    }
+    handleEditFileClose()
+  }
 
   const handlePublish = (isDraft) => {
     if (!textEditorContent) {
@@ -403,11 +416,8 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
     if (!title) {
       setAlert('warning', 'Please add title');
     }
-    if(title.length > 50){
+    if (title?.length > 50) {
       setAlert('warning', 'Please enter Title within 50 Characters');
-    }
-    if (!selectedAnnouncementId) {
-      setAlert('warning', 'Please select announcement category');
     }
     if (isStudentIncluded && !selectedSectionMappingId.length > 0) {
       setAlert('warning', 'Please select sections');
@@ -421,8 +431,11 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
     if (!selectedUserLevelId.length > 0) {
       setAlert('warning', 'Please select user level');
     }
+    if (!memberList.length > 0) {
+      setAlert('warning', 'No members for announcement');
+    }
 
-    if (selectedBranchId && selectedUserLevelId.length > 0 && title && title.length<50 && textEditorContent && selectedAnnouncementId) {
+    if (selectedBranchId && selectedUserLevelId.length > 0 && title && title.length < 50 && textEditorContent && announcementType?.id && memberList.length > 0) {
       let payLoad = {
         branch_id: selectedBranchId.toString() || '',
         // "section_mapping_id" : selectedSectionMappingId.toString() || "",
@@ -430,7 +443,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
         title: title || '',
         content: textEditorContent || '',
         // "attachments" : uploadFiles || [],
-        category: selectedAnnouncementId,
+        category: announcementType?.id,
         members: memberList || [],
       };
       if (isDraft) {
@@ -442,6 +455,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
       if (isStudentIncluded) {
         payLoad['section_mapping_id'] = selectedSectionMappingId.toString() || '';
       }
+      setLoading(true);
       axiosInstance
         .post(`${endpoints.announcementNew.createAnnouncement}`, payLoad)
         .then((res) => {
@@ -451,6 +465,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
           } else {
             setAlert('error', res?.data?.message);
           }
+          setLoading(false);
         });
     }
   };
@@ -460,35 +475,44 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
     <Dialog
       //   className='reminderDialog'
       classes={{ paper: classes.paper }}
+      style={{marginLeft : setMobileView ? '5%' : ""}}
       fullWidth
-      open={openModal}
+      open={openModalAnnouncement}
       onClose={handleCloseModal}
+      maxWidth='lg'
     //   aria-labelledby='draggable-dialog-title'
     >
-      <DialogTitle
-        id='customized-dialog-title'
-        style={{ padding: '0px 0px 10px 10px', display: 'flex', alignItems: 'center' }}
+      {loading && <Loader />}
+      <Grid
+        xs={12}
       >
-        <b>
-          <AddBoxIcon style={{ position: 'relative', top: '7px' }} />
-          Create New Announcement
-        </b>
-        <CancelOutlinedIcon
-          style={{
-            position: 'relative',
-            top: '6px',
-            marginLeft: '450px',
-            cursor: 'pointer',
-          }}
-          onClick={handleCloseModal}
-        />
-      </DialogTitle>
-      <hr style={{ marginBottom: '20px' }} />
+        <Grid container justifyContent='space-between' alignItems='center' style={{ fontSize: 20, marginBottom: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            {announcementType?.category_name === "Event" && (<EventIcon style={{ color: '#7852CC', marginRight: 10 }} />)}
+            {announcementType?.category_name === "Exam" && (<EventNoteIcon style={{ color: '#EF005A', marginRight: 10 }} />)}
+            {announcementType?.category_name === "Holiday" && (<BeachAccessIcon style={{ color: '#F96C00', marginRight: 10 }} />)}
+            {announcementType?.category_name === "TimeTable" && (<InsertInvitationIcon style={{ color: '#62A7EB', marginRight: 10 }} />)}
+            {announcementType?.category_name === "General" && (<SubjectIcon style={{ color: '#464D57', marginRight: 10 }} />)}
+            {announcementType?.category_name}
+          </div>
+          <CancelOutlinedIcon
+            style={{
+              position: 'relative',
+              top: '6px',
+              color: 'black',
+              cursor: 'pointer',
+              marginTop: "-7px",
+            }}
+            onClick={handleCloseModal}
+          />
+        </Grid>
+      </Grid>
+      <hr style={{ marginBottom: '10px' }} />
       <DialogContent>
-        <div>
+        <div style={{ height: '50vh' }}>
           <Grid container spacing={1}>
             <Grid xs={12} md={6} lg={6} item>
-              <b>Choose User Level</b>
+              <Grid style={{ marginBottom: 5 }}><b >Choose User Level</b></Grid>
               <Autocomplete
                 multiple
                 size='small'
@@ -512,7 +536,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
               />
             </Grid>
             <Grid xs={12} md={6} lg={6} item>
-              <b>Branch</b>
+              <Grid style={{ marginBottom: 5 }}><b>Branch</b></Grid>
               <Autocomplete
                 id='combo-box-demo'
                 size='small'
@@ -528,7 +552,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
             </Grid>
             {isStudentIncluded && (
               <Grid xs={12} md={6} lg={6} item>
-                <b>Grade</b>
+                <Grid style={{ marginBottom: 5 }}><b>Grade</b></Grid>
                 <Autocomplete
                   multiple
                   size='small'
@@ -554,7 +578,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
             )}
             {isStudentIncluded && (
               <Grid xs={12} md={6} lg={6} item>
-                <b>Section</b>
+                <Grid style={{ marginBottom: 5 }}><b>Section</b></Grid>
                 <Autocomplete
                   multiple
                   size='small'
@@ -579,35 +603,28 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
               </Grid>
             )}
 
-            <Typography>
-              Total Members{' '}
-              {memberCount ? memberCount : '0'}
-            </Typography>
+            <Grid container>
+              <Grid xs={12} md={6} lg={6} item style={{ padding: '0 5px', margin: '10px 0px' }}>
+                <Grid container justifyContent='space-between' alignItems='center' style={{ border: '1px solid #d3cbcb', padding: 7, borderRadius: 8 }}>
+                  <Typography>
+                    Total {memberCount ? memberCount : '0'} members selected
+                  </Typography>
+                  {/* <div style={{color :'#576DC5',textDecoration:'underline',cursor:'pointer'}}>
+                    Select particular member
+                  </div> */}
+                </Grid>
+              </Grid>
+            </Grid>
+
+            {/* <Grid item spacing={2} xs={12} sm={6} style={{border:'1px solid grey'}}>
+              <Typography>Total Members {memberCount ? memberCount : '0'}</Typography>
+            </Grid> */}
 
             <Grid md={12} lg={12} item>
               <hr />
             </Grid>
             <Grid xs={12} md={6} lg={6} item>
-              <b>Announcement category</b>
-              <Autocomplete
-                id='combo-box-demo'
-                size='small'
-                options={announcementList || []}
-                onChange={handleAnnouncementType}
-                value={selectedAnnouncementListData}
-                getOptionLabel={(option) => option?.category_name}
-                // style={{ marginRight: 15 }}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    placeholder='Choose category'
-                    variant='outlined'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid xs={12} md={6} lg={6} item>
-              <b>Title</b>
+              <Grid style={{ marginBottom: 5 }}><b>Title</b></Grid>
               <TextField
                 style={{ display: 'grid' }}
                 id='outlined-basic'
@@ -616,45 +633,52 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
                 variant='outlined'
                 onChange={(e) => setTitle(e.target.value)}
               />
+              <div style={{ color: '#E60C38', display: 'flex', justifyContent: "flex-end", fontSize: 13, fontWeight: 600, marginTop: 5 }}>
+                Max. 50 Characters
+              </div>
             </Grid>
           </Grid>
-        </div>
 
-        <b style={{ marginTop: '10px' }}>Main Body</b>
-        <MyTinyEditor
-          id='Editor'
-          //description={Description}
-          content={textEditorContent}
-          placeholder='Description...'
-          handleEditorChange={handleEditorChange}
-          onChange={(e) => setContent(e.target.value)}
-          //   handleEditorChange={handleEditorChange}
-          //   setOpenEditor={setOpenEditor}
-          height='150px'
-          isShowToolBar='fontselect fontsizeselect bold italic aligncenter underline bullist numlist file image customInsertButton'
-        />
-        <b>Upload attachment</b>
-        <div
-          style={{
-            height: '40px',
-            width: '100%',
-            border: '1px solid #bbb8b8',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '10px',
-          }}
-        >
-          <div>{uploadFiles?.length > 0 ? uploadFiles?.length : '0'} File Attached</div>
-          <div style={{ cursor: 'pointer' }} onClick={() => setOpenUpload(true)}>
-            <PublishIcon
-              style={{ position: 'relative', top: '6px', }}
-            //   onClick={() => fileUploadInput.current.click()}
-            />
-            Upload
+          <Grid style={{ marginBottom: 5, marginTop: '5px' }}><b>Main Body</b></Grid>
+          <MyTinyEditor
+            id='Editor'
+            //description={Description}
+            content={textEditorContent}
+            // placeholder='Description...'
+            handleEditorChange={handleEditorChange}
+            onChange={(e) => setContent(e.target.value)}
+            //   handleEditorChange={handleEditorChange}
+            //   setOpenEditor={openEditor}
+            height='150px'
+            isShowToolBar='fontselect fontsizeselect bold italic aligncenter underline bullist numlist file image customInsertButton'
+          />
+          <Grid style={{ marginBottom: 5, marginTop: '20px' }}><b>Upload attachment</b></Grid>
+          <div
+            style={{
+              height: '40px',
+              width: '50%',
+              border: '1px solid #bbb8b8',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '10px',
+              marginBottom: 10
+            }}
+          >
+            <div>{uploadFiles?.length > 0 ? uploadFiles?.length : '0'} File Attached</div>
+            <div style={{ cursor: 'pointer' }} onClick={() => setOpenUpload(true)}>
+              <PublishIcon
+                style={{ position: 'relative', top: '6px' }}
+              //   onClick={() => fileUploadInput.current.click()}
+              />
+              Upload
+            </div>
           </div>
-        </div>
-        {/* <div
+          {fileToFilter.length > 0 && (<span style={{ textDecoration: 'underline', margin: "5px", cursor: 'pointer' }} onClick={() => { handleEditFileOpen() }}>
+            View all files
+          </span>)}
+          <div style={{ height: '20px', width: '100%' }}></div>
+          {/* <div
           classes={{ Check: classes.Check }}
           style={{
             display: 'flex',
@@ -687,7 +711,7 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
             Intimate via Email
           </div>
         </div> */}
-        {/* <input
+          {/* <input
           className='file-upload-input'
           type='file'
           name='attachments'
@@ -700,12 +724,14 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
           }}
           ref={fileUploadInput}
         /> */}
-        {/* 
+          {/* 
         <Typography gutterBottom>
           Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna,
           vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla
           non metus auctor fringilla.
         </Typography> */}
+        </div>
+
       </DialogContent>
       <DialogActions style={{ justifyContent: 'center' }}>
         <Button
@@ -732,6 +758,108 @@ const CreateAnnouncement = ({ openModal, setOpenModal, submit }) => {
         handleFiles={handleFiles}
         branchId={selectedBranchId}
       />
+      <Dialog
+        // fullScreen={true}
+        open={openEditUpload}
+        onClose={() => handleEditFileClose}
+        aria-labelledby='responsive-dialog-title'
+        fullWidth={true}
+        maxWidth='sm'
+      >
+        <Grid item container justifyContent='space-between' alignItems='center' xs={12}>
+          <Typography
+            style={{ color: '#676767', paddingLeft: 20, fontWeight: 600, fontSize: 20 }}
+          >
+            All Uploaded Files
+          </Typography>
+          <HighlightOffIcon
+            onClick={() => handleFilterClose(false)}
+            style={{ cursor: 'pointer', paddingRight: 20, fontSize: '50px' }}
+          />
+        </Grid>
+        <hr />
+        <div style={{ padding: "0 20px" }}>
+          <div
+            style={{
+              display: 'flex',
+              padding: '10px 25px',
+              background: '#E5E5E5',
+              fontSize: 16,
+              marginTop: 20,
+              fontWeight: 600,
+            }}
+          >
+            <div style={{ flex: 5, textAlign: 'left' }}>Name</div>
+            <div style={{ flex: 2, textAlign: 'center', paddingRight: 25 }}>Type</div>
+            <div style={{ flex: 1, textAlign: 'center' }}></div>
+          </div>
+          <div style={{ maxHeight: '250px', overflowY: 'scroll' }}>
+            {fileToFilter?.length > 0 &&
+              fileToFilter.flat(1)?.map((item, index) => (
+                <div
+                  style={{
+                    display: 'flex',
+                    padding: '10px 25px',
+                    border: '1px solid #E5E5E5',
+                    fontSize: 16,
+                  }}
+                >
+                  <div
+                    style={{
+                      flex: 5,
+                      textAlign: 'left',
+                      overflow: 'hidden',
+                      whiteSpace: 'nowrap',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {item.split('/')[2]}
+                  </div>
+                  <div style={{ flex: 2, textAlign: 'center' }}>
+                    {item.split(".")[2]}
+                  </div>
+                  <div style={{ flex: 1, textAlign: 'right' }}>
+                    <HighlightOffIcon
+                      onClick={() => {
+                        setopenModalFinal(true)
+                        setFileToDelete(item)
+                      }
+                      }
+                      style={{ cursor: 'pointer', fontSize: '30px' }}
+                    />
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+        <Grid
+          container
+          xs={12}
+          justifyContent='center'
+          style={{ marginBottom: 20, marginTop: 15 }}
+        >
+          <Button
+            variant='contained'
+            onClick={() => handleFilterClose(false)}
+            style={{ padding: '5px 30px', marginRight: 10 }}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant='contained'
+            color='primary'
+            style={{ padding: '5px 40px', marginLeft: 10 }}
+            onClick={() => handleFilterClose(true)}
+          >
+            Save
+          </Button>
+        </Grid>
+        <ConfirmModal
+          submit={handleFilter}
+          openModal={openModalFinal}
+          setOpenModal={setopenModalFinal}
+        />
+      </Dialog>
     </Dialog>
   );
 };

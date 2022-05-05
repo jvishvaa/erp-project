@@ -124,7 +124,7 @@ function ViewAllWibenars({
                   <Table>
                     <TableHead>
                       <TableRow>
-                        <TableCell float="left">S.No</TableCell>
+                        <TableCell float="left">S.No.</TableCell>
                         <TableCell float="left">Topic</TableCell>
                         <TableCell float="left">Speaker Name</TableCell>
                         <TableCell float="left">Schedule Time (hh:mm)</TableCell>

@@ -19,7 +19,7 @@ import FeedbackFormDialog from '../components/feedbackForm/feedback_form';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import unfiltered from '../../../assets/images/unfiltered.svg';
+import NoFilterData from 'components/noFilteredData/noFilterData';
 import './modulOnlineClass.css';
 
 const useStyles = makeStyles((theme) => ({}));

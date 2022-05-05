@@ -62,7 +62,7 @@ const AllBooksPage = () => {
   const [totalPages, setTotalPages] = useState('');
   const [pageNo, setPageNo] = useState(1);
   const limit = 8;
-  const [clearFilter, setclearFilter] = useState('');
+  const [clearFilter, setclearFilter] = useState(false);
   const [acadmicYear, setAcadmicYear] = useState('');
   const [branch, setBranch] = useState('');
   const [grade, setGrade] = useState('');
@@ -72,8 +72,6 @@ const AllBooksPage = () => {
   const [moduleId,setModuleId] = useState('');
   const [chapter, setChapter] = useState('');
   const [keyConcept,setKeyConcept] = useState('');
-
-
   const [open, setOpen] = useState(false);
   const [bookImage, setBookImage] = useState(
     // 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/ibooks/'
@@ -143,7 +141,6 @@ const AllBooksPage = () => {
 
   useEffect(() => {
 
-
     if(branch != ''){
       getEbook(acadmicYear , branch , grade , subject , volume, board,moduleId,chapter,keyConcept)
     }
@@ -173,7 +170,6 @@ const AllBooksPage = () => {
   };
 
   const handleFilter = (acad, branch, grade, sub, vol, board, moduleId, chapter, keyConcept) => {
-    // console.log(board, 'Checking')
     setAcadmicYear(acad);
     setBranch(branch);
     setGrade(grade);
@@ -196,7 +192,32 @@ const AllBooksPage = () => {
     const filterModule = `${moduleId?.length !== 0 ? `&lt_module=${moduleId?.id}` : ''}`;
     const filterChapter = `${chapter?.length !== 0 ? `&chapter_id=${chapter?.id}` : ''}`;
     const filterKeyConcept = `${keyConcept?.length !== 0 ? `&key_concept_id=${keyConcept?.id}` : ''}`
-    if(branch || grade || subject || vol || moduleId?.length > 0 || chapter?.length >0 || keyConcept?.length >0){
+    if(!branch){
+      setAlert('warning','Please Select Branch')
+      setBooksData([])
+      setTotalPages('')
+      return;
+    } else if(!grade){
+      setAlert('warning', 'Please Select Grade') 
+      setBooksData([])
+      setTotalPages('')
+      return;
+    } else if(!subject){
+      setAlert('warning', 'Please Select Subject')
+      setBooksData([])
+      setTotalPages('')
+      return;
+    } else if(!vol){
+      setAlert('warning', 'Please Select Volume')
+      setBooksData([])
+      setTotalPages('')
+      return;
+    } else if(!board?.length > 0){
+      setAlert('warning', "Please Select Board")
+      setBooksData([])
+      setTotalPages('')
+    }
+    else if(branch || grade || subject || vol || moduleId?.length > 0 || chapter?.length >0 || keyConcept?.length >0){
       setLoading(true);
       axiosInstance
         .get(
@@ -207,7 +228,7 @@ const AllBooksPage = () => {
           if (result.data.status_code === 200) {
             setBooksData(result.data.result.result);
             setTotalPages(Math.ceil(result.data.result.count / limit));
-            // setAlert('success',result.data.message)
+            setAlert('success',result.data.message)
             setLoading(false);
           } else {
             setLoading(false);
@@ -226,6 +247,10 @@ const AllBooksPage = () => {
     }
   };
 
+  useEffect(()=>{
+    setBooksData([])
+    setTotalPages('')
+  },[clearFilter])
   const handleClose = () => {
     setOpen(false);
   };
@@ -243,7 +268,7 @@ const AllBooksPage = () => {
             />
           </Grid>
           <Grid item md={12} xs={12} style={{ margin: '10px 0px' }}>
-            <Filter handleFilter={handleFilter} clearFilter={clearFilter} />
+            <Filter handleFilter={handleFilter} clearFilter={clearFilter} setclearFilter={setclearFilter}/>
           </Grid>
         </Grid>
 

@@ -25,7 +25,6 @@ import endpoints from 'config/endpoints';
 import axios from 'axios';
 import { useHistory } from 'react-router-dom';
 import Loader from '../../../components/loader/loader';
-import unfiltered from '../../../assets/images/unfiltered.svg';
 
 const useStyles = makeStyles((theme) => ({}));
 
@@ -205,7 +204,7 @@ console.log(mm,'moduless')
                 <Table className={classes.paper1} style={{ borderRadius: '15px' }}>
                   <TableHead>
                     <TableRow>
-                      <TableCell float="left">S.No</TableCell>
+                      <TableCell float="left">S.No.</TableCell>
                       <TableCell float="left">Topic</TableCell>
                       <TableCell float="left">Course Name</TableCell>
                       <TableCell float="left">Trainer Name</TableCell>
