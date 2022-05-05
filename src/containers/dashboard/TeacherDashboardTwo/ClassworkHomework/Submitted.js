@@ -50,7 +50,7 @@ function Submitted(props) {
   const [indexphotos, setindexphotos] = useState(null);
   const [modalData, setModalData] = useState([]);
   const [dataLast, setDataLast] = useState([]);
-  console.log('treefind', dataincoming);
+  const [Subid, setSubid] = useState(props?.subjectId2);
 
   const {
     selectedSectionIds,
@@ -83,35 +83,53 @@ function Submitted(props) {
   };
 
   const pendingList = () => {
+    // if (subjectmappingId || props?.subjectId2) {
+    let url, url1;
     if (subjectmappingId) {
-      axios
-        .get(
-          subjectChangedfilterOn
-            ?
-            `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
-              sectionId
-            )}&subject=${subjectmappingId}&date=${props?.Date2}`
-            : `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
-              props?.dataincoming?.detail?.section_mapping
-            )}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date
-            }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
-          {
-            headers: {
-              'X-DTS-HOST': window.location.host,
-              // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((result) => {
-          setTableData(result?.data?.result?.result);
-        })
-        .catch((error) => {
-          // setAlert('error', error?.message);
-          // setLoading(false);
-        });
+      url = `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
+        sectionId
+      )}&subject=${subjectmappingId}&date=${props?.Date2}`
     }
 
+    if (Subid) {
+      url1 = `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
+        props?.dataincoming?.detail?.section_mapping
+      )}&subject=${Subid}&date=${props?.dataincoming?.detail?.date
+        }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`
+    }
+
+
+    axios
+      .get(
+        // `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=2&subject=9&date=2022-02-01`,
+        subjectChangedfilterOn
+          ?
+          url
+          : url1,
+        {
+          headers: {
+            'X-DTS-HOST': window.location.host,
+            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((result) => {
+        setTableData(result?.data?.result?.result);
+        console.log('treenewspending', result?.data?.result?.result);
+        // setIndex(result?.data?.result?.un_submitted_list);
+        // if (result?.data?.status_code === 200) {
+        //   setStudentData(result);
+        // } else {
+        //   setAlert('error', result?.data?.message);
+        // }
+        // setLoading(false);
+      })
+      .catch((error) => {
+        // setAlert('error', error?.message);
+        // setLoading(false);
+      });
+    // }
   };
 
   const UpdatedHwlist = () => {
@@ -248,7 +266,9 @@ function Submitted(props) {
     if (dataincoming.hwcwstatus) {
       UpdatedHwlist();
     } else {
+
       pendingList();
+
     }
   }, [props?.Date2, defaultdate, subjectmappingId]);
 
