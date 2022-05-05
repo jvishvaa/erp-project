@@ -83,32 +83,35 @@ function Submitted(props) {
   };
 
   const pendingList = () => {
-    axios
-      .get(
-        subjectChangedfilterOn
-          ?
-          `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
-            sectionId
-          )}&subject=${subjectmappingId}&date=${props?.Date2}`
-          : `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
-            props?.dataincoming?.detail?.section_mapping
-          )}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date
-          }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
-        {
-          headers: {
-            'X-DTS-HOST': window.location.host,
-            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((result) => {
-        setTableData(result?.data?.result?.result);
-      })
-      .catch((error) => {
-        // setAlert('error', error?.message);
-        // setLoading(false);
-      });
+    if (subjectmappingId) {
+      axios
+        .get(
+          subjectChangedfilterOn
+            ?
+            `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
+              sectionId
+            )}&subject=${subjectmappingId}&date=${props?.Date2}`
+            : `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
+              props?.dataincoming?.detail?.section_mapping
+            )}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date
+            }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
+          {
+            headers: {
+              'X-DTS-HOST': window.location.host,
+              // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((result) => {
+          setTableData(result?.data?.result?.result);
+        })
+        .catch((error) => {
+          // setAlert('error', error?.message);
+          // setLoading(false);
+        });
+    }
+
   };
 
   const UpdatedHwlist = () => {

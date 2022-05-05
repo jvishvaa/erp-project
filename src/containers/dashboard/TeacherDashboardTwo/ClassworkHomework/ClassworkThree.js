@@ -241,7 +241,6 @@ function ClassworkThree(props) {
     const selectedId = value?.grade_id;
     setSelectedGrade(value);
     setSelectedGradeIds(selectedId);
-
     callApi(
       `${endpoints.academics.sections
       }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
@@ -278,12 +277,17 @@ function ClassworkThree(props) {
   };
 
   const handleSubject = (event = {}, value = []) => {
-    setSelectedSubject(value);
-    setSubjectId(value?.subject__id);
-    setSubjectmappingId(value?.subject__id);
-    setSubjectChangedfilterOn(true);
-    // pendingInfo();
-    // pendingDetails(sectionId, value?.subject__id, periodDate);
+    if (value) {
+      setSelectedSubject(value);
+      setSubjectId(value?.subject__id);
+      setSubjectmappingId(value?.subject__id);
+      setSubjectChangedfilterOn(true);
+    } else {
+      setSelectedSubject([])
+      setSubjectId([]);
+      setSubjectmappingId(null);
+      setSubjectChangedfilterOn(false);
+    }
   };
 
   function callApi(api, key) {
@@ -453,7 +457,7 @@ function ClassworkThree(props) {
                 size='small'
                 options={subjectList}
                 onChange={handleSubject}
-                value={selectedSubject}
+                value={selectedSubject || {}}
                 getOptionLabel={(option) => option?.subject__subject_name}
                 // style={{ width: 120 }}
                 renderInput={(params) => (

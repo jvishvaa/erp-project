@@ -76,37 +76,39 @@ function Pending(props) {
           // setLoading(false);
         });
     } else {
-      axios
-        .get(
-          (subjectChangedfilterOn)
-            ?
-            `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${sectionId}&subject=${subjectmappingId}&date=${props?.Date2}`
-            :
-            `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${Number(
-              props?.dataincoming?.detail?.section_mapping
-            )}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date
-            }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
-          {
-            headers: {
-              'X-DTS-HOST': window.location.host,
-              // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        )
-        .then((result) => {
+      if (subjectmappingId) {
+        axios
+          .get(
+            (subjectChangedfilterOn)
+              ?
+              `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${sectionId}&subject=${subjectmappingId}&date=${props?.Date2}`
+              :
+              `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${Number(
+                props?.dataincoming?.detail?.section_mapping
+              )}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date
+              }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
+            {
+              headers: {
+                'X-DTS-HOST': window.location.host,
+                // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then((result) => {
 
-          if (result?.data?.status_code === 200) {
-            setTableData(result?.data?.result?.result);
-            setIndex(result?.data?.result?.total_students);
-          } else {
-            setTableData([]);
-          }
-        })
-        .catch((error) => {
-          // setAlert('error', error?.message);
-          // setLoading(false);
-        });
+            if (result?.data?.status_code === 200) {
+              setTableData(result?.data?.result?.result);
+              setIndex(result?.data?.result?.total_students);
+            } else {
+              setTableData([]);
+            }
+          })
+          .catch((error) => {
+            // setAlert('error', error?.message);
+            // setLoading(false);
+          });
+      }
     }
   };
   const popUpList = () => {
