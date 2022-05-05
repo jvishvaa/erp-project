@@ -53,7 +53,7 @@ function Submitted(props) {
   console.log('treefind', dataincoming);
 
   const {
-
+    selectedSectionIds,
     subjectChangedfilterOn,
     subjectmappingId,
     defaultdate,
@@ -86,7 +86,8 @@ function Submitted(props) {
     axios
       .get(
         subjectChangedfilterOn
-          ? `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
+          ?
+          `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
             sectionId
           )}&subject=${subjectmappingId}&date=${props?.Date2}`
           : `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(

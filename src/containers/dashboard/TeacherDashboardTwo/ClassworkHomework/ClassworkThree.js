@@ -333,7 +333,7 @@ function ClassworkThree(props) {
     subjectChangedfilterOn,
     subjectmappingId,
     defaultdate,
-    sectionId
+    sectionId,
   };
 
   const displayDetails = () => {
@@ -465,7 +465,7 @@ function ClassworkThree(props) {
           <div
             style={{ marginTop: window.innerWidth < 768 ? '15px' : '', marginRight: 15 }}
           >
-            <TextField
+            {/* <TextField
               id='date'
               label='Date'
               type='date'
@@ -476,7 +476,8 @@ function ClassworkThree(props) {
               InputLabelProps={{
                 shrink: true,
               }}
-            />
+            /> */}
+            <div>Selected Date: {defaultdate}</div>
           </div>
         </Grid>
       </>
