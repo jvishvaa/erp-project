@@ -229,7 +229,7 @@ const AllCompletedCourses = ({ history }) => {
                   width: '100%',
                 }}
               >
-                {showCompletedCourses ? 'Completed Courses' : 'All Couses'}
+                {showCompletedCourses ? 'Completed Courses' : 'All Courses'}
               </Typography>
             </div>
           </div>

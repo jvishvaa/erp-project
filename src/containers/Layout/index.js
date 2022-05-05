@@ -977,20 +977,15 @@ const Layout = ({ children, history }) => {
         break;
       }
 
-      case 'Class Initiation Form': {
+      case 'Class Intitiation Form': {
         history.push('/sure_learning/class_initiation_form');
         break;
       }
-      case 'Initiate Class': {
+      case 'Intiate Class': {
         history.push('/sure_learning/initiate_class');
         break;
       }
-
-      case 'Initiate Class': {
-        history.push('/sure_learning/initiate_class');
-        break;
-      }
-      case 'Resources': {
+      case 'Resource': {
         history.push('/sure_learning/resources');
         break;
       }
@@ -1030,7 +1025,7 @@ const Layout = ({ children, history }) => {
         history.push('/sure-learning-course-wise-user-report');
         break;
       }
-      case 'Branch wise report': {
+      case 'Branch wise Report': {
         history.push('/sure-learning-branch-level-detailed-report');
         break;
       }
@@ -1042,7 +1037,7 @@ const Layout = ({ children, history }) => {
         history.push('/assignedCoursesByCordinator');
         break;
       }
-      case 'Assign Lead Teacher\n': {
+      case 'Assign Lead Teacher': {
         history.push('/sure-learning-assign-lead-teacher');
         break;
       }
@@ -1056,6 +1051,10 @@ const Layout = ({ children, history }) => {
       }
       case 'Assign Teacher': {
         history.push('/sure-learning/assign-teacher');
+        break;
+      }
+      case 'Enroll for sure learning': {
+        history.push('/sure-learning-access');
         break;
       }
       default:
