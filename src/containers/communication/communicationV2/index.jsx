@@ -663,6 +663,7 @@ const NewCommunication = () => {
               button
               onClick={() => {
                 setOnClickIndex(1);
+                setCategory(null);
               }}
             >
               <ListItemIcon>
@@ -677,6 +678,7 @@ const NewCommunication = () => {
                   button
                   onClick={() => {
                     setOnClickIndex(2);
+                    setCategory(null);
                   }}
                 >
                   <ListItemIcon>
@@ -689,6 +691,7 @@ const NewCommunication = () => {
                   button
                   onClick={() => {
                     setOnClickIndex(3);
+                    setCategory(null);
                   }}
                 >
                   <ListItemIcon>

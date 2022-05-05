@@ -29,6 +29,7 @@ import InsertInvitationIcon from '@material-ui/icons/InsertInvitation';
 import SubjectIcon from '@material-ui/icons/Subject';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import ConfirmModal from 'containers/assessment-central/assesment-card/confirm-modal';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 
 const useStyles = makeStyles(() => ({
@@ -37,8 +38,8 @@ const useStyles = makeStyles(() => ({
     // minHeight: '400px',
     padding: '10px',
     // maxHeight: '550px',
-    marginLeft: window.innerWidth > 768 ? '100px' : "0",
-    marginTop: '50px',
+    // marginLeft: window.innerWidth > 768 ? '100px' : "0",
+    // marginTop: '50px',
   },
   Check: {
     display: 'flex',
@@ -57,7 +58,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [loading, setLoading] = useState(false);
   const [openEditUpload, setOpenEditUpload] = useState(false)
-
+  const setMobileView = useMediaQuery('(min-width:960px)');
 
 
   const selectedAcademicYear = useSelector(
@@ -474,6 +475,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
     <Dialog
       //   className='reminderDialog'
       classes={{ paper: classes.paper }}
+      style={{marginLeft : setMobileView ? '5%' : ""}}
       fullWidth
       open={openModalAnnouncement}
       onClose={handleCloseModal}
