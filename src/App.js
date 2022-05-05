@@ -55,6 +55,7 @@ import endpoints from '../src/config/endpoints';
 import BookAppointment from './containers/BookAppointments/BookAppointment';
 import Appointments from './containers/BookAppointments/Appointments';
 import ResponderView from './containers/BookAppointments/ResponderView';
+import AssessmentForm from './containers/sure-learning/assessment_form/assessment_form';
 import {
   ViewAssessments,
   AssessmentAttemption,
@@ -283,7 +284,7 @@ import AssignQP from './containers/online-class/erp-view-class/admin/AssignQP';
 import ClassWork from './containers/Classwork/index';
 import { Helmet } from 'react-helmet';
 import logo from '../src/assets/images/logo_mobile.png';
-
+import AllCompletedCourses from 'containers/sure-learning/All_Completed_Courses/all_completed_courses';
 // import Contact from './containers/contact/Contact';
 
 import MultiplayerQuiz from './components/mp-quiz';
@@ -316,6 +317,7 @@ import AllSubjectChapters from 'containers/sure-learning/subject-training/allSub
 import InductionTraining from './containers/sure-learning/induction-training/inductionFilter';
 import TressureBox from './containers/sure-learning/tressureBox/tressurBox';
 import SureNotification from './containers/sure-learning/sure-Notification/notification'
+import ClassCourses from './containers/sure-learning/Initiate_Class/volume_details/ClassCourses';
 import EnrollForSelfCourses from './containers/sure-learning/sureLearning-courses/courses/selfDriven/enrollForSelfCourses';
 import EnrolledSelfCourses from './containers/sure-learning/sureLearning-courses/courses/selfDriven/enrolledSelfCourses';
 import AssignedCoursesByCordinator from './containers/sure-learning/sureLearning-courses/courses/selfDriven/assignedCoursesByCordinator';
@@ -331,13 +333,13 @@ import AllCoursesAssignedByCoordinatorContentUnit from 'containers/sure-learning
 import Quiz from 'containers/sure-learning/sureLearning-courses/courses/selfDriven/steps/quiz';
 import One from 'containers/sure-learning/sureLearning-courses/courses/trainerDriven/one';
 import InductionFilter from 'containers/sure-learning/induction-training/inductionFilter';
-import Blog from 'containers/sure-learning/Blogs-sureLearning/Blogs'
-import LearningNotes from 'containers/sure-learning/MyNotes/MyNotes'
-import ModuleOrOnlineTraining from 'containers/sure-learning/trainer-driven-courses/moduleOrOnline'
-import TrainingModules from 'containers/sure-learning/trainer-driven-courses/TrainingModule'
-import OnlineClassStart from 'containers/sure-learning/trainer-driven-courses/onClassStart'
+import Blog from 'containers/sure-learning/Blogs-sureLearning/Blogs';
+import LearningNotes from 'containers/sure-learning/MyNotes/MyNotes';
+import ModuleOrOnlineTraining from 'containers/sure-learning/trainer-driven-courses/moduleOrOnline';
+import TrainingModules from 'containers/sure-learning/trainer-driven-courses/TrainingModule';
+import OnlineClassStart from 'containers/sure-learning/trainer-driven-courses/onClassStart';
 import TeacherReport from 'containers/sure-learning/sureLearning-courses/courses/selfDriven/teacher-report/TeacherReport';
-import InhouseCalendar from 'containers/sure-learning/calender/inHouseViewWebinar/inhouseWibenarCalender'
+import InhouseCalendar from 'containers/sure-learning/calender/inHouseViewWebinar/inhouseWibenarCalender';
 import EachBlog from 'containers/sure-learning/Blogs-sureLearning/dialog-Blog';
 import Workshop from './components/Workshop';
 import LearningVideos from 'containers/sure-learning/MyNotes/learningAll';
@@ -361,12 +363,13 @@ import AcademicCalendar from 'containers/academicCalendar/index';
 import AcadCalendar from 'containers/academicCalendar/fullcalendar/acadCalendar';
 // import TimeTableOld from './containers/time-table-old/index';
 import TimeTableCheck from 'containers/timetable/index';
-
+import CoursesView from 'containers/sure-learning/PrincipalDashboard/PrincipalComponents/CoursesView';
+import CourseEnroleModle from 'containers/sure-learning/reusableComponents/courseEnroleModle/courseEnroleModle';
 import CurriculumCompletionSubject from 'containers/dashboard/ownerDashboard/academic/curriculamSubject';
 import CurriculumCompletionSection from 'containers/dashboard/ownerDashboard/academic/curruculamSection';
 
-import CurriculumCompletion from 'containers/dashboard/ownerDashboard/academic/curriculamGrade'
-import StudentReportDash from 'containers/dashboard/ownerDashboard/academic/studentReport/report'
+import CurriculumCompletion from 'containers/dashboard/ownerDashboard/academic/curriculamGrade';
+import StudentReportDash from 'containers/dashboard/ownerDashboard/academic/studentReport/report';
 import TestSubjectWiseDetails from 'containers/dashboard/ownerDashboard/academic/studentReport/test/subjectWiseDetails';
 import ClassWorkSubjectWiseDetails from 'containers/dashboard/ownerDashboard/academic/studentReport/classWork/subjectWiseDetails';
 import HomeWorkSubjectWiseDetails from 'containers/dashboard/ownerDashboard/academic/studentReport/homeWork/subjectWiseDetails';
@@ -391,9 +394,25 @@ import FeesSectionStatus from 'containers/dashboard/ownerDashboard/academic/fees
 import TransactionDetails from 'containers/dashboard/ownerDashboard/academic/feesStatus/TransactionDetails';
 import FeesStatusBranchWise from 'containers/dashboard/ownerDashboard/academic/feesStatus/FeesStatusBranchWise';
 import GradeWiseFeesDetails from 'containers/dashboard/ownerDashboard/academic/feesStatus/GradeWiseFeesDetails';
+import ModelBody from 'containers/sure-learning/studentCourse/courses/modelBody';
+import AssignTeacher from 'containers/sure-learning/PrincipalDashboard/AssignTeachers/AssignTeacher';
+import ReAssignTeacher from 'containers/sure-learning/PrincipalDashboard/ReassignTeachers/ReAssignTeacher';
+import AssessmentReview from 'containers/sure-learning/PrincipalDashboard/assessmentReviews/assessmentReviews';
+import Report from 'containers/sure-learning/PrincipalDashboard/report/report';
+import BranchReport from 'containers/sure-learning/visual-dashboard/dashboard';
+import ClassInitiationForm from 'containers/sure-learning/Class_Initation_Form/class_Initiation_form';
+import InitiateClass from 'containers/sure-learning/Initiate_Class/initiate_class';
+import Resources from 'containers/sure-learning/Resources/resources';
+import LeadTeacher from 'containers/sure-learning/PrincipalDashboard/leadTeacher/leadTeacher';
 import TeacherDashboard from 'containers/dashboard/TeacherDashboardTwo/DashboardTeacher/TeacherDashboard';
 import TeacherDash from './containers/dashboard/TeacherDashboardTwo/index';
 import NewCommunication from './containers/communication/communicationV2/index';
+import UserRegister from 'containers/sure-learning/registerationModule/ProfessionalReg';
+import ConsolidatedReport from 'containers/sure-learning/PrincipalDashboard/consolidatedReport/consolidatedReport';
+import WeeklyReport from 'containers/sure-learning/common/weekly-report/weeklyReport';
+import PrincipalLeadTeacher from 'containers/sure-learning/PrincipalDashboard/principalAssignTeacher/principalAssignTeacher'
+import ResourcesFolderList from './containers/sure-learning/Resources_Folders/resources_folder';
+import AllChaptersContent from './containers/sure-learning/Initiate_Class/Chapter_Details/allChapters';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -658,6 +677,47 @@ function App({ alert, isMsAPI, erpConfig }) {
                           </Route>
                           <Route exact path='/master-management/branch-table'>
                             {({ match }) => <BranchTable match={match} />}
+                          </Route>
+                          <Route exact path='/sure_learning/completed_courses'>
+                            {({ match, history }) => (
+                              <AllCompletedCourses match={match} history={history} />
+                            )}
+                          </Route>
+                          <Route exact path='/sure_learning/VolumeDetails'>
+                            {({ match, history }) => (
+                              <ClassCourses match={match} history={history} />
+                            )}
+                          </Route>
+                          <Route exact path='/modelBody'>
+                            {({ match, history }) => (
+                              <ModelBody match={match} history={history} />
+                            )}
+                          </Route>
+                          <Route exact path='/sure_learning/courses_details'>
+                            {({ match, history }) => (
+                              <CourseEnroleModle match={match} history={history} />
+                            )}
+                          </Route>
+                          <Route exact path='/sure_learning/assessment_report'>
+                            {({ match }) => <AssessmentForm match={match} />}
+                          </Route>
+                          <Route exact path='/sure_learning/resources'>
+                            {({ match, history }) => (
+                              <ResourcesFolderList match={match} history={history} />
+                            )}
+                          </Route>
+                          <Route exact path='/sure_learning/resources_containt'>
+                            {({ match }) => <Resources match={match} />}
+                          </Route>
+                          <Route exact path='/sure_learning/class_initiation_form'>
+                            {({ match, history }) => (
+                              <ClassInitiationForm match={match} history={history} />
+                            )}
+                          </Route>
+                          <Route exact path='/sure_learning/initiate_class'>
+                            {({ match, history }) => (
+                              <InitiateClass match={match} history={history} />
+                            )}
                           </Route>
                           <Route exact path='/master-management/branch-acad-table'>
                             {({ match }) => <BranchAcadTable match={match} />}
@@ -1603,6 +1663,11 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route exact path='/allchaptersInduction'>
                             {({ match }) => <AllChapters match={match} />}
                           </Route>
+                          <Route exact path='/sure-learning/allchaptersInduction'>
+                            {({ match, history }) => (
+                              <AllChaptersContent match={match} history={history} />
+                            )}
+                          </Route>
                           <Route exact path='/allsubjectchapters'>
                             {({ match }) => <AllSubjectChapters match={match} />}
                           </Route>
@@ -1755,6 +1820,45 @@ function App({ alert, isMsAPI, erpConfig }) {
                             {({ match }) => <CurriculumCompletionSection match={match} />}
                           </Route>
 
+                          <Route path='/sure-learning-trainee-courses'>
+                            {({ match }) => <CoursesView match={match} />}
+                          </Route>
+                          <Route path='/sure-learning-trainee-courses-details'>
+                            {({ match }) => <CourseEnroleModle match={match} />}
+                          </Route>
+                          <Route path='/sure-learning-trainee-courses-details-content-extension'>
+                            {({ match }) => <ModelBody match={match} />}
+                          </Route>
+                          <Route path='/sure-learning-assign-teacher'>
+                            {({ match }) => <AssignTeacher match={match} />}
+                          </Route>
+                          <Route path='/sure-learning-re-assign-teacher'>
+                            {({ match }) => <ReAssignTeacher match={match} />}
+                          </Route>
+                          <Route path='/sure-learning-assign-lead-teacher'>
+                            {({ match }) => <LeadTeacher match={match} />}
+                          </Route>
+                          <Route path='/sure-learning-assessment-review'>
+                            {({ match }) => <AssessmentReview match={match} />}
+                          </Route>
+                          <Route path='/sure-learning-course-wise-user-report'>
+                            {({ match }) => <Report match={match} />}
+                          </Route>
+                          <Route path='/sure-learning-branch-level-detailed-report'>
+                            {({ match }) => <BranchReport match={match} />}
+                          </Route>
+                          <Route path='/sure-learning-access'>
+                            {({ match }) => <UserRegister match={match} />}
+                          </Route>
+                          <Route path='/sure-learning-consolidated-report'>
+                            {({ match }) => <ConsolidatedReport match={match} />}
+                          </Route>
+                          <Route path='/sure-learning-weekly-report'>
+                            {({ match }) => <WeeklyReport match={match} />}
+                          </Route>
+                          <Route path='/sure-learning/assign-teacher'>
+                            {({ match }) => <PrincipalLeadTeacher match={match} />}
+                          </Route>
                           <Route path='/student-report-dash/:branchId'>
                             {({ match }) => <StudentReportDash match={match} />}
                           </Route>

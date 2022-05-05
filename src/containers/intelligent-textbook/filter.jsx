@@ -13,7 +13,7 @@ import { getModuleInfo } from '../../utility-functions';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { result } from 'lodash';
 
-const Filter = ({ handleFilter, clearFilter }) => {
+const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [academicYear, setAcademicYear] = useState([]);
   const [acadList, setAcadList] = useState([]);
@@ -93,17 +93,17 @@ const Filter = ({ handleFilter, clearFilter }) => {
     })
 
   },[])
-  useEffect(() => {
-    setSelectedVolume('');
-    setBranchList([]);
-    setGradeList([]);
-    setSubjectList([]);
-    setSelectedBranch('');
-    setSelectedGrade('');
-    setSelectedSubject('');
-    setSelectedBoard([]);
-    setSelectedBoardId([])
-  }, [clearFilter]);
+  // useEffect(() => {
+  //   setSelectedVolume('');
+  //   setBranchList([]);
+  //   setGradeList([]);
+  //   setSubjectList([]);
+  //   setSelectedBranch('');
+  //   setSelectedGrade('');
+  //   setSelectedSubject('');
+  //   setSelectedBoard([]);
+  //   setSelectedBoardId([])
+  // }, [clearFilter]);
 
   function ApiCal() {
     axios
@@ -176,6 +176,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
     setSelectedModule('')
     setSelectedBoard('')
     setSelectedChapterList('')
+    setSelectedBoardId([])
     if(value?.length !== 0){
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.id)
@@ -291,7 +292,8 @@ const Filter = ({ handleFilter, clearFilter }) => {
   }
 
   function handleClear() {
-    handleFilter();
+    // handleFilter();
+    setclearFilter(true)
     setSelectedVolume('');
     setGradeList([]);
     setSubjectList([]);

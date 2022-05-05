@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react';
-// import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
 import {
   Paper,
   Grid,
-  Typography,
   makeStyles,
   TableCell,
   TableBody,
@@ -14,6 +12,7 @@ import {
   Table,
   TextField,
 } from '@material-ui/core';
+import Button from '@material-ui/core/Button';
 import Layout from 'containers/Layout';
 import { ArrowForwardIos as ArrowForwardIosIcon } from '@material-ui/icons';
 import clsx from 'clsx';
@@ -41,9 +40,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    // '&::before': {
-    //   backgroundColor: 'black',
-    // },
   },
 
   cardContantFlex: {
@@ -126,7 +122,7 @@ const CurriculumCompletionDetails = (props) => {
   const [subjectList, setSubjectList] = useState([]);
   const [subjectId, setSubjectId] = useState();
 
-  // const { setAlert } = useContext(AlertNotificationContext);
+
   const [selectedSectionIds, setSelectedSectionIds] = useState([]);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -166,17 +162,17 @@ const CurriculumCompletionDetails = (props) => {
   };
 
   const handleGrade = (event = {}, value = []) => {
-    // setSelectedGrade([]);
+  
 
     const ids = value;
     const selectedId = value?.grade_id;
     setSelectedGrade(ids);
     setSelectedGradeIds(selectedId);
-    setSectionList([])  //clear List
-    setSubjectList([])
-    setSelectedSection([])
-    setSelectedSubject([])
-    setCurriculumData([])
+    setSectionList([]); 
+    setSubjectList([]);
+    setSelectedSection([]);
+    setSelectedSubject([]);
+    setCurriculumData([]);
     callApi(
       `${endpoints.academics.sections}?session_year=${
         selectedAcademicYear?.id
@@ -194,9 +190,9 @@ const CurriculumCompletionDetails = (props) => {
     setSectionId(sectionid);
     setSelectedSection(ids);
     setSelectedSectionIds(selectedId);
-    setSubjectList([]) //clear
-    setSelectedSubject([])
-    setCurriculumData([])
+    setSubjectList([]); //clear
+    setSelectedSubject([]);
+    setCurriculumData([]);
     callApi(
       `${endpoints.academics.subjects}?session_year=${selectedAcademicYear?.id}&branch=${
         props?.history?.location?.state?.branchIdMain
@@ -211,15 +207,23 @@ const CurriculumCompletionDetails = (props) => {
     setSelectedSubject(value);
     setSubjectId(value?.subject__id);
     setCurriculumData([]);
-    if(value?.subject__id){
+    if (value?.subject__id) {
       dataList(value?.subject__id);
     }
-    // pendingInfo();
+  
+  };
+  const clearFilterHandler = () => {
+    setSelectedGrade([]);
+    setGradeList([]);
+    setSectionList([]); //clear List
+    setSubjectList([]);
+    setSelectedSection([]);
+    setSelectedSubject([]);
+    setCurriculumData([]);
+    handleBranch();
   };
 
-  // const pendingInfo = () => {
-  //   pendingDetails(sectionId, subjectId, periodDate);
-  // };
+ 
 
   function callApi(api, key) {
     axiosInstance
@@ -252,12 +256,12 @@ const CurriculumCompletionDetails = (props) => {
     setPeriodDate(e.target.value);
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     let acadId = props?.history?.location?.state?.acadIdMain;
-    if(periodDate && selectedGradeIds && selectedSectionIds && acadId && subjectId){
-      dataList(subjectId)
+    if (periodDate && selectedGradeIds && selectedSectionIds && acadId && subjectId) {
+      dataList(subjectId);
     }
-  },[periodDate])
+  }, [periodDate]);
 
   let date = moment().format('YYYY-MM-DD');
 
@@ -294,9 +298,7 @@ const CurriculumCompletionDetails = (props) => {
       });
   };
 
-  // useEffect(() => {
-  //   dataList();
-  // }, []);
+
 
   return (
     <Layout>
@@ -321,27 +323,14 @@ const CurriculumCompletionDetails = (props) => {
         <Grid
           container
           direction='row'
-          // justifyContent='space-between'
+        
           xs={12}
           sm={12}
           md={12}
           lg={12}
           spacing={1}
         >
-          {/* <Grid item xs={12} md={2} spacing={1}>
-            <Autocomplete
-              id='combo-box-demo'
-              size='small'
-              // value={volume}
-              // onChange={handleGrade}
-              options={volumeArr || []}
-              getOptionLabel={(option) => option?.volume || ''}
-              // getOptionSelected={(option, value) => option?.id == value?.id}
-              renderInput={(params) => (
-                <TextField {...params} label='Volume' variant='outlined' />
-              )}
-            />
-          </Grid> */}
+          
           <Grid item xs={12} md={2} spacing={1}>
             <Autocomplete
               id='combo-box-demo'
@@ -401,13 +390,11 @@ const CurriculumCompletionDetails = (props) => {
                 border: '1px solid black',
                 borderRadius: '5px',
                 paddingTop: '5px',
-                width: '100%',
-                // position: 'relative',
-                // left: '200px',
-                paddingLeft: '10px'
+                width: '100%',              
+                paddingLeft: '10px',
               }}
               id='date'
-              // label='Till Date'
+           
               type='date'
               size='small'
               defaultValue={date}
@@ -419,6 +406,15 @@ const CurriculumCompletionDetails = (props) => {
             />
           </Grid>
         </Grid>
+        <Grid>
+          <Button
+            variant='contained'
+            onClick={clearFilterHandler}
+            style={{ color: '#8c8c8c', width: '200px', marginTop: '20px' }}
+          >
+            Clear all
+          </Button>
+        </Grid>
       </Grid>
       <div style={{ display: 'flex', marginBottom: 10, marginLeft: 20 }}>
         <div className={clsx(classes.textBold)}>
@@ -428,52 +424,61 @@ const CurriculumCompletionDetails = (props) => {
         <div className={clsx(classes.textBold)}>All grades and section</div>
       </div>
       <div style={{ padding: '0px 20px' }}>
-        {curriculumData.length === 0? <div style={{height:'200px',justifyContent:'center',  marginTop:'70px'}} ><NoFilterData data={'No Data Found'}/></div> :
-        <TableContainer component={Paper}>
-          <Table>
-            <TableHead style={{ background: '#ebf2fe' }}>
-              <TableRow>
-                <TableCell className={clsx(classes.textLeft)}>
-                  Grade and Subject
-                </TableCell>
-                <TableCell align='right'>Total Topics</TableCell>
-                <TableCell align='right'>Completed Topics</TableCell>
-                <TableCell align='right'>Completion Percentage</TableCell>
-                <TableCell></TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {curriculumData.map((item) => (
-                <TableRow key={item.totalTest}>
-                  <TableCell
-                    component='th'
-                    scope='row'
-                    className={clsx(classes.textLeft)}
-                  >
-                    <b>{item.period__subject_mapping__section_mapping__grade__grade_name}</b>
-                    {'\u00A0'}-{'\u00A0'}
-                    {item.period__subject_mapping__section_mapping__section__section_name}{' '}
-                    {'\u00A0'}
-                    {'\u00A0'}
-                    {'\u00A0'}
-                    {item.period__subject_mapping__subject__subject_name}
+        {curriculumData.length === 0 ? (
+          <div style={{ height: '200px', justifyContent: 'center', marginTop: '70px' }}>
+            <NoFilterData data={'No Data Found'} />
+          </div>
+        ) : (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead style={{ background: '#ebf2fe' }}>
+                <TableRow>
+                  <TableCell className={clsx(classes.textLeft)}>
+                    Grade and Subject
                   </TableCell>
-                  <TableCell align='right'>{item.total_topics}</TableCell>
-                  <TableCell align='right'>{item.total_completed}</TableCell>
-                  <TableCell align='right'>
-                    {item.percentage_completed ? item.percentage_completed : '0'}%
-                  </TableCell>
-                  {/* <TableCell align='left'>
-                    <ArrowForwardIosIcon
-                      style={{ cursor: 'pointer' }}
-                      onClick={chapterTopicHandler}
-                    />
-                  </TableCell> */}
+                  <TableCell align='right'>Total Topics</TableCell>
+                  <TableCell align='right'>Completed Topics</TableCell>
+                  <TableCell align='right'>Completion Percentage</TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>}
+              </TableHead>
+              <TableBody>
+                {curriculumData.map((item) => (
+                  <TableRow key={item.totalTest}>
+                    <TableCell
+                      component='th'
+                      scope='row'
+                      className={clsx(classes.textLeft)}
+                    >
+                      <b>
+                        {item.period__subject_mapping__section_mapping__grade__grade_name}
+                      </b>
+                      {'\u00A0'}-{'\u00A0'}
+                      {
+                        item.period__subject_mapping__section_mapping__section__section_name
+                      }{' '}
+                      {'\u00A0'}
+                      {'\u00A0'}
+                      {'\u00A0'}
+                      {item.period__subject_mapping__subject__subject_name}
+                    </TableCell>
+                    <TableCell align='right'>{item.total_topics}</TableCell>
+                    <TableCell align='right'>{item.total_completed}</TableCell>
+                    <TableCell align='right'>
+                      {item.percentage_completed ? item.percentage_completed : '0'}%
+                    </TableCell>
+                    <TableCell align='left'>
+                      <ArrowForwardIosIcon
+                        style={{ cursor: 'pointer' }}
+                        onClick={chapterTopicHandler}
+                      />
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
       </div>
     </Layout>
   );

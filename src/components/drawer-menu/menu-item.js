@@ -540,10 +540,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
       name: 'Induction Training',
       Path: '/inductionTrain',
     },
-    {
-      name: 'Enroll Courses',
-      Path: '/enrollTrainingfCourses',
-    },
+    // {
+    //   name: 'Enroll Courses',
+    //   Path: '/enrollTrainingfCourses',
+    // },
     {
       name: 'Enrolled Courses',
       Path: '/enrolledSelfCourses',
@@ -579,9 +579,41 @@ const MenuItem = withRouter(({ history, ...props }) => {
     {
       name: 'Trainer Driven Courses',
       Path: '/trainerDriven',
-      },
+    },
+    // {
+    //   name: 'Self Driven Courses',
+    //   Path: '/assignedCoursesByCordinator',
+    // },
     {
-      name: 'Self Driven Courses',
+      name: 'Trainee Courses',
+      Path: '/sure-learning-trainee-courses',
+    },
+    {
+      name: 'Assign Trainee',
+      Path: '/sure-learning-assign-teacher',
+    },
+    {
+      name: 'Reassign Trainee',
+      Path: '/sure-learning-re-assign-teacher',
+    },
+    {
+      name: 'Assessment Review',
+      Path: '/sure-learning-assessment-review',
+    },
+    {
+      name: 'Report',
+      Path: '/sure-learning-course-wise-user-report',
+    },
+    {
+      name: 'Branch wise Report',
+      Path: '/sure-learning-branch-level-detailed-report',
+    },
+    {
+      name: 'Enroll Self Courses',
+      Path: '/enrollTrainingfCourses',
+    },
+    {
+      name: 'Self Courses',
       Path: '/assignedCoursesByCordinator',
     },
     {
@@ -589,8 +621,48 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/teacher-attendance',
     },
     {
+      name: 'Assign Lead Teacher',
+      Path: '/sure-learning-assign-lead-teacher',
+    },
+    {
+      name: 'Consolidated Report',
+      Path: '/sure-learning-consolidated-report',
+    },
+    {
+      name: 'Weekly Report',
+      Path: '/sure-learning-weekly-report',
+    },
+    {
+      name: 'Class Intitiation Form',
+      Path: '/sure_learning/class_initiation_form',
+    },
+    {
+      name: 'Intiate Class',
+      Path: '/sure_learning/initiate_class',
+    },
+    {
+      name: 'Assessment Scores',
+      Path: '/sure_learning/assessment_report',
+    },
+    {
+      name: 'Assign Teacher',
+      Path: '/sure-learning/assign-teacher',
+    },
+    {
       name:'View Attendance',
       Path:'/teacher-attendance-verify',
+    },
+    {
+      name:'All/Completed Courses',
+      Path:'/sure_learning/completed_courses',
+    },
+    {
+      name:'Enroll for sure learning',
+      Path:'/sure-learning-access',
+    },
+    {
+      name:'Resource',
+      Path:'/sure_learning/resources',
     },
   ];
 

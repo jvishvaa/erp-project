@@ -254,9 +254,11 @@ const EachLearn = () => {
           </Grid>
           <Grid item md={2} xs={12}>
             <Button
-              variant='primary'
+              variant='contained'
+              color='primary'
+              fullWidth
               size='medium'
-              style={{ width: '100%' }}
+              // style={{ width: '100%' }}
             //   className='cancelButton labelColor'
               // onClick={history.push('/subjectTrain')}
               onClick={submitNote}

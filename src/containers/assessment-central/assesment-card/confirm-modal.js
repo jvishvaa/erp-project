@@ -25,7 +25,7 @@ const ConfirmModal = ({ openModal, setOpenModal, submit }) => {
         <div>Are you sure you want to Delete ?</div>
       </DialogTitle>
       <DialogActions>
-        <Button onClick={handleCloseModal} className='labelColor cancelButton'>
+        <Button onClick={handleCloseModal} style={{fontWeight:600}} className='labelColor cancelButton'>
           Cancel
         </Button>
         <Button

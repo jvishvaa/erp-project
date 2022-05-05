@@ -34,8 +34,8 @@ import axiosInstance from '../../../../config/axios';
 import endpoints from 'config/endpoints';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
-import unfiltered from '../../../../assets/images/unfiltered.svg';
-import {  SvgIcon } from '@material-ui/core';
+import NoFilterData from 'components/noFilteredData/noFilterData';
+import { SvgIcon } from '@material-ui/core';
 import CardContent from '@material-ui/core/CardContent';
 import '../induction-training.scss';
 
@@ -184,161 +184,209 @@ const AllchapterContent = () => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [moduleId, setModuleId] = useState('');
   const [content, setContent] = useState([]);
-  const [complete,setComplete] = useState(sessionStorage.getItem('complete') === 'true'?true:false);
+  const [complete, setComplete] = useState(
+    sessionStorage.getItem('complete') === 'true' ? true : false
+  );
   const udaanDetails = JSON.parse(localStorage.getItem('udaanDetails')) || [];
   const udaanToken = udaanDetails?.personal_info?.token;
   const moduleData = udaanDetails?.role_permission?.modules;
   const classes = useStyles({});
   const [open, setOpen] = React.useState(false);
   const history = useHistory();
-const course ="induction_training";
-const courseType ="is_induction_training";
+  const course = 'induction_training';
+  const courseType = 'is_induction_training';
   const handleDocument = (item, ind) => {
     if (content && content.length) {
-      content.forEach((con , index) => {
-        if(con.id === item.id && index > 0){
-          console.log(item.id,'is_finish')
-          console.log(index - 1 , "index");
-          let int = index-1;
-          console.log(content[int] , "prev typ");
-          console.log(int , "prev");
-          if(content[index-1].is_completed){
-            if(item?.course_wise_videos[0]?.is_download === true){
-            console.log(item ,"open")
-            history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id,content:content});
-            console.log(item.id, 'Assessmentidd');
-            sessionStorage.setItem('Download', JSON.stringify(item.course_wise_videos));
-            sessionStorage.setItem('induction_training', 'induction_training');
-            sessionStorage.setItem('is_induction_training', 'is_induction_training');
-            sessionStorage.setItem('chapter-content-type', 'Download');
+      content.forEach((con, index) => {
+        if (con.id === item.id && index > 0) {
+          console.log(item.id, 'is_finish');
+          console.log(index - 1, 'index');
+          let int = index - 1;
+          console.log(content[int], 'prev typ');
+          console.log(int, 'prev');
+          if (content[index - 1].is_completed) {
+            if (item?.course_wise_videos[0]?.is_download === true) {
+              console.log(item, 'open');
+              history.push({
+                pathname: '/inductionUnit',
+                state: item,
+                courseType: courseType,
+                course: course,
+                itemId: item.id,
+                content: content,
+              });
+              console.log(item.id, 'Assessmentidd');
+              sessionStorage.setItem('Download', JSON.stringify(item.course_wise_videos));
+              sessionStorage.setItem('induction_training', 'induction_training');
+              sessionStorage.setItem('is_induction_training', 'is_induction_training');
+              sessionStorage.setItem('chapter-content-type', 'Download');
             } else {
-            history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id,content:content});
-            console.log(item.id, 'Assessmentidd')
-            console.log(item.id,'is_finish');
-            sessionStorage.setItem('Doc', JSON.stringify(item.course_wise_videos));
-            sessionStorage.setItem('induction_training', 'induction_training');
-            sessionStorage.setItem('is_induction_training', 'is_induction_training');
-            sessionStorage.setItem('chapter-content-type', 'Assessment');
+              history.push({
+                pathname: '/inductionUnit',
+                state: item,
+                courseType: courseType,
+                course: course,
+                itemId: item.id,
+                content: content,
+              });
+              console.log(item.id, 'Assessmentidd');
+              console.log(item.id, 'is_finish');
+              sessionStorage.setItem('Doc', JSON.stringify(item.course_wise_videos));
+              sessionStorage.setItem('induction_training', 'induction_training');
+              sessionStorage.setItem('is_induction_training', 'is_induction_training');
+              sessionStorage.setItem('chapter-content-type', 'Assessment');
             }
-          }else{
-            setAlert('warning','please complete previous steps')
+          } else {
+            setAlert('warning', 'please complete previous steps');
           }
-        } 
-        if(con.id === item.id && index < 1 ) {
+        }
+        if (con.id === item.id && index < 1) {
           console.log('first');
-          console.log(item.id,'is_finish')
-          history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id,content:content});
-            console.log(item.id, 'Assessmentidd');
-            sessionStorage.setItem('Doc', JSON.stringify(item.course_wise_videos));
-            sessionStorage.setItem('induction_training', 'induction_training');
-            sessionStorage.setItem('is_induction_training', 'is_induction_training');
-            sessionStorage.setItem('chapter-content-type', 'Assessment');
+          console.log(item.id, 'is_finish');
+          history.push({
+            pathname: '/inductionUnit',
+            state: item,
+            courseType: courseType,
+            course: course,
+            itemId: item.id,
+            content: content,
+          });
+          console.log(item.id, 'Assessmentidd');
+          sessionStorage.setItem('Doc', JSON.stringify(item.course_wise_videos));
+          sessionStorage.setItem('induction_training', 'induction_training');
+          sessionStorage.setItem('is_induction_training', 'is_induction_training');
+          sessionStorage.setItem('chapter-content-type', 'Assessment');
         }
-        if(ind === content.length - 1 ){
-          console.log(con , "last");
-          sessionStorage.setItem('is_finish','true');
+        if (ind === content.length - 1) {
+          console.log(con, 'last');
+          sessionStorage.setItem('is_finish', 'true');
         }
-        if(content.length === 0) {
-          sessionStorage.setItem('is_finish','true');
+        if (content.length === 0) {
+          sessionStorage.setItem('is_finish', 'true');
         }
-       
-      })}
-   
+      });
+    }
   };
   const handleQuiz = (item) => {
     if (content && content.length) {
-      content.forEach((con , index) => {
-        if(con.id === item.id && index > 0){
-          console.log(index - 1 , "index");
-          let int = index-1;
-          console.log(content[int] , "prev typ");
-          console.log(int , "prev");
-          if(content[index-1].is_completed){
-            console.log("open")
-               // history.push('/teacherquiz');
-    history.push({ pathname: '/quiz', state: item ,courseType : "is_induction_training",course:"induction_training"});
-    //  history.push('/coursesquiz');
-    sessionStorage.setItem(
-      'Quiz',
-      JSON.stringify(item.course_wise_videos[0].chapter_wise_mcq)
-    );
-    console.log(
-      item.course_wise_videos[0].chapter_wise_mcq[0].type_question.question_type_name,
-      'Qui'
-    );
-          }else{
-            setAlert('warning','please complete previous steps')
+      content.forEach((con, index) => {
+        if (con.id === item.id && index > 0) {
+          console.log(index - 1, 'index');
+          let int = index - 1;
+          console.log(content[int], 'prev typ');
+          console.log(int, 'prev');
+          if (content[index - 1].is_completed) {
+            console.log('open');
+            // history.push('/teacherquiz');
+            history.push({
+              pathname: '/quiz',
+              state: item,
+              courseType: 'is_induction_training',
+              course: 'induction_training',
+            });
+            //  history.push('/coursesquiz');
+            sessionStorage.setItem(
+              'Quiz',
+              JSON.stringify(item.course_wise_videos[0].chapter_wise_mcq)
+            );
+            console.log(
+              item.course_wise_videos[0].chapter_wise_mcq[0].type_question
+                .question_type_name,
+              'Qui'
+            );
+          } else {
+            setAlert('warning', 'please complete previous steps');
           }
-        } 
+        }
 
-        if(con.id === item.id && index < 1 ) {
-          console.log('first');
-          console.log("open")
-          // history.push('/teacherquiz');
-history.push({ pathname: '/quiz', state: item ,courseType : "is_induction_training",course:"induction_training"});
-//  history.push('/coursesquiz');
-sessionStorage.setItem(
- 'Quiz',
- JSON.stringify(item.course_wise_videos[0].chapter_wise_mcq)
-);
-console.log(
- item.course_wise_videos[0].chapter_wise_mcq[0].type_question.question_type_name,
- 'Qui'
-);
-        }
-    //     else if (index === 0) {
-    // history.push({ pathname: '/quiz', state: item ,courseType : "is_induction_training",course:"induction_training"});
-    // sessionStorage.setItem(
-    //   'Quiz',
-    //   JSON.stringify(item.course_wise_videos[0].chapter_wise_mcq)
-    // );
-    // console.log(
-    //   item.course_wise_videos[0].chapter_wise_mcq[0].type_question.question_type_name,
-    //   'Qui'
-    // );
-    //     }
-      })}
- 
-  };
-  const handleVedio = (item , ind) => {
-    if (content && content.length) {
-      content.forEach((con , index) => {
-        if(con.id === item.id && index > 0){
-          console.log(index - 1 , "index");
-          let int = index-1;
-          console.log(content[int] , "prev typ");
-          console.log(int , "prev");
-          if(content[index-1].is_completed){
-            console.log("open")
-               // history.push('/allchapterContentUnit');
-    history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id,content:content});
-    console.log(item.id, 'Assessmentidd');
-    sessionStorage.setItem('induction_training', 'induction_training');
-    sessionStorage.setItem('is_induction_training', 'is_induction_training');
-    sessionStorage.setItem('Vid', JSON.stringify(item.course_wise_videos));
-    sessionStorage.setItem('chapter-content-type', 'Video');
-          }else{
-            setAlert('warning','please complete previous steps')
-          }
-        } 
         if (con.id === item.id && index < 1) {
-             // history.push('/allchapterContentUnit');
-    history.push({ pathname: '/inductionUnit', state: item ,courseType : courseType,course:course,itemId:item.id,content:content});
-    console.log(item.id, 'Assessmentidd');
-    sessionStorage.setItem('induction_training', 'induction_training');
-    sessionStorage.setItem('is_induction_training', 'is_induction_training');
-    sessionStorage.setItem('Vid', JSON.stringify(item.course_wise_videos));
-    sessionStorage.setItem('chapter-content-type', 'Video');
+          console.log('first');
+          console.log('open');
+          // history.push('/teacherquiz');
+          history.push({
+            pathname: '/quiz',
+            state: item,
+            courseType: 'is_induction_training',
+            course: 'induction_training',
+          });
+          //  history.push('/coursesquiz');
+          sessionStorage.setItem(
+            'Quiz',
+            JSON.stringify(item.course_wise_videos[0].chapter_wise_mcq)
+          );
+          console.log(
+            item.course_wise_videos[0].chapter_wise_mcq[0].type_question
+              .question_type_name,
+            'Qui'
+          );
         }
-        if(ind === content.length - 1 ){
-          console.log(con , "last");
-          sessionStorage.setItem('is_finish','true');
+        //     else if (index === 0) {
+        // history.push({ pathname: '/quiz', state: item ,courseType : "is_induction_training",course:"induction_training"});
+        // sessionStorage.setItem(
+        //   'Quiz',
+        //   JSON.stringify(item.course_wise_videos[0].chapter_wise_mcq)
+        // );
+        // console.log(
+        //   item.course_wise_videos[0].chapter_wise_mcq[0].type_question.question_type_name,
+        //   'Qui'
+        // );
+        //     }
+      });
+    }
+  };
+  const handleVedio = (item, ind) => {
+    if (content && content.length) {
+      content.forEach((con, index) => {
+        if (con.id === item.id && index > 0) {
+          console.log(index - 1, 'index');
+          let int = index - 1;
+          console.log(content[int], 'prev typ');
+          console.log(int, 'prev');
+          if (content[index - 1].is_completed) {
+            console.log('open');
+            // history.push('/allchapterContentUnit');
+            history.push({
+              pathname: '/inductionUnit',
+              state: item,
+              courseType: courseType,
+              course: course,
+              itemId: item.id,
+              content: content,
+            });
+            console.log(item.id, 'Assessmentidd');
+            sessionStorage.setItem('induction_training', 'induction_training');
+            sessionStorage.setItem('is_induction_training', 'is_induction_training');
+            sessionStorage.setItem('Vid', JSON.stringify(item.course_wise_videos));
+            sessionStorage.setItem('chapter-content-type', 'Video');
+          } else {
+            setAlert('warning', 'please complete previous steps');
+          }
         }
-        if(content.length === 0) {
-          sessionStorage.setItem('is_finish','true');
+        if (con.id === item.id && index < 1) {
+          // history.push('/allchapterContentUnit');
+          history.push({
+            pathname: '/inductionUnit',
+            state: item,
+            courseType: courseType,
+            course: course,
+            itemId: item.id,
+            content: content,
+          });
+          console.log(item.id, 'Assessmentidd');
+          sessionStorage.setItem('induction_training', 'induction_training');
+          sessionStorage.setItem('is_induction_training', 'is_induction_training');
+          sessionStorage.setItem('Vid', JSON.stringify(item.course_wise_videos));
+          sessionStorage.setItem('chapter-content-type', 'Video');
         }
-      })}
- 
+        if (ind === content.length - 1) {
+          console.log(con, 'last');
+          sessionStorage.setItem('is_finish', 'true');
+        }
+        if (content.length === 0) {
+          sessionStorage.setItem('is_finish', 'true');
+        }
+      });
+    }
   };
 
   useEffect(() => {
@@ -350,42 +398,46 @@ console.log(
         }
       });
     }
-    if(sessionStorage?.reload){
-      console.log("his");
+    if (sessionStorage?.reload) {
+      console.log('his');
       window.location.reload();
-      sessionStorage.removeItem('reload')
+      sessionStorage.removeItem('reload');
     }
   }, []);
   useEffect(() => {
     if (moduleId !== '') {
       if (history?.location?.state?.course_id) {
         getAllLesson(history?.location?.state);
-       
       }
     }
   }, [moduleId]);
 
- 
-
   const getAllLesson = (id) => {
+    let URL = '';
+    if (sessionStorage.getItem('trainer') === 'true') {
+      URL = `${endpoints.sureLearning.filterSubject}?content_id=${
+        history?.location?.state?.id
+      }&course_instance_id=${
+        history?.location?.state?.course_id
+      }&trainer=true&class_id=${sessionStorage.getItem('Initiate_Class_Id')}`;
+    } else {
+      URL = `${endpoints.sureLearning.filterSubject}?content_id=${history?.location?.state?.id}&course_instance_id=${history?.location?.state?.course_id}&induction_training=true`;
+    }
     axios
-        .get(
-          `${endpoints.sureLearning.filterSubject}?content_id=${history?.location?.state?.id}&course_instance_id=${history?.location?.state?.course_id}&induction_training=true`,
-          {
-            headers: {
-              Authorization: `Bearer ${udaanToken}`,
-              module: moduleId,
-            },
-          }
-        )
-        .then((response) => {
-          console.log(response.data, 'successcou');
-          // setState(response.data.course_wise_videos)
-          setContent(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      .get(URL, {
+        headers: {
+          Authorization: `Bearer ${udaanToken}`,
+          module: moduleId,
+        },
+      })
+      .then((response) => {
+        console.log(response.data, 'successcou');
+        // setState(response.data.course_wise_videos)
+        setContent(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const getCardColor = (index) => {
@@ -421,13 +473,13 @@ console.log(
     setOpen(true);
     console.log(open);
   };
-  
- 
+
   const handleBack = () => {
     // history.push('/allchaptersInduction');
     history.goBack();
+    sessionStorage.setItem('trainer', false);
   };
-const BreadCrumb= sessionStorage.getItem('BreadCrumb')
+  const BreadCrumb = sessionStorage.getItem('BreadCrumb');
   return (
     <Layout className='accessBlockerContainer'>
       <div className={classes.parentDiv}>
@@ -449,143 +501,147 @@ const BreadCrumb= sessionStorage.getItem('BreadCrumb')
             </Button>
           </Grid>
           {/* <Grid item md={9} xs={12} /> */}
-          {/* <Grid container spacing={4}> */} 
-          <div style={{ display: 'flex' }} id='contentCard'>
-            {content[0]?.course_wise_videos ?
-            <>
-            {content[0]?.course_wise_videos &&
-              content?.map((item, index) => {
-                if(item?.course_wise_videos){
-                console.log(item , "itemmm");
-                if (
-                  item?.course_wise_videos[0].content_type === 'File' ||
-                  item?.course_wise_videos[0].content_type == 'Assignment'||
-                  item?.course_wise_videos[0].content_type == 'Text'
-                ) {
-                  return (
-                    <Card
-                      style={{
-                        backgroundColor: getCardColor(index),
-                        marginLeft: '20px',
-                        marginTop: '20px',
-                        cursor: 'pointer',
-                      }}
-                      className={classes.cards}
-                      id='iconCard'
-                    >
-                      <CardMedia component='img' image={item.file} />
-                      <div style={{ flexDirection: 'column' }}>
-                      <Typography
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            fontSize: '17px',
-                          }}
-                          id='titleContent'
-                        >
-                        Step {index + 1 } </Typography>
-                        {console.log(content[index - 1] , "prev" )}
-                        <Typography
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            fontSize: '16px',
-                          }}
-                          id='titleContent'
-                        >
-                          {' '}
-                          {item.title}{' '}
-                        </Typography>
-                      </div>
-                      <Typography
-                        onClick={() => handleDocument(item , index)}
-                        color='primary'
-                        style={{
-                          fontWeight: 'bold',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          color: 'white',
-                          cursor: 'pointer',
-                          fontSize: '15px',
-                        }}
-                      >
-                        Go To {item.title}{' '}
-                      </Typography>
-                      <Typography style={{ display: 'flex', justifyContent: 'center' }}>
-                        {item.is_completed === true ? 'Completed' : 'Not Completed'}
-                      </Typography>
-                    </Card>
-                  );
-                }
+          {/* <Grid container spacing={4}> */}
+          <div style={{ display: 'flex', margin: '5px 0 15px' }} id='contentCard'>
+            {content[0]?.course_wise_videos ? (
+              <>
+                {content[0]?.course_wise_videos &&
+                  content?.map((item, index) => {
+                    if (item?.course_wise_videos) {
+                      console.log(item, 'itemmm');
+                      if (
+                        item?.course_wise_videos[0].content_type === 'File' ||
+                        item?.course_wise_videos[0].content_type == 'Assignment' ||
+                        item?.course_wise_videos[0].content_type == 'Text'
+                      ) {
+                        return (
+                          <Card
+                            style={{
+                              backgroundColor: getCardColor(index),
+                              marginLeft: '20px',
+                              marginTop: '20px',
+                              // cursor: 'pointer',
+                            }}
+                            className={classes.cards}
+                            id='iconCard'
+                          >
+                            <CardMedia component='img' image={item.file} />
+                            <div style={{ flexDirection: 'column' }}>
+                              <Typography
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  fontSize: '17px',
+                                }}
+                                id='titleContent'
+                              >
+                                Step {index + 1}{' '}
+                              </Typography>
+                              {console.log(content[index - 1], 'prev')}
+                              <Typography
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  fontSize: '16px',
+                                }}
+                                id='titleContent'
+                              >
+                                {' '}
+                                {item.title}{' '}
+                              </Typography>
+                            </div>
+                            <Typography
+                              onClick={() => handleDocument(item, index)}
+                              color='primary'
+                              style={{
+                                fontWeight: 'bold',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                color: 'white',
+                                cursor: 'pointer',
+                                fontSize: '15px',
+                              }}
+                            >
+                              Go To {item.title}{' '}
+                            </Typography>
+                            <Typography
+                              style={{ display: 'flex', justifyContent: 'center' }}
+                            >
+                              {item.is_completed === true ? 'Completed' : 'Not Completed'}
+                            </Typography>
+                          </Card>
+                        );
+                      }
 
-                if (item?.course_wise_videos[0].content_type === 'McqTest') {
-                  return (
-                    <Card
-                      style={{
-                        backgroundColor: getCardColor(index),
-                        marginLeft: '20px',
-                        marginTop: '20px',
-                        cursor: 'pointer',
-                      }}
-                      className={classes.cards}
-                      id='iconCard'
-                    >
-                      <CardMedia component='img' image={item.file} />
-                      <div style={{ flexDirection: 'column' }}>
-                      <Typography
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            fontSize: '17px',
-                          }}
-                          id='titleContent'
-                        >
-                        Step {index + 1 } </Typography>
-                        <Typography
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            fontSize: '16px',
-                          }}
-                          id='titleContent'
-                        >
-                          {' '}
-                          {item.title}{' '}
-                        </Typography>
-                      </div>
-                      {item.course_wise_videos[0].quiz_status === true  ? (
-                        <Typography
-                          onClick={() => handleClickOpen(item)}
-                          color='primary'
-                          style={{
-                            fontWeight: 'bold',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            color: 'white',
-                            cursor: 'pointer',
-                            fontSize: '15px',
-                          }}
-                        >
-                          View Score {item.title}
-                        </Typography>
-                      ) : (
-                        <Typography
-                          onClick={() => handleQuiz(item)}
-                          color='primary'
-                          style={{
-                            fontWeight: 'bold',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            color: 'white',
-                            cursor: 'pointer',
-                            fontSize: '15px',
-                          }}
-                        >
-                          Go To {item.title}
-                        </Typography>
-                      )}
-                      <Dialog open={open} handleClose={handleClose} item={item} />
-                      {/* <Dialog
+                      if (item?.course_wise_videos[0].content_type === 'McqTest') {
+                        return (
+                          <Card
+                            style={{
+                              backgroundColor: getCardColor(index),
+                              marginLeft: '20px',
+                              marginTop: '20px',
+                              // cursor: 'pointer',
+                            }}
+                            className={classes.cards}
+                            id='iconCard'
+                          >
+                            <CardMedia component='img' image={item.file} />
+                            <div style={{ flexDirection: 'column' }}>
+                              <Typography
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  fontSize: '17px',
+                                }}
+                                id='titleContent'
+                              >
+                                Step {index + 1}{' '}
+                              </Typography>
+                              <Typography
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  fontSize: '16px',
+                                }}
+                                id='titleContent'
+                              >
+                                {' '}
+                                {item.title}{' '}
+                              </Typography>
+                            </div>
+                            {item.course_wise_videos[0].quiz_status === true ? (
+                              <Typography
+                                onClick={() => handleClickOpen(item)}
+                                color='primary'
+                                style={{
+                                  fontWeight: 'bold',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  color: 'white',
+                                  cursor: 'pointer',
+                                  fontSize: '15px',
+                                }}
+                              >
+                                View Score {item.title}
+                              </Typography>
+                            ) : (
+                              <Typography
+                                onClick={() => handleQuiz(item)}
+                                color='primary'
+                                style={{
+                                  fontWeight: 'bold',
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  color: 'white',
+                                  cursor: 'pointer',
+                                  fontSize: '15px',
+                                }}
+                              >
+                                Go To {item.title}
+                              </Typography>
+                            )}
+                            <Dialog open={open} handleClose={handleClose} item={item} />
+                            {/* <Dialog
                         onClose={handleClose}
                         aria-labelledby='customized-dialog-title'
                         open={open}
@@ -608,77 +664,82 @@ const BreadCrumb= sessionStorage.getItem('BreadCrumb')
                           </Typography>
                         </DialogContent>
                       </Dialog> */}
-                      <Typography style={{ display: 'flex', justifyContent: 'center' }}>
-                        {item.course_wise_videos[0].quiz_status === true  ? 'Completed' : 'Not Completed'}
-                      </Typography>
-                    </Card>
-                  );
-                }
-                if (item?.course_wise_videos[0].content_type == 'Video') {
-                  return (
-                    <Card
-                      style={{
-                        backgroundColor: getCardColor(index),
-                        marginLeft: '20px',
-                        marginTop: '20px',
-                        cursor: 'pointer',
-                      }}
-                      className={classes.cards}
-                      id='iconCard'
-                    >
-                      <CardMedia component='img' image={item.file} />
-                      <div style={{ flexDirection: 'column' }}>
-                      <Typography
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            fontSize: '17px',
-                          }}
-                          id='titleContent'
-                        >
-                        Step {index + 1 } </Typography>
-                        <Typography
-                          style={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            fontSize: '16px',
-                          }}
-                        >
-                          {' '}
-                          {item.title}{' '}
-                        </Typography>
-                      </div>
+                            <Typography
+                              style={{ display: 'flex', justifyContent: 'center' }}
+                            >
+                              {item.course_wise_videos[0].quiz_status === true
+                                ? 'Completed'
+                                : 'Not Completed'}
+                            </Typography>
+                          </Card>
+                        );
+                      }
+                      if (item?.course_wise_videos[0].content_type == 'Video') {
+                        return (
+                          <Card
+                            style={{
+                              backgroundColor: getCardColor(index),
+                              marginLeft: '20px',
+                              marginTop: '20px',
+                              // cursor: 'pointer',
+                            }}
+                            className={classes.cards}
+                            id='iconCard'
+                          >
+                            <CardMedia component='img' image={item.file} />
+                            <div style={{ flexDirection: 'column' }}>
+                              <Typography
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  fontSize: '17px',
+                                }}
+                                id='titleContent'
+                              >
+                                Step {index + 1}{' '}
+                              </Typography>
+                              <Typography
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  fontSize: '16px',
+                                }}
+                              >
+                                {' '}
+                                {item.title}{' '}
+                              </Typography>
+                            </div>
 
-                      <Typography
-                        onClick={() => handleVedio(item , index)}
-                        color='primary'
-                        style={{
-                          fontWeight: 'bold',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          color: 'white',
-                          cursor: 'pointer',
-                          fontSize: '15px',
-                        }}
-                      >
-                        Go To{item.title}
-                      </Typography>
-                      <Typography style={{ display: 'flex', justifyContent: 'center' }}>
-                        {item.is_completed === true ? 'Completed' : 'Not Completed'}
-                      </Typography>
-                    </Card>
-                  );
-                }
-              } 
-              })}
-              </> :  <div className="noDataIMG" style={{width: '100%'}} >
-                <SvgIcon
-                  component={() => (
-                    <img style={{ paddingLeft: '380px' }} src={unfiltered} />
-                  )}
-                />
-                <p style={{ paddingLeft: '440px' }}>NO DATA FOUND </p>
-              </div> }
+                            <Typography
+                              onClick={() => handleVedio(item, index)}
+                              color='primary'
+                              style={{
+                                fontWeight: 'bold',
+                                display: 'flex',
+                                justifyContent: 'center',
+                                color: 'white',
+                                cursor: 'pointer',
+                                fontSize: '15px',
+                              }}
+                            >
+                              Go To{item.title}
+                            </Typography>
+                            <Typography
+                              style={{ display: 'flex', justifyContent: 'center' }}
+                            >
+                              {item.is_completed === true ? 'Completed' : 'Not Completed'}
+                            </Typography>
+                          </Card>
+                        );
+                      }
+                    }
+                  })}
+              </>
+            ) : (
+              <div className='noDataIMG' style={{ width: '100%' }}>
+                <NoFilterData data={'NO DATA FOUND'} />
+              </div>
+            )}
           </div>
         </Grid>
       </div>

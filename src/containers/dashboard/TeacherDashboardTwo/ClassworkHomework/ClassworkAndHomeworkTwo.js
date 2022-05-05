@@ -14,12 +14,12 @@ import {
   IconButton,
 } from '@material-ui/core';
 import Layout from 'containers/Layout';
+import Loader from '../../../../components/loader/loader';
 import moment from 'moment';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
-import Loader from '../../../../components/loader/loader';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import axiosInstance from '../../../../config/axios';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
@@ -39,13 +39,11 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
   const [loading, setLoading] = useState(false);
   const [homework, setHomework] = useState(true);
   const { setAlert } = useContext(AlertNotificationContext);
-
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [selectedGradeIds, setSelectedGradeIds] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [sectionId, setSectionId] = useState('');
-
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
   const [subjectList, setSubjectList] = useState([]);
@@ -55,7 +53,6 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
   const [rowGrade, setRowGrade] = useState();
   const [rowSection, setRowSection] = useState();
   const [rowSubject, setRowSubject] = useState();
-
   const [classworkData, setClassworkData] = useState([]);
 
   const [dateRangeTechPer, setDateRangeTechPer] = useState([]);
@@ -69,6 +66,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
 
   const [totalCwRecord, setTotalCwRecord] = useState(0);
   const [cwPageNumber, setCwPageNumber] = useState(1);
+  const [moduleId, setModuleId] = useState('');
 
   let date = moment().format('YYYY-MM-DD');
 
@@ -76,6 +74,26 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
   const [endDate, setEndDate] = useState();
   const [gradeSectionList, setGradeSectionList] = useState([]);
   const [indvalue, setIndvalue] = useState(0);
+
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Online Class' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Create Class') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
 
   const gradeSectionSubjectList = () => {
     const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -111,21 +129,24 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
           setPageNumber(1);
           setCwPageNumber(1);
           setIndvalue(0);
-          homeWorkList(
-            gradeSecSub[0]?.section_mapping__grade__id,
-            gradeSecSub[0]?.subjects__id,
-            gradeSecSub[0]?.section_mapping__section__id,
-            startDate,
-            endDate
-          );
-
-          classWorkList(
-            gradeSecSub[0]?.section_mapping__grade__id,
-            gradeSecSub[0]?.subjects__id,
-            gradeSecSub[0]?.section_mapping__section__id,
-            startDate,
-            endDate
-          );
+          if (homework) {
+            homeWorkList(
+              gradeSecSub[0]?.section_mapping__grade__id,
+              gradeSecSub[0]?.subjects__id,
+              gradeSecSub[0]?.section_mapping__section__id,
+              startDate,
+              endDate
+            );
+          }
+          if (!homework) {
+            classWorkList(
+              gradeSecSub[0]?.section_mapping__grade__id,
+              gradeSecSub[0]?.subjects__id,
+              gradeSecSub[0]?.section_mapping__section__id,
+              startDate,
+              endDate
+            );
+          }
         } else {
         }
         setLoading(false);
@@ -138,7 +159,6 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
     selectedGradeIds,
     subjectId,
     selectedSectionIds,
-    sectionList,
     gradePageNumber,
     startDate,
     endDate,
@@ -150,7 +170,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
     setSelectedSubject([]);
     callApi(
       `${endpoints.academics.grades
-      }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&module_id=${2}`,
+      }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&module_id=${moduleId}`,
       'gradeList'
     );
   };
@@ -170,7 +190,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
       setSelectedGradeIds(selectedId);
       callApi(
         `${endpoints.academics.sections
-        }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&grade_id=${selectedId?.toString()}&module_id=${2}`,
+        }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
         'section'
       );
     } else {
@@ -201,7 +221,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
       setSelectedSectionIds(selectedsecctionId);
       callApi(
         `${endpoints.academics.subjects
-        }?session_year=${sessionYearIDDDD}&branch=${databranch}&grade=${selectedGradeIds?.toString()}&section=${selectedsecctionId.toString()}&module_id=${2}`,
+        }?session_year=${sessionYearIDDDD}&branch=${databranch}&grade=${selectedGradeIds?.toString()}&section=${selectedsecctionId.toString()}&module_id=${moduleId}`,
         'subject'
       );
     } else {
@@ -285,8 +305,10 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
   };
 
   useEffect(() => {
-    handleBranch();
-  }, []);
+    if (moduleId) {
+      handleBranch();
+    }
+  }, [moduleId]);
 
   const handleClick = (item, i) => {
     setIndvalue(i);
@@ -295,23 +317,6 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
     setRowGrade(item?.section_mapping__grade__id);
     setRowSection(item?.section_mapping__section__id);
     setRowSubject(item?.subjects__id);
-    // homework &&
-    //   homeWorkList(
-    //     item?.section_mapping__grade__id,
-    //     item?.subjects__id,
-    //     item?.section_mapping__section__id,
-    //     startDate,
-    //     endDate
-    //   );
-
-    // !homework &&
-    //   classWorkList(
-    //     item?.section_mapping__grade__id,
-    //     item?.subjects__id,
-    //     item?.section_mapping__section__id,
-    //     startDate,
-    //     endDate
-    //   );
   };
 
   useEffect(() => {
@@ -334,6 +339,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
   };
 
   const homeworkfileopener = (data) => {
+    console.log('debughomework', data);
     // setIsWorkDetail(true);
     // sethwcwdetails(data);
     history.push({
@@ -354,18 +360,16 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
     });
   };
 
-  const classworkfileopener = () => {
-    // setIsWorkDetail(true);
-    // sethwcwdetails(data);
+  const classworkfileopener = (item) => {
     history.push({
       pathname: './slide3',
       state: {
-        detail: classworkData[0],
+        detail: item,
         hwcwstatus: homework,
         databranch: databranch,
-        selectedGradeIds1: selectedGradeIds,
-        selectedSectionIds1: selectedSectionIds,
-        subjectId1: subjectId,
+        selectedGradeIds1: rowGrade,
+        selectedSectionIds1: rowSection,
+        subjectId1: rowSubject,
         startDate1: startDate,
         endDate1: endDate,
         selectedGradevalue: selectedGrade,
@@ -480,8 +484,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
         <div style={{ marginTop: window.innerWidth < 768 ? '15px' : '' }}>
           <LocalizationProvider dateAdapter={MomentUtils}>
             <DateRangePicker
-              // minDate={minStartDate ? new Date(minStartDate) : undefined}
-              // maxDate={maxStartDate ? new Date(maxStartDate) : undefined}
+
               startText='Select-date-range'
               value={dateRangeTechPer}
               onChange={(newValue) => {
@@ -707,9 +710,9 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
                             justifyContent: 'space-between',
                             padding: '20px 0',
                             borderBottom: '1px solid #D7E0E7',
-                            // cursor: 'pointer',
+                            cursor: 'pointer',
                           }}
-                        // onClick={() => classworkfileopener(item)}
+                          onClick={() => classworkfileopener(item)}
                         >
                           <div style={{ flex: 1, textAlign: 'center' }}>{item.date}</div>
                           <div style={{ flex: 1, textAlign: 'center' }}>
@@ -718,10 +721,6 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
                           <div style={{ flex: 1, textAlign: 'center' }}>
                             {item.total_students - item.submitted_count}
                           </div>
-                          {/* <div style={{ flex: 1, textAlign: 'center' }}>NA</div>
-                      <div style={{ flex: 1, textAlign: 'center' }}>
-                        Lorem ipsum dolor sit .
-                      </div> */}
                         </div>
                       ))}
                   </>

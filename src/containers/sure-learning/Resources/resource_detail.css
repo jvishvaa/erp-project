@@ -1,0 +1,23 @@
+.pg-viewer-wrapper {
+  /* overflow-y: hidden !important; */
+  width: 100% !important;
+  margin: 0 0 0 50px !important;
+  height: 100% !important;
+  /* overflow-x: hidden !important; */
+}
+.pg-viewer {
+  width: 100% !important;
+  height: 100% !important;
+}
+.pdf-viewer-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+.pdf-viewer {
+  width: 100% !important;
+  height: 100% !important;
+}
+.pdf-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}

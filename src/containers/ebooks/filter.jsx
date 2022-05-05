@@ -40,6 +40,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
     setSelectedGrade('');
     setSelectedSubject('');
     setSelectedVolume('')
+    // setIsFilter(true);
   }, [clearFilter]);
 
   function ApiCal() {

@@ -19,7 +19,7 @@ import { Autocomplete, Pagination } from '@material-ui/lab';
 import { connect, useSelector } from 'react-redux';
 import { Divider, TextField } from '@material-ui/core';
 import { Link, useHistory } from 'react-router-dom';
-import unfiltered from '../../../../../../assets/images/unfiltered.svg';
+import NoFilterData from 'components/noFilteredData/noFilterData';
 import { SvgIcon } from '@material-ui/core';
 
 import axios from 'axios';
@@ -638,12 +638,7 @@ const AllCoursesAssignedByCordinatorContent = () => {
             </>
           ) : (
             <div className='noDataIMG' style={{ width: '100%' }}>
-              <SvgIcon
-                component={() => (
-                  <img style={{ paddingLeft: '380px' }} src={unfiltered} />
-                )}
-              />
-              <p style={{ paddingLeft: '440px' }}>NO DATA FOUND </p>
+              <NoFilterData data = {'NO DATA FOUND'} />
             </div>
           )}
         </div>

@@ -192,9 +192,15 @@ const InductionUnit = () => {
       }
 
       setLoading(true);
+      let URL = ''
+      if(sessionStorage.getItem('trainer') === true){
+        URL = `${endpoints.sureLearning.FinishChapterApi}?trainer=true`
+      }else{
+        URL =`${endpoints.sureLearning.FinishChapterApi}?${course}=true`
+      }
       axios
         .post(
-          `${endpoints.sureLearning.FinishChapterApi}?${course}=true`,
+          URL,
           JSON.stringify(courseFinish),
           {
             headers: {
@@ -244,10 +250,16 @@ const InductionUnit = () => {
         };
       }
       console.log(course, 'history?.location?');
+      let URL = ''
+      if(sessionStorage.getItem('trainer') === 'true'){
+        URL = `${endpoints.sureLearning.FinishChapterApi}?trainer=true`
+      }else{
+        URL =`${endpoints.sureLearning.FinishChapterApi}?${course}=true`
+      }
       setLoading(true);
       axios
         .post(
-          `${endpoints.sureLearning.FinishChapterApi}?${course}=true`,
+          URL,
           JSON.stringify(courseFinish),
           {
             headers: {
@@ -362,7 +374,13 @@ const InductionUnit = () => {
                       <div className='download-section'>
                         <p> {index + 1} . </p>
                         <p>{Download.title}</p>
-                        <Button onClick={() => handleDownload(Download)}>Download</Button>
+                        <Button
+                          variant='contained'
+                          color='primary'
+                          onClick={() => handleDownload(Download)}
+                        >
+                          Download
+                        </Button>
                       </div>
                     </Grid>
                   ))}

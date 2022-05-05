@@ -3,26 +3,16 @@ import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import Avatar from '@material-ui/core/Avatar';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
-import Modal from '@material-ui/core/Modal';
-import Backdrop from '@material-ui/core/Backdrop';
-import Fade from '@material-ui/core/Fade';
-import ModalSubmitted from './ModalSubmitted';
 import endpoints from '../../../../config/endpoints';
 import axios from '../../../../config/axios';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import FileCopyIcon from '@material-ui/icons/FileCopy';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import NoFilterData from 'components/noFilteredData/noFilterData';
@@ -44,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function Submitted(props) {
+  console.log('debugSub', props);
   const [tableData, setTableData] = useState([]);
   const [pendingData, setPendingData] = useState([]);
   const [fileData, setFileData] = useState([]);
@@ -59,19 +50,21 @@ function Submitted(props) {
   const [indexphotos, setindexphotos] = useState(null);
   const [modalData, setModalData] = useState([]);
   const [dataLast, setDataLast] = useState([]);
+  const [Subid, setSubid] = useState(props?.subjectId2);
 
   const {
     selectedSectionIds,
     subjectChangedfilterOn,
     subjectmappingId,
     defaultdate,
+    sectionId
   } = useContext(FilterContext);
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-
   const handleOpen = (data) => {
+    console.log('tree4', data);
     if (dataincoming?.hwcwstatus) {
       popUpListData(data);
       setOpen(true);
@@ -90,16 +83,29 @@ function Submitted(props) {
   };
 
   const pendingList = () => {
+    // if (subjectmappingId || props?.subjectId2) {
+    let url, url1;
+    if (subjectmappingId) {
+      url = `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
+        sectionId
+      )}&subject=${subjectmappingId}&date=${props?.Date2}`
+    }
+
+    if (Subid) {
+      url1 = `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
+        props?.dataincoming?.detail?.section_mapping
+      )}&subject=${Subid}&date=${props?.dataincoming?.detail?.date
+        }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`
+    }
+
+
     axios
       .get(
+        // `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=2&subject=9&date=2022-02-01`,
         subjectChangedfilterOn
-          ? `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
-            selectedSectionIds
-          )}&subject=${subjectmappingId}&date=${props?.Date2}`
-          : `${endpoints.teacherDashboard.submittedCWdata}?section_mapping=${Number(
-            props?.dataincoming?.detail?.section_mapping
-          )}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date
-          }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
+          ?
+          url
+          : url1,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
@@ -110,11 +116,20 @@ function Submitted(props) {
       )
       .then((result) => {
         setTableData(result?.data?.result?.result);
+        console.log('treenewspending', result?.data?.result?.result);
+        // setIndex(result?.data?.result?.un_submitted_list);
+        // if (result?.data?.status_code === 200) {
+        //   setStudentData(result);
+        // } else {
+        //   setAlert('error', result?.data?.message);
+        // }
+        // setLoading(false);
       })
       .catch((error) => {
         // setAlert('error', error?.message);
         // setLoading(false);
       });
+    // }
   };
 
   const UpdatedHwlist = () => {
@@ -143,17 +158,18 @@ function Submitted(props) {
         popUpList();
       })
       .catch((error) => {
-        // setAlert('error', error?.message);
         // setLoading(false);
       });
   };
+
+
 
   const fileList = (erpid) => {
     axios
       .get(
         subjectChangedfilterOn
-          ? `${endpoints.teacherDashboard.fileHwData}?section_mapping=${selectedSectionIds}&subject=${subjectmappingId}&date=${props?.Date2}&erp=${erpid}`
-          : `${endpoints.teacherDashboard.fileHwData}?section_mapping=${props?.selectedSectionIds2}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date}&erp=${erpid}`,
+          ? `${endpoints.teacherDashboard.fileHwData}?section_mapping=${sectionId}&subject=${subjectmappingId}&date=${props?.Date2}&erp=${erpid}`
+          : `${endpoints.teacherDashboard.fileHwData}?section_mapping=${props?.sectionId2}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date}&erp=${erpid}`,
         {
           headers: {
             'X-DTS-HOST': window.location.host,
@@ -164,6 +180,7 @@ function Submitted(props) {
       )
       .then((result) => {
         setFileData(result?.data?.result);
+        // setLoading(false);
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -174,9 +191,10 @@ function Submitted(props) {
   const popUpList = () => {
     axios
       .get(
+
         (subjectChangedfilterOn)
           ?
-          `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&date=${props?.Date2}`
+          `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${sectionId}&subject_id=${subjectmappingId}&date=${props?.Date2}`
           :
           `${endpoints.teacherDashboard.HWPendingStudentList}?section_mapping=${Number(
             props?.dataincoming?.detail?.section_mapping_id
@@ -184,14 +202,18 @@ function Submitted(props) {
         {
           headers: {
             'X-DTS-HOST': window.location.host,
-            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
             Authorization: `Bearer ${token}`,
           },
         }
       )
       .then((result) => {
+        console.log('PendingHWList1', result?.data?.result);
         setModalData(result?.data?.result);
+
         parsedData(result?.data?.result);
+        // setPopup(modalData);
+        // setIndex(result?.data?.result?.total_students);
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -202,9 +224,10 @@ function Submitted(props) {
   const popUpListData = (id) => {
     axios
       .get(
+
         (subjectChangedfilterOn)
           ?
-          `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${selectedSectionIds}&subject_id=${subjectmappingId}&erp_id=${id}&date=${props?.Date2}`
+          `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${sectionId}&subject_id=${subjectmappingId}&erp_id=${id}&date=${props?.Date2}`
           :
           `${endpoints.teacherDashboard.HWPendingData}?section_mapping=${Number(
             props?.dataincoming?.detail?.section_mapping_id
@@ -212,15 +235,16 @@ function Submitted(props) {
         {
           headers: {
             'X-DTS-HOST': window.location.host,
-            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
             Authorization: `Bearer ${token}`,
           },
         }
       )
       .then((result) => {
-
+        console.log('PendingHWList2', result?.data?.result);
         setDataLast(result?.data?.result);
-
+        // setPopup(modalData);
+        // setIndex(result?.data?.result?.total_students);
       })
       .catch((error) => {
         // setAlert('error', error?.message);
@@ -229,24 +253,27 @@ function Submitted(props) {
   };
 
   const parsedData = (data) => {
-
+    console.log('ParsedData', data);
     const obj = {};
     data.forEach((item) => {
       obj[item.id] = item;
     });
     setOutput(obj);
-
+    console.log('Filtered', obj);
   };
 
   useEffect(() => {
     if (dataincoming.hwcwstatus) {
       UpdatedHwlist();
     } else {
+
       pendingList();
+
     }
   }, [props?.Date2, defaultdate, subjectmappingId]);
 
   const handleClickOn = (erpid, index) => {
+    console.log('ERP', erpid);
     setOn(true);
     setindexphotos(index);
     if (!dataincoming?.hwcwstatus) {
@@ -257,12 +284,12 @@ function Submitted(props) {
   useEffect(() => {
     console.log('a');
   }, [open]);
-  let inputRef = useRef(null);
+  let inputRef = useRef();
   const [Ind, setInd] = useState(0);
   let inputImage = (img) => {
     inputRef.current.src = img;
   };
-
+  console.log('Submitted1', tableData);
   return (
     <>
       <Grid container>
@@ -290,12 +317,14 @@ function Submitted(props) {
           <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label='simple table'>
               {tableData?.map((data, index) => {
+                console.log('Submitted', data);
                 let interval = Math.trunc(
                   moment.duration(moment() - moment(data.submitted_at)).asDays()
                 );
                 return (
                   <TableBody>
                     <TableRow
+                      // key=bonnie
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     // onClick={assessmentHandler}
                     >
@@ -509,7 +538,7 @@ function Submitted(props) {
               ? tableData &&
               tableData[indexphotos]?.uploaded_file?.map((file, index) => {
                 const filename = file.split('/')[3];
-
+                console.log('HWfile', file);
                 return (
                   <div>
                     <Card
@@ -523,6 +552,7 @@ function Submitted(props) {
                     </Card>
                   </div>
                 );
+
               })
               : fileData.length &&
               fileData.map((file, index) => {
@@ -540,6 +570,7 @@ function Submitted(props) {
                     </Card>
                   </div>
                 );
+
               })}
           </div>
           <div
@@ -551,8 +582,7 @@ function Submitted(props) {
               justifyContent: 'center',
             }}
           >
-            <img src='' ref={inputRef}></img>
-
+            <img ref={inputRef}></img>
           </div>
         </div>
       </Dialog>
@@ -563,8 +593,10 @@ function Submitted(props) {
       ) : (
         <ModalPending
           index1={dataincoming?.hwcwstatus}
+          // key1={index}
           row={tableData[popup]}
           col={dataLast}
+          // row={dataincoming.hwcwstatus ? dataLast : tableData[popup]}
           open={open}
           handleClose={handleClose}
         />

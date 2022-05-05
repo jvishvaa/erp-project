@@ -133,12 +133,9 @@ function ClassworkThree(props) {
   const [loading, setLoading] = useState(false);
   const [homework, setHomework] = useState(true);
   const { setAlert } = useContext(AlertNotificationContext);
-
   const [acadIDS, setAcadIDS] = useState();
   const [moduleId, setModuleId] = useState('');
-  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [selectedbranchIds, setSelectedbranchIds] = useState([]);
-
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState(
     props?.history?.location?.state?.selectedGradevalue
@@ -207,13 +204,33 @@ function ClassworkThree(props) {
   };
   const dataincoming = props?.history?.location?.state;
 
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Online Class' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Create Class') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
+
   const handleBranch = () => {
     // setGradeList([]);
     // setSelectedSection([]);
     // setSelectedSubject([]);
     callApi(
       `${endpoints.academics.grades
-      }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&module_id=${2}`,
+      }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&module_id=${moduleId}`,
       'gradeList'
     );
   };
@@ -224,10 +241,9 @@ function ClassworkThree(props) {
     const selectedId = value?.grade_id;
     setSelectedGrade(value);
     setSelectedGradeIds(selectedId);
-
     callApi(
       `${endpoints.academics.sections
-      }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&grade_id=${selectedId?.toString()}&module_id=${2}`,
+      }?session_year=${sessionYearIDDDD}&branch_id=${databranch}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
       'section'
     );
   };
@@ -236,6 +252,7 @@ function ClassworkThree(props) {
     // setSectionList([])
     // setSubjectId()
     if (value) {
+      console.log('tree', value);
       setSubjectList([]);
       setSelectedSubject([]);
       setSelectedSectionIds([]);
@@ -248,7 +265,7 @@ function ClassworkThree(props) {
       setSelectedSectionIds(selectedsecctionId);
       callApi(
         `${endpoints.academics.subjects
-        }?session_year=${sessionYearIDDDD}&branch=${databranch}&grade=${selectedGradeIds?.toString()}&section=${selectedsecctionId.toString()}&module_id=${2}`,
+        }?session_year=${sessionYearIDDDD}&branch=${databranch}&grade=${selectedGradeIds?.toString()}&section=${selectedsecctionId.toString()}&module_id=${moduleId}`,
         'subject'
       );
     } else {
@@ -260,13 +277,17 @@ function ClassworkThree(props) {
   };
 
   const handleSubject = (event = {}, value = []) => {
-    setSelectedSubject(value);
-
-    setSubjectId(value?.subject__id);
-    setSubjectmappingId(value?.id);
-    setSubjectChangedfilterOn(true);
-    // pendingInfo();
-    // pendingDetails(sectionId, value?.subject__id, periodDate);
+    if (value) {
+      setSelectedSubject(value);
+      setSubjectId(value?.subject__id);
+      setSubjectmappingId(value?.subject__id);
+      setSubjectChangedfilterOn(true);
+    } else {
+      setSelectedSubject([])
+      setSubjectId([]);
+      setSubjectmappingId(null);
+      setSubjectChangedfilterOn(false);
+    }
   };
 
   function callApi(api, key) {
@@ -296,8 +317,10 @@ function ClassworkThree(props) {
   const sessionYearIDDDD = id;
 
   useEffect(() => {
-    handleBranch();
-  }, []);
+    if (moduleId) {
+      handleBranch();
+    }
+  }, [moduleId]);
 
   // const handleDateChange = (newValue) => {
   //   setDateRangeTechPer(newValue);
@@ -314,6 +337,7 @@ function ClassworkThree(props) {
     subjectChangedfilterOn,
     subjectmappingId,
     defaultdate,
+    sectionId,
   };
 
   const displayDetails = () => {
@@ -433,7 +457,7 @@ function ClassworkThree(props) {
                 size='small'
                 options={subjectList}
                 onChange={handleSubject}
-                value={selectedSubject}
+                value={selectedSubject || {}}
                 getOptionLabel={(option) => option?.subject__subject_name}
                 // style={{ width: 120 }}
                 renderInput={(params) => (
@@ -445,7 +469,7 @@ function ClassworkThree(props) {
           <div
             style={{ marginTop: window.innerWidth < 768 ? '15px' : '', marginRight: 15 }}
           >
-            <TextField
+            {/* <TextField
               id='date'
               label='Date'
               type='date'
@@ -456,14 +480,12 @@ function ClassworkThree(props) {
               InputLabelProps={{
                 shrink: true,
               }}
-            />
+            /> */}
+            <div>Selected Date: {defaultdate}</div>
           </div>
         </Grid>
       </>
-      {/* <Details section={section} subject={subject} date={date} /> */}
-      {/* <Details hworcw={props} /> */}
       <>
-        {/* <dataPropsContext.Provider value={dataincoming}> */}
         <Grid
           container
           style={{

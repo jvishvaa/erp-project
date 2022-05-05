@@ -1,14 +1,8 @@
 import React from 'react';
-// import './App.css';
-import { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import CardHeader from '@material-ui/core/CardHeader';
 import Avatar from '@material-ui/core/Avatar';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 const useStyles = makeStyles((theme) => ({
@@ -35,19 +29,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function ModalSubmitted(props) {
-  // console.log('ModalSubmitted', props);
+  console.log('ModalSubmitted', props);
   const classes = useStyles();
 
   return (
     <div>
       <div>
         <div>
-          {/* <Button variant='outlined' color='primary'>
-            <Avatar aria-label='recipe' className={classes.avatar}>
-              3
-            </Avatar>
-            Pending 3 more tasks
-          </Button> */}
           <Dialog
             open={props?.open}
             onClose={props?.handleClose}
@@ -89,7 +77,7 @@ function ModalSubmitted(props) {
                   </div>
                 </div>
                 <hr style={{ width: '300px' }} />
-                <div style={{ display: 'flex', BorderBottom: '1px solid black' }}>
+                <div style={{ display: 'flex', BorderBottom: '1px solid black', justifyContent: 'space-between' }}>
                   <div>
                     <b style={{ color: '#E33535', fontSize: 'small' }}>
                       Pending Class Work's
@@ -108,11 +96,11 @@ function ModalSubmitted(props) {
                 </div>
                 {props?.index1
                   ? props?.col?.map((data) => {
-
+                    console.log('ModalInside', data);
                     return (
                       <>
                         <div
-                          style={{ display: 'flex', borderBottom: '1px solid #E8E8E8' }}
+                          style={{ display: 'flex', borderBottom: '1px solid #E8E8E8', justifyContent: 'space-between' }}
                         >
                           <div style={{ width: 20 }}>
                             {/* <p style={{ fontSize: 'small' }}>{row?.not_submitted_list[0].title_name}</p> */}
@@ -120,7 +108,7 @@ function ModalSubmitted(props) {
                               {data.first_name} {data.last_name}
                             </p>
                           </div>
-                          <div style={{ marginLeft: '120px' }}>
+                          <div>
                             <p style={{ fontSize: 'small' }}>Date</p>
                           </div>
                         </div>
@@ -137,7 +125,7 @@ function ModalSubmitted(props) {
                             {/* <p style={{ fontSize: 'small' }}>{row?.not_submitted_list[0].title_name}</p> */}
                             <p style={{ fontSize: 'small' }}>{data.title_name}</p>
                           </div>
-                          <div style={{ marginLeft: '120px' }}>
+                          <div>
                             <p style={{ fontSize: 'small' }}>{data.date}</p>
                           </div>
                         </div>

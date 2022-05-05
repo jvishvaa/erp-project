@@ -1,0 +1,21 @@
+#cardChapter{
+    padding: 10px;
+    .MuiButtonBase-root{
+        color: black !important ;
+        background: white !important;
+    }
+}
+#iconCard{
+    width: 16% !important;
+}
+#contentCard{
+    flex-wrap: wrap;
+    justify-content: space-around;
+    width: 90%;
+}
+#imageIcon{
+    min-height: 200px;
+}
+#subTrain{
+    margin: 14px;
+}
