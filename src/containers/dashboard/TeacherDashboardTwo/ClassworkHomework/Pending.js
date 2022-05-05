@@ -46,8 +46,12 @@ function Pending(props) {
   const { sectionId, selectedSectionIds, subjectChangedfilterOn, subjectmappingId, defaultdate } = useContext(FilterContext)
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
+  const [Subid, setSubid] = useState(props?.subjectId2);
+
+  // let output = {};
   const pendingList = () => {
     if (dataincoming?.hwcwstatus) {
+
       axios
         .get(
           (subjectChangedfilterOn)
@@ -76,40 +80,49 @@ function Pending(props) {
           // setLoading(false);
         });
     } else {
+      let url, url1;
       if (subjectmappingId) {
-        axios
-          .get(
-            (subjectChangedfilterOn)
-              ?
-              `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${sectionId}&subject=${subjectmappingId}&date=${props?.Date2}`
-              :
-              `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${Number(
-                props?.dataincoming?.detail?.section_mapping
-              )}&subject=${props?.subjectId2}&date=${props?.dataincoming?.detail?.date
-              }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`,
-            {
-              headers: {
-                'X-DTS-HOST': window.location.host,
-                // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          )
-          .then((result) => {
-
-            if (result?.data?.status_code === 200) {
-              setTableData(result?.data?.result?.result);
-              setIndex(result?.data?.result?.total_students);
-            } else {
-              setTableData([]);
-            }
-          })
-          .catch((error) => {
-            // setAlert('error', error?.message);
-            // setLoading(false);
-          });
+        url = `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${sectionId}&subject=${subjectmappingId}&date=${props?.Date2}`
       }
+
+      if (Subid) {
+        url1 = `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${Number(
+          props?.dataincoming?.detail?.section_mapping
+        )}&subject=${Subid}&date=${props?.dataincoming?.detail?.date
+          }&online_class_id=${props?.dataincoming?.detail?.online_class_id}`
+      }
+
+      axios
+        .get(
+          // `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=2&subject=9&date=2022-02-01`,
+          (subjectChangedfilterOn)
+            ?
+            url
+            :
+            url1,
+          {
+            headers: {
+              'X-DTS-HOST': window.location.host,
+              // 'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        )
+        .then((result) => {
+
+          if (result?.data?.status_code === 200) {
+            setTableData(result?.data?.result?.result);
+            setIndex(result?.data?.result?.total_students);
+          } else {
+            setTableData([]);
+          }
+        })
+        .catch((error) => {
+          // setAlert('error', error?.message);
+          // setLoading(false);
+        });
     }
+
   };
   const popUpList = () => {
     axios
