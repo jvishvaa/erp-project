@@ -365,11 +365,6 @@ const SubjectTraining = () => {
     }
   };
 
-  function udaanTeacherRegisterFormOpen() {
-    // setOpen(true);
-    history.push('/sure-learning-access');
-  }
-
   return (
     <Layout className='accessBlockerContainer'>
       <div className={classes.parentDiv}>
@@ -380,19 +375,6 @@ const SubjectTraining = () => {
         />
 
         <div className='listcontainer'>
-          {erp_config ? (
-            <Button
-              variant='contained'
-              color='primary'
-              className={classes.filters}
-              style={{ margin: '0 2%' }}
-              onClick={udaanTeacherRegisterFormOpen}
-            >
-              Sure Learning Access 
-            </Button>
-          ) : (
-            ''
-          )}
           <div className='filterStudent'>
             <Grid item md={3} xs={12} style={{ margin: '0 20px' }}>
               <Autocomplete
