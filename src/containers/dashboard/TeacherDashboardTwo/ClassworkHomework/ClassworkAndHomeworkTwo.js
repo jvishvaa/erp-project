@@ -129,6 +129,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
           setPageNumber(1);
           setCwPageNumber(1);
           setIndvalue(0);
+          if(homework){
           homeWorkList(
             gradeSecSub[0]?.section_mapping__grade__id,
             gradeSecSub[0]?.subjects__id,
@@ -136,7 +137,8 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
             startDate,
             endDate
           );
-
+          }
+          if(!homework){
           classWorkList(
             gradeSecSub[0]?.section_mapping__grade__id,
             gradeSecSub[0]?.subjects__id,
@@ -144,6 +146,7 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
             startDate,
             endDate
           );
+          }
         } else {
         }
         setLoading(false);
@@ -156,7 +159,6 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
     selectedGradeIds,
     subjectId,
     selectedSectionIds,
-    sectionList,
     gradePageNumber,
     startDate,
     endDate,
