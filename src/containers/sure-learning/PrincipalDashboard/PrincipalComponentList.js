@@ -122,7 +122,7 @@ const ComponentList = {
     // },
     localStorage.getItem('Assign_Lead_Teacher')!=="null"?
     {
-      name: 'Assign Lead Teacher\n',
+      name: 'Assign Lead Teacher',
       icon: <RedoIcon />,
       link: '/sure-learning-assign-lead-teacher',
       component: leadTeacher,
@@ -154,7 +154,7 @@ const ComponentList = {
     }:null,
     localStorage.getItem('Branch_Wise_Report')!=="null"?
     {
-      name: 'Branch wise report',
+      name: 'Branch wise Report',
       icon: <RedoIcon />,
       link: '/sure-learning-branch-level-detailed-report',
       component: dashboard,
@@ -286,7 +286,7 @@ const ComponentList = {
     //   component: TeachersPerformance,
     // },
     {
-      name: 'Assign Lead Teacher\n',
+      name: 'Assign Lead Teacher',
       icon: <RedoIcon />,
       link: '/sure-learning-assign-lead-teacher',
       component: leadTeacher,
@@ -314,7 +314,7 @@ const ComponentList = {
       component: consolidatedReport,
     },
     {
-      name: 'Branch wise report',
+      name: 'Branch wise Report',
       icon: <RedoIcon />,
       link: '/sure-learning-branch-level-detailed-report',
       component: dashboard,
@@ -403,7 +403,7 @@ const ComponentList = {
     //   component: TeachersPerformance,
     // },
     {
-      name: 'Assign Lead Teacher\n',
+      name: 'Assign Lead Teacher',
       icon: <RedoIcon />,
       link: '/sure-learning-assign-lead-teacher',
       component: TeachersPerformance,
@@ -477,7 +477,7 @@ const ComponentList = {
     //   component: TeachersPerformance,
     // },
     // {
-    //   name: 'Assign Lead Teacher\n',
+    //   name: 'Assign Lead Teacher',
     //   icon: <RedoIcon />,
     //   link: '/sure-learning-assign-lead-teacher',
     //   component: TeachersPerformance,
@@ -551,13 +551,13 @@ const ComponentList = {
     //   component: TeachersPerformance,
     // },
     // {
-    //   name: 'Assign Lead Teacher\n',
+    //   name: 'Assign Lead Teacher',
     //   icon: <RedoIcon />,
     //   link: '/sure-learning-assign-lead-teacher',
     //   component: TeachersPerformance,
     // },
     {
-      name: 'Branch wise report',
+      name: 'Branch wise Report',
       icon: <RedoIcon />,
       link: '/sure-learning-branch-level-detailed-report',
       component: dashboard,
@@ -631,7 +631,7 @@ const ComponentList = {
     //   component: TeachersPerformance,
     // },
     // {
-    //   name: 'Assign Lead Teacher\n',
+    //   name: 'Assign Lead Teacher',
     //   icon: <RedoIcon />,
     //   link: '/sure-learning-assign-lead-teacher',
     //   component: TeachersPerformance,

@@ -39,6 +39,8 @@ import useFetch from '../../hoc/useFetch';
 import axios from 'axios';
 import CommonBreadcrumbs from '../../../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../../../Layout';
+import { Autocomplete } from '@material-ui/lab';
+
 
 let status;
 const ITEM_HEIGHT = 48;
@@ -199,7 +201,7 @@ const AssessmentReview = ({ classes }) => {
     // &branch_id=${branch}
     fetchReviewsData({
       url: `${endpoints.sureLearning.AssessmentReviewApi
-        }?course_id=${course}&page_size=${5}&page=${1}`,
+        }?course_id=${course?.course?.id}&page_size=${5}&page=${1}`,
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -229,7 +231,7 @@ const AssessmentReview = ({ classes }) => {
     setPage(0);
 
     const courseArr = [];
-    for (let i = 0; i < course.length; i += 1) {
+    for (let i = 0; i < course?.course?.length; i += 1) {
       courseArr.push(
         getCourses &&
         getCourses.results.filter(
@@ -301,7 +303,7 @@ const AssessmentReview = ({ classes }) => {
     if (course && (submitMarksReview || page || rowsPerPage) && assessmentModuleId) {
       fetchReviewsData({
         url: `${endpoints.sureLearning.AssessmentReviewApi
-          }?course_id=${course}&page_size=${rowsPerPage || 5}&page=${page + 1}`,
+          }?course_id=${course?.course?.id}&page_size=${rowsPerPage || 5}&page=${page + 1}`,
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -518,7 +520,7 @@ const AssessmentReview = ({ classes }) => {
 
   console.log(
     isAllSelected,
-    course?.length,
+    course?.course?.length,
     getCourses?.results?.length,
     "isAllSelected"
   );
@@ -531,15 +533,13 @@ const AssessmentReview = ({ classes }) => {
     );
     if (value[value.length - 1] === "all") {
       setCourse(
-        course?.length === getCourses?.results?.length ? [] : courseList
+        course?.course?.length === getCourses?.results?.length ? [] : courseList
       );
       return;
     }
 
     setCourse(value);
   };
-
-  console.log(course, "assessmentReviews");
 
   return (
     <Layout>
@@ -562,70 +562,54 @@ const AssessmentReview = ({ classes }) => {
         <Paper className={classes.paper}>
           <Grid container spacing={2}>
             <Grid item md={4} xs={12}>
-              <Typography>
-                Select Course &nbsp;
-                <strong style={{ color: "red" }}>*</strong>
-              </Typography>
               {localStorage.getItem("coursesType") === "trainer_driven" ? (
-                <Select
-                  margin="dense"
+                <Autocomplete
+                  style={{ marginTop: "24px" }}
+                  size='small'
+                  className='dropdownIcon'
+                  options={getCourses?.results || []}
                   value={course || []}
+                  getOptionLabel={(option) => option?.course?.course_name || []}
+                  filterSelectedOptions
                   onChange={handleChange}
-                  // onChange={(e) => setCourse(e.target.value)}
-                  fullWidth
-                  variant="outlined"
-                  style={{ color: "black", margin: "8px 0 0 0" }}
-                  renderValue={(selected) => selected.join(", ")}
+                  required
                   multiple
-                  MenuProps={MenuProps}
-                >
-                  <MenuItem key="all" value="all">
-                    <ListItemIcon>
-                      <Checkbox
-                        checked={isAllSelected}
-                        indeterminate={
-                          course.length > 0 &&
-                          course.length < getCourses.results.length
-                        }
-                      />
-                    </ListItemIcon>
-                    <ListItemText
-                      classes={{ primary: classes.selectAllText }}
-                      primary="Select All"
+                  renderValue={(selected) => selected.join(", ")}
+                  renderInput={(params) => (
+                    <TextField
+                      size='small'
+                      className='create__class-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Select Course'
+                      placeholder='Select Course'
+                      required
                     />
-                  </MenuItem>
-                  {getCourses &&
-                    getCourses.results.length !== 0 &&
-                    getCourses.results.map((item) => (
-                      <MenuItem
-                        key={item.course.id}
-                        value={item.course.course_name}
-                        name={item.course.course_name}
-                      >
-                        <Checkbox
-                          checked={course.indexOf(item.course.course_name) > -1}
-                        />
-                        <ListItemText primary={item.course.course_name} />
-                      </MenuItem>
-                    ))}
-                </Select>
+                  )}
+                />
               ) : (
-                <Select
-                  margin="dense"
+                <Autocomplete
+                  style={{ marginTop: "24px" }}
+                  size='small'
+                  className='dropdownIcon'
+                  options={getCourses?.results || []}
                   value={course || []}
-                  onChange={(e) => setCourse(e.target.value)}
-                  fullWidth
-                  variant="outlined"
-                  style={{ color: "black" }}
-                >
-                  {getCourses &&
-                    getCourses.results.length !== 0 &&
-                    getCourses.results.map((item) => (
-                      <MenuItem key={item.course.id} value={item.course.id}>
-                        {item.course.course_name}
-                      </MenuItem>
-                    ))}
-                </Select>
+                  getOptionLabel={(option) => option?.course?.course_name || []}
+                  filterSelectedOptions
+                  onChange={(event, value) => setCourse(value)}
+                  required
+                  renderInput={(params) => (
+                    <TextField
+                      size='small'
+                      className='create__class-textfield'
+                      {...params}
+                      variant='outlined'
+                      label='Select Course'
+                      placeholder='Select Course'
+                      required
+                    />
+                  )}
+                />
               )}
             </Grid>
             {localStorage.getItem("coursesType") === "trainer_driven" ? (

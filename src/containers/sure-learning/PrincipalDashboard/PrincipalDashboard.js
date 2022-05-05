@@ -150,7 +150,7 @@ function PrincipalDashboard() {
             {roleList()
               && verify===false
               && roleList().length
-              && roleList().map((text, index) => (text!==null && text!== undefined && (text.name==="Dashboard" || text.name==="Report" ||  text.name==="Branch wise report" || text.name==="Consolidated Report" || text.name==="Weekly Report") ? (
+              && roleList().map((text, index) => (text!==null && text!== undefined && (text.name==="Dashboard" || text.name==="Report" ||  text.name==="Branch wise Report" || text.name==="Consolidated Report" || text.name==="Weekly Report") ? (
                 <ListItem
                   key={index}
                   button

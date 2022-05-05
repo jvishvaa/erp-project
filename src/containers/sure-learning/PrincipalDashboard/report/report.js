@@ -197,7 +197,7 @@ const Report = ({ classes }) => {
         fetchlevel({
           url: `${endpoints.sureLearning.userReportApi}?page=${page +
             1}&page_size=${rowsPerPage ||
-            10}&role_id=${array}&course_type=${trainingType.id}&course_id=${courseIDList}&start_date=${startDate}&end_date=${endDate}&branch=${branch.id}`,
+            10}&role_id=${array}&course_type=${trainingType?.id}&course_id=${courseIDList}&start_date=${startDate}&end_date=${endDate}&branch=${branch?.id}`,
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -209,7 +209,7 @@ const Report = ({ classes }) => {
         fetchlevel({
           url: `${endpoints.sureLearning.userReportApi}?page=${page +
             1}&page_size=${rowsPerPage ||
-            10}&role_id=${array}&course_type=${trainingType.id}&course_id=${courseIDList}&start_date=${startDate}&branch=${branch.id}`,
+            10}&role_id=${array}&course_type=${trainingType?.id}&course_id=${courseIDList}&start_date=${startDate}&branch=${branch?.id}`,
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -221,7 +221,7 @@ const Report = ({ classes }) => {
         fetchlevel({
           url: `${endpoints.sureLearning.userReportApi}?page=${page +
             1}&page_size=${rowsPerPage ||
-            10}&role_id=${array}&course_type=${trainingType.id}&course_id=${courseIDList}&end_date=${endDate}&branch=${branch.id}`,
+            10}&role_id=${array}&course_type=${trainingType?.id}&course_id=${courseIDList}&end_date=${endDate}&branch=${branch?.id}`,
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -233,7 +233,7 @@ const Report = ({ classes }) => {
         fetchlevel({
           url: `${endpoints.sureLearning.userReportApi}?page=${page +
             1}&page_size=${rowsPerPage ||
-            10}&role_id=${array}&course_type=${trainingType.id}&course_id=${courseIDList}&branch=${branch.id}`,
+            10}&role_id=${array}&course_type=${trainingType?.id}&course_id=${courseIDList}&branch=${branch?.id}`,
           method: "GET",
           headers: {
             "Content-Type": "application/json",
@@ -263,7 +263,7 @@ const Report = ({ classes }) => {
         setBottomHRef([
           {
             csv: `${endpoints.sureLearning.courseWiseReportExcelApi
-              }?course_id=${courseIDList}&role_id=${array}&course_type=${trainingType.id}&start_date=${startDate}&end_date=${endDate}&branch=${branch.id}&Authorization=Bearer ${auth.personal_info.token
+              }?course_id=${courseIDList}&role_id=${array}&course_type=${trainingType?.id}&start_date=${startDate}&end_date=${endDate}&branch=${branch?.id}&Authorization=Bearer ${auth.personal_info.token
               }&module=${courseReportModuleId}&export_type=csv`,
           },
         ]);
@@ -271,7 +271,7 @@ const Report = ({ classes }) => {
         setBottomHRef([
           {
             csv: `${endpoints.sureLearning.courseWiseReportExcelApi
-              }?course_id=${courseIDList}&role_id=${array}&course_type=${trainingType.id}&start_date=${startDate}&branch=${branch.id}&Authorization=Bearer ${auth.personal_info.token
+              }?course_id=${courseIDList}&role_id=${array}&course_type=${trainingType?.id}&start_date=${startDate}&branch=${branch?.id}&Authorization=Bearer ${auth.personal_info.token
               }&module=${courseReportModuleId}&export_type=csv`,
           },
         ]);
@@ -279,7 +279,7 @@ const Report = ({ classes }) => {
         setBottomHRef([
           {
             csv: `${endpoints.sureLearning.courseWiseReportExcelApi
-              }?course_id=${courseIDList}&role_id=${array}&course_type=${trainingType.id}&end_date=${endDate}&branch=${branch.id}&Authorization=Bearer ${auth.personal_info.token
+              }?course_id=${courseIDList}&role_id=${array}&course_type=${trainingType?.id}&end_date=${endDate}&branch=${branch?.id}&Authorization=Bearer ${auth.personal_info.token
               }&module=${courseReportModuleId}&export_type=csv`,
           },
         ]);
@@ -287,7 +287,7 @@ const Report = ({ classes }) => {
         setBottomHRef([
           {
             csv: `${endpoints.sureLearning.courseWiseReportExcelApi
-              }?course_id=${courseIDList}&role_id=${array}&course_type=${trainingType.id}&branch=${branch.id}&Authorization=Bearer ${auth.personal_info.token
+              }?course_id=${courseIDList}&role_id=${array}&course_type=${trainingType?.id}&branch=${branch?.id}&Authorization=Bearer ${auth.personal_info.token
               }&module=${courseReportModuleId}&export_type=csv`,
           },
         ]);
@@ -429,7 +429,7 @@ const Report = ({ classes }) => {
     isRoleChosen = true;
     setCourseId(null);
     setCourseIdVal(null);
-    setTrainingType("");
+
   };
 
   // async function getCourse(e) {
@@ -541,33 +541,50 @@ const Report = ({ classes }) => {
   );
 
   const handleCourseChange = (event, value) => {
-    if (value[0]?.course_name === 'Select All') {
-      const courses = [];
-      courseFullList.map((item, index) => {
-        courses.push(item);
+    for (let i = 0; i < value.length; i++) {
+      if (value[i]?.course_name === 'Select All') {
+        const courses = [];
+        courseFullList.map((item, index) => {
+          courses.push(item);
+        }
+        )
+        courses.splice(0, 1);
+        setCourseIdVal(courses);
+        setCourseId(courses);
+        return;
+      } else {
+        setCourseIdVal(value);
+        setCourseId(value);
       }
-      )
-      courses.splice(0, 1);
-      setCourseIdVal(courses);
-      setCourseId(courses);
-    } else {
-      setCourseIdVal(value);
-      setCourseId(value);
     }
+
   };
 
   function handleRoleChange(event, value) {
-    if (value[0]?.role_name === 'Select All') {
-      const roles = [];
-      roleList.map((item, index) => {
-        roles.push(item);
+    for (let i = 0; i <= value.length; i++) {
+      if (value[i]?.role_name === 'Select All') {
+        const roles = [];
+        roleList.map((item, index) => {
+          roles.push(item);
+        }
+        )
+        roles.splice(0, 1);
+        setRoleId(roles);
+        return;
+      } else {
+        setRoleId(value)
       }
-      )
-      roles.splice(0, 1);
-      setRoleId(roles);
-    } else {
-      setRoleId(value)
     }
+
+  }
+
+  function handleBranchChange(e, value) {
+    setBranch(value);
+    setRoleId(null);
+    setTrainingType("");
+    setCourseIdVal(null);
+    setStartDate(null);
+    setEndDate(null);
   }
 
   return (
@@ -577,388 +594,171 @@ const Report = ({ classes }) => {
         childComponentName='Course Wise User Report'
         isAcademicYearVisible={true}
       />
-      <div className={classes.root} style={{ margin: ' 5px 40px 5px 40px' }}>
+      <div style={{ margin: ' 5px 40px 5px 40px' }}>
         <div className={classes.tableMargin}>
-          {/* <Typography variant="h4">Course Wise User Report</Typography>
-          <Divider className={classes.divider} /> */}
-          <Paper className={classes.paper}>
-            <Grid container spacing={2} alignItems="center">
-              <Grid item md={2} xs={12}>
-                <Autocomplete
-                  // multiple
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={(e, value) => setBranch(value)}
-                  value={branch || ""}
-                  options={branchList || ''}
-                  getOptionLabel={(option) => option?.branch_name || ''}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Select Branch'
-                      placeholder='Select Branch'
-                    />
-                  )}
-                />
-                {/* <Typography>
-                  Select Branch
-                  <b style={{ color: "red" }}>*</b>
-                </Typography>
-                <Select
-                  margin="dense"
-                  fullWidth
-                  value={branch || ""}
-                  onChange={(e) => setBranch(e.target.value)}
-                  className={classes.textField}
-                  variant="outlined"
-                  style={{ color: "black" }}
-                >
-                  {branchList &&
-                    branchList.length !== 0 &&
-                    branchList.map((data) => (
-                      <MenuItem
-                        value={data.id}
-                        key={data.id}
-                        name={data.branch_name}
-                      >
-                        {data.branch_name ? data.branch_name : ""}
-                      </MenuItem>
-                    ))}
-                </Select> */}
-              </Grid>
-              <Grid item md={2} xs={12}>
-                <Autocomplete
-                  multiple
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleRoleChange}
-                  value={roleId || []}
-                  options={roleList || ''}
-                  getOptionLabel={(option) => option?.role_name || ''}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Select Role'
-                      placeholder='Select Role'
-                    />
-                  )}
-                />
-                {/* <Typography>
-                  Select Role
-                  <b style={{ color: "red" }}>*</b>
-                </Typography>
-                <FormControl className={classes.formControl}>
-                  <Select
-                    margin="dense"
-                    fullWidth
-                    value={roleId || []}
-                    // onChange={(e) => setSchool(e.target.value)}
-                    onChange={handleChange}
-                    // onChange={(e) => handleSelectALlSchool(e)}
-                    multiple
-                    className={classes.textField}
-                    variant="outlined"
-                    style={{ color: "black" }}
-                    renderValue={(selected) => selected.join(", ")}
-                    MenuProps={MenuProps}
-                  >
-                    <MenuItem key="all" value="all">
-                      <ListItemIcon>
-                        <Checkbox
-                          checked={isAllSelected}
-                          indeterminate={
-                            roleId.length > 0 && roleId.length < roleList.length
-                          }
-                        />
-                      </ListItemIcon>
-                      <ListItemText
-                        classes={{ primary: classes.selectAllText }}
-                        primary="Select All"
-                      />
-                    </MenuItem>
-                    {roleList &&
-                      roleList.length !== 0 &&
-                      roleList.response.map((data) => (
-                        <MenuItem
-                          value={data.role_name}
-                          key={data.role_id}
-                          name={data.role_name}
-                        >
-                          <Checkbox
-                            checked={roleId.indexOf(data.role_name) > -1}
-                          />
-                          <ListItemText primary={data.role_name} />
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl> */}
+          <Grid container spacing={2} alignItems="center">
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                // multiple
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleBranchChange}
+                value={branch || ""}
+                options={branchList || ''}
+                getOptionLabel={(option) => option?.branch_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Select Branch'
+                    placeholder='Select Branch'
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                multiple
+                style={{ width: '100%' }}
+                size='small'
+                limitTags={2}
+                className='dropdownIcon'
+                onChange={handleRoleChange}
+                value={roleId || []}
+                options={roleList || ''}
+                getOptionLabel={(option) => option?.role_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Select Role'
+                    placeholder='Select Role'
+                  />
+                )}
+              />
+            </Grid>
 
-                {/* <Typography>
-                      Select Role
-                      <b style={{ color: 'red' }}>*</b>
-                    </Typography>
-                    <Select
-                      margin="dense"
-                      labelId="demo-mutiple-checkbox-label"
-                      id="demo-mutiple-checkbox"
-                      fullWidth
-                      className={classes.textField}
-                      variant="outlined"
-                      style={{ color: 'black',height:'60%',}}
-                      multiple
-                      value={roleId || ''}
-                      // onChange={handleChange}
-                      onChange={(e) => {roleChosen(e); }}
-                      // input={<Input/>}
-                      renderValue={(selected) => selected.join(', ')}
-                      MenuProps={MenuProps}
-                    >
-                      {roleList
-                        && roleList.length !== 0
-                        && roleList.response.map((data) => (
-                        <MenuItem key={data.role_id} value={data.role_name} >
-                          <Checkbox checked={roleId.indexOf(data.role_name) > -1} />
-                          <ListItemText primary={data.role_name} />
-                        </MenuItem>
-                      ))}
-                    </Select> */}
-
-                {/* </FormControl> */}
-              </Grid>
-
-              <Grid item md={2} xs={12}>
-                <Autocomplete
-                  // multiple
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={(e, value) => trainingTypeChosen(value)}
-                  value={trainingType || ""}
-                  options={trainingTypeList || ''}
-                  getOptionLabel={(option) => option?.name || ''}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Select Training'
-                      placeholder='Select Training'
-                    />
-                  )}
-                />
-                {/* <Typography>
-                  Select Training
-                  <b style={{ color: "red" }}>*</b>
-                </Typography>
-                <Select
-                  margin="dense"
-                  fullWidth
-                  value={trainingType || ""}
-                  onChange={(e) => trainingTypeChosen(e)}
-                  className={classes.textField}
-                  variant="outlined"
-                  style={{ color: "black", marginLeft: "10px" }}
-                >
-                  {trainingTypeList &&
-                    trainingTypeList.length !== 0 &&
-                    trainingTypeList.map((data, i) =>
-                      verify || data.id === "4" ? (
-                        <MenuItem
-                          value={data.id}
-                          key={data.id}
-                          name={data.name}
-                        >
-                          {data.id ? data.name : ""}
-                        </MenuItem>
-                      ) : (
-                        ""
-                      )
-                    )}
-                </Select> */}
-              </Grid>
-              <Grid item md={6} sm={12} xs={12}>
-                <Autocomplete
-                  multiple
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleCourseChange}
-                  value={courseIdVal || []}
-                  options={courseFullList || []}
-                  getOptionLabel={(option) => option?.course_name || ''}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Select Course'
-                      placeholder='Select Course'
-                    />
-                  )}
-                />
-                {/* <Typography>
-                  Select Course
-                  <b style={{ color: "red" }}>*</b>
-                </Typography>
-                <FormControl className={classes.formControl}>
-                  <Select
-                    margin="dense"
-                    labelId="demo-mutiple-checkbox-label"
-                    id="demo-mutiple-checkbox"
-                    fullWidth
-                    className={classes.textField}
-                    variant="outlined"
-                    style={{
-                      color: "black",
-                      height: "60%",
-                      marginLeft: "10px",
-                    }}
-                    multiple
-                    value={courseIdVal || []}
-                    onChange={handleCourseChange}
-                    // onChange={(e) => setCourse(e)}
-                    renderValue={(selected) => selected.join(", ")}
-                    MenuProps={MenuProps}
-                  >
-                    <MenuItem key="all" value="all">
-                      <ListItemIcon>
-                        <Checkbox
-                          checked={isAllCoursesSelected}
-                          indeterminate={
-                            courseIdVal.length > 0 &&
-                            courseIdVal.length < courseList.length
-                          }
-                        />
-                      </ListItemIcon>
-                      <ListItemText
-                        classes={{ primary: classes.selectAllText }}
-                        primary="Select All"
-                      />
-                    </MenuItem>
-
-                    {courseList &&
-                      courseList.length !== 0 &&
-                      courseList.map((data) => (
-                        <MenuItem
-                          name={data.course_name}
-                          key={data.id}
-                          value={data.course_name}
-                        >
-                          <Checkbox
-                            checked={courseIdVal.indexOf(data.course_name) > -1}
-                          />
-                          <ListItemText primary={data.course_name} />
-                        </MenuItem>
-                      ))}
-                  </Select>
-                </FormControl> */}
-              </Grid>
-
-              {/* <Grid item md={3} xs={12}>
-                <Typography>
-                  Select Course
-                  <b style={{ color: 'red' }}>*</b>
-                </Typography>
-                <Select
-                  margin="dense"
-                  fullWidth
-                  value={courseId || ''}
-                  onChange={(e) => setCourse(e)}
-                  // onChange={(e) => trainingTypeChosen(e)}
-                  className={classes.textField}
-                  variant="outlined"
-                  style={{ color: 'black' }}
-                >
-                  {courseList
-                && courseList.length !== 0
-                && courseList.map((data) => (
-                  <MenuItem
-                    value={data.id}
-                    key={data.id}
-                    name={data.course_name}
-                  >
-                    {data.course_name ? data.course_name : ''}
-                  </MenuItem>
-                ))}
-
-                </Select>
-              </Grid> */}
-              <Grid item md={2} xs={12}>
-                <Typography>Start Date</Typography>
-                <TextField
-                  className={classes.textField}
-                  margin="dense"
-                  required
-                  fullWidth
-                  onChange={(e) => handleStartDateChange(e.target.value)}
-                  type="date"
-                  value={startDate || ""}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid item md={2} xs={12}>
-                <Typography>End Date</Typography>
-                <TextField
-                  className={classes.textField}
-                  margin="dense"
-                  required
-                  fullWidth
-                  onChange={(e) => handleEndDateChange(e.target.value)}
-                  type="date"
-                  value={endDate || ""}
-                  variant="outlined"
-                />
-              </Grid>
-              <Grid item md={5} xs={12}>
-                <Button
-                  style={{ marginTop: "37px" }}
-                  // className={classes.updateButton}
-                  className={classes.button}
-                  color="primary"
-                  // size="small"
-                  variant="contained"
-                  onClick={() => getReports()}
-                >
-                  Search
-                </Button>
-                {/* </Grid>
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                // multiple
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(e, value) => trainingTypeChosen(value)}
+                value={trainingType || ""}
+                options={trainingTypeList || ''}
+                getOptionLabel={(option) => option?.name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Select Training'
+                    placeholder='Select Training'
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                multiple
+                style={{ width: '100%' }}
+                size='small'
+                limitTags={2}
+                className='dropdownIcon'
+                onChange={handleCourseChange}
+                value={courseIdVal || []}
+                options={courseFullList || []}
+                getOptionLabel={(option) => option?.course_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Select Course'
+                    placeholder='Select Course'
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item md={3} xs={12}>
+              <Typography>Start Date</Typography>
+              <TextField
+                className={classes.textField}
+                margin="dense"
+                required
+                fullWidth
+                onChange={(e) => handleStartDateChange(e.target.value)}
+                type="date"
+                value={startDate || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={3} xs={12}>
+              <Typography>End Date</Typography>
+              <TextField
+                className={classes.textField}
+                margin="dense"
+                required
+                fullWidth
+                onChange={(e) => handleEndDateChange(e.target.value)}
+                type="date"
+                value={endDate || ""}
+                variant="outlined"
+              />
+            </Grid>
+            <Grid item md={1} xs={12}>
+              <Button
+                style={{ marginTop: "30px" }}
+                // className={classes.updateButton}
+                className={classes.button}
+                color="primary"
+                // size="small"
+                variant="contained"
+                fullWidth
+                onClick={() => getReports()}
+              >
+                Search
+              </Button>
+              {/* </Grid>
 
               <Grid item md={1} xs={12}> */}
-                {permission.can_export ? (
-                  <Button
-                    style={{ marginTop: "37px", marginLeft: "5%" }}
-                    className={classes.button}
-                    color="primary"
-                    variant="contained"
-                    href={bottomHRef && bottomHRef[0].csv}
-                    disabled={
-                      !(
-                        roleId !== "" &&
-                        roleId !== undefined &&
-                        trainingType !== "" &&
-                        trainingType !== undefined &&
-                        courseId !== "" &&
-                        courseId !== undefined &&
-                        branch !== "" &&
-                        branch !== undefined
-                      )
-                    }
-                  >
-                    Download
-                  </Button>
-                ) : null}
-              </Grid>
             </Grid>
-          </Paper>
+            <Grid item md={1} xs={12}>
+              {permission.can_export ? (
+                <Button
+                  style={{ marginTop: "30px" }}
+                  className={classes.button}
+                  color="primary"
+                  variant="contained"
+                  fullWidth
+                  href={bottomHRef && bottomHRef[0].csv}
+                  disabled={
+                    !(
+                      roleId !== "" &&
+                      roleId !== undefined &&
+                      trainingType !== "" &&
+                      trainingType !== undefined &&
+                      courseId !== "" &&
+                      courseId !== undefined &&
+                      branch !== "" &&
+                      branch !== undefined
+                    )
+                  }
+                >
+                  Download
+                </Button>
+              ) : null}
+            </Grid>
+          </Grid>
         </div>
       </div>
       <>
         {levelList && levelList.length !== 0 && (
           <Paper className={classes.paper}>
             {levelList &&
-              levelList.courses.map((courseItr, itr) => (
+              levelList?.courses?.map((courseItr, itr) => (
                 <>
                   <Table
                     className={classes.table}

@@ -67,8 +67,8 @@ function PrincipalLeadTeacher({ classes }) {
   }, [])
 
   useEffect(() => {
-    if (assignedTeacherres) {
-      setAlert("success", 'Teachers Assignd successfully');
+    if (assignedTeacherres?.status_code === 201) {
+      setAlert("success", assignedTeacherres?.message);
       setSelected([]);
       setSelectedLeadTeacher('');
     }
@@ -397,7 +397,7 @@ function PrincipalLeadTeacher({ classes }) {
               <Grid item md={6} xs={12} style={{ textAlign: 'right', marginTop: '30px' }}>
                 {allTeachersList && allTeachersList.results && (
                   <Button variant="contained" color="primary" onClick={() => submitTeacher()}>
-                    Assign Lead Teacher\ns
+                    Assign Lead Teacher's
                   </Button>
                 )}
               </Grid>

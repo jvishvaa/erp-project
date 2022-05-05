@@ -628,18 +628,19 @@ function ReAssignTeacher() {
             && (
               <>
                 <div>
-                  {/* <InputLabel
+                  <InputLabel
                     id="demo-mutiple-name-label"
                     style={{ fontWeight: 'bold', color: 'black', fontSize: '1rem' }}
                   >
                     Start Date
-                  </InputLabel> */}
+                  </InputLabel>
                   <TextField
                     type="date"
                     id="startdate"
                     margin="dense"
                     variant="outlined"
-                    label=" Start Date"
+                    // label=" Start Date"
+                    fullWidth
                     onChange={(e) => handleDateChange(e.target.value, e.target.id)}
                   />
                 </div>
@@ -655,7 +656,8 @@ function ReAssignTeacher() {
                     id="enddate"
                     margin="dense"
                     variant="outlined"
-                    label=" End Date"
+                    fullWidth
+                    // label=" End Date"
                     onChange={(e) => handleDateChange(e.target.value, e.target.id)}
                   />
                 </div>

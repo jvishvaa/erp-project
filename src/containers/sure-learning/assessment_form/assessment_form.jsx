@@ -113,7 +113,7 @@ const AssessmentForm = () => {
   const getAllCoursesInformation = async () => {
     let tempInfo = [];
     axios
-      .get(`${endpoints.sureLearning.getInstructureCourses}?course_type=self_driven`, {
+      .get(`${endpoints.sureLearning.getInstructureCourses}?course_type=self_driven&page_size=100`, {
         headers: {
           Authorization: `Bearer ${udaanToken}`,
           module: moduleId,
@@ -168,7 +168,7 @@ const AssessmentForm = () => {
         if (response.data.status_code !== 200) {
           setAlert('error', response.data.message);
         } else {
-          setAlert('success', 'data submitted successfully');
+          setAlert('success', response.data.message);
         }
       })
       .catch((error) => {

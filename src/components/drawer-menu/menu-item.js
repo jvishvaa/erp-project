@@ -605,7 +605,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/sure-learning-course-wise-user-report',
     },
     {
-      name: 'Branch wise report',
+      name: 'Branch wise Report',
       Path: '/sure-learning-branch-level-detailed-report',
     },
     {
@@ -621,7 +621,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/teacher-attendance',
     },
     {
-      name: 'Assign Lead Teacher\n',
+      name: 'Assign Lead Teacher',
       Path: '/sure-learning-assign-lead-teacher',
     },
     {
@@ -633,11 +633,11 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/sure-learning-weekly-report',
     },
     {
-      name: 'Class Initiation Form',
+      name: 'Class Intitiation Form',
       Path: '/sure_learning/class_initiation_form',
     },
     {
-      name: 'Initiate Class',
+      name: 'Intiate Class',
       Path: '/sure_learning/initiate_class',
     },
     {
@@ -651,6 +651,18 @@ const MenuItem = withRouter(({ history, ...props }) => {
     {
       name:'View Attendance',
       Path:'/teacher-attendance-verify',
+    },
+    {
+      name:'All/Completed Courses',
+      Path:'/sure_learning/completed_courses',
+    },
+    {
+      name:'Enroll for sure learning',
+      Path:'/sure-learning-access',
+    },
+    {
+      name:'Resource',
+      Path:'/sure_learning/resources',
     },
   ];
 
