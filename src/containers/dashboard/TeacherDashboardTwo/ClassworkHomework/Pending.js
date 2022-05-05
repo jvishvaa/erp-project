@@ -43,7 +43,7 @@ function Pending(props) {
   const classes = useStyles();
   const dataincoming = props.dataincoming;
 
-  const { sectionId, subjectChangedfilterOn, subjectmappingId, defaultdate } = useContext(FilterContext)
+  const { sectionId, selectedSectionIds, subjectChangedfilterOn, subjectmappingId, defaultdate } = useContext(FilterContext)
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const pendingList = () => {
@@ -80,7 +80,7 @@ function Pending(props) {
         .get(
           (subjectChangedfilterOn)
             ?
-            `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${sectionId}&subject_id=${subjectmappingId}&date=${props?.Date2}`
+            `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${sectionId}&subject=${subjectmappingId}&date=${props?.Date2}`
             :
             `${endpoints.teacherDashboard.pendingCWdata}?section_mapping=${Number(
               props?.dataincoming?.detail?.section_mapping

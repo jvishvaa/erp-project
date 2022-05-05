@@ -129,23 +129,23 @@ const ClassworkAndHomeworkTwo = ({ props }) => {
           setPageNumber(1);
           setCwPageNumber(1);
           setIndvalue(0);
-          if(homework){
-          homeWorkList(
-            gradeSecSub[0]?.section_mapping__grade__id,
-            gradeSecSub[0]?.subjects__id,
-            gradeSecSub[0]?.section_mapping__section__id,
-            startDate,
-            endDate
-          );
+          if (homework) {
+            homeWorkList(
+              gradeSecSub[0]?.section_mapping__grade__id,
+              gradeSecSub[0]?.subjects__id,
+              gradeSecSub[0]?.section_mapping__section__id,
+              startDate,
+              endDate
+            );
           }
-          if(!homework){
-          classWorkList(
-            gradeSecSub[0]?.section_mapping__grade__id,
-            gradeSecSub[0]?.subjects__id,
-            gradeSecSub[0]?.section_mapping__section__id,
-            startDate,
-            endDate
-          );
+          if (!homework) {
+            classWorkList(
+              gradeSecSub[0]?.section_mapping__grade__id,
+              gradeSecSub[0]?.subjects__id,
+              gradeSecSub[0]?.section_mapping__section__id,
+              startDate,
+              endDate
+            );
           }
         } else {
         }
