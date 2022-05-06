@@ -132,7 +132,7 @@ const AssessmentReportFilters = ({
 
   const fetchReportCardData = (params) => {
     setLoading(true);
-    apiRequest('get', `${endpoints.assessmentReportTypes.reportCardData}${params}`, null, null, false, 60000)
+    apiRequest('get', `${endpoints.assessmentReportTypes.reportCardData}${params}`, null, null, false, 10000)
       .then((result) => {
         if (result?.data?.status === 200) {
           setReportCardData(result?.data?.result);
