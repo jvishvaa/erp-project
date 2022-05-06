@@ -224,7 +224,7 @@ const GuardianDetailsForm = ({
                     id='father_mobile'
                     name='father_mobile'
                     onChange={(e)=>handleFatherMobileNumber(e)}
-                    // inputProps={{ maxLength: 11 }}
+                    inputProps={{ maxLength: 15 }}
                     type='number'
                     onInput={(e) => {
                       e.target.value = Math.max(0, parseInt(e.target.value))
@@ -232,7 +232,7 @@ const GuardianDetailsForm = ({
                         .slice(0, 15);
                     }}
                     min={0}
-                    inputProps={{ pattern: { min: 10, max: 10 } }}
+                    // inputProps={{ pattern: { min: 5, max: 15 } }}
                     placeholder='Ex: 995656xxxx'
                     value={formik.values.father_mobile}
                     label='Mobile no.'
