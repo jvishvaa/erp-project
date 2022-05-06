@@ -105,6 +105,11 @@ const UserDetailsForm = ({
     formik.handleChange();
   };
 
+
+  const handleMobileNumber = (e) => {
+    formik.setFieldValue('contact', e.target.value.toString());
+  }
+
   const handlePropsData = (code) => {
     formik.setFieldValue('student_country_code', code);
   };
@@ -274,7 +279,7 @@ const UserDetailsForm = ({
           <OutlinedInput
             id='contact'
             name='contact'
-            // inputProps={{ maxLength: 11 }}
+            inputProps={{ maxLength: 15 }}
             type='number'
             onInput={(e) => {
               e.target.value = Math.max(0, parseInt(e.target.value))
@@ -282,8 +287,8 @@ const UserDetailsForm = ({
                 .slice(0, 10);
             }}
             min={0}
-            inputProps={{ pattern: { min: 10, max: 10 } }}
-            onChange={formik.handleChange}
+            // inputProps={{ pattern: { min: 10, max: 10 } }}
+            onChange={(e)=>handleMobileNumber(e)}
             value={formik.values.contact}
             label='Mobile no.'
           />
