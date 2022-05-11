@@ -235,6 +235,7 @@ const CreateUpdateSignatureModel = ({
                         id='outlined-button-filee'
                         type='file'
                         onChange={(e) => functionToHandleImage(e.target.files[0])}
+                        component='span'
                       />
                       <Button
                         variant='contained'
