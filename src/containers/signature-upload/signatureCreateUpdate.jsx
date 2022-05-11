@@ -235,7 +235,6 @@ const CreateUpdateSignatureModel = ({
                         id='outlined-button-filee'
                         type='file'
                         onChange={(e) => functionToHandleImage(e.target.files[0])}
-                        component='span'
                       />
                       <Button
                         variant='contained'
@@ -243,6 +242,7 @@ const CreateUpdateSignatureModel = ({
                         style={{ color: 'white', width: '100%' }}
                         color='primary'
                         startIcon={<CloudUploadIcon style={{ fontSize: '20px' }} />}
+                        component='span'
                       >
                         Browse
                       </Button>
