@@ -7,6 +7,10 @@ import { setReportType } from '../../../../redux/actions';
 const reportTypes = [
   { id: 3, type: 'Student Comparison' },
   {
+    id: 5,
+    type: 'Report Card',
+  },
+  {
     id: 6,
     type: 'Individual Test Report',
   },
