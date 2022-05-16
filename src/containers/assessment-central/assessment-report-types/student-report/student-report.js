@@ -1,5 +1,5 @@
 import Layout from 'containers/Layout';
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext } from 'react';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -13,15 +13,15 @@ import { Autocomplete } from '@material-ui/lab';
 import { setReportType } from 'redux/actions';
 import { connect, useSelector } from 'react-redux';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
-import './student-report.css'
+import './student-report.css';
 import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
-import { Grid, TextField, } from '@material-ui/core';
+import { Grid, TextField } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
 
 const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
-  const { setAlert } = useContext(AlertNotificationContext)
+  const { setAlert } = useContext(AlertNotificationContext);
   const [studentIndivisualReport, setStudentIndivisualReport] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -53,7 +53,6 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
     topic: '',
     erp: '',
   });
-
 
   const handleBranch = (event, value) => {
     setDropdownData({
@@ -145,7 +144,6 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
         filterData.branch?.branch?.id,
         value?.grade_id
       );
-
     }
   };
 
@@ -164,7 +162,7 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   function getGrade(acadId, branchId) {
@@ -182,7 +180,7 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   function getSection(acadId, branchId, gradeId) {
@@ -200,7 +198,7 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   function getSubject(acadMappingId, gradeId) {
@@ -218,9 +216,8 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
-
 
   function getChapter(subjectId) {
     axiosInstance
@@ -235,7 +232,7 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   function getBranch(acadId) {
@@ -251,10 +248,8 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
           });
         }
       })
-      .catch((error) => { });
-
+      .catch((error) => {});
   }
-
 
   useEffect(() => {
     if (selectedReportType?.id) {
@@ -269,7 +264,6 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
       });
     }
   }, [selectedReportType?.id, moduleId]);
-
 
   // useEffect(() => {
   //   if (NavData && NavData.length) {
@@ -307,12 +301,9 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
     }
   }, [window.location.pathname]);
 
-
-
-
   useEffect(() => {
     if (moduleId) {
-      getBranch(selectedAcademicYear?.id)
+      getBranch(selectedAcademicYear?.id);
     }
   }, [moduleId]);
   const getERP = (branchId, gradeId, sectionId) => {
@@ -341,16 +332,17 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
   };
 
   function getUsersData(value, subj) {
-    console.log(value, "iop")
+    console.log(value, 'iop');
     axiosInstance
-      .get(`${endpoints.assessmentReportTypes.individualStudentReport}?session_year=${value?.branch?.session_year?.id}&branch_id=${value?.branch?.branch?.id}&grade_id=${value?.grade?.grade_id}&subject=${subj?.subject_id}`)
-      .then(response => {
+      .get(
+        `${endpoints.assessmentReportTypes.individualStudentReport}?session_year=${value?.branch?.session_year?.id}&branch_id=${value?.branch?.branch?.id}&grade_id=${value?.grade?.grade_id}&subject=${subj?.subject_id}`
+      )
+      .then((response) => {
         setStudentIndivisualReport(response?.data);
       })
       .catch((error) => {
-        setAlert("error", "Something went wrong")
-      })
-
+        setAlert('error', 'Something went wrong');
+      });
   }
 
   return (
@@ -389,7 +381,6 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
           />
         </Grid>
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-
           <Autocomplete
             style={{ width: '100%', margin: 30 }}
             size='small'
@@ -432,9 +423,9 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
         <Grid container>
           <TableContainer>
             <Table stickyHeader aria-label='sticky table'>
-              <TableHead className="table-header-row">
-                <TableRow >
-                  <TableCell >Test Name</TableCell>
+              <TableHead className='table-header-row'>
+                <TableRow>
+                  <TableCell>Test Name</TableCell>
                   <TableCell>Corrent Answer</TableCell>
                   <TableCell>Total Marks</TableCell>
                   <TableCell>Wrong Answer</TableCell>
@@ -444,13 +435,13 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
               </TableHead>
               <TableBody>
                 {studentIndivisualReport.map((repos) => (
-                  <TableRow>
+                  <TableRow className={repos.marks_percentage < 60 ? 'highlighted' : ''}>
                     <TableCell>{repos.test__test_name}</TableCell>
                     <TableCell>{repos.correct_answer}</TableCell>
                     <TableCell>{repos.test__total_mark}</TableCell>
                     <TableCell>{repos.wrong_answer}</TableCell>
                     <TableCell>{repos.marks_obtained}</TableCell>
-                    <TableCell>{repos.marks_percentage}</TableCell>
+                    <TableCell>{repos.marks_percentage} %</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -460,5 +451,5 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
       </Grid>
     </Layout>
   );
-}
+};
 export default StudentReport;
