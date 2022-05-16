@@ -1,3 +1,6 @@
-.datemargin{
+.datemargin {
   margin-left: 20px;
+}
+.highlighted {
+  background: #e14b4b !important;
 }
