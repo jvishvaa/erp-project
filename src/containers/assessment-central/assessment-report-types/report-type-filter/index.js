@@ -5,40 +5,23 @@ import { connect } from 'react-redux';
 import { setReportType } from '../../../../redux/actions';
 
 const reportTypes = [
-  { id: 1, type: 'Class Average marks Subject wise with Teacher name' },
-  { id: 2, type: 'Topic wise Average for a Test' },
-  { id: 3, type: 'Individual Student Marks Comparison with Class Average' },
-  {
-    id: 4,
-    type: 'Individual Student Topic wise Marks Comparison with Class Topic Average',
-  },
+  { id: 3, type: 'Student Comparison' },
   {
     id: 5,
     type: 'Report Card',
   },
   {
     id: 6,
-    type: 'Assessment Report',
+    type: 'Individual Test Report',
   },
-  {
-    id: 7,
-    type: 'Weekly Student Report',
-  },
-  {
-    id: 8,
-    type: 'Consolidated Sample Report',
-  },
+
   {
     id: 9,
-    type: 'Individual Assessment Report Teacher',
+    type: 'Gradewise Assessment Summary',
   },
   {
     id: 10,
-    type: 'Weekly Teacher Report Each Grade',
-  },
-  {
-    id: 11,
-    type: 'Weekly Assessment Performance',
+    type: 'Gradewise Assessment Completion',
   },
   {
     id: 12,
