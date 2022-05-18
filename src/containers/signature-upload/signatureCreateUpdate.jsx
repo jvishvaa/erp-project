@@ -242,6 +242,7 @@ const CreateUpdateSignatureModel = ({
                         style={{ color: 'white', width: '100%' }}
                         color='primary'
                         startIcon={<CloudUploadIcon style={{ fontSize: '20px' }} />}
+                        component='span'
                       >
                         Browse
                       </Button>
