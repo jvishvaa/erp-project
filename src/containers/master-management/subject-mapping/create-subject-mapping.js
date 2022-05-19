@@ -36,20 +36,15 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
       .post(endpoints.masterManagement.createSubjectMapping, {
         session_year: filterData.session?.map(({ id }) => id),
         branch_id: filterData.branch?.map(({ id }) => id),
-        grade_id: filterData.grade?.map(({ id }) => id),
+        grade_id: filterData.grade?.map(({ grade_id }) => grade_id),
         section_id: filterData.section?.map(({ id }) => id),
         subject_id: filterData.subject?.map(({ id }) => id),
       })
       .then((result) => {
         if (result.data?.status_code > 199 && result.data?.status_code < 300) {
-          if (result?.data?.result) {
-            setLoading(false);
-            handleGoBack();
-            setAlert('success', result.data?.message || result.data?.msg);
-          } else {
-            setLoading(false);
-            setAlert('warning', result.data?.message || result.data?.msg);
-          }
+          setLoading(false);
+          handleGoBack();
+          setAlert('success', result.data?.message || result.data?.msg);
         } else {
           setLoading(false);
           setAlert('error', result.data?.message || result.data?.msg);
@@ -170,13 +165,13 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
       let sessionIds = filterData.session?.map(({ id }) => id);
       axiosInstance
         .get(
-          `${endpoints.masterManagement.grades}?session_year=${sessionIds}&branch_id=${ids}&module_id=${moduleId}`
+          `${endpoints.mappingStudentGrade.grade}?session_year=${sessionIds}&branch_id=${ids}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result.data.status_code > 199 && result.data.status_code < 300) {
             setDropDown({
               ...dropDown,
-              gradeDrop: result.data?.result?.results,
+              gradeDrop: result.data?.data,
               sectionDrop: [],
               subjectDrop: [],
             });
@@ -209,7 +204,7 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
         section: [],
         subject: [],
       });
-      let ids = value.map(({ id }) => id);
+      let ids = value.map(({ grade_id }) => grade_id);
       let sessionIds = filterData.session?.map(({ id }) => id);
       let branchIds = filterData.branch?.map(({ id }) => id);
       axiosInstance
@@ -252,7 +247,7 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
       let ids = value.map(({ id }) => id);
       let sessionIds = filterData.session?.map(({ id }) => id);
       let branchIds = filterData.branch?.map(({ id }) => id);
-      let gradeIds = filterData.section?.map(({ id }) => id);
+      let gradeIds = filterData.section?.map(({ grade_id }) => grade_id);
       axiosInstance
         .get(
           `${endpoints.masterManagement.subjects}?session_year=${sessionIds}&branch_id=${branchIds}&grade_id=${gradeIds}&section_id=${ids}&module_id=${moduleId}`
@@ -444,7 +439,7 @@ const CreateSubjectMapping = ({ moduleId, setLoading, handleGoBack }) => {
         <Grid item xs={6} sm={2} className={isMobile ? '' : 'addEditButtonsPadding'}>
           <Button
             variant='contained'
-            style={{ width: '100%', fontWeight: '700' }}
+            style={{ width: '100%' }}
             className='cancelButton labelColor'
             size='medium'
             onClick={handleGoBack}
