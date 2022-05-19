@@ -151,7 +151,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
   
   ${titlebody}
   -${first_name} ${last_name}
-  For more details, please check it out here: https://orchids.letseduvate.com
+  For more details, please check it out here: ${window.location.host}
   
   Regards,
   Orchids International School
@@ -895,6 +895,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
               </Tooltip>}
             </Grid>
           </div>
+          <div style={{ height: '20px', width: '100%' }}></div>
         </div>
       </DialogContent>
       <DialogActions style={{ justifyContent: 'center',marginTop : '1%' }}>
