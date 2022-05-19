@@ -61,6 +61,8 @@ import './announcement.scss';
 import { AlertNotificationContext } from './../../../context-api/alert-context/alert-state';
 import logo from './filter.png';
 import CloseIcon from '@material-ui/icons/Close';
+import Loader from 'components/loader/loader';
+import Pagination from 'components/PaginationComponent';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -107,6 +109,7 @@ const NewCommunication = () => {
   const [dialogData, setDialogData] = useState([]);
   const [openPublish, setOpenPublish] = useState(false);
   const [filterOn, setFilterOn] = useState(false);
+  const [loading, setLoading] = useState(false);
   const currentDate = moment(new Date()).format('DD/MM/YYYY');
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElAnnouncementType, setAnchorElAnnouncementType] = useState(null);
@@ -128,9 +131,12 @@ const NewCommunication = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [announcementType, setAnnouncementType] = useState({});
   const [announcementList, setAnnouncementList] = useState([]);
-  const branches = JSON.parse(localStorage.getItem('userDetails'))?.role_details?.branch;
+  const branches = JSON.parse(localStorage.getItem('userDetails'))?.role_details?.branch || [];
   const { setAlert } = useContext(AlertNotificationContext);
   const branchId = branches.map((item) => item.id);
+  const [count,setCount] = useState(0)
+  const [pageNo,setpageNo] = useState(1)
+  const limit = 10;
   const handleRightClick = (event) => {
     if (menuPosition) {
       return;
@@ -207,12 +213,13 @@ const NewCommunication = () => {
   );
 
   const rowsData = (filterOn) => {
+    setLoading(true)
     let url = '';
     let baseurl = '';
     if (category == null) {
-      baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}`;
+      baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
     } else {
-      baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}&is_category=${category}`;
+      baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
     }
     if (filterOn && selectedSectionMappingId.length > 0) {
       if (onClickIndex == 1) {
@@ -227,23 +234,23 @@ const NewCommunication = () => {
     } else {
       if (category > 0) {
         if (onClickIndex == 1) {
-          url = `${endpoints.announcementNew.inbox}?is_category=${category}`;
+          url = `${endpoints.announcementNew.inbox}?is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
         if (onClickIndex == 2) {
-          url = `${endpoints.announcementNew.inbox}?is_draft=True&is_category=${category}`;
+          url = `${endpoints.announcementNew.inbox}?is_draft=True&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
         if (onClickIndex == 3) {
-          url = `${endpoints.announcementNew.inbox}?is_sent=True&is_category=${category}`;
+          url = `${endpoints.announcementNew.inbox}?is_sent=True&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
       } else {
         if (onClickIndex == 1) {
-          url = `${endpoints.announcementNew.inbox}`;
+          url = `${endpoints.announcementNew.inbox}?page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
         if (onClickIndex == 2) {
-          url = `${endpoints.announcementNew.inbox}?is_draft=True`;
+          url = `${endpoints.announcementNew.inbox}?is_draft=True&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
         if (onClickIndex == 3) {
-          url = `${endpoints.announcementNew.inbox}?is_sent=True`;
+          url = `${endpoints.announcementNew.inbox}?is_sent=True&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
       }
     }
@@ -259,6 +266,8 @@ const NewCommunication = () => {
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setRows(result?.data?.data);
+          setCount(result?.data?.count);
+          setLoading(false)
           let message =
             onClickIndex == 1 ? 'Inbox' : onClickIndex == 2 ? 'Drafts' : ' Sent';
           setAlert('success', `Successfully fetched ${message} `);
@@ -266,16 +275,17 @@ const NewCommunication = () => {
       })
       .catch((error) => {
         // setAlert('error', error?.message);
-        // setLoading(false);
+        setLoading(false);
         setAlert('error', error?.message);
       });
   };
 
   useEffect(() => {
     rowsData();
-  }, [onClickIndex, category]);
+  }, [onClickIndex, category, pageNo]);
 
   useEffect(() => {
+    setLoading(true)
     axiosInstance
       .get(`${endpoints.announcementNew.getAnnouncemenetCategory}`)
       .then((res) => {
@@ -285,6 +295,7 @@ const NewCommunication = () => {
         } else {
           setAnnouncementList([]);
         }
+        setLoading(false)
       });
   }, []);
 
@@ -474,7 +485,8 @@ const NewCommunication = () => {
 
   return (
     <Layout>
-      <Grid container spacing={2} style={{ backgroundColor: '#F6FAFD' }}>
+      {loading && <Loader />}
+      <Grid container style={{ backgroundColor: '#F6FAFD' }}>
         <Grid item xs={9} sm={9} md={9} spacing={3}>
           <div style={{ padding: '0 20px' }}>
             <div
@@ -484,7 +496,7 @@ const NewCommunication = () => {
               }}
             >
               <div style={{ paddingTop: '10px', color: '#347394', fontSize: '20px' }}>
-                Announcements
+                Announcements ({count})
               </div>
               {userLevel !== 12 && userLevel !== 13 && (
                 <div
@@ -663,6 +675,7 @@ const NewCommunication = () => {
               button
               onClick={() => {
                 setOnClickIndex(1);
+                setpageNo(1)
                 setCategory(null);
               }}
             >
@@ -678,6 +691,7 @@ const NewCommunication = () => {
                   button
                   onClick={() => {
                     setOnClickIndex(2);
+                    setpageNo(1)
                     setCategory(null);
                   }}
                 >
@@ -691,6 +705,7 @@ const NewCommunication = () => {
                   button
                   onClick={() => {
                     setOnClickIndex(3);
+                    setpageNo(1)
                     setCategory(null);
                   }}
                 >
@@ -705,7 +720,10 @@ const NewCommunication = () => {
           <Divider />
           <List dense={true}>
             {announcementList.map((item) => (
-              <ListItem button onClick={() => setCategory(item?.id)}>
+              <ListItem button onClick={() => {
+              setCategory(item?.id);
+              setpageNo(1)
+              }}>
                 <ListItemIcon>
                   {item?.category_name === 'Event' ? (
                     <EventIcon style={{ color: '#7852CC' }} />
@@ -1178,6 +1196,15 @@ const NewCommunication = () => {
           </Button>
         </MenuItem>
       </Menu>
+      <Grid container justify='center'>
+        {rows && count > 9 && (
+          <Pagination
+            totalPages={Math.ceil(count / limit)}
+            currentPage={pageNo}
+            setCurrentPage={setpageNo}
+          />
+        )}
+      </Grid>
     </Layout>
   );
 };
