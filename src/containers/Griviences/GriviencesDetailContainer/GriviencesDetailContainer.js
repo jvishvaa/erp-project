@@ -19,7 +19,7 @@ import moment from 'moment';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
-import { red } from '@material-ui/core/colors';
+import DNDFileUpload from 'components/dnd-file-upload';
 
 const useStyles = makeStyles((theme) => ({
   text_color: {
@@ -60,24 +60,28 @@ const useStyles = makeStyles((theme) => ({
   reply_button: {
     color: theme.palette.primary.main,
     cursor: 'pointer',
+    marginTop: '25%'
   },
 }));
 
 const GriviencesDetailContainer = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const userDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [reply, setReply] = useState(false);
   const setMobileView = useMediaQuery('(min-width:800px)');
   const [loading, setLoading] = useState(false);
+  const [studentView, setStudentView] = useState();
   const [replyDescription, setReplyDescription] = useState('');
-  const reply_list = props.list_tickets.reply;
-
-  const [replyList, setReplyList] = useState(reply_list === {} ? false : true);
+  const reply_list = [props?.list_tickets?.reply];
+  const [replyflag, setReplyFlag] = useState(false);
+  const [replyList, setReplyList] = useState(
+    Object.keys(props.list_tickets.reply).length === 0 ? false : true
+  );
+  const [openUpload, setOpenUpload] = useState(false);
   const date = moment(props.list_tickets.createdAt).format('dddd, MMMM D, YYYY');
   const time = moment(props.list_tickets.createdAt).format('LT');
   const [flag, setFlag] = useState(false);
-
-  console.log('reply_list', reply_list);
 
   const openReplyTextEditor = () => {
     setReply(!reply);
@@ -87,48 +91,145 @@ const GriviencesDetailContainer = (props) => {
     await setReplyDescription(event.target.value);
   };
   const [image, setImage] = useState([]);
+  const formData = new FormData();
+
   const fileChangedHandler = (event) => {
     const file = event.target.files[0];
-    console.log(file);
-    setImage(URL.createObjectURL(event.target.files[0]));
+    // formData.append('grievance_reply_attachment', file  )
+    setImage(file);
+  };
+
+  const fileConf = {
+    fileTypes: 'image/jpeg,image/png,.pdf,video/mp4,audio/mpeg',
+    types: 'images,pdf,mp3,mp4',
+    initialValue: '',
   };
 
   const handleSubmit = () => {
-    setReply(!reply);
-    axiosInstance
-      .post(
-        endpoints.grievances.grievance_reply,
-        // { body: replyDescription, grievance_ticket: props.list_tickets.id ,replyImage:image},
-        { body: replyDescription, grievance_ticket: props.list_tickets.id },
+    console.log(image);
+    if (image !== [] && image?.length != 0) {
+      if (image?.type == 'image/jpeg' || image?.type == 'image/jpg' || image?.type == 'image/png') {
+     
+        setReply(!reply);
+        setReplyFlag((prevCheck) => !prevCheck);
+        if (image !== []) {
+          formData.append('grievance_reply_attachment', image)
+        }
+        formData.append('body', replyDescription)
+        formData.append('grievance_ticket', props.list_tickets.id)
+        axiosInstance
+          .post(
+            endpoints.grievances.grievance_reply,
+            // { body: replyDescription, grievance_ticket: props.list_tickets.id ,replyImage:image},
+            // { body: replyDescription, grievance_ticket: props.list_tickets.id , grievance_reply_attachment : formData },
+            formData,
 
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      .then((response) => {
-        if (response.status == 200) {
-          setAlert('success', 'Reply sent');
-        } else {
-          if (response.data.message == 'Something went wrong,please try again later') {
-            setAlert('error', 'Reply cannot be empty');
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then((response) => {
+            if (response.status == 200) {
+              setAlert('success', 'Reply sent');
+              setImage([])
+              props.handleRefresh()
+            } else {
+              if (response.data.message == 'Something went wrong,please try again later') {
+                setAlert('error', 'Reply cannot be empty');
+              }
+            }
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
+            setImage([])
+          });
+      } else {
+        setAlert('error', "Please upload only Image Files")
+      }
+    } 
+    if(image?.length == 0) {
+      setReply(!reply);
+      setReplyFlag((prevCheck) => !prevCheck);
+      if (image !== []) {
+        formData.append('grievance_reply_attachment', image)
+      }
+      formData.append('body', replyDescription)
+      formData.append('grievance_ticket', props.list_tickets.id)
+      axiosInstance
+        .post(
+          endpoints.grievances.grievance_reply,
+          // { body: replyDescription, grievance_ticket: props.list_tickets.id ,replyImage:image},
+          // { body: replyDescription, grievance_ticket: props.list_tickets.id , grievance_reply_attachment : formData },
+          formData,
+
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
+        )
+        .then((response) => {
+          if (response.status == 200) {
+            setAlert('success', 'Reply sent');
+            setImage([])
+            props.handleRefresh()
+          } else {
+            if (response.data.message == 'Something went wrong,please try again later') {
+              setAlert('error', 'Reply cannot be empty');
+            }
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
   };
+  let path = window.location.pathname;
   useEffect(() => {
-    console.log('testing');
-  }, [flag]);
+    if (Object.keys(props.list_tickets.reply).length === 0) {
+    } else {
+    }
+
+    if (path === '/griviences/admin-view') {
+      setStudentView(false);
+      if (
+        props.FilterData.year &&
+        props.FilterData.branch &&
+        props.FilterData.grade &&
+        props.FilterData.section &&
+        props.FilterData.types
+      ) {
+        props.handleFilterData(
+          props.FilterData.year,
+          props.FilterData.branch,
+          props.FilterData.grade,
+          props.FilterData.section,
+          props.FilterData.types
+        );
+      }
+    } else if (path === '/griviences/student-view') {
+      setStudentView(true);
+    }
+
+  }, [flag, replyflag]);
 
   const style = useStyles();
   return (
     <div className='grevience-container' style={{ borderRadius: '10px' }}>
+      <div style={{ margin: '5px' }}>
+        {!setMobileView ? (
+          <div>
+            {' '}
+            <label className={style.text_color}>{date}</label>
+          </div>
+        ) : (
+          <></>
+        )}
+      </div>
       <Paper className={style.container}>
-        <div>
+        <div className='reply_para'>
           <div>
             <div
               style={{
@@ -142,17 +243,39 @@ const GriviencesDetailContainer = (props) => {
                   className={style.purple}
                   src={props?.list_tickets?.user?.profile}
                 />
-                <span style={{ marginLeft: '10px'}}>
-                  <Typography className={style.titleText}>
-                    {props?.list_tickets?.title}
+                <span style={{ marginLeft: '10px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', minWidth: '110%' }}>
+                    <Typography className={style.titleText}>
+                      {props?.list_tickets?.user?.name}
+                    </Typography>
+                    <Typography className={style.titleText} style={{ fontSize: '15px', display: 'flex', alignItems: 'center' }} >
+                      {props?.list_tickets?.user?.erp_id}
+                    </Typography>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', minWidth: '110%' }}>
+                    <Typography className={style.titleText} style={{ fontSize: '15px', display: 'flex', alignItems: 'center' }} >
+                      {props?.list_tickets?.user?.section_mapping?.grade[0]?.grade__grade_name}
+                    </Typography>
+                    <Typography className={style.titleText} style={{ fontSize: '15px', display: 'flex', alignItems: 'center' }} >
+                      {props?.list_tickets?.user?.section_mapping?.section[0]?.section__section_name}
+                    </Typography>
+                  </div>
+                  <Typography style={{ fontSize: '18px' }}>
+                    {props?.list_tickets?.grievance_type?.grievance_name}
                   </Typography>
-                  <Typography style={{fontSize: '18px'}}>{props?.list_tickets?.ticket_type}</Typography>
                 </span>
               </div>
 
               <div style={{ textAlign: 'end' }}>
-                <label className={style.text_color}>{date}</label>
-                <br />
+                {setMobileView ? (
+                  <div>
+                    {' '}
+                    <label className={style.text_color}>{date}</label>
+                  </div>
+                ) : (
+                  ''
+                )}
+
                 <label className={style.text_color}>{time}</label>
               </div>
             </div>
@@ -170,77 +293,32 @@ const GriviencesDetailContainer = (props) => {
                     }}
                   />
                 </label>
+                <div>
+                  <a href={props?.list_tickets?.grievance_attachment} target="_blank" >
+                    <img src={props?.list_tickets?.grievance_attachment} style={{ minWidth: '10%', height: '100px' }} />
+                  </a>
+                </div>
               </Grid>
             </Grid>
 
-            <Grid sm={3}>
-              <div className={style.flex_column}>
-                <label className={style.text_color}>
-                  {props?.list_tickets?.user?.name}
-                </label>
-                {props?.list_tickets?.user?.role != undefined ? (
-                  <label className={style.text_color}>
-                    {props?.list_tickets?.user?.role?.role_name}
-                  </label>
-                ) : null}
-              </div>
-            </Grid>
+
           </div>
           <Grid item sm />
           <Grid sm={4}></Grid>
         </div>
 
-        {reply_list && reply_list?.body && (
-          <div
-            style={{
-              margin: '10px',
-              border: '1px solid #E2E2E2',
-              borderRadius: '10px',
-            }}
-          >
-            <Reply Replys={reply_list} />
-          </div>
-        )}
 
-        {!replyList ? (
-          <div>
-            {!reply &&
-              (reply_list != '' && reply_list != null
-                ? reply_list &&
-                  reply_list?.slice(0, 1)?.map((Replys) => (
-                    <div
-                      style={{
-                        margin: '10px',
-                        border: '1px solid red',
-                        borderRadius: '10px',
-                      }}
-                    >
-                      <Reply Replys={Replys} />
-                    </div>
-                  ))
-                : null)}
-            {reply &&
-              (reply_list != '' && reply_list != null
-                ? reply_list &&
-                  reply_list?.map((Replys) => (
-                    <div
-                      style={{
-                        margin: '10px',
-                        border: '1px solid green',
-                        borderRadius: '10px',
-                      }}
-                    >
-                      <Reply Replys={Replys} />
-                    </div>
-                  ))
-                : null)}
-          </div>
-        ) : null}
-
+        <div>
+          {reply_list.length > 0 ? (
+            <>
+              <Reply Replys={reply_list} setPostFlag={props?.setPostFlag} />
+            </>
+          ) : <></>}
+        </div>
         <Grid container style={{ marginBottom: '10px' }}>
           <Grid item sm />
           <Grid item sm='1'>
-            <h4 className={style.reply_button} onClick={openReplyTextEditor}>
+            <h4 className={style.reply_button} onClick={openReplyTextEditor} >
               Reply
             </h4>
           </Grid>
@@ -265,40 +343,40 @@ const GriviencesDetailContainer = (props) => {
             <Grid
               style={{
                 display: 'flex',
-
+                width: '100%',
                 justifyContent: 'center',
                 marginTop: '5px',
               }}
             >
-              <Grid>
-                <Avatar
-                  size='small'
-                  className={style.blue}
+              <div style={{ display: 'flex', alignItems: 'center' }} >
+                <Grid>
+                  <Avatar
+                    size='small'
+                    className={style.blue}
+                    style={{
+                      fontSize: '10px',
+                      width: '20px',
+                      height: '20px',
+                      marginRight: '1px',
+                    }}
+                  ></Avatar>
+                </Grid>
+                <Grid>
+                  {' '}
+                  <label className={style.text_color} style={{ marginRight: '1px' }}>
+                    {userDetails?.first_name}
+                  </label>
+                </Grid>
+                <Divider
+                  orientation='vertical'
+                  flexItem
                   style={{
-                    fontSize: '10px',
-                    width: '20px',
-                    height: '20px',
-                    marginRight: '1px',
+                    backgroundColor: 'blue',
+                    margin: '3px',
                   }}
-                ></Avatar>
-              </Grid>
-              <Grid>
-                {' '}
-                <label className={style.text_color} style={{ marginRight: '1px' }}>
-                  swaggy
-                </label>
-              </Grid>
-              <Divider
-                orientation='vertical'
-                flexItem
-                style={{
-                  backgroundColor: 'blue',
-                  margin: '3px',
-                }}
-              />
-
-              <Grid>
-                {' '}
+                />
+              </div>
+              <Grid style={{ width: '100%' }} >
                 <ThemeProvider>
                   <InputBase
                     onChange={handleReply}
@@ -314,10 +392,12 @@ const GriviencesDetailContainer = (props) => {
 
             <Grid style={{ display: 'flex', alignItems: 'center' }}>
               {setMobileView ? (
-                <Grid>
-                  {' '}
-                  <input type='file' onChange={(event) => fileChangedHandler(event)} />
-                </Grid>
+                <>
+                  <Grid>
+                    {' '}
+                    <input type='file' onChange={(event) => fileChangedHandler(event)} />
+                  </Grid>
+                </>
               ) : (
                 <></>
               )}

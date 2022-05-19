@@ -391,6 +391,7 @@ export default {
     getGrivienceList: '/academic/grevience-filter/',
     grievance_reply: '/academic/grievance_reply/',
     getGrievenceErpList: '/academic/greivance-reply-list/',
+    getGrievenceStudent: '/academic/grevience-student-data/',
   },
   studentViewBatchesApi: {
     onclsAcessCheck: '/academic/onine_class_access_blocker_check/',
