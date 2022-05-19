@@ -130,11 +130,16 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
   const [fileToDelete, setFileToDelete] = useState()
 
   let titlebody = extractContent(textEditorContent)
-
+  let channelsArr = [
+      'orchids.letseduvate.com',
+      'localhost:3000',
+      'dev.olvorchidnaigaon.letseduvate.com',
+      'qa.olvorchidnaigaon.letseduvate.com'
+  ]
   let smsTxt = `
   Greetings of the day ! 
   
-  Hello "${first_name} ${last_name}" ,
+  Hello "UserName" ,
 
   Did you hear that Bell?
   That’s because you have an Announcement related to "${announcementType?.category_name}" . Please check it out here : ${window.location.host}`
@@ -802,7 +807,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
             </span>
           )}
           <div style={{ height: '20px', width: '100%' }}></div>
-          <div>
+          {channelsArr.includes(window.location.host) && <div>
             <Grid container spacing={1} style={{ justifyContent: 'center' }}>
             {(smsArr.includes(user_level) || is_superuser) &&  
             <Tooltip title={<div style={{ whiteSpace: 'pre-line' }}>{smsTxt} </div>}>
@@ -862,7 +867,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
                     <IconButton size='small'>
                       <WhatsAppIcon style={{ color: '#49C858' }} />
                     </IconButton>
-                    Intimat via Whatsapp
+                    Intimate via Whatsapp
                   </span>
                 </div>
               </Grid>
@@ -894,7 +899,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
               </Grid>
               </Tooltip>}
             </Grid>
-          </div>
+          </div>}
           <div style={{ height: '20px', width: '100%' }}></div>
         </div>
       </DialogContent>

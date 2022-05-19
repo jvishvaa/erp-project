@@ -62,6 +62,7 @@ const GeneralDairyList = () => {
   const [startDate, setSDate] = useState([]);
   const [endDate, setEDate] = useState([]);
   const [deleteFlag, setDeleteFlag] = useState(false);
+  const [initialFlag, setInitialFlag] = useState(false);
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
 
   const selectedAcademicYear = useSelector(
@@ -102,7 +103,7 @@ const GeneralDairyList = () => {
         }
       });
     }
-    if (deleteFlag)
+    if (initialFlag)
       handleDairyList(branch, grade, sections, startDate, endDate, activeTab, page);
   }, [location.pathname, page, deleteFlag]);
 
@@ -142,7 +143,7 @@ const GeneralDairyList = () => {
     const diaryUrl = isTeacher
       ? `${
           endpoints.generalDairy.dairyList
-        }?module_id=${teacherModuleId}&session_year=${academic_year?.id}&branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format(
+        }?module_id=${teacherModuleId}&session_year=${sessionYear?.id}&branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format(
           'YYYY-MM-DD'
         )}&end_date=${endDate.format('YYYY-MM-DD')}${
           activeTab !== 0 ? '&dairy_type=' + activeTab : ''
@@ -173,6 +174,7 @@ const GeneralDairyList = () => {
           setLoading(false);
           setPeriodData(result.data.result.results);
           setTotalPages(result.data.result.total_pages);
+          setInitialFlag(true)
         } else {
           setLoading(false);
           setAlert('error', result.data.description);

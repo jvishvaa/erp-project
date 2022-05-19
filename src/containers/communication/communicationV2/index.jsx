@@ -217,9 +217,9 @@ const NewCommunication = () => {
     let url = '';
     let baseurl = '';
     if (category == null) {
-      baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}&page_number=${pageNo}&page_size=${limit}`;
+      baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
     } else {
-      baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}&is_category=${category}&page_number=${pageNo}&page_size=${limit}`;
+      baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
     }
     if (filterOn && selectedSectionMappingId.length > 0) {
       if (onClickIndex == 1) {
@@ -234,23 +234,23 @@ const NewCommunication = () => {
     } else {
       if (category > 0) {
         if (onClickIndex == 1) {
-          url = `${endpoints.announcementNew.inbox}?is_category=${category}&page_number=${pageNo}&page_size=${limit}`;
+          url = `${endpoints.announcementNew.inbox}?is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
         if (onClickIndex == 2) {
-          url = `${endpoints.announcementNew.inbox}?is_draft=True&is_category=${category}&page_number=${pageNo}&page_size=${limit}`;
+          url = `${endpoints.announcementNew.inbox}?is_draft=True&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
         if (onClickIndex == 3) {
-          url = `${endpoints.announcementNew.inbox}?is_sent=True&is_category=${category}&page_number=${pageNo}&page_size=${limit}`;
+          url = `${endpoints.announcementNew.inbox}?is_sent=True&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
       } else {
         if (onClickIndex == 1) {
-          url = `${endpoints.announcementNew.inbox}?page_number=${pageNo}&page_size=${limit}`;
+          url = `${endpoints.announcementNew.inbox}?page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
         if (onClickIndex == 2) {
-          url = `${endpoints.announcementNew.inbox}?is_draft=True&page_number=${pageNo}&page_size=${limit}`;
+          url = `${endpoints.announcementNew.inbox}?is_draft=True&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
         if (onClickIndex == 3) {
-          url = `${endpoints.announcementNew.inbox}?is_sent=True&page_number=${pageNo}&page_size=${limit}`;
+          url = `${endpoints.announcementNew.inbox}?is_sent=True&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
       }
     }
