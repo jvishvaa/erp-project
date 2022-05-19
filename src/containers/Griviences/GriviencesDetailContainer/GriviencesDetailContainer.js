@@ -60,7 +60,9 @@ const useStyles = makeStyles((theme) => ({
   reply_button: {
     color: theme.palette.primary.main,
     cursor: 'pointer',
-    marginTop: '25%'
+    '&:hover': {
+      // backgroundColor: 'transparent !important',
+    },
   },
 }));
 
@@ -109,7 +111,7 @@ const GriviencesDetailContainer = (props) => {
     console.log(image);
     if (image !== [] && image?.length != 0) {
       if (image?.type == 'image/jpeg' || image?.type == 'image/jpg' || image?.type == 'image/png') {
-     
+
         setReply(!reply);
         setReplyFlag((prevCheck) => !prevCheck);
         if (image !== []) {
@@ -148,8 +150,8 @@ const GriviencesDetailContainer = (props) => {
       } else {
         setAlert('error', "Please upload only Image Files")
       }
-    } 
-    if(image?.length == 0) {
+    }
+    if (image?.length == 0) {
       setReply(!reply);
       setReplyFlag((prevCheck) => !prevCheck);
       if (image !== []) {
@@ -234,7 +236,6 @@ const GriviencesDetailContainer = (props) => {
             <div
               style={{
                 display: 'flex',
-                alignItems: 'center',
                 justifyContent: 'space-between',
               }}
             >
@@ -303,25 +304,16 @@ const GriviencesDetailContainer = (props) => {
 
 
           </div>
-          <Grid item sm />
-          <Grid sm={4}></Grid>
+          {/* <Grid item sm />
+          <Grid sm={4}></Grid> */}
         </div>
 
 
-        <div>
-          {reply_list.length > 0 ? (
-            <>
-              <Reply Replys={reply_list} setPostFlag={props?.setPostFlag} />
-            </>
-          ) : <></>}
-        </div>
-        <Grid container style={{ marginBottom: '10px' }}>
-          <Grid item sm />
-          <Grid item sm='1'>
-            <h4 className={style.reply_button} onClick={openReplyTextEditor} >
+
+        <Grid container style={{ marginBottom: '10px' , display : 'flex' , justifyContent: 'flex-end' }}>
+            <Button className='reply_button' onClick={openReplyTextEditor} >
               Reply
-            </h4>
-          </Grid>
+            </Button>
         </Grid>
 
         {reply == true ? (
@@ -336,8 +328,9 @@ const GriviencesDetailContainer = (props) => {
               justifyContent: 'space-between',
               borderRadius: '10px',
               padding: '3px',
-              width: '80%',
+              width: '90%',
               margin: 'auto',
+              height: '70px'
             }}
           >
             <Grid
@@ -355,15 +348,15 @@ const GriviencesDetailContainer = (props) => {
                     className={style.blue}
                     style={{
                       fontSize: '10px',
-                      width: '20px',
-                      height: '20px',
+                      width: '30px',
+                      height: '30px',
                       marginRight: '1px',
                     }}
                   ></Avatar>
                 </Grid>
                 <Grid>
                   {' '}
-                  <label className={style.text_color} style={{ marginRight: '1px' }}>
+                  <label className={style.text_color} style={{ marginRight: '1px' , fontSize: '20px' }}>
                     {userDetails?.first_name}
                   </label>
                 </Grid>
@@ -376,13 +369,13 @@ const GriviencesDetailContainer = (props) => {
                   }}
                 />
               </div>
-              <Grid style={{ width: '100%' }} >
+              <Grid style={{ width: '100%' , display : 'flex' }} >
                 <ThemeProvider>
                   <InputBase
                     onChange={handleReply}
                     placeholder='Type your reply here...'
                     id='mui-theme-provider-standard-input'
-                    style={{ fontSize: '12px', width: '100%' }}
+                    style={{ fontSize: '20px', width: '100%' }}
                   />
                 </ThemeProvider>
               </Grid>
@@ -418,6 +411,14 @@ const GriviencesDetailContainer = (props) => {
             </Grid>
           </Grid>
         ) : null}
+
+        <div>
+          {reply_list.length > 0 ? (
+            <>
+              <Reply Replys={reply_list} setPostFlag={props?.setPostFlag} />
+            </>
+          ) : <></>}
+        </div>
       </Paper>
     </div>
   );

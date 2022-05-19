@@ -15,8 +15,8 @@ const useStyles = makeStyles((theme) => ({
   //   },
   // },
   small: {
-    width: theme.spacing(3),
-    height: theme.spacing(3),
+    width: '40px',
+    height: '40px',
     backgroundColor: '#78B5F3',
   },
 }));
@@ -42,7 +42,7 @@ const Reply = (props) => {
         >
           <Typography className={classes.heading}>Replies({props?.Replys[0]?.length ? props?.Replys[0]?.length : 0 })</Typography>
         </AccordionSummary>
-        <AccordionDetails style={{flexDirection: 'column' , height: '450px' , minHeight: '100px' , overflow: 'auto' , overflowX: 'hidden'}} >
+        <AccordionDetails style={{flexDirection: 'column' , height: props?.Replys[0]?.length > 3 ? '450px' : '200px' , minHeight: '100px' , overflow: 'auto' , overflowX: 'hidden'}} >
           {props?.Replys[0]?.length > 0 ? props?.Replys[0].map((reply) => (
             <>
               <div style={{ backgroundColor: '#F9F9F9', borderRadius: '10px', padding: '15px' }}>
@@ -62,7 +62,7 @@ const Reply = (props) => {
                   <Grid style={{ color: '#014b7e' }}>{moment(reply?.createdAt).fromNow(true)} ago</Grid>
                 </Grid>
                 <Grid item sm={10} style={{display : 'flex' , justifyContent: 'space-between'}}  >
-                  <Typography style={{ fontSize: '13px', padding: '10px' , lineBreak: 'anywhere' }}>
+                  <Typography style={{ fontSize: '17px', padding: '10px' , lineBreak: 'anywhere' }}>
                     {reply?.body}
                   </Typography>
                   <div>

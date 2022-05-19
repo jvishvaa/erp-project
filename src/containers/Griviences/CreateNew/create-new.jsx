@@ -5,7 +5,7 @@ import Select from '@material-ui/core/Select';
 import LayersClearIcon from '@material-ui/icons/LayersClear';
 import { Button } from '@material-ui/core';
 import endpoints from '../../../config/endpoints';
-
+import DNDFileUpload from 'components/dnd-file-upload';
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -29,6 +29,7 @@ import { columnSelectionComplete } from '@syncfusion/ej2-grids';
 import Grid from '@material-ui/core/Grid';
 import { excelQueryCellInfo } from '@syncfusion/ej2-grids';
 import { useHistory, useLocation } from 'react-router-dom';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -46,7 +47,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-evenly',
     width: '29%',
-    marginTop: '4%',
   },
   flexMobile: {
     display: 'flex',
@@ -103,6 +103,11 @@ const CreateNewForm = (props) => {
   const handleChangeFile = (files) => {
     setFiles(files[0]);
   };
+
+  const handleUpload = (e) => {
+    console.log(e);
+    setFiles(e);
+  }
   const handleOpenImage = (files) => {
     setFiles(files);
     setOpenImage(true);
@@ -110,6 +115,10 @@ const CreateNewForm = (props) => {
   const handleCloseImage = () => {
     setOpenImage(false);
   };
+
+  const removeItem = () => {
+    setFiles([])
+  }
 
   const handleEditorChange = (content, editor) => {
     setEditorContent(content);
@@ -173,12 +182,12 @@ const CreateNewForm = (props) => {
   const formData = new FormData();
 
   const handlePostData = () => {
-
-    if( titleData?.length == 0 ){
+    console.log(files);
+    if (titleData?.length == 0) {
       setAlert('warning', 'Title');
       return;
     }
-    if( editorContent?.length == 0 ){
+    if (editorContent?.length == 0) {
       setAlert('warning', 'Description');
       return;
     }
@@ -209,7 +218,7 @@ const CreateNewForm = (props) => {
     formData.append('title', titleData)
     formData.append('description', editorContent)
     formData.append('ticket_type', 1)
-    if (files != undefined) {
+    if (files?.length > 0) {
       formData.append('grievance_attachment', files)
     }
 
@@ -234,6 +243,11 @@ const CreateNewForm = (props) => {
   const handleBackButton = () => {
     window.history.back();
   }
+  const fileConf = {
+    fileTypes: 'image/jpeg,image/png,',
+    types: 'images',
+    initialValue: '',
+  };
   return (
     <>
       <Layout>
@@ -315,24 +329,35 @@ const CreateNewForm = (props) => {
           <div className='drag-drop-griviences'>
             {setMobileView ? (
               <div className='drag-and-drop-images'>
-                <div style={{width: '25%' , display: 'flex' , flexDirection: 'column' , justifyContent: 'center'}} >
-                <Typography style={{ textAlign: 'center' }}>
-                  Add Attachment
-                </Typography>
-                <Typography style={{ textAlign: 'center' }}>
-                  (Optional)
-                </Typography>
+                <div style={{ width: '25%', display: 'flex', flexDirection: 'column', justifyContent: 'center' , height: '130px' }} >
+                  <Typography style={{ textAlign: 'center' }}>
+                    Add Attachment
+                  </Typography>
+                  <Typography style={{ textAlign: 'center' }}>
+                    (Optional)
+                  </Typography>
                 </div>
-                <div className='drag-and-drop'>
-                  {' '}
-                  <DropzoneArea
-                    open={openImage}
-                    error={error.image}
-                    acceptedFiles={['image/jpeg', 'image/png', 'image/bmp']}
-                    maxFileSize={5000000}
-                    onChange={handleChangeFile.bind(this)}
-                    onClose={handleCloseImage.bind(this)}
+                <div className='drag-and-drop'  >
+
+                  <DNDFileUpload
+                    value={fileConf.initialValue}
+                    handleChange={(e) => {
+                      if (e) {
+                        handleUpload(e);
+                      }
+                    }}
+                    fileType={fileConf.fileTypes}
+                    typeNames={fileConf.types}
                   />
+
+                  {files?.name ? 
+                  <div style={{display : 'flex' , justifyContent: 'space-between'}} >
+                  <p style={{fontSize: '17px' , fontWeight: '600' , marginTop: '10px'}}> File Name : {files?.name}</p> 
+                  <IconButton onClick={removeItem}>
+                    <DeleteIcon   />
+                  </IconButton>
+                  </div>
+                  : ''}
                 </div>
                 {/* <div className='attach-image-button'>
                   <input
