@@ -5,7 +5,7 @@ import Select from '@material-ui/core/Select';
 import LayersClearIcon from '@material-ui/icons/LayersClear';
 import { Button } from '@material-ui/core';
 import endpoints from '../../../config/endpoints';
-
+import DNDFileUpload from 'components/dnd-file-upload';
 import { Autocomplete, Pagination } from '@material-ui/lab';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import InputLabel from '@material-ui/core/InputLabel';
@@ -29,6 +29,7 @@ import { columnSelectionComplete } from '@syncfusion/ej2-grids';
 import Grid from '@material-ui/core/Grid';
 import { excelQueryCellInfo } from '@syncfusion/ej2-grids';
 import { useHistory, useLocation } from 'react-router-dom';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -46,7 +47,6 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-evenly',
     width: '29%',
-    marginTop: '4%',
   },
   flexMobile: {
     display: 'flex',
@@ -97,40 +97,41 @@ const CreateNewForm = (props) => {
     callingGriviencesAPI();
   }, []);
 
-  const handleChangeOption = (event) => {
-    setOptionData(event.target.value);
-    console.log(event.target.value, '********************************');
+  const handleChangeOption = (event = {}, value = []) => {
+    setOptionData(value);
   };
   const handleChangeFile = (files) => {
-    setFiles(files);
-    console.log(files, '************files************');
+    setFiles(files[0]);
   };
+
+  const handleUpload = (e) => {
+    console.log(e);
+    setFiles(e);
+  }
   const handleOpenImage = (files) => {
-    console.log('attach image');
     setFiles(files);
-    console.log(openImage, 'Images');
     setOpenImage(true);
   };
   const handleCloseImage = () => {
     setOpenImage(false);
   };
 
+  const removeItem = () => {
+    setFiles([])
+  }
+
   const handleEditorChange = (content, editor) => {
     setEditorContent(content);
-    console.log('Content was updated:', content);
   };
   // const callingAcadamicAPI = () => {
   //   axiosInstance
   //     .get('/erp_user/list-academic_year/', {})
   //     .then((res) => {
   //       if (res.status === 200) {
-  //         console.log(res, 'listyear');
   //         setAcadamicData(res.data.data);
   //       }
-  //       console.log(res.data.data);
   //     })
   //     .catch((error) => {
-  //       console.log(error);
   //     });
   // };
   const callingGriviencesAPI = () => {
@@ -138,17 +139,13 @@ const CreateNewForm = (props) => {
     axiosInstance
       .get('/academic/grievance_types/')
       .then((res) => {
-        console.log(res, 'res data');
         setLoading(false);
         if (res.status === 200) {
-          console.log(res);
           setGrevancesData(res.data.data);
           setLoading(false);
         }
-        console.log(res, 'grievand');
       })
       .catch((error) => {
-        console.log(error);
         setLoading(false);
       });
   };
@@ -159,19 +156,15 @@ const CreateNewForm = (props) => {
       .then((result) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
-            console.log(result?.data?.data || [], 'checking');
             setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
-            console.log(result?.data?.data || [], 'checking');
             setBranchList(result?.data?.data?.results || []);
           }
           if (key === 'gradeList') {
-            console.log(result?.data?.data || [], 'checking');
             setGradeList(result.data.data || []);
           }
           if (key === 'section') {
-            console.log(result?.data?.data || [], 'checking');
             setSectionList(result.data.data);
           }
           setLoading(false);
@@ -186,45 +179,16 @@ const CreateNewForm = (props) => {
       });
   }
   let Valid = true;
+  const formData = new FormData();
+
   const handlePostData = () => {
-    // console.log(optionData);
-    // if (optionData.trim().length === 0) {
-    //   console.log(false);
-    //   setErrorValue({ ...error, option: false });
-    //   Valid = false;
-    // }
-    // if (editorContent.trim().length === 0) {
-    //   console.log(false);
-    //   setErrorValue({ ...error, editor: false });
-    //   Valid = false;
-    // }
-    // if (titleData.trim().lenght === 0) {
-    //   console.log(false);
-    //   setErrorValue({ ...error, title: false });
-    //   Valid = false;
-    // }
-    // if (files.lenght === 0) {
-    //   console.log(false);
-    //   setErrorValue({ ...error, image: false });
-    //   Valid = false;
-    // }
-    // if (Valid) {
-    if (!selectedAcademicYear) {
-      setAlert('warning', 'Select Academic Year');
+    console.log(files);
+    if (titleData?.length == 0) {
+      setAlert('warning', 'Title');
       return;
     }
-    console.log(selectedBranch.length, '===============');
-    if (selectedBranch.length == 0) {
-      console.log(selectedBranch.length, '===============');
-      setAlert('warning', 'Select Branch');
-      return;
-    }
-    if (selectedGrade.length == 0) {
-      setAlert('warning', 'Select Grade');
-      return;
-    }
-    if (selectedSection.length == 0) {
-      setAlert('warning', 'Select Section');
+    if (editorContent?.length == 0) {
+      setAlert('warning', 'Description');
       return;
     }
     if (optionData == 0) {
@@ -232,21 +196,17 @@ const CreateNewForm = (props) => {
       return;
     }
     let temp;
-    if (optionData === 'type 1') {
+    if (optionData?.grievance_name === 'type 1') {
       temp = 1;
-    } else if (optionData === 'type 2') {
+    } else if (optionData?.grievance_name === 'type 2') {
       temp = 2;
-    } else if (optionData === 'type 3') {
+    } else if (optionData?.grievance_name === 'type 3') {
       temp = 3;
-    } else if (optionData === 'type 4') {
+    } else if (optionData?.grievance_name === 'type 4') {
       temp = 4;
     }
     let obj = {
-      academic_year: selectedAcademicYear.id,
 
-      branch: selectedBranch.branch.id,
-      grade: selectedGrade.grade_id,
-      section: selectedSection.section_id,
       grievance_type: temp,
       title: titleData,
       description: editorContent,
@@ -254,16 +214,23 @@ const CreateNewForm = (props) => {
       erp_id: '',
       ticket_type: 'Grievance',
     };
-    console.log(obj, 'objjdata');
+    formData.append('grievance_type', optionData?.id)
+    formData.append('title', titleData)
+    formData.append('description', editorContent)
+    formData.append('ticket_type', 1)
+    if (files?.length > 0) {
+      formData.append('grievance_attachment', files)
+    }
+
     setLoading(true);
     axiosInstance
-      .post('/academic/grevience-filter/', obj)
+      .post('/academic/grevience-filter/', formData)
       .then((res) => {
         setLoading(false);
-        if (res.status === 200) {
+        if (res.status === 201) {
           setAlert('success', 'Created Succcessfully');
           setLoading(false);
-          history.push('/griviences/admin-view');
+          history.push('/griviences/student-view');
         }
       })
       .catch((error) => {
@@ -271,19 +238,23 @@ const CreateNewForm = (props) => {
         setLoading(false);
       });
     // }
-    // console.log('data', error);
   };
 
   const handleBackButton = () => {
     window.history.back();
   }
+  const fileConf = {
+    fileTypes: 'image/jpeg,image/png,',
+    types: 'images',
+    initialValue: '',
+  };
   return (
     <>
       <Layout>
         <Grid className='griviences-breadcrums-container'>
           <CommonBreadcrumbs
-            componentName='Griviences'
-            childComponentName='Create Griviences'
+            componentName='Grievance'
+            childComponentName='Create Grievance'
           />
         </Grid>
         <div className='griviences-create-form'>
@@ -294,213 +265,28 @@ const CreateNewForm = (props) => {
             spacing={3}
             id='selectionContainer'
           >
-            <Grid item md={3} xs={12}>
+            <Grid item md={2} xs={12}>
               <Autocomplete
                 style={{ width: '100%' }}
                 size='small'
-                onChange={(event, value) => {
-                  setSelectedAcadmeicYear(value);
-                  console.log(value, 'test');
-                  if (value) {
-                    callApi(
-                      `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${moduleId}`,
-                      'branchList'
-                    );
-                  }
-                  setSelectedGrade([]);
-                  setSectionList([]);
-                  setSelectedSection([]);
-                  setSelectedBranch([]);
-                }}
+                onChange={handleChangeOption}
                 id='branch_id'
                 className='dropdownIcon'
-                value={selectedAcademicYear || ''}
-                options={academicYear || ''}
-                getOptionLabel={(option) => option?.session_year || ''}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Academic Year'
-                    placeholder='Academic Year'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={3} xs={12}>
-              <Autocomplete
-                // multiple
-                style={{ width: '100%' }}
-                size='small'
-                onChange={(event, value) => {
-                  setSelectedBranch([]);
-                  if (value) {
-                    // const ids = value.map((el)=>el)
-                    const selectedId = value.branch.id;
-                    setSelectedBranch(value);
-                    console.log(value);
-                    callApi(
-                      `${endpoints.academics.grades}?session_year=${
-                        selectedAcademicYear.id
-                      }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-                      'gradeList'
-                    );
-                  }
-                  setSelectedGrade([]);
-                  setSectionList([]);
-                  setSelectedSection([]);
-                }}
-                id='branch_id'
-                className='dropdownIcon'
-                value={selectedBranch || ''}
-                options={branchList || ''}
-                getOptionLabel={(option) => option?.branch?.branch_name || ''}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={3} xs={12}>
-              <Autocomplete
-                // multiple
-                style={{ width: '100%' }}
-                size='small'
-                onChange={(event, value) => {
-                  setSelectedGrade([]);
-                  if (value) {
-                    // const ids = value.map((el)=>el)
-                    const selectedId = value.grade_id;
-                    // console.log(selectedBranch.branch)
-                    const branchId = selectedBranch.branch.id;
-                    setSelectedGrade(value);
-                    callApi(
-                      `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
-                      'section'
-                    );
-                  }
-                  setSectionList([]);
-                  setSelectedSection([]);
-                }}
-                id='grade_id'
-                className='dropdownIcon'
-                value={selectedGrade || ''}
-                options={gradeList || ''}
-                getOptionLabel={(option) => option?.grade__grade_name || ''}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Grade'
-                    placeholder='Grade'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={3} xs={12}>
-              <Autocomplete
-                // multiple
-                style={{ width: '100%' }}
-                size='small'
-                onChange={(event, value) => {
-                  setSelectedSection([]);
-                  if (value) {
-                    const ids = value.id;
-                    const secId = value.section_id;
-                    setSelectedSection(value);
-                    setSecSelectedId(secId);
-                  }
-                }}
-                id='section_id'
-                className='dropdownIcon'
-                value={selectedSection || ''}
-                options={sectionList || ''}
-                getOptionLabel={(option) =>
-                  option?.section__section_name || option?.section_name || ''
-                }
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Section'
-                    placeholder='Section'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item md={3} xs={12}>
-              {/* <Autocomplete
-                // multiple
-                style={{ width: '100%' }}
-                size='small'
-                // onChange={(event, value) => {
-                //   setSelectedSection([]);
-                //   if (value) {
-                //     const ids = value.id;
-                //     const secId = value.section_id;
-                //     setSelectedSection(value);
-                //     setSecSelectedId(secId);
-                //   }
-                // }}
-                id='section_id'
-                className='dropdownIcon'
-                // value={selectedSection || ''}
-                // options={sectionList || ''}
-                // getOptionLabel={(option) =>
-                //   option?.section__section_name || option?.section_name || ''
+                value={optionData || []}
+                options={grevancesData || []}
+                getOptionLabel={(option) => option?.grievance_name || ''}
+                // getOptionSelected={(option, value) =>
+                //   option?.grievance_name == value?.grievance_name
                 // }
-                // filterSelectedOptions
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     variant='outlined'
-                    label='Grivience Type'
-                    placeholder='Grivience Type'
+                    label='Type'
+                    placeholder='Type'
                   />
                 )}
-              /> */}
-              {/* <div className='field-label-container'> */}
-              <FormControl
-                variant='outlined'
-                fullWidth
-                size='small'
-                className='dropdownIcon'
-              >
-                <InputLabel
-                  id='demo-simple-select-outlined-label'
-                  className='dropdownIcon'
-                >
-                  Type
-                </InputLabel>
-                <Select
-                  labelId='demo-simple-select-outlined-label'
-                  id='demo-simple-select-outlined'
-                  value={optionData}
-                  error={error.option}
-                  onChange={handleChangeOption}
-                  className='dropdownIcon'
-                  label='Type'
-                >
-                  <MenuItem value=''>
-                    <em>None</em>
-                  </MenuItem>
-                  {grevancesData &&
-                    grevancesData.map((data, index) => (
-                      <MenuItem key={index} value={data?.grievance_name}>
-                        {data.grievance_name}
-                      </MenuItem>
-                    ))}
-                </Select>
-              </FormControl>
-              {/* </div> */}
+              />
             </Grid>
           </Grid>
 
@@ -508,7 +294,7 @@ const CreateNewForm = (props) => {
           <div className='editor-container'>
             <div className='field-label-container-type'>
               {' '}
-              <Typography color = "secondary">Title</Typography>
+              <Typography color="secondary">Title</Typography>
               <TextField
                 fullWidth
                 size='small'
@@ -517,8 +303,9 @@ const CreateNewForm = (props) => {
                 InputProps={{
                   className: classes.multilineColor,
                 }}
+                inputProps={{ maxLength: 100 }}
                 onChange={(e) => setTitleData(e.target.value)}
-                placeholder='Title not to be more then 100 words'
+                placeholder='Title not to be more than 100 words'
               />
             </div>
             {setMobileView ? (
@@ -542,19 +329,35 @@ const CreateNewForm = (props) => {
           <div className='drag-drop-griviences'>
             {setMobileView ? (
               <div className='drag-and-drop-images'>
-                <Typography style={{ padding: '5%' }}>
-                  Add Attachment(Optional)
-                </Typography>
-                <div className='drag-and-drop'>
-                  {' '}
-                  <DropzoneArea
-                    open={openImage}
-                    error={error.image}
-                    acceptedFiles={['image/jpeg', 'image/png', 'image/bmp']}
-                    maxFileSize={5000000}
-                    onChange={handleChangeFile.bind(this)}
-                    onClose={handleCloseImage.bind(this)}
+                <div style={{ width: '25%', display: 'flex', flexDirection: 'column', justifyContent: 'center' , height: '130px' }} >
+                  <Typography style={{ textAlign: 'center' }}>
+                    Add Attachment
+                  </Typography>
+                  <Typography style={{ textAlign: 'center' }}>
+                    (Optional)
+                  </Typography>
+                </div>
+                <div className='drag-and-drop'  >
+
+                  <DNDFileUpload
+                    value={fileConf.initialValue}
+                    handleChange={(e) => {
+                      if (e) {
+                        handleUpload(e);
+                      }
+                    }}
+                    fileType={fileConf.fileTypes}
+                    typeNames={fileConf.types}
                   />
+
+                  {files?.name ? 
+                  <div style={{display : 'flex' , justifyContent: 'space-between'}} >
+                  <p style={{fontSize: '17px' , fontWeight: '600' , marginTop: '10px'}}> File Name : {files?.name}</p> 
+                  <IconButton onClick={removeItem}>
+                    <DeleteIcon   />
+                  </IconButton>
+                  </div>
+                  : ''}
                 </div>
                 {/* <div className='attach-image-button'>
                   <input
@@ -586,12 +389,12 @@ const CreateNewForm = (props) => {
            
           </div> */}
           <div className={setMobileView ? classes.flex : classes.flexMobile}>
-            <Button variant = "contained" className='cancelButton labelColor' onClick={e => handleBackButton()}>
-               BACK
+            <Button variant="contained" className='cancelButton labelColor' onClick={e => handleBackButton()}>
+              BACK
               {/* </Link> */}
             </Button>
-            <Button color='primary' variant = "contained" style={{color:"white"}} onClick={handlePostData}>
-                POST
+            <Button color='primary' variant="contained" style={{ color: "white" }} onClick={handlePostData}>
+              POST
             </Button>
           </div>
         </div>

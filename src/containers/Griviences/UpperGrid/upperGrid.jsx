@@ -291,7 +291,7 @@ const UpperGrade = (props) => {
       let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
       console.log(userName.user_id, 'userName');
       setUserID(userName.user_id);
-      setStudentView(false);
+      setStudentView(true);
       handleGenerateData();
     }
   }, []);
