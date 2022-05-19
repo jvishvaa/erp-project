@@ -63,6 +63,12 @@ const LessonViewFilters = ({
   let token = JSON.parse(localStorage.getItem('userDetails'))?.token || {};
   const [erpYear, setErpYear] = useState({});
   const classes = useStyles();
+  let boardFilterArr = [
+    'orchids.letseduvate.com',
+    'localhost:3000',
+    'dev.olvorchidnaigaon.letseduvate.com',
+    'qa.olvorchidnaigaon.letseduvate.com'
+  ]
 
   const [filterData, setFilterData] = useState({
     academic: '',
@@ -139,14 +145,13 @@ const LessonViewFilters = ({
     }
   };
 
-useEffect(() => {
-  if(window.location.host !== 'orchids.letseduvate.com'){
-    if(filterData?.subject && boardDropdown.length > 0){
-      let data =  boardDropdown?.filter((item) => item?.board_name === "CBSE");
-      handleBoard('',data)
-    }
-  }
- 
+  useEffect(() => {
+    if (!boardFilterArr.includes(window.location.host)) {
+      if (filterData?.subject && boardDropdown.length > 0) {
+        let data = boardDropdown?.filter((item) => item?.board_name === 'CBSE');
+        handleBoard('', data);
+      }
+    } 
 },[filterData?.subject,boardDropdown])
 
   useEffect(() => {
@@ -318,7 +323,7 @@ useEffect(() => {
           .get('academic/get-board-list/')
           .then((result) => {
             if (result?.data?.status_code === 200) {
-              if(window.location.host !== 'orchids.letseduvate.com'){
+              if(!boardFilterArr.includes(window.location.host)){
                 setBoardDropdown(result?.data?.result)
               }
               setLoading(false)
@@ -741,7 +746,7 @@ const handleBoard = (event = {}, values = []) => {
           )}
         />
       </Grid>
-      {(window.location.host === 'orchids.letseduvate.com') && <Grid
+      {(boardFilterArr.includes(window.location.host)) && <Grid
         item
         xs={12}
         sm={4}
