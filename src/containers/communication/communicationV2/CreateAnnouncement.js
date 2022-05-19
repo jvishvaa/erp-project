@@ -867,7 +867,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
                     <IconButton size='small'>
                       <WhatsAppIcon style={{ color: '#49C858' }} />
                     </IconButton>
-                    Intimat via Whatsapp
+                    Intimate via Whatsapp
                   </span>
                 </div>
               </Grid>
