@@ -382,6 +382,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const [acadId, setAcadId] = useState();
   
   // useEffect(() => {});
 
@@ -509,6 +510,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     setFilterData({ ...filterData, branch: [], grade: [], subject: '', chapter: '', section: [] });
     setOverviewSynopsis([]);
     if (value) {
+      setAcadId(value)
       setFilterData({
         ...filterData,
         branch: [value],
@@ -951,7 +953,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
             // branch:filterData.branch.map(function (b) {
             //     return b.id
             //   }),
-            academic_year:searchAcademicYear?.id,
+            academic_year:acadId?.id,
             branch: filterData?.branch[0]?.branch?.id,
             // grades:[54],
             grade: filterData.grade.map((g) => g.grade_id),
