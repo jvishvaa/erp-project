@@ -995,7 +995,7 @@ const NewCommunication = () => {
                     );
                   })}
               </Grid>
-              <Grid
+              {/* <Grid
                 item
                 xs={2}
                 sm={2}
@@ -1019,7 +1019,13 @@ const NewCommunication = () => {
                     >
                       <DeleteIcon style={{ color: '#FF006F' }} />
                     </IconButton>
-                  </div>
+                    {/* <IconButton
+                      title='Edit'
+                      // onClick={}
+                    >
+                      <BorderColorIcon style={{ color: '#536476' }} />
+                    </IconButton> */}
+                  {/* </div> 
                 ) : (
                   <>
                     <Typography
@@ -1041,7 +1047,7 @@ const NewCommunication = () => {
                     />
                   </>
                 )}
-              </Grid>
+              </Grid> */}
             </Grid>
           </DialogContentText>
         </DialogContent>
