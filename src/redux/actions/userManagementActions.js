@@ -224,8 +224,13 @@ export const fetchBranchesForCreateUser = (acadId, moduleId) => {
   return axios
     .get(`/erp_user/branch/?session_year=${acadId}&module_id=${moduleId}`)
     .then((response) => {
-      if (response.data.status_code === 200)
-        return response?.data?.data?.results.map((obj) => (obj && obj.branch) || {});
+      if (response.data.status_code === 200){
+        return response?.data?.data?.results.map((obj) => {
+          let tempArr = obj?.branch
+          tempArr['acadId']=obj?.id
+          return tempArr;
+         });
+      }
       else {
       }
     })
