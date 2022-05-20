@@ -12,6 +12,8 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
@@ -134,10 +136,8 @@ function EnhancedTableHead(props) {
         ))}
         {data?.[0]?.attendance.map((headCell) => (
           <TableCell style={{ backgroundColor: 'LightGray' }}>
-           
-              {moment(headCell?.date, 'YYYY-MM-DD').date()} <br />
-              {moment(headCell?.date, 'YYYY-MM-DD').format('ddd')}
-         
+            {moment(headCell?.date, 'YYYY-MM-DD').date()} <br />
+            {moment(headCell?.date, 'YYYY-MM-DD').format('ddd')}
           </TableCell>
         ))}
       </TableRow>
@@ -242,9 +242,8 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
-    paddingTop:'2px',
+    paddingTop: '2px',
   },
-  
 }));
 
 export default function TeacherAttendanceVerify() {
@@ -305,18 +304,16 @@ export default function TeacherAttendanceVerify() {
 
   const [moduleId, setModuleId] = React.useState();
   const [month, setMonth] = React.useState('1');
-  const [year, setYear] = React.useState('2022');
+  const [year, setYear] = React.useState('2021');
   const [open, setOpen] = React.useState(false);
   const [branchDropdown, setBranchDropdown] = React.useState([]);
   const [dropdownData, setDropdownData] = React.useState({
     branch: [],
     grade: [],
-    
   });
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-
 
   const [filterData, setFilterData] = React.useState({
     branch: '',
@@ -325,12 +322,10 @@ export default function TeacherAttendanceVerify() {
   useEffect(() => {
     handleAcademicYear('', selectedAcademicYear);
     setFilterData({
-        branch: '',
-        grade: '',
-        
-      });
-    
-  }, [ moduleId]);
+      branch: '',
+      grade: '',
+    });
+  }, [moduleId]);
 
   function getBranch(acadId) {
     axiosInstance
@@ -345,7 +340,7 @@ export default function TeacherAttendanceVerify() {
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   const handleAcademicYear = (event, value) => {
@@ -390,14 +385,15 @@ export default function TeacherAttendanceVerify() {
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
-  
+
   const fileType =
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
   const fileExtension = '.xlsx';
 
   const handleChanges = (event) => {
+    console.log(event, 'event');
     setMonth(event.target.value);
   };
   const handleYear = (event) => {
@@ -412,6 +408,7 @@ export default function TeacherAttendanceVerify() {
       });
       const resultOptions = [];
       if (result.status === 200) {
+        console.log(result, 'idofrole');
         result.data.result.map((items) => resultOptions.push(items.role_name));
         setRoles(result.data.result);
       } else {
@@ -438,6 +435,7 @@ export default function TeacherAttendanceVerify() {
   // };
 
   const handleMultipleRoles = (event, value) => {
+    console.log('value', value);
 
     setRolesId(value.id);
   };
@@ -461,8 +459,8 @@ export default function TeacherAttendanceVerify() {
   }, [window.location.pathname]);
 
   const getTeacherData = () => {
-    if(filterData.branch?.branch?.id === undefined){
-      setAlert('error','select branch')
+    if (filterData.branch?.branch?.id === undefined) {
+      setAlert('error', 'select branch');
       return false;
     }
     const result = axiosInstance
@@ -557,32 +555,28 @@ export default function TeacherAttendanceVerify() {
 
   const years = [
     {
-      value: '2024',
-      label: '01',
-    },
-    {
-      value: '2023',
-      label: '02',
-    },
-    {
       value: '2022',
-      label: '03',
-    },
-    {
-      value: '2021',
-      label: '04',
-    },
-    {
-      value: '2000',
-      label: '05',
-    },
-    {
-      value: '1999',
       label: '06',
     },
     {
+      value: '2021',
+      label: '01',
+    },
+    {
+      value: '2020',
+      label: '02',
+    },
+    {
+      value: '1999',
+      label: '03',
+    },
+    {
       value: '1998',
-      label: '07',
+      label: '04',
+    },
+    {
+      value: '1997',
+      label: '05',
     },
   ];
 
@@ -597,7 +591,7 @@ export default function TeacherAttendanceVerify() {
       case 'halfday':
         return '#4747d1';
       case 'holiday':
-        return 'brown';
+        return '#81c3b4';
       case 'NA':
         return 'black';
     }
@@ -609,20 +603,16 @@ export default function TeacherAttendanceVerify() {
     const dataX = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(dataX, fileName + fileExtension);
   };
- 
-  
+
   const handleBranch = (event, value) => {
     setDropdownData({
       ...dropdownData,
       grade: [],
-      
-     
     });
     setFilterData({
       ...filterData,
       branch: '',
       grade: '',
-     
     });
     if (value) {
       getGrade(selectedAcademicYear?.id, value?.branch?.id);
@@ -637,45 +627,48 @@ export default function TeacherAttendanceVerify() {
         direction='row'
         style={{ paddingLeft: '22px', paddingRight: '10px' }}
       >
-        <Grid item xs={12}>
-          <Typography
-            className={classes.title}
-            style={{ fontWeight: 'bold' }}
-            id='tableTitle'
-            component='div'
+        <Grid item xs={12} md={6}>
+          <Breadcrumbs
+            separator={<NavigateNextIcon fontSize='small' />}
+            aria-label='breadcrumb'
           >
-            <span style={{ color: '#ff944d' }}>Attendance Report </span>({' '}
-            <span style={{ color: '#00ff00' }}>P:PRESENT</span>,{' '}
-            <span style={{ color: 'red' }}>A:ABSENT </span>,
-            <span style={{ color: '#800080' }}> L:LATE </span>,
-            <span style={{ color: '#4747d1' }}> HD:HALF DAY </span>,
-            <span style={{ color: 'brown' }}> H:Holiday Day</span>)
-          </Typography>
+            <Typography color='textPrimary' variant='h6'>
+              Attendance
+            </Typography>
+            <Typography color='textPrimary'>Attendance Report</Typography>
+          </Breadcrumbs>
         </Grid>
+        <Grid container spacing={1} style={{ marginTop: '5px' }}>
+          <FormControl className={classes.formControl}>
+            <InputLabel htmlFor='age-native-simple'>Month</InputLabel>
+            <Select
+              native
+              value={month}
+              onChange={handleChanges}
+              inputProps={{
+                name: 'month',
+                id: 'filled-month-native-simple',
+              }}
+            >
+              {months.map((option) => (
+                <option key={option.label} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+          {/* </Grid> */}
+          <Grid item xs={12} md={1} className='mobileYear'>
+            <InputLabel htmlFor='month-native-simple'>Year</InputLabel>
+            <Select native value={year} onChange={handleYear}>
+              {years.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.value}
+                </option>
+              ))}
+            </Select>
+          </Grid>
 
-        <Grid container spacing={2} style={{ marginTop: '5px' }}>
-        <Grid item xs={12} md={2} >
-          <Autocomplete
-            size='small'
-            onChange={handleBranch}
-            id='branch'
-            style={{ marginTop: '16px' }}
-            value={filterData.branch || {}}
-            options={dropdownData.branch || []}
-            getOptionLabel={(option) => option?.branch?.branch_name || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Branch'
-                placeholder='Branch'
-              />
-            )}
-          />
-        
-            
-            </Grid>
           <Grid item xs={12} md={2}>
             <Autocomplete
               // multiple
@@ -684,7 +677,7 @@ export default function TeacherAttendanceVerify() {
               onChange={handleMultipleRoles}
               value={rolesId}
               className='dropdownIcon'
-              style={{ marginTop: '15px' }}
+              // style={{ marginTop: '15px' }}
               id='message_log-smsType'
               options={roles}
               getOptionLabel={(option) => option?.role_name}
@@ -699,40 +692,36 @@ export default function TeacherAttendanceVerify() {
                 />
               )}
             />
-          </Grid>        
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <Autocomplete
+              size='small'
+              onChange={handleBranch}
+              id='branch'
+              // style={{ marginTop: '16px' }}
+              value={filterData.branch || {}}
+              options={dropdownData.branch || []}
+              getOptionLabel={(option) => option?.branch?.branch_name || ''}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  placeholder='Branch'
+                />
+              )}
+            />
+          </Grid>
           {/* style={{width:"109px"}} */}
 
           {/* <Grid item xs={12} md={2} md={1} > */}
-          <FormControl className={classes.formControl}>
-            <InputLabel htmlFor='age-native-simple'>Month</InputLabel>
-            <Select native value={month} onChange={handleChanges} inputProps={{
-            name: 'month',
-            id: 'filled-month-native-simple',
-          }}   >
-              {months.map((option) => (
-                <option key={option.label} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </Select>
-            </FormControl>
-          {/* </Grid> */}
-          <Grid item xs={12} md={2} className='mobileYear'>
-            <InputLabel htmlFor='month-native-simple'>Year</InputLabel>
-            <Select native value={year} onChange={handleYear}>
-              {years.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.value}
-                </option>
-              ))}
-            </Select>
-          </Grid>
-          <Grid item md={2} xs={12} md={1} >
+
+          <Grid item md={1} xs={12}>
             <Button
               onClick={getTeacherData}
               variant='contained'
               style={{ backgroundColor: '#e65c00' }}
-
             >
               Search
             </Button>
@@ -748,8 +737,30 @@ export default function TeacherAttendanceVerify() {
               Download excel file
             </Button>
           </Grid>
+          <Grid item xs={12} md={2}>
+            {/* <Typography
+            className={classes.title}
+            style={{
+              fontWeight: 'bold',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+            id='tableTitle'
+            component='div'
+          > */}
+            <Grid container direction='column' justifyContent='left' alignItems='rght'>
+              <span style={{ color: '#ff944d' }}>Index : </span>
+              <span style={{ color: '#00ff00' }}>P: Present</span>
+              <span style={{ color: 'red' }}>A: Absent </span>
+              <span style={{ color: '#800080' }}> L: Late </span>
+              <span style={{ color: '#4747d1' }}> HD: Half Day</span>
+              <span style={{ color: '#81c3b4' }}> H: Holiday </span>
+              {/* <span style={{ color: 'brown' }}> H:Holiday Day</span>) */}
+              {/* </Typography> */}
+            </Grid>
+          </Grid>
         </Grid>
-      
 
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer style={{ marginBottom: '5px' }}>
@@ -810,7 +821,7 @@ export default function TeacherAttendanceVerify() {
             </TableBody>
           </Table>
         </TableContainer>
-        </Grid>
+      </Grid>
     </Layout>
   );
 }

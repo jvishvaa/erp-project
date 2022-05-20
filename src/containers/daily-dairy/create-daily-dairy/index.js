@@ -84,6 +84,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const widerWidth = isMobile ? '98%' : '95%';
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [acadId, setAcadId] = useState();
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -169,6 +170,7 @@ const CreateDailyDairy = (details, onSubmit) => {
           ? data?.map((obj) => ({
             id: obj.id,
             branch_name: obj.branch_name,
+            academicYearId: obj?.acadId
           }))
           : [];
         setBranches(transformedData);
@@ -178,6 +180,7 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleChangeBranch = (values) => {
     if (values) {
+      setAcadId(values[0])
       fetchGrades(searchAcademicYear?.id, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
@@ -395,7 +398,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         createDairyEntry,
         filePath && filePath.length > 0
           ? {
-            academic_year: searchAcademicYear?.id,
+            academic_year: acadId?.academicYearId,
             module_id: moduleId,
             branch: formik.values?.branch?.id,
             grade,
@@ -415,7 +418,7 @@ const CreateDailyDairy = (details, onSubmit) => {
             is_central: formik.values?.chapters?.is_central,
           }
           : {
-            academic_year: searchAcademicYear?.id,
+            academic_year: acadId?.academicYearId,
             branch: formik.values?.branch?.id,
             module_id: moduleId,
             grade,
@@ -459,7 +462,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const handleEdited = () => {
 
     let payload = {
-      academic_year: editData.academic_year.id,
+      academic_year: acadId?.academicYearId,
       branch: editData.branch.id,
       grade: editData.grade.id,
       section: [editData.section.id],
