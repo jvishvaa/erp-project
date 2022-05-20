@@ -750,7 +750,7 @@ export default function TeacherAttendanceVerify() {
             component='div'
           > */}
             <Grid container direction='column' justifyContent='left' alignItems='rght'>
-              <span style={{ color: '#ff944d' }}>Attendance Report : </span>
+              <span style={{ color: '#ff944d' }}>Index : </span>
               <span style={{ color: '#00ff00' }}>P: Present</span>
               <span style={{ color: 'red' }}>A: Absent </span>
               <span style={{ color: '#800080' }}> L: Late </span>

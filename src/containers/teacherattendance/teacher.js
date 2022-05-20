@@ -300,41 +300,6 @@ export default function TeacherAttendance(props) {
     }
   };
 
-  function getGrade(acadId, branchId) {
-    axiosInstance
-      .get(
-        `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchId}&module_id=${moduleId}`
-      )
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setDropdownData((prev) => {
-            return {
-              ...prev,
-              grade: result.data?.data,
-            };
-          });
-        }
-      })
-      .catch((error) => {});
-  }
-  function getSection(acadId, branchId, gradeId) {
-    axiosInstance
-      .get(
-        `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchId}&grade_id=${gradeId}&module_id=${moduleId}`
-      )
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setDropdownData((prev) => {
-            return {
-              ...prev,
-              section: result?.data?.data,
-            };
-          });
-        }
-      })
-      .catch((error) => {});
-  }
-
   const handleBranch = (event, value) => {
     if (value) {
       console.log('selected branch', value);
@@ -397,23 +362,6 @@ export default function TeacherAttendance(props) {
     }
   };
 
-  function getGrade(acadId, branchId) {
-    axiosInstance
-      .get(
-        `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchId}&module_id=${moduleId}`
-      )
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setDropdownData((prev) => {
-            return {
-              ...prev,
-              grade: result.data?.data,
-            };
-          });
-        }
-      })
-      .catch((error) => {});
-  }
   function callApi(api, key) {
     axiosInstance
       .get(api)
