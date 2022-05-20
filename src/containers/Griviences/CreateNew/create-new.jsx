@@ -30,6 +30,8 @@ import Grid from '@material-ui/core/Grid';
 import { excelQueryCellInfo } from '@syncfusion/ej2-grids';
 import { useHistory, useLocation } from 'react-router-dom';
 import DeleteIcon from '@material-ui/icons/Delete';
+import { connect, useSelector } from 'react-redux';
+
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -67,7 +69,6 @@ const CreateNewForm = (props) => {
   const [optionData, setOptionData] = useState('');
   const [loading, setLoading] = useState(false);
   const [academicYear, setAcademicYear] = useState([]);
-  const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -90,6 +91,9 @@ const CreateNewForm = (props) => {
     title: true,
     image: true,
   });
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   useEffect(() => {
     // callingAcadamicAPI();
@@ -214,11 +218,12 @@ const CreateNewForm = (props) => {
       erp_id: '',
       ticket_type: 'Grievance',
     };
+    formData.append('academic_year', selectedAcademicYear?.id)
     formData.append('grievance_type', optionData?.id)
     formData.append('title', titleData)
     formData.append('description', editorContent)
     formData.append('ticket_type', 1)
-    if (files?.length > 0) {
+    if (files?.type ) {
       formData.append('grievance_attachment', files)
     }
 

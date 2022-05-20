@@ -384,7 +384,7 @@ const GravienceHome = () => {
   useEffect(() => {
     if (path === '/griviences/student-view') {
       axiosInstance
-        .get(`${endpoints.grievances.getGrievenceStudent}?user_id=${userName?.user_id}&page_size=${limit}&page=${currentPage}`)
+        .get(`${endpoints.grievances.getGrievenceStudent}?user_id=${userName?.user_id}&page_size=${limit}&page=${currentPage}&academic_year=${selectedAcademicYear?.id}`)
         .then((result) => {
           if (result.status == 200) {
             console.log(result, 'sameeraaaaaaa');
@@ -406,7 +406,7 @@ const GravienceHome = () => {
       const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
       if (endDateTechPer && dateFlag) {
         axiosInstance
-          .get(`${endpoints.grievances.getGrievenceStudent}?user_id=${userName?.user_id}&page_size=${limit}&page=${currentPage}&start_date=${moment(startDateTechPer)?.format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer)?.format('YYYY-MM-DD')}`)
+          .get(`${endpoints.grievances.getGrievenceStudent}?user_id=${userName?.user_id}&page_size=${limit}&page=${currentPage}&start_date=${moment(startDateTechPer)?.format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer)?.format('YYYY-MM-DD')}&academic_year=${selectedAcademicYear?.id}`)
           .then((result) => {
             if (result.status == 200) {
               console.log(result, 'sameeraaaaaaa');
