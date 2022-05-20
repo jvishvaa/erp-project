@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -12,83 +10,91 @@ import endpoints from '../../config/endpoints';
 import { makeStyles } from '@material-ui/core/styles';
 import './teacherattendance.css';
 
-
-
 const useStyles = makeStyles((theme) => ({
-    absentPadding: {
-      paddingLeft:'20px',
-    },
-    halfdayPadding: {
-        paddingLeft:'20px',
-      },
-      latePadding: {
-        paddingLeft:'28px',
-      },
-      holidayPadding: {
-        paddingLeft:'15px',
-      },
-    
-   
-  }));
+  absentPadding: {
+    paddingLeft: '20px',
+  },
+  halfdayPadding: {
+    paddingLeft: '20px',
+  },
+  latePadding: {
+    paddingLeft: '28px',
+  },
+  holidayPadding: {
+    paddingLeft: '15px',
+  },
+}));
 export default function TeacherAttendanceStatus(props) {
-    const classes=useStyles();
+  const classes = useStyles();
 
-   
-    const [value, setValue] = React.useState('');
-    const [attendance, setAttendance] = React.useState(props.attendence_status);
+  const [value, setValue] = React.useState('');
+  const [attendance, setAttendance] = React.useState(props.attendence_status);
 
-    
-
-    const handleChange = (event) => {
-       
-        var body = {
-            erp_user: props?.user_id,
-            attendence_status: event.target.value,
-            date:props?.start_date,
-            
-        }
-        setAttendance(event.target.value);
-
-
-        axiosInstance.post(`${endpoints.academics.teacherAttendanceSent}`, body)
-        .then((result) => {
-            console.log("abcd")
-
-            //  setValue(event.target.value);
-
-        }
-        ).catch((error) => {
-            console.log(error)
-        })
-        
+  const handleChange = (event) => {
+    var body = {
+      erp_user: props?.user_id,
+      attendence_status: event.target.value,
+      date: props?.start_date,
     };
-    return (
-        // <Grid container direction="row" justifyContent="center">
-            <FormControl component="fieldset" name="attendence_status">
+    setAttendance(event.target.value);
 
-                <RadioGroup row={true}  value={attendance} onChange={handleChange}>
+    axiosInstance
+      .post(`${endpoints.academics.teacherAttendanceSent}`, body)
+      .then((result) => {
+        console.log(result, 'abcd');
 
-                    <Grid item md={2}  padding={10}>
-                        <FormControlLabel  value="present" control={<Radio />} label="Present" />
-                    </Grid>
-                    <Grid item  md={2} className={classes.absentPadding} className='absentPadding'>
-
-                        <FormControlLabel  value="absent" control={<Radio />} label="Absent" />
-                    </Grid>
-                    <Grid item  md={2} className={classes.halfdayPadding} className='halfdayPadding'>
-
-                        <FormControlLabel  value="halfday" control={<Radio />} label="Half Day" />
-                    </Grid>
-                    <Grid item  md={2} className={classes.latePadding} className='latePadding'>
-
-                        <FormControlLabel  value="late" control={<Radio />} label="Late" />
-                    </Grid>
-                    <Grid item md={2} className={classes.holidayPadding} className='holidayPadding' >
-                        <FormControlLabel  value="holiday" control={<Radio />} label="Holiday" />
-                    </Grid>
-                </RadioGroup>
-            </FormControl>
-        // </Grid>
-    );
-
-};
+        //  setValue(event.target.value);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+  return (
+    // <Grid container direction="row" justifyContent="center">
+    <FormControl component='fieldset' name='attendence_status'>
+      <RadioGroup row={true} value={attendance} onChange={handleChange}>
+        <Grid item md={2} padding={10}>
+          <FormControlLabel
+            value='present'
+            control={<Radio />}
+            label='Present'
+            className='th-font-size-13'
+          />
+        </Grid>
+        <Grid item md={2} className={classes.absentPadding} className='absentPadding'>
+          <FormControlLabel
+            value='absent'
+            control={<Radio />}
+            label='Absent'
+            className='th-font-size-13'
+          />
+        </Grid>
+        <Grid item md={2} className={classes.halfdayPadding} className='halfdayPadding'>
+          <FormControlLabel
+            value='halfday'
+            control={<Radio />}
+            label='Half Day'
+            className='th-font-size-13'
+          />
+        </Grid>
+        <Grid item md={2}>
+          <FormControlLabel
+            value='late'
+            control={<Radio />}
+            label='Late'
+            className='th-font-size-13'
+          />
+        </Grid>
+        <Grid item md={2}>
+          <FormControlLabel
+            value='holiday'
+            control={<Radio />}
+            label='Holiday'
+            className='th-font-size-13'
+          />
+        </Grid>
+      </RadioGroup>
+    </FormControl>
+    // </Grid>
+  );
+}

@@ -9,11 +9,15 @@ import {
   Grid,
   TextField,
   Checkbox,
+  IconButton,
+  useTheme
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import PublishIcon from '@material-ui/icons/Publish';
-// import TinyMce from '../../../components/TinyMCE/tinyMce';
+import MessageIcon from '@material-ui/icons/Message';
+import WhatsAppIcon from '@material-ui/icons/WhatsApp';
+import EmailIcon from '@material-ui/icons/Email';
 import MyTinyEditor from '../../question-bank/create-question/tinymce-editor';
 import UploadFiles from './uploadFiles';
 import endpoints from '../../../config/endpoints';
@@ -30,75 +34,133 @@ import SubjectIcon from '@material-ui/icons/Subject';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
 import ConfirmModal from 'containers/assessment-central/assesment-card/confirm-modal';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
+import Tooltip from '@material-ui/core/Tooltip';
+import Pagination from 'components/Pagination';
 
 
 const useStyles = makeStyles(() => ({
   paper: {
-    // minWidth: '825px',
-    // minHeight: '400px',
     padding: '10px',
-    // maxHeight: '550px',
-    // marginLeft: window.innerWidth > 768 ? '100px' : "0",
-    // marginTop: '50px',
   },
-  Check: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-around',
+  checkbox:{
+    '& .MuiSvgIcon-root': {
+      color: '#A1A1A1',
+    },
   },
+  checkedsms: {
+    '& .MuiSvgIcon-root': {
+      color: '#4185F4',
+    },
+  },
+  checkedwhatsapp: {
+    '& .MuiSvgIcon-root': {
+      color: '#49C858',
+    },
+  },
+  checkedemail: {
+    '& .MuiSvgIcon-root': {
+      color: '#F5A836',
+    },
+  },
+  selected:{
+    border : '1px solid #8D8B8B'
+  },
+  unselected : {
+    border: '1px solid #E6E6E6'
+  },
+  msgcssweb :{
+    color: '#4185F4',
+    marginLeft: '15%'
+  },
+  msgcssmobile :{
+    marginLeft: '2%',
+    fontSize : 'small'
+  }
+
 }));
 
 const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, announcementType, setPage }) => {
   const fileUploadInput = useRef(null);
   const classes = useStyles();
   const [openUpload, setOpenUpload] = useState(false);
-  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const { user_level,is_superuser, first_name, last_name } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [uploadFiles, setuploadedFiles] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [loading, setLoading] = useState(false);
   const [openEditUpload, setOpenEditUpload] = useState(false)
   const setMobileView = useMediaQuery('(min-width:960px)');
-
-
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-
-  const [moduleId, setModuleId] = useState('')
-
+  let intimateState = {
+    sms : false,
+    whatsapp : false ,
+    email: false
+  }
+const smsArr = [1]
+const whatsappArr = [1]
+const emailArr = [1,11,4,5,8,9,10,3,2,14]
+// console.log(user_level,'@@')
+  const [moduleId, setModuleId] = useState('');
   const [userLevelList, setUserLevelList] = useState([]);
   const [selectedUserLevelData, setSelectedUserLevelData] = useState([]);
   const [selectedUserLevelId, setSelectedUserLevelId] = useState([]);
   const isStudentIncluded = selectedUserLevelId.includes(13);
-
   const [branchList, setBranchList] = useState([]);
   const [selectedbranchListData, setSelectedbranchListData] = useState({});
   const [selectedBranchId, setSelectedBranchId] = useState('');
-
   const [gradeList, setGradeList] = useState([]);
   const [selectedGradeListData, setSelectedGradeListData] = useState([]);
   const [selectedGradeId, setSelectedGradeId] = useState([]);
-
   const [sectionList, setSectionList] = useState([]);
   const [selectedSectionListData, setSelectedSectionListData] = useState([]);
   const [selectedSectionId, setSelectedSectionId] = useState([]);
   const [selectedSectionMappingId, setSelectedSectionMappingId] = useState([]);
-
-  const [memberList, setMemberList] = useState([]);
+  const [intimateMsg , setIntimateMsg] = useState(intimateState)
+  // const [memberList, setMemberList] = useState([]);
   const [memberCount, setMemberCount] = useState();
-
-
-  const [title, setTitle] = useState();
+  const [title, setTitle] = useState('');
   const [content, setContent] = useState();
-
   const [textEditorContent, setTextEditorContent] = useState('');
-
   const [fileToFilter, setFileToFilter] = useState([])
-
   const [openModalFinal, setopenModalFinal] = useState(false)
-
   const [fileToDelete, setFileToDelete] = useState()
+
+  let titlebody = extractContent(textEditorContent)
+  let channelsArr = [
+      'orchids.letseduvate.com',
+      'localhost:3000',
+      'dev.olvorchidnaigaon.letseduvate.com',
+      'qa.olvorchidnaigaon.letseduvate.com'
+  ]
+  let smsTxt = `
+  Greetings of the day ! 
+  
+  Hello "UserName" ,
+
+  Did you hear that Bell?
+  That’s because you have an Announcement related to "${announcementType?.category_name}" . Please check it out here : ${window.location.host}`
+  
+  let emailTxt = `
+  Dear UserName,
+
+  Greetings of the day ! 
+  
+  Subject : Announcement – "${announcementType?.category_name}" - ${title}
+  
+  Did you hear that Bell?
+  That’s because you have an Announcement related to "${announcementType?.category_name}"
+  
+  ${titlebody}
+  -${first_name} ${last_name}
+  For more details, please check it out here: ${window.location.host}
+  
+  Regards,
+  Orchids International School
+  `;
 
   const handleEditFileClose = () => {
     setOpenEditUpload(false)
@@ -123,10 +185,10 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
     setSelectedSectionMappingId([]);
 
 
-    setMemberList([]);
-    setMemberCount()
+    // setMemberList([]);
+    setMemberCount();
 
-    setTitle();
+    setTitle('');
     // setContent()
 
     setTextEditorContent('');
@@ -134,6 +196,11 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
     setFileToFilter([])
   };
 
+  function extractContent(s) {
+    const span = document.createElement('span');
+    span.innerHTML = s;
+    return span.textContent || span.innerText;
+  }
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -364,8 +431,8 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
     }
     axiosInstance.get(`${endpoints.announcementNew.getMembersData}${url}`).then((res) => {
       if (res?.data?.status_code === 200) {
-        setMemberList(res?.data?.members);
-        setMemberCount(res?.data?.count)
+        // setMemberList(res?.data?.members);
+        setMemberCount(res?.data?.count);
       }
     });
   };
@@ -431,20 +498,19 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
     if (!selectedUserLevelId.length > 0) {
       setAlert('warning', 'Please select user level');
     }
-    if (!memberList.length > 0) {
+    if (memberCount == 0) {
       setAlert('warning', 'No members for announcement');
     }
 
-    if (selectedBranchId && selectedUserLevelId.length > 0 && title && title.length < 50 && textEditorContent && announcementType?.id && memberList.length > 0) {
+    if (selectedBranchId && selectedUserLevelId.length > 0 && title && title.length < 50 && textEditorContent && announcementType?.id && memberCount !== 0) {
       let payLoad = {
         branch_id: selectedBranchId.toString() || '',
-        // "section_mapping_id" : selectedSectionMappingId.toString() || "",
+        session_year: selectedAcademicYear?.id,
         role_id: selectedUserLevelId.toString() || '',
         title: title || '',
         content: textEditorContent || '',
-        // "attachments" : uploadFiles || [],
         category: announcementType?.id,
-        members: memberList || [],
+        // members: memberList || [],
       };
       if (isDraft) {
         payLoad['is_draft'] = true;
@@ -454,6 +520,15 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
       }
       if (isStudentIncluded) {
         payLoad['section_mapping_id'] = selectedSectionMappingId.toString() || '';
+      }
+      if(intimateMsg?.sms){
+        payLoad['intimate_via_sms'] = true
+      }
+      if(intimateMsg?.whatsapp){
+        payLoad['intimate_via_whatsapp'] = true
+      }
+      if(intimateMsg?.email){
+        payLoad['intimate_via_email'] = true
       }
       setLoading(true);
       axiosInstance
@@ -475,24 +550,37 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
     <Dialog
       //   className='reminderDialog'
       classes={{ paper: classes.paper }}
-      style={{marginLeft : setMobileView ? '5%' : ""}}
+      style={{ marginLeft: setMobileView ? '5%' : '' }}
       fullWidth
       open={openModalAnnouncement}
       onClose={handleCloseModal}
       maxWidth='lg'
-    //   aria-labelledby='draggable-dialog-title'
+      //   aria-labelledby='draggable-dialog-title'
     >
       {loading && <Loader />}
-      <Grid
-        xs={12}
-      >
-        <Grid container justifyContent='space-between' alignItems='center' style={{ fontSize: 20, marginBottom: 10 }}>
+      <Grid xs={12}>
+        <Grid
+          container
+          justifyContent='space-between'
+          alignItems='center'
+          style={{ fontSize: 20, marginBottom: 10 }}
+        >
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            {announcementType?.category_name === "Event" && (<EventIcon style={{ color: '#7852CC', marginRight: 10 }} />)}
-            {announcementType?.category_name === "Exam" && (<EventNoteIcon style={{ color: '#EF005A', marginRight: 10 }} />)}
-            {announcementType?.category_name === "Holiday" && (<BeachAccessIcon style={{ color: '#F96C00', marginRight: 10 }} />)}
-            {announcementType?.category_name === "TimeTable" && (<InsertInvitationIcon style={{ color: '#62A7EB', marginRight: 10 }} />)}
-            {announcementType?.category_name === "General" && (<SubjectIcon style={{ color: '#464D57', marginRight: 10 }} />)}
+            {announcementType?.category_name === 'Event' && (
+              <EventIcon style={{ color: '#7852CC', marginRight: 10 }} />
+            )}
+            {announcementType?.category_name === 'Exam' && (
+              <EventNoteIcon style={{ color: '#EF005A', marginRight: 10 }} />
+            )}
+            {announcementType?.category_name === 'Holiday' && (
+              <BeachAccessIcon style={{ color: '#F96C00', marginRight: 10 }} />
+            )}
+            {announcementType?.category_name === 'TimeTable' && (
+              <InsertInvitationIcon style={{ color: '#62A7EB', marginRight: 10 }} />
+            )}
+            {announcementType?.category_name === 'General' && (
+              <SubjectIcon style={{ color: '#464D57', marginRight: 10 }} />
+            )}
             {announcementType?.category_name}
           </div>
           <CancelOutlinedIcon
@@ -501,7 +589,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
               top: '6px',
               color: 'black',
               cursor: 'pointer',
-              marginTop: "-7px",
+              marginTop: '-7px',
             }}
             onClick={handleCloseModal}
           />
@@ -512,7 +600,9 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
         <div style={{ height: '50vh' }}>
           <Grid container spacing={1}>
             <Grid xs={12} md={6} lg={6} item>
-              <Grid style={{ marginBottom: 5 }}><b >Choose User Level</b></Grid>
+              <Grid style={{ marginBottom: 5 }}>
+                <b>Choose User Level</b>
+              </Grid>
               <Autocomplete
                 multiple
                 size='small'
@@ -536,7 +626,9 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
               />
             </Grid>
             <Grid xs={12} md={6} lg={6} item>
-              <Grid style={{ marginBottom: 5 }}><b>Branch</b></Grid>
+              <Grid style={{ marginBottom: 5 }}>
+                <b>Branch</b>
+              </Grid>
               <Autocomplete
                 id='combo-box-demo'
                 size='small'
@@ -552,7 +644,9 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
             </Grid>
             {isStudentIncluded && (
               <Grid xs={12} md={6} lg={6} item>
-                <Grid style={{ marginBottom: 5 }}><b>Grade</b></Grid>
+                <Grid style={{ marginBottom: 5 }}>
+                  <b>Grade</b>
+                </Grid>
                 <Autocomplete
                   multiple
                   size='small'
@@ -578,7 +672,9 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
             )}
             {isStudentIncluded && (
               <Grid xs={12} md={6} lg={6} item>
-                <Grid style={{ marginBottom: 5 }}><b>Section</b></Grid>
+                <Grid style={{ marginBottom: 5 }}>
+                  <b>Section</b>
+                </Grid>
                 <Autocomplete
                   multiple
                   size='small'
@@ -604,8 +700,19 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
             )}
 
             <Grid container>
-              <Grid xs={12} md={6} lg={6} item style={{ padding: '0 5px', margin: '10px 0px' }}>
-                <Grid container justifyContent='space-between' alignItems='center' style={{ border: '1px solid #d3cbcb', padding: 7, borderRadius: 8 }}>
+              <Grid
+                xs={12}
+                md={6}
+                lg={6}
+                item
+                style={{ padding: '0 5px', margin: '10px 0px' }}
+              >
+                <Grid
+                  container
+                  justifyContent='space-between'
+                  alignItems='center'
+                  style={{ border: '1px solid #d3cbcb', padding: 7, borderRadius: 8 }}
+                >
                   <Typography>
                     Total {memberCount ? memberCount : '0'} members selected
                   </Typography>
@@ -624,7 +731,9 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
               <hr />
             </Grid>
             <Grid xs={12} md={6} lg={6} item>
-              <Grid style={{ marginBottom: 5 }}><b>Title</b></Grid>
+              <Grid style={{ marginBottom: 5 }}>
+                <b>Title</b>
+              </Grid>
               <TextField
                 style={{ display: 'grid' }}
                 id='outlined-basic'
@@ -633,13 +742,24 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
                 variant='outlined'
                 onChange={(e) => setTitle(e.target.value)}
               />
-              <div style={{ color: '#E60C38', display: 'flex', justifyContent: "flex-end", fontSize: 13, fontWeight: 600, marginTop: 5 }}>
+              <div
+                style={{
+                  color: '#E60C38',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  fontSize: 13,
+                  fontWeight: 600,
+                  marginTop: 5,
+                }}
+              >
                 Max. 50 Characters
               </div>
             </Grid>
           </Grid>
 
-          <Grid style={{ marginBottom: 5, marginTop: '5px' }}><b>Main Body</b></Grid>
+          <Grid style={{ marginBottom: 5, marginTop: '5px' }}>
+            <b>Main Body</b>
+          </Grid>
           <MyTinyEditor
             id='Editor'
             //description={Description}
@@ -652,93 +772,143 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
             height='150px'
             isShowToolBar='fontselect fontsizeselect bold italic aligncenter underline bullist numlist file image customInsertButton'
           />
-          <Grid style={{ marginBottom: 5, marginTop: '20px' }}><b>Upload attachment</b></Grid>
+          <Grid style={{ marginBottom: 5, marginTop: '20px' }}>
+            <b>Upload attachment</b>
+          </Grid>
           <div
             style={{
               height: '40px',
-              width: '50%',
+              width: isMobile ? '100%': '50%',
               border: '1px solid #bbb8b8',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '10px',
-              marginBottom: 10
+              marginBottom: 10,
             }}
           >
             <div>{uploadFiles?.length > 0 ? uploadFiles?.length : '0'} File Attached</div>
             <div style={{ cursor: 'pointer' }} onClick={() => setOpenUpload(true)}>
               <PublishIcon
                 style={{ position: 'relative', top: '6px' }}
-              //   onClick={() => fileUploadInput.current.click()}
+                //   onClick={() => fileUploadInput.current.click()}
               />
               Upload
             </div>
           </div>
-          {fileToFilter.length > 0 && (<span style={{ textDecoration: 'underline', margin: "5px", cursor: 'pointer' }} onClick={() => { handleEditFileOpen() }}>
-            View all files
-          </span>)}
+          {fileToFilter.length > 0 && (
+            <span
+              style={{ textDecoration: 'underline', margin: '5px', cursor: 'pointer' }}
+              onClick={() => {
+                handleEditFileOpen();
+              }}
+            >
+              View all files
+            </span>
+          )}
           <div style={{ height: '20px', width: '100%' }}></div>
-          {/* <div
-          classes={{ Check: classes.Check }}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-around',
-          }}
-        >
-          <div>
-            <Checkbox
-            // value={upload}
-            // checked={upload}
-            // onChange={(e) => setUpload(e.target.checked)}
-            />
-            Intimate via SMS
-          </div>
-          <div>
-            <Checkbox
-            // value={upload}
-            // checked={upload}
-            // onChange={(e) => setUpload(e.target.checked)}
-            />
-            Intimat via Whatsapp
-          </div>
-          <div>
-            <Checkbox
-            // value={upload}
-            // checked={upload}
-            // onChange={(e) => setUpload(e.target.checked)}
-            />
-            Intimate via Email
-          </div>
-        </div> */}
-          {/* <input
-          className='file-upload-input'
-          type='file'
-          name='attachments'
-          style={{ display: 'none' }}
-          accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
-          onChange={(e) => {
-            handleFileUpload(e.target.files[0]);
-             e.target.value = null;
-             onChange('attachments', Array.from(e.target.files)[]);
-          }}
-          ref={fileUploadInput}
-        /> */}
-          {/* 
-        <Typography gutterBottom>
-          Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus magna,
-          vel scelerisque nisl consectetur et. Donec sed odio dui. Donec ullamcorper nulla
-          non metus auctor fringilla.
-        </Typography> */}
+          {channelsArr.includes(window.location.host) && <div>
+            <Grid container spacing={1} style={{ justifyContent: 'center' }}>
+            {(smsArr.includes(user_level) || is_superuser) &&  
+            <Tooltip title={<div style={{ whiteSpace: 'pre-line' }}>{smsTxt} </div>}>
+              <Grid
+                item
+                md={3}
+                xs={12}
+                className = {intimateMsg?.sms ? classes.selected : classes.unselected}
+                style={{borderRadius: '2px', padding: '0' }}
+              >
+                <Checkbox
+                  className= {intimateMsg?.sms ? classes.checkedsms : classes.checkbox}
+                  value = {intimateMsg.sms}
+                  checked = {intimateMsg.sms}
+                  onChange={(e) => setIntimateMsg(prevState => ({
+                    ...prevState,
+                    sms: e.target.checked
+                }))}
+                  
+                />
+                <span style={{ color: '#4185F4' }} className={isMobile ? classes.msgcssmobile : classes.msgcssweb}>
+                  <IconButton size='small' style={{cursor:'text'}}>
+                    <MessageIcon style={{ color: '#4185F4'}} />
+                  </IconButton>
+                  Intimate via SMS
+                </span>
+              </Grid>
+              </Tooltip>}
+            {(whatsappArr.includes(user_level)|| is_superuser) &&
+             <Tooltip title={<div style={{ whiteSpace: 'pre-line' }}>{smsTxt} </div>}>
+               <Grid
+                item
+                md={3}
+                xs={12}
+                className = {intimateMsg?.whatsapp ? classes.selected : classes.unselected}
+                style={{
+                  borderRadius: '2px',
+                  marginLeft: isMobile ? '0%' : '2%',
+                  marginRight: isMobile ? '0%' : '2%',
+                  marginTop : isMobile ? '5%' : '0%',
+                  marginBottom : isMobile ? '5%' : '0%',
+                  padding: '0',
+                }}
+                
+              >
+                <div>
+                  <Checkbox
+                  className= {intimateMsg?.whatsapp ? classes.checkedwhatsapp : classes.checkbox}
+                  value = {intimateMsg.whatsapp}
+                    checked = {intimateMsg.whatsapp}
+                    onChange={(e) => setIntimateMsg(prevState => ({
+                      ...prevState,
+                      whatsapp: e.target.checked
+                  }))}
+                  />
+                  <span style={{ color: '#49C858' }} className={isMobile ? classes.msgcssmobile : classes.msgcssweb}>
+                    <IconButton size='small'>
+                      <WhatsAppIcon style={{ color: '#49C858' }} />
+                    </IconButton>
+                    Intimate via Whatsapp
+                  </span>
+                </div>
+              </Grid>
+              </Tooltip>}
+              { (emailArr.includes(user_level) || is_superuser) &&
+              <Tooltip title= {<div style={{ whiteSpace: 'pre-line' }}>{emailTxt} </div>}>
+              <Grid
+                item
+                md={3}
+                xs={12}
+                className = {intimateMsg?.email ? classes.selected : classes.unselected}
+                style={{borderRadius: '2px', padding: '0' }}
+              >
+                <Checkbox
+                  className= {intimateMsg?.email ? classes.checkedemail : classes.checkbox}
+                  value = {intimateMsg.email}
+                  checked = {intimateMsg.email}
+                  onChange={(e) => setIntimateMsg(prevState => ({
+                    ...prevState,
+                    email: e.target.checked
+                }))}
+                />
+                <span style={{ color: '#F5A836'}} className={isMobile ? classes.msgcssmobile : classes.msgcssweb}>
+                  <IconButton size='small'>
+                    <EmailIcon style={{ color: '#F5A836' }} />
+                  </IconButton>
+                  Send via Email
+                </span>
+              </Grid>
+              </Tooltip>}
+            </Grid>
+          </div>}
+          <div style={{ height: '20px', width: '100%' }}></div>
         </div>
-
       </DialogContent>
-      <DialogActions style={{ justifyContent: 'center' }}>
+      <DialogActions style={{ justifyContent: 'center',marginTop : '1%' }}>
         <Button
           onClick={() => handlePublish(true)}
           variant='contained'
           autoFocus
-        // color='primary'
+          // color='primary'
         >
           Save as Draft
         </Button>
@@ -751,7 +921,6 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
           Publish
         </Button>
       </DialogActions>
-      {/* openModal={openModal} setOpenModal={setOpenModal} */}
       <UploadFiles
         openUpload={openUpload}
         setOpenUpload={setOpenUpload}
@@ -778,7 +947,7 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
           />
         </Grid>
         <hr />
-        <div style={{ padding: "0 20px" }}>
+        <div style={{ padding: '0 20px' }}>
           <div
             style={{
               display: 'flex',
@@ -815,16 +984,13 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
                   >
                     {item.split('/')[2]}
                   </div>
-                  <div style={{ flex: 2, textAlign: 'center' }}>
-                    {item.split(".")[2]}
-                  </div>
+                  <div style={{ flex: 2, textAlign: 'center' }}>{item.split('.')[2]}</div>
                   <div style={{ flex: 1, textAlign: 'right' }}>
                     <HighlightOffIcon
                       onClick={() => {
-                        setopenModalFinal(true)
-                        setFileToDelete(item)
-                      }
-                      }
+                        setopenModalFinal(true);
+                        setFileToDelete(item);
+                      }}
                       style={{ cursor: 'pointer', fontSize: '30px' }}
                     />
                   </div>
