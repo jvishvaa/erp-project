@@ -462,7 +462,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const handleEdited = () => {
 
     let payload = {
-      academic_year: editData.academic_year.id,
+      academic_year: acadId?.academicYearId,
       branch: editData.branch.id,
       grade: editData.grade.id,
       section: [editData.section.id],
