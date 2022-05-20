@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
@@ -12,6 +12,8 @@ import TableRow from '@material-ui/core/TableRow';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
+import Breadcrumbs from '@material-ui/core/Breadcrumbs';
+import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
@@ -73,7 +75,7 @@ const headCells = [
   { id: 'ERP ID', numeric: true, disablePadding: true, label: 'ERP ID' },
   { id: 'Name', numeric: false, disablePadding: false, label: 'Name' },
   { id: 'Designation', numeric: false, disablePadding: false, label: 'Designation' },
- 
+
   { id: 'Attendance', numeric: false, disablePadding: false, label: 'Attendance' },
 ];
 
@@ -92,19 +94,24 @@ function EnhancedTableHead(props) {
   };
 
   return (
-    <TableHead stickyHeader>
+    <TableHead align='left' stickyHeader>
       <TableRow>
-        <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader>
+        <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
           ERP Id
         </TableCell>
-        <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader>
+        <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeaderalign='left'>
           Name
         </TableCell>
-        <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader>
+        <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
           Designation
         </TableCell>
-     
-        <TableCell style={{ backgroundColor: 'LightGray'}}  className='mobile-attendance' stickyHeader>
+
+        <TableCell
+          style={{ backgroundColor: 'LightGray' }}
+          className='mobile-attendance'
+          stickyHeader
+          align='left'
+        >
           Attendance
         </TableCell>
       </TableRow>
@@ -192,7 +199,7 @@ const useStyles = makeStyles((theme) => ({
     // marginBottom: theme.spacing(2),
   },
   table: {
-    minWidth: 750,
+    // minWidth: 750,
   },
   fontColorHeadCell: {
     color: 'black',
@@ -227,8 +234,8 @@ export default function TeacherAttendance(props) {
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectedMultipleRoles, setSelectedMultipleRoles] = React.useState([]);
   const [roles, setRoles] = React.useState([]);
+  console.log(selectedMultipleRoles, roles, 'roles');
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
-  // const { setAlert } = useContext(AlertNotificationContext);
   const [startDate, setStartDate] = React.useState(moment().format('YYYY-MM-DD'));
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -240,24 +247,35 @@ export default function TeacherAttendance(props) {
   const [dropdownData, setDropdownData] = React.useState({
     branch: [],
     grade: [],
+    section: [],
   });
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const [branchList, setBranchList] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedBranchIds, setSelectedBranchIds] = useState('');
+  const [gradeList, setGradeList] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState([]);
+  const [selectedGradeIds, setSelectedGradeIds] = useState('');
+
+  const [sectionId, setSectionId] = useState('');
+  const [sectionList, setSectionList] = useState([]);
+  const [selectedSection, setSelectedSection] = useState([]);
+  const [selectedSectionIds, setSelectedSectionIds] = useState('');
 
   const [filterData, setFilterData] = React.useState({
     branch: '',
     year: '',
+    grade: '',
+    section: '',
   });
+  console.log('filterdata', filterData);
   const handleDateChange = (name, date) => {
     if (name === 'startDate') setStartDate(date);
   };
   useEffect(() => {
     handleAcademicYear('', selectedAcademicYear);
-    setFilterData({
-      branch: '',
-      grade: '',
-    });
   }, [moduleId]);
 
   function getBranch(acadId) {
@@ -265,41 +283,20 @@ export default function TeacherAttendance(props) {
       .get(`${endpoints.academics.branches}?session_year=${acadId}&module_id=${moduleId}`)
       .then((result) => {
         if (result.data.status_code === 200) {
-          setDropdownData((prev) => {
-            return {
-              ...prev,
-              branch: result.data?.data?.results,
-            };
-          });
+          let branches = result.data?.data?.results.map((item) => item.branch);
+          setBranchList(branches);
+          console.log(
+            'branches',
+            result.data?.data?.results.map((item) => item.branch)
+          );
         }
       })
       .catch((error) => {});
   }
 
   const handleAcademicYear = (event, value) => {
-    setDropdownData({
-      ...dropdownData,
-      branch: [],
-      grade: [],
-      subject: [],
-      section: [],
-      test: [],
-      chapter: [],
-      topic: [],
-    });
-    setFilterData({
-      ...filterData,
-      branch: '',
-      grade: '',
-      section: '',
-      subject: '',
-      test: '',
-      chapter: '',
-      topic: '',
-    });
     if (value) {
       getBranch(value?.id);
-      setFilterData({ ...filterData, selectedAcademicYear });
     }
   };
 
@@ -314,6 +311,23 @@ export default function TeacherAttendance(props) {
             return {
               ...prev,
               grade: result.data?.data,
+            };
+          });
+        }
+      })
+      .catch((error) => {});
+  }
+  function getSection(acadId, branchId, gradeId) {
+    axiosInstance
+      .get(
+        `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchId}&grade_id=${gradeId}&module_id=${moduleId}`
+      )
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setDropdownData((prev) => {
+            return {
+              ...prev,
+              section: result?.data?.data,
             };
           });
         }
@@ -322,18 +336,64 @@ export default function TeacherAttendance(props) {
   }
 
   const handleBranch = (event, value) => {
-    setDropdownData({
-      ...dropdownData,
-      grade: [],
-    });
-    setFilterData({
-      ...filterData,
-      branch: '',
-      grade: '',
-    });
     if (value) {
-      getGrade(selectedAcademicYear?.id, value?.branch?.id);
-      setFilterData({ ...filterData, branch: value });
+      console.log('selected branch', value);
+      setGradeList([]);
+      setSelectedGrade([]);
+      setSelectedGradeIds('');
+      setSectionList([]);
+      setSelectedSection([]);
+      setSelectedSectionIds('');
+      const selectedId = value?.id;
+      setSelectedBranch(value);
+      setSelectedBranchIds(selectedId);
+      callApi(
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedId}&module_id=${moduleId}`,
+        'gradeList'
+      );
+    } else {
+      setSelectedBranchIds('');
+      setSelectedBranch([]);
+      setGradeList([]);
+      setSelectedGradeIds([]);
+      setSelectedGrade([]);
+      setSectionList([]);
+      setSelectedSection([]);
+      setSelectedSectionIds([]);
+    }
+  };
+
+  const handleGrade = (event = {}, value = []) => {
+    if (value) {
+      setSectionList([]);
+      setSelectedSection([]);
+      setSelectedSectionIds('');
+
+      const selectedId = value?.grade_id;
+      setSelectedGrade(value);
+      setSelectedGradeIds(selectedId);
+      callApi(
+        `${endpoints.academics.sections}?session_year=${
+          selectedAcademicYear?.id
+        }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
+        'section'
+      );
+    } else {
+      setSectionList([]);
+      setSelectedSection([]);
+      setSelectedGradeIds('');
+      setSelectedSectionIds('');
+    }
+  };
+
+  const handleSection = (event = {}, value = []) => {
+    if (value) {
+      const selectedsecctionId = value?.section_id;
+      const sectionid = value?.id;
+      setSectionId(sectionid);
+      setSelectedSection(value);
+      setSelectedSectionIds(selectedsecctionId);
+    } else {
     }
   };
 
@@ -353,6 +413,25 @@ export default function TeacherAttendance(props) {
         }
       })
       .catch((error) => {});
+  }
+  function callApi(api, key) {
+    axiosInstance
+      .get(api)
+      .then((result) => {
+        if (result.status === 200) {
+          if (key === 'gradeList') {
+            setGradeList(result.data.data || []);
+          }
+          if (key === 'section') {
+            setSectionList(result.data.data);
+          }
+        } else {
+          console.log('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
 
   const getRoleApi = async () => {
@@ -407,23 +486,26 @@ export default function TeacherAttendance(props) {
   }, [window.location.pathname]);
 
   const getTeacherData = () => {
-    if (filterData.branch?.branch?.id === undefined) {
-      setAlert('error', 'select branch');
-      return false;
-    }
     setData([]);
-    const result = axiosInstance
-      .get(
-        `${endpoints.academics.teacherAttendanceData}?branch_id=${filterData.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&roles=${rolesId}&date=${startDate}`
-      )
-      .then((result) => {
-        if (result.status === 200) {
-          setData(result?.data);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
+    if (!selectedBranchIds || !selectedGradeIds || !rolesId) {
+      console.log('jj', selectedBranchIds, selectedGradeIds);
+      setAlert('error', 'Select all required field');
+      return false;
+    } else {
+      const result = axiosInstance
+        .get(
+          `${endpoints.academics.teacherAttendanceData}?branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&session_year=${selectedAcademicYear?.id}&roles=${rolesId}&date=${startDate}`
+        )
+        .then((result) => {
+          if (result.status === 200) {
+            setData(result?.data);
+            console.log(result?.data);
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
   };
 
   const handleChange = (event) => {
@@ -458,43 +540,21 @@ export default function TeacherAttendance(props) {
         container
         direction='row'
         style={{ paddingLeft: '22px', paddingRight: '10px' }}
+        spacing={2}
       >
-        <Grid item xs={12} md={2}>
-          <Typography
-            className={classes.title}
-            style={{
-              fontWeight: 'bold',
-            }}
-            variant='h6'
-            id='tableTitle'
-            component='div'
+        <Grid item xs={12} md={6}>
+          <Breadcrumbs
+            separator={<NavigateNextIcon fontSize='small' />}
+            aria-label='breadcrumb'
           >
-            ATTENDANCE
-          </Typography>
+            <Typography color='textPrimary' variant='h6'>
+              Attendance
+            </Typography>
+            <Typography color='textPrimary'>Mark Attendance</Typography>
+          </Breadcrumbs>
         </Grid>
 
         <Grid container spacing={2}>
-          <Grid item xs={12} md={2}>
-            <Autocomplete
-              size='small'
-              onChange={handleBranch}
-              id='branch'
-              style={{ marginTop: '4px' }}
-              value={filterData.branch || {}}
-              options={dropdownData.branch || []}
-              getOptionLabel={(option) => option?.branch?.branch_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                />
-              )}
-            />
-          </Grid>
-
           <Grid item xs={12} md={2}>
             <MuiPickersUtilsProvider utils={MomentUtils}>
               <KeyboardDatePicker
@@ -505,12 +565,15 @@ export default function TeacherAttendance(props) {
                 format='YYYY-MM-DD'
                 margin='none'
                 id='date-picker-start-date'
-                label='Start date'
+                label='Select date'
                 value={startDate}
                 // maxDate={new Date()}
                 disableFuture={true}
                 onChange={(event, date) => {
                   handleDateChange('startDate', date);
+                }}
+                InputLabelProps={{
+                  shrink: true,
                 }}
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
@@ -518,7 +581,6 @@ export default function TeacherAttendance(props) {
               />
             </MuiPickersUtilsProvider>
           </Grid>
-
           <Grid item xs={12} md={2}>
             <Autocomplete
               // multiple
@@ -527,7 +589,6 @@ export default function TeacherAttendance(props) {
               value={rolesId}
               disableClearable
               className='dropdownIcon'
-              style={{ marginTop: '4px' }}
               id='message_log-smsType'
               options={roles}
               getOptionLabel={(option) => option?.role_name}
@@ -539,73 +600,116 @@ export default function TeacherAttendance(props) {
                   variant='outlined'
                   label='Role'
                   placeholder='Role'
+                  required
                 />
               )}
             />
           </Grid>
+          <Grid item xs={12} md={2}>
+            <Autocomplete
+              id='combo-box-demo'
+              size='small'
+              options={branchList}
+              onChange={handleBranch}
+              value={selectedBranch}
+              getOptionLabel={(option) => option.branch_name}
+              renderInput={(params) => (
+                <TextField {...params} label='Branch' variant='outlined' required />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <Autocomplete
+              id='combo-box-demo'
+              size='small'
+              options={gradeList}
+              onChange={handleGrade}
+              value={selectedGrade}
+              getOptionLabel={(option) => option?.grade_name}
+              renderInput={(params) => (
+                <TextField {...params} label='Grade' variant='outlined' required />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <Autocomplete
+              id='combo-box-demo'
+              size='small'
+              options={sectionList}
+              onChange={handleSection}
+              value={selectedSection}
+              getOptionLabel={(option) => option?.section__section_name}
+              renderInput={(params) => (
+                <TextField {...params} label='Section' variant='outlined' />
+              )}
+            />
+          </Grid>
+
           <Grid item md={2} xs={12} sm={12}>
             <Button onClick={getTeacherData} variant='contained' color='primary'>
               Search
             </Button>
           </Grid>
         </Grid>
+        <div className='th-sticky-header' style={{ width: '100%' }}>
+          <TableContainer className='tableContainer'>
+            <Table
+              className={classes.table}
+              aria-labelledby='tableTitle'
+              size={dense ? 'small' : 'medium'}
+              aria-label='enhanced table'
+              stickyHeader
+            >
+              <EnhancedTableHead
+                classes={classes}
+                order={order}
+                onRequestSort={handleRequestSort}
+                rowCount={data?.length}
+              />
+              <TableBody>
+                {
+                  data.map((value, i) => {
+                    return (
+                      <TableRow
+                        hover
+                        // onClick={(event) => handleClick(event, row.name)}
+                        role='checkbox'
+                        // aria-checked={isItemSelected}
+                        tabIndex={-1}
+                        key={value?.name}
+                        // selected={isItemSelected}
+                      >
+                        <TableCell align='left' style={{ width: '1px' }}>
+                          {value?.erp_id}
+                        </TableCell>
+                        <TableCell align='left' style={{ width: '1px' }}>
+                          {value?.name}
+                        </TableCell>
+                        <TableCell align='left' style={{ width: '1px' }}>
+                          {value?.roles__role_name}
+                        </TableCell>
 
-        <TableContainer className='tableContainer'>
-          <Table
-            className={classes.table}
-            aria-labelledby='tableTitle'
-            size={dense ? 'small' : 'medium'}
-            aria-label='enhanced table'
-          >
-            <EnhancedTableHead
-              classes={classes}
-              order={order}
-              onRequestSort={handleRequestSort}
-              rowCount={data?.length}
-            />
-            <TableBody>
-              {
-                data.map((value, i) => {
-                  return (
-                    <TableRow
-                      hover
-                      // onClick={(event) => handleClick(event, row.name)}
-                      role='checkbox'
-                      // aria-checked={isItemSelected}
-                      tabIndex={-1}
-                      key={value?.name}
-                      // selected={isItemSelected}
-                    >
-                      <TableCell align='left' style={{ width: '1px' }}>
-                        {value?.erp_id}
-                      </TableCell>
-                      <TableCell align='left' style={{ width: '1px' }}>
-                        {value?.name}
-                      </TableCell>
-                      <TableCell align='left' style={{ width: '1px' }}>
-                        {value?.roles__role_name}
-                      </TableCell>
-                     
-                      <TableCell align='center' style={{ width: '1px' }}>
-                        <TeacherAttendanceStatus
-                          user_id={value?.id}
-                          start_date={startDate}
-                          attendence_status={value?.attendence_status}
-                        />
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-                // })}
-                /* {emptyRows > 0 && (
+                        <TableCell align='right' style={{ width: '1px' }}>
+                          <TeacherAttendanceStatus
+                            user_id={value?.id}
+                            start_date={startDate}
+                            attendence_status={value?.attendence_status}
+                          />
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })
+                  // })}
+                  /* {emptyRows > 0 && (
                   <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
                     <TableCell colSpan={6} />
                   </TableRow>
                 )} */
-              }
-            </TableBody>
-          </Table>
-        </TableContainer>
+                }
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
       </Grid>
     </Layout>
   );
