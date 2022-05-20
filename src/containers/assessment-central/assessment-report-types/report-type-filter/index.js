@@ -5,6 +5,25 @@ import { connect } from 'react-redux';
 import { setReportType } from '../../../../redux/actions';
 
 const reportTypes = [
+  {
+    id: 6,
+    type: 'Individual Test Report',
+  },
+
+  {
+    id: 9,
+    type: 'Gradewise Assessment Summary',
+  },
+  {
+    id: 10,
+    type: 'Gradewise Assessment Completion',
+  },
+  {
+    id: 13,
+    type: 'Consolidated Assessment Report',
+  },
+];
+const orchidsReportTypes = [
   { id: 3, type: 'Student Comparison' },
   {
     id: 5,
@@ -22,10 +41,6 @@ const reportTypes = [
   {
     id: 10,
     type: 'Gradewise Assessment Completion',
-  },
-  {
-    id: 12,
-    type: 'Consolidated Subject Assessment Report',
   },
   {
     id: 13,
@@ -55,6 +70,8 @@ const ReportTypeFilter = ({
     }
   }, [isReportView]);
 
+  let domain = window.location.href.split('/');
+  let isAolOrchids = domain[2].includes('aolschool') || domain[2].includes('orchids');
   return (
     <Grid
       container
@@ -72,7 +89,7 @@ const ReportTypeFilter = ({
           id='report-types'
           className='dropdownIcon'
           value={selectedReportType || {}}
-          options={reportTypes || []}
+          options={isAolOrchids ? orchidsReportTypes : reportTypes || []}
           getOptionLabel={(option) => option?.type || ''}
           getOptionSelected={(option, value) => option?.id === value?.id}
           renderInput={(params) => (
