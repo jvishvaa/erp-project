@@ -1,6 +1,7 @@
 const webUrl = window.location.host;
 const hostUrl = webUrl.split('.')
 
+const chechUrl = hostUrl[0] === 'orchids' ? true : false;
 const local = {
   s3: {
     // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
@@ -100,7 +101,7 @@ const prod = {
     baseURLMPQ: 'https://mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     baseURLCentral: 'https://mgmt.letseduvate.com/qbox',
-    baseFinanceURL:'https://revamp.finance.letseduvate.com/qbox',
+    baseFinanceURL: chechUrl ? 'https://revamp.finance.letseduvate.com/qbox' : `${hostUrl[0]}.finance.letseduvate.com/qbox`,
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://classes.letseduvate.com',
     msReportsUrl: 'https://reports.letseduvate.com',
