@@ -7,15 +7,9 @@ import {
   Typography,
   Menu,
   MenuItem,
-  TableCell,
-  TableBody,
-  TableContainer,
-  TableRow,
-  TableHead,
-  Table,
   TextField,
-  Checkbox,
-  IconButton,
+  useTheme,
+  useMediaQuery
 } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import Popover from '@material-ui/core/Popover';
@@ -53,7 +47,6 @@ import axiosInstance from 'config/axios';
 import { connect, useSelector } from 'react-redux';
 import FilterFramesIcon from '@material-ui/icons/FilterFrames';
 import NoFilterData from 'components/noFilteredData/noFilterData';
-import { useTheme } from '@material-ui/core/styles';
 import { SvgIcon } from '@material-ui/core';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { AttachmentPreviewerContext } from './../../../components/attachment-previewer/attachment-previewer-contexts/attachment-previewer-contexts';
@@ -62,7 +55,8 @@ import { AlertNotificationContext } from './../../../context-api/alert-context/a
 import logo from './filter.png';
 import CloseIcon from '@material-ui/icons/Close';
 import Loader from 'components/loader/loader';
-import Pagination from 'components/PaginationComponent';
+import Pagination from 'components/PaginationComponent';  
+
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -99,6 +93,20 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: '20px',
     },
   },
+  rootmenu:{
+    '& .MuiPopover-paper' : {
+      top:'115px !important',
+      left: '8px !important',
+      width : '100%'
+    }
+  },
+  rootwebmenu : {
+    '& .MuiPopover-paper' : {
+      // top:'115px !important',
+      // left: '8px !important',
+      width : '26%'
+    }
+  }
 }));
 
 const NewCommunication = () => {
@@ -136,6 +144,8 @@ const NewCommunication = () => {
   const branchId = branches.map((item) => item.id);
   const [count,setCount] = useState(0)
   const [pageNo,setpageNo] = useState(1)
+  const themeContext = useTheme();
+  const isMobile = useMediaQuery(themeContext.breakpoints.down('xs'));
   const limit = 10;
   const handleRightClick = (event) => {
     if (menuPosition) {
@@ -150,12 +160,8 @@ const NewCommunication = () => {
   const handleItemClick = (event) => {
     // setMenuPosition(null);
   };
-
-  const theme = useTheme();
   const [moduleId, setModuleId] = useState('');
-
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
-
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
 
@@ -214,6 +220,7 @@ const NewCommunication = () => {
 
   const rowsData = (filterOn) => {
     setLoading(true)
+    setMenuPosition(null)
     let url = '';
     let baseurl = '';
     if (category == null) {
@@ -486,42 +493,47 @@ const NewCommunication = () => {
   return (
     <Layout>
       {loading && <Loader />}
-      <Grid container style={{ backgroundColor: '#F6FAFD' }}>
-        <Grid item xs={9} sm={9} md={9} spacing={3}>
-          <div style={{ padding: '0 20px' }}>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-              }}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div style={{ paddingTop: '10px', color: '#347394', fontSize: '20px' , marginLeft: '1%' }}>
+          Announcements ({count})
+        </div>
+        {userLevel !== 12 && userLevel !== 13 && (
+          <div
+            style={{
+              paddingTop: '10px',
+              color: '#347394',
+              fontSize: '20px',
+              cursor: 'pointer',
+              marginRight : isMobile ? '' : '28%'
+            }}
+          >
+            <Typography
+              onClick={handleRightClick}
+              style={{ display: 'flex', alignItems: 'center' }}
             >
-              <div style={{ paddingTop: '10px', color: '#347394', fontSize: '20px' }}>
-                Announcements ({count})
-              </div>
-              {userLevel !== 12 && userLevel !== 13 && (
-                <div
-                  style={{
-                    paddingTop: '10px',
-                    color: '#347394',
-                    fontSize: '20px',
-                    cursor: 'pointer',
-                  }}
-                >
-                  <Typography
-                    onClick={handleRightClick}
-                    style={{ display: 'flex', alignItems: 'center' }}
-                  >
-                    {/* Filters <FilterFramesIcon /> */}
-                    Filters{' '}
-                    <img
-                      src={logo}
-                      alt=''
-                      style={{ height: '12px', width: '12px', marginLeft: '10px' }}
-                    ></img>
-                  </Typography>
-                </div>
-              )}
-            </div>
+              {/* Filters <FilterFramesIcon /> */}
+              Filters{' '}
+              <img
+                src={logo}
+                alt=''
+                style={{ height: '12px', width: '12px', marginLeft: '10px' }}
+              ></img>
+            </Typography>
+          </div>
+        )}
+      </div>
+      <Grid
+        container
+        direction={isMobile ? 'column-reverse' : 'row'}
+        style={{ backgroundColor: '#F6FAFD' }}
+      >
+        <Grid item xs={12} sm={9} md={9} spacing={3}>
+          <div style={{ padding: '0 20px' }}>
             {dateWiseEvents.length === 0 ? (
               <div style={{ marginTop: '30px' }}>
                 <NoFilterData data={'No Data Found for this Section & Date'} />
@@ -667,15 +679,21 @@ const NewCommunication = () => {
             )}
           </div>
         </Grid>
-        <Grid item xs={2} sm={2} md={2} spacing={2}>
-          <div style={{ height: '80px' }}></div>
-          <List dense={true}>
+        <Grid item xs={12} sm={2} md={2} spacing={2}>
+          <div style={{ height: isMobile ? 'auto' : '80px' }}></div>
+          <List
+            style={{
+              display: isMobile ? 'flex' : 'block',
+              overflow: isMobile ? 'scroll' : 'hidden',
+            }}
+            dense={true}
+          >
             <ListItem
               className={` ${classes.listItem} ${onClickIndex == 1 && 'active'}`}
               button
               onClick={() => {
                 setOnClickIndex(1);
-                setpageNo(1)
+                setpageNo(1);
                 setCategory(null);
               }}
             >
@@ -691,7 +709,7 @@ const NewCommunication = () => {
                   button
                   onClick={() => {
                     setOnClickIndex(2);
-                    setpageNo(1)
+                    setpageNo(1);
                     setCategory(null);
                   }}
                 >
@@ -705,7 +723,7 @@ const NewCommunication = () => {
                   button
                   onClick={() => {
                     setOnClickIndex(3);
-                    setpageNo(1)
+                    setpageNo(1);
                     setCategory(null);
                   }}
                 >
@@ -718,12 +736,22 @@ const NewCommunication = () => {
             )}
           </List>
           <Divider />
-          <List dense={true}>
+          <List
+            style={{
+              display: isMobile ? 'flex' : 'block',
+              width: '100%',
+              overflow: isMobile ? 'scroll' : 'hidden',
+            }}
+            dense={true}
+          >
             {announcementList.map((item) => (
-              <ListItem button onClick={() => {
-              setCategory(item?.id);
-              setpageNo(1)
-              }}>
+              <ListItem
+                button
+                onClick={() => {
+                  setCategory(item?.id);
+                  setpageNo(1);
+                }}
+              >
                 <ListItemIcon>
                   {item?.category_name === 'Event' ? (
                     <EventIcon style={{ color: '#7852CC' }} />
@@ -762,7 +790,7 @@ const NewCommunication = () => {
           </List>
           <div style={{ height: '20px' }}></div>
           {userLevel !== 12 && userLevel !== 13 && (
-            <div>
+            <div style={{position : isMobile ? 'absolute' : 'static', bottom : isMobile ? '15%' : 0 , right : isMobile? '10px' : 0}}>
               <Button
                 aria-describedby={idAnnouncementType}
                 variant='contained'
@@ -1025,7 +1053,7 @@ const NewCommunication = () => {
                     >
                       <BorderColorIcon style={{ color: '#536476' }} />
                     </IconButton> */}
-                  {/* </div> 
+              {/* </div> 
                 ) : (
                   <>
                     <Typography
@@ -1124,7 +1152,8 @@ const NewCommunication = () => {
         onClose={() => setMenuPosition(null)}
         anchorReference='anchorPosition'
         anchorPosition={menuPosition}
-        style={{ width: '25vw' }}
+        // style={{ width: isMobile ? '100%' : '35vw' }}
+        className={isMobile ? classes.rootmenu : classes.rootwebmenu}
       >
         <MenuItem onClick={handleItemClick}>
           <form className={classes.container} noValidate>
