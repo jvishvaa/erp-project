@@ -142,7 +142,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
   Hello "UserName" ,
 
   Did you hear that Bell?
-  That’s because you have an Announcement related to "${announcementType?.category_name}" . Please check it out here : ${window.location.host}`
+  That’s because you have an Announcement related to "${announcementType?.category_name}" . Please check it out here : https://bit.ly/3wIzzUV`
   
   let emailTxt = `
   Dear UserName,
@@ -154,9 +154,9 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
   Did you hear that Bell?
   That’s because you have an Announcement related to "${announcementType?.category_name}"
   
-  ${titlebody}
+  ${titlebody.length > 300 ? titlebody.slice(0, 300) + '...' : titlebody}
   -${first_name} ${last_name}
-  For more details, please check it out here: ${window.location.host}
+  For more details, please check it out here: https://bit.ly/3wIzzUV
   
   Regards,
   Orchids International School
