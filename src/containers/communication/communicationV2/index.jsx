@@ -816,12 +816,12 @@ const NewCommunication = () => {
                 anchorEl={anchorElAnnouncementType}
                 onClose={handleCloseAnnouncement}
                 anchorOrigin={{
-                  vertical: isMobile ? 'bottom' : 'top',
+                  vertical:  'top',
                   horizontal: 'left',
                 }}
                 transformOrigin={{
-                  vertical: isMobile ? 'top' : 'bottom',
-                  horizontal: isMobile ? 'center' : 'left',
+                  vertical: 'bottom',
+                  horizontal: 'left',
                 }}
               >
                 <List dense={true}>
