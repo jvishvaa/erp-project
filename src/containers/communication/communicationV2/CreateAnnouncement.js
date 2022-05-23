@@ -100,10 +100,9 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
     whatsapp : false ,
     email: false
   }
-const smsArr = [1]
-const whatsappArr = [1]
+const smsArr = [1,8]
+const whatsappArr = [1,8]
 const emailArr = [1,11,4,5,8,9,10,3,2,14]
-// console.log(user_level,'@@')
   const [moduleId, setModuleId] = useState('');
   const [userLevelList, setUserLevelList] = useState([]);
   const [selectedUserLevelData, setSelectedUserLevelData] = useState([]);
