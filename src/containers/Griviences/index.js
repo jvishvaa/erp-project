@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Avatar,
   Button,
@@ -34,13 +35,20 @@ import UpperGrade from './UpperGrid/upperGrid';
 import EmojiObjectsSharpIcon from '@material-ui/icons/EmojiObjectsSharp';
 import { BrowserRouter as Router, Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import TablePagination from '@material-ui/core/TablePagination';
+import { connect, useSelector } from 'react-redux';
+import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
+import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
+import DateRangeIcon from '@material-ui/icons/DateRange';
+import moment from 'moment';
+import { IconButton } from '@material-ui/core';
 import './greviences.scss';
 
 const useStyles = makeStyles({
   grivienceDiv: {
     '@media (max-width: 600px)': {
-      marginBottom: '70px'
-    }
+      marginBottom: '70px',
+    },
   },
   buttonContainer: {
     marginTop: '20px',
@@ -60,7 +68,13 @@ const useStyles = makeStyles({
       alignItems: 'center',
     },
   },
-})
+  tablePaginationToolbar: {
+    justifyContent: 'center',
+  },
+  tablePaginationSpacer: {
+    flex: 0,
+  },
+});
 
 const StyledFilterButton = withStyles((theme) => ({
   root: {
@@ -71,7 +85,7 @@ const StyledFilterButton = withStyles((theme) => ({
     textTransform: 'capitalize',
     backgroundColor: 'transparent',
     '&:hover': {
-      backgroundColor: 'transparent !important',
+      // backgroundColor: 'transparent !important',
     },
   },
   iconSize: {},
@@ -101,6 +115,10 @@ const GravienceHome = () => {
   const [grievanceTypeID, setGrievanceTypeID] = useState();
   let userName = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [expanded, setExpanded] = React.useState(true);
+  const [limit, setLimit] = useState('5');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const [postFlag, setPostFlag] = useState(false)
   const [filters, setFilters] = React.useState({
     year: '',
     branch: '',
@@ -108,6 +126,47 @@ const GravienceHome = () => {
     section: '',
     types: '',
   });
+  const [filterFlag, setFilterFlag] = useState(false)
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+  const [minStartDate, setMinStartDate] = useState();
+  const [maxStartDate, setMaxStartDate] = useState();
+  const [dateRangeTechPer, setDateRangeTechPer] = useState([
+    moment().subtract(6, 'days'),
+    moment(),
+  ]);
+  const history = useHistory()
+
+
+  const [dateFlag, setDateFlag] = useState(false)
+
+  const handleRefresh = () => {
+    if (postFlag) {
+      setPostFlag(false)
+    } else {
+      setPostFlag(true)
+    }
+  }
+
+  const handleFilerFlag = () => {
+    setFilters({
+      year: '',
+      branch: '',
+      grade: '',
+      section: '',
+      types: ''
+    })
+    if (filterFlag) {
+      setFilterFlag(false)
+    } else {
+      setFilterFlag(true)
+    }
+  }
+
+  const handlePagination = (event, page) => {
+    setCurrentPage(page);
+  };
 
   const handleFilterData = (years, branchs, grades, sections, types) => {
     setFilters({
@@ -115,8 +174,55 @@ const GravienceHome = () => {
       branch: branchs,
       grade: grades,
       section: sections,
-      types: types
+      types: types,
     });
+    if (path === '/griviences/admin-view') {
+      if (
+        years !== '' &&
+        branchs !== '' &&
+        grades !== '' &&
+        sections !== '' &&
+        types !== ''
+      ) {
+        axiosInstance
+          .get(
+            `${endpoints.grievances.getGrivienceList}?academic_year=${years?.id}&branch=${branchs?.id}&grade=${grades?.id}&section=${sections?.id}&grievance_type=${types?.id}&page_size=${limit}&page=${currentPage}`
+          )
+          .then((result) => {
+            console.log(result, 'list data');
+            if (result.status == 200) {
+              console.log(result, 'list-tickets ddata');
+              setGravienceList(result.data.data.results);
+              setCurrentPage(result?.data?.data?.current_page)
+              setTotalCount(result?.data?.data?.count)
+            } else {
+              setAlert('error', result.data.message);
+            }
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
+          });
+      } else {
+        // add
+        axiosInstance
+          .get(`${endpoints.grievances.getGrivienceList}?academic_year=${selectedAcademicYear.id}&page_size=${limit}&page=${currentPage}`)
+          .then((result) => {
+            console.log(result, 'list data');
+            if (result.status == 200) {
+              console.log(result, 'list-tickets ddata');
+              setGravienceList(result.data.data.results);
+              setCurrentPage(result?.data?.data?.current_page)
+              setTotalCount(result?.data?.data?.count)
+            } else {
+              setAlert('error', result.data.message);
+            }
+          })
+          .catch((error) => {
+            //setAlert('error', error.message);
+            setAlert('warning', 'Please select filter');
+          });
+      }
+    }
   };
 
   const handleExpandClick = () => {
@@ -162,14 +268,7 @@ const GravienceHome = () => {
     temp,
     userID,
     studentView,
-    // acadamicYear_ID,
-    // grade_ID,
-    // branch_ID,
-    // section_ID,
-    // academic_Year,
-    // grade_Name,
-    // branch_Name,
-    // section_Name,
+
     open_Dialog
   ) => {
     if (path === '/griviences/admin-view') {
@@ -183,18 +282,11 @@ const GravienceHome = () => {
         handleOpenForm();
       }
     } else if (path === '/griviences/student-view') {
-      // setAcadamicYear(acadamicYearID[0]);
-      // setGradeID(gradeID[0]);
-      // setBranchID(branchID[0]);
-      // setSectionID(sectionID[0]);
-      // setGrievanceTypeID(temp);
+
       setUserID(userID);
       setStudentView(studentView);
     }
-    // setAcadamicYearName(academic_Year);
-    // setGradeName(grade_Name);
-    // setBranchName(branch_Name);
-    // setSectionName(section_Name);
+
   };
 
   useEffect(() => {
@@ -221,90 +313,84 @@ const GravienceHome = () => {
 
     userID
   ) => {
-    if (path === '/griviences/admin-view') {
-      await axiosInstance.get(
-          `${endpoints.grievances.getGrivienceList}?academic_year=${acadamicYearID[0]}&branch=${branchID[0]}&grade=${gradeID[0]}&section=${sectionID[0]}&grievance_type=${temp}`
-        )
-        .then((result) => {
-          console.log(result, 'list data');
-          if (result.status == 200) {
-            console.log(result, 'list-tickets ddata');
-            setGravienceList(result.data.data.results);
-          } else {
-            setAlert('error', result.data.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-        });
-    } else if (path === '/griviences/student-view') {
-      // await axiosInstance
-      // .get(`${endpoints.grievances.getGrievenceErpList}?erp_id=${userName.user_id}`)
-      //   .then((result) => {
-      //     console.log(result, 'list data');
-      //     if (result.status == 200) {
-      //       console.log(result, 'list-tickets ddata');
-      //       setGravienceList(result.data.data.results);
-      //     } else {
-      //       setAlert('error', result.data.message);
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     setAlert('error', error.message);
-      //   });
-    }
+
   };
 
   useEffect(() => {
-    console.log(filters,'filters');
-    if (path === '/griviences/admin-view'){
-      if(filters.year !== '' && filters.branch !== '' && filters.grade !== '' && filters.section !== '' && filters.types !== ''){
+    console.log(filters, 'filters');
+    if (path === '/griviences/admin-view') {
+      if (filters.year !== '' && filters.branch !== '' && filters.grade !== '' && filters.section !== '' && filters.types !== '') {
         axiosInstance.get(
-          `${endpoints.grievances.getGrivienceList}?academic_year=${filters.year?.id}&branch=${filters.branch?.id}&grade=${filters.grade?.id}&section=${filters.section?.id}&grievance_type=${filters.types?.id}`
+          `${endpoints.grievances.getGrivienceList}?academic_year=${filters.year?.id}&branch=${filters.branch?.id}&grade=${filters.grade?.id}&section=${filters.section?.id}&grievance_type=${filters.types?.id}&page_size=${limit}&page=${currentPage}`
         )
-        .then((result) => {
-          console.log(result, 'list data');
-          if (result.status == 200) {
-            console.log(result, 'list-tickets ddata');
-            setGravienceList(result.data.data.results);
-          } else {
-            setAlert('error', result.data.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-        });
+          .then((result) => {
+            console.log(result, 'list data');
+            if (result.status == 200) {
+              console.log(result, 'list-tickets ddata');
+              setGravienceList(result.data.data.results);
+            } else {
+              setAlert('error', result.data.message);
+            }
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
+          });
       } else {
-        // add 
-        // axiosInstance.get(
-        //   `${endpoints.grievances.getGrivienceList}`
-        // )
-        // .then((result) => {
-        //   console.log(result, 'list data');
-        //   if (result.status == 200) {
-        //     console.log(result, 'list-tickets ddata');
-        //     setGravienceList(result.data.data.results);
-        //   } else {
-        //     setAlert('error', result.data.message);
-        //   }
-        // })
-        // .catch((error) => {
-        //   //setAlert('error', error.message);
-        //   setAlert('warning', 'Please select filter');
-        // });
+        axiosInstance.get(
+          `${endpoints.grievances.getGrivienceList}?academic_year=${selectedAcademicYear.id}&page_size=${limit}&page=${currentPage}`
+        )
+          .then((result) => {
+            console.log(result, 'list data');
+            if (result.status == 200) {
+              console.log(result, 'list-tickets ddata');
+              setGravienceList(result.data.data.results);
+              setCurrentPage(result?.data?.data?.current_page)
+              setTotalCount(result?.data?.data?.count)
+            } else {
+              setAlert('error', result.data.message);
+            }
+          })
+          .catch((error) => {
+            //setAlert('error', error.message);
+            setAlert('warning', 'Please select filter');
+          });
       }
     }
-  },[filters])
+  }, [currentPage, postFlag])
 
   useEffect(() => {
-    if(path === '/griviences/student-view'){
-      axiosInstance
-      .get(`${endpoints.grievances.getGrievenceErpList}?erp_id=${userName.user_id}`)
+    if (path === '/griviences/admin-view') {
+      axiosInstance.get(
+        `${endpoints.grievances.getGrivienceList}?academic_year=${selectedAcademicYear.id}&page_size=${limit}&page=${currentPage}`
+      )
         .then((result) => {
           console.log(result, 'list data');
           if (result.status == 200) {
             console.log(result, 'list-tickets ddata');
             setGravienceList(result.data.data.results);
+            setCurrentPage(result?.data?.data?.current_page)
+            setTotalCount(result?.data?.data?.count)
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          //setAlert('error', error.message);
+          setAlert('warning', 'Please select filter');
+        });
+    }
+  }, [filterFlag])
+
+  useEffect(() => {
+    if (path === '/griviences/student-view') {
+      axiosInstance
+        .get(`${endpoints.grievances.getGrievenceStudent}?user_id=${userName?.user_id}&page_size=${limit}&page=${currentPage}&academic_year=${selectedAcademicYear?.id}`)
+        .then((result) => {
+          if (result.status == 200) {
+            console.log(result, 'sameeraaaaaaa');
+            setGravienceList(result.data.data.results);
+            setCurrentPage(result?.data?.data?.current_page)
+            setTotalCount(result?.data?.data?.count)
           } else {
             setAlert('error', result.data.message);
           }
@@ -313,25 +399,107 @@ const GravienceHome = () => {
           setAlert('error', error.message);
         });
     }
-  },[]);
+  }, [currentPage, postFlag]);
+
+  useEffect(() => {
+    if (path === '/griviences/student-view') {
+      const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
+      if (endDateTechPer && dateFlag) {
+        axiosInstance
+          .get(`${endpoints.grievances.getGrievenceStudent}?user_id=${userName?.user_id}&page_size=${limit}&page=${currentPage}&start_date=${moment(startDateTechPer)?.format('YYYY-MM-DD')}&end_date=${moment(endDateTechPer)?.format('YYYY-MM-DD')}&academic_year=${selectedAcademicYear?.id}`)
+          .then((result) => {
+            if (result.status == 200) {
+              console.log(result, 'sameeraaaaaaa');
+              setGravienceList(result.data.data.results);
+              setCurrentPage(result?.data?.data?.current_page)
+              setTotalCount(result?.data?.data?.count)
+            } else {
+              setAlert('error', result.data.message);
+            }
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
+          });
+      }
+    }
+  }, [dateRangeTechPer]);
   const showFilters = () => {
     console.log('sameera');
     setStudentView(!studentView);
     console.log(studentView, 'studentVieww');
   };
 
+  const createGrev = () => {
+    history.push('/greviences/createnew')
+  }
+
   return (
     <Layout>
       <div className='griviences-breadcrums-container'>
-        <CommonBreadcrumbs componentName='Griviences' />
+        <CommonBreadcrumbs componentName='Grievance'
+          childComponentName={studentView ? 'Grievance Student' : 'Grievance teacher'}
+          isAcademicYearVisible={true}
+        />
       </div>
       <div className={classes.grivienceDiv}>
         {location.pathname !== '/griviences/student-view' && (
           <div>
             <Collapse in={expanded}>
-              <Filters handleFilterData={handleFilterData}/>
+              <Filters handleFilterData={handleFilterData} handleFilerFlag={handleFilerFlag} />
             </Collapse>
           </div>
+        )}
+        {location.pathname == '/griviences/student-view' && (
+          <Grid style={{ margin: '0 5%', display: 'flex', justifyContent: 'space-between' }}>
+            <LocalizationProvider dateAdapter={MomentUtils}   >
+              <DateRangePicker
+                // minDate={minStartDate ? new Date(minStartDate) : undefined}
+                // maxDate={maxStartDate ? new Date(maxStartDate) : undefined}
+                startText='Select-date-range'
+                value={dateRangeTechPer}
+                onChange={(newValue) => {
+                  console.log(newValue, 'new');
+                  setDateRangeTechPer(newValue);
+                  setDateFlag(true);
+                }}
+                renderInput={({ inputProps, ...startProps }, endProps) => {
+                  return (
+                    <>
+                      <TextField
+                        {...startProps}
+                        inputProps={{
+                          ...inputProps,
+                          value: `${moment(inputProps.value).format(
+                            'DD/MM/YYYY'
+                          )} - ${moment(endProps.inputProps.value).format(
+                            'DD/MM/YYYY'
+                          )}`,
+                          readOnly: true,
+                          endAdornment: (
+                            <IconButton>
+                              <DateRangeIcon
+                                style={{ width: '35px' }}
+                                color='primary'
+                              />
+                            </IconButton>
+                          ),
+                        }}
+                        size='small'
+                      />
+                    </>
+                  );
+                }}
+              />
+            </LocalizationProvider>
+            {studentView ?
+              <div >
+                <Button onClick={createGrev} >
+                  <EmojiObjectsSharpIcon />
+                  CREATE GRIEVANCE
+                </Button>
+              </div>
+              : ''}
+          </Grid>
         )}
 
         {/* {setMobileView ? (
@@ -340,59 +508,70 @@ const GravienceHome = () => {
           <></>
         )} */}
         <div className='Greviences-container'>
-          <Grid
-            container
-            className={classes.buttonContainer}
-          >
+          <Grid container className={classes.buttonContainer}>
             <Grid item xs={12} sm={8}>
-              <Typography color="secondary">All</Typography>
-              
+
             </Grid>
             <Grid item xs={12} sm={4}>
               <Grid container>
-                <Grid item xs={6}>
-                  <Button
-                    color='primary'
-                    onClick={handleDownload}
-                  >
+                {/* <Grid item xs={6}>
+                  <Button color='primary' onClick={handleDownload}>
                     Download
                   </Button>
-                </Grid>
+                </Grid> */}
                 {location.pathname !== '/griviences/student-view' && (
                   <Grid item xs={6}>
-                    <StyledFilterButton onClick={handleExpandClick} startIcon={<FilterFilledIcon />}>
-                      Show filters
+                    <StyledFilterButton
+                      onClick={handleExpandClick}
+                      startIcon={<FilterFilledIcon />}
+                      style={{ fontSize: '18px', fontWeight: '600', background: '#E2E2E2' }}
+                    >
+                      {expanded ? 'Hide Filters ' : ' Show filters '}
                     </StyledFilterButton>
                   </Grid>
                 )}
               </Grid>
             </Grid>
           </Grid>
-          <Divider style={{ backgroundColor: '#78B5F3', width: '90%', marginLeft: '5%' }} />
+          <Divider
+            style={{ backgroundColor: '#78B5F3', width: '90%', marginLeft: '5%' }}
+          />
           <div
             style={{
               maxWidth: '80%',
               margin: 'auto',
             }}
           >
-            {gravienceList != undefined && gravienceList.length != 0
+            {gravienceList != undefined && gravienceList.length > 0
               ? gravienceList.map((result) => (
-                  <GriviencesDetailContainer list_tickets={result} />
-                ))
+                <GriviencesDetailContainer
+                  list_tickets={result}
+                  handleFilterData={handleFilterData}
+                  FilterData={filters}
+                  setPostFlag={setPostFlag}
+                  handleRefresh={handleRefresh}
+                />
+              ))
               : null}
           </div>
         </div>
       </div>
-      {!setMobileView && (
-          <div className='create-report-box'>
-            <div className='create-report-button'>
-              <Link to='/greviences/createnew'>
-                <EmojiObjectsSharpIcon />
-                CREATE REPORT
-              </Link>
-            </div>
-          </div>
-        )}
+
+      <TablePagination
+        component='div'
+        count={totalCount}
+        rowsPerPage={limit}
+        page={Number(currentPage) - 1}
+        onChangePage={(e, page) => {
+          setCurrentPage(page + 1)
+        }}
+        rowsPerPageOptions={false}
+        className='table-pagination'
+        classes={{
+          spacer: classes.tablePaginationSpacer,
+          toolbar: classes.tablePaginationToolbar,
+        }}
+      />
     </Layout>
   );
 };

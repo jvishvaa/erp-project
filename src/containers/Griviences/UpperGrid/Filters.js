@@ -384,6 +384,7 @@ const Filters = (props) => {
   }
 
   const clearFilter = () => {
+    props.handleFilerFlag()
     //setAcademicYear([]);
     setBranch([]);
     setGrade([]);
@@ -393,7 +394,7 @@ const Filters = (props) => {
     setGradeId(0);
     setSectionId(0);
     setSelectedIndex(0);
-
+    setExpanded('panel1')
     setselectedAcademic({ id: 0, year: '' });
     setSelectedBranch({ id: 0, branchs: '' });
     setSelectedGrade({ id: 0, grades: '' });
@@ -431,12 +432,12 @@ const Filters = (props) => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Griviences' &&
+          item.parent_modules === 'Grievance' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Griviences Teacher') {
+            if (item.child_name === 'Grievance Teacher') {
               setModuleId(item.child_id);
             }
           });
@@ -488,7 +489,6 @@ const Filters = (props) => {
           `${endpoints.masterManagement.sections}?module_id=${moduleId}&session_year=${academicId}&branch_id=${branchId}&grade_id=${gradeId}`
         )
         .then((res) => {
-          console.log(res.data);
           setSections(res.data.data);
         })
         .catch((error) => console.log(error));
@@ -677,7 +677,7 @@ const Filters = (props) => {
                 // className={classes.filterButton}
                 onClick={handleFilters}
               >
-                filter
+                Filter
               </StyledFilterButton>
             </Grid>
         </Grid>
@@ -983,12 +983,12 @@ const Filters = (props) => {
               </Grid>
             <Grid item sm={4} xs={12}>
               <div style={{ marginTop: '100px', marginBottom: '50px', display: 'flex', alignItems: 'center'}}>
-                <StyledFilterButton
+                {/* <StyledFilterButton
                   startIcon={<EmojiObjectsSharpIcon className={classes.filterIcon} />}
                   onClick={handleGenerate}
                 >
                   Generate
-                </StyledFilterButton>
+                </StyledFilterButton> */}
               </div>
               <div>
                 <StyledClearButton
@@ -1005,7 +1005,7 @@ const Filters = (props) => {
                   className={classes.filterButton}
                   onClick={handleFilters}
                 >
-                  filter
+                  Filter
                 </StyledFilterButton>
               </div>
             </Grid>

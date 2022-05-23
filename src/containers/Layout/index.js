@@ -539,11 +539,11 @@ const Layout = ({ children, history }) => {
         break;
       }
 
-      case 'Griviences Teacher': {
+      case 'Grievance Teacher': {
         history.push('/griviences/admin-view');
         break;
       }
-      case 'Griviences Student': {
+      case 'Grievance Student': {
         history.push('/griviences/student-view');
         break;
       }

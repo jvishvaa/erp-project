@@ -269,7 +269,7 @@ const menuIcon = (name) => {
       icon = <ReceiptRoundedIcon />;
       break;
     }
-    case 'Griviences': {
+    case 'Grievance': {
       icon = <FeedbackIcon />;
       break;
     }

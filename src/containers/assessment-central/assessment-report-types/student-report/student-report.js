@@ -426,7 +426,7 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
               <TableHead className='table-header-row'>
                 <TableRow>
                   <TableCell>Test Name</TableCell>
-                  <TableCell>Corrent Answer</TableCell>
+                  <TableCell>Correct Answer</TableCell>
                   <TableCell>Total Marks</TableCell>
                   <TableCell>Wrong Answer</TableCell>
                   <TableCell>Marks Obtained</TableCell>
