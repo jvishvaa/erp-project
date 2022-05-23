@@ -106,7 +106,12 @@ const useStyles = makeStyles((theme) => ({
       // left: '8px !important',
       width : '26%'
     }
-  }
+  },
+  ellipses:{
+    textOverflow: 'ellipsis',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',  }
+
 }));
 
 const NewCommunication = () => {
@@ -790,7 +795,7 @@ const NewCommunication = () => {
           </List>
           <div style={{ height: '20px' }}></div>
           {userLevel !== 12 && userLevel !== 13 && (
-            <div style={{position : isMobile ? 'absolute' : 'static', bottom : isMobile ? '15%' : 0 , right : isMobile? '10px' : 0}}>
+            <div style={{position : isMobile ? 'absolute' : 'static',bottom : isMobile? '20px' : '', right : isMobile ? '10px':''}}>
               <Button
                 aria-describedby={idAnnouncementType}
                 variant='contained'
@@ -811,12 +816,12 @@ const NewCommunication = () => {
                 anchorEl={anchorElAnnouncementType}
                 onClose={handleCloseAnnouncement}
                 anchorOrigin={{
-                  vertical: 'top',
+                  vertical: isMobile ? 'bottom' : 'top',
                   horizontal: 'left',
                 }}
                 transformOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
+                  vertical: isMobile ? 'top' : 'bottom',
+                  horizontal: isMobile ? 'center' : 'left',
                 }}
               >
                 <List dense={true}>
@@ -919,6 +924,7 @@ const NewCommunication = () => {
                       color: 'black',
                       fontWeight: 'bold',
                       width: '100%',
+                      whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'
                     }}
                   >
                     {dialogData?.created_user}
@@ -963,8 +969,8 @@ const NewCommunication = () => {
                   })}
                 </div>
               </Grid>
-              <Grid item xs={8} sm={8} md={8} style={{ width: '100%' }}>
-                <div>{dialogData?.title}</div>
+              <Grid item xs={8} sm={8} md={8} style={{ width: '100%',marginLeft:'30px' }}>
+                <div style={{ whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{dialogData?.title}</div>
                 <div style={{ margin: '10px 0' }}>
                   <Typography
                     style={{
@@ -988,7 +994,7 @@ const NewCommunication = () => {
                           justifyContent: 'space-between',
                         }}
                       >
-                        <div style={{ fontSize: 16, fontWeight: 'bold' }}>{name}</div>
+                        <div style={{ fontSize: 16, fontWeight: 'bold' }} className = {isMobile ? classes.ellipses : null}>{name}</div>
                         <div
                           className='announcementsrc'
                           style={{
@@ -1032,8 +1038,17 @@ const NewCommunication = () => {
                   display: 'flex',
                   justifyContent: 'flex-end',
                 }}
-              >
-                {openPublish ? (
+              > */}
+              <div> <CancelIcon
+                      style={{
+                        height: isMobile ? '12px' : '25px',
+                        width: isMobile ? '12px' : '25px',
+                        cursor: 'pointer',
+                      }}
+                      onClick={handleClose}
+                    /></div>
+               
+                {/* {openPublish ? (
                   <div
                     style={{
                       display: 'flex',
@@ -1047,13 +1062,13 @@ const NewCommunication = () => {
                     >
                       <DeleteIcon style={{ color: '#FF006F' }} />
                     </IconButton>
-                    {/* <IconButton
+                     <IconButton
                       title='Edit'
                       // onClick={}
                     >
                       <BorderColorIcon style={{ color: '#536476' }} />
-                    </IconButton> */}
-              {/* </div> 
+                    </IconButton>
+              </div> 
                 ) : (
                   <>
                     <Typography
@@ -1074,8 +1089,8 @@ const NewCommunication = () => {
                       onClick={handleClose}
                     />
                   </>
-                )}
-              </Grid> */}
+                )} */}
+              {/* </Grid> */}
             </Grid>
           </DialogContentText>
         </DialogContent>
