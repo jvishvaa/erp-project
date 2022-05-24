@@ -134,8 +134,8 @@ const Appbar = ({ children, history, ...props }) => {
       if(window.location.pathname != '/'){
         localStorage.setItem('refURL',window.location.pathname)
       }
-      // history.push('/');
-      window.location.href = '/' ;
+      history.push('/');
+      // window.location.href = '/' ;
     }
     if (userDetails) {
       userDetails = JSON.parse(userDetails);

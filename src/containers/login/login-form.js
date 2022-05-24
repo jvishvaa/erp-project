@@ -95,8 +95,7 @@ function LoginForm(props) {
               if(refURL){
                 localStorage.removeItem('refURL')
                 window.location.href = refURL; 
-              }
-              if(userData?.user_level !== 4 ){
+              } else if(userData?.user_level !== 4 ){
               history.push('/acad-calendar');
               console.log(userData?.user_level , "level");
               } else {
