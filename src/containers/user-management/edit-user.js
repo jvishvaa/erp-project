@@ -214,6 +214,7 @@ class EditUser extends Component {
       guardian_email,
       guardian_country_code,
       guardian_mobile,
+      guardian_photo,
     } = parent;
 
     const parentDetail = {};
@@ -274,6 +275,7 @@ class EditUser extends Component {
       profile,
       father_photo,
       mother_photo,
+      guardian_photo,
       parent: parentDetail,
     };
 
@@ -281,6 +283,7 @@ class EditUser extends Component {
       delete requestObj.parent;
       delete requestObj.father_photo;
       delete requestObj.mother_photo;
+      delete requestObj.guardian_photo;
     }
     const { setAlert } = this.context;
     const requestObjFormData = jsonToFormData(requestObj);

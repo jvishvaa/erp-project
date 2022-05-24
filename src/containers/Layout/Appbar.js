@@ -131,7 +131,11 @@ const Appbar = ({ children, history, ...props }) => {
     }
     let userDetails = localStorage.getItem('userDetails');
     if (!userDetails) {
+      if(window.location.pathname != '/'){
+        localStorage.setItem('refURL',window.location.pathname)
+      }
       history.push('/');
+      // window.location.href = '/' ;
     }
     if (userDetails) {
       userDetails = JSON.parse(userDetails);
