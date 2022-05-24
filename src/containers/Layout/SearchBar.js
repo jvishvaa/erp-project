@@ -89,9 +89,10 @@ const SearchBar = ({ children, history, ...props }) => {
       setNavigationData(JSON.parse(navigationData));
     }
     let userDetails = localStorage.getItem('userDetails');
-    if (!userDetails) {
-      history.push('/');
-    }
+    // if (!userDetails) {
+    //   console.log(">>>>> locationsearch --- ", window.location);
+    //   history.push('/');
+    // }
     if (userDetails) {
       userDetails = JSON.parse(userDetails);
       const { is_superuser = false } = userDetails;

@@ -29,6 +29,8 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import Loading from '../../../../../components/loader/loader';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import { useHistory } from 'react-router-dom';
+
 
 const style = {
   position: 'absolute',
@@ -184,6 +186,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 export default function Announcement(props) {
+  const history = useHistory();
   const classes = useStyles();
   const [nextPage, setNextPage] = React.useState(''); //next page url from API response
   const [announcementArr, setAnnouncementArr] = React.useState([]); //we will store all the announcements in this array
@@ -250,6 +253,10 @@ export default function Announcement(props) {
         console.log('error');
       });
   };
+const announcementRedirect = () => {
+  history.push('/comm_dashboard')
+}
+
   const nextpagehandler = () => {
     let url = nextPage?.split('page=')[1];
     if (url)
@@ -595,7 +602,7 @@ export default function Announcement(props) {
                           <Button
                             variant='outlined'
                             size='small'
-                            onClick={handleOpentwo}
+                            onClick={announcementRedirect}
                             className={classes.iconmore}
                             style={{ fontSize: '0.8em' }}
                             // varient='contained'

@@ -61,6 +61,7 @@ const GuardianDetailsForm = ({
           : details.mother_mobile,
       mother_photo: details.mother_photo,
       father_photo: details.father_photo,
+      guardian_photo:details.guardian_photo,
       address: details.address,
       guardian_first_name: details.guardian_first_name,
       guardian_middle_name: details.guardian_middle_name,

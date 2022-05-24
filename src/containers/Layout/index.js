@@ -75,9 +75,10 @@ const Layout = ({ children, history }) => {
       setNavigationData(JSON.parse(navigationData));
     }
     let userDetails = localStorage.getItem('userDetails');
-    if (!userDetails) {
-      history.push('/');
-    }
+    // if (!userDetails) {
+    //   console.log(">>>>> location --- ", window.location.href);
+    //   window.location.href = '/';
+    // }
     if (userDetails) {
       userDetails = JSON.parse(userDetails);
       const { is_superuser = false } = userDetails;
