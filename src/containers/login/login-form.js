@@ -18,7 +18,7 @@ function LoginForm(props) {
   const { onLogin, isMsAPI, aolOnLogin, setLoading, history } = props;
   const classes = useStyles();
   const [uname, pass, checked] =
-    JSON.parse(localStorage.getItem('rememberDetails')) || [];
+  JSON.parse(localStorage.getItem('rememberDetails')) || [];
   const [username, setUsername] = useState('' || uname);
   const [password, setPassword] = useState('' || pass);
   const [check, setCheck] = useState(false || checked);
@@ -91,6 +91,11 @@ function LoginForm(props) {
             let userData = JSON.parse(localStorage.getItem('userDetails'));
             if(res === true || res.length > 0) {
               erpConfig = res;
+              let refURL = localStorage.getItem('refURL')
+              if(refURL){
+                localStorage.removeItem('refURL')
+                window.location.href = refURL; 
+              }
               if(userData?.user_level !== 4 ){
               history.push('/acad-calendar');
               console.log(userData?.user_level , "level");
