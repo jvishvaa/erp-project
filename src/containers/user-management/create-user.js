@@ -61,6 +61,7 @@ class CreateUser extends Component {
           mother_mobile: '',
           mother_photo: '',
           father_photo: '',
+          guardian_photo: '',
           address: '',
           guardian_first_name: '',
           guardian_middle_name: '',
