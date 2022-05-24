@@ -90,7 +90,7 @@ const CreateUpdateSignatureModel = ({
     if ((data && data.type === 'image/jpeg') || (data && data.type === 'image/png')) {
       setFile(data);
     } else {
-      setAlert('warning', 'Upload Image in JPEG && PNG format Only');
+      setAlert('warning', 'Upload Image in JPEG & PNG format Only');
     }
   }
 
