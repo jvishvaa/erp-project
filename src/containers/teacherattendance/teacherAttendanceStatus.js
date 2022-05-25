@@ -53,44 +53,44 @@ export default function TeacherAttendanceStatus(props) {
     // <Grid container direction="row" justifyContent="center">
     <FormControl component='fieldset' name='attendence_status'>
       <RadioGroup row={true} value={attendance} onChange={handleChange}>
-        <Grid item md={2} padding={10}>
+        <Grid item md={3}>
           <FormControlLabel
             value='present'
             control={<Radio />}
             label='Present'
-            className='th-font-size-13'
+            className='th-font-size-13 th-label'
           />
         </Grid>
-        <Grid item md={2} className={classes.absentPadding} className='absentPadding'>
+        <Grid item md={2} className='absentPadding'>
           <FormControlLabel
             value='absent'
             control={<Radio />}
             label='Absent'
-            className='th-font-size-13'
+            className='th-font-size-13 th-label'
           />
         </Grid>
-        <Grid item md={2} className={classes.halfdayPadding} className='halfdayPadding'>
+        <Grid item md={3} className='halfdayPadding'>
           <FormControlLabel
             value='halfday'
             control={<Radio />}
             label='Half Day'
-            className='th-font-size-13'
+            className='th-font-size-13 th-label'
           />
         </Grid>
-        <Grid item md={2}>
+        <Grid item md={2} className='latePadding'>
           <FormControlLabel
             value='late'
             control={<Radio />}
             label='Late'
-            className='th-font-size-13'
+            className='th-font-size-13 th-label'
           />
         </Grid>
-        <Grid item md={2}>
+        <Grid item md={2} className='holidayPadding '>
           <FormControlLabel
             value='holiday'
             control={<Radio />}
             label='Holiday'
-            className='th-font-size-13'
+            className='th-font-size-13 th-label'
           />
         </Grid>
       </RadioGroup>
