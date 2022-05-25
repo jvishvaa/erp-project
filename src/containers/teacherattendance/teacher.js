@@ -30,6 +30,7 @@ import Button from '@material-ui/core/Button';
 import moment from 'moment';
 import TeacherAttendanceStatus from './teacherAttendanceStatus';
 import { connect, useSelector } from 'react-redux';
+import Loader from '../../components/loader/loader';
 
 import {
   MuiPickersUtilsProvider,
@@ -75,7 +76,6 @@ const headCells = [
   { id: 'ERP ID', numeric: true, disablePadding: true, label: 'ERP ID' },
   { id: 'Name', numeric: false, disablePadding: false, label: 'Name' },
   { id: 'Designation', numeric: false, disablePadding: false, label: 'Designation' },
-
   { id: 'Attendance', numeric: false, disablePadding: false, label: 'Attendance' },
 ];
 
@@ -103,7 +103,7 @@ function EnhancedTableHead(props) {
           Name
         </TableCell>
         <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
-          Designation
+          Role
         </TableCell>
 
         <TableCell
@@ -224,6 +224,7 @@ const useStyles = makeStyles((theme) => ({
 export default function TeacherAttendance(props) {
   const classes = useStyles();
   const [order, setOrder] = React.useState('asc');
+  const [loading, setLoading] = React.useState(false);
   const [orderBy, setOrderBy] = React.useState('');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
@@ -344,6 +345,7 @@ export default function TeacherAttendance(props) {
         'section'
       );
     } else {
+      setSelectedGrade([]);
       setSectionList([]);
       setSelectedSection([]);
       setSelectedGradeIds('');
@@ -359,6 +361,9 @@ export default function TeacherAttendance(props) {
       setSelectedSection(value);
       setSelectedSectionIds(selectedsecctionId);
     } else {
+      setSectionId('');
+      setSelectedSection([]);
+      setSelectedSectionIds('');
     }
   };
 
@@ -440,6 +445,7 @@ export default function TeacherAttendance(props) {
       setAlert('error', 'Select all required field');
       return false;
     } else {
+      setLoading(true);
       const result = axiosInstance
         .get(
           `${endpoints.academics.teacherAttendanceData}?branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&session_year=${selectedAcademicYear?.id}&roles=${rolesId}&date=${startDate}`
@@ -447,11 +453,12 @@ export default function TeacherAttendance(props) {
         .then((result) => {
           if (result.status === 200) {
             setData(result?.data);
-            console.log(result?.data);
+            setLoading(false);
           }
         })
         .catch((error) => {
           console.log(error);
+          setLoading(false);
         });
     }
   };
@@ -466,7 +473,11 @@ export default function TeacherAttendance(props) {
   };
 
   const handleMultipleRoles = (event, value) => {
-    setRolesId(value.id);
+    if (value) {
+      setRolesId(value?.id);
+    } else {
+      setRolesId('');
+    }
   };
 
   const handleChangePage = (event, newPage) => {
@@ -487,10 +498,12 @@ export default function TeacherAttendance(props) {
       <Grid
         container
         direction='row'
-        style={{ paddingLeft: '22px', paddingRight: '10px' }}
-        spacing={2}
+        style={{
+          paddingLeft: '22px',
+          paddingRight: '10px',
+        }}
       >
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
           <Breadcrumbs
             separator={<NavigateNextIcon fontSize='small' />}
             aria-label='breadcrumb'
@@ -502,10 +515,22 @@ export default function TeacherAttendance(props) {
           </Breadcrumbs>
         </Grid>
 
-        <Grid container spacing={2}>
+        <Grid container spacing={1}>
           <Grid item xs={12} md={2}>
             <MuiPickersUtilsProvider utils={MomentUtils}>
               <KeyboardDatePicker
+                onOpen={() => {
+                  setTimeout(() => {
+                    document
+                      .querySelectorAll(
+                        '.MuiPickersModal-dialogRoot .MuiDialogActions-root button'
+                      )
+                      .forEach((elem) => {
+                        elem.classList.remove('MuiButton-textPrimary');
+                        elem.classList.add('MuiButton-containedPrimary');
+                      });
+                  }, 1000);
+                }}
                 size='small'
                 color='primary'
                 // disableToolbar
@@ -520,9 +545,6 @@ export default function TeacherAttendance(props) {
                 onChange={(event, date) => {
                   handleDateChange('startDate', date);
                 }}
-                InputLabelProps={{
-                  shrink: true,
-                }}
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
                 }}
@@ -535,7 +557,7 @@ export default function TeacherAttendance(props) {
               size='small'
               onChange={handleMultipleRoles}
               value={rolesId}
-              disableClearable
+              // disableClearable
               className='dropdownIcon'
               id='message_log-smsType'
               options={roles}
@@ -593,7 +615,7 @@ export default function TeacherAttendance(props) {
             />
           </Grid>
 
-          <Grid item md={2} xs={12} sm={12}>
+          <Grid item md={1} xs={12}>
             <Button onClick={getTeacherData} variant='contained' color='primary'>
               Search
             </Button>
@@ -614,47 +636,51 @@ export default function TeacherAttendance(props) {
                 onRequestSort={handleRequestSort}
                 rowCount={data?.length}
               />
-              <TableBody>
-                {
-                  data.map((value, i) => {
-                    return (
-                      <TableRow
-                        hover
-                        // onClick={(event) => handleClick(event, row.name)}
-                        role='checkbox'
-                        // aria-checked={isItemSelected}
-                        tabIndex={-1}
-                        key={value?.name}
-                        // selected={isItemSelected}
-                      >
-                        <TableCell align='left' style={{ width: '1px' }}>
-                          {value?.erp_id}
-                        </TableCell>
-                        <TableCell align='left' style={{ width: '1px' }}>
-                          {value?.name}
-                        </TableCell>
-                        <TableCell align='left' style={{ width: '1px' }}>
-                          {value?.roles__role_name}
-                        </TableCell>
+              {loading ? (
+                <Loader />
+              ) : (
+                <TableBody>
+                  {
+                    data.map((value, i) => {
+                      return (
+                        <TableRow
+                          hover
+                          // onClick={(event) => handleClick(event, row.name)}
+                          role='checkbox'
+                          // aria-checked={isItemSelected}
+                          tabIndex={-1}
+                          key={value?.name}
+                          // selected={isItemSelected}
+                        >
+                          <TableCell align='left' style={{ width: '1px' }}>
+                            {value?.erp_id}
+                          </TableCell>
+                          <TableCell align='left' style={{ width: '1px' }}>
+                            {value?.name}
+                          </TableCell>
+                          <TableCell align='left' style={{ width: '1px' }}>
+                            {value?.roles__role_name}
+                          </TableCell>
 
-                        <TableCell align='right' style={{ width: '1px' }}>
-                          <TeacherAttendanceStatus
-                            user_id={value?.id}
-                            start_date={startDate}
-                            attendence_status={value?.attendence_status}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                  // })}
-                  /* {emptyRows > 0 && (
+                          <TableCell align='right'>
+                            <TeacherAttendanceStatus
+                              user_id={value?.id}
+                              start_date={startDate}
+                              attendence_status={value?.attendence_status}
+                            />
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })
+                    // })}
+                    /* {emptyRows > 0 && (
                   <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
                     <TableCell colSpan={6} />
                   </TableRow>
                 )} */
-                }
-              </TableBody>
+                  }
+                </TableBody>
+              )}
             </Table>
           </TableContainer>
         </div>
