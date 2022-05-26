@@ -46,7 +46,7 @@ const CreateBranchAcad = ({ moduleId, setLoading, handleGoBack, academicYearList
         branch_id: branch?.id,
       })
       .then((result) => {
-        if (result.data.status_code === 200) {
+        if (result.data.status_code === 200 || result.data.status_code === 201) {
           setAcademicYear([]);
           setBranch('');
           setLoading(false);
