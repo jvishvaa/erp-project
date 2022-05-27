@@ -13,7 +13,7 @@ import { getModuleInfo } from '../../utility-functions';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { result } from 'lodash';
 
-const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
+const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const [academicYear, setAcademicYear] = useState([]);
   const [acadList, setAcadList] = useState([]);
@@ -25,10 +25,11 @@ const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
   );
 
   // const currentYear = sessionStorage.getItem('acad_session')
-  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
   const [selectedBranch, setSelectedBranch] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
+  console.log('debug', selectedSubject);
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const [academicYearId, setAcademicYearId] = useState(null);
 
@@ -40,59 +41,62 @@ const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
   const [boardList, setBoardList] = useState([]);
-  const [selectedBoard,setSelectedBoard] = useState([]);
+  const [selectedBoard, setSelectedBoard] = useState([]);
   const [moduleList, setModuleList] = useState([]);
   const [selectedModule, setSelectedModule] = useState([]);
-  const [chapterList , setChapterList] = useState([]);
+  const [chapterList, setChapterList] = useState([]);
   const [selectedChapterList, setSelectedChapterList] = useState([]);
-  const [keyConceptList , setKeyConceptList] = useState([]);
+  const [keyConceptList, setKeyConceptList] = useState([]);
   const [selectedKeyConcept, setSelectedKeyConcept] = useState([]);
   const [subjectId, setSubjectId] = useState(null);
-  const [volumeId,setVolumeId] = useState(null);
-  const [gradeId, setGradeId] = useState(null)
-  const [boardId, setBoardId] = useState(null)
+  const [volumeId, setVolumeId] = useState(null);
+  const [gradeId, setGradeId] = useState(null);
+  const [boardId, setBoardId] = useState(null);
   const [selectedBoardId, setSelectedBoardId] = useState([]);
-  const [gradeSubjectId,setGradeSubjectId] = useState('')
+  const [gradeSubjectId, setGradeSubjectId] = useState('');
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
 
   useEffect(() => {
     axiosInstance
-    .get(`${endpoints.userManagement.academicYear}?module_id=${getModuleInfo('Ebook View').id}`)
-    .then((res) => {
-      if (res?.data?.status_code === 200) {
-        setAcademicYear(res?.data?.data);
-      }
-    })
-    .catch((error) => {
-      setAlert('error ', error?.message);
-    });
-    axios
-    .get(`${endpoints.lessonPlan.academicYearList}`, {
-      headers: {
-        'x-api-key': 'vikash@12345#1231',
-      },
-    })
-    .then((result) => {
-      if(result?.data?.status_code === 200) {
-        setAcademicYearDropdown(result?.data?.result?.results);
-        if (selectedAcademicYear) {
-          let arr= result?.data?.result?.results.map((item) => {
-            if(item.session_year === selectedAcademicYear?.session_year){
-              handleAcademicYear( '', item.id)
-            }
-          })
+      .get(
+        `${endpoints.userManagement.academicYear}?module_id=${
+          getModuleInfo('Ebook View').id
+        }`
+      )
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setAcademicYear(res?.data?.data);
         }
-      } else {
-        setAlert('error',result?.data?.message)
-      }
-    })
-    .catch((error) => {
-      setAlert('error', error.message)
-    })
-
-  },[])
+      })
+      .catch((error) => {
+        setAlert('error ', error?.message);
+      });
+    axios
+      .get(`${endpoints.lessonPlan.academicYearList}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setAcademicYearDropdown(result?.data?.result?.results);
+          if (selectedAcademicYear) {
+            let arr = result?.data?.result?.results.map((item) => {
+              if (item.session_year === selectedAcademicYear?.session_year) {
+                handleAcademicYear('', item.id);
+              }
+            });
+          }
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      });
+  }, []);
   // useEffect(() => {
   //   setSelectedVolume('');
   //   setBranchList([]);
@@ -125,10 +129,10 @@ const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
   }
 
   const handleAcademicYear = (event, value) => {
-    if(value){
-      setAcademicYearId(value)
+    if (value) {
+      setAcademicYearId(value);
     }
-  }
+  };
 
   function withAxiosInstance(url, key) {
     setLoading(true);
@@ -170,130 +174,130 @@ const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
     // ApiCal();
   }, []);
 
-
-  const handleBoard = (event,value) => {
-    setSelectedKeyConcept('')
-    setSelectedModule('')
-    setSelectedBoard('')
-    setSelectedChapterList('')
-    setSelectedBoardId([])
-    if(value?.length !== 0){
+  const handleBoard = (event, value) => {
+    setSelectedKeyConcept('');
+    setSelectedModule('');
+    setSelectedBoard('');
+    setSelectedChapterList('');
+    setSelectedBoardId([]);
+    if (value?.length !== 0) {
       const ids = value.map((el) => el);
-      const selectedId = value.map((el) => el?.id)
-      setSelectedBoard(ids)
-      setSelectedBoardId(selectedId)
-        axios
-        .get(`${endpoints.ibook.moduleMapped}?volume=${volumeId}&academic_year=${academicYearId}&board=${selectedId}&grade_subject=${gradeSubjectId}&page_size=100`, {
-          headers: {
-            'x-api-key': 'vikash@12345#1231',
+      const selectedId = value.map((el) => el?.id);
+      setSelectedBoard(ids);
+      setSelectedBoardId(selectedId);
+      axios
+        .get(
+          `${endpoints.ibook.moduleMapped}?volume=${volumeId}&academic_year=${academicYearId}&board=${selectedId}&grade_subject=${selectedSubject?.central_gs_mapping}&page_size=100`,
+          {
+            headers: {
+              'x-api-key': 'vikash@12345#1231',
+            },
           }
-        })
-          
+        )
+
         .then((result) => {
-          if(result?.data?.status_code === 200){
-            setLoading(false)
-            setModuleList(result?.data?.result)
-          } else{
-            setLoading(false)
-            setAlert('error', result?.data?.message)
-            setModuleList([])
+          if (result?.data?.status_code === 200) {
+            setLoading(false);
+            setModuleList(result?.data?.result);
+          } else {
+            setLoading(false);
+            setAlert('error', result?.data?.message);
+            setModuleList([]);
           }
         })
         .catch((error) => {
-          setLoading(false)
+          setLoading(false);
           setAlert('error', error.message);
-          setModuleList([])
-        })
-
-    }else {
-      setModuleList([])
-      setChapterList([])
-      setKeyConceptList([])
+          setModuleList([]);
+        });
+    } else {
+      setModuleList([]);
+      setChapterList([]);
+      setKeyConceptList([]);
     }
-  }
+  };
 
-  const handleModule = (event,value) => {
+  const handleModule = (event, value) => {
     setSelectedKeyConcept('');
-    setSelectedChapterList('')
-    setSelectedModule('')
-    if(value){
-      setLoading(true)
-      setSelectedModule(value)
+    setSelectedChapterList('');
+    setSelectedModule('');
+    if (value) {
+      setLoading(true);
+      setSelectedModule(value);
       axios
-      .get(`${endpoints.ibook.chapterMapped}?grade_subject=${gradeSubjectId}&volume=${volumeId}&academic_year=${academicYearId}&board=${selectedBoardId}&lt_module=${value.id}`
-      , {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        }
-      })
-      .then((result) => {
-        if(result?.data?.status_code === 200) {
-          setLoading(false)
-          setChapterList(result?.data?.result);
-        } else {
-          setLoading(false)
-          setAlert('error',result.data.message)
-          setChapterList([])
-        }
-      })
-      .catch((error) => {
-        setLoading(false)
-        setAlert('error', error.message);
-        setChapterList([]);
-      });
+        .get(
+          `${endpoints.ibook.chapterMapped}?grade_subject=${selectedSubject?.central_gs_mapping}&volume=${volumeId}&academic_year=${academicYearId}&board=${selectedBoardId}&lt_module=${value.id}`,
+          {
+            headers: {
+              'x-api-key': 'vikash@12345#1231',
+            },
+          }
+        )
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setLoading(false);
+            setChapterList(result?.data?.result);
+          } else {
+            setLoading(false);
+            setAlert('error', result.data.message);
+            setChapterList([]);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          setAlert('error', error.message);
+          setChapterList([]);
+        });
     } else {
-      setLoading(false)
-      setChapterList([])
-      setKeyConceptList([])
+      setLoading(false);
+      setChapterList([]);
+      setKeyConceptList([]);
     }
+  };
 
-  }
-
-  const handleKeyConcept =(event,value) => {
-    setSelectedKeyConcept('')
-    if(value){
-      setSelectedKeyConcept(value)
+  const handleKeyConcept = (event, value) => {
+    setSelectedKeyConcept('');
+    if (value) {
+      setSelectedKeyConcept(value);
     }
-  }
+  };
 
-  const handleChapter = (event,value) => {
-    setSelectedKeyConcept('')
-    setSelectedChapterList('')
-    if(value){
-      setLoading(true)
-      setSelectedChapterList(value)
+  const handleChapter = (event, value) => {
+    setSelectedKeyConcept('');
+    setSelectedChapterList('');
+    if (value) {
+      setLoading(true);
+      setSelectedChapterList(value);
       axios
-      .get(`${endpoints.ibook.keyConceptMapped}?chapter=${value?.id}&page_size=100`,{
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        }
-      })
-      .then((result) =>{
-        if(result?.data?.status_code === 200){
-          setLoading(false)
-          setKeyConceptList(result?.data?.result)
-
-        } else{
-          setLoading(false)
-          setKeyConceptList([])
-          setAlert('error', result.data.message)
-        }
-      })
-      .catch((error) => {
-        setLoading(false)
-        setAlert('error', error.message);
-        setKeyConceptList([]);
-      })
+        .get(`${endpoints.ibook.keyConceptMapped}?chapter=${value?.id}&page_size=100`, {
+          headers: {
+            'x-api-key': 'vikash@12345#1231',
+          },
+        })
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setLoading(false);
+            setKeyConceptList(result?.data?.result);
+          } else {
+            setLoading(false);
+            setKeyConceptList([]);
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          setAlert('error', error.message);
+          setKeyConceptList([]);
+        });
     } else {
-      setLoading(false)
-      setKeyConceptList([])
+      setLoading(false);
+      setKeyConceptList([]);
     }
-
-  }
+  };
 
   function handleClear() {
     // handleFilter();
-    setclearFilter(true)
+    setclearFilter(true);
     setSelectedVolume('');
     setGradeList([]);
     setSubjectList([]);
@@ -307,9 +311,9 @@ const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
     setSelectedSubject('');
     setSelectedBoard([]);
     setSelectedModule('');
-    setSelectedChapterList('')
-    setSelectedKeyConcept('')
-    setSelectedBoardId([])
+    setSelectedChapterList('');
+    setSelectedKeyConcept('');
+    setSelectedBoardId([]);
   }
 
   return (
@@ -333,15 +337,15 @@ const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
                   'grade'
                 );
               }
-              
-              setSelectedBranch(value)
+
+              setSelectedBranch(value);
               setSelectedGrade('');
               setSelectedSubject('');
               setSelectedVolume('');
               setSelectedBoard('');
               setSelectedModule('');
               setSelectedChapterList('');
-              setSelectedKeyConcept('')
+              setSelectedKeyConcept('');
               setGradeList([]);
               setSubjectList([]);
               setVolumeList([]);
@@ -370,8 +374,8 @@ const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
             size='small'
             onChange={(event, value) => {
               if (value) {
-                setGradeId(value?.erp_grade)
-                setGradeSubjectId(value?.central_gs_mapping)
+                setGradeId(value?.erp_grade);
+                setGradeSubjectId(value?.central_gs_mapping);
                 withAxiosInstance(
                   `${endpoints.ibook.ibookMappedGrade}?branch_id=${selectedBranch?.branch?.id}&session_year=${selectedAcad?.id}&grade_id=${value.erp_grade}`,
                   'subject'
@@ -379,7 +383,7 @@ const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
               }
               setSelectedGrade(value);
               setSelectedSubject('');
-              setSelectedVolume('')
+              setSelectedVolume('');
               setSelectedBoard('');
               setSelectedModule('');
               setSelectedChapterList('');
@@ -413,17 +417,17 @@ const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
           <Autocomplete
             size='small'
             onChange={(event, value) => {
-              if(value){
-                setSubjectId(value?.subject_id_name?.[0]?.erp_subject_id)
+              if (value) {
+                setSubjectId(value?.subject_id_name?.[0]?.erp_subject_id);
                 setSelectedSubject(value);
                 ApiCal();
               }
-              setSelectedSubject(value)
-              setSelectedVolume('')
+              setSelectedSubject(value);
+              setSelectedVolume('');
               setSelectedBoard('');
-              setSelectedModule('')
-              setSelectedChapterList('')
-              setSelectedKeyConcept('')
+              setSelectedModule('');
+              setSelectedChapterList('');
+              setSelectedKeyConcept('');
               setVolumeList([]);
               setBoardList([]);
               setModuleList([]);
@@ -461,36 +465,36 @@ const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
             size='small'
             className='dropdownIcon'
             onChange={(event, value) => {
-              setSelectedBoard('')
-              setSelectedModule('')
-              setSelectedChapterList('')
-              setSelectedKeyConcept('')
-              setSelectedVolume('')
+              setSelectedBoard('');
+              setSelectedModule('');
+              setSelectedChapterList('');
+              setSelectedKeyConcept('');
+              setSelectedVolume('');
               setBoardList([]);
               setModuleList([]);
               setChapterList([]);
               setKeyConceptList([]);
-              if(value){
-                setLoading(true)
-                setVolumeId(value?.id)
+              if (value) {
+                setLoading(true);
+                setVolumeId(value?.id);
                 setSelectedVolume(value);
                 axiosInstance
                   .get(`academic/get-board-list/`)
                   .then((result) => {
-                    if(result?.data.status_code === 200){
-                      setLoading(false)
-                      setBoardList(result?.data?.result)
+                    if (result?.data.status_code === 200) {
+                      setLoading(false);
+                      setBoardList(result?.data?.result);
                     } else {
-                      setLoading(false)
+                      setLoading(false);
                       setAlert('error', result?.data?.message);
                       setBoardList([]);
                     }
                   })
-                  .catch((error) =>{
-                    setLoading(false)
+                  .catch((error) => {
+                    setLoading(false);
                     setAlert('error', error?.message);
-                    setBoardList([])
-                  })
+                    setBoardList([]);
+                  });
               }
             }}
             id='volume_id'
@@ -518,7 +522,7 @@ const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
             id='board'
             options={boardList || []}
             value={selectedBoard || []}
-            getOptionLabel={(option) => option?.board_name  || ''}
+            getOptionLabel={(option) => option?.board_name || ''}
             getOptionSelected={(option, value) => option?.id == value?.id}
             // filterSelectedOptions
             renderInput={(params) => (
@@ -532,62 +536,63 @@ const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
           />
         </Grid>
         <Grid
-        item
-        xs={12}
-        sm={3}
-        // className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-      >
-        <Autocomplete
-          // multiple
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleModule}
-          id='module'
-          className='dropdownIcon'
-          value={selectedModule || ''}
-          options={moduleList || []}
-          getOptionLabel={(option) => option?.lt_module_name || []}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Module'
-              placeholder='Module'
-            />
-          )}
-        />
-      </Grid>
-      <Grid
-        item
-        xs={12}
-        sm={3}
-        // className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-      >
-        <Autocomplete
-          style={{ width: '100%' }}
-          size='small'
-          onChange={handleChapter}
-          id='chapter'
-          className='dropdownIcon'
-          value={selectedChapterList || ''}
-          options={chapterList || []}
-          getOptionLabel={(option) => option?.chapter_name || []}
-          filterSelectedOptions
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              variant='outlined'
-              label='Chapter'
-              placeholder='Chapter'
-            />
-          )}
-        />
-      </Grid>
-      <Grid item
-        xs={12}
-        sm={3}
-        // className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+          item
+          xs={12}
+          sm={3}
+          // className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+        >
+          <Autocomplete
+            // multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleModule}
+            id='module'
+            className='dropdownIcon'
+            value={selectedModule || ''}
+            options={moduleList || []}
+            getOptionLabel={(option) => option?.lt_module_name || []}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Module'
+                placeholder='Module'
+              />
+            )}
+          />
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={3}
+          // className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+        >
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleChapter}
+            id='chapter'
+            className='dropdownIcon'
+            value={selectedChapterList || ''}
+            options={chapterList || []}
+            getOptionLabel={(option) => option?.chapter_name || []}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Chapter'
+                placeholder='Chapter'
+              />
+            )}
+          />
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={3}
+          // className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
         >
           <Autocomplete
             style={{ width: '100%' }}
@@ -611,8 +616,8 @@ const Filter = ({ handleFilter, clearFilter , setclearFilter}) => {
           />
         </Grid>
         {!isMobile && (
-          <Grid style={{marginTop:'20px', marginBottom:'20px'}} xs={12} sm={12}>
-            <Divider/>
+          <Grid style={{ marginTop: '20px', marginBottom: '20px' }} xs={12} sm={12}>
+            <Divider />
           </Grid>
         )}
         {/* <Grid item md={9}></Grid> */}
