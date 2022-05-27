@@ -280,7 +280,7 @@ export default function TeacherAttendance(props) {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Teacher Attendance' &&
+          item.parent_modules === 'Attendance' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
