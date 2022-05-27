@@ -226,7 +226,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
       setSelectedModule(value);
       axios
         .get(
-          `${endpoints.ibook.chapterMapped}?grade_subject=${gradeSubjectId}&volume=${volumeId}&academic_year=${academicYearId}&board=${selectedBoardId}&lt_module=${value.id}`,
+          `${endpoints.ibook.chapterMapped}?grade_subject=${selectedSubject?.central_gs_mapping}&volume=${volumeId}&academic_year=${academicYearId}&board=${selectedBoardId}&lt_module=${value.id}`,
           {
             headers: {
               'x-api-key': 'vikash@12345#1231',
