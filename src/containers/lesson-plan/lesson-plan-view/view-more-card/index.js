@@ -92,6 +92,10 @@ const ViewMoreCard = ({
           setAlert('success', result?.data?.message);
           setCompletedStatus(result?.data?.result?.is_completed);
           handleClickOpenFeed()
+<<<<<<< HEAD
+=======
+          // setOnComplete(result.data.result.is_completed);
+>>>>>>> 1ee17365c53eade90681250037c000eb3dbfb2bf
         } else {
           setAlert('error', result?.data?.message);
           // setOnComplete(false);
@@ -169,7 +173,7 @@ const ViewMoreCard = ({
                             // src: getS3DomainURL(file, p),
                             // src: `${endpoints.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${grade_name}/${subject_name}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`,
                             // src: `${endpoints.lessonPlan.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${centralGradeName}/${centralSubjectName}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`,
-                            src: `${endpoints.lessonPlan.s3}${file}`,
+                            src: `${endpoints.lessonPlan.s3erp}${file}`,
                             name: `${p?.document_type}`,
                             extension: '.' + file.split('.')[file.split('.').length - 1],
                           },
