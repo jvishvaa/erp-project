@@ -131,7 +131,8 @@ const NewCommunication = () => {
   const [rows, setRows] = useState([]);
   const [defaultdate, setDefaultDate] = useState(moment().format('YYYY-MM-DD'));
   const [branchList, setBranchList] = useState([]);
-  const [selectedbranchListData, setSelectedbranchListData] = useState();
+  const [selectedbranchListData, setSelectedbranchListData] = useState({});
+  const [selectedbranchListId, setSelectedbranchListId] = useState(null);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGradeListData, setSelectedGradeListData] = useState([]);
   const [selectedGradeId, setSelectedGradeId] = useState([]);
@@ -283,6 +284,11 @@ const NewCommunication = () => {
           let message =
             onClickIndex == 1 ? 'Inbox' : onClickIndex == 2 ? 'Drafts' : ' Sent';
           setAlert('success', `Successfully fetched ${message} `);
+          emptyFilter()
+        }else{
+          setLoading(false);
+          setAlert('error', result?.data?.message);
+          emptyFilter()
         }
       })
       .catch((error) => {
@@ -291,6 +297,18 @@ const NewCommunication = () => {
         setAlert('error', error?.message);
       });
   };
+
+  const emptyFilter = () =>{
+    setSelectedbranchListData({})
+    setSelectedbranchListId(null)
+    setSelectedGradeListData([])
+    setSelectedGradeId([])
+    setGradeList([])
+    setSelectedSectionListData([])
+    setSelectedSectionId([])
+    setSectionList([])
+    setSelectedSectionMappingId([])
+  }
 
   useEffect(() => {
     rowsData();
@@ -333,7 +351,7 @@ const NewCommunication = () => {
   const getGrade = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&module_id=${moduleId}`
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedbranchListId}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -343,6 +361,28 @@ const NewCommunication = () => {
         }
       });
   };
+
+  const handleBranch = (e,value) =>{
+    if(value){
+      setSelectedbranchListData(value)
+      setSelectedbranchListId(value.id)
+      setSelectedGradeListData([])
+      setSelectedGradeId([])
+      setGradeList([])
+      setSelectedSectionListData([])
+      setSelectedSectionId([])
+      setSectionList([])
+    }else{
+      setSelectedbranchListData({})
+      setSelectedbranchListId(null)
+      setSelectedGradeListData([])
+      setSelectedGradeId([])
+      setGradeList([])
+      setSelectedSectionListData([])
+      setSelectedSectionId([])
+      setSectionList([])
+    }
+  }
 
   const handleGrade = (e, value) => {
     if (value?.length) {
@@ -394,10 +434,20 @@ const NewCommunication = () => {
   useEffect(() => {
     if (moduleId) {
       getBranch();
+    }
+  }, [moduleId]);
+
+  useEffect(() => {
+    if (selectedbranchListId) {
       getGrade();
+    }
+  }, [selectedbranchListData]);
+
+  useEffect(() => {
+    if (selectedGradeId.length>0) {
       getSection();
     }
-  }, [selectedGradeId, moduleId]);
+  }, [selectedGradeListData]);
 
   const updatePublish = (id) => {
     const params = {
@@ -1186,6 +1236,23 @@ const NewCommunication = () => {
               }}
             />
           </form>
+        </MenuItem>
+
+        <MenuItem>
+          <Grid xs={12} md={12} lg={12} item>
+          <b>Branch</b>
+          <Autocomplete
+                id='combo-box-demo'
+                size='small'
+                options={branchList || []}
+                onChange={handleBranch}
+                value={selectedbranchListData}
+                getOptionLabel={(option) => option?.branch_name}
+                renderInput={(params) => (
+                  <TextField {...params} placeholder='Branch' variant='outlined' />
+                )}
+              />
+          </Grid>
         </MenuItem>
 
         <MenuItem>
