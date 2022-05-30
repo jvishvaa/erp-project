@@ -24,6 +24,7 @@ const PeriodCard = ({
   apiParams,
   setApiParams,
   subjectIDs,
+  
 }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -45,7 +46,7 @@ const PeriodCard = ({
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}&subjects=${subjectIDs}`
+        `${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}&subjects=${lesson?.subject_id_id}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {
