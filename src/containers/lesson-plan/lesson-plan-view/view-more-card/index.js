@@ -16,11 +16,11 @@ import { AttachmentPreviewerContext } from '../../../../components/attachment-pr
 
 const useStyles = makeStyles((theme) => ({
   rootViewMore: theme.rootViewMore,
-  lessonCompleted:{
+  lessonCompleted: {
     fontWeight: 600,
     color: theme.palette.primary.main
   },
-  resourceBulkDownload:{
+  resourceBulkDownload: {
     fontSize: '1.1rem',
     color: theme.palette.primary.main,
     display: 'flex',
@@ -65,13 +65,17 @@ const ViewMoreCard = ({
   const { volume_name = '', id: volumeId = '' } = volumeData || {};
 
   const checkFeedback = () => {
-    console.log(periodDataForView , "completed");
+    console.log(periodDataForView, "completed");
     if (completedStatus) {
       handleClickOpenFeed()
     }
   }
 
   const handleComplete = () => {
+<<<<<<< HEAD
+=======
+    console.log(filterDataDown, "subject cdc")
+>>>>>>> 167805111 (pop issue resolved)
     setLoading(true);
     let request = {
       academic_year: session_year,
@@ -92,7 +96,10 @@ const ViewMoreCard = ({
           setAlert('success', result?.data?.message);
           setCompletedStatus(result?.data?.result?.is_completed);
           handleClickOpenFeed()
+<<<<<<< HEAD
           // setOnComplete(result.data.result.is_completed);
+=======
+>>>>>>> 167805111 (pop issue resolved)
         } else {
           setAlert('error', result?.data?.message);
           // setOnComplete(false);
@@ -119,7 +126,11 @@ const ViewMoreCard = ({
               onClick={() => {
                 setViewMore(false);
                 setSelectedIndex(-1);
+<<<<<<< HEAD
                 checkFeedback();
+=======
+                // checkFeedback()
+>>>>>>> 167805111 (pop issue resolved)
               }}
             >
               <CloseIcon color='primary' />
@@ -193,8 +204,8 @@ const ViewMoreCard = ({
                   </a>
                 </div>
                 {p?.document_type === "Activity_Sheet" ?
-                <a href={`${endpoints.lessonPlan.s3erp}${file}`} target = "_blank" download ><IconButton style={{padding: '0', margin: '0 7px'}} > <GetAppIcon /> </IconButton> </a>
-                    : '' }
+                  <a href={`${endpoints.lessonPlan.s3erp}${file}`} target="_blank" download ><IconButton style={{ padding: '0', margin: '0 7px' }} > <GetAppIcon /> </IconButton> </a>
+                  : ''}
               </div>
             ))}
           </div>
@@ -210,7 +221,7 @@ const ViewMoreCard = ({
               <Button
                 key={`btn-${periodDataForView?.id}`}
                 variant='contained'
-                style={{color:'white', width: '100%' }}
+                style={{ color: 'white', width: '100%' }}
                 color='primary'
                 size='small'
                 onClick={handleComplete}
