@@ -127,6 +127,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
   const [fileToFilter, setFileToFilter] = useState([])
   const [openModalFinal, setopenModalFinal] = useState(false)
   const [fileToDelete, setFileToDelete] = useState()
+  const [error, setError] = useState('')
 
   let titlebody = extractContent(textEditorContent)
   let channelsArr = [
@@ -475,6 +476,18 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
     handleEditFileClose()
   }
 
+  const restrictchar = (e) => {
+                  
+      const newValue = e.target.value;
+    
+      if (!newValue.match(/[%<>\\$'"]/)) {
+        setError("");
+        setTitle(newValue); // only set when successful
+      } else {
+        setError("Forbidden character: %<>$'\"");
+      }
+  }
+
   const handlePublish = (isDraft) => {
     if (!textEditorContent) {
       setAlert('warning', 'Please add description')
@@ -739,7 +752,9 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
                 size='small'
                 placeholder='Title'
                 variant='outlined'
-                onChange={(e) => setTitle(e.target.value)}
+                onChange={restrictchar}
+                helperText={error}
+                error={!!error}
               />
               <div
                 style={{
