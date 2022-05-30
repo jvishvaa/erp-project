@@ -226,7 +226,7 @@ const ViewMoreCard = ({
                 size='small'
                 onClick={handleComplete}
               >
-                Completed
+                Complete
               </Button>
             </div>
           )}
