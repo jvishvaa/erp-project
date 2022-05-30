@@ -2,33 +2,15 @@ import React, { useEffect, useState, useContext } from 'react';
 import moreicon from './announcement.svg';
 import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
-import Modal from '@material-ui/core/Modal';
 import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
 import Grid from '@material-ui/core/Grid';
 import AddCommentIcon from '@material-ui/icons/AddComment';
 import endpoints from '../../config/Endpoint';
 import apiRequest from '../../config/apiRequest';
 import moment from 'moment';
 import bullet from './bullet.svg';
-import axiosInstance from 'config/axios';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import Typography from '@material-ui/core/Typography';
-import { useDashboardContext } from '../../../dashboard-context';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import DeleteIcon from '@material-ui/icons/Delete';
-import BorderColorIcon from '@material-ui/icons/BorderColor';
-import { IconButton } from '@material-ui/core';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
-import Loading from '../../../../../components/loader/loader';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { useHistory } from 'react-router-dom';
 
 
@@ -190,9 +172,6 @@ export default function Announcement(props) {
   const classes = useStyles();
   const [nextPage, setNextPage] = React.useState(''); //next page url from API response
   const [announcementArr, setAnnouncementArr] = React.useState([]); //we will store all the announcements in this array
-  const [add, setAdd] = React.useState(''); //to add the announcement and role
-  const [editadd, setEditAdd] = React.useState(''); // to add the edited announcement from the modal
-  const [isShort, setIsShort] = React.useState(true); //just 35 characters must be shown if true
   const [isShortArray, setIsShortArray] = React.useState(true); //how many announcements should be visible(2 or all)
   //for modal
   const [open, setOpen] = React.useState(false);
@@ -211,11 +190,7 @@ export default function Announcement(props) {
   const [opentwo, setOpentwo] = React.useState(false);
   const handleOpentwo = () => setOpentwo(true);
   const handleClosetwo = () => setOpentwo(false);
-  const [isStudent, setIsStudent] = useState(true);
-  const { welcomeDetails = {} } = useDashboardContext();
   //select
-  const [role, setRole] = React.useState([]); //which one? teacher, principal, none, student,//which one have you selected
-  const [select, setSelect] = React.useState(false);
   const [roledata, setRoledata] = React.useState(); //roles coming from API
   const matches = useMediaQuery('(max-width:600px)');
   const { setAlert } = useContext(AlertNotificationContext);
@@ -241,12 +216,12 @@ export default function Announcement(props) {
   };
   //making request to show announcements
   const updateAnnouncement = () => {
-    apiRequest('get','/announcement/v2/inbox/', null, null, true, 5000)
+    apiRequest('get', `/announcement/v2/inbox/`, null, null, false, 5000)
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          setIsEnabled(result?.data?.is_enabled);
-          setNextPage(result?.data?.result?.next);
-          setAnnouncementArr(result?.data?.result?.data);
+          // setIsEnabled(result?.data?.is_enabled);
+          // setNextPage(result?.data?.result?.next);
+          setAnnouncementArr(result?.data?.data);
         }
       })
       .catch((error) => {
@@ -283,100 +258,6 @@ const announcementRedirect = () => {
     updateAnnouncement();
     // nextpagehandler();
   }, []);
-  const handleChange = (event, newValue) => {
-    setRole(newValue);
-  };
-  const selectClose = () => {
-    setSelect(false);
-  };
-  const selectOpen = () => {
-    setSelect(true);
-  };
-  const addbtnhandler = () => {
-    if (add.length === 0) {
-      // checking if user has entered anything or not. we dont want an empty announcement to be shown
-      return;
-    }
-    setAdd('');
-    let myRole = [];
-    if (role?.length)
-      role.map((item) => {
-        myRole.push(item.id);
-      });
-    const payload = { role_id: myRole, content: add };
-    apiRequest('post', endpoints.dashboard.student.create, payload)
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          updateAnnouncement();
-          setRole([]);
-          setAdd('');
-          setOpen(false);
-        }
-      })
-      .catch((error) => {
-        console.log('error');
-      });
-  };
-
-  const deleteHandler = (item, index, arr) => {
-    setLoading(true);
-    // announcementArr.splice(index, 1);
-    apiRequest('delete', `${endpoints.dashboard.student.deleteAnnouncement}${item.id}/`)
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          setAlert('success', 'Deleted');
-          arr.splice(index, 1);
-          setLoading(false);
-          checkDates();
-          getRoleData();
-          setRoledata([]);
-          updateAnnouncement();
-        } else {
-          setAlert('error', 'Not Authorized');
-          setLoading(false);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', 'Network Error');
-        setLoading(false);
-      });
-  };
-
-  const editHandler = (item, index) => {
-    // setLoading(true);
-    setOpentwo(false);
-    let myRole = [];
-    if (role?.length)
-      role.map((roleitem) => {
-        myRole.push(roleitem.id);
-      });
-    const payload = { role_id: myRole, content: add };
-    apiRequest(
-      'put',
-      `${endpoints.dashboard.student.editAnnouncement}${checkdata?.id}/`,
-      payload
-    )
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          updateAnnouncement();
-          handleClose();
-          setLoading(false);
-          checkDates();
-          getRoleData();
-          setRoledata([]);
-          setAdd('');
-          setRole([]);
-          setCheckdata('');
-        } else {
-          setAlert('error', 'Not Authorized');
-          setLoading(false);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', 'Network Error');
-        setLoading(false);
-      });
-  };
 
   const checkDates = () => {
     setToday(
@@ -426,101 +307,9 @@ const announcementRedirect = () => {
               <div>
                 <span className={classes.announcementhead}>
                   Announcements
-                  {/* <span style={{ marginLeft: '10px' }}>
-                    {welcomeDetails?.userLevel == '13' ? (
-                      ''
-                    ) : (
-                      <AddCommentIcon
-                        onClick={handleOpen}
-                        style={{ fontSize: '1.3rem', cursor: 'pointer' }}
-                      />
-                    )}
-                  </span> */}
                 </span>
                 <hr />
               </div>
-              {/* <span>
-                <Modal
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby='modal-modal-title'
-                  aria-describedby='modal-modal-description'
-                >
-                  <Box sx={style}>
-                    <div>
-                      <div style={{ width: '100%' }}>
-                        <Autocomplete
-                          freeSolo
-                          id='free-solo-2-demo'
-                          disableClearable
-                          options={roledata}
-                          getOptionLabel={(option) => option?.role_name}
-                          filterSelectedOptions
-                          onChange={handleChange}
-                          // value={role}
-                          value={role || []}
-                          multiple
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              label='Search role'
-                              margin='normal'
-                              variant='outlined'
-                              fullWidth
-                              InputProps={{ ...params.InputProps, type: 'search' }}
-                            />
-                          )}
-                        />
-                      </div>
-
-                      <div className={classes.textfieldgap}>
-                        <TextField
-                          label='Enter the Announcement:*'
-                          variant='outlined'
-                          margin='dense'
-                          // style={{ height: '50px' }}
-                          multiline
-                          rowsMax='3'
-                          rows={4}
-                          value={add}
-                          onChange={(e) => setAdd(e.target.value)}
-                          inputProps={{
-                            maxLength: 250,
-                          }}
-                          fullWidth
-                          id='fullWidth'
-                        />
-                      </div>
-                      <div className={classes.addbtntextfield}>
-                        {checkdata === '' ? (
-                          <Button
-                            style={{ backgroundColor: '#349ceb' }}
-                            // onClick={handleClose}
-                            onClick={addbtnhandler}
-                          >
-                            Add
-                          </Button>
-                        ) : (
-                          <Button
-                            style={{ backgroundColor: '#349ceb' }}
-                            // onClick={handleClose}
-                            onClick={editHandler}
-                          >
-                            Edit
-                          </Button>
-                        )}
-                        <Button
-                          style={{ backgroundColor: '#349ceb', marginLeft: '50px' }}
-                          // onClick={handleClose}
-                          onClick={handleClose}
-                        >
-                          Close
-                        </Button>
-                      </div>
-                    </div>
-                  </Box>
-                </Modal>
-              </span> */}
             </Grid>
           </Grid>
         </Grid>
@@ -531,8 +320,7 @@ const announcementRedirect = () => {
               <div>
                 {isShortArray ? ( //we are checking if we want to render 2 or all items in announcement */}
                   <ul style={{ overflow: 'scroll', height: '250px', width: '350px' }}>
-                    {isEnabled &&
-                      announcementArr &&
+                    {announcementArr &&
                       announcementArr.map(
                         (d, i) =>
                           i <= 100 && (
@@ -559,12 +347,12 @@ const announcementRedirect = () => {
                                       position: 'relative',
                                     }}
                                   >
-                                    {d?.content}
+                                    {d?.title?.length >20 ? `${d?.title.slice(0,20)}...` : d?.title}
                                   </div>
                                 </div>
                                 <p>
                                   <span className={classes.time}>
-                                    {moment(d?.created_at).calendar()};
+                                    {moment(d?.created_time).calendar()};
                                   </span>
                                 </p>
                               </li>
@@ -611,343 +399,6 @@ const announcementRedirect = () => {
                             {isShortArray ? 'more' : 'less'}
                           </Button>
                         )}
-                        <Modal
-                          open={opentwo}
-                          onClose={handleClosetwo}
-                          aria-labelledby='modal-modal-title'
-                          aria-describedby='modal-modal-description'
-                        >
-                          <Box sx={styletwo}>
-                            {/* <div> */}
-                            <div className={classes.announcementheadtwo}>
-                              Announcements
-                            </div>
-                            <hr />
-                            <InfiniteScroll
-                              dataLength={announcementArr?.length}
-                              next={nextpagehandler}
-                              hasMore={!!nextPage}
-                              loader={<h4>Loading...</h4>}
-                              endMessage={
-                                <p style={{ textAlign: 'center', color: 'grey' }}>
-                                  <b>Yay! You have seen it all</b>
-                                </p>
-                              }
-                              height={500}
-                            >
-                              <div>
-                                <div>
-                                  <Card style={{ margin: '10px' }}>
-                                    <CardContent>
-                                      <div
-                                        style={{
-                                          textAlign: 'center',
-                                          fontSize: '16px',
-                                          fontWeight: '800',
-                                        }}
-                                      >
-                                        Today
-                                      </div>
-                                      <ul style={{ paddingLeft: '30px' }}>
-                                        {today &&
-                                          today.map((item, index) => {
-                                            return (
-                                              <div
-                                                style={{
-                                                  display: 'flex',
-                                                  justifyContent: 'space-between',
-                                                }}
-                                                key={`Anntoday_${index}`}
-                                              >
-                                                <li
-                                                  style={{
-                                                    maxWidth: '350px',
-                                                    wordWrap: 'break-word',
-                                                    whiteSpace: 'pre-line',
-                                                  }}
-                                                >
-                                                  <div>{item?.content}</div>
-                                                  <p>
-                                                    <span className={classes.time}>
-                                                      {moment(
-                                                        item?.created_at
-                                                      ).calendar()}
-                                                      ;
-                                                    </span>
-                                                  </p>
-                                                </li>
-                                                <div>
-                                                  {welcomeDetails?.userLevel == '13' ? (
-                                                    ''
-                                                  ) : (
-                                                    <div>
-                                                      <IconButton
-                                                        onClick={() =>
-                                                          deleteHandler(
-                                                            item,
-                                                            index,
-                                                            today
-                                                          )
-                                                        }
-                                                      >
-                                                        <DeleteIcon />
-                                                      </IconButton>
-                                                      <Button
-                                                        onClick={() =>
-                                                          handleOpen(item, index)
-                                                        }
-                                                      >
-                                                        Update
-                                                      </Button>
-                                                    </div>
-                                                  )}
-                                                </div>
-                                              </div>
-                                            );
-                                          })}
-                                      </ul>
-                                    </CardContent>
-                                  </Card>
-                                </div>
-                                <div>
-                                  <Card style={{ margin: '10px' }}>
-                                    <CardContent>
-                                      <div
-                                        style={{
-                                          textAlign: 'center',
-                                          fontSize: '16px',
-                                          fontWeight: '800',
-                                        }}
-                                      >
-                                        Yesterday
-                                      </div>
-                                      <ul style={{ paddingLeft: '30px' }}>
-                                        {yesterday &&
-                                          yesterday.map((item, index) => {
-                                            return (
-                                              <div
-                                                style={{
-                                                  display: 'flex',
-                                                  justifyContent: 'space-between',
-                                                }}
-                                                key={`AnnYEs_${index}`}
-                                              >
-                                                <li
-                                                  style={{
-                                                    maxWidth: '350px',
-                                                    wordWrap: 'break-word',
-                                                    whiteSpace: 'pre-line',
-                                                  }}
-                                                >
-                                                  <div>{item?.content}</div>
-                                                  <p>
-                                                    <span className={classes.time}>
-                                                      {moment(
-                                                        item?.created_at
-                                                      ).calendar()}
-                                                      ;
-                                                    </span>
-                                                  </p>
-                                                </li>
-                                                <div>
-                                                  {welcomeDetails?.userLevel == '13' ? (
-                                                    ''
-                                                  ) : (
-                                                    <div>
-                                                      <IconButton
-                                                        onClick={() =>
-                                                          deleteHandler(
-                                                            item,
-                                                            index,
-                                                            yesterday
-                                                          )
-                                                        }
-                                                      >
-                                                        <DeleteIcon />
-                                                      </IconButton>
-                                                      <Button
-                                                        onClick={() =>
-                                                          handleOpen(item, index)
-                                                        }
-                                                      >
-                                                        Update
-                                                      </Button>
-                                                    </div>
-                                                  )}
-                                                </div>
-                                              </div>
-                                            );
-                                          })}
-                                      </ul>
-                                    </CardContent>
-                                  </Card>
-                                </div>
-                                <div>
-                                  <Card style={{ margin: '10px' }}>
-                                    <CardContent>
-                                      <div
-                                        style={{
-                                          textAlign: 'center',
-                                          fontSize: '16px',
-                                          fontWeight: '800',
-                                        }}
-                                      >
-                                        2 Days back
-                                      </div>
-                                      <ul style={{ paddingLeft: '30px' }}>
-                                        {twodays &&
-                                          twodays.map((item, index) => {
-                                            return (
-                                              <div
-                                                style={{
-                                                  display: 'flex',
-                                                  justifyContent: 'space-between',
-                                                }}
-                                                key={`Anntwo_${index}`}
-                                              >
-                                                <li
-                                                  style={{
-                                                    maxWidth: '350px',
-                                                    wordWrap: 'break-word',
-                                                    whiteSpace: 'pre-line',
-                                                  }}
-                                                >
-                                                  <div>{item?.content}</div>
-                                                  <p>
-                                                    <span className={classes.time}>
-                                                      {moment(
-                                                        item?.created_at
-                                                      ).calendar()}
-                                                      ;
-                                                    </span>
-                                                  </p>
-                                                </li>
-                                                <div>
-                                                  {welcomeDetails?.userLevel == '13' ? (
-                                                    ''
-                                                  ) : (
-                                                    <div>
-                                                      <IconButton
-                                                        onClick={() =>
-                                                          deleteHandler(
-                                                            item,
-                                                            index,
-                                                            twodays
-                                                          )
-                                                        }
-                                                      >
-                                                        <DeleteIcon />
-                                                      </IconButton>
-                                                      <Button
-                                                        onClick={() =>
-                                                          handleOpen(item, index)
-                                                        }
-                                                      >
-                                                        Update
-                                                      </Button>
-                                                    </div>
-                                                  )}
-                                                </div>
-                                              </div>
-                                            );
-                                          })}
-                                      </ul>
-                                    </CardContent>
-                                  </Card>
-                                </div>
-                                <div>
-                                  <Card style={{ margin: '10px' }}>
-                                    <CardContent>
-                                      <div
-                                        style={{
-                                          textAlign: 'center',
-                                          fontSize: '16px',
-                                          fontWeight: '800',
-                                        }}
-                                      >
-                                        Old
-                                      </div>
-                                      <ul style={{ paddingLeft: '30px' }}>
-                                        {oldPost &&
-                                          oldPost.map((item, index) => {
-                                            return (
-                                              <div
-                                                style={{
-                                                  display: 'flex',
-                                                  justifyContent: 'space-between',
-                                                }}
-                                                key={`Annold_${index}`}
-                                              >
-                                                <li
-                                                  style={{
-                                                    maxWidth: '350px',
-                                                    wordWrap: 'break-word',
-                                                    whiteSpace: 'pre-line',
-                                                  }}
-                                                >
-                                                  <div>{item?.content}</div>
-                                                  <p>
-                                                    <span className={classes.time}>
-                                                      {moment(
-                                                        item?.created_at
-                                                      ).calendar()}
-                                                      ;
-                                                    </span>
-                                                  </p>
-                                                </li>
-                                                <div>
-                                                  {welcomeDetails?.userLevel == '13' ? (
-                                                    ''
-                                                  ) : (
-                                                    <div>
-                                                      <IconButton
-                                                        onClick={() =>
-                                                          deleteHandler(
-                                                            item,
-                                                            index,
-                                                            oldPost
-                                                          )
-                                                        }
-                                                      >
-                                                        <DeleteIcon />
-                                                      </IconButton>
-                                                      <Button
-                                                        onClick={() =>
-                                                          handleOpen(item, index)
-                                                        }
-                                                      >
-                                                        Update
-                                                      </Button>
-                                                    </div>
-                                                  )}
-                                                </div>
-                                              </div>
-                                            );
-                                          })}
-                                      </ul>
-                                      <ul></ul>
-                                    </CardContent>
-                                  </Card>
-                                </div>
-                              </div>
-                            </InfiniteScroll>
-                            <div
-                              style={{
-                                width: '100%',
-                                display: 'flex',
-                                paddingTop: '10px',
-                              }}
-                            >
-                              <Button
-                                onClick={handleClosetwo}
-                                style={{ margin: '0 auto' }}
-                              >
-                                Close
-                              </Button>
-                            </div>
-                            {/* </div> */}
-                          </Box>
-                        </Modal>
                       </div>
                     </div>
                   </ul>
