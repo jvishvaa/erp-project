@@ -52,6 +52,8 @@ const LessonReport = () => {
     acad_year_id: '',
     completed_by: '',
   });
+  const [startdate , setStartDate] = useState()
+  const [enddate , setEndDate] = useState()
 
   const handlePagination = (event, page) => {
     setPage(page);
@@ -59,6 +61,8 @@ const LessonReport = () => {
 
   const handleLessonList = (gradeId, subjectIds,subjectMapping, volumeId, startDate, endDate) => {
     setLoading(true);
+    setStartDate(startDate)
+    setEndDate(endDate)
     setPeriodData([]);
     setSubjectMap(subjectMapping);
     axiosInstance
@@ -137,6 +141,8 @@ const LessonReport = () => {
                         setPeriodColor={setPeriodColor}
                         apiParams={apiParams}
                         setApiParams={setApiParams}
+                        startDate = {startdate}
+                        endDate = {enddate}
                       />
                     </Grid>
                   ))}
@@ -148,7 +154,6 @@ const LessonReport = () => {
                     viewMoreData={viewMoreData}
                     setViewMore={setViewMore}
                     periodDataForView={periodDataForView}
-                    setSelectedIndex={setSelectedIndex}
                     setSelectedIndex={setSelectedIndex}
                     apiParams={apiParams}
                     subjectMap={subjectMap}
