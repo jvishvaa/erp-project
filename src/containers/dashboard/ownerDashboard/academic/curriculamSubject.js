@@ -420,6 +420,7 @@ const CurriculumCompletionSubject = (props) => {
                 value={date}
                 size='small'
                 variant='outlined'
+                inputProps={{ max: date }}
                 // defaultValue={dateToday}
                 onChange={(e) => setDate(e.target.value)}
                 className={classes.textField}
