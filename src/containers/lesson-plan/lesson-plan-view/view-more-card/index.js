@@ -72,10 +72,6 @@ const ViewMoreCard = ({
   }
 
   const handleComplete = () => {
-<<<<<<< HEAD
-=======
-    console.log(filterDataDown, "subject cdc")
->>>>>>> 167805111 (pop issue resolved)
     setLoading(true);
     let request = {
       academic_year: session_year,
@@ -96,10 +92,7 @@ const ViewMoreCard = ({
           setAlert('success', result?.data?.message);
           setCompletedStatus(result?.data?.result?.is_completed);
           handleClickOpenFeed()
-<<<<<<< HEAD
           // setOnComplete(result.data.result.is_completed);
-=======
->>>>>>> 167805111 (pop issue resolved)
         } else {
           setAlert('error', result?.data?.message);
           // setOnComplete(false);
@@ -126,11 +119,7 @@ const ViewMoreCard = ({
               onClick={() => {
                 setViewMore(false);
                 setSelectedIndex(-1);
-<<<<<<< HEAD
-                checkFeedback();
-=======
                 // checkFeedback()
->>>>>>> 167805111 (pop issue resolved)
               }}
             >
               <CloseIcon color='primary' />
@@ -181,7 +170,7 @@ const ViewMoreCard = ({
                             // src: getS3DomainURL(file, p),
                             // src: `${endpoints.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${grade_name}/${subject_name}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`,
                             // src: `${endpoints.lessonPlan.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${centralGradeName}/${centralSubjectName}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`,
-                            src: `${endpoints.lessonPlan.s3}${file}`,
+                            src: `${endpoints.lessonPlan.s3erp}${file}`,
                             name: `${p?.document_type}`,
                             extension: '.' + file.split('.')[file.split('.').length - 1],
                           },
