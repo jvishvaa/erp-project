@@ -92,10 +92,7 @@ const ViewMoreCard = ({
           setAlert('success', result?.data?.message);
           setCompletedStatus(result?.data?.result?.is_completed);
           handleClickOpenFeed()
-<<<<<<< HEAD
-=======
           // setOnComplete(result.data.result.is_completed);
->>>>>>> 1ee17365c53eade90681250037c000eb3dbfb2bf
         } else {
           setAlert('error', result?.data?.message);
           // setOnComplete(false);
