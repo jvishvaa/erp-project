@@ -241,7 +241,7 @@ export default function Announcement(props) {
   };
   //making request to show announcements
   const updateAnnouncement = () => {
-    apiRequest('get', endpoints.dashboard.student.update, null, null, true, 5000)
+    apiRequest('get','/announcement/v2/inbox/', null, null, true, 5000)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setIsEnabled(result?.data?.is_enabled);
@@ -426,7 +426,7 @@ const announcementRedirect = () => {
               <div>
                 <span className={classes.announcementhead}>
                   Announcements
-                  <span style={{ marginLeft: '10px' }}>
+                  {/* <span style={{ marginLeft: '10px' }}>
                     {welcomeDetails?.userLevel == '13' ? (
                       ''
                     ) : (
@@ -435,11 +435,11 @@ const announcementRedirect = () => {
                         style={{ fontSize: '1.3rem', cursor: 'pointer' }}
                       />
                     )}
-                  </span>
+                  </span> */}
                 </span>
                 <hr />
               </div>
-              <span>
+              {/* <span>
                 <Modal
                   open={open}
                   onClose={handleClose}
@@ -520,7 +520,7 @@ const announcementRedirect = () => {
                     </div>
                   </Box>
                 </Modal>
-              </span>
+              </span> */}
             </Grid>
           </Grid>
         </Grid>
