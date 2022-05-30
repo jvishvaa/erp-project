@@ -198,7 +198,6 @@ const LessonPlan = () => {
             </Grid>
           ) : (
             <div className='periodDataUnavailable'>
-<<<<<<< HEAD
               <SvgIcon
                 component={() => (
                   <img
@@ -223,9 +222,6 @@ const LessonPlan = () => {
                   />
                 )}
               />
-=======
-              <NoFilterData selectfilter={true} />
->>>>>>> 99ab10313 (Teacher View)
             </div>
           )}
           {periodData?.length > 0 && (

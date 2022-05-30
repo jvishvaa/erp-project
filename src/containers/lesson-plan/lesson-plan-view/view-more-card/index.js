@@ -72,10 +72,6 @@ const ViewMoreCard = ({
   }
 
   const handleComplete = () => {
-<<<<<<< HEAD
-=======
-    console.log(filterDataDown, "subject cdc")
->>>>>>> 167805111 (pop issue resolved)
     setLoading(true);
     let request = {
       academic_year: session_year,
@@ -96,10 +92,6 @@ const ViewMoreCard = ({
           setAlert('success', result?.data?.message);
           setCompletedStatus(result?.data?.result?.is_completed);
           handleClickOpenFeed()
-<<<<<<< HEAD
-          // setOnComplete(result.data.result.is_completed);
-=======
->>>>>>> 167805111 (pop issue resolved)
         } else {
           setAlert('error', result?.data?.message);
           // setOnComplete(false);
@@ -126,11 +118,7 @@ const ViewMoreCard = ({
               onClick={() => {
                 setViewMore(false);
                 setSelectedIndex(-1);
-<<<<<<< HEAD
-                checkFeedback();
-=======
                 // checkFeedback()
->>>>>>> 167805111 (pop issue resolved)
               }}
             >
               <CloseIcon color='primary' />
