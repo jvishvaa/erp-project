@@ -52,12 +52,14 @@ const LessonReport = () => {
     acad_year_id: '',
     completed_by: '',
   });
+  const [subjectIDs , setSubjectIds] = useState([])
 
   const handlePagination = (event, page) => {
     setPage(page);
   };
 
   const handleLessonList = (gradeId, subjectIds,subjectMapping, volumeId, startDate, endDate) => {
+    setSubjectIds(subjectIds)
     setLoading(true);
     setPeriodData([]);
     setSubjectMap(subjectMapping);
@@ -137,6 +139,7 @@ const LessonReport = () => {
                         setPeriodColor={setPeriodColor}
                         apiParams={apiParams}
                         setApiParams={setApiParams}
+                        subjectIDs = {subjectIDs}
                       />
                     </Grid>
                   ))}
@@ -148,7 +151,6 @@ const LessonReport = () => {
                     viewMoreData={viewMoreData}
                     setViewMore={setViewMore}
                     periodDataForView={periodDataForView}
-                    setSelectedIndex={setSelectedIndex}
                     setSelectedIndex={setSelectedIndex}
                     apiParams={apiParams}
                     subjectMap={subjectMap}
