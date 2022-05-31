@@ -90,7 +90,7 @@ import {
   EditWordCountConfig,
   SendEmailAttCwHw,
   EditBlogTeacher,
-  PreviewEditBlogTeacher
+  PreviewEditBlogTeacher,
 } from './containers/blog';
 import { CreateEbook, ViewEbook } from './containers/ebooks';
 import LessonPlanGraphReport from './containers/lesson-plan/lesson-plan-graph-report';
@@ -316,7 +316,7 @@ import AllChapters from './containers/sure-learning/induction-training/steps/all
 import AllSubjectChapters from 'containers/sure-learning/subject-training/allSubjectChapters';
 import InductionTraining from './containers/sure-learning/induction-training/inductionFilter';
 import TressureBox from './containers/sure-learning/tressureBox/tressurBox';
-import SureNotification from './containers/sure-learning/sure-Notification/notification'
+import SureNotification from './containers/sure-learning/sure-Notification/notification';
 import ClassCourses from './containers/sure-learning/Initiate_Class/volume_details/ClassCourses';
 import EnrollForSelfCourses from './containers/sure-learning/sureLearning-courses/courses/selfDriven/enrollForSelfCourses';
 import EnrolledSelfCourses from './containers/sure-learning/sureLearning-courses/courses/selfDriven/enrolledSelfCourses';
@@ -410,9 +410,11 @@ import NewCommunication from './containers/communication/communicationV2/index';
 import UserRegister from 'containers/sure-learning/registerationModule/ProfessionalReg';
 import ConsolidatedReport from 'containers/sure-learning/PrincipalDashboard/consolidatedReport/consolidatedReport';
 import WeeklyReport from 'containers/sure-learning/common/weekly-report/weeklyReport';
-import PrincipalLeadTeacher from 'containers/sure-learning/PrincipalDashboard/principalAssignTeacher/principalAssignTeacher'
+import PrincipalLeadTeacher from 'containers/sure-learning/PrincipalDashboard/principalAssignTeacher/principalAssignTeacher';
 import ResourcesFolderList from './containers/sure-learning/Resources_Folders/resources_folder';
 import AllChaptersContent from './containers/sure-learning/Initiate_Class/Chapter_Details/allChapters';
+import AcademicReport from './containers/dashboard/ownerDashboard/academic/academicReport';
+import HomeworkSubmissionReport from './containers/dashboard/ownerDashboard/academic/studentReport/homeworkSubmissionReport';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -1202,7 +1204,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                             {({ match }) => <BulkFeeUpload match={match} alert={alert} />}
                           </Route>
                           <Route exact path='/finance/StudentWallet'>
-                            {({ match }) => <ExtraAmtAdjust match={match} alert={alert} />}
+                            {({ match }) => (
+                              <ExtraAmtAdjust match={match} alert={alert} />
+                            )}
                           </Route>
                           <Route exact path='/finance/student/FeeCollection'>
                             {({ match }) => <FeeCollection match={match} alert={alert} />}
@@ -1656,7 +1660,6 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route exact path='/connection-pod'>
                             {({ match }) => <ConnectionPod match={match} />}
                           </Route>
-
                           <Route exact path='/subjectTrain'>
                             {({ match }) => <SubjectTraining match={match} />}
                           </Route>
@@ -1744,9 +1747,6 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route exact path='/oneee'>
                             {({ match }) => <One match={match} />}
                           </Route>
-
-
-
                           <Route exact path='/allchapterContentUnit'>
                             {({ match }) => <Unit match={match} />}
                           </Route>
@@ -1758,68 +1758,51 @@ function App({ alert, isMsAPI, erpConfig }) {
                               <AllCoursesAssignedByCoordinatorContentUnit match={match} />
                             )}
                           </Route>
-
                           <Route exact path='/learningVideos'>
-                            {({ match }) => (
-                              <LearningVideos match={match} />
-                            )}
+                            {({ match }) => <LearningVideos match={match} />}
                           </Route>
                           <Route exact path='/eachLearn'>
-                            {({ match }) => (
-                              <EachLearn match={match} />
-                            )}
+                            {({ match }) => <EachLearn match={match} />}
                           </Route>
                           <Route exact path='/Teacher-report'>
                             {({ match }) => <TeacherReport match={match} />}
                           </Route>
-
                           <Route path='/walletbulkupload'>
                             {({ match }) => <WalletBulk match={match} />}
                           </Route>
-
                           <Route path='/studentrefer'>
                             {({ match }) => <StudentRefer match={match} />}
                           </Route>
-
                           <Route path='/successrefer'>
                             {({ match }) => <ReferSuccess match={match} />}
                           </Route>
-
                           <Route path='/holidaymarking'>
                             {({ match }) => <HolidayMark match={match} />}
                           </Route>
-
                           <Route path='/student_count_report'>
                             {({ match }) => <StudentCountReport match={match} />}
                           </Route>
-
                           <Route path='/user-level-table'>
                             {({ match }) => <UserLevelTable match={match} />}
                           </Route>
-
                           <Route exact path='/online-class/connection-pod'>
                             {({ match }) => <ConnectionPod match={match} />}
                           </Route>
                           <Route path='/academic-calendar'>
                             {({ match }) => <AcademicCalendar match={match} />}
                           </Route>
-
                           <Route path='/acad-calendar'>
                             {({ match }) => <AcadCalendar match={match} />}
                           </Route>
-
                           <Route path='/curriculum-completion/:branchId'>
                             {({ match }) => <CurriculumCompletion match={match} />}
                           </Route>
-
                           <Route path='/curriculum-completion-subject/:branchId/:gradeId'>
                             {({ match }) => <CurriculumCompletionSubject match={match} />}
                           </Route>
-
                           <Route path='/curriculum-completion-section/:branchId/:gradeId/:subjectId'>
                             {({ match }) => <CurriculumCompletionSection match={match} />}
                           </Route>
-
                           <Route path='/sure-learning-trainee-courses'>
                             {({ match }) => <CoursesView match={match} />}
                           </Route>
@@ -1862,84 +1845,78 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route path='/student-report-dash/:branchId'>
                             {({ match }) => <StudentReportDash match={match} />}
                           </Route>
-
                           <Route path='/student-report/test-subject-wise/:branchId/:gradeId/:sectionId'>
                             {({ match }) => <TestSubjectWiseDetails match={match} />}
                           </Route>
-
                           <Route path='/student-report/test-student-wise/:branchId/:gradeId/:sectionId/:subjectId/:testId'>
                             {({ match }) => <TestStudentWiseDetails match={match} />}
                           </Route>
-
                           <Route path='/student-report/classwork-subject-wise/:branchId/:gradeId/:sectionId'>
                             {({ match }) => <ClassWorkSubjectWiseDetails match={match} />}
                           </Route>
-
                           <Route path='/student-report/classwork-student-wise/:branchId/:gradeId/:sectionId/:subjectId'>
                             {({ match }) => <ClassWorkStudentWiseDetails match={match} />}
                           </Route>
-
                           <Route path='/student-report/homework-subject-wise/:branchId/:gradeId/:sectionId'>
                             {({ match }) => <HomeWorkSubjectWiseDetails match={match} />}
                           </Route>
-
                           <Route path='/student-report/homework-student-wise/:branchId/:gradeId/:sectionId/:subjectId'>
                             {({ match }) => <HomeWorkStudentWiseDetails match={match} />}
                           </Route>
-
                           <Route path='/student-report/classparticipation-subject-wise/:branchId/:gradeId/:sectionId'>
-                            {({ match }) => <ClassParticipationSubjectWiseDetails match={match} />}
+                            {({ match }) => (
+                              <ClassParticipationSubjectWiseDetails match={match} />
+                            )}
                           </Route>
-
                           <Route path='/student-report/classparticipation-student-wise/:branchId/:gradeId/:sectionId/:subjectId'>
-                            {({ match }) => <ClassParticipationStudentWiseDetails match={match} />}
+                            {({ match }) => (
+                              <ClassParticipationStudentWiseDetails match={match} />
+                            )}
                           </Route>
-
                           <Route path='/student-report/report-tab'>
                             {({ match }) => <ReportTab match={match} />}
                           </Route>
-
                           <Route path='/attendance-report/:branchId'>
                             {({ match }) => <AttendanceGrade match={match} />}
                           </Route>
-
                           <Route path='/student-attendance-report/subject-wise/:branchId/:gradeId/:sectionId'>
-                            {({ match }) => <SubjectWiseAttendanceDetails match={match} />}
+                            {({ match }) => (
+                              <SubjectWiseAttendanceDetails match={match} />
+                            )}
                           </Route>
-
                           <Route path='/student-attendance-report/student-wise/:branchId/:gradeId/:sectionId/:subjectId'>
-                            {({ match }) => <StudentWiseAttendanceDetails match={match} />}
+                            {({ match }) => (
+                              <StudentWiseAttendanceDetails match={match} />
+                            )}
                           </Route>
-
                           <Route path='/student-attendance-report/student-wise-more-absent/:branchId/:gradeId/:sectionId/:subjectId'>
-                            {({ match }) => <StudentWiseAttendanceDetailsMoreAbsent match={match} />}
+                            {({ match }) => (
+                              <StudentWiseAttendanceDetailsMoreAbsent match={match} />
+                            )}
                           </Route>
-
                           <Route path='/staff-attendance-report/branch-wise'>
                             {({ match }) => <StuffAttendanceBranchWise match={match} />}
                           </Route>
-
                           <Route path='/staff-attendance-report/staff-type-wise/:branchId'>
-                            {({ match }) => <StuffAttendanceStuffTypeWise match={match} />}
+                            {({ match }) => (
+                              <StuffAttendanceStuffTypeWise match={match} />
+                            )}
                           </Route>
-
                           <Route path='/stuff-attendance-report/:roleName/:branchId'>
                             {({ match }) => <StuffAttendanceAdminWise match={match} />}
                           </Route>
-
                           <Route path='/stuff-attendance-report/teacher-wise/:branchId/:stuffTypeID'>
                             {({ match }) => <StuffAttendanceTeacherWise match={match} />}
                           </Route>
-
                           <Route path='/stuff-attendance-report/other-stuff-wise/:branchId/:stuffTypeID'>
-                            {({ match }) => <StuffAttendanceOtherStuffWise match={match} />}
+                            {({ match }) => (
+                              <StuffAttendanceOtherStuffWise match={match} />
+                            )}
                           </Route>
                           <Route path='/staff-attendance-report/staff-details/:branchId/:erpId'>
                             {({ match }) => <StuffAttendancDetails match={match} />}
                           </Route>
-
                           {/* Fees routes--> */}
-
                           <Route path='/fees-table-status'>
                             {({ match }) => <FeesTableStatus match={match} />}
                           </Route>
@@ -1964,9 +1941,13 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route path='/comm_dashboard'>
                             {({ match }) => <NewCommunication match={match} />}
                           </Route>
-
-
-
+                          {/* Academic Report */}
+                          <Route path='/academic-report'>
+                            {({ match }) => <AcademicReport match={match} />}
+                          </Route>
+                          <Route path='/homework-submission-report'>
+                            {({ match }) => <HomeworkSubmissionReport match={match} />}
+                          </Route>
                           <Route path='*'>
                             <ErrorBoundary404 HomeButton={true} />
                           </Route>
