@@ -1,0 +1,9 @@
+.th-sticky-header .MuiTableContainer-root {
+  overflow-x: inherit !important;
+}
+.th-picker .MuiPickersPopper-root {
+  left: 2 rem !important;
+}
+#menu- .MuiPaper-rounded {
+  top: 60px !important;
+}

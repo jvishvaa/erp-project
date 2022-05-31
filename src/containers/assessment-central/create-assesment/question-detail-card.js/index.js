@@ -90,7 +90,7 @@ const QuestionDetailCard = ({
   };
 
   const extractDate = (dateValue) => {
-    return dateValue.split('T')[0];
+    return dateValue?.split('T')[0];
     // date.split("-")
   };
 

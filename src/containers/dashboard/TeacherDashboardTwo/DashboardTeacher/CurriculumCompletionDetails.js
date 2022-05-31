@@ -436,8 +436,8 @@ const CurriculumCompletionDetails = (props) => {
                   <TableCell className={clsx(classes.textLeft)}>
                     Grade and Subject
                   </TableCell>
-                  <TableCell align='right'>Total Topics</TableCell>
-                  <TableCell align='right'>Completed Topics</TableCell>
+                  <TableCell align='right'>Total Periods</TableCell>
+                  <TableCell align='right'>Completed Periods</TableCell>
                   <TableCell align='right'>Completion Percentage</TableCell>
                   <TableCell></TableCell>
                 </TableRow>

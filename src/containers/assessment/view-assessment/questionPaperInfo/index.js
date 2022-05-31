@@ -281,7 +281,7 @@ const QuestionPaperInfo = ({
               );
             }}
           >
-            {getTestStatus() ? 'Take Test' : 'Not Started'}
+            {getTestStatus() ? <b style={{fontSize:'20px'}}>Take Test</b> : 'Not Started'}
           </Button>
         )}
       </div>
