@@ -1304,6 +1304,7 @@ const FinanceOwnerDashboard = (props) => {
                                     <div
                                       className={clsx(classes.absentGrid)}
                                       onClick={() => history.push('./academic-report')}
+                                      style={{ cursor: 'pointer' }}
                                     >
                                       <div style={{ width: '53%' }}>
                                         <Typography
