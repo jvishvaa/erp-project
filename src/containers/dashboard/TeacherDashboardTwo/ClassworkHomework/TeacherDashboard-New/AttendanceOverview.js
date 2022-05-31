@@ -512,7 +512,7 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
                       <div
                         className='colorDiv'
                         style={{
-                          background: '#DAB5FF',
+                          background: '#4a90e2',
                           marginRight: '1%',
                           height: '20px',
                           width: '20px',
