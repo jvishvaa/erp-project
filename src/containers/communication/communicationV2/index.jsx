@@ -132,7 +132,6 @@ const NewCommunication = () => {
   const [defaultdate, setDefaultDate] = useState(moment().format('YYYY-MM-DD'));
   const [branchList, setBranchList] = useState([]);
   const [selectedbranchListData, setSelectedbranchListData] = useState({});
-  const [selectedbranchListId, setSelectedbranchListId] = useState(null);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGradeListData, setSelectedGradeListData] = useState([]);
   const [selectedGradeId, setSelectedGradeId] = useState([]);
@@ -284,11 +283,6 @@ const NewCommunication = () => {
           let message =
             onClickIndex == 1 ? 'Inbox' : onClickIndex == 2 ? 'Drafts' : ' Sent';
           setAlert('success', `Successfully fetched ${message} `);
-          emptyFilter()
-        }else{
-          setLoading(false);
-          setAlert('error', result?.data?.message);
-          emptyFilter()
         }
       })
       .catch((error) => {
@@ -297,18 +291,6 @@ const NewCommunication = () => {
         setAlert('error', error?.message);
       });
   };
-
-  const emptyFilter = () =>{
-    setSelectedbranchListData({})
-    setSelectedbranchListId(null)
-    setSelectedGradeListData([])
-    setSelectedGradeId([])
-    setGradeList([])
-    setSelectedSectionListData([])
-    setSelectedSectionId([])
-    setSectionList([])
-    setSelectedSectionMappingId([])
-  }
 
   useEffect(() => {
     rowsData();
@@ -351,7 +333,7 @@ const NewCommunication = () => {
   const getGrade = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedbranchListId}&module_id=${moduleId}`
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -361,28 +343,6 @@ const NewCommunication = () => {
         }
       });
   };
-
-  const handleBranch = (e,value) =>{
-    if(value){
-      setSelectedbranchListData(value)
-      setSelectedbranchListId(value.id)
-      setSelectedGradeListData([])
-      setSelectedGradeId([])
-      setGradeList([])
-      setSelectedSectionListData([])
-      setSelectedSectionId([])
-      setSectionList([])
-    }else{
-      setSelectedbranchListData({})
-      setSelectedbranchListId(null)
-      setSelectedGradeListData([])
-      setSelectedGradeId([])
-      setGradeList([])
-      setSelectedSectionListData([])
-      setSelectedSectionId([])
-      setSectionList([])
-    }
-  }
 
   const handleGrade = (e, value) => {
     if (value?.length) {
@@ -420,7 +380,7 @@ const NewCommunication = () => {
   const getSection = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedbranchListId}&grade_id=${selectedGradeId}&module_id=${moduleId}`
+        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&grade_id=${selectedGradeId}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -434,20 +394,15 @@ const NewCommunication = () => {
   useEffect(() => {
     if (moduleId) {
       getBranch();
-    }
-  }, [moduleId]);
-
-  useEffect(() => {
-    if (selectedbranchListId) {
       getGrade();
     }
-  }, [selectedbranchListData]);
-
-  useEffect(() => {
-    if (selectedGradeId.length>0) {
+  }, [moduleId]);
+  
+  useEffect(()=>{
+    if(selectedGradeId.length>0){
       getSection();
     }
-  }, [selectedGradeListData]);
+  }, [selectedGradeId])
 
   const updatePublish = (id) => {
     const params = {
@@ -544,6 +499,17 @@ const NewCommunication = () => {
         return '#464D57';
     }
   };
+
+  const branchName = (branchID=[]) =>{
+    if(branchID.length>0){
+      for(let i = 0 ; i<branchList.length ; i++){
+        if(branchList[i].id === branchID[0]){
+          return branchList[i].branch_name
+        }
+      }
+    }
+
+  }
 
   return (
     <Layout>
@@ -1018,6 +984,22 @@ const NewCommunication = () => {
                     );
                   })}
                 </div>
+                <div>
+                <span
+                  style={{
+                    background: '#EBEBEB 0% 0% no-repeat padding-box',
+                    border: '1px solid #EBEBEB',
+                    borderRadius: 17,
+                    opacity: '1',
+                    textAlign: 'center',
+                    fontSize: '12px',
+                    margin: '5px 5px 0 0',
+                    padding: '5px 10px',
+                  }}
+                >
+                  {branchName(dialogData.branch_id)}
+                </span>
+                </div>
               </Grid>
               <Grid item xs={8} sm={8} md={8} style={{ width: '100%',marginLeft:'30px' }}>
                 <div style={{ whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{dialogData?.title}</div>
@@ -1238,7 +1220,7 @@ const NewCommunication = () => {
           </form>
         </MenuItem>
 
-        <MenuItem>
+        {/* <MenuItem>
           <Grid xs={12} md={12} lg={12} item>
           <b>Branch</b>
           <Autocomplete
@@ -1253,7 +1235,7 @@ const NewCommunication = () => {
                 )}
               />
           </Grid>
-        </MenuItem>
+        </MenuItem> */}
 
         <MenuItem>
           <Grid xs={12} md={12} lg={12} item>
