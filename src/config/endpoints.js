@@ -196,7 +196,8 @@ export default {
     subjects: '/academic/lesson-plan-subjects/',
     lessonList: '/academic/lesson-completed-report/',
     lessonViewMoreData: '/academic/user-chapters-details/',
-    teacherList: '/academic/lesson_plan_user_list/',
+    // teacherList: '/academic/lesson_plan_user_list/',
+    teacherList : '/academic/lesson-plan-user-list-v2/',
   },
   studentListApis: {
     branchWiseStudentCount: '/academic/school_strength/',
