@@ -116,7 +116,7 @@ const LessonPlan = () => {
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
         <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
-          <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='Teacher View' />
+          <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='View' />
         </BreadcrumbToggler>
 
         <div className={isFilter ? 'showFilters' : 'hideFilters'}>
