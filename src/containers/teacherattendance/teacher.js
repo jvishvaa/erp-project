@@ -275,13 +275,34 @@ export default function TeacherAttendance(props) {
   const handleDateChange = (name, date) => {
     if (name === 'startDate') setStartDate(date);
   };
+
   useEffect(() => {
-    handleAcademicYear('', selectedAcademicYear);
-  }, [moduleId]);
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Attendance' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Mark Attendance') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
+
+  useEffect(() => {
+    // handleAcademicYear('', selectedAcademicYear);
+      if (moduleId && selectedAcademicYear) getBranch();
+    }, [moduleId, selectedAcademicYear]);
 
   function getBranch(acadId) {
+    let url = `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
     axiosInstance
-      .get(`${endpoints.academics.branches}?session_year=${acadId}&module_id=${moduleId}`)
+      .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
           let branches = result.data?.data?.results.map((item) => item.branch);
@@ -294,12 +315,6 @@ export default function TeacherAttendance(props) {
       })
       .catch((error) => {});
   }
-
-  const handleAcademicYear = (event, value) => {
-    if (value) {
-      getBranch(value?.id);
-    }
-  };
 
   const handleBranch = (event, value) => {
     if (value) {
@@ -419,24 +434,6 @@ export default function TeacherAttendance(props) {
   //     setSelectedMultipleRoles([]);
   //   }
   // };
-
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Teacher Attendance' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Mark Attendance') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, [window.location.pathname]);
 
   const getTeacherData = () => {
     setData([]);
