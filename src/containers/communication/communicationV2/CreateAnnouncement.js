@@ -480,7 +480,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
                   
       const newValue = e.target.value;
     
-      if (!newValue.match(/[%<>\\$'"]/)) {
+      if (!newValue.match(/[%<>\\$"]/)) {
         setError("");
         setTitle(newValue); // only set when successful
       } else {
