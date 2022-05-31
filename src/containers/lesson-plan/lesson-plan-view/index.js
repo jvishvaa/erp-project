@@ -51,7 +51,7 @@ const LessonPlan = () => {
   const [centralGradeName, setCentralGradeName] = useState('');
   const [centralSubjectName, setCentralSubjectName] = useState('');
   const [openFeed, setOpenFeed] = React.useState(false);
-  const [topicId,setTopicId] = useState()
+  const [topicId, setTopicId] = useState()
 
   const handleClickOpenFeed = () => {
     setOpenFeed(true);
@@ -67,7 +67,7 @@ const LessonPlan = () => {
     setPage(page);
   };
 
-  const handlePeriodList = (searchChapter,topicId) => {
+  const handlePeriodList = (searchChapter, topicId) => {
     setLoading(true);
     setPeriodData([]);
     setTopicId(topicId)
@@ -99,7 +99,7 @@ const LessonPlan = () => {
   };
 
   useEffect(() => {
-    if (page && chapterSearch) handlePeriodList(chapterSearch,topicId);
+    if (page && chapterSearch) handlePeriodList(chapterSearch, topicId);
   }, [page]);
 
   const sortPeriodsAsPerNumber =(periodArray=[])=>{

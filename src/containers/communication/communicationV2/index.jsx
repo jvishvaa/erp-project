@@ -131,7 +131,7 @@ const NewCommunication = () => {
   const [rows, setRows] = useState([]);
   const [defaultdate, setDefaultDate] = useState(moment().format('YYYY-MM-DD'));
   const [branchList, setBranchList] = useState([]);
-  const [selectedbranchListData, setSelectedbranchListData] = useState();
+  const [selectedbranchListData, setSelectedbranchListData] = useState({});
   const [gradeList, setGradeList] = useState([]);
   const [selectedGradeListData, setSelectedGradeListData] = useState([]);
   const [selectedGradeId, setSelectedGradeId] = useState([]);
@@ -395,9 +395,14 @@ const NewCommunication = () => {
     if (moduleId) {
       getBranch();
       getGrade();
+    }
+  }, [moduleId]);
+  
+  useEffect(()=>{
+    if(selectedGradeId.length>0){
       getSection();
     }
-  }, [selectedGradeId, moduleId]);
+  }, [selectedGradeId])
 
   const updatePublish = (id) => {
     const params = {
@@ -494,6 +499,17 @@ const NewCommunication = () => {
         return '#464D57';
     }
   };
+
+  const branchName = (branchID=[]) =>{
+    if(branchID.length>0){
+      for(let i = 0 ; i<branchList.length ; i++){
+        if(branchList[i].id === branchID[0]){
+          return branchList[i].branch_name
+        }
+      }
+    }
+
+  }
 
   return (
     <Layout>
@@ -968,6 +984,22 @@ const NewCommunication = () => {
                     );
                   })}
                 </div>
+                <div>
+                <span
+                  style={{
+                    background: '#EBEBEB 0% 0% no-repeat padding-box',
+                    border: '1px solid #EBEBEB',
+                    borderRadius: 17,
+                    opacity: '1',
+                    textAlign: 'center',
+                    fontSize: '12px',
+                    margin: '5px 5px 0 0',
+                    padding: '5px 10px',
+                  }}
+                >
+                  {branchName(dialogData.branch_id)}
+                </span>
+                </div>
               </Grid>
               <Grid item xs={8} sm={8} md={8} style={{ width: '100%',marginLeft:'30px' }}>
                 <div style={{ whiteSpace: 'nowrap',overflow: 'hidden',textOverflow: 'ellipsis'}}>{dialogData?.title}</div>
@@ -1187,6 +1219,23 @@ const NewCommunication = () => {
             />
           </form>
         </MenuItem>
+
+        {/* <MenuItem>
+          <Grid xs={12} md={12} lg={12} item>
+          <b>Branch</b>
+          <Autocomplete
+                id='combo-box-demo'
+                size='small'
+                options={branchList || []}
+                onChange={handleBranch}
+                value={selectedbranchListData}
+                getOptionLabel={(option) => option?.branch_name}
+                renderInput={(params) => (
+                  <TextField {...params} placeholder='Branch' variant='outlined' />
+                )}
+              />
+          </Grid>
+        </MenuItem> */}
 
         <MenuItem>
           <Grid xs={12} md={12} lg={12} item>
