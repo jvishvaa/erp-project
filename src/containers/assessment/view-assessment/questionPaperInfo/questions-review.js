@@ -68,7 +68,7 @@ function QuestionReview() {
                   </b>
                   &nbsp;
                 </span>
-                <span>
+                <span style={{ fontSize: '14px' }}>
                   <b>
                     {ReactHtmlParser(question)}
                   </b>
@@ -81,7 +81,7 @@ function QuestionReview() {
                       {`Sub Q${index + 1}.`}
                       &nbsp;
                     </span>
-                    <span>{ReactHtmlParser(item?.question_answer[0]?.question)}</span>
+                    <span style={{ fontSize: '14px' }}>{ReactHtmlParser(item?.question_answer[0]?.question)}</span>
                   </div>
                   {(item?.user_sub_answer?.question_type === 9) ? (
                     <div className={classes.answersContainer}>
@@ -133,7 +133,7 @@ function QuestionReview() {
                   {`Q${index + 1}.`}
                   &nbsp;
                 </span>
-                <span>{ReactHtmlParser(question)}</span>
+                <span style={{ fontSize: '14px' }}>{ReactHtmlParser(question)}</span>
               </div>
               {questionType === 1 || questionType === 8 || questionType === 2 ? (
                 <>
