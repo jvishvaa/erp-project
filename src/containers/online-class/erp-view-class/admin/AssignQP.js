@@ -146,8 +146,10 @@ const AssignQP = (props) => {
   };
 
   const handleQPSelect = (event, value) => {
-    if (value) {
+    if (value?.is_erp_qp) {
       setSelectedQp(value.question_paper);
+    }else{
+      setSelectedQp(value.central_qp_id);
     }
     let quepaperId = value?.is_erp_qp  ? value?.question_paper : value?.central_qp_id ;    
     const QuestionsInQP = JSON.parse(localStorage.getItem('isMsAPI'))
