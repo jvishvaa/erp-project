@@ -15,7 +15,7 @@ import {
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import cuid from 'cuid';
 import { connect } from 'react-redux';
-import { useHistory, useParams,useLocation } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { useTheme } from '@material-ui/core/styles';
 import Layout from '../../Layout';
 import QuestionCard from '../../../components/question-card';
@@ -25,6 +25,9 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
+import moment from 'moment';
 
 const validateQuestions = (obj) => {
   let error = false;
@@ -58,7 +61,7 @@ const StyledOutlinedButton = withStyles((theme) => ({
     backgroundColor: 'transparent',
     '& .MuiSvgIcon-root': {
       color: theme.palette.primary.main,
-      fontSize:'20px'
+      fontSize: '20px'
     },
   },
 }))(Button);
@@ -74,6 +77,8 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [teacherModuleId, setTeacherModuleId] = useState(null);
   const [errors, setErrors] = useState({ name: '', description: '' });
+  const [date, setDate] = useState(new Date());
+  const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
   const [isEdit, setisEdit] = useState(location?.state?.isEdit)
   const [questions, setQuestions] = useState([
     {
@@ -94,28 +99,32 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const branch = params.branch;
   const grade = params.grade;
 
+  const handleDateChange = (event, value) => {
+    setDateValue(value);
+  };
 
-  useEffect(() => { 
-if(location?.state?.isEdit){
-  // setisEdit(location.state.isEdit)
-  // sethwId(location.state.viewHomework.homeworkId)
-  setName(location.state.selectedHomeworkDetails.homework_name)
-  setSectionDisplay(Object.keys(location.state.viewHomework.sectiondata).length > 0 ? [location.state.viewHomework.sectiondata] : [])
-  setDescription(location.state.selectedHomeworkDetails.description)
-  const que = location?.state?.selectedHomeworkDetails?.hw_questions?.map((data)=>(
-    {
-      id: cuid(),
-      is_attachment_enable: data.is_attachment_enable,
-      max_attachment: data.max_attachment,
-      penTool: data.is_pen_editor_enable,
-      question:data.question,
-      attachments:data.question_files
+
+  useEffect(() => {
+    if (location?.state?.isEdit) {
+      // setisEdit(location.state.isEdit)
+      // sethwId(location.state.viewHomework.homeworkId)
+      setName(location.state.selectedHomeworkDetails.homework_name)
+      setSectionDisplay(Object.keys(location.state.viewHomework.sectiondata).length > 0 ? [location.state.viewHomework.sectiondata] : [])
+      setDescription(location.state.selectedHomeworkDetails.description)
+      const que = location?.state?.selectedHomeworkDetails?.hw_questions?.map((data) => (
+        {
+          id: cuid(),
+          is_attachment_enable: data.is_attachment_enable,
+          max_attachment: data.max_attachment,
+          penTool: data.is_pen_editor_enable,
+          question: data.question,
+          attachments: data.question_files
+        }
+      )
+      )
+      setQuestions(que)
     }
-  )
-)
-setQuestions(que)
-}
-  },[])
+  }, [])
 
   const validateHomework = () => {
     let isFormValid = true;
@@ -161,6 +170,7 @@ setQuestions(que)
         section_mapping: sectionDisplay.map((data) => parseInt(data.id, 10)),
         subject: params.id,
         date: params.date,
+        last_submission_date: dateValue,
         questions: questions.map((q) => {
           const qObj = q;
           delete qObj.errors;
@@ -169,7 +179,7 @@ setQuestions(que)
         }),
       };
       try {
-        const response = await onAddHomework(reqObj,isEdit,hwId);
+        const response = await onAddHomework(reqObj, isEdit, hwId);
         setAlert('success', 'Homework added');
         history.push('/homework/teacher');
       } catch (error) {
@@ -219,9 +229,9 @@ setQuestions(que)
   const handleBackButton = () => {
     history.push('/homework/teacher');
   };
-// const descriptionChange = (e) => {
-//   setDescription(e.target.value);
-// }
+  // const descriptionChange = (e) => {
+  //   setDescription(e.target.value);
+  // }
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -273,10 +283,10 @@ setQuestions(que)
   return (
     <Layout>
       <CommonBreadcrumbs
-          componentName='Homework'
-          childComponentName={location?.state?.isEdit ? 'Edit Homework' : 'Add Homework'} 
-          isAcademicYearVisible={true}
-        />
+        componentName='Homework'
+        childComponentName={location?.state?.isEdit ? 'Edit Homework' : 'Add Homework'}
+        isAcademicYearVisible={true}
+      />
       <div className='add-homework-container'>
         <Grid container className='add-homework-inner-container' spacing={2}>
           <Grid item xs={12} className='add-homework-title-container' md={3}>
@@ -342,22 +352,45 @@ setQuestions(que)
                   )}
                 />
               </Grid>
+              <Grid item xs={12} sm={4} style={{ margin: '0 20px' }}>
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <KeyboardDatePicker
+                    size='small'
+                    variant='dialog'
+                    format='YYYY-MM-DD'
+                    margin='none'
+                    // className='button'
+                    className='dropdownIcon'
+                    id='date-picker'
+                    label='Due Date'
+                    inputVariant='outlined'
+                    fullWidth
+                    value={dateValue}
+                    onChange={handleDateChange}
+                    // className='dropdown'
+                    style={{ width: '100%' }}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change date',
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
+              </Grid>
               <Grid item xs={12} className='form-field'>
                 <FormControl variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Title</InputLabel>
                   <OutlinedInput
                     id='title'
                     name='title'
-                    onChange={() => {}}
+                    onChange={() => { }}
                     inputProps={{ maxLength: 20 }}
                     label='Title'
                     autoFocus
                     onChange={(e) => {
                       setName(e.target.value);
                     }}
-                    value = {name}
-                    //error={errors.name ? true : false}
-                    //helperText="Title is required"
+                    value={name}
+                  //error={errors.name ? true : false}
+                  //helperText="Title is required"
                   />
                   <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
                 </FormControl>
@@ -377,9 +410,9 @@ setQuestions(que)
                     rows={4}
                     rowsMax={6}
                     label='Instruction'
-                    value = {description}
-                    //error={true}
-                    //helperText="Description required"
+                    value={description}
+                  //error={true}
+                  //helperText="Description required"
                   />
                   <FormHelperText style={{ color: 'red' }}>
                     {errors.description}
@@ -390,7 +423,7 @@ setQuestions(que)
                 <QuestionCard
                   key={question.id}
                   question={question}
-                  isEdit = {location?.state?.isEdit}
+                  isEdit={location?.state?.isEdit}
                   index={index}
                   addNewQuestion={addNewQuestion}
                   handleChange={handleChange}
@@ -452,8 +485,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onAddHomework: (reqObj,isEdit,hwId) => {
-    return dispatch(addHomeWork(reqObj,isEdit,hwId));
+  onAddHomework: (reqObj, isEdit, hwId) => {
+    return dispatch(addHomeWork(reqObj, isEdit, hwId));
   },
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));

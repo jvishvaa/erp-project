@@ -173,7 +173,7 @@ export const fetchTeacherHomeworkDetails = (moduleId, acadYear, branch, garde, s
       homeworkColumns.forEach((col) => {
         const homeworkStatus = row.hw_details.find((detail) => detail.subject === col.subject_id);
         obj[col.subject_name] = homeworkStatus
-          ? { hw_id: homeworkStatus.id, ...homeworkStatus.status }
+          ? { hw_id: homeworkStatus.id, ...homeworkStatus.status , last_submission_date : homeworkStatus.last_submission_dt}
           : {};
       });
       return obj;
@@ -194,17 +194,18 @@ export const setSelectedHomework = (data) => ({
   data,
 });
 
-export const fetchStudentsListForTeacherHomework = (id, subjectId, sectionId, selectedTeacherUser_id) => async (dispatch) => {
+export const fetchStudentsListForTeacherHomework = (id, subjectId, sectionId, selectedTeacherUser_id , date) => async (dispatch) => {
   dispatch({ type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_REQUEST });
   try {
     const response = await axios.get(selectedTeacherUser_id ?
       `/academic/homework-submitted-data/?homework=${id}&user=${selectedTeacherUser_id}&subject=${subjectId}&section_mapping=${sectionId}`
-      : `/academic/homework-submitted-data/?homework=${id}&subject=${subjectId}&section_mapping=${sectionId}`);
+      : `/academic/homework-submitted-data/?homework=${id}&subject=${subjectId}&section_mapping=${sectionId}&date=${date}`);
     const {
       evaluated_list: evaluatedStudents,
       submitted_list: submittedStudents,
       un_submitted_list: unSubmittedStudents,
       unevaluated_list: unevaluatedStudents,
+      absent_list : absentList,
     } = response.data;
     dispatch({
       type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_SUCCESS,
@@ -212,6 +213,7 @@ export const fetchStudentsListForTeacherHomework = (id, subjectId, sectionId, se
       submittedStudents,
       unSubmittedStudents,
       unevaluatedStudents,
+      absentList
     });
   } catch (error) {
     dispatch({ type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_FAILURE });
