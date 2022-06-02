@@ -16,11 +16,11 @@ import { AttachmentPreviewerContext } from '../../../../components/attachment-pr
 
 const useStyles = makeStyles((theme) => ({
   rootViewMore: theme.rootViewMore,
-  lessonCompleted:{
+  lessonCompleted: {
     fontWeight: 600,
     color: theme.palette.primary.main
   },
-  resourceBulkDownload:{
+  resourceBulkDownload: {
     fontSize: '1.1rem',
     color: theme.palette.primary.main,
     display: 'flex',
@@ -65,7 +65,7 @@ const ViewMoreCard = ({
   const { volume_name = '', id: volumeId = '' } = volumeData || {};
 
   const checkFeedback = () => {
-    console.log(periodDataForView , "completed");
+    console.log(periodDataForView, "completed");
     if (completedStatus) {
       handleClickOpenFeed()
     }
@@ -119,7 +119,7 @@ const ViewMoreCard = ({
               onClick={() => {
                 setViewMore(false);
                 setSelectedIndex(-1);
-                checkFeedback();
+                // checkFeedback()
               }}
             >
               <CloseIcon color='primary' />
@@ -167,9 +167,6 @@ const ViewMoreCard = ({
                         currentAttachmentIndex: 0,
                         attachmentsArray: [
                           {
-                            // src: getS3DomainURL(file, p),
-                            // src: `${endpoints.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${grade_name}/${subject_name}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`,
-                            // src: `${endpoints.lessonPlan.s3}dev/lesson_plan_file/${session_year}/${volume_name}/${centralGradeName}/${centralSubjectName}/${chapter_name}/${periodDataForView?.period_name}/${p?.document_type}/${file}`,
                             src: `${endpoints.lessonPlan.s3}${file}`,
                             name: `${p?.document_type}`,
                             extension: '.' + file.split('.')[file.split('.').length - 1],
@@ -193,8 +190,8 @@ const ViewMoreCard = ({
                   </a>
                 </div>
                 {p?.document_type === "Activity_Sheet" ?
-                <a href={`${endpoints.lessonPlan.s3erp}${file}`} target = "_blank" download ><IconButton style={{padding: '0', margin: '0 7px'}} > <GetAppIcon /> </IconButton> </a>
-                    : '' }
+                  <a href={`${endpoints.lessonPlan.s3}${file}`} target="_blank" download ><IconButton style={{ padding: '0', margin: '0 7px' }} > <GetAppIcon /> </IconButton> </a>
+                  : ''}
               </div>
             ))}
           </div>
@@ -210,12 +207,12 @@ const ViewMoreCard = ({
               <Button
                 key={`btn-${periodDataForView?.id}`}
                 variant='contained'
-                style={{color:'white', width: '100%' }}
+                style={{ color: 'white', width: '100%' }}
                 color='primary'
                 size='small'
                 onClick={handleComplete}
               >
-                Completed
+                Complete
               </Button>
             </div>
           )}

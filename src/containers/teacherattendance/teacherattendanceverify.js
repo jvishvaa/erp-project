@@ -15,17 +15,11 @@ import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import Paper from '@material-ui/core/Paper';
-import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import { connect, useSelector } from 'react-redux';
 import FormControl from '@material-ui/core/FormControl';
-
-import './teacherattendance.css';
+import InputBase from '@material-ui/core/InputBase';
+import SearchIcon from '@material-ui/icons/Search';
+import Loader from '../../components/loader/loader';
 
 import Layout from 'containers/Layout';
 import Grid from '@material-ui/core/Grid';
@@ -250,6 +244,8 @@ export default function TeacherAttendanceVerify() {
   const classes = useStyles();
 
   const [order, setOrder] = React.useState('asc');
+  const [loading, setLoading] = React.useState(false);
+  const [seachedData, setSeachedData] = React.useState('');
   const [orderBy, setOrderBy] = React.useState('Erp_id');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
@@ -262,6 +258,7 @@ export default function TeacherAttendanceVerify() {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [startDate, setStartDate] = React.useState(moment().format('YYYY-MM-DD'));
   const [academicYearDropdown, setAcademicYearDropdown] = React.useState([]);
+  const [disableDownload, setDisableDownload] = React.useState(true);
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [data, setData] = React.useState([]);
@@ -269,14 +266,14 @@ export default function TeacherAttendanceVerify() {
   var studentAttendanceData = [];
   data.map((item) =>
     studentAttendanceData.push({
-      erp_id: item.erp_id,
-      name: item.name,
-      contact: item.contact,
-      roles__role_name: item.roles__role_name,
+      'ERP ID': item.erp_id,
+      Name: item.name,
+      'Contact Number': item.contact,
+      Role: item.roles__role_name,
     })
   );
   for (var i = 0; i <= data?.length; i++) {
-    for (var j = 0; j <= data[i]?.attendance?.length; j++) {
+    for (var j = 0; j < data[i]?.attendance?.length; j++) {
       var dateSplit = data[i]?.attendance[j]?.date?.split('-');
       var a = '-';
       if (data[i]?.attendance[j]?.attendence_status === 'present') a = 'P';
@@ -444,7 +441,7 @@ export default function TeacherAttendanceVerify() {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Teacher Attendance' &&
+          item.parent_modules === 'Attendance' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
@@ -463,6 +460,8 @@ export default function TeacherAttendanceVerify() {
       setAlert('error', 'select branch');
       return false;
     }
+    setLoading(true);
+    setDisableDownload(true);
     const result = axiosInstance
       .get(
         `${endpoints.academics.getTeacherAttendanceData}?branch_id=${filterData.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&month=${month}&year=${year}&roles=${rolesId}`
@@ -470,10 +469,13 @@ export default function TeacherAttendanceVerify() {
       .then((result) => {
         if (result.status === 200) {
           setData(result?.data);
+          setLoading(false);
+          if (result?.data?.length > 0) setDisableDownload(false);
         }
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   };
   useEffect(() => {
@@ -598,8 +600,12 @@ export default function TeacherAttendanceVerify() {
   };
   const exportTo = (data, fileName) => {
     const ws = XLSX.utils.json_to_sheet(data);
+
     const wb = { Sheets: { data: ws }, SheetNames: ['data'] };
-    const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+    const excelBuffer = XLSX.write(wb, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
     const dataX = new Blob([excelBuffer], { type: fileType });
     FileSaver.saveAs(dataX, fileName + fileExtension);
   };
@@ -627,7 +633,7 @@ export default function TeacherAttendanceVerify() {
         direction='row'
         style={{ paddingLeft: '22px', paddingRight: '10px' }}
       >
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
           <Breadcrumbs
             separator={<NavigateNextIcon fontSize='small' />}
             aria-label='breadcrumb'
@@ -635,10 +641,10 @@ export default function TeacherAttendanceVerify() {
             <Typography color='textPrimary' variant='h6'>
               Attendance
             </Typography>
-            <Typography color='textPrimary'>Attendance Report</Typography>
+            <Typography color='textPrimary'>View Attendence</Typography>
           </Breadcrumbs>
         </Grid>
-        <Grid container spacing={1} style={{ marginTop: '5px' }}>
+        <Grid container spacing={2}>
           <FormControl className={classes.formControl}>
             <InputLabel htmlFor='age-native-simple'>Month</InputLabel>
             <Select
@@ -673,7 +679,7 @@ export default function TeacherAttendanceVerify() {
             <Autocomplete
               // multiple
               size='small'
-              disableClearable
+              // disableClearable
               onChange={handleMultipleRoles}
               value={rolesId}
               className='dropdownIcon'
@@ -689,6 +695,7 @@ export default function TeacherAttendanceVerify() {
                   variant='outlined'
                   label='Role'
                   placeholder='Role'
+                  required
                 />
               )}
             />
@@ -717,7 +724,7 @@ export default function TeacherAttendanceVerify() {
 
           {/* <Grid item xs={12} md={2} md={1} > */}
 
-          <Grid item md={1} xs={12}>
+          <Grid item md={1} xs={12} style={{ marginRight: 10 }}>
             <Button
               onClick={getTeacherData}
               variant='contained'
@@ -726,16 +733,19 @@ export default function TeacherAttendanceVerify() {
               Search
             </Button>
           </Grid>
-          <Grid item xs={12} md={2}>
+
+          <Grid item xs={12} md={3}>
             {/* <exportToCSV data={studentAttendanceData} fileName="attendance" /> */}
-            <Button
-              variant='contained'
-              className='mobile-download'
-              style={{ backgroundColor: '#e65c00' }}
-              onClick={() => exportTo(studentAttendanceData, 'attendance')}
-            >
-              Download excel file
-            </Button>
+            {!disableDownload && (
+              <Button
+                variant='contained'
+                className='mobile-download'
+                style={{ backgroundColor: '#e65c00' }}
+                onClick={() => exportTo(studentAttendanceData, 'attendance')}
+              >
+                Download excel file
+              </Button>
+            )}
           </Grid>
           <Grid item xs={12} md={2}>
             {/* <Typography
@@ -749,21 +759,47 @@ export default function TeacherAttendanceVerify() {
             id='tableTitle'
             component='div'
           > */}
-            <Grid container direction='column' justifyContent='left' alignItems='rght'>
+          </Grid>
+        </Grid>
+
+        {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
+        {/* var searchedData = studentAttendanceData.filter((item)=>{return item.name..toLowerCase().includes("qa".toLowerCase())||item.contact.includes("567")||item.erp_id.includes("031_OLV")}) */}
+        <Grid container spacing={1}>
+          <Grid item md={4}>
+            <Paper elevation={3} className='search'>
+              <div>
+                <SearchIcon />
+              </div>
+              <InputBase
+                placeholder=' Search'
+                onChange={(e) => {
+                  setSeachedData(e.target.value);
+                }}
+              />
+            </Paper>
+          </Grid>{' '}
+          <Grid item md={6}>
+            <Grid
+              container
+              spacing={1}
+              direction='row'
+              justifyContent='space-evenly'
+              alignItems='center'
+              style={{ fontWeight: 'bold', height: '100%' }}
+            >
               <span style={{ color: '#ff944d' }}>Index : </span>
-              <span style={{ color: '#00ff00' }}>P: Present</span>
-              <span style={{ color: 'red' }}>A: Absent </span>
-              <span style={{ color: '#800080' }}> L: Late </span>
-              <span style={{ color: '#4747d1' }}> HD: Half Day</span>
-              <span style={{ color: '#81c3b4' }}> H: Holiday </span>
+              <span style={{ color: '#00ff00' }}>P : Present</span>
+              <span style={{ color: 'red' }}>A : Absent </span>
+              <span style={{ color: '#800080' }}> L : Late </span>
+              <span style={{ color: '#4747d1' }}> HD : Half Day</span>
+              <span style={{ color: '#81c3b4' }}> H : Holiday </span>
               {/* <span style={{ color: 'brown' }}> H:Holiday Day</span>) */}
               {/* </Typography> */}
             </Grid>
           </Grid>
         </Grid>
 
-        <EnhancedTableToolbar numSelected={selected.length} />
-        <TableContainer style={{ marginBottom: '5px' }}>
+        <TableContainer>
           <Table
             className={classes.table}
             aria-labelledby='tableTitle'
@@ -778,47 +814,62 @@ export default function TeacherAttendanceVerify() {
               rowCount={data?.length}
               data={data}
             />
-            <TableBody>
-              {data.map((value, i) => {
-                return (
-                  <>
-                    <TableRow role='checkbox' tabIndex={-1} key={value.name}>
-                      <TableCell
-                        className='sticky-col first-col'
-                        component='th'
-                        scope='row'
-                        padding='none'
-                      >
-                        {i + 1}
-                      </TableCell>
-                      <TableCell className='sticky-col second-col' align='right'>
-                        {value?.erp_id}
-                      </TableCell>
-                      <TableCell className='sticky-col third-col' align='right'>
-                        {value?.name}
-                      </TableCell>
-                      <TableCell align='right'>{value?.roles__role_name}</TableCell>
-                      <TableCell align='right'>{value?.contact}</TableCell>
-                      {value?.attendance?.map((item, index) => {
-                        return (
+            {loading ? (
+              <Loader />
+            ) : (
+              <TableBody>
+                {data
+                  ?.filter(
+                    (item) =>
+                      item?.name?.toLowerCase()?.includes(seachedData?.toLowerCase()) ||
+                      item?.erp_id?.includes(seachedData) ||
+                      item?.contact?.includes(seachedData)
+                  )
+                  .map((value, i) => {
+                    return (
+                      <>
+                        <TableRow role='checkbox' tabIndex={-1} key={value.name}>
                           <TableCell
-                            key={`att_${index}`}
-                            align='center'
-                            style={{ color: getStatusCol(item?.attendence_status) }}
+                            className='sticky-col first-col'
+                            component='th'
+                            scope='row'
+                            padding='none'
                           >
-                            {item?.attendence_status === 'NA'
-                              ? 'NA'
-                              : item?.attendence_status === 'halfday'
-                              ? 'HD'
-                              : item?.attendence_status.substr(0, 1).toUpperCase()}
+                            {i + 1}.
                           </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  </>
-                );
-              })}
-            </TableBody>
+                          <TableCell className='sticky-col second-col' align='right'>
+                            {value?.erp_id}
+                          </TableCell>
+                          <TableCell className='sticky-col third-col' align='right'>
+                            {value?.name}
+                          </TableCell>
+                          <TableCell align='right'>{value?.roles__role_name}</TableCell>
+                          <TableCell align='right'>{value?.contact}</TableCell>
+                          {value?.attendance?.map((item, index) => {
+                            return (
+                              <TableCell
+                                className='th-sticky-header'
+                                key={`att_${index}`}
+                                align='center'
+                                style={{
+                                  color: getStatusCol(item?.attendence_status),
+                                  fontWeight: 'bold',
+                                }}
+                              >
+                                {item?.attendence_status === 'NA'
+                                  ? 'NA'
+                                  : item?.attendence_status === 'halfday'
+                                  ? 'HD'
+                                  : item?.attendence_status.substr(0, 1).toUpperCase()}
+                              </TableCell>
+                            );
+                          })}
+                        </TableRow>
+                      </>
+                    );
+                  })}
+              </TableBody>
+            )}
           </Table>
         </TableContainer>
       </Grid>

@@ -88,7 +88,7 @@ const AssignQP = (props) => {
 
   const getQP = () => {
     axiosInstance
-      .get(`${endpoints.questionPaper.FETCHQP}`)
+      .get(`${endpoints.questionPaper.FETCHQP}?test_type=1`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setQpList(result.data.result);
@@ -149,12 +149,13 @@ const AssignQP = (props) => {
     if (value) {
       setSelectedQp(value.question_paper);
     }
+    let quepaperId = value?.is_erp_qp  ? value?.question_paper : value?.central_qp_id ;    
     const QuestionsInQP = JSON.parse(localStorage.getItem('isMsAPI'))
       ? '/mp_quiz/mpq_questions/'
       : endpoints.questionPaper.QuestionsInQP;
     axiosInstance
       .get(
-        `${QuestionsInQP}?question_paper=${value.question_paper}&lobby_identifier=${params.id}&question_paper_list=1`
+        `${QuestionsInQP}?question_paper=${quepaperId}&lobby_identifier=${params.id}&question_paper_list=1&is_central=${!value?.is_erp_qp}`
       )
       .then((result) => {
         if (result.data.status_code === 200) {

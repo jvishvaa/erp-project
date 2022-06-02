@@ -420,6 +420,7 @@ const CurriculumCompletionSubject = (props) => {
                 value={date}
                 size='small'
                 variant='outlined'
+                inputProps={{ max: date }}
                 // defaultValue={dateToday}
                 onChange={(e) => setDate(e.target.value)}
                 className={classes.textField}
@@ -535,11 +536,11 @@ const CurriculumCompletionSubject = (props) => {
                                     <TableRow>
                                       <TableCell></TableCell>
                                       <TableCell>
-                                        <b>Total</b>
+                                        <b>Total Periods</b>
                                       </TableCell>
                                       <TableCell>
                                         <b>
-                                          Completed
+                                          Completed Periods
                                         </b>
                                       </TableCell>
                                       <TableCell>

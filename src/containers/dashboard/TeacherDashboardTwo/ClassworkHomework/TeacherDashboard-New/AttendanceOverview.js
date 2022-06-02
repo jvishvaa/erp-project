@@ -52,8 +52,8 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
   const dashBoard = () => {
     history.push({
       pathname: `/dashboard`,
-      counter:2,
-    })
+      counter: 2,
+    });
   };
   const classes = useStyles();
   const [yearlyAttendance, setYearlyAttendance] = useState([]);
@@ -69,8 +69,8 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
     let present = [];
     let absent = [];
 
-    let data1 = data.sort(function(a, b) { 
-      return a.month_name - b.month_name
+    let data1 = data.sort(function (a, b) {
+      return a.month_name - b.month_name;
     });
 
     data1.forEach((element) => {
@@ -251,27 +251,27 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
     let statusTag = document.getElementById('statusTag');
     let status = document.getElementById('status');
 
-    if (attendanceDetail?.attendence_status === "present") {
+    if (attendanceDetail?.attendence_status === 'present') {
       status.style.color = 'green';
       statusTag.style.backgroundColor = 'green';
       status.innerHTML = '<b>Present</b>';
-    } else if (attendanceDetail?.attendence_status === 'absent'){
+    } else if (attendanceDetail?.attendence_status === 'absent') {
       status.style.color = 'red';
       statusTag.style.backgroundColor = 'red';
       status.innerHTML = '<b>Absent</b>';
-    } else if (attendanceDetail?.attendence_status === 'halfday'){
+    } else if (attendanceDetail?.attendence_status === 'halfday') {
       status.style.color = 'blue';
       statusTag.style.backgroundColor = 'blue';
       status.innerHTML = '<b>Half Day</b>';
-    } else if (attendanceDetail?.attendence_status === 'holiday'){
+    } else if (attendanceDetail?.attendence_status === 'holiday') {
       status.style.color = '#DAB5FF';
       statusTag.style.backgroundColor = '#DAB5FF';
       status.innerHTML = '<b>Holiday</b>';
-    }else if (attendanceDetail?.attendence_status === 'late'){
+    } else if (attendanceDetail?.attendence_status === 'late') {
       status.style.color = '#DAB5FF';
       statusTag.style.backgroundColor = '#DAB5FF';
       status.innerHTML = '<b>Late</b>';
-    }else {
+    } else {
       status.style.color = 'black';
       statusTag.style.backgroundColor = 'grey';
       status.innerHTML = '<b>Not Available</b>';
@@ -295,7 +295,7 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
         <div style={{ marginTop: '2%' }}>
           <ArrowBackIcon style={{ cursor: 'pointer' }} onClick={dashBoard} />
         </div>
-        <div style={{ marginLeft: '-2.5%', marginTop:"-2%" }}>
+        <div style={{ marginLeft: '-2.5%', marginTop: '-2%' }}>
           <CommonBreadcrumbs componentName='Dashboard' childComponentName='Attendance' />
         </div>
         <div className={classes.parent}>
@@ -453,12 +453,11 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
                     className='colorArea'
                     style={{
                       width: '50%',
-                      flexWrap: 'wrap',
                       padding: '1% 2%',
                       display: 'flex',
                       margin: 5,
                       justifyContent: 'space-around',
-                      marginLeft: '70%',
+                      marginLeft: '60%',
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -489,7 +488,31 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
                       <div
                         className='colorDiv'
                         style={{
-                          background: '#DAB5FF',
+                          background: '#800080',
+                          marginRight: '1%',
+                          height: '20px',
+                          width: '20px',
+                        }}
+                      ></div>
+                      <p> Late </p>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <div
+                        className='colorDiv'
+                        style={{
+                          background: '#4747d1',
+                          marginRight: '1%',
+                          height: '20px',
+                          width: '20px',
+                        }}
+                      ></div>
+                      <p style={{width:"55px"}}> Half Day </p>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                      <div
+                        className='colorDiv'
+                        style={{
+                          background: '#4a90e2',
                           marginRight: '1%',
                           height: '20px',
                           width: '20px',

@@ -33,6 +33,9 @@
   margin-top: 26px;
   /* overflow: hidden !important; */
 }
+.custom-breadcrumb {
+  margin-bottom: 15px;
+}
 /* .mobile-month {
     margin-left: 25px;
   }
@@ -111,4 +114,18 @@
 }
 .th-sticky-header .MuiTableContainer-root {
   overflow-x: inherit !important;
+}
+.th-datepicker .MuiTableContainer-root {
+  overflow-x: inherit !important;
+}
+.search {
+  display: flex !important;
+  /* justify-content: space-around; */
+  align-items: center !important;
+  margin: 10px 0px;
+  padding: 5px;
+}
+
+.th-label.MuiFormControlLabel-root {
+  min-width: 80px;
 }

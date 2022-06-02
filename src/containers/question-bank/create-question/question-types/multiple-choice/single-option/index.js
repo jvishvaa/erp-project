@@ -241,6 +241,7 @@ const SingleOption = ({
                         accept='image/*'
                         onChange={(e) => {
                           handleOptionData(e, index);
+                          e.target.value = null;
                         }}
                       />
                       Attach Image

@@ -107,7 +107,7 @@ export default {
     getAnnouncemenetCategory: '/announcement/announcement-category/',
     getMembersData: `/announcement/members/`,
     createAnnouncement: '/announcement/create/',
-    publish: 'announcement/v2/announcement-update'
+    publish: 'announcement/v2/announcement-update',
   },
   onlineClass: {
     // batchList: '/erp_user/batch-student-list/',
@@ -170,7 +170,7 @@ export default {
     createTopic: '/assessment/topics/',
     updateTopic: '/assessment/',
     erpSystemConfig: '/erp_user/erp_system_config/',
-    defaultAcademicYear: '/erp_user/default-current-session-year/'
+    defaultAcademicYear: '/erp_user/default-current-session-year/',
   },
   gloabSearch: {
     getUsers: '/erp_user/global-search/',
@@ -197,7 +197,8 @@ export default {
     subjects: '/academic/lesson-plan-subjects/',
     lessonList: '/academic/lesson-completed-report/',
     lessonViewMoreData: '/academic/user-chapters-details/',
-    teacherList: '/academic/lesson_plan_user_list/',
+    // teacherList: '/academic/lesson_plan_user_list/',
+    teacherList : '/academic/lesson-plan-user-list-v2/',
   },
   studentListApis: {
     branchWiseStudentCount: '/academic/school_strength/',
@@ -272,7 +273,7 @@ export default {
     createCoursePrice: '/aol/course-details/',
     updateCoursePrice: '/aol/course_details_update/',
     updateTeacher: '/aol/update-batch-teacher/',
-    onlineClassNoFilter: '/erp_user/teacher_online_class_no_filter/v3/'
+    onlineClassNoFilter: '/erp_user/teacher_online_class_no_filter/v3/',
   },
 
   attendanceList: {
@@ -369,9 +370,9 @@ export default {
     listBooksBookmarks: 'academic/list-books-bookmarks/',
     listBooksHighlight: 'academic/list-books-highlight/',
     ibookMappedGrade: '/academic/ibook_mapped_grades/',
-    moduleMapped:`${baseURLCentral}/lesson_plan/lt-module/`,
-    chapterMapped:`${baseURLCentral}/lesson_plan/chapter/`,
-    keyConceptMapped: `${baseURLCentral}/assessment/topic/`
+    moduleMapped: `${baseURLCentral}/lesson_plan/lt-module/`,
+    chapterMapped: `${baseURLCentral}/lesson_plan/chapter/`,
+    keyConceptMapped: `${baseURLCentral}/assessment/topic/`,
   },
   email: {
     email: '/academic/email/',
@@ -448,7 +449,7 @@ export default {
     // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
     s3: 'https://d3ka3pry54wyko.cloudfront.net',
     examTypeList: '/assessment/exam-type-list/',
-    downloadAssessmentPdf: '/assessment/test1/'
+    downloadAssessmentPdf: '/assessment/test1/',
   },
 
   assessment: {
@@ -481,7 +482,8 @@ export default {
     weeklyStudentReport: '/assessment/download-report-student-report/',
     reportConsolidated: '/assessment/download-report-consolidate/',
     individualQuizTeacherReport: '/assessment/download-report-individual-teacher/',
-    weeklyTeacherReportEachGrade: '/assessment/download-report-teacher-grade-section-wise/',
+    weeklyTeacherReportEachGrade:
+      '/assessment/download-report-teacher-grade-section-wise/',
     individualStudentReport: '/assessment/individual-student-report/',
     weeklyQuizPerformance: '/assessment/weekly-quiz-performance-report/',
     assessmentRetest: '/assessment/retake-assessment-permission/',
@@ -742,8 +744,6 @@ export default {
     weeklyReportDownloadApi: `${baseUdaan}/courses/sure-learning-weekly-report/`,
     asssignTeachesLeadApi: `${baseUdaan}/instructors/lead_teachers_user_list/`,
     leadTeachersListApi: `${baseUdaan}/instructors/lead_teachers_list/`,
-
-
   },
   classworkReport: {
     tableData: '/academic/teacher_classwork_report/',
@@ -832,6 +832,10 @@ export default {
     availableSlot: '/course_extend/get_slots/',
     createMeeting: '/course_extend/create_meeting/',
     markAttendence: '/course_extend/meeting_attendence/',
+  },
+  academicTestReport: {
+    academicTestReport: '/assessment/academic-test-report/',
+    homeworkSubmissionReport: '/assessment/academic-homework-submission-report/',
   },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

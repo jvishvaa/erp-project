@@ -433,7 +433,7 @@ if (NavData && NavData.length) {
     }
 
       axios
-      .get(urls.CheckPayment + '?student=' + this.props.studentErp[0].erp, {
+      .get(urls.CheckPayment + '?student=' + this.props.studentErp[0].erp + '&session_year=' + this.props.selectedYear , {
         headers: {
           Authorization: 'Bearer ' + token,
         },
@@ -914,6 +914,7 @@ const mapStateToProps = (state) => ({
   studentErp: state.finance.accountantReducer.studentErpSearch.studentErpList,
   dataLoading: state.finance.common.dataLoader,
   branches: state.finance.common.branchPerSession,
+  selectedYear: state.commonFilterReducer.selectedYear.session_year,
   // gradeList: state.finance.common.gradeList,
 });
 

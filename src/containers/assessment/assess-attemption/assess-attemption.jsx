@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     border: `1px solid ${theme.palette.primary.main}`,
     padding: '10px',
     overflowY: 'scroll',
-    height: '42rem',
+    height: '36rem',
     borderRadius: '5px',
     fontFamily: 'Andika New Basic, sans- serif',
     color: theme.palette.secondary.main,
@@ -70,7 +70,7 @@ const AssessmentAttemptionUI = (props) => {
   return (
     <>
       {fetching ? <Loading message='Loading...' /> : null}
-      <Container>
+      <Container style={{minWidth: '1500px'}}>
         <CommonBreadcrumbs
           componentName='Assessment'
           {...(questionPaperGradeName

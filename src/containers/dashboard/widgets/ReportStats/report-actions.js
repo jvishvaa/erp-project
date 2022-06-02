@@ -21,6 +21,7 @@ const ReportAction = ({ title }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const { setAlert } = useContext(AlertNotificationContext);
+  const { id: sessionYearId = '' } =  JSON.parse(sessionStorage.getItem('acad_session')) || {};
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -53,6 +54,9 @@ const ReportAction = ({ title }) => {
   const handleDownload = (days) => {
     const params = { days, branch_ids: branchIds.join(',') };
     const decisonParam = title.toLowerCase().split(' ')[0];
+    if(decisonParam === "homework" || decisonParam === "classwork"){
+      params["session_year_id"] = sessionYearId
+    }
     downloadReport(decisonParam, params)
       .then((response) => {
         const {
