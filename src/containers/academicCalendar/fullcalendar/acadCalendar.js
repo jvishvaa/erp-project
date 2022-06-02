@@ -285,6 +285,7 @@ const AcadCalendar = () => {
                         variant='outlined'
                         label='Branch'
                         placeholder='Select Branch'
+                        required
                       />
                     )}
                   />
@@ -308,6 +309,7 @@ const AcadCalendar = () => {
                         variant='outlined'
                         label='Grades'
                         placeholder='Select Grades'
+                        required
                       />
                     )}
                   />
@@ -331,6 +333,7 @@ const AcadCalendar = () => {
                         variant='outlined'
                         label='Section'
                         placeholder='Section'
+                        required
                       />
                     )}
                   />
@@ -354,6 +357,7 @@ const AcadCalendar = () => {
                         variant='outlined'
                         label='Subject'
                         placeholder='Subject'
+                        required
                       />
                     )}
                   />
