@@ -92,7 +92,7 @@ export default function HomeworkSubmissionReport(props) {
   }, [window.location.pathname]);
 
   useEffect(() => {
-    if (moduleId && selectedAcademicYear) getBranch();
+    getBranch();
     getAssesmentTypes();
   }, [moduleId, selectedAcademicYear]);
 
