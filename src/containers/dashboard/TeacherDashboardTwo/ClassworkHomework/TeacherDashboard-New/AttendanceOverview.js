@@ -85,8 +85,13 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
     axiosInstance
       .get(`${endpoints.teacherDashboardTwo.yearlyAttendance}?session_year=2021-22`, {
         headers: {
-          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com', ///hatana hai..............
+<<<<<<< HEAD
+          'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+          // 'X-DTS-HOST': window.location.host,
+=======
+          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com', 
           'X-DTS-HOST': window.location.host,
+>>>>>>> 4005f3678... minor-bug-fix
           Authorization: `Bearer ${userToken}`,
         },
       })
@@ -110,10 +115,12 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
             ? '#4EC692'
             : element?.attendence_status === 'absent'
             ? '#FF5D41'
+            : element?.attendence_status === 'late'
+            ? '#800080'
             : element?.attendence_status === 'halfday'
-            ? 'paleyellow'
+            ? '#4747d1'
             : element?.attendence_status === 'holiday'
-            ? '#DAB5FF'
+            ? '#4a90e2'
             : 'orange';
 
         let setTitle =
@@ -121,6 +128,8 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
             ? 'P'
             : element?.attendence_status === 'absent'
             ? 'A'
+            : element?.attendence_status === 'late'
+            ? 'L'
             : element?.attendence_status === 'halfday'
             ? 'HD'
             : element?.attendence_status === 'holiday'
@@ -195,7 +204,8 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
     },
     tooltip: {
       pointFormat:
-        '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+        // '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:.0f}%)<br/>',
+        '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.percentage:0f}%)<br/>',
       shared: true,
     },
     plotOptions: {
@@ -208,12 +218,13 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
         color: 'rgb(78, 198, 146)',
         name: 'Present',
         data: yearlyPresent,
-        // data: [yearlyAttendance[0]?.present || 0, 3, 4, 7, 2, 2, 6, 5, 6, 3, 5, 0],
+        // data: [yearlyAttendance[0]?.present || 1, 4, 5, 8, 3, 3, 7, 6, 7, 4, 6, 1],
       },
       {
         color: 'rgb(255, 0, 0)',
         name: 'Absent',
         data: yearlyAbsent,
+        // data: [yearlyAttendance[0]?.absent || 0, 3, 4, 7, 2, 2, 6, 5, 6, 3, 5, 0],
       },
     ],
   };
@@ -260,16 +271,16 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
       statusTag.style.backgroundColor = 'red';
       status.innerHTML = '<b>Absent</b>';
     } else if (attendanceDetail?.attendence_status === 'halfday') {
-      status.style.color = 'blue';
-      statusTag.style.backgroundColor = 'blue';
+      status.style.color = '4747d1';
+      statusTag.style.backgroundColor = '4747d1';
       status.innerHTML = '<b>Half Day</b>';
     } else if (attendanceDetail?.attendence_status === 'holiday') {
-      status.style.color = '#DAB5FF';
-      statusTag.style.backgroundColor = '#DAB5FF';
+      status.style.color = '#4a90e2';
+      statusTag.style.backgroundColor = '#4a90e2';
       status.innerHTML = '<b>Holiday</b>';
     } else if (attendanceDetail?.attendence_status === 'late') {
-      status.style.color = '#DAB5FF';
-      statusTag.style.backgroundColor = '#DAB5FF';
+      status.style.color = '#800080';
+      statusTag.style.backgroundColor = '#800080';
       status.innerHTML = '<b>Late</b>';
     } else {
       status.style.color = 'black';
@@ -506,7 +517,7 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
                           width: '20px',
                         }}
                       ></div>
-                      <p style={{width:"55px"}}> Half Day </p>
+                      <p style={{ width: '55px' }}> Half Day </p>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center' }}>
                       <div
