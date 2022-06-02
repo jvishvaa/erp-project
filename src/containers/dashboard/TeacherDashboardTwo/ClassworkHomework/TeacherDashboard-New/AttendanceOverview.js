@@ -17,6 +17,7 @@ import moment from 'moment';
 import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 const userToken = JSON.parse(localStorage.getItem('userDetails'))?.token;
+const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
 
 const useStyles = makeStyles((theme) => ({
   parent: {
@@ -83,13 +84,16 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
 
   const yearlyGraph = () => {
     axiosInstance
-      .get(`${endpoints.teacherDashboardTwo.yearlyAttendance}?session_year=2021-22`, {
-        headers: {
-          // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com', 
-          'X-DTS-HOST': window.location.host,
-          Authorization: `Bearer ${userToken}`,
-        },
-      })
+      .get(
+        `${endpoints.teacherDashboardTwo.yearlyAttendance}?session_year=${sessionYear.session_year}`,
+        {
+          headers: {
+            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+            'X-DTS-HOST': window.location.host,
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      )
       .then((result) => {
         if (result?.data?.status_code === 200 || result?.data?.status_code === 201) {
           setYearlyAttendance(result.data.result);
