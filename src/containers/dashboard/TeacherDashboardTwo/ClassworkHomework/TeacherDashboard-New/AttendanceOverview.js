@@ -85,13 +85,8 @@ const AttendanceOverview = withRouter(({ history, ...props }) => {
     axiosInstance
       .get(`${endpoints.teacherDashboardTwo.yearlyAttendance}?session_year=2021-22`, {
         headers: {
-<<<<<<< HEAD
-          'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
-          // 'X-DTS-HOST': window.location.host,
-=======
           // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com', 
           'X-DTS-HOST': window.location.host,
->>>>>>> 4005f3678... minor-bug-fix
           Authorization: `Bearer ${userToken}`,
         },
       })
