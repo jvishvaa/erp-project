@@ -15,9 +15,10 @@ import {
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import cuid from 'cuid';
 import { connect } from 'react-redux';
-import { useHistory, useParams,useLocation } from 'react-router-dom';
+import { useHistory, useParams, useLocation } from 'react-router-dom';
 import { useTheme } from '@material-ui/core/styles';
 import Layout from '../../Layout';
+import Loading from '../../../components/loader/loader';
 import QuestionCard from '../../../components/question-card';
 import { addHomeWork, setSelectedHomework } from '../../../redux/actions';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
@@ -58,23 +59,24 @@ const StyledOutlinedButton = withStyles((theme) => ({
     backgroundColor: 'transparent',
     '& .MuiSvgIcon-root': {
       color: theme.palette.primary.main,
-      fontSize:'20px'
+      fontSize: '20px',
     },
   },
 }))(Button);
 
 const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const location = useLocation();
-  const [hwId, sethwId] = useState(location?.state?.viewHomework?.homeworkId)
+  const [hwId, sethwId] = useState(location?.state?.viewHomework?.homeworkId);
   const classes = useStyles();
   const [name, setName] = useState('');
+  const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState('');
   const [sections, setSections] = useState([]);
   const [sectionDisplay, setSectionDisplay] = useState([]);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [teacherModuleId, setTeacherModuleId] = useState(null);
   const [errors, setErrors] = useState({ name: '', description: '' });
-  const [isEdit, setisEdit] = useState(location?.state?.isEdit)
+  const [isEdit, setisEdit] = useState(location?.state?.isEdit);
   const [questions, setQuestions] = useState([
     {
       id: cuid(),
@@ -94,28 +96,28 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
   const branch = params.branch;
   const grade = params.grade;
 
-
-  useEffect(() => { 
-if(location?.state?.isEdit){
-  // setisEdit(location.state.isEdit)
-  // sethwId(location.state.viewHomework.homeworkId)
-  setName(location.state.selectedHomeworkDetails.homework_name)
-  setSectionDisplay(Object.keys(location.state.viewHomework.sectiondata).length > 0 ? [location.state.viewHomework.sectiondata] : [])
-  setDescription(location.state.selectedHomeworkDetails.description)
-  const que = location?.state?.selectedHomeworkDetails?.hw_questions?.map((data)=>(
-    {
-      id: cuid(),
-      is_attachment_enable: data.is_attachment_enable,
-      max_attachment: data.max_attachment,
-      penTool: data.is_pen_editor_enable,
-      question:data.question,
-      attachments:data.question_files
+  useEffect(() => {
+    if (location?.state?.isEdit) {
+      // setisEdit(location.state.isEdit)
+      // sethwId(location.state.viewHomework.homeworkId)
+      setName(location.state.selectedHomeworkDetails.homework_name);
+      setSectionDisplay(
+        Object.keys(location.state.viewHomework.sectiondata).length > 0
+          ? [location.state.viewHomework.sectiondata]
+          : []
+      );
+      setDescription(location.state.selectedHomeworkDetails.description);
+      const que = location?.state?.selectedHomeworkDetails?.hw_questions?.map((data) => ({
+        id: cuid(),
+        is_attachment_enable: data.is_attachment_enable,
+        max_attachment: data.max_attachment,
+        penTool: data.is_pen_editor_enable,
+        question: data.question,
+        attachments: data.question_files,
+      }));
+      setQuestions(que);
     }
-  )
-)
-setQuestions(que)
-}
-  },[])
+  }, []);
 
   const validateHomework = () => {
     let isFormValid = true;
@@ -169,11 +171,14 @@ setQuestions(que)
         }),
       };
       try {
-        const response = await onAddHomework(reqObj,isEdit,hwId);
+        setLoading(true);
+        const response = await onAddHomework(reqObj, isEdit, hwId);
+        setLoading(false);
         setAlert('success', 'Homework added');
         history.push('/homework/teacher');
       } catch (error) {
         setAlert('error', 'Failed to add homework');
+        setLoading(false);
       }
     }
   };
@@ -194,6 +199,8 @@ setQuestions(que)
   };
 
   const removeQuestion = (index) => {
+    // let tempArr = questions
+    // let newArr = tempArr.splice(index,1) ;
     setQuestions((prevState) => [
       ...prevState.slice(0, index),
       ...prevState.slice(index + 1),
@@ -219,9 +226,9 @@ setQuestions(que)
   const handleBackButton = () => {
     history.push('/homework/teacher');
   };
-// const descriptionChange = (e) => {
-//   setDescription(e.target.value);
-// }
+  // const descriptionChange = (e) => {
+  //   setDescription(e.target.value);
+  // }
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -271,135 +278,139 @@ setQuestions(que)
   };
 
   return (
-    <Layout>
-      <CommonBreadcrumbs
+    <>
+      {loading ? <Loading message='Loading...' /> : null}
+      <Layout>
+        <CommonBreadcrumbs
           componentName='Homework'
-          childComponentName={location?.state?.isEdit ? 'Edit Homework' : 'Add Homework'} 
+          childComponentName={location?.state?.isEdit ? 'Edit Homework' : 'Add Homework'}
           isAcademicYearVisible={true}
         />
-      <div className='add-homework-container'>
-        <Grid container className='add-homework-inner-container' spacing={2}>
-          <Grid item xs={12} className='add-homework-title-container' md={3}>
-            <div className='nav-cards-container'>
-              <div
-                className={` ${classes.navCard} nav-card`}
-                onClick={() => {
-                  window.history.back('/homework/teacher');
-                }}
-              >
+        <div className='add-homework-container'>
+          <Grid container className='add-homework-inner-container' spacing={2}>
+            <Grid item xs={12} className='add-homework-title-container' md={3}>
+              <div className='nav-cards-container'>
                 <div
-                  className={` ${classes.headerText} text-center`}
-                  style={{ cursor: 'pointer' }}
+                  className={` ${classes.navCard} nav-card`}
+                  onClick={() => {
+                    window.history.back('/homework/teacher');
+                  }}
                 >
-                  All Homeworks
+                  <div
+                    className={` ${classes.headerText} text-center`}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    All Homeworks
+                  </div>
+                </div>
+                <div className={` ${classes.navCard} nav-card`}>
+                  <div
+                    className={` ${classes.headerText} text-center`}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {params.date}
+                  </div>
+                  <div
+                    className={` ${classes.headerText} text-center`}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {params.subject}
+                  </div>
                 </div>
               </div>
-              <div className={` ${classes.navCard} nav-card`}>
-                <div
-                  className={` ${classes.headerText} text-center`}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {params.date}
-                </div>
-                <div
-                  className={` ${classes.headerText} text-center`}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {params.subject}
-                </div>
-              </div>
-            </div>
-          </Grid>
+            </Grid>
 
-          <Grid
-            item
-            className='homework-create-questions-container'
-            container
-            xs={12}
-            md={9}
-          >
-            <Grid container style={{ width: '95%', margin: '0 auto' }}>
-              <Grid item xs={12} sm={4} style={{ marginBottom: '20px' }}>
-                <Autocomplete
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleSection}
-                  id='section'
-                  required
-                  multiple
-                  value={sectionDisplay || []}
-                  options={sections || []}
-                  getOptionLabel={(option) => option?.section__section_name || ''}
-                  filterSelectedOptions
-                  className='dropdownIcon'
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Sections'
-                      placeholder='Sections'
+            <Grid
+              item
+              className='homework-create-questions-container'
+              container
+              xs={12}
+              md={9}
+            >
+              <Grid container style={{ width: '95%', margin: '0 auto' }}>
+                <Grid item xs={12} sm={4} style={{ marginBottom: '20px' }}>
+                  <Autocomplete
+                    style={{ width: '100%' }}
+                    size='small'
+                    onChange={handleSection}
+                    id='section'
+                    required
+                    multiple
+                    value={sectionDisplay || []}
+                    options={sections || []}
+                    getOptionLabel={(option) => option?.section__section_name || ''}
+                    filterSelectedOptions
+                    className='dropdownIcon'
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        variant='outlined'
+                        label='Sections'
+                        placeholder='Sections'
+                      />
+                    )}
+                  />
+                </Grid>
+                <Grid item xs={12} className='form-field'>
+                  <FormControl variant='outlined' fullWidth size='small'>
+                    <InputLabel htmlFor='component-outlined'>Title</InputLabel>
+                    <OutlinedInput
+                      id='title'
+                      name='title'
+                      onChange={() => {}}
+                      inputProps={{ maxLength: 20 }}
+                      label='Title'
+                      autoFocus
+                      onChange={(e) => {
+                        setName(e.target.value);
+                      }}
+                      value={name}
+                      //error={errors.name ? true : false}
+                      //helperText="Title is required"
                     />
-                  )}
-                />
-              </Grid>
-              <Grid item xs={12} className='form-field'>
-                <FormControl variant='outlined' fullWidth size='small'>
-                  <InputLabel htmlFor='component-outlined'>Title</InputLabel>
-                  <OutlinedInput
-                    id='title'
-                    name='title'
-                    onChange={() => {}}
-                    inputProps={{ maxLength: 20 }}
-                    label='Title'
-                    autoFocus
-                    onChange={(e) => {
-                      setName(e.target.value);
-                    }}
-                    value = {name}
-                    //error={errors.name ? true : false}
-                    //helperText="Title is required"
+                    <FormHelperText style={{ color: 'red' }}>
+                      {errors.name}
+                    </FormHelperText>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} className='form-field'>
+                  <FormControl variant='outlined' fullWidth size='small'>
+                    <InputLabel htmlFor='component-outlined'>Instruction</InputLabel>
+                    <OutlinedInput
+                      id='description'
+                      name='Instruction'
+                      // onChange = {descriptionChange}
+                      onChange={(e) => {
+                        setDescription(e.target.value);
+                      }}
+                      inputProps={{ maxLength: 150 }}
+                      multiline
+                      rows={4}
+                      rowsMax={6}
+                      label='Instruction'
+                      value={description}
+                      //error={true}
+                      //helperText="Description required"
+                    />
+                    <FormHelperText style={{ color: 'red' }}>
+                      {errors.description}
+                    </FormHelperText>
+                  </FormControl>
+                </Grid>
+                {questions?.map((question, index) => (
+                  <QuestionCard
+                    key={question.id}
+                    question={question}
+                    isEdit={location?.state?.isEdit}
+                    index={index}
+                    addNewQuestion={addNewQuestion}
+                    handleChange={handleChange}
+                    removeQuestion={removeQuestion}
                   />
-                  <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12} className='form-field'>
-                <FormControl variant='outlined' fullWidth size='small'>
-                  <InputLabel htmlFor='component-outlined'>Instruction</InputLabel>
-                  <OutlinedInput
-                    id='description'
-                    name='Instruction'
-                    // onChange = {descriptionChange}
-                    onChange={(e) => {
-                      setDescription(e.target.value);
-                    }}
-                    inputProps={{ maxLength: 150 }}
-                    multiline
-                    rows={4}
-                    rowsMax={6}
-                    label='Instruction'
-                    value = {description}
-                    //error={true}
-                    //helperText="Description required"
-                  />
-                  <FormHelperText style={{ color: 'red' }}>
-                    {errors.description}
-                  </FormHelperText>
-                </FormControl>
-              </Grid>
-              {questions?.map((question, index) => (
-                <QuestionCard
-                  key={question.id}
-                  question={question}
-                  isEdit = {location?.state?.isEdit}
-                  index={index}
-                  addNewQuestion={addNewQuestion}
-                  handleChange={handleChange}
-                  removeQuestion={removeQuestion}
-                />
-              ))}
+                ))}
 
-              <Grid container item xs={12} spacing={1}>
-                {/*
+                <Grid container item xs={12} spacing={1}>
+                  {/*
                 <Grid item xs={12} md={2}>
                   <Button
                       variant='contained'
@@ -411,39 +422,40 @@ setQuestions(que)
                   </Button>
                 </Grid>
                 */}
-                <Grid item xs={12} md={6} className='form-field'>
-                  <div className='finish-btn-container'>
-                    <StyledOutlinedButton
-                      startIcon={<AddCircleOutlineIcon />}
-                      onClick={() => {
-                        setQueIndexCounter(queIndexCounter + 1);
-                        addNewQuestion(queIndexCounter + 1);
-                      }}
-                      title='Add Question'
-                      fullWidth
-                    >
-                      Add Another Question
-                    </StyledOutlinedButton>
-                  </div>
-                </Grid>
-                <Grid item xs={12} md={6} className='form-field'>
-                  <div className='finish-btn-container'>
-                    <Button
-                      variant='contained'
-                      style={{ color: 'white', width: '100%' }}
-                      color='primary'
-                      onClick={handleAddHomeWork}
-                    >
-                      Finish
-                    </Button>
-                  </div>
+                  <Grid item xs={12} md={6} className='form-field'>
+                    <div className='finish-btn-container'>
+                      <StyledOutlinedButton
+                        startIcon={<AddCircleOutlineIcon />}
+                        onClick={() => {
+                          setQueIndexCounter(queIndexCounter + 1);
+                          addNewQuestion(queIndexCounter + 1);
+                        }}
+                        title='Add Question'
+                        fullWidth
+                      >
+                        Add Another Question
+                      </StyledOutlinedButton>
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} md={6} className='form-field'>
+                    <div className='finish-btn-container'>
+                      <Button
+                        variant='contained'
+                        style={{ color: 'white', width: '100%' }}
+                        color='primary'
+                        onClick={handleAddHomeWork}
+                      >
+                        Finish
+                      </Button>
+                    </div>
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      </div>
-    </Layout>
+        </div>
+      </Layout>
+    </>
   );
 };
 
@@ -452,8 +464,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  onAddHomework: (reqObj,isEdit,hwId) => {
-    return dispatch(addHomeWork(reqObj,isEdit,hwId));
+  onAddHomework: (reqObj, isEdit, hwId) => {
+    return dispatch(addHomeWork(reqObj, isEdit, hwId));
   },
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
