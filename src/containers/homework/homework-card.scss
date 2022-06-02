@@ -121,11 +121,11 @@
 }
 .buttonSubmit{
   height: 25px;
-  background: #014b7e;
+  background: #014b7e !important;
   .MuiButton-label{
     font-size: 15px;
   }
 }
 .buttonSubmit:hover{
-  background: #014b7e;
+  background: #014b7e !important;
 }

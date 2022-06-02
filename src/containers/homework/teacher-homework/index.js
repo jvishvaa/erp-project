@@ -983,7 +983,7 @@ const TeacherHomework = withRouter(
                             <div className='icon-desc-container'>
                             <div className='badgeContent' >
                               <Badge color="success" variant="dot" >
-                                <AssignmentIcon />
+                                <AssignmentIcon style={{color: '#014b7e'}} />
                               </Badge>
                             </div>
                             <Typography color="secondary" style={{ fontSize: '16px' }}>Online Submission</Typography>

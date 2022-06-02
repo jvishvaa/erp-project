@@ -47,10 +47,10 @@ const HomeworkCard = ({
   return (
     // <Layout>
 
-    <Grid item xs={12} md={3} className='hwcard-container' style={{ display: 'flex', height: '100vh', flexWrap: 'wrap' }}>
+    <Grid item xs={12} md={3} className='hwcard-container' style={{ display: 'flex', flexWrap: 'wrap' }}>
       <Paper
         className='hwcard'
-        style={{ flexDirection: 'column', width: '100%' , overflowX: 'hidden' , overflow: 'auto' }}
+        style={{ flexDirection: 'column', width: '100%' , overflowX: 'hidden' , overflow: 'auto' , height: '100%' }}
       >
         <div className='close-icon'>
           <IconButton onClick={onClose}>
@@ -89,8 +89,8 @@ const HomeworkCard = ({
             </div>
           </div>
         )}
-        {view === 'submissionStats' && (submittedStudents && submittedStudents.length !== 0) && (
-          <div className='list' style={{ flexGrow: 1 , height: '50%' }}>
+        {view === 'submissionStats'  && (
+          <div className='list' style={{ flexGrow: 1 ,maxHeight: '200px' }}>
             <div style={{ display: 'flex' }}>
               <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} onChange={() => handleAllSubmit()} />
               <div className='cardHeaderSub'>Submitted students :</div>
@@ -115,7 +115,7 @@ const HomeworkCard = ({
                           {student?.hw_submission_mode === 'Online Submission' ?
                             <div className='badgeContent' >
                               <Badge color="success" variant="dot" >
-                                <AssignmentIcon />
+                                <AssignmentIcon style={{color: '#014b7e'}} />
                               </Badge>
                             </div>
                             : ''}
@@ -128,14 +128,16 @@ const HomeworkCard = ({
                 </div>
               )}
             </div>
+            {submittedStudents && (submittedStudents && submittedStudents.length !== 0) ?
             <div style={{display: 'flex' , justifyContent: 'flex-end'}} >
               <Button onClick={handleSubmittedStd} className='buttonSubmit'  >Move to Not Submitted</Button>
-            </div>
+            </div> 
+            : '' }
           </div>
         )}
-        {view === 'submissionStats' && (unSubmittedStudents && unSubmittedStudents.length !== 0) && (
+        {view === 'submissionStats'  && (
 
-          <div className='list' style={{ flexGrow: 1, height: '50%' , padding: '20px 0' }}>
+          <div className='list' style={{ flexGrow: 1, maxHeight: '200px' , margin: '15% 0' }}>
             <div style={{ display: 'flex' }}>
               <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} onChange={() => handleAllUnSubmit()}/>
               <div className='cardHeaderSub'>Not submitted students :</div>
@@ -167,13 +169,15 @@ const HomeworkCard = ({
                 </div>
               )}
             </div>
+            {unSubmittedStudents && (unSubmittedStudents && unSubmittedStudents.length !== 0) ?
             <div style={{display: 'flex' , justifyContent: 'flex-end'}}>
               <Button onClick={handleUnSubmittedStd} className='buttonSubmit'  >Move to Submitted</Button>
             </div>
+            : '' }
           </div>
         )}
 
-        {view === 'submissionStats' && (absentList && absentList.length !== 0) && (
+        {view === 'submissionStats'  && (
 
           <div className='absentlist' style={{ flexGrow: 1,height: '100px' , padding: '10px 0'  }}>
             <div style={{ display: 'flex' }} className='absentAll' >
@@ -207,9 +211,11 @@ const HomeworkCard = ({
                 </div>
               )}
             </div>
-            <div style={{display: 'flex' , justifyContent: 'flex-end'}}>
+            {absentList && (absentList && absentList.length !== 0) ?
+            <div style={{display: 'flex' , justifyContent: 'flex-end' , padding: 'inherit'}}>
               <Button onClick={handleUnSubmittedStd} className='buttonSubmit' >Move to Submitted</Button>
             </div>
+            : '' }
           </div>
         )}
 
