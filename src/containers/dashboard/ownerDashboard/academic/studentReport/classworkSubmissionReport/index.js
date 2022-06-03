@@ -35,7 +35,7 @@ const reportTypes = [
   { type: 'Monthly Report', days: '30' },
 ];
 
-export default function HomeworkReport(props) {
+export default function ClassworkReport(props) {
   const {
     branchIds = [],
     downloadReport = () => {},
@@ -259,15 +259,20 @@ export default function HomeworkReport(props) {
       return false;
     } else {
       setLoading(true);
-      const result = axiosInstance
+      axiosInstance
         .get(
-          `${endpoints.academicTestReport.homeworkSubmissionReport}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&subject_id=${selectedSubjectIds}&date_gte=${startDate}&date_lte=${endDate}`
+          `${endpoints.academicTestReport.classworkSubmissionReport}?session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&subject_id=${selectedSubjectIds}&start_date=${startDate}&end_date=${endDate}`,
+          {
+            headers: {
+              'X-DTS-HOST': window.location.host,
+            },
+          }
         )
         .then((result) => {
           if (result.status === 200) {
-            setSubmissionData(result?.data);
+            setSubmissionData(result?.data?.result);
             setLoading(false);
-            if (result?.data?.data?.length === 0) setShowNoData(true);
+            if (result?.data?.result?.length === 0) setShowNoData(true);
           }
         })
         .catch((error) => {
@@ -308,7 +313,7 @@ export default function HomeworkReport(props) {
   };
   const handleDownload = (days) => {
     const params = { days, branch_ids: selectedBranchIds };
-    const decisonParam = 'Homework Report'.toLowerCase().split(' ')[0];
+    const decisonParam = 'Classwork Report'.toLowerCase().split(' ')[0];
     downloadReport(decisonParam, params)
       .then((response) => {
         const { headers = {}, message = 'Downloadable report not available', data = '' } =
@@ -342,8 +347,8 @@ export default function HomeworkReport(props) {
             <Button
               variant='contained'
               color='primary'
-              startIcon={<GetAppIcon />}
               onClick={handleClick}
+              startIcon={<GetAppIcon />}
             >
               Download Report
             </Button>
@@ -476,7 +481,7 @@ export default function HomeworkReport(props) {
       </Grid>
       <div className='th-sticky-header' style={{ width: '100%' }}>
         {loading && <Loader />}
-        {submissionData?.data?.length > 0 && (
+        {submissionData?.length > 0 && (
           <TableContainer>
             <Table stickyHeader aria-label='sticky table'>
               <TableHead>
@@ -489,35 +494,39 @@ export default function HomeworkReport(props) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {submissionData?.data?.length > 0 &&
-                  submissionData?.data
-                    ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((item) => (
-                      <TableRow>
-                        <TableCell>{moment(item?.date).format('DD-MM-YYYY')}</TableCell>
-                        <TableCell>{submissionData?.total_student}</TableCell>
-                        <TableCell>{item?.total_submission}</TableCell>
-                        <TableCell>
-                          {submissionData?.total_student - item?.total_submission}
-                        </TableCell>
-                        <TableCell>
-                          {(
-                            (item?.total_submission / submissionData?.total_student) *
-                            100
-                          ).toFixed(2)}{' '}
-                          %
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                {submissionData
+                  ?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((item) => (
+                    <TableRow>
+                      <TableCell>{moment(item?.date).format('DD-MM-YYYY')}</TableCell>
+                      <TableCell>
+                        {item?.total_students ? item.total_students : 0}
+                      </TableCell>
+                      <TableCell>
+                        {item?.total_students ? item?.submit_count : 0}
+                      </TableCell>
+                      <TableCell>
+                        {item?.total_students
+                          ? item?.total_students - item?.submit_count
+                          : 0}
+                      </TableCell>
+                      <TableCell>
+                        {item?.total_students
+                          ? ((item?.submit_count / item?.total_students) * 100).toFixed(2)
+                          : 0}{' '}
+                        %
+                      </TableCell>
+                    </TableRow>
+                  ))}
               </TableBody>
             </Table>
           </TableContainer>
         )}
-        {submissionData?.data?.length > 0 && (
+        {submissionData?.length > 0 && (
           <TablePagination
             rowsPerPageOptions={[]}
             component='div'
-            count={submissionData?.data?.length}
+            count={submissionData?.length}
             rowsPerPage={rowsPerPage}
             page={page}
             onPageChange={handleChangePage}

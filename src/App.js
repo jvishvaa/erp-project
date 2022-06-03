@@ -414,7 +414,6 @@ import PrincipalLeadTeacher from 'containers/sure-learning/PrincipalDashboard/pr
 import ResourcesFolderList from './containers/sure-learning/Resources_Folders/resources_folder';
 import AllChaptersContent from './containers/sure-learning/Initiate_Class/Chapter_Details/allChapters';
 import AcademicReport from './containers/dashboard/ownerDashboard/academic/academicReport';
-import HomeworkSubmissionReport from './containers/dashboard/ownerDashboard/academic/studentReport/homeworkSubmissionReport';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -1944,9 +1943,6 @@ function App({ alert, isMsAPI, erpConfig }) {
                           {/* Academic Report */}
                           <Route path='/academic-report'>
                             {({ match }) => <AcademicReport match={match} />}
-                          </Route>
-                          <Route path='/homework-submission-report'>
-                            {({ match }) => <HomeworkSubmissionReport match={match} />}
                           </Route>
                           <Route path='*'>
                             <ErrorBoundary404 HomeButton={true} />

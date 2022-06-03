@@ -834,6 +834,7 @@ export default {
   academicTestReport: {
     academicTestReport: '/assessment/academic-test-report/',
     homeworkSubmissionReport: '/assessment/academic-homework-submission-report/',
+    classworkSubmissionReport: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/classwork-details/`,
   },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
