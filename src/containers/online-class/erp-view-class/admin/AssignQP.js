@@ -82,6 +82,8 @@ const AssignQP = (props) => {
   const [selectedQp, setSelectedQp] = useState();
   const [qpList, setQpList] = useState([]);
   const [questionData, setQuestionData] = useState([]);
+  const [assessment_id, setAssessment_id] = useState()
+  const [isErp,setIsErp] = useState()
   useEffect(() => {
     getQP();
   }, []);
@@ -125,6 +127,8 @@ const AssignQP = (props) => {
 
     requestData = {
       quiz_test_paper: selectedQp,
+      assessment_id : assessment_id,
+      is_erp_qp : isErp
     };
     if (JSON.parse(localStorage.getItem('isMsAPI')) && props.location.state.historicalData === false) {
       msApihandleSubmit(requestData);
@@ -146,10 +150,10 @@ const AssignQP = (props) => {
   };
 
   const handleQPSelect = (event, value) => {
-    if (value) {
-      setSelectedQp(value.question_paper);
-    }
     let quepaperId = value?.is_erp_qp  ? value?.question_paper : value?.central_qp_id ;    
+     setSelectedQp(quepaperId); 
+     setAssessment_id(value?.id)
+     setIsErp(value?.is_erp_qp)  
     const QuestionsInQP = JSON.parse(localStorage.getItem('isMsAPI'))
       ? '/mp_quiz/mpq_questions/'
       : endpoints.questionPaper.QuestionsInQP;

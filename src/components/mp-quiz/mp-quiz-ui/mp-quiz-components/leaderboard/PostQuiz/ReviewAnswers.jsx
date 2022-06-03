@@ -28,9 +28,9 @@ export class ReviewAnswers extends Component {
 
   getQuestions = () => {
     const {
-      params: { lobby_identifier: lobbyIdentifier, question_paper: questionPaper } = {},
+      params: { lobby_identifier: lobbyIdentifier, question_paper: questionPaper, is_erp_qp : is_erp_qp, assessment_id : assessment_id } = {},
     } = this.props;
-    const apiUrl = `${fetchQuizQpPaperAPIEndpoint}?question_paper=${questionPaper}&lobby_identifier=${lobbyIdentifier}&online_class_id=${lobbyIdentifier}`;
+    const apiUrl = `${fetchQuizQpPaperAPIEndpoint}?question_paper=${questionPaper}&lobby_identifier=${lobbyIdentifier}&online_class_id=${lobbyIdentifier}&assessment_id=${assessment_id}&is_erp_qp=${is_erp_qp}`;
     
     axios
       .get(apiUrl, fetchQuizQpPaperHeaders)
