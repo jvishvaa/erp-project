@@ -307,7 +307,11 @@ export default function HomeworkReport(props) {
     document.body.removeChild(link);
   };
   const handleDownload = (days) => {
-    const params = { days, branch_ids: selectedBranchIds };
+    const params = {
+      days,
+      branch_ids: selectedBranchIds,
+      session_year_id: selectedAcademicYear?.id,
+    };
     const decisonParam = 'Homework Report'.toLowerCase().split(' ')[0];
     downloadReport(decisonParam, params)
       .then((response) => {
