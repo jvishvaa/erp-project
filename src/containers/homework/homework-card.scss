@@ -71,7 +71,9 @@
   font: normal normal 600 18px/21px Raleway;
   letter-spacing: 0px;
   color: #014b7e;
-  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
 
 .cardRow {
@@ -92,12 +94,10 @@
 }
 
 .studentName {
-  font-size: 1.1rem;
+  font-size: 15px;
   letter-spacing: 0px;
   color: #014b7e;
   opacity: 1;
-  padding-left: 0.5rem;
-  cursor: pointer;
   white-space : nowrap ;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -113,4 +113,19 @@
   color: grey;
   text-align: center;
   font-size: 1rem;
+}
+.badgeContent{
+  .MuiBadge-badge{
+    background: yellowgreen;
+  }
+}
+.buttonSubmit{
+  height: 25px;
+  background: #014b7e !important;
+  .MuiButton-label{
+    font-size: 15px;
+  }
+}
+.buttonSubmit:hover{
+  background: #014b7e !important;
 }

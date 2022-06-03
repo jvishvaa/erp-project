@@ -209,9 +209,14 @@ const JoinClass = (props) => {
   }
   const handleTakeQuiz = (fullData) => {
     if (fullData && fullData.online_class && fullData.online_class.question_paper_id) {
+      let {assessment_id , is_erp_qp} = fullData?.online_class 
       history.push({
         pathname: `/erp-online-class/${fullData.online_class.id}/${fullData.online_class.question_paper_id}/pre-quiz`,
-        state: { data: fullData.online_class.id },
+        state: { data: fullData.online_class.id ,
+          assessment_id : assessment_id,
+          is_erp_qp : is_erp_qp
+       },
+        
       });
     } else {
       setAlert('error', 'This onlineclass does not have quiz associated with it.');
@@ -341,7 +346,10 @@ const JoinClass = (props) => {
               onClick={() =>
                 history.push({
                   pathname: `/erp-online-class/${fullData.online_class.id}/${fullData.online_class.question_paper_id}/pre-quiz`,
-                  state: { data: fullData.online_class.id },
+                  state: { data: fullData.online_class.id,
+                    assessment_id : fullData?.online_class?.assessment_id,
+                    is_erp_qp : fullData?.online_class?.is_erp_qp
+                   },
                 })
               }
               disabled={props?.data?.is_cancelled ? true : isClassStartted()}
