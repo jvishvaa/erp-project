@@ -182,6 +182,7 @@ export default {
     hwDelete: '/academic/',
     upload: '/academic/upload-homework/',
     HwSubmittedDetail: '/academic/homework-submitted-data/',
+    submitToUnsubmit: '/academic/homework-submitted-unsubmitted/',
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',
