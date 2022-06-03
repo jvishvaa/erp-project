@@ -27,7 +27,7 @@ import endpoints from '../../../../../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { AlertNotificationContext } from '../../../../../../context-api/alert-context/alert-state';
 
-export default function AcademicReport(props) {
+export default function HomeworkSubmissionReport(props) {
   const [loading, setLoading] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -65,12 +65,12 @@ export default function AcademicReport(props) {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Teacher Attendance' &&
+          item.parent_modules === 'Blogs' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Mark Attendance') {
+            if (item.child_name === 'Principal Blogs') {
               setModuleId(item.child_id);
             }
           });
@@ -80,7 +80,7 @@ export default function AcademicReport(props) {
   }, [window.location.pathname]);
 
   useEffect(() => {
-    if (moduleId && selectedAcademicYear) getBranch();
+    if (moduleId) getBranch();
   }, [moduleId, selectedAcademicYear]);
 
   function getBranch() {

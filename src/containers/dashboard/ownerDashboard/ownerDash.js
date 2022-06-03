@@ -110,7 +110,7 @@ const OwnerDashboard = () => {
   };
 
   const handleAcadRefresh = () => {
-    // getAvgScore();
+    getAvgScore();
     getCurrReport();
     getAttendanceReportOverview();
     setAcadCounter(true);

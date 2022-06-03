@@ -33,7 +33,7 @@ import { AlertNotificationContext } from '../../../../../context-api/alert-conte
 // import MomentUtils from '@date-io/moment';
 import { fetchAssesmentTypes } from '../../../../../redux/actions';
 
-export default function HomeworkSubmissionReport(props) {
+export default function AcademicReport(props) {
   const [loading, setLoading] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const { setAlert } = useContext(AlertNotificationContext);
@@ -77,12 +77,12 @@ export default function HomeworkSubmissionReport(props) {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Teacher Attendance' &&
+          item.parent_modules === 'Blogs' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Mark Attendance') {
+            if (item.child_name === 'Principal Blogs') {
               setModuleId(item.child_id);
             }
           });
@@ -92,8 +92,10 @@ export default function HomeworkSubmissionReport(props) {
   }, [window.location.pathname]);
 
   useEffect(() => {
-    getBranch();
-    getAssesmentTypes();
+    if (moduleId) {
+      getBranch();
+      getAssesmentTypes();
+    }
   }, [moduleId, selectedAcademicYear]);
 
   function getBranch() {
