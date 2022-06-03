@@ -247,7 +247,7 @@ const Assesment = () => {
   useEffect(() => {
     if (formik.values.academic) {
       getBranch(formik.values.academic?.id);
-      if (formik.values.branch) {
+      if (formik.values.branch.length) {
         const branchIds =
           formik.values.branch.map((element) => element?.branch?.id) || [];
         getGrades(formik.values.academic?.id, branchIds);

@@ -536,11 +536,11 @@ const CurriculumCompletionSubject = (props) => {
                                     <TableRow>
                                       <TableCell></TableCell>
                                       <TableCell>
-                                        <b>Total</b>
+                                        <b>Total Periods</b>
                                       </TableCell>
                                       <TableCell>
                                         <b>
-                                          Completed
+                                          Completed Periods
                                         </b>
                                       </TableCell>
                                       <TableCell>

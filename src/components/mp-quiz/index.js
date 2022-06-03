@@ -15,7 +15,9 @@ function MultiplayerQuiz(props) {
       params: {
         onlineclassId: onlineClassId,
         questionpaperId: questionPaperId,
-        lobbyuuid: lobbyUuid,role:role
+        lobbyuuid: lobbyUuid,role:role,
+        is_erp_qp : is_erp_qp,
+        assessment_id : assessment_id
       }
       = {}
     }
@@ -26,7 +28,9 @@ function MultiplayerQuiz(props) {
     question_paper: questionPaperId,
     lobby_identifier: onlineClassId,
     lobbyuuif: lobbyUuid,
-    role:role
+    role:role,
+    is_erp_qp : is_erp_qp,
+    assessment_id : assessment_id
   }
   return <MpQuizHome params={params} />;
 }

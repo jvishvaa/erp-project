@@ -117,6 +117,7 @@ export default function reducer(state = INITIAL_STATE, action) {
         submittedStudents: action.submittedStudents,
         unSubmittedStudents: action.unSubmittedStudents,
         unevaluatedStudents: action.unevaluatedStudents,
+        absentList: action.absentList,
       };
     case teacherHomeworkActions.FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_FAILURE:
       return {

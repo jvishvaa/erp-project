@@ -648,7 +648,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route exact path='/erp-online-class/:id/:qid/pre-quiz'>
                             {({ match }) => <PreQuiz match={match} />}
                           </Route>
-                          <Route path='/erp-online-class/:onlineclassId/quiz/:questionpaperId/:lobbyuuid/:role'>
+                          <Route path='/erp-online-class/:onlineclassId/quiz/:questionpaperId/:lobbyuuid/:role/:is_erp_qp/:assessment_id'>
                             {({ match }) => <MultiplayerQuiz match={match} />}
                           </Route>
                           {/* <Route exact path='/online-class/view-class'>
