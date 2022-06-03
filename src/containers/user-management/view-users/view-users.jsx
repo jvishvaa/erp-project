@@ -159,7 +159,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [academicYearList, setAcademicYearList] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
-  const [isNewSeach, setIsNewSearch] = useState(true);
+  const [isNewSeach, setIsNewSearch] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [limit, setLimit] = useState(15);
   const [totalCount, setTotalCount] = useState(0);
@@ -423,7 +423,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     if (search.length > 1) {
       debounceCallback(search);
     } else {
-      setIsNewSearch(false);
+      setIsNewSearch(true);
     }
   };
 
@@ -590,7 +590,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   };
 
   useEffect(() => {
-    setIsNewSearch(true);
+    if(selectedRoles != null && selectedGrades != []){
+      setIsNewSearch(true);
+    }
   }, [selectedRoles, selectedGrades]);
 
   useEffect(() => {
