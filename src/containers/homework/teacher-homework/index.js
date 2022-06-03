@@ -74,7 +74,9 @@ import expiredIcon from '../../../assets/images/Expired.svg';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../../config/endpoints';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import axiosInstance from '../../../config/axios';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -93,13 +95,13 @@ const useStyles = makeStyles((theme) => ({
   container: {
     maxHeight: 440,
   },
-  homeworkTableMobileView:{
-    color : theme.palette.secondary.main
-  }, homeworkblock:{
-    color : theme.palette.secondary.main,
+  homeworkTableMobileView: {
+    color: theme.palette.secondary.main
+  }, homeworkblock: {
+    color: theme.palette.secondary.main,
     fontWeight: 600
   },
-  dayicon : theme.dayIcon
+  dayicon: theme.dayIcon
 }));
 
 
@@ -126,6 +128,7 @@ const TeacherHomework = withRouter(
     unevaluatedStudents,
     submittedStudents,
     unSubmittedStudents,
+    absentList,
     fetchingStudentLists,
     fetchStudentLists,
     history,
@@ -154,6 +157,8 @@ const TeacherHomework = withRouter(
       date: '',
       subjectName: '',
     });
+    const [ hwFlag , setHwFlag ] = useState(false);
+    const [ selectSub , setSelectSub ] = useState(false)
 
     const [receivedHomework, setReceivedHomework] = useState({
       studentHomeworkId: '',
@@ -226,7 +231,7 @@ const TeacherHomework = withRouter(
     const handleSelectCol = (col, view) => {
       //  setClassNameForcontainer("home-wrapper")
       const { homeworkId, subjectId, sectionId } = col;
-      fetchStudentLists(homeworkId, subjectId, sectionId);
+      fetchStudentLists(homeworkId, subjectId, sectionId ,null, col?.date );
       setSelectedCol(col);
       if (isMobile) {
         setActiveView('card-view');
@@ -279,21 +284,13 @@ const TeacherHomework = withRouter(
         `/homework/add/${date}/${sessionYear}/${branch}/${grade}/${subject}/${subjectId}`
       );
     };
-    console.log(
-      // selectedBranch,
-      'show all==============',
-      selectedFilters.section,
-      'wfawfafw',
-      sectionDisplay,
-      'awfawfafafwaf',
-      gradeDisplay
-    );
+   
     useEffect(() => {
       if (teacherModuleId) {
         if (selectedFilters.branch !== '') {
           setSelectedBranch(selectedFilters.branch);
           handleBranch('', selectedFilters.branch);
-        }  
+        }
         if (selectedFilters.grade !== '') {
           setGradeDisplay(selectedFilters.grade);
           handleGrade('', selectedFilters.grade);
@@ -314,7 +311,7 @@ const TeacherHomework = withRouter(
               selectedAcademicYear?.id &&
               selectedBranch?.id &&
               gradeDisplay?.id,
-            sectionDisplay?.id)
+              sectionDisplay?.id)
           ) {
             //alert(searchSection)
             getTeacherHomeworkDetails(
@@ -337,6 +334,7 @@ const TeacherHomework = withRouter(
       teacherModuleId,
       sectionDisplay,
       gradeDisplay,
+      hwFlag
     ]);
 
     useEffect(() => {
@@ -366,6 +364,122 @@ const TeacherHomework = withRouter(
         });
       }
     }, []);
+
+  
+
+
+    let slectedSubmitStudent = [];
+    const handleUser = (e) => {
+      if (slectedSubmitStudent?.length == 0) {
+        slectedSubmitStudent.push({ 'student_homework_id': e?.student_homework_id, 'hw_submission_mode': e?.hw_submission_mode })
+      }
+      else if (slectedSubmitStudent.length > 0) {
+        if (slectedSubmitStudent.filter((element) => element?.student_homework_id === e?.student_homework_id)?.length === 0) {
+          slectedSubmitStudent.push({ 'student_homework_id': e?.student_homework_id, 'hw_submission_mode': e?.hw_submission_mode })
+        } else {
+          let tempArray = slectedSubmitStudent.filter((element) => element?.student_homework_id !== e?.student_homework_id)
+          slectedSubmitStudent = tempArray
+        }
+      }
+    }
+
+
+    let slectedUnSubmitStudent = [];
+    const handleUserUnsubmitted = (e) => {
+      if (slectedUnSubmitStudent.includes(e?.user_id) == false) {
+        slectedUnSubmitStudent.push(e?.user_id)
+      }
+      else if (slectedUnSubmitStudent.includes(e?.user_id) == true) {
+        let tempArray = slectedUnSubmitStudent.filter(element => element !== e?.user_id)
+        slectedUnSubmitStudent = tempArray;
+      }
+    }
+
+    const handleUserAbsent = (e) => {
+      if (slectedUnSubmitStudent.includes(e?.user_id) == false) {
+        slectedUnSubmitStudent.push(e?.user_id)
+      }
+      else if (slectedUnSubmitStudent.includes(e?.user_id) == true) {
+        let tempArray = slectedUnSubmitStudent.filter(element => element !== e?.user_id)
+        slectedUnSubmitStudent = tempArray;
+      }
+    }
+
+    const handleAllSubmit = () => {
+      const testclick = document.getElementsByClassName('checkboxsubmit');
+      const checkboxes = testclick[0]?.querySelectorAll('input[type=checkbox]')
+      for (let i = 0; i < checkboxes.length; i ++) {
+        checkboxes[i].click();
+      }
+      }
+
+      const handleAllUnSubmit = () => {
+        const testclick = document.getElementsByClassName('checkboxUnsubmit');
+        const checkboxes = testclick[0]?.querySelectorAll('input[type=checkbox]')
+        for (let i = 0; i < checkboxes.length; i ++) {
+          checkboxes[i].click();
+        }
+        }
+
+        const handleAllAbsent = () => {
+          const testclick = document.getElementsByClassName('checkboxAbsent');
+          const checkboxes = testclick[0]?.querySelectorAll('input[type=checkbox]')
+          console.log(checkboxes , "all submit");
+          for (let i = 0; i < checkboxes.length; i ++) {
+            checkboxes[i].click();
+          }
+          console.log(slectedUnSubmitStudent);
+          }
+
+    const handleSubmittedStd = () => {
+      if(slectedSubmitStudent.length > 0){
+      axiosInstance
+      .put(endpoints.homework.submitToUnsubmit, slectedSubmitStudent)
+      .then((result) => {
+        setAlert('success', result.data.message);
+      fetchStudentLists(selectedCol?.homeworkId, selectedCol?.subjectId, selectedCol?.sectionId ,null, selectedCol?.date);
+      if(hwFlag == true){
+        setHwFlag(false)
+      } else {
+        setHwFlag(true)
+      }
+      slectedSubmitStudent = [];
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', 'something went wrong');
+        console.log(error);
+      });
+    } else {
+      setAlert('error','Please select Users')
+    }
+    }
+
+    const handleUnSubmittedStd = () => {
+      if(slectedUnSubmitStudent.length > 0){
+      axiosInstance
+      .put(`academic/${selectedCol?.homeworkId}/homework-unsubmitted-submitted/`, slectedUnSubmitStudent)
+      .then((result) => {
+        setAlert('success', result.data.message);
+        console.log(selectedCol);
+      fetchStudentLists(selectedCol?.homeworkId, selectedCol?.subjectId, selectedCol?.sectionId ,null, selectedCol?.date);
+      if(hwFlag == true){
+        setHwFlag(false)
+      } else {
+        setHwFlag(true)
+      }
+      slectedUnSubmitStudent = [];
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', 'something went wrong');
+        console.log(error);
+      });
+    } else {
+      setAlert('error','Please select Users')
+    }
+    }
+
 
     const renderRef = useRef(0);
 
@@ -732,7 +846,7 @@ const TeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <Typography color = "secondary">Assigned</Typography>
+                      <Typography color="secondary">Assigned</Typography>
                     </div>
                     <div className='icon-desc-container'>
                       <SvgIcon
@@ -744,7 +858,7 @@ const TeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <Typography color = "secondary">Submitted</Typography>
+                      <Typography color="secondary">Submitted</Typography>
                     </div>
                     <div className='icon-desc-container'>
                       <SvgIcon
@@ -756,7 +870,7 @@ const TeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <Typography color = "secondary">Evaluated</Typography>
+                      <Typography color="secondary">Evaluated</Typography>
                     </div>
                     <div className='icon-desc-container'>
                       <SvgIcon
@@ -768,7 +882,7 @@ const TeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <Typography color = "secondary">Expired</Typography>
+                      <Typography color="secondary">Expired</Typography>
                     </div>
                   </div>
                 )}
@@ -804,7 +918,7 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <Typography color = "secondary" style={{ fontSize: '16px' }}>Add Homework</Typography>
+                              <Typography color="secondary" style={{ fontSize: '16px' }}>Add Homework</Typography>
                             </div>
                             <div className='icon-desc-container'>
                               <SvgIcon
@@ -816,7 +930,7 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <Typography color = "secondary"style={{ fontSize: '16px' }}>HW Evaluated</Typography>
+                              <Typography color="secondary" style={{ fontSize: '16px' }}>HW Evaluated</Typography>
                             </div>
                             <div className='icon-desc-container'>
                               <SvgIcon
@@ -828,7 +942,7 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <Typography color = "secondary" style={{ fontSize: '16px' }}>HW Assigned</Typography>
+                              <Typography color="secondary" style={{ fontSize: '16px' }}>HW Assigned</Typography>
                             </div>
                             <div className='icon-desc-container'>
                               <SvgIcon
@@ -840,7 +954,7 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <Typography color = "secondary" style={{ fontSize: '16px' }}>Students Submitted</Typography>
+                              <Typography color="secondary" style={{ fontSize: '16px' }}>Students Submitted</Typography>
                             </div>
                             {/* <div className='icon-desc-container'>
                               <SvgIcon
@@ -864,7 +978,15 @@ const TeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <Typography color = "secondary" style={{ fontSize: '16px' }}>Expired</Typography>
+                              <Typography color="secondary" style={{ fontSize: '16px' }}>Expired</Typography>
+                            </div>
+                            <div className='icon-desc-container'>
+                            <div className='badgeContent' >
+                              <Badge color="success" variant="dot" >
+                                <AssignmentIcon style={{color: '#014b7e'}} />
+                              </Badge>
+                            </div>
+                            <Typography color="secondary" style={{ fontSize: '16px' }}>Online Submission</Typography>
                             </div>
                           </Grid>
                         )}
@@ -906,7 +1028,7 @@ const TeacherHomework = withRouter(
                                           {col.subject_name.split('_').join('/')}
                                         </TableCell>
                                       ) : (
-                                        <TableCell style={{zIndex:'20'}}>{col}</TableCell>
+                                        <TableCell style={{ zIndex: '20' }}>{col}</TableCell>
                                       );
                                     })}
                                   </TableRow>
@@ -943,11 +1065,20 @@ const TeacherHomework = withRouter(
                         unSubmittedStudents={unSubmittedStudents}
                         loading={fetchingStudentLists}
                         onClick={handleViewReceivedHomework}
+                        handleUser={handleUser}
+                        handleUserUnsubmitted={handleUserUnsubmitted}
+                        handleSubmittedStd={handleSubmittedStd}
+                        handleUnSubmittedStd={handleUnSubmittedStd}
                         // onClose={() => {
                         //   setActiveView('list-homework');
                         //   setSelectedCol({});
                         // }}
                         onClose={handleCloseCard}
+                        handleAllSubmit={handleAllSubmit}
+                        absentList={absentList}
+                        handleAllUnSubmit={handleAllUnSubmit}
+                        handleAllAbsent={handleAllAbsent}
+                        handleUserAbsent={handleUserAbsent}
                       />
                     )}
                   {activeView === 'list-homework' && isMobile && (
@@ -1012,7 +1143,7 @@ const TeacherHomework = withRouter(
                                                     subject: col.subject_name,
                                                     subjectId: col.subject_id,
                                                     homeworkId: data.hw_id,
-                                                    sectiondata : sectionDisplay,
+                                                    sectiondata: sectionDisplay,
                                                     sessionYear: row.sessionYear,
                                                     branch: row.branch,
                                                     grade: row.grade,
@@ -1177,6 +1308,7 @@ const mapStateToProps = (state) => ({
   unSubmittedStudents: state.teacherHomework.unSubmittedStudents,
   unevaluatedStudents: state.teacherHomework.unevaluatedStudents,
   fetchingStudentLists: state.teacherHomework.fetchingStudentLists,
+  absentList: state.teacherHomework.absentList,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1206,8 +1338,8 @@ const mapDispatchToProps = (dispatch) => ({
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
   },
-  fetchStudentLists: (id, subjectId, sectionId) => {
-    dispatch(fetchStudentsListForTeacherHomework(id, subjectId, sectionId));
+  fetchStudentLists: (id, subjectId, sectionId ,user , date ) => {
+    dispatch(fetchStudentsListForTeacherHomework(id, subjectId, sectionId ,user , date));
   },
   onSetSelectedFilters: (data) => {
     dispatch(setSelectedFilters(data));

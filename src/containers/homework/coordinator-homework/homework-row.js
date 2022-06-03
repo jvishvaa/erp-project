@@ -56,7 +56,8 @@ const HomeworkRow = ({ data, cols, selectedCol, sectionId, setSelectedCol, handl
                 subject: col.subject_name,
                 subjectId: col.subject_id,
                 homeworkId: data[col.subject_name].hw_id,
-                coord_selected_teacher_id
+                coord_selected_teacher_id,
+                last_sub_date : data[col.subject_name]?.last_submission_date,
               });
             }}
           />

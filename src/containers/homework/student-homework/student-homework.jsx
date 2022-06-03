@@ -61,23 +61,23 @@ const useStyles = makeStyles((theme) => ({
   homeworkSubmissionIsOpen: {
     display: 'none',
   },
-  homeworkblock:{
-    color : theme.palette.secondary.main,
+  homeworkblock: {
+    color: theme.palette.secondary.main,
     fontWeight: 600
-  }, 
-   dayicon : theme.dayIcon,
-   homeworkstudentheadercount:{
+  },
+  dayicon: theme.dayIcon,
+  homeworkstudentheadercount: {
     position: "absolute",
     right: 0,
     top: 0,
     backgroundColor: theme.palette.primary.main,
     color: "white",
     width: "20px",
-   },
-   dateweb:{
-color:theme.palette.secondary.main,
-marginTop : "10px"
-   }
+  },
+  dateweb: {
+    color: theme.palette.secondary.main,
+    marginTop: "10px"
+  }
 
 }));
 
@@ -187,7 +187,8 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                   isSubmited: subjects.hw_status.is_submitted,
                   isEvaluted: subjects.hw_status.is_evaluated,
                   isOpened: subjects.hw_status.is_opened,
-                  submitted_at: subjects.submitted_at
+                  submitted_at: subjects.submitted_at,
+                  last_sub: subjects.last_submission_dt,
                 };
             });
             if (!tempobj[header.subject_slag]) {
@@ -353,7 +354,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
             ) : (
               !homeworkSubmission.isOpen && (
                 <div className='homework_block_wrapper'>
-                  <Typography color = "secondary"
+                  <Typography color="secondary"
                     className={` ${classes.homeworkblock}  icon-desc-container-desk`}
                     style={{ fontSize: '16px', marginLeft: '15px' }}
                   >
@@ -369,7 +370,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <Typography color = "secondary" style={{ fontSize: '16px' }}>Unopened</Typography>
+                    <Typography color="secondary" style={{ fontSize: '16px' }}>Unopened</Typography>
                   </div>
 
                   <div className='icon-desc-container-desk'>
@@ -382,7 +383,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <Typography color = "secondary" style={{ fontSize: '16px' }}>
+                    <Typography color="secondary" style={{ fontSize: '16px' }}>
                       File Opened
                     </Typography>
                   </div>
@@ -396,7 +397,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <Typography color = "secondary" style={{ fontSize: '16px' }}>Submitted</Typography>
+                    <Typography color="secondary" style={{ fontSize: '16px' }}>Submitted</Typography>
                   </div>
 
                   <div className='icon-desc-container-desk'>
@@ -409,7 +410,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <Typography  color = "secondary" style={{ fontSize: '16px' }}>Evaluated</Typography>
+                    <Typography color="secondary" style={{ fontSize: '16px' }}>Evaluated</Typography>
                   </div>
                   <div className='icon-desc-container-desk'>
                     <SvgIcon
@@ -424,7 +425,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                         />
                       )}
                     />
-                    <Typography color = "secondary" style={{ fontSize: '16px' }}>
+                    <Typography color="secondary" style={{ fontSize: '16px' }}>
                       Not Submitted
                     </Typography>
                   </div>
@@ -540,7 +541,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                       />
                                     </TableCell>
                                   ) : (
-                                    <TableCell className='homework_header' style={headers.subject_slag === 'date'?{ zIndex:20}:{zIndex:2}}>
+                                    <TableCell className='homework_header' style={headers.subject_slag === 'date' ? { zIndex: 20 } : { zIndex: 2 }}>
                                       {headers.subject_slag === 'date'
                                         ? 'Weekday'
                                         : headers.subject_slag}
@@ -557,7 +558,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                 >
                                   {messageRows.header?.map((headers, i) =>
                                     headers.subject_slag === 'date' ? (
-                                      <TableCell style={{position : "sticky", zIndex:20, left: 0,backgroundColor:'white'}}>
+                                      <TableCell style={{ position: "sticky", zIndex: 20, left: 0, backgroundColor: 'white' }}>
                                         <div className='table-date'>
                                           <div
                                             className={classes.dayicon}
@@ -582,120 +583,38 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                         }
                                       >
                                         <div>
-                                        {row[headers.subject_slag].isSubmited ? (
-                                          <span
-                                            onClick={() =>
-                                              handleOpenHomework(
-                                                row[headers.subject_slag].homeworkId,
-                                                row.date,
-                                                headers.subject_slag,
-                                                2,
-                                                row[headers.subject_slag].isEvaluted
-                                              )
-                                            }
-                                          >
-                                            <SvgIcon
-                                              component={() => (
-                                                <img
-                                                  style={{
-                                                    width: '35px',
-                                                    height: '35px',
-                                                    padding: '5px',
-                                                    cursor: 'pointer',
-                                                  }}
-                                                  src={hwGiven}
-                                                  alt='given'
-                                                />
-                                              )}
-                                            />
-                                          </span>
-                                        ) : new Date(
-                                          new Date().getFullYear(),
-                                          new Date().getMonth(),
-                                          new Date().getDate()
-                                        ) >= new Date(row.date) ? (
-                                          <SvgIcon
-                                            component={() => (
-                                              <img
-                                                style={{
-                                                  width: '35px',
-                                                  height: '35px',
-                                                  padding: '5px',
-                                                }}
-                                                src={hwFileNotSubmitted}
-                                                alt='homeworkunopened'
+                                          {row[headers.subject_slag].isSubmited ? (
+                                            <span
+                                              onClick={() =>
+                                                handleOpenHomework(
+                                                  row[headers.subject_slag].homeworkId,
+                                                  row.date,
+                                                  headers.subject_slag,
+                                                  2,
+                                                  row[headers.subject_slag].isEvaluted
+                                                )
+                                              }
+                                            >
+                                              <SvgIcon
+                                                component={() => (
+                                                  <img
+                                                    style={{
+                                                      width: '35px',
+                                                      height: '35px',
+                                                      padding: '5px',
+                                                      cursor: 'pointer',
+                                                    }}
+                                                    src={hwGiven}
+                                                    alt='given'
+                                                  />
+                                                )}
                                               />
-                                            )}
-                                          />
-                                        ) : null}
-                                        {!row[headers.subject_slag].isSubmited ? (
-                                          <>
-                                            {row[headers.subject_slag].isOpened ? (
-                                              <span
-                                                onClick={() =>
-                                                  handleOpenHomework(
-                                                    row[headers.subject_slag].homeworkId,
-                                                    row.date,
-                                                    headers.subject_slag,
-                                                    1
-                                                  )
-                                                }
-                                              >
-                                                <SvgIcon
-                                                  component={() => (
-                                                    <img
-                                                      style={{
-                                                        width: '35px',
-                                                        height: '35px',
-                                                        padding: '5px',
-                                                        cursor: 'pointer',
-                                                      }}
-                                                      src={hwFileOpened}
-                                                      alt='homeworkopened'
-                                                    />
-                                                  )}
-                                                />
-                                              </span>
-                                            ) : (
-                                              <span
-                                                onClick={() =>
-                                                  handleOpenHomework(
-                                                    row[headers.subject_slag].homeworkId,
-                                                    row.date,
-                                                    headers.subject_slag,
-                                                    1
-                                                  )
-                                                }
-                                              >
-                                                <SvgIcon
-                                                  component={() => (
-                                                    <img
-                                                      style={{
-                                                        width: '35px',
-                                                        height: '35px',
-                                                        padding: '5px',
-                                                        cursor: 'pointer',
-                                                      }}
-                                                      src={hwFileUnopened}
-                                                      alt='homeworkunopened'
-                                                    />
-                                                  )}
-                                                />
-                                              </span>
-                                            )}
-                                          </>
-                                        ) : null}
-                                        {row[headers.subject_slag].isEvaluted ? (
-                                          <span
-                                            onClick={() =>
-                                              handleOpenHomework(
-                                                row[headers.subject_slag].homeworkId,
-                                                row.date,
-                                                headers.subject_slag,
-                                                3
-                                              )
-                                            }
-                                          >
+                                            </span>
+                                          ) : new Date(
+                                            new Date().getFullYear(),
+                                            new Date().getMonth(),
+                                            new Date().getDate()
+                                          ) >= new Date(row.date) ? (
                                             <SvgIcon
                                               component={() => (
                                                 <img
@@ -703,21 +622,104 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                     width: '35px',
                                                     height: '35px',
                                                     padding: '5px',
-                                                    cursor: 'pointer',
                                                   }}
-                                                  src={studentHomeworkEvaluted}
-                                                  alt='homeworkEvaluted'
+                                                  src={hwFileNotSubmitted}
+                                                  alt='homeworkunopened'
                                                 />
                                               )}
                                             />
-                                          </span>
-                                        ) : null}
+                                          ) : null}
+                                          {!row[headers.subject_slag].isSubmited ? (
+                                            <>
+                                              {row[headers.subject_slag].isOpened ? (
+                                                <span
+                                                  onClick={() =>
+                                                    handleOpenHomework(
+                                                      row[headers.subject_slag].homeworkId,
+                                                      row.date,
+                                                      headers.subject_slag,
+                                                      1
+                                                    )
+                                                  }
+                                                >
+                                                  <SvgIcon
+                                                    component={() => (
+                                                      <img
+                                                        style={{
+                                                          width: '35px',
+                                                          height: '35px',
+                                                          padding: '5px',
+                                                          cursor: 'pointer',
+                                                        }}
+                                                        src={hwFileOpened}
+                                                        alt='homeworkopened'
+                                                      />
+                                                    )}
+                                                  />
+                                                </span>
+                                              ) : (
+                                                <span
+                                                  onClick={() =>
+                                                    handleOpenHomework(
+                                                      row[headers.subject_slag].homeworkId,
+                                                      row.date,
+                                                      headers.subject_slag,
+                                                      1
+                                                    )
+                                                  }
+                                                >
+                                                  <SvgIcon
+                                                    component={() => (
+                                                      <img
+                                                        style={{
+                                                          width: '35px',
+                                                          height: '35px',
+                                                          padding: '5px',
+                                                          cursor: 'pointer',
+                                                        }}
+                                                        src={hwFileUnopened}
+                                                        alt='homeworkunopened'
+                                                      />
+                                                    )}
+                                                  />
+                                                </span>
+                                              )}
+                                            </>
+                                          ) : null}
+                                          {row[headers.subject_slag].isEvaluted ? (
+                                            <span
+                                              onClick={() =>
+                                                handleOpenHomework(
+                                                  row[headers.subject_slag].homeworkId,
+                                                  row.date,
+                                                  headers.subject_slag,
+                                                  3
+                                                )
+                                              }
+                                            >
+                                              <SvgIcon
+                                                component={() => (
+                                                  <img
+                                                    style={{
+                                                      width: '35px',
+                                                      height: '35px',
+                                                      padding: '5px',
+                                                      cursor: 'pointer',
+                                                    }}
+                                                    src={studentHomeworkEvaluted}
+                                                    alt='homeworkEvaluted'
+                                                  />
+                                                )}
+                                              />
+                                            </span>
+                                          ) : null}
                                         </div>
-                                          <small>{row[headers?.subject_slag]?.submitted_at?.split('/')[0]}</small>
+                                        <small>{row[headers?.subject_slag]?.submitted_at?.split('/')[0]}</small>
                                         <div>
                                           <small>{row[headers?.subject_slag]?.submitted_at?.split('/')[1]}</small>
+                                          {row[headers?.subject_slag]?.last_sub !== null ? <div style={{width: '100%' , fontSize: '14px'}} >Due Date : {moment(row[headers?.subject_slag]?.last_sub).format('DD-MM-YYYY')}</div> : ''}
                                         </div>
-                                  
+
                                       </TableCell>
                                     ) : (
                                       <TableCell />

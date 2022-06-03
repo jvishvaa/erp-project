@@ -159,7 +159,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [academicYearList, setAcademicYearList] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
-  const [isNewSeach, setIsNewSearch] = useState(true);
+  const [isNewSeach, setIsNewSearch] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [limit, setLimit] = useState(15);
   const [totalCount, setTotalCount] = useState(0);
@@ -293,7 +293,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         rolesId.push(each.id);
       });
     }
-    let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}&session_year=${selectedYear?.id}`;
     if (classStatus && classStatus != 1 && classStatus != 0) {
       let status = classStatus - 1;
       getUserListUrl += `&status=${status.toString()}`;
@@ -356,7 +356,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     setSelectedGrades([]);
     setClassStatus(1);
     setCurrentPage(1);
-    setIsNewSearch(true);
+    // setIsNewSearch(true);
+    setUsersData([])
+    setTotalCount(0)
   };
 
   const handleExcel = () => {
@@ -423,7 +425,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     if (search.length > 1) {
       debounceCallback(search);
     } else {
-      setIsNewSearch(false);
+      setIsNewSearch(true);
     }
   };
 
@@ -590,7 +592,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   };
 
   useEffect(() => {
-    setIsNewSearch(true);
+    if(selectedRoles != null && selectedGrades != []){
+      setIsNewSearch(true);
+    }
   }, [selectedRoles, selectedGrades]);
 
   useEffect(() => {
@@ -918,6 +922,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         {!isMobile && (
           <Paper className={`${classes.root} common-table`}>
             {loading && <Loader />}
+            {usersData?.length > 0 ?
             <TableContainer
               className={`table table-shadow view_users_table ${classes.container}`}
             >
@@ -934,7 +939,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {usersData.map((items, i) => (
+                  { usersData.map((items, i) => (
                     <TableRow
                       hover
                       role='checkbox'
@@ -1025,10 +1030,15 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                         )}
                       </TableCell>
                     </TableRow>
-                  ))}
+                  )) }
                 </TableBody>
+             
               </Table>
             </TableContainer>
+               : 
+               <div style={{display: 'flex' , justifyContent: 'center' , width: '100%' , fontSize: '25px', color: '#646363' , minHeight: '300px' , alignItems: 'center'}} >
+                 <p style={{fontWeight: '600'}} > Please Apply Filters</p>
+               </div>}
             <TablePagination
               component='div'
               count={totalCount}
