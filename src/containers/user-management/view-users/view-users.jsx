@@ -293,7 +293,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         rolesId.push(each.id);
       });
     }
-    let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}`;
+    let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}&session_year=${selectedYear?.id}`;
     if (classStatus && classStatus != 1 && classStatus != 0) {
       let status = classStatus - 1;
       getUserListUrl += `&status=${status.toString()}`;
