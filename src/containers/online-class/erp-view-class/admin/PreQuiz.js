@@ -154,8 +154,8 @@ const handleSubmit = () =>{
     // question_paper: questionPaperId
   }= lobbyInfoObj||{}
 
-let {quiz_test_paper} = preQuizInfo?.online_class_info?.online_class || {};
-  let questionPaperId = quiz_test_paper
+let {is_erp_qp, question_paper_id, central_qp_id} = preQuizInfo?.assessment_details || {};
+  let questionPaperId = is_erp_qp  ? question_paper_id : central_qp_id 
   const {online_class: onlineClassObj} = onlineClassInfo||{}
   const {id: onlineClassId} = onlineClassObj||{}
   const searchParams = new URLSearchParams(window.location.search);
@@ -186,6 +186,7 @@ useEffect(()=>{
 },[isUuid]);
 
 const handleCreateLobby = ()=>{
+  debugger
   const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
   const hostSplitArray = host.split('.');
   const subDomainLevels = hostSplitArray.length - 2;
@@ -209,8 +210,8 @@ const handleCreateLobby = ()=>{
   }else{
     role=1
   }
-  let {quiz_test_paper} = preQuizInfo?.online_class_info?.online_class || {};
-  let questionPaperId = quiz_test_paper
+  let {is_erp_qp, question_paper_id, central_qp_id} = preQuizInfo?.assessment_details || {};
+  let questionPaperId = is_erp_qp  ? question_paper_id : central_qp_id
   const {online_class_info: onlineClassInfo} = preQuizInfo||{}
   const {online_class: onlineClassObj} = onlineClassInfo||{}
   const {id: onlineClassId} = onlineClassObj||{}
