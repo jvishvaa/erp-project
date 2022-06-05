@@ -56,6 +56,7 @@ const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
   const [showButton, setShowButton] = useState(false);
   const { welcomeDetails = {}, setReports } = useDashboardContext();
   const { greeting, name, userRole, userLevel } = welcomeDetails;
+  const [open, setOpen] = useState(false);
 
   const getAllReport = () => {
     // let button = document.getElementById('refreshButton')
@@ -97,12 +98,15 @@ const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
     history.push('./teacherdash');
   };
 
+ 
+
   return (
     <>
       {welcomeDetails?.userLevel === 1 ||
         welcomeDetails?.userLevel === 4 ||
         welcomeDetails?.userLevel === 8 ||
         welcomeDetails?.userLevel === 10 ||
+        welcomeDetails?.userLevel === 13 ||
         welcomeDetails?.userLevel === 11 ? (
         <div
           style={{
@@ -132,7 +136,9 @@ const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
             </>
           )}
 
-          {erp_config ? (
+          
+
+          {(erp_config && welcomeDetails?.userLevel !== 13 && window.location.pathname !== '/dashboard')? (
             <Button
               className={classes.outlined}
               style={{ margin: '0 2%' }}
@@ -145,19 +151,43 @@ const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
             ''
           )}
 
-          {erp_config ? (
-            <Button
-              className={classes.outlined}
-              style={{ margin: '0 2%' }}
-              color='secondary'
-              onClick={() => changeView(2)}
-            >
-              Stats View V2
-            </Button>
+          {/* {(welcomeDetails?.userLevel == 11 && welcomeDetails?.userLevel !== 13) ? (
+            <>
+              {checkDev === true ? (
+                <>
+                  {erp_config ? (
+                    <Button
+                      className={classes.outlined}
+                      style={{ margin: '0 2%' }}
+                      color='secondary'
+                      onClick={() => changeView(2)}
+                    >
+                      Stats View V2
+                    </Button>
+                  ) : (
+                    ''
+                  )}
+                </>
+              ) : (
+                ''
+              )}
+            </>
           ) : (
-            ''
-          )}
-
+            <>
+              {(erp_config && welcomeDetails?.userLevel !== 13) ? (
+                <Button
+                  className={classes.outlined}
+                  style={{ margin: '0 2%' }}
+                  color='secondary'
+                  onClick={() => changeView(2)}
+                >
+                  Stats View V2
+                </Button>
+              ) : (
+                ''
+              )}
+            </>
+          )} */}
         </div>
       ) : (
         ''
@@ -207,11 +237,11 @@ const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
         ) : (
           ''
         )}
-        {welcomeDetails?.userLevel === 1 ||
-          welcomeDetails?.userLevel === 4 ||
-          welcomeDetails?.userLevel === 8 ||
-          welcomeDetails?.userLevel === 10 ||
-          welcomeDetails?.userLevel === 11 ? (
+        {/* {welcomeDetails?.userLevel === 1 ||
+        welcomeDetails?.userLevel === 4 ||
+        welcomeDetails?.userLevel === 8 ||
+        welcomeDetails?.userLevel === 10 ||
+        welcomeDetails?.userLevel === 11 ? (
           ''
         ) : (
           <>
@@ -221,13 +251,24 @@ const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
                 color='secondary'
                 onClick={academicView}
               >
-                Calendar View
+                Academic View
+              </Button>
+            ) : (
+              ''
+            )}
+            {erp_config ? (
+              <Button
+                className={classes.outlined}
+                color='secondary'
+                onClick={teacherDashboardV2}
+              >
+                Dashboard V2
               </Button>
             ) : (
               ''
             )}
           </>
-        )}
+        )} */}
       </Box>
     </>
   );

@@ -55,14 +55,13 @@ export default function AcademicReports(props) {
               md={6}
               style={{ marginBottom: 15 }}
               // align='right'
-              indicatorColor='Primary'
-              textColor='Primary'
             >
               <Tabs
                 value={tabValue}
                 onChange={handleTabChange}
                 variant='fullWidth'
                 aria-label='simple tabs example'
+                indicatorColor='Primary'
               >
                 <Tab label='Assessment' style={{ fontWeight: 'bold' }} />
                 <Tab label='Homework' style={{ fontWeight: 'bold' }} />
@@ -73,7 +72,6 @@ export default function AcademicReports(props) {
           <TabPanel value={tabValue} index={0}>
             <AssessmentReport />
           </TabPanel>
-
           <TabPanel value={tabValue} index={1}>
             <HomeworkReport />
           </TabPanel>

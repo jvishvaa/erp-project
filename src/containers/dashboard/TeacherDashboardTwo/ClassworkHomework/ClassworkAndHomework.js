@@ -24,7 +24,8 @@ import { ArrowForwardIos as ArrowForwardIosIcon } from '@material-ui/icons';
 import axios from 'axios';
 import endpoints from 'config/endpoints';
 import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
-import axiosInstance from 'config/axios';
+import axiosInstance from '../../../../config/axios';
+import NoFilterData from 'components/noFilteredData/noFilterData';
 
 const styles = (theme) => ({
   root: {
@@ -234,6 +235,7 @@ class HomeworkClasswork extends React.Component {
       rightSideTableData: [],
       leftSideTableData: [],
       dateRangeTechPer: [moment().subtract(6, 'days'), moment()],
+      homework: true,
     };
     this.handleTableData = this.handleTableData.bind(this);
     this.tableData = this.tableData.bind(this);
@@ -268,6 +270,43 @@ class HomeworkClasswork extends React.Component {
     this.setState({ tableAllData: tableDatafinal });
   }
 
+  gradeList() {
+    axiosInstance
+      .get(`${endpoints.academics.grades}?session_year=1&branch_id=111&module_id=61`)
+      .then((result) => {
+        this.setState({
+          gradeListData: result?.data?.data,
+        });
+        console.log('grade', result, result?.data?.data);
+      });
+  }
+
+  sectionList() {
+    axiosInstance
+      .get(
+        `${endpoints.academics.sections}?session_year=1&branch_id=111&grade_id=59&module_id=61`
+      )
+      .then((result) => {
+        this.setState({
+          sectionListData: result?.data?.data,
+        });
+        console.log('section', result, result?.data?.data);
+      });
+  }
+
+  subjectList() {
+    axiosInstance
+      .get(
+        `${endpoints.academics.subjects}?session_year=1&branch=111&grade=59&module_id=61&section=68`
+      )
+      .then((result) => {
+        this.setState({
+          subjectListData: result?.data?.data,
+        });
+        console.log('subject', result, result?.data?.data);
+      });
+  }
+
   rightSideTableData(subjectID) {
     // setLoading(true);
     const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -277,8 +316,8 @@ class HomeworkClasswork extends React.Component {
         `${endpoints.teacherDashboard.cwHWTeacherDashboard}?acad_session=122&page_size=20&grade_id=59&end_date=2022-03-25&start_date=2022-02-28&branch_id=111&subject_id=${subjectID}&section_id=68`,
         {
           headers: {
-            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
             'X-DTS-HOST': window.location.host,
+            // 'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
             Authorization: `Bearer ${token}`,
           },
         }
@@ -322,55 +361,11 @@ class HomeworkClasswork extends React.Component {
       });
   }
 
-  // Call on first render
-  // sessin year from session storage
-  // module_id hardcore
-
-  // branchList() {
-  //   axiosInstance.get(`erp_user/branch/?session_year=1&module_id=61`).then((result) => {
-  //     console.log('listBranch', result, result?.data?.data?.results);
-  //     this.setState({
-  //       branchListData: result?.data?.data?.results,
-  //     });
-  //   });
-  // }
-
-  //branch id from local storage, can be multiple
-  //module id hardcore
-  //session year from session storage
-  gradeList() {
-    axiosInstance
-      .get(
-        `erp_user/sectionmapping/?session_year=1&branch_id=111&grade_id=59&module_id=61`
-      )
-      .then((result) => {
-        this.setState({
-          gradeListData: result?.data?.data,
-        });
-        console.log('listgrade', result, result?.data?.data);
-      });
-  }
-
-  //sectionlist and subjectlist
-  sectionList() {
-    axiosInstance
-      .get(
-        `erp_user/sub-sec-list/?role=203&module_id=2&erp_id=2628&is_super=0&grade_id=59&branch_id=88,111&session_year=1`
-      )
-      .then((result) => {
-        this.setState({
-          sectionListData: result?.data?.data?.section,
-          subjectListData: result?.data?.data?.subject,
-        });
-        console.log('listsection', result, result?.data?.data?.section);
-        console.log('listsubject', result, result?.data?.data?.subject);
-      });
-  }
-
   componentDidMount() {
     // this.branchList();
     this.gradeList();
     this.sectionList();
+    this.subjectList();
     this.leftSideTableData();
     this.rightSideTableData(101);
   }
@@ -413,14 +408,13 @@ class HomeworkClasswork extends React.Component {
                 <Grid item xs={12} md={2}>
                   <Autocomplete
                     id='combo-box-demo'
-                    options={this.state.branchListData}
+                    options={this.state.gradeListData}
                     size='small'
-                    multiple={true}
                     value={gradeValue}
                     //   onChange={(event, newValue) => {
                     //     this.setState({ gradeValue: newValue})
                     //   }}
-                    getOptionLabel={(option) => option.branch.branch_name}
+                    getOptionLabel={(option) => option?.grade_name}
                     renderInput={(params) => (
                       <TextField {...params} label='Branch' variant='outlined' />
                     )}
@@ -435,7 +429,7 @@ class HomeworkClasswork extends React.Component {
                     //   onChange={(event, newValue) => {
                     //     this.setState({ gradeValue: newValue})
                     //   }}
-                    getOptionLabel={(option) => option.grade__grade_name}
+                    getOptionLabel={(option) => option?.grade__grade_name}
                     renderInput={(params) => (
                       <TextField {...params} label='Grade' variant='outlined' />
                     )}
@@ -451,7 +445,7 @@ class HomeworkClasswork extends React.Component {
                     onChange={(event, newValue) => {
                       this.setState({ subjectValue: newValue });
                     }}
-                    getOptionLabel={(option) => option.subject__subject_name}
+                    getOptionLabel={(option) => option?.subject__subject_name}
                     renderInput={(params) => (
                       <TextField {...params} label='Subject' variant='outlined' />
                     )}
@@ -503,10 +497,11 @@ class HomeworkClasswork extends React.Component {
               container
               alignItems='center'
               xs={12}
+              justifyContent="space-between"
               direction='row'
-              style={{ padding: '20px 30px' }}
+              style={{ padding: '10px 30px' }}
             >
-              <Grid container xs={12} md={6}>
+              {/* <Grid container xs={12} md={6}>
                 <Typography style={{ marginTop: '6px', marginRight: '5px' }}>
                   Classwork
                 </Typography>
@@ -521,6 +516,42 @@ class HomeworkClasswork extends React.Component {
                   }
                   label='Homework'
                 />
+              </Grid> */}
+              <Grid
+                container
+                direction='row'
+                xs={12}
+                sm={8}
+                md={4}
+                style={{
+                  textAlign: 'center',
+                  // marginLeft: 15,
+                  marginBottom: '15px',
+                  border: '1px solid #4093D4',
+                }}
+              >
+                <Grid
+                  onClick={() => this.setState({ homework: true })}
+                  xs={6}
+                  style={{
+                    background: this.state.homework ? '#4093D4' : 'white',
+                    color: this.state.homework ? 'white' : 'black',
+                    padding: '10px 0',
+                  }}
+                >
+                  <b>Homework</b>
+                </Grid>
+                <Grid
+                  xs={6}
+                  onClick={() => this.setState({ homework: false })}
+                  style={{
+                    background: this.state.homework ? 'white' : '#4093D4',
+                    color: this.state.homework ? 'black' : 'white',
+                    padding: '10px 0',
+                  }}
+                >
+                  <b>Classwork</b>
+                </Grid>
               </Grid>
               <Grid container justifyContent='flex-end' xs={12} md={6}>
                 <span style={{ color: '#074597' }}>
@@ -530,6 +561,7 @@ class HomeworkClasswork extends React.Component {
               </Grid>
             </Grid>
             <Grid item xs={12} style={{ margin: '0 30px' }}>
+              {this.state?.leftSideTableData.length > 0 ?
               <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label='customized table'>
                   <TableHead style={{ backgroundColor: '#EBF2FE' }}>
@@ -620,6 +652,11 @@ class HomeworkClasswork extends React.Component {
                   </TableBody>
                 </Table>
               </TableContainer>
+              :
+              <Grid style={{marginTop : 100}}>
+                <NoFilterData data="No Data Found"/>
+              </Grid>
+              }
             </Grid>
           </Grid>
         </div>

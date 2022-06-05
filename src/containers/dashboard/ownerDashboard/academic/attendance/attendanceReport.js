@@ -23,6 +23,7 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Paper
 } from '@material-ui/core';
 import {
   Search as SearchIcon,
@@ -49,8 +50,11 @@ import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import '../style.scss';
 import Loader from '../../../../../components/loader/loader';
+import DownloadReport from '../downloadReport';
 // import Loading from '../../../../../components';
 import { connect, useSelector } from 'react-redux';
+import { DashboardContextProvider } from 'containers/dashboard/dashboard-context';
+import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
 
 const useStyles = makeStyles((theme) => ({
   gradeBoxContainer: {
@@ -75,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
   },
   accordion: {
     margin: '10px 0 !important',
-    border: '1px solid black',
+    // border: '1px solid black',
     // '&::before': {
     //   backgroundColor: 'black',
     // },
@@ -166,19 +170,26 @@ const AttendanceReport = (props) => {
         params: { ...params },
         headers: {
           'X-DTS-Host': window.location.host,
+          // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
         },
       })
       .then((res) => {
         // console.log(res, 'utpal');
-        let tempData = res.data.result.result;
-        tempData.unshift({
-          section_name: res.data.result.section_name,
-          total_strength: res.data.result.total_strength,
-          total_present: res.data.result.total_present,
-          total_absent: res.data.result.total_absent,
-          present_percentage: res.data.result.present_percentage,
-          absent_percentage: res.data.result.absent_percentage,
-        });
+        let tempData = res.data.result;
+        // tempData.unshift({
+        //   // section_name: res.data.result.section_name,
+        //   // total_strength: res.data.result.total_strength,
+        //   // total_present: res.data.result.total_present,
+        //   // total_absent: res.data.result.total_absent,
+        //   // present_percentage: res.data.result.present_percentage,
+        //   // absent_percentage: res.data.result.absent_percentage,
+        //   section_name: res.data.result[0].section_name,
+        //   total_strength: res.data.result[0].total_count,
+        //   total_present: res.data.result[0].present_count,
+        //   total_absent: res.data.result[0].absent_count,
+        //   present_percentage: res.data.result[0].present_percentage,
+        //   absent_percentage: res.data.result[0].absent_percentage,
+        // });
         setGradeWiseStat(tempData);
 
         setLoading(false);
@@ -196,16 +207,21 @@ const AttendanceReport = (props) => {
       >
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <div className={clsx(classes.breadcrumb)}>
-              <IconButton size='small' onClick={() => history.goBack()}>
-                <ArrowBackIcon />
-              </IconButton>
-              <Typography variant='h6' className={clsx(classes.textBold)}>
-                Attendance Report
-              </Typography>
-            </div>
+            <CommonBreadcrumbs
+              componentName='Attendance Report'
+              // childComponentName='Attendance Report'
+            />
+          </Grid>
+          <Grid item xs={12} style={{display : 'flex',justifyContent:'space-between'}}>
+            <IconButton size='small' onClick={() => history.goBack()}>
+              <ArrowBackIcon />
+            </IconButton>
+            <DashboardContextProvider>
+              <DownloadReport title='attendance' branchData={acad_session_id} />
+            </DashboardContextProvider>
           </Grid>
           <Grid item xs={12}>
+            <Paper elevation={1}>
             <Accordion
               elevation={0}
               className={clsx(classes.accordion)}
@@ -225,6 +241,8 @@ const AttendanceReport = (props) => {
                           <TableCell>Total</TableCell>
                           <TableCell>Present</TableCell>
                           <TableCell>Absent</TableCell>
+                          {/* <TableCell>Half Day</TableCell> */}
+                          {/* <TableCell>Late</TableCell> */}
                           <TableCell>Absent for more than 5 continuous days.</TableCell>
                           <TableCell></TableCell>
                         </TableRow>
@@ -237,13 +255,13 @@ const AttendanceReport = (props) => {
                                 {eachSection.section_name}
                               </TableCell>
                               <TableCell align='center'>
-                                {eachSection.total_strength}
+                                {eachSection.total_count}
                               </TableCell>
                               <TableCell align='center'>
-                                {eachSection.total_present}
+                                {eachSection.present_count}
                               </TableCell>
                               <TableCell align='center'>
-                                {eachSection.total_absent}
+                                {eachSection.total_count - eachSection.present_count}
                               </TableCell>
                               <TableCell
                                 align='center'
@@ -258,7 +276,8 @@ const AttendanceReport = (props) => {
                                     disabled={index === 0}
                                     onClick={() =>
                                       history.push({
-                                        pathname: `/student-attendance-report/subject-wise/${branchId}/${gradeList[0]?.grade_id}/${eachSection?.section_mapping_id}`,
+                                        // pathname: `/student-attendance-report/subject-wise/${branchId}/${gradeList[0]?.grade_id}/${eachSection?.section_mapping_id}`,
+                                        pathname: `/student-attendance-report/student-wise/${branchId}/${gradeList[0]?.grade_id}/${eachSection?.section_id}/${acad_session_id}`,
                                         state: {
                                           grade_name: `${gradeList[0]?.grade_name}`,
                                           section_name: `${eachSection.section_name}`,
@@ -279,6 +298,7 @@ const AttendanceReport = (props) => {
                 </div>
               </AccordionDetails>
             </Accordion>
+            </Paper>
             {gradeList &&
               gradeList
                 ?.filter((each, index) => index !== 0)
@@ -323,18 +343,25 @@ const AccordionLable = ({ data, acad_session_id, branchId }) => {
         params: { ...params },
         headers: {
           'X-DTS-Host': window.location.host,
+          // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
         },
       })
       .then((res) => {
-        let tempData = res.data.result.result;
-        tempData.unshift({
-          section_name: res.data.result.section_name,
-          total_strength: res.data.result.total_strength,
-          total_present: res.data.result.total_present,
-          total_absent: res.data.result.total_absent,
-          present_percentage: res.data.result.present_percentage,
-          absent_percentage: res.data.result.absent_percentage,
-        });
+        let tempData = res.data.result;
+        // tempData.unshift({
+        //   // section_name: res.data.result.section_name,
+        //   // total_strength: res.data.result.total_strength,
+        //   // total_present: res.data.result.total_present,
+        //   // total_absent: res.data.result.total_absent,
+        //   // present_percentage: res.data.result.present_percentage,
+        //   // absent_percentage: res.data.result.absent_percentage,
+        //   section_name: res.data.result[0].section_name,
+        //   total_strength: res.data.result[0].total_count,
+        //   total_present: res.data.result[0].present_count,
+        //   total_absent: res.data.result[0].absent_count,
+        //   present_percentage: res.data.result[0].present_percentage,
+        //   absent_percentage: res.data.result[0].absent_percentage,
+        // });
         setGradeWiseStat(tempData);
       })
       .catch((err) => {
@@ -356,6 +383,7 @@ const AccordionLable = ({ data, acad_session_id, branchId }) => {
           <AccordionTable
             data={gradeWiseState}
             details={{ grade: data, branchId: branchId }}
+            acad_session_id = {acad_session_id}
           />
         </div>
       </AccordionDetails>
@@ -363,7 +391,7 @@ const AccordionLable = ({ data, acad_session_id, branchId }) => {
   );
 };
 
-const AccordionTable = ({ data, details }) => {
+const AccordionTable = ({ data, details, acad_session_id }) => {
   const classes = useStyles();
   const history = useHistory();
   return (
@@ -384,9 +412,9 @@ const AccordionTable = ({ data, details }) => {
             return (
               <TableRow key={index}>
                 <TableCell align='center'>{eachSection.section_name}</TableCell>
-                <TableCell align='center'>{eachSection.total_strength}</TableCell>
-                <TableCell align='center'>{eachSection.total_present}</TableCell>
-                <TableCell align='center'>{eachSection.total_absent}</TableCell>
+                <TableCell align='center'>{eachSection.total_count}</TableCell>
+                <TableCell align='center'>{eachSection.present_count}</TableCell>
+                <TableCell align='center'>{eachSection.total_count - eachSection.present_count}</TableCell>
                 <TableCell align='center' className={clsx(classes.colorRed)}>
                   {/* {eachSection.moreAbsent} */}0
                 </TableCell>
@@ -397,7 +425,8 @@ const AccordionTable = ({ data, details }) => {
                       // disabled={index === 0}
                       onClick={() =>
                         history.push({
-                          pathname: `/student-attendance-report/subject-wise/${details?.branchId}/${details?.grade?.grade_id}/${eachSection?.section_mapping_id}`,
+                          // pathname: `/student-attendance-report/subject-wise/${details?.branchId}/${details?.grade?.grade_id}/${eachSection?.section_mapping_id}`,
+                          pathname: `/student-attendance-report/student-wise/${details?.branchId}/${details?.grade?.grade_id}/${eachSection?.section_id}/${acad_session_id}`,
                           state: {
                             grade_name: `${details?.grade?.grade_name}`,
                             section_name: `${eachSection.section_name}`,

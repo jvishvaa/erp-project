@@ -18,11 +18,19 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  TableContainer,
+  Paper,
+  Table,
+  TableHead,
+  TableBody,
+  TableCell,
+  TableRow,
 } from '@material-ui/core';
 import {
   Search as SearchIcon,
   ExpandMore as ExpandMoreIcon,
   ArrowBack as ArrowBackIcon,
+  ChevronRight as ArrowCircleRightIcon,
 } from '@material-ui/icons';
 import { withRouter } from 'react-router-dom';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
@@ -31,7 +39,7 @@ import { Pagination } from '@material-ui/lab';
 import MediaQuery from 'react-responsive';
 import { makeStyles } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-
+import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
 // import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 // import Loader from '../../components/loader/loader';
 // import axiosInstance from '../../config/axios';
@@ -48,6 +56,7 @@ import Loader from 'components/loader/loader';
 import { connect, useSelector } from 'react-redux';
 import communicationStyles from 'containers/Finance/src/components/Finance/BranchAccountant/Communication/communication.styles';
 import '../academic/style.scss';
+// import { TableCell, TableRow } from 'semantic-ui-react';
 
 const useStyles = makeStyles((theme) => ({
   gradeBoxContainer: {
@@ -118,6 +127,25 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
   },
+  TableTextLeft: {
+    textAlign: 'left !important',
+  },
+  TableTextRight: {
+    textAlign: 'right !important',
+  },
+  TableTextRightContainer: {
+    textAlign: 'right !important',
+    paddingRight: '48px',
+  },
+  TableHeaderColor: {
+    backgroundColor: '#FFD9D9',
+    color: 'black',
+  },
+  tableStateMent: {
+    color:'#F39494',
+    fontWeight:'bolder'
+
+  }
 }));
 
 const CurriculumCompletion = (props) => {
@@ -125,10 +153,11 @@ const CurriculumCompletion = (props) => {
   const [volume, setVolume] = React.useState('');
   const history = useHistory();
   const [tableData, setTableData] = React.useState([]);
-  const [loading, setLoading] = React.useState(false)
+  const [loading, setLoading] = React.useState(false);
   const [moduleId, setModuleId] = React.useState('');
   const [acadeId, setAcadeId] = React.useState('');
   const [gradeApiData, setGradeApiData] = React.useState([]);
+  const [branchName,setBranchName] = React.useState([]);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -146,81 +175,76 @@ const CurriculumCompletion = (props) => {
 
   useEffect(() => {
     // console.log(history?.location?.state, 'Mobile99999999')
-    setModuleId(history?.location?.state?.module_id)
-    setAcadeId(history?.location?.state?.acad_session_id)
-
-  }, [history])
+    setModuleId(history?.location?.state?.module_id);
+    setAcadeId(history?.location?.state?.acad_session_id);
+    setBranchName(history?.location?.state?.branchName)
+  }, [history]);
 
   const handleVolumeChange = (event) => {
     setVolume(event.target.value);
   };
 
   useEffect(() => {
-    // console.log(branchId, moduleId,'BB=?')
-    gradeData(branchId)
-  }, [branchId, moduleId])
+    gradeData(branchId);
+  }, [branchId, moduleId]);
 
-  const { acad_session_id, module_id } = history.location.state;
+  const { acad_session_id, module_id,acad_sess_id } = history.location.state;
 
   const handleCurrSubject = (gradeId, gradeName) => {
-    // console.log(gradeId,gradeName,'OPPPP')
-    history.push(
-      {
-        pathname: `/curriculum-completion-subject/${branchId}/${gradeId}`,
-        state: {
-          grade: gradeId,
-          gradeName: gradeName,
-          acad_session_id: acad_session_id,
-          module_id: moduleId
-
-        }
-      }
-    )
-  }
+    history.push({
+      pathname: `/curriculum-completion-subject/${branchId}/${gradeId}`,
+      state: {
+        grade: gradeId,
+        gradeName: gradeName,
+        acad_session_id: acad_session_id,
+        acad_sess_id:acad_sess_id,
+        module_id: moduleId,
+        branchName:branchName
+      },
+    });
+  };
 
   const gradeData = (branchId) => {
-    console.log(moduleId, 'mb==? ')
     if (moduleId !== '' || null || undefined) {
-      axiosInstance.get(`${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&module_id=${moduleId}`)
+      axiosInstance
+        .get(
+          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&module_id=${moduleId}`
+        )
         .then((res) => {
-          console.log(res, 'OnePlus====>')
-          setGradeApiData(res?.data?.data)
+          setGradeApiData(res?.data?.data);
         })
-        .catch(() => { });
+        .catch(() => {});
     }
-  }
+  };
 
   useEffect(() => {
     gradeListTable({
       acad_session_id: acad_session_id,
-    })
-
-  }, [acad_session_id])
-
+    });
+  }, [acad_session_id]);
 
   const gradeListTable = (params = {}) => {
-    setLoading(true)
+    setLoading(true);
     axiosInstance
       .get(`${endpoints.ownerDashboard.curriculumGradeReport}`, {
         params: { ...params },
         headers: {
           'X-DTS-Host': window.location.host,
+          // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
           // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
         },
       })
       .then((res) => {
-        console.log(res?.data?.result, 'HARSHA');
-        setTableData(res?.data?.result)
-        setLoading(false)
+        setTableData(res?.data?.result);
+        setLoading(false);
 
         // setStudentData(res.data.result);
       })
       .catch((err) => {
         console.log(err);
-        setLoading(false)
+        setLoading(false);
       });
   };
-
 
   const handleScroll = (each, index) => {
     // communicationStyles.log(each, 'Ru')
@@ -228,29 +252,20 @@ const CurriculumCompletion = (props) => {
       behavior: 'smooth',
       block: 'start',
     });
-  }
-
-
-
+  };
 
   return (
     <Layout>
       <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <div className={clsx(classes.breadcrumb)}>
-              <IconButton size='small'
-                onClick={() => history.goBack()}
-              >
-                <ArrowBackIcon />
-              </IconButton>
-              <Typography variant='h6' className={clsx(classes.textBold)}
-              >
-                Curriculum Completion
-              </Typography>
-            </div>
+          < CommonBreadcrumbs 
+          componentName='Dashboard'
+          childComponentName='Academic Performance' 
+          childComponentNameNext = 'Curriculum Completion'
+          />
           </Grid>
-          <Grid item container xs={9} spacing={3}>
+          <Grid item container xs={12} spacing={3}>
             <Grid item xs={3}>
               {/* <FormControl fullWidth variant='outlined' margin='dense'>
                 <InputLabel id='volume'>Volume</InputLabel>
@@ -267,45 +282,63 @@ const CurriculumCompletion = (props) => {
               </FormControl> */}
             </Grid>
             <Grid item xs={12}>
-              <Typography variant='body1'>Overview of All Grades</Typography>
+              <Typography variant='body1' className={clsx(classes.tableStateMent)}>Curriculum Completion Details : <b style={{color:'black'}}> {branchName} </b></Typography>
             </Grid>
             <Grid item xs={12}>
-              <div className={clsx(classes.gradeOverviewContainer)}>
-                {tableData &&
-                  tableData.map((each, index) => {
-                    return (
-                      <>
-                        <div ref={refs[each?.period__subject_mapping__section_mapping__grade]} className={classes.eachGradeOverviewContainer} onClick={() => handleCurrSubject(each?.period__subject_mapping__section_mapping__grade, each?.period__subject_mapping__section_mapping__grade__grade_name)}>
-                          <Typography variant='body1' className={classes.eachGradeName}>
-                            {' '}
-                            {each?.period__subject_mapping__section_mapping__grade__grade_name}
-                          </Typography>
-                          <Typography variant='body1'> {each?.percentage_completed} %</Typography>
-                        </div>
-                      </>
-                    );
-                  })}
-              </div>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead className={clsx(classes.TableHeaderColor)}>
+                    <TableRow>
+                      <TableCell className={clsx(classes.TableTextLeft)}>
+                        {' '}
+                        Overview of All Subjects
+                      </TableCell>
+                      {/* <TableCell className={clsx(classes.TableTextRight)}>
+                        Avg. Completion
+                      </TableCell> */}
+                      <TableCell></TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {tableData &&
+                      tableData.map((each, index) => {
+                        return (
+                          <>
+                            <TableRow key={index}>
+                              <TableCell className={clsx(classes.TableTextLeft)}>
+                                {' '}
+                                {
+                                  each?.period__subject_mapping__section_mapping__grade__grade_name
+                                }{' '}
+                              </TableCell>
+                              {/* <TableCell
+                                className={clsx(classes.TableTextRightContainer)}
+                              >
+                                {each?.percentage_completed} %
+                              </TableCell> */}
+                              <TableCell className={clsx(classes.TableTextRight)}>
+                                <IconButton
+                                  size='large'
+                                  onClick={() =>
+                                    handleCurrSubject(
+                                      each?.period__subject_mapping__section_mapping__grade,
+                                      each?.period__subject_mapping__section_mapping__grade__grade_name
+                                    )
+                                  }
+                                  
+                                >
+                                  <ArrowCircleRightIcon />
+                                </IconButton>
+                              </TableCell>
+                            </TableRow>
+                          </>
+                        );
+                      })}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Grid>
           </Grid>
-          <div className='button-grade-scroll'>
-            <Typography style={{ fontWeight: '600', padding: '2%' }}>View Gradewise {'>'}</Typography>
-            <div className='button-container'>
-              {tableData &&
-                tableData.map((each, index) => {
-                  return (
-                    <>
-                      <div className='button-area-div' >
-                        <Button variant='contained' onClick={() => handleScroll(each, index)} style={{ minWidth: '100px' }} className='grade-button-hover' >
-                          {each?.period__subject_mapping__section_mapping__grade__grade_name}
-                        </Button>
-                      </div>
-                    </>
-                  );
-                })}
-            </div>
-          </div>
-
         </Grid>
 
         {loading && <Loader />}

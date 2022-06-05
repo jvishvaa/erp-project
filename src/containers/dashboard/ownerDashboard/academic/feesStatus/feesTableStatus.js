@@ -23,10 +23,10 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  Input,
-  OutlinedInput,
   TableBody,
+  OutlinedInput,
   Paper,
+  makeStyles,
 } from '@material-ui/core';
 import {
   Search as SearchIcon,
@@ -42,7 +42,7 @@ import { withRouter, useHistory } from 'react-router-dom';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { Pagination } from '@material-ui/lab';
 import MediaQuery from 'react-responsive';
-import { makeStyles } from '@material-ui/core';
+// import { makeStyles } from '@material-ui/core';
 import Layout from '../../../../Layout';
 import clsx from 'clsx';
 import moment from 'moment';
@@ -151,22 +151,10 @@ const FeesTableStatus = (props) => {
   //     params: { branchId },
   //   },
   // } = props;
-
-  // console.log(selectedBranchId.toString(),'Branch---->')
-
   const { session_year: sessionYearId = '' } =
     JSON.parse(sessionStorage.getItem('acad_session')) || {};
 
-  // console.log(sessionYearId,'YEARPPPPPPP')
-
-  let dateToday = moment().format('YYYY-MM-DD');
-
-  // const handleDateClass = (e) => {
-  //   setDate(e.target.value);
-  // };
-
   const handleChange = () => {
-    // console.log('hello');
     setExpanded(expanded ? false : true);
   };
 
@@ -218,17 +206,18 @@ const FeesTableStatus = (props) => {
         <Grid container spacing={3} justifyContent='space-between'>
           <Grid item xs={12}>
             <div className={clsx(classes.breadcrumb)}>
-              <IconButton size='small'>
-                <ArrowBackIcon
-                  onClick={() =>
-                    history.push({
-                      pathname: '/dashboard',
-                      state: {
-                        stateView: '2',
-                      },
-                    })
-                  }
-                />
+              <IconButton
+                size='small'
+                onClick={() =>
+                  history.push({
+                    pathname: '/dashboard',
+                    state: {
+                      stateView: '2',
+                    },
+                  })
+                }
+              >
+                <ArrowBackIcon />
               </IconButton>
               <Typography variant='h6' className={clsx(classes.textBold)}>
                 Dashboard
@@ -289,16 +278,16 @@ const FeesTableStatus = (props) => {
                         </TableCell>
                         <TableCell className={clsx(classes.colorBlue)}>
                           {' '}
-                          <b> ₹{Math.round(each?.totalfees).toLocaleString()}</b>
+                          <b> ₹{Math.round(each?.totalfees)}</b>
                         </TableCell>
                         <TableCell className={clsx(classes.colorGreen)}>
-                          <b> ₹{Math.round(each?.paid).toLocaleString()}</b>
+                          <b> ₹{Math.round(each?.paid)}</b>
                         </TableCell>
                         <TableCell className={clsx(classes.colorRed)}>
-                          <b> ₹ {Math.round(each?.outstanding).toLocaleString()}</b>
+                          <b> ₹ {Math.round(each?.outstanding)}</b>
                         </TableCell>
                         <TableCell className={clsx(classes.colorYellow)}>
-                          <b>{Math.round(each?.no_of_admission).toLocaleString()}</b>
+                          <b>{Math.round(each?.no_of_admission)}</b>
                         </TableCell>
                         <TableCell>
                           <IconButton

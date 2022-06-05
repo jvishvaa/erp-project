@@ -414,6 +414,7 @@ import PrincipalLeadTeacher from 'containers/sure-learning/PrincipalDashboard/pr
 import ResourcesFolderList from './containers/sure-learning/Resources_Folders/resources_folder';
 import AllChaptersContent from './containers/sure-learning/Initiate_Class/Chapter_Details/allChapters';
 import AcademicReport from './containers/dashboard/ownerDashboard/academic/academicReport';
+import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/curriculumBranchWise';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -1793,6 +1794,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route path='/acad-calendar'>
                             {({ match }) => <AcadCalendar match={match} />}
                           </Route>
+                          <Route path='/curriculum-completion-branchWise'>
+                            {({ match }) => <CurriculumBranchWise match={match} />}
+                          </Route>
                           <Route path='/curriculum-completion/:branchId'>
                             {({ match }) => <CurriculumCompletion match={match} />}
                           </Route>
@@ -1883,12 +1887,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                               <SubjectWiseAttendanceDetails match={match} />
                             )}
                           </Route>
-                          <Route path='/student-attendance-report/student-wise/:branchId/:gradeId/:sectionId/:subjectId'>
+                          <Route path='/student-attendance-report/student-wise/:branchId/:gradeId/:sectionId/:acad_session_id'>
                             {({ match }) => (
                               <StudentWiseAttendanceDetails match={match} />
                             )}
                           </Route>
-                          <Route path='/student-attendance-report/student-wise-more-absent/:branchId/:gradeId/:sectionId/:subjectId'>
+                          <Route path='/student-attendance-report/student-wise-more-absent/:branchId/:gradeId/:sectionId/:acad_session_id'>
                             {({ match }) => (
                               <StudentWiseAttendanceDetailsMoreAbsent match={match} />
                             )}

@@ -11,6 +11,7 @@ import { useHistory } from 'react-router';
 import endpoints from 'config/endpoints';
 import axios from 'axios';
 import { isDeveloper } from 'components/utils/checkDeveloper';
+import studentDashboard from './StudentDashboard/studentDashboard';
 const TeacherDashboard = React.lazy(() => import('./TeacherDashboard/teacherDashboard'));
 const StudentDashboard = React.lazy(() => import('./StudentDashboard/studentDashboard'));
 const AdminDashboard = React.lazy(() => import('./AdminDashboard/adminDashboard'));
@@ -31,16 +32,11 @@ const Dashboard = () => {
   const history = useHistory();
   const [oldDash, setOldDash] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || [];
+  const [buttonCounter, setButtonCounter] = useState(1);
   const { erp, username, erp_config } =
     JSON.parse(localStorage.getItem('userDetails')) || [];
-  const [buttonCounter, setButtonCounter] = useState(1)
-  const checkOldorNew = () => {
-    if (!oldDash) {
-      setOldDash(true)
-    } else {
-      setOldDash(false)
-    }
-  }
+    const [checkOrigin, setCheckOrigin] = useState(false);
+
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -51,7 +47,7 @@ const Dashboard = () => {
         ) {
           item.child_module.forEach((item) => {
             if (item.child_name === 'Induction Training') {
-              if (userLevel === 11 || userLevel === 23 || userLevel === 10 || userLevel === 8) {
+              if (userLevel === 11 || userLevel === 23 || userLevel === 10|| userLevel === 8) {
                 axios
                   .post(endpoints.sureLearning.login, {
                     username: erp ? erp : username,
@@ -103,10 +99,19 @@ const Dashboard = () => {
     }
   }, [history]);
 
-
   useEffect(()=> {
+    console.log("history location ", history.location)
     if(history?.location?.state?.stateView){
       setButtonCounter(2);
+    }
+    const origin = window.location.origin;
+    if (
+      origin.indexOf('orchids.') > -1 ||
+      origin.indexOf('dev.') > -1 ||
+      origin.indexOf('qa.') > -1 ||
+      origin.indexOf('localhost') > -1
+    ) {
+      setCheckOrigin(true);
     }
   },[])
 
@@ -114,26 +119,27 @@ const Dashboard = () => {
     switch (userLevel) {
       case 1:
         const GetDashboard = getDashboardChoice(AdminDashboard, OwnerDashboard);
-        return <GetDashboard />;
+        return <OwnerDashboard />;
       case 4:
         const GetOwnerDashboard = getDashboardChoice(AdminDashboard, OwnerDashboard);
-        return <GetOwnerDashboard />;
+        return <OwnerDashboard />;
       case 8:
         const GetPrincipalDashboard = getDashboardChoice(
           PrincipalDashboard,
           OwnerDashboard
         );
-        return <GetPrincipalDashboard />;
+        return <OwnerDashboard />;
       case 11:
         const GetTeacherDashboard = getDashboardChoice(TeacherDashboard, TeacherDash2);
-        return <GetTeacherDashboard />;
+        return <TeacherDash2 />;
       case 13:
-        return <StudentDashboard />; // to be replaced with student dashboard
+        const StuDashboard = checkOrigin ? StudentDashboard : DefaultDashboard;
+        return <StuDashboard/>; // to be replaced with student dashboard
       case 5:
         return <DefaultDashboard />;
       case 10:
         const GetCoordiDashboard = getDashboardChoice(PrincipalDashboard, OwnerDashboard);
-        return <GetCoordiDashboard />;
+        return <OwnerDashboard />;
       default:
         return <DefaultDashboard />;
     }
@@ -141,7 +147,11 @@ const Dashboard = () => {
 
   return (
     <Box px={3} mt={1}>
-      <WelcomeComponent erp_config={erp_config} isMsAPIKey={isMsAPIKey} changeView={changeView} buttonCounter={buttonCounter} />
+      <WelcomeComponent
+        erp_config={erp_config}
+        isMsAPIKey={isMsAPIKey}
+        changeView={changeView}
+      />
       <Suspense fallback={<Loading />}>
         {isMsAPIKey ? renderRoleDashboard() : <DefaultDashboard />}
         {/* {true ? renderRoleDashboard() : <DefaultDashboard />} */}
