@@ -70,7 +70,7 @@ const AssessmentAttemptionUI = (props) => {
   return (
     <>
       {fetching ? <Loading message='Loading...' /> : null}
-      <Container style={{minWidth: '1500px'}}>
+      <Container style={{minWidth: '1370px'}}>
         <CommonBreadcrumbs
           componentName='Assessment'
           {...(questionPaperGradeName

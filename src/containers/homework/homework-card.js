@@ -75,7 +75,7 @@ const HomeworkCard = ({
                       <>
                         <div
                           className='cardRow'
-                          onClick={() => onClick(student.student_homework_id)}
+                          onClick={() => checkMode(student)}
                           style={{ width: '75%', display: 'flex', justifyContent: 'space-between', cursor: student?.hw_submission_mode === 'Online Submission' ? 'pointer' : 'default' }}
                         >
                           <div className='studentName'>{`${student.first_name} ${student.last_name}`}</div>
@@ -240,8 +240,16 @@ const HomeworkCard = ({
                       <div className='cardRow'>
                         <div
                           className='studentName'
-                          onClick={() => onClick(student.student_homework_id)}
+                          onClick={() => checkMode(student)}
+                          style={{ width: '75%', display: 'flex', justifyContent: 'space-between', cursor: student?.hw_submission_mode === 'Online Submission' ? 'pointer' : 'default' }}
                         >{`${student.first_name} ${student.last_name}`}</div>
+                            {student?.hw_submission_mode === 'Online Submission' ?
+                            <div className='badgeContent' >
+                              <Badge color="success" variant="dot" >
+                                <AssignmentIcon style={{color: '#014b7e'}} />
+                              </Badge>
+                            </div>
+                            : ''}
                       </div>
                     ))
                   ) : (

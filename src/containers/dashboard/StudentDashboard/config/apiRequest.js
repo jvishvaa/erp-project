@@ -14,7 +14,7 @@ const apiRequest = async (method, path, payload, responseType, isReportsURL, tim
         };
         if (isReportsURL) {
             headers['X-DTS-HOST'] = window.location.host;
-            // headers['X-DTS-HOST'] = "dev.olvorchidnaigaon.letseduvate.com";
+            // headers['X-DTS-HOST'] = "qa.olvorchidnaigaon.letseduvate.com";
         }
         axios({
             method: method,

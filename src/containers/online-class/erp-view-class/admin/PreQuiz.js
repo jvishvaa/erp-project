@@ -75,7 +75,7 @@ const useStyles = makeStyles((theme) => ({
 
 const PreQuiz = (props) => {
   const classes = useStyles()
-  const {location:{state:{data}={}}={}}=props||{}
+  const { location:{ state: { data, assessment_id , is_erp_qp } = {},} = {} } = props || {};
   const history = useHistory()
   const { match: { params } } = props;
 
@@ -111,7 +111,7 @@ useEffect(() => {
       const getPreQuizStatus =  () => {
         setLoading(true)
         axiosInstance
-      .get(`${endpoints.questionPaper.QuestionsInQP}?lobby_identifier=${params.id}&question_paper=${params.qid}`, {
+      .get(`${endpoints.questionPaper.QuestionsInQP}?lobby_identifier=${params.id}&question_paper=${params.qid}&assessment_id=${assessment_id}&is_erp_qp=${is_erp_qp}`, {
         headers: {
             Authorization: `Bearer ${token}`,
         },
@@ -153,17 +153,18 @@ const handleSubmit = () =>{
     // lobby_identifier: onlineClassId,
     // question_paper: questionPaperId
   }= lobbyInfoObj||{}
-  const questionPaperId = preQuizInfo?.assessment_details?.question_paper_id
-  const {online_class_info: onlineClassInfo} = preQuizInfo||{}
+
+let {is_erp_qp, question_paper_id, central_qp_id} = preQuizInfo?.assessment_details || {};
+  let questionPaperId = is_erp_qp  ? question_paper_id : central_qp_id 
   const {online_class: onlineClassObj} = onlineClassInfo||{}
   const {id: onlineClassId} = onlineClassObj||{}
   const searchParams = new URLSearchParams(window.location.search);
   const redirectionView = +searchParams.get('wb_view');
   let url
 if(isWebview){
-   url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}/?wb_view=${redirectionView}`
+   url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}/${is_erp_qp}/${assessment_id}?wb_view=${redirectionView}`
 }else{
-   url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`
+   url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}/${is_erp_qp}/${assessment_id}`
 }
 if(redirectionView === 2){
   history.push(url)
@@ -185,6 +186,7 @@ useEffect(()=>{
 },[isUuid]);
 
 const handleCreateLobby = ()=>{
+  debugger
   const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
   const hostSplitArray = host.split('.');
   const subDomainLevels = hostSplitArray.length - 2;
@@ -208,7 +210,8 @@ const handleCreateLobby = ()=>{
   }else{
     role=1
   }
-  const questionPaperId = preQuizInfo?.assessment_details?.question_paper_id
+  let {is_erp_qp, question_paper_id, central_qp_id} = preQuizInfo?.assessment_details || {};
+  let questionPaperId = is_erp_qp  ? question_paper_id : central_qp_id
   const {online_class_info: onlineClassInfo} = preQuizInfo||{}
   const {online_class: onlineClassObj} = onlineClassInfo||{}
   const {id: onlineClassId} = onlineClassObj||{}
@@ -255,9 +258,9 @@ const handleCreateLobby = ()=>{
         if(lobbyUuid) {
           let url
           if(isWebview){
-            url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}/?wb_view=${redirectionView}`;
+            url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}/${is_erp_qp}/${assessment_id}?wb_view=${redirectionView}`;
           }else{
-            url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}`;
+            url = `/erp-online-class/${onlineClassId}/quiz/${questionPaperId}/${lobbyUuid}/${role}/${is_erp_qp}/${assessment_id}`;
           }
           history.push(url);
           setCreateLobby(false);

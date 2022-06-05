@@ -62,7 +62,16 @@ const useStyles = makeStyles((theme) => ({
     //   backgroundColor: 'black',
     // },
   },
-
+  branchName: {
+    fontSize: '20px',
+    lineHeight: '24px',
+    fontWeight: 'bold',
+    color: '#3A90E6',
+  },
+  text: {
+    fontSize: '16px',
+    lineHeight: '20px',
+  },
   cardContantFlex: {
     display: 'flex',
     alignItems: 'center',
@@ -83,6 +92,13 @@ const useStyles = makeStyles((theme) => ({
   link: {
     cursor: 'pointer',
     color: 'blue',
+    padding: '8px 16px',
+  },
+  branchCardContant: {
+    padding: '8px 16px 10px !important',
+  },
+  branchInnerCardContant: {
+    padding: '8px !important',
   },
   textAlignEnd: {
     textAlign: 'end',
@@ -218,17 +234,11 @@ const BranchWiseStuffAttendance = (props) => {
           <Grid container spacing={3} justifyContent='space-between'>
             <Grid item xs={6}>
               <div className={clsx(classes.breadcrumb)}>
-                <IconButton
-                  size='small'
-                  onClick={() =>
-                    history.push({
-                      pathname: '/dashboard',
-                      state: {
-                        stateView: '2',
-                      },
-                    })
-                  }
-                >
+                <IconButton size='small' onClick={() => history.push({
+                  pathname: '/dashboard',
+                  state : {
+                    stateView : '2'
+                  }})}>
                   <ArrowBackIcon />
                 </IconButton>
                 <Typography variant='h6' className={clsx(classes.textBold)}>
@@ -245,6 +255,7 @@ const BranchWiseStuffAttendance = (props) => {
                 label='Date'
                 type='date'
                 variant='outlined'
+                fullWidth
                 margin='dense'
                 value={date}
                 // defaultValue="2017-05-24"
@@ -255,17 +266,19 @@ const BranchWiseStuffAttendance = (props) => {
                 onChange={(e) => handleDateClass(e.target.value)}
               />
             </Grid>
+          </Grid>
+          <Grid container spacing={2} justifyContent='center'>
             {branchAttendance.length > 0 ? (
               <>
                 {branchAttendance?.map((each, index) => {
                   return (
-                    <Grid item xs={12} key={index}>
+                    <Grid item xs={9} key={index}>
                       <Card elevation={1}>
                         <CardHeader
                           title={
                             <Typography
                               variant='h5'
-                              // className={clsx(classes.clickable)}
+                              className={clsx(classes.branchName)}
                               // onClick={() => history.push('/finance-owner/academic-performance')}
                             >
                               {each.branch_name}
@@ -275,15 +288,22 @@ const BranchWiseStuffAttendance = (props) => {
                           onClick={() => handleClick(each)}
                         />
                         <Divider />
-                        <CardContent>
+                        <CardContent className={clsx(classes.branchCardContant)}>
                           <Grid container spacing={2} justifyContent='center'>
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                               <Card
                                 elevation={0}
                                 className={clsx(classes.attendanceCard)}
                               >
-                                <CardContent>
-                                  <Typography variant='body1'>Total Staff</Typography>
+                                <CardContent
+                                  className={clsx(classes.branchInnerCardContant)}
+                                >
+                                  <Typography
+                                    variant='body1'
+                                    className={clsx(classes.text)}
+                                  >
+                                    Total Staff
+                                  </Typography>
                                   <Typography
                                     variant='h6'
                                     className={clsx(classes.textBold)}
@@ -298,7 +318,12 @@ const BranchWiseStuffAttendance = (props) => {
                                 elevation={1}
                                 className={clsx(classes.attendanceCard)}
                               >
-                                <CardContent className={clsx(classes.cardContantFlex)}>
+                                <CardContent
+                                  className={clsx(
+                                    classes.cardContantFlex,
+                                    classes.branchInnerCardContant
+                                  )}
+                                >
                                   <span
                                     className={clsx(
                                       classes.cardLetter,
@@ -310,8 +335,16 @@ const BranchWiseStuffAttendance = (props) => {
                                     P
                                   </span>
                                   <div>
-                                    <Typography variant='h6'>{`${each.attendance_details.total_present}/${each.total_people}`}</Typography>
-                                    <Typography variant='body1'>Total Present</Typography>
+                                    <Typography
+                                      variant='h6'
+                                      className={clsx(classes.text)}
+                                    >{`${each.attendance_details.total_present}/${each.total_people}`}</Typography>
+                                    <Typography
+                                      variant='body1'
+                                      className={clsx(classes.text)}
+                                    >
+                                      Total Present
+                                    </Typography>
                                   </div>
                                 </CardContent>
                               </Card>
@@ -321,7 +354,12 @@ const BranchWiseStuffAttendance = (props) => {
                                 elevation={1}
                                 className={clsx(classes.attendanceCard)}
                               >
-                                <CardContent className={clsx(classes.cardContantFlex)}>
+                                <CardContent
+                                  className={clsx(
+                                    classes.cardContantFlex,
+                                    classes.branchInnerCardContant
+                                  )}
+                                >
                                   <span
                                     className={clsx(
                                       classes.cardLetter,
@@ -333,18 +371,31 @@ const BranchWiseStuffAttendance = (props) => {
                                     A
                                   </span>
                                   <div>
-                                    <Typography variant='h6'>{`${each.attendance_details.total_absent}/${each.total_people}`}</Typography>
-                                    <Typography variant='body1'>Total Absent</Typography>
+                                    <Typography
+                                      variant='h6'
+                                      className={clsx(classes.text)}
+                                    >{`${each.attendance_details.total_absent}/${each.total_people}`}</Typography>
+                                    <Typography
+                                      variant='body1'
+                                      className={clsx(classes.text)}
+                                    >
+                                      Total Absent
+                                    </Typography>
                                   </div>
                                 </CardContent>
                               </Card>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                               <Card
                                 elevation={1}
                                 className={clsx(classes.attendanceCard)}
                               >
-                                <CardContent className={clsx(classes.cardContantFlex)}>
+                                <CardContent
+                                  className={clsx(
+                                    classes.cardContantFlex,
+                                    classes.branchInnerCardContant
+                                  )}
+                                >
                                   <span
                                     className={clsx(
                                       classes.cardLetter,
@@ -356,22 +407,29 @@ const BranchWiseStuffAttendance = (props) => {
                                     %
                                   </span>
                                   <div>
-                                    <Typography variant='h6'>
+                                    <Typography
+                                      variant='h6'
+                                      className={clsx(classes.text)}
+                                    >
                                       {each.total_people < 1
                                         ? 0
                                         : Math.round(
                                             (each.attendance_details.total_present /
                                               each.total_people) *
                                               100
-                                          )}
+                                          )}{' '}
+                                      %
                                       {/* {Number.isNaN((each.attendance_details.total_present /
                                         each.total_people) *
                                         100) ? 0: (each.attendance_details.total_present /
                                           each.total_people) *
                                           100} */}
                                     </Typography>
-                                    <Typography variant='body1'>
-                                      % {each.branch_name} Staff Present
+                                    <Typography
+                                      variant='body1'
+                                      className={clsx(classes.text)}
+                                    >
+                                      {each.branch_name} Staff Present
                                     </Typography>
                                   </div>
                                 </CardContent>

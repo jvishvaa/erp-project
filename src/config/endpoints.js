@@ -581,9 +581,12 @@ export default {
   },
   ownerDashboard: {
     // gradeWiseStudentAttendanceState : `${`https://tiny-newt-42.loca.lt`}/api/acad_performance/v1/attendance/grade-wise-stats/`,
-    gradeWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/grade-wise-stats/`,
+    // gradeWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/grade-wise-stats/`,
+    gradeWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v2/attendance-section-wise-stats/`,
     subjectWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/subject-wise-stats/`,
-    studentWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-stats/`,
+    // studentWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-stats/`,
+    studentWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v2/attendance-student-wise-stats/`,
+
     studentWiseMoreAbsentStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-absence-stats/`,
     subjectWiseTestStudentReportStat: `${msReportsUrl}/api/acad_performance/v1/test/subject-wise-stats/`,
     studentWiseTestStudentReportStat: `${msReportsUrl}/api/acad_performance/v1/test/student-wise-stats/`,
@@ -596,7 +599,8 @@ export default {
 
     //curriculumReport
     curriculumGradeReport: `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-grade/`,
-    curriculumGradeSubjectReport: `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-section/`,
+    // curriculumGradeSubjectReport: `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-section/`,
+    curriculumGradeSubjectReport: `${msReportsUrl}/api/acad_performance/v2/curriculam-sections-report/`,
     curriculumGradeList: `${baseURL}/assessment/subjects-list/`,
     curriculumChapterList: `${msReportsUrl}/api/acad_performance/v1/academic-topic-status/`,
     subjectListGradeFilter: `${baseURL}/academic/lesson-plan-subjects/`,
@@ -610,7 +614,8 @@ export default {
     transactionAllType: `${baseFinanceURL}/apiV1/today-all-transactions-list/`,
 
     // student attendance
-    getStudentAttendance: `/api/acad_performance/v1/attendance/branch-wise-stats/`,
+    // getStudentAttendance: `/api/acad_performance/v1/attendance/branch-wise-stats/`,
+    getStudentAttendance: `/api/acad_performance/v2/attendance-overall-stats/`,
     getStaffDetails: `/api/acad_performance/v1/staff_att/all-staff-stats/`,
     getFinanceDetails: `${baseFinanceURL}/apiV1/session-wise-fees--list/`,
     getAvgTest: `/api/acad_performance/v1/student_report/combined-branch-wise-stats/`,
@@ -836,6 +841,7 @@ export default {
   academicTestReport: {
     academicTestReport: '/assessment/academic-test-report/',
     homeworkSubmissionReport: '/assessment/academic-homework-submission-report/',
+    classworkSubmissionReport: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/classwork-details/`,
   },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

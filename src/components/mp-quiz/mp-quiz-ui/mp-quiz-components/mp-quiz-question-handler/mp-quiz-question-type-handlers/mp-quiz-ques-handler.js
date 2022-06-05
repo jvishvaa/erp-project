@@ -10,6 +10,7 @@ import '../../../styles/question_view.css';
 import '../../../styles/anim.css';
 
 function QuestionHandler(props) {
+  debugger
   const {
     fetchQuizQp,
     quizQp: { fetch, fetching, fetchFailed, message },
@@ -19,13 +20,16 @@ function QuestionHandler(props) {
 
   React.useEffect(() => {
     const {
-      params: { lobby_identifier: lobbyIdentifier, question_paper: questionPaper } = {},
+      params: { lobby_identifier: lobbyIdentifier, question_paper: questionPaper ,assessment_id:assessment_id,is_erp_qp:is_erp_qp } = {},
     } = props || {};
     const dataProp = {
       queryParamObj: {
         question_paper: questionPaper,
         lobby_identifier: lobbyIdentifier,
         online_class_id: lobbyIdentifier,
+        assessment_id :assessment_id,
+        is_erp_qp: is_erp_qp
+
       },
     };
     // const dataProp = {

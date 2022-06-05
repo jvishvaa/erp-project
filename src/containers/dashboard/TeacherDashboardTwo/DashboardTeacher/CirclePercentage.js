@@ -9,6 +9,7 @@ const CirclePercentage = ({ width, height, percent, pathcolor }) => {
   return (
     <div style={{ width: width, height: height }}>
       <CircularProgressbar
+        style={{ fontSize: '35px !important' }}
         value={percentage}
         text={`${percentage}%`}
         styles={buildStyles({

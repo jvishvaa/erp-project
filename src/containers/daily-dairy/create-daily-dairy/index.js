@@ -371,10 +371,10 @@ const CreateDailyDairy = (details, onSubmit) => {
       setAlert('error', 'Select Subject!');
       return;
     }
-    if (!filterData?.chapter) {
-      setAlert('error', 'Select Chapter!');
-      return;
-    }
+    // if (!filterData?.chapter) {
+    //   setAlert('error', 'Select Chapter!');
+    //   return;
+    // }
     const createDairyEntry = endpoints.dailyDairy.createDailyDairy;
     const mapId = formik.values?.section?.section_mapping_id;
     const ids = formik.values?.section

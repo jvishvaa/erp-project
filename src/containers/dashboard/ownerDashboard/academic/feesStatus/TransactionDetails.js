@@ -272,6 +272,16 @@ const TransactionDetails = (props) => {
                 <Grid container spacing={3} justifyContent='space-between'>
                     <Grid item xs={12}>
                         <div className={clsx(classes.breadcrumb)}>
+                            <IconButton size='small'                 onClick={() =>
+                  history.push({
+                    pathname: '/dashboard',
+                    state: {
+                      stateView: '2',
+                    },
+                  })
+                }>
+                                <ArrowBackIcon />
+                            </IconButton>
                             <Typography variant='h6' className={clsx(classes.textBold)}>
                                 Dashboard
                             </Typography>
@@ -280,10 +290,10 @@ const TransactionDetails = (props) => {
                                 Fees Status
                             </Typography>
                             <ArrowForwardIosIcon />
-                            <Typography variant='h6' className={clsx(classes.textBold)}>
+                            {/* <Typography variant='h6' className={clsx(classes.textBold)}>
                                 {branchName}
                             </Typography>
-                            <ArrowForwardIosIcon />
+                            <ArrowForwardIosIcon /> */}
                             <Typography variant='h6' className={clsx(classes.textBold, classes.colorBlue)}>
                                 Transaction Details
                             </Typography>
@@ -385,9 +395,9 @@ const TransactionDetails = (props) => {
 
 
                                                 </TableCell>
-                                                <TableCell> <b>{each?.name}</b></TableCell>
-                                                <TableCell> <b>₹ {isNaN(each?.amount) ? 0 : Math.round(each.amount).toLocaleString()}</b></TableCell>
-                                                <TableCell> <b>{each?.date}</b></TableCell>
+                                                <TableCell> <b>{each.name}</b></TableCell>
+                                                <TableCell> <b>{each.amount}</b></TableCell>
+                                                <TableCell> <b>{each.date}</b></TableCell>
                                                 {/* <TableCell> <b>{each.time}</b></TableCell> */}
                                             </TableRow>
 

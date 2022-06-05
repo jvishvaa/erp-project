@@ -63,6 +63,18 @@ const useStyles = makeStyles((theme) => ({
     //   backgroundColor: 'black',
     // },
   },
+  branchName: {
+    fontSize: '20px',
+    lineHeight: '24px',
+    fontWeight: 'bold',
+    color: '#3A90E6',
+    verticalAlign: 'middle',
+    display: 'inline-flex',
+  },
+  text: {
+    fontSize: '16px',
+    lineHeight: '20px',
+  },
 
   cardContantFlex: {
     display: 'flex',
@@ -84,6 +96,13 @@ const useStyles = makeStyles((theme) => ({
   link: {
     cursor: 'pointer',
     color: 'blue',
+    padding: '8px 16px',
+  },
+  branchCardContant: {
+    padding: '8px 16px 10px !important',
+  },
+  branchInnerCardContant: {
+    padding: '8px !important',
   },
   textAlignEnd: {
     textAlign: 'end',
@@ -204,9 +223,9 @@ const StuffTypeWiseStuffAttendance = (props) => {
           <Grid container spacing={3} justifyContent='space-between'>
             <Grid item xs={6}>
               <div className={clsx(classes.breadcrumb)}>
-              <IconButton size='small' onClick={() => history.goBack()}>
-                <ArrowBackIcon />
-              </IconButton>
+                <IconButton size='small' onClick={() => history.goBack()}>
+                  <ArrowBackIcon />
+                </IconButton>
                 <Typography variant='h6' className={clsx(classes.textBold)}>
                   Dashboard
                 </Typography>
@@ -228,6 +247,7 @@ const StuffTypeWiseStuffAttendance = (props) => {
                 label='Date'
                 type='date'
                 variant='outlined'
+                fullWidth
                 margin='dense'
                 value={date}
                 // defaultValue="2017-05-24"
@@ -247,35 +267,44 @@ const StuffTypeWiseStuffAttendance = (props) => {
                 )}
               /> */}
             </Grid>
+          </Grid>
+          <Grid container spacing={2} justifyContent='center'>
             {branchData.length > 0 ? (
               <>
                 {branchData?.map((each, index) => {
                   return (
-                    <Grid item xs={12} key={index}>
+                    <Grid item xs={9} key={index}>
                       <Card elevation={1}>
                         <CardHeader
                           title={
                             <Typography
                               variant='h5'
-                              // className={clsx(classes.clickable)}
+                              className={clsx(classes.branchName)}
                               // onClick={() => history.push('/finance-owner/academic-performance')}
                             >
-                              <PersonSharpIcon /> {each.erp_user__roles__role_name}
+                              <PersonSharpIcon /> &nbsp;{each.erp_user__roles__role_name}
                             </Typography>
                           }
                           className={clsx(classes.link)}
                           onClick={() => handleClick(each)}
                         />
                         <Divider />
-                        <CardContent>
+                        <CardContent className={clsx(classes.branchCardContant)}>
                           <Grid container spacing={2} justifyContent='center'>
-                            <Grid item xs={3}>
+                            <Grid item xs={2}>
                               <Card
                                 elevation={0}
                                 className={clsx(classes.attendanceCard)}
                               >
-                                <CardContent>
-                                  <Typography variant='body1'>Total Staff</Typography>
+                                <CardContent
+                                  className={clsx(classes.branchInnerCardContant)}
+                                >
+                                  <Typography
+                                    variant='body1'
+                                    className={clsx(classes.text)}
+                                  >
+                                    Total Staff
+                                  </Typography>
                                   <Typography
                                     variant='h6'
                                     className={clsx(classes.textBold)}
@@ -290,7 +319,12 @@ const StuffTypeWiseStuffAttendance = (props) => {
                                 elevation={1}
                                 className={clsx(classes.attendanceCard)}
                               >
-                                <CardContent className={clsx(classes.cardContantFlex)}>
+                                <CardContent
+                                  className={clsx(
+                                    classes.cardContantFlex,
+                                    classes.branchInnerCardContant
+                                  )}
+                                >
                                   <span
                                     className={clsx(
                                       classes.cardLetter,
@@ -302,8 +336,16 @@ const StuffTypeWiseStuffAttendance = (props) => {
                                     P
                                   </span>
                                   <div>
-                                    <Typography variant='h6'>{`${each.total_present}/${each.total_people}`}</Typography>
-                                    <Typography variant='body1'>Total Present</Typography>
+                                    <Typography
+                                      variant='h6'
+                                      className={clsx(classes.text)}
+                                    >{`${each.total_present}/${each.total_people}`}</Typography>
+                                    <Typography
+                                      variant='body1'
+                                      className={clsx(classes.text)}
+                                    >
+                                      Total Present
+                                    </Typography>
                                   </div>
                                 </CardContent>
                               </Card>
@@ -313,7 +355,12 @@ const StuffTypeWiseStuffAttendance = (props) => {
                                 elevation={1}
                                 className={clsx(classes.attendanceCard)}
                               >
-                                <CardContent className={clsx(classes.cardContantFlex)}>
+                                <CardContent
+                                  className={clsx(
+                                    classes.cardContantFlex,
+                                    classes.branchInnerCardContant
+                                  )}
+                                >
                                   <span
                                     className={clsx(
                                       classes.cardLetter,
@@ -325,18 +372,31 @@ const StuffTypeWiseStuffAttendance = (props) => {
                                     A
                                   </span>
                                   <div>
-                                    <Typography variant='h6'>{`${each.total_absent}/${each.total_people}`}</Typography>
-                                    <Typography variant='body1'>Total Absent</Typography>
+                                    <Typography
+                                      variant='h6'
+                                      className={clsx(classes.text)}
+                                    >{`${each.total_absent}/${each.total_people}`}</Typography>
+                                    <Typography
+                                      variant='body1'
+                                      className={clsx(classes.text)}
+                                    >
+                                      Total Absent
+                                    </Typography>
                                   </div>
                                 </CardContent>
                               </Card>
                             </Grid>
-                            <Grid item xs={3}>
+                            <Grid item xs={4}>
                               <Card
                                 elevation={1}
                                 className={clsx(classes.attendanceCard)}
                               >
-                                <CardContent className={clsx(classes.cardContantFlex)}>
+                                <CardContent
+                                  className={clsx(
+                                    classes.cardContantFlex,
+                                    classes.branchInnerCardContant
+                                  )}
+                                >
                                   <span
                                     className={clsx(
                                       classes.cardLetter,
@@ -348,11 +408,17 @@ const StuffTypeWiseStuffAttendance = (props) => {
                                     %
                                   </span>
                                   <div>
-                                    <Typography variant='h6'>
-                                      {each.percentage_present}
+                                    <Typography
+                                      variant='h6'
+                                      className={clsx(classes.text)}
+                                    >
+                                      {each.percentage_present} %
                                     </Typography>
-                                    <Typography variant='body1'>
-                                      % {each.erp_user__roles__role_name} Staff Present
+                                    <Typography
+                                      variant='body1'
+                                      className={clsx(classes.text)}
+                                    >
+                                      {each.erp_user__roles__role_name} Staff Present
                                     </Typography>
                                   </div>
                                 </CardContent>

@@ -24,6 +24,7 @@ import {
   TableRow,
   TableCell,
   Table,
+  Paper
 } from '@material-ui/core';
 import {
   Search as SearchIcon,
@@ -60,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '3px',
   },
   gradeOverviewContainer: {
-    border: '1px solid black',
+    // border: '1px solid black',
     borderRadius: '10px',
     padding: '15px 8px',
     maxHeight: '60vh',
@@ -120,10 +121,10 @@ const StudentWiseDetailsMoreAbsent = (props) => {
   const history = useHistory();
   const {
     match: {
-      params: { branchId, gradeId, sectionId, subjectId },
+      params: { branchId, gradeId, sectionId, subjectId, acad_session_id },
     },
   } = props;
-  const { grade_name, section_name } = history.location.state;
+  const { grade_name, section_name, data } = history.location.state;
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
     moment().subtract(0, 'days'),
     moment(),
@@ -139,8 +140,9 @@ const StudentWiseDetailsMoreAbsent = (props) => {
   }, []);
   useEffect(() => {
     getMoreAbsentStudentWiseData({
-      subject_id: subjectId,
-      section_mapping_id: sectionId,
+      acad_session_id: acad_session_id,
+      grade_id: gradeId,
+      section_id: sectionId,
       start_date: moment(dateRangeTechPer[0])?.format('YYYY-MM-DD'),
       end_date: moment(dateRangeTechPer[1])?.format('YYYY-MM-DD'),
     });
@@ -148,16 +150,17 @@ const StudentWiseDetailsMoreAbsent = (props) => {
 
   const getMoreAbsentStudentWiseData = (params = {}) => {
     axiosInstance
-      .get(`${endpoints.ownerDashboard.studentWiseMoreAbsentStudentAttendanceState}`, {
+      .get(`${endpoints.ownerDashboard.studentWiseStudentAttendanceState}`, {
         params: { ...params },
         headers: {
           'X-DTS-Host': window.location.host,
+          // 'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com ',
           // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
         },
       })
       .then((res) => {
         console.log(res);
-        setMoreAbsentData(res.data.result);
+        setMoreAbsentData(res.data.result?.below_thresh_hold_students);
       })
       .catch((err) => {
         console.log(err);
@@ -239,7 +242,7 @@ const StudentWiseDetailsMoreAbsent = (props) => {
               </Button>
             </Grid>
             <Grid item xs={12}>
-              <div className={clsx(classes.gradeOverviewContainer)}>
+              <Paper elevation={1} className={clsx(classes.gradeOverviewContainer)}>
                 <TableContainer>
                   <Table>
                     <TableHead>
@@ -264,7 +267,7 @@ const StudentWiseDetailsMoreAbsent = (props) => {
                           return (
                             <TableRow key={index}>
                               <TableCell className={clsx(classes.tableCellLeftAlign)}>
-                                {each.name}
+                                {each.student_name}
                               </TableCell>
                               {/* <TableCell className={clsx(classes.colorGreen)}>{each.present}</TableCell> */}
                               <TableCell
@@ -286,7 +289,7 @@ const StudentWiseDetailsMoreAbsent = (props) => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-              </div>
+              </Paper>
             </Grid>
           </Grid>
         </Grid>

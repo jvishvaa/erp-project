@@ -414,7 +414,7 @@ import PrincipalLeadTeacher from 'containers/sure-learning/PrincipalDashboard/pr
 import ResourcesFolderList from './containers/sure-learning/Resources_Folders/resources_folder';
 import AllChaptersContent from './containers/sure-learning/Initiate_Class/Chapter_Details/allChapters';
 import AcademicReport from './containers/dashboard/ownerDashboard/academic/academicReport';
-import HomeworkSubmissionReport from './containers/dashboard/ownerDashboard/academic/studentReport/homeworkSubmissionReport';
+import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/curriculumBranchWise';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -649,7 +649,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route exact path='/erp-online-class/:id/:qid/pre-quiz'>
                             {({ match }) => <PreQuiz match={match} />}
                           </Route>
-                          <Route path='/erp-online-class/:onlineclassId/quiz/:questionpaperId/:lobbyuuid/:role'>
+                          <Route path='/erp-online-class/:onlineclassId/quiz/:questionpaperId/:lobbyuuid/:role/:is_erp_qp/:assessment_id'>
                             {({ match }) => <MultiplayerQuiz match={match} />}
                           </Route>
                           {/* <Route exact path='/online-class/view-class'>
@@ -1794,6 +1794,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                           <Route path='/acad-calendar'>
                             {({ match }) => <AcadCalendar match={match} />}
                           </Route>
+                          <Route path='/curriculum-completion-branchWise'>
+                            {({ match }) => <CurriculumBranchWise match={match} />}
+                          </Route>
                           <Route path='/curriculum-completion/:branchId'>
                             {({ match }) => <CurriculumCompletion match={match} />}
                           </Route>
@@ -1884,12 +1887,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                               <SubjectWiseAttendanceDetails match={match} />
                             )}
                           </Route>
-                          <Route path='/student-attendance-report/student-wise/:branchId/:gradeId/:sectionId/:subjectId'>
+                          <Route path='/student-attendance-report/student-wise/:branchId/:gradeId/:sectionId/:acad_session_id'>
                             {({ match }) => (
                               <StudentWiseAttendanceDetails match={match} />
                             )}
                           </Route>
-                          <Route path='/student-attendance-report/student-wise-more-absent/:branchId/:gradeId/:sectionId/:subjectId'>
+                          <Route path='/student-attendance-report/student-wise-more-absent/:branchId/:gradeId/:sectionId/:acad_session_id'>
                             {({ match }) => (
                               <StudentWiseAttendanceDetailsMoreAbsent match={match} />
                             )}
@@ -1944,9 +1947,6 @@ function App({ alert, isMsAPI, erpConfig }) {
                           {/* Academic Report */}
                           <Route path='/academic-report'>
                             {({ match }) => <AcademicReport match={match} />}
-                          </Route>
-                          <Route path='/homework-submission-report'>
-                            {({ match }) => <HomeworkSubmissionReport match={match} />}
                           </Route>
                           <Route path='*'>
                             <ErrorBoundary404 HomeButton={true} />

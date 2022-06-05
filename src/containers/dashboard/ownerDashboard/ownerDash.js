@@ -31,6 +31,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import apiRequest from '../StudentDashboard/config/apiRequest';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import UserLevelTable from 'containers/user-management/User-Level/tableUserLevel';
 
 const OwnerDashboard = () => {
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -69,6 +70,7 @@ const OwnerDashboard = () => {
     staffDetails: false,
   }
   const [progress1, setProgress1] = useState(initialState);
+  const userLevel = data.user_level
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -91,13 +93,13 @@ const OwnerDashboard = () => {
   useEffect(() => {
     // getBranches()
     getBranches();
-  }, [moduleId]);
+  }, [moduleId,selectedAcademicYear]);
 
   // useEffect(() => {
   // }, [branchList])
 
   const handleTodayAttendance = () => {
-    getAttendanceReport();
+    // getAttendanceReport();
     getStaffDetails();
     setTodayCounter(true);
   };
@@ -105,12 +107,12 @@ const OwnerDashboard = () => {
     if(selectedBranchId.length == 1) {
       getFinanceReport();
     } else {
-      setAlert('error','Please select a branch (max 1 branch)');
+      setAlert('error','Please select at least and at most one branch');
     }
   };
 
   const handleAcadRefresh = () => {
-    // getAvgScore();
+    getAvgScore();
     getCurrReport();
     getAttendanceReportOverview();
     setAcadCounter(true);
@@ -124,7 +126,7 @@ const OwnerDashboard = () => {
       getrecenttransaction();
       setRecentTransCounter(true);
     } else {
-      setAlert('error','Please select a branch (max 1 branch)');
+      setAlert('error','Please select at least or at most one branch');
     }
   };
 
@@ -138,7 +140,6 @@ const OwnerDashboard = () => {
         `${endpoints.ownerDashboard.getRecentTransaction}?academic_year=${selectedAcademicYear?.session_year}&branch=${selectedBranchId}&date=${date}`
       )
       .then((res) => {
-        console.log(res, 'finan');
         setRecentTrans(res.data);
         setProgress1(initialState)
         // setFinanceData(res.data)
@@ -155,10 +156,13 @@ const OwnerDashboard = () => {
         )
         .then((res) => {
           setBranchList(res.data.data.results);
-          const ids = res.data.data.results?.map((el) => el?.branch?.id);
-          console.log(ids);
+          const ids = res.data.data.results?.map((el) => el?.id);  //acad id
           setSelectedBranchId(ids);
           setBranchData(res.data.data.results);
+          // if(!data?.is_superuser && !(userLevel === 1 || userLevel === 2 ||userLevel === 3 ||userLevel === 4)){
+          if(res.data.data.results.length === 1){
+            handleBranch('',[res.data.data.results[0]])
+          }
         })
         .catch(() => { });
     }
@@ -182,7 +186,7 @@ const OwnerDashboard = () => {
       //       },
       //     }
       //   )
-      apiRequest('get', `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`, null, null, true, 10000)
+      apiRequest('get', `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&acad_session=${selectedBranchId}`, null, null, true, 10000) //session_year_id=${selectedAcademicYear?.id}&
         .then((res) => {
           setStudentAttendance(res.data.result);
           setProgress1(initialState)
@@ -199,9 +203,9 @@ const OwnerDashboard = () => {
       //       },
       //     }
       //   )
-      apiRequest('get', `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}&session_year_id=${selectedAcademicYear?.id}`, null, null, true, 10000)
+      apiRequest('get', `${endpoints.ownerDashboard.getStudentAttendance}?start_date=${date}&end_date=${date}`, null, null, true, 10000) //&session_year_id=${selectedAcademicYear?.id}
         .then((res) => {
-          setStudentAttendance(res.data.result);
+          setStudentAttendance(res.data.result);  //object
           setProgress1(initialState)
         })
         .catch(() => { });
@@ -223,7 +227,7 @@ const OwnerDashboard = () => {
     //       },
     //     }
     //   )
-    apiRequest('get', `${endpoints.ownerDashboard.getStudentAttendance}?session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchId}`, null, null, true, 10000)
+    apiRequest('get', `${endpoints.ownerDashboard.getStudentAttendance}?acad_session=${selectedBranchId}`, null, null, true, 10000)  //session_year_id=${selectedAcademicYear?.id}&
       .then((res) => {
         setStudentAttendanceOverview(res.data.result);
         setProgress1(initialState)
@@ -249,7 +253,7 @@ const OwnerDashboard = () => {
       //       },
       //     }
       //   )
-      apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}&date_range_type=today`, null, null, true, 10000)
+      apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}&session_year_id=${selectedAcademicYear?.id}&date_range_type=today`, null, null, true, 10000)
         .then((res) => {
           setRoleWiseAttendance(res.data.result);
           setProgress1(initialState)
@@ -263,7 +267,7 @@ const OwnerDashboard = () => {
       //       Authorization: `Bearer ${token}`,
       //     },
       //   })
-      apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?date_range_type=today`, null, null, true, 10000)
+      apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?session_year_id=${selectedAcademicYear?.id}&date_range_type=today`, null, null, true, 10000)
         .then((res) => {
           setRoleWiseAttendance(res.data.result);
           setProgress1(initialState)
@@ -285,10 +289,9 @@ const OwnerDashboard = () => {
     //       Authorization: `Bearer ${token}`,
     //     },
     //   })
-    apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}&staff_details_type=1`, null, null, true, 10000)
+    apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}`, null, null, true, 10000)
       .then((res) => {
         // setRoleWiseAttendance(res.data.result)
-        // console.log(res, 'staffover');
         setProgress1(initialState);
         setStaffOverall(res.data.result);
       })
@@ -310,7 +313,6 @@ const OwnerDashboard = () => {
     //   })
     apiRequest('get', `${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${Acad_id}`, null, null, true, 10000)
       .then((res) => {
-        console.log(res, 'student');
         setAvgTest(res.data.result);
         setProgress1(initialState)
       })
@@ -326,7 +328,6 @@ const OwnerDashboard = () => {
         `${endpoints.ownerDashboard.getFinanceDetails}?academic_year=${selectedAcademicYear?.session_year}&branch=${selectedBranchId}`
       )
       .then((res) => {
-        console.log(res, 'finan');
         setFinanceData(res.data);
         setProgress1(initialState)
         // setRoleWiseAttendance(res.data.result)
@@ -348,7 +349,6 @@ const OwnerDashboard = () => {
     //   })
     apiRequest('get', `${endpoints.ownerDashboard.getAllBranchCurr}?branch_id=${selectedBranchId}`, null, null, true, 10000)
       .then((res) => {
-        console.log(res, 'currbranch');
         setCurrBranch(res.data.result);
         setProgress1(initialState)
         // setFinanceData(res.data)
@@ -361,9 +361,8 @@ const OwnerDashboard = () => {
     setSelectedBranch([]);
     if (value?.length > 0) {
       const ids = value.map((el) => el);
-      const selectedId = value.map((el) => el?.branch?.id);
+      const selectedId = value.map((el) => el?.id);  //acad_id
       setSelectedBranch(ids);
-      console.log(ids);
       setBranchList(ids);
       setSelectedBranchId(selectedId);
       setBranchCounter(true);
@@ -375,7 +374,7 @@ const OwnerDashboard = () => {
   };
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={0}>
       {/* <Grid container xs={12} sm={8} md={8} spacing={1}>
                 <AttendanceOverviewDashboard/>
             </Grid> */}
@@ -419,7 +418,7 @@ const OwnerDashboard = () => {
         </Grid>
         <Grid item xs={7}></Grid>
       </Grid>
-      <Grid container xs={12} sm={9} md={9} spacing={1}>
+      <Grid container xs={12} sm={9} md={8} spacing={2}>
         <FinanceOwnerDashboard
           roleWiseAttendance={roleWiseAttendance}
           financeData={financeData}
@@ -446,7 +445,7 @@ const OwnerDashboard = () => {
           progress1={progress1}
         />
       </Grid>
-      <Grid container xs={0} sm={3} md={3}>
+      <Grid container xs={0} sm={3} md={4}>
         <Grid item style={{ marginLeft: '5px' }}>
           <StudentRightDashboard />
         </Grid>

@@ -297,7 +297,7 @@ const announcementRedirect = () => {
       direction='column'
       spacing={1}
       className={classes.box}
-      style={{ height: matches ? '320px' : '135px' }}
+      style={{ height: matches ? '320px' : '160px',marginBottom: '10px' }}
       xs={12}
     >
       <Grid>
