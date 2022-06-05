@@ -285,7 +285,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   };
 
   const getUsersData = async () => {
-    setLoading(true);
     const rolesId = [];
     const gradesId = [];
     if (selectedRoles && selectedRoles !== 'All') {
@@ -293,6 +292,13 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         rolesId.push(each.id);
       });
     }
+    console.log(status , 'status');
+    console.log(rolesId , 'role');
+    console.log(selectedBranch , 'role');
+    console.log(rolesId , 'role');
+    console.log(rolesId , 'role');
+    if(searchText || classStatus && classStatus != 1 && classStatus != 0 || rolesId.length > 0 || selectedBranch !== null || gradeIds.length > 0){
+    setLoading(true);
     let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}&session_year=${selectedYear?.id}`;
     if (classStatus && classStatus != 1 && classStatus != 0) {
       let status = classStatus - 1;
@@ -342,6 +348,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     } catch (error) {
       setAlert('error', error.message);
     }
+  } else {
+    setAlert('error' , 'Please Select Any Filter')
+  }
   };
   const handlePagination = (event, page) => {
     setIsClicked(true);
