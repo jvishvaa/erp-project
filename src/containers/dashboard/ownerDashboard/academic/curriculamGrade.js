@@ -219,7 +219,7 @@ const CurriculumCompletion = (props) => {
 
   useEffect(() => {
     gradeListTable({
-      acad_session_id: acad_session_id,
+      acad_session_id: acad_sess_id,
     });
   }, [acad_session_id]);
 
