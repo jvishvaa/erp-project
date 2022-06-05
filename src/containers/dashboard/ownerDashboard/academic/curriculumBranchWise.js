@@ -232,7 +232,7 @@ const AttendanceGradeRoute = (each) => {
   history.push({
     pathname: `/attendance-report/${each?.branch?.id}`,
     state: {
-      acad_session_id: each?.branch?.id,
+      acad_session_id: each?.id,
       module_id: moduleId,
     },
   });
