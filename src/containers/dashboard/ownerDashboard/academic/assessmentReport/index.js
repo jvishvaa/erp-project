@@ -438,7 +438,7 @@ export default function AssessmentReport(props) {
                 <TableRow>
                   <TableCell>Test Name</TableCell>
                   <TableCell>Total marks</TableCell>
-                  <TableCell>Student Below Threshold</TableCell>
+                  <TableCell>Students Below Threshold (50%)</TableCell>
                   <TableCell>Class Average</TableCell>
                   <TableCell>Below 35%</TableCell>
                   <TableCell>35% to 70%</TableCell>

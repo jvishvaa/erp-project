@@ -207,9 +207,9 @@ const StuffTypeAdminWiseStuffAttendance = (props) => {
           <Grid container spacing={3} justifyContent='space-between'>
             <Grid item xs={12}>
               <div className={clsx(classes.breadcrumb)}>
-              <IconButton size='small' onClick={() => history.goBack()}>
-                <ArrowBackIcon />
-              </IconButton>
+                <IconButton size='small' onClick={() => history.goBack()}>
+                  <ArrowBackIcon />
+                </IconButton>
                 <Typography variant='h6' className={clsx(classes.textBold)}>
                   Dashboard
                 </Typography>
@@ -255,6 +255,7 @@ const StuffTypeAdminWiseStuffAttendance = (props) => {
                 label='Date'
                 type='date'
                 variant='outlined'
+                fullWidth
                 margin='dense'
                 value={date}
                 // defaultValue="2017-05-24"
@@ -274,7 +275,7 @@ const StuffTypeAdminWiseStuffAttendance = (props) => {
             </Grid>
             <Grid item xs={12}>
               <TableContainer component={Paper}>
-                <Table>
+                <Table size='small'>
                   <TableHead>
                     <TableRow>
                       <TableCell>ERP NO</TableCell>

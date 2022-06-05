@@ -24,6 +24,7 @@ import {
   TableRow,
   TableCell,
   Table,
+  Paper
 } from '@material-ui/core';
 import {
   Search as SearchIcon,
@@ -60,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '3px',
   },
   gradeOverviewContainer: {
-    border: '1px solid black',
+    // border: '1px solid black',
     borderRadius: '10px',
     padding: '15px 8px',
     maxHeight: '60vh',
@@ -91,7 +92,7 @@ const useStyles = makeStyles((theme) => ({
   },
   accordion: {
     margin: '10px 0 !important',
-    border: '1px solid black',
+    // border: '1px solid black',
     '&::before': {
       backgroundColor: 'black',
     },
@@ -120,7 +121,7 @@ const StudentWiseDetails = (props) => {
   const history = useHistory();
   const {
     match: {
-      params: { branchId, gradeId, sectionId, subjectId },
+      params: { branchId, gradeId, sectionId, acad_session_id },
     },
   } = props;
   const { grade_name, section_name } = history.location.state;
@@ -132,8 +133,9 @@ const StudentWiseDetails = (props) => {
 
   useEffect(() => {
     getStudentWiseData({
-      subject_id: subjectId,
-      section_mapping_id: sectionId,
+      acad_session_id: acad_session_id,
+      section_id: sectionId,
+      grade_id : gradeId,
       start_date: moment(dateRangeTechPer[0])?.format('YYYY-MM-DD'),
       end_date: moment(dateRangeTechPer[1])?.format('YYYY-MM-DD'),
     });
@@ -152,6 +154,7 @@ const StudentWiseDetails = (props) => {
         params: { ...params },
         headers: {
           'X-DTS-Host': window.location.host,
+          // 'X-DTS-Host': 'dev.olvorchidnaigaon.letseduvate.com',
           // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
         },
       })
@@ -166,9 +169,10 @@ const StudentWiseDetails = (props) => {
 
   const changePath = () => {
     history.push({
-      pathname: `/student-attendance-report/student-wise-more-absent/${branchId}/${gradeId}/${sectionId}/${subjectId}`,
+      pathname: `/student-attendance-report/student-wise-more-absent/${branchId}/${gradeId}/${sectionId}/${acad_session_id}`,
       state: {
         //   payload : payload
+        data: studentData?.below_thresh_hold_students,
         start_date: moment(dateRangeTechPer[0])?.format('YYYY-MM-DD'),
         end_date: moment(dateRangeTechPer[1])?.format('YYYY-MM-DD'),
         grade_name: grade_name,
@@ -252,7 +256,7 @@ const StudentWiseDetails = (props) => {
               </Button>
             </Grid>
             <Grid item xs={12}>
-              <div className={clsx(classes.gradeOverviewContainer)}>
+              <Paper elevation={1} className={clsx(classes.gradeOverviewContainer)}>
                 <TableContainer>
                   <Table>
                     <TableHead>
@@ -271,11 +275,11 @@ const StudentWiseDetails = (props) => {
                     </TableHead>
                     <TableBody>
                       {studentData &&
-                        studentData?.map((each, index) => {
+                        studentData?.above_threshold_students?.map((each, index) => {
                           return (
                             <TableRow key={index}>
                               <TableCell className={clsx(classes.tableCellLeftAlign)}>
-                                {each.name}
+                                {each.student_name}
                               </TableCell>
                               <TableCell className={clsx(classes.colorGreen)}>
                                 {each.present_count}
@@ -294,7 +298,7 @@ const StudentWiseDetails = (props) => {
                     </TableBody>
                   </Table>
                 </TableContainer>
-              </div>
+              </Paper>
             </Grid>
           </Grid>
         </Grid>

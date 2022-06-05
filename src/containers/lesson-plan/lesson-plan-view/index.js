@@ -52,6 +52,8 @@ const LessonPlan = () => {
   const [centralSubjectName, setCentralSubjectName] = useState('');
   const [openFeed, setOpenFeed] = React.useState(false);
   const [topicId, setTopicId] = useState()
+  const [sessionBranchGrade,setSessionBranchGrade] = useState({'session': 0,'branch': 0, 'grade': 0});
+
 
   const handleClickOpenFeed = () => {
     setOpenFeed(true);
@@ -132,6 +134,8 @@ const LessonPlan = () => {
             setCentralSubjectName={setCentralSubjectName}
             centralGradeName={centralGradeName}
             centralSubjectName={centralSubjectName}
+            setSessionBranchGrade = {setSessionBranchGrade}
+            sessionBranchGrade = {sessionBranchGrade}
           />
         </div>
 
@@ -192,6 +196,7 @@ const LessonPlan = () => {
                     centralGradeName={centralGradeName}
                     centralSubjectName={centralSubjectName}
                     handleClickOpenFeed={handleClickOpenFeed}
+                    sessionBranchGrade = {sessionBranchGrade}
                   />
                 </Grid>
               )}
