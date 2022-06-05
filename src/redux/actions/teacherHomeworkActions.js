@@ -292,7 +292,7 @@ export const fetchCoordinateTeacherHomeworkDetails = (
         const homeworkStatus = row.hw_details.find((detail) => detail.subject === col.subject_id);
 
         obj[col.subject_name] = homeworkStatus
-          ? { hw_id: homeworkStatus.id, ...homeworkStatus.status }
+          ? { hw_id: homeworkStatus.id, ...homeworkStatus.status , last_submission_date : homeworkStatus.last_submission_dt }
           : {};
       });
       return obj;

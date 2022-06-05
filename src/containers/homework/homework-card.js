@@ -76,8 +76,16 @@ const HomeworkCard = ({
                         <div
                           className='cardRow'
                           onClick={() => onClick(student.student_homework_id)}
+                          style={{ width: '75%', display: 'flex', justifyContent: 'space-between', cursor: student?.hw_submission_mode === 'Online Submission' ? 'pointer' : 'default' }}
                         >
                           <div className='studentName'>{`${student.first_name} ${student.last_name}`}</div>
+                          {student?.hw_submission_mode === 'Online Submission' ?
+                            <div className='badgeContent' >
+                              <Badge color="success" variant="dot" >
+                                <AssignmentIcon style={{color: '#014b7e'}} />
+                              </Badge>
+                            </div>
+                            : ''}
                         </div>
                       </>
                     ))
@@ -92,7 +100,7 @@ const HomeworkCard = ({
         {view === 'submissionStats'  && (
           <div className='list' style={{ flexGrow: 1 ,maxHeight: '200px' }}>
             <div style={{ display: 'flex' }}>
-              <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} onChange={() => handleAllSubmit()} />
+              <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} onChange={() => handleAllSubmit()} id="submitAllid" />
               <div className='cardHeaderSub'>Submitted students :</div>
             </div>
             <div >
@@ -100,8 +108,8 @@ const HomeworkCard = ({
                 <CircularProgress color='primary' />
               ) : (
                 <div style={{ height: '150px', overflow: 'auto', overflowX: 'hidden' }} className='checkboxsubmit' >
-                  {submittedStudents.length ? (
-                    submittedStudents.map((student) => (
+                  {submittedStudents?.length ? (
+                    submittedStudents?.map((student) => (
                       <div style={{ display: 'flex', alignItems: 'center' }}>
                         <Checkbox onChange={() => handleUser(student)} inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} />
                         <div
