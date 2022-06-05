@@ -449,9 +449,9 @@ const CurriculumCompletionSubject = (props) => {
   };
 
   useEffect(() => {
-    if (historyGrade?.acad_session_id) {
+    if (historyGrade?.acad_sess_id) {
       gradeListTable({
-        acad_session_id: historyGrade?.acad_session_id,
+        acad_session_id: historyGrade?.acad_sess_id,
       });
     }
   }, [historyGrade?.acad_session_id]);
