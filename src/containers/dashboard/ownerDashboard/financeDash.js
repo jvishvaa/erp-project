@@ -498,7 +498,8 @@ const FinanceOwnerDashboard = (props) => {
   return (
     <div style={{ width: '100%', overflow: 'hidden', padding: '10px' }}>
       <Grid item container spacing={2}>
-        {academicPerformanceDetailsOpen === false ? (
+        {user_level !== 11 ? (
+        academicPerformanceDetailsOpen === false ? (
           <>
             <Grid item xs={12}>
               <Card elevation={1} className={clsx(classes.cardHeaderAttendance)}>
@@ -1766,6 +1767,159 @@ const FinanceOwnerDashboard = (props) => {
                 })}
             </Grid>
           </>
+        )) : (
+          <Grid item container spacing={1} xs={12}>
+              <Grid item xs={12}>
+                <Card>
+                  <Card>
+                    <CardHeader
+                      title={
+                        <Typography
+                          // variant='h5'
+                          style={{ display: 'flex' }}
+                          className={clsx(classes.cardtopicStyle)}
+                          // onClick={() => setAcademicPerformanceDetailsOpen(true)}
+                          // onClick={() => history.push('/finance-owner/academic-performance')}
+                        >
+                          <b>Academic Performance &nbsp;</b>{''}
+                          {props?.branchCounter ? (
+                            <Tooltip
+                              title={
+                                props?.selectedBranch &&
+                                props?.selectedBranch?.map(
+                                  (item) => item?.branch?.branch_name + ' '
+                                )
+                              }
+                            >
+                              <Chip
+                                variant='outlined'
+                                size='small'
+                                // icon={props?.selectedBranch?.length}
+                                avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
+                                label={' Branch Selected'}
+                              />
+                            </Tooltip>
+                          ) : (
+                            // <div style={{ display: 'flex' }}>
+                            //   {props?.selectedBranch &&
+                            //     props?.selectedBranch?.map((item) => (
+                            //       <div style={{ margin: '0 5px' }}>
+                            //         {item?.branch?.branch_name}
+                            //       </div>
+                            //     ))}
+                            // </div>
+                            <></>
+                          )}
+                        </Typography>
+                      }
+                      action={
+                        <IconButton
+                          size='small'
+                          className={clsx(
+                            classes.viewButton,
+                            classes.refreshButtonMargin
+                          )}
+                          aria-label='view all'
+                          onClick={props.handleAcadRefresh}
+                        >
+                          <RefreshIcon style={{ color: 'blue', fontSize: '20px' }} />
+                        </IconButton>
+                      }
+                    />
+                    <CardContent
+                      style={{
+                        minHeight: '90px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <>
+                        {props?.progress1?.academic ? (
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <CircularProgress />
+                          </div>
+                        ) : (
+                          <>
+                            {props?.acadCounter ? (
+                              <Grid container spacing={1} alignItems='center'>
+                                <Grid
+                                  item
+                                  xs={12}
+                                  style={{
+                                    borderRadius: '5px',
+                                    backgroundColor: '#ffd4d9',
+                                    // display:'flex'
+                                  }}
+                                >
+                                  <div className={clsx(classes.absentGrid)}
+                                  onClick={() => props?.selectedBranch.length > 0 ? handleBranchRoute(props?.selectedBranch,true) :  setAlert('error','Please select Atleast one Branch')}>
+                                    <div style={{ width: '53%' }}>
+                                      <Typography
+                                        variant='body2'
+                                        className={clsx(classes.customTextSize)}
+                                      >
+                                        Curriculum Completion
+                                      </Typography>
+                                    </div>
+                                    <div
+                                      style={{
+                                        width: '13%',
+                                        display: 'flex',
+                                        fontWeight: 'bolder',
+                                      }}
+                                    >
+                                    
+                                      <IconButton
+                                        aria-label='delete'
+                                        size='small'
+                                      >
+                                        <DeleteIcon fontSize='inherit' />
+                                      </IconButton>
+                                    </div>
+                                  </div>
+                                </Grid>
+                              </Grid>
+                            ) : (
+                              <Grid
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  margin: 'auto',
+                                  flexDirection: 'column',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                                <Typography style={{ fontWeight: '600' }}>
+                                  No Records
+                                </Typography>
+                              </Grid>
+                            )}
+                          </>
+                        )}
+                      </>
+                    </CardContent>
+                    {/* <CardActions style={{ float: 'right' }}>
+                      <Button
+                        size='small'
+                        variant='text'
+                        className={clsx(classes.viewMoreButton)}
+                        onClick={() => setAcademicPerformanceDetailsOpen(true)}
+                        endIcon={<ChevronRightIcon style={{ color: 'black' }} />}
+                      >
+                        View All
+                      </Button>
+                    </CardActions> */}
+                  </Card>
+                </Card>
+              </Grid>
+            </Grid>
         )}
       </Grid>
     </div>
