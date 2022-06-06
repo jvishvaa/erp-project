@@ -120,6 +120,12 @@ const Dashboard = () => {
       case 1:
         const GetDashboard = getDashboardChoice(AdminDashboard, OwnerDashboard);
         return <OwnerDashboard />;
+      case 2:
+        const CentralAcademic = getDashboardChoice(AdminDashboard, OwnerDashboard);
+      return <OwnerDashboard />;
+      case 3:
+        const TechSupport  = getDashboardChoice(AdminDashboard, OwnerDashboard);
+      return <OwnerDashboard />;
       case 4:
         const GetOwnerDashboard = getDashboardChoice(AdminDashboard, OwnerDashboard);
         return <OwnerDashboard />;
