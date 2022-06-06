@@ -1797,7 +1797,7 @@ const FinanceOwnerDashboard = (props) => {
                                 size='small'
                                 // icon={props?.selectedBranch?.length}
                                 avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
-                                label={' Branch Selected'}
+                                label={props?.selectedBranch[0]?.branch?.branch_name}
                               />
                             </Tooltip>
                           ) : (
