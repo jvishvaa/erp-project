@@ -49,7 +49,7 @@ function TodayAttendance({ attendanceDetail }) {
     });
   };
   return (
-    <div>
+    <div style={{paddingTop: '10px'}}>
       <Card
         style={{ minWidth: '100%', border: '2px solid whitesmoke', marginBottom: '10px' }}
       >

@@ -198,7 +198,7 @@ export default {
     lessonList: '/academic/lesson-completed-report/',
     lessonViewMoreData: '/academic/user-chapters-details/',
     // teacherList: '/academic/lesson_plan_user_list/',
-    teacherList : '/academic/lesson-plan-user-list-v2/',
+    teacherList: '/academic/lesson-plan-user-list-v2/',
   },
   studentListApis: {
     branchWiseStudentCount: '/academic/school_strength/',
@@ -248,8 +248,8 @@ export default {
     chapterList: `/academic/central-chapters-list/`,
     gradeListCentral: `${baseURLCentral}/lesson_plan/list-grade/`,
     chapterListCentral: `${baseURLCentral}/lesson_plan/chapter/`,
-    periodCompleted: '/academic/lessonplan-completed-status/',
-    periodCompletedStatus: '/academic/lesson-status/',
+    periodCompleted: '/academic/v2/lessonplan-completed-status/',
+    periodCompletedStatus: '/academic/v2/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
     overviewSynopsis: `/academic/list-lesson-overview/`,
     s3: 'https://d2r9gkgplfhsr2.cloudfront.net/',
@@ -581,9 +581,12 @@ export default {
   },
   ownerDashboard: {
     // gradeWiseStudentAttendanceState : `${`https://tiny-newt-42.loca.lt`}/api/acad_performance/v1/attendance/grade-wise-stats/`,
-    gradeWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/grade-wise-stats/`,
+    // gradeWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/grade-wise-stats/`,
+    gradeWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v2/attendance-section-wise-stats/`,
     subjectWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/subject-wise-stats/`,
-    studentWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-stats/`,
+    // studentWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-stats/`,
+    studentWiseStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v2/attendance-student-wise-stats/`,
+
     studentWiseMoreAbsentStudentAttendanceState: `${msReportsUrl}/api/acad_performance/v1/attendance/student-wise-absence-stats/`,
     subjectWiseTestStudentReportStat: `${msReportsUrl}/api/acad_performance/v1/test/subject-wise-stats/`,
     studentWiseTestStudentReportStat: `${msReportsUrl}/api/acad_performance/v1/test/student-wise-stats/`,
@@ -596,7 +599,8 @@ export default {
 
     //curriculumReport
     curriculumGradeReport: `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-grade/`,
-    curriculumGradeSubjectReport: `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-section/`,
+    // curriculumGradeSubjectReport: `${msReportsUrl}/api/acad_performance/v1/curriculum-stats-section/`,
+    curriculumGradeSubjectReport: `${msReportsUrl}/api/acad_performance/v2/curriculam-sections-report/`,
     curriculumGradeList: `${baseURL}/assessment/subjects-list/`,
     curriculumChapterList: `${msReportsUrl}/api/acad_performance/v1/academic-topic-status/`,
     subjectListGradeFilter: `${baseURL}/academic/lesson-plan-subjects/`,
@@ -610,7 +614,8 @@ export default {
     transactionAllType: `${baseFinanceURL}/apiV1/today-all-transactions-list/`,
 
     // student attendance
-    getStudentAttendance: `/api/acad_performance/v1/attendance/branch-wise-stats/`,
+    // getStudentAttendance: `/api/acad_performance/v1/attendance/branch-wise-stats/`,
+    getStudentAttendance: `/api/acad_performance/v2/attendance-overall-stats/`,
     getStaffDetails: `/api/acad_performance/v1/staff_att/all-staff-stats/`,
     getFinanceDetails: `${baseFinanceURL}/apiV1/session-wise-fees--list/`,
     getAvgTest: `/api/acad_performance/v1/student_report/combined-branch-wise-stats/`,
@@ -626,6 +631,7 @@ export default {
     getHWData: `${msReportsUrl}/api/acad_performance/v1/homework/grade-wise-stats/`,
     getCPData: `${msReportsUrl}/api/acad_performance/v1/class_part/grade-stats/`,
     getRecentTransaction: `${baseFinanceURL}/apiV1/today-recent-transactions/`,
+    getAttendanceDownload: `${msReportsUrl}/api/acad_performance/v2/download-attendance-report`,
 
     // section wise report
 
@@ -834,8 +840,9 @@ export default {
     markAttendence: '/course_extend/meeting_attendence/',
   },
   academicTestReport: {
-    academicTestReport: '/assessment/academic-test-report/',
-    homeworkSubmissionReport: '/assessment/academic-homework-submission-report/',
+    assessmentReport: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
+    homeworkSubmissionReport: `${msReportsUrl}/api/acad_performance/v1/homework/homework-submission-report/`,
+    classworkSubmissionReport: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/classwork-details/`,
   },
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',

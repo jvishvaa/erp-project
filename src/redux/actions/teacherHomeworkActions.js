@@ -198,7 +198,7 @@ export const fetchStudentsListForTeacherHomework = (id, subjectId, sectionId, se
   dispatch({ type: FETCH_STUDENT_LIST_FOR_TEACHER_HOMEWORK_REQUEST });
   try {
     const response = await axios.get(selectedTeacherUser_id ?
-      `/academic/homework-submitted-data/?homework=${id}&user=${selectedTeacherUser_id}&subject=${subjectId}&section_mapping=${sectionId}`
+      `/academic/homework-submitted-data/?homework=${id}&user=${selectedTeacherUser_id}&subject=${subjectId}&section_mapping=${sectionId}&date=${date}`
       : `/academic/homework-submitted-data/?homework=${id}&subject=${subjectId}&section_mapping=${sectionId}&date=${date}`);
     const {
       evaluated_list: evaluatedStudents,
@@ -292,7 +292,7 @@ export const fetchCoordinateTeacherHomeworkDetails = (
         const homeworkStatus = row.hw_details.find((detail) => detail.subject === col.subject_id);
 
         obj[col.subject_name] = homeworkStatus
-          ? { hw_id: homeworkStatus.id, ...homeworkStatus.status }
+          ? { hw_id: homeworkStatus.id, ...homeworkStatus.status , last_submission_date : homeworkStatus.last_submission_dt }
           : {};
       });
       return obj;

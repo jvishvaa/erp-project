@@ -24,6 +24,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '2px',
     // height: "250px",
     fontSize: '1em',
+    display: 'flex',
+    flexDirection: 'column'
   },
 }));
 
@@ -36,15 +38,15 @@ export default function Calendar() {
     return item.holiday_start_date === item.holiday_end_date
       ? moment(item.holiday_start_date, 'YYYY-MM-DD').format('DD-MM-YYYY')
       : `${moment(item.holiday_start_date, 'YYYY-MM-DD').format('DD-MM-YYYY')} - ${moment(
-          item.holiday_end_date,
-          'YYYY-MM-DD'
-        ).format('DD-MM-YYYY')}`;
+        item.holiday_end_date,
+        'YYYY-MM-DD'
+      ).format('DD-MM-YYYY')}`;
   };
 
   return (
     <div style={{ position: 'relative' }}>
       <Grid container className={classes.parentContainer}>
-        <Grid item xs={10}>
+        <div>
           {eveType ? (
             <Grid style={{ display: eveType ? 'block' : 'none' }}>
               <Card>
@@ -61,7 +63,7 @@ export default function Calendar() {
                           <Grid item xs={5}>
                             {item.title}
                           </Grid>
-                          <Grid item xs={6} style={{fontSize: '12px' , margin: 'auto 0'}} >
+                          <Grid item xs={6} style={{ fontSize: '12px', margin: 'auto 0' }} >
                             {getDisplayDate(item)}
                           </Grid>
                         </Grid>
@@ -90,38 +92,27 @@ export default function Calendar() {
               </Card>
             </Grid>
           ) : (
+            <div>
+              <div style={{textAlign : 'center', fontSize: '20px',fontWeight: '600' , color: '#464D57'}} >
+                Calendar
+              </div>
             <RangeCalender setEventList={setEventList} />
+            </div>
           )}
-        </Grid>
-        <Grid item xs={2} style={{ display: 'flex', position: 'relative', backgroundColor: 'white' }}>
-          <hr />
-          <div className={classes.divider}></div>
-          <Grid container direction='row' justifyContent='center' alignItems='center'>
-            <Grid className={classes.themeColor}>
-              <Box
-                onClick={() => {
-                  setEveType('events');
-                }}
-                style={{ textAlign: 'center', padding: '5px', cursor: 'pointer' }}
-              >
-                <h2 style={{ lineHeight: '1.5rem' }}>{eventList.length}</h2>
-                <p>Holidays</p>
-              </Box>
-            </Grid>
-            {/* <Grid className={classes.themeColor}>
-              <Box
-                onClick={() => {
-                  setEveType('birthdays');
-                }}
-                style={{ textAlign: 'center', padding: '10px', cursor: 'pointer' }}
-              >
-                <h1 style={{ lineHeight: '1.5rem' }}>5</h1>
-                <p>Birthdays</p>
-              </Box>
-            </Grid> */}
-          </Grid>
-        </Grid>
-      </Grid>
-    </div>
+      </div>
+      <div style={{ display: 'flex', position: 'relative', backgroundColor: 'white' , padding: '5px' }}>
+       
+            <Box
+              onClick={() => {
+                setEveType('events');
+              }}
+              style={{ textAlign: 'center', padding: '5px', cursor: 'pointer',minWidth: '30%' , border : '1px solid #2DC8A8' , display: 'flex' , justifyContent: 'space-between' , margin: 'auto 0', borderRadius: '10px' }}
+            >
+              <h2 style={{ fontSize: '15px' , background: '#2DC8A8' , borderRadius: '25px' , minWidth: '25%' , color: 'white' }}>{eventList.length}</h2>
+              <p  style={{ fontSize: '15px' , color: '#2DC8A8'  , marginLeft: '1%'}}>Holidays</p>
+            </Box>   
+      </div>
+    </Grid>
+    </div >
   );
 }

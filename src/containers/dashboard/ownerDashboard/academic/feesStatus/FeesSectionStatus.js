@@ -150,39 +150,8 @@ const useStyles = makeStyles((theme) => ({
     margin: '5px 0',
   },
 }));
-const arr = [
-  {
-    roll: 1,
-    name: 'Student Name 1',
-    fees: '1200000',
-    paid: '8960000',
-    outstanding: '450000',
-  },
-  {
-    roll: 2,
-    name: 'Student Name 2',
-    fees: '200000',
-    paid: '4960000',
-    outstanding: '550000',
-  },
-  {
-    roll: 3,
-    name: 'Student Name 3',
-    fees: '200000',
-    paid: '4960000',
-    outstanding: '550000',
-  },
-  {
-    roll: 4,
-    name: 'Student Name 4',
-    fees: '200000',
-    paid: '4960000',
-    outstanding: '550000',
-  },
-];
 
 function Row(props) {
-  // console.log(props,'HUUUUUUU')
   const {
     row,
     params: { branchId, gradeId },
@@ -196,7 +165,7 @@ function Row(props) {
   const [propsData, setPropsData] = useState([]);
   const [gradeName, setGradeName] = useState('');
 
-  const { session_year: sessionYearId = '' } =
+  const { id: sessionYearId = '' } =
     JSON.parse(sessionStorage.getItem('acad_session')) || {};
 
   useEffect(() => {
@@ -218,6 +187,7 @@ function Row(props) {
         .then((res) => {
           setSubTable(res.data);
           setLoading(false);
+          console.log(res.data);
         })
         .catch((err) => {
           console.log(err);
@@ -261,13 +231,13 @@ function Row(props) {
           <b>{row.grade_name}</b>
         </TableCell>
         <TableCell align='right' style={{ color: '#4180e7' }}>
-          <b>₹ {isNaN(row?.totalfees) ? 0 : Math.round(row?.totalfees).toLocaleString()}</b>
+          <b>{Math.round(row.totalfees)}</b>
         </TableCell>
         <TableCell align='right' style={{ color: '#08cf39' }}>
-          <b>₹ {isNaN(row?.paid) ? 0 : Math.round(row?.paid).toLocaleString()}</b>
+          <b>{Math.round(row.paid)}</b>
         </TableCell>
         <TableCell align='right' style={{ color: '#ff3573' }}>
-          <b>₹ {isNaN(row?.outstanding) ? 0 : Math.round(row?.outstanding).toLocaleString()}</b>
+          <b>{Math.round(row.outstanding)}</b>
         </TableCell>
         <TableCell align='right'>
           <Box>
@@ -279,7 +249,6 @@ function Row(props) {
             aria-label='expand row'
             size='small'
             onClick={() => handleOpen(row?.grade, row?.grade_name)}
-            // onClick ={handleOpen(e)}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
@@ -290,16 +259,6 @@ function Row(props) {
           <Collapse in={open} timeout='auto' unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Table aria-label='purchases'>
-                {/* <TableHead>
-                                    <TableRow>
-                                        <TableCell></TableCell>
-                                        <TableCell style={{ textAlign: 'left' }}></TableCell>
-                                        <TableCell style={{ textAlign: 'left' }}></TableCell>
-                                        <TableCell style={{ textAlign: 'left' }}></TableCell>
-                                        <TableCell style={{ textAlign: 'left' }}></TableCell>
-                                        <TableCell />
-                                    </TableRow>
-                                </TableHead> */}
                 <TableBody>
                   {subTable.map((historyRow) => (
                     <TableRow style={{ textAlign: 'left' }}>
@@ -308,16 +267,16 @@ function Row(props) {
                       </TableCell>
 
                       <TableCell style={{ textAlign: 'left', color: '#4180e7' }}>
-                        <b> ₹ {isNaN(historyRow?.totalfees) ? 0 : Math.round(historyRow?.totalfees).toLocaleString()}</b>
+                        <b>{Math.round(historyRow?.totalfees)}</b>
                       </TableCell>
                       {/* <TableCell></TableCell> */}
                       <TableCell style={{ textAlign: 'left', color: '#08cf39' }}>
-                        <b> ₹ {isNaN(historyRow?.paid) ? 0 : Math.round(historyRow?.paid).toLocaleString()}</b>
+                        <b>{Math.round(historyRow?.paid)}</b>
                       </TableCell>
                       {/* <TableCell></TableCell> */}
                       <TableCell style={{ textAlign: 'left', color: '#ff3573' }}>
                         {' '}
-                        <b>₹ {isNaN(historyRow?.outstanding) ? 0 : Math.round(historyRow?.outstanding).toLocaleString()}</b>
+                        <b>{Math.round(historyRow?.outstanding)}</b>
                       </TableCell>
                       {/* <TableCell></TableCell> */}
                       {/* <TableCell></TableCell> */}
@@ -366,7 +325,6 @@ const FeesSectionStatus = (props) => {
   const [historyData, setHistoryData] = useState('');
 
   useEffect(() => {
-    // console.log(history.location.state,'MO*****8888888')
     setHistoryData(history.location.state);
   }, [history]);
 
@@ -386,7 +344,6 @@ const FeesSectionStatus = (props) => {
   };
 
   const handleChange = () => {
-    console.log('hello');
     setExpanded(expanded ? false : true);
   };
 
@@ -406,7 +363,6 @@ const FeesSectionStatus = (props) => {
       );
       if (data) {
         setLoading(false);
-        // console.log(data,'KIIIIII')
         setGradeData(data);
       } else {
         throw new Error(data?.message);

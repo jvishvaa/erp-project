@@ -77,6 +77,9 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     color: 'blue',
   },
+  cardContant: {
+    padding: '8px 16px !important',
+  },
   textAlignEnd: {
     textAlign: 'end',
   },
@@ -111,8 +114,8 @@ const StuffDetails = (props) => {
   const classes = useStyles();
   const history = useHistory();
   const [loading, setLoading] = useState(true);
-//   const [branchName, setBranchName] = useState(history.location.state.payload.branchName);
-//   const [userName, setUserName] = useState(history.location.state.payload.userName);
+  //   const [branchName, setBranchName] = useState(history.location.state.payload.branchName);
+  //   const [userName, setUserName] = useState(history.location.state.payload.userName);
   const [totalStaff, setTotalStaff] = useState(0);
   const [userData, setUserData] = useState(null);
   const {
@@ -121,7 +124,7 @@ const StuffDetails = (props) => {
     },
   } = props;
 
-  const {branchName,userName} = history.location.state.payload
+  const { branchName, userName } = history.location.state.payload;
 
   const getGradeWiseState = () => {
     setLoading(true);
@@ -159,9 +162,9 @@ const StuffDetails = (props) => {
           <Grid container spacing={3} justifyContent='space-between'>
             <Grid item xs={12}>
               <div className={clsx(classes.breadcrumb)}>
-              <IconButton size='small' onClick={() => history.goBack()}>
-                <ArrowBackIcon />
-              </IconButton>
+                <IconButton size='small' onClick={() => history.goBack()}>
+                  <ArrowBackIcon />
+                </IconButton>
                 <Typography variant='h6' className={clsx(classes.textBold)}>
                   Dashboard
                 </Typography>
@@ -216,7 +219,7 @@ const StuffDetails = (props) => {
                     <Grid container spacing={2}>
                       <Grid item xs={3}>
                         <Card elevation={1}>
-                          <CardContent>
+                          <CardContent className={clsx(classes.cardContant)}>
                             <Typography variant='body1'>Total Days</Typography>
                             <Typography variant='h6' className={clsx(classes.textBold)}>
                               {userData?.total_days}
@@ -226,7 +229,9 @@ const StuffDetails = (props) => {
                       </Grid>
                       <Grid item xs={3}>
                         <Card elevation={1}>
-                          <CardContent className={clsx(classes.cardContantFlex)}>
+                          <CardContent
+                            className={clsx(classes.cardContantFlex, classes.cardContant)}
+                          >
                             <span
                               className={clsx(
                                 classes.cardLetter,
@@ -248,7 +253,9 @@ const StuffDetails = (props) => {
                       </Grid>
                       <Grid item xs={3}>
                         <Card elevation={1}>
-                          <CardContent className={clsx(classes.cardContantFlex)}>
+                          <CardContent
+                            className={clsx(classes.cardContantFlex, classes.cardContant)}
+                          >
                             <span
                               className={clsx(
                                 classes.cardLetter,
@@ -270,7 +277,9 @@ const StuffDetails = (props) => {
                       </Grid>
                       <Grid item xs={3}>
                         <Card elevation={1}>
-                          <CardContent className={clsx(classes.cardContantFlex)}>
+                          <CardContent
+                            className={clsx(classes.cardContantFlex, classes.cardContant)}
+                          >
                             <span
                               className={clsx(
                                 classes.cardLetter,
@@ -283,11 +292,9 @@ const StuffDetails = (props) => {
                             </span>
                             <div>
                               <Typography variant='h6'>
-                                {userData?.percentage_present}
+                                {userData?.percentage_present}%
                               </Typography>
-                              <Typography variant='body1'>
-                                % Admin Staff Present
-                              </Typography>
+                              <Typography variant='body1'>Present</Typography>
                             </div>
                           </CardContent>
                         </Card>

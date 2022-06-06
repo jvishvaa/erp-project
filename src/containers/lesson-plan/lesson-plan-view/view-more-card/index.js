@@ -13,6 +13,7 @@ import { useLocation } from 'react-router-dom';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { AttachmentPreviewerContext } from '../../../../components/attachment-previewer/attachment-previewer-contexts';
+import SectionFilter from '../SectionFilter';
 
 const useStyles = makeStyles((theme) => ({
   rootViewMore: theme.rootViewMore,
@@ -41,6 +42,8 @@ const ViewMoreCard = ({
   centralSubjectName,
   setCompletedStatus,
   handleClickOpenFeed,
+  sessionBranchGrade,
+  completedSections,
 }) => {
   const classes = useStyles();
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
@@ -63,16 +66,22 @@ const ViewMoreCard = ({
   } = subjectData || {};
   const { chapter_name = '', id: chapterId = '' } = chapterData || {};
   const { volume_name = '', id: volumeId = '' } = volumeData || {};
+  const [open,setOpen] = useState(false);
 
   const checkFeedback = () => {
-    console.log(periodDataForView, "completed");
     if (completedStatus) {
       handleClickOpenFeed()
     }
   }
 
-  const handleComplete = () => {
+
+  const handleComplete = (sectionIds,sectionList) => {
+    if(sectionIds.length === 0){
+      return setAlert('error', 'please Select sections')
+    }
+    setOpen(false)
     setLoading(true);
+    setOpen(false)
     let request = {
       academic_year: session_year,
       academic_year_id: yearId,
@@ -84,6 +93,7 @@ const ViewMoreCard = ({
       grade_subject: filterDataDown?.subject?.id,
       central_gs_mapping_id: viewMoreData[0]?.mapping_id,
       period_id: periodDataForView?.id,
+      section_mapping_id: sectionIds
     };
     axiosInstance
       .post(`${endpoints.lessonPlan.periodCompleted}`, request)
@@ -91,8 +101,13 @@ const ViewMoreCard = ({
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
           setCompletedStatus(result?.data?.result?.is_completed);
-          handleClickOpenFeed()
-          // setOnComplete(result.data.result.is_completed);
+          // checkFeedback()
+          if(sectionList.length === sectionIds.length){
+            handleClickOpenFeed()
+          }
+          setViewMore(false)
+          setSelectedIndex(-1)
+          // handleClickOpenFeed()
         } else {
           setAlert('error', result?.data?.message);
           // setOnComplete(false);
@@ -197,6 +212,9 @@ const ViewMoreCard = ({
           </div>
         </div>
       ))}
+
+      {open ? <SectionFilter  setOpen={setOpen} open={open} handleComplete={handleComplete} sessionBranchGrade={sessionBranchGrade} completedSections={completedSections} /> : null}
+      
       {location.pathname === '/lesson-plan/teacher-view' && (
         <>
           {!completedStatus && (
@@ -210,7 +228,7 @@ const ViewMoreCard = ({
                 style={{ color: 'white', width: '100%' }}
                 color='primary'
                 size='small'
-                onClick={handleComplete}
+                onClick={()=>setOpen(true)}
               >
                 Complete
               </Button>

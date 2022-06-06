@@ -189,6 +189,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                   isOpened: subjects.hw_status.is_opened,
                   submitted_at: subjects.submitted_at,
                   last_sub: subjects.last_submission_dt,
+                  sub_mode: subjects.submission_mode
                 };
             });
             if (!tempobj[header.subject_slag]) {
@@ -241,7 +242,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
     setIsSelectedCell({ row, index });
   };
 
-  const handleOpenHomework = (id, classDate, subjectName, status, isEvaluated) => {
+  const handleOpenHomework = (id, classDate, subjectName, status, isEvaluated , row) => {
     setHomeworkSubmission({
       isOpen: true,
       homeworkId: id,
@@ -251,6 +252,12 @@ const StudentHomework = withRouter(({ history, ...props }) => {
       isEvaluated
     });
   };
+
+  const checkMode = (id, classDate, subjectName, status, mode) => {
+    if(mode == 'online'){
+      handleOpenHomework(id , classDate , subjectName , status)
+    }
+  }
 
   const handleStartDateChange = (date) => {
     const endDate = getDaysAfter(date.clone(), 6);
@@ -688,14 +695,18 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                           ) : null}
                                           {row[headers.subject_slag].isEvaluted ? (
                                             <span
-                                              onClick={() =>
-                                                handleOpenHomework(
-                                                  row[headers.subject_slag].homeworkId,
-                                                  row.date,
-                                                  headers.subject_slag,
-                                                  3
-                                                )
-                                              }
+                                              // onClick={() =>
+                                              //   handleOpenHomework(
+                                              //     row[headers.subject_slag].homeworkId,
+                                              //     row.date,
+                                              //     headers.subject_slag,
+                                              //     3,row[headers?.subject_slag]?.sub_mode
+                                              //   )
+                                              // }
+                                              onClick={() => checkMode( row[headers.subject_slag].homeworkId,
+                                                row.date,
+                                                headers.subject_slag,
+                                                3,row[headers?.subject_slag]?.sub_mode)}
                                             >
                                               <SvgIcon
                                                 component={() => (
@@ -704,7 +715,7 @@ const StudentHomework = withRouter(({ history, ...props }) => {
                                                       width: '35px',
                                                       height: '35px',
                                                       padding: '5px',
-                                                      cursor: 'pointer',
+                                                      cursor: row[headers?.subject_slag]?.sub_mode === 'online' ? 'pointer' : 'default'
                                                     }}
                                                     src={studentHomeworkEvaluted}
                                                     alt='homeworkEvaluted'
