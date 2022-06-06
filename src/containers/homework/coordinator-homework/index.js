@@ -56,6 +56,7 @@ import {
   setSelectedCoFilters,
   resetSelectedCoFilters,
 } from '../../../redux/actions';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import HomeworkRow from './homework-row';
 import ViewHomework from './view-homework';
 import ViewHomeworkSubmission from './view-homework-submission';
@@ -268,7 +269,7 @@ const CoordinatorTeacherHomework = withRouter(
 
     const handleSelectCol = (col, view) => {
       const { homeworkId, subjectId, sectionId, coord_selected_teacher_id } = col;
-      fetchStudentLists(homeworkId, subjectId, sectionId, coord_selected_teacher_id);
+      fetchStudentLists(homeworkId, subjectId, sectionId, coord_selected_teacher_id , col?.date);
       setSelectedCol(col);
       if (isMobile) {
         setActiveView('card-view');
@@ -1099,6 +1100,14 @@ const CoordinatorTeacherHomework = withRouter(
                                 )}
                               />
                               <Typography color="secondary">HW Evaluated</Typography>
+                            </div>
+                            <div className='icon-desc-container'>
+                            <div className='badgeContent' >
+                              <Badge color="success" variant="dot" >
+                                <AssignmentIcon style={{color: '#014b7e'}} />
+                              </Badge>
+                            </div>
+                            <Typography color="secondary" style={{ fontSize: '16px' }}>Online Submission</Typography>
                             </div>
                           </div>
                         )}
