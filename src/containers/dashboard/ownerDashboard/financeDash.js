@@ -332,8 +332,8 @@ const FinanceOwnerDashboard = (props) => {
         `${endpoints.ownerDashboard.getCurrReport}?branch_id=${branch}&acad_session_id=${acad}`,
         {
           headers: {
-            // 'X-DTS-Host': window.location.host,
-            'X-DTS-Host': "qa.olvorchidnaigaon.letseduvate.com",
+            'X-DTS-Host': window.location.host,
+            // 'X-DTS-Host': "qa.olvorchidnaigaon.letseduvate.com",
             Authorization: `Bearer ${token}`,
           },
         }
