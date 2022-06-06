@@ -111,8 +111,8 @@ const OwnerDashboard = () => {
   };
 
   const handleAcadRefresh = () => {
-    getAvgScore();
-    getCurrReport();
+    // getAvgScore();        comment_out_extra_api
+    // getCurrReport();       comment_out_extra_api
     getAttendanceReportOverview();
     setAcadCounter(true);
   };
