@@ -137,7 +137,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
       history.push(
         `/assessment/?${generateQueryParamSting({ page, info: showInfo, status })}`
       ),
-    [showInfo, page, status] //
+    [showInfo, page, status]
   );
   const handleCloseInfo = () => {
     setShowInfo(undefined);
