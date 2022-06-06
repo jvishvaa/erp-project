@@ -42,7 +42,8 @@ const ViewMoreCard = ({
   centralSubjectName,
   setCompletedStatus,
   handleClickOpenFeed,
-  sessionBranchGrade
+  sessionBranchGrade,
+  completedSections,
 }) => {
   const classes = useStyles();
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
@@ -68,13 +69,14 @@ const ViewMoreCard = ({
   const [open,setOpen] = useState(false);
 
   const checkFeedback = () => {
-    console.log(periodDataForView, "completed");
     if (completedStatus) {
       handleClickOpenFeed()
     }
   }
 
-  const handleComplete = (sectionIds) => {
+
+  const handleComplete = (sectionIds,sectionList) => {
+    setOpen(false)
     setLoading(true);
     setOpen(false)
     let request = {
@@ -96,8 +98,13 @@ const ViewMoreCard = ({
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
           setCompletedStatus(result?.data?.result?.is_completed);
-          handleClickOpenFeed()
-          // setOnComplete(result.data.result.is_completed);
+          // checkFeedback()
+          if(sectionList.length === sectionIds.length){
+            handleClickOpenFeed()
+          }
+          setViewMore(false)
+          setSelectedIndex(-1)
+          // handleClickOpenFeed()
         } else {
           setAlert('error', result?.data?.message);
           // setOnComplete(false);
@@ -202,7 +209,9 @@ const ViewMoreCard = ({
           </div>
         </div>
       ))}
-       {open ? <SectionFilter  setOpen={setOpen} open={open} handleComplete={handleComplete} sessionBranchGrade={sessionBranchGrade} /> : null}
+
+      {open ? <SectionFilter  setOpen={setOpen} open={open} handleComplete={handleComplete} sessionBranchGrade={sessionBranchGrade} completedSections={completedSections} /> : null}
+      
       {location.pathname === '/lesson-plan/teacher-view' && (
         <>
           {!completedStatus && (
