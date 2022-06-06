@@ -31,6 +31,11 @@ import axiosInstance from 'config/axios';
 // import axiosInstance from '../../../../config/axios';
 import FilterDetailsContext from '../store/filter-data';
 import { connect, useSelector } from 'react-redux';
+import FinanceDash from 'containers/dashboard/ownerDashboard/financeDash';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import { TextField } from '@material-ui/core';
+import apiRequest from 'containers/dashboard/StudentDashboard/config/apiRequest';
+import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 
 function TeacherDashboard() {
   // const [studentDetail, setStudentDetail] = useState({});
@@ -49,6 +54,23 @@ function TeacherDashboard() {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedBranchId, setSelectedBranchId] = useState([]);
+  const [branchList, setBranchList] = useState([]);
+  const [branchCounter, setBranchCounter] = useState(false);
+  const [branchData, setBranchData] = useState([]);
+  const [acadCounter, setAcadCounter] = useState(false);
+  const initialState = {
+    attendence: false,
+    tranction: false,
+    feeStatus: false,
+    academic: false,
+    staffDetails: false,
+  };
+  const [progress1, setProgress1] = useState(initialState);
+  const { setAlert } = useContext(AlertNotificationContext);
+
+  const [currBranch, setCurrBranch] = useState();
 
   const gradeSectionDetails = () => {
     axios
@@ -197,6 +219,79 @@ function TeacherDashboard() {
     }
   }, []);
 
+  useEffect(() => {
+    getBranches();
+  }, [moduleId, selectedAcademicYear]);
+
+  const getBranches = () => {
+    if (moduleId != '' || null || undefined) {
+      axiosInstance
+        .get(
+          `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
+        )
+        .then((res) => {
+          setBranchList(res.data.data.results);
+          const ids = res.data.data.results?.map((el) => el?.id); //acad id
+          setSelectedBranchId(ids);
+          setBranchData(res.data.data.results);
+          // if(!data?.is_superuser && !(userLevel === 1 || userLevel === 2 ||userLevel === 3 ||userLevel === 4)){
+          if (res.data.data.results.length === 1) {
+            handleBranch('', [res.data.data.results[0]]);
+          }
+        })
+        .catch(() => {});
+    }
+  };
+
+  const handleBranch = (event = {}, new_value = []) => {
+    let value = [new_value]
+    // setSelectedDisplayBranch()
+    setSelectedBranch([]);
+    if (new_value !== null && value?.length > 0) {
+      const ids = value.map((el) => el);
+      const selectedId = value.map((el) => el?.id); //acad_id
+      setSelectedBranch(ids);
+      setBranchList(ids);
+      setSelectedBranchId(selectedId);
+      setBranchCounter(true);
+    }
+    if (new_value === null || value?.length === 0) {
+      getBranches();
+      setBranchCounter(false);
+    }
+  };
+
+  const getCurrReport = (params) => {
+    if(selectedBranchId.length > 1){
+      setAlert('error','Please select at least and at most one branch');
+      return
+    }
+    setProgress1((prevState) => ({
+      ...prevState,
+      academic: true,
+    }));
+    apiRequest(
+      'get',
+      `${endpoints.ownerDashboard.getAllBranchCurr}?branch_id=${selectedBranchId}`,
+      null,
+      null,
+      true,
+      10000
+    )
+      .then((res) => {
+        setCurrBranch(res.data.result);
+        setProgress1(initialState);
+        // setFinanceData(res.data)
+        // setRoleWiseAttendance(res.data.result)
+      })
+      .catch(() => {});
+  };
+
+  const handleAcadRefresh = () => {
+    getCurrReport();
+    setAcadCounter(true);
+  };
+
   return (
     <>
       <FilterDetailsContext.Provider
@@ -208,9 +303,48 @@ function TeacherDashboard() {
       >
         <Grid container spacing={2}>
           <Grid item xs={8}>
-            <Typography style={{ fontWeight: '1000', fontSize: '16px' }}>
-              Dashboard
-            </Typography>
+            <Grid
+              item
+              // container
+              xs={12}
+              // spacing={2}
+              justifyContent='space-between'
+              alignItems='center'
+              style={{ paddingLeft: '10px', display: 'flex' }}
+            >
+              <Grid item md={2}>
+                <Typography style={{ fontSize: '32px', fontWeight: 'bolder' }}>
+                  {' '}
+                  Dashboard{' '}
+                </Typography>
+              </Grid>
+
+              <Grid item md={2} xs={12}>
+                <Autocomplete
+                // multiple
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleBranch}
+                  id='branch_id'
+                  className='dropdownIcon'
+                  // value={selectedBranch || []}
+                  options={branchData || []}
+                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                  // getOptionSelected={(option, value) =>
+                  //   option?.branch?.id == value?.branch?.id
+                  // }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={7}></Grid>
+            </Grid>
             <Grid container spacing={2}>
               {/* <Grid item xs={12}>
                 <TodayClass branchdetail={branchDetail} />
@@ -221,13 +355,13 @@ function TeacherDashboard() {
                     <Grid container direction='column'>
                       <Grid item xs={12}>
                         <TodayAttendance attendanceDetail={attendanceDetail} />
-                        <Grid item xs={12}>
+                        {/* <Grid item xs={12}>
                           <Overview
                             recentSubmissionDetail={recentSubmissionDetail}
                             overviewDetails={overviewDetails}
                             acadId={acadId}
                           />
-                        </Grid>
+                        </Grid> */}
                       </Grid>
                     </Grid>
                   </Grid>
@@ -237,9 +371,17 @@ function TeacherDashboard() {
                         <AssessmentNew gradesectionDetail={gradesectionDetail} />
                       </Grid> */}
                       <Grid item xs={12}>
-                        <CurriculumCompletionNew
-                          curriculumDetail={curriculumDetail}
-                          curriculumDetails={curriculumDetails}
+                        {/* <CurriculumCompletionNew curriculumDetail={curriculumDetail} /> */}
+                        {/* <OwnerLikeCurriculam/> */}
+                        <FinanceDash
+                          branchList={branchList}
+                          branchData={branchData}
+                          getBranches={getBranches}
+                          branchCounter={branchCounter}
+                          selectedBranch={selectedBranch}
+                          handleAcadRefresh={handleAcadRefresh}
+                          progress1={progress1}
+                          acadCounter={acadCounter}
                         />
                       </Grid>
                       {/* <Grid item xs={12}>
