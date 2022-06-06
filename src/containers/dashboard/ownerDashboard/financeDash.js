@@ -8,6 +8,7 @@ import {
   InputAdornment,
   Card,
   CardHeader,
+  CardActions,
   CardContent,
   IconButton,
   Accordion,
@@ -22,6 +23,7 @@ import {
   Chip,
   Avatar,
   Tooltip,
+  Paper,
 } from '@material-ui/core';
 import {
   Search as SearchIcon,
@@ -29,6 +31,8 @@ import {
   ArrowBack as ArrowBackIcon,
   ArrowRightAlt as ArrowRightAltIcon,
   MonetizationOn as MonetizationOnIcon,
+  ChevronRight as ChevronRightIcon,
+  ArrowForwardIosSharp as ArrowForwardIosSharpIcon,
 } from '@material-ui/icons';
 import { withRouter, useHistory } from 'react-router-dom';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
@@ -51,11 +55,29 @@ import axios from 'axios';
 import endpoints from 'config/endpoints';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import apiRequest from '../StudentDashboard/config/apiRequest';
-
+import { divide } from 'lodash';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 // import Box from '@mui/material/Box';
 // import Box from '@material-ui/core/CircularProgress';
 
 const useStyles = makeStyles((theme) => ({
+  refreshButtonMargin: {
+    marginTop: '10px',
+  },
+  classTableStaff: {
+    border: '1px solid lightgray',
+    borderRadius: '4px',
+    margin: '1px 0',
+  },
+  cardHeaderAttendance: {
+    borderRadius: '8px',
+    border: '1px solid #D7E0E7',
+  },
+  newBorder: {
+    border: '1px solid #D7E0E7',
+    borderRadius: '4px',
+    opacity: '1',
+  },
   studentStrenghtDownloadButton: {
     width: '100%',
     color: theme.palette.secondary.main,
@@ -112,6 +134,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     justifyContent: 'space-between',
     padding: '3px',
+    cursor: 'pointer',
   },
   detailsDiv: {
     borderRadius: '5px',
@@ -125,7 +148,7 @@ const useStyles = makeStyles((theme) => ({
   },
   accordion: {
     margin: '10px 0 !important',
-    border: '1px solid black',
+    // border: '1px solid black',
     '&::before': {
       backgroundColor: 'black',
     },
@@ -147,23 +170,28 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    height: '80%',
+    // height: '90%',
   },
   transactionTable: {
     border: '1px solid lightgrey',
     display: 'flex',
     borderRadius: '5px',
+    margin: '2px 0',
+    padding: '3px',
   },
   transactionTextDesign: {
-    fontSize: '10px',
+    fontSize: '12px',
+    lineHeight: '17px',
   },
   transactionTextDesignLeft: {
     textAlign: 'right',
-    fontSize: '10px',
+    fontSize: '14px',
+    lineHeight: '17px',
   },
   transactionTextDesignGray: {
     textAlign: 'right',
-    fontSize: '10px',
+    fontSize: '12px',
+    lineHeight: '17px',
     color: 'grey',
   },
   viewButton: {
@@ -189,110 +217,78 @@ const useStyles = makeStyles((theme) => ({
     color: '#08cf39',
   },
   cardtopicStyle: {
-    fontSize: '15px',
+    fontSize: '18px',
+    // border:'1px solid #D7E0E7'
   },
   customLeftText: {
     textAlign: 'left',
   },
-  finhide: {
-    flexWrap: 'wrap',
+  viewMoreButton: {
+    // fontSize: '16px',
+    color: 'black',
+    backgroundColor: 'white',
+    font: 'normal normal normal 16px/19px',
+    letterSpacing: '0px',
   },
-  acadHide: {
-    margin: '1%',
-    minWidth: '98%',
+  feesOverviewContainer: {},
+  cardHeaderText: {
+    fontSize: '18px',
+    lineHeight: '22px',
   },
-  acadnot: {
-    margin: '1% 0',
-    minWidth: '100%',
+  refreshButton: {
+    float: 'right',
   },
-
-  // customBorder: {
-  //   borderLeft:'2px solid grey',
-  //   borderRight:'2px solid grey',
-  //   paddingLeft:'10px',
-  //   paddingRight:'10px'
-  //   // borderRadius:'5px'
-  // }
+  feesOverview: {
+    width: '100%',
+    minHeight: '170px',
+  },
+  totalFessText: {
+    fontSize: '24px',
+    lineHeight: '28px',
+  },
+  sideBorder: {
+    borderLeft: '2px solid lightgray',
+    borderRight: '2px solid lightgray',
+  },
+  feesOverviewValue: {
+    fontSize: '20px',
+    lineHeight: '24px',
+  },
+  color1: {
+    color: '#2DC8A8',
+  },
+  color2: {
+    color: '#FE8083',
+  },
+  color3: {
+    color: '#FFC258',
+  },
+  feesOverviewViewMore: {
+    textDecoration: 'none',
+    fontSize: '18px',
+    lineHeight: '22px',
+    float: 'right',
+    backgroundColor: 'white',
+    color: '#536476',
+  },
+  arrowViewViewMore: {
+    textDecoration: 'none',
+    lineHeight: '22px',
+    float: 'right',
+    backgroundColor: 'white',
+    color: '#536476',
+  },
+  resentTransactionText: {
+    margin: '10px 0 0',
+    padding: '5px 0 5px 5px',
+    backgroundColor: '#536476',
+    color: 'white',
+  },
 }));
 
-const arr = [
-  {
-    branchName: 'Branch 1',
-    curriculumCompletion: '7%',
-    studentReport: '85%',
-    attendanceReport: '85%',
-  },
-  {
-    branchName: 'Branch 2',
-    curriculumCompletion: '71%',
-    studentReport: '86%',
-    attendanceReport: '86%',
-  },
-  {
-    branchName: 'Branch 3',
-    curriculumCompletion: '72%',
-    studentReport: '87%',
-    attendanceReport: '87%',
-  },
-];
-
-const todayArray = [
-  {
-    role: 'Admins',
-    total: '5',
-    present: '4',
-    absent: '4',
-  },
-  {
-    role: 'Teacher',
-    total: '1250',
-    present: '1150',
-    absent: '50',
-  },
-  {
-    role: 'Staffs',
-    total: '1250',
-    present: '1150',
-    absent: '50',
-  },
-  {
-    role: 'Students',
-    total: '1250',
-    present: '1150',
-    absent: '50',
-  },
-];
-
-const transaction = [
-  {
-    bank: 'via Online Banking',
-    branch: 'Branch Name 1',
-    time: '30min ago',
-    amount: '₹ 48,000',
-  },
-  {
-    bank: 'via Online Banking',
-    branch: 'Branch Name 1',
-    time: '30min ago',
-    amount: '₹ 48,000',
-  },
-  {
-    bank: 'via Online Banking',
-    branch: 'Branch Name 1',
-    time: '30min ago',
-    amount: '₹ 48,000',
-  },
-  {
-    bank: 'via Online Banking',
-    branch: 'Branch Name 1',
-    time: '30min ago',
-    amount: '₹ 48,000',
-  },
-];
 const FinanceOwnerDashboard = (props) => {
   const classes = useStyles();
   const history = useHistory();
-  console.log(props);
 
   const [academicPerformanceDetailsOpen, setAcademicPerformanceDetailsOpen] = useState(
     false
@@ -305,10 +301,12 @@ const FinanceOwnerDashboard = (props) => {
   const [testScoreData, setTestScoreData] = useState();
   const [loading, setLoading] = useState(false);
   const [clicked, setClicked] = useState(false);
+  const { setAlert } = useContext(AlertNotificationContext)
 
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const token = data?.token;
   const user_level = data?.user_level;
+  let users = [2,3,10]
 
   const handleVolumeChange = (event) => {
     setVolume(event.target.value);
@@ -316,14 +314,12 @@ const FinanceOwnerDashboard = (props) => {
 
   const handleChange = (each, value) => (e, isExpanded) => {
     const testclick = document.querySelectorAll('#branchWise');
-    console.log(isExpanded, 'each');
-    console.log(each, 'ind');
     setClicked(true);
     setLoading(true);
     setExpanded(isExpanded ? value : false);
     getCurriculumReport(each?.branch?.id, each?.id);
-    getStudentReport(each?.branch?.id, each?.session_year?.id);
-    // getTestScore(each?.id);
+    getStudentReport(each?.id, each?.session_year?.id);
+    getTestScore(each?.id);
   };
 
   const AcadPerformanceClick = () => {
@@ -337,12 +333,12 @@ const FinanceOwnerDashboard = (props) => {
         {
           headers: {
             'X-DTS-Host': window.location.host,
+            // 'X-DTS-Host': "qa.olvorchidnaigaon.letseduvate.com",
             Authorization: `Bearer ${token}`,
           },
         }
       )
       .then((res) => {
-        console.log(res, 'currreport');
         setCurriculumData(res.data.result);
         setLoading(false);
       })
@@ -357,21 +353,20 @@ const FinanceOwnerDashboard = (props) => {
     //     `${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}`,
     //     {
     //       headers: {
-    //         'X-DTS-Host': window.location.host,
+    //         'X-DTS-Host': "qa.olvorchidnaigaon.letseduvate.com",
     //         Authorization: `Bearer ${token}`,
     //       },
     //     }
     //   )
     apiRequest(
       'get',
-      `${endpoints.ownerDashboard.getStudentAttendance}?branch_id=${branch}&session_year_id=${year}`,
+      `${endpoints.ownerDashboard.getStudentAttendance}?acad_session=${branch}&session_year_id=${year}`,
       null,
       null,
       true,
       10000
     )
       .then((res) => {
-        console.log(res, 'stureport');
         setStudentReportData(res.data.result);
         setLoading(false);
       })
@@ -384,7 +379,7 @@ const FinanceOwnerDashboard = (props) => {
     // axios
     //   .get(`${endpoints.ownerDashboard.getAvgTest}?acad_session_id=${acad}`, {
     //     headers: {
-    //       'X-DTS-Host': window.location.host,
+    //       'X-DTS-Host': "qa.olvorchidnaigaon.letseduvate.com",
     //       Authorization: `Bearer ${token}`,
     //     },
     //   })
@@ -397,7 +392,6 @@ const FinanceOwnerDashboard = (props) => {
       10000
     )
       .then((res) => {
-        console.log(res, 'avgport');
         setTestScoreData(res.data.result);
         setLoading(false);
       })
@@ -410,16 +404,16 @@ const FinanceOwnerDashboard = (props) => {
     if (props?.branchList?.length > 0) {
       getCurriculumReport(props?.branchList[0]?.branch?.id, props?.branchList[0]?.id);
       getStudentReport(
-        props?.branchList[0]?.branch?.id,
+        props?.branchList[0]?.id, //acad id
         props?.branchList[0]?.session_year?.id
       );
-      // getTestScore(props?.branchList[0]?.id);
+      getTestScore(props?.branchList[0]?.id);
     }
   }, [props?.branchList]);
 
   const handleAttendance = (each) => {
     history.push({
-      pathname: `/attendance-report/${each?.branch?.id}`,
+      pathname: `/attendance-report/${each?.id}`, //acad id
       state: {
         acad_session_id: each?.id,
         module_id: props?.moduleId,
@@ -428,18 +422,17 @@ const FinanceOwnerDashboard = (props) => {
   };
 
   const handleStudentreport = (each) => {
-    // console.log("hit");
-    history.push(`/student-report-dash/${each?.branch?.id}`);
+    history.push(`/student-report-dash/${each?.id}`); //acad id
   };
 
   const handleRoute = (data) => {
-    console.log(data);
     // history.push(`/curriculum-completion/${data.branch.id}/`)
     history.push({
       pathname: `/curriculum-completion/${data?.branch?.id}`,
       state: {
         acad_session_id: data?.id,
         module_id: props?.moduleId,
+        branchName: data?.branch?.branch_name,
       },
     });
   };
@@ -453,8 +446,25 @@ const FinanceOwnerDashboard = (props) => {
     });
   };
 
+  const handleRouteTransaction = (data) => {
+    const branchName = data.map((item) => {
+      return item?.branch?.branch_name;
+    });
+
+    const branchId = data.map((item) => {
+      return item?.id; //acad id
+    });
+
+    history.push({
+      pathname: `/trasaction-details/${branchId}/${branchName}`,
+      state: {
+        branchName: branchName,
+      },
+    });
+  };
+
   const feeredirect = () => {
-    if (user_level != 10) {
+    if (!users.includes(user_level)) {
       if (props?.branchCounter === true) {
         history.push({
           pathname: '/fees-table-status',
@@ -469,12 +479,13 @@ const FinanceOwnerDashboard = (props) => {
     }
   };
 
-  const handleBranchRoute = (data) => {
+  const handleBranchRoute = (data, iscurriculam) => {
     history.push({
       pathname: `/curriculum-completion-branchWise`,
       state: {
         branchData: data,
         module_id: props?.moduleId,
+        iscurriculam: iscurriculam,
       },
     });
   };
@@ -486,12 +497,13 @@ const FinanceOwnerDashboard = (props) => {
   }, []);
 
   return (
-    <div style={{ width: '100%', overflow: 'hidden', padding: '20px' }}>
+    <div style={{ width: '100%', overflow: 'hidden', padding: '10px' }}>
       <Grid item container spacing={2}>
-        {academicPerformanceDetailsOpen === false ? (
+        {user_level !== 11 ? (
+        academicPerformanceDetailsOpen === false ? (
           <>
             <Grid item xs={12}>
-              <Card elevation={0}>
+              <Card elevation={1} className={clsx(classes.cardHeaderAttendance)}>
                 <CardHeader
                   title={
                     <Typography
@@ -499,9 +511,9 @@ const FinanceOwnerDashboard = (props) => {
                       className={clsx(classes.clickable, classes.cardtopicStyle)}
                       style={{ display: 'flex' }}
                       // onClick={() => setAcademicPerformanceDetailsOpen(true)}
-                      onClick={staffRedirect}
+                      // onClick={staffRedirect}
                     >
-                      <b>Today's Attendance Overview :</b>{' '}
+                      <b>Today's Attendance Overview :&nbsp;</b>{' '}
                       {props?.branchCounter ? (
                         <Tooltip
                           title={
@@ -528,21 +540,30 @@ const FinanceOwnerDashboard = (props) => {
                         //       </div>
                         //     ))}
                         // </div>
-                        <>All Branch</>
+                        <> All Branch </>
                       )}
                     </Typography>
                   }
                   action={
-                    <Button
-                      className={clsx(classes.viewButton)}
-                      aria-label='view all'
-                      onClick={props.handleTodayAttendance}
-                    >
-                      <RefreshIcon style={{ color: 'blue' }} />
-                    </Button>
+                    <>
+                      <Button
+                        variant='text'
+                        className={clsx(classes.viewMoreButton)}
+                        endIcon={<ChevronRightIcon style={{ color: 'black' }} />}
+                        onClick={staffRedirect}
+                      >
+                        View All Attendance
+                      </Button>
+                      <IconButton
+                        className={clsx(classes.viewButton)}
+                        aria-label='view all'
+                        onClick={props.handleTodayAttendance}
+                      >
+                        <RefreshIcon style={{ color: 'blue', fontSize: '20px' }} />
+                      </IconButton>
+                    </>
                   }
                 />
-                <Divider />
                 <CardContent>
                   <>
                     {props?.progress1?.attendence ? (
@@ -565,7 +586,7 @@ const FinanceOwnerDashboard = (props) => {
                                   <div
                                     className={clsx(
                                       classes.detailsDiv,
-                                      classes.applyBorder
+                                      classes.newBorder
                                     )}
                                   >
                                     <div>
@@ -610,6 +631,7 @@ const FinanceOwnerDashboard = (props) => {
                                         <CircularProgress
                                           variant='determinate'
                                           value={each?.percentage_present}
+                                          style={{ width: '60px', height: '60px' }}
                                         />
                                         <Box
                                           sx={{
@@ -632,15 +654,15 @@ const FinanceOwnerDashboard = (props) => {
                                           </Typography>
                                         </Box>
                                       </Box>
-                                      <IconButton size='small'>
+                                      {/* <IconButton size='small'>
                                         <ArrowRightAltIcon />
-                                      </IconButton>
+                                      </IconButton> */}
                                     </div>
                                   </div>
                                 </Grid>
                               ))}
 
-                            <Grid item xs={3}>
+                            {/* <Grid item xs={3}>
                               <div
                                 className={clsx(classes.detailsDiv, classes.applyBorder)}
                               >
@@ -657,9 +679,9 @@ const FinanceOwnerDashboard = (props) => {
                                   >
                                     <b>
                                       Total :{' '}
-                                      {/* {props?.studentAttendance
+                                      {props?.studentAttendance
                                   ? props?.studentAttendance?.total_strength
-                                  : ''} */}
+                                  : ''}
                                       {isNaN(props?.studentAttendance?.total_strength)
                                         ? 0
                                         : Math.round(
@@ -692,10 +714,10 @@ const FinanceOwnerDashboard = (props) => {
                                   >
                                     <b>
                                       Absent :{' '}
-                                      {/* {props?.studentAttendance
+                                      {props?.studentAttendance
                                   ? props?.studentAttendance?.total_strength -
                                   props?.studentAttendance?.total_present
-                                  : ''} */}
+                                  : ''}
                                       {isNaN(
                                         props?.studentAttendance?.total_strength -
                                           props?.studentAttendance?.total_present
@@ -713,6 +735,7 @@ const FinanceOwnerDashboard = (props) => {
                                     sx={{ position: 'relative', display: 'inline-flex' }}
                                   >
                                     <CircularProgress
+                                      style={{ width: '60px', height: '60px' }}
                                       variant='determinate'
                                       value={props?.studentAttendance?.total_avg}
                                     />
@@ -747,7 +770,7 @@ const FinanceOwnerDashboard = (props) => {
                                   </IconButton>
                                 </div>
                               </div>
-                            </Grid>
+                            </Grid> */}
                           </Grid>
                         ) : (
                           <Grid
@@ -770,685 +793,357 @@ const FinanceOwnerDashboard = (props) => {
                 </CardContent>
               </Card>
             </Grid>
-            <div style={{ display: 'flex', width: '100%' }}>
-              {user_level == 10 ? (
-                ''
-              ) : (
-                <Grid item xs={6} style={{ margin: '10px' }}>
-                  {/* <Grid item xs={12}> */}
-                  <Card>
-                    <CardHeader
-                      style={{ cursor: 'pointer' }}
-                      title={
-                        <Typography
-                          // variant='h5'
-                          style={{ display: 'flex' }}
-                          className={clsx(classes.clickable, classes.cardtopicStyle)}
-                          // onClick={() => user_level != 10 ? history.push('/fees-table-status') : ''}
-                          onClick={feeredirect}
-                          // className={clsx(classes.cardtopicStyle)}
-                        >
-                          <b>Fee Status Overview :</b>{' '}
-                          {props?.branchCounter ? (
-                            <Tooltip
-                              title={
-                                props?.selectedBranch &&
-                                props?.selectedBranch?.map(
-                                  (item) => item?.branch?.branch_name + ' '
-                                )
-                              }
-                            >
-                              <Chip
-                                variant='outlined'
-                                size='small'
-                                // icon={props?.selectedBranch?.length}
-                                avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
-                                label={' Branch Selected'}
-                              />
-                            </Tooltip>
-                          ) : (
-                            // <div style={{ display: 'flex' }}>
-                            //   {props?.selectedBranch &&
-                            //     props?.selectedBranch?.map((item) => (
-                            //       <div style={{ margin: '0 5px' }}>
-                            //         {item?.branch?.branch_name}
-                            //       </div>
-                            //     ))}
-                            // </div>
-                            <>All Branch</>
-                          )}
-                        </Typography>
-                      }
-                      action={
-                        user_level != 10 ? (
-                          <Button
-                            className={clsx(classes.viewButton)}
-                            aria-label='view all'
-                            onClick={props.handleFeeRefresh}
-                          >
-                            <RefreshIcon style={{ color: 'blue' }} />
-                          </Button>
-                        ) : (
-                          ''
-                        )
-                      }
-                    />
-                    <Divider />
-                    <CardContent>
-                      <>
-                        {props?.progress1?.feeStatus ? (
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}
-                          >
-                            <CircularProgress />
-                          </div>
-                        ) : (
-                          <>
-                            {props?.financeData?.totalfees ? (
-                              <Grid container spacing={3} alignItems='center'>
-                                <Grid item xs={12}>
-                                  <Typography
-                                    // variant='h6'
-                                    // style={{ textAlign: 'end' }}
-                                    className={clsx(
-                                      classes.textBold,
-                                      classes.textAlignCenter
-                                    )}
-                                  >
-                                    Total Fee{' '}
-                                    <b
-                                      style={{
-                                        color: '#628fef',
-                                        fontWeight: '800',
-                                        marginLeft: '10px',
-                                      }}
-                                    >
-                                      ₹{' '}
-                                      {props?.financeData
-                                        ? Math.round(
-                                            props?.financeData?.totalfees
-                                          ).toLocaleString()
-                                        : ''}
-                                    </b>
-                                  </Typography>
-                                  {/* <Typography
-                        // variant='h5'
-                        color='primary'
-                        className={clsx(classes.textBold)}
-                      >
-                        ₹ 170,00,000
-                      </Typography> */}
-                                </Grid>
-
-                                <Grid item xs={4}>
-                                  <Card elevation={0}>
-                                    <CardContent className={clsx(classes.cardContant)}>
-                                      <Typography
-                                        // variant='body2'
-                                        // className={classes.textAlignCenter,classes.cus}
-                                        className={clsx(
-                                          classes.textAlignCenter,
-                                          classes.customTextSize
-                                        )}
-                                      >
-                                        Total Collected
-                                      </Typography>
-                                      <div className={clsx(classes.lookALikeButton)}>
-                                        <Typography
-                                          variant='body2'
-                                          className={clsx(
-                                            classes.textAlignCenter,
-                                            classes.textBold,
-                                            classes.colorGreen,
-                                            classes.customTextSize
-                                          )}
-                                        >
-                                          ₹{' '}
-                                          {props?.financeData
-                                            ? Math.round(
-                                                props?.financeData?.paid
-                                              ).toLocaleString()
-                                            : ''}
-                                        </Typography>
-                                      </div>
-                                    </CardContent>
-                                  </Card>
-                                </Grid>
-                                <Grid item xs={4}>
-                                  <Card elevation={0}>
-                                    <CardContent className={clsx(classes.cardContant)}>
-                                      <Typography
-                                        variant='body2'
-                                        // className={classes.textAlignCenter}
-                                        className={clsx(
-                                          classes.customTextSize,
-                                          classes.textAlignCenter
-                                        )}
-                                      >
-                                        Total Pending
-                                      </Typography>
-                                      <div className={clsx(classes.lookALikeButton)}>
-                                        <Typography
-                                          variant='body2'
-                                          className={clsx(
-                                            classes.textAlignCenter,
-                                            classes.textBold,
-                                            classes.colorRed,
-                                            classes.customTextSize
-                                          )}
-                                        >
-                                          ₹{' '}
-                                          {props?.financeData
-                                            ? Math.round(
-                                                props?.financeData?.outstanding
-                                              ).toLocaleString()
-                                            : ''}
-                                        </Typography>
-                                      </div>
-                                    </CardContent>
-                                  </Card>
-                                </Grid>
-                                <Grid item xs={4}>
-                                  <Card elevation={0}>
-                                    <CardContent className={clsx(classes.cardContant)}>
-                                      <Typography
-                                        variant='body2'
-                                        className={classes.textAlignCenter}
-                                      >
-                                        Total Admissions
-                                      </Typography>
-                                      <div className={clsx(classes.lookALikeButton)}>
-                                        <Typography
-                                          variant='body2'
-                                          className={clsx(
-                                            classes.textAlignCenter,
-                                            classes.textBold,
-                                            classes.colorYellow,
-                                            classes.customTextSize
-                                          )}
-                                        >
-                                          {props?.financeData
-                                            ? Math.round(
-                                                props?.financeData?.no_of_admission
-                                              ).toLocaleString()
-                                            : ''}
-                                        </Typography>
-                                      </div>
-                                    </CardContent>
-                                  </Card>
-                                </Grid>
-                              </Grid>
-                            ) : (
-                              <Grid
-                                style={{
-                                  minHeight: '180px',
-                                  textAlign: 'center',
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                }}
-                              >
-                                <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
-                                {user_level != 10 ? (
-                                  <Typography style={{ fontWeight: '600' }}>
-                                    No Records
-                                  </Typography>
-                                ) : (
-                                  <Typography style={{ fontWeight: '600' }}>
-                                    Access Denied
-                                  </Typography>
-                                )}
-                              </Grid>
-                            )}
-                          </>
-                        )}
-                      </>
-                    </CardContent>
-                  </Card>
-                  {/* </Grid> */}
-                  <Card>
-                    <CardHeader
-                      style={{ backgroundColor: '#d6dfe7' }}
-                      title={
-                        <Typography className={clsx(classes.cardtopicStyle)}>
-                          <b> Recent Transaction </b>
-                        </Typography>
-                      }
-                      action={
-                        user_level != 10 ? (
-                          <Button
-                            className={clsx(classes.viewButton)}
-                            aria-label='view all'
-                            onClick={props.handlerecent}
-                          >
-                            <RefreshIcon style={{ color: 'blue' }} />
-                          </Button>
-                        ) : (
-                          ''
-                        )
-                      }
-                    ></CardHeader>
-                    <CardContent
-                      style={{
-                        minHeight: '250px',
-                        display: 'flex',
-                        maxHeight: '300px',
-                        overflow: 'auto',
-                      }}
-                    >
-                      <>
-                        {props?.progress1?.tranction ? (
-                          <div
-                            style={{
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              width: '100%',
-                            }}
-                          >
-                            <CircularProgress />
-                          </div>
-                        ) : (
-                          <>
-                            {props?.recentTransCounter ? (
-                              <Grid container spacing={3} alignItems='center'>
-                                {props?.recentTrans &&
-                                  props?.recentTrans?.map((each, index) => {
-                                    return (
-                                      <>
-                                        <Grid
-                                          item
-                                          xs={12}
-                                          className={clsx(classes.transactionTable)}
-                                        >
-                                          <Grid item md={1}>
-                                            <MonetizationOnIcon />
-                                          </Grid>
-                                          <Grid item md={8}>
-                                            <Typography
-                                              variant='body2'
-                                              className={clsx(
-                                                classes.transactionTextDesign
-                                              )}
-                                            >
-                                              Deposition in the bank <b>{each?.mode}</b>
-                                            </Typography>
-                                            <Typography
-                                              variant='body2'
-                                              className={clsx(
-                                                classes.transactionTextDesign
-                                              )}
-                                            >
-                                              Branch Name {each?.branch}
-                                            </Typography>
-                                          </Grid>
-                                          <Grid item md={3}>
-                                            <Typography
-                                              variant='body2'
-                                              className={clsx(
-                                                classes.transactionTextDesignGray
-                                              )}
-                                            >
-                                              {each?.date}
-                                            </Typography>
-                                            <Typography
-                                              variant='body2'
-                                              className={clsx(
-                                                classes.transactionTextDesignLeft
-                                              )}
-                                            >
-                                              <b>
-                                                ₹{' '}
-                                                {Math.round(
-                                                  each?.amount
-                                                ).toLocaleString()}{' '}
-                                              </b>
-                                            </Typography>
-                                          </Grid>
-                                        </Grid>
-
-                                        {/* <Grid item xs={12}
-                      className={clsx(classes.viewButtonAlign)}
-                    >
-                      <Button
-                        // style={{color:'black',backgroundColor:'white'}}
-                        className={clsx(classes.viewButton)}
-
-                      >
-
-                        View All <DeleteIcon style={{ color: 'black' }} />
-                      </Button>
-
-                    </Grid> */}
-                                      </>
-                                    );
-                                  })}
-                              </Grid>
-                            ) : (
-                              <Grid
-                                style={{
-                                  display: 'flex',
-                                  justifyContent: 'center',
-                                  margin: 'auto',
-                                  alignItems: 'center',
-                                  flexDirection: 'column',
-                                }}
-                              >
-                                <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
-                                {user_level != 10 ? (
-                                  <Typography style={{ fontWeight: '600' }}>
-                                    No Records
-                                  </Typography>
-                                ) : (
-                                  <Typography style={{ fontWeight: '600' }}>
-                                    Access Denied
-                                  </Typography>
-                                )}
-                              </Grid>
-                            )}
-                          </>
-                        )}
-                      </>
-                    </CardContent>
-                  </Card>
-                </Grid>
-              )}
-              <div
-                style={{ display: 'flex', justifyContent: 'space-between', width: '50%' }}
-                className={user_level == 10 ? '' : `${classes.finhide}`}
-              >
-                <Grid item xs={12} style={{ minWidth: '100%', margin: '1% 0' }}>
-                  <Card>
-                    <Card>
-                      <CardHeader
+            <Grid item xs={6}>
+              <Card className={clsx(classes.feesOverviewContainer)}>
+                <CardContent>
+                  <Typography className={clsx(classes.cardHeaderText)}>
+                    <b>Fee Status Overview : &nbsp;</b>
+                    {props?.branchCounter ? (
+                      <Tooltip
                         title={
-                          <Typography
-                            // variant='h5'
-                            style={{ display: 'flex' }}
-                            className={clsx(classes.clickable, classes.cardtopicStyle)}
-                            onClick={() => setAcademicPerformanceDetailsOpen(true)}
-                            // onClick={() => history.push('/finance-owner/academic-performance')}
-                          >
-                            <b>Academic Performance : </b>{' '}
-                            {props?.branchCounter ? (
-                              <Tooltip
-                                title={
-                                  props?.selectedBranch &&
-                                  props?.selectedBranch?.map(
-                                    (item) => item?.branch?.branch_name + ' '
-                                  )
-                                }
-                              >
-                                <Chip
-                                  variant='outlined'
-                                  size='small'
-                                  // icon={props?.selectedBranch?.length}
-                                  avatar={
-                                    <Avatar>{props?.selectedBranch?.length}</Avatar>
-                                  }
-                                  label={' Branch Selected'}
-                                />
-                              </Tooltip>
-                            ) : (
-                              // <div style={{ display: 'flex' }}>
-                              //   {props?.selectedBranch &&
-                              //     props?.selectedBranch?.map((item) => (
-                              //       <div style={{ margin: '0 5px' }}>
-                              //         {item?.branch?.branch_name}
-                              //       </div>
-                              //     ))}
-                              // </div>
-                              <>All Branch</>
-                            )}
-                          </Typography>
+                          props?.selectedBranch &&
+                          props?.selectedBranch?.map(
+                            (item) => item?.branch?.branch_name + ' '
+                          )
                         }
-                        action={
-                          <Button
-                            className={clsx(classes.viewButton)}
-                            aria-label='view all'
-                            onClick={props.handleAcadRefresh}
-                          >
-                            <RefreshIcon style={{ color: 'blue' }} />
-                          </Button>
-                        }
-                      />
-                      <Divider />
-                      <CardContent
-                        style={{
-                          minHeight: '180px',
-                          display: 'flex',
-                          justifyContent: 'center',
-                        }}
                       >
+                        <Chip
+                          variant='outlined'
+                          size='small'
+                          avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
+                          label={' Branch Selected'}
+                        />
+                      </Tooltip>
+                    ) : (
+                      <>All Branch</>
+                    )}
+                    {!users.includes(user_level)  ? (
+                      <IconButton
+                        size='small'
+                        className={clsx(classes.refreshButton)}
+                        aria-label='view all'
+                        onClick={props.handleFeeRefresh}
+                      >
+                        <RefreshIcon fontSize='small' style={{ color: 'blue' }} />
+                      </IconButton>
+                    ) : (
+                      ''
+                    )}
+                  </Typography>
+                  <Card className={clsx(classes.feesOverview)}>
+                    <CardContent style={{ paddingBottom: '8px' }}>
+                      {props?.progress1?.feeStatus ? (
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          <CircularProgress />
+                        </div>
+                      ) : (
                         <>
-                          {props?.progress1?.academic ? (
-                            <div
+                          {props?.financeData?.totalfees ? (
+                            <Grid container spacing={1}>
+                              <Grid item xs={12}>
+                                <Typography
+                                  className={clsx(
+                                    classes.textAlignCenter
+                                  )}
+                                  style={{ marginBottom: '8px' }}
+                                >
+                                  <b>Total Fee&nbsp;&nbsp; </b>
+                                  <b
+                                    style={{
+                                      color: '#628fef',
+                                    }}
+                                  >
+                                    ₹ &nbsp;
+                                    {props?.financeData
+                                      ? props?.financeData?.totalfees
+                                          ?.toString()
+                                          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                                      : ''}
+                                  </b>
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={4} className={clsx(classes.textAlignCenter)}>
+                                <div>
+                                  Total <br /> Collected
+                                </div>
+                                <Typography
+                                  className={clsx(
+                                    // classes.feesOverviewValue,
+                                    classes.color1
+                                  )}
+                                >
+                                  <b>
+                                    ₹
+                                    {props?.financeData
+                                      ? Math.round(props?.financeData?.paid)
+                                          ?.toString()
+                                          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                                      : ''}
+                                  </b>
+                                </Typography>
+                              </Grid>
+                              <Grid
+                                item
+                                xs={4}
+                                className={clsx(
+                                  classes.textAlignCenter,
+                                  classes.sideBorder
+                                )}
+                              >
+                                <div>
+                                  Total <br /> Outstanding
+                                </div>
+                                <Typography
+                                  className={clsx(
+                                    // classes.feesOverviewValue,
+                                    classes.color2
+                                  )}
+                                >
+                                  <b>
+                                    ₹
+                                    {props?.financeData
+                                      ? Math.round(props?.financeData?.outstanding)
+                                          ?.toString()
+                                          .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+                                      : ''}
+                                  </b>
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={4} className={clsx(classes.textAlignCenter)}>
+                                <div>
+                                  Total <br /> Admissions
+                                </div>
+                                <Typography
+                                  className={clsx(
+                                    // classes.feesOverviewValue,
+                                    classes.color3
+                                  )}
+                                >
+                                  <b>
+                                    {props?.financeData
+                                      ? props?.financeData?.no_of_admission
+                                      : ''}
+                                  </b>
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12}>
+                                <Divider style={{ margin: '8px 0' }} />
+                              </Grid>
+                              <Grid item xs={12}>
+                                <Button
+                                  variant='text'
+                                  className={clsx(classes.arrowViewViewMore)}
+                                  onClick={feeredirect}
+                                  endIcon={
+                                    <ArrowForwardIosSharpIcon
+                                      fontSize='small'
+                                      style={{ color: '#536476' }}
+                                    />
+                                  }
+                                >
+                                  View All
+                                </Button>
+                              </Grid>
+                            </Grid>
+                          ) : (
+                            <Grid
                               style={{
+                                minHeight: '180px',
+                                textAlign: 'center',
                                 display: 'flex',
+                                flexDirection: 'column',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                               }}
                             >
-                              <CircularProgress />
-                            </div>
-                          ) : (
-                            <>
-                              {props?.acadCounter ? (
-                                <Grid container spacing={3} alignItems='center'>
-                                  <Grid
-                                    item
-                                    xs={12}
-                                    style={{
-                                      borderRadius: '5px',
-                                      backgroundColor: '#ffd4d9',
-                                      minHeight: '75px',
-                                    }}
-                                  >
-                                    <div className={clsx(classes.absentGrid)}>
-                                      <div style={{ width: '53%' }}>
-                                        <Typography
-                                          variant='body2'
-                                          className={clsx(classes.customTextSize)}
-                                        >
-                                          Curriculum Completion
-                                        </Typography>
-                                      </div>
-                                      <div style={{ width: '33%', textAlign: 'center' }}>
-                                        <Typography variant='body2'>
-                                          ------------------
-                                        </Typography>
-                                      </div>
-                                      <div
-                                        style={{
-                                          width: '13%',
-                                          display: 'flex',
-                                          fontWeight: 'bolder',
-                                        }}
-                                      >
-                                        <Typography style={{ fontSize: '15px' }}>
-                                          <b>
-                                            {props?.currBranch?.length > 0 ? (
-                                              <>
-                                                {' '}
-                                                {`${Math.round(
-                                                  props?.currBranch[0]
-                                                    ?.percentage_completed
-                                                )}%`}
-                                              </>
-                                            ) : (
-                                              <>0%</>
-                                            )}
-                                          </b>
-                                        </Typography>
-                                        <IconButton aria-label='delete' size='small'>
-                                          <DeleteIcon fontSize='inherit' />
-                                        </IconButton>
-                                      </div>
-                                    </div>
-                                  </Grid>
-
-                                  <Grid
-                                    item
-                                    xs={12}
-                                    style={{
-                                      borderRadius: '5px',
-                                      backgroundColor: '#b3f5e6',
-                                      marginTop: '5px',
-                                    }}
-                                  >
-                                    <div
-                                      className={clsx(classes.absentGrid)}
-                                      onClick={() => history.push('./academic-report')}
-                                      style={{ cursor: 'pointer' }}
-                                    >
-                                      <div style={{ width: '53%' }}>
-                                        <Typography
-                                          variant='body2'
-                                          // className={classes.textAlignCenter}
-                                          className={clsx(classes.customTextSize)}
-                                        >
-                                          Academic Report
-                                        </Typography>
-                                      </div>
-                                      <div style={{ width: '33%', textAlign: 'center' }}>
-                                        <Typography variant='body2'>
-                                          ------------------
-                                        </Typography>
-                                      </div>
-                                      <div
-                                        style={{
-                                          width: '13%',
-                                          display: 'flex',
-                                          fontWeight: 'bolder',
-                                        }}
-                                      >
-                                        <Typography style={{ fontSize: '15px' }}>
-                                          <b>
-                                            {props?.avgTest ? (
-                                              <>
-                                                {isNaN(props?.avgTest?.overall_avg)
-                                                  ? 0
-                                                  : Math.round(
-                                                      props?.avgTest?.overall_avg
-                                                    )}
-                                              </>
-                                            ) : (
-                                              <>0%</>
-                                            )}
-                                          </b>
-                                        </Typography>
-                                        <IconButton aria-label='delete' size='small'>
-                                          <DeleteIcon fontSize='inherit' />
-                                        </IconButton>
-                                      </div>
-                                    </div>
-                                  </Grid>
-
-                                  <Grid
-                                    item
-                                    xs={12}
-                                    style={{
-                                      borderRadius: '5px',
-                                      backgroundColor: '#fff2cc',
-                                      marginTop: '5px',
-                                      minHeight: '75px',
-                                    }}
-                                  >
-                                    <div className={clsx(classes.absentGrid)}>
-                                      <div style={{ width: '53%' }}>
-                                        <Typography
-                                          variant='body2'
-                                          className={clsx(classes.customTextSize)}
-                                        >
-                                          Student Attendance Report
-                                        </Typography>
-                                      </div>
-                                      <div style={{ width: '33%', textAlign: 'center' }}>
-                                        <Typography variant='body2'>
-                                          ------------------
-                                        </Typography>
-                                      </div>
-                                      <div style={{ width: '13%', display: 'flex' }}>
-                                        <Typography
-                                          className={clsx(classes.customTextSize)}
-                                        >
-                                          <b>
-                                            {' '}
-                                            {props?.studentAttendanceOverview ? (
-                                              <>
-                                                {isNaN(
-                                                  props?.studentAttendanceOverview
-                                                    ?.total_avg
-                                                )
-                                                  ? 0
-                                                  : `${Math.round(
-                                                      props?.studentAttendanceOverview
-                                                        ?.total_avg
-                                                    )}%`}
-                                              </>
-                                            ) : (
-                                              <>0%</>
-                                            )}
-                                          </b>
-                                        </Typography>
-                                        <IconButton aria-label='delete' size='small'>
-                                          <DeleteIcon fontSize='inherit' />
-                                        </IconButton>
-                                      </div>
-                                    </div>
-                                  </Grid>
-                                </Grid>
+                              <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                              {!users.includes(user_level) ? (
+                                <Typography style={{ fontWeight: '600' }}>
+                                  No Records
+                                </Typography>
                               ) : (
-                                <Grid
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'center',
-                                    margin: 'auto',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                  }}
-                                >
-                                  <Typography style={{ fontSize: '1.2rem' }}>
-                                    ☹️
-                                  </Typography>
-                                  <Typography style={{ fontWeight: '600' }}>
-                                    No Records
-                                  </Typography>
-                                </Grid>
+                                <Typography style={{ fontWeight: '600' }}>
+                                  Access Denied
+                                </Typography>
                               )}
-                            </>
+                            </Grid>
                           )}
                         </>
-                      </CardContent>
-                    </Card>
+                      )}
+                    </CardContent>
                   </Card>
-                </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  className={
-                    user_level == 10 ? `${classes.acadHide}` : `${classes.acadnot}`
-                  }
-                >
+                  <Typography className={clsx(classes.resentTransactionText)}>
+                    <b> Recent Transaction </b>
+                    {!users.includes(user_level) ? (
+                      <IconButton
+                        size='small'
+                        className={clsx(classes.refreshButton)}
+                        aria-label='view all'
+                        onClick={props.handlerecent}
+                      >
+                        <RefreshIcon fontSize='small' style={{ color: 'white' }} />
+                      </IconButton>
+                    ) : (
+                      ''
+                    )}
+                  </Typography>
+                  <div
+                    style={{
+                      minHeight: '235px',
+                      // display: 'flex',
+                      maxHeight: '300px',
+                      overflow: 'auto',
+                      width: '100%',
+                    }}
+                  >
+                    <>
+                      {props?.progress1?.tranction ? (
+                        <div
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            width: '100%',
+                          }}
+                        >
+                          <CircularProgress />
+                        </div>
+                      ) : (
+                        <>
+                          {props?.recentTransCounter ? (
+                            props?.recentTrans && (
+                              <>
+                                {props?.recentTrans?.slice(0, 5)?.map((each, index) => {
+                                  return (
+                                    <>
+                                      <Grid
+                                        container
+                                        className={clsx(classes.transactionTable)}
+                                      >
+                                        <Grid item md={1}>
+                                          <MonetizationOnIcon />
+                                        </Grid>
+                                        <Grid item md={8}>
+                                          <Typography
+                                            variant='body2'
+                                            className={clsx(
+                                              classes.transactionTextDesign
+                                            )}
+                                          >
+                                            Deposition in the bank by <b>{each?.mode}</b>
+                                          </Typography>
+                                          <Typography
+                                            variant='body2'
+                                            className={clsx(
+                                              classes.transactionTextDesign
+                                            )}
+                                          >
+                                            Branch Name {each?.branch}
+                                          </Typography>
+                                        </Grid>
+                                        <Grid item md={3}>
+                                          <Typography
+                                            variant='body2'
+                                            className={clsx(
+                                              classes.transactionTextDesignGray
+                                            )}
+                                          >
+                                            {each?.date}
+                                          </Typography>
+                                          <Typography
+                                            variant='body2'
+                                            className={clsx(
+                                              classes.transactionTextDesignLeft
+                                            )}
+                                          >
+                                            <b>₹ {each?.amount} </b>
+                                          </Typography>
+                                        </Grid>
+                                      </Grid>
+                                    </>
+                                  );
+                                })}
+                                <div
+                                  style={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    margin: '10px 0 0',
+                                  }}
+                                >
+                                  <Typography
+                                    style={{ fontSize: '14px', lineHeight: '17px' }}
+                                  >
+                                    {props?.recentTrans?.length} Transactions done Today.
+                                  </Typography>
+                                  <Button
+                                    variant='text'
+                                    className={clsx(classes.feesOverviewViewMore)}
+                                    style={{ fontSize: '16px', lineHeight: '19px' }}
+                                    onClick={() =>
+                                      handleRouteTransaction(props.branchList)
+                                    }
+                                    endIcon={
+                                      <ArrowForwardIosSharpIcon
+                                        fontSize='small'
+                                        style={{ color: '#536476' }}
+                                      />
+                                    }
+                                  >
+                                    View All
+                                  </Button>
+                                </div>
+                              </>
+                            )
+                          ) : (
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                margin: 'auto',
+                                alignItems: 'center',
+                                flexDirection: 'column',
+                              }}
+                            >
+                              <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                              {!users.includes(user_level) ? (
+                                <Typography style={{ fontWeight: '600' }}>
+                                  No Records
+                                </Typography>
+                              ) : (
+                                <Typography style={{ fontWeight: '600' }}>
+                                  Access Denied
+                                </Typography>
+                              )}
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </>
+                  </div>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid item container spacing={1} xs={6}>
+              <Grid item xs={12}>
+                <Card>
                   <Card>
-                    {/* <Grid item xs={12}> */}
-                    {/* <Card> */}
                     <CardHeader
                       title={
                         <Typography
-                          className={clsx(classes.clickable, classes.cardtopicStyle)}
                           // variant='h5'
-                          // className={clsx(classes.clickable)}
-                          // onClick={() => history.push('/staff-attendance-report/branch-wise')}
-                          onClick={staffRedirect}
                           style={{ display: 'flex' }}
+                          className={clsx(classes.cardtopicStyle)}
+                          // onClick={() => setAcademicPerformanceDetailsOpen(true)}
+                          // onClick={() => history.push('/finance-owner/academic-performance')}
                         >
-                          <b>Staff Details :</b>{' '}
+                          <b>Academic Performance &nbsp;</b>{''}
                           {props?.branchCounter ? (
                             <Tooltip
                               title={
@@ -1480,89 +1175,191 @@ const FinanceOwnerDashboard = (props) => {
                         </Typography>
                       }
                       action={
-                        <Button
-                          className={clsx(classes.viewButton)}
+                        <IconButton
+                          size='small'
+                          className={clsx(
+                            classes.viewButton,
+                            classes.refreshButtonMargin
+                          )}
                           aria-label='view all'
-                          onClick={props.handlestaffOverViewRefresh}
+                          onClick={props.handleAcadRefresh}
                         >
-                          <RefreshIcon style={{ color: 'blue' }} />
-                        </Button>
+                          <RefreshIcon style={{ color: 'blue', fontSize: '20px' }} />
+                        </IconButton>
                       }
                     />
-                    <Divider />
                     <CardContent
                       style={{
-                        minHeight: '300px',
+                        minHeight: '180px',
                         display: 'flex',
                         justifyContent: 'center',
                       }}
                     >
                       <>
-                        {props?.progress1?.staffDetails ? (
-                          <CircularProgress />
+                        {props?.progress1?.academic ? (
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <CircularProgress />
+                          </div>
                         ) : (
                           <>
-                            {props?.staffOverAll[0] ? (
-                              <Grid
-                                container
-                                spacing={3}
-                                alignItems='center'
-                                style={{ overflowX: 'auto', maxHeight: '300px' }}
-                              >
-                                <Grid item sm={12} xs={12}>
-                                  <Grid item xs={12}>
-                                    <div className={clsx(classes.absentGrid)}>
-                                      <div style={{ width: '50%' }}>
-                                        <Typography
-                                          className={clsx(classes.customTextSize)}
-                                        >
-                                          <b>Overall Attendance</b>
-                                        </Typography>
-                                      </div>
-                                      {/* <div style={{ width: '50%', paddingLeft: '10px', fontSize: '15px', textAlign: 'center' }}>
-                              Absent for more than 3 continuous day
-                            </div> */}
+                            {props?.acadCounter ? (
+                              <Grid container spacing={1} alignItems='center'>
+                                <Grid
+                                  item
+                                  xs={12}
+                                  style={{
+                                    borderRadius: '5px',
+                                    backgroundColor: '#ffd4d9',
+                                    // display:'flex'
+                                  }}
+                                >
+                                  <div className={clsx(classes.absentGrid)}
+                                  onClick={() => props?.selectedBranch.length > 0 ? handleBranchRoute(props?.selectedBranch,true) :  setAlert('error','Please select Atleast one Branch')}>
+                                    <div style={{ width: '53%' }}>
+                                      <Typography
+                                        variant='body2'
+                                        className={clsx(classes.customTextSize)}
+                                      >
+                                        Curriculum Completion
+                                      </Typography>
                                     </div>
-                                  </Grid>
+                                    <div
+                                      style={{
+                                        width: '13%',
+                                        display: 'flex',
+                                        fontWeight: 'bolder',
+                                      }}
+                                    >
+                                    
+                                      <IconButton
+                                        aria-label='delete'
+                                        size='small'
+                                      >
+                                        <DeleteIcon fontSize='inherit' />
+                                      </IconButton>
+                                    </div>
+                                  </div>
                                 </Grid>
-                                {props?.staffOverAll &&
-                                  props?.staffOverAll?.map((item) => (
-                                    <Grid item xs={12}>
-                                      <div className={clsx(classes.absentGrid)}>
-                                        <div style={{ width: '33%' }}>
-                                          <Typography
-                                            variant='body2'
-                                            // className={classes.textAlignCenter}
-                                            className={clsx(
-                                              classes.customTextSize,
-                                              classes.customLeftText
-                                            )}
-                                          >
-                                            {item?.role_name}
-                                          </Typography>
-                                        </div>
-                                        <div style={{ width: '33%' }}>
-                                          <Typography
-                                            variant='body2'
-                                            className={clsx(
-                                              classes.textAlignCenter,
-                                              classes.textBold,
-                                              classes.colorGreen
-                                            )}
-                                          >
-                                            <b>{`${Math.round(
-                                              item?.percentage_present
-                                            )}%`}</b>
-                                          </Typography>
-                                        </div>
-                                        {/* <div style={{ width: '33%' }}>
-                            <Button disabled style={{ height: '50%', backgroundColor: '#ffd4d9' }}>
-                              {item?.total_absent}
-                            </Button>
-                          </div> */}
-                                      </div>
-                                    </Grid>
-                                  ))}
+
+                                <Grid
+                                  item
+                                  xs={12}
+                                  style={{
+                                    borderRadius: '5px',
+                                    backgroundColor: '#b3f5e6',
+                                    marginTop: '5px',
+                                  }}
+                                >
+                                  <div
+                                    className={clsx(classes.absentGrid)}
+                                    onClick={() => history.push('./academic-report')}
+                                    style={{ cursor: 'pointer' }}
+                                  >
+                                    <div style={{ width: '53%' }}>
+                                      <Typography
+                                        variant='body2'
+                                        // className={classes.textAlignCenter}
+                                        className={clsx(classes.customTextSize)}
+                                      >
+                                        Academic Report
+                                      </Typography>
+                                    </div>
+                                    <div style={{ width: '33%', textAlign: 'center' }}>
+                                      <Typography variant='body2'>{''}</Typography>
+                                    </div>
+                                    <div
+                                      style={{
+                                        width: '13%',
+                                        display: 'flex',
+                                        fontWeight: 'bolder',
+                                      }}
+                                    >
+                                      {/* <Typography style={{ fontSize: '15px' }}>
+                                        <b>
+                                          {props?.avgTest ? (
+                                            <>
+                                              {isNaN(props?.avgTest?.overall_avg)
+                                                ? 0
+                                                : Math.round(props?.avgTest?.overall_avg)}
+                                              %
+                                            </>
+                                          ) : (
+                                            <>0%</>
+                                          )}
+                                        </b>
+                                      </Typography> */}
+                                      <IconButton aria-label='delete' size='small'>
+                                        <DeleteIcon fontSize='inherit' />
+                                      </IconButton>
+                                    </div>
+                                  </div>
+                                </Grid>
+
+                                <Grid
+                                  item
+                                  xs={12}
+                                  style={{
+                                    borderRadius: '5px',
+                                    backgroundColor: '#fff2cc',
+                                    marginTop: '5px',
+                                    cursor: 'pointer',
+                                  }}
+                                >
+                                  <div
+                                    className={clsx(classes.absentGrid)}
+                                    onClick={() => {
+                                      handleBranchRoute(props?.branchList, false);
+                                    }}
+                                  >
+                                    <div style={{ width: '53%' }}>
+                                      <Typography
+                                        variant='body2'
+                                        className={clsx(classes.customTextSize)}
+                                      >
+                                        Student Attendance Report
+                                      </Typography>
+                                    </div>
+                                    <div style={{ width: '33%', textAlign: 'center' }}>
+                                      <Typography variant='body2'>
+                                        ------------------
+                                      </Typography>
+                                    </div>
+                                    <div style={{ width: '13%', display: 'flex' }}>
+                                      <Typography
+                                        className={clsx(classes.customTextSize)}
+                                      >
+                                        <b>
+                                          {' '}
+                                          {props?.studentAttendanceOverview ? (
+                                            <>
+                                              {isNaN(
+                                                props?.studentAttendanceOverview[0]
+                                                  ?.percentage_attendance
+                                              )
+                                                ? 0
+                                                : Math.round(
+                                                    props?.studentAttendanceOverview[0]
+                                                      ?.percentage_attendance
+                                                  )}
+                                              %
+                                            </>
+                                          ) : (
+                                            <>0%</>
+                                          )}
+                                        </b>
+                                      </Typography>
+                                      <IconButton aria-label='delete' size='small'>
+                                        <DeleteIcon fontSize='inherit' />
+                                      </IconButton>
+                                    </div>
+                                  </div>
+                                </Grid>
                               </Grid>
                             ) : (
                               <Grid
@@ -1570,8 +1367,8 @@ const FinanceOwnerDashboard = (props) => {
                                   display: 'flex',
                                   justifyContent: 'center',
                                   margin: 'auto',
-                                  alignItems: 'center',
                                   flexDirection: 'column',
+                                  alignItems: 'center',
                                 }}
                               >
                                 <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
@@ -1584,12 +1381,189 @@ const FinanceOwnerDashboard = (props) => {
                         )}
                       </>
                     </CardContent>
-                    {/* </Card> */}
-                    {/* </Grid> */}
+                    <CardActions style={{ float: 'right' }}>
+                      <Button
+                        size='small'
+                        variant='text'
+                        className={clsx(classes.viewMoreButton)}
+                        onClick={() => setAcademicPerformanceDetailsOpen(true)}
+                        endIcon={<ChevronRightIcon style={{ color: 'black' }} />}
+                      >
+                        View All
+                      </Button>
+                    </CardActions>
                   </Card>
-                </Grid>
-              </div>
-            </div>
+                </Card>
+              </Grid>
+              <Grid item xs={12}>
+                <Card style={{ minHeight: '248px' }}>
+                  {/* <Grid item xs={12}> */}
+                  {/* <Card> */}
+                  <CardHeader
+                    style={{ padding: '10px' }}
+                    title={
+                      <Typography
+                        className={clsx(classes.clickable, classes.cardtopicStyle)}
+                        // variant='h5'
+                        // className={clsx(classes.clickable)}
+                        // onClick={() => history.push('/staff-attendance-report/branch-wise')}
+                        style={{ display: 'flex' }}
+                      >
+                        <b>Staff Details &nbsp;</b>{' '}
+                        {props?.branchCounter ? (
+                          <Tooltip
+                            title={
+                              props?.selectedBranch &&
+                              props?.selectedBranch?.map(
+                                (item) => item?.branch?.branch_name + ' '
+                              )
+                            }
+                          >
+                            <Chip
+                              variant='outlined'
+                              size='small'
+                              // icon={props?.selectedBranch?.length}
+                              avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
+                              label={' Branch Selected'}
+                            />
+                          </Tooltip>
+                        ) : (
+                          // <div style={{ display: 'flex' }}>
+                          //   {props?.selectedBranch &&
+                          //     props?.selectedBranch?.map((item) => (
+                          //       <div style={{ margin: '0 5px' }}>
+                          //         {item?.branch?.branch_name}
+                          //       </div>
+                          //     ))}
+                          // </div>
+                          <>All Branch</>
+                        )}
+                      </Typography>
+                    }
+                    action={
+                      <>
+                        <Button
+                          size='small'
+                          variant='text'
+                          className={clsx(classes.viewMoreButton)}
+                          onClick={staffRedirect}
+                          endIcon={<ChevronRightIcon style={{ color: 'black' }} />}
+                        >
+                          View All
+                        </Button>
+                        <IconButton
+                          className={clsx(classes.viewButton)}
+                          aria-label='view all'
+                          onClick={props.handlestaffOverViewRefresh}
+                        >
+                          <RefreshIcon style={{ color: 'blue', fontSize: '20px' }} />
+                        </IconButton>
+                      </>
+                    }
+                  />
+                  <CardContent
+                    style={{
+                      // minHeight: '300px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <>
+                      {props?.progress1?.staffDetails ? (
+                        <CircularProgress />
+                      ) : (
+                        <>
+                          {props?.staffOverAll[0] ? (
+                            <Grid
+                              container
+                              spacing={1}
+                              alignItems='center'
+                              style={{ overflowX: 'auto', maxHeight: '300px' }}
+                            >
+                              <Grid item sm={12} xs={12}>
+                                <Grid item xs={12}>
+                                  <div className={clsx(classes.absentGrid)}>
+                                    <div style={{ width: '50%' }}>
+                                      <Typography
+                                        className={clsx(classes.customTextSize)}
+                                      >
+                                        <b>Overall Attendance</b>
+                                      </Typography>
+                                    </div>
+                                    {/* <div style={{ width: '50%', paddingLeft: '10px', fontSize: '15px', textAlign: 'center' }}>
+                              Absent for more than 3 continuous day
+                            </div> */}
+                                  </div>
+                                </Grid>
+                              </Grid>
+                              {props?.staffOverAll &&
+                                props?.staffOverAll?.map((item) => (
+                                  <Grid
+                                    item
+                                    xs={12}
+                                    className={clsx(classes.classTableStaff)}
+                                  >
+                                    <div className={clsx(classes.absentGrid)}>
+                                      <div style={{ width: '33%' }}>
+                                        <Typography
+                                          variant='body2'
+                                          // className={classes.textAlignCenter}
+                                          className={clsx(
+                                            classes.customTextSize,
+                                            classes.customLeftText
+                                          )}
+                                        >
+                                          {item?.role_name}
+                                        </Typography>
+                                      </div>
+                                      <div style={{ width: '33%' }}>
+                                        <Typography
+                                          variant='body2'
+                                          className={clsx(
+                                            classes.textAlignCenter,
+                                            classes.textBold,
+                                            classes.colorGreen
+                                          )}
+                                        >
+                                          <b>{`${Math.round(
+                                            item?.percentage_present
+                                          )}%`}</b>
+                                        </Typography>
+                                      </div>
+                                      {/* <div style={{ width: '33%' }}>
+                            <Button disabled style={{ height: '50%', backgroundColor: '#ffd4d9' }}>
+                              {item?.total_absent}
+                            </Button>
+                          </div> */}
+                                    </div>
+                                  </Grid>
+                                ))}
+                            </Grid>
+                          ) : (
+                            <Grid
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                margin: 'auto',
+                                alignItems: 'center',
+                                flexDirection: 'column',
+                              }}
+                            >
+                              <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                              <Typography style={{ fontWeight: '600' }}>
+                                No Records
+                              </Typography>
+                            </Grid>
+                          )}
+                        </>
+                      )}
+                    </>
+                  </CardContent>
+                  {/* </Card> */}
+                  {/* </Grid> */}
+                </Card>
+              </Grid>
+            </Grid>
           </>
         ) : isAcad ? (
           <>
@@ -1632,154 +1606,160 @@ const FinanceOwnerDashboard = (props) => {
                   return (
                     <div className={`acc${index + 1}`}>
                       {each ? (
-                        <Accordion
-                          elevation={0}
-                          className={clsx(classes.accordion)}
-                          // {...{
-                          //   ...(index === 0 && {
-                          //     expanded: true,
-                          //   }),
-                          // }}
-                          expanded={expanded === index + 1}
-                          onChange={handleChange(each, index + 1)}
-                          id='branchWise'
-                        >
-                          <AccordionSummary
-                            expandIcon={<ExpandMoreIcon />}
-                            aria-controls={`${index}-content`}
-                            id={`${index}-header`}
+                        <Paper elevation={1}>
+                          <Accordion
+                            elevation={0}
+                            className={clsx(classes.accordion)}
+                            // {...{
+                            //   ...(index === 0 && {
+                            //     expanded: true,
+                            //   }),
+                            // }}
+                            expanded={expanded === index + 1}
+                            onChange={handleChange(each, index + 1)}
+                            id='branchWise'
                           >
-                            <Typography>{each?.branch?.branch_name}</Typography>
-                          </AccordionSummary>
-                          {expanded && (
-                            <AccordionDetails>
-                              <div style={{ width: '100%' }}>
-                                <Grid container spacing={2} style={{ width: '150%' }}>
-                                  {loading ? (
-                                    <Loading />
-                                  ) : (
-                                    <>
-                                      <Grid
-                                        item
-                                        xs={4}
-                                        onClick={() => handleRoute(each)}
-                                        style={{ cursor: 'pointer' }}
-                                      >
-                                        <div
-                                          className={clsx(
-                                            classes.detailsDiv,
-                                            classes.applyColor1
-                                          )}
+                            <AccordionSummary
+                              expandIcon={<ExpandMoreIcon />}
+                              aria-controls={`${index}-content`}
+                              id={`${index}-header`}
+                            >
+                              <Typography>{each?.branch?.branch_name}</Typography>
+                            </AccordionSummary>
+                            {expanded && (
+                              <AccordionDetails>
+                                <div style={{ width: '100%' }}>
+                                  <Grid container spacing={1}>
+                                    {loading ? (
+                                      <Loading />
+                                    ) : (
+                                      <>
+                                        <Grid
+                                          item
+                                          xs={4}
+                                          onClick={() => handleRoute(each)}
+                                          style={{ cursor: 'pointer' }}
                                         >
-                                          <div>
-                                            <Typography variant='body2'>
-                                              Curriculum Completion
-                                            </Typography>
+                                          <div
+                                            className={clsx(
+                                              classes.detailsDiv,
+                                              classes.applyColor1
+                                            )}
+                                          >
+                                            <div>
+                                              <Typography variant='body2'>
+                                                Curriculum Completion
+                                              </Typography>
+                                            </div>
+                                            <div className={clsx(classes.textAlignEnd)}>
+                                              <Typography
+                                                variant='body2'
+                                                className={clsx(classes.textBold)}
+                                              >
+                                                {curriculumData?.length > 0 ? (
+                                                  `${Math.round(
+                                                    curriculumData[0]
+                                                      ?.percentage_completed
+                                                  )}%`
+                                                ) : (
+                                                  <>0%</>
+                                                )}
+                                              </Typography>
+                                            </div>
                                           </div>
-                                          <div className={clsx(classes.textAlignEnd)}>
-                                            <Typography
-                                              variant='body2'
-                                              className={clsx(classes.textBold)}
-                                            >
-                                              {curriculumData.length > 0 ? (
-                                                `${Math.round(
-                                                  curriculumData[0]?.percentage_completed
-                                                )}%`
-                                              ) : (
-                                                <>0%</>
-                                              )}
-                                            </Typography>
-                                          </div>
-                                        </div>
-                                      </Grid>
+                                        </Grid>
 
-                                      {/* <Grid
-                                        item
-                                        xs={4}
-                                        onClick={() => handleStudentreport(each)}
-                                        style={{ cursor: 'pointer' }}
-                                      >
-                                        <div
-                                          className={clsx(
-                                            classes.detailsDiv,
-                                            classes.applyColor2
-                                          )}
+                                        <Grid
+                                          item
+                                          xs={4}
+                                          onClick={() => handleStudentreport(each)}
+                                          style={{ cursor: 'pointer' }}
                                         >
-                                          <div>
-                                            <Typography variant='body2'>
-                                              Student Report
-                                            </Typography>
-                                            <Typography variant='caption'>
-                                              Learning & Engagement Reports
-                                            </Typography>
+                                          <div
+                                            className={clsx(
+                                              classes.detailsDiv,
+                                              classes.applyColor2
+                                            )}
+                                          >
+                                            <div>
+                                              <Typography variant='body2'>
+                                                Student Report
+                                              </Typography>
+                                              <Typography variant='caption'>
+                                                Learning & Engagement Reports
+                                              </Typography>
+                                            </div>
+                                            <div className={clsx(classes.textAlignEnd)}>
+                                              <Typography
+                                                variant='body2'
+                                                className={clsx(classes.textBold)}
+                                              >
+                                                {testScoreData?.overall_avg > 0 ? (
+                                                  <>
+                                                    {`${Math.round(
+                                                      testScoreData?.overall_avg
+                                                    )}%`}{' '}
+                                                  </>
+                                                ) : (
+                                                  <>0%</>
+                                                )}
+                                              </Typography>
+                                              <Typography variant='caption'>
+                                                Av. Score
+                                              </Typography>
+                                            </div>
                                           </div>
-                                          <div className={clsx(classes.textAlignEnd)}>
-                                            <Typography
-                                              variant='body2'
-                                              className={clsx(classes.textBold)}
-                                            >
-                                              {testScoreData?.overall_avg > 0 ? (
-                                                <>
-                                                  {`${Math.round(
-                                                    testScoreData?.overall_avg
-                                                  )}%`}{' '}
-                                                </>
-                                              ) : (
-                                                <>0%</>
-                                              )}
-                                            </Typography>
-                                            <Typography variant='caption'>
-                                              Av. Score
-                                            </Typography>
-                                          </div>
-                                        </div>
-                                      </Grid> */}
-                                      <Grid
-                                        item
-                                        xs={4}
-                                        onClick={() => handleAttendance(each)}
-                                        style={{ cursor: 'pointer' }}
-                                      >
-                                        <div
-                                          className={clsx(
-                                            classes.detailsDiv,
-                                            classes.applyColor3
-                                          )}
+                                        </Grid>
+                                        <Grid
+                                          item
+                                          xs={4}
+                                          onClick={() => handleAttendance(each)}
+                                          style={{ cursor: 'pointer' }}
                                         >
-                                          <div>
-                                            <Typography variant='body2'>
-                                              Attendance Report
-                                            </Typography>
+                                          <div
+                                            className={clsx(
+                                              classes.detailsDiv,
+                                              classes.applyColor3
+                                            )}
+                                          >
+                                            <div>
+                                              <Typography variant='body2'>
+                                                Attendance Report
+                                              </Typography>
+                                            </div>
+                                            <div className={clsx(classes.textAlignEnd)}>
+                                              <Typography
+                                                variant='body2'
+                                                className={clsx(classes.textBold)}
+                                              >
+                                                {studentReportData &&
+                                                studentReportData[1]
+                                                  ?.percentage_attendance > 0 ? (
+                                                  <>
+                                                    {' '}
+                                                    {`${Math.round(
+                                                      studentReportData[1]
+                                                        ?.percentage_attendance
+                                                    )}%`}
+                                                  </>
+                                                ) : (
+                                                  <>0%</>
+                                                )}
+                                              </Typography>
+                                              <Typography variant='caption'>
+                                                Av. Attendance
+                                              </Typography>
+                                            </div>
                                           </div>
-                                          <div className={clsx(classes.textAlignEnd)}>
-                                            <Typography
-                                              variant='body2'
-                                              className={clsx(classes.textBold)}
-                                            >
-                                              {studentReportData?.total_avg > 0 ? (
-                                                <>
-                                                  {' '}
-                                                  {`${Math.round(
-                                                    studentReportData?.total_avg
-                                                  )}%`}
-                                                </>
-                                              ) : (
-                                                <>0%</>
-                                              )}
-                                            </Typography>
-                                            <Typography variant='caption'>
-                                              Av. Attendance
-                                            </Typography>
-                                          </div>
-                                        </div>
-                                      </Grid>
-                                    </>
-                                  )}
-                                </Grid>
-                              </div>
-                            </AccordionDetails>
-                          )}
-                        </Accordion>
+                                        </Grid>
+                                      </>
+                                    )}
+                                  </Grid>
+                                </div>
+                              </AccordionDetails>
+                            )}
+                          </Accordion>
+                        </Paper>
                       ) : (
                         <></>
                       )}
@@ -1788,6 +1768,159 @@ const FinanceOwnerDashboard = (props) => {
                 })}
             </Grid>
           </>
+        )) : (
+          <Grid item container spacing={1} xs={12}>
+              <Grid item xs={12}>
+                <Card>
+                  <Card>
+                    <CardHeader
+                      title={
+                        <Typography
+                          // variant='h5'
+                          style={{ display: 'flex' }}
+                          className={clsx(classes.cardtopicStyle)}
+                          // onClick={() => setAcademicPerformanceDetailsOpen(true)}
+                          // onClick={() => history.push('/finance-owner/academic-performance')}
+                        >
+                          <b>Academic Performance &nbsp;</b>{''}
+                          {props?.branchCounter ? (
+                            <Tooltip
+                              title={
+                                props?.selectedBranch &&
+                                props?.selectedBranch?.map(
+                                  (item) => item?.branch?.branch_name + ' '
+                                )
+                              }
+                            >
+                              <Chip
+                                variant='outlined'
+                                size='small'
+                                // icon={props?.selectedBranch?.length}
+                                avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
+                                label={props?.selectedBranch[0]?.branch?.branch_name}
+                              />
+                            </Tooltip>
+                          ) : (
+                            // <div style={{ display: 'flex' }}>
+                            //   {props?.selectedBranch &&
+                            //     props?.selectedBranch?.map((item) => (
+                            //       <div style={{ margin: '0 5px' }}>
+                            //         {item?.branch?.branch_name}
+                            //       </div>
+                            //     ))}
+                            // </div>
+                            <></>
+                          )}
+                        </Typography>
+                      }
+                      action={
+                        <IconButton
+                          size='small'
+                          className={clsx(
+                            classes.viewButton,
+                            classes.refreshButtonMargin
+                          )}
+                          aria-label='view all'
+                          onClick={props.handleAcadRefresh}
+                        >
+                          <RefreshIcon style={{ color: 'blue', fontSize: '20px' }} />
+                        </IconButton>
+                      }
+                    />
+                    <CardContent
+                      style={{
+                        minHeight: '90px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <>
+                        {props?.progress1?.academic ? (
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <CircularProgress />
+                          </div>
+                        ) : (
+                          <>
+                            {props?.acadCounter ? (
+                              <Grid container spacing={1} alignItems='center'>
+                                <Grid
+                                  item
+                                  xs={12}
+                                  style={{
+                                    borderRadius: '5px',
+                                    backgroundColor: '#ffd4d9',
+                                    // display:'flex'
+                                  }}
+                                >
+                                  <div className={clsx(classes.absentGrid)}
+                                  onClick={() => props?.selectedBranch.length > 0 ? handleBranchRoute(props?.selectedBranch,true) :  setAlert('error','Please select Atleast one Branch')}>
+                                    <div style={{ width: '53%' }}>
+                                      <Typography
+                                        variant='body2'
+                                        className={clsx(classes.customTextSize)}
+                                      >
+                                        Curriculum Completion
+                                      </Typography>
+                                    </div>
+                                    <div
+                                      style={{
+                                        width: '13%',
+                                        display: 'flex',
+                                        fontWeight: 'bolder',
+                                      }}
+                                    >
+                                    
+                                      <IconButton
+                                        aria-label='delete'
+                                        size='small'
+                                      >
+                                        <DeleteIcon fontSize='inherit' />
+                                      </IconButton>
+                                    </div>
+                                  </div>
+                                </Grid>
+                              </Grid>
+                            ) : (
+                              <Grid
+                                style={{
+                                  display: 'flex',
+                                  justifyContent: 'center',
+                                  margin: 'auto',
+                                  flexDirection: 'column',
+                                  alignItems: 'center',
+                                }}
+                              >
+                                <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
+                                <Typography style={{ fontWeight: '600' }}>
+                                  No Records
+                                </Typography>
+                              </Grid>
+                            )}
+                          </>
+                        )}
+                      </>
+                    </CardContent>
+                    {/* <CardActions style={{ float: 'right' }}>
+                      <Button
+                        size='small'
+                        variant='text'
+                        className={clsx(classes.viewMoreButton)}
+                        onClick={() => setAcademicPerformanceDetailsOpen(true)}
+                        endIcon={<ChevronRightIcon style={{ color: 'black' }} />}
+                      >
+                        View All
+                      </Button>
+                    </CardActions> */}
+                  </Card>
+                </Card>
+              </Grid>
+            </Grid>
         )}
       </Grid>
     </div>

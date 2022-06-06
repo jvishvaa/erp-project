@@ -40,7 +40,7 @@ const ViewMoreCard = ({
           periodDataForView?.central_gs_mapping_id
         }&volume_id=${periodDataForView.volume_id}&academic_year_id=${
           periodDataForView?.academic_year_id
-        }&completed_by=${periodDataForView?.completed_by}&export=${'excel'}`,
+        }&section_id=${periodDataForView?.section_id}&completed_by=${periodDataForView?.completed_by}&export=${'excel'}`,
         {
           responseType: 'arraybuffer',
         }

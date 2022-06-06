@@ -47,7 +47,7 @@ const PeriodCard = ({
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}&subjects=${lesson?.subject_id_id}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}`)
+        `${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}&subjects=${lesson?.subject_id_id}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}&section_id=${lesson.section_id}`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setLoading(false);

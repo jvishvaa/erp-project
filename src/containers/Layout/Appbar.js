@@ -365,9 +365,11 @@ const Appbar = ({ children, history, ...props }) => {
                     </Select>
                   </FormControl>
                   <div>
-                  <IconButton onClick={handleFinance}  style={{padding : '1%'}} >
-                    <MonetizationOnIcon />
-                  </IconButton>
+                  {apps?.finance == true ?
+                      <IconButton onClick={handleFinance}  style={{padding : '1%'}} >
+                        <MonetizationOnIcon />
+                      </IconButton> : ''
+                    }
                   </div>
                 </Grid>
               

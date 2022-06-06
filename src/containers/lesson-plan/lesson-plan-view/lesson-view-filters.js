@@ -32,6 +32,8 @@ const LessonViewFilters = ({
   setLoading,
   setCentralGradeName,
   setCentralSubjectName,
+  setSessionBranchGrade,
+  sessionBranchGrade,
 }) => {
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
@@ -210,6 +212,7 @@ const LessonViewFilters = ({
         chapter: '',
         board: '', module: '', keyconcept: '',
       });
+      setSessionBranchGrade({...sessionBranchGrade, branch: value})
       setSubjectDropdown([]);
       setChapterDropdown([]);
       setGradeDropdown([])
@@ -259,6 +262,7 @@ const LessonViewFilters = ({
     setOverviewSynopsis([]);
     if (value && filterData.branch) {
       setFilterData({ ...filterData, grade: value, subject: '', chapter: '', board: '', module: '', keyconcept: '', });
+      setSessionBranchGrade({...sessionBranchGrade,grade:value})
       setChapterDropdown([]);
       setBoardDropdown([])
       setSelectedBoardId([])
@@ -295,6 +299,7 @@ const LessonViewFilters = ({
 
   const handleSubject = (event, value) => {
     setFilterData({ ...filterData, subject: '', chapter: '', board: '', module: '', keyconcept: '' });
+    // setSessionBranchGrade({...sessionBranchGrade,grade:value})
     setChapterDropdown([]);
     setSelectedBoardId([])
     setModuleDropdown([])
@@ -470,6 +475,7 @@ const LessonViewFilters = ({
         if (year?.session_year === filterData.year?.session_year) {
           erp_year = year;
           setErpYear(year);
+          setSessionBranchGrade({...sessionBranchGrade,session: year})
           setFilterData({ ...filterData, academic: year });
           return year;
         }

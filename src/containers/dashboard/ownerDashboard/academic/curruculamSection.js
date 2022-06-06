@@ -53,6 +53,8 @@ import './style.scss';
 import Loader from 'components/loader/loader';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
+import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
 
 const useStyles = makeStyles((theme) => ({
   gradeBoxContainer: {
@@ -140,59 +142,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-const section = [
-  {
-    chapter: 'chapter 1',
-    topic: 'topic 1',
-    a: true,
-    b: false,
-    c: true,
-    d: true,
-    e: false,
-    f: true,
-  },
-  {
-    chapter: 'chapter 1',
-    topic: 'topic 2',
-    a: true,
-    b: true,
-    c: true,
-    d: false,
-    e: true,
-    f: true,
-  },
-  {
-    chapter: 'chapter 1',
-    topic: 'topic 3',
-    a: true,
-    b: true,
-    c: true,
-    d: false,
-    e: false,
-    f: true,
-  },
-  {
-    chapter: 'chapter 1',
-    topic: 'topic 1',
-    a: true,
-    b: true,
-    c: true,
-    d: true,
-    e: false,
-    f: false,
-  },
-];
-
-const apiResponse = [
-  {
-    section_mapping__grade__grade_name: 'Grade 1',
-    subject__subject_name: 'HI English',
-    subject__chapter__chapter_name: 'NOUN',
-    subject__chapter__topic__topic_name: 'demo_topic',
-    section_mapping__section__section_name: ['A', 'A', 'Sec A'],
-    completion_status: [true, false, false],
-  },
-];
 
 const CurriculumCompletionSection = (props) => {
   const classes = useStyles();
@@ -201,6 +150,7 @@ const CurriculumCompletionSection = (props) => {
   const [expanded, setExpanded] = useState(true);
   const [date, setDate] = useState(moment(new Date()).format('YYYY-MM-DD'));
   const [loading, setLoading] = useState(false);
+  const { setAlert } = useContext(AlertNotificationContext);
   const [historySubject, setHistorySubject] = useState({});
   const [tableChapter, setTableChapter] = useState(null);
 
@@ -249,14 +199,19 @@ const CurriculumCompletionSection = (props) => {
         params: { ...params },
         headers: {
           'X-DTS-Host': window.location.host,
+          // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
           // Authorization: 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6InN1cGVyX2FkbWluX09MViIsImV4cCI6NjY0MDk0MzY4NCwiZW1haWwiOiJzdXBlcl9hZG1pbkBvcmNoaWRzLmVkdS5pbiIsImZpcnN0X25hbWUiOiJ0ZXN0IiwiaXNfc3VwZXJ1c2VyIjp0cnVlfQ.-xEeYFMvknL-PR6vsdR3a2QtCzej55lfIzllNgvJtTg'
         },
       })
       .then((res) => {
-        console.log(res?.data?.result, 'CCCCC');
-        setTableChapter(res?.data?.result);
-        setLoading(false);
+        if(res?.data?.message === "No data found"){
+          setLoading(false)
+          setAlert('error',res?.data?.message)
+        }else{
+          setTableChapter(res?.data?.result);
+          setLoading(false);
 
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -276,14 +231,14 @@ const CurriculumCompletionSection = (props) => {
       >
         <Grid container spacing={3}>
           <Grid item xs={12}>
-            <div className={clsx(classes.breadcrumb)}>
-              <IconButton size='small' onClick={() => history.goBack()}>
-                <ArrowBackIcon />
-              </IconButton>
-              <Typography variant='h6' className={clsx(classes.textBold)}>
-                Curriculum Completion
-              </Typography>
-            </div>
+          <IconButton size='small' onClick={() => history.goBack()}>
+            <ArrowBackIcon />
+          </IconButton>
+            < CommonBreadcrumbs 
+          componentName='Dashboard'
+          childComponentName='Academic Performance' 
+          childComponentNameNext = 'Curriculum Completion'
+          />
           </Grid>
           <Grid xs={12}>
             <Typography style={{ marginLeft: '20px', fontWeight: 'bolder', textTransform:'capitalize' }}>

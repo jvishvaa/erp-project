@@ -321,7 +321,7 @@ const LessonPlanGraphReport = ({
           endpoints.lessonReport.lessonViewMoreData
         }?central_gs_mapping_id=${mapId}&volume_id=${
           filterData.volume.id
-        }&academic_year_id=${filterData.year.id}&completed_by=${
+        }&academic_year_id=${filterData.year.id}&section_id=${filterData?.section?.section_id}&completed_by=${
           filterData.teacher.user_id
         }&start_date=${startDateTechPer.format(
           'YYYY-MM-DD'

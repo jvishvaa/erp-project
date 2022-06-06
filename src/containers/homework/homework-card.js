@@ -100,7 +100,7 @@ const HomeworkCard = ({
         {view === 'submissionStats'  && (
           <div className='list' style={{ flexGrow: 1 ,maxHeight: '200px' }}>
             <div style={{ display: 'flex' }}>
-              <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} onChange={() => handleAllSubmit()} />
+              <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} onChange={() => handleAllSubmit()} id="submitAllid" />
               <div className='cardHeaderSub'>Submitted students :</div>
             </div>
             <div >
