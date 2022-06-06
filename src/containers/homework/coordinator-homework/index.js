@@ -46,7 +46,7 @@ import hwGiven from '../../../assets/images/hw-given.svg';
 import hwEvaluated from '../../../assets/images/hw-evaluated.svg';
 import submitted from '../../../assets/images/student-submitted.svg';
 import HomeWorkCard from '../homework-card';
-
+import $ from 'jquery';
 import './styles.scss';
 import {
   fetchCoordinateTeacherHomeworkDetails,
@@ -81,25 +81,25 @@ const useStyles = makeStyles((theme) => ({
   container: {
     maxHeight: 440,
   },
-  vertical_divider:{
+  vertical_divider: {
     height: "80px",
     width: "1px",
     margin: "5px 20px",
     backgroundColor: theme.palette.primary.main,
   },
-  homeworkTableMobileView:{
-    color : theme.palette.secondary.main
+  homeworkTableMobileView: {
+    color: theme.palette.secondary.main
   }
-  ,horizontal_divider:{
+  , horizontal_divider: {
     marginTop: '15px',
     marginBottom: '15px',
     backgroundColor: theme.palette.primary.main,
   },
-  homeworkblock:{
-    color : theme.palette.secondary.main,
+  homeworkblock: {
+    color: theme.palette.secondary.main,
     fontWeight: 600
   },
-  dayicon :theme.dayIcon
+  dayicon: theme.dayIcon
 
 }));
 
@@ -118,7 +118,7 @@ const StyledClearButton = withStyles({
       backgroundColor: '#E2E2E2 !important',
     },
   },
-  
+
 })(Button);
 
 function getDaysAfter(date, amount) {
@@ -149,6 +149,7 @@ const CoordinatorTeacherHomework = withRouter(
     history,
     selectedTeacherByCoordinatorToCreateHw,
     setFirstTeacherUserIdOnloadCordinatorHomewok,
+    absentList,
     ...props
   }) => {
     //const [dateRange, setDateRange] = useState([moment().subtract(6, 'days'), moment()]);
@@ -208,8 +209,9 @@ const CoordinatorTeacherHomework = withRouter(
     const [datePopperOpen, setDatePopperOpen] = useState(false);
 
     const [teacherModuleId, setTeacherModuleId] = useState("");
- 
-    
+
+    const [hwFlag, setHwFlag] = useState(false);
+    const [selectSub, setSelectSub] = useState(false)
     const themeContext = useTheme();
     const isMobile = useMediaQuery(themeContext.breakpoints.down('md'));
 
@@ -231,22 +233,22 @@ const CoordinatorTeacherHomework = withRouter(
       }
     }, []);
 
-    useEffect(()=>{
-      if(teacherModuleId){
-      const managementTeacher= JSON.parse(localStorage.getItem('managementTeacher'));
-          handleBranch("",managementTeacher?.selectedBranch);
-          handleGrade("",managementTeacher?.selectedGrade);
-          handleSection("",managementTeacher?.selectedSection);
-          // handleCoordinateTeacher("",managementTeacher?.selectedTeacher);
-          // let teacherModuleId=managementTeacher?.teacherModuleId;
-      }
-    },[teacherModuleId]);
     useEffect(() => {
-      if(selectedBranch && gradeDisplay && sectionDisplay){
-        const managementTeacher= JSON.parse(localStorage.getItem('managementTeacher'));
-        handleCoordinateTeacher("",managementTeacher?.selectedTeacher);
+      if (teacherModuleId) {
+        const managementTeacher = JSON.parse(localStorage.getItem('managementTeacher'));
+        handleBranch("", managementTeacher?.selectedBranch);
+        handleGrade("", managementTeacher?.selectedGrade);
+        handleSection("", managementTeacher?.selectedSection);
+        // handleCoordinateTeacher("",managementTeacher?.selectedTeacher);
+        // let teacherModuleId=managementTeacher?.teacherModuleId;
       }
-    }, [selectedBranch,gradeDisplay,sectionDisplay])
+    }, [teacherModuleId]);
+    useEffect(() => {
+      if (selectedBranch && gradeDisplay && sectionDisplay) {
+        const managementTeacher = JSON.parse(localStorage.getItem('managementTeacher'));
+        handleCoordinateTeacher("", managementTeacher?.selectedTeacher);
+      }
+    }, [selectedBranch, gradeDisplay, sectionDisplay])
 
 
     const handleViewHomework = ({
@@ -322,7 +324,7 @@ const CoordinatorTeacherHomework = withRouter(
           }
         }
       }
-    }, [getCoordinateTeacherHomeworkDetails, dateRange, activeView, teacherModuleId, sectionDisplay]);
+    }, [getCoordinateTeacherHomeworkDetails, dateRange, activeView, teacherModuleId, sectionDisplay, hwFlag]);
 
     const getTeacherListApi = async () => {
       const [startDate, endDate] = dateRange;
@@ -381,7 +383,7 @@ const CoordinatorTeacherHomework = withRouter(
         setAlert('error', error.message);
         setLoading(false);
       }
-    
+
     };
 
     const handleCoordinateTeacher = (e, value) => {
@@ -556,7 +558,7 @@ const CoordinatorTeacherHomework = withRouter(
       //setSearchGrade('');
       //setSearchSection([]);
       setSelectedBranch([]);
-      if (value && value.length!==0) {
+      if (value && value.length !== 0) {
         setSelectedBranch(value);
         setLoading(true);
         onSetSelectedFilters({
@@ -569,7 +571,7 @@ const CoordinatorTeacherHomework = withRouter(
         // endpoints.masterManagement.gradesDrop
         axiosInstance.get(`${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value?.branch?.id}&module_id=${teacherModuleId}`)
           .then((result) => {
-            if (result.status === 200) {        
+            if (result.status === 200) {
               setGrades(result.data.data || []);
               setLoading(false);
             } else {
@@ -585,7 +587,7 @@ const CoordinatorTeacherHomework = withRouter(
     };
 
     const handleGrade = (event, value) => {
-      const managementTeacher= JSON.parse(localStorage.getItem('managementTeacher'));
+      const managementTeacher = JSON.parse(localStorage.getItem('managementTeacher'));
       setSectionDisplay([]);
       setSections([]);
       setGradeDisplay([]);
@@ -594,7 +596,7 @@ const CoordinatorTeacherHomework = withRouter(
       setSelectedTeacherUser_id('');
       //setSearchGrade('');
       //setSearchSection([]);
-      if (value && value.length!==0) {
+      if (value && value.length !== 0) {
         //setSearchGrade(value?.grade_id);
         setGradeDisplay(value);
         setLoading(true);
@@ -606,7 +608,7 @@ const CoordinatorTeacherHomework = withRouter(
         });
         axiosInstance
           .get(
-            `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id || managementTeacher?.selectedBranch?.id}&grade_id=${value?.grade_id}&module_id=${ managementTeacher?.teacherModuleId ||teacherModuleId}`
+            `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id || managementTeacher?.selectedBranch?.id}&grade_id=${value?.grade_id}&module_id=${managementTeacher?.teacherModuleId || teacherModuleId}`
           )
           .then((result) => {
             if (result.data.status_code === 200) {
@@ -625,9 +627,9 @@ const CoordinatorTeacherHomework = withRouter(
     };
 
     const handleSection = (event, value) => {
-     
+
       //setSearchSection([]);
-      
+
       setSectionDisplay([]);
       // setSelectedCoTeacherOpt([]);
       setselectedCoTeacherOptValue([]);
@@ -645,7 +647,7 @@ const CoordinatorTeacherHomework = withRouter(
         });
         //getTeacherListApi();
       }
-      
+
     };
 
     const handleCrearFilter = () => {
@@ -663,19 +665,137 @@ const CoordinatorTeacherHomework = withRouter(
     }
 
     const setData = (teacher) => {
-      
-      localStorage.setItem('managementTeacher',JSON.stringify({
+
+      localStorage.setItem('managementTeacher', JSON.stringify({
         // selectedYear: selectedYear,
         selectedBranch: selectedBranch,
         selectedGrade: gradeDisplay,
-        selectedSection: sectionDisplay ,
+        selectedSection: sectionDisplay,
         selectedTeacher: teacher,
         selectedDate: dateRange,
-        teacherModuleId:teacherModuleId,
-      
+        teacherModuleId: teacherModuleId,
+
       }))
-      
+
     };
+
+
+    let slectedSubmitStudent = [];
+    const handleUser = (e) => {
+      if (slectedSubmitStudent?.length == 0) {
+        slectedSubmitStudent.push({ 'student_homework_id': e?.student_homework_id, 'hw_submission_mode': e?.hw_submission_mode })
+      }
+      else if (slectedSubmitStudent.length > 0) {
+        if (slectedSubmitStudent.filter((element) => element?.student_homework_id === e?.student_homework_id)?.length === 0) {
+          slectedSubmitStudent.push({ 'student_homework_id': e?.student_homework_id, 'hw_submission_mode': e?.hw_submission_mode })
+        } else {
+          let tempArray = slectedSubmitStudent.filter((element) => element?.student_homework_id !== e?.student_homework_id)
+          slectedSubmitStudent = tempArray
+        }
+      }
+    }
+
+
+    let slectedUnSubmitStudent = [];
+    const handleUserUnsubmitted = (e) => {
+      if (slectedUnSubmitStudent.includes(e?.user_id) == false) {
+        slectedUnSubmitStudent.push(e?.user_id)
+      }
+      else if (slectedUnSubmitStudent.includes(e?.user_id) == true) {
+        let tempArray = slectedUnSubmitStudent.filter(element => element !== e?.user_id)
+        slectedUnSubmitStudent = tempArray;
+      }
+    }
+
+    const handleUserAbsent = (e) => {
+      if (slectedUnSubmitStudent.includes(e?.user_id) == false) {
+        slectedUnSubmitStudent.push(e?.user_id)
+      }
+      else if (slectedUnSubmitStudent.includes(e?.user_id) == true) {
+        let tempArray = slectedUnSubmitStudent.filter(element => element !== e?.user_id)
+        slectedUnSubmitStudent = tempArray;
+      }
+    }
+
+    const handleAllSubmit = () => {
+      const testclick = document.getElementsByClassName('checkboxsubmit');
+      const checkboxes = testclick[0]?.querySelectorAll('input[type=checkbox]')
+      for (let i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].click();
+      }
+    }
+
+    const handleAllUnSubmit = () => {
+      const testclick = document.getElementsByClassName('checkboxUnsubmit');
+      const checkboxes = testclick[0]?.querySelectorAll('input[type=checkbox]')
+      for (let i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].click();
+      }
+    }
+
+    const handleAllAbsent = () => {
+      const testclick = document.getElementsByClassName('checkboxAbsent');
+      const checkboxes = testclick[0]?.querySelectorAll('input[type=checkbox]')
+      console.log(checkboxes, "all submit");
+      for (let i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].click();
+      }
+      console.log(slectedUnSubmitStudent);
+    }
+
+
+
+    const handleSubmittedStd = () => {
+      const managementTeacher = JSON.parse(localStorage.getItem('managementTeacher'));
+      if (slectedSubmitStudent.length > 0) {
+        axiosInstance
+          .put(endpoints.homework.submitToUnsubmit, slectedSubmitStudent)
+          .then((result) => {
+            setAlert('success', result.data.message);
+            fetchStudentLists(selectedCol?.homeworkId, selectedCol?.subjectId, selectedCol?.sectionId, null, selectedCol?.date);
+            if (hwFlag == true) {
+              setHwFlag(false)
+            } else {
+              setHwFlag(true)
+            }
+            slectedSubmitStudent = [];
+          })
+          .catch((error) => {
+            setLoading(false);
+            setAlert('error', 'something went wrong');
+            console.log(error);
+          });
+      } else {
+        setAlert('error', 'Please select Users')
+      }
+    }
+
+    const handleUnSubmittedStd = () => {
+      console.log(selectedCol);
+      if (slectedUnSubmitStudent.length > 0) {
+        axiosInstance
+          .put(`academic/${selectedCol?.homeworkId}/homework-unsubmitted-submitted/`, slectedUnSubmitStudent)
+          .then((result) => {
+            setAlert('success', result.data.message);
+            console.log(selectedCol);
+            fetchStudentLists(selectedCol?.homeworkId, selectedCol?.subjectId, selectedCol?.sectionId, null, selectedCol?.date);
+            if (hwFlag == true) {
+              setHwFlag(false)
+            } else {
+              setHwFlag(true)
+            }
+            slectedUnSubmitStudent = [];
+          })
+          .catch((error) => {
+            setLoading(false);
+            setAlert('error', 'something went wrong');
+            console.log(error);
+          });
+      } else {
+        setAlert('error', 'Please select Users')
+      }
+    }
+
 
     return (
       <>
@@ -857,7 +977,7 @@ const CoordinatorTeacherHomework = withRouter(
                   {isMobile ? (
                     <Grid item xs={12} className='date-container4'>
                       <Divider
-                      className={classes.horizontal_divider}
+                        className={classes.horizontal_divider}
                       />
                     </Grid>
                   ) : (
@@ -866,7 +986,7 @@ const CoordinatorTeacherHomework = withRouter(
                   <Grid item xs={12} sm={3}>
                     <Grid container>
                       <Grid item xs={12} sm={12} className='date-container3'>
-                       
+
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <div className='download_button'>
@@ -894,7 +1014,7 @@ const CoordinatorTeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <Typography color ="secondary">Assigned</Typography>
+                      <Typography color="secondary">Assigned</Typography>
                     </div>
                     <div className='icon-desc-container'>
                       <SvgIcon
@@ -906,7 +1026,7 @@ const CoordinatorTeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <Typography color ="secondary">Submitted</Typography>
+                      <Typography color="secondary">Submitted</Typography>
                     </div>
                     <div className='icon-desc-container'>
                       <SvgIcon
@@ -918,7 +1038,7 @@ const CoordinatorTeacherHomework = withRouter(
                           />
                         )}
                       />
-                      <Typography color ="secondary">Evaluated</Typography>
+                      <Typography color="secondary">Evaluated</Typography>
                     </div>
                   </div>
                 )}
@@ -954,7 +1074,7 @@ const CoordinatorTeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <Typography color = "secondary">HW given</Typography>
+                              <Typography color="secondary">HW given</Typography>
                             </div>
                             <div className='icon-desc-container'>
                               <SvgIcon
@@ -978,7 +1098,7 @@ const CoordinatorTeacherHomework = withRouter(
                                   />
                                 )}
                               />
-                              <Typography color = "secondary">HW Evaluated</Typography>
+                              <Typography color="secondary">HW Evaluated</Typography>
                             </div>
                           </div>
                         )}
@@ -1019,7 +1139,7 @@ const CoordinatorTeacherHomework = withRouter(
                                           {col.subject_name}
                                         </TableCell>
                                       ) : (
-                                        <TableCell style={{zIndex:'20'}}>{col}</TableCell>
+                                        <TableCell style={{ zIndex: '20' }}>{col}</TableCell>
                                       );
                                     })}
                                   </TableRow>
@@ -1062,7 +1182,7 @@ const CoordinatorTeacherHomework = withRouter(
                                   {homeworkRows.map((row) => {
                                     const data = row[col.subject_name];
                                     return (
-                                      <ListItem className={` ${classes.homeworkTableMobileView} homework-table-mobile-view`}> 
+                                      <ListItem className={` ${classes.homeworkTableMobileView} homework-table-mobile-view`}>
                                         <div className={classes.dayicon}>
                                           {moment(row.date).format('dddd').split('')[0]}
                                         </div>
@@ -1228,6 +1348,15 @@ const CoordinatorTeacherHomework = withRouter(
                           setActiveView('list-homework');
                           setSelectedCol({});
                         }}
+                        handleAllSubmit={handleAllSubmit}
+                        absentList={absentList}
+                        handleAllUnSubmit={handleAllUnSubmit}
+                        handleAllAbsent={handleAllAbsent}
+                        handleUserAbsent={handleUserAbsent}
+                        handleUser={handleUser}
+                        handleUserUnsubmitted={handleUserUnsubmitted}
+                        handleSubmittedStd={handleSubmittedStd}
+                        handleUnSubmittedStd={handleUnSubmittedStd}
                       />
                     )}
                 </Grid>
@@ -1252,6 +1381,8 @@ const mapStateToProps = (state) => ({
   fetchingStudentLists: state.teacherHomework.fetchingStudentLists,
   selectedTeacherByCoordinatorToCreateHw:
     state.teacherHomework.selectedTeacherByCoordinatorToCreateHw,
+  absentList: state.teacherHomework.absentList,
+
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -1283,8 +1414,8 @@ const mapDispatchToProps = (dispatch) => ({
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
   },
-  fetchStudentLists: (id, subjectId, sectionId, selectedTeacherUser_id) => {
-    dispatch(fetchStudentsListForTeacherHomework(id, subjectId, sectionId, selectedTeacherUser_id));
+  fetchStudentLists: (id, subjectId, sectionId, selectedTeacherUser_id, date) => {
+    dispatch(fetchStudentsListForTeacherHomework(id, subjectId, sectionId, selectedTeacherUser_id, date));
   },
   setFirstTeacherUserIdOnloadCordinatorHomewok: (selectedTeacherUser_id) => {
     return dispatch(setTeacherUserIDCoord(selectedTeacherUser_id));

@@ -9,6 +9,7 @@ import hwEvaluatedIcon from '../../../assets/images/hw-evaluated.svg';
 import submitted from '../../../assets/images/student-submitted.svg';
 import { Badge, Typography } from '@material-ui/core';
 import AddHomework from '../../../assets/images/AddHomework.svg';
+import moment from 'moment';
 
 const HomeworkCol = ({
   data,
@@ -55,7 +56,7 @@ const HomeworkCol = ({
                 )}
               />
             </IconButton>
-            {studentSubmitted > 0 && (
+            {/* {studentSubmitted > 0 && ( */}
               <IconButton onClick={() => handleClick('submissionStats')}>
                 <Badge
                   badgeContent={studentSubmitted}
@@ -74,7 +75,7 @@ const HomeworkCol = ({
                   />
                 </Badge>
               </IconButton>
-            )}
+            {/* )} */}
 
             {hwEvaluated > 0 && (
               <IconButton onClick={() => handleClick('evaluationStats')}>
@@ -99,6 +100,7 @@ const HomeworkCol = ({
           </>
         )}
       </div>
+      {data?.last_submission_date ? <p style={{fontSize: '14px' , color: 'blue'}}>Last Submission Date :{moment(data?.last_submission_date).format('DD-MM-YYYY')}</p> : '' }
     </TableCell>
   );
 };
