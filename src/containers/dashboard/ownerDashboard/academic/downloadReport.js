@@ -38,7 +38,7 @@ const DownloadReport = ({ title, branchData }) => {
   const downloadAttendanceReport = (params) => {
     // const config = { headers, params, responseType: 'arraybuffer' }   
     const url = `${endpoints.ownerDashboard.getAttendanceDownload}?acad_session=${params?.acad_session}&days=${params?.days}`
-    return axiosInstance
+    return axios
       .get(url,{
         headers: {
           'X-DTS-Host': window.location.host,
