@@ -289,7 +289,7 @@ const OwnerDashboard = () => {
     //       Authorization: `Bearer ${token}`,
     //     },
     //   })
-    apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}`, null, null, true, 10000)
+    apiRequest('get', `${endpoints.ownerDashboard.getStaffDetails}?acad_session_id=${Acad_id}&hide_student=${1}`, null, null, true, 10000)
       .then((res) => {
         // setRoleWiseAttendance(res.data.result)
         setProgress1(initialState);

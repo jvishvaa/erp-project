@@ -7,10 +7,12 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
 import { useDashboardContext } from '../../dashboard-context';
 import Loader from 'components/loader/loader';
+import axios from 'config/axios' ;
 // import SyncIcon from '@mui/icons-material/Sync';  
 import SyncIcon from '@material-ui/icons/Refresh';
 import '../../WelcomeComponent/Styles.css'
-
+import endpoints from 'config/endpoints';
+import axiosInstance from 'config/axios';
 const reportTypes = [
   { type: 'Daily Report', days: '1' },
   { type: 'Weekly Report', days: '7' },
@@ -23,13 +25,31 @@ const DownloadReport = ({ title, branchData }) => {
   const open = Boolean(anchorEl);
   const { setAlert } = useContext(AlertNotificationContext);
   const[loader,setLoader] = React.useState(false)
-
+  const {
+    token: TOKEN = ''} = JSON.parse(localStorage.getItem('userDetails')) || {};
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleClose = (event) => {
     setAnchorEl(null);
+  };
+
+  const downloadAttendanceReport = (params) => {
+    // const config = { headers, params, responseType: 'arraybuffer' }   
+    const url = `${endpoints.ownerDashboard.getAttendanceDownload}?acad_session=${params?.acad_session}&days=${params?.days}`
+    return axiosInstance
+      .get(url,{
+        headers: {
+          'X-DTS-Host': window.location.host,
+          // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
+          // Authorization: `Bearer ${TOKEN}`,
+        },
+      })
+      .then((response) => {
+        return response || {};
+      })
+      .catch(() => { });
   };
 
   const getAttendanceReport = () => {    
@@ -53,11 +73,18 @@ const DownloadReport = ({ title, branchData }) => {
   };
 
   const handleDownload = (days) => {
-    let branchIds = branchData?.length > 1 ? branchData.map((item) => item?.branch?.id) : branchData
-    const params = { days, branch_ids: branchIds?.length > 1 ? branchIds.join(','): branchIds };
-    const decisonParam = title.toLowerCase().split(' ')[0];
+    let AcadIds , ids
+   if(typeof branchData[0] === 'object' && branchData !== null) {
+    AcadIds = branchData.map((item) => item?.id)
+    ids = AcadIds.length > 1 ? AcadIds.join(',') : AcadIds[0]
+   }else{
+    AcadIds =  branchData
+    ids = branchData
+   }
+    const params = { days, acad_session: ids }
+    // const decisonParam = title.toLowerCase().split(' ')[0];
     setLoader(true)
-    downloadReport(decisonParam, params)
+    downloadAttendanceReport(params)
       .then((response) => {
         setLoader(false)
         const {

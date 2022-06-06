@@ -248,8 +248,8 @@ export default {
     chapterList: `/academic/central-chapters-list/`,
     gradeListCentral: `${baseURLCentral}/lesson_plan/list-grade/`,
     chapterListCentral: `${baseURLCentral}/lesson_plan/chapter/`,
-    periodCompleted: '/academic/lessonplan-completed-status/',
-    periodCompletedStatus: '/academic/lesson-status/',
+    periodCompleted: '/academic/v2/lessonplan-completed-status/',
+    periodCompletedStatus: '/academic/v2/lesson-status/',
     bulkDownload: `${baseURLCentral}/lesson_plan/bulk_download/`,
     overviewSynopsis: `/academic/list-lesson-overview/`,
     s3: 'https://d2r9gkgplfhsr2.cloudfront.net/',
@@ -631,6 +631,7 @@ export default {
     getHWData: `${msReportsUrl}/api/acad_performance/v1/homework/grade-wise-stats/`,
     getCPData: `${msReportsUrl}/api/acad_performance/v1/class_part/grade-stats/`,
     getRecentTransaction: `${baseFinanceURL}/apiV1/today-recent-transactions/`,
+    getAttendanceDownload:`${msReportsUrl}/api/acad_performance/v2/download-attendance-report`,
 
     // section wise report
 

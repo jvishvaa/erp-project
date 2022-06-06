@@ -1407,7 +1407,7 @@ const FinanceOwnerDashboard = (props) => {
                         // onClick={() => history.push('/staff-attendance-report/branch-wise')}
                         style={{ display: 'flex' }}
                       >
-                        <b>Staff Details : &nbsp;</b>{' '}
+                        <b>Staff Details &nbsp;</b>{' '}
                         {props?.branchCounter ? (
                           <Tooltip
                             title={

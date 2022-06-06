@@ -429,7 +429,7 @@ const BranchWiseStuffAttendance = (props) => {
                                       variant='body1'
                                       className={clsx(classes.text)}
                                     >
-                                      {each.branch_name} Staff Present
+                                      {each.branch_name} Present Percentage
                                     </Typography>
                                   </div>
                                 </CardContent>

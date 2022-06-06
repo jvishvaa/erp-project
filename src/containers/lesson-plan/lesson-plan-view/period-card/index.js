@@ -30,6 +30,7 @@ const PeriodCard = ({
   setSelectedIndex,
   centralGradeName,
   centralSubjectName,
+  setCompletedSections,
 }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -72,10 +73,11 @@ const PeriodCard = ({
             setPeriodColor(true);
             axiosInstance
               .get(
-                `${endpoints.lessonPlan.periodCompletedStatus}?subject=${filterDataDown?.subject?.subject_id}&chapter=${filterDataDown?.chapter?.id}&period=${period?.id}`
+                `${endpoints.lessonPlan.periodCompletedStatus}?subject=${filterDataDown?.subject?.subject_id}&chapter=${filterDataDown?.chapter?.id}&period=${period?.id}&grade_id=${filterDataDown?.grade?.grade_id}&branch_id=${filterDataDown?.branch?.id}&session_year_id=${filterDataDown?.academic?.id}`
               )
               .then((result) => {
                 setCompletedStatus(result?.data?.is_completed);
+                setCompletedSections(result?.data?.lp_completed_sections)
               })
               .catch((error) => {
                 setAlert('error', error?.message);

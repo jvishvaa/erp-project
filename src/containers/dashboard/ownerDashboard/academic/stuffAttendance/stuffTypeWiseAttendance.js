@@ -418,7 +418,7 @@ const StuffTypeWiseStuffAttendance = (props) => {
                                       variant='body1'
                                       className={clsx(classes.text)}
                                     >
-                                      {each.erp_user__roles__role_name} Staff Present
+                                      {each.erp_user__roles__role_name} Present Percentage
                                     </Typography>
                                   </div>
                                 </CardContent>
