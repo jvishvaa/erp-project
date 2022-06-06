@@ -206,15 +206,15 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Online Class' &&
+          item.parent_modules === 'Communication' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Create Class') {
+            if (item.child_name === 'Announcement') {
               setModuleId(item.child_id);
             }
-          });
+          }); 
         }
       });
     }
