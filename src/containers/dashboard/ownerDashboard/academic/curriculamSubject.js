@@ -588,7 +588,7 @@ const CurriculumCompletionSubject = (props) => {
                 </Select>
               </FormControl>
             </Grid> */}
-            <Grid item xs={3}>
+            {/* <Grid item xs={3}>
               <TextField
                 id='date'
                 label='Select Date'
@@ -596,7 +596,7 @@ const CurriculumCompletionSubject = (props) => {
                 value={date}
                 size='small'
                 variant='outlined'
-                inputProps={{ max: date }}
+                inputProps={{ max: new Date().toISOString().slice(0, 10) }}
                 // defaultValue={dateToday}
                 onChange={(e) => setDate(e.target.value)}
                 className={classes.textField}
@@ -604,7 +604,7 @@ const CurriculumCompletionSubject = (props) => {
                   shrink: true,
                 }}
               />
-            </Grid>
+            </Grid> */}
             <Grid item xs={12}>
               <Typography variant='body1' className={clsx(classes.tableStateMent)}>
                 Curriculum Completion Details :{' '}

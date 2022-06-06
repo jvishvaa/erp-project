@@ -4,7 +4,7 @@ import { Button, Dialog, DialogContent, Grid, TextField } from '@material-ui/cor
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 
-const SectionFilter = ({ open, setOpen, sessionBranchGrade, handleComplete }) => {
+const SectionFilter = ({ open, setOpen, sessionBranchGrade, handleComplete,completedSections }) => {
   //   const [open, setOpen] = useState(false);
   const [sectionList, setSectionList] = useState([]);
   const [selectedSectionList, setSelectedSectionList] = useState([]);
@@ -44,7 +44,13 @@ const SectionFilter = ({ open, setOpen, sessionBranchGrade, handleComplete }) =>
       )
       .then((result) => {
         if (result.data.status_code === 200) {
-          setSectionList(result.data.data);
+          let sectionData = result.data.data
+           sectionData.forEach((obj,i)=>{
+            if (completedSections.indexOf(obj.id) !== -1) {
+              sectionData.splice(i, 1);
+          }
+          })
+          setSectionList(sectionData)          
         } else {
           //   setLoading(false);
           //   setAlert('error', result.data.description);
@@ -102,7 +108,9 @@ const SectionFilter = ({ open, setOpen, sessionBranchGrade, handleComplete }) =>
         </Grid>
         <Button
           style={{ width: '100%' }}
-          onClick={() => handleComplete(selectedSectionList)}
+          onClick={() => handleComplete(selectedSectionList,sectionList)}
+          color='primary'
+          variant='contained'
         >
           Submit
         </Button>
