@@ -76,12 +76,12 @@ const OwnerDashboard = () => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Blogs' &&
+          item.parent_modules === 'Ebook' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Principal Blogs') {
+            if (item.child_name === 'Ebook View') {
               setModuleId(item.child_id);
             }
           });
@@ -90,8 +90,7 @@ const OwnerDashboard = () => {
     }
   }, []);
 
-  useEffect(() => {
-    // getBranches()
+  useEffect(() => {    // getBranches()
     getBranches();
   }, [moduleId,selectedAcademicYear]);
 
@@ -112,8 +111,8 @@ const OwnerDashboard = () => {
   };
 
   const handleAcadRefresh = () => {
-    getAvgScore();
-    getCurrReport();
+    // getAvgScore();        comment_out_extra_api
+    // getCurrReport();       comment_out_extra_api
     getAttendanceReportOverview();
     setAcadCounter(true);
   };
@@ -149,7 +148,7 @@ const OwnerDashboard = () => {
   };
 
   const getBranches = () => {
-    if (moduleId != '' || null || undefined) {
+    if ((moduleId != '' || null || undefined) && selectedAcademicYear) {
       axiosInstance
         .get(
           `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`

@@ -71,6 +71,7 @@ function TeacherDashboard() {
   const { setAlert } = useContext(AlertNotificationContext);
 
   const [currBranch, setCurrBranch] = useState();
+  const [branchDisplay, setBranchDisplay] = useState();
 
   const gradeSectionDetails = () => {
     axios
@@ -236,7 +237,7 @@ function TeacherDashboard() {
           setBranchData(res.data.data.results);
           // if(!data?.is_superuser && !(userLevel === 1 || userLevel === 2 ||userLevel === 3 ||userLevel === 4)){
           if (res.data.data.results.length === 1) {
-            handleBranch('', [res.data.data.results[0]]);
+            handleBranch('', res.data.data.results[0]);
           }
         })
         .catch(() => {});
@@ -247,7 +248,9 @@ function TeacherDashboard() {
     let value = [new_value]
     // setSelectedDisplayBranch()
     setSelectedBranch([]);
+    setBranchDisplay()
     if (new_value !== null && value?.length > 0) {
+      setBranchDisplay(new_value)
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.id); //acad_id
       setSelectedBranch(ids);
@@ -262,7 +265,7 @@ function TeacherDashboard() {
   };
 
   const getCurrReport = (params) => {
-    if(selectedBranchId.length > 1){
+    if(selectedBranchId?.length > 1){
       setAlert('error','Please select at least and at most one branch');
       return
     }
@@ -327,7 +330,7 @@ function TeacherDashboard() {
                   onChange={handleBranch}
                   id='branch_id'
                   className='dropdownIcon'
-                  // value={selectedBranch || []}
+                  value={branchDisplay || {}}
                   options={branchData || []}
                   getOptionLabel={(option) => option?.branch?.branch_name || ''}
                   // getOptionSelected={(option, value) =>
