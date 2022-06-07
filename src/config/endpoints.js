@@ -631,7 +631,7 @@ export default {
     getHWData: `${msReportsUrl}/api/acad_performance/v1/homework/grade-wise-stats/`,
     getCPData: `${msReportsUrl}/api/acad_performance/v1/class_part/grade-stats/`,
     getRecentTransaction: `${baseFinanceURL}/apiV1/today-recent-transactions/`,
-    getAttendanceDownload: `${msReportsUrl}/api/acad_performance/v2/download-attendance-report`,
+    getAttendanceDownload: `${msReportsUrl}/api/acad_performance/v2/download-attendance-report/`,
 
     // section wise report
 

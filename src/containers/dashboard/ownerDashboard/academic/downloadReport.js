@@ -19,6 +19,7 @@ const reportTypes = [
   { type: 'Monthly Report', days: '30' },
 ];
 
+
 const DownloadReport = ({ title, branchData }) => {
   const { branchIds = [], downloadReport = () => {}, getReport = () => {}, setCard, setReports } = useDashboardContext();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -34,18 +35,19 @@ const DownloadReport = ({ title, branchData }) => {
   const handleClose = (event) => {
     setAnchorEl(null);
   };
+  const  headers= {
+    'X-DTS-Host': window.location.host,
+    // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
+    Authorization: `Bearer ${TOKEN}`,
+  } 
 
   const downloadAttendanceReport = (params) => {
     // const config = { headers, params, responseType: 'arraybuffer' }   
-    const url = `${endpoints.ownerDashboard.getAttendanceDownload}?acad_session=${params?.acad_session}&days=${params?.days}`
+    const url = `${endpoints.ownerDashboard.getAttendanceDownload}`
+    const config = { headers, params, responseType: 'arraybuffer' };
+
     return axios
-      .get(url,{
-        headers: {
-          'X-DTS-Host': window.location.host,
-          // 'X-DTS-Host': 'qa.olvorchidnaigaon.letseduvate.com',
-          // Authorization: `Bearer ${TOKEN}`,
-        },
-      })
+      .get(url,config)
       .then((response) => {
         return response || {};
       })
