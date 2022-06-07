@@ -155,7 +155,7 @@ const OwnerDashboard = () => {
         )
         .then((res) => {
           setBranchList(res.data.data.results);
-          const ids = res.data.data.results?.map((el) => el?.id);  //acad id
+          const ids = res.data.data.results?.map((el) => el?.branch?.id);  //acad id
           setSelectedBranchId(ids);
           setBranchData(res.data.data.results);
           // if(!data?.is_superuser && !(userLevel === 1 || userLevel === 2 ||userLevel === 3 ||userLevel === 4)){
@@ -360,7 +360,7 @@ const OwnerDashboard = () => {
     setSelectedBranch([]);
     if (value?.length > 0) {
       const ids = value.map((el) => el);
-      const selectedId = value.map((el) => el?.id);  //acad_id
+      const selectedId = value.map((el) => el?.branch?.id);  //acad_id
       setSelectedBranch(ids);
       setBranchList(ids);
       setSelectedBranchId(selectedId);
