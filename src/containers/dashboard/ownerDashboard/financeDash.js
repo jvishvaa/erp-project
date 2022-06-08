@@ -452,7 +452,7 @@ const FinanceOwnerDashboard = (props) => {
     });
 
     const branchId = data.map((item) => {
-      return item?.id; //acad id
+      return item?.branch?.id; //acad id
     });
 
     history.push({
