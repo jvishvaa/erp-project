@@ -165,7 +165,7 @@ function Row(props) {
   const [propsData, setPropsData] = useState([]);
   const [gradeName, setGradeName] = useState('');
 
-  const { id: sessionYearId = '' } =
+  const { session_year: sessionYearId = '' } =
     JSON.parse(sessionStorage.getItem('acad_session')) || {};
 
   useEffect(() => {
