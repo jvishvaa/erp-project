@@ -10,7 +10,8 @@ import {
   TextField,
   Checkbox,
   IconButton,
-  useTheme
+  useTheme,
+  TextareaAutosize
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
@@ -129,7 +130,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
   const [fileToDelete, setFileToDelete] = useState()
   const [error, setError] = useState('')
 
-  let titlebody = extractContent(textEditorContent)
+  let titlebody = textEditorContent
   let channelsArr = [
       'orchids.letseduvate.com',
       'localhost:3000',
@@ -195,12 +196,6 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
     setuploadedFiles([]);
     setFileToFilter([])
   };
-
-  function extractContent(s) {
-    const span = document.createElement('span');
-    span.innerHTML = s;
-    return span.textContent || span.innerText;
-  }
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -452,13 +447,6 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
   }, [
     selectedSectionListData,
   ]);
-
-
-  const handleEditorChange = (content, editor) => {
-    content = content.replace(/&nbsp;/g, '');
-    //  editor?.getContent({ format: 'text' })
-    setTextEditorContent(content);
-  };
 
   const handleFilter = () => {
     const removeFile = fileToFilter.filter((z) => z != fileToDelete);
@@ -771,20 +759,19 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
             </Grid>
           </Grid>
 
-          <Grid style={{ marginBottom: 5, marginTop: '5px' }}>
+          <Grid style={{ marginTop: '5px' }}>
             <b>Main Body</b>
           </Grid>
-          <MyTinyEditor
-            id='Editor'
-            //description={Description}
-            content={textEditorContent}
-            // placeholder='Description...'
-            handleEditorChange={handleEditorChange}
-            onChange={(e) => setContent(e.target.value)}
-            //   handleEditorChange={handleEditorChange}
-            //   setOpenEditor={openEditor}
-            height='150px'
-            isShowToolBar='fontselect fontsizeselect bold italic aligncenter underline bullist numlist file image customInsertButton'
+          <TextField
+            multiline
+            rows={6}
+            style={{ width: '100%',}}
+            // defaultValue={Content}
+            onChange={(e) => setTextEditorContent(e.target.value)}
+            id='outlined-basic'
+            // label='Main Body'
+            variant='outlined'
+            margin='dense'
           />
           <Grid style={{ marginBottom: 5, marginTop: '20px' }}>
             <b>Upload attachment</b>
