@@ -33,6 +33,7 @@ import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 import InsertInvitationIcon from '@material-ui/icons/InsertInvitation';
 import SubjectIcon from '@material-ui/icons/Subject';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import BlurCircularIcon from '@material-ui/icons/BlurCircular';
 import ConfirmModal from 'containers/assessment-central/assesment-card/confirm-modal';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -581,6 +582,9 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
             {announcementType?.category_name === 'General' && (
               <SubjectIcon style={{ color: '#464D57', marginRight: 10 }} />
             )}
+            {announcementType?.category_name === 'Circular' && (
+              <BlurCircularIcon style={{ color: 'rgb(65 106 103)', marginRight: 10 }} />
+            )}            
             {announcementType?.category_name}
           </div>
           <CancelOutlinedIcon
