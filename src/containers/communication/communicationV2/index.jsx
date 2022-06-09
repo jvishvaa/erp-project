@@ -26,6 +26,7 @@ import EventIcon from '@material-ui/icons/Event';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 import InsertInvitationIcon from '@material-ui/icons/InsertInvitation';
+import BlurCircularIcon from '@material-ui/icons/BlurCircular';
 import SubjectIcon from '@material-ui/icons/Subject';
 import AddIcon from '@material-ui/icons/Add';
 import Dialog from '@material-ui/core/Dialog';
@@ -229,19 +230,25 @@ const NewCommunication = () => {
     let url = '';
     let baseurl = '';
     if (category == null) {
-      baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
+      baseurl = `date=${defaultdate}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
     } else {
-      baseurl = `date=${defaultdate}&section_mapping=${selectedSectionMappingId.toString()}&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
+      baseurl = `date=${defaultdate}&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
     }
-    if (filterOn && selectedSectionMappingId.length > 0) {
+    if (filterOn) {
       if (onClickIndex == 1) {
-        url = `${endpoints.announcementNew.inbox}?${baseurl}`;
+        url = selectedSectionMappingId.length > 0 
+        ? `${endpoints.announcementNew.inbox}?${baseurl}&section_mapping=${selectedSectionMappingId.toString()}`
+         : `${endpoints.announcementNew.inbox}?${baseurl}`
       }
       if (onClickIndex == 2) {
-        url = `${endpoints.announcementNew.inbox}?is_draft=True&${baseurl}`;
+        url = selectedSectionMappingId.length > 0 
+        ? `${endpoints.announcementNew.inbox}?is_draft=True&${baseurl}&section_mapping=${selectedSectionMappingId.toString()}`
+        : `${endpoints.announcementNew.inbox}?is_draft=True&${baseurl}`;
       }
       if (onClickIndex == 3) {
-        url = `${endpoints.announcementNew.inbox}?is_sent=True&${baseurl}`;
+        url = selectedSectionMappingId.length > 0 
+        ?  `${endpoints.announcementNew.inbox}?is_sent=True&${baseurl}&section_mapping=${selectedSectionMappingId.toString()}`
+        :  `${endpoints.announcementNew.inbox}?is_sent=True&${baseurl}`;
       }
     } else {
       if (category > 0) {
@@ -495,6 +502,8 @@ const NewCommunication = () => {
         return '#62A7EB';
       case 'General':
         return '#464D57';
+      case 'Circular' :
+        return 'rgb(65 106 103)';
       default:
         return '#464D57';
     }
@@ -799,6 +808,11 @@ const NewCommunication = () => {
                   ) : (
                     ''
                   )}
+                  {item?.category_name === 'Circular' ? (
+                    <BlurCircularIcon style={{ color: 'rgb(65 106 103)' }} />
+                  ) : (
+                    ''
+                  )}
                 </ListItemIcon>
                 <ListItemText
                   style={{
@@ -874,6 +888,11 @@ const NewCommunication = () => {
                         )}
                         {item?.category_name === 'TimeTable' ? (
                           <InsertInvitationIcon style={{ color: '#62A7EB' }} />
+                        ) : (
+                          ''
+                        )}
+                        {item?.category_name === 'Circular' ? (
+                          <BlurCircularIcon style={{ color: 'rgb(65 106 103)' }} />
                         ) : (
                           ''
                         )}
@@ -1013,6 +1032,7 @@ const NewCommunication = () => {
                     {extractContent(dialogData?.content)}
                   </Typography>
                 </div>
+                {dialogData?.attachments?.length>0 && <Grid><b>Attachment</b></Grid>}
                 {dialogData?.attachments &&
                   dialogData?.attachments.map((item, index, arr) => {
                     const extension = item.split('.')[item.split('.').length - 1];
@@ -1038,7 +1058,7 @@ const NewCommunication = () => {
                           <SvgIcon
                             component={() => (
                               <VisibilityIcon
-                                style={{ width: 30, height: 30 }}
+                                style={{ width: 30, height: 30, cursor: 'pointer' }}
                                 onClick={() => {
                                   const fileSrc = `${endpoints.lessonPlan.s3erp}announcement/${item}`;
                                   openPreview({
