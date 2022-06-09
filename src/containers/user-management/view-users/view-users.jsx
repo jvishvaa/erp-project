@@ -381,14 +381,17 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
     if (selectedGrades && selectedGrades !== 'All') {
       selectedGrades.map((each, i) => {
-        gradesId.push(each.id);
+        gradesId.push(each.grade_id);
       });
     }
-    let getUserListUrl = `communication/erp-user-info-excel/?module_id=${moduleId}`;
+    let getUserListUrl = `communication/erp-user-info-excel-v2/?module_id=${moduleId}`;
     if (rolesId.length > 0 && selectedRoles !== 'All') {
       rolesId.map((each, i) => {
         getUserListUrl += `&role=${each.toString()}`;
       });
+    }
+    if (selectedBranch != null && selectedBranch !== 'All') {
+      getUserListUrl += `&branch=${selectedBranch?.id}`;
     }
     // /*
     if (gradesId.length > 0 && selectedGrades !== 'All') {
