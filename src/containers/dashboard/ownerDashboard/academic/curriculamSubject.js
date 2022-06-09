@@ -270,8 +270,8 @@ function Row(props) {
                 <TableHead>
                   <TableRow>
                     <TableCell>Sections</TableCell>
-                    <TableCell>Total Topics</TableCell>
-                    <TableCell align='right'>Completed Topics</TableCell>
+                    <TableCell>Total Periods</TableCell>
+                    <TableCell align='right'>Completed Periods</TableCell>
                     <TableCell align='right'>Avg. Completion</TableCell>
                   </TableRow>
                 </TableHead>

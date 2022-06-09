@@ -262,7 +262,12 @@ export default function AssessmentReport(props) {
       setLoading(true);
       const result = axiosInstance
         .get(
-          `${endpoints.academicTestReport.academicTestReport}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&subject_id=${selectedSubjectIds}&test_type=${selectedTestId}&date_gte=${startDate}&date_lte=${endDate}`
+          `${endpoints.academicTestReport.assessmentReport}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&subject_id=${selectedSubjectIds}&test_type=${selectedTestId}&date_gte=${startDate}&date_lte=${endDate}`,
+          {
+            headers: {
+              'X-DTS-HOST': window.location.host,
+            },
+          }
         )
         .then((result) => {
           if (result.status === 200) {

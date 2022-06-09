@@ -306,6 +306,7 @@ const FinanceOwnerDashboard = (props) => {
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const token = data?.token;
   const user_level = data?.user_level;
+  let users = [2,3,10]
 
   const handleVolumeChange = (event) => {
     setVolume(event.target.value);
@@ -451,7 +452,7 @@ const FinanceOwnerDashboard = (props) => {
     });
 
     const branchId = data.map((item) => {
-      return item?.id; //acad id
+      return item?.branch?.id; //acad id
     });
 
     history.push({
@@ -463,7 +464,7 @@ const FinanceOwnerDashboard = (props) => {
   };
 
   const feeredirect = () => {
-    if (user_level != 10) {
+    if (!users.includes(user_level)) {
       if (props?.branchCounter === true) {
         history.push({
           pathname: '/fees-table-status',
@@ -816,7 +817,7 @@ const FinanceOwnerDashboard = (props) => {
                     ) : (
                       <>All Branch</>
                     )}
-                    {user_level != 10 ? (
+                    {!users.includes(user_level)  ? (
                       <IconButton
                         size='small'
                         className={clsx(classes.refreshButton)}
@@ -962,7 +963,7 @@ const FinanceOwnerDashboard = (props) => {
                               }}
                             >
                               <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
-                              {user_level != 10 ? (
+                              {!users.includes(user_level) ? (
                                 <Typography style={{ fontWeight: '600' }}>
                                   No Records
                                 </Typography>
@@ -979,7 +980,7 @@ const FinanceOwnerDashboard = (props) => {
                   </Card>
                   <Typography className={clsx(classes.resentTransactionText)}>
                     <b> Recent Transaction </b>
-                    {user_level != 10 ? (
+                    {!users.includes(user_level) ? (
                       <IconButton
                         size='small'
                         className={clsx(classes.refreshButton)}
@@ -1111,7 +1112,7 @@ const FinanceOwnerDashboard = (props) => {
                               }}
                             >
                               <Typography style={{ fontSize: '1.2rem' }}>☹️</Typography>
-                              {user_level != 10 ? (
+                              {!users.includes(user_level) ? (
                                 <Typography style={{ fontWeight: '600' }}>
                                   No Records
                                 </Typography>
@@ -1796,7 +1797,7 @@ const FinanceOwnerDashboard = (props) => {
                                 size='small'
                                 // icon={props?.selectedBranch?.length}
                                 avatar={<Avatar>{props?.selectedBranch?.length}</Avatar>}
-                                label={' Branch Selected'}
+                                label={props?.selectedBranch[0]?.branch?.branch_name}
                               />
                             </Tooltip>
                           ) : (

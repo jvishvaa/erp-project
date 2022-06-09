@@ -76,6 +76,9 @@ const ViewMoreCard = ({
 
 
   const handleComplete = (sectionIds,sectionList) => {
+    if(sectionIds.length === 0){
+      return setAlert('error', 'please Select sections')
+    }
     setOpen(false)
     setLoading(true);
     setOpen(false)

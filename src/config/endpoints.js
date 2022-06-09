@@ -198,7 +198,7 @@ export default {
     lessonList: '/academic/lesson-completed-report/',
     lessonViewMoreData: '/academic/user-chapters-details/',
     // teacherList: '/academic/lesson_plan_user_list/',
-    teacherList : '/academic/lesson-plan-user-list-v2/',
+    teacherList: '/academic/lesson-plan-user-list-v2/',
   },
   studentListApis: {
     branchWiseStudentCount: '/academic/school_strength/',
@@ -631,7 +631,7 @@ export default {
     getHWData: `${msReportsUrl}/api/acad_performance/v1/homework/grade-wise-stats/`,
     getCPData: `${msReportsUrl}/api/acad_performance/v1/class_part/grade-stats/`,
     getRecentTransaction: `${baseFinanceURL}/apiV1/today-recent-transactions/`,
-    getAttendanceDownload:`${msReportsUrl}/api/acad_performance/v2/download-attendance-report`,
+    getAttendanceDownload: `${msReportsUrl}/api/acad_performance/v2/download-attendance-report/`,
 
     // section wise report
 
@@ -840,8 +840,8 @@ export default {
     markAttendence: '/course_extend/meeting_attendence/',
   },
   academicTestReport: {
-    academicTestReport: '/assessment/academic-test-report/',
-    homeworkSubmissionReport: '/assessment/academic-homework-submission-report/',
+    assessmentReport: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
+    homeworkSubmissionReport: `${msReportsUrl}/api/acad_performance/v1/homework/homework-submission-report/`,
     classworkSubmissionReport: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/classwork-details/`,
   },
 
