@@ -422,7 +422,7 @@ class WriteBlog extends Component {
                   </Grid>
                   <Grid item xs={12}>
                     <Typography color='secondary' style={{ margin: 10 }} variant='body1'>
-                      Add Thumbnail
+                      Add Attachment
                     </Typography>
                     <Typography
                       color='textPrimary'
