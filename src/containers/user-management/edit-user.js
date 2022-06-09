@@ -65,9 +65,16 @@ class EditUser extends Component {
   componentDidUpdate(prevProps) {
     const { selectedUser } = this.props;
     let details = JSON.parse(localStorage.getItem('userDetails'));
-    if(selectedUser?.user_level === 13 && (details?.user_level !== 1 || !details?.is_superuser)){
-          this.state.isEditable = true;
+    if (!details?.is_superuser) {
+      if (
+        selectedUser?.user_level === 13 ||
+        selectedUser?.user_level === '' ||
+        selectedUser?.user_level === null ||
+        selectedUser?.user_level === undefined
+      ) {
+        this.state.isEditable = true;
       }
+    }
     if (prevProps.selectedUser !== selectedUser && selectedUser) {
       this.setState({
         user: selectedUser,
