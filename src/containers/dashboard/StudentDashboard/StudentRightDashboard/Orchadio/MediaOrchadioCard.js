@@ -17,6 +17,8 @@ import Endpoint from '../../config/Endpoint';
 import classnames from 'classnames';
 import Ott from './Ott.png';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import {useSelector } from 'react-redux';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -71,7 +73,10 @@ export default function MediaControlCard() {
   const [hasLiked, setHasLiked] = React.useState(false);
   const [likeCount, setLikeCount] = React.useState(0);
   const [isEnabled, setIsEnabled] = React.useState(false);
-  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
+  // const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
+  const sessionYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   //references
   const audioPlayer = useRef();
@@ -98,34 +103,37 @@ export default function MediaControlCard() {
   };
 
   useEffect(() => {
-    apiRequest(
-      'get',
-      `${endpoints?.dashboard?.student?.orchadioapi}?session_year=${sessionYear?.id}`,
-      null,
-      null,
-      true,
-      5000
-    )
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          setMediaData(result?.data?.result?.data);
-          setTotalAudioCount(result?.data?.result?.total_orchadioprograms);
-          setIsEnabled(result?.data?.is_enabled);
-          if (result?.data?.result?.data?.length > 0) {
-            setCurrentAudioId(0);
-            setPageNumber(1);
-            setLikeCount(result?.data?.result?.data[0]?.likes);
-            setHasLiked(result?.data?.result?.data[0]?.is_like);
+    if(sessionYear){
+      apiRequest(
+        'get',
+        `${endpoints?.dashboard?.student?.orchadioapi}?session_year=${sessionYear?.id}`,
+        null,
+        null,
+        true,
+        5000
+      )
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setMediaData(result?.data?.result?.data);
+            setTotalAudioCount(result?.data?.result?.total_orchadioprograms);
+            setIsEnabled(result?.data?.is_enabled);
+            if (result?.data?.result?.data?.length > 0) {
+              setCurrentAudioId(0);
+              setPageNumber(1);
+              setLikeCount(result?.data?.result?.data[0]?.likes);
+              setHasLiked(result?.data?.result?.data[0]?.is_like);
+            }
+            //Add loader
+          } else {
+            setAlert('error', 'No more songs to play');
           }
-          //Add loader
-        } else {
-          setAlert('error', 'No more songs to play');
-        }
-      })
-      .catch((error) => {
-        setAlert('error', 'Network Error');
-      });
-  }, []);
+        })
+        .catch((error) => {
+          setAlert('error', 'Network Error');
+        });
+    }
+ 
+  }, [sessionYear]);
 
   const fetchMoreAudio = async (pageNumber) => {
     const response = await apiRequest(

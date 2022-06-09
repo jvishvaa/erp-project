@@ -12,6 +12,7 @@ import bullet from './bullet.svg';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import { useHistory } from 'react-router-dom';
+import {useSelector } from 'react-redux';
 
 
 const style = {
@@ -200,6 +201,9 @@ export default function Announcement(props) {
   const [oldPost, setOldPost] = useState([]);
   const [isEnabled, setIsEnabled] = React.useState(false);
   const [page, setPage] = React.useState();
+  const sessionYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const [loading, setLoading] = useState(false);
   //we are making request to show roles in modal
@@ -216,7 +220,8 @@ export default function Announcement(props) {
   };
   //making request to show announcements
   const updateAnnouncement = () => {
-    apiRequest('get', `/announcement/v2/inbox/`, null, null, false, 5000)
+    let url =  `/announcement/v2/inbox/?session_year=${sessionYear?.id}`
+    apiRequest('get', url, null, null, false, 5000)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           // setIsEnabled(result?.data?.is_enabled);
@@ -255,9 +260,11 @@ const announcementRedirect = () => {
   };
   useEffect(() => {
     getRoleData();
-    updateAnnouncement();
+    if(sessionYear){
+      updateAnnouncement();
+    }
     // nextpagehandler();
-  }, []);
+  }, [sessionYear]);
 
   const checkDates = () => {
     setToday(

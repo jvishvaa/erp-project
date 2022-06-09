@@ -34,6 +34,7 @@ const EditSchoolDetailsForm = ({
   index = 0,
   handleDelete,
   isAcadDisabled = false,
+  isEditable = false,
 }) => {
   const [academicYears, setAcademicYears] = useState([]);
   const [branches, setBranches] = useState([]);
@@ -373,6 +374,7 @@ const EditSchoolDetailsForm = ({
             <Autocomplete
               id='branch'
               name='branch'
+              disabled={isEditable}
               key={`branch_${index}`}
               onChange={(e, value) => {
                 formik.setFieldValue('grade', []);
@@ -409,6 +411,7 @@ const EditSchoolDetailsForm = ({
               id='grade'
               name='grade'
               key={`grade_${index}`}
+              disabled={isEditable}
               onChange={(e, value) => {
                 formik.setFieldValue('section', []);
                 formik.setFieldValue('subjects', []);
