@@ -104,13 +104,38 @@ function QuestionReview() {
                   ) : (
                     <div className={classes.answersContainer}>
                       <b>Your answer : &nbsp; </b>
-                      <label
-                        dangerouslySetInnerHTML={{
-                          __html: handlerAnswerVar(
-                            item?.user_sub_answer?.user_answer_values
-                          ),
-                        }}
-                      ></label>
+                      <span>
+                        <label
+                          dangerouslySetInnerHTML={{
+                            __html: handlerAnswerVar(
+                              item?.user_sub_answer?.user_answer_values
+                            ),
+                          }}
+                        ></label>
+                          {item?.user_sub_answer?.user_answer_images?.map((image) => (
+                            <a
+                              className='underlineRemove'
+                              onClick={() => {
+                                const fileSrc = `${s3Images}${image}`;
+                                // 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/questions_files/2/0/1/1/1627717292_2021-05-17_18_20_14.202081_screenshot_from_2021-03-18_20-31-20_(2).png';
+                                // `${s3Image}${options[1]?.option2?.images[0]}`
+                                openPreview({
+                                  currentAttachmentIndex: 0,
+                                  attachmentsArray: [
+                                    {
+                                      src: fileSrc,
+                                      name: `demo`,
+                                      extension: '.png',
+                                    },
+                                  ],
+                                });
+                              }}
+                            >
+                              <SvgIcon component={() => <VisibilityIcon />} />
+                            </a>
+                          ))}
+                      </span>
+
                       <br />
                       <b>Correct answer : &nbsp; </b>
                       <label
@@ -120,6 +145,28 @@ function QuestionReview() {
 
                         }}
                       ></label>
+                       {item?.question_answer[0]?.answer_images?.map((image) => (   
+                          <a
+                            className='underlineRemove'
+                            onClick={() => {
+                              const fileSrc = `${s3Images}${image}`;
+                              // 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/questions_files/2/0/1/1/1627717292_2021-05-17_18_20_14.202081_screenshot_from_2021-03-18_20-31-20_(2).png';
+                              // `${s3Image}${options[1]?.option2?.images[0]}`
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: [
+                                  {
+                                    src: fileSrc,
+                                    name: `demo`,
+                                    extension: '.png',
+                                  },
+                                ],
+                              });
+                            }}
+                          >
+                            <SvgIcon component={() => <VisibilityIcon />} />
+                          </a>
+                        ))}
                     </div>
                   )}
                 </>
