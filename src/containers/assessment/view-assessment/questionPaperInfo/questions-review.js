@@ -37,9 +37,10 @@ function QuestionReview() {
           answer: userAnswer = [],
           user_answer_values: differUserResponse,
           user_answer_images: userResposeImages,
+          is_central: isCentral,
         } = {},
         sub_question_answer: subQuestion = [{}],
-        is_central: isCentral = false,
+        // is_central: isCentral = false,
       } = questionsDataObj[questionId] || {};
       const handlerAnswerVar = (ansVar) => {
         let answer = '';
@@ -56,7 +57,7 @@ function QuestionReview() {
         answer = answer ?? `${ansVar}`;
         return answer;
       };
-      const s3Images = `${isCentral ? endpoints.s3 : endpoints.assessmentErp.s3}/`;
+      const s3Images = `${isCentral === true ? endpoints.s3 : endpoints.assessmentErp.s3}/`;
       return (
         <div className={classes.questionCotainer}>
           {questionType === 7 ? (

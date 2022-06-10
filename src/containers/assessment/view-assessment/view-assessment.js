@@ -45,6 +45,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const [page, setPageNumber] = useState(+getSearchParams(restProps).page || 1);
   const [totalCount, setTotalCount] = useState(0);
   const [status, setStatus] = useState(+getSearchParams(restProps).status || 0);
+  const IsTestDone = JSON.parse(localStorage.getItem('is_test_comp')) || {};
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
   // const [questionPaperInfoObj, setQuestionPaperInfoObj] = useState();
   // const { containerRef } = React.useContext(ContainerContext);
@@ -59,6 +60,15 @@ const ViewAssessments = ({ history, ...restProps }) => {
   useEffect(() => {
     localStorage.setItem('is_retest', query.get('status') === '2');
   }, [])
+
+  useEffect(() => {
+    if(IsTestDone === true){
+      setStatus(1)
+      localStorage.setItem("is_test_comp",false)
+    }
+    localStorage.setItem("is_test_comp",false)
+  },[IsTestDone])
+  
   useEffect(()=>{
     setShowInfo()
   },[window.location.pathname])
