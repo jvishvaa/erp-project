@@ -44,6 +44,7 @@ class EditUser extends Component {
       collectData: {},
       mappingBgsLength: 0,
       collectDataCount: 0,
+      isEditable: false,
     };
   }
 
@@ -63,6 +64,17 @@ class EditUser extends Component {
 
   componentDidUpdate(prevProps) {
     const { selectedUser } = this.props;
+    let details = JSON.parse(localStorage.getItem('userDetails'));
+    if (!details?.is_superuser) {
+      if (
+        selectedUser?.user_level === 13 ||
+        selectedUser?.user_level === '' ||
+        selectedUser?.user_level === null ||
+        selectedUser?.user_level === undefined
+      ) {
+        this.state.isEditable = true;
+      }
+    }
     if (prevProps.selectedUser !== selectedUser && selectedUser) {
       this.setState({
         user: selectedUser,
@@ -412,6 +424,7 @@ class EditUser extends Component {
                               isAcadDisabled={is_acad_disabled}
                               index={index}
                               handleDelete={() => this.handleDeleteMappingObject(index)}
+                              isEditable = {this.state.isEditable}
                               // selectedYearIds={this.state.selectedYearIds}
                             />
                           )

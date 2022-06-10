@@ -17,10 +17,12 @@ import {
   Button,
   SvgIcon,
 } from '@material-ui/core';
+import axiosInstance from 'config/axios';
+import endpoints from 'config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { useHistory } from 'react-router-dom';
-import { connect } from 'react-redux';
+import { connect, useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import cuid from 'cuid';
@@ -65,6 +67,11 @@ const CreateAssesment = ({
   initQuestionsLength,
   initResetFormState,
 }) => {
+  const [CentralFilter,setCentralFilter] = useState(false)
+  const[flag,setFlag] = useState(false);
+  const [branch,setBranch] = useState([])
+  const [branchDropdown, setBranchDropdown] = useState([]);
+  const [branchId,setBranchId] = useState([]);
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const clearForm = query.get('clear');
@@ -81,8 +88,13 @@ const CreateAssesment = ({
   const [totalMarks, setTotalmarks] = useState(initialTotalMarks);
   const [paperchecked, setChecked] = React.useState(true);
   const history = useHistory();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [moduleId, setModuleId] = useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [assesmentTypes, setAssesmentTypes] = useState([]);
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const formik = useFormik({
     initialValues: {
       test_mode: selectedTestType || testTypes[0],
@@ -103,6 +115,23 @@ const CreateAssesment = ({
     setTestMarks([]);
     initResetFormState();
   };
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Assessment' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Question Paper') {
+              setModuleId(item?.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
   const getAssesmentTypes = async () => {
     try {
       const data = await fetchAssesmentTypes();
@@ -118,6 +147,33 @@ const CreateAssesment = ({
   // }, [moduleId]);
 
   useEffect(() => {
+    if(selectedQuestionPaper?.is_central && moduleId){
+      setCentralFilter(true)
+      axiosInstance
+      .get(
+        `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
+      )
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          const selectAllObject = {
+            session_year: {},
+            id: 'all',
+            branch: { id: 'all', branch_name: 'Select All' },
+          };
+          const data = [selectAllObject,...result?.data?.data?.results];
+          setBranchDropdown(data);
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+      });
+
+    }
+  },[selectedQuestionPaper?.is_central, moduleId])
+
+  useEffect(() => {
     if (clearForm) {
       resetForm();
     }
@@ -125,6 +181,10 @@ const CreateAssesment = ({
   const handleCreateAssesmentTest = async () => {
     const qMap = new Map();
 
+    if(CentralFilter === true && flag !== true){
+      setAlert('warning', 'Please Select Branch');
+      return;
+    }
     if (totalMarks < 0 || totalMarks > 1000) {
       setAlert('warning', 'Please enter valid marks.');
       return;
@@ -261,7 +321,7 @@ const CreateAssesment = ({
       is_question_wise: !paperchecked,
       grade: selectedQuestionPaper['grade'],
       subjects: selectedQuestionPaper['subjects'],
-      acad_session: selectedQuestionPaper['academic_session'],
+      acad_session: CentralFilter === true ? branchId : selectedQuestionPaper['academic_session'],
       is_central: selectedQuestionPaper['is_central'],
     };
 
@@ -387,6 +447,20 @@ const CreateAssesment = ({
     setMarksAssignMode(e.target.checked);
   };
 
+  const handleBranch = (event,value) => {
+    setFlag(false)
+    setBranch([])
+    if(value?.length > 0){
+      value =
+      value.filter(({ id }) => id === 'all').length === 1
+        ? [...branchDropdown].filter(({ id }) => id !== 'all')
+        : value;
+      const branchIds = value.map((element) => element?.id) || [];
+      setBranchId(branchIds)
+      setBranch(value)
+      setFlag(true)
+    }
+  }
   useEffect(() => {
     if (selectedQuestionPaper) {
       // initFetchQuestionPaperDetails(3);
@@ -500,6 +574,32 @@ const CreateAssesment = ({
                             size='small'
                           />
                         </Grid>
+                        {CentralFilter === true ? (
+                        <Grid item xs={12} md={4}>
+                          <Autocomplete
+                            id='branch_name'
+                            name='branch_name'
+                            multiple
+                            limitTags={2}
+                            className='dropdownIcon'
+                            onChange={handleBranch}
+                            value={branch || []}
+                            options={branchDropdown || []}
+                            getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                            filterSelectedOptions
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                variant='outlined'
+                                label='Branch'
+                                placeholder='Branch'
+                              />
+                            )}
+                            size='small'
+                          />
+                        </Grid>
+
+                        ) : '' }
                       </Grid>
                       <FormHelperText style={{ color: 'red' }}>
                         {formik.errors.branch ? formik.errors.branch : ''}

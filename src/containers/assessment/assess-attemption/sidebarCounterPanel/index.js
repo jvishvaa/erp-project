@@ -157,6 +157,7 @@ const SidebarCounterPanel = (props) => {
       const { message, status_code: statusCodeResponse } = res.data || {};
       const statusCode = Number(statusCodeResponse);
       if (statusCode > 199 && statusCode < 300) {
+        localStorage.setItem("is_test_comp",true)
         setAlert(
           'success',
           isAutoSubmit ? 'Test timed out! Thanks for taking the test.' : `${message}`

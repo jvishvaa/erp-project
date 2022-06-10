@@ -87,7 +87,7 @@ export const fetchUser = (id) => (dispatch) => {
         last_name: user.user.last_name || '',
         email: user.user.email || '',
         username: user.user.username || '',
-        user_level: user.user.user_level || '', 
+        user_level: user?.user?.user_level || '', 
         mapping_bgs:
           user?.mapping_bgs.map(mapping => ({ ...mapping, is_delete: false })) || [],
 

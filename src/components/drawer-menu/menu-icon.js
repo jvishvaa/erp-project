@@ -55,6 +55,7 @@ import {
   Store,
 } from '@material-ui/icons';
 import AssessmentIcon from '@material-ui/icons/Assessment';
+import HowToRegIcon from '@material-ui/icons/HowToReg';
 
 const menuIcon = (name) => {
   let icon = '';
@@ -247,6 +248,10 @@ const menuIcon = (name) => {
     }
     case 'Assessment': {
       icon = <AssessmentIcon />;
+      break;
+    }
+    case 'Attendance': {
+      icon = <HowToRegIcon />;
       break;
     }
     case 'Discussion Forum': {

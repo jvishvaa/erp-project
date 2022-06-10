@@ -10,7 +10,8 @@ import {
   TextField,
   Checkbox,
   IconButton,
-  useTheme
+  useTheme,
+  TextareaAutosize
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
@@ -32,6 +33,7 @@ import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 import InsertInvitationIcon from '@material-ui/icons/InsertInvitation';
 import SubjectIcon from '@material-ui/icons/Subject';
 import HighlightOffIcon from '@material-ui/icons/HighlightOff';
+import BlurCircularIcon from '@material-ui/icons/BlurCircular';
 import ConfirmModal from 'containers/assessment-central/assesment-card/confirm-modal';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -129,7 +131,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
   const [fileToDelete, setFileToDelete] = useState()
   const [error, setError] = useState('')
 
-  let titlebody = extractContent(textEditorContent)
+  let titlebody = textEditorContent
   let channelsArr = [
       'orchids.letseduvate.com',
       'localhost:3000',
@@ -195,12 +197,6 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
     setuploadedFiles([]);
     setFileToFilter([])
   };
-
-  function extractContent(s) {
-    const span = document.createElement('span');
-    span.innerHTML = s;
-    return span.textContent || span.innerText;
-  }
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -453,13 +449,6 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
     selectedSectionListData,
   ]);
 
-
-  const handleEditorChange = (content, editor) => {
-    content = content.replace(/&nbsp;/g, '');
-    //  editor?.getContent({ format: 'text' })
-    setTextEditorContent(content);
-  };
-
   const handleFilter = () => {
     const removeFile = fileToFilter.filter((z) => z != fileToDelete);
     setFileToFilter(removeFile)
@@ -593,6 +582,9 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
             {announcementType?.category_name === 'General' && (
               <SubjectIcon style={{ color: '#464D57', marginRight: 10 }} />
             )}
+            {announcementType?.category_name === 'Circular' && (
+              <BlurCircularIcon style={{ color: 'rgb(65 106 103)', marginRight: 10 }} />
+            )}            
             {announcementType?.category_name}
           </div>
           <CancelOutlinedIcon
@@ -771,20 +763,19 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
             </Grid>
           </Grid>
 
-          <Grid style={{ marginBottom: 5, marginTop: '5px' }}>
+          <Grid style={{ marginTop: '5px' }}>
             <b>Main Body</b>
           </Grid>
-          <MyTinyEditor
-            id='Editor'
-            //description={Description}
-            content={textEditorContent}
-            // placeholder='Description...'
-            handleEditorChange={handleEditorChange}
-            onChange={(e) => setContent(e.target.value)}
-            //   handleEditorChange={handleEditorChange}
-            //   setOpenEditor={openEditor}
-            height='150px'
-            isShowToolBar='fontselect fontsizeselect bold italic aligncenter underline bullist numlist file image customInsertButton'
+          <TextField
+            multiline
+            rows={6}
+            style={{ width: '100%',}}
+            // defaultValue={Content}
+            onChange={(e) => setTextEditorContent(e.target.value)}
+            id='outlined-basic'
+            // label='Main Body'
+            variant='outlined'
+            margin='dense'
           />
           <Grid style={{ marginBottom: 5, marginTop: '20px' }}>
             <b>Upload attachment</b>

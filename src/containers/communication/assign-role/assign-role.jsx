@@ -41,6 +41,7 @@ const AssignRole = (props) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const isSuper = JSON.parse(localStorage.getItem('userDetails'))?.is_superuser || {};
   const [selectedRole, setSelectedRole] = useState('');
   const [pageno, setPageno] = useState(1);
   const [assignedRole, setAssigenedRole] = useState(false);
@@ -240,7 +241,17 @@ const AssignRole = (props) => {
   };
 
   const displayUsersList = async () => {
-    let getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+    if(moduleId){
+      let getUserListUrl = ''
+      if (window.location.host == 'orchids.letseduvate.com' || window.location.host == 'qa.olvorchidnaigaon.letseduvate.com' ){
+        if(isSuper != true){
+        getUserListUrl = `${endpoints.communication.userListV2}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+        } else {
+        getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+        }
+      } else {
+        getUserListUrl = `${endpoints.communication.userList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+      }
 
     if (selectedMultipleRoles.length) {
       const selectedRoleId = selectedMultipleRoles.map((el) => el.id);
@@ -337,6 +348,7 @@ const AssignRole = (props) => {
     } catch (error) {
       setAlert('error', error.message);
     }
+  }
   };
 
   useEffect(() => {

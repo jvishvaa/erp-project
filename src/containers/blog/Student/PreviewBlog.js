@@ -27,6 +27,7 @@ import Layout from '../../Layout';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { AttachmentPreviewerContext } from '../../../components/attachment-previewer/attachment-previewer-contexts';
 
 const styles = (theme) => ({
   root: {
@@ -48,9 +49,9 @@ const styles = (theme) => ({
     marginBottom: 20,
   },
   media: {
-    height: 300,
+    height: 400,
     borderRadius: 16,
-    backgroundSize:'500px'
+    backgroundSize: '500px'
   },
   author: {
     marginTop: 20,
@@ -65,7 +66,9 @@ const styles = (theme) => ({
   },
 });
 
+let openPreview = '';
 class ContentView extends Component {
+
   constructor(props) {
     super(props);
     this.state = {
@@ -78,32 +81,36 @@ class ContentView extends Component {
       studentName: this.props.location.state.studentName,
       date: this.props.location.state.creationDate,
       files: this.props.location.state.files,
-      genreName:this.props.location.state.genreName,
-      genreObj:this.props.location.state.genreObj,
-      parsedTextEditorContentLen:this.props.location.state.parsedTextEditorContentLen,
+      genreName: this.props.location.state.genreName,
+      genreObj: this.props.location.state.genreObj,
+      parsedTextEditorContentLen: this.props.location.state.parsedTextEditorContentLen,
     };
   }
 
-  static contextType = AlertNotificationContext
+  // static contextType = AlertNotificationContext;
+  static contextType = AttachmentPreviewerContext;
+
   componentDidMount() {
     const { files } = this.state;
-    const imageUrl = URL.createObjectURL( files && files[0]);
+    const imageUrl = URL.createObjectURL(files && files[0]);
     this.setState({ imageUrl });
+    // const { openPreview } = this.imagecontextType;
+    openPreview = this.context.openPreview;
   }
 
   WriteBlogNav = () => {
-    const { content, title, files ,genreId,genreName,genreObj,parsedTextEditorContentLen} = this.state;
+    const { content, title, files, genreId, genreName, genreObj, parsedTextEditorContentLen } = this.state;
     this.props.history.push({
       pathname: '/blog/student/write-blog',
-      state: { content, title, files,genreId , genreName,genreObj,parsedTextEditorContentLen},
+      state: { content, title, files, genreId, genreName, genreObj, parsedTextEditorContentLen },
     });
   };
 
   submitBlog = (type) => {
-    const { title, content, files, genreId ,parsedTextEditorContentLen} = this.state;
+    const { title, content, files, genreId, parsedTextEditorContentLen } = this.state;
     const formData = new FormData();
     for (var i = 0; i < files.length; i++) {
-      formData.append('thumbnail',files[i]);
+      formData.append('thumbnail', files[i]);
     }
     formData.set('title', title);
     formData.set('content', content);
@@ -116,7 +123,7 @@ class ContentView extends Component {
       .post(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
-          this.context.setAlert('success',"Blog Successfully Submitted")
+          // this.context.setAlert('success', "Blog Successfully Submitted")
           this.props.history.push({
             pathname: '/blog/student/dashboard',
           });
@@ -137,6 +144,7 @@ class ContentView extends Component {
   render() {
     const { classes } = this.props;
     const { relatedBlog, starsRating, feedBack } = this.state;
+    // const { openPreview } = this.imagecontextType;
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -149,7 +157,7 @@ class ContentView extends Component {
               <div className='create_group_filter_container'>
                 <div className={classes.root}>
                   <Grid container spacing={3}>
-                  {/* <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                       <Button
                         style={{ cursor: 'Pointer' }}
                         onClick={() => window.history.back()}
@@ -158,7 +166,7 @@ class ContentView extends Component {
                         <i>Back</i>
                       </Button>
                       </Grid> */}
-                      <Grid item xs={9}>
+                    <Grid item xs={9}>
                       <Card className={classes.cardRoot}>
                         <Typography
                           variant='h5'
@@ -170,7 +178,22 @@ class ContentView extends Component {
                         <CardMedia
                           className={classes.media}
                           image={this.state.imageUrl}
-                          title='Contemplative Reptile'
+                          title='Blog Images'
+                          onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: [
+                                {
+                                  // src: `${endpoints.lessonPlan.s3}${file}`,
+                                  src: `${this.state.imageUrl}`,
+                                  // name: `${p?.document_type}`,
+                                  extension: '.png',
+                                },
+                              ],
+                            });
+                          }}
+                          rel='noopener noreferrer'
+                          target='_blank'
                         />
                         <CardHeader
                           className={classes.author}
@@ -186,13 +209,13 @@ class ContentView extends Component {
                           <Typography variant='body2' color='textSecondary' component='p'>
                             {ReactHtmlParser(this.state.content)}
                           </Typography>
-                          
+
                         </CardContent>
                         <CardActions>
                           <Button
                             style={{ width: 150 }}
                             size='small'
-                            variant = "contained"
+                            variant="contained"
                             color='primary'
                             onClick={this.WriteBlogNav}
                           >
@@ -201,7 +224,7 @@ class ContentView extends Component {
                           <Button
                             style={{ width: 150 }}
                             size='small'
-                            variant = "contained"
+                            variant="contained"
                             color='primary'
                             onClick={() => this.submitBlog('Publish')}
                           >
@@ -210,7 +233,7 @@ class ContentView extends Component {
                           <Button
                             style={{ width: 150 }}
                             size='small'
-                            variant = "contained"
+                            variant="contained"
                             color='primary'
                             onClick={() => this.submitBlog('Draft')}
                           >
