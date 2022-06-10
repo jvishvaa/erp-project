@@ -214,6 +214,10 @@ const GeneralDairyFilter = ({
   let sectionId = [];
   let allSectionIds = [];
   const handleGrade = (event, value) => {
+    value =
+      value.filter(({ grade__grade_name }) => grade__grade_name === 'Select All').length === 1
+        ? [...gradeDropdown].filter(({ grade__grade_name }) => grade__grade_name !== 'Select All')
+        : value;
     setFilterData({
       ...filterData,
       grade: '',
@@ -232,31 +236,33 @@ const GeneralDairyFilter = ({
         sections: [],
         sectionIds: [],
       });
-      axiosInstance
-        .get(
-          `${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value[0]?.grade_id}&module_id=${moduleId}`
-        )
-        .then((result) => {
-          if (result?.data?.status_code === 200) {
-            const sectionData = result?.data?.data || [];
-            for (let i = 0; i < sectionData?.length; i++) {
-              allSectionIds.push(sectionData[i]?.section_id)
+      if (value.length > 0) {
+        axiosInstance
+          .get(
+            `${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value.map(gradeObj => gradeObj.grade_id).join(',')}&module_id=${moduleId}`
+          )
+          .then((result) => {
+            if (result?.data?.status_code === 200) {
+              const sectionData = result?.data?.data || [];
+              for (let i = 0; i < sectionData?.length; i++) {
+                allSectionIds.push(sectionData[i]?.section_id)
+              }
+              sectionData.unshift({
+                section__section_name: 'Select All',
+                section_id: allSectionIds,
+              });
+              setSectionDropdown(result?.data?.data);
+              setSectionIds([]);
+            } else {
+              setAlert('error', result.data.message);
+              setSectionDropdown([]);
             }
-            sectionData.unshift({
-              section__section_name: 'Select All',
-              section_id: allSectionIds,
-            });
-            setSectionDropdown(result.data.data);
-            setSectionIds([]);
-          } else {
-            setAlert('error', result.data.message);
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
             setSectionDropdown([]);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-          setSectionDropdown([]);
-        });
+          });
+      }
     } else {
       setSectionDropdown([]);
     }
@@ -275,7 +281,7 @@ const GeneralDairyFilter = ({
       setFilterData({ ...filterData, year: value, branch: '', grade: '' });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.branchMappingTable}?session_year=${value.id}&module_id=${moduleId}`
+          `${endpoints.masterManagement.branchMappingTable}?session_year=${value?.id}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result?.data?.status_code) {
@@ -327,10 +333,10 @@ const GeneralDairyFilter = ({
       });
       axiosInstance
         .get(
-          `${endpoints.communication.grades}?session_year=${filterData?.year?.id}&branch_id=${value.branch.id}&module_id=${moduleId}`
+          `${endpoints.communication.grades}?session_year=${filterData?.year?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`
         )
         .then((result) => {
-          if (result?.data?.status_code === 200) { 
+          if (result?.data?.status_code === 200) {
             const gradeData = result?.data?.data || [];
             for (let i = 0; i < gradeData.length; i++) {
               allGradeIds.push(gradeData[i].grade_id)
