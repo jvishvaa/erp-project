@@ -243,7 +243,7 @@ const AssignRole = (props) => {
   const displayUsersList = async () => {
     if(moduleId){
       let getUserListUrl = ''
-      if (window.location.host == 'orchids.letseduvate.com' || window.location.host == 'qa.olvorchidnaigaon.letseduvate.com' ){
+      if (window.location.host == 'orchids.letseduvate.com' || window.location.host == 'qa.olvorchidnaigaon.letseduvate.com' || window.location.host == 'test.orchids.letseduvate.com'){
         if(isSuper != true){
         getUserListUrl = `${endpoints.communication.userListV2}?page=${pageno}&page_size=15&module_id=${moduleId}`;
         } else {
