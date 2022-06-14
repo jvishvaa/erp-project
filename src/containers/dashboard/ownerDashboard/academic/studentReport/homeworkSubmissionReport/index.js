@@ -110,20 +110,32 @@ export default function HomeworkReport(props) {
   }, [moduleId]);
 
   function getBranch() {
+    let allBranchIds = [];
     let url = `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`;
     axiosInstance
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
           let branches = result.data?.data?.results.map((item) => item.branch);
+          for (let i = 0; i < branches.length; i++) {
+            allBranchIds.push(branches[i].id);
+          }
           setBranchList(branches);
+          branches.unshift({
+            branch_name: 'Select All',
+            id: allBranchIds,
+          });
         }
       })
       .catch((error) => {});
   }
 
   const handleBranch = (event, value) => {
+    var branchIds = [];
     if (value) {
+      for (let i = 0; i < value.length; i++) {
+        branchIds.push(value[i].id);
+      }
       setGradeList([]);
       setSelectedGrade([]);
       setSelectedGradeIds('');
@@ -134,11 +146,10 @@ export default function HomeworkReport(props) {
       setShowButton(true);
       setSelectedSubject([]);
       setSelectedSubjectIds([]);
-      const selectedId = value?.id;
       setSelectedBranch(value);
-      setSelectedBranchIds(selectedId);
+      setSelectedBranchIds(branchIds);
       callApi(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedId}&module_id=${moduleId}`,
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchIds}&module_id=${moduleId}`,
         'gradeList'
       );
     } else {
@@ -322,8 +333,11 @@ export default function HomeworkReport(props) {
     const decisonParam = 'Homework Report'.toLowerCase().split(' ')[0];
     downloadReport(decisonParam, params)
       .then((response) => {
-        const { headers = {}, message = 'Downloadable report not available', data = '' } =
-          response || {};
+        const {
+          headers = {},
+          message = 'Downloadable report not available',
+          data = '',
+        } = response || {};
         const contentType = headers['content-type'] || 'application/json';
         if (contentType === 'application/json') {
           setAlert('info', message);
@@ -386,6 +400,7 @@ export default function HomeworkReport(props) {
       <Grid container spacing={2}>
         <Grid item xs={12} md={3}>
           <Autocomplete
+            multiple
             id='combo-box-demo'
             size='small'
             options={branchList}
