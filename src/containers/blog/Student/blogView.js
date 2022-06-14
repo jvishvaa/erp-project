@@ -26,7 +26,9 @@ import Restore from '@material-ui/icons/Restore'
 import IconButton from '@material-ui/core/IconButton';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 import ReviewPrincipal from '../Principal/ReviewPrincipal';
-import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+// import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { AttachmentPreviewerContext } from '../../../components/attachment-previewer/attachment-previewer-contexts';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 
 const styles = (theme) => ({
   root: {
@@ -79,6 +81,7 @@ const styles = (theme) => ({
   }
 });
 
+let openPreview = '';
 
 class BlogView extends Component {
   constructor(props) {
@@ -100,10 +103,12 @@ class BlogView extends Component {
       overallRemark: this.props.location.state.data && this.props.location.state.data.overall_remark,
     };
   }
-  static contextType = AlertNotificationContext
+  // static contextType = AlertNotificationContext;
+  static contextType = AttachmentPreviewerContext;
 
   componentDidMount() {
-    let { blogId } = this.state
+    let { blogId } = this.state;
+    openPreview = this.context.openPreview;
   }
 
 
@@ -172,7 +177,8 @@ class BlogView extends Component {
 
       .then(result => {
         if (result.data.status_code === 200) {
-          this.context.setAlert('success', "Blog delete sucessfully")
+          // this.context.setAlert('success', 'Blog delete sucessfully');
+          console.log('success', 'Blog delete sucessfully');
 
           this.props.history.push({
             pathname: '/blog/student/dashboard',
@@ -199,7 +205,8 @@ class BlogView extends Component {
 
       .then(result => {
         if (result.data.status_code === 200) {
-          this.context.setAlert('success', "Blog restored to drafted tab")
+          // this.context.setAlert('success', 'Blog restored to drafted tab');
+          console.log('success', 'Blog restored to drafted tab');
 
           this.props.history.push({
             pathname: '/blog/student/dashboard',
@@ -284,28 +291,72 @@ class BlogView extends Component {
                               : ''
                           }
                         </Typography>
-
-                        <CardMedia className={classes.media} image={data.thumbnail} />
-                        {
-                          tabValue === 0 ?
-                            <CardContent>
-                              <Typography
-                                color="primary"
-                                style={{ fontSize: '12px' }}
-                              >Revision Feedback:{data.feedback_revision_required}
-
-                              </Typography>
-                              <Typography style={{ fontSize: '12px' }}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent>
-                            : tabValue !== 0 && data.comment ?
-                              <CardContent>
-                                <Typography
-                                  color="primary"
-                                  style={{ fontSize: '12px' }}
-                                >Comment:{data.comment}
-
-                                </Typography>
-                                <Typography style={{ fontSize: '12px' }}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
-                              </CardContent> : ''}
+                        {'.' + data.thumbnail.split('.')[data.thumbnail.split('.').length - 1] == '.pdf' ?
+                          <div onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: [
+                                {
+                                  // src: `${endpoints.lessonPlan.s3}${file}`,
+                                  src: `${data?.thumbnail}`,
+                                  // name: `${p?.document_type}`,
+                                  // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                  extension: '.' + data?.thumbnail?.split('.')[data?.thumbnail?.split('.').length - 1],
+                                  // extension: '.jpg,.jpeg,.png,.pdf',
+                                },
+                              ],
+                            });
+                          }} className={classes.media}>
+                            <PictureAsPdfIcon style={{ height: 200, width: 200 }} />
+                            <div style={{ fontSize: '16px' }}><b>'Click on the PDF icon to view'</b></div>
+                          </div>
+                          :
+                          <CardMedia className={classes.media} image={data?.thumbnail}
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: [
+                                  {
+                                    // src: `${endpoints.lessonPlan.s3}${file}`,
+                                    src: `${data?.thumbnail}`,
+                                    // name: `${p?.document_type}`,
+                                    // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                    extension: '.' + data?.thumbnail?.split('.')[data?.thumbnail?.split('.')?.length - 1],
+                                    // extension: '.jpg,.jpeg,.png,.pdf',
+                                  },
+                                ],
+                              });
+                            }}
+                          />}
+                        {tabValue === 0 ? (
+                          <CardContent>
+                            {' '}
+                            <Typography color="primary" style={{ fontSize: '12px' }}>
+                              Revision Feedback:{data.feedback_revision_required}
+                            </Typography>
+                            <Typography style={{ fontSize: '12px' }}>
+                              {' '}
+                              Revised By:
+                              {data &&
+                                data.feedback_revision_by &&
+                                data.feedback_revision_by.first_name}
+                            </Typography>
+                          </CardContent>
+                        ) : tabValue !== 0 && data.comment ? (
+                          <CardContent>
+                            {' '}
+                            <Typography color="primary" style={{ fontSize: '12px' }}>
+                              Comment:{data.comment}
+                            </Typography>
+                            <Typography style={{ fontSize: '12px' }}>
+                              {' '}
+                              Commented By:
+                              {data && data.commented_by && data.commented_by.first_name}
+                            </Typography>
+                          </CardContent>
+                        ) : (
+                          ''
+                        )}
                         <CardHeader
                           className={classes.author}
                           title={data.author.first_name}
@@ -327,20 +378,23 @@ class BlogView extends Component {
 
                         </CardContent>
                         <CardActions>
-                          <Button
-                            className={classes.likeAndViewbtn}
-                          >
-                            <Favorite className={classes.likeColor} />{likes}likes</Button>
+                          <Button className={classes.likeAndViewbtn}>
+                            <Favorite className={classes.likeColor} />
+                            {likes}likes
+                          </Button>
                           &nbsp;&nbsp;&nbsp;
                           <Button
                             className={classes.likeAndViewbtn}
-                          >   <Visibility className = {classes.ViewColor}/>{data.views}Views
+                          >
+                            {' '}
+                            <Visibility className={classes.ViewColor} />
+                            {data.views}Views
                           </Button>
 
                           {!data.feedback_revision_required && tabValue === 1 ?
                             <Button
                               size='small'
-                              variant = "contained"
+                              variant="contained"
                               color='primary'
                               onClick={() => {
                                 this.setState({
@@ -354,9 +408,9 @@ class BlogView extends Component {
 
                           {tabValue === 0 || tabValue === 2 ?
                             <Button
+                              variant="contained"
                               style={{ width: 150 }}
                               size='small'
-                              variant = "contained"
                               color='primary'
                               onClick={this.EditBlogNav}
                             >
@@ -367,23 +421,27 @@ class BlogView extends Component {
                       </Card>
                     </Grid>
                     <Grid item xs={3}>
-                      {relatedBlog ? ''
-                        : (
-                          <Grid>
-                            <Typography
-                              color="primary"
-                              style={{
-                                fontSize: '12px', width: '300px',
-                                paddingLeft: '30px',
-                              }}>Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
-
-                            </Typography>
-                            <ReviewPrincipal blogId={data.id} ratingParameters={this.getRatings} overallRemark={this.getOverAllRemark}
-                            />
-
-                          </Grid>
-                        )
-                      }
+                      {relatedBlog ? (
+                        ''
+                      ) : (
+                        <Grid>
+                          <Typography
+                            color="primary"
+                            style={{
+                              fontSize: '12px',
+                              width: '300px',
+                              paddingLeft: '30px',
+                            }}
+                          >
+                            Reviewed By:{data.reviewed_by && data.reviewed_by.first_name}
+                          </Typography>
+                          <ReviewPrincipal
+                            blogId={data.id}
+                            ratingParameters={this.getRatings}
+                            overallRemark={this.getOverAllRemark}
+                          />
+                        </Grid>
+                      )}
                     </Grid>
                   </Grid>
                 </div>
