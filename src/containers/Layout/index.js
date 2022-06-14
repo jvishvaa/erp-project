@@ -299,6 +299,10 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/access-blocker');
         break;
       }
+      case 'Virtual School': {
+        history.push('/virtual-school');
+        break;
+      }
       case 'Assign Role': {
         history.push('/user-management/assign-role');
         break;
