@@ -18,6 +18,7 @@ import AlertNotificationProvider from './context-api/alert-context/alert-state';
 // import './assets/styles/styles.scss';
 import UserManagement from './containers/user-management';
 import ViewUsers from './containers/user-management/view-users/view-users';
+import VirtualSchool from 'containers/user-management/virtual-school';
 import Login from './containers/login';
 import Forgot from './containers/login/forgot-password';
 import Dashboard from './containers/dashboard';
@@ -1947,6 +1948,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                           {/* Academic Report */}
                           <Route path='/academic-report'>
                             {({ match }) => <AcademicReport match={match} />}
+                          </Route>
+                          <Route path='/virtual-school'>
+                            {({ match }) => <VirtualSchool match={match} />}
                           </Route>
                           <Route path='*'>
                             <ErrorBoundary404 HomeButton={true} />
