@@ -132,7 +132,8 @@ const NewCommunication = () => {
   const [rows, setRows] = useState([]);
   const [defaultdate, setDefaultDate] = useState(moment().format('YYYY-MM-DD'));
   const [branchList, setBranchList] = useState([]);
-  const [selectedbranchListData, setSelectedbranchListData] = useState({});
+  const [selectBranchId,setSelectBranchId] = useState(null)	
+  const [selectedbranchData, setSelectedbranchData] = useState({});
   const [gradeList, setGradeList] = useState([]);
   const [selectedGradeListData, setSelectedGradeListData] = useState([]);
   const [selectedGradeId, setSelectedGradeId] = useState([]);
@@ -168,6 +169,7 @@ const NewCommunication = () => {
   };
   const [moduleId, setModuleId] = useState('');
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
+  const showBranchFilter = [1,2,4,8,9]
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
 
@@ -205,12 +207,12 @@ const NewCommunication = () => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Online Class' &&
+          item.parent_modules === 'Communication' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'Create Class') {
+            if (item.child_name === 'Announcement') {
               setModuleId(item.child_id);
             }
           });
@@ -235,7 +237,7 @@ const NewCommunication = () => {
       baseurl = `date=${defaultdate}&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
     }
     if (filterOn) {
-      if (onClickIndex == 1) {
+      if (onClickIndex) {
         url = selectedSectionMappingId.length > 0 
         ? `${endpoints.announcementNew.inbox}?${baseurl}&section_mapping=${selectedSectionMappingId.toString()}`
          : `${endpoints.announcementNew.inbox}?${baseurl}`
@@ -252,24 +254,36 @@ const NewCommunication = () => {
       }
     } else {
       if (category > 0) {
-        if (onClickIndex == 1) {
-          url = `${endpoints.announcementNew.inbox}?is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
+        if (onClickIndex) {
+          url = selectBranchId
+                ? `${endpoints.announcementNew.inbox}?is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}&branch_id=${selectBranchId}`
+                : `${endpoints.announcementNew.inbox}?is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
         if (onClickIndex == 2) {
-          url = `${endpoints.announcementNew.inbox}?is_draft=True&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
+          url = selectBranchId
+                ? `${endpoints.announcementNew.inbox}?is_draft=True&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}&branch_id=${selectBranchId}`
+                : `${endpoints.announcementNew.inbox}?is_draft=True&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
         if (onClickIndex == 3) {
-          url = `${endpoints.announcementNew.inbox}?is_sent=True&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
+          url = selectBranchId
+                ? `${endpoints.announcementNew.inbox}?is_sent=True&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}&branch_id=${selectBranchId}`
+                : `${endpoints.announcementNew.inbox}?is_sent=True&is_category=${category}&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
       } else {
-        if (onClickIndex == 1) {
-          url = `${endpoints.announcementNew.inbox}?page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
+        if (onClickIndex) {
+          url = selectBranchId ? 	
+          `${endpoints.announcementNew.inbox}?page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}&branch_id=${selectBranchId}`	
+          :`${endpoints.announcementNew.inbox}?page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
         if (onClickIndex == 2) {
-          url = `${endpoints.announcementNew.inbox}?is_draft=True&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
+          url = selectBranchId ? 	
+          `${endpoints.announcementNew.inbox}?is_draft=True&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}&branch_id=${selectBranchId}`	
+          : `${endpoints.announcementNew.inbox}?is_draft=True&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
         if (onClickIndex == 3) {
-          url = `${endpoints.announcementNew.inbox}?is_sent=True&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
+          url = selectBranchId ? 	
+          `${endpoints.announcementNew.inbox}?is_sent=True&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}&branch_id=${selectBranchId}`	
+          : `${endpoints.announcementNew.inbox}?is_sent=True&page_number=${pageNo}&page_size=${limit}&session_year=${selectedAcademicYear?.id}`;
         }
       }
     }
@@ -301,7 +315,7 @@ const NewCommunication = () => {
 
   useEffect(() => {
     rowsData();
-  }, [onClickIndex, category, pageNo]);
+  }, [onClickIndex, category, pageNo,selectBranchId]);
 
   useEffect(() => {
     setLoading(true)
@@ -340,7 +354,7 @@ const NewCommunication = () => {
   const getGrade = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&module_id=${moduleId}`
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${selectBranchId ? selectBranchId : branchId}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -351,6 +365,15 @@ const NewCommunication = () => {
       });
   };
 
+  const handleBranch = (e,value={}) =>{	
+    if(value){	
+      setSelectedbranchData(value)	
+      setSelectBranchId(value?.id)	
+    }else{	
+    setSelectBranchId(null)	
+    setSelectedbranchData({})	
+    }	
+  }
   const handleGrade = (e, value) => {
     if (value?.length) {
       const data = value.map((el) => el);
@@ -387,7 +410,7 @@ const NewCommunication = () => {
   const getSection = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&grade_id=${selectedGradeId}&module_id=${moduleId}`
+        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${selectBranchId ? selectBranchId : branchId}&grade_id=${selectedGradeId}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -411,6 +434,9 @@ const NewCommunication = () => {
     }
   }, [selectedGradeId])
 
+  useEffect(()=>{	
+    getGrade();	
+  },[selectBranchId])
   const updatePublish = (id) => {
     const params = {
       is_draft: false,
@@ -527,11 +553,33 @@ const NewCommunication = () => {
         style={{
           display: 'flex',
           justifyContent: 'space-between',
+          flexDirection : isMobile ? 'column' : 'row',
+          padding : isMobile ? '0 15px' : '0'
         }}
       >
         <div style={{ paddingTop: '10px', color: '#347394', fontSize: '20px' , marginLeft: '1%' }}>
           Announcements ({count})
         </div>
+        {showBranchFilter.includes(userLevel) &&	
+          <Grid xs={6} sm={2}>	
+          <Autocomplete	
+            style={{ width: '100%' }}	
+            size='small'	
+            onChange={handleBranch}	
+            id='branch_id'	
+            className='dropdownIcon'	
+            options={branchList || []}	
+            getOptionLabel={(option) => option?.branch_name || ''}	
+            renderInput={(params) => (	
+              <TextField	
+                {...params}	
+                variant='outlined'	
+                label='Branch'	
+                placeholder='Branch'	
+              />	
+            )}	
+          />	
+          </Grid>}
         {userLevel !== 12 && userLevel !== 13 && (
           <div
             style={{
