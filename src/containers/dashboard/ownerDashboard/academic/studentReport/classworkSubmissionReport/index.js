@@ -132,7 +132,7 @@ export default function ClassworkReport(props) {
 
   const handleBranch = (event, value) => {
     var branchIds = [];
-    if (value) {
+    if (value.length) {
       for (let i = 0; i < value.length; i++) {
         branchIds.push(value[i].id);
       }
@@ -327,7 +327,7 @@ export default function ClassworkReport(props) {
   const handleDownload = (days) => {
     const params = {
       days,
-      branch_ids: selectedBranchIds,
+      branch_ids: selectedBranchIds.toString(),
       session_year_id: selectedAcademicYear?.id,
     };
     const decisonParam = 'Classwork Report'.toLowerCase().split(' ')[0];
