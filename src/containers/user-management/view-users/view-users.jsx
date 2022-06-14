@@ -292,14 +292,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         rolesId.push(each.id);
       });
     }
-    console.log(status , 'status');
-    console.log(rolesId , 'role');
-    console.log(selectedBranch , 'role');
-    console.log(rolesId , 'role');
-    console.log(rolesId , 'role');
     if(searchText || classStatus && classStatus != 1 && classStatus != 0 || rolesId.length > 0 || selectedBranch !== null || gradeIds.length > 0){
     setLoading(true);
-    let getUserListUrl = `${endpoints.communication.userList}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}&session_year=${selectedYear?.id}`;
+    let getUserListUrl = `${endpoints.communication.viewUser}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}&session_year=${selectedYear?.id}`;
     if (classStatus && classStatus != 1 && classStatus != 0) {
       let status = classStatus - 1;
       getUserListUrl += `&status=${status.toString()}`;
@@ -605,7 +600,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   useEffect(() => {
     if(selectedRoles != null && selectedGrades != []){
-      setIsNewSearch(true);
+      // setIsNewSearch(true);
     }
   }, [selectedRoles, selectedGrades]);
 
