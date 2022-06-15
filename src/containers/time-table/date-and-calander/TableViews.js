@@ -155,13 +155,14 @@ const [selectedItem , setSelectedItem] = useState()
                   <TableCell className={classes.tableCell}>{items.created_at}</TableCell>
                   {/* <TableCell className={classes.tableCell}>{items?.role}</TableCell> */}
                   <TableCell className={classes.tableCell}>
-                    {items && items.active === true ? (
+                  <div style={{ color: 'green' }}>Saved</div>
+                    {/* {items && items.active === true ? (
                       <div style={{ color: 'green' }}>Activated</div>
                     ) : items && items.status === 2 ? (
                       <div style={{ color: 'blue' }}>Published</div>
                     ) : (
                       <div style={{ color: 'red' }}>Draft</div>
-                    )}
+                    )} */}
                   </TableCell>
                   <TableCell
                     style={{
@@ -171,7 +172,7 @@ const [selectedItem , setSelectedItem] = useState()
                     }}
                     className={classes.tableCell}
                   >
-                    {items && items.status === 'deleted' ? (
+                    {/* {items && items.status === 'deleted' ? (
                       'Restore'
                     ) : items.active === true ? (
                       <>
@@ -203,7 +204,7 @@ const [selectedItem , setSelectedItem] = useState()
                         A
                       </button>}
                       </>
-                    )}
+                    )} */}
                     {items && items?.is_delete == false ? (
                       <>
                         {(props?.user_level === 1 || props?.user_level === 8 || props?.user_level === 10 || props?.is_superuser) && props?.teacherView && <IconButton
