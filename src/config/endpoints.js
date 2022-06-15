@@ -87,6 +87,7 @@ export default {
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
     userList: '/communication/erp-user-info/',
+    viewUser : '/communication/v1/view-users/',
     userListV2: '/communication/erp-user-info-v2/',
     communicationUserList: '/communication/communication-user-list/',
     studentUserList: '/communication/student-user-list/',
