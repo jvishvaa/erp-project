@@ -440,7 +440,7 @@ let data = await collidingPeriod(payload);
         >
           Create New Timetable
         </Button>}
-        { TimeTableList?.length && <TableViews 
+        { TimeTableList?.length > 0 && <TableViews 
           TimeTableList={TimeTableList} 
           handleView={handleTimeTable} 
           handleOperation={handleOperation}
@@ -491,7 +491,7 @@ let data = await collidingPeriod(payload);
             <>
             <div style={{display:'flex'}}>
              <Grid item xs={2} sm={2} md={2}>
-             {timeTableEvents?.length && (user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) && props?.teacherView && <Button
+             {/* {timeTableEvents?.length && (user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) && props?.teacherView && <Button
               color='primary'
               variant='contained'
               style = {{marginLeft : '17%'}}
@@ -501,7 +501,7 @@ let data = await collidingPeriod(payload);
               }}
             >
               Publish
-            </Button>}
+            </Button>} */}
             </Grid>
             <Grid item xs={2} sm={2} md={2} style={{marginLeft : '72%'}}>
             {(user_level === 1 || user_level === 8 || user_level === 10 || is_superuser) && props?.teacherView &&<Button

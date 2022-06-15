@@ -8,7 +8,7 @@ const TimeTableCheck = () => {
     const erp_config = JSON.parse(localStorage.getItem('userDetails'))?.erp_config;
     setPeriodConfig(erp_config);
   }, [periodConfig]);
-  return <>{periodConfig ? <TimeTableNew /> : <TimeTableOld />}</>;
+  return <><TimeTableNew /></>
 };
 
 export default TimeTableCheck;
