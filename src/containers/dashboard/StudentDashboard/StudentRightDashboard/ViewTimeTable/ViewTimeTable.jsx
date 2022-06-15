@@ -31,10 +31,16 @@ const useStyles = makeStyles((theme) => ({
 export default function ViewTimeTables() {
   const history = useHistory();
   const classes = useStyles();
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails'));
+
   //   const { erp_config } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleClick = () => {
-    history.push('/timetable/teacherview');
+    if(user_level === 13){
+      history.push('/timetable/studentview');
+    }else{
+      history.push('/timetable/teacherview');
+    }
   };
   return (
     <Card className={classes.root}>
