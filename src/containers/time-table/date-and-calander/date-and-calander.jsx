@@ -440,7 +440,7 @@ let data = await collidingPeriod(payload);
         >
           Create New Timetable
         </Button>}
-        { TimeTableList?.length && <TableViews 
+        { TimeTableList?.length > 0 && <TableViews 
           TimeTableList={TimeTableList} 
           handleView={handleTimeTable} 
           handleOperation={handleOperation}
