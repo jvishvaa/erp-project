@@ -284,7 +284,9 @@ export default function HomeworkReport(props) {
   function handleDate(v1) {
     if (v1 && v1.length !== 0) {
       setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
-      setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
+      if(v1[1] !== undefined){
+        setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
+      }
     }
     setDateRangeTechPer(v1);
   }
