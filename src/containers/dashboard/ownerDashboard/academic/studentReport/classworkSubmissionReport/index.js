@@ -77,7 +77,7 @@ export default function ClassworkReport(props) {
   const [dateRangeTechPer, setDateRangeTechPer] = useState([]);
   const [showButton, setShowButton] = useState(false);
   const [showNoData, setShowNoData] = useState(false);
-
+  const [multipleBranchSelect, setMultipleBranchSelect] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -110,20 +110,37 @@ export default function ClassworkReport(props) {
   }, [moduleId]);
 
   function getBranch() {
+    let allBranchIds = [];
     let url = `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`;
     axiosInstance
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
           let branches = result.data?.data?.results.map((item) => item.branch);
+          for (let i = 0; i < branches.length; i++) {
+            allBranchIds.push(branches[i].id);
+          }
           setBranchList(branches);
+          branches.unshift({
+            branch_name: 'Select All',
+            id: allBranchIds,
+          });
         }
       })
       .catch((error) => {});
   }
 
   const handleBranch = (event, value) => {
-    if (value) {
+    if (value.length > 1 || value[0]?.branch_name === 'Select All') {
+      setMultipleBranchSelect(true);
+    } else {
+      setMultipleBranchSelect(false);
+    }
+    var branchIds = [];
+    if (value.length) {
+      for (let i = 0; i < value.length; i++) {
+        branchIds.push(value[i].id);
+      }
       setGradeList([]);
       setSelectedGrade([]);
       setSelectedGradeIds('');
@@ -134,11 +151,10 @@ export default function ClassworkReport(props) {
       setShowButton(true);
       setSelectedSubject([]);
       setSelectedSubjectIds([]);
-      const selectedId = value?.id;
       setSelectedBranch(value);
-      setSelectedBranchIds(selectedId);
+      setSelectedBranchIds(branchIds);
       callApi(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedId}&module_id=${moduleId}`,
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchIds}&module_id=${moduleId}`,
         'gradeList'
       );
     } else {
@@ -248,43 +264,47 @@ export default function ClassworkReport(props) {
   }
 
   const getSubmissionData = () => {
-    setSubmissionData([]);
-    if (
-      !selectedBranchIds ||
-      !selectedGradeIds ||
-      !selectedSectionIds ||
-      !selectedSubjectIds
-    ) {
-      setAlert('error', 'Select all required fields');
-      return false;
+    if (multipleBranchSelect === true) {
+      setAlert('error', 'Select Single Branch');
     } else {
-      setLoading(true);
-      axiosInstance
-        .get(
-          `${endpoints.academicTestReport.classworkSubmissionReport}?session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&subject_id=${selectedSubjectIds}&start_date=${startDate}&end_date=${endDate}`,
-          {
-            headers: {
-              'X-DTS-HOST': window.location.host,
-            },
-          }
-        )
-        .then((result) => {
-          if (result.status === 200) {
-            setSubmissionData(result?.data?.result);
+      setSubmissionData([]);
+      if (
+        !selectedBranchIds ||
+        !selectedGradeIds ||
+        !selectedSectionIds ||
+        !selectedSubjectIds
+      ) {
+        setAlert('error', 'Select all required fields');
+        return false;
+      } else {
+        setLoading(true);
+        axiosInstance
+          .get(
+            `${endpoints.academicTestReport.classworkSubmissionReport}?session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&subject_id=${selectedSubjectIds}&start_date=${startDate}&end_date=${endDate}`,
+            {
+              headers: {
+                'X-DTS-HOST': window.location.host,
+              },
+            }
+          )
+          .then((result) => {
+            if (result.status === 200) {
+              setSubmissionData(result?.data?.result);
+              setLoading(false);
+              if (result?.data?.result?.length === 0) setShowNoData(true);
+            }
+          })
+          .catch((error) => {
             setLoading(false);
-            if (result?.data?.result?.length === 0) setShowNoData(true);
-          }
-        })
-        .catch((error) => {
-          setLoading(false);
-        });
+          });
+      }
     }
   };
 
   function handleDate(v1) {
     if (v1 && v1.length !== 0) {
       setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
-      if(v1[1] !== undefined){
+      if (v1[1] !== undefined) {
         setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
       }
     }
@@ -316,14 +336,17 @@ export default function ClassworkReport(props) {
   const handleDownload = (days) => {
     const params = {
       days,
-      branch_ids: selectedBranchIds,
+      branch_ids: selectedBranchIds.toString(),
       session_year_id: selectedAcademicYear?.id,
     };
     const decisonParam = 'Classwork Report'.toLowerCase().split(' ')[0];
     downloadReport(decisonParam, params)
       .then((response) => {
-        const { headers = {}, message = 'Downloadable report not available', data = '' } =
-          response || {};
+        const {
+          headers = {},
+          message = 'Downloadable report not available',
+          data = '',
+        } = response || {};
         const contentType = headers['content-type'] || 'application/json';
         if (contentType === 'application/json') {
           setAlert('info', message);
@@ -386,6 +409,7 @@ export default function ClassworkReport(props) {
       <Grid container spacing={2}>
         <Grid item xs={12} md={3}>
           <Autocomplete
+            multiple
             id='combo-box-demo'
             size='small'
             options={branchList}
