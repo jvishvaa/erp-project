@@ -77,7 +77,7 @@ export default function ClassworkReport(props) {
   const [dateRangeTechPer, setDateRangeTechPer] = useState([]);
   const [showButton, setShowButton] = useState(false);
   const [showNoData, setShowNoData] = useState(false);
-
+  const [multipleBranchSelect, setMultipleBranchSelect] = useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -131,6 +131,11 @@ export default function ClassworkReport(props) {
   }
 
   const handleBranch = (event, value) => {
+    if (value.length > 1 || value[0]?.branch_name === 'Select All') {
+      setMultipleBranchSelect(true);
+    } else {
+      setMultipleBranchSelect(false);
+    }
     var branchIds = [];
     if (value.length) {
       for (let i = 0; i < value.length; i++) {
@@ -259,43 +264,47 @@ export default function ClassworkReport(props) {
   }
 
   const getSubmissionData = () => {
-    setSubmissionData([]);
-    if (
-      !selectedBranchIds ||
-      !selectedGradeIds ||
-      !selectedSectionIds ||
-      !selectedSubjectIds
-    ) {
-      setAlert('error', 'Select all required fields');
-      return false;
+    if (multipleBranchSelect === true) {
+      setAlert('error', 'Select Single Branch');
     } else {
-      setLoading(true);
-      axiosInstance
-        .get(
-          `${endpoints.academicTestReport.classworkSubmissionReport}?session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&subject_id=${selectedSubjectIds}&start_date=${startDate}&end_date=${endDate}`,
-          {
-            headers: {
-              'X-DTS-HOST': window.location.host,
-            },
-          }
-        )
-        .then((result) => {
-          if (result.status === 200) {
-            setSubmissionData(result?.data?.result);
+      setSubmissionData([]);
+      if (
+        !selectedBranchIds ||
+        !selectedGradeIds ||
+        !selectedSectionIds ||
+        !selectedSubjectIds
+      ) {
+        setAlert('error', 'Select all required fields');
+        return false;
+      } else {
+        setLoading(true);
+        axiosInstance
+          .get(
+            `${endpoints.academicTestReport.classworkSubmissionReport}?session_year_id=${selectedAcademicYear?.id}&branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&subject_id=${selectedSubjectIds}&start_date=${startDate}&end_date=${endDate}`,
+            {
+              headers: {
+                'X-DTS-HOST': window.location.host,
+              },
+            }
+          )
+          .then((result) => {
+            if (result.status === 200) {
+              setSubmissionData(result?.data?.result);
+              setLoading(false);
+              if (result?.data?.result?.length === 0) setShowNoData(true);
+            }
+          })
+          .catch((error) => {
             setLoading(false);
-            if (result?.data?.result?.length === 0) setShowNoData(true);
-          }
-        })
-        .catch((error) => {
-          setLoading(false);
-        });
+          });
+      }
     }
   };
 
   function handleDate(v1) {
     if (v1 && v1.length !== 0) {
       setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
-      if(v1[1] !== undefined){
+      if (v1[1] !== undefined) {
         setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
       }
     }
