@@ -64,18 +64,18 @@ class EditUser extends Component {
 
   componentDidUpdate(prevProps) {
     const { selectedUser } = this.props;
-    let details = JSON.parse(localStorage.getItem('userDetails'));
-    if (!details?.is_superuser) {
-      if (
-        selectedUser?.user_level === 13 ||
-        selectedUser?.user_level === '' ||
-        selectedUser?.user_level === null ||
-        selectedUser?.user_level === undefined
-      ) {
-        this.state.isEditable = true;
-      }
-    }
     if (prevProps.selectedUser !== selectedUser && selectedUser) {
+      let details = JSON.parse(localStorage.getItem('userDetails'));
+      if (!details?.is_superuser) {
+        if (
+          selectedUser?.user_level === 13 ||
+          selectedUser?.user_level === '' ||
+          selectedUser?.user_level === null ||
+          selectedUser?.user_level === undefined
+        ) {
+          this.state.isEditable = true;
+        }
+      }
       this.setState({
         user: selectedUser,
         mappingBgsLength: selectedUser.mapping_bgs?.length,
