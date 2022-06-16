@@ -169,6 +169,7 @@ const NewCommunication = () => {
   };
   const [moduleId, setModuleId] = useState('');
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
+  const isSuperUser = JSON.parse(localStorage.getItem('userDetails'))?.is_superuser;
   const showBranchFilter = [1,2,4,8,9]
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
@@ -562,7 +563,7 @@ const NewCommunication = () => {
         <div style={{ paddingTop: '10px', color: '#347394', fontSize: '20px' , marginLeft: '1%' }}>
           Announcements ({count})
         </div>
-        {showBranchFilter.includes(userLevel) &&	
+        {(showBranchFilter.includes(userLevel) || isSuperUser) &&	
           <Grid xs={6} sm={2} md={3}>	
           <Autocomplete	
             multiple
