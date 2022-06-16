@@ -92,8 +92,10 @@ export default function AssessmentReport(props) {
   }, [window.location.pathname]);
 
   useEffect(() => {
-    if (moduleId) getBranch();
-    getAssesmentTypes();
+    if (moduleId){
+      getBranch();
+      getAssesmentTypes();
+    } 
   }, [moduleId]);
 
   function getBranch() {
