@@ -24,6 +24,8 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import Layout from '../../Layout';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+import { AttachmentPreviewerContext } from '../../../components/attachment-previewer/attachment-previewer-contexts';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 
 const styles = (theme) => ({
   root: {
@@ -47,7 +49,7 @@ const styles = (theme) => ({
   media: {
     height: 300,
     borderRadius: 16,
-    backgroundSize:'500px'
+    backgroundSize: '500px'
   },
   author: {
     marginTop: 20,
@@ -61,7 +63,7 @@ const styles = (theme) => ({
     textAlign: 'center',
   },
 });
-
+let openPreview = '';
 class PreviewEditBlog extends Component {
   constructor(props) {
     super(props);
@@ -75,34 +77,36 @@ class PreviewEditBlog extends Component {
       studentName: this.props.location.state.studentName,
       date: this.props.location.state.creationDate,
       files: this.props.location.state.files,
-      blogId:this.props.location.state.blogId,
-      genreName:this.props.location.state.genreName,
-      image:this.props.location.state.image,
-      parsedTextEditorContentLen:this.props.location.state.parsedTextEditorContentLen,
-      genreObj:this.props.location.state.genreObj
+      blogId: this.props.location.state.blogId,
+      genreName: this.props.location.state.genreName,
+      image: this.props.location.state.image,
+      parsedTextEditorContentLen: this.props.location.state.parsedTextEditorContentLen,
+      genreObj: this.props.location.state.genreObj
     };
   }
 
+  static contextType = AttachmentPreviewerContext;
   componentDidMount() {
     const { files } = this.state;
-    if (files.length){
-    const imageUrl = URL.createObjectURL( files && files[0]);
-    this.setState({ imageUrl });
+    if (files.length) {
+      const imageUrl = URL.createObjectURL(files && files[0]);
+      this.setState({ imageUrl });
     }
+    openPreview = this.context.openPreview;
   }
 
 
   submitBlog = (type) => {
-    const { title, content, files, genreId ,blogId,image,parsedTextEditorContentLen} = this.state;
+    const { title, content, files, genreId, blogId, image, parsedTextEditorContentLen } = this.state;
     const formData = new FormData();
     for (var i = 0; i < files.length; i++) {
-      formData.append('thumbnail',files[i] || image);
+      formData.append('thumbnail', files[i] || image);
     }
     formData.set('title', title);
     formData.set('blog_id', blogId);
     formData.set('content', content);
     formData.set('genre_id', genreId);
-    formData.set('word_count',parsedTextEditorContentLen)
+    formData.set('word_count', parsedTextEditorContentLen)
     formData.set('status', type == 'Draft' ? 2 : 8);
 
     axios
@@ -116,14 +120,13 @@ class PreviewEditBlog extends Component {
           console.log(result.data.message);
         }
       })
-      .catch((error) => {
-      });
+      .catch((error) => { });
   };
   EditBlogNav = () => {
-    const { content, title, files ,genreId,genreName,genreObj,image,parsedTextEditorContentLen,blogId} = this.state;
+    const { content, title, files, genreId, genreName, genreObj, image, parsedTextEditorContentLen, blogId } = this.state;
     this.props.history.push({
       pathname: '/blog/student/edit-blog',
-      state: { content, title, files,genreId , genreName,genreObj,image,blogId,parsedTextEditorContentLen},
+      state: { content, title, files, genreId, genreName, genreObj, image, blogId, parsedTextEditorContentLen },
     });
   };
 
@@ -142,7 +145,7 @@ class PreviewEditBlog extends Component {
               <div className='create_group_filter_container'>
                 <div className={classes.root}>
                   <Grid container spacing={3}>
-                  {/* <Grid item xs={12}>
+                    {/* <Grid item xs={12}>
                       <Button
                         style={{ cursor: 'Pointer' }}
                         onClick={() => window.history.back()}
@@ -151,7 +154,7 @@ class PreviewEditBlog extends Component {
                         <i>Back</i>
                       </Button>
                       </Grid> */}
-                      <Grid item xs={9}>
+                    <Grid item xs={9}>
                       <Card className={classes.cardRoot}>
                         <Typography
                           variant='h5'
@@ -160,11 +163,53 @@ class PreviewEditBlog extends Component {
                         >
                           {this.state.title}
                         </Typography>
-                        <CardMedia
+                        {console.log('debug', this.state.imageUrl || this.state.image)}
+                        {console.log('debug1', this.state.imageUrl)}
+                        {console.log('debug2', this.state.image)}
+                        {console.log('debug3', this.state)}
+                        {'.' + this?.state?.files[0]?.name.split('.')[this?.state?.files[0]?.name.split('.').length - 1] == '.pdf' ?
+                          <div onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: [
+                                {
+                                  // src: `${endpoints.lessonPlan.s3}${file}`,
+                                  src: `${this?.state?.imageUrl || this?.state?.image}`,
+                                  // name: `${p?.document_type}`,
+                                  // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                  extension: '.' + this?.state?.files[0]?.name?.split('.')[this?.state?.files[0]?.name?.split('.').length - 1],
+                                  // extension: '.jpg,.jpeg,.png,.pdf',
+                                },
+                              ],
+                            });
+                          }} className={classes.media}>
+                            <PictureAsPdfIcon style={{ height: 200, width: 200 }} />
+                            <div style={{ fontSize: '16px' }}><b>'Click on the PDF icon to view'</b></div>
+
+                          </div>
+                          :
+                          <CardMedia className={classes.media} image={this.state.imageUrl || this?.state?.image}
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: [
+                                  {
+                                    // src: `${endpoints.lessonPlan.s3}${file}`,
+                                    src: `${this?.state?.imageUrl || this?.state?.image}`,
+                                    // name: `${p?.document_type}`,
+                                    // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                    extension: '.' + this?.state?.files[0]?.name?.split('.')[this?.state?.files[0]?.name?.split('.').length - 1],
+                                    // extension: '.jpg,.jpeg,.png,.pdf',
+                                  },
+                                ],
+                              });
+                            }}
+                          ><span> Please click here to view Image/PDF</span></ CardMedia>}
+                        {/* <CardMedia
                           className={classes.media}
                           image={this.state.imageUrl || this.state.image}
                           title='Contemplative Reptile'
-                        />
+                        /> */}
                         <CardHeader
                           className={classes.author}
                           avatar={
@@ -177,12 +222,12 @@ class PreviewEditBlog extends Component {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                          {ReactHtmlParser(this.state.content)}
+                            {ReactHtmlParser(this.state.content)}
                           </Typography>
-                          
+
                         </CardContent>
                         <CardActions>
-                        <Button
+                          <Button
                             style={{ width: 150 }}
                             size='small'
                             color='primary'
@@ -190,7 +235,7 @@ class PreviewEditBlog extends Component {
                           >
                             Edit
                           </Button>
-                        
+
                           <Button
                             style={{ width: 150 }}
                             size='small'
@@ -215,8 +260,8 @@ class PreviewEditBlog extends Component {
               </div>
             </div>
           </div>
-        </Layout>
-      </div>
+        </Layout >
+      </div >
     );
   }
 }

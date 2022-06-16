@@ -2,6 +2,7 @@
 /* eslint-disable react/jsx-wrap-multilines */
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 // import { connect } from 'react-redux';
 import {
   Grid,
@@ -65,7 +66,7 @@ const styles = (theme) => ({
     textAlign: 'center',
   },
 });
-
+const PDFJS = window.pdfjsLib;
 let openPreview = '';
 class ContentView extends Component {
 
@@ -84,6 +85,7 @@ class ContentView extends Component {
       genreName: this.props.location.state.genreName,
       genreObj: this.props.location.state.genreObj,
       parsedTextEditorContentLen: this.props.location.state.parsedTextEditorContentLen,
+      image: this.props.image,
     };
   }
 
@@ -108,6 +110,8 @@ class ContentView extends Component {
 
   submitBlog = (type) => {
     const { title, content, files, genreId, parsedTextEditorContentLen } = this.state;
+    // const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
+
     const formData = new FormData();
     for (var i = 0; i < files.length; i++) {
       formData.append('thumbnail', files[i]);
@@ -123,7 +127,7 @@ class ContentView extends Component {
       .post(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
-          // this.context.setAlert('success', "Blog Successfully Submitted")
+          // this.context.setAlert('success', 'Blog Successfully Submitted');
           this.props.history.push({
             pathname: '/blog/student/dashboard',
           });
@@ -132,7 +136,9 @@ class ContentView extends Component {
         }
       })
       .catch((error) => {
-        this.context.setAlert('error', error?.response?.data?.description);
+        // this.context.setAlert('error', error?.response?.data?.description);
+        console.log('error', error.message)
+        console.log('error2', error?.response?.data?.description)
         // setAlert('error', error.message);
         // setSections([]);
         // setSearchSection([]);
@@ -140,6 +146,8 @@ class ContentView extends Component {
         // setSectionDisp('');
       });
   };
+
+
 
   render() {
     const { classes } = this.props;
@@ -175,26 +183,50 @@ class ContentView extends Component {
                         >
                           {this.state.title}
                         </Typography>
-                        <CardMedia
-                          className={classes.media}
-                          image={this.state.imageUrl}
-                          title='Blog Images'
-                          onClick={() => {
+                        {'.' + this?.state?.files[0].name.split('.')[this?.state?.files[0]?.name?.split('.').length - 1] == '.pdf' ?
+                          <div onClick={() => {
                             openPreview({
                               currentAttachmentIndex: 0,
                               attachmentsArray: [
                                 {
                                   // src: `${endpoints.lessonPlan.s3}${file}`,
-                                  src: `${this.state.imageUrl}`,
+                                  src: `${this?.state?.imageUrl}`,
                                   // name: `${p?.document_type}`,
-                                  extension: '.png',
+                                  // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                  extension: '.' + this?.state?.files[0]?.name?.split('.')[this?.state?.files[0]?.name?.split('.')?.length - 1],
+                                  // extension: '.jpg,.jpeg,.png,.pdf',
                                 },
                               ],
                             });
-                          }}
-                          rel='noopener noreferrer'
-                          target='_blank'
-                        />
+                          }} className={classes.media}>
+                            <PictureAsPdfIcon style={{ height: 200, width: 200 }} />
+                            <div style={{ fontSize: '16px' }}><b>'Click on the PDF icon to view'</b></div>
+
+                          </div>
+                          :
+                          <CardMedia
+                            className={classes.media}
+                            image={this.state.imageUrl}
+                            title='Blog Images and PDF'
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: [
+                                  {
+                                    // src: `${endpoints.lessonPlan.s3}${file}`,
+                                    src: `${this?.state?.imageUrl}`,
+                                    // name: `${p?.document_type}`,
+                                    // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                    extension: '.' + this?.state?.files[0]?.name?.split('.')[this?.state?.files[0]?.name?.split('.').length - 1],
+                                    // extension: '.jpg,.jpeg,.png,.pdf',
+                                  },
+                                ],
+                              });
+                            }}
+                            rel='noopener noreferrer'
+                            target='_blank'
+                          />
+                        }
                         <CardHeader
                           className={classes.author}
                           avatar={
