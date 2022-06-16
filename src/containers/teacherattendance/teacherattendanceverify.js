@@ -634,7 +634,7 @@ export default function TeacherAttendanceVerify() {
     if (value) {
       getGrade(selectedAcademicYear?.id, value?.branch?.id);
       setFilterData({ ...filterData, branch: value });
-      const selectedId = value?.id;
+      const selectedId = value?.branch?.id;
       setSelectedBranch(value);
       setSelectedBranchIds(selectedId);
       callApi(
