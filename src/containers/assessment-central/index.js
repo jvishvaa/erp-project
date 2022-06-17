@@ -90,6 +90,7 @@ const Assesment = () => {
   const [selectedAssesmentTest, setSelectedAssesmentTest] = useState();
   const [fetchingTests, setFetchingTests] = useState(false);
   const [minDate, setMinDate] = useState(null);
+  const [ filterData , setFilterData ] = useState([])
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -184,7 +185,7 @@ const Assesment = () => {
       setAssesmentTypes(data);
     } catch (e) {}
   };
-
+  let filterData1 = [];
   const filterResults = async (page) => {
     const {
       branch = [],
@@ -194,6 +195,14 @@ const Assesment = () => {
       date,
       status,
     } = formik.values;
+    console.log(formik.values);
+    filterData1 = {
+      branch : formik.values.branch,
+      grade : formik.values.grade,
+      subject: formik.values.subject,
+    }
+    console.log(filterData1);
+    setFilterData(filterData1)
     // const acadSessionId = branch?.id;
     const acadSessionIds = branch.map((element) => element?.id) || [];
     const subjectIds = subject.map(({ subject_id }) => subject_id);
@@ -748,6 +757,7 @@ const Assesment = () => {
                           onClose={() => {
                             setSelectedAssesmentTest(null);
                           }}
+                          filterData={filterData}
                         />
                       </Grid>
                     )}
@@ -812,6 +822,7 @@ const Assesment = () => {
                           onClose={() => {
                             setSelectedAssesmentTest(null);
                           }}
+                          filterData={filterData}
                         />
                       </Grid>
                     )}
@@ -876,6 +887,7 @@ const Assesment = () => {
                           onClose={() => {
                             setSelectedAssesmentTest(null);
                           }}
+                          filterData={filterData1}
                         />
                       </Grid>
                     )}

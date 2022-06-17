@@ -416,6 +416,8 @@ import ResourcesFolderList from './containers/sure-learning/Resources_Folders/re
 import AllChaptersContent from './containers/sure-learning/Initiate_Class/Chapter_Details/allChapters';
 import AcademicReport from './containers/dashboard/ownerDashboard/academic/academicReport';
 import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/curriculumBranchWise';
+import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStudent';
+import StudentMark from 'containers/assessment-central/studentMakUpload';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -1951,6 +1953,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                           </Route>
                           <Route path='/virtual-school'>
                             {({ match }) => <VirtualSchool match={match} />}
+                          </Route>
+                          <Route path='/offline-student'>
+                            {({ match }) => <OfflineStudentAssessment match={match} />}
+                          </Route>
+                          <Route path='/student-mark'>
+                            {({ match }) => <StudentMark match={match} />}
                           </Route>
                           <Route path='*'>
                             <ErrorBoundary404 HomeButton={true} />

@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Grid, IconButton, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
 import moment from 'moment';
@@ -9,7 +10,9 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { handleDownloadPdf } from '../../../../src/utility-functions';
 
-const AssesmentDetails = ({ test, onClick, onClose }) => {
+const AssesmentDetails = ({ test, onClick, onClose, filterData }) => {
+  const history = useHistory();
+
   const {
     test_id: id,
     id: assessmentId,
@@ -23,6 +26,21 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
     created_at: createdDate,
     updated_at: updatedDate,
   } = test;
+
+  const handleData = () => {
+    console.log(test);
+    console.log(onClick);
+    console.log(onClose);
+    console.log(filterData);
+    history.push({
+      pathname: '/offline-student',
+      state : {
+        data : filterData,
+        test : test
+      }
+    })
+
+  }
 
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -181,6 +199,13 @@ const AssesmentDetails = ({ test, onClick, onClose }) => {
                   Download Question Paper
                 </Button>
               </Grid>
+              {test?.test_mode == 2 ?
+                <Grid item xs={12} style={{margin: '4% 0'}} >
+                  <Button variant='contained' color='primary' onClick={handleData}>
+                    Upload Marks
+                  </Button>
+                </Grid>
+                : ''}
             </Grid>
           </div>
         </div>
