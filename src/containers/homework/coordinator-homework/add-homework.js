@@ -24,6 +24,9 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
+import moment from 'moment';
 
 const validateQuestions = (obj) => {
   let error = false;
@@ -90,6 +93,12 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
   const sessionYear = params.session_year;
   const branch = params.branch;
   const grade = params.grade;
+  const [date, setDate] = useState(new Date());
+  const [dateValue, setDateValue] = useState(moment(date).format('YYYY-MM-DD'));
+
+  const handleDateChange = (event, value) => {
+    setDateValue(value);
+  };
 
   const validateHomework = () => {
     let isFormValid = true;
@@ -127,6 +136,7 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
         section_mapping: sectionDisplay.map(data => parseInt(data.id, 10)),
         subject: params.id,
         date: params.date,
+        last_submission_date: dateValue,
         questions: questions.map((q) => {
           const qObj = q;
           delete qObj.errors;
@@ -284,13 +294,36 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
                   )}
                 />
               </Grid>
+              <Grid item xs={12} sm={4} style={{ margin: '0 20px' }}>
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <KeyboardDatePicker
+                    size='small'
+                    variant='dialog'
+                    format='YYYY-MM-DD'
+                    margin='none'
+                    // className='button'
+                    className='dropdownIcon'
+                    id='date-picker'
+                    label='Due Date'
+                    inputVariant='outlined'
+                    fullWidth
+                    value={dateValue}
+                    onChange={handleDateChange}
+                    // className='dropdown'
+                    style={{ width: '100%' }}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change date',
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
+              </Grid>
               <Grid item xs={12} className='form-field'>
                 <FormControl variant='outlined' fullWidth size='small'>
                   <InputLabel htmlFor='component-outlined'>Title</InputLabel>
                   <OutlinedInput
                     id='title'
                     name='title'
-                    onChange={() => {}}
+                    // onChange={() => {}}
                     inputProps={{ maxLength: 20 }}
                     label='Title'
                     autoFocus

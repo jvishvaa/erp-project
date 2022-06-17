@@ -98,17 +98,17 @@ class WriteBlog extends Component {
           : '',
       genreId:
         this.props.location.state.genreId &&
-        this.props.location.state.genreId.length !== 0
+          this.props.location.state.genreId.length !== 0
           ? this.props.location.state.genreId
           : '',
       genreName:
         this.props.location.state.genreName &&
-        this.props.location.state.genreName.length !== 0
+          this.props.location.state.genreName.length !== 0
           ? this.props.location.state.genreName
           : '',
       image:
         this.props.location.state.thumbnail &&
-        this.props.location.state.thumbnail.length !== 0
+          this.props.location.state.thumbnail.length !== 0
           ? this.props.location.state.thumbnail
           : '',
       TITLE_CHARACTER_LIMIT: 100,
@@ -119,7 +119,7 @@ class WriteBlog extends Component {
       creationDate: new Date(),
       textEditorContent:
         this.props.location.state.content &&
-        this.props.location.state.content.length !== 0
+          this.props.location.state.content.length !== 0
           ? this.props.location.state.content
           : '',
       files:
@@ -129,7 +129,7 @@ class WriteBlog extends Component {
       wordCountLimit: 50,
       genreObj:
         this.props.location.state.genreObj &&
-        this.props.location.state.genreObj.length !== 0
+          this.props.location.state.genreObj.length !== 0
           ? this.props.location.state.genreObj
           : '',
     };
@@ -147,7 +147,7 @@ class WriteBlog extends Component {
       creationDate: date,
       genreName:
         this.props.location.state.genreName &&
-        this.props.location.state.genreName.length !== 0
+          this.props.location.state.genreName.length !== 0
           ? this.props.location.state.genreName
           : '',
       // textEditorContent: localStorage.getItem('blogContent'),
@@ -162,7 +162,7 @@ class WriteBlog extends Component {
       .then((res) => {
         this.setState({ genreList: res.data.result });
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   wordCountFetch = () => {
@@ -175,7 +175,7 @@ class WriteBlog extends Component {
           wordCountLimit: res.data && res.data.result && res.data.result[0].word_count,
         });
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   isWordCountSubceeded = () => {
@@ -223,15 +223,16 @@ class WriteBlog extends Component {
     this.setState({ title: event.target.value });
   };
   isImage = (files) => {
-    if (files[0].name.match(/.(jpg|jpeg|png)$/i)) {
+    if (files[0].name.match(/.(jpg|jpeg|png|pdf)$/i)) {
       return true;
     }
     return false;
   };
 
   onDrop = (files = []) => {
+    console.log('debug', files)
     if (!this.isImage(files)) {
-      this.context.setAlert('error', 'Please select only image file format');
+      this.context.setAlert('error', 'Please select only image/pdf file format');
 
       // this.props.alert.warning('Please select only image file format')
       return;
@@ -385,7 +386,7 @@ class WriteBlog extends Component {
                       renderInput={(params) => (
                         <TextField {...params} label='Genre' variant='outlined' />
                       )}
-                      // getOptionSelected={(option, value) => value && option.id == value.id}
+                    // getOptionSelected={(option, value) => value && option.id == value.id}
                     />
                   </Grid>
                 </Grid>
@@ -410,7 +411,7 @@ class WriteBlog extends Component {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography color='secondary' style={{ margin: 10 }} variant='body1'>
+                    <Typography color="secondary" style={{ margin: 10 }} variant='body1'>
                       Write the blog with atleast {wordCountLimit} words
                     </Typography>
                     <MyTinyEditor
@@ -454,12 +455,7 @@ class WriteBlog extends Component {
                                       color='primary'
                                       style={{ marginLeft: '45%', marginTop: '15%' }}
                                     />
-                                    <Typography
-                                      color='secondary'
-                                      style={{ marginLeft: '38%' }}
-                                    >
-                                      drop file
-                                    </Typography>
+                                    <Typography color="secondary" style={{ marginLeft: "38%" }}>drop file</Typography>
                                   </>
                                 )}
                               </div>
@@ -478,7 +474,7 @@ class WriteBlog extends Component {
                           style={{ width: 150 }}
                           onClick={this.PreviewBlogNav}
                           color='primary'
-                          // disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
+                        // disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
                         >
                           Preview Blog
                         </Button>

@@ -230,12 +230,15 @@ const Filters = (props) => {
             <Button
               onClick={handleFilter}
               style={{ marginRight: '17px', width: '120px' }}
+              color = 'primary'
+              variant = 'contained'
             >
               Filter
             </Button>
             {/* </Grid>
           <Grid item xs={12} sm={1}> */}
-            <Button style={{ width: '120px' }} onClick={() => handleClearData('clear')}>
+            <Button style={{ width: '120px' }} onClick={() => handleClearData('clear')} color = 'primary'
+              variant = 'contained'>
               Clear
             </Button>
           </Grid>
