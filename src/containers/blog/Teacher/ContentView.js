@@ -3,6 +3,8 @@
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import moment from 'moment';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
+import { AttachmentPreviewerContext } from '../../../components/attachment-previewer/attachment-previewer-contexts';
 
 // import { connect } from 'react-redux';
 import {
@@ -71,8 +73,8 @@ const styles = (theme) => ({
   ViewColor: {
     color: `${theme.palette.primary.main} !important`
   },
-  likeColor : {
-      color : 'red !important'
+  likeColor: {
+    color: 'red !important'
   },
   likeAndViewbtn: {
     fontFamily: 'Open Sans',
@@ -83,6 +85,8 @@ const styles = (theme) => ({
     backgroundColor: 'white',
   }
 });
+
+let openPreview = '';
 
 const publishLevelChoice = [
   { label: 'Branch', value: '2' },
@@ -113,10 +117,12 @@ class ContentView extends Component {
       loginUserName: JSON.parse(localStorage.getItem('userDetails')).erp_user_id,
     };
   }
-  static contextType = AlertNotificationContext;
+  // static contextType = AlertNotificationContext;
+  static contextType = AttachmentPreviewerContext;
   componentDidMount() {
     let { blogId } = this.state;
     this.handleView(blogId);
+    openPreview = this.context.openPreview;
   }
 
   handleView = (blogId) => {
@@ -326,9 +332,52 @@ class ContentView extends Component {
                           component='h2'
                           style={{ marginBottom: 10 }}
                         >
-                          {data.title}
+                          {data?.title}
                         </Typography>
-                        <CardMedia className={classes.media} image={data.thumbnail} />
+                        {/* <CardMedia className={classes.media} image={data.thumbnail} /> */}
+                        {'.' + this?.state?.data?.thumbnail.split('.')[this?.state?.data?.thumbnail.split('.').length - 1] == '.pdf' ?
+                          <div onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: [
+                                {
+                                  // src: `${endpoints.lessonPlan.s3}${file}`,
+                                  src: `${this?.state?.data?.thumbnail}`,
+                                  // name: `${p?.document_type}`,
+                                  // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                  extension: '.' + this?.state?.data?.thumbnail.split('.')[this?.state?.data?.thumbnail?.split('.')?.length - 1],
+                                  // extension: '.jpg,.jpeg,.png,.pdf',
+                                },
+                              ],
+                            });
+                          }} className={classes.media}>
+                            <PictureAsPdfIcon style={{ height: 200, width: 200 }} />
+                            <div style={{ fontSize: '16px' }}><b>'Click on the PDF icon to view'</b></div>
+                          </div>
+                          :
+                          <CardMedia
+                            className={classes.media}
+                            image={this?.state?.data?.thumbnail}
+                            title='Blog Images and PDF'
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: [
+                                  {
+                                    // src: `${endpoints.lessonPlan.s3}${file}`,
+                                    src: `${this?.state?.data?.thumbnail}`,
+                                    // name: `${p?.document_type}`,
+                                    // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                    extension: '.' + this?.state?.data?.thumbnail.split('.')[this?.state?.data?.thumbnail.split('.').length - 1],
+                                    // extension: '.jpg,.jpeg,.png,.pdf',
+                                  },
+                                ],
+                              });
+                            }}
+                            rel='noopener noreferrer'
+                            target='_blank'
+                          />
+                        }
                         {data && data.feedback_revision_required ? (
                           <CardContent>
                             {' '}
@@ -463,14 +512,14 @@ class ContentView extends Component {
                           ) : (
                             ''
                           )}
-                               <Button
-                              size='small'
-                              variant ="contained"
-                              color='primary'
-                              onClick={this.EditBlogNav}
-                            >
-                              Edit
-                            </Button>
+                          <Button
+                            size='small'
+                            variant="contained"
+                            color='primary'
+                            onClick={this.EditBlogNav}
+                          >
+                            Edit
+                          </Button>
                         </CardActions>
                       </Card>
                     </Grid>

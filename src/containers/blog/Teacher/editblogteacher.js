@@ -99,7 +99,7 @@ class EditBlogTeacher extends Component {
       key: 0,
       parsedTextEditorContentLen:
         this.props.location.state.parsedTextEditorContentLen &&
-        this.props.location.state.parsedTextEditorContentLen !== 0
+          this.props.location.state.parsedTextEditorContentLen !== 0
           ? this.props.location.state.parsedTextEditorContentLen
           : '',
       title:
@@ -109,22 +109,22 @@ class EditBlogTeacher extends Component {
       blogId: this.props.location.state.blogId ? this.props.location.state.blogId : '',
       genreId:
         this.props.location.state.genreId &&
-        this.props.location.state.genreId.length !== 0
+          this.props.location.state.genreId.length !== 0
           ? this.props.location.state.genreId
           : '',
       genreName:
         this.props.location.state.genreName &&
-        this.props.location.state.genreName.length !== 0
+          this.props.location.state.genreName.length !== 0
           ? this.props.location.state.genreName
           : '',
       genreObj:
         this.props.location.state.genreObj &&
-        this.props.location.state.genreObj.length !== 0
+          this.props.location.state.genreObj.length !== 0
           ? this.props.location.state.genreObj
           : '',
       image:
         this.props.location.state.thumbnail &&
-        this.props.location.state.thumbnail.length !== 0
+          this.props.location.state.thumbnail.length !== 0
           ? this.props.location.state.thumbnail
           : this.props.location.state.image,
       TITLE_CHARACTER_LIMIT: 100,
@@ -135,7 +135,7 @@ class EditBlogTeacher extends Component {
       creationDate: new Date(),
       textEditorContent:
         this.props.location.state.content &&
-        this.props.location.state.content.length !== 0
+          this.props.location.state.content.length !== 0
           ? this.props.location.state.content
           : '',
       files:
@@ -148,7 +148,7 @@ class EditBlogTeacher extends Component {
   static contextType = AlertNotificationContext;
 
   componentDidMount() {
-      console.log(this.props , "prop");
+    console.log(this.props, "prop");
     this.wordCountFetch();
     this.listGenre();
     const { creationDate } = this.state;
@@ -173,7 +173,7 @@ class EditBlogTeacher extends Component {
       .then((res) => {
         this.setState({ genreList: res.data.result });
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   isWordCountSubceeded = () => {
@@ -207,17 +207,17 @@ class EditBlogTeacher extends Component {
     axios
       .get(`${endpoints.blog.WordCountConfig}?erp_user_id=${erpUserId}`)
       .then((res) => {
-          if(res.data.result.length === 1 ){
-            this.setState({
-                wordCountLimit: res.data && res.data.result && res.data.result[0].word_count,
-              });              
-          } else {
-        this.setState({
-          wordCountLimit: res.data && res.data.result && res.data.result[1].word_count,
-        });
-    }
+        if (res.data.result.length === 1) {
+          this.setState({
+            wordCountLimit: res.data && res.data.result && res.data.result[0].word_count,
+          });
+        } else {
+          this.setState({
+            wordCountLimit: res.data && res.data.result && res.data.result[1].word_count,
+          });
+        }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
 
   // handleTextEditor = (content) => {
@@ -240,7 +240,7 @@ class EditBlogTeacher extends Component {
     this.setState({ title: event.target.value });
   };
   isImage = (files) => {
-    if (files[0].name.match(/.(jpg|jpeg|png)$/i)) {
+    if (files[0].name.match(/.(jpg|jpeg|png|pdf)$/i)) {
       return true;
     }
     return false;
@@ -248,7 +248,7 @@ class EditBlogTeacher extends Component {
 
   onDrop = (files = []) => {
     if (!this.isImage(files)) {
-      this.context.setAlert('error', 'Please select only image file format');
+      this.context.setAlert('error', 'Please select only image/pdf file format');
       return;
     } else if (files.length > 1) {
       this.context.setAlert('error', 'You can select only a single image at once');
@@ -457,7 +457,7 @@ class EditBlogTeacher extends Component {
                   </Grid>
                   <Grid item xs={12}>
                     <Typography style={{ margin: 10 }} variant='body1'>
-                      Add Thumbnail
+                      Add Attachment
                     </Typography>
                     {image ? (
                       <Grid item style={{ position: 'relative' }}>
@@ -524,7 +524,7 @@ class EditBlogTeacher extends Component {
                           style={{ width: 150 }}
                           onClick={this.PreviewBlogNav}
                           color='primary'
-                          // disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
+                        // disabled={!genreId || !files.length> 0 ||!title ||!textEditorContent}
                         >
                           Preview Blog
                         </Button>

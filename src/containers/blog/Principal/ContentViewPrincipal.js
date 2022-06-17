@@ -24,8 +24,10 @@ import endpoints from '../../../config/endpoints';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import ReviewPrincipal from './ReviewPrincipal'
 import Layout from '../../Layout';
-import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
-import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons';
+// import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
+import { AttachmentPreviewerContext } from '../../../components/attachment-previewer/attachment-previewer-contexts';
 
 const styles = (theme) => ({
   root: {
@@ -62,6 +64,9 @@ const styles = (theme) => ({
     marginBottom: 20,
     textAlign: 'center',
   },
+  ViewColor: {
+    color: `${theme.palette.primary.main} !important`
+  },
   likeColor: {
     color: 'red !important'
   },
@@ -78,6 +83,7 @@ const styles = (theme) => ({
   },
 });
 
+let openPreview = '';
 
 const publishLevelChoice = [
   { label: 'Branch', value: '2' },
@@ -109,10 +115,12 @@ class ContentView extends Component {
     };
 
   }
-  static contextType = AlertNotificationContext
+  // static contextType = AlertNotificationContext;
+  static contextType = AttachmentPreviewerContext;
   componentDidMount() {
-    let { blogId } = this.state
-    this.handleView(blogId)
+    let { blogId } = this.state;
+    this.handleView(blogId);
+    openPreview = this.context.openPreview;
   }
 
 
@@ -202,7 +210,7 @@ class ContentView extends Component {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
-          this.context.setAlert('success', "Blog Published Successfully")
+          // this.context.setAlert('success', 'Blog Published Successfully');
           this.props.history.push({
             pathname: '/blog/principal',
           });
@@ -282,25 +290,86 @@ class ContentView extends Component {
                         >
                           {data.title}
                         </Typography>
-                        <CardMedia className={classes.media} image={data.thumbnail} />
-                        {
-                          data.feedback_revision_required ?
-                            <CardContent> <Typography
+                        {/* <CardMedia className={classes.media} image={data.thumbnail} /> */}
+                        {'.' + this?.state?.data?.thumbnail.split('.')[this?.state?.data?.thumbnail.split('.').length - 1] == '.pdf' ?
+                          <div onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: [
+                                {
+                                  // src: `${endpoints.lessonPlan.s3}${file}`,
+                                  src: `${this?.state?.data?.thumbnail}`,
+                                  // name: `${p?.document_type}`,
+                                  // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                  extension: '.' + this?.state?.data?.thumbnail.split('.')[this?.state?.data?.thumbnail?.split('.')?.length - 1],
+                                  // extension: '.jpg,.jpeg,.png,.pdf',
+                                },
+                              ],
+                            });
+                          }} className={classes.media}>
+                            <PictureAsPdfIcon style={{ height: 200, width: 200 }} />
+                            <div style={{ fontSize: '16px' }}><b>'Click on the PDF icon to view'</b></div>
+                          </div>
+                          :
+                          <CardMedia
+                            className={classes.media}
+                            image={this?.state?.data?.thumbnail}
+                            title='Blog Images and PDF'
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: [
+                                  {
+                                    // src: `${endpoints.lessonPlan.s3}${file}`,
+                                    src: `${this?.state?.data?.thumbnail}`,
+                                    // name: `${p?.document_type}`,
+                                    // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                    extension: '.' + this?.state?.data?.thumbnail.split('.')[this?.state?.data?.thumbnail.split('.').length - 1],
+                                    // extension: '.jpg,.jpeg,.png,.pdf',
+                                  },
+                                ],
+                              });
+                            }}
+                            rel='noopener noreferrer'
+                            target='_blank'
+                          />
+                        }
+                        {data.feedback_revision_required ? (
+                          <CardContent>
+                            {' '}
+                            <Typography color="primary" style={{ fontSize: '12px' }}>
+                              Revision Feedback:{data.feedback_revision_required}
+                            </Typography>
+                            <Typography style={{ fontSize: '12px' }}>
+                              {' '}
+                              Revised By:
+                              {data &&
+                                data.feedback_revision_by &&
+                                data.feedback_revision_by.first_name}
+                            </Typography>
+                          </CardContent>
+                        ) : data.comment ? (
+                          <CardContent>
+                            {' '}
+                            <Typography color="primary" style={{ fontSize: '12px' }}>
+                              Comment:{data.comment}
+                            </Typography>
+                            <Typography style={{ fontSize: '12px' }}>
+                              {' '}
+                              Commented By:
+                              {data && data.commented_by && data.commented_by.first_name}
+                            </Typography>
+                            <Typography style={{ fontSize: '12px' }}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent>
+                        ) : data.comment ?
+                          <CardContent>
+                            <Typography
                               color="primary"
                               style={{ fontSize: '12px' }}
-                            >Revision Feedback:{data.feedback_revision_required}
-                            </Typography>
-                              <Typography style={{ fontSize: '12px' }}> Revised By:{data && data.feedback_revision_by && data.feedback_revision_by.first_name}</Typography></CardContent>
-                            : data.comment ?
-                              <CardContent>
-                                <Typography
-                                  color="primary"
-                                  style={{ fontSize: '12px' }}
-                                >Comment:{data.comment}
+                            >Comment:{data.comment}
 
-                                </Typography>
-                                <Typography style={{ fontSize: '12px' }}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
-                              </CardContent> : ''}
+                            </Typography>
+                            <Typography style={{ fontSize: '12px' }}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
+                          </CardContent> : ''}
                         <CardHeader
                           className={classes.author}
                           avatar={
@@ -336,13 +405,13 @@ class ContentView extends Component {
                           </Button> : ''} &nbsp;&nbsp;&nbsp;
                           <Button
                             className={classes.likeAndViewbtn}
-                          >   <Visibility className = {classes.ViewColor} />{data.views}Views
+                          >   <Visibility className={classes.ViewColor} />{data.views}Views
                           </Button>
                           {tabValue === 1 && !data.feedback_revision_required && !data.comment && !data.published_by ?
                             <Button
                               size='small'
                               color='primary'
-                              variant = "contained"
+                              variant="contained"
                               onClick={() => this.setState({ feedBack: true })}
                             >
                               Comment
@@ -351,7 +420,7 @@ class ContentView extends Component {
                             data.feedback_revision_required !== null ?
                               <Button
                                 size='small'
-                                variant = "contained"
+                                variant="contained"
                                 color='primary'
                                 onClick={() => this.setState({ isPublish: true })}
                               >
@@ -364,7 +433,7 @@ class ContentView extends Component {
                           {data.feedback_revision_required !== null ?
                             <Button
                               size='small'
-                              variant = "contained"
+                              variant="contained"
                               color='primary'
                               onClick={() => {
                                 this.setState({
@@ -400,7 +469,7 @@ class ContentView extends Component {
                               <Button
                                 style={{ fontSize: 12 }}
                                 size='small'
-                                variant = "contained"
+                                variant="contained"
                                 color='primary'
                                 disabled={!comment}
                                 onClick={this.submitComment}
@@ -438,7 +507,7 @@ class ContentView extends Component {
                                 style={{ fontSize: 12 }}
                                 size='small'
                                 color='primary'
-                                variant = "contained"
+                                variant="contained"
                                 disabled={!publishedLevel}
                                 onClick={this.submitPublish}
                               >
@@ -452,7 +521,7 @@ class ContentView extends Component {
                           : (
                             <Grid>
                               <Typography
-                              color = "primary"
+                                color="primary"
                                 style={{
                                   fontSize: '12px', width: '300px',
                                   paddingLeft: '30px',
