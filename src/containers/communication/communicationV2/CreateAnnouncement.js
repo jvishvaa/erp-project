@@ -102,8 +102,8 @@ const CreateAnnouncement = ({ openModalAnnouncement, setOpenModalAnnouncement, a
     whatsapp : false ,
     email: false
   }
-const smsArr = [1,8]
-const whatsappArr = [1,8]
+const smsArr = [1,2,4,8,9]
+const whatsappArr = [1,2,4,8,9]
 const emailArr = [1,11,4,5,8,9,10,3,2,14]
   const [moduleId, setModuleId] = useState('');
   const [userLevelList, setUserLevelList] = useState([]);
@@ -605,7 +605,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
           <Grid container spacing={1}>
             <Grid xs={12} md={6} lg={6} item>
               <Grid style={{ marginBottom: 5 }}>
-                <b>Choose User Level</b>
+                <b>Audience</b>
               </Grid>
               <Autocomplete
                 multiple
@@ -624,7 +624,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
                     {...params}
                     variant='outlined'
                     // label={'Choose User Level'}
-                    placeholder={'Choose User Level'}
+                    placeholder={'Audience'}
                   />
                 )}
               />

@@ -24,6 +24,8 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import Layout from '../../Layout';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
+import { AttachmentPreviewerContext } from '../../../components/attachment-previewer/attachment-previewer-contexts';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 
 const styles = (theme) => ({
   root: {
@@ -62,6 +64,7 @@ const styles = (theme) => ({
   },
 });
 
+let openPreview = '';
 class PreviewEditBlogTeacher extends Component {
   constructor(props) {
     super(props);
@@ -83,12 +86,15 @@ class PreviewEditBlogTeacher extends Component {
     };
   }
 
+  static contextType = AttachmentPreviewerContext;
+
   componentDidMount() {
     const { files } = this.state;
     if (files.length) {
       const imageUrl = URL.createObjectURL(files && files[0]);
       this.setState({ imageUrl });
     }
+    openPreview = this.context.openPreview;
   }
 
   submitBlog = (type) => {
@@ -116,7 +122,7 @@ class PreviewEditBlogTeacher extends Component {
           console.log(result.data.message);
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   };
   EditBlogNav = () => {
     const {
@@ -183,11 +189,52 @@ class PreviewEditBlogTeacher extends Component {
                         >
                           {this.state.title}
                         </Typography>
-                        <CardMedia
+                        {console.log('debug', this.state.imageUrl || this.state.image)}
+                        {console.log('debug1', this.state.imageUrl)}
+                        {console.log('debug2', this.state.image)}
+                        {console.log('debug3', this.state)}
+                        {'.' + this?.state?.files[0]?.name.split('.')[this?.state?.files[0]?.name.split('.').length - 1] == '.pdf' ?
+                          <div onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: [
+                                {
+                                  // src: `${endpoints.lessonPlan.s3}${file}`,
+                                  src: `${this?.state?.imageUrl || this?.state?.image}`,
+                                  // name: `${p?.document_type}`,
+                                  // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                  extension: '.' + this?.state?.files[0]?.name.split('.')[this?.state?.image?.split('.').length - 1],
+                                  // extension: '.jpg,.jpeg,.png,.pdf',
+                                },
+                              ],
+                            });
+                          }} className={classes.media}>
+                            <PictureAsPdfIcon style={{ height: 200, width: 200 }} />
+                            <div style={{ fontSize: '16px' }}><b>'Click on the PDF icon to view'</b></div>
+                          </div>
+                          :
+                          <CardMedia className={classes.media} image={this.state.imageUrl || this?.state?.image}
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: [
+                                  {
+                                    // src: `${endpoints.lessonPlan.s3}${file}`,
+                                    src: `${this?.state?.imageUrl || this?.state?.image}`,
+                                    // name: `${p?.document_type}`,
+                                    // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                    extension: '.' + this?.state?.image?.split('.')[this?.state?.image?.split('.').length - 1],
+                                    // extension: '.jpg,.jpeg,.png,.pdf',
+                                  },
+                                ],
+                              });
+                            }}
+                          ><span> Please click here to view Image/PDF</span></ CardMedia>}
+                        {/* <CardMedia
                           className={classes.media}
                           image={this.state.imageUrl || this.state.image}
                           title='Contemplative Reptile'
-                        />
+                        /> */}
                         <CardHeader
                           className={classes.author}
                           avatar={

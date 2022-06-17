@@ -1885,6 +1885,59 @@ const FinanceOwnerDashboard = (props) => {
                                     </div>
                                   </div>
                                 </Grid>
+                                <Grid
+                                  item
+                                  xs={12}
+                                  style={{
+                                    borderRadius: '5px',
+                                    backgroundColor: '#b3f5e6',
+                                    marginTop: '5px',
+                                  }}
+                                >
+                                  <div
+                                    className={clsx(classes.absentGrid)}
+                                    onClick={() => history.push('./academic-report')}
+                                    style={{ cursor: 'pointer' }}
+                                  >
+                                    <div style={{ width: '53%' }}>
+                                      <Typography
+                                        variant='body2'
+                                        // className={classes.textAlignCenter}
+                                        className={clsx(classes.customTextSize)}
+                                      >
+                                        Academic Report
+                                      </Typography>
+                                    </div>
+                                    <div style={{ width: '33%', textAlign: 'center' }}>
+                                      <Typography variant='body2'>{''}</Typography>
+                                    </div>
+                                    <div
+                                      style={{
+                                        width: '13%',
+                                        display: 'flex',
+                                        fontWeight: 'bolder',
+                                      }}
+                                    >
+                                      {/* <Typography style={{ fontSize: '15px' }}>
+                                        <b>
+                                          {props?.avgTest ? (
+                                            <>
+                                              {isNaN(props?.avgTest?.overall_avg)
+                                                ? 0
+                                                : Math.round(props?.avgTest?.overall_avg)}
+                                              %
+                                            </>
+                                          ) : (
+                                            <>0%</>
+                                          )}
+                                        </b>
+                                      </Typography> */}
+                                      <IconButton aria-label='delete' size='small'>
+                                        <DeleteIcon fontSize='inherit' />
+                                      </IconButton>
+                                    </div>
+                                  </div>
+                                </Grid>
                               </Grid>
                             ) : (
                               <Grid

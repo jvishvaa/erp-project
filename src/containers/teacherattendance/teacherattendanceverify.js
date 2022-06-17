@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import PropTypes from 'prop-types';
 import clsx from 'clsx';
 import { lighten, makeStyles, useTheme } from '@material-ui/core/styles';
@@ -122,13 +122,12 @@ function EnhancedTableHead(props) {
         >
           Name
         </TableCell>
-
-        {headCells.map((headCell) => (
-          <TableCell key={headCell.id} style={{ backgroundColor: 'LightGray' }}>
-            {headCell.label}
+        {headCells && headCells?.map((headCell) => (
+          <TableCell key={headCell?.id} style={{ backgroundColor: 'LightGray' }}>
+            {headCell?.label}
           </TableCell>
         ))}
-        {data?.[0]?.attendance.map((headCell) => (
+        {data?.[0]?.attendance?.map((headCell) => (
           <TableCell style={{ backgroundColor: 'LightGray' }}>
             {moment(headCell?.date, 'YYYY-MM-DD').date()} <br />
             {moment(headCell?.date, 'YYYY-MM-DD').format('ddd')}
@@ -157,13 +156,13 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark,
+      },
   title: {
     flex: '1 1 100%',
     fontWeight: 'bold',
@@ -304,6 +303,18 @@ export default function TeacherAttendanceVerify() {
   const [year, setYear] = React.useState('2021');
   const [open, setOpen] = React.useState(false);
   const [branchDropdown, setBranchDropdown] = React.useState([]);
+
+  const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedBranchIds, setSelectedBranchIds] = useState('');
+  const [gradeList, setGradeList] = useState([]);
+  const [selectedGrade, setSelectedGrade] = useState([]);
+  const [selectedGradeIds, setSelectedGradeIds] = useState('');
+  const [sectionId, setSectionId] = useState('');
+  const [sectionList, setSectionList] = useState([]);
+  const [selectedSection, setSelectedSection] = useState([]);
+  const [selectedSectionIds, setSelectedSectionIds] = useState('');
+
+
   const [dropdownData, setDropdownData] = React.useState({
     branch: [],
     grade: [],
@@ -337,7 +348,7 @@ export default function TeacherAttendanceVerify() {
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   const handleAcademicYear = (event, value) => {
@@ -382,7 +393,7 @@ export default function TeacherAttendanceVerify() {
           });
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   const fileType =
@@ -434,7 +445,7 @@ export default function TeacherAttendanceVerify() {
   const handleMultipleRoles = (event, value) => {
     console.log('value', value);
 
-    setRolesId(value.id);
+    setRolesId(value?.id);
   };
 
   useEffect(() => {
@@ -464,7 +475,7 @@ export default function TeacherAttendanceVerify() {
     setDisableDownload(true);
     const result = axiosInstance
       .get(
-        `${endpoints.academics.getTeacherAttendanceData}?branch_id=${filterData.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&month=${month}&year=${year}&roles=${rolesId}`
+        `${endpoints.academics.getTeacherAttendanceData}?branch_id=${filterData.branch?.branch?.id}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&session_year=${selectedAcademicYear?.id}&month=${month}&year=${year}&roles=${rolesId}`
       )
       .then((result) => {
         if (result.status === 200) {
@@ -623,8 +634,73 @@ export default function TeacherAttendanceVerify() {
     if (value) {
       getGrade(selectedAcademicYear?.id, value?.branch?.id);
       setFilterData({ ...filterData, branch: value });
+      const selectedId = value?.branch?.id;
+      setSelectedBranch(value);
+      setSelectedBranchIds(selectedId);
+      callApi(
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedId}&module_id=${moduleId}`,
+        'gradeList'
+      );
+    }
+
+  };
+
+  const handleGrade = (event = {}, value = []) => {
+    if (value) {
+      setSectionList([]);
+      setSelectedSection([]);
+      setSelectedSectionIds('');
+
+      const selectedId = value?.grade_id;
+      setSelectedGrade(value);
+      setSelectedGradeIds(selectedId);
+      callApi(
+        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
+        }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
+        'section'
+      );
+    } else {
+      setSelectedGrade([]);
+      setSectionList([]);
+      setSelectedSection([]);
+      setSelectedGradeIds('');
+      setSelectedSectionIds('');
     }
   };
+
+  const handleSection = (event = {}, value = []) => {
+    if (value) {
+      const selectedsecctionId = value?.section_id;
+      const sectionid = value?.id;
+      setSectionId(sectionid);
+      setSelectedSection(value);
+      setSelectedSectionIds(selectedsecctionId);
+    } else {
+      setSectionId('');
+      setSelectedSection([]);
+      setSelectedSectionIds('');
+    }
+  };
+
+  function callApi(api, key) {
+    axiosInstance
+      .get(api)
+      .then((result) => {
+        if (result.status === 200) {
+          if (key === 'gradeList') {
+            setGradeList(result.data.data || []);
+          }
+          if (key === 'section') {
+            setSectionList(result.data.data);
+          }
+        } else {
+          console.log('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
 
   return (
     <Layout>
@@ -644,26 +720,27 @@ export default function TeacherAttendanceVerify() {
             <Typography color='textPrimary'>View Attendence</Typography>
           </Breadcrumbs>
         </Grid>
-        <Grid container spacing={2}>
-          <FormControl className={classes.formControl}>
-            <InputLabel htmlFor='age-native-simple'>Month</InputLabel>
-            <Select
-              native
-              value={month}
-              onChange={handleChanges}
-              inputProps={{
-                name: 'month',
-                id: 'filled-month-native-simple',
-              }}
-            >
-              {months.map((option) => (
-                <option key={option.label} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </Select>
-          </FormControl>
-          {/* </Grid> */}
+        <Grid container spacing={1}>
+          <Grid item xs={12} md={1}>
+            <FormControl className={classes.formControl}>
+              <InputLabel htmlFor='age-native-simple'>Month</InputLabel>
+              <Select
+                native
+                value={month}
+                onChange={handleChanges}
+                inputProps={{
+                  name: 'month',
+                  id: 'filled-month-native-simple',
+                }}
+              >
+                {months.map((option) => (
+                  <option key={option.label} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
           <Grid item xs={12} md={1} className='mobileYear'>
             <InputLabel htmlFor='month-native-simple'>Year</InputLabel>
             <Select native value={year} onChange={handleYear}>
@@ -674,7 +751,6 @@ export default function TeacherAttendanceVerify() {
               ))}
             </Select>
           </Grid>
-
           <Grid item xs={12} md={2}>
             <Autocomplete
               // multiple
@@ -720,11 +796,33 @@ export default function TeacherAttendanceVerify() {
               )}
             />
           </Grid>
-          {/* style={{width:"109px"}} */}
-
-          {/* <Grid item xs={12} md={2} md={1} > */}
-
-          <Grid item md={1} xs={12} style={{ marginRight: 10 }}>
+          <Grid item xs={12} md={2}>
+            <Autocomplete
+              id='combo-box-demo'
+              size='small'
+              options={gradeList}
+              onChange={handleGrade}
+              value={selectedGrade}
+              getOptionLabel={(option) => option?.grade_name}
+              renderInput={(params) => (
+                <TextField {...params} label='Grade' variant='outlined' required />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} md={2}>
+            <Autocomplete
+              id='combo-box-demo'
+              size='small'
+              options={sectionList}
+              onChange={handleSection}
+              value={selectedSection}
+              getOptionLabel={(option) => option?.section__section_name}
+              renderInput={(params) => (
+                <TextField {...params} label='Section' variant='outlined' />
+              )}
+            />
+          </Grid>
+          <Grid item xs={12} md={1} >
             <Button
               onClick={getTeacherData}
               variant='contained'
@@ -733,8 +831,7 @@ export default function TeacherAttendanceVerify() {
               Search
             </Button>
           </Grid>
-
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={1}>
             {/* <exportToCSV data={studentAttendanceData} fileName="attendance" /> */}
             {!disableDownload && (
               <Button
@@ -743,12 +840,12 @@ export default function TeacherAttendanceVerify() {
                 style={{ backgroundColor: '#e65c00' }}
                 onClick={() => exportTo(studentAttendanceData, 'attendance')}
               >
-                Download excel file
+                Download
               </Button>
             )}
           </Grid>
-          <Grid item xs={12} md={2}>
-            {/* <Typography
+          {/* <Grid item xs={12} md={2}> */}
+          {/* <Typography
             className={classes.title}
             style={{
               fontWeight: 'bold',
@@ -759,7 +856,7 @@ export default function TeacherAttendanceVerify() {
             id='tableTitle'
             component='div'
           > */}
-          </Grid>
+          {/* </Grid> */}
         </Grid>
 
         {/* <EnhancedTableToolbar numSelected={selected.length} /> */}
@@ -859,8 +956,8 @@ export default function TeacherAttendanceVerify() {
                                 {item?.attendence_status === 'NA'
                                   ? 'NA'
                                   : item?.attendence_status === 'halfday'
-                                  ? 'HD'
-                                  : item?.attendence_status.substr(0, 1).toUpperCase()}
+                                    ? 'HD'
+                                    : item?.attendence_status.substr(0, 1).toUpperCase()}
                               </TableCell>
                             );
                           })}
