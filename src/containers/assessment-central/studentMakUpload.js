@@ -197,7 +197,8 @@ const StudentMark = () => {
     const [selectedUserData, setSelectedUserData] = useState(history?.location?.state?.studentData)
     const [dummyArr, setDummyArr] = useState(Array.from(Array(history?.location?.state?.studentData?.total_question).keys()))
     const [values, setValues] = useState({ val: [] });
-    const [studentmarks, setStudentMarks] = useState()
+    const [studentmarks, setStudentMarks] = useState();
+    const [nextFlag, setNextFlag] = useState(false);
 
 
     useEffect(() => {
@@ -227,6 +228,11 @@ const StudentMark = () => {
             .then((result) => {
                 console.log(result);
                 setStudentMarks(result?.data?.result)
+                if (result?.data?.result?.total_marks === undefined) {
+                    setNextFlag(true)
+                } else {
+                    setNextFlag(false)
+                }
                 marksArr = [result?.data?.result?.user_response]
                 console.log(marksArr);
                 marksArr.map((ele, i) => sum.push({
@@ -246,71 +252,93 @@ const StudentMark = () => {
 
     const nextUser = () => {
         console.log(values.val);
-        if (values?.val?.length > 0) {
-            studentList.map((ele, i) => {
-                if (ele?.user_id === selectedUser) {
-                    setValues({ val: [] })
-                    console.log(i);
-                    setSelectedUser(history?.location?.state?.student[i + 1]?.user_id)
-                    setSelectedUserData(history?.location?.state?.student[i + 1])
-                    setDummyArr(Array.from(Array(history?.location?.state?.student[i + 1]?.total_question).keys()))
-                    axiosInstance
-                        .get(`${endpoints.assessment.studentMarks}?test_id=${history?.location?.state?.test_id}&user=${history?.location?.state?.student[i + 1]?.user_id}`)
-                        .then((result) => {
-                            console.log(result);
-                            setStudentMarks(result?.data?.result)
-                            marksArr = [result?.data?.result?.user_response]
-                            console.log(marksArr);
-                            marksArr.map((ele, i) => sum.push({
-                                i: ele
-                            }))
-                            if (marksArr[0] !== undefined) {
-                                setValues({ val: sum[0]?.i })
-                            }
-                            console.log(sum);
-                        })
-                        .catch((error) => {
-                            console.log('');
-                        });
-                }
-            })
+        if (nextFlag === false) {
+            if (values?.val?.length > 0) {
+                studentList.map((ele, i) => {
+                    if ( studentList?.length > i+1) {
+                        if (ele?.user_id === selectedUser) {
+                            setValues({ val: [] })
+                            console.log(i);
+                            setSelectedUser(history?.location?.state?.student[i + 1]?.user_id)
+                            setSelectedUserData(history?.location?.state?.student[i + 1])
+                            setDummyArr(Array.from(Array(history?.location?.state?.student[i + 1]?.total_question).keys()))
+                            axiosInstance
+                                .get(`${endpoints.assessment.studentMarks}?test_id=${history?.location?.state?.test_id}&user=${history?.location?.state?.student[i + 1]?.user_id}`)
+                                .then((result) => {
+                                    console.log(result);
+                                    setStudentMarks(result?.data?.result)
+                                    if (result?.data?.result?.total_marks === undefined) {
+                                        setNextFlag(true)
+                                        console.log("true");
+                                    }else {
+                                        setNextFlag(false)
+                                    }
+                                    marksArr = [result?.data?.result?.user_response]
+                                    console.log(marksArr);
+                                    marksArr.map((ele, i) => sum.push({
+                                        i: ele
+                                    }))
+                                    if (marksArr[0] !== undefined) {
+                                        setValues({ val: sum[0]?.i })
+                                    }
+                                    console.log(sum);
+                                })
+                                .catch((error) => {
+                                    console.log('');
+                                });
+                        }
+                    }
+                })
+            } else {
+                setAlert('warning', 'Please Upload Marks First')
+            }
         } else {
             setAlert('warning', 'Please Upload Marks First')
         }
     }
 
     const lastUser = () => {
-        console.log(values.val);
-        if (values?.val?.length > 0) {
-            studentList.map((ele, i) => {
-                if (ele?.user_id === selectedUser) {
-                    if (i >= 0) {
-                        console.log(i);
-                        setSelectedUser(history?.location?.state?.student[i - 1]?.user_id)
-                        setSelectedUserData(history?.location?.state?.student[i - 1])
-                        setDummyArr(Array.from(Array(history?.location?.state?.student[i - 1]?.total_question).keys()))
-                        console.log(history?.location?.state?.student[i - 1]?.total_question);
-                        axiosInstance
-                            .get(`${endpoints.assessment.studentMarks}?test_id=${history?.location?.state?.test_id}&user=${history?.location?.state?.student[i - 1]?.user_id}`)
-                            .then((result) => {
-                                console.log(result);
-                                setStudentMarks(result?.data?.result)
-                                marksArr = [result?.data?.result?.user_response]
-                                console.log(marksArr);
-                                marksArr.map((ele, i) => sum.push({
-                                    i: ele
-                                }))
-                                if (marksArr[0] !== undefined) {
-                                    setValues({ val: sum[0]?.i })
-                                }
-                                console.log(sum);
-                            })
-                            .catch((error) => {
-                                console.log('');
-                            });
+        console.log(studentmarks);
+        if (nextFlag === false) {
+            if (values?.val?.length > 0) {
+                studentList.map((ele, i) => {
+                    if (ele?.user_id === selectedUser) {
+                        if (i > 0) {
+                            console.log(i);
+                            setSelectedUser(history?.location?.state?.student[i - 1]?.user_id)
+                            setSelectedUserData(history?.location?.state?.student[i - 1])
+                            setDummyArr(Array.from(Array(history?.location?.state?.student[i - 1]?.total_question).keys()))
+                            console.log(history?.location?.state?.student[i - 1]?.total_question);
+                            axiosInstance
+                                .get(`${endpoints.assessment.studentMarks}?test_id=${history?.location?.state?.test_id}&user=${history?.location?.state?.student[i - 1]?.user_id}`)
+                                .then((result) => {
+                                    console.log(result);
+                                    setStudentMarks(result?.data?.result)
+                                    if (result?.data?.result?.total_marks === undefined) {
+                                        setNextFlag(true)
+                                        console.log("true");
+                                    }else {
+                                        setNextFlag(false)
+                                    }
+                                    marksArr = [result?.data?.result?.user_response]
+                                    console.log(marksArr);
+                                    marksArr.map((ele, i) => sum.push({
+                                        i: ele
+                                    }))
+                                    if (marksArr[0] !== undefined) {
+                                        setValues({ val: sum[0]?.i })
+                                    }
+                                    console.log(sum);
+                                })
+                                .catch((error) => {
+                                    console.log('');
+                                });
+                        }
                     }
-                }
-            })
+                })
+            } else {
+                setAlert('warning', 'Please Upload Marks First')
+            }
         } else {
             setAlert('warning', 'Please Upload Marks First')
         }
@@ -326,21 +354,23 @@ const StudentMark = () => {
 
 
     const handleBack = () => {
-        // history.push({
-        //     pathname: '/offline-student',
-        //     state: {
-        //         section : history?.location?.state?.selectedSection
-        //     }
-        // })
-        history.goBack()
+        history.goBack({
+            pathname: '/offline-student',
+            state: {
+                section: history?.location?.state?.selectedSection,
+                branch: history?.location?.state?.branch,
+                grade: history?.location?.state?.grade
+            }
+        })
+        // history.goBack()
     }
 
     const handleSave = () => {
         let value = 0;
-        var sum = values.val.reduce((a, v) => a = parseInt(a) + parseInt(v), 0);
-        console.log(selectedUserData)
-        if ( values?.val?.length === history?.location?.state?.studentData?.total_question) {
-            if (selectedUserData?.total_marks > sum) {
+        var sum = values.val.reduce((a, v) => a = parseFloat(a) + parseFloat(v), 0);
+
+        if (values?.val?.length === history?.location?.state?.studentData?.total_question) {
+            if (selectedUserData?.total_marks >= sum && sum >= -(selectedUserData?.total_marks)) {
                 const payload = {
                     test: history?.location?.state?.test_id,
                     submitted_by: selectedUser,
@@ -353,51 +383,56 @@ const StudentMark = () => {
                     .then((result) => {
                         console.log(result);
                         setAlert('success', 'Marks Uploaded')
+                        setNextFlag(false)
                     })
                     .catch((error) => {
                         console.log('');
                     });
-                } else {
-                setAlert('warning', `Marks cannot exceed total marks :- ${selectedUserData?.total_marks} `)
-                }
             } else {
-                setAlert('warning', ' All Fields are required')
+                setAlert('warning', `Marks cannot exceed total marks :- ${selectedUserData?.total_marks} `)
             }
+        } else {
+            setAlert('warning', ' All Fields are required')
         }
+    }
 
-        const handleSkip = () => {
-            studentList.map((ele, i) => {
-                if (ele?.user_id === selectedUser) {
-                    setValues({ val: [] })
-                    console.log(i);
-                    setSelectedUser(history?.location?.state?.student[i + 1]?.user_id)
-                    setSelectedUserData(history?.location?.state?.student[i + 1])
-                    setDummyArr(Array.from(Array(history?.location?.state?.student[i + 1]?.total_question).keys()))
-                    axiosInstance
-                        .get(`${endpoints.assessment.studentMarks}?test_id=${history?.location?.state?.test_id}&user=${history?.location?.state?.student[i + 1]?.user_id}`)
-                        .then((result) => {
-                            console.log(result);
-                            setStudentMarks(result?.data?.result)
-                            marksArr = [result?.data?.result?.user_response]
-                            console.log(marksArr);
-                            marksArr.map((ele, i) => sum.push({
-                                i: ele
-                            }))
-                            if (marksArr[0] !== undefined) {
-                                setValues({ val: sum[0]?.i })
-                            }
-                            console.log(sum);
-                        })
-                        .catch((error) => {
-                            console.log('');
-                        });
-                }
-            })
-        }
+    const handleSkip = () => {
+        studentList.map((ele, i) => {
+            if (ele?.user_id === selectedUser) {
+                setValues({ val: [] })
+                console.log(i);
+                setSelectedUser(history?.location?.state?.student[i + 1]?.user_id)
+                setSelectedUserData(history?.location?.state?.student[i + 1])
+                setDummyArr(Array.from(Array(history?.location?.state?.student[i + 1]?.total_question).keys()))
+                axiosInstance
+                    .get(`${endpoints.assessment.studentMarks}?test_id=${history?.location?.state?.test_id}&user=${history?.location?.state?.student[i + 1]?.user_id}`)
+                    .then((result) => {
+                        console.log(result);
+                        setStudentMarks(result?.data?.result)
+                        if (result?.data?.result?.total_marks === undefined) {
+                            setNextFlag(true)
+                        }else {
+                            setNextFlag(false)
+                        }
+                        marksArr = [result?.data?.result?.user_response]
+                        console.log(marksArr);
+                        marksArr.map((ele, i) => sum.push({
+                            i: ele
+                        }))
+                        if (marksArr[0] !== undefined) {
+                            setValues({ val: sum[0]?.i })
+                        }
+                        console.log(sum);
+                    })
+                    .catch((error) => {
+                        console.log('');
+                    });
+            }
+        })
+    }
 
-        const handleStudent = (e, val) => {
-            console.log(val);
-            console.log(values.val);
+    const handleStudent = (e, val) => {
+        if (nextFlag === false) {
             if (values?.val[0] !== undefined) {
                 setValues({ val: [] })
                 setSelectedUser(val?.user_id)
@@ -408,6 +443,11 @@ const StudentMark = () => {
                     .then((result) => {
                         console.log(result);
                         setStudentMarks(result?.data?.result)
+                        if (result?.data?.result?.total_marks === undefined) {
+                            setNextFlag(true)
+                        }else {
+                            setNextFlag(false)
+                        }
                         marksArr = [result?.data?.result?.user_response]
                         console.log(marksArr);
                         marksArr.map((ele, i) => sum.push({
@@ -424,95 +464,98 @@ const StudentMark = () => {
             } else {
                 setAlert('warning', 'Please Upload Marks First')
             }
+        } else {
+            setAlert('warning', 'Please Upload Marks First')
         }
+    }
 
-        return (
-            <Layout className='accessBlockerContainer'>
-                <div className={classes.parentDiv}>
-                    <CommonBreadcrumbs
-                        componentName='Assessment'
-                        childComponentName='Offline Marks Upload'
-                        isAcademicYearVisible={true}
-                    />
+    return (
+        <Layout className='accessBlockerContainer'>
+            <div className={classes.parentDiv}>
+                <CommonBreadcrumbs
+                    componentName='Assessment'
+                    childComponentName='Offline Marks Upload'
+                    isAcademicYearVisible={true}
+                />
 
-                    <div className="listcontainer">
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '95%', margin: '0 auto' }} >
-                            <div className='filterStudent' style={{ width: '55%' }} >
-                                <div>
-                                    <StyledButton onClick={lastUser} startIcon={<NavigateBeforeIcon style={{ fontSize: '30px' }} />} style={{ fontWeight: '600' }} >Previous Student</StyledButton>
-                                </div>
-                                <div style={{ margin: '0 20px', width: '50%' }}>
-                                    <Autocomplete
-                                        style={{ width: '100%' }}
-                                        size='small'
-                                        onChange={handleStudent}
-                                        id='branch_id'
-                                        className='dropdownIcon'
-                                        value={selectedUserData || []}
-                                        options={studentList || []}
-                                        getOptionLabel={(option) => option?.name || ''}
-                                        renderInput={(params) => (
-                                            <TextField
-                                                {...params}
-                                                variant='outlined'
-                                                label='Students'
-                                                placeholder='Students'
-                                            />
-                                        )}
-                                    />
-                                </div>
-
-                                <div>
-                                    <StyledClearButton onClick={handleBack} style={{ fontWeight: '600' }} >All Students</StyledClearButton>
-                                </div>
-
+                <div className="listcontainer">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '95%', margin: '0 auto' }} >
+                        <div className='filterStudent' style={{ width: '55%' }} >
+                            <div>
+                                <StyledButton onClick={lastUser} startIcon={<NavigateBeforeIcon style={{ fontSize: '30px' }} />} style={{ fontWeight: '600' }} >Previous Student</StyledButton>
                             </div>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', width: '40%' }}>
-                                <div style={{ width: '30%' }}>
-                                    <StyledButton onClick={handleSave} style={{ fontWeight: '600', width: '100%' }} >Save</StyledButton>
-                                </div>
-                                <div style={{ width: '30%' }}>
-                                    <StyledClearButton onClick={handleSkip} style={{ fontWeight: '600', width: '100%', margin: '0' }} >Skip</StyledClearButton>
-                                </div>
-                                {/* <div>
+                            <div style={{ margin: '0 20px', width: '50%' }}>
+                                <Autocomplete
+                                    style={{ width: '100%' }}
+                                    size='small'
+                                    onChange={handleStudent}
+                                    id='branch_id'
+                                    className='dropdownIcon'
+                                    value={selectedUserData || []}
+                                    options={studentList || []}
+                                    getOptionLabel={(option) => option?.name || ''}
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            variant='outlined'
+                                            label='Students'
+                                            placeholder='Students'
+                                        />
+                                    )}
+                                />
+                            </div>
+
+                            <div>
+                                <StyledClearButton onClick={handleBack} style={{ fontWeight: '600' }} >All Students</StyledClearButton>
+                            </div>
+
+                        </div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '40%' }}>
+                            <div style={{ width: '30%' }}>
+                                <StyledButton onClick={handleSave} style={{ fontWeight: '600', width: '100%' }} >Save</StyledButton>
+                            </div>
+                            <div style={{ width: '30%' }}>
+                                <StyledClearButton onClick={handleSkip} style={{ fontWeight: '600', width: '100%', margin: '0' }} >Skip</StyledClearButton>
+                            </div>
+                            {/* <div>
                                 <StyledButton onClick={lastUser} startIcon={<NavigateBeforeIcon style={{ fontSize: '30px' }} />} style={{ fontWeight: '600' }} />
                             </div> */}
-                                <div>
-                                    <StyledButton onClick={nextUser} endIcon={<NavigateNextIcon style={{ fontSize: '30px' }} />} style={{ fontWeight: '600' }} >Next Student</StyledButton>
-                                </div>
+                            <div>
+                                <StyledButton onClick={nextUser} endIcon={<NavigateNextIcon style={{ fontSize: '30px' }} />} style={{ fontWeight: '600' }} >Next Student</StyledButton>
                             </div>
                         </div>
+                    </div>
 
-                        <Paper className={`${classes.root} common-table`} id='singleStudent'>
-                            <TableContainer
-                                className={`table table-shadow view_users_table ${classes.container}`}
-                            >
-                                <Table stickyHeader aria-label='sticky table'>
-                                    <TableHead className={`${classes.columnHeader} table-header-row`}>
-                                        <TableRow>
-                                            <TableCell className={classes.tableCell}>Number</TableCell>
-                                            {/* <TableCell className={classes.tableCell}>Question</TableCell> */}
-                                            <TableCell className={classes.tableCell}>Marks</TableCell>
-                                            {/* <TableCell className={classes.tableCell}>Edit</TableCell> */}
+                    <Paper className={`${classes.root} common-table`} id='singleStudent'>
+                        <TableContainer
+                            className={`table table-shadow view_users_table ${classes.container}`}
+                        >
+                            <Table stickyHeader aria-label='sticky table'>
+                                <TableHead className={`${classes.columnHeader} table-header-row`}>
+                                    <TableRow>
+                                        <TableCell className={classes.tableCell}>Number</TableCell>
+                                        {/* <TableCell className={classes.tableCell}>Question</TableCell> */}
+                                        <TableCell className={classes.tableCell}>Marks</TableCell>
+                                        {/* <TableCell className={classes.tableCell}>Edit</TableCell> */}
+                                    </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                    {dummyArr.map((items, i) => (
+                                        <TableRow key={items.id}>
+                                            <TableCell className={classes.tableCell}>
+                                                Question - {i + 1}
+                                            </TableCell>
+                                            {/* <TableCell className={classes.tableCell}>{items?.erp_user?.name}</TableCell> */}
+                                            <TableCell className={classes.tableCell} id="blockArea" >
+                                                <TextField required variant='outlined' value={values?.val?.length > 0 ? values?.val[i] : ''} placeholder='Enter Mark' type='number' onChange={(e) => handleMarksEnter(e, i)} />
+                                            </TableCell>
+
                                         </TableRow>
-                                    </TableHead>
-                                    <TableBody>
-                                        {dummyArr.map((items, i) => (
-                                            <TableRow key={items.id}>
-                                                <TableCell className={classes.tableCell}>
-                                                    Question - {i + 1}
-                                                </TableCell>
-                                                {/* <TableCell className={classes.tableCell}>{items?.erp_user?.name}</TableCell> */}
-                                                <TableCell className={classes.tableCell} id="blockArea" >
-                                                    <TextField required variant='outlined' value={values?.val?.length > 0 ? values?.val[i] : ''} placeholder='Enter Mark' type='number' onChange={(e) => handleMarksEnter(e, i)} />
-                                                </TableCell>
-
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </TableContainer>
-                            {/* <TablePagination
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                        {/* <TablePagination
                             component='div'
                             count={totalCount}
                             rowsPerPage={limit}
@@ -527,11 +570,11 @@ const StudentMark = () => {
                                 toolbar: classes.tablePaginationToolbar,
                             }}
                         /> */}
-                        </Paper>
-                    </div>
+                    </Paper>
                 </div>
-            </Layout>
-        );
-    };
+            </div>
+        </Layout>
+    );
+};
 
-    export default StudentMark;
+export default StudentMark;

@@ -340,7 +340,10 @@ const OfflineStudentAssessment = () => {
                 user: data?.user_id,
                 student: studentList,
                 studentData: data,
-                selectedSection : selectedSection
+                selectedSection : selectedSection,
+                branch : history?.location?.state?.data?.branch,
+                gradeList : history?.location?.state?.data?.grade,
+                grade: history?.location?.state?.data?.grade,
             }
         })
     }
