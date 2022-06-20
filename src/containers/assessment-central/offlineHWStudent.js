@@ -249,7 +249,7 @@ const OfflineStudentAssessment = () => {
         }
     };
 
-    
+
 
 
 
@@ -284,21 +284,23 @@ const OfflineStudentAssessment = () => {
     }
     useEffect(() => {
         handleGrade(history?.location?.state?.data?.grade)
-    }, [selectedBranch])
+    }, [selectedBranch , moduleId])
 
     const handleGrade = (value) => {
-        console.log(value);
-        let selectedId = [];
-        if (value?.id) {
-            axiosInstance
-                .get(`erp_user/sectionmapping/?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${value.grade_id}&module_id=${moduleId}`)
-                .then((result) => {
-                    setSectionList(result?.data?.data);
-                    console.log(result?.data?.data);
-                })
-                .catch((error) => {
-                    console.log('');
-                });
+        if (moduleId) {
+            console.log(value);
+            let selectedId = [];
+            if (value?.id) {
+                axiosInstance
+                    .get(`erp_user/sectionmapping/?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.branch?.id}&grade_id=${value.grade_id}&module_id=${moduleId}`)
+                    .then((result) => {
+                        setSectionList(result?.data?.data);
+                        console.log(result?.data?.data);
+                    })
+                    .catch((error) => {
+                        console.log('');
+                    });
+            }
         }
     }
 
@@ -319,7 +321,7 @@ const OfflineStudentAssessment = () => {
         console.log(history?.location?.state?.test, 'test');
         console.log(selectedGrade);
         axiosInstance
-            .get(`${endpoints.assessment.offlineAssesment}?acad_session=${selectedBranch?.id}&grade=${selectedGrade?.grade_id}&subject_id=${history?.location?.state?.data?.subject[0].subject_id}&test_id=${history?.location?.state?.test?.id}&section_mapping_id=${selectedSection?.section_id}`)
+            .get(`${endpoints.assessment.offlineAssesment}?acad_session=${selectedBranch?.id}&grade=${selectedGrade?.grade_id}&subject_id=${history?.location?.state?.data?.subject[0].subject_id}&test_id=${history?.location?.state?.test?.id}&section_mapping_id=${selectedSection?.id}`)
             .then((result) => {
                 console.log(result);
                 setStudentList(result?.data?.result)
@@ -336,11 +338,26 @@ const OfflineStudentAssessment = () => {
             state: {
                 test_id: history?.location?.state?.test?.id,
                 user: data?.user_id,
-                student : studentList,
-                studentData : data,
+                student: studentList,
+                studentData: data,
+                selectedSection : selectedSection
             }
         })
     }
+
+    // useEffect(() => {
+    //     if(history?.location?.state?.section?.id){
+    //         axiosInstance
+    //         .get(`${endpoints.assessment.offlineAssesment}?acad_session=${selectedBranch?.id}&grade=${selectedGrade?.grade_id}&subject_id=${history?.location?.state?.data?.subject[0].subject_id}&test_id=${history?.location?.state?.test?.id}&section_mapping_id=${history?.location?.state?.section?.id}`)
+    //         .then((result) => {
+    //             console.log(result);
+    //             setStudentList(result?.data?.result)
+    //         })
+    //         .catch((error) => {
+    //             console.log('');
+    //         });
+    //     }
+    // },[])
 
 
 
@@ -442,7 +459,7 @@ const OfflineStudentAssessment = () => {
                             <StyledClearButton onClick={handleClearAllList} style={{ fontWeight: '600' }} >Clear All</StyledClearButton>
                         </Grid>
                         <Grid sm={2} xs={6}>
-                            <StyledButton style={{width: '50%'}} onClick={offlineMarks} >Filter</StyledButton>
+                            <StyledButton style={{ width: '50%' }} onClick={offlineMarks} >Filter</StyledButton>
                         </Grid>
                     </div>
                     <Paper className={`${classes.root} common-table`} id='singleStudent'>
@@ -462,67 +479,67 @@ const OfflineStudentAssessment = () => {
                                 />
                             </FormControl> */}
                         </div>
-                        { studentList?.length > 0 ? 
-                        <TableContainer
-                            className={`table table-shadow view_users_table ${classes.container}`}
-                        >
-                            <Table stickyHeader aria-label='sticky table'>
-                                <TableHead className={`${classes.columnHeader} table-header-row`}>
-                                    <TableRow>
-                                        <TableCell className={classes.tableCell}>Serial No.</TableCell>
-                                        <TableCell className={classes.tableCell}>ERP Id</TableCell>
-                                        <TableCell className={classes.tableCell}>Name</TableCell>
-                                        <TableCell className={classes.tableCell}>Total Marks</TableCell>
-                                        <TableCell className={classes.tableCell}>Action</TableCell>
-                                        {/* <TableCell className={classes.tableCell}>Edit</TableCell> */}
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                    {studentList.map((items, i) => (
-                                        <TableRow key={items.id}>
-                                            <TableCell className={classes.tableCell}>
-                                                {i + 1}
-                                            </TableCell>
-                                            <TableCell className={classes.tableCell}>{items?.erp_id}</TableCell>
-                                            <TableCell className={classes.tableCell} id="blockArea" >
-                                                {items?.name}
-                                            </TableCell>
-                                            <TableCell className={classes.tableCell} id="blockArea" >
-                                                {items?.test_details?.total_marks ? items?.test_details?.total_marks : 
-                                                <StyledButton onClick={() => uploadMarks(items)}  startIcon={<EditIcon style={{ fontSize: '30px' }} />} >Upload Marks</StyledButton>
-                                                }
-                                            </TableCell>
-                                            <TableCell className={classes.tableCell}>
-                                                <StyledButton onClick={() => uploadMarks(items)}  startIcon={<EditIcon style={{ fontSize: '30px' }} />} >Edit Marks</StyledButton>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                        : 
-                        <div
-                            style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              justifyContent: 'center',
-                              alignItems: 'center',
-                              height: '100%',
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'center',
-                              }}
+                        {studentList?.length > 0 ?
+                            <TableContainer
+                                className={`table table-shadow view_users_table ${classes.container}`}
                             >
-                              <img src={unfiltered} alt='placeholder' />
-                              <p className='select-filter-text'>
-                                Please select the filter to display reports
-                              </p>
-                            </div>
-                          </div> }
+                                <Table stickyHeader aria-label='sticky table'>
+                                    <TableHead className={`${classes.columnHeader} table-header-row`}>
+                                        <TableRow>
+                                            <TableCell className={classes.tableCell}>Serial No.</TableCell>
+                                            <TableCell className={classes.tableCell}>ERP Id</TableCell>
+                                            <TableCell className={classes.tableCell}>Name</TableCell>
+                                            <TableCell className={classes.tableCell}>Total Marks</TableCell>
+                                            <TableCell className={classes.tableCell}>Action</TableCell>
+                                            {/* <TableCell className={classes.tableCell}>Edit</TableCell> */}
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        {studentList.map((items, i) => (
+                                            <TableRow key={items.id}>
+                                                <TableCell className={classes.tableCell}>
+                                                    {i + 1}
+                                                </TableCell>
+                                                <TableCell className={classes.tableCell}>{items?.erp_id}</TableCell>
+                                                <TableCell className={classes.tableCell} id="blockArea" >
+                                                    {items?.name}
+                                                </TableCell>
+                                                <TableCell className={classes.tableCell} id="blockArea" >
+                                                    {items?.test_details?.total_marks ? items?.test_details?.total_marks :
+                                                        <StyledButton onClick={() => uploadMarks(items)} startIcon={<EditIcon style={{ fontSize: '30px' }} />} >Upload Marks</StyledButton>
+                                                    }
+                                                </TableCell>
+                                                <TableCell className={classes.tableCell}>
+                                                    <StyledButton onClick={() => uploadMarks(items)} startIcon={<EditIcon style={{ fontSize: '30px' }} />} >Edit Marks</StyledButton>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                            :
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    height: '100%',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        flexDirection: 'column',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <img src={unfiltered} alt='placeholder' />
+                                    <p className='select-filter-text'>
+                                        Please select the filter to display reports
+                                    </p>
+                                </div>
+                            </div>}
                         {/* <TablePagination
                             component='div'
                             count={totalCount}
