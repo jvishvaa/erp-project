@@ -217,7 +217,6 @@ const StudentMark = () => {
                 }
             });
         }
-        console.log(history?.location?.state?.studentData);
     }, []);
     let marksArr = [];
     let sum = [];
@@ -228,8 +227,10 @@ const StudentMark = () => {
             .then((result) => {
                 console.log(result);
                 setStudentMarks(result?.data?.result)
-                if (result?.data?.result?.total_marks === undefined) {
+                if (result?.data?.result?.total_mark === undefined) {
+                    console.log(result?.data?.result?.total_mark);
                     setNextFlag(true)
+                    console.log("true");
                 } else {
                     setNextFlag(false)
                 }
@@ -251,11 +252,11 @@ const StudentMark = () => {
     }, [history])
 
     const nextUser = () => {
-        console.log(values.val);
+        console.log(nextFlag);
         if (nextFlag === false) {
             if (values?.val?.length > 0) {
                 studentList.map((ele, i) => {
-                    if ( studentList?.length > i+1) {
+                    if (studentList?.length > i + 1) {
                         if (ele?.user_id === selectedUser) {
                             setValues({ val: [] })
                             console.log(i);
@@ -267,10 +268,10 @@ const StudentMark = () => {
                                 .then((result) => {
                                     console.log(result);
                                     setStudentMarks(result?.data?.result)
-                                    if (result?.data?.result?.total_marks === undefined) {
+                                    if (result?.data?.result?.total_mark === undefined) {
                                         setNextFlag(true)
                                         console.log("true");
-                                    }else {
+                                    } else {
                                         setNextFlag(false)
                                     }
                                     marksArr = [result?.data?.result?.user_response]
@@ -314,10 +315,10 @@ const StudentMark = () => {
                                 .then((result) => {
                                     console.log(result);
                                     setStudentMarks(result?.data?.result)
-                                    if (result?.data?.result?.total_marks === undefined) {
+                                    if (result?.data?.result?.total_mark === undefined) {
                                         setNextFlag(true)
                                         console.log("true");
-                                    }else {
+                                    } else {
                                         setNextFlag(false)
                                     }
                                     marksArr = [result?.data?.result?.user_response]
@@ -354,15 +355,7 @@ const StudentMark = () => {
 
 
     const handleBack = () => {
-        history.goBack({
-            pathname: '/offline-student',
-            state: {
-                section: history?.location?.state?.selectedSection,
-                branch: history?.location?.state?.branch,
-                grade: history?.location?.state?.grade
-            }
-        })
-        // history.goBack()
+        history.goBack()
     }
 
     const handleSave = () => {
@@ -375,7 +368,7 @@ const StudentMark = () => {
                     test: history?.location?.state?.test_id,
                     submitted_by: selectedUser,
                     user_response: values.val,
-                    total_mark: sum
+                    total_mark: parseFloat(sum)
                 }
                 console.log(payload);
                 axiosInstance
@@ -395,38 +388,39 @@ const StudentMark = () => {
             setAlert('warning', ' All Fields are required')
         }
     }
-
     const handleSkip = () => {
         studentList.map((ele, i) => {
-            if (ele?.user_id === selectedUser) {
-                setValues({ val: [] })
-                console.log(i);
-                setSelectedUser(history?.location?.state?.student[i + 1]?.user_id)
-                setSelectedUserData(history?.location?.state?.student[i + 1])
-                setDummyArr(Array.from(Array(history?.location?.state?.student[i + 1]?.total_question).keys()))
-                axiosInstance
-                    .get(`${endpoints.assessment.studentMarks}?test_id=${history?.location?.state?.test_id}&user=${history?.location?.state?.student[i + 1]?.user_id}`)
-                    .then((result) => {
-                        console.log(result);
-                        setStudentMarks(result?.data?.result)
-                        if (result?.data?.result?.total_marks === undefined) {
-                            setNextFlag(true)
-                        }else {
-                            setNextFlag(false)
-                        }
-                        marksArr = [result?.data?.result?.user_response]
-                        console.log(marksArr);
-                        marksArr.map((ele, i) => sum.push({
-                            i: ele
-                        }))
-                        if (marksArr[0] !== undefined) {
-                            setValues({ val: sum[0]?.i })
-                        }
-                        console.log(sum);
-                    })
-                    .catch((error) => {
-                        console.log('');
-                    });
+            if (studentList?.length > i + 1) {
+                if (ele?.user_id === selectedUser) {
+                    setValues({ val: [] })
+                    console.log(i);
+                    setSelectedUser(history?.location?.state?.student[i + 1]?.user_id)
+                    setSelectedUserData(history?.location?.state?.student[i + 1])
+                    setDummyArr(Array.from(Array(history?.location?.state?.student[i + 1]?.total_question).keys()))
+                    axiosInstance
+                        .get(`${endpoints.assessment.studentMarks}?test_id=${history?.location?.state?.test_id}&user=${history?.location?.state?.student[i + 1]?.user_id}`)
+                        .then((result) => {
+                            console.log(result);
+                            setStudentMarks(result?.data?.result)
+                            if (result?.data?.result?.total_mark === undefined) {
+                                setNextFlag(true)
+                            } else {
+                                setNextFlag(false)
+                            }
+                            marksArr = [result?.data?.result?.user_response]
+                            console.log(marksArr);
+                            marksArr.map((ele, i) => sum.push({
+                                i: ele
+                            }))
+                            if (marksArr[0] !== undefined) {
+                                setValues({ val: sum[0]?.i })
+                            }
+                            console.log(sum);
+                        })
+                        .catch((error) => {
+                            console.log('');
+                        });
+                }
             }
         })
     }
@@ -443,9 +437,9 @@ const StudentMark = () => {
                     .then((result) => {
                         console.log(result);
                         setStudentMarks(result?.data?.result)
-                        if (result?.data?.result?.total_marks === undefined) {
+                        if (result?.data?.result?.total_mark === undefined) {
                             setNextFlag(true)
-                        }else {
+                        } else {
                             setNextFlag(false)
                         }
                         marksArr = [result?.data?.result?.user_response]

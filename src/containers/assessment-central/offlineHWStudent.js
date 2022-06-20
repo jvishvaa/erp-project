@@ -195,6 +195,7 @@ const OfflineStudentAssessment = () => {
     const [bulkUpload, setBulkUpload] = useState(true);
     const [isLesson, setIsLesson] = useState('');
     const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+    const filterData = JSON.parse(sessionStorage.getItem('filterData')) || {};
     const [isNewSeach, setIsNewSearch] = useState(false);
     const [searchText, setSearchText] = useState('');
     const [limit, setLimit] = useState('10');
@@ -221,7 +222,7 @@ const OfflineStudentAssessment = () => {
                 }
             });
         }
-        console.log(history?.location?.state?.data);
+        console.log(filterData);
     }, []);
 
     useEffect(() => {
@@ -320,6 +321,15 @@ const OfflineStudentAssessment = () => {
     const offlineMarks = () => {
         console.log(history?.location?.state?.test, 'test');
         console.log(selectedGrade);
+        const payload = {
+            branchId : selectedBranch?.id,
+            gradeId: selectedGrade?.grade_id,
+            subjId: history?.location?.state?.data?.subject[0].subject_id,
+            testId: history?.location?.state?.test?.id,
+            sectionId: selectedSection?.id,
+            selectedSection : selectedSection
+        }
+        sessionStorage.setItem('filterData',JSON.stringify(payload))
         axiosInstance
             .get(`${endpoints.assessment.offlineAssesment}?acad_session=${selectedBranch?.id}&grade=${selectedGrade?.grade_id}&subject_id=${history?.location?.state?.data?.subject[0].subject_id}&test_id=${history?.location?.state?.test?.id}&section_mapping_id=${selectedSection?.id}`)
             .then((result) => {
@@ -344,27 +354,25 @@ const OfflineStudentAssessment = () => {
                 branch : history?.location?.state?.data?.branch,
                 gradeList : history?.location?.state?.data?.grade,
                 grade: history?.location?.state?.data?.grade,
+                subject_id : history?.location?.state?.data?.subject[0].subject_id,
             }
         })
     }
 
-    // useEffect(() => {
-    //     if(history?.location?.state?.section?.id){
-    //         axiosInstance
-    //         .get(`${endpoints.assessment.offlineAssesment}?acad_session=${selectedBranch?.id}&grade=${selectedGrade?.grade_id}&subject_id=${history?.location?.state?.data?.subject[0].subject_id}&test_id=${history?.location?.state?.test?.id}&section_mapping_id=${history?.location?.state?.section?.id}`)
-    //         .then((result) => {
-    //             console.log(result);
-    //             setStudentList(result?.data?.result)
-    //         })
-    //         .catch((error) => {
-    //             console.log('');
-    //         });
-    //     }
-    // },[])
-
-
-
-
+    useEffect(() => {
+        if(filterData?.subjId){
+            setSelectedSection(filterData?.selectedSection)
+            axiosInstance
+            .get(`${endpoints.assessment.offlineAssesment}?acad_session=${filterData?.branchId}&grade=${filterData?.gradeId}&subject_id=${filterData?.subjId}&test_id=${filterData?.testId}&section_mapping_id=${filterData?.sectionId}`)
+            .then((result) => {
+                console.log(result);
+                setStudentList(result?.data?.result)
+            })
+            .catch((error) => {
+                console.log('');
+            });
+        }
+    } , [])
 
 
     return (
@@ -508,12 +516,14 @@ const OfflineStudentAssessment = () => {
                                                     {items?.name}
                                                 </TableCell>
                                                 <TableCell className={classes.tableCell} id="blockArea" >
-                                                    {items?.test_details?.total_marks ? items?.test_details?.total_marks :
+                                                    {items?.test_details?.total_marks != null ? items?.test_details?.total_marks :
                                                         <StyledButton onClick={() => uploadMarks(items)} startIcon={<EditIcon style={{ fontSize: '30px' }} />} >Upload Marks</StyledButton>
                                                     }
                                                 </TableCell>
                                                 <TableCell className={classes.tableCell}>
+                                                    {items?.test_details?.total_marks != null ? 
                                                     <StyledButton onClick={() => uploadMarks(items)} startIcon={<EditIcon style={{ fontSize: '30px' }} />} >Edit Marks</StyledButton>
+                                                    : ''}
                                                 </TableCell>
                                             </TableRow>
                                         ))}
