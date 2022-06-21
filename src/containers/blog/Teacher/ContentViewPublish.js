@@ -31,6 +31,8 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { AttachmentPreviewerContext } from '../../../components/attachment-previewer/attachment-previewer-contexts';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 
 const styles = (theme) => ({
   root: {
@@ -69,25 +71,26 @@ const styles = (theme) => ({
   },
 });
 
+let openPreview = '';
 
-const publishLevelChoiceBranch=[ 
-//   { label: 'Branch', value: '2' },
+const publishLevelChoiceBranch = [
+  //   { label: 'Branch', value: '2' },
   { label: 'Grade', value: '3' },
   { label: 'Section', value: '4' }
 
-  ] 
-  const publishLevelChoiceGrade=[ 
-      { label: 'Branch', value: '2' },
-    //   { label: 'Grade', value: '3' },
-      { label: 'Section', value: '4' }
-    
-      ] 
-      const publishLevelChoiceSection=[ 
-          { label: 'Branch', value: '2' },
-          { label: 'Grade', value: '3' },
-        //   { label: 'Section', value: '4' }
-        
-          ] 
+]
+const publishLevelChoiceGrade = [
+  { label: 'Branch', value: '2' },
+  //   { label: 'Grade', value: '3' },
+  { label: 'Section', value: '4' }
+
+]
+const publishLevelChoiceSection = [
+  { label: 'Branch', value: '2' },
+  { label: 'Grade', value: '3' },
+  //   { label: 'Section', value: '4' }
+
+]
 class ContentViewPublish extends Component {
   constructor(props) {
     super(props);
@@ -95,72 +98,74 @@ class ContentViewPublish extends Component {
       relatedBlog: true,
       starsRating: 0,
       feedBack: false,
-      isPublish:false,
+      isPublish: false,
       data: this.props.location.state.data && this.props.location.state.data,
-      tabValue :this.props.location.state.tabValue && this.props.location.state.tabValue,
-      feedbackrevisionReq:'',
+      tabValue: this.props.location.state.tabValue && this.props.location.state.tabValue,
+      feedbackrevisionReq: '',
       roleDetails: JSON.parse(localStorage.getItem('userDetails')),
 
       blogId: this.props.location.state.data && this.props.location.state.data.id,
-      likeStatus:false,
+      likeStatus: false,
       currentLikes: 0,
-      loading:false,
+      loading: false,
       likes: this.props.location.state.data && this.props.location.state.data.likes,
-      loginUserName : JSON.parse(localStorage.getItem('userDetails')).erp_user_id
+      loginUserName: JSON.parse(localStorage.getItem('userDetails')).erp_user_id
 
     };
 
   }
-  static contextType = AlertNotificationContext
+  // static contextType = AlertNotificationContext;
+  static contextType = AttachmentPreviewerContext;
 
-  
+
   componentDidMount() {
-    let {blogId} = this.state
-    this.handleView(blogId)
+    let { blogId } = this.state;
+    this.handleView(blogId);
+    openPreview = this.context.openPreview;
   }
 
 
   handleView = (blogId) => {
     let requestData = {
-      "blog_id": blogId ,
+      "blog_id": blogId,
     }
-  axios.post(`${endpoints.blog.BlogView}`, requestData)
-  .then(result=>{
-  if (result.data.status_code === 200) {
-  } else {        
+    axios.post(`${endpoints.blog.BlogView}`, requestData)
+      .then(result => {
+        if (result.data.status_code === 200) {
+        } else {
+        }
+      }).catch((error) => {
+      })
   }
-  }).catch((error)=>{
-  })
-}
 
 
 
-handelUnpublish = (blogId) => {
-  let requestData = {
-    "blog_id": blogId ,
-    "status": "6"
-  }
-axios.put(`${endpoints.blog.Blog}`, requestData)
+  handelUnpublish = (blogId) => {
+    let requestData = {
+      "blog_id": blogId,
+      "status": "6"
+    }
+    axios.put(`${endpoints.blog.Blog}`, requestData)
 
-.then(result=>{
-if (result.data.status_code === 200) {
-  this.setState({loading:false})
-  this.context.setAlert('success',"unpublished successfully")
-  this.props.history.push({
-    pathname: '/blog/teacher',
-  });
+      .then(result => {
+        if (result.data.status_code === 200) {
+          this.setState({ loading: false })
+          // this.context.setAlert('success',"unpublished successfully")
+          this.props.history.push({
+            pathname: '/blog/teacher',
+          });
 
-} else {        
-  this.setState({loading:false})
-}
-}).catch((error)=>{
-  this.setState({loading:false})
-})
+        } else {
+          this.setState({ loading: false })
+        }
+      }).catch((error) => {
+        this.setState({ loading: false })
+      })
   }
 
   submitRevisionFeedback = () => {
 
-    const {  data, feedbackrevisionReq } = this.state;
+    const { data, feedbackrevisionReq } = this.state;
     const formData = new FormData();
     formData.set('blog_id', data.id);
     formData.set('status', 5);
@@ -170,7 +175,7 @@ if (result.data.status_code === 200) {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
-          this.context.setAlert('success',"success")
+          // this.context.setAlert('success', 'success');
 
           this.props.history.push({
             pathname: '/blog/teacher',
@@ -183,25 +188,25 @@ if (result.data.status_code === 200) {
       });
   };
   handleReivisionNameChange = (e) => {
-    this.setState({feedbackrevisionReq:e.target.value})
+    this.setState({ feedbackrevisionReq: e.target.value })
   };
   submitPublish = () => {
 
-  const {  data, publishedLevel ,roleDetails} = this.state;
-  const formData = new FormData();
-  formData.set('blog_id', data.id);
-  formData.set('status', 4);
-  formData.set('published_level', publishedLevel);
-  if(publishedLevel === '2'){
-    let branchId = roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
-    formData.set('branch_id', branchId);
-    
+    const { data, publishedLevel, roleDetails } = this.state;
+    const formData = new FormData();
+    formData.set('blog_id', data.id);
+    formData.set('status', 4);
+    formData.set('published_level', publishedLevel);
+    if (publishedLevel === '2') {
+      let branchId = roleDetails && roleDetails.role_details.branch && roleDetails.role_details.branch[0]
+      formData.set('branch_id', branchId);
+
     }
     axios
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
-          this.context.setAlert('success',"success")
+          // this.context.setAlert('success', 'success');
 
           this.props.history.push({
             pathname: '/blog/teacher/publish/view',
@@ -215,63 +220,63 @@ if (result.data.status_code === 200) {
   };
 
   getLikeStatus = (isLiked) => {
-    let { likeStatus,likes }=this.state
+    let { likeStatus, likes } = this.state
     if (isLiked === true && likeStatus === false) {
-      this.setState({currentLikes :likes-1,likeStatus:true})
+      this.setState({ currentLikes: likes - 1, likeStatus: true })
     } else if (isLiked === true && likeStatus === true) {
-      this.setState({currentLikes :likes+1,likeStatus:false})
-  
+      this.setState({ currentLikes: likes + 1, likeStatus: false })
+
     } else if (isLiked === false && likeStatus === false) {
-      this.setState({currentLikes :likes+1,likeStatus:true})
-  
+      this.setState({ currentLikes: likes + 1, likeStatus: true })
+
     } else if (isLiked === false && likeStatus === true) {
-      this.setState({currentLikes :likes,likeStatus:false})
-  
+      this.setState({ currentLikes: likes, likeStatus: false })
+
     }
   }
 
 
-  handleLike = (isLiked,blogId) => {
+  handleLike = (isLiked, blogId) => {
     this.getLikeStatus(isLiked)
     let requestData = {
-      "blog_id": blogId ,
-  
+      "blog_id": blogId,
+
     }
-  axios.post(`${endpoints.blog.BlogLike}`, requestData)
-  
-  .then(result=>{
-  if (result.data.status_code === 200) {
-    this.setState({loading:false})
-    // setAlert('success', result.data.message);
-  } else {        
-    this.setState({loading:false})
-    // setAlert('error', result.data.message);
+    axios.post(`${endpoints.blog.BlogLike}`, requestData)
+
+      .then(result => {
+        if (result.data.status_code === 200) {
+          this.setState({ loading: false })
+          // setAlert('success', result.data.message);
+        } else {
+          this.setState({ loading: false })
+          // setAlert('error', result.data.message);
+        }
+      }).catch((error) => {
+        this.setState({ loading: false })
+        // setAlert('error', error.message);
+      })
   }
-  }).catch((error)=>{
-    this.setState({loading:false})
-    // setAlert('error', error.message);
-  })
-    }
-    
+
   handlePublishLevelType = (event, value) => {
-    if (value && value.value){
-      this.setState({publishedLevel:value.value})
+    if (value && value.value) {
+      this.setState({ publishedLevel: value.value })
     }
-    else{
-      this.setState({publishedLevel:''})
+    else {
+      this.setState({ publishedLevel: '' })
 
     }
   }
-  
+
   render() {
     const { classes } = this.props;
-    const {roleDetails, likes,currentLikes,likeStatus,loginUserName,tabValue,relatedBlog, starsRating, feedBack ,data,feedbackrevisionReq,isPublish,publishedLevel} = this.state;
-    const blogFkLike= data && data.blog_fk_like
-    const likedUserIds=blogFkLike.map(blog => blog.user)
-    const indexOfLoginUser=likedUserIds.indexOf(roleDetails.user_id)
-    const loginUser=likedUserIds.includes(roleDetails.user_id)
+    const { roleDetails, likes, currentLikes, likeStatus, loginUserName, tabValue, relatedBlog, starsRating, feedBack, data, feedbackrevisionReq, isPublish, publishedLevel } = this.state;
+    const blogFkLike = data && data.blog_fk_like
+    const likedUserIds = blogFkLike.map(blog => blog.user)
+    const indexOfLoginUser = likedUserIds.indexOf(roleDetails.user_id)
+    const loginUser = likedUserIds.includes(roleDetails.user_id)
     const isLiked = loginUser ? blogFkLike[indexOfLoginUser].is_liked : false
-    const name =data && data.author && data.author.id
+    const name = data && data.author && data.author.id
     return (
       <div className='layout-container-div'>
         <Layout className='layout-container'>
@@ -284,7 +289,7 @@ if (result.data.status_code === 200) {
               <div className='create_group_filter_container'>
                 <div className={classes.root}>
                   <Grid container spacing={3}>
-                  <Grid item xs={12}>
+                    <Grid item xs={12}>
                       <Button
                         style={{ cursor: 'Pointer' }}
                         onClick={() => window.history.back()}
@@ -292,25 +297,69 @@ if (result.data.status_code === 200) {
                       >
                         <i>Back</i>
                       </Button>
-                      </Grid>
-                      <Grid item xs={9}>
+                    </Grid>
+                    <Grid item xs={9}>
                       <Card className={classes.cardRoot}>
                         <Typography
                           variant='h5'
                           component='h2'
                           style={{ marginBottom: 10 }}
                         >
-                            {data.title}
+                          {data.title}
                         </Typography>
-                        <CardMedia className={classes.media} image={data.thumbnail} />
-                       {tabValue  && data.comment ? 
-                        <CardContent> <Typography
-                        style={{color:'red', fontSize:'12px'}}
-                      >Comment:{data.comment}
-                     
-                      </Typography>
-                      <Typography style={{fontSize:'12px'}}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
-                      </CardContent>  :''}
+                        {/* <CardMedia className={classes.media} image={data.thumbnail} /> */}
+                        {'.' + data.thumbnail.split('.')[data.thumbnail.split('.').length - 1] == '.pdf' ?
+                          <div onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: [
+                                {
+                                  // src: `${endpoints.lessonPlan.s3}${file}`,
+                                  src: `${data?.thumbnail}`,
+                                  // name: `${p?.document_type}`,
+                                  // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                  extension: '.' + data?.thumbnail?.split('.')[data?.thumbnail?.split('.').length - 1],
+                                  // extension: '.jpg,.jpeg,.png,.pdf',
+                                },
+                              ],
+                            });
+                          }} className={classes.media}>
+                            <PictureAsPdfIcon style={{ height: 200, width: 200 }} />
+                            <div style={{ fontSize: '16px' }}><b>'Click on the PDF icon to view'</b></div>
+                          </div>
+                          :
+                          <CardMedia className={classes.media} image={data?.thumbnail}
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: [
+                                  {
+                                    // src: `${endpoints.lessonPlan.s3}${file}`,
+                                    src: `${data?.thumbnail}`,
+                                    // name: `${p?.document_type}`,
+                                    // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                    extension: '.' + data?.thumbnail?.split('.')[data?.thumbnail?.split('.')?.length - 1],
+                                    // extension: '.jpg,.jpeg,.png,.pdf',
+                                  },
+                                ],
+                              });
+                            }}
+                          />}
+                        {tabValue && data.comment ? (
+                          <CardContent>
+                            {' '}
+                            <Typography style={{ color: 'red', fontSize: '12px' }}>
+                              Comment:{data.comment}
+                            </Typography>
+                            <Typography style={{ fontSize: '12px' }}>
+                              {' '}
+                              Commented By:
+                              {data && data.commented_by && data.commented_by.first_name}
+                            </Typography>
+                          </CardContent>
+                        ) : (
+                          ''
+                        )}
                         <CardHeader
                           className={classes.author}
                           avatar={
@@ -318,7 +367,7 @@ if (result.data.status_code === 200) {
                               R
                             </Avatar>
                           }
-                       
+
                           title={data.author.first_name}
                           subheader=
                           {data && moment(data.created_at).format('MMM DD YYYY')}
@@ -326,79 +375,79 @@ if (result.data.status_code === 200) {
                         />
                         <CardContent>
                           <Typography variant='body2' color='textSecondary' component='p'>
-                          {ReactHtmlParser(data.content)}
+                            {ReactHtmlParser(data.content)}
                           </Typography>
 
-                          <Typography component='p'  style={{paddingRight: '650px', fontSize:'12px'}}
->
-                          Total Words : {data.word_count}
+                          <Typography component='p' style={{ paddingRight: '650px', fontSize: '12px' }}
+                          >
+                            Total Words : {data.word_count}
                           </Typography>
-                          <Typography  component='p' style={{ paddingRight: '650px',fontSize:'12px'}}>
-                           Genre: {data.genre && data.genre.genre}
+                          <Typography component='p' style={{ paddingRight: '650px', fontSize: '12px' }}>
+                            Genre: {data.genre && data.genre.genre}
                           </Typography>
                         </CardContent>
                         <CardActions>
-                        {loginUserName !== name ? <Button
-                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
-                              onClick={()=>this.handleLike(isLiked,data.id)}
-                            > {isLiked || likeStatus ? <Favorite style={{ color: '#ff6b6b' }} />
-                                : <FavoriteBorder style={{ color: '#ff6b6b' }} />} {currentLikes === 0 ? likes
-                                : currentLikes
-                              }Likes
-                            </Button> : ''} &nbsp;&nbsp;&nbsp;
-                            <Button
-                              style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize' ,color:'red' ,backgroundColor:'white'}}
-
-                            >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
-                            </Button>
-                        
-                          {tabValue !== 0 ?
-                        
+                          {loginUserName !== name ? <Button
+                            style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize', color: 'red', backgroundColor: 'white' }}
+                            onClick={() => this.handleLike(isLiked, data.id)}
+                          > {isLiked || likeStatus ? <Favorite style={{ color: '#ff6b6b' }} />
+                            : <FavoriteBorder style={{ color: '#ff6b6b' }} />} {currentLikes === 0 ? likes
+                              : currentLikes
+                            }Likes
+                          </Button> : ''} &nbsp;&nbsp;&nbsp;
                           <Button
-                            size='small'
-                            color='primary'
-                            onClick={() => this.setState({ isPublish: true })}
-                          >
-                            Publish
-                          </Button> :''
+                            style={{ fontFamily: 'Open Sans', fontSize: '12px', fontWeight: 'lighter', 'text-transform': 'capitalize', color: 'red', backgroundColor: 'white' }}
+
+                          >   <Visibility style={{ color: '#ff6b6b' }} />{data.views}Views
+                          </Button>
+
+                          {tabValue !== 0 ?
+
+                            <Button
+                              size='small'
+                              color='primary'
+                              onClick={() => this.setState({ isPublish: true })}
+                            >
+                              Publish
+                            </Button> : ''
 
                           } {tabValue !== 0 ?
-                        
+
                             <Button
                               size='small'
                               color='primary'
                               onClick={() => this.handelUnpublish(data.id)}
                             >
                               Un Publish
-                            </Button> :''
-    
-                            }
+                            </Button> : ''
+
+                          }
                         </CardActions>
                       </Card>
                     </Grid>
                     <Grid item xs={3}>
-                     {isPublish ? (
+                      {isPublish ? (
                         <Card style={{ minWidth: 320 }} className={classes.reviewCard}>
                           <CardContent>
-                          <Autocomplete
-                            disableClearable
-                            style={{ width: '100%' }}
-                            size='small'
-                            onChange={this.handlePublishLevelType}
-                            id='category'
-                            required
-                            options={tabValue === 1 ? publishLevelChoiceBranch : tabValue === 2 ? publishLevelChoiceGrade : publishLevelChoiceSection}
-                            getOptionLabel={(option) => option?.label}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                variant='outlined'
-                                label='Publish Level'
-                                placeholder='Publish Level'
-                              />
-                            )}
-                          />
+                            <Autocomplete
+                              disableClearable
+                              style={{ width: '100%' }}
+                              size='small'
+                              onChange={this.handlePublishLevelType}
+                              id='category'
+                              required
+                              options={tabValue === 1 ? publishLevelChoiceBranch : tabValue === 2 ? publishLevelChoiceGrade : publishLevelChoiceSection}
+                              getOptionLabel={(option) => option?.label}
+                              filterSelectedOptions
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  variant='outlined'
+                                  label='Publish Level'
+                                  placeholder='Publish Level'
+                                />
+                              )}
+                            />
                             <br />
                             <CardActions>
                               <Button
@@ -406,7 +455,7 @@ if (result.data.status_code === 200) {
                                 size='small'
                                 color='primary'
                                 disabled={!publishedLevel}
-                                onClick ={this.submitPublish}
+                                onClick={this.submitPublish}
                               >
                                 Submit
                               </Button>
@@ -414,7 +463,7 @@ if (result.data.status_code === 200) {
                           </CardContent>
                         </Card>
                       )
-                      : ''}
+                        : ''}
                     </Grid>
                   </Grid>
                 </div>
