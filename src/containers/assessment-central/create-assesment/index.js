@@ -97,7 +97,7 @@ const CreateAssesment = ({
   );
   const formik = useFormik({
     initialValues: {
-      test_mode: selectedTestType || testTypes[0],
+      test_mode: '',
       test_type: '',
     },
     onSubmit: (values) => { },

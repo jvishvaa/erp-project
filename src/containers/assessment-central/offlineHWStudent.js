@@ -374,6 +374,11 @@ const OfflineStudentAssessment = () => {
         }
     } , [])
 
+    const handleBack = () => {
+        sessionStorage.removeItem('filterData')
+        history.goBack()
+    }
+
 
     return (
         <Layout className='accessBlockerContainer'>
@@ -467,7 +472,7 @@ const OfflineStudentAssessment = () => {
                     </div>
                     <div className="filterArea" >
                         <Grid sm={2} xs={6}>
-                            <StyledClearButton onClick={handleClearAllList} style={{ fontWeight: '600' }} >Clear All</StyledClearButton>
+                            <StyledClearButton onClick={handleBack} style={{ fontWeight: '600' }} >Back</StyledClearButton>
                         </Grid>
                         <Grid sm={2} xs={6}>
                             <StyledButton style={{ width: '50%' }} onClick={offlineMarks} >Filter</StyledButton>

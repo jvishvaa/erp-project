@@ -28,10 +28,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData }) => {
   } = test;
 
   const handleData = () => {
-    console.log(test);
-    console.log(onClick);
-    console.log(onClose);
-    console.log(filterData);
+    sessionStorage.removeItem('filterData')
     history.push({
       pathname: '/offline-student',
       state : {

@@ -304,6 +304,7 @@ const StudentMark = () => {
             if (values?.val?.length > 0) {
                 studentList.map((ele, i) => {
                     if (ele?.user_id === selectedUser) {
+                        setValues({ val: [] })
                         if (i > 0) {
                             console.log(i);
                             setSelectedUser(history?.location?.state?.student[i - 1]?.user_id)
@@ -475,7 +476,7 @@ const StudentMark = () => {
                 <div className="listcontainer">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '95%', margin: '0 auto' }} >
                         <div className='filterStudent' style={{ width: '55%' }} >
-                            <div>
+                            <div style={{width: '40%'}} >
                                 <StyledButton onClick={lastUser} startIcon={<NavigateBeforeIcon style={{ fontSize: '30px' }} />} style={{ fontWeight: '600' }} >Previous Student</StyledButton>
                             </div>
                             <div style={{ margin: '0 20px', width: '50%' }}>
@@ -500,7 +501,7 @@ const StudentMark = () => {
                             </div>
 
                             <div>
-                                <StyledClearButton onClick={handleBack} style={{ fontWeight: '600' }} >All Students</StyledClearButton>
+                                <StyledClearButton onClick={handleBack} style={{ fontWeight: '600' , width: '100%' }} >All Students</StyledClearButton>
                             </div>
 
                         </div>
