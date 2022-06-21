@@ -207,6 +207,10 @@ const CreateAssesment = ({
       setAlert('error', 'Select Assessment Type');
       return;
     }
+    if (!formik.values.test_mode?.id) {
+      setAlert('error', 'Select Text Mode');
+      return;
+    }
 
     testMarks.forEach((obj) => {
       const { parentQuestionId } = obj;

@@ -472,7 +472,7 @@ const OfflineStudentAssessment = () => {
                     </div>
                     <div className="filterArea" >
                         <Grid sm={2} xs={6}>
-                            <StyledClearButton onClick={handleBack} style={{ fontWeight: '600' }} >Back</StyledClearButton>
+                            <StyledClearButton onClick={handleBack} style={{ fontWeight: '600' , width: '50%' }} >Back</StyledClearButton>
                         </Grid>
                         <Grid sm={2} xs={6}>
                             <StyledButton style={{ width: '50%' }} onClick={offlineMarks} >Filter</StyledButton>
