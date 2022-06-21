@@ -97,7 +97,7 @@ const CreateAssesment = ({
   );
   const formik = useFormik({
     initialValues: {
-      test_mode: selectedTestType || testTypes[0],
+      test_mode: '',
       test_type: '',
     },
     onSubmit: (values) => { },
@@ -205,6 +205,10 @@ const CreateAssesment = ({
 
     if (!formik.values.test_type?.id) {
       setAlert('error', 'Select Assessment Type');
+      return;
+    }
+    if (!formik.values.test_mode?.id) {
+      setAlert('error', 'Select Text Mode');
       return;
     }
 
