@@ -7,6 +7,7 @@ import './styles.scss';
 import { deleteAssessmentTest, fetchAssesmentTests } from '../../../redux/actions';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import ConfirmModal from './confirm-modal';
+import Badge from '@material-ui/core/Badge';
 
 const menuOptions = ['Delete'];
 
@@ -27,7 +28,7 @@ const AssesmentCard = ({
   const { setAlert } = useContext(AlertNotificationContext);
   const [openModal, setOpenModal] = useState(false);
   const [open, setOpen] = useState(false);
-  
+
   const handleOpen = () => {
     setOpen(true);
   }
@@ -51,7 +52,11 @@ const AssesmentCard = ({
   return (
     <div className={`assesment-card ${isSelected ? 'selected' : ''}`}>
       <div className='card-header'>
+        <div style={{display: 'flex' , justifyContent: 'flex-start'}} >
+     
+          <div className={value?.test_mode == 1 ? 'greenDot' : 'redDot'} ></div> 
         <p className={`${isSelected ? 'selected' : 'header'}`}>{value.test_type__exam_name}</p>
+        </div>
         <div className='menu'>
           <IconButton
             aria-label='more'
@@ -104,7 +109,7 @@ const AssesmentCard = ({
                 key={option}
                 selected={option === 'Pyxis'}
                 // onClick={(e) => handleDelete(value?.id)}
-                onClick = {(e) => {
+                onClick={(e) => {
                   setOpenModal(true);
                 }}
                 style={{
@@ -118,25 +123,25 @@ const AssesmentCard = ({
               <ConfirmModal
                 submit={(e) => handleDelete(value?.id)}
                 openModal={openModal}
-                setOpenModal = {setOpenModal}
-                />
+                setOpenModal={setOpenModal}
+              />
             )}
           </Popover>
         </div>
       </div>
       <div className='name'>
-        <p>{value.test_name}</p>
+        <p style={{marginLeft: '10px'}} >{value.test_name}</p>
       </div>
       <div className='grade-details'>
         <div>
-          <p>
+          <p style={{marginLeft: '10px'}} >
             {
               `${value.question_paper__grade_name || value.grade_name} `
               // ${value.question_paper__subject_name && value.question_paper__subject_name?.join(', ')}`
             }
           </p>
           {/* <p className='completed'>Completed -30.12.2020</p> */}
-          <p className='scheduled'>
+          <p className='scheduled' style={{marginLeft: '10px'}} >
             {`Scheduled on - ${moment(value.test_date).format('DD-MM-YYYY')}`}
             {', '}
             {value?.test_date?.slice(11, 16)}
