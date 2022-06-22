@@ -86,3 +86,22 @@
     color: $primary-color;
   }
 }
+.badgeOnline{
+  .MuiBadge-dot{
+  width: 15px;
+  height: 15px;
+  border-radius: 10px;
+  }
+}
+.greenDot{
+  width: 10px;
+    height: 10px;
+    background: green;
+    border-radius: 10px;
+}
+.redDot{
+  width: 10px;
+  height: 10px;
+  background: rgb(181, 39, 20);
+  border-radius: 10px; 
+}
