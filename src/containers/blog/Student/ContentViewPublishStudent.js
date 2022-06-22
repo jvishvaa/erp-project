@@ -29,6 +29,9 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 import ReviewPrincipal from '../Principal/ReviewPrincipal';
+import { AttachmentPreviewerContext } from '../../../components/attachment-previewer/attachment-previewer-contexts';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
+
 
 const styles = (theme) => ({
   root: {
@@ -82,6 +85,8 @@ const styles = (theme) => ({
   }
 });
 
+let openPreview = '';
+
 class ContentViewPublishStudent extends Component {
   constructor(props) {
     super(props);
@@ -102,8 +107,10 @@ class ContentViewPublishStudent extends Component {
     };
 
   }
+  static contextType = AttachmentPreviewerContext;
   componentDidMount() {
-    let { blogId } = this.state
+    let { blogId } = this.state;
+    openPreview = this.context.openPreview;
   }
   getLikeStatus = (isLiked) => {
     let { likeStatus, likes } = this.state
@@ -203,17 +210,64 @@ class ContentViewPublishStudent extends Component {
                         >
                           {data.title}
                         </Typography>
-                        <CardMedia className={classes.media} image={data.thumbnail} />
-                        <CardContent> {tabValue && data.comment ?
-                          <CardContent>
-                            <Typography
-                              color="primary"
-                              style={{ fontSize: '12px' }}
-                            >Comment:{data.comment}
-
-                            </Typography>
-                            <Typography style={{ fontSize: '12px' }}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
-                          </CardContent> : ''}</CardContent>
+                        {/* <CardMedia className={classes.media} image={data.thumbnail} /> */}
+                        {'.' + data.thumbnail.split('.')[data.thumbnail.split('.').length - 1] == '.pdf' ?
+                          <div onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: [
+                                {
+                                  // src: `${endpoints.lessonPlan.s3}${file}`,
+                                  src: `${data?.thumbnail}`,
+                                  // name: `${p?.document_type}`,
+                                  // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                  extension: '.' + data?.thumbnail?.split('.')[data?.thumbnail?.split('.').length - 1],
+                                  // extension: '.jpg,.jpeg,.png,.pdf',
+                                },
+                              ],
+                            });
+                          }} className={classes.media}>
+                            <PictureAsPdfIcon style={{ height: 200, width: 200 }} />
+                            <div style={{ fontSize: '16px' }}><b>'Click on the PDF icon to view'</b></div>
+                          </div>
+                          :
+                          <CardMedia className={classes.media} image={data?.thumbnail}
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: [
+                                  {
+                                    // src: `${endpoints.lessonPlan.s3}${file}`,
+                                    src: `${data?.thumbnail}`,
+                                    // name: `${p?.document_type}`,
+                                    // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                    extension: '.' + data?.thumbnail?.split('.')[data?.thumbnail?.split('.')?.length - 1],
+                                    // extension: '.jpg,.jpeg,.png,.pdf',
+                                  },
+                                ],
+                              });
+                            }}
+                          />}
+                        <CardContent>
+                          {' '}
+                          {tabValue && data.comment ? (
+                            <CardContent>
+                              {' '}
+                              <Typography style={{ color: 'red', fontSize: '12px' }}>
+                                Comment:{data.comment}
+                              </Typography>
+                              <Typography style={{ fontSize: '12px' }}>
+                                {' '}
+                                Commented By:
+                                {data &&
+                                  data.commented_by &&
+                                  data.commented_by.first_name}
+                              </Typography>
+                            </CardContent>
+                          ) : (
+                            ''
+                          )}
+                        </CardContent>
                         <CardHeader
                           className={classes.author}
                           avatar={
@@ -252,14 +306,14 @@ class ContentViewPublishStudent extends Component {
                             </Button> : ''} &nbsp;&nbsp;&nbsp;
                           <Button
                             className={classes.likeAndViewbtn}
-                          >   <Visibility className = {classes.ViewColor}/>{data.views}Views
+                          >   <Visibility className={classes.ViewColor} />{data.views}Views
                           </Button>
                         </CardActions>
                       </Card>
                     </Grid>
                     <Grid item xs={3}>
                       <Typography
-                      color = "primary"
+                        color="primary"
                         style={{
                           fontSize: '12px', width: '300px',
                           paddingLeft: '30px',

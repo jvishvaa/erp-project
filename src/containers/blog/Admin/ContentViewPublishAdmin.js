@@ -27,6 +27,8 @@ import Layout from '../../Layout';
 import { Visibility, FavoriteBorder, Favorite } from '@material-ui/icons'
 import ReviewPrincipal from '../Principal/ReviewPrincipal';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import { AttachmentPreviewerContext } from '../../../components/attachment-previewer/attachment-previewer-contexts';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 
 const styles = (theme) => ({
   root: {
@@ -78,6 +80,7 @@ const styles = (theme) => ({
   }
 });
 
+let openPreview = '';
 
 const publishLevelChoiceBranch = [
   { label: 'Orchids', value: '1' },
@@ -135,9 +138,12 @@ class ContentViewPublish extends Component {
   }
   static contextType = AlertNotificationContext
 
+  static contextType = AttachmentPreviewerContext;
+
   componentDidMount() {
-    let { blogId } = this.state
-    this.handleView(blogId)
+    let { blogId } = this.state;
+    this.handleView(blogId);
+    openPreview = this.context.openPreview;
   }
 
 
@@ -171,7 +177,7 @@ class ContentViewPublish extends Component {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
-          this.context.setAlert('success', "successfully submitted revision feedback")
+          // this.context.setAlert('success', 'successfully submitted revision feedback');
 
           this.props.history.push({
             pathname: '/blog/admin',
@@ -202,7 +208,7 @@ class ContentViewPublish extends Component {
       .put(`${endpoints.blog.Blog}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
-          this.context.setAlert('success', "published successfully")
+          // this.context.setAlert('success', 'published successfully');
 
           this.props.history.push({
             pathname: '/blog/admin/publish/view',
@@ -249,8 +255,8 @@ class ContentViewPublish extends Component {
 
       .then(result => {
         if (result.data.status_code === 200) {
-          this.setState({ loading: false })
-          this.context.setAlert('success', "unpublished successfully")
+          this.setState({ loading: false });
+          // this.context.setAlert('success', 'unpublished successfully');
           this.props.history.push({
             pathname: '/blog/admin',
           });
@@ -338,16 +344,64 @@ class ContentViewPublish extends Component {
                         >
                           {data.title}
                         </Typography>
-                        <CardMedia className={classes.media} image={data.thumbnail} />
-                        <CardContent>  {tabValue && data.comment ?
-                          <CardContent> <Typography
-                            color="primary"
-                            style={{ fontSize: '12px' }}
-                          >Comment:{data.comment}
-
-                          </Typography>
-                            <Typography style={{ fontSize: '12px' }}> Commented By:{data && data.commented_by && data.commented_by.first_name}</Typography>
-                          </CardContent> : ''}</CardContent>
+                        {/* <CardMedia className={classes.media} image={data.thumbnail} /> */}
+                        {'.' + data.thumbnail.split('.')[data.thumbnail.split('.').length - 1] == '.pdf' ?
+                          <div onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: [
+                                {
+                                  // src: `${endpoints.lessonPlan.s3}${file}`,
+                                  src: `${data?.thumbnail}`,
+                                  // name: `${p?.document_type}`,
+                                  // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                  extension: '.' + data?.thumbnail?.split('.')[data?.thumbnail?.split('.').length - 1],
+                                  // extension: '.jpg,.jpeg,.png,.pdf',
+                                },
+                              ],
+                            });
+                          }} className={classes.media}>
+                            <PictureAsPdfIcon style={{ height: 200, width: 200 }} />
+                            <div style={{ fontSize: '16px' }}><b>'Click on the PDF icon to view'</b></div>
+                          </div>
+                          :
+                          <CardMedia className={classes.media} image={data?.thumbnail}
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: [
+                                  {
+                                    // src: `${endpoints.lessonPlan.s3}${file}`,
+                                    src: `${data?.thumbnail}`,
+                                    // name: `${p?.document_type}`,
+                                    // name: this.state.files.split('.')[this.state.files.split('.').length - 2],
+                                    extension: '.' + data?.thumbnail?.split('.')[data?.thumbnail?.split('.')?.length - 1],
+                                    // extension: '.jpg,.jpeg,.png,.pdf',
+                                  },
+                                ],
+                              });
+                            }}
+                          />}
+                        <CardContent>
+                          {' '}
+                          {tabValue && data.comment ? (
+                            <CardContent>
+                              {' '}
+                              <Typography color="primary" style={{ fontSize: '12px' }}>
+                                Comment:{data.comment}
+                              </Typography>
+                              <Typography style={{ fontSize: '12px' }}>
+                                {' '}
+                                Commented By:
+                                {data &&
+                                  data.commented_by &&
+                                  data.commented_by.first_name}
+                              </Typography>
+                            </CardContent>
+                          ) : (
+                            ''
+                          )}
+                        </CardContent>
                         <CardHeader
                           className={classes.author}
                           avatar={
@@ -384,7 +438,7 @@ class ContentViewPublish extends Component {
                           </Button> : ''} &nbsp;&nbsp;&nbsp;
                           <Button
                             className={classes.likeAndViewbtn}
-                          >    <Visibility className = {classes.ViewColor} />{data.views}Views
+                          >    <Visibility className={classes.ViewColor} />{data.views}Views
                           </Button>
 
                           {tabValue !== 0 ?
@@ -392,7 +446,7 @@ class ContentViewPublish extends Component {
                             <Button
                               size='small'
                               color='primary'
-                              variant = "contained"
+                              variant="contained"
                               onClick={() => this.setState({ isPublish: true })}
                             >
                               Publish
@@ -404,7 +458,7 @@ class ContentViewPublish extends Component {
                             <Button
                               size='small'
                               color='primary'
-                              variant = "contained"
+                              variant="contained"
                               onClick={() => this.handelUnpublish(data.id)}
                             >
                               Un Publish
@@ -425,7 +479,15 @@ class ContentViewPublish extends Component {
                               onChange={this.handlePublishLevelType}
                               id='category'
                               required
-                              options={tabValue === 1 ? publishLevelChoiceBranch : tabValue === 2 ? publishLevelChoiceGrade : tabValue === 3 ? publishLevelChoiceSection : publishLevelChoiceOrchids}
+                              options={
+                                tabValue === 1
+                                  ? publishLevelChoiceBranch
+                                  : tabValue === 2
+                                    ? publishLevelChoiceGrade
+                                    : tabValue === 3
+                                      ? publishLevelChoiceSection
+                                      : publishLevelChoiceOrchids
+                              }
                               getOptionLabel={(option) => option?.label}
                               filterSelectedOptions
                               renderInput={(params) => (
@@ -443,7 +505,7 @@ class ContentViewPublish extends Component {
                                 style={{ fontSize: 12 }}
                                 size='small'
                                 color='primary'
-                                variant = "contained"
+                                variant="contained"
                                 disabled={!publishedLevel}
                                 onClick={this.submitPublish}
                               >
@@ -455,7 +517,7 @@ class ContentViewPublish extends Component {
                       )
                         : <Grid item xs={3}>
                           <Typography
-                          color = "primary"
+                            color="primary"
                             style={{
                               fontSize: '12px', width: '300px',
                               paddingLeft: '30px',
