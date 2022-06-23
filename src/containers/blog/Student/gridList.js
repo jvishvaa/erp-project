@@ -110,6 +110,9 @@ function GridList(props) {
                         marginTop: '-35px',
                         fontWeight: 'bold',
                         color: 'white',
+                        whiteSpace:'nowrap',
+                        overflow:'hidden',
+                        textOverflow: 'ellipsis'
                       }}
                       color='textSecondary'
                       component='p'
@@ -201,6 +204,9 @@ function GridList(props) {
                           marginTop: '-10px',
                           fontWeight: 'bold',
                           color: 'white',
+                          whiteSpace:'nowrap',
+                          overflow:'hidden',
+                          textOverflow: 'ellipsis'
                         }}
                         color='textSecondary'
                         component='p'
@@ -289,6 +295,9 @@ function GridList(props) {
                           marginTop: '-15px',
                           fontWeight: 'bold',
                           color: 'white',
+                          whiteSpace:'nowrap',
+                          overflow:'hidden',
+                          textOverflow: 'ellipsis'
                         }}
                         color='textSecondary'
                         component='p'
@@ -383,6 +392,9 @@ function GridList(props) {
                           marginTop: '-15px',
                           fontWeight: 'bold',
                           color: 'white',
+                          whiteSpace:'nowrap',
+                          overflow:'hidden',
+                          textOverflow: 'ellipsis'
                         }}
                         color='textSecondary'
                         component='p'
@@ -472,6 +484,9 @@ function GridList(props) {
                           marginTop: '-15px',
                           fontWeight: 'bold',
                           color: 'white',
+                          whiteSpace:'nowrap',
+                          overflow:'hidden',
+                          textOverflow: 'ellipsis'
                         }}
                         color='textSecondary'
                         component='p'
@@ -554,6 +569,9 @@ function GridList(props) {
                         marginTop: '-35px',
                         fontWeight: 'bold',
                         color: 'white',
+                        whiteSpace:'nowrap',
+                        overflow:'hidden',
+                        textOverflow: 'ellipsis'
                       }}
                       color='textSecondary'
                       component='p'

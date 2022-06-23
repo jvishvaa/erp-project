@@ -304,8 +304,8 @@ const StudentMark = () => {
             if (values?.val?.length > 0) {
                 studentList.map((ele, i) => {
                     if (ele?.user_id === selectedUser) {
-                        setValues({ val: [] })
                         if (i > 0) {
+                            setValues({ val: [] })
                             console.log(i);
                             setSelectedUser(history?.location?.state?.student[i - 1]?.user_id)
                             setSelectedUserData(history?.location?.state?.student[i - 1])
