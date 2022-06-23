@@ -79,6 +79,9 @@ function GridListPublish(props) {
                       // fontSize: 'x-large',
                       fontWeight: 'bold',
                       color: 'white',
+                      whiteSpace : 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow : 'ellipsis'
                     }}
                     color='textSecondary'
                     component='p'

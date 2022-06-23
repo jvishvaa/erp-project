@@ -70,6 +70,7 @@ const GeneralDairyFilter = ({
   const [branchDropdown, setBranchDropdown] = useState([]);
   //   const [subjectIds, setSubjectIds] = useState([]);
   const [sectionIds, setSectionIds] = useState([]);
+  const [gradeIds,setGradeIds] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
   const [isEmail, setIsEmail] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
@@ -237,6 +238,7 @@ const GeneralDairyFilter = ({
         sectionIds: [],
       });
       if (value.length > 0) {
+        setGradeIds(value.map(gradeObj => gradeObj.grade_id).join(','))
         axiosInstance
           .get(
             `${endpoints.masterManagement.sections}?session_year=${filterData?.year?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${value.map(gradeObj => gradeObj.grade_id).join(',')}&module_id=${moduleId}`
@@ -295,8 +297,14 @@ const GeneralDairyFilter = ({
   };
 
   const handleSection = (event, value) => {
-    sectionId = [];
-    setFilterData({ ...filterData });
+    // sectionId = [];
+    setFilterData({ ...filterData,
+      branch: '',
+      grade: '',
+      subject: '',
+      chapter: '',
+      sections: [],
+      sectionIds: [],});
     if (value) {
       const ids =
         value &&
@@ -306,7 +314,7 @@ const GeneralDairyFilter = ({
         });
       setFilterData({ ...filterData, sections: value });
       setSectionIds(ids);
-      setSectionDropdown([])
+      // setSectionDropdown([])
     }
   };
   let allGradeIds = []
@@ -386,7 +394,8 @@ const GeneralDairyFilter = ({
           page,
           filterData.subject,
           moduleId,
-          filterData?.year
+          filterData?.year,
+          gradeIds
         );
       }
     } else if (userDetails?.personal_info?.role !== 'SuperUser' && !isTeacher) {
@@ -403,7 +412,8 @@ const GeneralDairyFilter = ({
         page,
         filterData.subject,
         moduleId,
-        filterData?.year
+        filterData?.year,
+        gradeIds
       );
     }
   };
@@ -489,6 +499,7 @@ const GeneralDairyFilter = ({
           <Autocomplete
             multiple
             style={{ width: '100%' }}
+            limit={2}
             size='small'
             onChange={handleGrade}
             id='volume'

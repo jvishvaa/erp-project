@@ -208,7 +208,7 @@ const CreateAssesment = ({
       return;
     }
     if (!formik.values.test_mode?.id) {
-      setAlert('error', 'Select Text Mode');
+      setAlert('error', 'Select Test Mode');
       return;
     }
 
