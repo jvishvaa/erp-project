@@ -743,6 +743,7 @@ const Assesment = () => {
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
+                                  activeTab={activeTab}
                                 />
                               </Grid>
                             ))}
