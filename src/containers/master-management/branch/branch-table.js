@@ -300,7 +300,7 @@ const BranchTable = () => {
                             </TableCell>
                             <TableCell
                               className={classes.tableCell}
-                              style={{ maxWidth: '250px' }}
+                              style={{ maxWidth: '250px', wordBreak:'break-all' }}
                             >
                               {branch?.address}
                             </TableCell>

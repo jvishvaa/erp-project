@@ -676,8 +676,14 @@ export default function TeacherAttendanceVerify() {
 
   const handleSection = (event = {}, value = []) => {
     if (value) {
-      const selectedsecctionId = value?.section_id;
-      const sectionid = value?.id;
+      value =
+      value.filter(({ id }) => id === 'all').length === 1
+        ? [...sectionList].filter(({ id }) => id !== 'all')
+        : value;
+      const selectedsecctionId = value.map((item) => item.section_id || [] );
+      // const selectedsecctionId = value?.section_id;
+      const sectionid = value.map((item) => item.id  || [])
+      // const sectionid = value?.id;
       setSectionId(sectionid);
       setSelectedSection(value);
       setSelectedSectionIds(selectedsecctionId);
@@ -697,7 +703,15 @@ export default function TeacherAttendanceVerify() {
             setGradeList(result.data.data || []);
           }
           if (key === 'section') {
-            setSectionList(result.data.data);
+            const selectAllObject ={
+              session_year: {},
+              id: 'all',
+              section__section_name:'Select All',
+              section_name:'Select All',
+              section_id:'all'
+            };
+            const data = [selectAllObject, ...result?.data?.data];
+            setSectionList(data);
           }
         } else {
           console.log('error', result.data.message);
@@ -811,18 +825,21 @@ export default function TeacherAttendanceVerify() {
               value={selectedGrade}
               getOptionLabel={(option) => option?.grade_name}
               renderInput={(params) => (
-                <TextField {...params} label='Grade' variant='outlined' required />
+                <TextField {...params} label='Grade' variant='outlined'/>
               )}
             />
           </Grid>
           <Grid item xs={12} md={2}>
             <Autocomplete
               id='combo-box-demo'
+              multiple
+              limitTags={1}
               size='small'
               options={sectionList}
               onChange={handleSection}
               value={selectedSection}
               getOptionLabel={(option) => option?.section__section_name}
+              filterSelectedOptions
               renderInput={(params) => (
                 <TextField {...params} label='Section' variant='outlined' />
               )}

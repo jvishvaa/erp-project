@@ -263,7 +263,7 @@ export default function TeacherAttendance(props) {
   const [sectionId, setSectionId] = useState('');
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
-  const [selectedSectionIds, setSelectedSectionIds] = useState('');
+  const [selectedSectionIds, setSelectedSectionIds] = useState([]);
 
   const [filterData, setFilterData] = React.useState({
     branch: '',
@@ -369,10 +369,14 @@ export default function TeacherAttendance(props) {
   };
 
   const handleSection = (event = {}, value = []) => {
-    if (value) {
-      const selectedsecctionId = value?.section_id;
-      const sectionid = value?.id;
-      setSectionId(sectionid);
+    if (value?.length > 0) {
+        value =
+        value.filter(({ section_id }) => section_id === 'all').length === 1
+          ? [...sectionList].filter(({ section_id }) => section_id !== 'all')
+          : value;
+      const sectionId = value.map((item) => item.id)
+      setSectionId(sectionId);
+      const selectedsecctionId = value.map((element) => element?.section_id)
       setSelectedSection(value);
       setSelectedSectionIds(selectedsecctionId);
     } else {
@@ -391,7 +395,15 @@ export default function TeacherAttendance(props) {
             setGradeList(result.data.data || []);
           }
           if (key === 'section') {
-            setSectionList(result.data.data);
+            const selectAllObject ={
+              session_year:{},
+              id:'all',
+              section_id:'all',
+              section__section_name: 'Select All',
+              section_name: 'Select All'
+            }
+            const data =[selectAllObject, ...result?.data?.data];
+            setSectionList(data);
           }
         } else {
           console.log('error', result.data.message);
@@ -602,10 +614,13 @@ export default function TeacherAttendance(props) {
             <Autocomplete
               id='combo-box-demo'
               size='small'
-              options={sectionList}
+              multiple
+              limitTags={1}
+              options={sectionList || []}
               onChange={handleSection}
-              value={selectedSection}
-              getOptionLabel={(option) => option?.section__section_name}
+              value={selectedSection || []}
+              getOptionLabel={(option) => option?.section__section_name || ''}
+              filterSelectedOptions
               renderInput={(params) => (
                 <TextField {...params} label='Section' variant='outlined' />
               )}
