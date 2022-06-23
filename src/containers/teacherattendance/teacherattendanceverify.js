@@ -76,6 +76,9 @@ const headCells = [
   // { id: 'Sno', numeric: true, disablePadding: true, label: 'Sno' },
   // { id: 'ERP ID', numeric: true, disablePadding: true, label: 'ERP ID' },
   // { id: 'Name', numeric: false, disablePadding: false, label: 'Name' },
+  { id: 'Branch', numeric: false, disablePadding: false, label: 'Branch' },
+  { id: 'Grade', numeric: false, disablePadding: false, label: 'Grade' },
+  { id: 'Section', numeric: false, disablePadding: false, label: 'Section' },
   { id: 'Role', numeric: false, disablePadding: false, label: 'Role' },
   {
     id: 'Contact Number',
@@ -268,6 +271,9 @@ export default function TeacherAttendanceVerify() {
       'ERP ID': item.erp_id,
       Name: item.name,
       'Contact Number': item.contact,
+      Branch : item.section_mapping__acad_session__branch__branch_name,
+      Grade : item.section_mapping__grade__grade_name,
+      Section : item.section_mapping__section__section_name,
       Role: item.roles__role_name,
     })
   );
@@ -875,7 +881,7 @@ export default function TeacherAttendanceVerify() {
               />
             </Paper>
           </Grid>{' '}
-          <Grid item md={6}>
+          <Grid item md={8}>
             <Grid
               container
               spacing={1}
@@ -890,6 +896,7 @@ export default function TeacherAttendanceVerify() {
               <span style={{ color: '#800080' }}> L : Late </span>
               <span style={{ color: '#4747d1' }}> HD : Half Day</span>
               <span style={{ color: '#81c3b4' }}> H : Holiday </span>
+              <span style={{ color: 'rgb(118 94 111)' }}> NA : Not Available </span>
               {/* <span style={{ color: 'brown' }}> H:Holiday Day</span>) */}
               {/* </Typography> */}
             </Grid>
@@ -940,6 +947,9 @@ export default function TeacherAttendanceVerify() {
                           <TableCell className='sticky-col third-col' align='right'>
                             {value?.name}
                           </TableCell>
+                          <TableCell align='right'>{value?.section_mapping__acad_session__branch__branch_name ? value?.section_mapping__acad_session__branch__branch_name : '-'}</TableCell>
+                          <TableCell align='right'>{value?.section_mapping__grade__grade_name ? value?.section_mapping__grade__grade_name : '-'}</TableCell>
+                          <TableCell align='right'>{value?.section_mapping__section__section_name ? value?.section_mapping__section__section_name : '-'}</TableCell>
                           <TableCell align='right'>{value?.roles__role_name}</TableCell>
                           <TableCell align='right'>{value?.contact}</TableCell>
                           {value?.attendance?.map((item, index) => {
