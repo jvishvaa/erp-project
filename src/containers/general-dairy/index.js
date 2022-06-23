@@ -62,12 +62,8 @@ const GeneralDairyList = () => {
   const [startDate, setSDate] = useState([]);
   const [endDate, setEDate] = useState([]);
   const [deleteFlag, setDeleteFlag] = useState(false);
-<<<<<<< HEAD
   const [initialFlag, setInitialFlag] = useState(false);
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
-=======
-  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
->>>>>>> 966f15375... selcect all feature in section for attendance and diary
 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear

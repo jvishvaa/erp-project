@@ -825,7 +825,7 @@ export default function TeacherAttendanceVerify() {
               value={selectedGrade}
               getOptionLabel={(option) => option?.grade_name}
               renderInput={(params) => (
-                <TextField {...params} label='Grade' variant='outlined' required />
+                <TextField {...params} label='Grade' variant='outlined'/>
               )}
             />
           </Grid>
