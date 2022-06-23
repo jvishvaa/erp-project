@@ -1181,7 +1181,7 @@ const AttedanceCalender = () => {
         style={{ background: 'white' }}
         id='completeContainer'
       >
-        <div className='whole-calender-filter'>
+        <div className='whole-calender-filter' style={{marginLeft:"180px"}}>
           <Grid className='calenderGrid'>
             <div className='buttonContainer'>
               <div className='today'>
@@ -1281,7 +1281,7 @@ const AttedanceCalender = () => {
             </StyledFilterButton>
           </Grid>
         </div>
-        <div className='attendenceWhole'>
+        <div className='attendenceWhole' hidden="true">
           <div className='startDate'> From {moment(startDate).format('DD-MM-YYYY')}</div>
           <Paper elevation={3} className={classes.paperSize} id='attendanceContainer'>
             <Grid container direction='row' className={classes.root} id='attendanceGrid'>
@@ -1419,14 +1419,14 @@ const AttedanceCalender = () => {
           </Paper>
         </div>
        
-        <div className='eventWhole'>
+        <div className='eventWhole' style={{marginRight:"200px"}}>
         <div className='startDate'> To {moment(endDate).format('DD-MM-YYYY')}</div>
           <Paper
             elevation={3}
             className={[classes.root, classes.paperSize]}
             id='eventContainer'
           >
-            <Grid container direction='row' className='eventContainer'>
+            <Grid container direction='row' className='eventContainer' style={{marginRight:"150px"}}>
               <Grid item md={6} xs={12}>
                 <Typography variant='h6' color='primary' className='eventPara'>
                   Holiday

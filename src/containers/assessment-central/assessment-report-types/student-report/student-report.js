@@ -439,9 +439,9 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
                   <TableRow className={repos.marks_percentage < 60 ? 'highlighted' : ''}>
                     <TableCell>{repos.test__test_name}</TableCell>
                     <TableCell>{repos.test__test_mode == 1 ? 'Online' : 'Offline'}</TableCell>
-                    <TableCell>{repos.correct_answer == 0 ? '-' : repos.correct_answer}</TableCell>
+                    <TableCell>{repos.correct_answer == 0 && repos.test__test_mode == '2' ? '-' : repos.correct_answer}</TableCell>
                     <TableCell>{repos.test__total_mark}</TableCell>
-                    <TableCell>{repos.wrong_answer == 0 ? '-' : repos.wrong_answer}</TableCell>
+                    <TableCell>{repos.wrong_answer == 0 && repos.test__test_mode == '2' ? '-' : repos.wrong_answer}</TableCell>
                     <TableCell>{repos.marks_obtained}</TableCell>
                     <TableCell>{repos.marks_percentage} %</TableCell>
                   </TableRow>

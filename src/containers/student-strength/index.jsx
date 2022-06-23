@@ -26,9 +26,8 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     color: theme.palette.secondary.main,
     border: `1px solid ${theme.palette.primary.main} !important`,
-    backgroundColor: "white !important",
-  }
-
+    backgroundColor: 'white !important',
+  },
 }));
 const StudentStrength = ({ history }) => {
   const [acadminYearList, setAcadminYearList] = useState([]);
@@ -64,12 +63,14 @@ const StudentStrength = ({ history }) => {
   useEffect(() => {
     setHRef([
       {
-        csv: `${endpoints.studentListApis.downloadExcelAllstudents}?academic_year_id=${selectedAcademicYear && selectedAcademicYear.id
-          }&export_type=csv`,
+        csv: `${endpoints.studentListApis.downloadExcelAllstudents}?academic_year_id=${
+          selectedAcademicYear && selectedAcademicYear.id
+        }&export_type=csv`,
       },
       {
-        csv: `${endpoints.studentListApis.downloadBranchWiseStudent}?academic_year_id=${selectedAcademicYear && selectedAcademicYear.id
-          }&branch_id=${selectedBranch?.branch?.id}
+        csv: `${endpoints.studentListApis.downloadBranchWiseStudent}?academic_year_id=${
+          selectedAcademicYear && selectedAcademicYear.id
+        }&branch_id=${selectedBranch?.branch?.id}
           &export_type=csv`,
       },
     ]);
@@ -126,8 +127,10 @@ const StudentStrength = ({ history }) => {
     console.log(selectedBranch, 'branch');
     axiosInstance
       .get(
-        `${endpoints.studentListApis.branchWiseStudentCount}?academic_year_id=${selectedAcademicYear && selectedAcademicYear.id
-        }&branch_id=${selectedBranch && selectedBranch.branch.id}&page_number=${pageNumber || 1
+        `${endpoints.studentListApis.branchWiseStudentCount}?academic_year_id=${
+          selectedAcademicYear && selectedAcademicYear.id
+        }&branch_id=${selectedBranch && selectedBranch.branch.id}&page_number=${
+          pageNumber || 1
         }&page_size=${15}`
       )
       .then((result) => {
@@ -148,9 +151,7 @@ const StudentStrength = ({ history }) => {
 
   return (
     <Layout>
-      <CommonBreadcrumbs
-        componentName='School Strength'
-      />
+      <CommonBreadcrumbs componentName='School Strength' />
       <div style={{ width: '100%', overflow: 'hidden' }}>
         <Grid container spacing={2} className='studentStrenghtBody'>
           <Grid item md={12} xs={12} className='studentStrengthFilterDiv'>
@@ -163,7 +164,9 @@ const StudentStrength = ({ history }) => {
                     setSelectedAcadmeicYear(value);
                     if (value) {
                       callApi(
-                        `${endpoints.communication.branches}?session_year=${value?.id}&module_id=${getModuleId()}`,
+                        `${endpoints.communication.branches}?session_year=${
+                          value?.id
+                        }&module_id=${getModuleId()}`,
                         'branchList'
                       );
                     }
@@ -195,7 +198,8 @@ const StudentStrength = ({ history }) => {
                       const selectedId = value.branch.id;
                       setSelectedBranch(value);
                       callApi(
-                        `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id
+                        `${endpoints.academics.grades}?session_year=${
+                          selectedAcademicYear.id
                         }&branch_id=${selectedId.toString()}&module_id=${getModuleId()}`,
                         'gradeList'
                       );
@@ -305,6 +309,12 @@ const StudentStrength = ({ history }) => {
                     size='medium'
                     href={hRef && hRef[0] && hRef[0].csv}
                     className={classes.studentStrenghtDownloadButton}
+                    onClick={() => {
+                      setLoading(true);
+                      setTimeout(function () {
+                        setLoading(false);
+                      }, 4000);
+                    }}
                   >
                     <span style={{ fontSize: '13px' }}> Download All Branch Excel</span>
                   </Button>
@@ -317,6 +327,12 @@ const StudentStrength = ({ history }) => {
                     color='primary'
                     style={{ color: 'white', width: '100%' }}
                     href={hRef && hRef[1] && hRef[1].csv}
+                    onClick={() => {
+                      setLoading(true);
+                      setTimeout(function () {
+                        setLoading(false);
+                      }, 4000);
+                    }}
                   >
                     <span style={{ fontSize: '13px' }}> Download Branch Excel</span>{' '}
                   </Button>
