@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useSelector } from 'react-redux'
+import { useSelector } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 import { Grid, useTheme, SvgIcon } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
@@ -62,8 +62,12 @@ const GeneralDairyList = () => {
   const [startDate, setSDate] = useState([]);
   const [endDate, setEDate] = useState([]);
   const [deleteFlag, setDeleteFlag] = useState(false);
+<<<<<<< HEAD
   const [initialFlag, setInitialFlag] = useState(false);
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
+=======
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
+>>>>>>> 966f15375... selcect all feature in section for attendance and diary
 
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -117,7 +121,8 @@ const GeneralDairyList = () => {
     page,
     subjects,
     moduleId,
-    academic_year
+    academic_year,
+    multipleGradeId
   ) => {
     setLoading(true);
     setPeriodData([]);
@@ -141,9 +146,9 @@ const GeneralDairyList = () => {
       }
     }
     const diaryUrl = isTeacher
-      ? `${
-          endpoints.generalDairy.dairyList
-        }?module_id=${teacherModuleId}&session_year=${sessionYear?.id}&branch=${branchId}&grades=${gradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format(
+      ? `${endpoints.generalDairy.dairyList}?module_id=${teacherModuleId}&session_year=${
+          academic_year?.id
+        }&branch=${branchId}&grades=${multipleGradeId}&sections=${sectionIds}&page=${page}&page_size=${limit}&start_date=${startDate.format(
           'YYYY-MM-DD'
         )}&end_date=${endDate.format('YYYY-MM-DD')}${
           activeTab !== 0 ? '&dairy_type=' + activeTab : ''
@@ -155,7 +160,9 @@ const GeneralDairyList = () => {
           subjects.id
         }&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format(
           'YYYY-MM-DD'
-        )}&session_year=${sessionYear?.id}${activeTab !== 0 ? '&dairy_type=' + activeTab : ''}`
+        )}&session_year=${sessionYear?.id}${
+          activeTab !== 0 ? '&dairy_type=' + activeTab : ''
+        }`
       : `${
           endpoints.generalDairy.dairyList
         }?module_id=${studentModuleId}&page=${page}&page_size=${limit}&start_date=${startDate.format(
@@ -201,7 +208,7 @@ const GeneralDairyList = () => {
           handleDairyList={handleDairyList}
           setPeriodData={setPeriodData}
           isTeacher={isTeacher}
-          sessionYear = {sessionYear}
+          sessionYear={sessionYear}
           showSubjectDropDown={showSubjectDropDown}
           studentModuleId={studentModuleId}
           // pageup={page}
