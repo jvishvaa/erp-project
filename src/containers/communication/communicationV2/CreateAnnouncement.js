@@ -298,7 +298,9 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
-          setSectionList(res?.data?.data);
+          const transformData = res?.data?.data.map((item)=>({section_id : item.section_id,section__section_name: item.section__section_name, id : item.id}))
+          transformData.unshift({ section_id: 'all', section__section_name: 'Select All',id : 'section_mapping_id' });
+          setSectionList(transformData);
         } else {
           setSectionList([]);
         }
@@ -407,12 +409,16 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
 
   const handleSection = (e, value) => {
     if (value.length) {
-      const data = value.map((el) => el);
-      const ids = value.map((el) => el.section_id);
-      const sectionMappingIds = value.map((el) => el.id);
-      setSelectedSectionId(ids);
-      setSelectedSectionListData(data);
-      setSelectedSectionMappingId(sectionMappingIds);
+      // const data = value.map((el) => el);
+      // const ids = value.map((el) => el.section_id);
+      // const sectionMappingIds = value.map((el) => el.id);
+      value =
+      value.filter(({ section_id }) => section_id === 'all').length === 1
+        ? [...sectionList].filter(({ section_id }) => section_id !== 'all')
+        : value;
+      setSelectedSectionId(value.map((i)=>i.section_id));
+      setSelectedSectionListData(value);
+      setSelectedSectionMappingId(value.map((i)=>i.id));
       setMemberCount()
     } else {
       setSelectedSectionListData([]);

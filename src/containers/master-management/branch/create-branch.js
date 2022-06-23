@@ -88,7 +88,7 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
               multiline
               rows={4}
               rowsMax={6}
-              inputProps={{ maxLength: 100 }}
+              inputProps={{ maxLength: 250 }}
               value={address}
               name='address'
               onChange={(e) => setAddress(e.target.value)}
