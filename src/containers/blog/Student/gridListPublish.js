@@ -84,6 +84,9 @@ function GridListPublish(props) {
                       // fontSize: 'x-large',
                       fontWeight: 'bold',
                       color: 'white',
+                      whiteSpace:'nowrap',
+                      overflow:'hidden',
+                      textOverflow: 'ellipsis'
                     }}
                     color='textSecondary'
                     component='p'
@@ -154,6 +157,9 @@ function GridListPublish(props) {
                         marginTop: '-18px',
                         fontWeight: 'bold',
                         color: 'white',
+                        whiteSpace:'nowrap',
+                        overflow:'hidden',
+                        textOverflow: 'ellipsis'
 
                       }}
                       color='textSecondary'
@@ -228,6 +234,9 @@ function GridListPublish(props) {
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
                         color: 'white',
+                        whiteSpace:'nowrap',
+                        overflow:'hidden',
+                        textOverflow: 'ellipsis'
 
                       }}
                       color='textSecondary'
@@ -303,6 +312,9 @@ function GridListPublish(props) {
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
                         color: 'white',
+                        whiteSpace:'nowrap',
+                        overflow:'hidden',
+                        textOverflow: 'ellipsis'
 
                       }}
                       color='textSecondary'
@@ -375,6 +387,9 @@ function GridListPublish(props) {
                         // fontSize: 'x-large',
                         fontWeight: 'bold',
                         color: 'white',
+                        whiteSpace:'nowrap',
+                        overflow:'hidden',
+                        textOverflow: 'ellipsis'
 
                       }}
                       color='textSecondary'
@@ -449,6 +464,9 @@ function GridListPublish(props) {
                       // fontSize: 'x-large',
                       fontWeight: 'bold',
                       color: 'white',
+                      whiteSpace:'nowrap',
+                      overflow:'hidden',
+                      textOverflow: 'ellipsis'
 
                     }}
                     color='textSecondary'
