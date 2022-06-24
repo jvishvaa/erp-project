@@ -333,7 +333,7 @@ const FinanceOwnerDashboard = (props) => {
         {
           headers: {
             'X-DTS-Host': window.location.host,
-            // 'X-DTS-Host': "qa.olvorchidnaigaon.letseduvate.com",
+            // 'X-DTS-Host': "dev.olvorchidnaigaon.letseduvate.com",
             Authorization: `Bearer ${token}`,
           },
         }
@@ -571,7 +571,7 @@ const FinanceOwnerDashboard = (props) => {
                         style={{
                           display: 'flex',
                           alignItems: 'center',
-                          justifyContent: 'center',
+                          justifyContent: 'center',                         
                         }}
                       >
                         <CircularProgress />
@@ -601,6 +601,12 @@ const FinanceOwnerDashboard = (props) => {
                                         variant='body2'
                                       >
                                         <b>Total : {each?.total_people}</b>
+                                      </Typography>
+                                      <Typography
+                                        className={clsx(classes.fontDesign)}
+                                        variant='body2'
+                                      >
+                                        <b>Total Marked :<span>{each?.total_present + each?.total_absent+ each?.total_half_day+ each?.total_late}</span></b>
                                       </Typography>
                                       <Typography
                                         className={clsx(
@@ -634,15 +640,16 @@ const FinanceOwnerDashboard = (props) => {
                                           style={{ width: '60px', height: '60px' }}
                                         />
                                         <Box
-                                          sx={{
-                                            top: 0,
-                                            left: 0,
-                                            bottom: 0,
-                                            right: 0,
+                                          sx={{                                          
+                                            // marginLeft:'-16px',
+                                            // marginTop:'6px',
+                                            margin:'6px 0px 0px 9px',
+                                            borderRadius:'5px',
+                                            padding:'1px',                                            
                                             position: 'absolute',
                                             display: 'flex',
                                             alignItems: 'center',
-                                            justifyContent: 'center',
+                                            justifyContent: 'space-between',
                                           }}
                                         >
                                           <Typography
