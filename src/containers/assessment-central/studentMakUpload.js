@@ -364,27 +364,64 @@ const StudentMark = () => {
         var sum = values.val.reduce((a, v) => a = parseFloat(a) + parseFloat(v), 0);
 
         if (values?.val?.length === history?.location?.state?.studentData?.total_question) {
-            if (selectedUserData?.total_marks >= sum && sum >= -(selectedUserData?.total_marks)) {
-                const payload = {
-                    test: history?.location?.state?.test_id,
-                    submitted_by: selectedUser,
-                    user_response: values.val,
-                    total_mark: parseFloat(sum)
+            if (selectedUserData?.is_question_wise == false) {
+                let eachQues = selectedUserData?.total_marks / selectedUserData?.total_question
+                console.log(eachQues);
+                if (values?.val?.length > 0) {
+                    let check = values?.val?.some(ele => ele > eachQues)
+                    console.log(check);
+                    if (check == true) {
+                        setAlert('warning', 'Marks cannot exceed total marks')
+                    } else {
+                        const payload = {
+                            test: history?.location?.state?.test_id,
+                            submitted_by: selectedUser,
+                            user_response: values.val,
+                            total_mark: parseFloat(sum)
+                        }
+                        console.log(payload);
+                        axiosInstance
+                            .put(`${endpoints.assessment.studentMarks}`, payload)
+                            .then((result) => {
+                                console.log(result);
+                                setAlert('success', 'Marks Uploaded')
+                                setNextFlag(false)
+                            })
+                            .catch((error) => {
+                                console.log('');
+                            });
+                    }
                 }
-                console.log(payload);
-                axiosInstance
-                    .put(`${endpoints.assessment.studentMarks}`, payload)
-                    .then((result) => {
-                        console.log(result);
-                        setAlert('success', 'Marks Uploaded')
-                        setNextFlag(false)
-                    })
-                    .catch((error) => {
-                        console.log('');
-                    });
-            } else {
-                setAlert('warning', `Marks cannot exceed total marks :- ${selectedUserData?.total_marks} `)
+
+            } 
+            if (selectedUserData?.is_question_wise == true) {
+                let checkValid = values?.val?.some((ele , index) => ele > selectedUserData?.question_wise_mark[index]?.max_marks || -(selectedUserData?.question_wise_mark[index]?.neg_marks) > ele )
+                // let checkValid = values?.val?.some((ele , index) =>  -(selectedUserData?.question_wise_mark[index]?.neg_marks) > ele )
+                console.log(checkValid);
+                if (checkValid == true) {
+                    setAlert('warning', 'Marks cannot exceed total marks')
+                } else {
+                    const payload = {
+                        test: history?.location?.state?.test_id,
+                        submitted_by: selectedUser,
+                        user_response: values.val,
+                        total_mark: parseFloat(sum)
+                    }
+                    console.log(payload);
+                    axiosInstance
+                        .put(`${endpoints.assessment.studentMarks}`, payload)
+                        .then((result) => {
+                            console.log(result);
+                            setAlert('success', 'Marks Uploaded')
+                            setNextFlag(false)
+                        })
+                        .catch((error) => {
+                            console.log('');
+                        });
+                }
             }
+
+
         } else {
             setAlert('warning', ' All Fields are required')
         }
@@ -476,7 +513,7 @@ const StudentMark = () => {
                 <div className="listcontainer">
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '95%', margin: '0 auto' }} >
                         <div className='filterStudent' style={{ width: '55%' }} >
-                            <div style={{width: '40%'}} >
+                            <div style={{ width: '40%' }} >
                                 <StyledButton onClick={lastUser} startIcon={<NavigateBeforeIcon style={{ fontSize: '30px' }} />} style={{ fontWeight: '600' }} >Previous Student</StyledButton>
                             </div>
                             <div style={{ margin: '0 20px', width: '50%' }}>
@@ -501,7 +538,7 @@ const StudentMark = () => {
                             </div>
 
                             <div>
-                                <StyledClearButton onClick={handleBack} style={{ fontWeight: '600' , width: '100%' }} >All Students</StyledClearButton>
+                                <StyledClearButton onClick={handleBack} style={{ fontWeight: '600', width: '100%' }} >All Students</StyledClearButton>
                             </div>
 
                         </div>
