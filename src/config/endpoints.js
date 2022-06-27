@@ -102,6 +102,7 @@ export default {
     assignRole: '/erp_user/assign_role/',
     userStatusChange: '/erp_user/',
     getMessages: '/communication/email-sms-logs/',
+    fetchContactInfo: '/erp_user/fetch-erp-details/'
   },
   announcementNew: {
     uploadingFile: '/announcement/upload-announcement-file/',
