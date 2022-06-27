@@ -208,6 +208,8 @@ export default {
     sectionWiseStudentCount: '/academic/grade_wise_students/',
     downloadBranchWiseStudent: '/qbox/academic/branch_strength_excel_data/',
     downloadExcelAllstudents: '/qbox/academic/all_branch_strength_excel_data/',
+    downloadBranchWiseStudent2: '/academic/branch_strength_excel_data/',
+    downloadExcelAllstudents2: '/academic/all_branch_strength_excel_data/',
   },
 
   idCards: {
