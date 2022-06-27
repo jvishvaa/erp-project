@@ -10,7 +10,7 @@ import BlockOutlined from '@material-ui/icons/BlockOutlined';
 import RestoreIcon from '@material-ui/icons/Restore';
 import useStyles from './useStyles';
 
-const ViewUserCard = ({ user, onEdit, onRestore, onDelete, onStatusChange }) => {
+const ViewUserCard = ({ user, onEdit, onRestore, onDelete, onStatusChange, index, showContactInfo }) => {
   const userStatus = user.active
     ? user.status === 'deleted'
       ? 'Deleted'
@@ -115,6 +115,7 @@ const ViewUserCard = ({ user, onEdit, onRestore, onDelete, onStatusChange }) => 
                 color='secondary'
                 noWrap
                 title={user.emails}
+                onClick={() => showContactInfo(user.erpId, index)}
               >
                 {user.emails}
               </Typography>
