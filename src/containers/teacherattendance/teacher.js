@@ -96,6 +96,9 @@ function EnhancedTableHead(props) {
   return (
     <TableHead align='left' stickyHeader>
       <TableRow>
+      <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
+          S. No.
+        </TableCell>
         <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
           ERP Id
         </TableCell>
@@ -664,6 +667,9 @@ export default function TeacherAttendance(props) {
                           key={value?.name}
                           // selected={isItemSelected}
                         >
+                          <TableCell align='left' style={{ width: '1px' }}>
+                            {i+1}
+                          </TableCell>
                           <TableCell align='left' style={{ width: '1px' }}>
                             {value?.erp_id}
                           </TableCell>
