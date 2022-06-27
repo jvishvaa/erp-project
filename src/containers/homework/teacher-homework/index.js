@@ -157,8 +157,8 @@ const TeacherHomework = withRouter(
       date: '',
       subjectName: '',
     });
-    const [ hwFlag , setHwFlag ] = useState(false);
-    const [ selectSub , setSelectSub ] = useState(false)
+    const [hwFlag, setHwFlag] = useState(false);
+    const [selectSub, setSelectSub] = useState(false)
 
     const [receivedHomework, setReceivedHomework] = useState({
       studentHomeworkId: '',
@@ -231,7 +231,7 @@ const TeacherHomework = withRouter(
     const handleSelectCol = (col, view) => {
       //  setClassNameForcontainer("home-wrapper")
       const { homeworkId, subjectId, sectionId } = col;
-      fetchStudentLists(homeworkId, subjectId, sectionId ,null, col?.date );
+      fetchStudentLists(homeworkId, subjectId, sectionId, null, col?.date);
       setSelectedCol(col);
       if (isMobile) {
         setActiveView('card-view');
@@ -284,7 +284,7 @@ const TeacherHomework = withRouter(
         `/homework/add/${date}/${sessionYear}/${branch}/${grade}/${subject}/${subjectId}`
       );
     };
-   
+
     useEffect(() => {
       if (teacherModuleId) {
         if (selectedFilters.branch !== '') {
@@ -365,7 +365,7 @@ const TeacherHomework = withRouter(
       }
     }, []);
 
-  
+
 
 
     let slectedSubmitStudent = [];
@@ -408,76 +408,76 @@ const TeacherHomework = withRouter(
     const handleAllSubmit = () => {
       const testclick = document.getElementsByClassName('checkboxsubmit');
       const checkboxes = testclick[0]?.querySelectorAll('input[type=checkbox]')
-      for (let i = 0; i < checkboxes.length; i ++) {
+      for (let i = 0; i < checkboxes.length; i++) {
         checkboxes[i].click();
       }
+    }
+
+    const handleAllUnSubmit = () => {
+      const testclick = document.getElementsByClassName('checkboxUnsubmit');
+      const checkboxes = testclick[0]?.querySelectorAll('input[type=checkbox]')
+      for (let i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].click();
       }
+    }
 
-      const handleAllUnSubmit = () => {
-        const testclick = document.getElementsByClassName('checkboxUnsubmit');
-        const checkboxes = testclick[0]?.querySelectorAll('input[type=checkbox]')
-        for (let i = 0; i < checkboxes.length; i ++) {
-          checkboxes[i].click();
-        }
-        }
-
-        const handleAllAbsent = () => {
-          const testclick = document.getElementsByClassName('checkboxAbsent');
-          const checkboxes = testclick[0]?.querySelectorAll('input[type=checkbox]')
-          console.log(checkboxes , "all submit");
-          for (let i = 0; i < checkboxes.length; i ++) {
-            checkboxes[i].click();
-          }
-          console.log(slectedUnSubmitStudent);
-          }
+    const handleAllAbsent = () => {
+      const testclick = document.getElementsByClassName('checkboxAbsent');
+      const checkboxes = testclick[0]?.querySelectorAll('input[type=checkbox]')
+      console.log(checkboxes, "all submit");
+      for (let i = 0; i < checkboxes.length; i++) {
+        checkboxes[i].click();
+      }
+      console.log(slectedUnSubmitStudent);
+    }
 
     const handleSubmittedStd = () => {
-      if(slectedSubmitStudent.length > 0){
-      axiosInstance
-      .put(endpoints.homework.submitToUnsubmit, slectedSubmitStudent)
-      .then((result) => {
-        setAlert('success', result.data.message);
-      fetchStudentLists(selectedCol?.homeworkId, selectedCol?.subjectId, selectedCol?.sectionId ,null, selectedCol?.date);
-      if(hwFlag == true){
-        setHwFlag(false)
+      if (slectedSubmitStudent.length > 0) {
+        axiosInstance
+          .put(endpoints.homework.submitToUnsubmit, slectedSubmitStudent)
+          .then((result) => {
+            setAlert('success', result.data.message);
+            fetchStudentLists(selectedCol?.homeworkId, selectedCol?.subjectId, selectedCol?.sectionId, null, selectedCol?.date);
+            if (hwFlag == true) {
+              setHwFlag(false)
+            } else {
+              setHwFlag(true)
+            }
+            slectedSubmitStudent = [];
+          })
+          .catch((error) => {
+            setLoading(false);
+            setAlert('error', 'something went wrong');
+            console.log(error);
+          });
       } else {
-        setHwFlag(true)
+        setAlert('error', 'Please select Users')
       }
-      slectedSubmitStudent = [];
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', 'something went wrong');
-        console.log(error);
-      });
-    } else {
-      setAlert('error','Please select Users')
-    }
     }
 
     const handleUnSubmittedStd = () => {
-      if(slectedUnSubmitStudent.length > 0){
-      axiosInstance
-      .put(`academic/${selectedCol?.homeworkId}/homework-unsubmitted-submitted/`, slectedUnSubmitStudent)
-      .then((result) => {
-        setAlert('success', result.data.message);
-        console.log(selectedCol);
-      fetchStudentLists(selectedCol?.homeworkId, selectedCol?.subjectId, selectedCol?.sectionId ,null, selectedCol?.date);
-      if(hwFlag == true){
-        setHwFlag(false)
+      if (slectedUnSubmitStudent.length > 0) {
+        axiosInstance
+          .put(`academic/${selectedCol?.homeworkId}/homework-unsubmitted-submitted/`, slectedUnSubmitStudent)
+          .then((result) => {
+            setAlert('success', result.data.message);
+            console.log(selectedCol);
+            fetchStudentLists(selectedCol?.homeworkId, selectedCol?.subjectId, selectedCol?.sectionId, null, selectedCol?.date);
+            if (hwFlag == true) {
+              setHwFlag(false)
+            } else {
+              setHwFlag(true)
+            }
+            slectedUnSubmitStudent = [];
+          })
+          .catch((error) => {
+            setLoading(false);
+            setAlert('error', 'something went wrong');
+            console.log(error);
+          });
       } else {
-        setHwFlag(true)
+        setAlert('error', 'Please select Users')
       }
-      slectedUnSubmitStudent = [];
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', 'something went wrong');
-        console.log(error);
-      });
-    } else {
-      setAlert('error','Please select Users')
-    }
     }
 
 
@@ -981,12 +981,12 @@ const TeacherHomework = withRouter(
                               <Typography color="secondary" style={{ fontSize: '16px' }}>Expired</Typography>
                             </div>
                             <div className='icon-desc-container'>
-                            <div className='badgeContent' >
-                              <Badge color="success" variant="dot" >
-                                <AssignmentIcon style={{color: '#014b7e'}} />
-                              </Badge>
-                            </div>
-                            <Typography color="secondary" style={{ fontSize: '16px' }}>Online Submission</Typography>
+                              <div className='badgeContent' >
+                                <Badge color="success" variant="dot" >
+                                  <AssignmentIcon style={{ color: '#014b7e' }} />
+                                </Badge>
+                              </div>
+                              <Typography color="secondary" style={{ fontSize: '16px' }}>Online Submission</Typography>
                             </div>
                           </Grid>
                         )}
@@ -1005,7 +1005,7 @@ const TeacherHomework = withRouter(
                       ) : (
                         <Grid
                           xs={12}
-                          md={selectedCol?.subject ? 9 : 12}
+                          md={selectedCol?.subject ? 8 : 12}
                           item
                           className='table-cont'
                         >
@@ -1338,8 +1338,8 @@ const mapDispatchToProps = (dispatch) => ({
   onSetSelectedHomework: (data) => {
     dispatch(setSelectedHomework(data));
   },
-  fetchStudentLists: (id, subjectId, sectionId ,user , date ) => {
-    dispatch(fetchStudentsListForTeacherHomework(id, subjectId, sectionId ,user , date));
+  fetchStudentLists: (id, subjectId, sectionId, user, date) => {
+    dispatch(fetchStudentsListForTeacherHomework(id, subjectId, sectionId, user, date));
   },
   onSetSelectedFilters: (data) => {
     dispatch(setSelectedFilters(data));
