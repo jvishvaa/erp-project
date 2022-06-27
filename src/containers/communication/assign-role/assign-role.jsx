@@ -370,7 +370,7 @@ const AssignRole = (props) => {
         if(type === "email"){
           const email = statusChange?.data?.data?.email;
           newData = { ...usersRow[index], email };
-          console.log(statusChange?.data?.data?.email)
+          // console.log(statusChange?.data?.data?.email)
         }
         else{
           let details = statusChange?.data?.data?.personal_info
