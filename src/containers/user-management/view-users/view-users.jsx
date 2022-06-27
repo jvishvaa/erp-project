@@ -1123,6 +1123,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   onStatusChange={(userId, status) => {
                     handleStatusChange(userId, i, status);
                   }}
+                  index={i}
+                  showContactInfo = {(id, idx)=>showContactInfo(id, idx)}
                 />
               ))}
             </div>
