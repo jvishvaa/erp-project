@@ -50,7 +50,7 @@ const HomeworkCard = ({
     <Grid item xs={12} md={4} className='hwcard-container' style={{ display: 'flex', flexWrap: 'wrap' }}>
       <Paper
         className='hwcard'
-        style={{ flexDirection: 'column', width: '100%', overflowX: 'hidden', overflow: 'auto', height: '95%', padding: '5px' }}
+        style={{ flexDirection: 'column', width: '100%', overflowX: 'hidden', overflow: 'auto', height: '95%', padding: '5px', scrollbarWidth: "inherit" }}
       >
         <div style={{ display: 'flex', flexDirection: "row-reverse", padding: '0px' }}>
           <div style={{ padding: '0px' }}>
