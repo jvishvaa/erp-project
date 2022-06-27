@@ -23,6 +23,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
     pageno,
     setSelectAll,
     name,
+    showContactInfo,
   } = props || {};
 
   React.useEffect(() => {
@@ -85,11 +86,16 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
   };
 
   const selectmodule = (e) => {
+    if(isColumnClick.current){
+      isColumnClick.current = false;
+      return;
+    }
     if(name === 'assign_level'){
       selectRowLevel(e)
     } else {
       selectRow(e)
     }
+    isColumnClick.current = false;
   }
   const pageChange = (e) => {
     changePage(e.page + 1);
@@ -99,7 +105,23 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
     columns: [...header],
   };
 
+  const handleOnCellClick = (e) => {
+    if(e["field"]){
+      // console.log("eeee",e,rows,isColumnClick,rows);
+      let index;
+      for(let i=0;i<rows.length;i++){
+        if(rows[i].id === e?.row?.id){
+          index = i;
+        }
+      }
+      showContactInfo(index, e?.row?.erp_id,e.field)
+    isColumnClick.current = true
+    }
+    // console.log("eeee",e,rows)
+  }
+
   let apiRef = React.useRef(null);
+  let isColumnClick = React.useRef(false);
 
   return (
     <div
@@ -126,6 +148,8 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
         ref={(input) => (apiRef = input)}
         {...data}
         onRowSelected={selectmodule}
+        disableSelectionOnClick
+        onCellClick={handleOnCellClick}
         // selectRows={() => {
         //   console.log('selectRows ????');
         // }}

@@ -60,6 +60,44 @@ const StudentStrength = ({ history }) => {
     return getModuleInfo(moduleName).id;
   }
 
+  const file = () => {    
+    setLoading(true);
+    axiosInstance
+      .get(
+        `${endpoints.studentListApis.downloadExcelAllstudents2}?academic_year_id=${
+          selectedAcademicYear && selectedAcademicYear.id
+        }&export_type=csv`
+      )
+      .then((result) => {
+        if (result.status === 200) {
+          // window.location.href = `/qbox${endpoints.studentListApis.downloadExcelAllstudents}?academic_year_id=${selectedAcademicYear && selectedAcademicYear.id
+          // }&export_type=csv`
+          // setDownloadFile(true)
+          setLoading(false);
+        }
+      });
+  };
+
+  const file2 = () => {
+    setLoading(true);
+    axiosInstance
+      .get(
+        `${endpoints.studentListApis.downloadBranchWiseStudent2}?academic_year_id=${
+          selectedAcademicYear && selectedAcademicYear.id
+        }&branch_id=${selectedBranch?.branch?.id}
+    &export_type=csv`
+      )
+      .then((result) => {
+        if (result.status === 200) {
+          setLoading(false);
+          // setDownloadFile(true)
+          // window.location.href = `${endpoints.studentListApis.downloadBranchWiseStudent}?academic_year_id=${selectedAcademicYear && selectedAcademicYear.id
+          // }&branch_id=${selectedBranch?.branch?.id}
+          // &export_type=csv`
+        }
+      });
+  };
+
   useEffect(() => {
     setHRef([
       {
@@ -307,13 +345,12 @@ const StudentStrength = ({ history }) => {
                 <Grid item style={{ marginLeft: '5%' }}>
                   <Button
                     size='medium'
+                    // href={hRef && hRef[0] && hRef[0].csv}
+                    // href={downloadFile && hRef && hRef[0] && hRef[0].csv}
                     href={hRef && hRef[0] && hRef[0].csv}
                     className={classes.studentStrenghtDownloadButton}
                     onClick={() => {
-                      setLoading(true);
-                      setTimeout(function () {
-                        setLoading(false);
-                      }, 4000);
+                      file();
                     }}
                   >
                     <span style={{ fontSize: '13px' }}> Download All Branch Excel</span>
@@ -326,15 +363,14 @@ const StudentStrength = ({ history }) => {
                     size='medium'
                     color='primary'
                     style={{ color: 'white', width: '100%' }}
+                    // href={hRef && hRef[1] && hRef[1].csv}
+                    // href={downloadFile && hRef && hRef[1] && hRef[1].csv}
                     href={hRef && hRef[1] && hRef[1].csv}
                     onClick={() => {
-                      setLoading(true);
-                      setTimeout(function () {
-                        setLoading(false);
-                      }, 4000);
+                      file2();
                     }}
                   >
-                    <span style={{ fontSize: '13px' }}> Download Branch Excel</span>{' '}
+                    <span style={{ fontSize: '13px' }}> Download Branch Excel</span>
                   </Button>
                 </Grid>
               </MediaQuery>

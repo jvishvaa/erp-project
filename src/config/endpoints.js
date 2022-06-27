@@ -102,6 +102,7 @@ export default {
     assignRole: '/erp_user/assign_role/',
     userStatusChange: '/erp_user/',
     getMessages: '/communication/email-sms-logs/',
+    fetchContactInfo: '/erp_user/fetch-erp-details/'
   },
   announcementNew: {
     uploadingFile: '/announcement/upload-announcement-file/',
@@ -208,6 +209,8 @@ export default {
     sectionWiseStudentCount: '/academic/grade_wise_students/',
     downloadBranchWiseStudent: '/qbox/academic/branch_strength_excel_data/',
     downloadExcelAllstudents: '/qbox/academic/all_branch_strength_excel_data/',
+    downloadBranchWiseStudent2: '/academic/branch_strength_excel_data/',
+    downloadExcelAllstudents2: '/academic/all_branch_strength_excel_data/',
   },
 
   idCards: {
