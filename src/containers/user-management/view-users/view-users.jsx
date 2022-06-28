@@ -680,7 +680,10 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   };
 
-  const showContactInfo = async (id, index) => {
+  const showContactInfo = async (id, index, mail) => {
+    if(mail.includes('@')){
+      return;
+    }
     setLoading(true);
     try {
       const statusChange = await axiosInstance.get(
@@ -989,14 +992,14 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                       <TableCell className={classes.tableCell}>{items.erpId}</TableCell>
                       <TableCell
                         className={classes.tableCell}
-                        style={{ cursor: 'pointer' }}
+                        // style={{ cursor: 'pointer' }}
                       >
                         {items.emails.includes('*') ? (
-                          <div onClick={() => showContactInfo(items?.erpId, i)}>
+                          <div style={items.emails.includes('@') ? {} : { cursor: 'pointer' }} onClick={() => showContactInfo(items?.erpId, i, items.emails)}>
                             ******@mail.com
                           </div>
                         ) : (
-                          <div onClick={() => showContactInfo(items?.erpId, i)}>
+                          <div style={items.emails.includes('@') ? {} : { cursor: 'pointer' }} onClick={() => showContactInfo(items?.erpId, i,items.emails)}>
                             {items.emails}
                           </div>
                         )}
