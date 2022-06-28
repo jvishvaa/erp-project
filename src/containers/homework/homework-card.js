@@ -47,10 +47,10 @@ const HomeworkCard = ({
   return (
     // <Layout>
 
-    <Grid item xs={12} md={3} className='hwcard-container' style={{ display: 'flex', flexWrap: 'wrap' }}>
+    <Grid item xs={12} md={4} className='hwcard-container' style={{ display: 'flex', flexWrap: 'wrap' }}>
       <Paper
         className='hwcard'
-        style={{ flexDirection: 'column', width: '100%', overflowX: 'hidden', overflow: 'auto', height: '100%' }}
+        style={{ flexDirection: 'column', width: '100%', overflowX: 'hidden', overflow: 'auto', height: '100%', padding: '5px', scrollbarWidth: "inherit" }}
       >
         <div style={{ display: 'flex', flexDirection: "row-reverse", padding: '0px' }}>
           <div style={{ padding: '0px' }}>
@@ -61,8 +61,8 @@ const HomeworkCard = ({
         </div>
 
         <div className='cardHeader'>
-          <div className='subjectName'>{subject}</div>
-          <div> {moment(date).format('DD-MM-YYYY')}</div>
+          <div className='subjectName' style={{ marginLeft: '15px' }}>{subject}</div>
+          <div style={{ marginRight: '5px' }}> {moment(date).format('DD-MM-YYYY')}</div>
         </div>
         <div className='divider'></div>
         {view === 'evaluationStats' && (
@@ -117,7 +117,7 @@ const HomeworkCard = ({
                         <Checkbox onChange={() => handleUser(student)} inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} />
                         <div
                           onClick={() => checkMode(student)}
-                          style={{ width: '75%', display: 'flex', justifyContent: 'space-between', cursor: student?.hw_submission_mode === 'Online Submission' ? 'pointer' : 'default' }}
+                          style={{ width: '55%', display: 'flex', justifyContent: 'space-between', cursor: student?.hw_submission_mode === 'Online Submission' ? 'pointer' : 'default' }}
                         >
                           <div className='studentName'  >
                             {`${student.first_name.charAt(0).toUpperCase() + student.first_name.slice(1)} 
