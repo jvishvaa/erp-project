@@ -98,7 +98,7 @@ function EnhancedTableHead(props) {
     <TableHead align='left' stickyHeader>
       <TableRow>
       <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
-          S. No.
+          S.No.
         </TableCell>
         <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
           ERP Id
