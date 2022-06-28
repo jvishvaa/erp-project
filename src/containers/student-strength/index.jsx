@@ -321,7 +321,10 @@ const StudentStrength = ({ history }) => {
                 <Grid item>
                   <Button
                     size='medium'
-                    href={hRef && hRef[0] && hRef[0].csv}
+                    // href={hRef && hRef[0] && hRef[0].csv}
+                    onClick={() => {
+                      file();
+                    }}
                     className={classes.studentStrenghtDownloadButton}
                   >
                     Download All Branch Excel
@@ -334,7 +337,10 @@ const StudentStrength = ({ history }) => {
                     size='medium'
                     color='primary'
                     style={{ color: 'white', width: '100%' }}
-                    href={hRef && hRef[1] && hRef[1].csv}
+                    // href={hRef && hRef[1] && hRef[1].csv}
+                    onClick={() => {
+                      file2();
+                    }}
                   >
                     Download Branch Excel
                   </Button>
