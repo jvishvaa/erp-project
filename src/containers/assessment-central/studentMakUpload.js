@@ -395,8 +395,10 @@ const StudentMark = () => {
 
             } 
             if (selectedUserData?.is_question_wise == true) {
-                let checkValid = values?.val?.some((ele , index) => ele > selectedUserData?.question_wise_mark[index]?.max_marks || -(selectedUserData?.question_wise_mark[index]?.neg_marks) > ele )
+                let checkValid = values?.val?.some((ele , index) => ele > selectedUserData?.question_mark[index]?.question_mark[0] || -(selectedUserData?.question_mark[index]?.question_mark[1]) > ele )
                 // let checkValid = values?.val?.some((ele , index) =>  -(selectedUserData?.question_wise_mark[index]?.neg_marks) > ele )
+                // let checkValid = values?.val?.some((ele , index) =>  -(selectedUserData?.question_wise_mark[index]?.max_marks) > ele )
+
                 console.log(checkValid);
                 if (checkValid == true) {
                     setAlert('warning', 'Marks cannot exceed total marks')
