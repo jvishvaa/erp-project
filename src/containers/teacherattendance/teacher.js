@@ -45,6 +45,7 @@ import endpoints from '../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import MomentUtils from '@date-io/moment';
+import NotifyConfirmPopUp from './notifyConfirmPopUp';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -226,6 +227,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TeacherAttendance(props) {
   const classes = useStyles();
+  const [openModal,setOpenModal] = useState(false)
   const [order, setOrder] = React.useState('asc');
   const [loading, setLoading] = React.useState(false);
   const [orderBy, setOrderBy] = React.useState('');
@@ -263,11 +265,12 @@ export default function TeacherAttendance(props) {
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [selectedGradeIds, setSelectedGradeIds] = useState('');
 
-  const [sectionId, setSectionId] = useState('');
+  const [sectionId, setSectionId] = useState([]);
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
   const [selectedSectionIds, setSelectedSectionIds] = useState([]);
 
+  const [isStudentInRole,setIsStudentInRole] = useState(false)
   const [filterData, setFilterData] = React.useState({
     branch: '',
     year: '',
@@ -325,6 +328,7 @@ export default function TeacherAttendance(props) {
       setGradeList([]);
       setSelectedGrade([]);
       setSelectedGradeIds('');
+      setSectionId([])
       setSectionList([]);
       setSelectedSection([]);
       setSelectedSectionIds('');
@@ -344,6 +348,7 @@ export default function TeacherAttendance(props) {
       setSectionList([]);
       setSelectedSection([]);
       setSelectedSectionIds([]);
+      setSectionId([])
     }
   };
 
@@ -352,6 +357,7 @@ export default function TeacherAttendance(props) {
       setSectionList([]);
       setSelectedSection([]);
       setSelectedSectionIds('');
+      setSectionId([])
 
       const selectedId = value?.grade_id;
       setSelectedGrade(value);
@@ -368,6 +374,7 @@ export default function TeacherAttendance(props) {
       setSelectedSection([]);
       setSelectedGradeIds('');
       setSelectedSectionIds('');
+      setSectionId([])
     }
   };
 
@@ -383,7 +390,7 @@ export default function TeacherAttendance(props) {
       setSelectedSection(value);
       setSelectedSectionIds(selectedsecctionId);
     } else {
-      setSectionId('');
+      setSectionId([]);
       setSelectedSection([]);
       setSelectedSectionIds('');
     }
@@ -486,9 +493,14 @@ export default function TeacherAttendance(props) {
 
   const handleMultipleRoles = (event, value) => {
     if (value) {
+      const isSubset = (array1, array2) => array2.every(element => array1.includes(element));
+      const roleName = value?.role_name.toUpperCase().split('')
+      const studentSpelling = ['S','T','U','D','E','N','T']
+      setIsStudentInRole(isSubset(roleName,studentSpelling))
       setRolesId(value?.id);
     } else {
       setRolesId('');
+      setIsStudentInRole(false)
     }
   };
 
@@ -505,6 +517,22 @@ export default function TeacherAttendance(props) {
 
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
+  const handleNotifyPopUp = (val) => {
+    if(startDate !== moment().format('YYYY-MM-DD')){
+      setAlert('warning','Please select today\'s date')
+    }
+    if (sectionId.length == 0 || !selectedBranchIds || !selectedGradeIds ) {
+      setAlert('warning','Select all fields')
+    }
+    if (sectionId.length > 0 && selectedBranchIds && selectedGradeIds && (startDate == moment().format('YYYY-MM-DD'))){
+      setOpenModal(val)
+    }
+  }
+
+  const local = 'localhost:3000'
+  const dev = 'dev.olvorchidnaigaon.letseduvate.com'
+  const qa = 'qa.olvorchidnaigaon.letseduvate.com'
+  const prod = 'orchids.letseduvate.com'
   return (
     <Layout>
       <Grid
@@ -635,6 +663,13 @@ export default function TeacherAttendance(props) {
               Search
             </Button>
           </Grid>
+          {isStudentInRole && (window.location.host == local || window.location.host == dev || window.location.host == qa || window.location.host == prod) && 
+          <Grid item md={1} xs={12}>
+          <Button onClick={()=>{handleNotifyPopUp(true)}} variant='contained' color='primary'>
+            Notify
+          </Button>
+        </Grid>}
+
         </Grid>
         <div className='th-sticky-header' style={{ width: '100%' }}>
           <TableContainer className='tableContainer'>
@@ -703,6 +738,12 @@ export default function TeacherAttendance(props) {
           </TableContainer>
         </div>
       </Grid>
+      <NotifyConfirmPopUp 
+        openModal={openModal} 
+        handleNotifyPopUp={handleNotifyPopUp} 
+        sectionId={sectionId}
+        startDate={startDate} 
+      />
     </Layout>
   );
 }
