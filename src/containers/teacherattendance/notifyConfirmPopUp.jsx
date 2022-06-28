@@ -10,7 +10,7 @@ import Loader from '../../components/loader/loader';
 
 
 const NotifyConfirmPopUp = (props) => {
-  const { openModal, handleNotifyPopUp,startDate,sectionId } = props;
+  const { openModal, handleNotifyPopUp,startDate,sectionId,rolesId } = props;
   const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = React.useState(false);
@@ -22,7 +22,8 @@ const NotifyConfirmPopUp = (props) => {
     const sectionMappingId = sectionId.toString()
     const payLoad = {
       section_mapping_id:sectionMappingId,
-      date : startDate
+      date : startDate,
+      role : rolesId,
     }
     axiosInstance.post(`${endpoints.academics.notifyAttendance}`,payLoad).then((result)=>{
       if(result.data.status_code === 200){

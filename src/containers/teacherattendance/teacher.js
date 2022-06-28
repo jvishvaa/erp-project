@@ -743,6 +743,7 @@ export default function TeacherAttendance(props) {
         handleNotifyPopUp={handleNotifyPopUp} 
         sectionId={sectionId}
         startDate={startDate} 
+        rolesId={rolesId}
       />
     </Layout>
   );
