@@ -143,11 +143,11 @@ const SectionTable = () => {
       getUserListUrl += `&session_year=${selectedYear}`;
     }
     if (searchBranch) {
-      getUserListUrl += `&branch_name=${searchBranch.branch.branch_name}`;
+      getUserListUrl += `&branch_id=${searchBranch.branch.id}`;
     }
     if (searchGrades.length) {
-      const selectedGradeId = searchGrades.map((el) => el.grade_name);
-      getUserListUrl += `&grade_name=${selectedGradeId.toString()}`;
+      const selectedGradeId = searchGrades.map((el) => el.grade_id);
+      getUserListUrl += `&grade_id=${selectedGradeId.toString()}`;
     }
     if (searchSection) {
       getUserListUrl += `&section_name=${searchSection}`;
@@ -330,8 +330,11 @@ const SectionTable = () => {
     let url = `${endpoints.masterManagement.sectionMappingTable}?page=${page}&page_size=${limit}`;
     if (searchSection) url += `&section_name=${searchSection.toLowerCase()}`;
     if (selectedYear) url += `&session_year=${selectedYear}`;
-    if (searchGrades) url += `&grade_name=${searchGrades}`;
-    if (searchBranch) url += `&branch_name=${searchBranch}`;
+    if (searchGrades.length > 0){
+      const selectedGradeId = searchGrades.map((el) => el.grade_id);
+      url += `&grade_id=${selectedGradeId.toString()}`;
+    }
+    if (searchBranch) url += `&branch_id=${searchBranch.branch.id}`;
 
     axiosInstance
       .get(url)
