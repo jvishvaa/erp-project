@@ -106,7 +106,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
   };
 
   const handleOnCellClick = (e) => {
-    if(e["field"]){
+    if(e["field"] === "contact" || e["field"] === "email"){
       // console.log("eeee",e,rows,isColumnClick,rows);
       let index;
       for(let i=0;i<rows.length;i++){
@@ -114,7 +114,13 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
           index = i;
         }
       }
-      showContactInfo(index, e?.row?.erp_id,e.field)
+      if(e["field"] === "email") {
+        if(!e.row?.email.includes("@")) {
+          showContactInfo(index, e?.row?.erp_id,e.field)
+        }
+      } else  if(e["field"] === "contact" && e.row?.contact.includes("X")){
+        showContactInfo(index, e?.row?.erp_id,e.field)
+      }
     isColumnClick.current = true
     }
     // console.log("eeee",e,rows)
