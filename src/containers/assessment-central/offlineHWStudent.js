@@ -521,7 +521,7 @@ const OfflineStudentAssessment = () => {
                                                     {items?.name}
                                                 </TableCell>
                                                 <TableCell className={classes.tableCell} id="blockArea" >
-                                                    {items?.test_details?.total_marks != null ? items?.test_details?.total_marks :
+                                                    {items?.test_details?.total_marks != null ? items?.test_details?.total_marks.toFixed(2) :
                                                         <StyledButton onClick={() => uploadMarks(items)} startIcon={<EditIcon style={{ fontSize: '30px' }} />} >Upload Marks</StyledButton>
                                                     }
                                                 </TableCell>
