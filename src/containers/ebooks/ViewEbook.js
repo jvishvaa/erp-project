@@ -24,6 +24,7 @@ import GridList from './gridList';
 import axios from 'axios';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
+import { getModuleInfo } from '../../utility-functions';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -89,18 +90,36 @@ class ViewEbook extends Component {
       selectedGrade: '',
       selectedSubject: '',
       selectedVolume: '',
+      central_branchid: '',
     };
   }
   static contextType = AlertNotificationContext;
 
   componentDidMount() {
-    this.handleCentralGradeId();
+    this.handleBranchid();
+    // this.handleCentralGradeId();
     // this.getEbook();
   }
-  handleCentralGradeId = () => {
+
+  handleBranchid = () => {
+    axiosInstance.get(
+      `${endpoints.communication.branches}?session_year=${this.state.sessionYear?.id}&module_id=${getModuleInfo('Ebook View').id}`
+    )
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          const central_branchid = result?.data?.data?.results[0]?.branch?.id
+          this.handleCentralGradeId(central_branchid)
+          console.log('debug', central_branchid)
+        } else {
+          // console.log(result.data.message);
+        }
+      })
+  }
+
+  handleCentralGradeId = (central_branchid) => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     axiosInstance
-      .get(`${endpoints.ebook.getCentralGrade}?session_year=${this.state.sessionYear?.id}`, {
+      .get(`${endpoints.ebook.getCentralGrade}?session_year=${this.state.sessionYear?.id}&branch_id=${central_branchid}`, {
         headers: {
           Authorization: 'Bearer ' + token,
         },
@@ -229,7 +248,7 @@ class ViewEbook extends Component {
     }
   };
 
-  getEbook = (acad, branch, grade, subject, vol,customGrade) => {
+  getEbook = (acad, branch, grade, subject, vol, customGrade) => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
     const hostSplitArray = host.split('.');
@@ -251,11 +270,11 @@ class ViewEbook extends Component {
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     let filterGrade
-    if(customGrade){
-       filterGrade = `${grade ? `&grade=[${customGrade}]` : ''}`;
+    if (customGrade) {
+      filterGrade = `${grade ? `&grade=[${customGrade}]` : ''}`;
 
-    }else {
-       filterGrade = `${grade ? `&grade=[${grade?.central_grade}]` : ''}`;
+    } else {
+      filterGrade = `${grade ? `&grade=[${grade?.central_grade}]` : ''}`;
 
     }
     // const filterGrade = `${grade ? `&grade=[${grade?.central_grade}]` : ''}`;
@@ -267,22 +286,17 @@ class ViewEbook extends Component {
 
     if (tabValue === 0 || tabValue === 1) {
       if (filterGrade === '') {
-        urlPath = `${
-          endpoints.ebook.ebook
-        }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
-          tabValue + 1
-        }&grade=[${this.state.central_grade}]`;
+        urlPath = `${endpoints.ebook.ebook
+          }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${tabValue + 1
+          }&grade=[${this.state.central_grade}]`;
       } else {
-        urlPath = `${
-          endpoints.ebook.ebook
-        }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
-          tabValue + 1
-        }${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+        urlPath = `${endpoints.ebook.ebook
+          }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${tabValue + 1
+          }${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
       }
     } else if (tabValue === 2) {
-      urlPath = `${
-        endpoints.ebook.ebook
-      }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+      urlPath = `${endpoints.ebook.ebook
+        }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
     }
     axiosInstance
       .get(urlPath, {
@@ -319,7 +333,7 @@ class ViewEbook extends Component {
     this.state.selectedGrade = grade;
     this.state.selectedSubject = sub.central_subject;
     this.state.selectedVolume = vol;
-    this.getEbook(acad, branch, grade, sub.central_subject, vol,customGrade);
+    this.getEbook(acad, branch, grade, sub.central_subject, vol, customGrade);
   };
 
   handleClearFilter = () => {

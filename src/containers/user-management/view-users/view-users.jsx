@@ -680,6 +680,39 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   };
 
+  const showContactInfo = async (id, index, mail) => {
+    if(mail.includes('@')){
+      return;
+    }
+    setLoading(true);
+    try {
+      const statusChange = await axiosInstance.get(
+        `${endpoints.communication.fetchContactInfo}?erp_id=${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (statusChange.status === 200) {
+        setLoading(false);
+        setAlert('success', statusChange.data.message);
+        const tempGroupData = JSON.parse(JSON.stringify(usersData));
+        const emails = statusChange?.data?.data?.email;
+        const newData = { ...tempGroupData[index], emails };
+        tempGroupData.splice(index, 1, newData);
+        setUsersData(tempGroupData);
+        // console.log("Abcd",statusChange?.data?.result?.user?.email)
+      } else {
+        setLoading(false);
+        setAlert('error', statusChange.data.message);
+      }
+    } catch (error) {
+      setLoading(false);
+      setAlert('error', error.message);
+    }
+  };
+
   return (
     <Layout>
       <CommonBreadcrumbs
@@ -957,7 +990,21 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                         {items.userName}
                       </TableCell>
                       <TableCell className={classes.tableCell}>{items.erpId}</TableCell>
-                      <TableCell className={classes.tableCell}>{items.emails}</TableCell>
+                      <TableCell
+                        className={classes.tableCell}
+                        // style={{ cursor: 'pointer' }}
+                      >
+                        {items.emails.includes('*') ? (
+                          <div style={items.emails.includes('@') ? {} : { cursor: 'pointer' }} onClick={() => showContactInfo(items?.erpId, i, items.emails)}>
+                            ******@mail.com
+                          </div>
+                        ) : (
+                          <div style={items.emails.includes('@') ? {} : { cursor: 'pointer' }} onClick={() => showContactInfo(items?.erpId, i,items.emails)}>
+                            {items.emails}
+                          </div>
+                        )}
+                        {/* <div onClick={() => showContactInfo(items?.userId,i)}>{items.emails}</div> */}
+                      </TableCell>
                       <TableCell className={classes.tableCell}>{items?.role}</TableCell>
                       <TableCell className={classes.tableCell}>
                         {items && items.status === 'active' ? (
@@ -1079,6 +1126,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   onStatusChange={(userId, status) => {
                     handleStatusChange(userId, i, status);
                   }}
+                  index={i}
+                  showContactInfo = {(id, idx)=>showContactInfo(id, idx)}
                 />
               ))}
             </div>
