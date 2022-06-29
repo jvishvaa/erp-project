@@ -24,6 +24,7 @@ import { connect, useSelector } from 'react-redux';
 import useStyles from './useStyles';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import './styles.scss';
+import Loader from '../../../components/loader/loader';
 
 import Layout from '../../Layout';
 import { SearchOutlined } from '@material-ui/icons';
@@ -76,6 +77,7 @@ const AssignRole = (props) => {
   const [isNewSeach, setIsNewSearch] = useState(true);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('xs'));
+  const [loading, setLoading] = useState(false);
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
@@ -351,6 +353,46 @@ const AssignRole = (props) => {
   }
   };
 
+  const showContactInfo = async (index, id, type) => {
+    setLoading(true);
+    try {
+      const statusChange = await axiosInstance.get(
+        `${endpoints.communication.fetchContactInfo}?erp_id=${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (statusChange.status === 200) {
+        // setLoading(false);
+        let newData;
+        if(type === "email"){
+          const email = statusChange?.data?.data?.email;
+          newData = { ...usersRow[index], email };
+          // console.log(statusChange?.data?.data?.email)
+        }
+        else{
+          let details = statusChange?.data?.data?.personal_info
+          const contact = details.contact.split('-').length > 1
+          ? details.contact.split('-')[1]
+          : details.contact
+          newData = { ...usersRow[index], contact };  //emails
+
+        }
+        usersRow.splice(index, 1, newData);
+        setAlert('success', statusChange.data.message);
+        setLoading(false);
+      } else {
+        setLoading(false);
+        setAlert('error', statusChange.data.message);
+      }
+    } catch (error) {
+      setLoading(false);
+      setAlert('error', error.message);
+    }
+  };
+
   useEffect(() => {
     displayUsersList();
   },[pageno,clearAllActive]);
@@ -559,6 +601,7 @@ const AssignRole = (props) => {
 
   return (
     <Layout>
+      {loading && <Loader />}
       <CommonBreadcrumbs
         componentName='User Management'
         childComponentName='Assign role'
@@ -823,6 +866,8 @@ const AssignRole = (props) => {
               name='assign_role'
               setSelectedUsers={setSelectedUsers}
               pageSize={15}
+              showContactInfo = {showContactInfo}
+              setLoading = {setLoading}
             />
           </>
         )}

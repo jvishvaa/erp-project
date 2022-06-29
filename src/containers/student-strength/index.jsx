@@ -20,6 +20,7 @@ import { makeStyles } from '@material-ui/core';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { getModuleInfo } from '../../utility-functions';
 import { useLocation } from 'react-router-dom';
+import FileSaver from 'file-saver';
 
 const useStyles = makeStyles((theme) => ({
   studentStrenghtDownloadButton: {
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const StudentStrength = ({ history }) => {
+  const { token } = JSON.parse(localStorage.getItem('userDetails')) || {}
   const [acadminYearList, setAcadminYearList] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState('');
@@ -59,6 +61,69 @@ const StudentStrength = ({ history }) => {
     const moduleName = tempObj[location.pathname] || tempObj['default'];
     return getModuleInfo(moduleName).id;
   }
+
+  // const file = () => {    
+  //   setLoading(true);
+  //   axiosInstance
+  //     .get(
+  //       `${endpoints.studentListApis.downloadExcelAllstudents2}?academic_year_id=${
+  //         selectedAcademicYear && selectedAcademicYear.id
+  //       }&export_type=csv`
+  //     )
+  //     .then((result) => {
+  //       if (result.status === 200) {
+  //         // window.location.href = `/qbox${endpoints.studentListApis.downloadExcelAllstudents}?academic_year_id=${selectedAcademicYear && selectedAcademicYear.id
+  //         // }&export_type=csv`
+  //         // setDownloadFile(true)
+  //         setLoading(false);
+  //       }
+  //     });
+  // };
+
+  const file = () => {
+    setLoading(true);
+    axiosInstance.get(`${endpoints.studentListApis.downloadExcelAllstudents2}?academic_year_id=${
+      selectedAcademicYear && selectedAcademicYear.id
+    }`,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          responseType : 'arraybuffer'
+        }) 
+        .then((res) => {
+        const blob = new Blob([res.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+        FileSaver.saveAs(blob, 'branch-all.xls');
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', 'Something Wrong!')
+      });
+  };
+
+  const file2 = () => {
+    console.log('orchids','file2')
+    setLoading(true);
+    axiosInstance.get(`${endpoints.studentListApis.downloadBranchWiseStudent2}?academic_year_id=${selectedAcademicYear && selectedAcademicYear.id}&branch_id=${selectedBranch?.branch?.id}`,{
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          responseType : 'arraybuffer'
+        }) 
+        .then((res) => {
+        const blob = new Blob([res.data], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+        FileSaver.saveAs(blob, 'branch.xls');
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', 'Something Wrong!')
+      });
+  };
 
   useEffect(() => {
     setHRef([
@@ -256,7 +321,10 @@ const StudentStrength = ({ history }) => {
                 <Grid item>
                   <Button
                     size='medium'
-                    href={hRef && hRef[0] && hRef[0].csv}
+                    // href={hRef && hRef[0] && hRef[0].csv}
+                    onClick={() => {
+                      file();
+                    }}
                     className={classes.studentStrenghtDownloadButton}
                   >
                     Download All Branch Excel
@@ -269,7 +337,10 @@ const StudentStrength = ({ history }) => {
                     size='medium'
                     color='primary'
                     style={{ color: 'white', width: '100%' }}
-                    href={hRef && hRef[1] && hRef[1].csv}
+                    // href={hRef && hRef[1] && hRef[1].csv}
+                    onClick={() => {
+                      file2();
+                    }}
                   >
                     Download Branch Excel
                   </Button>
@@ -307,13 +378,12 @@ const StudentStrength = ({ history }) => {
                 <Grid item style={{ marginLeft: '5%' }}>
                   <Button
                     size='medium'
-                    href={hRef && hRef[0] && hRef[0].csv}
+                    // href={hRef && hRef[0] && hRef[0].csv}
+                    // href={downloadFile && hRef && hRef[0] && hRef[0].csv}
+                    // href={hRef && hRef[0] && hRef[0].csv}
                     className={classes.studentStrenghtDownloadButton}
                     onClick={() => {
-                      setLoading(true);
-                      setTimeout(function () {
-                        setLoading(false);
-                      }, 4000);
+                      file();
                     }}
                   >
                     <span style={{ fontSize: '13px' }}> Download All Branch Excel</span>
@@ -326,15 +396,14 @@ const StudentStrength = ({ history }) => {
                     size='medium'
                     color='primary'
                     style={{ color: 'white', width: '100%' }}
-                    href={hRef && hRef[1] && hRef[1].csv}
+                    // href={hRef && hRef[1] && hRef[1].csv}
+                    // href={downloadFile && hRef && hRef[1] && hRef[1].csv}
+                    // href={hRef && hRef[1] && hRef[1].csv}
                     onClick={() => {
-                      setLoading(true);
-                      setTimeout(function () {
-                        setLoading(false);
-                      }, 4000);
+                      file2();
                     }}
                   >
-                    <span style={{ fontSize: '13px' }}> Download Branch Excel</span>{' '}
+                    <span style={{ fontSize: '13px' }}> Download Branch Excel</span>
                   </Button>
                 </Grid>
               </MediaQuery>
@@ -369,7 +438,10 @@ const StudentStrength = ({ history }) => {
                 <Grid item>
                   <Button
                     size='medium'
-                    href={hRef && hRef[0] && hRef[0].csv}
+                    // href={hRef && hRef[0] && hRef[0].csv}
+                    onClick={() => {
+                      file();
+                    }}
                     className={classes.studentStrenghtDownloadButton}
                   >
                     Download All Branch Excel
@@ -381,7 +453,10 @@ const StudentStrength = ({ history }) => {
                     variant='contained'
                     size='medium'
                     color='primary'
-                    href={hRef && hRef[1] && hRef[1].csv}
+                    // href={hRef && hRef[1] && hRef[1].csv}
+                    onClick={() => {
+                      file2();
+                    }}
                     style={{ color: 'white', width: '100%' }}
                   >
                     Download Branch Excel
@@ -420,7 +495,10 @@ const StudentStrength = ({ history }) => {
                 <Grid item xs={12}>
                   <Button
                     size='medium'
-                    href={hRef && hRef[0] && hRef[0].csv}
+                    // href={hRef && hRef[0] && hRef[0].csv}
+                    onClick={() => {
+                      file();
+                    }}
                     className={classes.studentStrenghtDownloadButton}
                   >
                     Download All Branch Excel
@@ -432,7 +510,10 @@ const StudentStrength = ({ history }) => {
                     variant='contained'
                     size='medium'
                     color='primary'
-                    href={hRef && hRef[1] && hRef[1].csv}
+                    // href={hRef && hRef[1] && hRef[1].csv}
+                    onClick={() => {
+                      file2();
+                    }}
                     style={{ color: 'white', width: '100%' }}
                   >
                     Download Branch Excel

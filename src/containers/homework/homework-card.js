@@ -47,19 +47,22 @@ const HomeworkCard = ({
   return (
     // <Layout>
 
-    <Grid item xs={12} md={3} className='hwcard-container' style={{ display: 'flex', flexWrap: 'wrap' }}>
+    <Grid item xs={12} md={4} className='hwcard-container' style={{ display: 'flex', flexWrap: 'wrap' }}>
       <Paper
         className='hwcard'
-        style={{ flexDirection: 'column', width: '100%' , overflowX: 'hidden' , overflow: 'auto' , height: '100%' }}
+        style={{ flexDirection: 'column', width: '100%', overflowX: 'hidden', overflow: 'auto', height: '100%', padding: '5px', scrollbarWidth: "inherit" }}
       >
-        <div className='close-icon'>
-          <IconButton onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
+        <div style={{ display: 'flex', flexDirection: "row-reverse", padding: '0px' }}>
+          <div style={{ padding: '0px' }}>
+            <IconButton onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          </div>
         </div>
+
         <div className='cardHeader'>
-          <div className='subjectName'>{subject}</div>
-          <div> {moment(date).format('DD-MM-YYYY')}</div>
+          <div className='subjectName' style={{ marginLeft: '15px' }}>{subject}</div>
+          <div style={{ marginRight: '5px' }}> {moment(date).format('DD-MM-YYYY')}</div>
         </div>
         <div className='divider'></div>
         {view === 'evaluationStats' && (
@@ -82,7 +85,7 @@ const HomeworkCard = ({
                           {student?.hw_submission_mode === 'Online Submission' ?
                             <div className='badgeContent' >
                               <Badge color="success" variant="dot" >
-                                <AssignmentIcon style={{color: '#014b7e'}} />
+                                <AssignmentIcon style={{ color: '#014b7e' }} />
                               </Badge>
                             </div>
                             : ''}
@@ -97,11 +100,11 @@ const HomeworkCard = ({
             </div>
           </div>
         )}
-        {view === 'submissionStats'  && (
-          <div className='list' style={{ flexGrow: 1 ,maxHeight: '200px' }}>
+        {view === 'submissionStats' && (
+          <div className='list' style={{ flexGrow: 1, maxHeight: '200px' }}>
             <div style={{ display: 'flex' }}>
               <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} onChange={() => handleAllSubmit()} id="submitAllid" />
-              <div className='cardHeaderSub'>Submitted students :</div>
+              <div className='cardHeaderSub'>Submitted students : (total: {submittedStudents?.length})</div>
             </div>
             <div >
               {loading ? (
@@ -114,7 +117,7 @@ const HomeworkCard = ({
                         <Checkbox onChange={() => handleUser(student)} inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} />
                         <div
                           onClick={() => checkMode(student)}
-                          style={{ width: '75%', display: 'flex', justifyContent: 'space-between', cursor: student?.hw_submission_mode === 'Online Submission' ? 'pointer' : 'default' }}
+                          style={{ width: '55%', display: 'flex', justifyContent: 'space-between', cursor: student?.hw_submission_mode === 'Online Submission' ? 'pointer' : 'default' }}
                         >
                           <div className='studentName'  >
                             {`${student.first_name.charAt(0).toUpperCase() + student.first_name.slice(1)} 
@@ -123,7 +126,7 @@ const HomeworkCard = ({
                           {student?.hw_submission_mode === 'Online Submission' ?
                             <div className='badgeContent' >
                               <Badge color="success" variant="dot" >
-                                <AssignmentIcon style={{color: '#014b7e'}} />
+                                <AssignmentIcon style={{ color: '#014b7e' }} />
                               </Badge>
                             </div>
                             : ''}
@@ -137,18 +140,18 @@ const HomeworkCard = ({
               )}
             </div>
             {submittedStudents && (submittedStudents && submittedStudents.length !== 0) ?
-            <div style={{display: 'flex' , justifyContent: 'flex-end'}} >
-              <Button onClick={handleSubmittedStd} className='buttonSubmit'  >Move to Not Submitted</Button>
-            </div> 
-            : '' }
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }} >
+                <Button onClick={handleSubmittedStd} className='buttonSubmit'  >Move to Not Submitted</Button>
+              </div>
+              : ''}
           </div>
         )}
-        {view === 'submissionStats'  && (
+        {view === 'submissionStats' && (
 
-          <div className='list' style={{ flexGrow: 1, maxHeight: '200px' , margin: '15% 0' }}>
+          <div className='list' style={{ flexGrow: 1, maxHeight: '200px', margin: '15% 0' }}>
             <div style={{ display: 'flex' }}>
-              <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} onChange={() => handleAllUnSubmit()}/>
-              <div className='cardHeaderSub'>Not submitted students :</div>
+              <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} onChange={() => handleAllUnSubmit()} />
+              <div className='cardHeaderSub'>Not submitted students: (total: {unSubmittedStudents?.length})</div>
             </div>
             <div >
               {loading ? (
@@ -178,26 +181,26 @@ const HomeworkCard = ({
               )}
             </div>
             {unSubmittedStudents && (unSubmittedStudents && unSubmittedStudents.length !== 0) ?
-            <div style={{display: 'flex' , justifyContent: 'flex-end'}}>
-              <Button onClick={handleUnSubmittedStd} className='buttonSubmit'  >Move to Submitted</Button>
-            </div>
-            : '' }
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <Button onClick={handleUnSubmittedStd} className='buttonSubmit'  >Move to Submitted</Button>
+              </div>
+              : ''}
           </div>
         )}
 
-        {view === 'submissionStats'  && (
+        {view === 'submissionStats' && (
 
-          <div className='absentlist' style={{ flexGrow: 1,height: '100px' , padding: '10px 0'  }}>
+          <div className='absentlist' style={{ flexGrow: 1, height: '100px', padding: '10px 0' }}>
             <div style={{ display: 'flex' }} className='absentAll' >
               <Checkbox inputProps={{ 'aria-label': 'uncontrolled-checkbox' }} onChange={() => handleAllAbsent()} />
-              <div className='cardHeaderSub'>Absent students :</div>
+              <div className='cardHeaderSub'>Absent students: (total: {absentList?.length || 0})</div>
             </div>
             <div >
               {loading ? (
                 <CircularProgress color='primary' />
               ) : (
                 <div style={{ height: '150px', overflow: 'auto', overflowX: 'hidden' }} className='checkboxAbsent' >
-                  {absentList && absentList.length ? (
+                  {absentList && absentList?.length ? (
                     <div>
                       {absentList.map((student) => (
                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -220,10 +223,10 @@ const HomeworkCard = ({
               )}
             </div>
             {absentList && (absentList && absentList.length !== 0) ?
-            <div style={{display: 'flex' , justifyContent: 'flex-end' , padding: 'inherit'}}>
-              <Button onClick={handleUnSubmittedStd} className='buttonSubmit' >Move to Submitted</Button>
-            </div>
-            : '' }
+              <div style={{ display: 'flex', justifyContent: 'flex-end', padding: 'inherit' }}>
+                <Button onClick={handleUnSubmittedStd} className='buttonSubmit' >Move to Submitted</Button>
+              </div>
+              : ''}
           </div>
         )}
 
@@ -243,13 +246,13 @@ const HomeworkCard = ({
                           onClick={() => checkMode(student)}
                           style={{ width: '75%', display: 'flex', justifyContent: 'space-between', cursor: student?.hw_submission_mode === 'Online Submission' ? 'pointer' : 'default' }}
                         >{`${student.first_name} ${student.last_name}`}</div>
-                            {student?.hw_submission_mode === 'Online Submission' ?
-                            <div className='badgeContent' >
-                              <Badge color="success" variant="dot" >
-                                <AssignmentIcon style={{color: '#014b7e'}} />
-                              </Badge>
-                            </div>
-                            : ''}
+                        {student?.hw_submission_mode === 'Online Submission' ?
+                          <div className='badgeContent' >
+                            <Badge color="success" variant="dot" >
+                              <AssignmentIcon style={{ color: '#014b7e' }} />
+                            </Badge>
+                          </div>
+                          : ''}
                       </div>
                     ))
                   ) : (

@@ -65,13 +65,23 @@ const GeneralDairyList = () => {
   const [initialFlag, setInitialFlag] = useState(false);
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
 
+  const [academic_year, setAcademicYear] = useState([]);
+  const [subjects, setSubjects] = useState();
+  const [moduleId, setModuleId] = useState(0);
+  const [multipleGradeId, setMultipleGradeId] = useState([]);
+
+  // subjects,
+  //   moduleId,
+  //   academic_year,
+  //   multipleGradeId
+
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
 
   const handlePagination = (event, page) => {
     setPage(page);
-    handleDairyList(branch, grade, sections, startDate, endDate, activeTab, page);
+    handleDairyList(branch, grade, sections, startDate, endDate, activeTab, page, subjects, moduleId, academic_year, multipleGradeId);
   };
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -79,7 +89,7 @@ const GeneralDairyList = () => {
   useEffect(() => {
     // if(page !== 1 && branch && grade && sections && startDate && endDate && activeTab)
     //   handleDairyList(branch,grade,sections,startDate,endDate,activeTab)
-    if (NavData && NavData.length) {
+    if (NavData && NavData.length) {     
       NavData.forEach((item) => {
         if (
           item.parent_modules === 'Diary' &&
@@ -103,8 +113,9 @@ const GeneralDairyList = () => {
         }
       });
     }
-    if (initialFlag)
-      handleDairyList(branch, grade, sections, startDate, endDate, activeTab, page);
+    if (initialFlag){      
+      handleDairyList(branch, grade, sections, startDate, endDate, activeTab, page, subjects, moduleId, academic_year, multipleGradeId);
+    }
   }, [location.pathname, page, deleteFlag]);
 
   const handleDairyList = (
@@ -119,7 +130,8 @@ const GeneralDairyList = () => {
     moduleId,
     academic_year,
     multipleGradeId
-  ) => {
+  ) => {  
+    
     setLoading(true);
     setPeriodData([]);
     setBranch(branchId);
@@ -132,6 +144,10 @@ const GeneralDairyList = () => {
     setViewMore(false);
     setPeriodDataForView('');
     setSelectedIndex(-1);
+    setSubjects(subjects)
+    setModuleId(moduleId)
+    setAcademicYear(academic_year);
+    setMultipleGradeId(multipleGradeId)
     // setPeriodColor(false)
     const roleDetails = JSON.parse(localStorage.getItem('userDetails'));
     if (isTeacher) {
