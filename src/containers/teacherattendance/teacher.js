@@ -459,9 +459,9 @@ export default function TeacherAttendance(props) {
 
   const getTeacherData = () => {
     setData([]);
-    if (!selectedBranchIds || !selectedGradeIds || !rolesId) {
+    if (!selectedBranchIds || !selectedGradeIds || !rolesId || sectionId.length == 0) {
       console.log('jj', selectedBranchIds, selectedGradeIds);
-      setAlert('error', 'Select all required field');
+      setAlert('warning', 'Please select all required fields');
       return false;
     } else {
       setLoading(true);
@@ -522,7 +522,7 @@ export default function TeacherAttendance(props) {
       setAlert('warning','Please select today\'s date')
     }
     if (sectionId.length == 0 || !selectedBranchIds || !selectedGradeIds ) {
-      setAlert('warning','Select all fields')
+      setAlert('warning','Please select all required fields')
     }
     if (sectionId.length > 0 && selectedBranchIds && selectedGradeIds && (startDate == moment().format('YYYY-MM-DD'))){
       setOpenModal(val)
@@ -653,7 +653,7 @@ export default function TeacherAttendance(props) {
               getOptionLabel={(option) => option?.section__section_name || ''}
               filterSelectedOptions
               renderInput={(params) => (
-                <TextField {...params} label='Section' variant='outlined' />
+                <TextField {...params} label='Section' variant='outlined' required/>
               )}
             />
           </Grid>
