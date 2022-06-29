@@ -367,11 +367,12 @@ const StudentMark = () => {
             if (selectedUserData?.is_question_wise == false) {
                 let eachQues = selectedUserData?.total_marks / selectedUserData?.total_question
                 console.log(eachQues);
-                if (values?.val?.length > 0) {
+                if (values?.val?.length > 0  && !values?.val.some(ele => ele === "")) {
+                    let checkSome = values?.val.some(ele => ele === "")
                     let check = values?.val?.some(ele => ele > eachQues)
                     console.log(check);
                     if (check == true) {
-                        setAlert('warning', 'Marks cannot exceed total marks')
+                        setAlert('warning', 'Marks cannot exceed Indiviual Mark')
                     } else {
                         const payload = {
                             test: history?.location?.state?.test_id,
@@ -391,17 +392,20 @@ const StudentMark = () => {
                                 console.log('');
                             });
                     }
+                } else {
+                    setAlert('warning', 'All Fields Are Required')
                 }
 
             } 
             if (selectedUserData?.is_question_wise == true) {
+                if (values?.val?.length > 0  && !values?.val.some(ele => ele === "")) {
                 let checkValid = values?.val?.some((ele , index) => ele > selectedUserData?.question_mark[index]?.question_mark[0] || -(selectedUserData?.question_mark[index]?.question_mark[1]) > ele )
                 // let checkValid = values?.val?.some((ele , index) =>  -(selectedUserData?.question_wise_mark[index]?.neg_marks) > ele )
                 // let checkValid = values?.val?.some((ele , index) =>  -(selectedUserData?.question_wise_mark[index]?.max_marks) > ele )
 
                 console.log(checkValid);
                 if (checkValid == true) {
-                    setAlert('warning', 'Marks cannot exceed total marks')
+                    setAlert('warning', 'Marks cannot exceed Indiviual mark')
                 } else {
                     const payload = {
                         test: history?.location?.state?.test_id,
@@ -421,8 +425,10 @@ const StudentMark = () => {
                             console.log('');
                         });
                 }
+            } else {
+                setAlert('warning', 'All Fields Are Required')
             }
-
+        }
 
         } else {
             setAlert('warning', ' All Fields are required')
