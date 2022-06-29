@@ -367,7 +367,7 @@ const StudentMark = () => {
             if (selectedUserData?.is_question_wise == false) {
                 let eachQues = selectedUserData?.total_marks / selectedUserData?.total_question
                 console.log(eachQues);
-                if (values?.val?.length > 0  && !values?.val.some(ele => ele === "")) {
+                if (values?.val?.length > 0 && !values?.val.some(ele => ele === "") && !values?.val.some(ele => ele === null) && !values?.val.some(ele => ele === undefined) && values?.val[0] !== undefined ) {
                     let checkSome = values?.val.some(ele => ele === "")
                     let check = values?.val?.some(ele => ele > eachQues)
                     console.log(check);
@@ -380,7 +380,6 @@ const StudentMark = () => {
                             user_response: values.val,
                             total_mark: parseFloat(sum)
                         }
-                        console.log(payload);
                         axiosInstance
                             .put(`${endpoints.assessment.studentMarks}`, payload)
                             .then((result) => {
@@ -398,7 +397,7 @@ const StudentMark = () => {
 
             } 
             if (selectedUserData?.is_question_wise == true) {
-                if (values?.val?.length > 0  && !values?.val.some(ele => ele === "")) {
+                if (values?.val?.length > 0 && !values?.val.some(ele => ele === "") && values?.val[0] !== undefined && !values?.val.some(ele => ele === null)) {
                 let checkValid = values?.val?.some((ele , index) => ele > selectedUserData?.question_mark[index]?.question_mark[0] || -(selectedUserData?.question_mark[index]?.question_mark[1]) > ele )
                 // let checkValid = values?.val?.some((ele , index) =>  -(selectedUserData?.question_wise_mark[index]?.neg_marks) > ele )
                 // let checkValid = values?.val?.some((ele , index) =>  -(selectedUserData?.question_wise_mark[index]?.max_marks) > ele )
