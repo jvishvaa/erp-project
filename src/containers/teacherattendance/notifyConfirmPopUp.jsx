@@ -51,10 +51,7 @@ const NotifyConfirmPopUp = (props) => {
       />
       <DialogTitle id='draggable-dialog-title'>
         <Grid style={{ marginTop: 15 }}>
-          Share the attendance status for the following students?
-        </Grid>
-        <Grid style={{ color: 'red', fontSize: 14, fontWeight: 600 }}>
-          ( These students were not "PRESENT" )
+          Share the attendance status for the students marked <b>"Absent"</b> ?
         </Grid>
       </DialogTitle>
       <Grid container justifyContent='center' style={{ marginBottom: 20 }}>
