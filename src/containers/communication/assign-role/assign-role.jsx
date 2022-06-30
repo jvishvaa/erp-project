@@ -357,7 +357,7 @@ const AssignRole = (props) => {
     setLoading(true);
     try {
       const statusChange = await axiosInstance.get(
-        `${endpoints.communication.fetchContactInfo}?erp_id=${id}`,
+        `${endpoints.communication.fetchContactInfoByErp}?erp_id=${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -373,12 +373,10 @@ const AssignRole = (props) => {
           // console.log(statusChange?.data?.data?.email)
         }
         else{
-          let details = statusChange?.data?.data?.personal_info
-          const contact = details.contact.split('-').length > 1
-          ? details.contact.split('-')[1]
-          : details.contact
-          newData = { ...usersRow[index], contact };  //emails
-
+          let details = statusChange?.data?.data?.contact;
+          const contact =
+            details?.split('-').length > 1 ? details?.split('-')[1] : details;
+          newData = { ...usersRow[index], contact }; //emails
         }
         usersRow.splice(index, 1, newData);
         setAlert('success', statusChange.data.message);
