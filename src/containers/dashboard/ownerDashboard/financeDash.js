@@ -143,7 +143,7 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
-    padding: '8px',
+    padding: '6px',
     margin: '5px 0',
   },
   accordion: {
@@ -208,7 +208,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#4180e7',
   },
   fontDesign: {
-    fontSize: '12px',
+    fontSize: '11px',
   },
   fontColor2: {
     color: '#ff3573',
@@ -589,7 +589,7 @@ const FinanceOwnerDashboard = (props) => {
                                       classes.newBorder
                                     )}
                                   >
-                                    <div>
+                                    <div style={{width:"120px"}}>
                                       <Typography
                                         className={clsx(classes.roleStyle)}
                                         variant='body2'
@@ -607,6 +607,13 @@ const FinanceOwnerDashboard = (props) => {
                                         variant='body2'
                                       >
                                         <b>Total Marked :<span>{each?.total_present + each?.total_absent+ each?.total_half_day+ each?.total_late}</span></b>
+                                      </Typography>
+                                      <Typography
+                                        className={clsx(classes.fontDesign)}
+                                        variant='body2'
+                                        style={{width:106}}
+                                      >
+                                        <b>Total UnMarked : {each?.total_people - (each?.total_present + each?.total_absent + each?.total_half_day + each?.total_late) }</b>
                                       </Typography>
                                       <Typography
                                         className={clsx(
@@ -633,11 +640,13 @@ const FinanceOwnerDashboard = (props) => {
                                           position: 'relative',
                                           display: 'inline-flex',
                                         }}
+                                        style={{marginBottom:"60px", marginRight:"6px"}}
                                       >
                                         <CircularProgress
                                           variant='determinate'
                                           value={each?.percentage_present}
-                                          style={{ width: '60px', height: '60px' }}
+                                          // value="100"
+                                          style={{ width: '46px', height: '40px' }}
                                         />
                                         <Box
                                           sx={{                                          
@@ -657,7 +666,8 @@ const FinanceOwnerDashboard = (props) => {
                                             component='div'
                                             color='text.secondary'
                                           >
-                                            {`${Math.round(each?.percentage_present)}%`}
+                                          <span style={{fontSize:"13px", marginTop:"9px"}}>{`${Math.round(each?.percentage_present)}%`}</span>
+                                                                                      
                                           </Typography>
                                         </Box>
                                       </Box>

@@ -118,7 +118,7 @@ export default function CustomSelectionTable({ pageSize, ...props }) {
         if(!e.row?.email.includes("@")) {
           showContactInfo(index, e?.row?.erp_id,e.field)
         }
-      } else  if(e["field"] === "contact" && e.row?.contact.includes("X")){
+      } else  if(e["field"] === "contact" && (e.row?.contact.includes("X") || e.row?.contact.includes("*")) ){
         showContactInfo(index, e?.row?.erp_id,e.field)
       }
     isColumnClick.current = true
