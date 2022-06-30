@@ -687,7 +687,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     setLoading(true);
     try {
       const statusChange = await axiosInstance.get(
-        `${endpoints.communication.fetchContactInfo}?erp_id=${id}`,
+        `${endpoints.communication.fetchContactInfoByErp}?erp_id=${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
