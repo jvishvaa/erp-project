@@ -133,10 +133,19 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setTabChapterId(chapterObj);
     setTabIsErpCentral(isErpCentral);
     setTabValue(newValue);
-    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&question_level=${quesLevel?.value}&question_type=${quesTypeId}&page_size=${limit}&page=${page}`;
+    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&page_size=${limit}&page=${page}`;
     requestUrl += `&request_type=${isErpCentral?.flag ? 2 : 1}`;
     if (newValue) {
       requestUrl += `&question_status=${newValue}`;
+    }
+    if(chapterObj){
+      requestUrl += `&chapter=${chapterObj?.id}`;
+    }
+    if(quesLevel){
+      requestUrl += `&question_level=${quesLevel?.value}`;
+    }
+    if(quesTypeId){
+      requestUrl += `&question_type=${quesTypeId}`;
     }
     if (quesCatId) {
       requestUrl += `&question_categories=${quesCatId?.value}`;

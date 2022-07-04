@@ -460,18 +460,18 @@ const QuestionBankFilters = ({
       setAlert('error', 'Select Subject!');
       return;
     }
-    if (!filterData?.chapter) {
-      setAlert('error', 'Select Chapter!');
-      return;
-    }
-    if (!filterData?.quesType) {
-      setAlert('error', 'Select Question Type!');
-      return;
-    }
-    if (!filterData?.question_level) {
-      setAlert('error', 'Select Question Level!');
-      return;
-    }
+    // if (!filterData?.chapter) {
+    //   setAlert('error', 'Select Chapter!');
+    //   return;
+    // }
+    // if (!filterData?.quesType) {
+    //   setAlert('error', 'Select Question Type!');
+    //   return;
+    // }
+    // if (!filterData?.question_level) {
+    //   setAlert('error', 'Select Question Level!');
+    //   return;
+    // }
     if (!filterData?.is_erp_central) {
       setAlert('error', 'Select Question From!');
       return;
