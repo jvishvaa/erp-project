@@ -176,14 +176,10 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
 
   useEffect(() => {
     if (
-      tabQueTypeId &&
       tabMapId &&
-      tabQueLevel &&
       tabYearId &&
       tabGradeId &&
-      tabChapterId &&
-      tabIsErpCentral &&
-      page
+      tabIsErpCentral&& page
     ) {
       setSelectedIndex(-1);
       handlePeriodList(
