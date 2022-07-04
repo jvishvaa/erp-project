@@ -77,6 +77,7 @@ export default {
     deletePeriod: '/period/period/',
     editPeriod: '/period/period/',
     collidingPeriod: 'period/deactivate_period/',
+    teacherTimeTable : '/period/teacher-retrieve-week-periods/'
   },
   communicationRoles: {
     roles: '/academic/booked-appointment-role-list/',
