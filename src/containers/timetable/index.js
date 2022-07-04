@@ -5,7 +5,7 @@ import TeacherTimeTable from './teacherTimeTable'
 
 const TimeTableCheck = () => {
   const [periodConfig, setPeriodConfig] = useState(null);
-  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const  user_level = JSON.parse(localStorage.getItem('userDetails'))?.user_level || {};
   const isTeacher = user_level == 11;
 
   useEffect(() => {
