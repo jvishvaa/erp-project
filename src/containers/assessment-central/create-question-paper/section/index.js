@@ -31,6 +31,8 @@ import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { useLocation } from 'react-router-dom';
 import CloseIcon from '@material-ui/icons/Close';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -133,6 +135,8 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const { openPreview, closePreview } =
+  React.useContext(AttachmentPreviewerContext) || {};
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -276,7 +280,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
       </div>
       <div className='section-content'>
         {section?.questions.map((q, index) => (
-          <div className='selected-question-card' key={index}>
+          <div className='selected-question-card' key={index} style={{ width: '100%' }}>
             <div className='selected-question-card-header'>
               <div className='header-name'>
                 {resolveQuestionTypeName(q.question_type)}
@@ -338,9 +342,41 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
                 </Popover>
               </div>
             </div>
-            <div>
-                Question : {extractContent(q?.question_answer[0]?.question)}
-              </div>
+            {/* <div>Question : {ReactHtmlParser(q?.question_answer[0]?.question)}</div> */}
+            <div style={{display : 'flex'}}> Question : {extractContent(q?.question_answer[0]?.question)}
+            <span style={{marginLeft:'5px'}}>
+              {q?.question_answer[0]?.question
+                ?.split('"')
+                .filter((str) => str.startsWith('https'))?.length > 0 && (
+                <a
+                  onClick={() => {
+                    openPreview({
+                      currentAttachmentIndex: 0,
+                      attachmentsArray: (() => {
+                        let newArray = q?.question_answer[0]?.question?.split('"');
+                        let filtered = newArray.filter((str) => str.startsWith('https'));
+                        const images = filtered || {};
+                        const attachmentsArray = [];
+                        images.forEach((image) => {
+                          const attachmentObj = {
+                            src: image,
+                            name: `${image}`.split('.').slice(0, -1).join('.'),
+                            extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                          };
+                          attachmentsArray.push(attachmentObj);
+                        });
+                        return attachmentsArray;
+                      })(),
+                    });
+                  }}
+                >
+                  <SvgIcon
+                    component={() => <VisibilityIcon style={{ cursor: 'pointer' }} />}
+                  />
+                </a>
+              )}
+              </span>
+            </div>
             <div className='content'>
               <div className='left'>
                 <div style={{ fontWeight: 550, fontSize: '1rem' }}>Online</div>
