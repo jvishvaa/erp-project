@@ -58,7 +58,7 @@ export default function TeacherAttendanceStatus(props) {
     // <Grid container direction="row" justifyContent="center">
     <FormControl component='fieldset' name='attendence_status' style={{display : 'flex' , justifyContent: 'space-between'}} >
       <RadioGroup row={true} value={attendance} onChange={handleChange} style={{ justifyContent:  props?.isStudentInRole ? 'center' : '' }} >
-        <Grid item md={3}>
+        <Grid item md={!props.isStudentInRole ? 3 : 4}>
           <FormControlLabel
             value='present'
             control={<Radio />}
@@ -66,7 +66,7 @@ export default function TeacherAttendanceStatus(props) {
             className='th-font-size-13 th-label'
           />
         </Grid>
-        <Grid item md={2} className='absentPadding'>
+        <Grid item md={!props.isStudentInRole ? 2 : 4} className='absentPadding'>
           <FormControlLabel
             value='absent'
             control={<Radio />}
@@ -74,7 +74,7 @@ export default function TeacherAttendanceStatus(props) {
             className='th-font-size-13 th-label'
           />
         </Grid>
-        {!props?.isStudentInRole && (window.location.host == local || window.location.host == dev || window.location.host == qa || window.location.host == prod) ? 
+        {!props.isStudentInRole && (
           <>
             <Grid item md={3} className='halfdayPadding'>
               <FormControlLabel
@@ -93,16 +93,15 @@ export default function TeacherAttendanceStatus(props) {
               />
             </Grid>
           </>
-          : ''
-        }
-        {/* <Grid item md={2} className='holidayPadding '>
+        )}
+        {/* <Grid item md={!props.isStudentInRole ? 2 : 4} className='holidayPadding '>
           <FormControlLabel
             value='holiday'
             control={<Radio />}
             label='Holiday'
             className='th-font-size-13 th-label'
           />
-        </Grid> */}
+        </Grid>  */}
       </RadioGroup>
     </FormControl>
     // </Grid>

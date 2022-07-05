@@ -242,7 +242,6 @@ export default function TeacherAttendance(props) {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [checked, setChecked] = React.useState(true);
-  // const [data, setData] = React.useState();
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectedMultipleRoles, setSelectedMultipleRoles] = React.useState([]);
   const [roles, setRoles] = React.useState([]);
@@ -252,6 +251,7 @@ export default function TeacherAttendance(props) {
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [data, setData] = React.useState([]);
+  const [recordsData, setRecordsData] = React.useState([]);
   const [rolesId, setRolesId] = React.useState();
 
   const [moduleId, setModuleId] = React.useState();
@@ -275,7 +275,7 @@ export default function TeacherAttendance(props) {
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
   const [selectedSectionIds, setSelectedSectionIds] = useState([]);
-
+  const [showdata, setshowdata] = useState(false);
   const [isStudentInRole, setIsStudentInRole] = useState(false)
   const [filterData, setFilterData] = React.useState({
     branch: '',
@@ -500,13 +500,16 @@ export default function TeacherAttendance(props) {
         .then((result) => {
           console.log(result);
           if (result.status === 200) {
-            setData(result?.data.attendance_data);
+            setData(result?.data?.attendance_data);
+            setRecordsData(result?.data?.aggregate_counts)
             setLoading(false);
+            setshowdata(true);
           }
         })
         .catch((error) => {
           console.log(error);
           setLoading(false);
+          setshowdata(false);
         });
     }
   };
@@ -545,8 +548,8 @@ export default function TeacherAttendance(props) {
     if (value) {
       const isSubset = (array1, array2) => array2.every(element => array1.includes(element));
       const roleName = value?.role_name.toUpperCase().split('')
-      const studentSpelling = ['S','T','U','D','E','N','T']
-      setIsStudentInRole(isSubset(roleName,studentSpelling))
+      const studentSpelling = ['S', 'T', 'U', 'D', 'E', 'N', 'T']
+      setIsStudentInRole(isSubset(roleName, studentSpelling))
       setRolesId(value?.id);
     } else {
       setRolesId('');
@@ -568,17 +571,16 @@ export default function TeacherAttendance(props) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
   const handleNotifyPopUp = (val) => {
-    if(startDate !== moment().format('YYYY-MM-DD')){
-      setAlert('warning','Please select today\'s date')
+    if (startDate !== moment().format('YYYY-MM-DD')) {
+      setAlert('warning', 'Please select today\'s date')
     }
     if (sectionId.length == 0 || !selectedBranchIds || !selectedGradeIds) {
       setAlert('warning','Please select all required fields')
     }
-    if (sectionId.length > 0 && selectedBranchIds && selectedGradeIds && (startDate == moment().format('YYYY-MM-DD'))){
+    if (sectionId.length > 0 && selectedBranchIds && selectedGradeIds && (startDate == moment().format('YYYY-MM-DD'))) {
       setOpenModal(val)
     }
   }
-
   const local = 'localhost:3000'
   const dev = 'dev.olvorchidnaigaon.letseduvate.com'
   const qa = 'qa.olvorchidnaigaon.letseduvate.com'
@@ -713,12 +715,7 @@ export default function TeacherAttendance(props) {
               Search
             </Button>
           </Grid>
-          {isStudentInRole && (window.location.host == local || window.location.host == dev || window.location.host == qa || window.location.host == prod) &&
-            <Grid item md={1} xs={12}>
-              <Button onClick={() => { handleNotifyPopUp(true) }} variant='contained' color='primary'>
-                Notify
-              </Button>
-            </Grid>}
+       
           {data?.length > 0 ?
             <Grid container spacing={1}>
               <div style={{ display: 'flex', alignItems: 'center' }} >
@@ -800,13 +797,17 @@ export default function TeacherAttendance(props) {
           </TableContainer>
         </div>
       </Grid>
-      <NotifyConfirmPopUp
-        openModal={openModal}
-        handleNotifyPopUp={handleNotifyPopUp}
-        sectionId={sectionId}
-        startDate={startDate}
-        rolesId={rolesId}
-      />
+      {showdata ?
+        <Grid container spacing={1} style={{ padding: '25px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          {recordsData?.total ? <h3>Total Present : {recordsData?.present || 0} &nbsp; Total Absent : {recordsData?.absent || 0}  &nbsp; Total Marked : {recordsData?.marked} &nbsp; Total Unmarked : {recordsData?.unmarked} &nbsp; Total: {recordsData?.total}</h3> : null}
+          {isStudentInRole && (recordsData?.total ? true : false) && (window.location.host == local || window.location.host == dev || window.location.host == qa || window.location.host == prod) &&
+            <Grid item md={1} xs={12} style={{ marginLeft: 15 }}>
+              <Button onClick={() => { handleNotifyPopUp(true) }} variant='contained' color='primary'>
+                Notify
+              </Button>
+            </Grid>}
+        </Grid> : null}
+    
       <Dialog
         open={openSelect}
         onClose={handleCloseSelect}
