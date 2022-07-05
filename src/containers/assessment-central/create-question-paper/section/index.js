@@ -161,6 +161,12 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
     setDeleteAlert(false);
   };
 
+  function extractContent(s) {
+    const span = document.createElement('span');
+    span.innerHTML = s;
+    return span.textContent || span.innerText;
+  }
+
   return (
     <div className='section-container'>
       <div className='section-header'>
@@ -332,6 +338,9 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
                 </Popover>
               </div>
             </div>
+            <div>
+                Question : {extractContent(q?.question_answer[0]?.question)}
+              </div>
             <div className='content'>
               <div className='left'>
                 <div style={{ fontWeight: 550, fontSize: '1rem' }}>Online</div>
