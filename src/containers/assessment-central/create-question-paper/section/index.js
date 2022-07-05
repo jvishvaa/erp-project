@@ -344,6 +344,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
             </div>
             {/* <div>Question : {ReactHtmlParser(q?.question_answer[0]?.question)}</div> */}
             <div style={{display : 'flex'}}> Question : {extractContent(q?.question_answer[0]?.question)}
+            <span style={{marginLeft:'5px'}}>
               {q?.question_answer[0]?.question
                 ?.split('"')
                 .filter((str) => str.startsWith('https'))?.length > 0 && (
@@ -374,6 +375,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
                   />
                 </a>
               )}
+              </span>
             </div>
             <div className='content'>
               <div className='left'>
