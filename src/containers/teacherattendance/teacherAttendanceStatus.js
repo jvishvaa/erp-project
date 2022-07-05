@@ -53,7 +53,7 @@ export default function TeacherAttendanceStatus(props) {
     // <Grid container direction="row" justifyContent="center">
     <FormControl component='fieldset' name='attendence_status'>
       <RadioGroup row={true} value={attendance} onChange={handleChange}>
-        <Grid item md={3}>
+        <Grid item md={!props.isStudentInRole ? 3 : 4}>
           <FormControlLabel
             value='present'
             control={<Radio />}
@@ -61,7 +61,7 @@ export default function TeacherAttendanceStatus(props) {
             className='th-font-size-13 th-label'
           />
         </Grid>
-        <Grid item md={2} className='absentPadding'>
+        <Grid item md={!props.isStudentInRole ? 2 : 4} className='absentPadding'>
           <FormControlLabel
             value='absent'
             control={<Radio />}
@@ -69,23 +69,27 @@ export default function TeacherAttendanceStatus(props) {
             className='th-font-size-13 th-label'
           />
         </Grid>
-        <Grid item md={3} className='halfdayPadding'>
-          <FormControlLabel
-            value='halfday'
-            control={<Radio />}
-            label='Half Day'
-            className='th-font-size-13 th-label'
-          />
-        </Grid>
-        <Grid item md={2} className='latePadding'>
-          <FormControlLabel
-            value='late'
-            control={<Radio />}
-            label='Late'
-            className='th-font-size-13 th-label'
-          />
-        </Grid>
-        <Grid item md={2} className='holidayPadding '>
+        {!props.isStudentInRole && (
+          <>
+            <Grid item md={3} className='halfdayPadding'>
+              <FormControlLabel
+                value='halfday'
+                control={<Radio />}
+                label='Half Day'
+                className='th-font-size-13 th-label'
+              />
+            </Grid>
+            <Grid item md={2} className='latePadding'>
+              <FormControlLabel
+                value='late'
+                control={<Radio />}
+                label='Late'
+                className='th-font-size-13 th-label'
+              />
+            </Grid>
+          </>
+        )}
+        <Grid item md={!props.isStudentInRole ? 2 : 4} className='holidayPadding '>
           <FormControlLabel
             value='holiday'
             control={<Radio />}
