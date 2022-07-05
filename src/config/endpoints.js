@@ -477,7 +477,8 @@ export default {
     // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
     s3: 'https://d2r9gkgplfhsr2.cloudfront.net/',
     offlineAssesment : '/assessment/offline-assessment-list/',
-    studentMarks: '/assessment/ru-offline-asmnt/'
+    studentMarks: '/assessment/ru-offline-asmnt/',
+    OMRResponse: '/assessment/list-omr-sheets/',
   },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,

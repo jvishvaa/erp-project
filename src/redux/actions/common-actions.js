@@ -12,6 +12,15 @@ export const uploadFile = async (file) => {
   }
 };
 
+export const uploadOMRFile = async (file) => {
+  try {
+    const response = await axiosInstance.post('/assessment/upload-omr-sheet/', file);
+    return response.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
 export const commonActions = {
   ACADEMIC_YEAR_LIST: 'ACADEMIC_YEAR_LIST',
   MS_API: 'MS_API',
