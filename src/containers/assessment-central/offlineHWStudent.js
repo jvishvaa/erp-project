@@ -204,6 +204,7 @@ const OfflineStudentAssessment = () => {
     const [studentList, setStudentList] = useState([]);
     const [page, setPage] = useState('1');
     const [checkFilter, setCheckFilter] = useState(false);
+    const [ quesList, setQuesList ] = useState([])
 
 
     useEffect(() => {
@@ -334,7 +335,8 @@ const OfflineStudentAssessment = () => {
             .get(`${endpoints.assessment.offlineAssesment}?acad_session=${selectedBranch?.id}&grade=${selectedGrade?.grade_id}&subject_id=${history?.location?.state?.data?.subject[0].subject_id}&test_id=${history?.location?.state?.test?.id}&section_mapping_id=${selectedSection?.id}`)
             .then((result) => {
                 console.log(result);
-                setStudentList(result?.data?.result)
+                setStudentList(result?.data?.result?.user_reponse)
+                setQuesList(result?.data?.result?.questions)
             })
             .catch((error) => {
                 console.log('');
@@ -355,6 +357,7 @@ const OfflineStudentAssessment = () => {
                 gradeList : history?.location?.state?.data?.grade,
                 grade: history?.location?.state?.data?.grade,
                 subject_id : history?.location?.state?.data?.subject[0].subject_id,
+                quesList : quesList
             }
         })
     }
@@ -366,7 +369,8 @@ const OfflineStudentAssessment = () => {
             .get(`${endpoints.assessment.offlineAssesment}?acad_session=${filterData?.branchId}&grade=${filterData?.gradeId}&subject_id=${filterData?.subjId}&test_id=${filterData?.testId}&section_mapping_id=${filterData?.sectionId}`)
             .then((result) => {
                 console.log(result);
-                setStudentList(result?.data?.result)
+                setStudentList(result?.data?.result?.user_reponse)
+                setQuesList(result?.data?.result?.questions)
             })
             .catch((error) => {
                 console.log('');

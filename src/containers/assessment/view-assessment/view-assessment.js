@@ -172,6 +172,16 @@ const ViewAssessments = ({ history, ...restProps }) => {
           <Tab label='Completed' {...a11yProps(1)} />
           <Tab label='Retest' {...a11yProps(2)} />
         </Tabs>
+        <div className='indexarea' >
+          <div className='onlinetotal'>
+            <div className='onbox' ></div>
+            <p style={{fontWeight: 600 , fontSize: '15px'}}>Online</p>
+          </div>
+          <div className='offlinetotal'>
+            <div className='offbox'></div>
+            <p style={{fontWeight: 600 , fontSize: '15px'}} >Offline</p>
+          </div>
+        </div>
       </>
     );
   };

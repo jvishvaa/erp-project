@@ -135,7 +135,8 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
   function questionDataProcessor(apiResp) {
     const { data: { result: apiData = {} } = {} } = apiResp || {};
 
-    const { questions = [], sections = [] } = apiData;
+    const { questions = [], sections = [] , test_mode = {} } = apiData;
+    console.log(apiData);
     const questionSectionsObj = parseSectionData(sections);
     const userQuesResponsesObj = formatQuesUserResponseObj(apiData || {}) || {};
     const questionsObj = {};
@@ -152,6 +153,7 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
       questionsObj[questionId] = {
         ...element,
         section: questionSectionObj || {},
+        test_mode,
         meta: {
           index,
           subIndex,
@@ -166,6 +168,7 @@ export const AssessmentReviewContextProvider = ({ children, ...restProps }) => {
       };
     };
     questions.forEach((element, index) => {
+      console.log(element);
       processFunc(element, index, null);
       const { sub_questions: subQuestions = [] } = element || {};
       subQuestions.forEach((subeElement, subIndex) => {

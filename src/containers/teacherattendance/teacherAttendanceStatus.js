@@ -30,6 +30,11 @@ export default function TeacherAttendanceStatus(props) {
   const [value, setValue] = React.useState('');
   const [attendance, setAttendance] = React.useState(props.attendence_status);
 
+  const local = 'localhost:3000'
+  const dev = 'dev.olvorchidnaigaon.letseduvate.com'
+  const qa = 'qa.olvorchidnaigaon.letseduvate.com'
+  const prod = 'orchids.letseduvate.com'
+
   const handleChange = (event) => {
     var body = {
       erp_user: props?.user_id,
@@ -51,8 +56,8 @@ export default function TeacherAttendanceStatus(props) {
   };
   return (
     // <Grid container direction="row" justifyContent="center">
-    <FormControl component='fieldset' name='attendence_status'>
-      <RadioGroup row={true} value={attendance} onChange={handleChange}>
+    <FormControl component='fieldset' name='attendence_status' style={{display : 'flex' , justifyContent: 'space-between'}} >
+      <RadioGroup row={true} value={attendance} onChange={handleChange} style={{ justifyContent:  props?.isStudentInRole ? 'center' : '' }} >
         <Grid item md={!props.isStudentInRole ? 3 : 4}>
           <FormControlLabel
             value='present'
@@ -89,14 +94,14 @@ export default function TeacherAttendanceStatus(props) {
             </Grid>
           </>
         )}
-        <Grid item md={!props.isStudentInRole ? 2 : 4} className='holidayPadding '>
+        {/* <Grid item md={!props.isStudentInRole ? 2 : 4} className='holidayPadding '>
           <FormControlLabel
             value='holiday'
             control={<Radio />}
             label='Holiday'
             className='th-font-size-13 th-label'
           />
-        </Grid>
+        </Grid>  */}
       </RadioGroup>
     </FormControl>
     // </Grid>
