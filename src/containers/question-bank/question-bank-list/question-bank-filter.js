@@ -460,18 +460,6 @@ const QuestionBankFilters = ({
       setAlert('error', 'Select Subject!');
       return;
     }
-    if (!filterData?.chapter) {
-      setAlert('error', 'Select Chapter!');
-      return;
-    }
-    if (!filterData?.quesType) {
-      setAlert('error', 'Select Question Type!');
-      return;
-    }
-    if (!filterData?.question_level) {
-      setAlert('error', 'Select Question Level!');
-      return;
-    }
     if (!filterData?.is_erp_central) {
       setAlert('error', 'Select Question From!');
       return;
@@ -500,27 +488,6 @@ const QuestionBankFilters = ({
         spacing={isMobile ? 3 : 5}
         style={{ width: widerWidth, margin: wider }}
       >
-        {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-          <Autocomplete
-            style={{ width: '100%' }}
-            size='small'
-            onChange={handleAcademicYear}
-            id='academicyear'
-            className='dropdownIcon'
-            value={filterData?.year || {}}
-            options={academicYearDropdown || []}
-            getOptionLabel={(option) => option?.session_year || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Academic Year'
-                placeholder='Academic Year'
-              />
-            )}
-          />
-        </Grid> */}
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
