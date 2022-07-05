@@ -18,7 +18,6 @@ import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
@@ -31,7 +30,6 @@ import moment from 'moment';
 import TeacherAttendanceStatus from './teacherAttendanceStatus';
 import { connect, useSelector } from 'react-redux';
 import Loader from '../../components/loader/loader';
-
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -39,7 +37,15 @@ import {
 } from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
 import MenuItem from '@material-ui/core/MenuItem';
-
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -97,7 +103,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead align='left' stickyHeader>
       <TableRow>
-      <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
+        <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
           S.No.
         </TableCell>
         <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
@@ -141,13 +147,13 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark,
+      },
   title: {
     flex: '1 1 100%',
     fontWeight: 'bold',
@@ -227,7 +233,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TeacherAttendance(props) {
   const classes = useStyles();
-  const [openModal,setOpenModal] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
   const [order, setOrder] = React.useState('asc');
   const [loading, setLoading] = React.useState(false);
   const [orderBy, setOrderBy] = React.useState('');
@@ -270,13 +276,29 @@ export default function TeacherAttendance(props) {
   const [selectedSection, setSelectedSection] = useState([]);
   const [selectedSectionIds, setSelectedSectionIds] = useState([]);
 
-  const [isStudentInRole,setIsStudentInRole] = useState(false)
+  const [isStudentInRole, setIsStudentInRole] = useState(false)
   const [filterData, setFilterData] = React.useState({
     branch: '',
     year: '',
     grade: '',
     section: '',
   });
+  const [checkedSelect, setCheckedSelect] = React.useState(false);
+  const [openSelect, setOpenSelect] = React.useState(false);
+  const [attendanceDialog, setAttendanceDialog] = React.useState('');
+
+
+  const handleChangeSelect = (event) => {
+    setCheckedSelect(event.target.checked);
+    setOpenSelect(event.target.checked)
+  };
+
+  const handleCloseSelect = () => {
+    setOpenSelect(false);
+    setCheckedSelect(false)
+  };
+
+
   console.log('filterdata', filterData);
   const handleDateChange = (name, date) => {
     if (name === 'startDate') setStartDate(date);
@@ -302,8 +324,8 @@ export default function TeacherAttendance(props) {
 
   useEffect(() => {
     // handleAcademicYear('', selectedAcademicYear);
-      if (moduleId && selectedAcademicYear) getBranch();
-    }, [moduleId, selectedAcademicYear]);
+    if (moduleId && selectedAcademicYear) getBranch();
+  }, [moduleId, selectedAcademicYear]);
 
   function getBranch(acadId) {
     let url = `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
@@ -319,7 +341,7 @@ export default function TeacherAttendance(props) {
           );
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   const handleBranch = (event, value) => {
@@ -363,8 +385,7 @@ export default function TeacherAttendance(props) {
       setSelectedGrade(value);
       setSelectedGradeIds(selectedId);
       callApi(
-        `${endpoints.academics.sections}?session_year=${
-          selectedAcademicYear?.id
+        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
         }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
         'section'
       );
@@ -380,11 +401,13 @@ export default function TeacherAttendance(props) {
 
   const handleSection = (event = {}, value = []) => {
     if (value?.length > 0) {
-        value =
+      value =
         value.filter(({ section_id }) => section_id === 'all').length === 1
           ? [...sectionList].filter(({ section_id }) => section_id !== 'all')
           : value;
-      const sectionId = value.map((item) => item.id)
+      let sectionId = [];
+      sectionId = value.map((item) => item.id)
+      console.log(sectionId);
       setSectionId(sectionId);
       const selectedsecctionId = value.map((element) => element?.section_id)
       setSelectedSection(value);
@@ -405,14 +428,14 @@ export default function TeacherAttendance(props) {
             setGradeList(result.data.data || []);
           }
           if (key === 'section') {
-            const selectAllObject ={
-              session_year:{},
-              id:'all',
-              section_id:'all',
+            const selectAllObject = {
+              session_year: {},
+              id: 'all',
+              section_id: 'all',
               section__section_name: 'Select All',
               section_name: 'Select All'
             }
-            const data =[selectAllObject, ...result?.data?.data];
+            const data = [selectAllObject, ...result?.data?.data];
             setSectionList(data);
           }
         } else {
@@ -422,6 +445,11 @@ export default function TeacherAttendance(props) {
       .catch((error) => {
         console.log(error);
       });
+  }
+
+  const handleChangeSelectPA = (event) => {
+    console.log(event.target.value);
+    setAttendanceDialog(event.target.value)
   }
 
   const getRoleApi = async () => {
@@ -470,8 +498,9 @@ export default function TeacherAttendance(props) {
           `${endpoints.academics.teacherAttendanceData}?branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&session_year=${selectedAcademicYear?.id}&roles=${rolesId}&date=${startDate}`
         )
         .then((result) => {
+          console.log(result);
           if (result.status === 200) {
-            setData(result?.data);
+            setData(result?.data.attendance_data);
             setLoading(false);
           }
         })
@@ -481,6 +510,27 @@ export default function TeacherAttendance(props) {
         });
     }
   };
+
+  const handleMark = () => {
+    let arrSec = [];
+    arrSec.push(sectionId.map((ele) => ele))
+    console.log((arrSec[0].toString()));
+    console.log(JSON.stringify(sectionId));
+    const payload = {
+      section_mapping_id: arrSec[0].toString(),
+      role: rolesId,
+      date: startDate,
+      attendance_status: attendanceDialog
+    }
+    axiosInstance
+      .post(`${endpoints.academics.markAllAttendance}`, payload)
+      .then((result) => {
+        console.log(result);
+        getTeacherData()
+        handleCloseSelect()
+      })
+      .catch((error) => { });
+  }
 
   const handleChange = (event) => {
     setChecked(event.target.checked);
@@ -521,7 +571,7 @@ export default function TeacherAttendance(props) {
     if(startDate !== moment().format('YYYY-MM-DD')){
       setAlert('warning','Please select today\'s date')
     }
-    if (sectionId.length == 0 || !selectedBranchIds || !selectedGradeIds ) {
+    if (sectionId.length == 0 || !selectedBranchIds || !selectedGradeIds) {
       setAlert('warning','Please select all required fields')
     }
     if (sectionId.length > 0 && selectedBranchIds && selectedGradeIds && (startDate == moment().format('YYYY-MM-DD'))){
@@ -653,7 +703,7 @@ export default function TeacherAttendance(props) {
               getOptionLabel={(option) => option?.section__section_name || ''}
               filterSelectedOptions
               renderInput={(params) => (
-                <TextField {...params} label='Section' variant='outlined' required/>
+                <TextField {...params} label='Section' variant='outlined' required />
               )}
             />
           </Grid>
@@ -663,13 +713,24 @@ export default function TeacherAttendance(props) {
               Search
             </Button>
           </Grid>
-          {isStudentInRole && (window.location.host == local || window.location.host == dev || window.location.host == qa || window.location.host == prod) && 
-          <Grid item md={1} xs={12}>
-          <Button onClick={()=>{handleNotifyPopUp(true)}} variant='contained' color='primary'>
-            Notify
-          </Button>
-        </Grid>}
-
+          {isStudentInRole && (window.location.host == local || window.location.host == dev || window.location.host == qa || window.location.host == prod) &&
+            <Grid item md={1} xs={12}>
+              <Button onClick={() => { handleNotifyPopUp(true) }} variant='contained' color='primary'>
+                Notify
+              </Button>
+            </Grid>}
+          {data?.length > 0 ?
+            <Grid container spacing={1}>
+              <div style={{ display: 'flex', alignItems: 'center' }} >
+                <Checkbox
+                  checked={checkedSelect}
+                  onChange={handleChangeSelect}
+                  inputProps={{ 'aria-label': 'primary checkbox' }}
+                />
+                <p>Mark All</p>
+              </div>
+            </Grid>
+            : ''}
         </Grid>
         <div className='th-sticky-header' style={{ width: '100%' }}>
           <TableContainer className='tableContainer'>
@@ -691,7 +752,7 @@ export default function TeacherAttendance(props) {
               ) : (
                 <TableBody>
                   {
-                    data.map((value, i) => {
+                    data?.map((value, i) => {
                       return (
                         <TableRow
                           hover
@@ -700,10 +761,10 @@ export default function TeacherAttendance(props) {
                           // aria-checked={isItemSelected}
                           tabIndex={-1}
                           key={value?.name}
-                          // selected={isItemSelected}
+                        // selected={isItemSelected}
                         >
                           <TableCell align='left' style={{ width: '1px' }}>
-                            {i+1}
+                            {i + 1}
                           </TableCell>
                           <TableCell align='left' style={{ width: '1px' }}>
                             {value?.erp_id}
@@ -720,6 +781,7 @@ export default function TeacherAttendance(props) {
                               user_id={value?.id}
                               start_date={startDate}
                               attendence_status={value?.attendence_status}
+                              isStudentInRole={isStudentInRole}
                             />
                           </TableCell>
                         </TableRow>
@@ -738,13 +800,50 @@ export default function TeacherAttendance(props) {
           </TableContainer>
         </div>
       </Grid>
-      <NotifyConfirmPopUp 
-        openModal={openModal} 
-        handleNotifyPopUp={handleNotifyPopUp} 
+      <NotifyConfirmPopUp
+        openModal={openModal}
+        handleNotifyPopUp={handleNotifyPopUp}
         sectionId={sectionId}
-        startDate={startDate} 
+        startDate={startDate}
         rolesId={rolesId}
       />
+      <Dialog
+        open={openSelect}
+        onClose={handleCloseSelect}
+        aria-labelledby="responsive-dialog-title"
+      >
+        <DialogTitle id="responsive-dialog-title">{"Please Select Present or Absent?"}</DialogTitle>
+        <DialogContent>
+          <FormControl component='fieldset' name='attendence_status' style={{ display: 'flex', justifyContent: 'space-around' }} >
+            <RadioGroup row={true} value={attendanceDialog} onChange={handleChangeSelectPA}>
+              <Grid item md={3}>
+                <FormControlLabel
+                  value='present'
+                  control={<Radio />}
+                  label='Present'
+                  className='th-font-size-13 th-label'
+                />
+              </Grid>
+              <Grid item md={2} className='absentPadding'>
+                <FormControlLabel
+                  value='absent'
+                  control={<Radio />}
+                  label='Absent'
+                  className='th-font-size-13 th-label'
+                />
+              </Grid>
+            </RadioGroup>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          <Button autoFocus onClick={handleCloseSelect} style={{background: 'darkgrey'}} >
+            Cancel
+          </Button>
+          <Button onClick={handleMark} color="primary" autoFocus>
+            Publish
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Layout>
   );
 }

@@ -45,6 +45,7 @@ const QuestionPaperInfo = ({
         analysis = {},
         user_response: userResponseObj,
         test_duration: testDuration,
+        test_mode: test_mode,
       } = {},
       fetching,
       fetchFailed,
@@ -133,19 +134,19 @@ const QuestionPaperInfo = ({
                 {` ${totalMarks}`}
               </div>
             </div>
-            <div className={classes.timeTakenContainer}>
-              <div className={classes.timeTakenLabel}>You took</div>
-              <div className={classes.timeTaken}>
-                {`${
-                  timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.minutes
-                }`}
-                <span className={classes.timeUnits}>min</span>
-                {` ${
-                  timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.seconds
-                }`}
-                <span className={classes.timeUnits}>secs</span>
+            {test_mode == 2 ? '' :
+              <div className={classes.timeTakenContainer}>
+                <div className={classes.timeTakenLabel}>You took</div>
+                <div className={classes.timeTaken}>
+                  {`${timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.minutes
+                    }`}
+                  <span className={classes.timeUnits}>min</span>
+                  {` ${timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.seconds
+                    }`}
+                  <span className={classes.timeUnits}>secs</span>
+                </div>
               </div>
-            </div>
+            }
           </div>
           <div className={classes.marksBarContainer}>
             <div className={classes.marksBar}>
@@ -197,9 +198,8 @@ const QuestionPaperInfo = ({
           </h4>
         </div>
         <div className={classes.cardDate}>
-          {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${
-            new Date(testDate).toDateString() || (fetching ? 'Loading...' : '')
-          }`}
+          {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${new Date(testDate).toDateString() || (fetching ? 'Loading...' : '')
+            }`}
         </div>
       </div>
     </>
@@ -252,9 +252,9 @@ const QuestionPaperInfo = ({
               margin: 'auto',
             }}
             disabled
-            // onClick={() => {
-            //   restProps.history.push(`/assessment/${questionPaperId}/attempt/`);
-            // }}
+          // onClick={() => {
+          //   restProps.history.push(`/assessment/${questionPaperId}/attempt/`);
+          // }}
           >
             Not Attempted
           </Button>
@@ -281,7 +281,7 @@ const QuestionPaperInfo = ({
               );
             }}
           >
-            {getTestStatus() ? <b style={{fontSize:'20px'}}>Take Test</b> : 'Not Started'}
+            {getTestStatus() ? <b style={{ fontSize: '20px' }}>Take Test</b> : 'Not Started'}
           </Button>
         )}
       </div>

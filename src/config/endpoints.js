@@ -49,6 +49,7 @@ export default {
     getTeacherAttendanceData: '/erp_user/erpuser-attendance-monthly-reports/',
     getStudentCountReportData: '/erp_user/grade-section-wise-student-count/',
     notifyAttendance : '/erp_user/sms-notifying-students/',
+    markAllAttendance : '/erp_user/mark-attendance-of-all-students/'
   },
   appBar: {
     schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,

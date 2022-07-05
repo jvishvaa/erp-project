@@ -30,6 +30,11 @@ export default function TeacherAttendanceStatus(props) {
   const [value, setValue] = React.useState('');
   const [attendance, setAttendance] = React.useState(props.attendence_status);
 
+  const local = 'localhost:3000'
+  const dev = 'dev.olvorchidnaigaon.letseduvate.com'
+  const qa = 'qa.olvorchidnaigaon.letseduvate.com'
+  const prod = 'orchids.letseduvate.com'
+
   const handleChange = (event) => {
     var body = {
       erp_user: props?.user_id,
@@ -51,8 +56,8 @@ export default function TeacherAttendanceStatus(props) {
   };
   return (
     // <Grid container direction="row" justifyContent="center">
-    <FormControl component='fieldset' name='attendence_status'>
-      <RadioGroup row={true} value={attendance} onChange={handleChange}>
+    <FormControl component='fieldset' name='attendence_status' style={{display : 'flex' , justifyContent: 'space-between'}} >
+      <RadioGroup row={true} value={attendance} onChange={handleChange} style={{ justifyContent:  props?.isStudentInRole ? 'center' : '' }} >
         <Grid item md={3}>
           <FormControlLabel
             value='present'
@@ -69,30 +74,35 @@ export default function TeacherAttendanceStatus(props) {
             className='th-font-size-13 th-label'
           />
         </Grid>
-        <Grid item md={3} className='halfdayPadding'>
-          <FormControlLabel
-            value='halfday'
-            control={<Radio />}
-            label='Half Day'
-            className='th-font-size-13 th-label'
-          />
-        </Grid>
-        <Grid item md={2} className='latePadding'>
-          <FormControlLabel
-            value='late'
-            control={<Radio />}
-            label='Late'
-            className='th-font-size-13 th-label'
-          />
-        </Grid>
-        <Grid item md={2} className='holidayPadding '>
+        {!props?.isStudentInRole && (window.location.host == local || window.location.host == dev || window.location.host == qa || window.location.host == prod) ? 
+          <>
+            <Grid item md={3} className='halfdayPadding'>
+              <FormControlLabel
+                value='halfday'
+                control={<Radio />}
+                label='Half Day'
+                className='th-font-size-13 th-label'
+              />
+            </Grid>
+            <Grid item md={2} className='latePadding'>
+              <FormControlLabel
+                value='late'
+                control={<Radio />}
+                label='Late'
+                className='th-font-size-13 th-label'
+              />
+            </Grid>
+          </>
+          : ''
+        }
+        {/* <Grid item md={2} className='holidayPadding '>
           <FormControlLabel
             value='holiday'
             control={<Radio />}
             label='Holiday'
             className='th-font-size-13 th-label'
           />
-        </Grid>
+        </Grid> */}
       </RadioGroup>
     </FormControl>
     // </Grid>

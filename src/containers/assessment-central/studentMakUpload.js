@@ -28,7 +28,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
-import { sum } from 'lodash';
+import ReactHtmlParser from 'react-html-parser'
+import './styles.scss';
 
 const useStyles = makeStyles((theme) => ({
     root: theme.commonTableRoot,
@@ -195,10 +196,13 @@ const StudentMark = () => {
     const [checkFilter, setCheckFilter] = useState(false);
     const [selectedUser, setSelectedUser] = useState(history?.location?.state?.user)
     const [selectedUserData, setSelectedUserData] = useState(history?.location?.state?.studentData)
+    const [quesList, setQuesList] = useState(history?.location?.state?.quesList)
     const [dummyArr, setDummyArr] = useState(Array.from(Array(history?.location?.state?.studentData?.total_question).keys()))
     const [values, setValues] = useState({ val: [] });
     const [studentmarks, setStudentMarks] = useState();
     const [nextFlag, setNextFlag] = useState(false);
+    let markQues = selectedUserData?.total_marks / selectedUserData?.total_question;
+
 
 
     useEffect(() => {
@@ -236,12 +240,13 @@ const StudentMark = () => {
                 }
                 marksArr = [result?.data?.result?.user_response]
                 console.log(marksArr);
-                marksArr.map((ele, i) => sum.push({
-                    i: ele
-                }))
+                marksArr[0].map((ele, i) =>  sum.push(
+                    ele?.question_mark
+                ))
+                console.log(sum);
                 // setValues( {val : sum[0]?.i})
                 if (marksArr[0] !== undefined) {
-                    setValues({ val: sum[0]?.i })
+                    setValues({ val: sum })
                 }
                 console.log(marksArr?.length);
             })
@@ -361,56 +366,34 @@ const StudentMark = () => {
 
     const handleSave = () => {
         let value = 0;
+        let valueArray = [] ;
+        let testArr = [];
         var sum = values.val.reduce((a, v) => a = parseFloat(a) + parseFloat(v), 0);
-
+        console.log(values?.val);
+        console.log(history?.location?.state?.studentData?.total_question);
         if (values?.val?.length === history?.location?.state?.studentData?.total_question) {
-            if (selectedUserData?.is_question_wise == false) {
-                let eachQues = selectedUserData?.total_marks / selectedUserData?.total_question
-                console.log(eachQues);
-                if (values?.val?.length > 0 && !values?.val.some(ele => ele === "") && !values?.val.some(ele => ele === null) && !values?.val.some(ele => ele === undefined) && values?.val[0] !== undefined ) {
-                    let checkSome = values?.val.some(ele => ele === "")
-                    let check = values?.val?.some(ele => ele > eachQues)
-                    console.log(check);
-                    if (check == true) {
-                        setAlert('warning', 'Marks cannot exceed Indiviual Mark')
-                    } else {
-                        const payload = {
-                            test: history?.location?.state?.test_id,
-                            submitted_by: selectedUser,
-                            user_response: values.val,
-                            total_mark: parseFloat(sum)
-                        }
-                        axiosInstance
-                            .put(`${endpoints.assessment.studentMarks}`, payload)
-                            .then((result) => {
-                                console.log(result);
-                                setAlert('success', 'Marks Uploaded')
-                                setNextFlag(false)
-                            })
-                            .catch((error) => {
-                                console.log('');
-                            });
-                    }
-                } else {
-                    setAlert('warning', 'All Fields Are Required')
-                }
-
-            } 
-            if (selectedUserData?.is_question_wise == true) {
-                if (values?.val?.length > 0 && !values?.val.some(ele => ele === "") && values?.val[0] !== undefined && !values?.val.some(ele => ele === null)) {
-                let checkValid = values?.val?.some((ele , index) => ele > selectedUserData?.question_mark[index]?.question_mark[0] || -(selectedUserData?.question_mark[index]?.question_mark[1]) > ele )
-                // let checkValid = values?.val?.some((ele , index) =>  -(selectedUserData?.question_wise_mark[index]?.neg_marks) > ele )
-                // let checkValid = values?.val?.some((ele , index) =>  -(selectedUserData?.question_wise_mark[index]?.max_marks) > ele )
-
+            if (values?.val?.length > 0 && !values?.val.some(ele => ele === "") && values?.val[0] !== undefined && !values?.val.some(ele => ele === null)) {
+                let checkValid = values?.val?.some((ele, index) => ele > quesList[index]?.question_mark[0] || -(quesList[index]?.question_mark[1]) > ele)
                 console.log(checkValid);
                 if (checkValid == true) {
                     setAlert('warning', 'Marks cannot exceed Indiviual mark')
                 } else {
+                    testArr = values?.val.map((ques, i) => valueArray.push({
+                        is_central: quesList[i]?.is_central,
+                        parent_id: quesList[i]?.parent_id,
+                        question: quesList[i]?.question,
+                        question_categories: quesList[i]?.question_categories,
+                        question_level: quesList[i]?.question_level,
+                        question_mark: parseInt(values?.val[i]),
+                        question_type: quesList[i]?.question_type,
+                        user_answer: []
+                    }))
+                    console.log(valueArray , 'valArray');
                     const payload = {
                         test: history?.location?.state?.test_id,
                         submitted_by: selectedUser,
-                        user_response: values.val,
-                        total_mark: parseFloat(sum)
+                        user_response: valueArray,
+                        // total_mark: parseFloat(sum)
                     }
                     console.log(payload);
                     axiosInstance
@@ -424,10 +407,10 @@ const StudentMark = () => {
                             console.log('');
                         });
                 }
+
             } else {
-                setAlert('warning', 'All Fields Are Required')
+                setAlert('warning', ' All Fields are required')
             }
-        }
 
         } else {
             setAlert('warning', ' All Fields are required')
@@ -573,9 +556,10 @@ const StudentMark = () => {
                                 <TableHead className={`${classes.columnHeader} table-header-row`}>
                                     <TableRow>
                                         <TableCell className={classes.tableCell}>Number</TableCell>
-                                        {/* <TableCell className={classes.tableCell}>Question</TableCell> */}
+                                        <TableCell className={classes.tableCell}>Question</TableCell>
+                                        <TableCell className={classes.tableCell}>Total Marks</TableCell>
+                                        <TableCell className={classes.tableCell}>Negative Marks</TableCell>
                                         <TableCell className={classes.tableCell}>Marks</TableCell>
-                                        {/* <TableCell className={classes.tableCell}>Edit</TableCell> */}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -583,6 +567,17 @@ const StudentMark = () => {
                                         <TableRow key={items.id}>
                                             <TableCell className={classes.tableCell}>
                                                 Question - {i + 1}
+                                            </TableCell>
+                                            <TableCell className={classes.tableCell} style={{maxWidth: '100px' , height: '100px'}} >
+                                                <div className='questnArea' >
+                                                {ReactHtmlParser(quesList[i]?.question_answer[0]?.question)}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className={classes.tableCell}>
+                                                {quesList[i]?.question_mark[0]}
+                                            </TableCell>
+                                            <TableCell className={classes.tableCell}>
+                                                {quesList[i]?.question_mark[1]}
                                             </TableCell>
                                             {/* <TableCell className={classes.tableCell}>{items?.erp_user?.name}</TableCell> */}
                                             <TableCell className={classes.tableCell} id="blockArea" >

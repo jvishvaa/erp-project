@@ -19,6 +19,7 @@ const QuestionPaperCard = ({
   test_date: testDate,
   test_name: testTitle,
   question_paper: questionPaperObj = {},
+  test_mode,
 }) => {
   const themeContext = useTheme();
   // const { setAlert } = useContext(AlertNotificationContext);
@@ -33,7 +34,7 @@ const QuestionPaperCard = ({
   } = questionPaperObj || {};
 
   return (
-    <Paper elevation={2} className={classes.paper}>
+    <Paper elevation={2} className={classes.paper} style={{background: test_mode == 2 ? '#eaeaea' : ''}} >
       <div className={classes.cardWrapper}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div>
