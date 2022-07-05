@@ -97,7 +97,7 @@ function EnhancedTableHead(props) {
   return (
     <TableHead align='left' stickyHeader>
       <TableRow>
-      <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
+        <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
           S.No.
         </TableCell>
         <TableCell style={{ backgroundColor: 'LightGray' }} stickyHeader align='left'>
@@ -141,13 +141,13 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-          color: theme.palette.secondary.main,
-          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-        }
+        color: theme.palette.secondary.main,
+        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+      }
       : {
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.secondary.dark,
-        },
+        color: theme.palette.text.primary,
+        backgroundColor: theme.palette.secondary.dark,
+      },
   title: {
     flex: '1 1 100%',
     fontWeight: 'bold',
@@ -227,7 +227,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function TeacherAttendance(props) {
   const classes = useStyles();
-  const [openModal,setOpenModal] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
   const [order, setOrder] = React.useState('asc');
   const [loading, setLoading] = React.useState(false);
   const [orderBy, setOrderBy] = React.useState('');
@@ -236,7 +236,6 @@ export default function TeacherAttendance(props) {
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [checked, setChecked] = React.useState(true);
-  // const [data, setData] = React.useState();
   const { setAlert } = useContext(AlertNotificationContext);
   const [selectedMultipleRoles, setSelectedMultipleRoles] = React.useState([]);
   const [roles, setRoles] = React.useState([]);
@@ -246,6 +245,7 @@ export default function TeacherAttendance(props) {
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [data, setData] = React.useState([]);
+  const [recordsData, setRecordsData] = React.useState([]);
   const [rolesId, setRolesId] = React.useState();
 
   const [moduleId, setModuleId] = React.useState();
@@ -269,8 +269,8 @@ export default function TeacherAttendance(props) {
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
   const [selectedSectionIds, setSelectedSectionIds] = useState([]);
-
-  const [isStudentInRole,setIsStudentInRole] = useState(false)
+  const [showdata, setshowdata] = useState(false);
+  const [isStudentInRole, setIsStudentInRole] = useState(false)
   const [filterData, setFilterData] = React.useState({
     branch: '',
     year: '',
@@ -302,8 +302,8 @@ export default function TeacherAttendance(props) {
 
   useEffect(() => {
     // handleAcademicYear('', selectedAcademicYear);
-      if (moduleId && selectedAcademicYear) getBranch();
-    }, [moduleId, selectedAcademicYear]);
+    if (moduleId && selectedAcademicYear) getBranch();
+  }, [moduleId, selectedAcademicYear]);
 
   function getBranch(acadId) {
     let url = `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
@@ -319,7 +319,7 @@ export default function TeacherAttendance(props) {
           );
         }
       })
-      .catch((error) => {});
+      .catch((error) => { });
   }
 
   const handleBranch = (event, value) => {
@@ -363,8 +363,7 @@ export default function TeacherAttendance(props) {
       setSelectedGrade(value);
       setSelectedGradeIds(selectedId);
       callApi(
-        `${endpoints.academics.sections}?session_year=${
-          selectedAcademicYear?.id
+        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
         }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
         'section'
       );
@@ -380,7 +379,7 @@ export default function TeacherAttendance(props) {
 
   const handleSection = (event = {}, value = []) => {
     if (value?.length > 0) {
-        value =
+      value =
         value.filter(({ section_id }) => section_id === 'all').length === 1
           ? [...sectionList].filter(({ section_id }) => section_id !== 'all')
           : value;
@@ -405,14 +404,14 @@ export default function TeacherAttendance(props) {
             setGradeList(result.data.data || []);
           }
           if (key === 'section') {
-            const selectAllObject ={
-              session_year:{},
-              id:'all',
-              section_id:'all',
+            const selectAllObject = {
+              session_year: {},
+              id: 'all',
+              section_id: 'all',
               section__section_name: 'Select All',
               section_name: 'Select All'
             }
-            const data =[selectAllObject, ...result?.data?.data];
+            const data = [selectAllObject, ...result?.data?.data];
             setSectionList(data);
           }
         } else {
@@ -471,13 +470,16 @@ export default function TeacherAttendance(props) {
         )
         .then((result) => {
           if (result.status === 200) {
-            setData(result?.data);
+            setData(result?.data?.attendance_data);
+            setRecordsData(result?.data?.aggregate_counts)
             setLoading(false);
+            setshowdata(true);
           }
         })
         .catch((error) => {
           console.log(error);
           setLoading(false);
+          setshowdata(false);
         });
     }
   };
@@ -495,8 +497,8 @@ export default function TeacherAttendance(props) {
     if (value) {
       const isSubset = (array1, array2) => array2.every(element => array1.includes(element));
       const roleName = value?.role_name.toUpperCase().split('')
-      const studentSpelling = ['S','T','U','D','E','N','T']
-      setIsStudentInRole(isSubset(roleName,studentSpelling))
+      const studentSpelling = ['S', 'T', 'U', 'D', 'E', 'N', 'T']
+      setIsStudentInRole(isSubset(roleName, studentSpelling))
       setRolesId(value?.id);
     } else {
       setRolesId('');
@@ -518,17 +520,16 @@ export default function TeacherAttendance(props) {
   const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
   const handleNotifyPopUp = (val) => {
-    if(startDate !== moment().format('YYYY-MM-DD')){
-      setAlert('warning','Please select today\'s date')
+    if (startDate !== moment().format('YYYY-MM-DD')) {
+      setAlert('warning', 'Please select today\'s date')
     }
-    if (sectionId.length == 0 || !selectedBranchIds || !selectedGradeIds ) {
-      setAlert('warning','Please select all required fields')
+    if (sectionId.length == 0 || !selectedBranchIds || !selectedGradeIds) {
+      setAlert('warning', 'Please select all required fields')
     }
-    if (sectionId.length > 0 && selectedBranchIds && selectedGradeIds && (startDate == moment().format('YYYY-MM-DD'))){
+    if (sectionId.length > 0 && selectedBranchIds && selectedGradeIds && (startDate == moment().format('YYYY-MM-DD'))) {
       setOpenModal(val)
     }
   }
-
   const local = 'localhost:3000'
   const dev = 'dev.olvorchidnaigaon.letseduvate.com'
   const qa = 'qa.olvorchidnaigaon.letseduvate.com'
@@ -653,7 +654,7 @@ export default function TeacherAttendance(props) {
               getOptionLabel={(option) => option?.section__section_name || ''}
               filterSelectedOptions
               renderInput={(params) => (
-                <TextField {...params} label='Section' variant='outlined' required/>
+                <TextField {...params} label='Section' variant='outlined' required />
               )}
             />
           </Grid>
@@ -663,12 +664,6 @@ export default function TeacherAttendance(props) {
               Search
             </Button>
           </Grid>
-          {isStudentInRole && (window.location.host == local || window.location.host == dev || window.location.host == qa || window.location.host == prod) && 
-          <Grid item md={1} xs={12}>
-          <Button onClick={()=>{handleNotifyPopUp(true)}} variant='contained' color='primary'>
-            Notify
-          </Button>
-        </Grid>}
 
         </Grid>
         <div className='th-sticky-header' style={{ width: '100%' }}>
@@ -700,10 +695,10 @@ export default function TeacherAttendance(props) {
                           // aria-checked={isItemSelected}
                           tabIndex={-1}
                           key={value?.name}
-                          // selected={isItemSelected}
+                        // selected={isItemSelected}
                         >
                           <TableCell align='left' style={{ width: '1px' }}>
-                            {i+1}
+                            {i + 1}
                           </TableCell>
                           <TableCell align='left' style={{ width: '1px' }}>
                             {value?.erp_id}
@@ -720,6 +715,7 @@ export default function TeacherAttendance(props) {
                               user_id={value?.id}
                               start_date={startDate}
                               attendence_status={value?.attendence_status}
+                              isStudentInRole={isStudentInRole}
                             />
                           </TableCell>
                         </TableRow>
@@ -738,11 +734,21 @@ export default function TeacherAttendance(props) {
           </TableContainer>
         </div>
       </Grid>
-      <NotifyConfirmPopUp 
-        openModal={openModal} 
-        handleNotifyPopUp={handleNotifyPopUp} 
+      {showdata ?
+        <Grid container spacing={1} style={{ padding: '25px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          {recordsData?.total ? <h3>Total Present : {recordsData?.present || 0} &nbsp; Total Absent : {recordsData?.absent || 0}  &nbsp; Total Marked : {recordsData?.marked} &nbsp; Total Unmarked : {recordsData?.unmarked} &nbsp; Total: {recordsData?.total}</h3> : null}
+          {isStudentInRole && (recordsData?.total ? true : false) && (window.location.host == local || window.location.host == dev || window.location.host == qa || window.location.host == prod) &&
+            <Grid item md={1} xs={12} style={{ marginLeft: 15 }}>
+              <Button onClick={() => { handleNotifyPopUp(true) }} variant='contained' color='primary'>
+                Notify
+              </Button>
+            </Grid>}
+        </Grid> : null}
+      <NotifyConfirmPopUp
+        openModal={openModal}
+        handleNotifyPopUp={handleNotifyPopUp}
         sectionId={sectionId}
-        startDate={startDate} 
+        startDate={startDate}
         rolesId={rolesId}
       />
     </Layout>
