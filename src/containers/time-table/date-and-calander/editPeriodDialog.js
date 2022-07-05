@@ -77,10 +77,10 @@ useEffect(() => {
     setperiodTypeId(props?.periodDetails?.period_type);
     setAssignedTeacherID(props?.periodDetails?.teacher_id);
     setSelectedSubject({
-        id : props?.periodDetails?.subject_id,
+        id : props?.periodDetails?.subject_mapping_id,
         subject_name : props?.periodDetails?.subject_name
     })
-    setSubjectIdOption(props?.periodDetails?.subject_id)
+    setSubjectIdOption(props?.periodDetails?.subject_mapping_id)
     setDays({
       id: props?.periodDetails?.day,
       name: props?.periodDetails?.day_name,
