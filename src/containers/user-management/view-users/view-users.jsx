@@ -1,9 +1,3 @@
-/* eslint-disable dot-notation */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-
-/* eslint-disable react/no-array-index-key */
-/* eslint-disable no-nested-ternary */
 import React, { useContext, useState, useEffect, useCallback } from 'react';
 import { withRouter } from 'react-router-dom';
 import { makeStyles, useTheme, withStyles } from '@material-ui/core/styles';
@@ -23,18 +17,14 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Select from '@material-ui/core/Select';
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
-import Container from '@material-ui/core/Container';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import SettingsBackupRestoreOutlined from '@material-ui/icons/SettingsBackupRestoreOutlined';
 import BlockIcon from '@material-ui/icons/Block';
 import IconButton from '@material-ui/core/IconButton';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import SearchOutlined from '@material-ui/icons/SearchOutlined';
-import Box from '@material-ui/core/Box';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import TablePagination from '@material-ui/core/TablePagination';
-import Input from '@material-ui/core/Input';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -44,12 +34,9 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import axiosInstance from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
-import CustomMultiSelect from '../../communication/custom-multiselect/custom-multiselect';
 import Layout from '../../Layout';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-// import './view-users.css';
 import ViewUserCard from '../../../components/view-user-card';
-import { CSVLink } from 'react-csv';
 import FileSaver from 'file-saver';
 import { connect, useSelector } from 'react-redux';
 import './styles.scss';
@@ -68,10 +55,6 @@ const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
   container: {
     maxHeight: 440,
-  },
-  formControl: {
-    // margin: theme.spacing(1),
-    // minWidth: 250,
   },
   cardsPagination: {
     width: '100%',
@@ -116,19 +99,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// const StyledButton = withStyles({
-//   root: {
-//     backgroundColor: '#FF6B6B',
-//     color: '#FFFFFF',
-//     padding: '7px 15px',
-//     '&:hover': {
-//       backgroundColor: '#FF6B6B !important',
-//     },
-//   }
-// })(Button);
-
-// eslint-disable-next-line no-unused-vars
-
 const debounce = (fn, delay) => {
   let timeoutId;
   return function (...args) {
@@ -142,11 +112,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [selectedRoles, setSelectedRoles] = useState(null);
-  // const [selectedYear, setSelectedYear] = useState('');
   const selectedYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const [selectedGrades, setSelectedGrades] = useState([]);
+  const [selectedSection, setSelectedSection] = useState([]);
   const [gradeIds, setGradeIds] = useState([]);
+  const [sectionIds, setSectionIds] = useState([]);
   const [usersData, setUsersData] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const [deleteId, setDeleteId] = useState(null);
@@ -159,6 +130,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [academicYearList, setAcademicYearList] = useState([]);
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
   const [isNewSeach, setIsNewSearch] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [limit, setLimit] = useState(15);
@@ -233,23 +205,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   };
 
-  // const getYearApi = async () => {
-  //   try {
-  //     const result = await axiosInstance.get(
-  //       `/erp_user/list-academic_year/?module_id=${moduleId}`
-  //     );
-  //     if (result.status === 200) {
-  //       setAcademicYearList(result.data?.data);
-  //       const defaultYear = result.data?.data?.[0];
-  //       setSelectedYear(defaultYear);
-  //     } else {
-  //       setAlert('error', result.data.message);
-  //     }
-  //   } catch (error) {
-  //     setAlert('error', error.message);
-  //   }
-  // };
-
   const getBranchApi = async () => {
     try {
       const result = await axiosInstance.get(
@@ -259,7 +214,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         const transformedResponse = result?.data?.data?.results.map(
           (obj) => (obj && obj.branch) || {}
         );
-        // setBranchList(result.data.data);
         setBranchList(transformedResponse);
       } else {
         setAlert('error', result.data.message);
@@ -284,6 +238,23 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   };
 
+  const getSectionApi = async () => {
+    try {    
+      const result = await axiosInstance.get(
+        `${endpoints.academics.sections}?session_year=${selectedYear.id}&branch_id=${
+          selectedBranch.id
+        }&grade_id=${gradeIds.toString()}&module_id=${moduleId}`
+      );
+      if (result.data.status_code === 200) { 
+        setSectionList(result.data.data);
+      } else {      
+        setAlert('error', result.data.message);
+      }
+    } catch (error) { 
+      setAlert('error', error.message);
+    }
+  };
+
   const getUsersData = async () => {
     const rolesId = [];
     const gradesId = [];
@@ -292,60 +263,69 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         rolesId.push(each.id);
       });
     }
-    if(searchText || classStatus && classStatus != 1 && classStatus != 0 || rolesId.length > 0 || selectedBranch !== null || gradeIds.length > 0){
-    setLoading(true);
-    let getUserListUrl = `${endpoints.communication.viewUser}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}&session_year=${selectedYear?.id}`;
-    if (classStatus && classStatus != 1 && classStatus != 0) {
-      let status = classStatus - 1;
-      getUserListUrl += `&status=${status.toString()}`;
-    }
-    if (rolesId && rolesId.length > 0 && selectedRoles !== 'All') {
-      getUserListUrl += `&role=${rolesId.toString()}`;
-    }
-    if (selectedBranch && selectedBranch !== null) {
-      getUserListUrl += `&branch_id=${selectedBranch?.id.toString()}`;
-    }
-    if (gradeIds.length > 0 && !selectedGrades.includes('All')) {
-      getUserListUrl += `&grade=${gradeIds.toString()}`;
-    }
-    if (searchText) {
-      getUserListUrl += `&search=${searchText}`;
-    }
-    try {
-      const result = await axiosInstance.get(getUserListUrl, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const resultUsers = [];
-      excelData.length = 0;
-
-      if (result.status === 200) {
-        setLoading(false);
-        setTotalCount(result.data.count);
-
-        result.data.results.map((items) =>
-          resultUsers.push({
-            userId: items.id,
-            userName: `${items.user.first_name} ${items.user.last_name}`,
-            erpId: items.erp_id,
-            status: items?.status,
-            emails: items.user.email,
-            role: items?.roles?.role_name,
-            active: items.is_active,
-          })
-        );
-        setUsersData(resultUsers);
-        setTotalPages(result.data.total_pages);
-      } else {
-        setAlert('error', result.data.message);
+    if (
+      searchText ||
+      (classStatus && classStatus != 1 && classStatus != 0) ||
+      rolesId.length > 0 ||
+      selectedBranch !== null ||
+      gradeIds.length > 0
+    ) {
+      setLoading(true);
+      let getUserListUrl = `${endpoints.communication.viewUser}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}&session_year=${selectedYear?.id}`;
+      if (classStatus && classStatus != 1 && classStatus != 0) {
+        let status = classStatus - 1;
+        getUserListUrl += `&status=${status.toString()}`;
       }
-    } catch (error) {
-      setAlert('error', error.message);
+      if (rolesId && rolesId.length > 0 && selectedRoles !== 'All') {
+        getUserListUrl += `&role=${rolesId.toString()}`;
+      }
+      if (selectedBranch && selectedBranch !== null) {
+        getUserListUrl += `&branch_id=${selectedBranch?.id.toString()}`;
+      }
+      if (gradeIds.length > 0 && !selectedGrades.includes('All')) {
+        getUserListUrl += `&grade=${gradeIds.toString()}`;
+      }
+      if (sectionIds.length > 0) {
+        getUserListUrl += `&section_mapping_id=${sectionIds.toString()}`;
+      }
+      if (searchText) {
+        getUserListUrl += `&search=${searchText}`;
+      }
+      try {
+        const result = await axiosInstance.get(getUserListUrl, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        const resultUsers = [];
+        excelData.length = 0;
+
+        if (result.status === 200) {
+          setLoading(false);
+          setTotalCount(result.data.count);
+
+          result.data.results.map((items) =>
+            resultUsers.push({
+              userId: items.id,
+              userName: `${items.user.first_name} ${items.user.last_name}`,
+              erpId: items.erp_id,
+              status: items?.status,
+              emails: items.user.email,
+              role: items?.roles?.role_name,
+              active: items.is_active,
+            })
+          );
+          setUsersData(resultUsers);
+          setTotalPages(result.data.total_pages);
+        } else {
+          setAlert('error', result.data.message);
+        }
+      } catch (error) {
+        setAlert('error', error.message);
+      }
+    } else {
+      setAlert('error', 'Please Select Any Filter');
     }
-  } else {
-    setAlert('error' , 'Please Select Any Filter')
-  }
   };
   const handlePagination = (event, page) => {
     setIsClicked(true);
@@ -354,15 +334,14 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   const handleResetFilters = () => {
     setSearchText('');
-    // setSelectedYear('');
     setSelectedRoles(null);
     setSelectedBranch(null);
     setSelectedGrades([]);
+    setSelectedSection([]);
     setClassStatus(1);
     setCurrentPage(1);
-    // setIsNewSearch(true);
-    setUsersData([])
-    setTotalCount(0)
+    setUsersData([]);
+    setTotalCount(0);
   };
 
   const handleExcel = () => {
@@ -398,10 +377,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       let status = classStatus - 1;
       getUserListUrl += `&status=${status.toString()}`;
     }
-    // */
-    // if (gradeIds.length && !selectedGrades.includes('All')) {
-    //   getUserListUrl += `&grade=${gradeIds.toString()}`;
-    // }
     if (searchText) {
       getUserListUrl += `&search=${searchText}`;
     }
@@ -472,7 +447,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     }
   };
 
-  // Restore User handler
   const handleRestore = async (id, index, status) => {
     setRestoreId(id);
     setRestoreIndex(index);
@@ -480,7 +454,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     setRestoreAlert(true);
   };
 
-  // Restore User API Call
   const handleRestoreConfirm = async () => {
     try {
       const request = {
@@ -599,14 +572,13 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   };
 
   useEffect(() => {
-    if(selectedRoles != null && selectedGrades != []){
-      // setIsNewSearch(true);
+    if (selectedRoles != null && selectedGrades != []) {
+      setIsNewSearch(true);
     }
   }, [selectedRoles, selectedGrades]);
 
   useEffect(() => {
     getRoleApi();
-    // getBranchApi();
   }, []);
 
   useEffect(() => {
@@ -619,12 +591,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       getUsersData();
     }
   }, [currentPage, moduleId]);
-
-  // useEffect(() => {
-  //   if (selectedYear) {
-  //     getBranchApi();
-  //   }
-  // }, [selectedYear]);
 
   useEffect(() => {
     if (status) {
@@ -642,23 +608,18 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   }, [selectedBranch]);
 
   useEffect(() => {
+    if (selectedGrades.length > 0) {
+      getSectionApi();
+    }
+  }, [selectedGrades]);
+
+  useEffect(() => {
     if (isNewSeach && moduleId) {
       setIsNewSearch(false);
       setCurrentPage(1);
       getUsersData();
     }
   }, [isNewSeach, moduleId]);
-
-  const handleYear = (event = {}, value = '') => {
-    // setSelectedYear('');
-    setSelectedBranch('');
-    setBranchList([]);
-    setGradeList([]);
-    setSelectedGrades([]);
-    if (value) {
-      // setSelectedYear(value);
-    }
-  };
 
   const handleBranch = (event, value) => {
     setSelectedBranch('');
@@ -673,15 +634,24 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     if (value.length) {
       const ids = value.map((el) => el.grade_id);
       setGradeIds(ids);
-      // listSubjects(ids)
     } else {
       setGradeIds([]);
       setSelectedGrades([]);
     }
   };
 
+  const handleSection = (event, value) => {
+    setSelectedSection(value);
+    if (value.length) {
+      const sectionId = value.map((el) => el.id);
+      setSectionIds(sectionId);
+    } else {
+      setSectionIds([]);
+    }
+  };
+
   const showContactInfo = async (id, index, mail) => {
-    if(mail.includes('@')){
+    if (mail.includes('@')) {
       return;
     }
     setLoading(true);
@@ -702,7 +672,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         const newData = { ...tempGroupData[index], emails };
         tempGroupData.splice(index, 1, newData);
         setUsersData(tempGroupData);
-        // console.log("Abcd",statusChange?.data?.result?.user?.email)
       } else {
         setLoading(false);
         setAlert('error', statusChange.data.message);
@@ -744,7 +713,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
               <IconButton
                 className='create-user-button'
                 onClick={() => {
-                  history.push('/user-management/create-user')
+                  history.push('/user-management/create-user');
                 }}
               >
                 <AddIcon style={{ color: '#ffffff' }} />
@@ -766,7 +735,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
               </AccordionSummary>
               <AccordionDetails>
                 <Grid container spacing={3}>
-                  <Grid item md={4} sm={4} xs={12}>
+                  <Grid item md={3} sm={3} xs={10}>
                     <Autocomplete
                       style={{ width: '100%' }}
                       multiple
@@ -791,11 +760,10 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                       )}
                     />
                   </Grid>
-                  <Grid item md={4} sm={4} xs={12}>
+                  <Grid item md={3} sm={3} xs={10}>
                     <Autocomplete
                       style={{ width: '100%' }}
                       size='small'
-                      //onChange={(e) => setSelectedBranch(e.target.value)}
                       onChange={handleBranch}
                       id='branch_id'
                       className='dropdownIcon'
@@ -813,9 +781,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                       )}
                     />
                   </Grid>
-                  <Grid item md={4} xs={12} sm={3}>
+                  <Grid item md={3} xs={10} sm={3}>
                     <Autocomplete
-                      //key={clearKey}
                       multiple
                       size='small'
                       onChange={handleGrade}
@@ -832,6 +799,28 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                           variant='outlined'
                           label='Grades'
                           placeholder='Select Grades'
+                        />
+                      )}
+                    />
+                  </Grid>
+                  <Grid item md={3} xs={10} sm={3}>
+                    <Autocomplete
+                      multiple
+                      size='small'
+                      onChange={handleSection}
+                      id='create__class-branch'
+                      options={sectionList}
+                      className='dropdownIcon'
+                      getOptionLabel={(option) => option?.section__section_name}
+                      filterSelectedOptions
+                      value={selectedSection}
+                      renderInput={(params) => (
+                        <TextField
+                          className='create__class-textfield'
+                          {...params}
+                          variant='outlined'
+                          label='Section'
+                          placeholder='Select Section'
                         />
                       )}
                     />
@@ -937,7 +926,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
           </DialogActions>
         </Dialog>
 
-        {/* Resore user Dialog Box */}
         <Dialog open={restoreAlert} onClose={handleDeleteCancel}>
           <DialogTitle id='draggable-dialog-title'>Restore User</DialogTitle>
           <DialogContent>
@@ -962,137 +950,156 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         {!isMobile && (
           <Paper className={`${classes.root} common-table`}>
             {loading && <Loader />}
-            {usersData?.length > 0 ?
-            <TableContainer
-              className={`table table-shadow view_users_table ${classes.container}`}
-            >
-              <Table stickyHeader aria-label='sticky table'>
-                <TableHead className={`${classes.columnHeader} table-header-row`}>
-                  <TableRow>
-                    <TableCell className={classes.tableCell}>Name</TableCell>
-                    <TableCell className={classes.tableCell}>ERP Id</TableCell>
-                    <TableCell className={classes.tableCell}>Email</TableCell>
-                    <TableCell className={classes.tableCell}>Role</TableCell>
-                    <TableCell className={classes.tableCell}>Status</TableCell>
-                    <TableCell className={classes.tableCell}>Action</TableCell>
-                    {/* <TableCell className={classes.tableCell}>Edit</TableCell> */}
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  { usersData.map((items, i) => (
-                    <TableRow
-                      hover
-                      role='checkbox'
-                      tabIndex={-1}
-                      key={`user_table_index${i}`}
-                    >
-                      <TableCell className={classes.tableCell}>
-                        {items.userName}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>{items.erpId}</TableCell>
-                      <TableCell
-                        className={classes.tableCell}
-                        // style={{ cursor: 'pointer' }}
+            {usersData?.length > 0 ? (
+              <TableContainer
+                className={`table table-shadow view_users_table ${classes.container}`}
+              >
+                <Table stickyHeader aria-label='sticky table'>
+                  <TableHead className={`${classes.columnHeader} table-header-row`}>
+                    <TableRow>
+                      <TableCell className={classes.tableCell}>Name</TableCell>
+                      <TableCell className={classes.tableCell}>ERP Id</TableCell>
+                      <TableCell className={classes.tableCell}>Email</TableCell>
+                      <TableCell className={classes.tableCell}>Role</TableCell>
+                      <TableCell className={classes.tableCell}>Status</TableCell>
+                      <TableCell className={classes.tableCell}>Action</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {usersData.map((items, i) => (
+                      <TableRow
+                        hover
+                        role='checkbox'
+                        tabIndex={-1}
+                        key={`user_table_index${i}`}
                       >
-                        {items.emails.includes('*') ? (
-                          <div style={items.emails.includes('@') ? {} : { cursor: 'pointer' }} onClick={() => showContactInfo(items?.erpId, i, items.emails)}>
-                            ******@mail.com
-                          </div>
-                        ) : (
-                          <div style={items.emails.includes('@') ? {} : { cursor: 'pointer' }} onClick={() => showContactInfo(items?.erpId, i,items.emails)}>
-                            {items.emails}
-                          </div>
-                        )}
-                        {/* <div onClick={() => showContactInfo(items?.userId,i)}>{items.emails}</div> */}
-                      </TableCell>
-                      <TableCell className={classes.tableCell}>{items?.role}</TableCell>
-                      <TableCell className={classes.tableCell}>
-                        {items && items.status === 'active' ? (
-                          <div style={{ color: 'green' }}>Activated</div>
-                        ) : items && items.status === 'deleted' ? (
-                          <div style={{ color: 'red' }}>Deleted</div>
-                        ) : (
-                          <div style={{ color: 'red' }}>Deactivated</div>
-                        )}
-                      </TableCell>
-                      <TableCell
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                        }}
-                        className={classes.tableCell}
-                      >
-                        {items && items.status === 'deleted' ? (
-                          <IconButton
-                            title='Restore'
-                            onClick={() => handleRestore(items.userId, i, '1')}
-                          >
-                            <RestoreIcon
-                              style={{ color: themeContext.palette.primary.main }}
-                            />
-                          </IconButton>
-                        ) : items.status === 'active' ? (
-                          <IconButton
-                            aria-label='deactivate'
-                            onClick={() => handleDeactivate(items.userId, i, '2')}
-                            title='Deactivate'
-                          >
-                            <BlockIcon
-                              style={{ color: themeContext.palette.primary.main }}
-                            />
-                          </IconButton>
-                        ) : (
-                          <button
-                            type='submit'
-                            title='Activate'
-                            onClick={() => handleStatusChange(items.userId, i, '1')}
-                            style={{
-                              borderRadius: '50%',
-                              backgroundColor: 'green',
-                              border: 0,
-                              width: '30px',
-                              height: '30px',
-                              color: '#ffffff',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            A
-                          </button>
-                        )}
-                        {items && items.status !== 'deleted' ? (
-                          <>
-                            <IconButton
-                              title='Delete'
-                              onClick={() => handleDelete(items.userId, i, '3')}
+                        <TableCell className={classes.tableCell}>
+                          {items.userName}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>{items.erpId}</TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {items.emails.includes('*') ? (
+                            <div
+                              style={
+                                items.emails.includes('@') ? {} : { cursor: 'pointer' }
+                              }
+                              onClick={() =>
+                                showContactInfo(items?.erpId, i, items.emails)
+                              }
                             >
-                              <DeleteOutlinedIcon
+                              ******@mail.com
+                            </div>
+                          ) : (
+                            <div
+                              style={
+                                items.emails.includes('@') ? {} : { cursor: 'pointer' }
+                              }
+                              onClick={() =>
+                                showContactInfo(items?.erpId, i, items.emails)
+                              }
+                            >
+                              {items.emails}
+                            </div>
+                          )}
+                        </TableCell>
+                        <TableCell className={classes.tableCell}>{items?.role}</TableCell>
+                        <TableCell className={classes.tableCell}>
+                          {items && items.status === 'active' ? (
+                            <div style={{ color: 'green' }}>Activated</div>
+                          ) : items && items.status === 'deleted' ? (
+                            <div style={{ color: 'red' }}>Deleted</div>
+                          ) : (
+                            <div style={{ color: 'red' }}>Deactivated</div>
+                          )}
+                        </TableCell>
+                        <TableCell
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                          className={classes.tableCell}
+                        >
+                          {items && items.status === 'deleted' ? (
+                            <IconButton
+                              title='Restore'
+                              onClick={() => handleRestore(items.userId, i, '1')}
+                            >
+                              <RestoreIcon
                                 style={{ color: themeContext.palette.primary.main }}
                               />
                             </IconButton>
+                          ) : items.status === 'active' ? (
                             <IconButton
-                              title='Edit'
-                              onClick={() => handleEdit(items.userId)}
+                              aria-label='deactivate'
+                              onClick={() => handleDeactivate(items.userId, i, '2')}
+                              title='Deactivate'
                             >
-                              <EditOutlinedIcon
+                              <BlockIcon
                                 style={{ color: themeContext.palette.primary.main }}
                               />
-                            </IconButton>{' '}
-                          </>
-                        ) : (
-                          ''
-                        )}
-                      </TableCell>
-                    </TableRow>
-                  )) }
-                </TableBody>
-             
-              </Table>
-            </TableContainer>
-               : 
-               <div style={{display: 'flex' , justifyContent: 'center' , width: '100%' , fontSize: '25px', color: '#646363' , minHeight: '300px' , alignItems: 'center'}} >
-                 <p style={{fontWeight: '600'}} > Please Apply Filters</p>
-               </div>}
+                            </IconButton>
+                          ) : (
+                            <button
+                              type='submit'
+                              title='Activate'
+                              onClick={() => handleStatusChange(items.userId, i, '1')}
+                              style={{
+                                borderRadius: '50%',
+                                backgroundColor: 'green',
+                                border: 0,
+                                width: '30px',
+                                height: '30px',
+                                color: '#ffffff',
+                                cursor: 'pointer',
+                              }}
+                            >
+                              A
+                            </button>
+                          )}
+                          {items && items.status !== 'deleted' ? (
+                            <>
+                              <IconButton
+                                title='Delete'
+                                onClick={() => handleDelete(items.userId, i, '3')}
+                              >
+                                <DeleteOutlinedIcon
+                                  style={{ color: themeContext.palette.primary.main }}
+                                />
+                              </IconButton>
+                              <IconButton
+                                title='Edit'
+                                onClick={() => handleEdit(items.userId)}
+                              >
+                                <EditOutlinedIcon
+                                  style={{ color: themeContext.palette.primary.main }}
+                                />
+                              </IconButton>{' '}
+                            </>
+                          ) : (
+                            ''
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            ) : (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  width: '100%',
+                  fontSize: '25px',
+                  color: '#646363',
+                  minHeight: '300px',
+                  alignItems: 'center',
+                }}
+              >
+                <p style={{ fontWeight: '600' }}> Please Apply Filters</p>
+              </div>
+            )}
             <TablePagination
               component='div'
               count={totalCount}
@@ -1127,18 +1134,11 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                     handleStatusChange(userId, i, status);
                   }}
                   index={i}
-                  showContactInfo = {(id, idx)=>showContactInfo(id, idx)}
+                  showContactInfo={(id, idx) => showContactInfo(id, idx)}
                 />
               ))}
             </div>
             <div className={classes.cardsPagination}>
-              {/* <Pagination
-              page={Number(currentPage)}	
-              count={totalPages}
-              onChange={handlePagination}
-              color='primary'
-              className='pagination-white'
-            /> */}
               <TablePagination
                 component='div'
                 count={totalCount}
