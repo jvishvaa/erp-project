@@ -135,6 +135,8 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const { openPreview, closePreview } =
+  React.useContext(AttachmentPreviewerContext) || {};
 
   const handleMenuClose = () => {
     setAnchorEl(null);
