@@ -105,6 +105,11 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.secondary.main,
         fontSize: '16px',
         padding: '10px'
+    },
+    omrButton: {
+        color: theme.palette.secondary.main,
+        right: '30px',
+        top: '-50px',
     }
 }));
 
@@ -191,7 +196,7 @@ const OfflineStudentAssessment = () => {
     const [gradeList, setGradeList] = useState([]);
     const [selectedGrade, setSelectedGrade] = useState(history?.location?.state?.data?.grade);
     const [sectionList, setSectionList] = useState([]);
-    const [selectedSection, setSelectedSection] = useState([]);
+    const [selectedSection, setSelectedSection] = useState(null);
     const [bulkUpload, setBulkUpload] = useState(true);
     const [isLesson, setIsLesson] = useState('');
     const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -282,7 +287,7 @@ const OfflineStudentAssessment = () => {
 
     const handleBranch = (e, value) => {
         setSelectedBranch(value)
-        setSelectedSection()
+        setSelectedSection(null)
     }
     useEffect(() => {
         handleGrade(history?.location?.state?.data?.grade)
@@ -316,7 +321,7 @@ const OfflineStudentAssessment = () => {
         // setSelectedAcadmeicYear();
         setSelectedBranch();
         setSelectedGrade();
-        setSelectedSection();
+        setSelectedSection(null);
     };
 
     const offlineMarks = () => {
@@ -383,6 +388,21 @@ const OfflineStudentAssessment = () => {
         history.goBack()
     }
 
+    const uploadOMR = () => {
+        if(!selectedSection){
+            setAlert("error","Please select section")
+            return;
+        }
+        // console.log("data12378",history?.location?.state?.test);
+        history.push({
+            pathname: '/uploadOMR',
+            state : {
+              data : filterData,
+              section : selectedSection,
+              test_id: history?.location?.state?.test,
+            }
+        })
+    }
 
     return (
         <Layout className='accessBlockerContainer'>
@@ -450,7 +470,7 @@ const OfflineStudentAssessment = () => {
                                 style={{ width: '100%' }}
                                 size='small'
                                 onChange={(event, value) => {
-                                    setSelectedSection([]);
+                                    setSelectedSection(null);
                                     if (value) {
                                         setSelectedSection(value);
                                         setCheckFilter(true);
@@ -476,10 +496,13 @@ const OfflineStudentAssessment = () => {
                     </div>
                     <div className="filterArea" >
                         <Grid sm={2} xs={6}>
-                            <StyledClearButton onClick={handleBack} style={{ fontWeight: '600' , width: '50%' }} >Back</StyledClearButton>
+                            <StyledClearButton onClick={handleBack} style={{ fontWeight: '600' , width: '80%' }} >Back</StyledClearButton>
                         </Grid>
                         <Grid sm={2} xs={6}>
-                            <StyledButton style={{ width: '50%' }} onClick={offlineMarks} >Filter</StyledButton>
+                            <StyledButton style={{ width: '90%' }} onClick={offlineMarks} >Filter</StyledButton>
+                        </Grid>
+                        <Grid sm={2} xs={6}>
+                            <StyledButton style={{ width: '80%' }} onClick={uploadOMR} >Upload OMR</StyledButton>
                         </Grid>
                     </div>
                     <Paper className={`${classes.root} common-table`} id='singleStudent'>
