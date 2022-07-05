@@ -32,7 +32,6 @@ import moment from 'moment';
 import { useLocation } from 'react-router-dom';
 import CloseIcon from '@material-ui/icons/Close';
 import VisibilityIcon from '@material-ui/icons/Visibility';
-import ReactHtmlParser from 'react-html-parser';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 
 const useStyles = makeStyles((theme) => ({
@@ -136,8 +135,6 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const { openPreview, closePreview } =
-  React.useContext(AttachmentPreviewerContext) || {};
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -179,7 +176,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
           <div className='checkbox'>
             <Checkbox
               checked={true}
-              onChange={() => {}}
+              onChange={() => { }}
               inputProps={{ 'aria-label': 'primary checkbox' }}
               color='primary'
             />
@@ -194,8 +191,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
             variant='contained'
             onClick={() => {
               history.push(
-                `/question-bank?question=${questionId}&section=${
-                  section.name
+                `/question-bank?question=${questionId}&section=${section.name
                 }&isedit=${Number(location.pathname.slice(23))}`
               );
             }}
