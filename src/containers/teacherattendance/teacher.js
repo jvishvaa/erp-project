@@ -732,8 +732,8 @@ export default function TeacherAttendance(props) {
           </Grid>
        
           {data?.length > 0 ?
-            <Grid container spacing={1}>
-              <div style={{ display: 'flex', alignItems: 'center' }} >
+            <Grid xs={9}  container spacing={1} justifyContent="flex-end">
+              <div style={{ display: 'flex', alignItems: 'center',marginRight : '-22px' }} >
                 <Checkbox
                   checked={checkedSelect}
                   onChange={handleChangeSelect}
@@ -816,9 +816,9 @@ export default function TeacherAttendance(props) {
         <Grid container spacing={1} style={{ padding: '25px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           {recordsData?.total ? <h3>Total Present : {recordsData?.present || 0} &nbsp; Total Absent : {recordsData?.absent || 0}  &nbsp; Total Marked : {recordsData?.marked} &nbsp; Total Unmarked : {recordsData?.unmarked} &nbsp; Total: {recordsData?.total}</h3> : null}
           {isStudentInRole && (recordsData?.total ? true : false) && (window.location.host == local || window.location.host == dev || window.location.host == qa || window.location.host == prod) &&
-            <Grid item md={1} xs={12} style={{ marginLeft: 15 }}>
+            <Grid item md={2} xs={12} style={{ marginLeft: 15 }}>
               <Button onClick={() => { handleNotifyPopUp(true) }} variant='contained' color='primary'>
-                Notify
+                Notify Absentees
               </Button>
             </Grid>}
         </Grid> : null}
