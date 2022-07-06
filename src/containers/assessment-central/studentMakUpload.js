@@ -562,21 +562,21 @@ const StudentMark = () => {
                             <Table stickyHeader aria-label='sticky table'>
                                 <TableHead className={`${classes.columnHeader} table-header-row`}>
                                     <TableRow>
-                                        <TableCell className={classes.tableCell}>Number</TableCell>
-                                        <TableCell className={classes.tableCell}>Question</TableCell>
-                                        <TableCell className={classes.tableCell}>Maximum Marks Per Question</TableCell>
-                                        <TableCell className={classes.tableCell}>Negative Marks</TableCell>
-                                        <TableCell className={classes.tableCell}>Marks</TableCell>
+                                        <TableCell className={classes.tableCell} style={{fontSize: '12px'}} >Number</TableCell>
+                                        <TableCell className={classes.tableCell} style={{fontSize: '12px'}} >Question</TableCell>
+                                        <TableCell className={classes.tableCell} style={{fontSize: '12px'}} >Max Marks Per Question</TableCell>
+                                        <TableCell className={classes.tableCell} style={{fontSize: '12px'}} >Negative Marks</TableCell>
+                                        <TableCell className={classes.tableCell} style={{fontSize: '12px'}} >Marks</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {dummyArr.map((items, i) => (
                                         <TableRow key={items.id}>
-                                            <TableCell className={classes.tableCell}>
+                                            <TableCell className={classes.tableCell} style={{fontSize: '13px', width: '10%'}} >
                                                 Question - {i + 1}
                                             </TableCell>
-                                            <TableCell className={classes.tableCell} style={{ maxWidth: '100px', height: '100px' }} >
-                                                <div className='questnArea' >
+                                            <TableCell className={classes.tableCell} style={{ maxWidth: '400px' , minWidth: '200px', height: '100px' , fontSize: '13px' }} >
+                                                <div className='questnArea'  style={{textAlign: 'justify'}} >
                                                     {ReactHtmlParser(quesList[i]?.question_answer[0]?.question)}
                                                     <span style={{ marginLeft: '5px' }}>
                                                         {quesList[i]?.question_answer[0]?.question
@@ -612,15 +612,15 @@ const StudentMark = () => {
                                                     </span>
                                                 </div>
                                             </TableCell>
-                                            <TableCell className={classes.tableCell}>
+                                            <TableCell className={classes.tableCell} style={{width: '14%'}} >
                                                 {quesList[i]?.question_mark[0]}
                                             </TableCell>
                                             <TableCell className={classes.tableCell}>
                                                 {quesList[i]?.question_mark[1]}
                                             </TableCell>
                                             {/* <TableCell className={classes.tableCell}>{items?.erp_user?.name}</TableCell> */}
-                                            <TableCell className={classes.tableCell} id="blockArea" >
-                                                <TextField required variant='outlined' value={values?.val?.length > 0 ? values?.val[i] : ''} placeholder='Enter Mark' type='number' onChange={(e) => handleMarksEnter(e, i)} />
+                                            <TableCell className={classes.tableCell} id="blockArea"  style={{width: '13%'}} >
+                                                <TextField required variant='outlined' value={values?.val?.length > 0 ? values?.val[i] : ''} placeholder='Enter Mark' style={{width: '50%'}} type='number' onChange={(e) => handleMarksEnter(e, i)} />
                                             </TableCell>
 
                                         </TableRow>
