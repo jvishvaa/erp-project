@@ -31,6 +31,8 @@ import { AttachmentPreviewerContext } from './../../components/attachment-previe
 import BackupOutlined from '@material-ui/icons/BackupOutlined';
 import FileValidators from 'components/file-validation/FileValidators';
 import { uploadOMRFile } from 'redux/actions';
+import SyncIcon from '@material-ui/icons/Sync';
+import Loader from 'components/loader/loader';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -161,6 +163,7 @@ const UploadOMR = () => {
   const classes = useStyles({});
   const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false);
 
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
@@ -194,16 +197,20 @@ const UploadOMR = () => {
       fd.append('test_id', history?.location?.state?.test_id?.id);
 
       // setFileUploadInProgress(true);
+      setLoading(true);
       const filePath = await uploadOMRFile(fd);
       // const final = Object.assign({}, filePath);
 
       if (filePath?.status_code === 200) {
         setAlert('success', filePath?.message);
+        setLoading(false);
       } else {
         setAlert('error', 'File upload failed');
+        setLoading(false);
       }
     } catch (e) {
       setAlert('error', 'File upload failed');
+      setLoading(false);
       // console.log(e);
     }
   };
@@ -212,23 +219,30 @@ const UploadOMR = () => {
   //   console.log('data12', data);
   // };
 
+  const getData = () => {
+    setLoading(true);
+    axiosInstance
+      .get(
+        `${endpoints.assessment.OMRResponse}?section_mapping=${history?.location?.state?.section?.id}`
+      )
+      .then((result) => {
+        setLoading(false);
+        setStudentList(result?.data?.result);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   useEffect(() => {
     if (history?.location?.state?.section?.id) {
-      axiosInstance
-        .get(
-          `${endpoints.assessment.OMRResponse}?section_mapping=${history?.location?.state?.section?.id}`
-        )
-        .then((result) => {
-          setStudentList(result?.data?.result);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      getData();
     }
   }, []);
 
   return (
     <Layout className='accessBlockerContainer'>
+      {loading && <Loader />}
       <div className={classes.parentDiv}></div>
       <CommonBreadcrumbs
         componentName='Assessment'
@@ -236,14 +250,23 @@ const UploadOMR = () => {
         isAcademicYearVisible={true}
       />
       <div className={classes.listcontainer}>
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{display: '-webkit-box'}}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <StyledButton
+              onClick={() => fileUploadInput.current.click()}
+              style={{ width: '200px' }}
+            >
+              Upload OMR Sheet
+            </StyledButton>
+            <small>.png, .jpg, .jpeg, .PNG, .JPG, .JPEG format</small>
+          </div>
           <StyledButton
-            onClick={() => fileUploadInput.current.click()}
-            style={{ width: '200px' }}
+            style={{marginLeft: '20px'}}
+            onClick={() => getData()}
+            startIcon={<SyncIcon style={{ fontSize: '30px' }} />}
           >
-            Upload OMR Sheet
+            Refresh
           </StyledButton>
-          <small>.png, .jpg, .jpeg, .PNG, .JPG, .JPEG format</small>
         </div>
 
         <input
@@ -289,7 +312,7 @@ const UploadOMR = () => {
                       {items?.name}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {items?.omr_sheet !== '' ? <>items?.upload_status</> : <>No</>}
+                      {items?.omr_sheet !== '' ? <>Yes</> : <>No</>}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {items?.omr_sheet !== '' ? (
@@ -306,19 +329,21 @@ const UploadOMR = () => {
                               <VisibilityOutlinedIcon
                                 style={{ width: 30, height: 30 }}
                                 onClick={() => {
-                                  // const fileSrc = `${endpoints.lessonPlan.s3erp}${data}`;
+                                  const fileSrc = `${endpoints.lessonPlan.s3erp}${items?.omr_sheet}`;
                                   openPreview({
                                     currentAttachmentIndex: 0,
                                     attachmentsArray: [
                                       {
-                                        //   src: fileSrc,
-                                        src: 'https://www.w3schools.com/html/pic_trulli.jpg',
-                                        //   name: name.split('.')[
-                                        //     name.split('.').length - 2
-                                        //   ],
-                                        extension: '.jpg',
-                                        // '.' +
-                                        // name.split('.')[name.split('.').length - 1],
+                                        src: fileSrc,
+                                        // src: 'https://www.w3schools.com/html/pic_trulli.jpg',
+                                        name: fileSrc.split('.')[
+                                          fileSrc.split('.').length - 2
+                                        ],
+                                        extension:
+                                          '.' +
+                                          fileSrc.split('.')[
+                                            fileSrc.split('.').length - 1
+                                          ],
                                       },
                                     ],
                                   });
@@ -334,7 +359,7 @@ const UploadOMR = () => {
                     </TableCell>
 
                     <TableCell className={classes.tableCell}>
-                      {items?.scan_status !== '' ? items?.scan_status : <>--</>}
+                      {items?.scan_status !== '' ? items?.status : <>--</>}
                     </TableCell>
 
                     <TableCell className={classes.tableCell} id='blockArea'>
@@ -369,7 +394,7 @@ const UploadOMR = () => {
           </TableContainer>
         ) : (
           <>
-            <NoFilterData data = {"Upload OMR Sheets"}/>
+            <NoFilterData data={'Upload OMR Sheets'} />
           </>
         )}
       </Paper>
