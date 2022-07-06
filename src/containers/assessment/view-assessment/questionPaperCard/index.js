@@ -37,8 +37,9 @@ const QuestionPaperCard = ({
     <Paper elevation={2} className={classes.paper} style={{background: test_mode == 2 ? '#eaeaea' : ''}} >
       <div className={classes.cardWrapper}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div>
-            <h3 className={classes.cardTitleHeading}>{testTitle}</h3>
+          <div style={{display: 'flex' , justifyContent: 'space-between' , width: '90%'}}>
+            <h3 className={classes.cardTitleHeading}  >{testTitle}</h3>
+            <h4>{test_mode == 1 ? "Online" : test_mode == 2 ? "Offline" : ''}</h4>
           </div>
           <h4 className={classes.cardDescription}>
             {/* Some test name, (This includes module) */}

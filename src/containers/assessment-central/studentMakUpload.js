@@ -9,6 +9,7 @@ import {
     Box,
     Input,
     Typography,
+    SvgIcon,
 } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
@@ -30,6 +31,8 @@ import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore';
 import ReactHtmlParser from 'react-html-parser'
 import './styles.scss';
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
 
 const useStyles = makeStyles((theme) => ({
     root: theme.commonTableRoot,
@@ -97,6 +100,9 @@ const useStyles = makeStyles((theme) => ({
         color: theme.palette.secondary.main,
         fontSize: '16px',
         padding: '10px'
+    },
+    eyeIcon: {
+        color: theme.palette.secondary.main,
     }
 }));
 
@@ -203,7 +209,8 @@ const StudentMark = () => {
     const [nextFlag, setNextFlag] = useState(false);
     let markQues = selectedUserData?.total_marks / selectedUserData?.total_question;
 
-
+    const { openPreview, closePreview } =
+        React.useContext(AttachmentPreviewerContext) || {};
 
     useEffect(() => {
         if (NavData && NavData.length) {
@@ -240,7 +247,7 @@ const StudentMark = () => {
                 }
                 marksArr = [result?.data?.result?.user_response]
                 console.log(marksArr);
-                marksArr[0].map((ele, i) =>  sum.push(
+                marksArr[0].map((ele, i) => sum.push(
                     ele?.question_mark
                 ))
                 console.log(sum);
@@ -281,11 +288,11 @@ const StudentMark = () => {
                                     }
                                     marksArr = [result?.data?.result?.user_response]
                                     console.log(marksArr);
-                                    marksArr.map((ele, i) => sum.push({
-                                        i: ele
-                                    }))
+                                    marksArr[0].map((ele, i) => sum.push(
+                                        ele?.question_mark
+                                    ))
                                     if (marksArr[0] !== undefined) {
-                                        setValues({ val: sum[0]?.i })
+                                        setValues({ val: sum })
                                     }
                                     console.log(sum);
                                 })
@@ -329,11 +336,11 @@ const StudentMark = () => {
                                     }
                                     marksArr = [result?.data?.result?.user_response]
                                     console.log(marksArr);
-                                    marksArr.map((ele, i) => sum.push({
-                                        i: ele
-                                    }))
+                                    marksArr[0].map((ele, i) => sum.push(
+                                        ele?.question_mark
+                                    ))
                                     if (marksArr[0] !== undefined) {
-                                        setValues({ val: sum[0]?.i })
+                                        setValues({ val: sum })
                                     }
                                     console.log(sum);
                                 })
@@ -366,7 +373,7 @@ const StudentMark = () => {
 
     const handleSave = () => {
         let value = 0;
-        let valueArray = [] ;
+        let valueArray = [];
         let testArr = [];
         var sum = values.val.reduce((a, v) => a = parseFloat(a) + parseFloat(v), 0);
         console.log(values?.val);
@@ -388,7 +395,7 @@ const StudentMark = () => {
                         question_type: quesList[i]?.question_type,
                         user_answer: []
                     }))
-                    console.log(valueArray , 'valArray');
+                    console.log(valueArray, 'valArray');
                     const payload = {
                         test: history?.location?.state?.test_id,
                         submitted_by: selectedUser,
@@ -437,11 +444,11 @@ const StudentMark = () => {
                             }
                             marksArr = [result?.data?.result?.user_response]
                             console.log(marksArr);
-                            marksArr.map((ele, i) => sum.push({
-                                i: ele
-                            }))
+                            marksArr[0].map((ele, i) => sum.push(
+                                ele?.question_mark
+                            ))
                             if (marksArr[0] !== undefined) {
-                                setValues({ val: sum[0]?.i })
+                                setValues({ val: sum })
                             }
                             console.log(sum);
                         })
@@ -472,11 +479,11 @@ const StudentMark = () => {
                         }
                         marksArr = [result?.data?.result?.user_response]
                         console.log(marksArr);
-                        marksArr.map((ele, i) => sum.push({
-                            i: ele
-                        }))
+                        marksArr[0].map((ele, i) => sum.push(
+                            ele?.question_mark
+                        ))
                         if (marksArr[0] !== undefined) {
-                            setValues({ val: sum[0]?.i })
+                            setValues({ val: sum })
                         }
                         console.log(sum);
                     })
@@ -557,7 +564,7 @@ const StudentMark = () => {
                                     <TableRow>
                                         <TableCell className={classes.tableCell}>Number</TableCell>
                                         <TableCell className={classes.tableCell}>Question</TableCell>
-                                        <TableCell className={classes.tableCell}>Total Marks</TableCell>
+                                        <TableCell className={classes.tableCell}>Maximum Marks Per Question</TableCell>
                                         <TableCell className={classes.tableCell}>Negative Marks</TableCell>
                                         <TableCell className={classes.tableCell}>Marks</TableCell>
                                     </TableRow>
@@ -568,9 +575,41 @@ const StudentMark = () => {
                                             <TableCell className={classes.tableCell}>
                                                 Question - {i + 1}
                                             </TableCell>
-                                            <TableCell className={classes.tableCell} style={{maxWidth: '100px' , height: '100px'}} >
+                                            <TableCell className={classes.tableCell} style={{ maxWidth: '100px', height: '100px' }} >
                                                 <div className='questnArea' >
-                                                {ReactHtmlParser(quesList[i]?.question_answer[0]?.question)}
+                                                    {ReactHtmlParser(quesList[i]?.question_answer[0]?.question)}
+                                                    <span style={{ marginLeft: '5px' }}>
+                                                        {quesList[i]?.question_answer[0]?.question
+                                                            ?.split('"')
+                                                            .filter((str) => str.startsWith('https'))?.length > 0 && (
+                                                                <a
+                                                                    onClick={() => {
+                                                                        openPreview({
+                                                                            currentAttachmentIndex: 0,
+                                                                            attachmentsArray: (() => {
+                                                                                let newArray = quesList[i]?.question_answer[0]?.question?.split('"');
+                                                                                let filtered = newArray.filter((str) => str.startsWith('https'));
+                                                                                const images = filtered || {};
+                                                                                const attachmentsArray = [];
+                                                                                images.forEach((image) => {
+                                                                                    const attachmentObj = {
+                                                                                        src: image,
+                                                                                        name: `${image}`.split('.').slice(0, -1).join('.'),
+                                                                                        extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                                                                    };
+                                                                                    attachmentsArray.push(attachmentObj);
+                                                                                });
+                                                                                return attachmentsArray;
+                                                                            })(),
+                                                                        });
+                                                                    }}
+                                                                >
+                                                                    <SvgIcon
+                                                                        component={() => <VisibilityIcon style={{ cursor: 'pointer' }} className={classes.eyeIcon} />}
+                                                                    />
+                                                                </a>
+                                                            )}
+                                                    </span>
                                                 </div>
                                             </TableCell>
                                             <TableCell className={classes.tableCell}>

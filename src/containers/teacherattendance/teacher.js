@@ -53,6 +53,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import MomentUtils from '@date-io/moment';
 import NotifyConfirmPopUp from './notifyConfirmPopUp';
 
+
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -158,6 +159,9 @@ const useToolbarStyles = makeStyles((theme) => ({
     flex: '1 1 100%',
     fontWeight: 'bold',
   },
+  button: {
+    background: theme.palette.secondary.main ,
+  }
 }));
 
 const EnhancedTableToolbar = (props) => {
@@ -229,6 +233,14 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '26px',
     //  overflow:'hidden',
   },
+  button: {
+    background: theme.palette.primary.main ,
+    '&:hover': {
+      background: theme.palette.primary.main,
+  },
+  }
+
+  
 }));
 
 export default function TeacherAttendance(props) {
@@ -286,6 +298,7 @@ export default function TeacherAttendance(props) {
   const [checkedSelect, setCheckedSelect] = React.useState(false);
   const [openSelect, setOpenSelect] = React.useState(false);
   const [attendanceDialog, setAttendanceDialog] = React.useState('');
+
 
 
   const handleChangeSelect = (event) => {
@@ -515,6 +528,7 @@ export default function TeacherAttendance(props) {
   };
 
   const handleMark = () => {
+    setLoading(true)
     let arrSec = [];
     arrSec.push(sectionId.map((ele) => ele))
     console.log((arrSec[0].toString()));
@@ -531,6 +545,7 @@ export default function TeacherAttendance(props) {
         console.log(result);
         getTeacherData()
         handleCloseSelect()
+        setAttendanceDialog('')
       })
       .catch((error) => { });
   }
@@ -807,7 +822,15 @@ export default function TeacherAttendance(props) {
               </Button>
             </Grid>}
         </Grid> : null}
-    
+          
+        <NotifyConfirmPopUp
+        openModal={openModal}
+        handleNotifyPopUp={handleNotifyPopUp}
+        sectionId={sectionId}
+        startDate={startDate}
+        rolesId={rolesId}
+      />
+
       <Dialog
         open={openSelect}
         onClose={handleCloseSelect}
@@ -840,7 +863,7 @@ export default function TeacherAttendance(props) {
           <Button autoFocus onClick={handleCloseSelect} style={{background: 'darkgrey'}} >
             Cancel
           </Button>
-          <Button onClick={handleMark} color="primary" autoFocus>
+          <Button onClick={handleMark} color="primary"   className={classes.button} >
             Publish
           </Button>
         </DialogActions>
