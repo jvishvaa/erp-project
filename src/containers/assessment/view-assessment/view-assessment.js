@@ -62,16 +62,16 @@ const ViewAssessments = ({ history, ...restProps }) => {
   }, [])
 
   useEffect(() => {
-    if(IsTestDone === true){
+    if (IsTestDone === true) {
       setStatus(1)
-      localStorage.setItem("is_test_comp",false)
+      localStorage.setItem("is_test_comp", false)
     }
-    localStorage.setItem("is_test_comp",false)
-  },[IsTestDone])
-  
-  useEffect(()=>{
+    localStorage.setItem("is_test_comp", false)
+  }, [IsTestDone])
+
+  useEffect(() => {
     setShowInfo()
-  },[window.location.pathname])
+  }, [window.location.pathname])
   const fetchQuestionPapers = () => {
     setLoading(true);
     const statusId = status === 0 ? 2 : 1;
@@ -155,31 +155,38 @@ const ViewAssessments = ({ history, ...restProps }) => {
   const tabBar = () => {
     return (
       <>
-        <Tabs
-          indicatorColor='secondary'
-          textColor='secondary'
-          value={status}
-          onChange={(e, a) => {
-            setPageNumber(1);
-            setStatus(a);
-            setShowInfo(undefined);
-            localStorage.setItem('is_retest', a === 2);
-          }}
-          aria-label='simple tabs example'
-        >
-          {/* <Tab label='All' {...a11yProps(0)} /> */}
-          <Tab label='Upcoming' {...a11yProps(0)} />
-          <Tab label='Completed' {...a11yProps(1)} />
-          <Tab label='Retest' {...a11yProps(2)} />
-        </Tabs>
-        <div className='indexarea' >
-          <div className='onlinetotal'>
-            <div className='onbox' ></div>
-            <p style={{fontWeight: 600 , fontSize: '15px'}}>Online</p>
-          </div>
-          <div className='offlinetotal'>
-            <div className='offbox'></div>
-            <p style={{fontWeight: 600 , fontSize: '15px'}} >Offline</p>
+        <div className='tabArea' >
+          <Tabs
+            indicatorColor='secondary'
+            textColor='secondary'
+            value={status}
+            onChange={(e, a) => {
+              setPageNumber(1);
+              setStatus(a);
+              setShowInfo(undefined);
+              localStorage.setItem('is_retest', a === 2);
+            }}
+            aria-label='simple tabs example'
+          >
+            {/* <Tab label='All' {...a11yProps(0)} /> */}
+            <Tab label='Upcoming' {...a11yProps(0)} />
+            <Tab label='Completed' {...a11yProps(1)} />
+            <Tab label='Retest' {...a11yProps(2)} />
+
+
+          </Tabs>
+          <div className='indexarea' >
+            <div className='indexTag' >
+              <p>Index :</p>
+            </div>
+            <div className='onlinetotal'>
+              <div className='onbox' ></div>
+              <p style={{ fontWeight: 600, fontSize: '15px' }}>Online</p>
+            </div>
+            <div className='offlinetotal'>
+              <div className='offbox'></div>
+              <p style={{ fontWeight: 600, fontSize: '15px' }} >Offline</p>
+            </div>
           </div>
         </div>
       </>

@@ -34,6 +34,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import EditIcon from '@material-ui/icons/Edit';
 import unfiltered from '../../assets/images/unfiltered.svg';
+import Loading from 'components/loader/loader';
 //import exportFromJSON from 'export-from-json';
 import { CSVLink } from 'react-csv';
 import TablePagination from '@material-ui/core/TablePagination';
@@ -209,7 +210,9 @@ const OfflineStudentAssessment = () => {
     const [studentList, setStudentList] = useState([]);
     const [page, setPage] = useState('1');
     const [checkFilter, setCheckFilter] = useState(false);
-    const [ quesList, setQuesList ] = useState([])
+    const [quesList, setQuesList] = useState([])
+    const [loading, setLoading] = useState(false);
+
 
 
     useEffect(() => {
@@ -291,7 +294,7 @@ const OfflineStudentAssessment = () => {
     }
     useEffect(() => {
         handleGrade(history?.location?.state?.data?.grade)
-    }, [selectedBranch , moduleId])
+    }, [selectedBranch, moduleId])
 
     const handleGrade = (value) => {
         if (moduleId) {
@@ -325,23 +328,25 @@ const OfflineStudentAssessment = () => {
     };
 
     const offlineMarks = () => {
+        setLoading(true)
         console.log(history?.location?.state?.test, 'test');
         console.log(selectedGrade);
         const payload = {
-            branchId : selectedBranch?.id,
+            branchId: selectedBranch?.id,
             gradeId: selectedGrade?.grade_id,
             subjId: history?.location?.state?.data?.subject[0].subject_id,
             testId: history?.location?.state?.test?.id,
             sectionId: selectedSection?.id,
-            selectedSection : selectedSection
+            selectedSection: selectedSection
         }
-        sessionStorage.setItem('filterData',JSON.stringify(payload))
+        sessionStorage.setItem('filterData', JSON.stringify(payload))
         axiosInstance
             .get(`${endpoints.assessment.offlineAssesment}?acad_session=${selectedBranch?.id}&grade=${selectedGrade?.grade_id}&subject_id=${history?.location?.state?.data?.subject[0].subject_id}&test_id=${history?.location?.state?.test?.id}&section_mapping_id=${selectedSection?.id}`)
             .then((result) => {
                 console.log(result);
                 setStudentList(result?.data?.result?.user_reponse)
                 setQuesList(result?.data?.result?.questions)
+                setLoading(false)
             })
             .catch((error) => {
                 console.log('');
@@ -357,31 +362,33 @@ const OfflineStudentAssessment = () => {
                 user: data?.user_id,
                 student: studentList,
                 studentData: data,
-                selectedSection : selectedSection,
-                branch : history?.location?.state?.data?.branch,
-                gradeList : history?.location?.state?.data?.grade,
+                selectedSection: selectedSection,
+                branch: history?.location?.state?.data?.branch,
+                gradeList: history?.location?.state?.data?.grade,
                 grade: history?.location?.state?.data?.grade,
-                subject_id : history?.location?.state?.data?.subject[0].subject_id,
-                quesList : quesList
+                subject_id: history?.location?.state?.data?.subject[0].subject_id,
+                quesList: quesList
             }
         })
     }
 
     useEffect(() => {
-        if(filterData?.subjId){
+        if (filterData?.subjId) {
+            setLoading(true)
             setSelectedSection(filterData?.selectedSection)
             axiosInstance
-            .get(`${endpoints.assessment.offlineAssesment}?acad_session=${filterData?.branchId}&grade=${filterData?.gradeId}&subject_id=${filterData?.subjId}&test_id=${filterData?.testId}&section_mapping_id=${filterData?.sectionId}`)
-            .then((result) => {
-                console.log(result);
-                setStudentList(result?.data?.result?.user_reponse)
-                setQuesList(result?.data?.result?.questions)
-            })
-            .catch((error) => {
-                console.log('');
-            });
+                .get(`${endpoints.assessment.offlineAssesment}?acad_session=${filterData?.branchId}&grade=${filterData?.gradeId}&subject_id=${filterData?.subjId}&test_id=${filterData?.testId}&section_mapping_id=${filterData?.sectionId}`)
+                .then((result) => {
+                    console.log(result);
+                    setLoading(false)
+                    setStudentList(result?.data?.result?.user_reponse)
+                    setQuesList(result?.data?.result?.questions)
+                })
+                .catch((error) => {
+                    console.log('');
+                });
         }
-    } , [])
+    }, [])
 
     const handleBack = () => {
         sessionStorage.removeItem('filterData')
@@ -389,17 +396,17 @@ const OfflineStudentAssessment = () => {
     }
 
     const uploadOMR = () => {
-        if(!selectedSection){
-            setAlert("error","Please select section")
+        if (!selectedSection) {
+            setAlert("error", "Please select section")
             return;
         }
         // console.log("data12378",history?.location?.state?.test);
         history.push({
             pathname: '/uploadOMR',
-            state : {
-              data : filterData,
-              section : selectedSection,
-              test_id: history?.location?.state?.test,
+            state: {
+                data: filterData,
+                section: selectedSection,
+                test_id: history?.location?.state?.test,
             }
         })
     }
@@ -496,14 +503,14 @@ const OfflineStudentAssessment = () => {
                     </div>
                     <div className="filterArea" >
                         <Grid sm={2} xs={6}>
-                            <StyledClearButton onClick={handleBack} style={{ fontWeight: '600' , width: '80%' }} >Back</StyledClearButton>
+                            <StyledClearButton onClick={handleBack} style={{ fontWeight: '600', width: '80%' }} >Back</StyledClearButton>
                         </Grid>
                         <Grid sm={2} xs={6}>
                             <StyledButton style={{ width: '90%' }} onClick={offlineMarks} >Filter</StyledButton>
                         </Grid>
-                        <Grid sm={2} xs={6}>
+                        {/* <Grid sm={2} xs={6}>
                             <StyledButton style={{ width: '80%' }} onClick={uploadOMR} >Upload OMR</StyledButton>
-                        </Grid>
+                        </Grid> */}
                     </div>
                     <Paper className={`${classes.root} common-table`} id='singleStudent'>
                         <div className="searchArea" >
@@ -522,6 +529,8 @@ const OfflineStudentAssessment = () => {
                                 />
                             </FormControl> */}
                         </div>
+                        {loading ? <Loading message='Loading...' /> : null}
+
                         {studentList?.length > 0 ?
                             <TableContainer
                                 className={`table table-shadow view_users_table ${classes.container}`}
@@ -553,9 +562,9 @@ const OfflineStudentAssessment = () => {
                                                     }
                                                 </TableCell>
                                                 <TableCell className={classes.tableCell}>
-                                                    {items?.test_details?.total_marks != null ? 
-                                                    <StyledButton onClick={() => uploadMarks(items)} startIcon={<EditIcon style={{ fontSize: '30px' }} />} >Edit Marks</StyledButton>
-                                                    : ''}
+                                                    {items?.test_details?.total_marks != null ?
+                                                        <StyledButton onClick={() => uploadMarks(items)} startIcon={<EditIcon style={{ fontSize: '30px' }} />} >Edit Marks</StyledButton>
+                                                        : ''}
                                                 </TableCell>
                                             </TableRow>
                                         ))}
