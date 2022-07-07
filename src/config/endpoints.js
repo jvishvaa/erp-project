@@ -47,7 +47,7 @@ export default {
     teacherAttendanceData: '/erp_user/erpuser-attendance-erp/',
     teacherAttendanceSent: '/erp_user/erpuser-attendance/',
     getTeacherAttendanceData: '/erp_user/erpuser-attendance-monthly-reports/',
-    getStudentCountReportData: '/erp_user/grade-section-wise-student-count/',
+    getStudentCountReportData: '/erp_user/grade-section-wise-student-count-v2/',
     notifyAttendance : '/erp_user/sms-notifying-students/',
     markAllAttendance : '/erp_user/mark-attendance-of-all-students/'
   },
