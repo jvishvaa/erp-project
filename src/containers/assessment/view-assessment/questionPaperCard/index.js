@@ -34,10 +34,10 @@ const QuestionPaperCard = ({
   } = questionPaperObj || {};
 
   return (
-    <Paper elevation={2} className={classes.paper} style={{background: test_mode == 2 ? '#eaeaea' : ''}} >
+    <Paper elevation={2} className={classes.paper} style={{ background: test_mode == 2 ? '#eaeaea' : '' }} >
       <div className={classes.cardWrapper}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div style={{display: 'flex' , justifyContent: 'space-between' , width: '90%'}}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '90%' }}>
             <h3 className={classes.cardTitleHeading}  >{testTitle}</h3>
             <h4>{test_mode == 1 ? "Online" : test_mode == 2 ? "Offline" : ''}</h4>
           </div>
@@ -67,10 +67,17 @@ const QuestionPaperCard = ({
               {testDate.slice(11, 16)}
             </div>
             {isTestAttempted ? (
-              <div className={classes.cardAttemptedTextGreen}>
-                Completed at - &nbsp;
-                {new Date(testAttemptedDate).toDateString()}
-              </div>
+              <>
+                {test_mode == 2 ?
+                  <div className={classes.cardAttemptedTextGreen}>
+                    Completed at - &nbsp;
+                    {new Date(testDate).toDateString()}
+                  </div>
+                  : <div className={classes.cardAttemptedTextGreen}>
+                    Completed at - &nbsp;
+                    {new Date(testAttemptedDate).toDateString()}
+                  </div>}
+              </>
             ) : (
               <div className={classes.cardAttemptedTextRed}>
                 Scheduled at - &nbsp;
