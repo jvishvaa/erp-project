@@ -391,7 +391,7 @@ const StudentMark = () => {
                         question: quesList[i]?.question,
                         question_categories: quesList[i]?.question_categories,
                         question_level: quesList[i]?.question_level,
-                        question_mark: parseInt(values?.val[i]),
+                        question_mark: parseFloat(values?.val[i]),
                         question_type: quesList[i]?.question_type,
                         user_answer: []
                     }))
