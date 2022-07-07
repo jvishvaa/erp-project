@@ -58,6 +58,13 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
     (state) => state.commonFilterReducer?.selectedYear
   );
 
+  let boardFilterArr = [
+    'orchids.letseduvate.com',
+    // 'localhost:3000',
+    // 'dev.olvorchidnaigaon.letseduvate.com',
+    'qa.olvorchidnaigaon.letseduvate.com',
+    'test.orchids.letseduvate.com'
+  ]
   useEffect(() => {
     axiosInstance
       .get(
@@ -316,6 +323,15 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
     setSelectedBoardId([]);
   }
 
+  useEffect(() => {
+    if (!boardFilterArr.includes(window.location.host)) {
+      if (volumeList && boardList.length > 0) {
+        let data = boardList?.filter((item) => item?.board_name === 'CBSE');
+        handleBoard('', data);
+      }
+    }
+  }, [volumeList, boardList]);  
+
   return (
     <>
       <Grid container spacing={2} style={{ padding: '0px 10px' }}>
@@ -482,6 +498,9 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
                   .get(`academic/get-board-list/`)
                   .then((result) => {
                     if (result?.data.status_code === 200) {
+                      if(!boardFilterArr.includes(window.location.host)) {
+                        setBoardList(result?.data?.result);
+                      }
                       setLoading(false);
                       setBoardList(result?.data?.result);
                     } else {
@@ -512,6 +531,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
             )}
           />
         </Grid>
+        {(boardFilterArr.includes(window.location.host)) && 
         <Grid item md={3} xs={12}>
           <Autocomplete
             multiple
@@ -535,6 +555,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
             )}
           />
         </Grid>
+        } 
         <Grid
           item
           xs={12}
