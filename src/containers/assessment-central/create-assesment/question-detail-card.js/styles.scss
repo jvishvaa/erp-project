@@ -5,7 +5,7 @@
     padding: 0.5rem 1rem;
     border: 1px solid #dbdbdb;
     border-radius: 10px;
-    width: 500px;
+    width: 100%;
     margin: 20px 10px;
 
     &.extra-width {
@@ -34,8 +34,10 @@
         display: flex;
         justify-content: space-evenly;
         width: 50%;
+        display: block;
         .created {
           color: #168d00;
+          display: block;
         }
       }
     }

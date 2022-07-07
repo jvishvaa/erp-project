@@ -45,6 +45,7 @@ class EditUser extends Component {
       mappingBgsLength: 0,
       collectDataCount: 0,
       isEditable: false,
+      isSuper: false
     };
   }
 
@@ -75,6 +76,9 @@ class EditUser extends Component {
         ) {
           this.state.isEditable = true;
         }
+      }
+      if(details?.is_superuser){
+        this.state.isSuper = true;
       }
       this.setState({
         user: selectedUser,
@@ -456,7 +460,7 @@ class EditUser extends Component {
                       </Grid>
                       <Grid item md={9} />
                       <Grid item md={1}>
-                        {this.state.user.user_level !== 13 && (
+                        {this.state?.isSuper ? (
                           <Button
                             startIcon={<AddOutlinedIcon />}
                             variant='contained'
@@ -468,7 +472,7 @@ class EditUser extends Component {
                           >
                             Add
                           </Button>
-                        )}
+                        ) : ''}
                       </Grid>
                     </Grid>
                   </>

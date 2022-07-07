@@ -59,6 +59,7 @@ export default function ConfirmPopOver({
           Deactivate Periods
         </Button> : <Button
           color='primary'
+          variant='contained'
           onClick={() => {
             submit();
             handleCloseModal();

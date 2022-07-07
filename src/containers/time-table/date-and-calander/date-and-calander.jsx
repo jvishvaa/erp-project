@@ -86,7 +86,7 @@ const DateAndCalander = (props) => {
   const [timeTableEvents, setTimeTableEvents] = useState();
   const [newTable, setnewTable] = useState(false);
   const [TimeTableList, setTimeTableList] = useState([]);
-  const [TimeTableName, setTimeTableName] = useState();
+  const [TimeTableName, setTimeTableName] = useState('');
   const [showTable, setShowTable] = useState(false);
   const [selectedStartDate, handleStartDateChange] = useState(new Date());
   const [selectedEndDate, handleEndDateChange] = useState(new Date());
@@ -169,7 +169,7 @@ const DateAndCalander = (props) => {
     setShowTable(false);
     props.HideAutocomplete(false)
     setnewTable(true);
-    setTimeTableName(null);
+    setTimeTableName('');
     setselectedStartTime(new Date('0'));
     setselectedEndTime(new Date('0'));
     handleStartDateChange(new Date());
