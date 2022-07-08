@@ -1,6 +1,46 @@
 .assessment_heading {
   color: #000;
 }
+.indexarea{
+  display: flex;
+  margin-right: 5%;
+}
+.onlinetotal{
+  display: flex;
+  padding: 5px;
+  align-items: center;
+}
+.onbox{
+  width: 20px;
+    height: 20px;
+    color: white;
+    background: white;
+    margin-right: 10px;
+}
+.offlinetotal{
+  display: flex;
+  padding: 5px;
+  align-items: center;
+}
+.offbox{
+  width: 20px;
+    height: 20px;
+    color: white;
+    background: #eaeaea;
+    margin-right: 10px;
+}
+.indexTag{
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  margin: 0 5%;
+  min-width: 45px;
+}
+.tabArea{
+  display: flex;
+    justify-content: space-between;
+    background: #c5c5c5;
+}
 
 @media screen and (max-width: 768px) {
   .cardsContainer {

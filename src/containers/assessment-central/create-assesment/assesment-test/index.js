@@ -424,7 +424,7 @@ const AssesmentTest = ({
 
                         <div className='section-content'>
                           {section.questions.map((q) => (
-                            <div className='question-detail-card-wrapper'>
+                            <div className='question-detail-card-wrapper' style={{width:'100%'}}>
                               <QuestionDetailCard
                                 createdAt={q?.created_at}
                                 question={q}
