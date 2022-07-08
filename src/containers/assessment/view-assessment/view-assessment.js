@@ -172,9 +172,8 @@ const ViewAssessments = ({ history, ...restProps }) => {
             <Tab label='Upcoming' {...a11yProps(0)} />
             <Tab label='Completed' {...a11yProps(1)} />
             <Tab label='Retest' {...a11yProps(2)} />
-
-
           </Tabs>
+          {status == 1 ? 
           <div className='indexarea' >
             <div className='indexTag' >
               <p>Index :</p>
@@ -188,6 +187,7 @@ const ViewAssessments = ({ history, ...restProps }) => {
               <p style={{ fontWeight: 600, fontSize: '15px' }} >Offline</p>
             </div>
           </div>
+        : '' }
         </div>
       </>
     );
