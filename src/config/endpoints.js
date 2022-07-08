@@ -47,8 +47,9 @@ export default {
     teacherAttendanceData: '/erp_user/erpuser-attendance-erp/',
     teacherAttendanceSent: '/erp_user/erpuser-attendance/',
     getTeacherAttendanceData: '/erp_user/erpuser-attendance-monthly-reports/',
-    getStudentCountReportData: '/erp_user/grade-section-wise-student-count/',
+    getStudentCountReportData: '/erp_user/grade-section-wise-student-count-v2/',
     notifyAttendance : '/erp_user/sms-notifying-students/',
+    markAllAttendance : '/erp_user/mark-attendance-of-all-students/'
   },
   appBar: {
     schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,
@@ -77,6 +78,7 @@ export default {
     deletePeriod: '/period/period/',
     editPeriod: '/period/period/',
     collidingPeriod: 'period/deactivate_period/',
+    teacherTimeTable : '/period/teacher-retrieve-week-periods/'
   },
   communicationRoles: {
     roles: '/academic/booked-appointment-role-list/',
@@ -475,7 +477,8 @@ export default {
     // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
     s3: 'https://d2r9gkgplfhsr2.cloudfront.net/',
     offlineAssesment : '/assessment/offline-assessment-list/',
-    studentMarks: '/assessment/ru-offline-asmnt/'
+    studentMarks: '/assessment/ru-offline-asmnt/',
+    OMRResponse: '/assessment/list-omr-sheets/',
   },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,

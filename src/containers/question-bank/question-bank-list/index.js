@@ -70,6 +70,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const filterRef = useRef(null);
   const [clearFlag, setClearFlag] = useState(false);
   const [callFlag, setCallFlag] = useState(false);
+  const [ is_Filter , setFilter ] = useState(false)
 
   const addQuestionToPaper = (question, questionId, section) => {
     initAddQuestionToSection(question, questionId, section);
@@ -119,7 +120,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     gradeId,
     chapterObj,
     isErpCentral = false,
-    newValue = 0
+    newValue = 0,
   ) => {
     setLoading(true);
     setPeriodData([]);
@@ -133,10 +134,19 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setTabChapterId(chapterObj);
     setTabIsErpCentral(isErpCentral);
     setTabValue(newValue);
-    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&chapter=${chapterObj?.id}&question_level=${quesLevel?.value}&question_type=${quesTypeId}&page_size=${limit}&page=${page}`;
+    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&page_size=${limit}&page=${page}`;
     requestUrl += `&request_type=${isErpCentral?.flag ? 2 : 1}`;
     if (newValue) {
       requestUrl += `&question_status=${newValue}`;
+    }
+    if(chapterObj){
+      requestUrl += `&chapter=${chapterObj?.id}`;
+    }
+    if(quesLevel){
+      requestUrl += `&question_level=${quesLevel?.value}`;
+    }
+    if(quesTypeId){
+      requestUrl += `&question_type=${quesTypeId}`;
     }
     if (quesCatId) {
       requestUrl += `&question_categories=${quesCatId?.value}`;
@@ -144,6 +154,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     if (topicId) {
       requestUrl += `&topic=${topicId?.id}`;
     }
+    setFilter(false)
     axiosInstance
       .get(requestUrl)
       .then((result) => {
@@ -167,16 +178,13 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
 
   useEffect(() => {
     if (
-      tabQueTypeId &&
       tabMapId &&
-      tabQueLevel &&
       tabYearId &&
       tabGradeId &&
-      tabChapterId &&
-      tabIsErpCentral &&
-      page
+      tabIsErpCentral&& page
     ) {
       setSelectedIndex(-1);
+      if(is_Filter == false && page != 1 ){
       handlePeriodList(
         tabQueTypeId,
         tabQueCatId,
@@ -189,6 +197,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
         tabIsErpCentral,
         tabValue
       );
+      }
     }
   }, [page, tabValue, callFlag]);
 
@@ -227,6 +236,8 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
             setViewMoreData={setViewMoreData}
             setFilterDataDown={setFilterDataDown}
             setSelectedIndex={setSelectedIndex}
+            setFilter={setFilter}
+            setPage={setPage}
           />
         </div>
         <Grid

@@ -417,6 +417,7 @@ import AllChaptersContent from './containers/sure-learning/Initiate_Class/Chapte
 import AcademicReport from './containers/dashboard/ownerDashboard/academic/academicReport';
 import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/curriculumBranchWise';
 import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStudent';
+import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
 
 function App({ alert, isMsAPI, erpConfig }) {
@@ -1956,6 +1957,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                           </Route>
                           <Route path='/offline-student'>
                             {({ match }) => <OfflineStudentAssessment match={match} />}
+                          </Route>
+                          <Route path='/uploadOMR'>
+                            {({ match }) => <UploadOMR match={match} />}
                           </Route>
                           <Route path='/student-mark'>
                             {({ match }) => <StudentMark match={match} />}

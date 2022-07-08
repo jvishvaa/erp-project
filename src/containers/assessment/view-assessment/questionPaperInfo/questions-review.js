@@ -21,6 +21,7 @@ function QuestionReview() {
   const { questionsArray = [], questionsDataObj = {} } =
     React.useContext(AssessmentReviewContext) || {};
   const questionsUI = (quesArray) => {
+    console.log(quesArray);
     return quesArray?.map((Q, index) => {
       const questionId = Q.id;
       const {
@@ -38,10 +39,13 @@ function QuestionReview() {
           user_answer_values: differUserResponse,
           user_answer_images: userResposeImages,
           is_central: isCentral,
+          question_mark: question_mark
         } = {},
         sub_question_answer: subQuestion = [{}],
+        test_mode: test_mode
         // is_central: isCentral = false,
       } = questionsDataObj[questionId] || {};
+      console.log(questionsDataObj[questionId])
       const handlerAnswerVar = (ansVar) => {
         let answer = '';
         if (Array.isArray(ansVar)) {
@@ -60,6 +64,7 @@ function QuestionReview() {
       const s3Images = `${isCentral === true ? endpoints.s3 : endpoints.assessmentErp.s3}/`;
       return (
         <div className={classes.questionCotainer}>
+          {console.log(test_mode, "testmode")}
           {questionType === 7 ? (
             <>
               <div className={classes.questionText}>
@@ -86,12 +91,13 @@ function QuestionReview() {
                   </div>
                   {(item?.user_sub_answer?.question_type === 9) ? (
                     <div className={classes.answersContainer}>
-                      <b>Your answer : &nbsp; </b>
-                      <label
+                      {test_mode == 2 ? <b>Your Marks : &nbsp; </b> : <b>Your answer : &nbsp; </b>}
+                      {test_mode == 2 ? question_mark : <label
                         dangerouslySetInnerHTML={{
                           __html: handlerAnswerVar(item?.user_sub_answer?.user_answer),
                         }}
                       ></label>
+                      }
                       <br />
                       <b>Correct answer : &nbsp; </b>
                       <label
@@ -104,15 +110,16 @@ function QuestionReview() {
                     </div>
                   ) : (
                     <div className={classes.answersContainer}>
-                      <b>Your answer : &nbsp; </b>
-                      <span>
-                        <label
-                          dangerouslySetInnerHTML={{
-                            __html: handlerAnswerVar(
-                              item?.user_sub_answer?.user_answer_values
-                            ),
-                          }}
-                        ></label>
+                      {test_mode == 2 ? <b>Your Marks : &nbsp; </b> : <b>Your answer : &nbsp; </b>}
+                      {test_mode == 2 ? question_mark :
+                        <span>
+                          <label
+                            dangerouslySetInnerHTML={{
+                              __html: handlerAnswerVar(
+                                item?.user_sub_answer?.user_answer_values
+                              ),
+                            }}
+                          ></label>
                           {item?.user_sub_answer?.user_answer_images?.map((image) => (
                             <a
                               className='underlineRemove'
@@ -135,8 +142,8 @@ function QuestionReview() {
                               <SvgIcon component={() => <VisibilityIcon />} />
                             </a>
                           ))}
-                      </span>
-
+                        </span>
+                      }
                       <br />
                       <b>Correct answer : &nbsp; </b>
                       <label
@@ -146,28 +153,28 @@ function QuestionReview() {
 
                         }}
                       ></label>
-                       {item?.question_answer[0]?.answer_images?.map((image) => (   
-                          <a
-                            className='underlineRemove'
-                            onClick={() => {
-                              const fileSrc = `${s3Images}${image}`;
-                              // 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/questions_files/2/0/1/1/1627717292_2021-05-17_18_20_14.202081_screenshot_from_2021-03-18_20-31-20_(2).png';
-                              // `${s3Image}${options[1]?.option2?.images[0]}`
-                              openPreview({
-                                currentAttachmentIndex: 0,
-                                attachmentsArray: [
-                                  {
-                                    src: fileSrc,
-                                    name: `demo`,
-                                    extension: '.png',
-                                  },
-                                ],
-                              });
-                            }}
-                          >
-                            <SvgIcon component={() => <VisibilityIcon />} />
-                          </a>
-                        ))}
+                      {item?.question_answer[0]?.answer_images?.map((image) => (
+                        <a
+                          className='underlineRemove'
+                          onClick={() => {
+                            const fileSrc = `${s3Images}${image}`;
+                            // 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/questions_files/2/0/1/1/1627717292_2021-05-17_18_20_14.202081_screenshot_from_2021-03-18_20-31-20_(2).png';
+                            // `${s3Image}${options[1]?.option2?.images[0]}`
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: [
+                                {
+                                  src: fileSrc,
+                                  name: `demo`,
+                                  extension: '.png',
+                                },
+                              ],
+                            });
+                          }}
+                        >
+                          <SvgIcon component={() => <VisibilityIcon />} />
+                        </a>
+                      ))}
                     </div>
                   )}
                 </>
@@ -187,12 +194,15 @@ function QuestionReview() {
                 <>
                   {questionType === 8 ? (
                     <div className={classes.answersContainer}>
-                      <b>Your answer: &nbsp; </b>
-                      <label
-                        dangerouslySetInnerHTML={{
-                          __html: handlerAnswerVar(differUserResponse),
-                        }}
-                      ></label>
+                      {test_mode == 2 ? <b>Your Marks : &nbsp; </b> : <b>Your answer : &nbsp; </b>}
+
+                      {test_mode == 2 ? question_mark :
+                        <label
+                          dangerouslySetInnerHTML={{
+                            __html: handlerAnswerVar(differUserResponse),
+                          }}
+                        ></label>
+                      }
                       <br />
                       <b>Correct answer: &nbsp;</b>
                       <span
@@ -204,32 +214,36 @@ function QuestionReview() {
                   ) : (
                     <>
                       <div className={classes.answersContainer}>
-                        <b>Your answer: &nbsp; </b>
-                        <label
-                          dangerouslySetInnerHTML={{
-                            __html: handlerAnswerVar(differUserResponse),
-                          }}
-                        ></label>
-                        {userResposeImages?.map((image) => (
-                          <a
-                            className='underlineRemove'
-                            onClick={() => {
-                              const fileSrc = `${s3Images}${image}`;
-                              openPreview({
-                                currentAttachmentIndex: 0,
-                                attachmentsArray: [
-                                  {
-                                    src: fileSrc,
-                                    name: `demo`,
-                                    extension: '.png',
-                                  },
-                                ],
-                              });
-                            }}
-                          >
-                            <SvgIcon component={() => <VisibilityIcon />} />
-                          </a>
-                        ))}
+                        {test_mode == 2 ? <b>Your Marks : &nbsp; </b> : <b>Your answer : &nbsp; </b>}
+                        {test_mode == 2 ? question_mark :
+                          <>
+                            <label
+                              dangerouslySetInnerHTML={{
+                                __html: handlerAnswerVar(differUserResponse),
+                              }}
+                            ></label>
+                            {userResposeImages?.map((image) => (
+                              <a
+                                className='underlineRemove'
+                                onClick={() => {
+                                  const fileSrc = `${s3Images}${image}`;
+                                  openPreview({
+                                    currentAttachmentIndex: 0,
+                                    attachmentsArray: [
+                                      {
+                                        src: fileSrc,
+                                        name: `demo`,
+                                        extension: '.png',
+                                      },
+                                    ],
+                                  });
+                                }}
+                              >
+                                <SvgIcon component={() => <VisibilityIcon />} />
+                              </a>
+                            ))}
+                          </>
+                        }
                         <br />
                         <b>Correct answer: &nbsp;</b>
                         <span
@@ -265,10 +279,12 @@ function QuestionReview() {
                 </>
               ) : questionType === 9 ? (
                 <div className={classes.answersContainer}>
-                  <b>Your answer: &nbsp; </b>
-                  <label
-                    dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer) }}
-                  ></label>
+                  {test_mode == 2 ? <b>Your Marks : &nbsp; </b> : <b>Your answer : &nbsp; </b>}
+                  {test_mode == 2 ? question_mark :
+                    <label
+                      dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer) }}
+                    ></label>
+                  }
                   <br />
                   <b>Correct answer: &nbsp;</b>
                   <span
@@ -277,10 +293,12 @@ function QuestionReview() {
                 </div>
               ) : (
                 <div className={classes.answersContainer}>
-                  <b>Your answer: &nbsp; </b>
-                  <label
-                    dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer) }}
-                  ></label>
+                  {test_mode == 2 ? <b>Your Marks : &nbsp; </b> : <b>Your answer : &nbsp; </b>}
+                  {test_mode == 2 ? question_mark :
+                    <label
+                      dangerouslySetInnerHTML={{ __html: handlerAnswerVar(userAnswer) }}
+                    ></label>
+                  }
                   <br />
                   <b>Correct answer: &nbsp;</b>
                   <span

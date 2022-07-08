@@ -26,6 +26,8 @@ const QuestionBankFilters = ({
   setSelectedIndex,
   setClearFlag,
   isEdit,
+  setFilter,
+  setPage
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
@@ -208,6 +210,7 @@ const QuestionBankFilters = ({
   }
 
   function handleBranch(event, value) {
+    setPage(1)
     setFilterData({
       ...filterData,
       branch: '',
@@ -245,6 +248,7 @@ const QuestionBankFilters = ({
   }
 
   const handleTopic = (event, value) => {
+    setPage(1)
     setFilterData({
       ...filterData,
       topicId: '',
@@ -264,6 +268,7 @@ const QuestionBankFilters = ({
   };
 
   const handleQuestionCategory = (event, value) => {
+    setPage(1)
     setFilterData({ ...filterData, question_category: '', quesType: '' });
     setPeriodData([]);
     setLoading(true);
@@ -348,6 +353,7 @@ const QuestionBankFilters = ({
   };
 
   const handleSubject = (event, value) => {
+    setPage(1)
     setFilterData({
       ...filterData,
       subject: '',
@@ -386,6 +392,7 @@ const QuestionBankFilters = ({
   };
 
   const handleChapter = (event, value) => {
+    setPage(1)
     setFilterData({
       ...filterData,
       chapter: '',
@@ -444,6 +451,7 @@ const QuestionBankFilters = ({
   }
 
   const handleFilter = () => {
+    setFilter(true)
     if (!filterData?.year) {
       setAlert('error', 'Select Academic Year!');
       return;
@@ -460,18 +468,6 @@ const QuestionBankFilters = ({
       setAlert('error', 'Select Subject!');
       return;
     }
-    if (!filterData?.chapter) {
-      setAlert('error', 'Select Chapter!');
-      return;
-    }
-    if (!filterData?.quesType) {
-      setAlert('error', 'Select Question Type!');
-      return;
-    }
-    if (!filterData?.question_level) {
-      setAlert('error', 'Select Question Level!');
-      return;
-    }
     if (!filterData?.is_erp_central) {
       setAlert('error', 'Select Question From!');
       return;
@@ -486,7 +482,7 @@ const QuestionBankFilters = ({
       filterData?.grade?.grade_id,
       filterData?.chapter,
       filterData?.is_erp_central,
-      0
+      0,
     );
     setSelectedIndex(-1);
   };
@@ -500,27 +496,6 @@ const QuestionBankFilters = ({
         spacing={isMobile ? 3 : 5}
         style={{ width: widerWidth, margin: wider }}
       >
-        {/* <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-          <Autocomplete
-            style={{ width: '100%' }}
-            size='small'
-            onChange={handleAcademicYear}
-            id='academicyear'
-            className='dropdownIcon'
-            value={filterData?.year || {}}
-            options={academicYearDropdown || []}
-            getOptionLabel={(option) => option?.session_year || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Academic Year'
-                placeholder='Academic Year'
-              />
-            )}
-          />
-        </Grid> */}
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
