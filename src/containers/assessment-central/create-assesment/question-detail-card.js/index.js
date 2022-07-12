@@ -8,6 +8,8 @@ import {
   useTheme,
   Checkbox,
   TextField,
+  Grid,
+  SvgIcon
 } from '@material-ui/core';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
@@ -16,6 +18,8 @@ import { debounce } from 'throttle-debounce';
 import './styles.scss';
 import QuestionView from '../question-view';
 import AssignMarksMenu from '../assign-marks-menu';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const resolveQuestionTypeName = (type) => {
   switch (type) {
@@ -61,6 +65,8 @@ const QuestionDetailCard = ({
   paperchecked,
 }) => {
   const themeContext = useTheme();
+  const { openPreview, closePreview } =
+  React.useContext(AttachmentPreviewerContext) || {};
 
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
@@ -103,49 +109,67 @@ const QuestionDetailCard = ({
         <>
           <div className='selected-question-card-header'>
             <div className='header-name'>
-              {resolveQuestionTypeName(question.question_type)}
+              <span style={{color:'#426a9c',fontWeight: 550, fontSize: '1rem'}}>
+                {resolveQuestionTypeName(question.question_type)}
+              </span>
+              {question?.question_answer.map((item) =>
+      {
+          let que="",index= item.question.indexOf("<img")
+          if(index === -1){
+            que=item.question
+          }else{
+            var s
+            s=item.question.slice(index,item.question.indexOf('/>') +2)
+            que=item.question.replace(s,'')
+          }
+          return(
+            <>
+              <p>Question :  <span
+                    dangerouslySetInnerHTML={{
+                      __html: que,
+                    }}
+                  /></p>
+
+            <span style={{marginLeft:'5px'}}>
+              {item.question
+                ?.split('"')
+                .filter((str) => str.startsWith('https'))?.length > 0 && (
+                <a
+                  onClick={() => {
+                    openPreview({
+                      currentAttachmentIndex: 0,
+                      attachmentsArray: (() => {
+                        let newArray = item?.question?.split('"');
+                        let filtered = newArray.filter((str) => str.startsWith('https'));
+                        const images = filtered || {};
+                        const attachmentsArray = [];
+                        images.forEach((image) => {
+                          const attachmentObj = {
+                            src: image,
+                            name: `${image}`.split('.').slice(0, -1).join('.'),
+                            extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                          };
+                          attachmentsArray.push(attachmentObj);
+                        });
+                        return attachmentsArray;
+                      })(),
+                    });
+                  }}
+                >
+                  <SvgIcon
+                    component={() => <VisibilityIcon style={{ cursor: 'pointer' }} />}
+                  />
+                </a>
+              )}
+              </span>
+            </>
+
+          )
+                 })}
             </div>
             <div className='icon'>
               {!paperchecked && (
-                <IconButton onClick={handleMenuOpen}>
-                  <MoreHorizIcon color='primary' />
-                </IconButton>
-              )}
-              <Popover
-                id=''
-                open={menuOpen}
-                anchorEl={anchorEl}
-                onClose={handleMenuClose}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'center',
-                }}
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'center',
-                }}
-                className='assesment-card-popup-menu'
-                PaperProps={{
-                  style: {
-                    border: `1px solid ${themeContext.palette.primary.main}`,
-                    boxShadow: 0,
-                    '&::before': {
-                      content: '',
-                      position: 'absolute',
-                      right: '50%',
-                      top: '-6px',
-                      backgroundColor: '#ffffff',
-                      width: '10px',
-                      height: '10px',
-                      transform: 'rotate(45deg)',
-                      border: '1px solid #ff6b6b',
-                      borderBottom: 0,
-                      borderRight: 0,
-                      zIndex: 10,
-                    },
-                  },
-                }}
-              >
+                <>
                 {menuOptions.map((option) => (
                   <MenuItem
                     className='assesment-card-popup-menu-item'
@@ -156,14 +180,6 @@ const QuestionDetailCard = ({
                       color: themeContext.palette.primary.main,
                     }}
                   >
-                    <div className='checkbox'>
-                      <Checkbox
-                        checked={true}
-                        onChange={() => {}}
-                        inputProps={{ 'aria-label': 'primary checkbox' }}
-                        color='primary'
-                      />
-                    </div>
                     {option}
                     <div className='value-input'>
                       <TextField
@@ -184,21 +200,27 @@ const QuestionDetailCard = ({
                     </div>
                   </MenuItem>
                 ))}
-              </Popover>
+                </>
+
+              )}
             </div>
           </div>
           <div className='content'>
             <div className='left'>
-              <div style={{ fontWeight: 550, fontSize: '1rem' }}>Online</div>
+              {/* <div style={{ fontWeight: 550, fontSize: '1rem' }}>Online</div> */}
               {/* <div> {q.is_published ? 'Published' : 'Draft'}</div> */}
-              <div> {'Published'}</div>
+              {/* <div> {'Published'}</div> */}
+              <div className='created'>
+                {/* <div style={{ fontWeight: 550, fontSize: '1rem', color:"#168d00"}}>
+                Created on {extractDate(createdAt)}
+                </div> */}
             </div>
             <div className='right'>
-              <div className='created'>
-                <div>Created on</div>
-                <div style={{ fontWeight: 550, fontSize: '1rem' }}>
-                  {extractDate(createdAt)}
-                </div>
+              {/* <div className='created'> */}
+                {/* <div>Created on :</div> */}
+                {/* <div style={{ fontWeight: 550, fontSize: '1rem'}}>
+                Created on :{extractDate(createdAt)}
+                </div> */}
               </div>
               {/* <div>
                 <Button variant='contained' color='primary'>
@@ -218,7 +240,7 @@ const QuestionDetailCard = ({
             <div className='mode'>Online</div>
             <div className='is-published'> {'Published'}</div>
             <div className='created'>
-              <div>Created on</div>
+              <div>Created on </div>
               <div style={{ fontWeight: 550, fontSize: '1rem' }}>
                 {extractDate(createdAt)}
               </div>

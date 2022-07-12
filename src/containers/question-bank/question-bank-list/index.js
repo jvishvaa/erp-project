@@ -70,6 +70,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
   const filterRef = useRef(null);
   const [clearFlag, setClearFlag] = useState(false);
   const [callFlag, setCallFlag] = useState(false);
+  const [ is_Filter , setFilter ] = useState(false)
 
   const addQuestionToPaper = (question, questionId, section) => {
     initAddQuestionToSection(question, questionId, section);
@@ -119,7 +120,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     gradeId,
     chapterObj,
     isErpCentral = false,
-    newValue = 0
+    newValue = 0,
   ) => {
     setLoading(true);
     setPeriodData([]);
@@ -153,6 +154,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     if (topicId) {
       requestUrl += `&topic=${topicId?.id}`;
     }
+    setFilter(false)
     axiosInstance
       .get(requestUrl)
       .then((result) => {
@@ -182,6 +184,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
       tabIsErpCentral&& page
     ) {
       setSelectedIndex(-1);
+      if(is_Filter == false && page != 1 ){
       handlePeriodList(
         tabQueTypeId,
         tabQueCatId,
@@ -194,6 +197,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
         tabIsErpCentral,
         tabValue
       );
+      }
     }
   }, [page, tabValue, callFlag]);
 
@@ -232,6 +236,8 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
             setViewMoreData={setViewMoreData}
             setFilterDataDown={setFilterDataDown}
             setSelectedIndex={setSelectedIndex}
+            setFilter={setFilter}
+            setPage={setPage}
           />
         </div>
         <Grid

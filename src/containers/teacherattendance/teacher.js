@@ -53,6 +53,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import MomentUtils from '@date-io/moment';
 import NotifyConfirmPopUp from './notifyConfirmPopUp';
 
+
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -158,6 +159,9 @@ const useToolbarStyles = makeStyles((theme) => ({
     flex: '1 1 100%',
     fontWeight: 'bold',
   },
+  button: {
+    background: theme.palette.secondary.main ,
+  }
 }));
 
 const EnhancedTableToolbar = (props) => {
@@ -229,6 +233,14 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '26px',
     //  overflow:'hidden',
   },
+  button: {
+    background: theme.palette.primary.main ,
+    '&:hover': {
+      background: theme.palette.primary.main,
+  },
+  }
+
+  
 }));
 
 export default function TeacherAttendance(props) {
@@ -286,6 +298,7 @@ export default function TeacherAttendance(props) {
   const [checkedSelect, setCheckedSelect] = React.useState(false);
   const [openSelect, setOpenSelect] = React.useState(false);
   const [attendanceDialog, setAttendanceDialog] = React.useState('');
+
 
 
   const handleChangeSelect = (event) => {
@@ -515,6 +528,7 @@ export default function TeacherAttendance(props) {
   };
 
   const handleMark = () => {
+    setLoading(true)
     let arrSec = [];
     arrSec.push(sectionId.map((ele) => ele))
     console.log((arrSec[0].toString()));
@@ -531,6 +545,7 @@ export default function TeacherAttendance(props) {
         console.log(result);
         getTeacherData()
         handleCloseSelect()
+        setAttendanceDialog('')
       })
       .catch((error) => { });
   }
@@ -717,8 +732,8 @@ export default function TeacherAttendance(props) {
           </Grid>
        
           {data?.length > 0 ?
-            <Grid container spacing={1}>
-              <div style={{ display: 'flex', alignItems: 'center' }} >
+            <Grid xs={9}  container spacing={1} justifyContent="flex-end">
+              <div style={{ display: 'flex', alignItems: 'center',marginRight : '-22px' }} >
                 <Checkbox
                   checked={checkedSelect}
                   onChange={handleChangeSelect}
@@ -801,13 +816,21 @@ export default function TeacherAttendance(props) {
         <Grid container spacing={1} style={{ padding: '25px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           {recordsData?.total ? <h3>Total Present : {recordsData?.present || 0} &nbsp; Total Absent : {recordsData?.absent || 0}  &nbsp; Total Marked : {recordsData?.marked} &nbsp; Total Unmarked : {recordsData?.unmarked} &nbsp; Total: {recordsData?.total}</h3> : null}
           {isStudentInRole && (recordsData?.total ? true : false) && (window.location.host == local || window.location.host == dev || window.location.host == qa || window.location.host == prod) &&
-            <Grid item md={1} xs={12} style={{ marginLeft: 15 }}>
+            <Grid item md={2} xs={12} style={{ marginLeft: 15 }}>
               <Button onClick={() => { handleNotifyPopUp(true) }} variant='contained' color='primary'>
-                Notify
+                Notify Absentees
               </Button>
             </Grid>}
         </Grid> : null}
-    
+          
+        <NotifyConfirmPopUp
+        openModal={openModal}
+        handleNotifyPopUp={handleNotifyPopUp}
+        sectionId={sectionId}
+        startDate={startDate}
+        rolesId={rolesId}
+      />
+
       <Dialog
         open={openSelect}
         onClose={handleCloseSelect}
@@ -840,7 +863,7 @@ export default function TeacherAttendance(props) {
           <Button autoFocus onClick={handleCloseSelect} style={{background: 'darkgrey'}} >
             Cancel
           </Button>
-          <Button onClick={handleMark} color="primary" autoFocus>
+          <Button onClick={handleMark} color="primary"   className={classes.button} >
             Publish
           </Button>
         </DialogActions>

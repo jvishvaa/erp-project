@@ -746,7 +746,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                       }}
                       id='role_id'
                       className='dropdownIcon'
-                      value={selectedRoles?.role_name}
+                      value={selectedRoles || []}
                       options={roleList}
                       getOptionLabel={(option) => option?.role_name}
                       filterSelectedOptions
