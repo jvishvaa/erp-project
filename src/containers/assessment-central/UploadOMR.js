@@ -16,6 +16,8 @@ import {
   TableRow,
   TableBody,
   SvgIcon,
+  TablePagination,
+  Popover,
 } from '@material-ui/core';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
@@ -110,6 +112,16 @@ const useStyles = makeStyles((theme) => ({
   listcontainer: {
     padding: '0 2% 1% 2%',
   },
+  popOver: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    maxWidth: '500px',
+    maxHeight: '200px',
+    overflow: 'auto',
+    minWidth: '200px',
+    minHeight: '200px',
+  },
 }));
 
 const StyledButton = withStyles((theme) => ({
@@ -169,6 +181,18 @@ const UploadOMR = () => {
     React.useContext(AttachmentPreviewerContext) || {};
   const [studentList, setStudentList] = useState([]); //need to make empty array by default
   const fileUploadInput = useRef(null);
+  const [totalCount, setTotalCount] = useState(0);
+  const [limit, setLimit] = useState(9);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isClicked, setIsClicked] = useState(false);
+  const [totalPages, setTotalPages] = useState(0);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [logs, setLogs] = useState('');
+
+  const handlePagination = (event, page) => {
+    setIsClicked(true);
+    setCurrentPage(page);
+  };
 
   const handleFileUpload = async (file) => {
     // console.log('file11', file);
@@ -203,6 +227,7 @@ const UploadOMR = () => {
 
       if (filePath?.status_code === 200) {
         setAlert('success', filePath?.message);
+        getData();
         setLoading(false);
       } else {
         setAlert('error', 'File upload failed');
@@ -223,11 +248,16 @@ const UploadOMR = () => {
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.assessment.OMRResponse}?section_mapping=${history?.location?.state?.section?.id}`
+        `${endpoints.assessment.OMRResponse}?section_mapping=${history?.location?.state?.section?.id}&page=${currentPage}&page_size=${limit}&test_id=${history?.location?.state?.test_id?.id}`
       )
       .then((result) => {
         setLoading(false);
-        setStudentList(result?.data?.result);
+        setTotalCount(result?.data?.count);
+        setTotalPages(result?.data?.total_pages);
+        setStudentList(result?.data?.results);
+        setCurrentPage(result?.data?.current_page);
+        setLimit(Number(result?.data?.limit) + 1);
+        setAlert('success', 'Data Fetched');
       })
       .catch((error) => {
         console.log(error);
@@ -240,6 +270,21 @@ const UploadOMR = () => {
     }
   }, []);
 
+  const msgShower = (item) => {
+    if (item?.status !== 'Failed') {
+      return;
+    }
+    setAnchorEl(true);
+    setLogs(item?.logs);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
   return (
     <Layout className='accessBlockerContainer'>
       {loading && <Loader />}
@@ -250,7 +295,7 @@ const UploadOMR = () => {
         isAcademicYearVisible={true}
       />
       <div className={classes.listcontainer}>
-        <div style={{display: '-webkit-box'}}>
+        <div style={{ display: '-webkit-box' }}>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <StyledButton
               onClick={() => fileUploadInput.current.click()}
@@ -258,15 +303,19 @@ const UploadOMR = () => {
             >
               Upload OMR Sheet
             </StyledButton>
-            <small>.png, .jpg, .jpeg, .PNG, .JPG, .JPEG format</small>
+            <small>.PNG, .JPG, .JPEG format</small>
           </div>
-          <StyledButton
-            style={{marginLeft: '20px'}}
+          {/* <StyledButton
+            style={{ marginLeft: '20px' }}
             onClick={() => getData()}
             startIcon={<SyncIcon style={{ fontSize: '30px' }} />}
           >
             Refresh
-          </StyledButton>
+          </StyledButton> */}
+          <SyncIcon
+            onClick={() => getData()}
+            style={{ fontSize: '30px', margin: '7px', cursor: 'pointer' }}
+          />
         </div>
 
         <input
@@ -294,11 +343,13 @@ const UploadOMR = () => {
               <TableHead className={`${classes.columnHeader} table-header-row`}>
                 <TableRow>
                   <TableCell className={classes.tableCell}>Serial No.</TableCell>
+                  <TableCell className={classes.tableCell}>
+                    File Name & Thumb Nail
+                  </TableCell>
+                  <TableCell className={classes.tableCell}>Upload Status</TableCell>
+                  <TableCell className={classes.tableCell}>Scan Status</TableCell>
                   <TableCell className={classes.tableCell}>Erp Id</TableCell>
                   <TableCell className={classes.tableCell}>Name</TableCell>
-                  <TableCell className={classes.tableCell}>Upload Status</TableCell>
-                  <TableCell className={classes.tableCell}>File Name</TableCell>
-                  <TableCell className={classes.tableCell}>Scan Status</TableCell>
                   <TableCell className={classes.tableCell}>Tools</TableCell>
                   {/* <TableCell className={classes.tableCell}>Edit</TableCell> */}
                 </TableRow>
@@ -306,13 +357,8 @@ const UploadOMR = () => {
               <TableBody>
                 {studentList.map((items, i) => (
                   <TableRow key={items.id}>
-                    <TableCell className={classes.tableCell}>{i + 1}</TableCell>
-                    <TableCell className={classes.tableCell}>{items?.erp_id}</TableCell>
-                    <TableCell className={classes.tableCell} id='blockArea'>
-                      {items?.name}
-                    </TableCell>
                     <TableCell className={classes.tableCell}>
-                      {items?.omr_sheet !== '' ? <>Yes</> : <>No</>}
+                      {i + 1 + (Number(currentPage) - 1) * limit}
                     </TableCell>
                     <TableCell className={classes.tableCell}>
                       {items?.omr_sheet !== '' ? (
@@ -320,14 +366,14 @@ const UploadOMR = () => {
                           style={{
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'space-around',
+                            justifyContent: 'space-between',
                           }}
                         >
                           {items?.file_name}
                           <SvgIcon
                             component={() => (
                               <VisibilityOutlinedIcon
-                                style={{ width: 30, height: 30 }}
+                                style={{ width: 30, height: 30, cursor: 'pointer' }}
                                 onClick={() => {
                                   const fileSrc = `${endpoints.lessonPlan.s3erp}${items?.omr_sheet}`;
                                   openPreview({
@@ -359,18 +405,32 @@ const UploadOMR = () => {
                     </TableCell>
 
                     <TableCell className={classes.tableCell}>
-                      {items?.scan_status !== '' ? items?.status : <>--</>}
+                      {items?.omr_sheet !== '' ? <>Yes</> : <>No</>}
                     </TableCell>
-
+                    <TableCell className={classes.tableCell}>
+                      {items?.status !== '' && items?.status !== null ? (
+                        <div onClick={() => msgShower(items)}>{items?.status}</div>
+                      ) : (
+                        <div>---</div>
+                      )}
+                    </TableCell>
+                    <TableCell className={classes.tableCell}>{items?.erp_id}</TableCell>
                     <TableCell className={classes.tableCell} id='blockArea'>
-                      {items?.omr_sheet === '' ? (
-                        <StyledButton
-                          // onClick={() => uploadMarks(items)}
+                      {items?.name}
+                    </TableCell>
+                    <TableCell className={classes.tableCell} id='blockArea'>
+                      {items?.omr_sheet !== '' && items?.status === 'Failed' ? (
+                        // <StyledButton
+                        //   disabled={items?.status !== 'failed'? false : true}
+                        //   onClick={() => fileUploadIlnput.current.click()}
+                        //   startIcon={<BackupOutlined style={{ fontSize: '30px' }} />}
+                        // >
+                        //   Upload
+                        // </StyledButton>
+                        <BackupOutlined
                           onClick={() => fileUploadInput.current.click()}
-                          startIcon={<BackupOutlined style={{ fontSize: '30px' }} />}
-                        >
-                          Upload
-                        </StyledButton>
+                          style={{ fontSize: '30px', cursor: 'pointer' }}
+                        />
                       ) : (
                         <> -- </>
                       )}
@@ -391,6 +451,21 @@ const UploadOMR = () => {
                 ))}
               </TableBody>
             </Table>
+            <TablePagination
+              component='div'
+              count={totalCount}
+              rowsPerPage={limit}
+              page={Number(currentPage) - 1}
+              onChangePage={(e, page) => {
+                handlePagination(e, page + 1);
+              }}
+              rowsPerPageOptions={false}
+              className='table-pagination'
+              classes={{
+                spacer: classes.tablePaginationSpacer,
+                toolbar: classes.tablePaginationToolbar,
+              }}
+            />
           </TableContainer>
         ) : (
           <>
@@ -398,6 +473,25 @@ const UploadOMR = () => {
           </>
         )}
       </Paper>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClose}
+        anchorOrigin={{
+          vertical: 'center',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'center',
+          horizontal: 'center',
+        }}
+      >
+        <Box p={4} className={classes.popOver}>
+          {/* just put logs state there in Typogarphy to show msg.*/}
+          <Typography>{logs}</Typography>
+        </Box>
+      </Popover>
     </Layout>
   );
 };
