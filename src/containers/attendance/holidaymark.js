@@ -1,9 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Loader from '../../components/loader/loader';
-import Calendar from 'react-calendar';
-import DatePicker from 'react-datepicker';
-// import MobileDatepicker from './mobile-datepicker';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 
@@ -14,7 +11,6 @@ import DateRangeIcon from '@material-ui/icons/DateRange';
 
 
 import 'react-calendar/dist/Calendar.css';
-import TimeRange from 'react-time-range';
 import moment from 'moment';
 import Layout from 'containers/Layout';
 import Divider from '@material-ui/core/Divider';
@@ -24,50 +20,22 @@ import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import Button from '@material-ui/core/Button';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
-import { addDays } from 'date-fns';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Breadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import '../Calendar/Styles.css';
-import { setModulePermissionsRequestData } from 'redux/actions';
-import LineAtt from '../../assets/images/LineAtt.svg';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
-import { KeyboardTimePicker } from '@material-ui/pickers';
-import { KeyboardDatePicker } from '@material-ui/pickers';
-import DateFnsUtils from '@date-io/date-fns';
-import { dateFormat } from 'highcharts';
 import { useHistory } from 'react-router';
-import { connect, useSelector } from 'react-redux';
-import { size } from 'lodash';
-import { id } from 'date-fns/locale';
+import { useSelector } from 'react-redux';
 import './AttendanceCalender.scss';
 function getDaysAfter(date, amount) {
   return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
 }
-function getDaysBefore(date, amount) {
-  return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
-}
 
 const HolidayMark = () => {
-  const [allDay, setAllDay] = useState(true);
-  const [firstHalf, setFirstHalf] = useState(false);
-  const [secondHalf, setSecondHalf] = useState(false);
-  const [isconfirm, setIsConfirm] = useState(false);
-  const [valuetime, onChange] = useState('10:00');
-  const [state, setState] = useState();
-  const [time, setTime] = useState();
-  const [startTime, setStartTime] = useState();
-  const [endTime, setEndTime] = useState();
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
-  const [DateEnd, setDateEnd] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
   const [evnetcategoryType, setEventcategoryType] = useState([]);
-  const [selectedStartTime, setSelectedStartTime] = useState(new Date());
-  const [selectedEndTime, setSelectedEndTime] = useState(new Date());
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
     moment().subtract(6, 'days'),
     moment(),
@@ -79,24 +47,11 @@ const HolidayMark = () => {
   const [minStartDate, setMinStartDate] = useState();
   const [maxStartDate, setMaxStartDate] = useState();
   const [loading, setLoading] = useState(false);
-  const [counter, setCounter] = useState(1);
-  const [discripValue, setdiscripValue] = useState();
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
 
-  const handleStartTimeChange = (start_time) => {
-    const time = start_time.toString().slice(16, 21);
-    setSelectedStartTime(start_time);
-    setStartTime(time);
-  };
-  const handleEndTimeChange = (end_time) => {
-    // let x=date._d
-    // console.log(x.split(" "))
-    setSelectedEndTime(end_time);
-    setEndTime(end_time.toString().slice(16, 21));
-  };
   const useStyles = makeStyles((theme) => ({
     root: {
       padding: '1rem',
@@ -357,10 +312,6 @@ const HolidayMark = () => {
   console.log(moduleId, 'MODULE_ID');
 
   useEffect(() => {
-    // callApi(
-    //   `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
-    //   'academicYearList'
-    // );
     callApi(
       `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
       'branchList'
@@ -372,9 +323,6 @@ const HolidayMark = () => {
   }, [ moduleId]);
 
   useEffect(() => {
-    console.log(history , "his");
-      const branchIds = [];
-    //   const i;
     if(history?.location?.state?.data){
         setIsEdit(true)
         console.log(history?.location?.state?.data?.branch?.length,"data");
@@ -382,11 +330,9 @@ const HolidayMark = () => {
         setHolidayName(history?.location?.state?.data?.title)
         handleGrade(history?.location?.state?.data?.grade)
         setDateRangeTechPer([moment(history?.location?.state?.data?.holiday_start_date).format('MM/DD/YYYY') , moment(history?.location?.state?.data?.holiday_end_date).format('MM/DD/YYYY')])
-        // handleBranch(history?.location?.state?.data?.branch)
 
        if(history?.location?.state?.data?.branch?.length) {
       const ids = history?.location?.state?.data?.branch.map((el , index) => el);
-    //   branchIds.push(ids)
      let filterBranch = branchList.filter((item) => ids.indexOf(item.branch.id) !== -1)
       setSelectedBranch(filterBranch)
       if (moduleId){
@@ -400,7 +346,6 @@ const HolidayMark = () => {
        }
        if(history?.location?.state?.data?.grade?.length && gradeList !== [] ) {
         const ids = history?.location?.state?.data?.grade.map((el , index) => el);
-      //   branchIds.push(ids)
        let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1)
         setSelectedGrade(filterBranch)
          }
@@ -412,7 +357,6 @@ const HolidayMark = () => {
   useEffect(() => {
     if(history?.location?.state?.data?.grade?.length) {
       const ids = history?.location?.state?.data?.grade.map((el , index) => el);
-    //   branchIds.push(ids)
      let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1)
       setSelectedGrade(filterBranch)
        }
@@ -434,7 +378,6 @@ const HolidayMark = () => {
   };
   const handleAcademicYear=(event,value)=>{
     
-      // setSelectedAcadmeicYear(value);
       if (value) {
         callApi(
           `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
@@ -446,21 +389,7 @@ const HolidayMark = () => {
       setSelectedSection([]);
       setSelectedBranch([]);
     }
-    function handleDate(v1) {
-        if (v1 && v1.length !== 0) {
-          setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
-          setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
-        }
-        setDateRangeTechPer(v1);
-      }
 
-  // const handleEventTypeChange = (e, value) => {
-  //   if (value) {
-  //     e.preventDefault();
-  //     console.log('eventttttype:', value.id);
-  //   } else {
-  //   }
-  // };
 
   return (
     <>
@@ -537,36 +466,6 @@ const HolidayMark = () => {
               className={classes.root}
               alignItems='center'
             >
-              {/* <Grid item xs={12} md={2} className='arrow-1'>
-                <MuiPickersUtilsProvider utils={MomentUtils}>
-                  <KeyboardDatePicker
-                    size='small'
-                    variant='dialog'
-                    format='YYYY-MM-DD'
-                    margin='none'
-                    // className='button'
-                    id='date-picker'
-                    label='StartDate'
-                    minDate={new Date()}
-                    name='start_date'
-                    inputVariant='outlined'
-                    // className='arrow conte'
-                    onChange={handleStartDateChange}
-                    // handleStartDateChange={handleStartDateChange}
-                    // handleEndDateChange={handleEndDateChange}
-
-                    value={startDate}
-                    className='dropdownIcon'
-                    // style={{ background: 'white', width: '50%' }}
-                    // onChange={handleDateChange}
-                    KeyboardButtonProps={{
-                      'aria-label': 'change date',
-                    }}
-                  />
-                </MuiPickersUtilsProvider>
-
-
-              </Grid> */}
 
 <Grid item xs={12} sm={3} className='date-range-holiday' >
                       <LocalizationProvider dateAdapter={MomentUtils}>
@@ -658,13 +557,10 @@ const HolidayMark = () => {
               </Grid>
             </Grid>
             <Grid container direction='row' className={classes.root}>
-              {/* <Grid item md={1} lg={1} xs={12}> */}
               <div className={classes.button}>
                 <Button variant='contained' onClick={onunHandleClearAll}>
                   Clear All
                 </Button>
-                {/* </Grid> */}
-                {/* <Grid item md={2} lg={1} xs={12}> */}
                 <Button
                   variant='contained'
                   color='primary'
@@ -673,8 +569,6 @@ const HolidayMark = () => {
                 >
                   Go Back
                 </Button>
-                {/* </Grid> */}
-                {/* <Grid item md={1} lg={1} xs={12}> */}
                 <Button
                   variant='contained'
                   type='submit'
@@ -684,7 +578,6 @@ const HolidayMark = () => {
                 >
                   Save Holiday
                 </Button>
-                {/* </Grid> */}
               </div>
             </Grid>
    
