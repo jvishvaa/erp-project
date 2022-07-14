@@ -41,19 +41,6 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import MomentUtils from '@date-io/moment';
 import NotifyConfirmPopUp from './notifyConfirmPopUp';
 
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-
-
 function EnhancedTableHead(props) {
   const {
     onRequestSort,
@@ -200,11 +187,7 @@ export default function TeacherAttendance(props) {
   const [order, setOrder] = React.useState('asc');
   const [loading, setLoading] = React.useState(false);
   const [orderBy, setOrderBy] = React.useState('');
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [checked, setChecked] = React.useState(true);
   const { setAlert } = useContext(AlertNotificationContext);
   const [roles, setRoles] = React.useState([]);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -238,7 +221,6 @@ export default function TeacherAttendance(props) {
   const [checkedSelect, setCheckedSelect] = React.useState(false);
   const [openSelect, setOpenSelect] = React.useState(false);
   const [attendanceDialog, setAttendanceDialog] = React.useState('');
-  const [updatecount, setupdatecount] = React.useState(0)
   const [absentvalue, setAbsent] = React.useState(0)
   const [presentvalue, setPresent] = React.useState(0)
 
@@ -289,10 +271,6 @@ export default function TeacherAttendance(props) {
         if (result.data.status_code === 200) {
           let branches = result.data?.data?.results.map((item) => item.branch);
           setBranchList(branches);
-          console.log(
-            'branches',
-            result.data?.data?.results.map((item) => item.branch)
-          );
         }
       })
       .catch((error) => { });
@@ -402,7 +380,6 @@ export default function TeacherAttendance(props) {
   }
 
   const handleChangeSelectPA = (event) => {
-    console.log(event.target.value);
     setAttendanceDialog(event.target.value)
   }
 
@@ -440,7 +417,6 @@ export default function TeacherAttendance(props) {
           `${endpoints.academics.teacherAttendanceData}?branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&session_year=${selectedAcademicYear?.id}&roles=${rolesId}&date=${startDate}`
         )
         .then((result) => {
-          console.log(result);
           if (result.status === 200) {
             setData(result?.data?.attendance_data);
             setRecordsData(result?.data?.aggregate_counts)
@@ -449,7 +425,6 @@ export default function TeacherAttendance(props) {
           }
         })
         .catch((error) => {
-          console.log(error);
           setLoading(false);
           setshowdata(false);
         });
@@ -509,7 +484,6 @@ export default function TeacherAttendance(props) {
     axiosInstance
       .post(`${endpoints.academics.markAllAttendance}`, payload)
       .then((result) => {
-        console.log(result);
         getTeacherData()
         handleCloseSelect()
         setAttendanceDialog('')
