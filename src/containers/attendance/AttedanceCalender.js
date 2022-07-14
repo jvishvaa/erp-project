@@ -15,9 +15,9 @@ import {
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import RangeCalender from './calender.jsx';
-import { Autocomplete, Pagination } from '@material-ui/lab';
+import { Autocomplete } from '@material-ui/lab';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import Loader from '../../components/loader/loader';
@@ -28,10 +28,9 @@ import ClearIcon from '../../components/icon/ClearIcon';
 import { deepOrange } from '@material-ui/core/colors';
 import flag from '../../assets/images/flag.svg';
 import moment from 'moment';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Popover from '@material-ui/core/Popover';
 import './AttendanceCalender.scss';
-
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: '1rem',
@@ -107,7 +106,6 @@ const AttedanceCalender = () => {
   const [teacherView, setTeacherView] = useState(true);
   const [holidayDetails, setHolidayDetails] = useState('');
   const [anchorEl, setAnchorEl] = React.useState(null);
-  console.log('year', academicYear);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const [holidayId, setHolidayid] = useState('');
@@ -115,12 +113,10 @@ const AttedanceCalender = () => {
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
 
   let path = window.location.pathname;
-  console.log(path, 'path');
 
   let userName = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
   let studentDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
 
-  console.log(userName, 'userName');
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -143,9 +139,7 @@ const AttedanceCalender = () => {
         }
       });
     }
-    console.log(history);
     if (history?.location?.state?.payload) {
-      console.log(history?.location?.state, 'vinod');
       setCounter(history?.location?.state?.payload?.counter);
       setStartDate(history?.location?.state?.payload?.startDate);
       setEndDate(history?.location?.state?.payload?.endDate);
@@ -153,8 +147,6 @@ const AttedanceCalender = () => {
   }, []);
   useEffect(() => {
     if (path === '/attendance-calendar/teacher-view') {
-      console.log(path, 'path');
-      console.log(history, 'checking counter');
       if (history?.location?.state?.backButtonStatus) {
         setSelectedBranch(history?.location?.state?.payload?.branch_id);
         setSelectedGrade(history?.location?.state?.payload?.grade_id);
@@ -178,7 +170,6 @@ const AttedanceCalender = () => {
             })
             .then((res) => {
               setLoading(false);
-              console.log(res.data.events, 'current eventssss');
               setCurrentEvent(res.data.events);
               setStudentDataAll(res.data);
             })
@@ -217,13 +208,11 @@ const AttedanceCalender = () => {
     }
     if (path === '/attendance-calendar/student-view') {
       if (history?.location?.state?.backButtonStatus) {
-        console.log(path, 'path');
         setTeacherView(false);
         setCounter(history?.location?.state?.payload?.counter);
         if (history?.location?.state?.payload?.counter == 1) {
           var date = new Date();
           var formatDate = moment(date).format('YYYY-MM-DD');
-          console.log(userName[0], 'format date');
           axiosInstance
             .get(`academic/single_student_calender/`, {
               params: {
@@ -234,7 +223,6 @@ const AttedanceCalender = () => {
             })
             .then((res) => {
               setLoading(false);
-              console.log(res.data.events, 'current eventssss');
               setCurrentEvent(res.data.events);
               setStudentDataAll(res.data);
             })
@@ -265,7 +253,6 @@ const AttedanceCalender = () => {
             })
             .then((res) => {
               setLoading(false);
-              console.log(res, 'respond student');
               setStudentDataAll(res.data);
               let temp = [...res.data.present_list, ...res.data.absent_list];
               setStudentData(temp);
@@ -273,7 +260,6 @@ const AttedanceCalender = () => {
             })
             .catch((error) => {
               setLoading(false);
-              console.log(error);
             });
         }
       }
@@ -282,12 +268,10 @@ const AttedanceCalender = () => {
 
   useEffect(() => {
     if (path === '/attendance-calendar/teacher-view') {
-      console.log(path, 'path');
       setTeacherView(true);
       setStudentDataAll(null);
     }
     if (path === '/attendance-calendar/student-view') {
-      console.log(path, 'path');
       setTeacherView(false);
       setStudentDataAll(null);
     }
@@ -348,7 +332,6 @@ const AttedanceCalender = () => {
   }, [moduleId, window.location.pathname]);
 
   const handleClearAll = () => {
-    console.log('clear all');
     setSelectedBranch([]);
     setSelectedGrade([]);
     setSelectedSection([]);
@@ -366,21 +349,17 @@ const AttedanceCalender = () => {
       .then((result) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
-            console.log(result?.data?.data || []);
             const defaultValue = result?.data?.data?.[0];
             handleAcademicYear({}, defaultValue);
             setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
-            console.log(result?.data?.data || []);
             setBranchList(result?.data?.data?.results || []);
           }
           if (key === 'gradeList') {
-            console.log(result?.data?.data || []);
             setGradeList(result.data.data || []);
           }
           if (key === 'section') {
-            console.log(result?.data?.data || []);
             setSectionList(result.data.data);
           }
           setLoading(false);
@@ -406,10 +385,8 @@ const AttedanceCalender = () => {
 
   const setDate = () => {
     setStudentDataAll(null);
-    console.log(startDate, 'startDs');
     var date = new Date();
     var formatDate = moment(date).format('YYYY-MM-DD');
-    console.log(formatDate, 'format date');
     var day = date.getDay();
     let currentDay;
     setCounter(1);
@@ -435,7 +412,6 @@ const AttedanceCalender = () => {
       currentDay = 'Saturday';
     }
     setTodayDate(currentDay + ' ' + moment(date).format('DD-MM-YYYY'));
-    console.log(currentDay, 'todays Date');
     setStartDate(date);
     setEndDate(date);
   };
@@ -444,7 +420,6 @@ const AttedanceCalender = () => {
     setCounter(2);
     setStudentDataAll(null);
     setCurrentEvent(null);
-    console.log(startDate, 'start');
   };
 
   const monthlyData = () => {
@@ -456,7 +431,6 @@ const AttedanceCalender = () => {
   const getToday = () => {
     var date = new Date();
     var formatDate = moment(date).format('YYYY-MM-DD');
-    console.log(formatDate, 'format date');
     axiosInstance
       .get(`academic/student_attendance_between_date_range/`, {
         params: {
@@ -470,7 +444,6 @@ const AttedanceCalender = () => {
         },
       })
       .then((res) => {
-        console.log(res, 'qa calender');
         setLoading(false);
         setStudentDataAll(res.data);
         let temp = [...res.data.present_list, ...res.data.absent_list];
@@ -481,7 +454,6 @@ const AttedanceCalender = () => {
         setLoading(false);
         setAlert('error', 'no attendance');
         setStudentDataAll(null);
-        console.log(error);
       });
 
     axiosInstance
@@ -489,7 +461,6 @@ const AttedanceCalender = () => {
         `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${formatDate}&end_date=${formatDate}&grade=${selectedGrade.grade_id}`
       )
       .then((res) => {
-        console.log(res, 'holiday');
         setHolidayDetails(res.data.holiday_detail);
       })
       .catch((error) => {
@@ -497,8 +468,6 @@ const AttedanceCalender = () => {
       });
   };
   const handlePassData = (endDate, startDate, starttime) => {
-    console.log(endDate, 'got date');
-    console.log(startDate, 'startDate passss');
     setStartDate(starttime);
     setEndDate(endDate);
   };
@@ -512,7 +481,6 @@ const AttedanceCalender = () => {
       startDate: startDate,
       endDate: endDate,
     };
-    console.log(payload, 'attendance calendar');
 
     localStorage.setItem(
       'teacherFilters',
@@ -548,12 +516,10 @@ const AttedanceCalender = () => {
         )
         .then((res) => {
           setLoading(false);
-          console.log(res, 'holiday');
           setHolidayDetails(res.data.holiday_detail);
         })
         .catch((error) => {
           setLoading(false);
-          console.log(error, 'err');
         });
     }
     if (counter === 1) {
@@ -573,7 +539,6 @@ const AttedanceCalender = () => {
         })
         .then((res) => {
           setLoading(false);
-          console.log(res, 'respond teacher');
           setStudentDataAll(res.data);
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
@@ -583,7 +548,6 @@ const AttedanceCalender = () => {
           setLoading(false);
           setAlert('error', 'no attendance');
           setStudentDataAll(null);
-          console.log(error);
         });
 
       axiosInstance
@@ -591,7 +555,6 @@ const AttedanceCalender = () => {
           `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
         )
         .then((res) => {
-          console.log(res, 'holiday');
           setHolidayDetails(res.data.holiday_detail);
         })
         .catch((error) => {
@@ -603,7 +566,6 @@ const AttedanceCalender = () => {
   const getTodayStudent = () => {
     var date = new Date();
     var formatDate = moment(date).format('YYYY-MM-DD');
-    console.log(formatDate, 'format date');
     axiosInstance
       .get(`academic/single_student_calender/`, {
         params: {
@@ -621,14 +583,12 @@ const AttedanceCalender = () => {
         setLoading(false);
         setAlert('error', 'no attendance');
         setStudentDataAll(null);
-        console.log(error);
       });
     axiosInstance
       .get(
         `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
       )
       .then((res) => {
-        console.log(res, 'holiday');
         setHolidayDetails(res.data.holiday_detail);
       })
       .catch((error) => {
@@ -644,7 +604,6 @@ const AttedanceCalender = () => {
         )
         .then((res) => {
           setLoading(false);
-          console.log(res, 'respond student');
           setStudentDataAll(res.data);
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
@@ -654,7 +613,6 @@ const AttedanceCalender = () => {
           setLoading(false);
           setAlert('error', 'no attendance');
           setStudentDataAll(null);
-          console.log(error);
         });
 
       let branchIds = studentDetails?.role_details?.branch?.map((branch) => [branch.id]);
@@ -667,7 +625,6 @@ const AttedanceCalender = () => {
           `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${gradesId}`
         )
         .then((res) => {
-          console.log(res, 'holiday');
           setHolidayDetails(res.data.holiday_detail);
         })
         .catch((error) => {
@@ -689,7 +646,6 @@ const AttedanceCalender = () => {
         })
         .then((res) => {
           setLoading(false);
-          console.log(res, 'respond student');
           setStudentDataAll(res.data);
           let temp = [...res.data.present_list, ...res.data.absent_list];
           setStudentData(temp);
@@ -699,14 +655,12 @@ const AttedanceCalender = () => {
           setLoading(false);
           setAlert('error', 'no attendance');
           setStudentDataAll(null);
-          console.log(error);
         });
       axiosInstance
         .get(
           `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
         )
         .then((res) => {
-          console.log(res, 'holiday');
           setHolidayDetails(res.data.holiday_detail);
         })
         .catch((error) => {
@@ -717,11 +671,9 @@ const AttedanceCalender = () => {
 
   const selectModule = () => {
     if (path === '/attendance-calendar/teacher-view') {
-      console.log(path, 'path');
       getRangeData();
     }
     if (path === '/attendance-calendar/student-view') {
-      console.log(userName, 'path');
       getStudentRange();
     }
   };
@@ -786,7 +738,6 @@ const AttedanceCalender = () => {
       endDate: moment(endDate).format('YYYY-MM-DD'),
       counter: counter,
     };
-    console.log(payload);
     history.push({
       pathname: '/markattendance',
       state: {
@@ -822,7 +773,6 @@ const AttedanceCalender = () => {
         `${endpoints.academics.getHoliday}?holiday_id=${holidayId}&session_year=${sessionYear?.id}`
       )
       .then((res) => {
-        console.log(res, 'holiday');
         getholidayrefresh();
         handleClosePop();
       })
@@ -837,7 +787,6 @@ const AttedanceCalender = () => {
         `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
       )
       .then((res) => {
-        console.log(res, 'holiday');
         setHolidayDetails(res.data.holiday_detail);
       })
       .catch((error) => {
@@ -848,7 +797,6 @@ const AttedanceCalender = () => {
   const handleClickPop = (event, data) => {
     setAnchorEl(event.currentTarget);
     setHolidayid(data.id);
-    console.log(data, 'data');
     setHolidayData(data);
   };
 
@@ -878,7 +826,6 @@ const AttedanceCalender = () => {
       stroke: '#FFFFFF',
     },
   }))(Button);
-  const [value, setValue] = React.useState([null, null]);
 
   const handleAcademicYear = (event, value) => {
     const teacherfilterdata = JSON.parse(localStorage.getItem('teacherFilters'));
@@ -938,7 +885,6 @@ const AttedanceCalender = () => {
                   const selectedAcademicYearId = value.id;
                   setSelectedAcademicYearId(selectedAcademicYearId);
                   setSelectedBranch(value);
-                  console.log(value);
                   callApi(
                     `${endpoints.academics.grades}?session_year=${
                       selectedAcademicYear.id
@@ -1449,7 +1395,6 @@ const AttedanceCalender = () => {
             )}
           </Paper>
         </div>
-        {/* </Grid> */}
       </Grid>
       {loading && <Loader />}
     </Layout>

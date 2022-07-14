@@ -20,18 +20,13 @@ import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import '../Calendar/Styles.css';
 import { useHistory } from 'react-router';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import './AttendanceCalender.scss';
 function getDaysAfter(date, amount) {
   return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
 }
-function getDaysBefore(date, amount) {
-  return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
-}
 
 const HolidayMark = () => {
-  const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
-  const [endDate, setEndDate] = useState(getDaysAfter(moment(), 6));
   const [evnetcategoryType, setEventcategoryType] = useState([]);
   const [selectedSession, setSelectedSession] = useState([]);
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
@@ -44,7 +39,6 @@ const HolidayMark = () => {
   const [minStartDate, setMinStartDate] = useState();
   const [maxStartDate, setMaxStartDate] = useState();
   const [loading, setLoading] = useState(false);
-
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -108,8 +102,6 @@ const HolidayMark = () => {
           ? [...gradeList].filter(({ grade_id }) => grade_id !== 'all')
           : value;
       const ids = value.map((el) => el) || [];
-      const selectedId = value.map((el) => el?.grade_id) || [];
-      const branchId = selectedBranch.map((el) => el?.branch?.id) || [];
       setSelectedGrade(ids);
     }
   };
@@ -117,8 +109,6 @@ const HolidayMark = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const [startDateTechPer, endDateTechPer] = dateRangeTechPer;
-
-    console.log(moment(startDateTechPer).format('YYYY-MM-DD'), 'dates submot');
 
     if (!selectedAcademicYear) {
       setAlert('warning', 'Select Academic Year');
@@ -156,7 +146,6 @@ const HolidayMark = () => {
         .catch((error) => {
           setLoading(false);
           setAlert('error', 'something went wrong');
-          console.log(error);
         });
     } else {
       axiosInstance
@@ -179,7 +168,6 @@ const HolidayMark = () => {
         .catch((error) => {
           setLoading(false);
           setAlert('error', 'something went wrong');
-          console.log(error);
         });
     }
   };
@@ -200,15 +188,6 @@ const HolidayMark = () => {
         backButtonStatus: true,
       },
     });
-    console.log(payload, 'pay');
-  };
-
-  const styles = {
-    crossButton: {
-      display: 'flex',
-      justifyContent: 'space-between',
-      margin: 0,
-    },
   };
 
   const classes = useStyles();
@@ -231,21 +210,17 @@ const HolidayMark = () => {
       .then((result) => {
         if (result.status === 200) {
           if (key === 'academicYearList') {
-            console.log(result?.data?.data || []);
             const defaultValue = result?.data?.data?.[0];
             handleAcademicYear({}, defaultValue);
             setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
-            console.log(result?.data?.data || []);
             setBranchList(result?.data?.data?.results || []);
           }
           if (key === 'gradeList') {
-            console.log(result?.data?.data || []);
             setGradeList(result.data.data || []);
           }
           if (key === 'section') {
-            console.log(result?.data?.data || []);
             setSectionList(result.data.data);
           }
           setLoading(false);
@@ -290,11 +265,8 @@ const HolidayMark = () => {
   }, [moduleId]);
 
   useEffect(() => {
-    console.log(history, 'his');
-    const branchIds = [];
     if (history?.location?.state?.data) {
       setIsEdit(true);
-      console.log(history?.location?.state?.data?.branch?.length, 'data');
       setHolidayDesc(history?.location?.state?.data?.description);
       setHolidayName(history?.location?.state?.data?.title);
       handleGrade(history?.location?.state?.data?.grade);
@@ -353,13 +325,7 @@ const HolidayMark = () => {
     setSelectedSection([]);
     setSelectedBranch([]);
   };
-  function handleDate(v1) {
-    if (v1 && v1.length !== 0) {
-      setStartDate(moment(new Date(v1[0])).format('YYYY-MM-DD'));
-      setEndDate(moment(new Date(v1[1])).format('YYYY-MM-DD'));
-    }
-    setDateRangeTechPer(v1);
-  }
+
 
   return (
     <>

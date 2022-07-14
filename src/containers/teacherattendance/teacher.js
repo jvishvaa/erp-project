@@ -7,40 +7,28 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
 import TableRow from '@material-ui/core/TableRow';
-import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
-import Paper from '@material-ui/core/Paper';
 import Checkbox from '@material-ui/core/Checkbox';
-import IconButton from '@material-ui/core/IconButton';
-import Tooltip from '@material-ui/core/Tooltip';
-import Switch from '@material-ui/core/Switch';
-import DeleteIcon from '@material-ui/icons/Delete';
-import FilterListIcon from '@material-ui/icons/FilterList';
 import './teacherattendance.css';
 import Layout from 'containers/Layout';
 import Grid from '@material-ui/core/Grid';
-import DateFnsUtils from '@date-io/date-fns';
 import Button from '@material-ui/core/Button';
 import moment from 'moment';
 import TeacherAttendanceStatus from './teacherAttendanceStatus';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import Loader from '../../components/loader/loader';
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -53,53 +41,10 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import MomentUtils from '@date-io/moment';
 import NotifyConfirmPopUp from './notifyConfirmPopUp';
 
-
-function descendingComparator(a, b, orderBy) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
-
-function getComparator(order, orderBy) {
-  return order === 'desc'
-    ? (a, b) => descendingComparator(a, b, orderBy)
-    : (a, b) => -descendingComparator(a, b, orderBy);
-}
-
-function stableSort(array, comparator) {
-  const stabilizedThis = array.map((el, index) => [el, index]);
-  stabilizedThis.sort((a, b) => {
-    const order = comparator(a[0], b[0]);
-    if (order !== 0) return order;
-    return a[1] - b[1];
-  });
-  return stabilizedThis.map((el) => el[0]);
-}
-
-const headCells = [
-  { id: 'ERP ID', numeric: true, disablePadding: true, label: 'ERP ID' },
-  { id: 'Name', numeric: false, disablePadding: false, label: 'Name' },
-  { id: 'Designation', numeric: false, disablePadding: false, label: 'Designation' },
-  { id: 'Attendance', numeric: false, disablePadding: false, label: 'Attendance' },
-];
-
 function EnhancedTableHead(props) {
   const {
-    classes,
-    onSelectAllClick,
-    order,
-    orderBy,
-    numSelected,
-    rowCount,
     onRequestSort,
   } = props;
-  const createSortHandler = (property) => (event) => {
-    onRequestSort(event, property);
-  };
 
   return (
     <TableHead align='left' stickyHeader>
@@ -141,10 +86,6 @@ EnhancedTableHead.propTypes = {
 };
 
 const useToolbarStyles = makeStyles((theme) => ({
-  // root: {
-  //   paddingLeft: theme.spacing(2),
-  //   paddingRight: theme.spacing(1),
-  // },
   highlight:
     theme.palette.type === 'light'
       ? {
@@ -210,10 +151,8 @@ const useStyles = makeStyles((theme) => ({
   paper: {
     width: '100%',
 
-    // marginBottom: theme.spacing(2),
   },
   table: {
-    // minWidth: 750,
   },
   fontColorHeadCell: {
     color: 'black',
@@ -231,7 +170,6 @@ const useStyles = makeStyles((theme) => ({
   },
   mobileTable: {
     marginTop: '26px',
-    //  overflow:'hidden',
   },
   button: {
     background: theme.palette.primary.main ,
@@ -249,13 +187,8 @@ export default function TeacherAttendance(props) {
   const [order, setOrder] = React.useState('asc');
   const [loading, setLoading] = React.useState(false);
   const [orderBy, setOrderBy] = React.useState('');
-  const [selected, setSelected] = React.useState([]);
-  const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-  const [checked, setChecked] = React.useState(true);
   const { setAlert } = useContext(AlertNotificationContext);
-  const [selectedMultipleRoles, setSelectedMultipleRoles] = React.useState([]);
   const [roles, setRoles] = React.useState([]);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [startDate, setStartDate] = React.useState(moment().format('YYYY-MM-DD'));
@@ -266,12 +199,6 @@ export default function TeacherAttendance(props) {
   const [rolesId, setRolesId] = React.useState();
 
   const [moduleId, setModuleId] = React.useState();
-  const [branchDropdown, setBranchDropdown] = React.useState([]);
-  const [dropdownData, setDropdownData] = React.useState({
-    branch: [],
-    grade: [],
-    section: [],
-  });
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -290,16 +217,10 @@ export default function TeacherAttendance(props) {
   const [count, setCount] = useState(false);
   const [showdata, setshowdata] = useState(false);
   const [isStudentInRole, setIsStudentInRole] = useState(false)
-  const [filterData, setFilterData] = React.useState({
-    branch: '',
-    year: '',
-    grade: '',
-    section: '',
-  });
+
   const [checkedSelect, setCheckedSelect] = React.useState(false);
   const [openSelect, setOpenSelect] = React.useState(false);
   const [attendanceDialog, setAttendanceDialog] = React.useState('');
-  const [updatecount, setupdatecount] = React.useState(0)
   const [absentvalue, setAbsent] = React.useState(0)
   const [presentvalue, setPresent] = React.useState(0)
 
@@ -314,7 +235,6 @@ export default function TeacherAttendance(props) {
     setOpenSelect(false);
     setCheckedSelect(false)
   };
-
 
 
   const handleDateChange = (name, date) => {
@@ -340,7 +260,6 @@ export default function TeacherAttendance(props) {
   }, [window.location.pathname]);
 
   useEffect(() => {
-    // handleAcademicYear('', selectedAcademicYear);
     if (moduleId && selectedAcademicYear) getBranch();
   }, [moduleId, selectedAcademicYear]);
 
@@ -352,10 +271,6 @@ export default function TeacherAttendance(props) {
         if (result.data.status_code === 200) {
           let branches = result.data?.data?.results.map((item) => item.branch);
           setBranchList(branches);
-          console.log(
-            'branches',
-            result.data?.data?.results.map((item) => item.branch)
-          );
         }
       })
       .catch((error) => { });
@@ -465,7 +380,6 @@ export default function TeacherAttendance(props) {
   }
 
   const handleChangeSelectPA = (event) => {
-    console.log(event.target.value);
     setAttendanceDialog(event.target.value)
   }
 
@@ -491,17 +405,6 @@ export default function TeacherAttendance(props) {
     getRoleApi();
   }, []);
 
-  // const handleMultipleRoles = (event, value) => {
-  //   if (value?.length) {
-  //     const ids = value.map((el) => el) || [];
-  //     console.log("idofrole1", ids?.[ids.length - 1]?.id);
-  //     setRolesId(ids?.[ids.length - 1]?.id);
-  //     setSelectedMultipleRoles(ids);
-  //   } else {
-  //     setSelectedMultipleRoles([]);
-  //   }
-  // };
-
   const getTeacherData = () => {
     setData([]);
     if (!selectedBranchIds || !selectedGradeIds || !rolesId || sectionId.length == 0) {
@@ -514,7 +417,6 @@ export default function TeacherAttendance(props) {
           `${endpoints.academics.teacherAttendanceData}?branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&session_year=${selectedAcademicYear?.id}&roles=${rolesId}&date=${startDate}`
         )
         .then((result) => {
-          console.log(result);
           if (result.status === 200) {
             setData(result?.data?.attendance_data);
             setRecordsData(result?.data?.aggregate_counts)
@@ -523,7 +425,6 @@ export default function TeacherAttendance(props) {
           }
         })
         .catch((error) => {
-          console.log(error);
           setLoading(false);
           setshowdata(false);
         });
@@ -583,7 +484,6 @@ export default function TeacherAttendance(props) {
     axiosInstance
       .post(`${endpoints.academics.markAllAttendance}`, payload)
       .then((result) => {
-        console.log(result);
         getTeacherData()
         handleCloseSelect()
         setAttendanceDialog('')
@@ -591,9 +491,6 @@ export default function TeacherAttendance(props) {
       .catch((error) => { });
   }
 
-  const handleChange = (event) => {
-    setChecked(event.target.checked);
-  };
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -612,19 +509,6 @@ export default function TeacherAttendance(props) {
       setIsStudentInRole(false)
     }
   };
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  };
-
-  const isSelected = (name) => selected.indexOf(name) !== -1;
-
-  const emptyRows = rowsPerPage - Math.min(rowsPerPage, data.length - page * rowsPerPage);
 
   const handleNotifyPopUp = (val) => {
     if (startDate !== moment().format('YYYY-MM-DD')) {
