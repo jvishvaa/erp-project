@@ -508,9 +508,9 @@ const OfflineStudentAssessment = () => {
                         <Grid sm={2} xs={6}>
                             <StyledButton style={{ width: '90%' }} onClick={offlineMarks} >Filter</StyledButton>
                         </Grid>
-                        {/* <Grid sm={2} xs={6}>
+                        <Grid sm={2} xs={6}>
                             <StyledButton style={{ width: '80%' }} onClick={uploadOMR} >Upload OMR</StyledButton>
-                        </Grid> */}
+                        </Grid>
                     </div>
                     <Paper className={`${classes.root} common-table`} id='singleStudent'>
                         <div className="searchArea" >

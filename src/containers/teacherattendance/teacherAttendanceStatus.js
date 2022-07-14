@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -17,18 +17,30 @@ export default function TeacherAttendanceStatus(props) {
   const qa = 'qa.olvorchidnaigaon.letseduvate.com'
   const prod = 'orchids.letseduvate.com'
 
+  // useEffect(() => {
+  //   props.getReportData()
+  // }, [])
+
   const handleChange = (event) => {
+    console.log(event, "debugevent", props)
+    console.log("abcd", props.index, attendance, props.data)
+    let Newdata = { ...props.data[props.index], attendence_status: event.target.value };
+    let NN = props.data.splice(props.index, 1, Newdata)
+
     var body = {
       erp_user: props?.user_id,
       attendence_status: event.target.value,
       date: props?.start_date,
     };
     setAttendance(event.target.value);
-
+    // props.setCount(attendance);
+    // props.setCount((prev) => !prev);
     axiosInstance
       .post(`${endpoints.academics.teacherAttendanceSent}`, body)
       .then((result) => {
         console.log(result, 'abcd');
+        props.getReportData()
+        props.setData(NN)
 
       })
       .catch((error) => {

@@ -230,12 +230,17 @@ export default function TeacherAttendance(props) {
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
   const [selectedSectionIds, setSelectedSectionIds] = useState([]);
+  const [selectedallsecctionmappingId, setSelectedallsecctionmappingId] = useState([]);
+  const [count, setCount] = useState(false);
   const [showdata, setshowdata] = useState(false);
   const [isStudentInRole, setIsStudentInRole] = useState(false)
 
   const [checkedSelect, setCheckedSelect] = React.useState(false);
   const [openSelect, setOpenSelect] = React.useState(false);
   const [attendanceDialog, setAttendanceDialog] = React.useState('');
+  const [updatecount, setupdatecount] = React.useState(0)
+  const [absentvalue, setAbsent] = React.useState(0)
+  const [presentvalue, setPresent] = React.useState(0)
 
 
 
@@ -295,7 +300,6 @@ export default function TeacherAttendance(props) {
 
   const handleBranch = (event, value) => {
     if (value) {
-      console.log('selected branch', value);
       setGradeList([]);
       setSelectedGrade([]);
       setSelectedGradeIds('');
@@ -356,11 +360,12 @@ export default function TeacherAttendance(props) {
           : value;
       let sectionId = [];
       sectionId = value.map((item) => item.id)
-      console.log(sectionId);
       setSectionId(sectionId);
       const selectedsecctionId = value.map((element) => element?.section_id)
+      const selectedsecctionmappingId = value.map((element) => element?.id)
       setSelectedSection(value);
       setSelectedSectionIds(selectedsecctionId);
+      setSelectedallsecctionmappingId(selectedsecctionmappingId);
     } else {
       setSectionId([]);
       setSelectedSection([]);
@@ -426,7 +431,6 @@ export default function TeacherAttendance(props) {
   const getTeacherData = () => {
     setData([]);
     if (!selectedBranchIds || !selectedGradeIds || !rolesId || sectionId.length == 0) {
-      console.log('jj', selectedBranchIds, selectedGradeIds);
       setAlert('warning', 'Please select all required fields');
       return false;
     } else {
@@ -452,12 +456,50 @@ export default function TeacherAttendance(props) {
     }
   };
 
+
+  const getReportData = () => {
+    const result = axiosInstance
+      .get(
+        `${endpoints.academics.dataupdate}?date=${startDate}&roles=${rolesId}&section_mapping_id=${selectedallsecctionmappingId}`
+      )
+      .then((result) => {
+        if (result.status === 200) {
+          let present
+          let absent
+          let flag1 = 0;
+          let flag2 = 0;
+
+          let a = result?.data?.result?.map((item) => {
+            if (item.attendence_status === "present") {
+              present = item.count;
+              flag1 = 1
+            } else {
+              absent = item.count;
+              flag2 = 1;
+            }
+          })
+          if (!flag1) {
+            present = 0;
+          } else if (!flag2) {
+            absent = 0;
+          }
+          setAbsent(absent)
+          setPresent(present)
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
+  useEffect(() => {
+    getReportData()
+  }, [data, count])
+
   const handleMark = () => {
     setLoading(true)
     let arrSec = [];
     arrSec.push(sectionId.map((ele) => ele))
-    console.log((arrSec[0].toString()));
-    console.log(JSON.stringify(sectionId));
     const payload = {
       section_mapping_id: arrSec[0].toString(),
       role: rolesId,
@@ -641,8 +683,8 @@ export default function TeacherAttendance(props) {
           </Grid>
        
           {data?.length > 0 ?
-            <Grid xs={9}  container spacing={1} justifyContent="flex-end">
-              <div style={{ display: 'flex', alignItems: 'center',marginRight : '-22px' }} >
+            <Grid xs={9} container spacing={1} justifyContent="flex-end">
+              <div style={{ display: 'flex', alignItems: 'center', marginRight: '-22px' }} >
                 <Checkbox
                   checked={checkedSelect}
                   onChange={handleChangeSelect}
@@ -703,6 +745,11 @@ export default function TeacherAttendance(props) {
                               start_date={startDate}
                               attendence_status={value?.attendence_status}
                               isStudentInRole={isStudentInRole}
+                              getReportData={getReportData}
+                              setCount={setCount}
+                              index={i}
+                              setDate={setData}
+                              data={data}
                             />
                           </TableCell>
                         </TableRow>
@@ -722,8 +769,8 @@ export default function TeacherAttendance(props) {
         </div>
       </Grid>
       {showdata ?
-        <Grid container spacing={1} style={{ padding: '25px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          {recordsData?.total ? <h3>Total Present : {recordsData?.present || 0} &nbsp; Total Absent : {recordsData?.absent || 0}  &nbsp; Total Marked : {recordsData?.marked} &nbsp; Total Unmarked : {recordsData?.unmarked} &nbsp; Total: {recordsData?.total}</h3> : null}
+        <Grid container spacing={1} style={{ padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'sticky', bottom: '0px', backgroundColor: 'lightgray', width: '97%', marginLeft: 20 }}>
+          {recordsData?.total ? <h3>Total Present : {presentvalue || 0} &nbsp; Total Absent : {absentvalue || 0}  &nbsp; Total Marked : {absentvalue + presentvalue} &nbsp; Total Unmarked : {recordsData?.total - (absentvalue + presentvalue)} &nbsp; Total: {recordsData?.total}</h3> : null}
           {isStudentInRole && (recordsData?.total ? true : false) && (window.location.host == local || window.location.host == dev || window.location.host == qa || window.location.host == prod) &&
             <Grid item md={2} xs={12} style={{ marginLeft: 15 }}>
               <Button onClick={() => { handleNotifyPopUp(true) }} variant='contained' color='primary'>
