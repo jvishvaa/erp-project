@@ -87,8 +87,7 @@ const HolidayMark = () => {
         'gradeList'
       );
     }
-    if (value?.length === 0) {
-      console.log('no branch');
+    if (value?.length === 0) {      
       setSelectedGrade([]);
       setGradeList([]);
     }
@@ -300,36 +299,28 @@ const HolidayMark = () => {
 
   const isEdited = history?.location?.state?.isEdit;
 
-  useEffect(()=>{
-    if(isEdited && branchList.length > 0){
+  useEffect(() => {
+    if (isEdited && branchList.length > 0) {
       gradeEdit();
     }
-   
-  },[isEdited, branchList])
+  }, [isEdited, branchList]);
 
-  const gradeEdit = () =>{
+  const gradeEdit = () => {
     const acadId = history?.location?.state?.acadId;
     
-      console.log("aaa1",acadId)
-      let filterBranch = branchList.filter(
-        (item) => acadId.indexOf(item.id) !== -1
-      );
-      setSelectedBranch(filterBranch) 
-     
-      
-      const allBranchIds = filterBranch.map((i)=>{
-        
-        return i.branch.id
-      })
+    let filterBranch = branchList.filter((item) => acadId.indexOf(item.id) !== -1);
+    setSelectedBranch(filterBranch);
+
+    const allBranchIds = filterBranch.map((i) => {
+      return i.branch.id;
+    });
     callApi(
       `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${allBranchIds}&module_id=${moduleId}`,
       'gradeList'
     );
     const gradeId = history?.location?.state?.gradeId;
-    let filterGrade = gradeList.filter(
-      (item) => gradeId.indexOf(item.id) !== -1
-    );  
-  }
+    let filterGrade = gradeList.filter((item) => gradeId.indexOf(item.id) !== -1);
+  };
 
   useEffect(() => {
     if (history?.location?.state?.data?.grade?.length) {
@@ -358,7 +349,6 @@ const HolidayMark = () => {
     setSelectedSection([]);
     setSelectedBranch([]);
   };
-
 
   return (
     <>
@@ -435,8 +425,7 @@ const HolidayMark = () => {
                   maxDate={maxStartDate ? new Date(maxStartDate) : undefined}
                   startText='Select-date-range'
                   value={dateRangeTechPer}
-                  onChange={(newValue) => {
-                    console.log(newValue, 'new');
+                  onChange={(newValue) => {                  
                     setDateRangeTechPer(newValue);
                   }}
                   renderInput={({ inputProps, ...startProps }, endProps) => {

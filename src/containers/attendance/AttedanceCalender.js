@@ -117,7 +117,6 @@ const AttedanceCalender = () => {
   let userName = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
   let studentDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
 
-
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -724,7 +723,7 @@ const AttedanceCalender = () => {
       pathname: '/holidaymarking',
       state: {
         payload: payload,
-        isEdit : false
+        isEdit: false,
       },
     });
   };
@@ -764,9 +763,9 @@ const AttedanceCalender = () => {
       state: {
         data: holidayData,
         payload: payload,
-        acadId : e.acad_session, 
-        gradeId : e.grade,
-        isEdit : true
+        acadId: e.acad_session,
+        gradeId: e.grade,
+        isEdit: true,
       },
     });
   };
@@ -983,13 +982,13 @@ const AttedanceCalender = () => {
               )}
             />
           </Grid>
-          <Grid item md={3} xs={12} style={{display:"flex"}}>
+          <Grid item md={3} xs={12} style={{ display: 'flex' }}>
             {teacherView === true ? (
               <StyledClearButton
                 variant='contained'
                 startIcon={<ClearIcon />}
                 onClick={handleClearAll}
-                style={{width:"100%"}}
+                style={{ width: '100%' }}
               >
                 Clear all
               </StyledClearButton>
@@ -1095,7 +1094,6 @@ const AttedanceCalender = () => {
               <></>
             )}
           </Grid>
-          
         </div>
         <div className='attendenceWhole' hidden='true'>
           <div className='startDate'> From {moment(startDate).format('DD-MM-YYYY')}</div>
@@ -1319,14 +1317,18 @@ const AttedanceCalender = () => {
 
                                   <Typography
                                     className='eventNameData'
-                                    style={{ fontSize: '15px', width: '180px', overflow:"hidden", whiteSpace:"nowrap", textOverflow:"ellipsis" }}
+                                    style={{
+                                      fontSize: '15px',
+                                      width: '180px',
+                                      overflow: 'hidden',
+                                      whiteSpace: 'nowrap',
+                                      textOverflow: 'ellipsis',
+                                    }}
                                   >
                                     {' '}
                                     {data.title}{' '}
                                   </Typography>
                                 </div>
-
-                               
                               </div>
                               <>
                                 {teacherView ? (
