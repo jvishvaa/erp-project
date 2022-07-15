@@ -430,30 +430,33 @@ const AttedanceCalender = () => {
   const getToday = () => {
     var date = new Date();
     var formatDate = moment(date).format('YYYY-MM-DD');
-    axiosInstance
-      .get(`academic/student_attendance_between_date_range/`, {
-        params: {
-          start_date: formatDate,
-          end_date: formatDate,
-          branch_id: selectedBranch.branch.id,
-          grade_id: selectedGrade.grade_id,
+    console.log(formatDate, 'format date');
+    // axiosInstance
+    //   .get(`academic/student_attendance_between_date_range/`, {
+    //     params: {
+    //       start_date: formatDate,
+    //       end_date: formatDate,
+    //       branch_id: selectedBranch.branch.id,
+    //       grade_id: selectedGrade.grade_id,
 
-          section_id: selectedSection.section_id,
-          academic_year: selectedAcademicYear.id,
-        },
-      })
-      .then((res) => {
-        setLoading(false);
-        setStudentDataAll(res.data);
-        let temp = [...res.data.present_list, ...res.data.absent_list];
-        setStudentData(temp);
-        setAlert('success', 'Data Sucessfully Fetched');
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', 'no attendance');
-        setStudentDataAll(null);
-      });
+    //       section_id: selectedSection.section_id,
+    //       academic_year: selectedAcademicYear.id,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     console.log(res, 'qa calender');
+    //     setLoading(false);
+    //     setStudentDataAll(res.data);
+    //     let temp = [...res.data.present_list, ...res.data.absent_list];
+    //     setStudentData(temp);
+    //     setAlert('success', 'Data Sucessfully Fetched');
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //     setAlert('error', 'no attendance');
+    //     setStudentDataAll(null);
+    //     console.log(error);
+    //   });
 
     axiosInstance
       .get(
@@ -507,7 +510,7 @@ const AttedanceCalender = () => {
       setAlert('warning', 'Select Section');
       return;
     }
-    setLoading(true);
+    // setLoading(true);
     if (counter === 2) {
       axiosInstance
         .get(
@@ -525,30 +528,35 @@ const AttedanceCalender = () => {
       getToday();
     }
     if (counter === 3) {
-      axiosInstance
-        .get(`academic/student_attendance_between_date_range/`, {
-          params: {
-            start_date: startDate,
-            end_date: endDate,
-            branch_id: selectedBranch.branch.id,
-            grade_id: selectedGrade.grade_id,
-            section_id: selectedSection.section_id,
-            academic_year: selectedAcademicYear.id,
-          },
-        })
-        .then((res) => {
-          setLoading(false);
-          setStudentDataAll(res.data);
-          let temp = [...res.data.present_list, ...res.data.absent_list];
-          setStudentData(temp);
-          setAlert('success', 'Data Sucessfully Fetched');
-        })
-        .catch((error) => {
-          setLoading(false);
-          setAlert('error', 'no attendance');
-          setStudentDataAll(null);
-        });
+      // axiosInstance
+      //   .get(`academic/student_attendance_between_date_range/`, {
+      //     params: {
+      //       start_date: startDate,
+      //       end_date: endDate,
+      //       branch_id: selectedBranch.branch.id,
+      //       grade_id: selectedGrade.grade_id,
+      //       // grade_id: 2,
 
+      //       section_id: selectedSection.section_id,
+      //       // section_id: 2,
+      //       academic_year: selectedAcademicYear.id,
+      //     },
+      //   })
+      //   .then((res) => {
+      //     setLoading(false);
+      //     console.log(res, 'respond teacher');
+      //     setStudentDataAll(res.data);
+      //     let temp = [...res.data.present_list, ...res.data.absent_list];
+      //     setStudentData(temp);
+      //     setAlert('success', 'Data Sucessfully Fetched');
+      //   })
+      //   .catch((error) => {
+      //     setLoading(false);
+      //     setAlert('error', 'no attendance');
+      //     setStudentDataAll(null);
+      //     console.log(error);
+      //   });
+      // }
       axiosInstance
         .get(
           `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
