@@ -573,27 +573,27 @@ const AttedanceCalender = () => {
   const getTodayStudent = () => {
     var date = new Date();
     var formatDate = moment(date).format('YYYY-MM-DD');
-    axiosInstance
-      .get(`academic/single_student_calender/`, {
-        params: {
-          start_date: formatDate,
-          erp_id: userName,
-          session_year: sessionYear?.id,
-        },
-      })
-      .then((res) => {
-        setLoading(false);
-        setCurrentEvent(res.data.events);
-        setStudentDataAll(res.data);
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', 'no attendance');
-        setStudentDataAll(null);
-      });
+    // axiosInstance
+    //   .get(`academic/single_student_calender/`, {
+    //     params: {
+    //       start_date: formatDate,
+    //       erp_id: userName,
+    //       session_year: sessionYear?.id,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     setLoading(false);
+    //     setCurrentEvent(res.data.events);
+    //     setStudentDataAll(res.data);
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //     setAlert('error', 'no attendance');
+    //     setStudentDataAll(null);
+    //   });
     axiosInstance
       .get(
-        `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
+        `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
       )
       .then((res) => {
         setHolidayDetails(res.data.holiday_detail);
@@ -605,22 +605,22 @@ const AttedanceCalender = () => {
 
   const getStudentRange = () => {
     if (counter === 2) {
-      axiosInstance
-        .get(
-          `academic/student_calender/?start_date=${startDate}&end_date=${endDate}&erp_id=${userName}&session_year=${sessionYear?.id}`
-        )
-        .then((res) => {
-          setLoading(false);
-          setStudentDataAll(res.data);
-          let temp = [...res.data.present_list, ...res.data.absent_list];
-          setStudentData(temp);
-          setAlert('success', 'Data Sucessfully Fetched');
-        })
-        .catch((error) => {
-          setLoading(false);
-          setAlert('error', 'no attendance');
-          setStudentDataAll(null);
-        });
+      // axiosInstance
+      //   .get(
+      //     `academic/student_calender/?start_date=${startDate}&end_date=${endDate}&erp_id=${userName}&session_year=${sessionYear?.id}`
+      //   )
+      //   .then((res) => {
+      //     setLoading(false);
+      //     setStudentDataAll(res.data);
+      //     let temp = [...res.data.present_list, ...res.data.absent_list];
+      //     setStudentData(temp);
+      //     setAlert('success', 'Data Sucessfully Fetched');
+      //   })
+      //   .catch((error) => {
+      //     setLoading(false);
+      //     setAlert('error', 'no attendance');
+      //     setStudentDataAll(null);
+      //   });
 
       let branchIds = studentDetails?.role_details?.branch?.map((branch) => [branch.id]);
       let gradesId = studentDetails?.role_details?.grades?.map((grade) => [
@@ -629,7 +629,7 @@ const AttedanceCalender = () => {
 
       axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${gradesId}`
+          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${startDate}&end_date=${endDate}&grade=${gradesId}`
         )
         .then((res) => {
           console.log(res, 'holiday');
@@ -643,30 +643,30 @@ const AttedanceCalender = () => {
       getTodayStudent();
     }
     if (counter === 3) {
-      axiosInstance
-        .get(`academic/student_calender/`, {
-          params: {
-            start_date: startDate,
-            end_date: endDate,
-            erp_id: userName,
-            session_year: sessionYear?.id,
-          },
-        })
-        .then((res) => {
-          setLoading(false);
-          setStudentDataAll(res.data);
-          let temp = [...res.data.present_list, ...res.data.absent_list];
-          setStudentData(temp);
-          setAlert('success', 'Data Sucessfully Fetched');
-        })
-        .catch((error) => {
-          setLoading(false);
-          setAlert('error', 'no attendance');
-          setStudentDataAll(null);
-        });
+      // axiosInstance
+      //   .get(`academic/student_calender/`, {
+      //     params: {
+      //       start_date: startDate,
+      //       end_date: endDate,
+      //       erp_id: userName,
+      //       session_year: sessionYear?.id,
+      //     },
+      //   })
+      //   .then((res) => {
+      //     setLoading(false);
+      //     setStudentDataAll(res.data);
+      //     let temp = [...res.data.present_list, ...res.data.absent_list];
+      //     setStudentData(temp);
+      //     setAlert('success', 'Data Sucessfully Fetched');
+      //   })
+      //   .catch((error) => {
+      //     setLoading(false);
+      //     setAlert('error', 'no attendance');
+      //     setStudentDataAll(null);
+      //   });
       axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
+          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${startDate}&end_date=${endDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
         )
         .then((res) => {
           setHolidayDetails(res.data.holiday_detail);
@@ -898,8 +898,7 @@ const AttedanceCalender = () => {
                   setSelectedAcademicYearId(selectedAcademicYearId);
                   setSelectedBranch(value);
                   callApi(
-                    `${endpoints.academics.grades}?session_year=${
-                      selectedAcademicYear.id
+                    `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id
                     }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
                     'gradeList'
                   );
@@ -1018,7 +1017,17 @@ const AttedanceCalender = () => {
           </Grid>
         </Grid>
       ) : (
-        <div></div>
+        <div>
+          <StyledFilterButton
+            variant='contained'
+            startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+            className={classes.filterButton}
+            onClick={selectModule}
+            style={{marginLeft: '5%'}}
+          >
+            filter
+          </StyledFilterButton>
+        </div>
       )}
       <Grid
         container
