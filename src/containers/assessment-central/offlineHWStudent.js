@@ -212,6 +212,9 @@ const OfflineStudentAssessment = () => {
     const [checkFilter, setCheckFilter] = useState(false);
     const [quesList, setQuesList] = useState([])
     const [loading, setLoading] = useState(false);
+    const [branchOMR, setBranchOMR] = useState([]);
+    const [ displayOMR , setDisplayOMR ] = useState(false)
+    const [ uploadBranchOMR , setUploadBranchOMR ] = useState('')
 
 
 
@@ -232,15 +235,48 @@ const OfflineStudentAssessment = () => {
             });
         }
         console.log(filterData);
+        checkOMR();
     }, []);
+    const checkOMR = () => {
+        axiosInstance
+            .get(`${endpoints?.academics?.checkOMR}`)
+            .then((result) => {
+                console.log(result);
+                setBranchOMR(result?.data?.result)
+                // enableOMR(result?.data?.result)
+        })
+            .catch((error) => {
+                console.log('');
+            });
+    }
 
     useEffect(() => {
         if (history?.location?.state?.data?.branch?.length > 0) {
             setBranchList(history?.location?.state?.data?.branch)
             setGradeList(history?.location?.state?.data?.grade)
             handleGrade(history?.location?.state?.data?.grade)
+            // enableOMR();
         }
     }, [moduleId])
+
+    useEffect(()=> {
+        enableOMR()
+    },[branchOMR])
+    let filterBranch = '';
+    const enableOMR = () => {
+        filterBranch = branchList.filter((item) => {
+            return  !branchOMR.includes(item?.id.toString())
+        });
+        setUploadBranchOMR(filterBranch)
+        // setDisplayOMR(filterBranch?.length > 0 ? true : false )  
+        console.log(filterBranch);  
+        console.log(branchList);
+        console.log(branchOMR);
+    }
+
+    useEffect(() => {
+        setDisplayOMR(uploadBranchOMR?.length > 0 ? false : true )  
+    },[uploadBranchOMR])
 
     useEffect(() => {
         // getUserList();
@@ -508,9 +544,11 @@ const OfflineStudentAssessment = () => {
                         <Grid sm={2} xs={6}>
                             <StyledButton style={{ width: '90%' }} onClick={offlineMarks} >Filter</StyledButton>
                         </Grid>
+                        {displayOMR ? 
                         <Grid sm={2} xs={6}>
                             <StyledButton style={{ width: '80%' }} onClick={uploadOMR} >Upload OMR</StyledButton>
                         </Grid>
+                        : '' }
                     </div>
                     <Paper className={`${classes.root} common-table`} id='singleStudent'>
                         <div className="searchArea" >
