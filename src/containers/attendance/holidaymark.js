@@ -298,6 +298,39 @@ const HolidayMark = () => {
     }
   }, [branchList]);
 
+  const isEdited = history?.location?.state?.isEdit;
+
+  useEffect(()=>{
+    if(isEdited && branchList.length > 0){
+      gradeEdit();
+    }
+   
+  },[isEdited, branchList])
+
+  const gradeEdit = () =>{
+    const acadId = history?.location?.state?.acadId;
+    
+      console.log("aaa1",acadId)
+      let filterBranch = branchList.filter(
+        (item) => acadId.indexOf(item.id) !== -1
+      );
+      setSelectedBranch(filterBranch) 
+     
+      
+      const allBranchIds = filterBranch.map((i)=>{
+        
+        return i.branch.id
+      })
+    callApi(
+      `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${allBranchIds}&module_id=${moduleId}`,
+      'gradeList'
+    );
+    const gradeId = history?.location?.state?.gradeId;
+    let filterGrade = gradeList.filter(
+      (item) => gradeId.indexOf(item.id) !== -1
+    );  
+  }
+
   useEffect(() => {
     if (history?.location?.state?.data?.grade?.length) {
       const ids = history?.location?.state?.data?.grade.map((el, index) => el);
