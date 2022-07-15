@@ -5,15 +5,12 @@ import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import './calender.scss';
 import { addDays } from 'date-fns';
-import DateRangeSelector from '../../components/date-range-selector/index';
-import axiosInstance from '../../config/axios';
 import moment from 'moment';
 
 let myFutureDate;
 let postSeven;
 
 const RangeCalender = (props) => {
-  // let date = new Date();
   const [state, setState] = useState([
     { endDate: props.endDate || new Date(), startDate: addDays(new Date(), -6), key: 'selection' },
   ]);
@@ -26,7 +23,6 @@ const RangeCalender = (props) => {
   ]);
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
-  const [student, setStudent] = useState([]);
 
 
 
@@ -39,18 +35,7 @@ const RangeCalender = (props) => {
     if (props.counter === 2) {
       setStartDate(moment(state[0].startDate).format('YYYY-MM-DD'));
     }
-    // autoEndDate();
-    // setState(endDate : postSeven.setDate(postSeven).getDate()+7);
-    // setEndDate((moment(state[0].endDate).format("YYYY-MM-DD")));
   }, [state, stateMonthly]);
-
-  const autoEndDate = () => {
-    if (props.counter == 3) {
-      if (state[0].endDate === state[0].startDate || state[0].endDate === null) {
-        console.log(JSON.stringify(state), 'hittttt');
-      }
-    }
-  };
 
   useEffect(() => {
     getfuture();
@@ -135,9 +120,7 @@ const RangeCalender = (props) => {
         <div className='weeklyCalendar'>
           <DateRangePicker
             onChange={(item) => handleDateRange(item)}
-            //showSelectionPreview={true}
             moveRangeOnFirstSelection={false}
-            //months={1}
             ranges={state}
             direction='horizontal'
           />
@@ -146,7 +129,6 @@ const RangeCalender = (props) => {
         <DateRange
           editableDateInputs={true}
           onChange={(item) => setStateMonthly([item.selection])}
-          // onchange= {(item) => getAttendance(item)}
           moveRangeOnFirstSelection={true}
           ranges={stateMonthly}
         />

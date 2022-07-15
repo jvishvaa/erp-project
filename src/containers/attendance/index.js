@@ -2,7 +2,6 @@
 /* eslint-disable no-nested-ternary */
 import React, { useContext, useEffect, useState } from 'react';
 import {
-  CircularProgress,
   Grid,
   Table,
   TableBody,
@@ -17,21 +16,16 @@ import {
   Checkbox,
   Switch,
   SvgIcon,
-  makeStyles
 } from '@material-ui/core';
 import moment from 'moment';
 import {
   MuiPickersUtilsProvider,
-  KeyboardTimePicker,
   KeyboardDatePicker,
 } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
-import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { useHistory, useParams, useLocation } from 'react-router-dom';
-// import './attendee-list.scss';
 import { Pagination } from '@material-ui/lab';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
-import ShuffleIcon from '@material-ui/icons/Shuffle';
 import RemoveCircleIcon from '@material-ui/icons/RemoveCircle';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
@@ -40,23 +34,16 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import { useSelector } from 'react-redux';
 import Layout from '../Layout';
 import ShuffleModal from './shuffle-modal';
-import { result } from 'lodash';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
 import './attendance.scss'
 import APIREQUEST from "../../config/apiRequest";
 
-const useStyles = makeStyles((theme) => ({
- 
-}));
 
 
 const AttendeeListRemake = (props) => {
-  const classes = useStyles();
-
   const history = useHistory();
   const location = useLocation();
-  //const { attendDate } = history.location.state
   const { id } = useParams();
   const attendanceDate = useSelector((state) => state.attendanceReducers.attendance);
   const [totalPages, setTotalPages] = useState(0);
@@ -70,7 +57,6 @@ const AttendeeListRemake = (props) => {
   const [isHidden, setIsHidden] = useState(window.innerWidth < 600);
   const [dateValue, setDateValue] = useState(moment(attendanceDate? attendanceDate : new Date()).format('YYYY-MM-DD'));
   const [openShuffleModal, setOpenShuffleModal] = useState(false);
-  const pageSize = 10;
   const [excelDate, setExcelDate] = useState('')
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -108,9 +94,6 @@ const AttendeeListRemake = (props) => {
       })
   };
 
-  //   useEffect(() => {
-  //     getAttendeeList();
-  //   }, [currentPage]);
   
   useEffect(() => {
     getAttendeeList(dateValue)
@@ -144,7 +127,6 @@ const AttendeeListRemake = (props) => {
 
   const handleCheck = (index, checked, student) => {
     setIsUpdating(true);
-    // checked= !checked
     const { match } = props;
     try {
       if(JSON.parse(localStorage.getItem('isMsAPI')) && props.location.state.historicalData === false){
@@ -177,28 +159,8 @@ const AttendeeListRemake = (props) => {
     }
   };
 
-  // const handleExcelDownload = () => {
-  //   const { data } = axiosInstance.get(`${endpoints.attendanceList.list}?zoom_meeting_id=${id}&class_date=${excelDate}&type=excel&page_number=1&page_size=10`, {
-  //     responseType: 'arraybuffer',
-  //   })
-  //   const blob = new Blob([data],
-  //   {
-  //   type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  //   });
-  //   const link = document.createElement('a');
-  //   link.href = window.URL.createObjectURL(blob);
-  //   // link.download = 'aol_attendance_report.xlsx';
-  //   link.click();
-  //   link.remove();
-  // }
-
-
-  // if(isEdit){
-  //  const attendee = attendeeList.map((el,i)=>({[el.user.user.id]:{isChecked: true}}))
-  // }
 
   const handleExcelDownload = async () => {
-    const { match } = props;
     try {
       const { data } = JSON.parse(localStorage.getItem('isMsAPI')) && props.location.state.historicalData === false  ? await APIREQUEST('get',`/oncls/v1/oncls-attendeelist/?zoom_meeting_id=${id}&class_date=${excelDate}&type=excel&page_number=1&page_size=10`, null, "arraybuffer" ) : 
       await axiosInstance.get(
@@ -235,10 +197,6 @@ const AttendeeListRemake = (props) => {
     getAttendeeList(value);
   }
 
-  const handleShuffle = () => {
-    setOpenShuffleModal(true);
-  }
-
   const handleGoBack = () => {
     history.goBack()
   }
@@ -255,7 +213,6 @@ const AttendeeListRemake = (props) => {
             <MuiPickersUtilsProvider utils={MomentUtils}>
               <KeyboardDatePicker
                 size='small'
-                // disableToolbar
                 variant='dialog'
                 format='YYYY-MM-DD'
                 margin='none'
@@ -367,9 +324,6 @@ const AttendeeListRemake = (props) => {
                 component={() => (
                   <img
                     style={
-                      // isMobile
-                      //   ? { height: '100px', width: '200px' }
-                        // :
                          { height: '160px', width: '290px' }
                     }
                     src={unfiltered}
@@ -380,9 +334,6 @@ const AttendeeListRemake = (props) => {
                 component={() => (
                   <img
                     style={
-                      // isMobile
-                      //   ? { height: '20px', width: '250px' }
-                      //   : 
                         { height: '50px', width: '400px', marginLeft: '5%' }
                     }
                     src={selectfilter}
