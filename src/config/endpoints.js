@@ -51,6 +51,7 @@ export default {
     notifyAttendance: '/erp_user/sms-notifying-students/',
     markAllAttendance: '/erp_user/mark-attendance-of-all-students/',
     dataupdate: '/erp_user/present_absent',
+    checkOMR : '/assessment/check-sys-config/?config_key=enable_omr_uploads_branches',
 
   },
   appBar: {
