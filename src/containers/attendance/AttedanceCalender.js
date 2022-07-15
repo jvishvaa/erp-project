@@ -573,6 +573,11 @@ const AttedanceCalender = () => {
   const getTodayStudent = () => {
     var date = new Date();
     var formatDate = moment(date).format('YYYY-MM-DD');
+    let branchIds = branchList?.map((branch) => [branch.id]);
+    let gradesId = studentDetails?.role_details?.grades?.map((grade) => [
+      grade?.grade_id,
+    ]);
+    setLoading(true)
     // axiosInstance
     //   .get(`academic/single_student_calender/`, {
     //     params: {
@@ -593,10 +598,11 @@ const AttedanceCalender = () => {
     //   });
     axiosInstance
       .get(
-        `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
+        `${endpoints.academics.getHoliday}?session_year=${branchIds}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
       )
       .then((res) => {
         setHolidayDetails(res.data.holiday_detail);
+      setLoading(false)
       })
       .catch((error) => {
         console.log(error, 'err');
@@ -621,19 +627,20 @@ const AttedanceCalender = () => {
       //     setAlert('error', 'no attendance');
       //     setStudentDataAll(null);
       //   });
-
-      let branchIds = studentDetails?.role_details?.branch?.map((branch) => [branch.id]);
+      setLoading(true)
+      let branchIds = branchList?.map((branch) => [branch.id]);
       let gradesId = studentDetails?.role_details?.grades?.map((grade) => [
         grade?.grade_id,
       ]);
 
       axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${startDate}&end_date=${endDate}&grade=${gradesId}`
+          `${endpoints.academics.getHoliday}?session_year=${branchIds}&start_date=${startDate}&end_date=${endDate}&grade=${gradesId}`
         )
         .then((res) => {
           console.log(res, 'holiday');
           setHolidayDetails(res.data.holiday_detail);
+          setLoading(false)
         })
         .catch((error) => {
           console.log(error, 'err');
@@ -643,6 +650,7 @@ const AttedanceCalender = () => {
       getTodayStudent();
     }
     if (counter === 3) {
+      setLoading(true)
       // axiosInstance
       //   .get(`academic/student_calender/`, {
       //     params: {
@@ -664,12 +672,16 @@ const AttedanceCalender = () => {
       //     setAlert('error', 'no attendance');
       //     setStudentDataAll(null);
       //   });
+      console.log(branchList);
+      let branchIds = branchList?.map((branch) => [branch?.id]);
+
       axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYear?.id}&start_date=${startDate}&end_date=${endDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
+          `${endpoints.academics.getHoliday}?session_year=${branchIds}&start_date=${startDate}&end_date=${endDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
         )
         .then((res) => {
           setHolidayDetails(res.data.holiday_detail);
+          setLoading(false)
         })
         .catch((error) => {
           console.log(error, 'err');
