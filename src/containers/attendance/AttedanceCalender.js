@@ -117,7 +117,6 @@ const AttedanceCalender = () => {
   let userName = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
   let studentDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
 
-
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -724,6 +723,7 @@ const AttedanceCalender = () => {
       pathname: '/holidaymarking',
       state: {
         payload: payload,
+        isEdit: false,
       },
     });
   };
@@ -763,6 +763,9 @@ const AttedanceCalender = () => {
       state: {
         data: holidayData,
         payload: payload,
+        acadId: e.acad_session,
+        gradeId: e.grade,
+        isEdit: true,
       },
     });
   };
@@ -979,7 +982,29 @@ const AttedanceCalender = () => {
               )}
             />
           </Grid>
-          <Grid item md={11} xs={12}>
+          <Grid item md={3} xs={12} style={{ display: 'flex' }}>
+            {teacherView === true ? (
+              <StyledClearButton
+                variant='contained'
+                startIcon={<ClearIcon />}
+                onClick={handleClearAll}
+                style={{ width: '100%' }}
+              >
+                Clear all
+              </StyledClearButton>
+            ) : (
+              <></>
+            )}
+            <StyledFilterButton
+              variant='contained'
+              startIcon={<FilterFilledIcon className={classes.filterIcon} />}
+              className={classes.filterButton}
+              onClick={selectModule}
+            >
+              filter
+            </StyledFilterButton>
+          </Grid>
+          <Grid item md={12} xs={12}>
             <Divider />
           </Grid>
         </Grid>
@@ -1068,27 +1093,6 @@ const AttedanceCalender = () => {
             ) : (
               <></>
             )}
-          </Grid>
-          <Grid className='buttonGrid'>
-            {teacherView === true ? (
-              <StyledClearButton
-                variant='contained'
-                startIcon={<ClearIcon />}
-                onClick={handleClearAll}
-              >
-                Clear all
-              </StyledClearButton>
-            ) : (
-              <></>
-            )}
-            <StyledFilterButton
-              variant='contained'
-              startIcon={<FilterFilledIcon className={classes.filterIcon} />}
-              className={classes.filterButton}
-              onClick={selectModule}
-            >
-              filter
-            </StyledFilterButton>
           </Grid>
         </div>
         <div className='attendenceWhole' hidden='true'>
@@ -1295,21 +1299,36 @@ const AttedanceCalender = () => {
                                 width: '100%',
                               }}
                             >
-                              <div style={{ display: 'flex' }}>
-                                <div
-                                  className='flagBgHoliday'
-                                  style={{ marginRight: '5px' }}
-                                >
-                                  <img src={flag} className='flagImg' />
-                                </div>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-between',
+                                  width: '100%',
+                                }}
+                              >
+                                <div style={{ display: 'flex' }}>
+                                  <div
+                                    className='flagBgHoliday'
+                                    style={{ marginRight: '5px' }}
+                                  >
+                                    <img src={flag} className='flagImg' />
+                                  </div>
 
-                                <Typography
-                                  className='eventNameData'
-                                  style={{ fontSize: '15px', width: '100%' }}
-                                >
-                                  {' '}
-                                  {data.title}{' '}
-                                </Typography>
+                                  <Typography
+                                    className='eventNameData'
+                                    style={{
+                                      fontSize: '15px',
+                                      width: '180px',
+                                      overflow: 'hidden',
+                                      whiteSpace: 'nowrap',
+                                      textOverflow: 'ellipsis',
+                                    }}
+                                  >
+                                    {' '}
+                                    {data.title}{' '}
+                                  </Typography>
+                                </div>
                               </div>
                               <>
                                 {teacherView ? (
