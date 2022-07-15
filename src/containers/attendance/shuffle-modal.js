@@ -1,18 +1,12 @@
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { TextField, Button } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import axiosInstance from '../../config/axios';
-import endpoints from '../../config/endpoints';
-import { result } from 'lodash';
 
 const ShuffleModal = ({ openShuffleModal, setOpenShuffleModal }) => {
-  const [batchList, setBatchList] = useState([]);
-  const [list, setList] = useState([]);
 
   return (
     <Dialog
@@ -31,11 +25,7 @@ const ShuffleModal = ({ openShuffleModal, setOpenShuffleModal }) => {
         <Autocomplete
           size='small'
           id='create__class-subject'
-          // options={yearList}
-          // value={yearDisplay}
-          // getOptionLabel={(option) => option.session_year}
           filterSelectedOptions
-          // onChange={handleYearChange}
           required
           renderInput={(params) => (
             <TextField

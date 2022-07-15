@@ -11,7 +11,6 @@ import Loader from '../../components/loader/loader';
 
 const NotifyConfirmPopUp = (props) => {
   const { openModal, handleNotifyPopUp,startDate,sectionId,rolesId } = props;
-  const history = useHistory();
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = React.useState(false);
 

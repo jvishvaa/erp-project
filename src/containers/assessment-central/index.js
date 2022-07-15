@@ -352,6 +352,8 @@ const Assesment = () => {
 
   const handleBranch = (event, value) => {
     formik.setFieldValue('branch', []);
+    formik.setFieldValue('grade', []);
+    formik.setFieldValue('subject', []);
     if (value.length > 0) {
       const branchIds = value?.map((element) => element?.branch?.id) || [];
       getGrades(formik.values.academic?.id, branchIds);
@@ -360,7 +362,8 @@ const Assesment = () => {
   };
 
   const handleGrade = (event, value) => {
-    formik.setFieldValue('grade', '');
+    formik.setFieldValue('grade', []);
+    formik.setFieldValue('subject', []);
     if (value) {
       const acadSessionIds = formik.values.branch.map((element) => element?.id) || [];
       getSubjects(acadSessionIds, value?.grade_id);
@@ -369,11 +372,18 @@ const Assesment = () => {
   };
 
   const handleSubject = (event, value) => {
-    formik.setFieldValue('subject', '');
+    formik.setFieldValue('subject', []);
     if (value) {
       formik.setFieldValue('subject', value);
     }
   };
+
+  const handleClearAll =(event,value) =>{
+    formik.handleReset();
+    setFilteredAssesmentTests([]);
+    setFilteredAssesmentTestsTotalPage(0);
+    setFilteredAssesmentTestPage(1);
+  }
 
   return (
     <Layout>
@@ -618,7 +628,7 @@ const Assesment = () => {
                     variant='contained'
                     className='cancelButton labelColor'
                     onClick={() => {
-                      formik.handleReset();
+                      handleClearAll()
                     }}
                   >
                     Clear All

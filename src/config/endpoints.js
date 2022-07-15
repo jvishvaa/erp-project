@@ -48,8 +48,11 @@ export default {
     teacherAttendanceSent: '/erp_user/erpuser-attendance/',
     getTeacherAttendanceData: '/erp_user/erpuser-attendance-monthly-reports/',
     getStudentCountReportData: '/erp_user/grade-section-wise-student-count-v2/',
-    notifyAttendance : '/erp_user/sms-notifying-students/',
-    markAllAttendance : '/erp_user/mark-attendance-of-all-students/'
+    notifyAttendance: '/erp_user/sms-notifying-students/',
+    markAllAttendance: '/erp_user/mark-attendance-of-all-students/',
+    dataupdate: '/erp_user/present_absent',
+    checkOMR : '/assessment/check-sys-config/?config_key=enable_omr_uploads_branches',
+
   },
   appBar: {
     schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,
@@ -78,7 +81,7 @@ export default {
     deletePeriod: '/period/period/',
     editPeriod: '/period/period/',
     collidingPeriod: 'period/deactivate_period/',
-    teacherTimeTable : '/period/teacher-retrieve-week-periods/'
+    teacherTimeTable: '/period/teacher-retrieve-week-periods/'
   },
   communicationRoles: {
     roles: '/academic/booked-appointment-role-list/',
@@ -90,7 +93,7 @@ export default {
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
     userList: '/communication/erp-user-info/',
-    viewUser : '/communication/v1/view-users/',
+    viewUser: '/communication/v1/view-users/',
     userListV2: '/communication/erp-user-info-v2/',
     communicationUserList: '/communication/communication-user-list/',
     studentUserList: '/communication/student-user-list/',
@@ -476,7 +479,7 @@ export default {
     fetchAssessmentQuestionPapersQuestions: `/assessment/<question-paper-id>/qp-questions-list/`,
     // s3: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
     s3: 'https://d2r9gkgplfhsr2.cloudfront.net/',
-    offlineAssesment : '/assessment/offline-assessment-list/',
+    offlineAssesment: '/assessment/offline-assessment-list/',
     studentMarks: '/assessment/ru-offline-asmnt/',
     OMRResponse: '/assessment/list-omr-sheets/',
   },
@@ -539,6 +542,7 @@ export default {
     erpQuestionList: '/assessment/questions-list/',
     erpViewMoreData: '/assessment/question-details/',
     erpQuestionPublishing: '/assessment/publish-question/',
+    erpQuestionNewPublishing: `/assessment/publish-multiple-question/`
   },
   assementQP: {
     assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,
