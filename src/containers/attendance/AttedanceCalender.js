@@ -177,7 +177,7 @@ const AttedanceCalender = () => {
             });
           axiosInstance
             .get(
-              `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${formatDateToday}&end_date=${formatDateToday}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
+              `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${formatDateToday}&end_date=${formatDateToday}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
             )
             .then((res) => {
               setHolidayDetails(res.data.holiday_detail);
@@ -188,7 +188,7 @@ const AttedanceCalender = () => {
         } else {
           axiosInstance
             .get(
-              `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&?start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
+              `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
             )
             .then((res) => {
               setHolidayDetails(res.data.holiday_detail);
@@ -430,30 +430,33 @@ const AttedanceCalender = () => {
   const getToday = () => {
     var date = new Date();
     var formatDate = moment(date).format('YYYY-MM-DD');
-    axiosInstance
-      .get(`academic/student_attendance_between_date_range/`, {
-        params: {
-          start_date: formatDate,
-          end_date: formatDate,
-          branch_id: selectedBranch.branch.id,
-          grade_id: selectedGrade.grade_id,
+    console.log(formatDate, 'format date');
+    // axiosInstance
+    //   .get(`academic/student_attendance_between_date_range/`, {
+    //     params: {
+    //       start_date: formatDate,
+    //       end_date: formatDate,
+    //       branch_id: selectedBranch.branch.id,
+    //       grade_id: selectedGrade.grade_id,
 
-          section_id: selectedSection.section_id,
-          academic_year: selectedAcademicYear.id,
-        },
-      })
-      .then((res) => {
-        setLoading(false);
-        setStudentDataAll(res.data);
-        let temp = [...res.data.present_list, ...res.data.absent_list];
-        setStudentData(temp);
-        setAlert('success', 'Data Sucessfully Fetched');
-      })
-      .catch((error) => {
-        setLoading(false);
-        setAlert('error', 'no attendance');
-        setStudentDataAll(null);
-      });
+    //       section_id: selectedSection.section_id,
+    //       academic_year: selectedAcademicYear.id,
+    //     },
+    //   })
+    //   .then((res) => {
+    //     console.log(res, 'qa calender');
+    //     setLoading(false);
+    //     setStudentDataAll(res.data);
+    //     let temp = [...res.data.present_list, ...res.data.absent_list];
+    //     setStudentData(temp);
+    //     setAlert('success', 'Data Sucessfully Fetched');
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //     setAlert('error', 'no attendance');
+    //     setStudentDataAll(null);
+    //     console.log(error);
+    //   });
 
     axiosInstance
       .get(
@@ -507,11 +510,11 @@ const AttedanceCalender = () => {
       setAlert('warning', 'Select Section');
       return;
     }
-    setLoading(true);
+    // setLoading(true);
     if (counter === 2) {
       axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
+          `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
         )
         .then((res) => {
           setLoading(false);
@@ -525,33 +528,38 @@ const AttedanceCalender = () => {
       getToday();
     }
     if (counter === 3) {
-      axiosInstance
-        .get(`academic/student_attendance_between_date_range/`, {
-          params: {
-            start_date: startDate,
-            end_date: endDate,
-            branch_id: selectedBranch.branch.id,
-            grade_id: selectedGrade.grade_id,
-            section_id: selectedSection.section_id,
-            academic_year: selectedAcademicYear.id,
-          },
-        })
-        .then((res) => {
-          setLoading(false);
-          setStudentDataAll(res.data);
-          let temp = [...res.data.present_list, ...res.data.absent_list];
-          setStudentData(temp);
-          setAlert('success', 'Data Sucessfully Fetched');
-        })
-        .catch((error) => {
-          setLoading(false);
-          setAlert('error', 'no attendance');
-          setStudentDataAll(null);
-        });
+      // axiosInstance
+      //   .get(`academic/student_attendance_between_date_range/`, {
+      //     params: {
+      //       start_date: startDate,
+      //       end_date: endDate,
+      //       branch_id: selectedBranch.branch.id,
+      //       grade_id: selectedGrade.grade_id,
+      //       // grade_id: 2,
 
+      //       section_id: selectedSection.section_id,
+      //       // section_id: 2,
+      //       academic_year: selectedAcademicYear.id,
+      //     },
+      //   })
+      //   .then((res) => {
+      //     setLoading(false);
+      //     console.log(res, 'respond teacher');
+      //     setStudentDataAll(res.data);
+      //     let temp = [...res.data.present_list, ...res.data.absent_list];
+      //     setStudentData(temp);
+      //     setAlert('success', 'Data Sucessfully Fetched');
+      //   })
+      //   .catch((error) => {
+      //     setLoading(false);
+      //     setAlert('error', 'no attendance');
+      //     setStudentDataAll(null);
+      //     console.log(error);
+      //   });
+      // }
       axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
+          `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
         )
         .then((res) => {
           setHolidayDetails(res.data.holiday_detail);
@@ -585,7 +593,7 @@ const AttedanceCalender = () => {
       });
     axiosInstance
       .get(
-        `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
+        `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
       )
       .then((res) => {
         setHolidayDetails(res.data.holiday_detail);
@@ -621,9 +629,10 @@ const AttedanceCalender = () => {
 
       axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${gradesId}`
+          `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${gradesId}`
         )
         .then((res) => {
+          console.log(res, 'holiday');
           setHolidayDetails(res.data.holiday_detail);
         })
         .catch((error) => {
@@ -657,7 +666,7 @@ const AttedanceCalender = () => {
         });
       axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
+          `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
         )
         .then((res) => {
           setHolidayDetails(res.data.holiday_detail);
@@ -773,7 +782,7 @@ const AttedanceCalender = () => {
   const handleDeleteHoliday = (data) => {
     axiosInstance
       .get(
-        `${endpoints.academics.getHoliday}?holiday_id=${holidayId}&session_year=${sessionYear?.id}`
+        `${endpoints.academics.getHoliday}?holiday_id=${holidayId}&session_year=${selectedBranch.id}`
       )
       .then((res) => {
         getholidayrefresh();
@@ -787,7 +796,7 @@ const AttedanceCalender = () => {
   const getholidayrefresh = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
+        `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
       )
       .then((res) => {
         setHolidayDetails(res.data.holiday_detail);
