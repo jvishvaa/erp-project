@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { Divider, FormControl, MenuItem, Select, AppBar, Grid, TextField } from '@material-ui/core';
+import { Divider, FormControl, MenuItem, Select, AppBar, Grid } from '@material-ui/core';
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -26,18 +26,19 @@ import { throttle, debounce } from 'throttle-debounce';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
-
 import logoMobile from '../../assets/images/logo_mobile.png';
 import SearchBar from './SearchBar';
 import AppSearchBarUseStyles from './AppSearchBarUseStyles';
-import { fetchAcademicYearList } from '../../redux/actions/common-actions'
-import { currentSelectedYear } from '../../redux/actions/common-actions'
+import {
+  currentSelectedYear,
+  currentSelectedBranch,
+  resetSelectedBranch,
+  fetchAcademicYearList,
+  fetchBranchList,
+} from '../../redux/actions/common-actions';
 import ENVCONFIG from 'config/config';
-
-
-// import { Autocomplete } from '@material-ui/lab';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import './styles.scss';
-// import { Item } from 'semantic-ui-react';
 
 const Appbar = ({ children, history, ...props }) => {
   const classes = AppSearchBarUseStyles();
@@ -47,7 +48,7 @@ const Appbar = ({ children, history, ...props }) => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = React.useState(null);
   const [centralSchoolLogo, setCentralSchoolLogo] = useState('');
-  const [centralSchoolName, setcentralSchoolName] = useState('')
+  const [centralSchoolName, setcentralSchoolName] = useState('');
   const [superUser, setSuperUser] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
@@ -59,21 +60,15 @@ const Appbar = ({ children, history, ...props }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchUserDetails, setSearchUserDetails] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
-  // const [userId, setUserId] = useState();
-  // const [displayUserDetails, setDisplayUserDetails] = useState(false);
-  // const [mobileSeach, setMobileSeach] = useState(false);
-  // const [open, setOpen] = React.useState(false);
-  // const [branchDropdown, setBranchDropdown] = useState([]);
-  // const [filterData, setFilterData] = useState({year: '',});
-  // const [moduleId, setModuleId] = useState(); 
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   let userData = JSON.parse(localStorage.getItem('userDetails'));
   let apps = JSON.parse(localStorage.getItem('apps'));
-
-
+  let branchList = useSelector((state) => state.commonFilterReducer.branchList);
+  let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
   const { role_details: roleDetails } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
+  const [branch, setBranch] = useState(selectedBranch?.branch?.branch_name);
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -131,8 +126,8 @@ const Appbar = ({ children, history, ...props }) => {
     }
     let userDetails = localStorage.getItem('userDetails');
     if (!userDetails) {
-      if(window.location.pathname != '/'){
-        localStorage.setItem('refURL',window.location.pathname)
+      if (window.location.pathname != '/') {
+        localStorage.setItem('refURL', window.location.pathname);
       }
       history.push('/');
       // window.location.href = '/' ;
@@ -174,10 +169,8 @@ const Appbar = ({ children, history, ...props }) => {
   }, [isLogout]);
 
   const handleFinance = () => {
-
-      window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/${token}#/auth/login`, "_blank")
-
-  }
+    window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/${token}#/auth/login`, '_blank');
+  };
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
@@ -271,12 +264,14 @@ const Appbar = ({ children, history, ...props }) => {
     } else {
       const logo = JSON.parse(schoolData);
       setCentralSchoolLogo(logo.school_logo);
-      setcentralSchoolName(logo.school_name)
+      setcentralSchoolName(logo.school_name);
     }
   }, []);
 
-  let academicYearlist = useSelector(state => state.commonFilterReducer.academicYearList);
-  let acdemicCurrentYear = useSelector(state => state.commonFilterReducer.selectedYear);
+  let academicYearlist = useSelector(
+    (state) => state.commonFilterReducer.academicYearList
+  );
+  let acdemicCurrentYear = useSelector((state) => state.commonFilterReducer.selectedYear);
 
   useEffect(() => {
     if (academicYearlist === null) {
@@ -286,28 +281,58 @@ const Appbar = ({ children, history, ...props }) => {
 
   useEffect(() => {
     if (academicYearlist && acdemicCurrentYear) {
-      setAcademicYear(acdemicCurrentYear?.session_year)
+      setAcademicYear(acdemicCurrentYear?.session_year);
     }
-  }, [acdemicCurrentYear, academicYearlist])
+  }, [acdemicCurrentYear, academicYearlist]);
 
+  const handleBranchChange = (event) => {
+    setBranch(event.target.value);
+    let selectedBranch;
 
+    branchList.forEach((item) => {
+      if (item.branch.branch_name === event.target.value) {
+        selectedBranch = item;
+      }
+    });
+    dispatch(currentSelectedBranch(selectedBranch));
+    sessionStorage.setItem('selected_branch', JSON.stringify(selectedBranch));
+    localStorage.setItem('isV2', selectedBranch?.isV2);
+    if (window.location.pathname.includes('academic-calendar')) {
+      history.push('/');
+    }
+    window.location.reload();
+  };
   const handleChange = (event) => {
     setAcademicYear(event.target.value);
     let acdemicCurrentYear;
     academicYearlist.forEach((item) => {
       if (item.session_year === event.target.value) {
-        acdemicCurrentYear = item
-
+        acdemicCurrentYear = item;
       }
-    })
-    dispatch(currentSelectedYear(acdemicCurrentYear))
+    });
+    sessionStorage.setItem('selected_branch', '');
+    sessionStorage.setItem('isSessionChanged', true);
+    dispatch(currentSelectedYear(acdemicCurrentYear));
+    dispatch(fetchBranchList(acdemicCurrentYear?.id));
     sessionStorage.setItem('acad_session', JSON.stringify(acdemicCurrentYear));
-    if(window.location.pathname.includes('academic-calendar')){
-      history.push('/')
+    if (window.location.pathname.includes('academic-calendar')) {
+      history.push('/');
     }
     window.location.reload();
   };
-
+  useEffect(() => {
+    if (branchList === '') {
+      dispatch(fetchBranchList(acdemicCurrentYear?.id));
+    }
+  }, []);
+  useEffect(() => {
+    if (sessionStorage.getItem('isSessionChanged') === 'true') {
+      dispatch(fetchBranchList(acdemicCurrentYear?.id));
+    }
+  }, [acdemicCurrentYear]);
+  useEffect(() => {
+    setBranch(selectedBranch?.branch?.branch_name);
+  }, [selectedBranch]);
   return (
     <>
       <AppBar position='absolute' className={clsx(classes.appBar)}>
@@ -334,9 +359,13 @@ const Appbar = ({ children, history, ...props }) => {
               </IconButton>
 
               <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                <Grid item xs={6} style={{ textAlign: 'center' }}>
+                <Grid item xs={6} style={{ textAlign: 'center', paddingTop: '10px' }}>
                   <IconButton className={classes.logoMobileContainer}>
-                    <img className={classes.logoMObile} src={logoMobile} alt='logo-small' />
+                    <img
+                      className={classes.logoMObile}
+                      src={logoMobile}
+                      alt='logo-small'
+                    />
                     <Divider
                       variant='middle'
                       className={classes.verticalLine}
@@ -346,33 +375,87 @@ const Appbar = ({ children, history, ...props }) => {
                     <img
                       src={centralSchoolLogo}
                       alt='logo'
-                      style={{ maxHeight: '38px', maxWidth: '38px', objectFit: 'fill' , fontSize: '12px'}}
+                      style={{
+                        maxHeight: '38px',
+                        maxWidth: '38px',
+                        objectFit: 'fill',
+                        fontSize: '12px',
+                      }}
                     />
                   </IconButton>
                 </Grid>
-                <Grid item xs={6} style={{ textAlign: 'center', paddingTop: 10 , display: 'flex' }}>
-                  <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={academicYear}
-                      onChange={handleChange}
-                      className={classes.year}
-                    >
-                      {academicYearlist?.map((year) =>
-                        <MenuItem value={year.session_year}>{year.session_year}</MenuItem>
-                      )}
-                    </Select>
-                  </FormControl>
+                <Grid
+                  item
+                  xs={6}
+                  style={{
+                    textAlign: 'center',
+                    paddingTop: '10px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <FormControl variant='standard'>
+                      <Select
+                        onChange={handleBranchChange}
+                        labelId='demo-simple-select-label'
+                        id='demo-simple-select'
+                        value={branch ? branch : branchList ? branchList[0] : ''}
+                        className={classes.branch}
+                        inputProps={{
+                          'aria-label': 'Without label',
+                          classes: {
+                            icon: 'th-select-icon',
+                          },
+                        }}
+                        IconComponent={KeyboardArrowDownIcon}
+                        MenuProps={{
+                          anchorOrigin: {
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                          },
+                          transformOrigin: {
+                            vertical: 'bottom',
+                            horizontal: 'left',
+                          },
+                        }}
+                      >
+                        {branchList?.map((item) => (
+                          <MenuItem value={item?.branch?.branch_name}>
+                            <>{item?.branch?.branch_name}</>
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <FormControl variant='standard'>
+                      <Select
+                        labelId='demo-simple-select-label'
+                        id='demo-simple-select'
+                        value={academicYear}
+                        onChange={handleChange}
+                        // className={classes.year}
+                        inputProps={{
+                          'aria-label': 'Without label',
+                          classes: {
+                            icon: 'th-select-icon',
+                          },
+                        }}
+                        IconComponent={KeyboardArrowDownIcon}
+                      >
+                        {academicYearlist?.map((year) => (
+                          <MenuItem value={year.session_year}>
+                            {year.session_year}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  </div>
                   <div>
-                  {apps?.finance == true ?
-                      <IconButton onClick={handleFinance}  style={{padding : '1%'}} >
-                        <MonetizationOnIcon />
-                      </IconButton> : ''
-                    }
+                    <IconButton onClick={handleFinance} style={{ padding: '1%' }}>
+                      <MonetizationOnIcon />
+                    </IconButton>
                   </div>
                 </Grid>
-              
               </Grid>
 
               <div className={classes.sectionMobile}>
@@ -390,7 +473,7 @@ const Appbar = ({ children, history, ...props }) => {
           )}
           {props.drawerOpen ? (
             <div style={{ display: 'flex' }}>
-              <Box pr={1} pl={38} component="span">
+              <Box pr={1} pl={38} component='span'>
                 {centralSchoolLogo && (
                   <IconButton
                     className={classes.inputButton}
@@ -411,16 +494,11 @@ const Appbar = ({ children, history, ...props }) => {
                     />
                   </IconButton>
                 )}
-
               </Box>
-              {isMobile ? null : <Box ml={4} p={2} component="span">
-                <h4 className={classes.SchoolName} >{centralSchoolName}</h4>
-              </Box>}
-
             </div>
           ) : (
             <div style={{ display: 'flex' }}>
-              <Box pr={1} pl={7} >
+              <Box pr={1} pl={7}>
                 {centralSchoolLogo && (
                   <IconButton
                     className={classes.inputButton}
@@ -442,40 +520,82 @@ const Appbar = ({ children, history, ...props }) => {
                   </IconButton>
                 )}
               </Box>
-              {isMobile ? null : <Box ml={4} p={2}>
-                <h4 className={classes.SchoolName} >{centralSchoolName}</h4>
-              </Box>}
-
             </div>
           )}
           {isMobile ? null : <SearchBar />}
           <div style={{ display: 'flex' }}>
-            {isMobile ? null : <div className={classes.grow} style={{ margin: '0' }} >
-              <FormControl variant="standard" sx={{ m: 1, minWidth: 100 }}>
-                <Select
-                  labelId="demo-simple-select-label"
-                  id="demo-simple-select"
-                  value={academicYear}
-                  onChange={handleChange}
-                  className={classes.year}
-                >
-                  {academicYearlist?.map((year) =>
-                    <MenuItem value={year.session_year}>{year.session_year}</MenuItem>
-                  )}
-                </Select>
-              </FormControl>
-
-            </div>}
-            {userData?.user_level == 1 || userData?.user_level == 25 || userData?.user_level == 13 ? <>
-              {apps?.finance == true ? <>
-                {isMobile ? null :
-                  <IconButton className={classes.grow} style={{ margin: '0' }} onClick={handleFinance}>
-                    <MonetizationOnIcon />
-                  </IconButton>
-                }
-              </> : <></>}
-            </> : <></>}
-
+            {isMobile ? null : (
+              <div className={classes.grow} style={{ margin: '0' }}>
+                <FormControl variant='standard' sx={{ m: 1, minWidth: 100 }}>
+                  <Select
+                    onChange={handleBranchChange}
+                    labelId='demo-simple-select-label'
+                    id='demo-simple-select'
+                    value={branch ? branch : branchList ? branchList[0] : ''}
+                    className={classes.branch}
+                    inputProps={{
+                      'aria-label': 'Without label',
+                      classes: {
+                        icon: 'th-select-icon-grey',
+                      },
+                    }}
+                    MenuProps={{
+                      anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      },
+                      transformOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      },
+                    }}
+                  >
+                    {branchList?.map((item) => (
+                      <MenuItem value={item?.branch?.branch_name}>
+                        <>{item?.branch?.branch_name}</>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                <FormControl variant='standard' sx={{ m: 1, minWidth: 100 }}>
+                  <Select
+                    labelId='demo-simple-select-label'
+                    id='demo-simple-select'
+                    value={academicYear}
+                    onChange={handleChange}
+                    className={classes.year}
+                  >
+                    {academicYearlist?.map((year) => (
+                      <MenuItem value={year.session_year}>{year.session_year}</MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+            )}
+            {userData?.user_level == 1 ||
+            userData?.user_level == 25 ||
+            userData?.user_level == 13 ||
+            userData?.is_superuser == true ? (
+              <>
+                {apps?.finance == true ? (
+                  <>
+                    {isMobile ? null : (
+                      <IconButton
+                        className={classes.grow}
+                        style={{ margin: '0' }}
+                        onClick={handleFinance}
+                      >
+                        <MonetizationOnIcon />
+                      </IconButton>
+                    )}
+                  </>
+                ) : (
+                  <></>
+                )}
+              </>
+            ) : (
+              <></>
+            )}
 
             <div className={classes.sectionDesktop}>
               <IconButton

@@ -1,5 +1,5 @@
 const webUrl = window.location.host;
-const hostUrl = webUrl.split('.')
+const hostUrl = webUrl.split('.');
 
 const chechUrl = hostUrl[0] === 'orchids' ? true : false;
 const local = {
@@ -18,7 +18,7 @@ const local = {
     // baseURL: 'http://localhost:8000/qbox',
     // baseURL: `${window.location.origin}/qbox`,
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
-    baseFinanceURL:'https://dev.erpfinance.letseduvate.com/qbox',
+    baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://dev.classes.letseduvate.com',
     msReportsUrl: 'https://dev.reports.letseduvate.com',
@@ -61,7 +61,7 @@ const qa = {
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     baseURLCentral: 'https://qa.mgmt.letseduvate.com/qbox',
-    baseFinanceURL:'https://dev.erpfinance.letseduvate.com/qbox',
+    baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://qa.classes.letseduvate.com',
     msReportsUrl: 'https://qa.reports.letseduvate.com',
@@ -101,7 +101,9 @@ const prod = {
     baseURLMPQ: 'https://mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     baseURLCentral: 'https://mgmt.letseduvate.com/qbox',
-    baseFinanceURL: chechUrl ? 'https://revamp.finance.letseduvate.com/qbox' : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
+    baseFinanceURL: chechUrl
+      ? 'https://revamp.finance.letseduvate.com/qbox'
+      : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://classes.letseduvate.com',
     msReportsUrl: 'https://reports.letseduvate.com',
@@ -115,7 +117,7 @@ const DEV = 'DEV';
 const QA = 'QA';
 const STAGE = 'STAGE';
 const env = { [PROD]: prod, [DEV]: dev, [QA]: qa, [STAGE]: stage };
-const config = env[process.env.REACT_APP_UI_ENV] || qa;
+const config = env[process.env.REACT_APP_UI_ENV] || dev;
 
 export default {
   // Add common config values here

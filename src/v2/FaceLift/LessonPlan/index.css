@@ -1,0 +1,14 @@
+.slide {
+  transform: scale(0.8);
+  transition: transform 300ms;
+  opacity: 0.5;
+}
+
+.activeSlide {
+  transform: scale(1.1);
+  opacity: 1;
+}
+.activeSlide:hover {
+  border-color: #1b4ccb !important;
+  cursor: pointer;
+}

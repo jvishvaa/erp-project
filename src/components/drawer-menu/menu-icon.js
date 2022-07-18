@@ -23,6 +23,7 @@ import FeedbackIcon from '@material-ui/icons/Feedback';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
 import LaptopChromebookIcon from '@material-ui/icons/LaptopChromebook';
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import EventIcon from '@material-ui/icons/Event';
 import EventNoteIcon from '@material-ui/icons/EventNote';
 import {
@@ -55,7 +56,6 @@ import {
   Store,
 } from '@material-ui/icons';
 import AssessmentIcon from '@material-ui/icons/Assessment';
-import HowToRegIcon from '@material-ui/icons/HowToReg';
 
 const menuIcon = (name) => {
   let icon = '';
@@ -250,10 +250,6 @@ const menuIcon = (name) => {
       icon = <AssessmentIcon />;
       break;
     }
-    case 'Attendance': {
-      icon = <HowToRegIcon />;
-      break;
-    }
     case 'Discussion Forum': {
       icon = <ForumIcon />;
       break;
@@ -274,12 +270,20 @@ const menuIcon = (name) => {
       icon = <ReceiptRoundedIcon />;
       break;
     }
-    case 'Grievance': {
+    case 'Griviences': {
       icon = <FeedbackIcon />;
       break;
     }
     case 'School Strength': {
       icon = <ViewListIcon />;
+      break;
+    }
+    case 'Sure Learning': {
+      icon = <LocalLibraryIcon />;
+      break;
+    }
+    case 'Finance V2': {
+      icon = <MonetizationOnIcon />;
       break;
     }
     case 'Event Management': {
@@ -288,10 +292,6 @@ const menuIcon = (name) => {
     }
     case 'Teacher Attendance': {
       icon = <EventNoteIcon />;
-      break;
-    }
-    case 'Sure Learning': {
-      icon = <LocalLibraryIcon />;
       break;
     }
 

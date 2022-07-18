@@ -1,0 +1,98 @@
+// .layout-container {
+//   height: 100%;
+//   display: flex;
+//   .content {
+//     height: 100vh;
+//   }
+// }
+.menu-item-text {
+  span {
+    color: #ffffff;
+  }
+}
+
+.layout_user_icon {
+  margin-left: 52% !important;
+}
+
+.search_icon {
+  border: 0.5px solid #9a9a9a;
+  border-radius: 26px;
+}
+
+.profile_img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.user_rows_details {
+  background-color: rgb(247, 236, 216) !important;
+}
+
+.user_rows_details:hover {
+  background-color: rgb(221, 203, 180) !important;
+}
+
+@media screen and (max-width: 700px) {
+  .main_search_container {
+    margin: auto !important;
+  }
+}
+
+.drawerScrollBar .MuiDrawer-paper::-webkit-scrollbar {
+  width: 0px;
+}
+
+/* Track */
+.drawerScrollBar .MuiDrawer-paper::-webkit-scrollbar-track {
+  // background: #F9F9F9;
+  border-radius: 10px;
+}
+
+/* Handle */
+.drawerScrollBar .MuiDrawer-paper::-webkit-scrollbar-thumb {
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.drawerScrollBar .MuiDrawer-paper::-webkit-scrollbar-thumb:hover {
+  background: #ffffff;
+}
+
+.MuiFormLabel-root {
+  color: #afafaf !important;
+}
+
+#academic-year {
+  color: #7d7d7d;
+}
+
+// #menu- .MuiPaper-rounded {
+//   top: 60px !important;
+//   // left: 1134px !important;
+// }
+
+@media screen and (max-width: 960px) {
+  #menu- .MuiPaper-rounded {
+    // top: 56px !important;
+  }
+}
+
+.MuiInput-underline:before {
+  border-bottom: none !important;
+}
+
+.MuiInput-underline:after {
+  border-bottom: none !important;
+}
+
+#demo-simple-select {
+  color: #737373;
+  font-weight: 500;
+}
+
+.th-icon-no-hover:hover {
+  background-color: #ffffff00 !important;
+}

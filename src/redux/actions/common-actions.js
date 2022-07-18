@@ -3,6 +3,8 @@ import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 // import setDefaultYear from '../reducers/common-reducer'
 
+const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
 export const uploadFile = async (file) => {
   try {
     const response = await axiosInstance.post('/academic/upload-question-file/', file);
@@ -21,18 +23,45 @@ export const uploadOMRFile = async (file) => {
   }
 };
 
+let moduleId;
+
+if (NavData && NavData.length) {
+  NavData.forEach((item) => {
+    if (
+      item.parent_modules === 'Ebook' &&
+      item.child_module &&
+      item.child_module.length > 0
+    ) {
+      item.child_module.forEach((item) => {
+        if (item.child_name === 'Ebook View') {
+          moduleId = item.child_id;
+        }
+      });
+    }
+  });
+}
+
 export const commonActions = {
   ACADEMIC_YEAR_LIST: 'ACADEMIC_YEAR_LIST',
   MS_API: 'MS_API',
   SELECTED_YEAR: 'SELECTED_YEAR',
-  ERP_CONFIG: 'ERP_CONFIG'
+  ERP_CONFIG: 'ERP_CONFIG',
+  SELECTED_BRANCH: 'SELECTED_BRANCH',
+  BRANCH_LIST: 'BRANCH_LIST',
 };
 
-const { ACADEMIC_YEAR_LIST,SELECTED_YEAR, MS_API, ERP_CONFIG } = commonActions;
+const {
+  ACADEMIC_YEAR_LIST,
+  SELECTED_YEAR,
+  MS_API,
+  ERP_CONFIG,
+  SELECTED_BRANCH,
+  BRANCH_LIST,
+} = commonActions;
 
-const getDefaultYear = (data) =>{
-  return data.filter(({is_current_session=false}) =>Boolean(is_current_session))[0] 
-}
+const getDefaultYear = (data) => {
+  return data.filter(({ is_current_session = false }) => Boolean(is_current_session))[0];
+};
 
 export const fetchAcademicYearList = (moduleId) => (dispatch) => {
   dispatch({ type: ACADEMIC_YEAR_LIST, payload: [] });
@@ -44,11 +73,13 @@ export const fetchAcademicYearList = (moduleId) => (dispatch) => {
       const { data = {} } = response || {};
       const { status_code, data: academicYearData = [] } = data || {};
       if (status_code > 199 && status_code < 300) {
-        const current_academic_year = getDefaultYear(academicYearData) ;
-        if(!current_academic_year){
+        const current_academic_year = getDefaultYear(academicYearData);
+        if (!current_academic_year) {
           sessionStorage.setItem('acad_session', JSON.stringify(academicYearData[0]));
-        }else{
+          sessionStorage.setItem('isSessionChanged', true);
+        } else {
           sessionStorage.setItem('acad_session', JSON.stringify(current_academic_year));
+          sessionStorage.setItem('isSessionChanged', true);
         }
         sessionStorage.setItem('acad_session_list', JSON.stringify(academicYearData));
         // dispatch({type: SELECTED_YEAR, payload: current_academic_year})
@@ -61,10 +92,10 @@ export const fetchAcademicYearList = (moduleId) => (dispatch) => {
 };
 
 export const currentSelectedYear = (data) => (dispatch) => {
-  dispatch({type: SELECTED_YEAR, payload: data})
-}
+  dispatch({ type: SELECTED_YEAR, payload: data });
+};
 
-export const isMsAPI = () => (dispatch)  =>{
+export const isMsAPI = () => (dispatch) => {
   let { token = null } = JSON.parse(localStorage.getItem('userDetails')) || {};
   if (!token) {
     return;
@@ -98,28 +129,58 @@ export const erpConfig = () => (dispatch) => {
     .then((res) => {
       if (res?.data?.status_code === 200) {
         if (res?.data?.result[0] == 'True') {
-          data['erp_config'] = true
+          data['erp_config'] = true;
           localStorage.setItem('userDetails', JSON.stringify(data));
           dispatch({ type: ERP_CONFIG, payload: true });
         } else if (res?.data?.result[0] == 'False') {
-          data['erp_config'] = false
+          data['erp_config'] = false;
           localStorage.setItem('userDetails', JSON.stringify(data));
           dispatch({ type: ERP_CONFIG, payload: false });
         } else if (res?.data?.result[0]) {
-          console.log(res.data.result[0], "  branchhh data ");
-          console.log(branch, "  branchhh ");
-          let resData = res?.data?.result[0]
-          
+          console.log(res.data.result[0], '  branchhh data ');
+          console.log(branch, '  branchhh ');
+          let resData = res?.data?.result[0];
+
           const selectedId = branch?.map((el) => el?.id);
-          let checkData = resData?.some(item => selectedId.includes(Number(item)))
-          console.log(checkData, "check");
-          data['erp_config'] = checkData
-          localStorage.setItem('userDetails', JSON.stringify(data))
+          let checkData = resData?.some((item) => selectedId.includes(Number(item)));
+          console.log(checkData, 'check');
+          data['erp_config'] = checkData;
+          localStorage.setItem('userDetails', JSON.stringify(data));
           dispatch({ type: ERP_CONFIG, payload: result });
         }
       }
     })
-      .catch(() => {
+    .catch(() => {
       dispatch({ type: ERP_CONFIG, payload: false });
     });
-}
+};
+
+export const currentSelectedBranch = (data) => (dispatch) => {
+  dispatch({ type: SELECTED_BRANCH, payload: data });
+};
+
+export const fetchBranchList = (session_year) => (dispatch) => {
+  console.log('Branch Api Called');
+  dispatch({ type: BRANCH_LIST, payload: [] });
+  let url = `${endpoints?.academics?.branches}?session_year=${session_year}&module_id=${moduleId}`;
+  return axiosInstance
+    .get(url)
+    .then((response) => {
+      let branchList = response?.data?.data?.results;
+      if (response?.status > 199 && response?.status < 300 && branchList) {
+        sessionStorage.setItem('branch_list', JSON.stringify(branchList));
+
+        if (!sessionStorage.getItem('selected_branch')) {
+          sessionStorage.setItem('selected_branch', JSON.stringify(branchList[0]));
+          localStorage.setItem('isV2', branchList[0]?.isV2);
+          dispatch({ type: SELECTED_BRANCH, payload: branchList[0] });
+          sessionStorage.setItem('isSessionChanged', false);
+        }
+
+        dispatch({ type: BRANCH_LIST, payload: branchList });
+      }
+    })
+    .catch(() => {
+      dispatch({ type: BRANCH_LIST, payload: [] });
+    });
+};
