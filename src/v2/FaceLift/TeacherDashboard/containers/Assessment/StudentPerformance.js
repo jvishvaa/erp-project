@@ -1,5 +1,5 @@
 import React from 'react';
-import Layout from 'v2/Layout';
+import Layout from 'containers/Layout';
 import { Table, Breadcrumb, DatePicker, Avatar, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import { DownOutlined } from '@ant-design/icons';

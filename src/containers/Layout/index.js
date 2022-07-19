@@ -29,10 +29,11 @@ const Layout = ({ children, history }) => {
   const containerRef = useRef(null);
   const dispatch = useDispatch();
   let isV2 = useSelector((state) => state.commonFilterReducer.selectedBranch)?.isV2;
-  const [drawerOpen, setDrawerOpen] = useState(
-    isV2 ? (window.innerWidth < 768 ? false : true) : false
-  );
+  // const [drawerOpen, setDrawerOpen] = useState(
+  //   isV2 ? (window.innerWidth < 768 ? false : true) : false
+  // );
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
   const [superUser, setSuperUser] = useState(false);
@@ -65,15 +66,15 @@ const Layout = ({ children, history }) => {
       containerRef.scrollTop = 0;
     }
   }, []);
-  useEffect(() => {
-    if (isV2) {
-      if (window.innerWidth < 768) {
-        setDrawerOpen(false);
-      } else {
-        setDrawerOpen(true);
-      }
-    }
-  }, [window.innerWidth]);
+  // useEffect(() => {
+  //   if (isV2) {
+  //     if (window.innerWidth < 768) {
+  //       setDrawerOpen(false);
+  //     } else {
+  //       setDrawerOpen(true);
+  //     }
+  //   }
+  // }, [window.innerWidth]);
 
   useEffect(() => {
     if (isLogout) {
@@ -1094,6 +1095,7 @@ const Layout = ({ children, history }) => {
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+
   return (
     <>
       <div className={classes.rootColumn}>

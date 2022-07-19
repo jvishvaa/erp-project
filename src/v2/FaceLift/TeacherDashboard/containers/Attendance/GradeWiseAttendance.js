@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Layout from 'v2/Layout';
+import Layout from 'containers/Layout';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { Table, DatePicker, Breadcrumb } from 'antd';

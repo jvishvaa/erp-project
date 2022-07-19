@@ -97,6 +97,7 @@ const DrawerMenu = ({ navigationItems, superUser, onClick, flag, drawerOpen }) =
       <SuperUserMenu
         onClickMenuItem={onClick}
         openMenu={openMenu}
+        drawerOpen={drawerOpen}
         onChangeMenuState={(menu) => {
           if (menu === openMenu) {
             setOpenMenu(null);

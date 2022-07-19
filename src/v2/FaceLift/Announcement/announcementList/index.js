@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Breadcrumb, Tabs, Select, DatePicker, Spin, Pagination } from 'antd';
-import Layout from 'v2/Layout';
+import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';

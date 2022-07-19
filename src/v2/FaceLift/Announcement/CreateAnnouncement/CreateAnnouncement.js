@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, createRef } from 'react';
-import Layout from 'v2/Layout';
+import Layout from 'containers/Layout';
 import { Breadcrumb, Checkbox, Select, Input, Button, message, Form } from 'antd';
 import axios from 'axios';
 import axiosInstance from 'v2/config/axios';
@@ -569,16 +569,13 @@ const CreateAnnouncement = () => {
                     <div className='col-md-10 col-9'>
                       <div className='row'>
                         {uploadedFiles?.map((item, index) => {
-                          const fullName = item[0]?.split('/')[
-                            item[0]?.split('/').length - 1
-                          ];
+                          const fullName =
+                            item[0]?.split('/')[item[0]?.split('/').length - 1];
 
-                          const fileName = fullName.split('.')[
-                            fullName?.split('.').length - 2
-                          ];
-                          const extension = fullName.split('.')[
-                            fullName?.split('.').length - 1
-                          ];
+                          const fileName =
+                            fullName.split('.')[fullName?.split('.').length - 2];
+                          const extension =
+                            fullName.split('.')[fullName?.split('.').length - 1];
                           return (
                             <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
                               <span className='th-12 th-black-1 text-truncate'>

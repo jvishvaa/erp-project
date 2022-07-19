@@ -1,11 +1,22 @@
 import React from 'react';
-import { List, Drawer, useMediaQuery, useTheme } from '@material-ui/core';
+import {
+  List,
+  Drawer,
+  useMediaQuery,
+  useTheme,
+  ListItemIcon,
+  ListItem,
+  IconButton,
+} from '@material-ui/core';
 import SearchBar from './SearchBar';
+import MenuIcon from '@material-ui/icons/Menu';
 import DrawerMenu from 'v2/Layout/Drawer';
 import useStyles from './useStyles';
 import './styles.scss';
 import clsx from 'clsx';
 import logo from '../../assets/images/logo.png';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 const Sidebar = (props) => {
   const classes = useStyles();
@@ -14,7 +25,7 @@ const Sidebar = (props) => {
   const { drawerOpen, navigationData, handleOpen, handleRouting, superUser } = props;
   return (
     <Drawer
-      open={true}
+      open={drawerOpen}
       variant={isMobile ? '' : 'permanent'}
       className={`${clsx(classes.drawer, {
         [classes.drawerPaper]: drawerOpen,
@@ -22,11 +33,12 @@ const Sidebar = (props) => {
       })} drawerScrollBar`}
       classes={{
         paper: clsx({
-          [classes.drawer]: drawerOpen,
+          [classes.drawer]: true,
           [classes.drawerPaper]: drawerOpen,
           [classes.drawerPaperClose]: !drawerOpen,
         }),
       }}
+      onClose={() => handleOpen(false)}
     >
       {isMobile ? <div className={classes.appBarSpacer} /> : null}
       {isMobile ? <SearchBar /> : null}
@@ -46,10 +58,31 @@ const Sidebar = (props) => {
           }}
         >
           <img src={logo} alt='logo' style={{ height: '36px', paddingLeft: '15px' }} />
+          <IconButton onClick={() => handleOpen((prevState) => !prevState)}>
+            {themeContext.direction === 'rtl' ? (
+              <ChevronRightIcon />
+            ) : (
+              <ChevronLeftIcon />
+            )}
+          </IconButton>
         </div>
       )}
 
-      <List className='px-3' style={{ height: 'calc(100% - 64px)' }}>
+      <List className='px-2' style={{ height: 'calc(100% - 64px)' }}>
+        {!drawerOpen ? (
+          <ListItem
+            className={classes.menuControlContainer}
+            onClick={() => handleOpen((prevState) => !prevState)}
+          >
+            {drawerOpen ? null : (
+              <>
+                <ListItemIcon className={'th-primary'}>
+                  <MenuIcon />
+                </ListItemIcon>
+              </>
+            )}
+          </ListItem>
+        ) : null}
         {drawerOpen
           ? navigationData &&
             navigationData.length > 0 && (

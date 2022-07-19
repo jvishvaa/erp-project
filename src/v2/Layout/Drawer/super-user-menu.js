@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom';
 import useStyles from './useStyles';
 import endpoints from 'config/endpoints';
 
-const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
+const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState, drawerOpen }) => {
   const history = useHistory();
   const classes = useStyles();
 
@@ -19,7 +19,8 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           button
           className={
             history.location.pathname === '/dashboard'
-              ? 'menu_selection th-item-menu th-br-6 px-0 py-2 my-1 th-bg-white'
+              ? 'menu_selection th-item-menu th-br-6 px-0 py-2 my-1 ' +
+                (drawerOpen ? 'th-bg-white ' : '')
               : 'th-item-menu th-br-6 px-0 py-2 my-1'
           }
           onClick={() => {
@@ -47,7 +48,9 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
           >
             <DashboardOutlinedIcon />
           </ListItemIcon>
-          <ListItemText className='menu-item-text-v2 th-menu-item'>
+          <ListItemText
+            className={'menu-item-text-v2 th-menu-item ' + (drawerOpen ? '' : 'd-none')}
+          >
             Dashboard
           </ListItemText>
         </ListItem>

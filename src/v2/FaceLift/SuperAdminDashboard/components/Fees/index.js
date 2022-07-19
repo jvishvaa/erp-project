@@ -108,13 +108,13 @@ const FeesOverview = () => {
       const selectedBranchId = branchId ? branchId : selectedBranch?.branch?.id;
       fetchFeesData({
         branch_id: selectedBranchId,
-        finance_session_year_id: selectedAcademicYear?.id,
-        finance_session_year: selectedAcademicYear?.session_year,
+        // finance_session_year_id: selectedAcademicYear?.id,
+        session_year: selectedAcademicYear?.session_year,
       });
       fetchFeesStats({
         branch_id: selectedBranchId,
-        finance_session_year_id: selectedAcademicYear?.id,
-        finance_session_year: selectedAcademicYear?.session_year,
+        // finance_session_year_id: selectedAcademicYear?.id,
+        session_year: selectedAcademicYear?.session_year,
       });
     }
   }, [selectedBranch, selectedAcademicYear, branchId]);

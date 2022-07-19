@@ -1,5 +1,5 @@
 import React from 'react';
-import Layout from 'v2/Layout';
+import Layout from 'containers/Layout';
 import { Table, Breadcrumb, Select, Avatar, Input } from 'antd';
 import { SearchOutlined } from '@ant-design/icons';
 import demoPic from 'v2/Assets/images/student_pic.png';

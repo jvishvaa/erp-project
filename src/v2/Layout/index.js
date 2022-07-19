@@ -1087,74 +1087,11 @@ const Layout = ({ children, history }) => {
   };
 
   const handleOpen = (value) => {
-    setDrawerOpen((value) => true);
+    setDrawerOpen((value) => !value);
   };
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
-
-  const handleDrawer = () => {
-    return (
-      <Drawer
-        open={true}
-        variant={isMobile ? '' : 'permanent'}
-        className={`${clsx(classes.drawer, {
-          [classes.drawerPaper]: drawerOpen,
-          [classes.drawerPaperClose]: !drawerOpen,
-        })} drawerScrollBar`}
-        classes={{
-          paper: clsx({
-            [classes.drawer]: drawerOpen,
-            [classes.drawerPaper]: drawerOpen,
-            [classes.drawerPaperClose]: !drawerOpen,
-          }),
-        }}
-      >
-        {isMobile ? <div className={classes.appBarSpacer} /> : null}
-        {isMobile ? <SearchBar /> : null}
-
-        {isMobile ? null : (
-          <div
-            className='p-2'
-            style={{
-              position: 'sticky',
-              top: 0,
-              height: '64px',
-              zIndex: '100000000',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              backgroundColor: '#f8f8f8',
-            }}
-          >
-            <img src={logo} alt='logo' style={{ height: '36px', paddingLeft: '15px' }} />
-          </div>
-        )}
-
-        <List className='px-3' style={{ height: 'calc(100% - 64px)' }}>
-          {drawerOpen
-            ? navigationData &&
-              navigationData.length > 0 && (
-                <DrawerMenu
-                  superUser={superUser}
-                  drawerOpen={drawerOpen}
-                  navigationItems={navigationData}
-                  onClick={handleRouting}
-                />
-              )
-            : navigationData &&
-              navigationData.length > 0 && (
-                <DrawerMenu
-                  superUser={superUser}
-                  navigationItems={navigationData}
-                  onClick={handleOpen}
-                  drawerOpen={drawerOpen}
-                />
-              )}
-        </List>
-      </Drawer>
-    );
-  };
 
   return (
     <div className={classes.rootColumn}>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, createRef } from 'react';
-import Layout from 'v2/Layout';
+import Layout from 'containers/Layout';
 import { Breadcrumb, Select, Input, Button, DatePicker, message, Form } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';

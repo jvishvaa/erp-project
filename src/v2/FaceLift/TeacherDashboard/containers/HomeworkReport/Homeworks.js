@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createRef } from 'react';
-import Layout from 'v2/Layout';
+import Layout from 'containers/Layout';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import endpoints from 'v2/config/endpoints';

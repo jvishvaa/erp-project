@@ -727,7 +727,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
         }}
         className={
           menuOpen && childValue && drawerOpen === false
-            ? `menu-item-parent-selection th-item-menu py-2 my-1 th-br-6 px-0`
+            ? ` th-item-menu py-2 my-1 th-br-6 px-0`
             : `th-item-menu py-2 my-1 th-br-6 px-0` + (menuOpen ? ' th-bg-white' : '')
         }
       >
@@ -763,7 +763,9 @@ const MenuItem = withRouter(({ history, ...props }) => {
         </ListItemIcon>
         <ListItemText
           primary={item.parent_modules}
-          className='menu-item-text-v2 th-menu-item th-black-1'
+          className={
+            'menu-item-text-v2 th-menu-item th-black-1 ' + (drawerOpen ? '' : 'd-none')
+          }
         />
         {item.child_module && item.child_module.length > 0 ? (
           menuOpen ? (
