@@ -34,7 +34,7 @@ const dev = {
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   apiGateway: {
-    baseURL: `${window.location.origin}/qbox`,
+    baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
     baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
