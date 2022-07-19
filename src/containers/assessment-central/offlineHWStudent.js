@@ -567,9 +567,7 @@ const OfflineStudentAssessment = () => {
                                 />
                             </FormControl> */}
                         </div>
-                        {loading ? <Loading message='Loading...' /> : null}
-
-                        {studentList?.length > 0 ?
+                        {studentList?.user_reponse?.length > 0 ?
                             <TableContainer
                                 className={`table table-shadow view_users_table ${classes.container}`}
                             >
@@ -585,7 +583,7 @@ const OfflineStudentAssessment = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {studentList.map((items, i) => (
+                                        {studentList?.user_reponse.map((items, i) => (
                                             <TableRow key={items.id}>
                                                 <TableCell className={classes.tableCell}>
                                                     {i + 1}
