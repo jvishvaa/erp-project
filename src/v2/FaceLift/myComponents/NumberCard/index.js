@@ -64,7 +64,7 @@ const NumberCard = (props) => {
               color='textSecondary'
               className='th-primary th-fw-700 th-12'
             >
-              {Math.round(percentage_present)}%
+              {isNaN(percentage_present) ? 0 : Math.round(percentage_present)}%
             </Typography>
           </Box>
         </Box>

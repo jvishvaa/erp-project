@@ -226,7 +226,16 @@ const Appbar = ({ children, history, ...props }) => {
     }
   };
 
-  const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
+  let host;
+  if (
+    window.location.href.includes('localhost') ||
+    window.location.href.includes('ui-revamp') ||
+    window.location.href.includes('dev')
+  ) {
+    host = 'dev.olvorchidnaigaon.letseduvate.com';
+  } else {
+    host = new URL(axiosInstance.defaults.baseURL).host;
+  }
   const hostSplitArray = host.split('.');
   const subDomainLevels = hostSplitArray.length - 2;
   let domain = '';

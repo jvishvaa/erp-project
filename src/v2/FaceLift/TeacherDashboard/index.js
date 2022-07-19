@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Layout from '../../Layout';
+import Layout from 'containers/Layout';
 import AttendanceReport from './components/AttendanceReport';
 import Announcement from './components/Announcement';
 import CalendarCard from '../myComponents/CalendarCard';
