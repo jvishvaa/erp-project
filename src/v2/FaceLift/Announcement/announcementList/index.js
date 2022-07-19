@@ -213,7 +213,9 @@ const AnnouncementList = () => {
                 Dashboard
               </Breadcrumb.Item>
 
-              <Breadcrumb.Item className='th-black-1'>Announcements</Breadcrumb.Item>
+              <Breadcrumb.Item className='th-black-1 th-16'>
+                Announcements
+              </Breadcrumb.Item>
             </Breadcrumb>
           </div>
 

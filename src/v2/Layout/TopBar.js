@@ -47,6 +47,7 @@ import AcadCalendarIcon from 'v2/Assets/dashboardIcons/topbarIcons/acadCalendar.
 import AnnouncementIcon from 'v2/Assets/dashboardIcons/topbarIcons/announcements.svg';
 import NotificationsIcon from 'assets/dashboardIcons/topbarIcons/notifications.svg';
 import StaffIcon from 'assets/dashboardIcons/topbarIcons/defaultProfile.svg';
+import RupeeSymbol from 'v2/Assets/dashboardIcons/topbarIcons/rupee-symbol.png';
 
 import './styles.scss';
 // import { Item } from 'semantic-ui-react';
@@ -71,7 +72,8 @@ const Appbar = ({ children, history, ...props }) => {
   const { setAlert } = useContext(AlertNotificationContext);
 
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
-
+  let userData = JSON.parse(localStorage.getItem('userDetails'));
+  let apps = JSON.parse(localStorage.getItem('apps'));
   const { role_details: roleDetails } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
 
@@ -168,7 +170,16 @@ const Appbar = ({ children, history, ...props }) => {
     </Menu>
   );
 
-  const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
+  let host;
+  if (
+    window.location.href.includes('localhost') ||
+    window.location.href.includes('ui-revamp') ||
+    window.location.href.includes('dev')
+  ) {
+    host = 'dev.olvorchidnaigaon.letseduvate.com';
+  } else {
+    host = new URL(axiosInstance.defaults.baseURL).host;
+  }
   const hostSplitArray = host.split('.');
   const subDomainLevels = hostSplitArray.length - 2;
   let domain = '';
@@ -564,6 +575,30 @@ const Appbar = ({ children, history, ...props }) => {
                   </Select>
                 </FormControl>
               </div>
+            )}
+            {userData?.user_level == 1 ||
+            userData?.user_level == 25 ||
+            userData?.user_level == 13 ||
+            userData?.is_superuser == true ? (
+              <>
+                {apps?.finance == true ? (
+                  <>
+                    {isMobile ? null : (
+                      <IconButton
+                        className={classes.grow}
+                        style={{ margin: '0' }}
+                        onClick={handleFinance}
+                      >
+                        <img src={RupeeSymbol} width='24px' />
+                      </IconButton>
+                    )}
+                  </>
+                ) : (
+                  <></>
+                )}
+              </>
+            ) : (
+              <></>
             )}
 
             {isMobile ? null : (

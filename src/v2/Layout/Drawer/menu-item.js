@@ -734,7 +734,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
         <ListItemIcon
           className={
             menuOpen && childValue && drawerOpen === false
-              ? classes.menuItemIconSelected
+              ? classes.menuItemIconWhite
               : item.child_module?.some((childItem) => childItem['child_name'] === child)
               ? classes.menuItemIconWhite
               : classes.menuItemIcon
