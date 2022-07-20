@@ -403,7 +403,7 @@ const Assesment = () => {
   const handleFileChange = (event) => {
     const { files } = event.target || {};
     const fil = files[0] || '';
-    if (fil.name.lastIndexOf('.xls') > 0 || fil.name.lastIndexOf('.xlsx') > 0) {
+    if (fil?.name?.lastIndexOf('.xls') > 0 || fil?.name?.lastIndexOf('.xlsx') > 0) {
       setFile(fil);
     } else {
       setFile(null);
