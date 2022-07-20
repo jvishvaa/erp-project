@@ -318,22 +318,26 @@ const Appbar = ({ children, history, ...props }) => {
                 )}
               </IconButton>
 
-              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                <Grid item xs={6} style={{ textAlign: 'center' }}>
+              <Grid
+                container
+                rowSpacing={1}
+                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                className='align-items-center'
+              >
+                <Grid item xs={2} style={{ textAlign: 'center' }}>
                   <IconButton className={classes.logoMobileContainer}>
                     <img
                       className={classes.logoMObile}
                       src={logoMobile}
                       alt='logo-small'
                     />
-                    <Divider
+                    {/* <Divider
                       variant='middle'
                       className={classes.verticalLine}
                       orientation='vertical'
                       flexItem
-                    />
-                    <img
-                      //   src={centralSchoolLogo}
+                    /> */}
+                    {/* <img
                       src={orchidsLogo}
                       alt='logo'
                       style={{
@@ -342,7 +346,7 @@ const Appbar = ({ children, history, ...props }) => {
                         objectFit: 'fill',
                         fontSize: '12px',
                       }}
-                    />
+                    /> */}
                   </IconButton>
                 </Grid>
                 <Grid
@@ -350,11 +354,15 @@ const Appbar = ({ children, history, ...props }) => {
                   xs={6}
                   style={{ textAlign: 'center', paddingTop: 10, display: 'flex' }}
                 >
-                  <FormControl variant='standard' sx={{ m: 1, minWidth: 120 }}>
+                  <FormControl
+                    variant='standard'
+                    sx={{ m: 1, minWidth: 100 }}
+                    className='flex-row'
+                  >
                     <Select
                       onChange={handleBranchChange}
                       value={branch ? branch : branchList ? branchList[0] : ''}
-                      className='th-primary th-bg-white th-br-4  text-left'
+                      className='th-primary th-bg-white th-br-4 th-12 text-left mr-1'
                       placement='bottomRight'
                       bordered={false}
                       showSearch={true}
@@ -376,7 +384,7 @@ const Appbar = ({ children, history, ...props }) => {
                     <Select
                       onChange={handleChange}
                       value={academicYear}
-                      className='th-primary th-bg-white th-br-4 text-center'
+                      className='th-primary th-bg-white th-br-4 th-12 text-center'
                       placement='bottomRight'
                       bordered={false}
                       showSearch={true}
