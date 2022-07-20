@@ -283,6 +283,10 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/section-shuffling');
         break;
       }
+      case 'Virtual School': {
+        history.push('/virtual-school');
+        break;
+      }
       case 'Access-Blocker': {
         history.push('/user-management/access-blocker');
         break;

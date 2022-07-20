@@ -130,13 +130,15 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
   const [openModalFinal, setopenModalFinal] = useState(false)
   const [fileToDelete, setFileToDelete] = useState()
   const [error, setError] = useState('')
+  const [isButtonVisible, setIsButtonVisible] = useState([])
 
   let titlebody = textEditorContent
   let channelsArr = [
       'orchids.letseduvate.com',
       'localhost:3000',
       'dev.olvorchidnaigaon.letseduvate.com',
-      'qa.olvorchidnaigaon.letseduvate.com'
+      'qa.olvorchidnaigaon.letseduvate.com',
+      'ui-revamp1.letseduvate.com',
   ]
   let smsTxt = `
   Greetings of the day ! 
@@ -241,6 +243,27 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
       getBranch();
     }
   }, [selectedUserLevelData]);
+
+  useEffect(() => {
+    checkButtonStatus()
+  },[announcementType])
+
+  const checkButtonStatus = () => {
+    setLoading(true);
+    axiosInstance.get(endpoints.academics.buttonStatus)
+    .then((res) => {
+      if(res?.data?.status_code === 200){
+        setLoading(false)
+        setIsButtonVisible(res?.data?.result)
+      } else{
+        setLoading(false)
+
+      }
+    })
+    .catch((err) =>{
+      setLoading(false)
+    })
+  }
 
   const getBranch = () => {
     setLoading(true);
@@ -819,7 +842,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
           )}
           <div style={{ height: '20px', width: '100%' }}></div>
           {channelsArr.includes(window.location.host) && <div>
-            <Grid container spacing={1} style={{ justifyContent: 'center' }}>
+            <Grid container spacing={2} style={{ justifyContent: 'center' }}>
             {(smsArr.includes(user_level) || is_superuser) &&  
             <Tooltip title={<div style={{ whiteSpace: 'pre-line' }}>{smsTxt} </div>}>
               <Grid
@@ -827,7 +850,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
                 md={3}
                 xs={12}
                 className = {intimateMsg?.sms ? classes.selected : classes.unselected}
-                style={{borderRadius: '2px', padding: '0' }}
+                style={{borderRadius: '5px', padding: '0', display: isButtonVisible?.is_sms_enabled === true ? '' : 'none',margin: '2px'}}
               >
                 <Checkbox
                   className= {intimateMsg?.sms ? classes.checkedsms : classes.checkbox}
@@ -861,6 +884,8 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
                   marginTop : isMobile ? '5%' : '0%',
                   marginBottom : isMobile ? '5%' : '0%',
                   padding: '0',
+                  display: isButtonVisible?.is_wtsapp_enabled === true ? '' : 'none',
+                  margin: '2px'
                 }}
                 
               >
@@ -890,7 +915,7 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
                 md={3}
                 xs={12}
                 className = {intimateMsg?.email ? classes.selected : classes.unselected}
-                style={{borderRadius: '2px', padding: '0' }}
+                style={{borderRadius: '2px', padding: '0', display: isButtonVisible?.is_email_enabled === true ? '' : 'none', margin: '2px' }}
               >
                 <Checkbox
                   className= {intimateMsg?.email ? classes.checkedemail : classes.checkbox}

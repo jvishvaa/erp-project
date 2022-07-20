@@ -58,6 +58,7 @@ import axios from './../../config/axios';
 import endpoints from 'config/endpoints';
 import Loader from './../../components/loader/loader'
 import FileSaver from 'file-saver';
+import axiosInstance from './../../config/axios';
 
 const useStyles = makeStyles({
   tabsFlexContainer: {
@@ -76,6 +77,7 @@ const Assesment = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
+  const fileRef = useRef()
 
   // const [statuses, setStatuses] = useState([]);
   const [academicDropdown, setAcademicDropdown] = useState([]);
@@ -407,6 +409,7 @@ const Assesment = () => {
       setFile(fil);
     } else {
       setFile(null);
+      fileRef.current.value = null
       setAlert(
         'error',
         'Only excel file is acceptable either with .xls or .xlsx extension'
@@ -428,17 +431,22 @@ const Assesment = () => {
     data.append('file', file);
     if (file) {
       setLoading(true)
-      axios
+      axiosInstance
         .post(`${endpoints.assessment.bulkUploadMarks}`, data)
         .then((result) => {
           setLoading(false)
           if(result?.status === 200){
             setAlert('success','File successfully uploaded')
             excelDownload(result.data)
+            fileRef.current.value = null
+            setFile(null)
           }else{
-            setAlert('error','Please upload in the given format')
+            setAlert('error',result?.error)
+            fileRef.current.value = null
+            setFile(null)
           }
-        }).finally(()=>setLoading(false));
+        }).catch((error)=>{setAlert('error',error?.response?.data?.error)})
+        .finally(()=>setLoading(false));
     }
     if(!file){
       setAlert('warning','Please select file')
@@ -746,7 +754,7 @@ const Assesment = () => {
                   <div>
                     <Input
                       type='file'
-                      // inputRef={props.fileRef}
+                      inputRef={fileRef}
                       inputProps={{ accept: '.xlsx,.xls' }}
                       onChange={handleFileChange}
                     />
