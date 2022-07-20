@@ -56,7 +56,7 @@ const TopBarStyles = makeStyles((theme) => ({
   },
   mobileToolbar: {
     display: 'none',
-    // width: '100%',
+    width: '95%',
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       position: 'absolute',
@@ -245,7 +245,7 @@ const TopBarStyles = makeStyles((theme) => ({
   },
   sectionMobile: {
     display: 'flex',
-    marginRight: '12px',
+    marginRight: '0px',
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },
