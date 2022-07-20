@@ -342,7 +342,7 @@ const Appbar = ({ children, history, ...props }) => {
                     <Select
                       onChange={handleBranchChange}
                       value={branch ? branch : branchList ? branchList[0] : ''}
-                      className='th-primary th-bg-grey th-br-4  text-left'
+                      className='th-primary th-bg-white th-br-4  text-left'
                       placement='bottomRight'
                       bordered={false}
                       showSearch={true}
@@ -364,7 +364,7 @@ const Appbar = ({ children, history, ...props }) => {
                     <Select
                       onChange={handleChange}
                       value={academicYear}
-                      className='th-primary th-bg-grey th-br-4 text-center'
+                      className='th-primary th-bg-white th-br-4 text-center'
                       placement='bottomRight'
                       bordered={false}
                       showSearch={true}
@@ -381,9 +381,33 @@ const Appbar = ({ children, history, ...props }) => {
                     </Select>
                   </FormControl>
                   <div>
-                    <IconButton onClick={handleFinance} style={{ padding: '1%' }}>
+                    {/* <IconButton onClick={handleFinance} style={{ padding: '1%' }}>
                       <MonetizationOnIcon />
-                    </IconButton>
+                    </IconButton> */}
+                    {userData?.user_level == 1 ||
+                    userData?.user_level == 25 ||
+                    userData?.user_level == 13 ||
+                    userData?.is_superuser == true ? (
+                      <>
+                        {apps?.finance == true ? (
+                          <>
+                            {isMobile ? (
+                              <IconButton
+                                className={classes.grow}
+                                style={{ margin: '0' }}
+                                onClick={handleFinance}
+                              >
+                                <img src={RupeeSymbol} width='24px' />
+                              </IconButton>
+                            ) : null}
+                          </>
+                        ) : (
+                          <></>
+                        )}
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 </Grid>
               </Grid>
@@ -466,7 +490,7 @@ const Appbar = ({ children, history, ...props }) => {
             {isMobile ? null : (
               <div className={classes.grow} style={{ margin: '0' }}>
                 <FormControl
-                  className='d-flex flex-row align-items-center th-bg-white th-br-4'
+                  className='d-flex flex-row align-items-center th-bg-white th-br-4 '
                   variant='standard'
                   sx={{ m: 1, minWidth: 100 }}
                 >
@@ -474,7 +498,7 @@ const Appbar = ({ children, history, ...props }) => {
                   <Select
                     onChange={handleBranchChange}
                     value={branch ? branch : branchList ? branchList[0] : ''}
-                    className='th-primary th-bg-grey th-br-4 text-left'
+                    className='th-primary th-bg-white th-br-4 text-left th-topbar-select'
                     placement='bottomRight'
                     bordered={false}
                     showSearch={true}
@@ -508,7 +532,7 @@ const Appbar = ({ children, history, ...props }) => {
                   <Select
                     onChange={handleChange}
                     value={academicYear}
-                    className='th-primary th-bg-grey th-br-4 text-center'
+                    className='th-primary th-bg-white th-br-4 text-center'
                     placement='bottomRight'
                     bordered={false}
                     showSearch={true}

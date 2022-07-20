@@ -259,5 +259,9 @@ body {
 }
 
 .ant-select-selector {
-  min-width: 80px !important;
+  min-width: 110px !important;
+}
+
+.th-topbar-select .ant-select-selection-item {
+  width: 110px !important;
 }

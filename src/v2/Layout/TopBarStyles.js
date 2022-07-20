@@ -122,7 +122,7 @@ const TopBarStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     marginRight: '30px',
-    padding: '10px',
+    padding: '8px',
     marginTop: '5px',
   },
   year: {
