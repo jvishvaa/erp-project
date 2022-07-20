@@ -387,35 +387,35 @@ const MyCalendar = ({ selectedGrade, selectedSubject, acadyear, filtered, setFil
                 className='colorDiv'
                 style={{ background: '#308143', marginRight: '1%' }}
               ></div>
-              <p> Holidays </p>
+              <p style={{marginBottom: 0, paddingLeft: '2px'}}> Holidays </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div
                 className='colorDiv'
                 style={{ background: '#F0485B', marginRight: '1%' }}
               ></div>
-              <p> Examination </p>
+              <p style={{marginBottom: 0, paddingLeft: '2px'}}> Examination </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div
                 className='colorDiv'
                 style={{ background: '#BD78F9', marginRight: '1%' }}
               ></div>
-              <p style={{ width: '100%' }}> Miscellaneous Event </p>
+              <p style={{ width: '100%', marginBottom: 0, paddingLeft:'2px' }}> Miscellaneous Event </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div
                 className='colorDiv'
                 style={{ background: '#F96E34', marginRight: '1%' }}
               ></div>
-              <p> Competitions </p>
+              <p style={{marginBottom: 0, paddingLeft: '2px'}}> Competitions </p>
             </div>
             <div style={{ display: 'flex', alignItems: 'center' }}>
               <div
                 className='colorDiv'
                 style={{ background: '#A7A09B', marginRight: '1%' }}
               ></div>
-              <p> Period </p>
+              <p style={{marginBottom: 0, paddingLeft: '2px'}}> Period </p>
             </div>
           </div>
 
