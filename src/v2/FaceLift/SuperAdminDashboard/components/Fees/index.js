@@ -196,7 +196,6 @@ const FeesOverview = () => {
               className='th-primary th-bg-grey th-br-4 th-width-100 text-left'
               placement='bottomRight'
               allowClear={true}
-              showSearch={true}
               bordered={false}
               suffixIcon={<DownOutlined className='th-primary' />}
               placeholder={

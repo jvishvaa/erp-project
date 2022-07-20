@@ -12,6 +12,7 @@ import CalendarCard from '../myComponents/CalendarCard';
 const { Option } = Select;
 
 const SuperAdmindashboardNew = () => {
+  const time = new Date().getHours();
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -38,7 +39,10 @@ const SuperAdmindashboardNew = () => {
     <Layout>
       <div className=''>
         <div className='row'>
-          <div className='col-md-8 th-16 py-3'>Good Morning, Super Admin</div>
+          <div className='col-md-8 th-16 py-3'>
+            Good {time < 12 ? 'Morning' : time < 16 ? 'AfterNoon' : 'Evening'}, Super
+            Admin
+          </div>
           <div className='col-md-4 th-16 py-3'>
             <Select
               className='th-primary th-bg-white th-br-4 w-100 text-left mt-1'

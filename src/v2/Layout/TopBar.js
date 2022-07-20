@@ -1,15 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Divider,
-  FormControl,
-  MenuItem,
-  Select,
-  AppBar,
-  Grid,
-  TextField,
-} from '@material-ui/core';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import { Divider, FormControl, MenuItem, AppBar, Grid } from '@material-ui/core';
+import { DownOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -48,9 +40,10 @@ import AnnouncementIcon from 'v2/Assets/dashboardIcons/topbarIcons/announcements
 import NotificationsIcon from 'assets/dashboardIcons/topbarIcons/notifications.svg';
 import StaffIcon from 'assets/dashboardIcons/topbarIcons/defaultProfile.svg';
 import RupeeSymbol from 'v2/Assets/dashboardIcons/topbarIcons/rupee-symbol.png';
-
+import { Select } from 'antd';
 import './styles.scss';
 // import { Item } from 'semantic-ui-react';
+const { Option } = Select;
 
 const Appbar = ({ children, history, ...props }) => {
   const classes = TopBarStyles();
@@ -250,11 +243,11 @@ const Appbar = ({ children, history, ...props }) => {
   }, [acdemicCurrentYear]);
 
   const handleChange = (event) => {
-    setAcademicYear(event.target.value);
+    setAcademicYear(event);
 
     let acdemicCurrentYear;
     academicYearlist.forEach((item) => {
-      if (item.session_year === event.target.value) {
+      if (item.session_year === event) {
         acdemicCurrentYear = item;
       }
     });
@@ -271,11 +264,11 @@ const Appbar = ({ children, history, ...props }) => {
   };
 
   const handleBranchChange = (event) => {
-    setBranch(event.target.value);
+    setBranch(event);
     let selectedBranch;
 
     branchList.forEach((item) => {
-      if (item.branch.branch_name === event.target.value) {
+      if (item.branch.branch_name === event) {
         selectedBranch = item;
       }
     });
@@ -346,64 +339,44 @@ const Appbar = ({ children, history, ...props }) => {
                   style={{ textAlign: 'center', paddingTop: 10, display: 'flex' }}
                 >
                   <FormControl variant='standard' sx={{ m: 1, minWidth: 120 }}>
-                    {/* <Select
-                      labelId='demo-simple-select-label'
-                      id='demo-simple-select'
-                      value={academicYear}
-                      onChange={handleChange}
-                      className={classes.year}
-                    > */}
                     <Select
                       onChange={handleBranchChange}
-                      labelId='demo-simple-select-label'
-                      id='th-select-white-bg'
                       value={branch ? branch : branchList ? branchList[0] : ''}
-                      className={classes.branch}
-                      inputProps={{
-                        'aria-label': 'Without label',
-                        classes: {
-                          icon: 'th-select-icon-grey',
-                        },
-                      }}
-                      MenuProps={{
-                        anchorOrigin: {
-                          vertical: 'bottom',
-                          horizontal: 'left',
-                        },
-                        transformOrigin: {
-                          vertical: 'bottom',
-                          horizontal: 'left',
-                        },
-                      }}
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
+                      className='th-primary th-bg-grey th-br-4  text-left'
+                      placement='bottomRight'
+                      bordered={false}
+                      showSearch={true}
+                      suffixIcon={<DownOutlined className='th-primary' />}
+                      dropdownMatchSelectWidth={false}
+                      optionFilterProp='children'
+                      filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
-                      {branchList?.map((item) => (
-                        <MenuItem value={item?.branch?.branch_name}>
-                          <>{item?.branch?.branch_name}</>
-                        </MenuItem>
-                      ))}
+                      {branchList?.map((item) => {
+                        return (
+                          <Option value={item?.branch?.branch_name}>
+                            {item?.branch?.branch_name}
+                          </Option>
+                        );
+                      })}
                     </Select>
                     <Select
                       onChange={handleChange}
-                      labelId='demo-simple-select-label'
-                      id='th-select'
                       value={academicYear}
-                      // defaultValue='222'
-                      displayEmpty
-                      inputProps={{
-                        'aria-label': 'Without label',
-                        classes: {
-                          icon: 'th-select-icon',
-                        },
-                      }}
-                      IconComponent={KeyboardArrowDownIcon}
+                      className='th-primary th-bg-grey th-br-4 text-center'
+                      placement='bottomRight'
+                      bordered={false}
+                      showSearch={true}
+                      suffixIcon={<DownOutlined className='th-primary' />}
+                      dropdownMatchSelectWidth={false}
+                      optionFilterProp='children'
+                      filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
                       {academicYearlist?.map((year) => (
-                        <MenuItem value={year.session_year}>{year.session_year}</MenuItem>
+                        <Option value={year.session_year}>{year.session_year}</Option>
                       ))}
                     </Select>
                   </FormControl>
@@ -500,38 +473,25 @@ const Appbar = ({ children, history, ...props }) => {
                   <div className='px-2 th-black-2 th-14'> Select Branch:</div>
                   <Select
                     onChange={handleBranchChange}
-                    labelId='demo-simple-select-label'
-                    id='th-select-white-bg'
                     value={branch ? branch : branchList ? branchList[0] : ''}
-                    // displayEmpty
-                    inputProps={{
-                      'aria-label': 'Without label',
-                      classes: {
-                        icon: 'th-select-icon-grey',
-                      },
-                    }}
-                    MenuProps={{
-                      anchorOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      },
-                      transformOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      },
-                    }}
-                    IconComponent={KeyboardArrowDownIcon}
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
+                    className='th-primary th-bg-grey th-br-4 text-left'
+                    placement='bottomRight'
+                    bordered={false}
+                    showSearch={true}
+                    suffixIcon={<DownOutlined className='th-primary' />}
+                    dropdownMatchSelectWidth={false}
+                    optionFilterProp='children'
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
-                    {branchList?.map((item) => (
-                      <MenuItem value={item?.branch?.branch_name}>
-                        <>{item?.branch?.branch_name}</>
-                      </MenuItem>
-                    ))}
+                    {branchList?.map((item) => {
+                      return (
+                        <Option value={item?.branch?.branch_name}>
+                          {item?.branch?.branch_name}
+                        </Option>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </div>
@@ -547,30 +507,20 @@ const Appbar = ({ children, history, ...props }) => {
                   <div className='px-2 th-black-2'> Academic Year:</div>
                   <Select
                     onChange={handleChange}
-                    labelId='demo-simple-select-label'
-                    id='th-select-white-bg'
                     value={academicYear}
-                    displayEmpty
-                    inputProps={{
-                      'aria-label': 'Without label',
-                      classes: {
-                        icon: 'th-select-icon-grey',
-                      },
-                    }}
-                    MenuProps={{
-                      anchorOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      },
-                      transformOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      },
-                    }}
-                    IconComponent={KeyboardArrowDownIcon}
+                    className='th-primary th-bg-grey th-br-4 text-center'
+                    placement='bottomRight'
+                    bordered={false}
+                    showSearch={true}
+                    suffixIcon={<DownOutlined className='th-primary' />}
+                    dropdownMatchSelectWidth={false}
+                    optionFilterProp='children'
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {academicYearlist?.map((year) => (
-                      <MenuItem value={year.session_year}>{year.session_year}</MenuItem>
+                      <Option value={year.session_year}>{year.session_year}</Option>
                     ))}
                   </Select>
                 </FormControl>
