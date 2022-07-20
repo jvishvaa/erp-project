@@ -302,6 +302,7 @@ const Appbar = ({ children, history, ...props }) => {
               className={classes.mobileToolbar}
               display='flex'
               justifyContent='space-between'
+              alignItems='center'
             >
               <IconButton
                 edge='start'
@@ -400,48 +401,51 @@ const Appbar = ({ children, history, ...props }) => {
                       ))}
                     </Select>
                   </FormControl>
-                  <div>
-                    {/* <IconButton onClick={handleFinance} style={{ padding: '1%' }}>
-                      <MonetizationOnIcon />
-                    </IconButton> */}
-                    {userData?.user_level == 1 ||
-                    userData?.user_level == 25 ||
-                    userData?.user_level == 13 ||
-                    userData?.is_superuser == true ? (
+                </Grid>
+              </Grid>
+              <div className='ml-1 d-flex align-items-center'>
+                {userData?.user_level == 1 ||
+                userData?.user_level == 25 ||
+                userData?.user_level == 13 ||
+                userData?.is_superuser == true ? (
+                  <>
+                    {apps?.finance == true ? (
                       <>
-                        {apps?.finance == true ? (
-                          <>
-                            {isMobile ? (
-                              <IconButton
-                                className={classes.grow}
-                                style={{ margin: '0' }}
-                                onClick={handleFinance}
-                              >
-                                <img src={RupeeSymbol} width='24px' />
-                              </IconButton>
-                            ) : null}
-                          </>
-                        ) : (
-                          <></>
-                        )}
+                        {isMobile ? (
+                          <IconButton
+                            className={classes.grow}
+                            style={{ margin: '0' }}
+                            onClick={handleFinance}
+                          >
+                            <img src={RupeeSymbol} width='24px' />
+                          </IconButton>
+                        ) : null}
                       </>
                     ) : (
                       <></>
                     )}
-                  </div>
-                </Grid>
-              </Grid>
-
-              <div className={classes.sectionMobile}>
-                <IconButton
-                  aria-label='show more'
-                  aria-controls={mobileMenuId}
-                  aria-haspopup='true'
-                  onClick={handleMobileMenuOpen}
-                  color='inherit'
-                >
-                  <MoreIcon />
-                </IconButton>
+                  </>
+                ) : (
+                  <></>
+                )}
+                <Switch
+                  checked={isV2}
+                  checkedChildren='V2'
+                  unCheckedChildren='V1'
+                  onChange={handleVersion}
+                />
+                <div className={classes.sectionMobile}>
+                  <IconButton
+                    aria-label='show more'
+                    aria-controls={mobileMenuId}
+                    aria-haspopup='true'
+                    onClick={handleMobileMenuOpen}
+                    color='inherit'
+                    className='p-0'
+                  >
+                    <MoreIcon />
+                  </IconButton>
+                </div>
               </div>
             </Box>
           )}
@@ -570,12 +574,14 @@ const Appbar = ({ children, history, ...props }) => {
                 </FormControl>
               </div>
             )}
-            <Switch
-              checked={isV2}
-              checkedChildren='V2'
-              unCheckedChildren='V1'
-              onChange={handleVersion}
-            />
+            {isMobile ? null : (
+              <Switch
+                checked={isV2}
+                checkedChildren='V2'
+                unCheckedChildren='V1'
+                onChange={handleVersion}
+              />
+            )}
             {userData?.user_level == 1 ||
             userData?.user_level == 25 ||
             userData?.user_level == 13 ||
