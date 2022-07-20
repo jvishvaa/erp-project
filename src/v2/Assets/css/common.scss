@@ -195,11 +195,11 @@ body {
   background: #1b4ccb;
 }
 
-.ant-picker-input:first-child > input {
+.ant-picker-input:first-child>input {
   text-align: right;
 }
 
-.ant-picker-input > input {
+.ant-picker-input>input {
   color: #32334a !important;
   font-size: 13px;
 }
@@ -264,4 +264,8 @@ body {
 
 .th-topbar-select .ant-select-selection-item {
   width: 110px !important;
+}
+
+.ant-switch-checked {
+  background: #1b4ccb;
 }

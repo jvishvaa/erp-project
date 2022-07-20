@@ -32,6 +32,7 @@ import {
   currentSelectedBranch,
   fetchAcademicYearList,
   fetchBranchList,
+  selectedVersion,
 } from '../../redux/actions/common-actions';
 import ENVCONFIG from 'config/config';
 import EventsIcon from 'assets/dashboardIcons/topbarIcons/events.svg';
@@ -40,7 +41,7 @@ import AnnouncementIcon from 'v2/Assets/dashboardIcons/topbarIcons/announcements
 import NotificationsIcon from 'assets/dashboardIcons/topbarIcons/notifications.svg';
 import StaffIcon from 'assets/dashboardIcons/topbarIcons/defaultProfile.svg';
 import RupeeSymbol from 'v2/Assets/dashboardIcons/topbarIcons/rupee-symbol.png';
-import { Select } from 'antd';
+import { Select, Switch } from 'antd';
 import './styles.scss';
 // import { Item } from 'semantic-ui-react';
 const { Option } = Select;
@@ -61,6 +62,7 @@ const Appbar = ({ children, history, ...props }) => {
   const [centralSchoolName, setcentralSchoolName] = useState('');
   const [superUser, setSuperUser] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
+
   const [navigationData, setNavigationData] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -281,6 +283,16 @@ const Appbar = ({ children, history, ...props }) => {
     window.location.reload();
   };
 
+  const handleVersion = (status) => {
+    dispatch(selectedVersion(status));
+    localStorage.setItem('selectedVersion', status);
+  };
+  const isV2 = useSelector(
+    (state) =>
+      state.commonFilterReducer.selectedBranch?.isV2 &&
+      state.commonFilterReducer.selectedVersion
+  );
+
   return (
     <>
       <AppBar position='absolute' className={clsx(classes.appBar)}>
@@ -486,7 +498,7 @@ const Appbar = ({ children, history, ...props }) => {
             </div>
           )}
           {/* {isMobile ? null : <SearchBar />} */}
-          <div className='d-flex'>
+          <div className='d-flex align-items-center'>
             {isMobile ? null : (
               <div className={classes.grow} style={{ margin: '0' }}>
                 <FormControl
@@ -550,6 +562,12 @@ const Appbar = ({ children, history, ...props }) => {
                 </FormControl>
               </div>
             )}
+            <Switch
+              checked={isV2}
+              checkedChildren='V2'
+              unCheckedChildren='V1'
+              onChange={handleVersion}
+            />
             {userData?.user_level == 1 ||
             userData?.user_level == 25 ||
             userData?.user_level == 13 ||

@@ -35,10 +35,12 @@ import {
   resetSelectedBranch,
   fetchAcademicYearList,
   fetchBranchList,
+  selectedVersion,
 } from '../../redux/actions/common-actions';
 import ENVCONFIG from 'config/config';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import './styles.scss';
+import { Switch } from 'antd';
 
 const Appbar = ({ children, history, ...props }) => {
   const classes = AppSearchBarUseStyles();
@@ -342,6 +344,19 @@ const Appbar = ({ children, history, ...props }) => {
   useEffect(() => {
     setBranch(selectedBranch?.branch?.branch_name);
   }, [selectedBranch]);
+
+  const handleVersion = (status) => {
+    dispatch(selectedVersion(status));
+    localStorage.setItem('selectedVersion', status);
+  };
+  const isV2 = useSelector(
+    (state) =>
+      state.commonFilterReducer.selectedBranch?.isV2 &&
+      state.commonFilterReducer.selectedVersion
+  );
+  const isBranchV2 = useSelector(
+    (state) => state.commonFilterReducer.selectedBranch?.isV2
+  );
   return (
     <>
       <AppBar position='absolute' className={clsx(classes.appBar)}>
@@ -532,7 +547,7 @@ const Appbar = ({ children, history, ...props }) => {
             </div>
           )}
           {isMobile ? null : <SearchBar />}
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
             {isMobile ? null : (
               <div className={classes.grow} style={{ margin: '0' }}>
                 <FormControl variant='standard' sx={{ m: 1, minWidth: 100 }}>
@@ -581,6 +596,14 @@ const Appbar = ({ children, history, ...props }) => {
                 </FormControl>
               </div>
             )}
+            {isBranchV2 ? (
+              <Switch
+                checked={isV2}
+                checkedChildren='V2'
+                unCheckedChildren='V1'
+                onChange={handleVersion}
+              />
+            ) : null}
             {userData?.user_level == 1 ||
             userData?.user_level == 25 ||
             userData?.user_level == 13 ||

@@ -48,6 +48,7 @@ export const commonActions = {
   ERP_CONFIG: 'ERP_CONFIG',
   SELECTED_BRANCH: 'SELECTED_BRANCH',
   BRANCH_LIST: 'BRANCH_LIST',
+  SELECTED_VERSION: 'SELECTED_VERSION',
 };
 
 const {
@@ -57,6 +58,7 @@ const {
   ERP_CONFIG,
   SELECTED_BRANCH,
   BRANCH_LIST,
+  SELECTED_VERSION,
 } = commonActions;
 
 const getDefaultYear = (data) => {
@@ -183,4 +185,8 @@ export const fetchBranchList = (session_year) => (dispatch) => {
     .catch(() => {
       dispatch({ type: BRANCH_LIST, payload: [] });
     });
+};
+
+export const selectedVersion = (data) => (dispatch) => {
+  dispatch({ type: SELECTED_VERSION, payload: data });
 };

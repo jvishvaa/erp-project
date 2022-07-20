@@ -10,7 +10,7 @@ const TopBarStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       zIndex: theme.zIndex.drawer + 200,
     },
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#f8f8f800',
     color: theme.palette.secondary.main,
     boxShadow: 'none',
   },
