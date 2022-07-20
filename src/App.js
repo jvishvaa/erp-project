@@ -428,8 +428,12 @@ function App({ alert, isMsAPI, erpConfig }) {
     erpConfig();
   }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
+  const isV2 = useSelector(
+    (state) =>
+      state.commonFilterReducer.selectedBranch?.isV2 &&
+      state.commonFilterReducer.selectedVersion
+  );
 
-  const isV2 = useSelector((state) => state.commonFilterReducer.selectedBranch)?.isV2;
   return (
     // <ErrorBoundary404 HomeButton={false}>
     <div className='App'>
@@ -2084,5 +2088,4 @@ const mapStateToProps = (state) => {
     // isLoggedIn: state.authentication.loggedIn
   };
 };
-
 export default connect(mapStateToProps, mapDispatchToProps)(App);

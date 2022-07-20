@@ -34,11 +34,11 @@ const Announcements = () => {
   }, [selectedAcademicYear]);
 
   return (
-    <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
+    <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm mt-3'>
       <div className='col-md-12 mt-2 pb-2 th-black-1 '>
         <span className='th-16 th-fw-500 '>Announcements </span>
       </div>
-      <div className='col-md-12 mt-2 mb-1' style={{ height: '575px', overflowY: 'auto' }}>
+      <div className='col-md-12 mt-2 mb-1' style={{ height: '330px', overflowY: 'auto' }}>
         {announcementListData?.length > 0 ? (
           announcementListData?.map((item) => {
             return (

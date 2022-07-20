@@ -22,7 +22,11 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
   const classes = useStyles();
   const userMenuOpen = openMenu === 'user-management';
   const masterMenuOpen = openMenu === 'master-management';
-  const isV2 = useSelector((state) => state.commonFilterReducer.selectedBranch)?.isV2;
+  const isV2 = useSelector(
+    (state) =>
+      state.commonFilterReducer.selectedBranch?.isV2 &&
+      state.commonFilterReducer.selectedVersion
+  );
   return (
     <>
       {window.location.host !== endpoints.aolConfirmURL && (

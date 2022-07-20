@@ -10,7 +10,7 @@ const TopBarStyles = makeStyles((theme) => ({
     [theme.breakpoints.down('sm')]: {
       zIndex: theme.zIndex.drawer + 200,
     },
-    backgroundColor: '#f8f8f8',
+    backgroundColor: '#f8f8f800',
     color: theme.palette.secondary.main,
     boxShadow: 'none',
   },
@@ -56,7 +56,7 @@ const TopBarStyles = makeStyles((theme) => ({
   },
   mobileToolbar: {
     display: 'none',
-    // width: '100%',
+    width: '95%',
     [theme.breakpoints.down('sm')]: {
       display: 'flex',
       position: 'absolute',
@@ -122,7 +122,7 @@ const TopBarStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'center',
     marginRight: '30px',
-    padding: '10px',
+    padding: '8px',
     marginTop: '5px',
   },
   year: {
@@ -245,7 +245,7 @@ const TopBarStyles = makeStyles((theme) => ({
   },
   sectionMobile: {
     display: 'flex',
-    marginRight: '12px',
+    marginRight: '0px',
     [theme.breakpoints.up('md')]: {
       display: 'none',
     },

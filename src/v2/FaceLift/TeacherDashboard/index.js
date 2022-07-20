@@ -12,9 +12,11 @@ import CurriculumCompletion from './components/CurriculumCompletion';
 import axios from 'v2/config/axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import endpoints from 'v2/config/endpoints';
+import Shortcut from './components/Shortcut';
 
 const TeacherdashboardNew = () => {
   const [todaysAttendance, setTodaysAttendance] = useState([]);
+  const time = new Date().getHours();
 
   const fetchTodaysAttendance = (params = {}) => {
     axios
@@ -42,7 +44,10 @@ const TeacherdashboardNew = () => {
     <Layout>
       <div className=''>
         <div className='row th-16 py-3 justify-content-between'>
-          <div className='col-md-6 th-black-1 th-20 th-fw-400'>Good Morning, Teacher</div>
+          <div className='col-md-6 th-black-1 th-20 th-fw-400'>
+            {' '}
+            Good {time < 12 ? 'Morning' : time < 16 ? 'AfterNoon' : 'Evening'}, Teacher
+          </div>
           <div className='col-md-6 text-right'>
             <div className='pr-3'>
               <span
@@ -73,6 +78,7 @@ const TeacherdashboardNew = () => {
           </div>
           <div className='col-md-4 th-custom-col-padding'>
             <Assessment />
+            <Shortcut />
             <Announcement scrollHeight={'335px'} />
           </div>
         </div>

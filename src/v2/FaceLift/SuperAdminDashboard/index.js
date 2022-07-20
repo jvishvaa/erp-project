@@ -8,10 +8,12 @@ import Announcement from './components/Announcement';
 import FeesOverview from './components/Fees';
 import AcademicPerformance from './components/Academic Performance';
 import CalendarCard from '../myComponents/CalendarCard';
+import Shortcut from './components/Shortcut';
 
 const { Option } = Select;
 
 const SuperAdmindashboardNew = () => {
+  const time = new Date().getHours();
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -38,19 +40,23 @@ const SuperAdmindashboardNew = () => {
     <Layout>
       <div className=''>
         <div className='row'>
-          <div className='col-md-8 th-16 py-3'>Good Morning, Super Admin</div>
+          <div className='col-md-8 th-16 py-3'>
+            Good {time < 12 ? 'Morning' : time < 16 ? 'AfterNoon' : 'Evening'}, Super
+            Admin
+          </div>
           <div className='col-md-4 th-16 py-3'>
             <Select
               className='th-primary th-bg-white th-br-4 w-100 text-left mt-1'
               placement='bottomRight'
               mode='multiple'
-              maxTagCount={2}
+              maxTagCount={3}
               showArrow={true}
               allowClear={true}
               suffixIcon={<DownOutlined className='th-primary' />}
-              placeholder={
-                <span className='th-primary'>{selectedBranch?.branch?.branch_name}</span>
-              }
+              // placeholder={
+              //   <span className='th-primary'>{selectedBranch?.branch?.branch_name}</span>
+              // }
+              placeholder='Select Branches'
               dropdownMatchSelectWidth={false}
               bordered={false}
               onChange={(e, value) => handleBranchChange(value)}
@@ -74,6 +80,7 @@ const SuperAdmindashboardNew = () => {
             <CalendarCard />
           </div>
           <div className='col-md-4 th-custom-col-padding'>
+            <Shortcut selectedBranchList={selectedBranchList} />
             <Announcement />
           </div>
         </div>

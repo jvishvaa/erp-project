@@ -35,7 +35,11 @@ const MenuItem = withRouter(({ history, ...props }) => {
   const [childValue, setChildValue] = useState(!flag);
   const [child, setChild] = useState('');
 
-  const isV2 = useSelector((state) => state.commonFilterReducer.selectedBranch)?.isV2;
+  const isV2 = useSelector(
+    (state) =>
+      state.commonFilterReducer.selectedBranch?.isV2 &&
+      state.commonFilterReducer.selectedVersion
+  );
 
   const useStyles = makeStyles((theme) => ({
     // listitem: {

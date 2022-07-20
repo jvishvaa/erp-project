@@ -32,7 +32,11 @@ export const ContainerContext = createContext();
 const Layout = ({ children, history }) => {
   const containerRef = useRef(null);
   const dispatch = useDispatch();
-  let isV2 = useSelector((state) => state.commonFilterReducer.selectedBranch)?.isV2;
+  let isV2 = useSelector(
+    (state) =>
+      state.commonFilterReducer.selectedBranch?.isV2 &&
+      state.commonFilterReducer.selectedVersion
+  );
   // const [drawerOpen, setDrawerOpen] = useState(
   //   isV2 ? (window.innerWidth < 768 ? false : true) : false
   // );
