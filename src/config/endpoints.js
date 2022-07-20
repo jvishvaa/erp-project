@@ -52,6 +52,7 @@ export default {
     markAllAttendance: '/erp_user/mark-attendance-of-all-students/',
     dataupdate: '/erp_user/present_absent',
     checkOMR : '/assessment/check-sys-config/?config_key=enable_omr_uploads_branches',
+    buttonStatus: `/assessment/check-sys-config/?config_key=config_properties&config_type=json`,
 
   },
   appBar: {
