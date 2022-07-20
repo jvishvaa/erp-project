@@ -548,6 +548,15 @@ const Appbar = ({ children, history, ...props }) => {
           )}
           {isMobile ? null : <SearchBar />}
           <div style={{ display: 'flex', alignItems: 'center' }}>
+            {isBranchV2 ? (
+              <Switch
+                checked={isV2}
+                checkedChildren='Older Version'
+                unCheckedChildren='Newer Version'
+                onChange={handleVersion}
+              />
+            ) : null}
+
             {isMobile ? null : (
               <div className={classes.grow} style={{ margin: '0' }}>
                 <FormControl variant='standard' sx={{ m: 1, minWidth: 100 }}>
@@ -596,14 +605,7 @@ const Appbar = ({ children, history, ...props }) => {
                 </FormControl>
               </div>
             )}
-            {isBranchV2 ? (
-              <Switch
-                checked={isV2}
-                checkedChildren='V2'
-                unCheckedChildren='V1'
-                onChange={handleVersion}
-              />
-            ) : null}
+
             {userData?.user_level == 1 ||
             userData?.user_level == 25 ||
             userData?.user_level == 13 ||

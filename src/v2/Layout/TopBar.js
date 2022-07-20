@@ -510,7 +510,16 @@ const Appbar = ({ children, history, ...props }) => {
             </div>
           )}
           {/* {isMobile ? null : <SearchBar />} */}
+
           <div className='d-flex align-items-center'>
+            {isMobile ? null : (
+              <Switch
+                checked={isV2}
+                checkedChildren={props.drawerOpen ? 'V1' : 'Older Version'}
+                unCheckedChildren={props.drawerOpen ? 'V2' : 'Newer Version'}
+                onChange={handleVersion}
+              />
+            )}
             {isMobile ? null : (
               <div className={classes.grow} style={{ margin: '0' }}>
                 <FormControl
@@ -574,14 +583,7 @@ const Appbar = ({ children, history, ...props }) => {
                 </FormControl>
               </div>
             )}
-            {isMobile ? null : (
-              <Switch
-                checked={isV2}
-                checkedChildren='V2'
-                unCheckedChildren='V1'
-                onChange={handleVersion}
-              />
-            )}
+
             {userData?.user_level == 1 ||
             userData?.user_level == 25 ||
             userData?.user_level == 13 ||
