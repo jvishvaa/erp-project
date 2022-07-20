@@ -10,6 +10,10 @@ import { Box, useMediaQuery, useTheme } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
+import 'v2/Assets/css/antdTab.css';
+import 'v2/Assets/css/antdModal.css';
+import 'v2/Assets/css/table.scss';
+import 'v2/Assets/css/antdDrawer.css';
 import Appbar from './Appbar';
 import TopBar from 'v2/Layout/TopBar';
 import SideBarV2 from 'v2/Layout/SideBar';
@@ -273,6 +277,10 @@ const Layout = ({ children, history }) => {
 
       case 'Section Shuffle': {
         history.push('/user-management/section-shuffling');
+        break;
+      }
+      case 'Virtual School': {
+        history.push('/virtual-school');
         break;
       }
       case 'Access-Blocker': {

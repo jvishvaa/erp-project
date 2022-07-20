@@ -13,6 +13,9 @@ const { Option } = Select;
 
 const SuperAdmindashboardNew = () => {
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   const [selectedBranchList, setSelectedBranchList] = useState([]);
   const handleBranchChange = (e) => {
     setSelectedBranchList([...e]);
@@ -45,7 +48,9 @@ const SuperAdmindashboardNew = () => {
               showArrow={true}
               allowClear={true}
               suffixIcon={<DownOutlined className='th-primary' />}
-              placeholder='Select any branch'
+              placeholder={
+                <span className='th-primary'>{selectedBranch?.branch?.branch_name}</span>
+              }
               dropdownMatchSelectWidth={false}
               bordered={false}
               onChange={(e, value) => handleBranchChange(value)}

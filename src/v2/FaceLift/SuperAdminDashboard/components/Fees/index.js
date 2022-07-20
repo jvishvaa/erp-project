@@ -45,8 +45,14 @@ const FeesOverview = () => {
   const [feesStats, setFeesStats] = useState('');
   const [feesOverviewData, setFeesOverviewData] = useState([]);
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
   const [branchId, setBranchId] = useState('');
-  const [branchSelected, setBranchSelected] = useState([]);
+  const [branchSelected, setBranchSelected] = useState([selectedBranch]);
   let data = JSON.parse(localStorage.getItem('userDetails')) || {};
   const user_level = data?.user_level;
 
@@ -66,12 +72,7 @@ const FeesOverview = () => {
   const handleChange = (e) => {
     setFeeOverviewFilter(e.target.value);
   };
-  const selectedBranch = useSelector(
-    (state) => state.commonFilterReducer?.selectedBranch
-  );
-  const selectedAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-  );
+
   let yearlyData = [];
   let categories = [];
 
@@ -108,30 +109,25 @@ const FeesOverview = () => {
       const selectedBranchId = branchId ? branchId : selectedBranch?.branch?.id;
       fetchFeesData({
         branch_id: selectedBranchId,
-        // finance_session_year_id: selectedAcademicYear?.id,
-        session_year: selectedAcademicYear?.session_year,
+        finance_session_year: selectedAcademicYear?.session_year,
       });
       fetchFeesStats({
         branch_id: selectedBranchId,
-        // finance_session_year_id: selectedAcademicYear?.id,
-        session_year: selectedAcademicYear?.session_year,
+        finance_session_year: selectedAcademicYear?.session_year,
       });
     }
   }, [selectedBranch, selectedAcademicYear, branchId]);
 
   const showFeesDetails = () => {
     if (user_level != 10) {
-      if (branchId) {
-        history.push({
-          pathname: '/fees-table-status',
-          state: {
-            branch: branchSelected,
-            filter: true,
-          },
-        });
-      } else {
-        history.push('/fees-table-status');
-      }
+      const branch = branchId ? branchSelected : [selectedBranch];
+      history.push({
+        pathname: '/fees-table-status',
+        state: {
+          branch: branch,
+          filter: true,
+        },
+      });
     }
   };
   const options = {
@@ -203,7 +199,9 @@ const FeesOverview = () => {
               showSearch={true}
               bordered={false}
               suffixIcon={<DownOutlined className='th-primary' />}
-              placeholder='Select Branch'
+              placeholder={
+                <span className='th-primary'>{selectedBranch?.branch?.branch_name}</span>
+              }
               dropdownMatchSelectWidth={false}
               onChange={(e, value) => handleBranchChange(value)}
               optionFilterProp='children'

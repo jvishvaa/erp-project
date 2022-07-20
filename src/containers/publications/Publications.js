@@ -156,7 +156,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "19px",
     color: theme.palette.secondary.main,
     fontWeight: 600,
-    // fontFamily: $font-roboto,
   },
   filter :{
     color: theme.palette.secondary.main,
@@ -215,16 +214,10 @@ const StyledFilterButton = withStyles((theme)=>({
 
 const Publications = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
-
   const [mainsubject, setMainsubject] = React.useState([]);
-
   const [data, setData] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const [Filter, setFilter] = useState(true);
-  //  const [counter, setCounter] = useState(3);
-
-  // extra
-  const [dataMap, setDataMap] = useState([]);
   const [acadamicYearID, setAcadamicYear] = useState(
     useSelector((state) => state.commonFilterReducer?.selectedYear)
   );
@@ -274,7 +267,6 @@ const Publications = (props) => {
   const [filterPage, setFilterPage] = useState(false);
   const handlePagination = (event, page) => {
     setPage(page);
-    console.log('The page number:', page);
 
     handleSubjectID(subjectChanger, page);
     handleAlldata(page);
@@ -392,7 +384,6 @@ const Publications = (props) => {
         if (res.data.total_pages === 0) {
           setChanger4(false);
         } else if (res.data.status_code === 200) {
-          // setAlert('success', res.data.message);
           setTotalPages4(res.data.total_pages);
           setIndividualData(res.data.data);
           setChanger4(true);
@@ -417,7 +408,6 @@ const Publications = (props) => {
           setData('');
           setLoading(false);
         } else if (res.data.status_code === 200) {
-          // setAlert('success', res.data.message);
           setTotalPages5(res.data.total_pages);
           setData(res.data.data);
           setChanger5(true);
@@ -442,7 +432,6 @@ const Publications = (props) => {
           setChanger2(false);
           setLoading(false);
         } else if (res.data.status_code === 200) {
-          // setAlert('success', res.data.message);
           setTotalPages2(res.data.total_pages);
           setDataDraft(res.data.data);
           setLoading(false);
@@ -465,7 +454,6 @@ const Publications = (props) => {
       .then((result) => {
         console.log('the new subject', theSubjectId);
         if (result.data.status_code === 200) {
-          // setAlert('success', result.data.message);
           filterForAllData(theSubjectId, page);
           setLoading(false);
         } else {
@@ -491,7 +479,6 @@ const Publications = (props) => {
           setChanger3(false);
           setLoading(false);
         } else if (res.data.status_code === 200) {
-          // setAlert('success', res.data.message);
           setTotalPages3(res.data.total_pages);
           setReviewData(res.data.data);
           setChanger3(true);
@@ -504,13 +491,6 @@ const Publications = (props) => {
   };
   const [open, setOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   const handlePublish = (value) => {
     formData.append('status_post', publishDataPut);
@@ -519,7 +499,6 @@ const Publications = (props) => {
       .put(`${endpoints.publish.update_delete}?publication_id=${value}`, formData)
       .then((result) => {
         if (result.data.status_code === 200) {
-          // setAlert('success', result.data.message);
           filterForAllData(theSubjectId, page);
           setLoading(false);
         } else {
@@ -545,9 +524,6 @@ const Publications = (props) => {
         value.push(options[noOfOption].value);
       }
     }
-    // if (counter === 1) {
-    //   setAcadamicYear(value);
-    // }
 
     if (counter === 2) {
       setSubjectID(value);
@@ -558,9 +534,6 @@ const Publications = (props) => {
     callingAPI();
   }, [counter]);
   const callingAPI = () => {
-    // if (counter === 1) {
-    //   callingAcadamicAPI();
-    // }
 
     if (counter === 2) {
       callingSubjectAPI(id);
@@ -568,14 +541,12 @@ const Publications = (props) => {
   };
 
   const callingSubjectAPI = (id) => {
-    // console.log('The subject id:', id);
     setLoading(true);
     axiosInstance
       .get(
         `${endpoints.userManagement.subjectName}?academic_year_id=${acadamicYearID?.id}`
       )
       .then((res) => {
-        // console.log('data Api:', res.data.data);
         if (acadamicYearID?.id) {
           setMainsubject(res.data.data);
           setLoading(false);
@@ -588,27 +559,7 @@ const Publications = (props) => {
         setLoading(false);
       });
   };
-  // const callingAcadamicAPI = () => {
-  //   setLoading(true);
-  //   //   axiosInstance
-  //   //     .get(endpoints.userManagement.academicYear)
-  //   //     .then((res) => {
-  //   //       setDataMap(res.data.data);
-  //   //       setLoading(false);
-  //   //     })
-  //   //     .catch((error) => {
-  //   //       setLoading(false);
-  //   //     });
-  // };
 
-  const handleCounter = (value) => {
-    if (value === 'back' && counter > 1) {
-      setCounter(counter - 1);
-    }
-    if (value === 'forward' && counter < 4) {
-      setCounter(counter + 1);
-    }
-  };
   const handleAlldata = (page) => {
     setLoading(true);
     axiosInstance
@@ -619,7 +570,6 @@ const Publications = (props) => {
           setData('');
           setLoading(false);
         } else if (res.data.status_code === 200) {
-          // setAlert('success', res.data.message);
           setTotalPages(res.data.total_pages);
           setData(res.data.data);
           setChanger(true);
@@ -636,7 +586,6 @@ const Publications = (props) => {
     handleAlldata(page);
   }, []);
   const classes = useStyles();
-  const theme = useTheme();
   const handleDelete = (value, subjectId) => {
     setLoading(true);
     axiosInstance
@@ -685,7 +634,6 @@ const Publications = (props) => {
             data.map((item, index) => {
               return (
                 <div className={classes.paperMar}>
-                  {/* {ReactHtmlParser(item.description)} */}
                   <Grid item xs={12}>
                     <Paper elevation={3}>
                       <Grid container spacing={2}>
@@ -916,7 +864,6 @@ const Publications = (props) => {
             data.map((item, index) => {
               return (
                 <div className={classes.paperMar1}>
-                  {/* {ReactHtmlParser(item.description)} */}
                   <Grid item xs={12} className='arrange'>
                     <Paper elevation={3}>
                       <Grid container spacing={2}>
@@ -1038,8 +985,6 @@ const Publications = (props) => {
             dataDraft.map((item, index) => {
               return (
                 <div className={classes.paperMar}>
-                  {/* {ReactHtmlParser(item.description)} */}
-
                   <Paper elevation={3}>
                     <Grid container spacing={2}>
                       <Grid item>
@@ -1304,7 +1249,6 @@ const Publications = (props) => {
             dataDraft.map((item, index) => {
               return (
                 <div className={classes.paperMar1}>
-                  {/* {ReactHtmlParser(item.description)} */}
                   <Grid item xs={12} className='arrange'>
                     <Paper elevation={3}>
                       <Grid container spacing={2}>
@@ -1434,7 +1378,6 @@ const Publications = (props) => {
             individualData.map((item, index) => {
               return (
                 <div className={classes.paperMar}>
-                  {/* {ReactHtmlParser(item.description)} */}
                   <Grid item xs={12}>
                     <Paper elevation={3}>
                       <Grid container spacing={2}>
@@ -1679,7 +1622,6 @@ const Publications = (props) => {
             individualData.map((item, index) => {
               return (
                 <div className={classes.paperMar1}>
-                  {/* {ReactHtmlParser(item.description)} */}
                   <Grid item xs={12} className='arrange'>
                     <Paper elevation={3}>
                       <Grid container spacing={2}>
@@ -1810,7 +1752,6 @@ const Publications = (props) => {
             reviewData.map((item, index) => {
               return (
                 <div className={classes.paperMar}>
-                  {/* {ReactHtmlParser(item.description)} */}
                   <Grid item xs={12}>
                     <Paper elevation={3}>
                       <Grid container spacing={2}>
@@ -2104,7 +2045,6 @@ const Publications = (props) => {
             reviewData.map((item, index) => {
               return (
                 <div className={classes.paperMar1}>
-                  {/* {ReactHtmlParser(item.description)} */}
                   <Grid item xs={12} className='arrange'>
                     <Paper elevation={3}>
                       <Grid container spacing={2}>
@@ -2422,17 +2362,6 @@ const Publications = (props) => {
                                       ))}
                                   </Select>
                                 </div>
-                                {/* <div className='text-fixed-last1'>
-                                  Expand
-                                  <IconButton
-                                    aria-label='delete'
-                                    onClick={() => setCounter(counter - 1)}
-                                    size='small'
-                                  >
-                                    <ArrowBackIcon className='arrow-button1' />
-                                    <ArrowForwardIcon className='arrow-button1' />
-                                  </IconButton>
-                                </div> */}
                               </div>
                             </>
                           ) : (
