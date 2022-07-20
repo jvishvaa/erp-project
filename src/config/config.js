@@ -45,6 +45,7 @@ const dev = {
     msReportsUrl: 'https://dev.reports.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
+    baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
   },
 };
 
