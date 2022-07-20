@@ -77,11 +77,11 @@ const ReportsCard = (props) => {
                         : item?.unsubmitted_students}
                     </div>
                   </div>
-                  <div className='row justify-content-between th-primary th-12 th-fw-400'>
+                  {/* <div className='row justify-content-between th-primary th-12 th-fw-400'>
                     <div className='col-4 text-right'></div>
                     <div className='col-4 pl-1'>Evaluated</div>
                     <div className='col-4 text-center'>09</div>
-                  </div>
+                  </div> */}
                 </div>
               </AccordionDetails>
             </Accordion>

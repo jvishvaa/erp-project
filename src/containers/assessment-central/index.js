@@ -18,6 +18,10 @@ import {
   IconButton,
   CircularProgress,
   SvgIcon,
+  FormControlLabel,
+  Checkbox,
+  Box,
+  Input,
 } from '@material-ui/core';
 import { connect, useSelector } from 'react-redux';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -50,6 +54,10 @@ import DateRangeSelector from '../../components/date-range-selector';
 import infoIcon from '../../assets/images/info-icon.svg';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
+import axios from './../../config/axios';
+import endpoints from 'config/endpoints';
+import Loader from './../../components/loader/loader'
+import FileSaver from 'file-saver';
 
 const useStyles = makeStyles({
   tabsFlexContainer: {
@@ -90,12 +98,19 @@ const Assesment = () => {
   const [selectedAssesmentTest, setSelectedAssesmentTest] = useState();
   const [fetchingTests, setFetchingTests] = useState(false);
   const [minDate, setMinDate] = useState(null);
-  const [ filterData , setFilterData ] = useState([])
+  const [filterData, setFilterData] = useState([]);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+  const [bulkUpload, setBulkUpload] = useState(false);
+  const [file, setFile] = useState(null);
+  const isSuperuser = JSON.parse(localStorage.getItem('userDetails'))?.is_superuser ;
+  const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level || {};
+  const isSuperAdmin = userLevel === 1
+  console.log('super','orchids',isSuperAdmin,isSuperuser)
+  const [loading,setLoading] = useState(false)
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -385,8 +400,54 @@ const Assesment = () => {
     setFilteredAssesmentTestPage(1);
   }
 
+  const handleFileChange = (event) => {
+    const { files } = event.target || {};
+    const fil = files[0] || '';
+    if (fil?.name?.lastIndexOf('.xls') > 0 || fil?.name?.lastIndexOf('.xlsx') > 0) {
+      setFile(fil);
+    } else {
+      setFile(null);
+      setAlert(
+        'error',
+        'Only excel file is acceptable either with .xls or .xlsx extension'
+      );
+    }
+  };
+
+  const { token: TOKEN = '' } = JSON.parse(localStorage.getItem('userDetails')) || {};
+
+  const excelDownload = (data) => {
+    const blob = new Blob([data], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+    FileSaver.saveAs(blob, 'upload_mark_status.xls');
+  }
+
+  const uploadMarks = () => {
+    const data = new FormData();
+    data.append('file', file);
+    if (file) {
+      setLoading(true)
+      axios
+        .post(`${endpoints.assessment.bulkUploadMarks}`, data)
+        .then((result) => {
+          setLoading(false)
+          if(result?.status === 200){
+            setAlert('success','File successfully uploaded')
+            excelDownload(result.data)
+          }else{
+            setAlert('error','Please upload in the given format')
+          }
+        }).finally(()=>setLoading(false));
+    }
+    if(!file){
+      setAlert('warning','Please select file')
+    }
+  };
+
   return (
     <Layout>
+      {loading && <Loader />}
       <div className='assesment-container'>
         <div
           className='lesson-plan-breadcrumb-wrapper'
@@ -666,6 +727,55 @@ const Assesment = () => {
                   </Button>
                 </div>
               </Grid>
+              {(isSuperAdmin || isSuperuser) &&  <Grid item container md={6} xs={6} justifyContent='flex-end'>
+                <div className='btn-container'>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        checked={bulkUpload}
+                        onChange={() => setBulkUpload(!bulkUpload)}
+                        name='checked'
+                        color='primary'
+                      />
+                    }
+                    label={<Typography color='secondary'>Upload Marks</Typography>}
+                  />
+                </div>
+
+                {bulkUpload ? (
+                  <div>
+                    <Input
+                      type='file'
+                      // inputRef={props.fileRef}
+                      inputProps={{ accept: '.xlsx,.xls' }}
+                      onChange={handleFileChange}
+                    />
+                    <div>Accepted Files : [.xlsx,.xls] files</div>
+                    <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
+                      <Box p={1}>
+                        {`Download Format: `}
+                        <a
+                          style={{ cursor: 'pointer' }}
+                          href='assets/download-format/Response.xlsx'
+                          download='format.xlsx'
+                        >
+                          Download format
+                        </a>
+                      </Box>
+                    </Box>
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={() => uploadMarks()}
+                      style={{marginLeft:'22%'}}
+                    >
+                      Upload
+                    </Button>
+                  </div>
+                ) : (
+                  <div></div>
+                )}
+              </Grid>}
             </Grid>
           </div>
           <div className='tabs-container'>
