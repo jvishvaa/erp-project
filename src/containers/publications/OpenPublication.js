@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Button, Grid, Paper, Typography,withStyles } from '@material-ui/core';
+import React, { useEffect } from 'react';
+import { Button, Grid, Typography,withStyles } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 import MenuBookIcon from '@material-ui/icons/MenuBook';
@@ -8,10 +8,7 @@ import BookIcon from '@material-ui/icons/Book';
 import './Styles.css';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
-// import { Document, Page } from 'react-pdf';
 import ReactHtmlParser from 'react-html-parser';
-import { Pagination } from '@material-ui/lab';
-
 import MediaQuery from 'react-responsive';
 
 import KeyboardBackspaceIcon from '@material-ui/icons/KeyboardBackspace';
@@ -86,9 +83,6 @@ const OpenPublication = ({ ID }) => {
   }, []);
 
   const [numPages, setNumPages] = React.useState(null);
-  function onDocumentLoadSuccess({ numPages }) {
-    setNumPages(numPages);
-  }
   const SingleBook = () => {
     setSingle(true);
     return (

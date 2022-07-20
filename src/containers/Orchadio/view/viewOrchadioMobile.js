@@ -1,12 +1,10 @@
-import React, { Component, useEffect, useContext, useCallback } from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import React, { useEffect, useContext } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
 import {
   Grid,
   IconButton,
   Tooltip,
   Card,
-  // useMediaQuery,
-  Divider,
   Button,
   TextField,
   Box,
@@ -19,7 +17,6 @@ import {
   ChatBubbleOutline as CommentIcon,
 } from '@material-ui/icons';
 import CardHeader from '@material-ui/core/CardHeader';
-import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Collapse from '@material-ui/core/Collapse';
@@ -27,10 +24,7 @@ import Avatar from '@material-ui/core/Avatar';
 import { red } from '@material-ui/core/colors';
 import Chip from '@material-ui/core/Chip';
 import moment from 'moment';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import clsx from 'clsx';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -105,17 +99,14 @@ const useStyles = makeStyles((theme) => ({
   tabRoot: {
     width: '100%',
     flexGrow: 1,
-    // backgroundColor: theme.palette.background.paper,
-    // margin: '20px',
+
   },
   comment: {
-    // border: '1px solid red',
     backgroundColor: '#f9f9f9',
     width: '95%',
     padding: 20,
     marginTop: 20,
     marginBottom: 20,
-    // marginLeft: '50px',
     display: 'flex'
   },
   commenter: {
@@ -149,7 +140,6 @@ const ViewOrchadioMobile = () => {
 
   const handleExpandClick = (index) => {
     setCollapseId(index);
-    // setExpanded(expanded ? index : false);
     setExpanded(!expanded);
   };
   const completionCallback = (id) => {
@@ -183,19 +173,14 @@ const ViewOrchadioMobile = () => {
       .catch((err) => console.log(err));
   };
   const likeHandler = (item) => {
-    // setisLiked(!status);
     axios
       .put(`${endpoints.orchadio.PostCommentandLike}${item.id}/orchido-like/`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setLoading(false);
           setAlert('success', result.data.message);
-          // console.log(result.data.result);
-          // setData(result.data.result);
-          // if (result.data && result.data.success === 'true') {
           const dat = data.map((it) => {
             if (it.id === item.id) {
-              // it.total_program_likes += 1
               it.is_like = !it.is_like;
               if (it.is_like) {
                 it.likes += 1;
@@ -206,18 +191,6 @@ const ViewOrchadioMobile = () => {
             return it;
           });
           setData(dat);
-          // }
-          // if (result.data && result.data.success === 'false') {
-          //   const dat = data.map((it) => {
-          //     if (it.id === item.id) {
-          //       // it.total_program_likes -= 1;
-          //       it.is_liked = 'False';
-          //     }
-          //     return it;
-          //   });
-          //   setData(dat);
-          // }
-          // getRadio();
         } else {
           setAlert('warning', result.data.message);
           console.log(result.data.message);
@@ -247,21 +220,14 @@ const ViewOrchadioMobile = () => {
           setComment('')
           setAlert('success', result.data.message);
           const dat = data.map((it) => {
-            // if (it.id === item.id) {
-            //   // it.total_program_likes += 1
-            //   it.comments_list.unshift(comment);
-            // }
             if (it.id === item.id) {
               const commentArray = [{'comment' : comment, 'user__first_name' : name ,'user__username' : userName[0] }]
-              // it.total_program_likes += 1
               it.comments_list.unshift(commentArray[0]);
               console.log(commentArray , "its");
             }
             return it;
           });
           setData(dat);
-          // console.log(result.data.result);
-          // setData(result.data.result);
         } else {
           setAlert('warning', result.data.message);
           console.log(result.data.message);
@@ -269,7 +235,6 @@ const ViewOrchadioMobile = () => {
       })
       .catch((error) => {
         setAlert('error', error?.response?.data?.description)
-        // setAlert('error', 'Something went wrong.. Try again later');
       });
   };
 
@@ -283,13 +248,8 @@ const ViewOrchadioMobile = () => {
     if (tabValue === 0) {
       url = `${endpoints.orchadio.GetRadioProgram}?page_number=${pageNumber}&page_size=${limit}`;
     } else if (tabValue === 1) {
-      // Liked
       url = `${endpoints.orchadio.GetRadioProgram}?category_type=1&page_number=${pageNumber}&page_size=${limit}`;
     } else if (tabValue === 2) {
-      // eslint-disable-next-line no-debugger
-      // debugger;
-      // Archived
-      // url = `${endpoints.orchadio.GetRadioProgram}?category_type=1`;
       url = `${endpoints.orchadio.GetRadioProgram}?is_deleted=True&page_number=${pageNumber}&page_size=${limit}`;
     }
     axios
@@ -301,11 +261,6 @@ const ViewOrchadioMobile = () => {
           console.log(result.data.result);
           setData(result.data.result.data);
           setTotalPages(result.data.result.total_pages);
-          //   const firstItem =
-          //     result.data.result.data.length && result.data.result.data.slice(0, 1);
-          // setAudioLink(result.data.result);
-          // setBranchName(firstItem);
-          //   Expandpanel(firstItem[0]);
         } else {
           console.log(result.data.message);
         }
@@ -316,13 +271,11 @@ const ViewOrchadioMobile = () => {
   };
   useEffect(() => {
     getRadio();
-    // TimeDifference();
   }, []);
   const handleTabChange = (event, newValue) => {
     settabValue(newValue);
     setLoading(true)
     setPageNumber(1)
-    // getRadio();
   };
   useEffect(() => {
     getRadio();
@@ -330,55 +283,15 @@ const ViewOrchadioMobile = () => {
   const handleComment = (event) => {
     setComment(event.target.value);
   };
-  const ShiftArrayElement = (arr, old_index, new_index) => {
-    while (old_index < 0) {
-      old_index += arr.length;
-    }
-    while (new_index < 0) {
-      new_index += arr.length;
-    }
-    if (new_index >= arr.length) {
-      let k = new_index - arr.length;
-      while (k-- + 1) {
-        arr.push(undefined);
-      }
-    }
-    arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
-    return arr;
-  };
   const getRadioList = (item, i) => {
-    // const list = branchName.map((item, i) => {
     const date = getSparseDate(moment('2021-03-17T21:03:55'));
     const bName = [];
     item.branch.map((ii) => bName.push(ii.branch_name));
     const composers = bName.join();
     return (
       <div style={{ marginBottom: '20px' }} key={`${item.id} ${i + 1}`}>
-        {/* <AudioPlayerWrapper
-            albumName={item.program_name}
-            // imageTxt='Orchids'
-            albumComposers={item.program_made_by.split(', ')}
-            src={item.audio_file}
-            timeToStart={getFormattedHrsMnts(date[3], date[4])}
-            timedStart
-            dateToStart={selectedDate}
-            duration={item.duration}
-            completionPercentage={80}
-            completionCallback={() => completionCallback(item.id)}
-            completedOnPecentageLimit={(percentage) =>
-              completedOnPecentageLimit(item.id, percentage)}
-            likeHandler={() => likeClickHandler(item.id)}
-            likesCount={item.total_program_likes}
-            viewCount={item.total_program_participants}
-            imageSrc={orchadioImg}
-            isLiked={item.is_liked === 'True'}
-            radioProgramId={item.id}
-          /> */}
-        {/* {console.log(item.branchName)} */}
         <AudioPlayerWrapper
           albumName={item.album_name}
-          // imageTxt='Orchids'
-          // albumComposers={item.composers}
           albumComposers={composers.split(', ')}
           src={`${endpoints.orchadio.s3}/${item.files[0]}`}
           timeToStart={getFormattedHrsMnts(date[3], date[4])}
@@ -399,8 +312,6 @@ const ViewOrchadioMobile = () => {
         />
       </div>
     );
-    // });
-    // return list;
   };
   return (
     <div className='layout-container-div'>
@@ -425,13 +336,6 @@ const ViewOrchadioMobile = () => {
                     {tabs.map((tab, index) => (
                       <Tab label={tab} {...a11yProps(index)} />
                     ))}
-                    {/* <Tab label='All' {...a11yProps(0)} /> */}
-                    {/* <Tab label='Today' {...a11yProps(1)} /> */}
-                    {/* <Tab label='Live Streams' {...a11yProps(2)} /> */}
-                    {/* <Tab label='Going Live' {...a11yProps(3)} /> */}
-                    {/* <Tab label='Most liked' {...a11yProps(4)} /> */}
-                    {/* <Tab label='Liked' {...a11yProps(1)} /> */}
-                    {/* <Tab label='Archived' {...a11yProps(2)} /> */}
                   </Tabs>
                   {tabs.map((tab, index) => {
                     return (
@@ -447,21 +351,13 @@ const ViewOrchadioMobile = () => {
                                     width='50px'
                                     style={{
                                       float: 'left',
-                                      // border: '1px solid yellow',
                                       borderRadius: '60px',
-                                      // padding: '10px',
                                       backgroundColor: 'white',
                                     }}
                                   />
                                 }
-                                //   action={
-                                //     <IconButton aria-label='settings'>
-                                //       <MoreVertIcon />
-                                //     </IconButton>
-                                //   }
                                 title={(
                                   <Typography align='center'>
-                                    {/* {item.album_name} */}
                                     ORCHADIO
                                   </Typography>
                                 )}
@@ -555,9 +451,7 @@ const ViewOrchadioMobile = () => {
                                         label='Enter your Comment'
                                         multiline
                                         size='small'
-                                        // fullWidth
                                         rowsMax={4}
-                                        // InputProps={{ classes: { input: classes.commentInput } }}
                                         style={{ marginBottom: '10px', width: '90%' }}
                                         value={comment}
                                         onChange={handleComment}
@@ -578,12 +472,7 @@ const ViewOrchadioMobile = () => {
                                       >
                                         Post
                                       </Button>
-                                      {/* </Grid> */}
-                                      {/* <Grid item xs={12}> */}
                                       {item.comments_list.map((c) => (
-                                        // <Card className={classes.comment}>
-                                        //   <Typography>{c}</Typography>
-                                        // </Card>
                                         <div className="commentArea" >
                                  
                                         <Card className={classes.comment}  >
@@ -611,12 +500,9 @@ const ViewOrchadioMobile = () => {
                      <Grid container justify='center'>
                     {data && !loading && <Pagination 
                       onChange={handlePagination}
-                      // style={{ paddingLeft: '150px' }}
-                      // count={Math.ceil(totalGenre / limit)}
                       count = {totalPages}
                       color='primary'
                       page={pageNumber}
-                      color='primary'
                     />}
               </Grid>
                 </div>
