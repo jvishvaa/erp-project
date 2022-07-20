@@ -8,6 +8,7 @@ import Announcement from './components/Announcement';
 import FeesOverview from './components/Fees';
 import AcademicPerformance from './components/Academic Performance';
 import CalendarCard from '../myComponents/CalendarCard';
+import Shortcut from './components/Shortcut';
 
 const { Option } = Select;
 
@@ -48,13 +49,14 @@ const SuperAdmindashboardNew = () => {
               className='th-primary th-bg-white th-br-4 w-100 text-left mt-1'
               placement='bottomRight'
               mode='multiple'
-              maxTagCount={2}
+              maxTagCount={3}
               showArrow={true}
               allowClear={true}
               suffixIcon={<DownOutlined className='th-primary' />}
-              placeholder={
-                <span className='th-primary'>{selectedBranch?.branch?.branch_name}</span>
-              }
+              // placeholder={
+              //   <span className='th-primary'>{selectedBranch?.branch?.branch_name}</span>
+              // }
+              placeholder='Select Branches'
               dropdownMatchSelectWidth={false}
               bordered={false}
               onChange={(e, value) => handleBranchChange(value)}
@@ -78,6 +80,7 @@ const SuperAdmindashboardNew = () => {
             <CalendarCard />
           </div>
           <div className='col-md-4 th-custom-col-padding'>
+            <Shortcut selectedBranchList={selectedBranchList} />
             <Announcement />
           </div>
         </div>

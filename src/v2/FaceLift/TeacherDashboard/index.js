@@ -12,6 +12,7 @@ import CurriculumCompletion from './components/CurriculumCompletion';
 import axios from 'v2/config/axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import endpoints from 'v2/config/endpoints';
+import Shortcut from './components/Shortcut';
 
 const TeacherdashboardNew = () => {
   const [todaysAttendance, setTodaysAttendance] = useState([]);
@@ -77,6 +78,7 @@ const TeacherdashboardNew = () => {
           </div>
           <div className='col-md-4 th-custom-col-padding'>
             <Assessment />
+            <Shortcut />
             <Announcement scrollHeight={'335px'} />
           </div>
         </div>
