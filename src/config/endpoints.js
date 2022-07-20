@@ -482,6 +482,7 @@ export default {
     offlineAssesment: '/assessment/offline-assessment-list/',
     studentMarks: '/assessment/ru-offline-asmnt/',
     OMRResponse: '/assessment/list-omr-sheets/',
+    bulkUploadMarks : `${baseFinanceURL}/apiV1/upload-omr-result-excel/`
   },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,
