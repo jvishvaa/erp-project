@@ -274,3 +274,23 @@ body {
 .ant-switch-checked {
   background: #1b4ccb;
 }
+
+.th-top-switch .ant-switch-inner {
+  font-size: 10px !important;
+  font-weight: 600;
+}
+
+.th-top-switch {
+  height: 28px !important;
+  line-height: 12px !important;
+}
+
+.th-top-switch .ant-switch-handle {
+  top: 8px !important;
+  width: 12px !important;
+  height: 12px !important;
+}
+
+.th-top-switch .ant-switch-checked .ant-switch-handle {
+  left: calc(100% - 15px - 2px) !important;
+}
