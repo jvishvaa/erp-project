@@ -67,11 +67,11 @@ const CreateAssesment = ({
   initQuestionsLength,
   initResetFormState,
 }) => {
-  const [CentralFilter,setCentralFilter] = useState(false)
-  const[flag,setFlag] = useState(false);
-  const [branch,setBranch] = useState([])
+  const [CentralFilter, setCentralFilter] = useState(false)
+  const [flag, setFlag] = useState(false);
+  const [branch, setBranch] = useState([])
   const [branchDropdown, setBranchDropdown] = useState([]);
-  const [branchId,setBranchId] = useState([]);
+  const [branchId, setBranchId] = useState([]);
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const clearForm = query.get('clear');
@@ -147,31 +147,31 @@ const CreateAssesment = ({
   // }, [moduleId]);
 
   useEffect(() => {
-    if(selectedQuestionPaper?.is_central && moduleId){
+    if (selectedQuestionPaper?.is_central && moduleId) {
       setCentralFilter(true)
       axiosInstance
-      .get(
-        `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
-      )
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          const selectAllObject = {
-            session_year: {},
-            id: 'all',
-            branch: { id: 'all', branch_name: 'Select All' },
-          };
-          const data = [selectAllObject,...result?.data?.data?.results];
-          setBranchDropdown(data);
-        } else {
-          setAlert('error', result?.data?.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error?.message);
-      });
+        .get(
+          `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
+        )
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            const selectAllObject = {
+              session_year: {},
+              id: 'all',
+              branch: { id: 'all', branch_name: 'Select All' },
+            };
+            const data = [selectAllObject, ...result?.data?.data?.results];
+            setBranchDropdown(data);
+          } else {
+            setAlert('error', result?.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error?.message);
+        });
 
     }
-  },[selectedQuestionPaper?.is_central, moduleId])
+  }, [selectedQuestionPaper?.is_central, moduleId])
 
   useEffect(() => {
     if (clearForm) {
@@ -181,7 +181,7 @@ const CreateAssesment = ({
   const handleCreateAssesmentTest = async () => {
     const qMap = new Map();
 
-    if(CentralFilter === true && flag !== true){
+    if (CentralFilter === true && flag !== true) {
       setAlert('warning', 'Please Select Branch');
       return;
     }
@@ -451,14 +451,14 @@ const CreateAssesment = ({
     setMarksAssignMode(e.target.checked);
   };
 
-  const handleBranch = (event,value) => {
+  const handleBranch = (event, value) => {
     setFlag(false)
     setBranch([])
-    if(value?.length > 0){
+    if (value?.length > 0) {
       value =
-      value.filter(({ id }) => id === 'all').length === 1
-        ? [...branchDropdown].filter(({ id }) => id !== 'all')
-        : value;
+        value.filter(({ id }) => id === 'all').length === 1
+          ? [...branchDropdown].filter(({ id }) => id !== 'all')
+          : value;
       const branchIds = value.map((element) => element?.id) || [];
       setBranchId(branchIds)
       setBranch(value)
@@ -579,31 +579,31 @@ const CreateAssesment = ({
                           />
                         </Grid>
                         {CentralFilter === true ? (
-                        <Grid item xs={12} md={4}>
-                          <Autocomplete
-                            id='branch_name'
-                            name='branch_name'
-                            multiple
-                            limitTags={2}
-                            className='dropdownIcon'
-                            onChange={handleBranch}
-                            value={branch || []}
-                            options={branchDropdown || []}
-                            getOptionLabel={(option) => option?.branch?.branch_name || ''}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                variant='outlined'
-                                label='Branch'
-                                placeholder='Branch'
-                              />
-                            )}
-                            size='small'
-                          />
-                        </Grid>
+                          <Grid item xs={12} md={4}>
+                            <Autocomplete
+                              id='branch_name'
+                              name='branch_name'
+                              multiple
+                              limitTags={2}
+                              className='dropdownIcon'
+                              onChange={handleBranch}
+                              value={branch || []}
+                              options={branchDropdown || []}
+                              getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                              filterSelectedOptions
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  variant='outlined'
+                                  label='Branch'
+                                  placeholder='Branch'
+                                />
+                              )}
+                              size='small'
+                            />
+                          </Grid>
 
-                        ) : '' }
+                        ) : ''}
                       </Grid>
                       <FormHelperText style={{ color: 'red' }}>
                         {formik.errors.branch ? formik.errors.branch : ''}

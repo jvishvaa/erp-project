@@ -1,14 +1,7 @@
-/* eslint-disable react/require-default-props */
-/* eslint-disable react/forbid-prop-types */
-/* eslint-disable react/no-unused-state */
 import React, { Component, useContext } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { Grid, Button, Divider } from '@material-ui/core';
-// import TextField from '@material-ui/core/TextField';
 import PropTypes from 'prop-types';
-// import moment from 'moment';
-// import Autocomplete from '@material-ui/lab/Autocomplete';
-// import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import { withRouter } from 'react-router-dom';
 import Tab from '@material-ui/core/Tab';
@@ -18,10 +11,8 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Layout from '../Layout';
 import { Pagination } from '@material-ui/lab';
-// import Filter from './Filter';
 import Filter from './filter.jsx';
 import GridList from './gridList';
-import axios from 'axios';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import { getModuleInfo } from '../../utility-functions';
@@ -68,8 +59,6 @@ const styles = (theme) => ({
   tabRoot: {
     width: '100%',
     flexGrow: 1,
-    // backgroundColor: theme.palette.background.paper,
-    // margin: '20px',
   },
 });
 class ViewEbook extends Component {
@@ -97,33 +86,36 @@ class ViewEbook extends Component {
 
   componentDidMount() {
     this.handleBranchid();
-    // this.handleCentralGradeId();
-    // this.getEbook();
   }
 
   handleBranchid = () => {
-    axiosInstance.get(
-      `${endpoints.communication.branches}?session_year=${this.state.sessionYear?.id}&module_id=${getModuleInfo('Ebook View').id}`
-    )
+    axiosInstance
+      .get(
+        `${endpoints.communication.branches}?session_year=${
+          this.state.sessionYear?.id
+        }&module_id=${getModuleInfo('Ebook View').id}`
+      )
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          const central_branchid = result?.data?.data?.results[0]?.branch?.id
-          this.handleCentralGradeId(central_branchid)
-          console.log('debug', central_branchid)
+          const central_branchid = result?.data?.data?.results[0]?.branch?.id;
+          this.handleCentralGradeId(central_branchid);
+          console.log('debug', central_branchid);
         } else {
-          // console.log(result.data.message);
         }
-      })
-  }
+      });
+  };
 
   handleCentralGradeId = (central_branchid) => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
     axiosInstance
-      .get(`${endpoints.ebook.getCentralGrade}?session_year=${this.state.sessionYear?.id}&branch_id=${central_branchid}`, {
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      })
+      .get(
+        `${endpoints.ebook.getCentralGrade}?session_year=${this.state.sessionYear?.id}&branch_id=${central_branchid}`,
+        {
+          headers: {
+            Authorization: 'Bearer ' + token,
+          },
+        }
+      )
       .then((result) => {
         if (result.data.status_code === 200) {
           this.setState({
@@ -218,8 +210,6 @@ class ViewEbook extends Component {
           this.state.selectedSubject,
           this.state.selectedVolume
         );
-        // this.state.clearFilter = 1;
-        // this.handleClearFilter();
       });
     } else if (newValue === 1) {
       this.setState({ tabValue: newValue, data: [] }, () => {
@@ -230,8 +220,6 @@ class ViewEbook extends Component {
           this.state.selectedSubject,
           this.state.selectedVolume
         );
-        // this.state.clearFilter = 2;
-        // this.handleClearFilter();
       });
     } else if (newValue === 2) {
       this.setState({ tabValue: newValue, data: [] }, () => {
@@ -242,15 +230,13 @@ class ViewEbook extends Component {
           this.state.selectedSubject,
           this.state.selectedVolume
         );
-        // this.state.clearFilter = 3;
-        // this.handleClearFilter();
       });
     }
   };
 
   getEbook = (acad, branch, grade, subject, vol, customGrade) => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
-    const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
+    const { host } = new URL(axiosInstance.defaults.baseURL);
     const hostSplitArray = host.split('.');
     const subDomainLevels = hostSplitArray.length - 2;
     let domain = '';
@@ -269,15 +255,12 @@ class ViewEbook extends Component {
     const domainTobeSent = subDomain;
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
-    let filterGrade
+    let filterGrade;
     if (customGrade) {
       filterGrade = `${grade ? `&grade=[${customGrade}]` : ''}`;
-
     } else {
       filterGrade = `${grade ? `&grade=[${grade?.central_grade}]` : ''}`;
-
     }
-    // const filterGrade = `${grade ? `&grade=[${grade?.central_grade}]` : ''}`;
 
     const filterSubject = `${subject ? `&subject=${subject}` : ''}`;
     const filterVolumes = `${vol ? `&volume=${vol?.id}` : ''}`;
@@ -286,17 +269,22 @@ class ViewEbook extends Component {
 
     if (tabValue === 0 || tabValue === 1) {
       if (filterGrade === '') {
-        urlPath = `${endpoints.ebook.ebook
-          }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${tabValue + 1
-          }&grade=[${this.state.central_grade}]`;
+        urlPath = `${
+          endpoints.ebook.ebook
+        }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
+          tabValue + 1
+        }&grade=[${this.state.central_grade}]`;
       } else {
-        urlPath = `${endpoints.ebook.ebook
-          }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${tabValue + 1
-          }${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+        urlPath = `${
+          endpoints.ebook.ebook
+        }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&ebook_type=${
+          tabValue + 1
+        }${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
       }
     } else if (tabValue === 2) {
-      urlPath = `${endpoints.ebook.ebook
-        }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
+      urlPath = `${
+        endpoints.ebook.ebook
+      }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
     }
     axiosInstance
       .get(urlPath, {
