@@ -9,6 +9,9 @@ const INITIAL_STATE = {
     ? JSON.parse(sessionStorage.getItem('selected_branch'))
     : '',
   branchList: '' || JSON.parse(sessionStorage.getItem('branch_list')),
+  selectedVersion: localStorage.getItem('selectedVersion')
+    ? JSON.parse(localStorage.getItem('selectedVersion'))
+    : true,
 };
 
 export const getDefaultYear = (data) => {
@@ -49,6 +52,11 @@ const commonReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         branchList: action.payload,
+      };
+    case commonActions.SELECTED_VERSION:
+      return {
+        ...state,
+        selectedVersion: action.payload,
       };
     default:
       return state;

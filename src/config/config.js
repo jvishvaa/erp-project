@@ -35,6 +35,7 @@ const dev = {
   },
   apiGateway: {
     baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
+    baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
     baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
@@ -44,6 +45,7 @@ const dev = {
     msReportsUrl: 'https://dev.reports.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
+    baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
   },
 };
 
@@ -117,7 +119,7 @@ const DEV = 'DEV';
 const QA = 'QA';
 const STAGE = 'STAGE';
 const env = { [PROD]: prod, [DEV]: dev, [QA]: qa, [STAGE]: stage };
-const config = env[process.env.REACT_APP_UI_ENV] || local;
+const config = env[process.env.REACT_APP_UI_ENV] || dev;
 
 export default {
   // Add common config values here

@@ -291,6 +291,12 @@ const TimeTable = (props) => {
       } else {
         createPeriodAPI()
       }
+    } else if (periodType?.type === "Break") {
+      if (days.length === 0) {
+        setAlert('Warning', 'Please Select Days');
+      } else {
+        createPeriodAPI()
+      }
     }
   };
 

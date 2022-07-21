@@ -3,6 +3,7 @@ import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import { Tooltip } from 'antd';
 import './index.css';
 import { useHistory } from 'react-router-dom';
 
@@ -26,7 +27,7 @@ const ReportsCard = (props) => {
       <div className='px-2'>
         <div className='row justify-content-between mb-1'>
           <div className='col-4 th-grey th-fw-400 th-12'>Grade</div>
-          <div className='col-4 th-grey th-fw-400 th-12'>Subject</div>
+          <div className='col-4 th-grey th-fw-400 th-12 text-center'>Subject</div>
           <div className='col-4 th-grey th-fw-400 th-12 px-0 text-center'>
             {type === 'classwork-report' || type === 'homework-report'
               ? '% Submitted'
@@ -46,10 +47,19 @@ const ReportsCard = (props) => {
                   className='row justify-content-between py-3 th-br-6 align-items-center'
                   onClick={() => history.push(url)}
                 >
-                  <div className='col-4 th-black-1 th-14 th-fw-400 pr-0'>
-                    {item?.grade_name} {item?.section_name}
+                  <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 text-truncate'>
+                    <Tooltip
+                      placement='top'
+                      title={
+                        <span>
+                          {item?.grade_name} {item?.section_name}
+                        </span>
+                      }
+                    >
+                      {item?.grade_name} {item?.section_name}
+                    </Tooltip>
                   </div>
-                  <div className='col-4 th-black-1 th-14 th-fw-400 pr-0'>
+                  <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 text-center'>
                     {item?.subject_name}
                   </div>
                   <div className='col-4 text-center th-16 th-fw-600 th-green-1 pr-0'>

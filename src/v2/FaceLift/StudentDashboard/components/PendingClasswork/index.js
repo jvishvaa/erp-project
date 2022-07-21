@@ -55,7 +55,7 @@ const PendingClasswork = () => {
             <div className='px-2'>
               <div className='row justify-content-between py-1'>
                 <div className='col-4 th-grey th-fw-400 th-12 text-left'>Subject</div>
-                <div className='col-4 th-grey th-fw-400 th-12 text-left'>Title</div>
+                <div className='col-4 th-grey th-fw-400 th-12 text-center'>Title</div>
                 <div className='col-4 th-red th-fw-400 th-12 pl-0 text-right'>
                   Due Date
                 </div>
@@ -70,7 +70,7 @@ const PendingClasswork = () => {
                       <div className='col-4 th-black-2 th-14 th-fw-400 pr-0 text-left pl-1 text-truncate'>
                         {item?.subject_name}
                       </div>
-                      <div className='col-4 th-black-2 th-14 th-fw-400 pr-0 pl-2 text-truncate text-left'>
+                      <div className='col-4 th-black-2 th-14 th-fw-400 pr-0 pl-2 text-truncate text-center'>
                         {item?.class_name}
                       </div>
                       <div className='col-4 text-center th-14 th-fw-400 th-red px-0 text-right'>

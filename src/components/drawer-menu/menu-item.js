@@ -35,7 +35,11 @@ const MenuItem = withRouter(({ history, ...props }) => {
   const [childValue, setChildValue] = useState(!flag);
   const [child, setChild] = useState('');
 
-  const isV2 = useSelector((state) => state.commonFilterReducer.selectedBranch)?.isV2;
+  const isV2 = useSelector(
+    (state) =>
+      state.commonFilterReducer.selectedBranch?.isV2 &&
+      state.commonFilterReducer.selectedVersion
+  );
 
   const useStyles = makeStyles((theme) => ({
     // listitem: {
@@ -145,6 +149,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'View Class', Path: '/erp-online-class' },
     { name: 'Section Shuffle', Path: '/user-management/section-shuffling' },
     { name: 'Access-Blocker', Path: '/user-management/access-blocker' },
+    { name: 'Virtual School', Path: '/virtual-school' },
     { name: 'Attend Online Class', Path: '/erp-online-class-student-view' },
     { name: 'Teacher View Class', Path: '/erp-online-class-teacher-view' },
     { name: 'Teacher View Attendance', Path: '/online-class/attendance-teacher-view' },

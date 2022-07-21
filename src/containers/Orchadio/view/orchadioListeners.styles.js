@@ -16,14 +16,8 @@ export default (theme) => ({
     },
     buttonFiller: {
       width: '100%',
-      // position: 'absolute',
       backgroundColor: '#ffe3bd',
-      // height: '28%',
-      // bottom: '0px',
       paddingTop: '30px',
-      // ['@media (min-width: 640px)']: {
-      //   height: '24vh'
-      // },
       ['@media (min-width: 1025px)']: {
         marginBottom: '15px'
       }

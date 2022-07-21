@@ -1,15 +1,7 @@
 import React, { useEffect, useState, useContext, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  Divider,
-  FormControl,
-  MenuItem,
-  Select,
-  AppBar,
-  Grid,
-  TextField,
-} from '@material-ui/core';
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import { Divider, FormControl, MenuItem, AppBar, Grid } from '@material-ui/core';
+import { DownOutlined } from '@ant-design/icons';
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -40,6 +32,7 @@ import {
   currentSelectedBranch,
   fetchAcademicYearList,
   fetchBranchList,
+  selectedVersion,
 } from '../../redux/actions/common-actions';
 import ENVCONFIG from 'config/config';
 import EventsIcon from 'assets/dashboardIcons/topbarIcons/events.svg';
@@ -48,9 +41,10 @@ import AnnouncementIcon from 'v2/Assets/dashboardIcons/topbarIcons/announcements
 import NotificationsIcon from 'assets/dashboardIcons/topbarIcons/notifications.svg';
 import StaffIcon from 'assets/dashboardIcons/topbarIcons/defaultProfile.svg';
 import RupeeSymbol from 'v2/Assets/dashboardIcons/topbarIcons/rupee-symbol.png';
-
+import { Select, Switch } from 'antd';
 import './styles.scss';
 // import { Item } from 'semantic-ui-react';
+const { Option } = Select;
 
 const Appbar = ({ children, history, ...props }) => {
   const classes = TopBarStyles();
@@ -68,6 +62,7 @@ const Appbar = ({ children, history, ...props }) => {
   const [centralSchoolName, setcentralSchoolName] = useState('');
   const [superUser, setSuperUser] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
+
   const [navigationData, setNavigationData] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
 
@@ -250,11 +245,11 @@ const Appbar = ({ children, history, ...props }) => {
   }, [acdemicCurrentYear]);
 
   const handleChange = (event) => {
-    setAcademicYear(event.target.value);
+    setAcademicYear(event);
 
     let acdemicCurrentYear;
     academicYearlist.forEach((item) => {
-      if (item.session_year === event.target.value) {
+      if (item.session_year === event) {
         acdemicCurrentYear = item;
       }
     });
@@ -271,11 +266,11 @@ const Appbar = ({ children, history, ...props }) => {
   };
 
   const handleBranchChange = (event) => {
-    setBranch(event.target.value);
+    setBranch(event);
     let selectedBranch;
 
     branchList.forEach((item) => {
-      if (item.branch.branch_name === event.target.value) {
+      if (item.branch.branch_name === event) {
         selectedBranch = item;
       }
     });
@@ -288,6 +283,16 @@ const Appbar = ({ children, history, ...props }) => {
     window.location.reload();
   };
 
+  const handleVersion = (status) => {
+    dispatch(selectedVersion(status));
+    localStorage.setItem('selectedVersion', status);
+  };
+  const isV2 = useSelector(
+    (state) =>
+      state.commonFilterReducer.selectedBranch?.isV2 &&
+      state.commonFilterReducer.selectedVersion
+  );
+
   return (
     <>
       <AppBar position='absolute' className={clsx(classes.appBar)}>
@@ -297,6 +302,7 @@ const Appbar = ({ children, history, ...props }) => {
               className={classes.mobileToolbar}
               display='flex'
               justifyContent='space-between'
+              alignItems='center'
             >
               <IconButton
                 edge='start'
@@ -313,22 +319,26 @@ const Appbar = ({ children, history, ...props }) => {
                 )}
               </IconButton>
 
-              <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-                <Grid item xs={6} style={{ textAlign: 'center' }}>
+              <Grid
+                container
+                rowSpacing={1}
+                columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                className='align-items-center'
+              >
+                <Grid item xs={2} style={{ textAlign: 'center' }}>
                   <IconButton className={classes.logoMobileContainer}>
                     <img
                       className={classes.logoMObile}
                       src={logoMobile}
                       alt='logo-small'
                     />
-                    <Divider
+                    {/* <Divider
                       variant='middle'
                       className={classes.verticalLine}
                       orientation='vertical'
                       flexItem
-                    />
-                    <img
-                      //   src={centralSchoolLogo}
+                    /> */}
+                    {/* <img
                       src={orchidsLogo}
                       alt='logo'
                       style={{
@@ -337,7 +347,7 @@ const Appbar = ({ children, history, ...props }) => {
                         objectFit: 'fill',
                         fontSize: '12px',
                       }}
-                    />
+                    /> */}
                   </IconButton>
                 </Grid>
                 <Grid
@@ -345,86 +355,97 @@ const Appbar = ({ children, history, ...props }) => {
                   xs={6}
                   style={{ textAlign: 'center', paddingTop: 10, display: 'flex' }}
                 >
-                  <FormControl variant='standard' sx={{ m: 1, minWidth: 120 }}>
-                    {/* <Select
-                      labelId='demo-simple-select-label'
-                      id='demo-simple-select'
-                      value={academicYear}
-                      onChange={handleChange}
-                      className={classes.year}
-                    > */}
+                  <FormControl
+                    variant='standard'
+                    sx={{ m: 1, minWidth: 100 }}
+                    className='flex-row'
+                  >
                     <Select
                       onChange={handleBranchChange}
-                      labelId='demo-simple-select-label'
-                      id='th-select-white-bg'
                       value={branch ? branch : branchList ? branchList[0] : ''}
-                      className={classes.branch}
-                      inputProps={{
-                        'aria-label': 'Without label',
-                        classes: {
-                          icon: 'th-select-icon-grey',
-                        },
-                      }}
-                      MenuProps={{
-                        anchorOrigin: {
-                          vertical: 'bottom',
-                          horizontal: 'left',
-                        },
-                        transformOrigin: {
-                          vertical: 'bottom',
-                          horizontal: 'left',
-                        },
-                      }}
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
+                      className='th-primary th-bg-white th-br-4 th-12 text-left mr-1'
+                      placement='bottomRight'
+                      bordered={false}
+                      showSearch={true}
+                      suffixIcon={<DownOutlined className='th-primary' />}
+                      dropdownMatchSelectWidth={false}
+                      optionFilterProp='children'
+                      filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
-                      {branchList?.map((item) => (
-                        <MenuItem value={item?.branch?.branch_name}>
-                          <>{item?.branch?.branch_name}</>
-                        </MenuItem>
-                      ))}
+                      {branchList?.map((item) => {
+                        return (
+                          <Option value={item?.branch?.branch_name}>
+                            {item?.branch?.branch_name}
+                          </Option>
+                        );
+                      })}
                     </Select>
                     <Select
                       onChange={handleChange}
-                      labelId='demo-simple-select-label'
-                      id='th-select'
                       value={academicYear}
-                      // defaultValue='222'
-                      displayEmpty
-                      inputProps={{
-                        'aria-label': 'Without label',
-                        classes: {
-                          icon: 'th-select-icon',
-                        },
-                      }}
-                      IconComponent={KeyboardArrowDownIcon}
+                      className='th-primary th-bg-white th-br-4 th-12 text-center'
+                      placement='bottomRight'
+                      bordered={false}
+                      showSearch={true}
+                      suffixIcon={<DownOutlined className='th-primary' />}
+                      dropdownMatchSelectWidth={false}
+                      optionFilterProp='children'
+                      filterOption={(input, option) =>
+                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      }
                     >
                       {academicYearlist?.map((year) => (
-                        <MenuItem value={year.session_year}>{year.session_year}</MenuItem>
+                        <Option value={year.session_year}>{year.session_year}</Option>
                       ))}
                     </Select>
                   </FormControl>
-                  <div>
-                    <IconButton onClick={handleFinance} style={{ padding: '1%' }}>
-                      <MonetizationOnIcon />
-                    </IconButton>
-                  </div>
                 </Grid>
               </Grid>
-
-              <div className={classes.sectionMobile}>
-                <IconButton
-                  aria-label='show more'
-                  aria-controls={mobileMenuId}
-                  aria-haspopup='true'
-                  onClick={handleMobileMenuOpen}
-                  color='inherit'
-                >
-                  <MoreIcon />
-                </IconButton>
+              <div className='ml-1 d-flex align-items-center'>
+                {userData?.user_level == 1 ||
+                userData?.user_level == 25 ||
+                userData?.user_level == 13 ||
+                userData?.is_superuser == true ? (
+                  <>
+                    {apps?.finance == true ? (
+                      <>
+                        {isMobile ? (
+                          <IconButton
+                            className={classes.grow}
+                            style={{ margin: '0' }}
+                            onClick={handleFinance}
+                          >
+                            <img src={RupeeSymbol} width='24px' />
+                          </IconButton>
+                        ) : null}
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                  </>
+                ) : (
+                  <></>
+                )}
+                <Switch
+                  checked={isV2}
+                  checkedChildren='V2'
+                  unCheckedChildren='V1'
+                  onChange={handleVersion}
+                />
+                <div className={classes.sectionMobile}>
+                  <IconButton
+                    aria-label='show more'
+                    aria-controls={mobileMenuId}
+                    aria-haspopup='true'
+                    onClick={handleMobileMenuOpen}
+                    color='inherit'
+                    className='p-0'
+                  >
+                    <MoreIcon />
+                  </IconButton>
+                </div>
               </div>
             </Box>
           )}
@@ -489,49 +510,45 @@ const Appbar = ({ children, history, ...props }) => {
             </div>
           )}
           {/* {isMobile ? null : <SearchBar />} */}
-          <div className='d-flex'>
+
+          <div className='d-flex align-items-center'>
+            {isMobile ? null : (
+              <Switch
+                checked={isV2}
+                checkedChildren={props.drawerOpen ? 'V1' : 'Older Version'}
+                unCheckedChildren={props.drawerOpen ? 'V2' : 'Newer Version'}
+                onChange={handleVersion}
+              />
+            )}
             {isMobile ? null : (
               <div className={classes.grow} style={{ margin: '0' }}>
                 <FormControl
-                  className='d-flex flex-row align-items-center th-bg-white th-br-4'
+                  className='d-flex flex-row align-items-center th-bg-white th-br-4 '
                   variant='standard'
                   sx={{ m: 1, minWidth: 100 }}
                 >
                   <div className='px-2 th-black-2 th-14'> Select Branch:</div>
                   <Select
                     onChange={handleBranchChange}
-                    labelId='demo-simple-select-label'
-                    id='th-select-white-bg'
                     value={branch ? branch : branchList ? branchList[0] : ''}
-                    // displayEmpty
-                    inputProps={{
-                      'aria-label': 'Without label',
-                      classes: {
-                        icon: 'th-select-icon-grey',
-                      },
-                    }}
-                    MenuProps={{
-                      anchorOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      },
-                      transformOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      },
-                    }}
-                    IconComponent={KeyboardArrowDownIcon}
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
+                    className='th-primary th-bg-white th-br-4 text-left th-topbar-select'
+                    placement='bottomRight'
+                    bordered={false}
+                    showSearch={true}
+                    suffixIcon={<DownOutlined className='th-primary' />}
+                    dropdownMatchSelectWidth={false}
+                    optionFilterProp='children'
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
-                    {branchList?.map((item) => (
-                      <MenuItem value={item?.branch?.branch_name}>
-                        <>{item?.branch?.branch_name}</>
-                      </MenuItem>
-                    ))}
+                    {branchList?.map((item) => {
+                      return (
+                        <Option value={item?.branch?.branch_name}>
+                          {item?.branch?.branch_name}
+                        </Option>
+                      );
+                    })}
                   </Select>
                 </FormControl>
               </div>
@@ -547,35 +564,26 @@ const Appbar = ({ children, history, ...props }) => {
                   <div className='px-2 th-black-2'> Academic Year:</div>
                   <Select
                     onChange={handleChange}
-                    labelId='demo-simple-select-label'
-                    id='th-select-white-bg'
                     value={academicYear}
-                    displayEmpty
-                    inputProps={{
-                      'aria-label': 'Without label',
-                      classes: {
-                        icon: 'th-select-icon-grey',
-                      },
-                    }}
-                    MenuProps={{
-                      anchorOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      },
-                      transformOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      },
-                    }}
-                    IconComponent={KeyboardArrowDownIcon}
+                    className='th-primary th-bg-white th-br-4 text-center'
+                    placement='bottomRight'
+                    bordered={false}
+                    showSearch={true}
+                    suffixIcon={<DownOutlined className='th-primary' />}
+                    dropdownMatchSelectWidth={false}
+                    optionFilterProp='children'
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
                   >
                     {academicYearlist?.map((year) => (
-                      <MenuItem value={year.session_year}>{year.session_year}</MenuItem>
+                      <Option value={year.session_year}>{year.session_year}</Option>
                     ))}
                   </Select>
                 </FormControl>
               </div>
             )}
+
             {userData?.user_level == 1 ||
             userData?.user_level == 25 ||
             userData?.user_level == 13 ||
