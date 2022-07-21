@@ -136,7 +136,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
     setAnchorEl(event.currentTarget);
   };
   const { openPreview, closePreview } =
-  React.useContext(AttachmentPreviewerContext) || {};
+    React.useContext(AttachmentPreviewerContext) || {};
 
   const handleMenuClose = () => {
     setAnchorEl(null);
@@ -279,6 +279,7 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
         </div>
       </div>
       <div className='section-content'>
+        <div>Total Questions: {section?.questions?.length}</div>
         {section?.questions.map((q, index) => (
           <div className='selected-question-card' key={index} style={{ width: '100%' }}>
             <div className='selected-question-card-header'>
@@ -343,38 +344,38 @@ const Section = ({ question, section, questionId, onDelete, onDeleteQuestion }) 
               </div>
             </div>
             {/* <div>Question : {ReactHtmlParser(q?.question_answer[0]?.question)}</div> */}
-            <div style={{display : 'flex'}}> Question : {extractContent(q?.question_answer[0]?.question)}
-            <span style={{marginLeft:'5px'}}>
-              {q?.question_answer[0]?.question
-                ?.split('"')
-                .filter((str) => str.startsWith('https'))?.length > 0 && (
-                <a
-                  onClick={() => {
-                    openPreview({
-                      currentAttachmentIndex: 0,
-                      attachmentsArray: (() => {
-                        let newArray = q?.question_answer[0]?.question?.split('"');
-                        let filtered = newArray.filter((str) => str.startsWith('https'));
-                        const images = filtered || {};
-                        const attachmentsArray = [];
-                        images.forEach((image) => {
-                          const attachmentObj = {
-                            src: image,
-                            name: `${image}`.split('.').slice(0, -1).join('.'),
-                            extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-                          };
-                          attachmentsArray.push(attachmentObj);
+            <div style={{ display: 'flex' }}> Question : {extractContent(q?.question_answer[0]?.question)}
+              <span style={{ marginLeft: '5px' }}>
+                {q?.question_answer[0]?.question
+                  ?.split('"')
+                  .filter((str) => str.startsWith('https'))?.length > 0 && (
+                    <a
+                      onClick={() => {
+                        openPreview({
+                          currentAttachmentIndex: 0,
+                          attachmentsArray: (() => {
+                            let newArray = q?.question_answer[0]?.question?.split('"');
+                            let filtered = newArray.filter((str) => str.startsWith('https'));
+                            const images = filtered || {};
+                            const attachmentsArray = [];
+                            images.forEach((image) => {
+                              const attachmentObj = {
+                                src: image,
+                                name: `${image}`.split('.').slice(0, -1).join('.'),
+                                extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                              };
+                              attachmentsArray.push(attachmentObj);
+                            });
+                            return attachmentsArray;
+                          })(),
                         });
-                        return attachmentsArray;
-                      })(),
-                    });
-                  }}
-                >
-                  <SvgIcon
-                    component={() => <VisibilityIcon style={{ cursor: 'pointer' }} />}
-                  />
-                </a>
-              )}
+                      }}
+                    >
+                      <SvgIcon
+                        component={() => <VisibilityIcon style={{ cursor: 'pointer' }} />}
+                      />
+                    </a>
+                  )}
               </span>
             </div>
             <div className='content'>
