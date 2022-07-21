@@ -26,7 +26,6 @@ import Backdrop from '@material-ui/core/Backdrop';
 import Modal from '@material-ui/core/Modal';
 import Fade from '@material-ui/core/Fade';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-// import ShareIcon from '@material-ui/icons/Share';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { red } from '@material-ui/core/colors';
@@ -103,8 +102,6 @@ const useStyles = makeStyles((theme) => ({
   tabRoot: {
     width: '100%',
     flexGrow: 1,
-    // backgroundColor: theme.palette.background.paper,
-    // margin: '20px',
   },
   media: {
     height: 0,
@@ -115,8 +112,6 @@ const useStyles = makeStyles((theme) => ({
   },
   cardRoot: {
     height: 240,
-    // maxWidth: 434,
-    // width: 370,
     width: '100%',
     border: '1px solid #8C8C8C',
     margin: 10,
@@ -127,7 +122,6 @@ const useStyles = makeStyles((theme) => ({
     margin: 10,
   },
   customTooltip: {
-    // I used the rgba color for the standard "secondary" color
     backgroundColor: '#F9F9F9',
     width: 200,
     alignContent: 'center',
@@ -150,7 +144,6 @@ const useStyles = makeStyles((theme) => ({
     width: '115%',
     maxWidth: 360,
     paddingLeft: 0,
-    // backgroundColor: theme.palette.background.paper,
   },
   selectFilterGrid: {
     height: '400px',
@@ -175,7 +168,6 @@ function ManageOrchadio() {
   const classes = useStyles();
   const history = useHistory();
   const [tabValue, settabValue] = React.useState(0);
-  const [arr, setArr] = React.useState([1, 2, 3, 8, 9]);
   const [startDate, setStartDate] = React.useState(
     moment(new Date()).format('YYYY-MM-DD')
   );
@@ -212,7 +204,6 @@ function ManageOrchadio() {
   const [filterFlag, setFilterFlag] = useState(0);
   const limit = 5;
   const [totalPages, setTotalPages] = React.useState('')
-  // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
@@ -230,13 +221,11 @@ function ManageOrchadio() {
               item.child_name === 'Student Orchadio'
             ) {
               setModuleId(item?.child_id);
-              console.log(item?.child_id, "module id");
             } else if (
               location.pathname === '/orchadio/manage-orchadio' &&
               item.child_name === 'Manage Orchadio'
             ) {
               setModuleId(item?.child_id);
-              console.log(item?.child_id, "module id");
               localStorage.setItem('moduleIdOrchido', item?.child_id);
             }
           });
@@ -253,13 +242,8 @@ function ManageOrchadio() {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
           setLoading(false);
-          // console.log(result.data.result);
           setData(result.data.result.data);
           setTotalPages(result.data.result.total_pages)
-          // const firstItem = result.data.result.slice(0, 1);
-          // setAudioLink(result.data.result);
-          // setBranchName(firstItem);
-          // Expandpanel(firstItem[0]);
         } else {
           console.log(result.data.message);
         }
@@ -319,68 +303,27 @@ function ManageOrchadio() {
       });
   }
 
-  const handleBranch = (event, value) => {
-    const branchId = [];
-    setSelectedBranch(value);
-    value.map((item) => {
-      branchId.push(item.id);
-    });
-    console.log(branchId);
-    setBranchId(branchId);
-    axios
-      .get(`${endpoints.orchadio.AddParticipants}?branch_id=${branchId}&session_year=${selectedAcademicYear?.id}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setLoading(false);
-          // setAlert('success', result.data.message);
-          // console.log(result.data.result);
-          setStudentsList(result.data.result);
-        } else {
-          setAlert('warning', result.data.message);
-          console.log(result.data.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', 'Something went wrong.. Try again later');
-      });
-    // this.setState({ data: [], selectedBranch: value }, () => {
-    //   this.getGrade();
-  };
-  const handleStudents = (event, value) => {
-    const studentsId = [];
-    setSelectedStudent(value);
-    value.map((item) => {
-      studentsId.push(item.id);
-    });
-    // console.log(branchId);
-    setStudentsId(studentsId);
-  };
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
   const handleTabChange = (event, newValue) => {
     settabValue(newValue);
     setPageNumber(1)
-    // setLoading(true)
   };
   const getDaysAfter = (date, amount) => {
-    // return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
     return date ? date.add(amount, 'days').format('DD-MM-YYYY') : undefined;
   };
   const getDaysBefore = (date, amount) => {
-    // return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
     return date ? date.subtract(amount, 'days').format('DD-MM-YYYY') : undefined;
   };
   const handleStartDateChange = (date) => {
     const endDate = getDaysAfter(date.clone(), 6);
     setEndDate(endDate);
-    // setStartDate(date.format('YYYY-MM-DD'));
     setStartDate(date.format('DD-MM-YYYY'));
   };
   const handleEndDateChange = (date) => {
     const startDate = getDaysBefore(date.clone(), 6);
     setStartDate(startDate);
-    // setEndDate(date.format('YYYY-MM-DD'));
     setEndDate(date.format('DD-MM-YYYY'));
   };
 
@@ -446,7 +389,6 @@ function ManageOrchadio() {
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
-          // console.log(result.data.result);
           setData(result.data.result.data);
           setTotalPages(result.data.result.total_pages)
           setLoading(false)
@@ -463,7 +405,6 @@ function ManageOrchadio() {
   };
 
   const handleDelete = (item) => {
-    // console.log(item);
     setLoading(true)
     axios
       .delete(`${endpoints.orchadio.DeleteOrchadio}${item.id}/update-orchadio/`)
@@ -549,16 +490,6 @@ function ManageOrchadio() {
                 <Grid item xs={12}>
                   <div style={{ margin: '20px', marginLeft: 5 }}>
                     <Grid container>
-                      {/* <Grid item>
-                      <Button
-                        color='primary'
-                        style={{ fontSize: 'small', margin: '20px' }}
-                        size='small'
-                        variant='contained'
-                      >
-                        Clear All
-                      </Button>
-                    </Grid> */}
                       <Grid item xs={12}>
                         <Button
                           style={{ fontSize: 'small', margin: '20px', width: 150,color:"white" }}
@@ -666,16 +597,10 @@ function ManageOrchadio() {
                                     )}
                                     title={(
                                       <Typography align='center'>
-                                        {/* {item.album_name} */}
                                         ORCHADIO
                                       </Typography>
                                     )}
                                   />
-                                  {/* <CardMedia
-                                className={classes.media}
-                                image='/static/images/cards/paella.jpg'
-                                title='Paella dish'
-                              /> */}
                                   <CardHeader
                                     style={{
                                       backgroundColor: '#F3F3F3',
@@ -690,7 +615,6 @@ function ManageOrchadio() {
                                         {item.branch
                                           ? item.branch.map((i) => {
                                             const str = i.branch_name;
-                                            // let str = 'karthick raja j'
                                             const matches = str.match(/\b(\w)/g);
                                             const acronym = matches.join('');
                                             return acronym;
@@ -791,7 +715,6 @@ function ManageOrchadio() {
                             ))}
                         </Grid>
                       ) : (
-                        // <Typography variant='subtitle1'>No Data Found</Typography>
                       <Grid item xs={12} className={classes.selectFilterGrid}>
                                 <img
                                     src={unfiltered}
@@ -882,29 +805,6 @@ function ManageOrchadio() {
                                           spacing={2}
                                         >
                                           <Grid item xs={isMobile ? 12 : ''}>
-                                            {/* <Tooltip
-                                              arrow
-                                              classes={{
-                                                tooltip: classes.customTooltip,
-                                                arrow: classes.customArrow,
-                                              }}
-                                              disableFocusListener
-                                              title={
-                                                item.users.length ? (
-                                                  item.users.map((i) => (
-                                                    <li>
-                                                      <Typography align='center'>
-                                                        {i.first_name}
-                                                      </Typography>
-                                                    </li>
-                                                  ))
-                                                ) : (
-                                                  <Typography align='center'>
-                                                    No Participants
-                                                  </Typography>
-                                                )
-                                              }
-                                            > */}
                                             {isMobile ? (
                                               <List
                                                 component='nav'
@@ -1042,8 +942,6 @@ function ManageOrchadio() {
                                         </Typography>
                                       </Grid>
                                       <Grid item xs align='center'>
-                                        {/* </Grid> */}
-                                        {/* <Grid item xs align='center'> */}
                                         <IconButton
                                           align='center'
                                           className={clsx(classes.expand, {
@@ -1082,7 +980,6 @@ function ManageOrchadio() {
                                   </Grid>
                                 </CardContent>
                                 <CardActions disableSpacing>
-                                  {/* <div style={{ border: '1px solid red' }}> */}
                                   <Grid item xs={4} align='center'>
                                     <Typography color='primary'>0%</Typography>
                                     <Typography>
@@ -1104,14 +1001,12 @@ function ManageOrchadio() {
                                         item.listened_upto_80_percentage}
                                     </Typography>
                                   </Grid>
-                                  {/* </div> */}
                                 </CardActions>
                               </Card>
                             </Grid>
                           ))}
                         </Grid>
                       ) : (
-                        // <Typography variant='subtitle1'>No Data Found</Typography>
                         <Grid item xs={12} className={classes.selectFilterGrid}>
                                 <img
                                     src={unfiltered}
@@ -1226,9 +1121,7 @@ function ManageOrchadio() {
                           onChange={(event, value) => {
                             setSelectedGrade([]);
                             if (value) {
-                              // const ids = value.map((el)=>el)
                               const selectedId = value.grade_id;
-                              // console.log(selectedBranch.branch)
                               const branchId = selectedBranch.branch.id;
                               setSelectedGrade(value);
                               callApi(
@@ -1257,7 +1150,6 @@ function ManageOrchadio() {
                       </Grid>
                       <Grid item md={3} xs={12}>
                         <Autocomplete
-                          // multiple
                           style={{ width: '100%' }}
                           size='small'
                           onChange={(event, value) => {
@@ -1298,7 +1190,6 @@ function ManageOrchadio() {
 
                       <Grid item md={3} xs={12}>
                         <Autocomplete
-                          // multiple
                           style={{ width: '100%' }}
                           size='small'
                           onChange={(event, value) => {
@@ -1338,7 +1229,6 @@ function ManageOrchadio() {
                               fontSize: 'small',
                               width: 150,
                               position: 'absolute',
-                              //   marginTop: '115px',
                             }}
                             onClick={handleParticipantSubmit}
                             color='primary'
@@ -1351,16 +1241,6 @@ function ManageOrchadio() {
                       </Grid>
                     </Grid>
                   </div>
-
-                  {/* <TextField
-                      fullWidth
-                      style={{ marginLeft: 20 }}
-                      id='outlined-basic'
-                      label='Duration in minutes'
-                      variant='outlined'
-                      multiline
-                    /> */}
-                  {/* </div> */}
                 </Fade>
               </Modal>
             </div>
@@ -1369,12 +1249,9 @@ function ManageOrchadio() {
         <Grid container justify='center'>
           {data && !loading && <Pagination
             onChange={handlePagination}
-            // style={{ paddingLeft: '150px' }}
-            // count={Math.ceil(totalGenre / limit)}
             count={totalPages}
             color='primary'
             page={pageNumber}
-            color='primary'
           />}
         </Grid>
       </Layout>

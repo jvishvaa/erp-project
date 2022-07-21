@@ -1,15 +1,11 @@
-import React, { Component, useEffect, useContext, useCallback, useState } from 'react';
-import { withRouter, useHistory } from 'react-router-dom';
+import React, { useEffect, useContext, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import moment from 'moment';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Chip from '@material-ui/core/Chip';
-import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import PropTypes, { element } from 'prop-types';
-import Accordion from '@material-ui/core/Accordion';
-import AccordionSummary from '@material-ui/core/AccordionSummary';
-import AccordionDetails from '@material-ui/core/AccordionDetails';
+import PropTypes from 'prop-types';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Box from '@material-ui/core/Box';
 import Pagination from '@material-ui/lab/Pagination';
@@ -18,7 +14,6 @@ import {
   IconButton,
   Tooltip,
   Card,
-  // useMediaQuery,
   Divider,
   Button,
   TextField,
@@ -41,7 +36,6 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import Layout from '../../Layout';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
-import RadioPlayer from './radioPlayer';
 import Loading from '../../../components/loader/loader';
 import orchidsRadioLogo from './orchidsRadioLogo.png';
 import Nodata from '../../../assets/images/not-found.png';
@@ -53,7 +47,6 @@ import {
 } from '../../../components/utils/timeFunctions';
 import ViewOrchadioMobile from './viewOrchadioMobile';
 import './viewplayer.scss';
-import { display } from '@material-ui/system';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -100,8 +93,6 @@ const useStyles = makeStyles((theme) => ({
   tabRoot: {
     width: '100%',
     flexGrow: 1,
-    // backgroundColor: theme.palette.background.paper,
-    // margin: '20px',
   },
   heading: {
     margin: 10,
@@ -115,10 +106,8 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 10,
     fontSize: theme.typography.pxToRem(15),
     color: theme.palette.secondary.main,
-    // color: '#014B7E',
   },
   comment: {
-    // border: '1px solid red',
     backgroundColor: '#f9f9f9',
     width: '95%',
     padding: 20,
@@ -142,7 +131,6 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '200px',
     overflowY: 'scroll',
     overflowX: 'hidden',
-    // border: '1px solid red',
   },
   selectBg: {
     backgroundColor: theme.palette.primary.primarylightest,
@@ -166,16 +154,8 @@ function ViewOrchadio() {
   const [loading, setLoading] = React.useState(false);
   const [ExpandedPanel, setExpandedPanel] = React.useState(null);
   const [data, setData] = useState([]);
-  // const [ExpandedPanel, setExpandedPanel] = React.useState(null);
-  const [audioSrc, setAudioSrc] = React.useState('');
-  const [RadioTitle, setRadioTitle] = React.useState('Orchadio');
-  const [isLiked, setisLiked] = React.useState(false);
-  const [orchadioId, setOrchadioId] = React.useState('');
-  // const [status, setStatus] = React.useState(false);
-  // const [loading, setLoading] = React.useState(false);
   const [branchName, setBranchName] = React.useState([]);
   const [comment, setComment] = React.useState('');
-  const [ commentError , setCommentError ] = React.useState('');
   const [pageNumber, setPageNumber] = React.useState(1)
   const limit = 5;
   const [totalPages, setTotalPages] = React.useState('')
@@ -228,13 +208,7 @@ function ViewOrchadio() {
   const { first_name: name } = JSON.parse(localStorage.getItem('userDetails') || {});
 
   const tabs = ['All', 'Liked', 'Archived'];
-  const TimeDifference = () => {
-    // const a = moment(new Date()).format('YYYY-MM-DD hh:mm:ss'); // now
-    // const b = moment('05/29/2021 05:50:06');
-    const a = moment('2016-06-06T21:03:55'); // now
-    const b = moment('2016-05-06T20:03:55');
-    console.log(a.diff(b, 'minutes'));
-  };
+  
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -243,7 +217,6 @@ function ViewOrchadio() {
     });
   };
   const Expandpanel = (item) => {
-    // const branch = [];
     console.log(item);
     const selectedItem = [];
     const composers = [];
@@ -256,31 +229,21 @@ function ViewOrchadio() {
       views: item.views,
       likes: item.likes,
       is_like: item.is_like,
-      // scheduledDate: item.program_schedule[0].datetime,
       scheduledDate: moment('2021-03-17T21:03:55'),
       duration: '86400',
     });
     let arr = [];
     const found = data.filter((n) => n.id === item.id);
     const otherElements = data.filter((n) => n.id !== item.id);
-    // const a = arraymove(data, b, 0);
     arr = [...otherElements];
     arr.unshift(found);
     arr = [...arr.flat()];
     setBranchName(selectedItem);
     if (arr.length) {
       console.log(arr, 'arr');
-      // setData(arr);
       scrollToTop();
     }
-    // console.log(, 'lp');
-    // console.log(item.files[0]);
-    // setAudioSrc(item.files[0]);
-    // setRadioTitle(item.album_name);
-    // setOrchadioId(item.id);
-    // item.branch.map((i) => setBranchName([...branch, i.branch_name]));
-    // console.log(branchName);
-    // setBranchName([])
+    
   };
   const handleComment = (event) => {
     setComment(event.target.value);
@@ -315,15 +278,12 @@ function ViewOrchadio() {
             console.log(item , "item");
             if (it.id === item.id) {
               const commentArray = [{'comment' : comment, 'user__first_name' : name ,'user__username' : userName[0] }]
-              // it.total_program_likes += 1
               it.comments_list.unshift(commentArray[0]);
               console.log(commentArray , "its");
             }
             return it;
           });
           setData(dat);
-          // console.log(result.data.result);
-          // setData(result.data.result);
         } else {
           setAlert('warning', result.data.message);
           console.log(result.data.message);
@@ -331,7 +291,6 @@ function ViewOrchadio() {
       })
       .catch((error) => {
         setAlert('error', error?.response?.data?.description)
-        // setAlert('error', 'Something went wrong.. Try again later');
       });
   };
   const completionCallback = (id) => {
@@ -365,11 +324,9 @@ function ViewOrchadio() {
       .catch((err) => console.log(err));
   };
   const getRadio = () => {
-    let url;
     if (tabValue === 0) {
       setData([]);
       console.log(data, 'data');
-      // url = `${endpoints.orchadio.GetRadioProgram}`;
       axios
       .get(`${endpoints.orchadio.GetRadioProgram}?page_number=${pageNumber}&page_size=${limit}&session_year=${sessionYear?.id}`)
       .then((result) => {
@@ -381,8 +338,7 @@ function ViewOrchadio() {
           setTotalPages(result.data.result.total_pages)
           const firstItem =
             result.data.result.data.length && result.data.result.data.slice(0, 1);
-          // setAudioLink(result.data.result);
-          // setBranchName(firstItem);
+          
           Expandpanel(firstItem[0]);
         } else {
           console.log(result.data.message);
@@ -394,8 +350,6 @@ function ViewOrchadio() {
     } else if (tabValue === 1) {
       setData([]);
       console.log(data, 'data1');
-      // Liked
-      // url = `${endpoints.orchadio.GetRadioProgram}?category_type=1`;
       axios
       .get(`${endpoints.orchadio.GetRadioProgram}?category_type=1&page_number=${pageNumber}&page_size=${limit}&session_year=${sessionYear?.id}`)
       .then((result) => {
@@ -407,8 +361,7 @@ function ViewOrchadio() {
           setTotalPages(result.data.result.total_pages)
           const firstItem =
             result.data.result.data.length && result.data.result.data.slice(0, 1);
-          // setAudioLink(result.data.result);
-          // setBranchName(firstItem);
+         
           Expandpanel(firstItem[0]);
         } else {
           console.log(result.data.message);
@@ -419,12 +372,7 @@ function ViewOrchadio() {
       });
     } else if (tabValue === 2) {
       setData([]);
-      console.log(data, 'data2');
-      // eslint-disable-next-line no-debugger
-
-      // Archived
-      // url = `${endpoints.orchadio.GetRadioProgram}?category_type=1`;
-      // url = `${endpoints.orchadio.GetRadioProgram}?is_deleted=True`;
+     
       axios
       .get(`${endpoints.orchadio.GetRadioProgram}?is_deleted=True&page_number=${pageNumber}&page_size=${limit}&session_year=${sessionYear?.id}`)
       .then((result) => {
@@ -436,8 +384,6 @@ function ViewOrchadio() {
           setTotalPages(result.data.result.total_pages)
           const firstItem =
             result.data.result.data.length && result.data.result.data.slice(0, 1);
-          // setAudioLink(result.data.result);
-          // setBranchName(firstItem);
           Expandpanel(firstItem[0]);
         } else {
           console.log(result.data.message);
@@ -450,34 +396,28 @@ function ViewOrchadio() {
   };
   useEffect(() => {
     getRadio();
-    // TimeDifference();
   }, []);
 
   const getDaysAfter = (date, amount) => {
-    // return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
     return date ? date.add(amount, 'days').format('DD-MM-YYYY') : undefined;
   };
   const getDaysBefore = (date, amount) => {
-    // return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
     return date ? date.subtract(amount, 'days').format('DD-MM-YYYY') : undefined;
   };
   const handleStartDateChange = (date) => {
     const endDate = getDaysAfter(date.clone(), 6);
     setEndDate(endDate);
-    // setStartDate(date.format('YYYY-MM-DD'));
     setStartDate(date.format('DD-MM-YYYY'));
   };
   const handleEndDateChange = (date) => {
     const startDate = getDaysBefore(date.clone(), 6);
     setStartDate(startDate);
-    // setEndDate(date.format('YYYY-MM-DD'));
     setEndDate(date.format('DD-MM-YYYY'));
   };
   const handleTabChange = (event, newValue) => {
     settabValue(newValue);
     setLoading(true)
     setPageNumber(1)
-    // getRadio();
   };
   useEffect(() => {
     console.log('data change');
@@ -487,9 +427,7 @@ function ViewOrchadio() {
   const handleChange = (panel) => (event, expanded) => {
     setExpandedPanel(expanded ? panel.id : false);
     Expandpanel(panel);
-    // this.setState({
-    //   expanded: expanded ? panel : false,
-    // });
+   
   };
 
  
@@ -506,8 +444,6 @@ function ViewOrchadio() {
           setTotalPages(result.data.result.total_pages)
           const firstItem =
             result.data.result.data.length && result.data.result.data.slice(0, 1);
-          // setAudioLink(result.data.result);
-          // setBranchName(firstItem);
           Expandpanel(firstItem[0]);
         } else {
           setAlert('warning', result.data.message);
@@ -515,25 +451,20 @@ function ViewOrchadio() {
         }
       })
       .catch((error) => {
-        // setAlert('error', 'Something went wrong.. Try again later');
       });
   };
 
   const likeHandler = (item) => {
     setLoading(true)
-    // setisLiked(!status);
     axios
       .put(`${endpoints.orchadio.PostCommentandLike}${item.id}/orchido-like/`)
       .then((result) => {
         if (result.data.status_code === 200) {
           setAlert('success', result.data.message);
           setLoading(false);
-          // console.log(result.data.result);
-          // setData(result.data.result);
-          // if (result.data && result.data.success === 'true') {
+         
           const dat = data.map((it) => {
             if (it.id === item.id) {
-              // it.total_program_likes += 1
               it.is_like = !it.is_like;
               if (it.is_like) {
                 it.likes += 1;
@@ -544,18 +475,6 @@ function ViewOrchadio() {
             return it;
           });
           setData(dat);
-          // }
-          // if (result.data && result.data.success === 'false') {
-          //   const dat = data.map((it) => {
-          //     if (it.id === item.id) {
-          //       // it.total_program_likes -= 1;
-          //       it.is_liked = 'False';
-          //     }
-          //     return it;
-          //   });
-          //   setData(dat);
-          // }
-          // getRadio();
         } else {
           setAlert('warning', result.data.message);
           console.log(result.data.message);
@@ -576,31 +495,8 @@ function ViewOrchadio() {
       const composers = item.branchName.join();
       return (
         <div style={{ marginBottom: '20px' }} key={`${item.id} ${i + 1}`}>
-          {/* <AudioPlayerWrapper
-            albumName={item.program_name}
-            // imageTxt='Orchids'
-            albumComposers={item.program_made_by.split(', ')}
-            src={item.audio_file}
-            timeToStart={getFormattedHrsMnts(date[3], date[4])}
-            timedStart
-            dateToStart={selectedDate}
-            duration={item.duration}
-            completionPercentage={80}
-            completionCallback={() => completionCallback(item.id)}
-            completedOnPecentageLimit={(percentage) =>
-              completedOnPecentageLimit(item.id, percentage)}
-            likeHandler={() => likeClickHandler(item.id)}
-            likesCount={item.total_program_likes}
-            viewCount={item.total_program_participants}
-            imageSrc={orchadioImg}
-            isLiked={item.is_liked === 'True'}
-            radioProgramId={item.id}
-          /> */}
-          {/* {console.log(item.branchName)} */}
           <AudioPlayerWrapper
             albumName={item.radioTitle}
-            // imageTxt='Orchids'
-            // albumComposers={item.composers}
             albumComposers={composers.split(', ')}
             src={`${endpoints.orchadio.s3}/${item.audioSrc}`}
             timeToStart={getFormattedHrsMnts(date[3], date[4])}
@@ -648,13 +544,6 @@ function ViewOrchadio() {
                 {tabs.map((tab, index) => (
                   <Tab label={tab} {...a11yProps(index)} />
                 ))}
-                {/* <Tab label='All' {...a11yProps(0)} /> */}
-                {/* <Tab label='Today' {...a11yProps(1)} /> */}
-                {/* <Tab label='Live Streams' {...a11yProps(2)} /> */}
-                {/* <Tab label='Going Live' {...a11yProps(3)} /> */}
-                {/* <Tab label='Most liked' {...a11yProps(4)} /> */}
-                {/* <Tab label='Liked' {...a11yProps(1)} /> */}
-                {/* <Tab label='Archived' {...a11yProps(2)} /> */}
               </Tabs>
               {tabs.map((tab, index) => {
                 return (
@@ -683,7 +572,6 @@ function ViewOrchadio() {
                                     className = "labelColor cancelButton"
                                     size='medium'
                                     variant='contained'
-                                    // onClick={handleFilter}
                                     disabled
                                   >
                                     Clear All
@@ -710,11 +598,8 @@ function ViewOrchadio() {
                       ''
                     )}
                     {data.length ? getRadioList() : <div  style={{display:'flex' , justifyContent:'center',width:'100%'}}> <img src={Nodata}  /> </div>}
-                    {/* <RadioPlayer data={branchName} /> */}
                     {data.map((item, index) => (
                       <Grid item xs={12} className='audioArea'>
-                        {/* <Grid container alignItems='center' className={classes.paperRoot}> */}
-                        {/* <div className={classes.root}> */}
                         <ExpansionPanel
                           id={index}
                           className={classes.programList}
@@ -726,7 +611,6 @@ function ViewOrchadio() {
                               k.id === item.id ? classes.selectBg : classes.unSelectBg
                             )
                           }
-                          // onClick={() => Expandpanel(item)}
                         >
                           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                             <Grid item xs={6}>
@@ -736,9 +620,7 @@ function ViewOrchadio() {
                                 width='50px'
                                 style={{
                                   float: 'left',
-                                  // border: '1px solid yellow',
                                   borderRadius: '60px',
-                                  // padding: '10px',
                                   backgroundColor: 'white',
                                 }}
                               />
@@ -755,7 +637,6 @@ function ViewOrchadio() {
                                       align='center'
                                     >
                                       PLAYING
-                                      {/* {ShiftArrayElement(data, data.indexOf(item.id), 0)} */}
                                     </Typography>
                                   ) : (
                                     ''
@@ -837,7 +718,6 @@ function ViewOrchadio() {
                                 required
                                 // fullWidth
                                 rowsMax={4}
-                                // InputProps={{ classes: { input: classes.commentInput } }}
                                 style={{ marginBottom: '10px', width: '90%' }}
                                 value={comment}
                                 onChange={handleComment}
@@ -854,13 +734,10 @@ function ViewOrchadio() {
                               <Button
                                 style={{ margin: 10 }}
                                 size='small'
-                                // onClick={() => postComment(item)}
                                 onClick={() => commentValidate(item)}
                               >
                                 Post
                               </Button>
-                              {/* </Grid> */}
-                              {/* <Grid item xs={12}> */}
                               {item.comments_list.map((c) => (
                                 <div className="commentArea" >
                                  
@@ -877,13 +754,6 @@ function ViewOrchadio() {
                             </Grid>
                           </ExpansionPanelDetails>
                         </ExpansionPanel>
-                        {/* </div> */}
-                        {/* <Paper className={classes.paper}> */}
-                        {/* <Grid container alignItems='center' className={classes.paperRoot}> */}
-
-                        {/* </Grid> */}
-                        {/* </Paper> */}
-                        {/* </Grid> */}
                       </Grid>
                     ))}
                   </TabPanel>
@@ -895,7 +765,6 @@ function ViewOrchadio() {
                   count = {totalPages}
                   color='primary'
                   page={pageNumber}
-                  color='primary'
                 />}
               </Grid>
             </div>
