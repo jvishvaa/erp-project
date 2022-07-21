@@ -5,7 +5,6 @@ import {
   Grid,
   TextField,
   Button,
-  withStyles,
   makeStyles,
   Divider,
   Typography,
@@ -58,7 +57,6 @@ const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     flexGrow: 1,
-    // backgroundColor: theme.palette.background.paper,
   },
   textEffect: {
     overflow: 'hidden',
@@ -73,7 +71,7 @@ const useStyles = makeStyles((theme) => ({
     whiteSpace: 'pre-wrap',
     wordWrap: 'break-word',
   },
-  tooltiptext:theme.toolTipText,
+  tooltiptext: theme.toolTipText,
 }));
 
 function BookView() {
@@ -99,7 +97,6 @@ function BookView() {
   };
 
   const handleClear = () => {
-    // handleFilter();
     setSelectedAcad('');
     setGradeList([]);
     setSubjectList([]);
@@ -128,9 +125,6 @@ function BookView() {
                   style={{ width: '100%' }}
                   className='dropdownIcon'
                   inputProps={{ maxLength: 100 }}
-                  //   onChange={(event, value) => {
-                  //     handleTitleChange(event);
-                  //   }}
                   color='secondary'
                   size='small'
                 />
@@ -140,24 +134,7 @@ function BookView() {
                   style={{ width: '100%' }}
                   size='small'
                   className='dropdownIcon'
-                  // onChange={(event, value) => {
-                  //   if (value) {
-                  //     withAxiosInstance(
-                  //       `${endpoints.communication.branches}?session_year=${
-                  //         value?.id
-                  //       }&module_id=${getModuleInfo('Ebook View').id}`,
-                  //       'branch'
-                  //     );
-                  //   }
-                  //   setSelectedAcad(value);
-                  //   setSelectedGrade('');
-                  //   setSelectedSubject('');
-                  //   setSelectedBranch('');
-                  // }}
                   id='Acad_id'
-                  // options={acadList}
-                  // value={selectedAcad}
-                  // getOptionLabel={(option) => option.session_year}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -174,22 +151,9 @@ function BookView() {
               <Grid item md={3} xs={12}>
                 <Autocomplete
                   size='small'
-                  // onChange={(event, value) => {
-                  //   if (value) {
-                  //     withAxiosInstance(
-                  //       `${endpoints.ebook.EbookMappedGrade}?branch_id=${selectedBranch.branch.id}&grade_id=${value.erp_grade}`,
-                  //       'subject'
-                  //     );
-                  //   }
-                  //   setSelectedGrade(value);
-                  //   setSelectedSubject('');
-                  // }}
                   className='dropdownIcon'
                   style={{ width: '100%' }}
                   id='grade'
-                  // options={gradeList}
-                  // value={selectedGrade}
-                  // getOptionLabel={(option) => option?.erp_grade_name || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -205,22 +169,9 @@ function BookView() {
               <Grid item md={3} xs={12}>
                 <Autocomplete
                   size='small'
-                  // onChange={(event, value) => {
-                  //   setSelectedSubject(value);
-                  // }}
                   className='dropdownIcon'
                   style={{ width: '100%' }}
                   id='subject'
-                  // options={subjectList}
-                  // getOptionLabel={(option) =>
-                  //   (option &&
-                  //     option.subject_id_name &&
-                  //     option.subject_id_name[0] &&
-                  //     option.subject_id_name[0].erp_sub_name) ||
-                  //   ''
-                  // }
-                  // value={selectedSubject}
-                  // getOptionLabel={(option) => option?.erp_sub_name||''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -236,22 +187,9 @@ function BookView() {
               <Grid item md={3} xs={12}>
                 <Autocomplete
                   size='small'
-                  // onChange={(event, value) => {
-                  //   setSelectedSubject(value);
-                  // }}
                   className='dropdownIcon'
                   style={{ width: '100%' }}
                   id='subject'
-                  // options={subjectList}
-                  // getOptionLabel={(option) =>
-                  //   (option &&
-                  //     option.subject_id_name &&
-                  //     option.subject_id_name[0] &&
-                  //     option.subject_id_name[0].erp_sub_name) ||
-                  //   ''
-                  // }
-                  // value={selectedSubject}
-                  // getOptionLabel={(option) => option?.erp_sub_name||''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -287,15 +225,6 @@ function BookView() {
                       variant='contained'
                       color='primary'
                       fullWidth
-                      // onClick={() =>
-                      //   handleFilter(
-                      //     selectedAcad,
-                      //     selectedBranch?.branch?.id,
-                      //     selectedGrade,
-                      //     selectedSubject,
-                      //     selectedVolume
-                      //   )
-                      // }
                     >
                       Filter
                     </Button>
@@ -339,7 +268,6 @@ function BookView() {
                     height: '170px',
                     borderRadius: 10,
                     padding: '5px',
-                    // backgroundColor: item?.ebook_type === '2' ? '#fefbe8' : '',
                   }}
                 >
                   <Grid container spacing={2}>
@@ -356,20 +284,6 @@ function BookView() {
                     <Grid item md={7} xs={6}>
                       <Grid container spacing={1}>
                         <Grid item md={12} xs={12}>
-                          {/* <IconButton
-                            aria-label='more'
-                            style={{ float: 'right' }}
-                            onClick={() => handlePeriodMenuOpen()}
-                            onMouseLeave={handlePeriodMenuClose}
-                          >
-                            <MoreHorizIcon color='primary' />
-                          </IconButton>
-                          <div className='tooltipContainer'>
-                            <span className='tooltiptext'>
-                              <div>Edit</div>
-                              <div>Delete</div>
-                            </span>
-                          </div> */}
                           <Box>
                             <span
                               className='period_card_menu'
@@ -383,46 +297,14 @@ function BookView() {
                               {showMenu ? (
                                 <div className='tooltipContainer'>
                                   <span className={` ${classes.tooltiptext} tooltiptext`}>
-                                    {/* <div onClick={(e) => handleDelete(period)}>Delete</div> */}
                                     <div>Edit</div> <div></div>
                                     <div>Delete</div>
-                                    {/* <Dialog
-                                      open={deleteAlert}
-                                      onClose={handleDeleteCancel}
-                                    >
-                                      <DialogTitle
-                                        style={{ cursor: 'move', color: '#014b7e' }}
-                                        id='draggable-dialog-title'
-                                      >
-                                        Delete Question
-                                      </DialogTitle>
-                                      <DialogContent>
-                                        <DialogContentText>
-                                          Are you sure you want to delete ?
-                                        </DialogContentText>
-                                      </DialogContent>
-                                      <DialogActions>
-                                        <Button
-                                          onClick={handleDeleteCancel}
-                                          className='labelColor cancelButton'
-                                        >
-                                          Cancel
-                                        </Button>
-                                        <Button
-                                          color='primary'
-                                          onClick={(e) => handleDeleteConfirm(period)}
-                                        >
-                                          Confirm
-                                        </Button>
-                                      </DialogActions>
-                                    </Dialog> */}
                                   </span>
                                 </div>
                               ) : null}
                             </span>
                           </Box>
                           <Typography
-                            // title={item && item.ebook_name}
                             title='Wings'
                             className={classes.textEffect}
                             style={{
@@ -433,25 +315,15 @@ function BookView() {
                               marginRight: '2px',
                             }}
                           >
-                            {/* {item && item.ebook_name} */}
                             {'wings'}
                           </Typography>
                         </Grid>
                         <Grid item md={12} xs={12}>
                           <Typography
-                            // title={
-                            //   item &&
-                            //   item.updated_at &&
-                            //   new Date(item.updated_at).toLocaleDateString()
-                            // }
                             title='Wings of fire'
                             style={{ fontSize: '10px', color: '#042955' }}
                           >
-                            Publication on&nbsp;
-                            {/* {item &&
-                              item.updated_at &&
-                              new Date(item.updated_at).toLocaleDateString()} */}
-                            June 22
+                            Publication on&nbsp; June 22
                           </Typography>
                         </Grid>
                         <Grid item md={12} xs={12}>
@@ -466,7 +338,6 @@ function BookView() {
                               borderRadius: '6px',
                               color: 'white',
                             }}
-                            // onClick={() => handleClickOpen(item)}
                           >
                             Read
                           </Button>
