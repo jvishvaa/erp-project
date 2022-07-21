@@ -5,7 +5,7 @@ import endpoints from '../config/endpoints';
 const colorsys = require('colorsys')
 
   const isV2 = JSON.parse(sessionStorage.getItem('selected_branch'))?.isV2;
-  const isV2Button = JSON.parse(localStorage.getItem('selectedVersion'));
+  const isV2Button = JSON.parse(localStorage.getItem('selectedVersion')) || true;
 
 export function fetchThemeApi() {
   return axiosInstance
