@@ -24,12 +24,12 @@ import './styles.scss';
 import QuestionDetailCard from '../question-detail-card.js';
 import ENVCONFIG from '../../../../config/config';
 
-const useStyles = makeStyles((theme) =>({
-  questionsheader : {
+const useStyles = makeStyles((theme) => ({
+  questionsheader: {
     color: theme.palette.primary.main,
     fontSize: "1.2rem"
   },
-  formfieldheader:{
+  formfieldheader: {
     color: theme.palette.primary.main,
     fontSize: "1.2rem",
     margin: "1rem 0",
@@ -413,7 +413,7 @@ const AssesmentTest = ({
                             <div className='checkbox'>
                               <Checkbox
                                 checked
-                                onChange={() => {}}
+                                onChange={() => { }}
                                 inputProps={{ 'aria-label': 'primary checkbox' }}
                                 color='primary'
                               />
@@ -423,8 +423,9 @@ const AssesmentTest = ({
                         </div>
 
                         <div className='section-content'>
+                          <div>Total Questions: {section.questions.length} </div>
                           {section.questions.map((q) => (
-                            <div className='question-detail-card-wrapper' style={{width:'100%'}}>
+                            <div className='question-detail-card-wrapper' style={{ width: '100%' }}>
                               <QuestionDetailCard
                                 createdAt={q?.created_at}
                                 question={q}
