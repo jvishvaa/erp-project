@@ -1,18 +1,14 @@
 import React, { useEffect, useState, useRef } from 'react';
 import {
   Typography,
-  // makeStyles
 } from '@material-ui/core';
 import { secondsToTime } from '../../../components/utils/timeFunctions';
-// import styles from './orchadioListeners.styles'
 
-// const useStyles = makeStyles(styles)
 
 const Timer = ({ seconds, closeOverlay, isCompleted }) => {
   const [time, setTime] = useState('00:00:00');
   const [secondsToShow, setSecondsToShow] = useState(0);
   const timer = useRef(null);
-  // const classes = useStyles()
 
   useEffect(() => {
     if (isCompleted && timer.current) {

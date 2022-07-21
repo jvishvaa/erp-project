@@ -19,7 +19,6 @@ import AddIcon from '@material-ui/icons/Add';
 import './Styles.css';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
-import { Editor } from '@tinymce/tinymce-react';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 
 import PublicationPreview from './PublicationPreview';
@@ -79,7 +78,6 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
   const [subject, setSubject] = useState();
   const [branchGet, setBranchGet] = useState();
   const [gradesGet, setGradesGet] = useState([]);
-  // data for post api
   const [grade, setGrade] = useState();
   const [postSubjects, setPostSubjects] = useState();
   const [postBranch, setPostBranch] = useState();
@@ -101,7 +99,6 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
 
   const [bookTemp, setBookTemp] = useState('');
   const [readFlag, setReadFlag] = useState(false);
-  const [editFlag, setEditFlag] = useState(false);
   const [tableFlag, setTableFlag] = useState(true);
   const [delFlag, setDelFlag] = useState(false);
   const [loading, setLoading] = React.useState(false);
@@ -218,7 +215,6 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
     }
   };
 
-  //local storage
   const LocalData = () => {
     localStorage.setItem('title', postData.title);
     localStorage.setItem('image', image);
@@ -689,7 +685,6 @@ const AddPublication = ({ handleGoBackPre, handleGoBackPre1 }) => {
                         onChange={handleFileChange}
                         style={{ display: 'none' }}
                       />
-                      {/* <FilePreviewerThumbnail file={pdfData} /> */}
                     </Grid>
                   </Grid>
                 </Grid>
