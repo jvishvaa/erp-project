@@ -4,8 +4,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../config/endpoints';
 import axios from 'axios';
 import axiosInstance from '../../config/axios';
-import ClearIcon from '../../components/icon/ClearIcon';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Loading from '../../components/loader/loader';
@@ -39,8 +38,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
     setSelectedBranch('');
     setSelectedGrade('');
     setSelectedSubject('');
-    setSelectedVolume('')
-    // setIsFilter(true);
+    setSelectedVolume('')  
   }, [clearFilter]);
 
   function ApiCal() {
@@ -69,9 +67,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
       .then((response) => {
         setLoading(false);
         if (response.data.status_code === 200) {
-          if (key === 'acad') {
-            // const defaultYear = response?.data?.current_acad_session_data?.[0];
-            //   setSelectedAcad(defaultYear)
+          if (key === 'acad') {          
             setAcadList(response.data.data);
             withAxiosInstance(
               `${endpoints.communication.branches}?session_year=${
@@ -94,27 +90,17 @@ const Filter = ({ handleFilter, clearFilter }) => {
       });
   }
 
-  useEffect(() => {
-    // withAxiosInstance(
-    //   `${endpoints.userManagement.academicYear}?module_id=${
-    //     getModuleInfo('Ebook View').id
-    //   }`,
-    //   'acad'
-    // );
+  useEffect(() => {   
     withAxiosInstance(
       `${endpoints.communication.branches}?session_year=${selectedAcad?.id}&module_id=${
         getModuleInfo('Ebook View').id
       }`,
       'branch'
-    );
-    // if (key === 'branch') {
-    // setBranchList(response.data.data.results);
-    // }
+    );   
     ApiCal();
   }, []);
 
-  function handleClear() {
-    // handleFilter();
+  function handleClear() {    
     setSelectedVolume('');
     setGradeList([]);
     setSubjectList([]);
@@ -126,42 +112,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
 
   return (
     <>
-      <Grid container spacing={2} style={{ padding: '0px 10px' }}>
-        {/* <Grid item md={3} xs={12}>
-          <Autocomplete
-            style={{ width: '100%' }}
-            size='small'
-            className='dropdownIcon'
-            onChange={(event, value) => {
-              if (value) {
-                withAxiosInstance(
-                  `${endpoints.communication.branches}?session_year=${
-                    value?.id
-                  }&module_id=${getModuleInfo('Ebook View').id}`,
-                  'branch'
-                );
-              }
-              setSelectedAcad(value);
-              setSelectedGrade('');
-              setSelectedSubject('');
-              setSelectedBranch('');
-            }}
-            id='Acad_id'
-            options={acadList}
-            value={selectedAcad}
-            getOptionLabel={(option) => option.session_year}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Academic Year'
-                //
-                placeholder='Academic Year'
-              />
-            )}
-          />
-        </Grid> */}
+      <Grid container spacing={2} style={{ padding: '0px 10px' }}>        
         <Grid item md={3} xs={12}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -254,8 +205,7 @@ const Filter = ({ handleFilter, clearFilter }) => {
                 option.subject_id_name[0].erp_sub_name) ||
               ''
             }
-            value={selectedSubject}
-            // getOptionLabel={(option) => option?.erp_sub_name||''}
+            value={selectedSubject}      
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -275,8 +225,6 @@ const Filter = ({ handleFilter, clearFilter }) => {
             className='dropdownIcon'
             onChange={(event, value) => {
               setSelectedVolume(value);
-              // setSelectedSubject(value);
-
             }}
             id='volume_id'
             options={volumeList}
