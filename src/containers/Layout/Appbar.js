@@ -345,9 +345,38 @@ const Appbar = ({ children, history, ...props }) => {
     setBranch(selectedBranch?.branch?.branch_name);
   }, [selectedBranch]);
 
+  function reseteTheme() {
+    const themecolors =
+      [
+        {
+          theme_key: "primary_color",
+          theme_value: "#FF6B6B",
+        },
+        {
+          theme_key: "second_color",
+          theme_value: "#014B7E",
+        }
+      ]
+    localStorage.setItem("themeDetails", JSON.stringify(themecolors));
+    axiosInstance
+      .post(`${endpoints.themeAPI.school_theme}`, themecolors)
+      .then((res) => {
+        console.log(res)
+        if (res.status === 200) {
+          window.location.reload()
+          setAlert('success', res.data.message);
+        } else {
+          setAlert('error', res.data.description);
+        }
+      }).catch((error) => {
+        console.log(error);
+      });
+  }
+
   const handleVersion = (status) => {
     dispatch(selectedVersion(status));
     localStorage.setItem('selectedVersion', status);
+    reseteTheme();
   };
   const isV2 = useSelector(
     (state) =>

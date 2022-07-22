@@ -1,14 +1,7 @@
-/* eslint-disable react/require-default-props */
-/* eslint-disable react/forbid-prop-types */
-/* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { Grid, Button, Divider } from '@material-ui/core';
-// import TextField from '@material-ui/core/TextField';
+import { Grid, Divider } from '@material-ui/core';
 import PropTypes from 'prop-types';
-// import moment from 'moment';
-// import Autocomplete from '@material-ui/lab/Autocomplete';
-// import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import { withRouter } from 'react-router-dom';
 import Tab from '@material-ui/core/Tab';
@@ -17,7 +10,6 @@ import Box from '@material-ui/core/Box';
 import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import Layout from '../Layout';
 import { Pagination } from '@material-ui/lab';
-// import Filter from './Filter';
 import Filter from './filter.jsx';
 import GridList from './gridList';
 import axios from 'axios';
@@ -66,8 +58,6 @@ const styles = (theme) => ({
   tabRoot: {
     width: '100%',
     flexGrow: 1,
-    // backgroundColor: theme.palette.background.paper,
-    // margin: '20px',
   },
 });
 
@@ -170,8 +160,6 @@ class ViewEbook extends Component {
           this.state.selectedSubject,
           this.state.selectedVolume
         );
-        // this.state.clearFilter = 1;
-        // this.handleClearFilter();
       });
     } else if (newValue === 1) {
       this.setState({ tabValue: newValue, data: [] }, () => {
@@ -182,8 +170,6 @@ class ViewEbook extends Component {
           this.state.selectedSubject,
           this.state.selectedVolume
         );
-        // this.state.clearFilter = 2;
-        // this.handleClearFilter();
       });
     } else if (newValue === 2) {
       this.setState({ tabValue: newValue, data: [] }, () => {
@@ -194,14 +180,12 @@ class ViewEbook extends Component {
           this.state.selectedSubject,
           this.state.selectedVolume
         );
-        // this.state.clearFilter = 3;
-        // this.handleClearFilter();
       });
     }
   };
 
   getEbook = (acad, branch, grade, subject, vol) => {
-    const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
+    const { host } = new URL(axiosInstance.defaults.baseURL);
     const hostSplitArray = host.split('.');
     const subDomainLevels = hostSplitArray.length - 2;
     let domain = '';
@@ -235,7 +219,7 @@ class ViewEbook extends Component {
         endpoints.ebook.ebook
       }?domain_name=${domainTobeSent}&is_ebook=true&page_number=${pageNo}&page_size=${pageSize}&is_delete=${'True'}${filterAcad}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}`;
     }
-    axios
+    axiosInstance
       .get(urlPath, {
         headers: {
           'x-api-key': 'vikash@12345#1231',
@@ -315,8 +299,6 @@ class ViewEbook extends Component {
                           <Tab label='All' {...a11yProps(0)} />
                           <Tab label='Activated' {...a11yProps(1)} />
                           <Tab label='Pending' {...a11yProps(2)} />
-
-                          {/* <Tab label='Deleted' {...a11yProps(2)} /> */}
                         </Tabs>
                         <TabPanel value={tabValue} index={0}>
                           {data && (
