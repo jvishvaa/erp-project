@@ -25,6 +25,7 @@ import Footer from '../footer/index';
 import AppSearchBarUseStyles from './AppSearchBarUseStyles';
 import ENVCONFIG from 'config/config';
 import SideBar from './Sidebar';
+import { IsV2Checker } from 'v2/isV2Checker';
 export const ContainerContext = createContext();
 
 // const isV2 = localStorage.getItem('isV2');
@@ -32,14 +33,7 @@ export const ContainerContext = createContext();
 const Layout = ({ children, history }) => {
   const containerRef = useRef(null);
   const dispatch = useDispatch();
-  let isV2 = useSelector(
-    (state) =>
-      state.commonFilterReducer.selectedBranch?.isV2 &&
-      state.commonFilterReducer.selectedVersion
-  );
-  // const [drawerOpen, setDrawerOpen] = useState(
-  //   isV2 ? (window.innerWidth < 768 ? false : true) : false
-  // );
+  const isV2 = IsV2Checker();
 
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLogout, setIsLogout] = useState(false);

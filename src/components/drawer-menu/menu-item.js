@@ -17,6 +17,7 @@ import { theme } from 'highcharts';
 import { ClassSharp } from '@material-ui/icons';
 import './styles.scss';
 import { useDispatch, useSelector } from 'react-redux';
+import { IsV2Checker } from 'v2/isV2Checker';
 
 const MenuItem = withRouter(({ history, ...props }) => {
   const {
@@ -35,11 +36,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
   const [childValue, setChildValue] = useState(!flag);
   const [child, setChild] = useState('');
 
-  const isV2 = useSelector(
-    (state) =>
-      state.commonFilterReducer.selectedBranch?.isV2 &&
-      state.commonFilterReducer.selectedVersion
-  );
+  const isV2 = IsV2Checker();
 
   const useStyles = makeStyles((theme) => ({
     // listitem: {

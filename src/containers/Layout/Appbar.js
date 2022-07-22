@@ -41,6 +41,7 @@ import ENVCONFIG from 'config/config';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import './styles.scss';
 import { Switch } from 'antd';
+import { IsV2Checker } from 'v2/isV2Checker';
 
 const Appbar = ({ children, history, ...props }) => {
   const classes = AppSearchBarUseStyles();
@@ -346,29 +347,29 @@ const Appbar = ({ children, history, ...props }) => {
   }, [selectedBranch]);
 
   function reseteTheme() {
-    const themecolors =
-      [
-        {
-          theme_key: "primary_color",
-          theme_value: "#FF6B6B",
-        },
-        {
-          theme_key: "second_color",
-          theme_value: "#014B7E",
-        }
-      ]
-    localStorage.setItem("themeDetails", JSON.stringify(themecolors));
+    const themecolors = [
+      {
+        theme_key: 'primary_color',
+        theme_value: '#FF6B6B',
+      },
+      {
+        theme_key: 'second_color',
+        theme_value: '#014B7E',
+      },
+    ];
+    localStorage.setItem('themeDetails', JSON.stringify(themecolors));
     axiosInstance
       .post(`${endpoints.themeAPI.school_theme}`, themecolors)
       .then((res) => {
-        console.log(res)
+        console.log(res);
         if (res.status === 200) {
-          window.location.reload()
+          window.location.reload();
           setAlert('success', res.data.message);
         } else {
           setAlert('error', res.data.description);
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         console.log(error);
       });
   }
@@ -378,11 +379,7 @@ const Appbar = ({ children, history, ...props }) => {
     localStorage.setItem('selectedVersion', status);
     reseteTheme();
   };
-  const isV2 = useSelector(
-    (state) =>
-      state.commonFilterReducer.selectedBranch?.isV2 &&
-      state.commonFilterReducer.selectedVersion
-  );
+  const isV2 = IsV2Checker();
   const isBranchV2 = useSelector(
     (state) => state.commonFilterReducer.selectedBranch?.isV2
   );

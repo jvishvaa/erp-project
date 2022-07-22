@@ -43,6 +43,7 @@ import StaffIcon from 'assets/dashboardIcons/topbarIcons/defaultProfile.svg';
 import RupeeSymbol from 'v2/Assets/dashboardIcons/topbarIcons/rupee-symbol.png';
 import { Select, Switch } from 'antd';
 import './styles.scss';
+import { IsV2Checker } from 'v2/isV2Checker';
 // import { Item } from 'semantic-ui-react';
 const { Option } = Select;
 
@@ -316,11 +317,7 @@ const Appbar = ({ children, history, ...props }) => {
     localStorage.setItem('selectedVersion', status);
     reseteTheme();
   };
-  const isV2 = useSelector(
-    (state) =>
-      state.commonFilterReducer.selectedBranch?.isV2 &&
-      state.commonFilterReducer.selectedVersion
-  );
+  const isV2 = IsV2Checker();
 
   return (
     <>
