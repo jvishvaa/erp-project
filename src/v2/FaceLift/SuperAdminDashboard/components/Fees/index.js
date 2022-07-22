@@ -39,7 +39,7 @@ const getMonth = (value) => {
   }
 };
 
-const FeesOverview = () => {
+const FeesOverview = (props) => {
   const history = useHistory();
   const [feeOverviewFilter, setFeeOverviewFilter] = useState('Monthly');
   const [feesStats, setFeesStats] = useState('');
@@ -67,6 +67,7 @@ const FeesOverview = () => {
   const handleBranchChange = (item) => {
     setBranchId(item?.value);
     setBranchSelected([item?.selected]);
+    props.handleFeesBranch([item?.selected]);
   };
 
   const handleChange = (e) => {

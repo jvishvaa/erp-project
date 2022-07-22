@@ -1,38 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import ShortcutCard from 'v2/FaceLift/myComponents/ShortcutCard';
-import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const Shortcut = (props) => {
-  const { selectedBranchList } = props;
-  const history = useHistory();
+  const { selectedBranchList, feesBranch } = props;
   const [moduleId, setModuleId] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Ebook' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Ebook View') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, []);
+
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
   const branchListAttendance = selectedBranchList;
-  const acadIds = branchListAttendance?.map((o, i) => (o.id = o.acadId));
+  if (selectedBranchList.length !== branchList.length) {
+    const acadIds = branchListAttendance?.map((o, i) => (o.id = o.acadId));
+  }
   const selectedBranchs = selectedBranchList?.map((item) => item?.selectedBranch);
-  const feesBranch = [selectedBranch];
 
   const shortcutsData = [
     {
@@ -43,13 +26,14 @@ const Shortcut = (props) => {
       },
     },
     {
-      title: 'Fees overview',
+      title: 'Fees Overview',
       url: '/fees-table-status',
       state: {
-        branch: feesBranch,
+        branch: feesBranch.length > 0 ? feesBranch : [selectedBranch],
         filter: true,
       },
     },
+
     {
       title: 'Curriculum Completion',
       url: '/curriculum-completion-branchWise',
@@ -71,6 +55,24 @@ const Shortcut = (props) => {
       iscurriculam: false,
     },
   ];
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Ebook' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Ebook View') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
 
   return (
     <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ minHeight: 240 }}>
