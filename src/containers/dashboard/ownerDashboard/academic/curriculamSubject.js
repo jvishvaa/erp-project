@@ -148,7 +148,7 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   tableStateMent: {
-    color: '#F39494',
+    color: `${theme.palette.v2Color1.primaryV2} !important`,
     fontWeight: 'bolder',
     fontSize: '20px',
     textAlign: 'left',

@@ -2,6 +2,8 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { colorLuminance } from '../utility-functions';
 import axiosInstance from '../config/axios';
 import endpoints from '../config/endpoints';
+import { IsV2Checker } from 'v2/isV2Checker';
+
 const colorsys = require('colorsys')
 
   const isV2 = sessionStorage.getItem('selected_branch')
@@ -96,6 +98,8 @@ export function themeGenerator() {
     lightestprimary = '#fff6f6  '
   } = colors || {};
 
+  const isV2Color = IsV2Checker();
+  
   return createMuiTheme({
     palette: {
       primary: {
@@ -118,10 +122,10 @@ export function themeGenerator() {
         secondary: '#f9f9f9',
       },
       v2Color1: {
-        primaryV2: isV2 ? '#4a77e8' : '#FFD9D9',
+        primaryV2: isV2Color ? '#4a77e8' : '#FFD9D9',
       },
       v2Color2: {
-        primaryV2: isV2 ? '#4a77e8' : '#ef676a',
+        primaryV2: isV2Color ? '#4a77e8' : '#ef676a',
       }
     },
     typography: {
