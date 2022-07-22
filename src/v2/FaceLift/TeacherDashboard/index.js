@@ -75,11 +75,11 @@ const TeacherdashboardNew = () => {
           <div className='col-md-4 th-custom-col-padding'>
             <HomeWorkReport />
             <CurriculumCompletion />
+            <Shortcut />
           </div>
           <div className='col-md-4 th-custom-col-padding'>
             <Assessment />
-            <Shortcut />
-            <Announcement scrollHeight={'335px'} />
+            <Announcement scrollHeight={'400px'} />
           </div>
         </div>
       </div>

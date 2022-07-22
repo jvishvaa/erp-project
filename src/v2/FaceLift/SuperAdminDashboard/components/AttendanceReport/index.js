@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import NumberCard from '../../../myComponents/NumberCard';
-import { Select } from 'antd';
+import { Select, Spin } from 'antd';
 import { DownOutlined, ReloadOutlined } from '@ant-design/icons';
 import students from 'assets/dashboardIcons/attendanceOverviewIcons/students.svg';
 import admins from 'assets/dashboardIcons/attendanceOverviewIcons/admins.svg';
@@ -35,6 +35,7 @@ const iconsData = [
 
 const AttendanceReport = (props) => {
   const { selectedBranchList } = props;
+  const [loading, setLoading] = useState(false);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -52,6 +53,7 @@ const AttendanceReport = (props) => {
   const [attendanceReportData, setAttendanceReportData] = useState([]);
 
   const fetchAttendanceReportData = (params = {}) => {
+    setLoading(true);
     axios
       .get(`${endpoints.adminDashboard.staffAttendanceStats}`, {
         params: { ...params },
@@ -62,9 +64,13 @@ const AttendanceReport = (props) => {
       .then((response) => {
         if (response.status === 200) {
           setAttendanceReportData(response?.data?.result);
+          setLoading(false);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
   };
 
   const mergeIconReportData = (iconsData, reportData) => {
@@ -105,7 +111,6 @@ const AttendanceReport = (props) => {
         fetchAttendanceReportData({
           session_year_id: selectedAcademicYear?.id,
           date_range_type: attendanceFilter,
-          // acad_session_id: selectedBranch?.branch?.id,
         });
       }
     }
@@ -149,7 +154,11 @@ const AttendanceReport = (props) => {
           ) : null}
         </div>
         <div className='row pt-2'>
-          {attendanceReportData?.length > 0 ? (
+          {loading ? (
+            <div className='th-width-100 text-center'>
+              <Spin tip='Loading...'></Spin>
+            </div>
+          ) : attendanceReportData?.length > 0 ? (
             finalAttendanceData?.map((item, i) => (
               <div
                 className='col-md-3 th-custom-col-padding'

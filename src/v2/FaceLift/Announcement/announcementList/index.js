@@ -19,6 +19,10 @@ const AnnouncementList = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
+  const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level;
   const [loading, setLoading] = useState(false);
   const [showTab, setShowTab] = useState('1');
@@ -29,8 +33,21 @@ const AnnouncementList = () => {
   const [pageNumber, setPageNumber] = useState(1);
   const [listCount, setListCount] = useState('');
   const [date, setDate] = useState('');
+  const [branchIds, setBranchIds] = useState('');
   const history = useHistory();
-
+  const showBranchFilter = [1, 2, 4, 8, 9];
+  const branchOptions = branchList?.map((each) => {
+    return (
+      <Option value={each?.branch?.id} key={each?.branch?.id}>
+        {each?.branch?.branch_name}
+      </Option>
+    );
+  });
+  const handleBranchChange = (item) => {
+    const branches = item?.map((i) => i.value).join(',');
+    setBranchIds(branches);
+  };
+  console.log('anbr', branchIds);
   const handleDateChange = (value) => {
     if (value) {
       setDate(moment(value).format('YYYY-MM-DD'));
@@ -61,6 +78,7 @@ const AnnouncementList = () => {
           ...params,
           ...(date ? { date: date } : {}),
           ...(selectedCategoryId ? { is_category: selectedCategoryId } : {}),
+          ...(branchIds ? { branch_id: branchIds } : {}),
         },
       })
       .then((response) => {
@@ -119,7 +137,7 @@ const AnnouncementList = () => {
         is_sent: 'True',
       });
     }
-  }, [showTab, pageNumber, date, selectedCategoryId]);
+  }, [showTab, pageNumber, date, selectedCategoryId, branchIds]);
 
   useEffect(() => {
     fetchCategories();
@@ -129,7 +147,33 @@ const AnnouncementList = () => {
     return (
       <>
         <div className='row mb-2 mb-md-0'>
-          <div className='col-md-8 col-0'>{''}</div>
+          <div className='col-md-4 col-0'>{''}</div>
+          <div className='col-md-4 px-0 py-2 py-md-0'>
+            {showBranchFilter.includes(userLevel) && (
+              <Select
+                className='th-primary th-bg-grey th-br-4 th-width-100 text-left'
+                placement='bottomRight'
+                mode='multiple'
+                maxTagCount={3}
+                showArrow={true}
+                allowClear={true}
+                bordered={false}
+                suffixIcon={<DownOutlined className='th-primary' />}
+                placeholder='Select Branches'
+                // placeholder={
+                //   <span className='th-primary'>{selectedBranch?.branch?.branch_name}</span>
+                // }
+                dropdownMatchSelectWidth={false}
+                onChange={(e, value) => handleBranchChange(value)}
+                optionFilterProp='children'
+                filterOption={(input, options) => {
+                  return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+                }}
+              >
+                {branchOptions}
+              </Select>
+            )}
+          </div>
           <div className='col-md-2 col-5 px-0 px-md-2'>
             <Select
               className='th-grey th-bg-grey th-br-4 th-select w-100 text-left'
@@ -228,7 +272,9 @@ const AnnouncementList = () => {
                       <div>
                         INBOX{' '}
                         {showTab == 1 && !loading && (
-                          <span className='th-fw-400'>({listCount})</span>
+                          <span className='th-fw-400'>
+                            {listCount > 0 ? `(${listCount})` : ''}
+                          </span>
                         )}
                       </div>
                     }
