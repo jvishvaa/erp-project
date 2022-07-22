@@ -117,6 +117,12 @@ export function themeGenerator() {
         primary: '#ffffff',
         secondary: '#f9f9f9',
       },
+      v2Color1: {
+        primaryV2: isV2 ? '#4a77e8' : '#FFD9D9',
+      },
+      v2Color2: {
+        primaryV2: isV2 ? '#4a77e8' : '#ef676a',
+      }
     },
     typography: {
       fontSize: 16,
@@ -142,13 +148,6 @@ export function themeGenerator() {
     switchLabel: {
       fontWeight: '600 !important',
       color: `${primarytemp} !important`,
-    },
-
-    v2Color1: {
-      primaryV2: isV2 ? '#4a77e8' : '#FFD9D9',
-    },
-    v2Color2: {
-      primaryV2: isV2 ? '#4a77e8' : '#ef676a',
     },
     //Css for view more card
     rootViewMore: {
