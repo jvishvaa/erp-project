@@ -147,7 +147,7 @@ const useStyles = makeStyles((theme) => ({
   },
   tableHeadText : {
     fontWeight:'bolder',
-    color:'#F39494',
+    color:`${theme.palette.v2Color1.primaryV2} !important`,
     font: 'normal normal medium 20px/24px Rubik',
     textAlign:'left'
   }
