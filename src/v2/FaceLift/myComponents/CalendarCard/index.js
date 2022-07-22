@@ -55,7 +55,8 @@ const CalendarCard = () => {
         date.isSameOrBefore(holiday.holiday_end_date);
         date.add(1, 'days')
       ) {
-        monthHolidays.push(date.format('YYYY-MM-DD'));
+        if (!monthHolidays.includes(date.format('YYYY-MM-DD')))
+          monthHolidays.push(date.format('YYYY-MM-DD'));
       }
     });
   }

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import OverviewCard from 'v2/FaceLift/myComponents/OverViewCard';
 import avgTestScore from 'assets/dashboardIcons/academicPerformanceIcons/avgTestScore.svg';
 import { useSelector } from 'react-redux';
-import { DownOutlined, ReloadOutlined } from '@ant-design/icons';
+import { ReloadOutlined } from '@ant-design/icons';
+import { message } from 'antd';
 import attendanceReport from 'assets/dashboardIcons/academicPerformanceIcons/attendanceReport.svg';
 import curriculumCompletion from 'assets/dashboardIcons/academicPerformanceIcons/curriculumCompletion.svg';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
@@ -89,6 +90,8 @@ const AcademicPerformance = (props) => {
           acad_session: selectedAcadSessionIds,
           session_year_id: selectedAcademicYear?.id,
         });
+      } else {
+        message.warning('Please select alteast one branch');
       }
     }
   };

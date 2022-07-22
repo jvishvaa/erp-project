@@ -84,7 +84,7 @@ const OverviewCard = (props) => {
         <div className=''>
           <img src={icon} />
         </div>
-        <div className='my-2 th-fw-500 th-14 th-black-1 pr-1'>{title}</div>
+        <div className='my-2 th-fw-500 th-14 th-black-1 pr-4'>{title}</div>
         <div className='th-20 th-fw-600 pb-2'>
           <span>{percentage}%</span>
         </div>
