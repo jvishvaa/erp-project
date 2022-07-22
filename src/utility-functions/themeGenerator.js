@@ -5,7 +5,7 @@ import endpoints from '../config/endpoints';
 const colorsys = require('colorsys')
 
   const isV2 = JSON.parse(sessionStorage.getItem('selected_branch'))?.isV2;
-  const isV2Button = JSON.parse(localStorage.getItem('selectedVersion')) || true;
+  const isV2Button = JSON.parse(localStorage.getItem('selectedVersion'));
 
 export function fetchThemeApi() {
   return axiosInstance
@@ -50,9 +50,11 @@ const getThemeElements = () => {
     },
   };
 
-  if (isV2 && isV2Button) {
-    elements['colors']['primary_color'] = '#1B4CCB';
-    elements['colors']['second_color'] = '#32334A';
+  if (isV2) {
+    if(isV2Button === null || isV2Button){
+      elements['colors']['primary_color'] = '#1B4CCB';
+      elements['colors']['second_color'] = '#32334A';
+    }
   } else if (themeDetails?.length > 0) {
     themeDetails.forEach(({ theme_key, theme_value }) => {
       elements['colors'][theme_key || 'primary_color'] = theme_value || '#ff6b6b';
