@@ -4,7 +4,9 @@ import axiosInstance from '../config/axios';
 import endpoints from '../config/endpoints';
 const colorsys = require('colorsys')
 
-  const isV2 = JSON.parse(sessionStorage.getItem('selected_branch'))?.isV2;
+  const isV2 = sessionStorage.getItem('selected_branch')
+  ? JSON.parse(sessionStorage.getItem('selected_branch'))?.isV2
+  : '';
   const isV2Button = JSON.parse(localStorage.getItem('selectedVersion'));
 
 export function fetchThemeApi() {
@@ -142,6 +144,12 @@ export function themeGenerator() {
       color: `${primarytemp} !important`,
     },
 
+    v2Color1: {
+      primaryV2: isV2 ? '#4a77e8' : '#FFD9D9',
+    },
+    v2Color2: {
+      primaryV2: isV2 ? '#4a77e8' : '#ef676a',
+    },
     //Css for view more card
     rootViewMore: {
       border: `1px solid ${primarytemp}`,

@@ -23,11 +23,11 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   addtimetablebtn: {
-    backgroundColor: '#EF676A',
+    backgroundColor:  `${theme.palette.v2Color2.primaryV2} !important`,
     marginTop: '5px',
     marginLeft: '12%',
     '&:hover': {
-      backgroundColor: '#EF676A',
+      backgroundColor:  `${theme.palette.v2Color2.primaryV2} !important`,
     },
   },
   addperiodbutton: {

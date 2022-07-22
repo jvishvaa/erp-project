@@ -138,7 +138,7 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: '48px',
   },
   TableHeaderColor: {
-    backgroundColor: '#FFD9D9',
+    backgroundColor: `${theme.palette.v2Color1.primaryV2} !important`,
     color: 'black',
   },
   tableStateMent: {
