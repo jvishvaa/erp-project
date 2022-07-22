@@ -98,7 +98,8 @@ export function themeGenerator() {
     lightestprimary = '#fff6f6  '
   } = colors || {};
 
-  const isV2Color = IsV2Checker();
+  // const isV2Color = IsV2Checker();
+  const isV2Color = isV2 && isV2Button ? true : false ;
   
   return createMuiTheme({
     palette: {
