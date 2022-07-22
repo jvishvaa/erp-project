@@ -4,17 +4,13 @@ import {
   Button,
   withStyles,
   Collapse,
-  Grid,
-  Typography,
-  Paper,
-  Divider,
+  Grid, 
 } from '@material-ui/core';
 import FilterIcon from '../../components/icon/FilterIcon';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import ClearIcon from '../../components/icon/ClearIcon';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-//import CategoryFilter from './CategoryFilter';
 import FilterContent from './FilterContent';
 
 const useStyles = makeStyles({
@@ -58,8 +54,6 @@ const useStyles = makeStyles({
     marginTop: '22px',
   },
   categoryFilterDiv: {
-    //height: '223px',
-    //position: 'relative',
     width: '100%',
     display: 'flex',
     flexWrap: 'wrap',
@@ -145,9 +139,6 @@ export default function FilterComponent(props) {
       <Collapse in={showFilter}>
         <Grid container spacing={2} className={classes.categoryFilterContainer}>
           <Grid item sm={8} xs={12}>
-            {/*
-                        <CategoryFilter className={classes.categoryFilterDiv}/>
-                        */}
             <FilterContent />
           </Grid>
           <Grid item sm={4} xs={12} style={{ display: 'flex' }}>

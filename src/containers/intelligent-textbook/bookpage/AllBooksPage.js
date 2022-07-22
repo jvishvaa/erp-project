@@ -1,33 +1,25 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import {
   Grid,
   useTheme,
-  SvgIcon,
   Card,
   IconButton,
-  Popover,
-  MenuList,
-  MenuItem,
   Button,
   Typography,
   Dialog,
   AppBar,
 } from '@material-ui/core';
-// import { Pagination } from '@material-ui/lab';
 import Pagination from 'components/PaginationComponent';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../../Layout';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-// import './AllBooksPage.css';
 import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import noimg from '../../../assets/images/book-icon.jpg';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import moment from 'moment';
 import Filter from '../filter.jsx';
 import { Close } from '@material-ui/icons';
@@ -48,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'bold',
     color: theme.palette.secondary.main,
     marginTop: '15px',
-  }
+  },
 }));
 
 const AllBooksPage = () => {
@@ -69,28 +61,22 @@ const AllBooksPage = () => {
   const [subject, setSubject] = useState('');
   const [volume, setVolume] = useState('');
   const [board, setBoard] = useState('');
-  const [moduleId,setModuleId] = useState('');
+  const [moduleId, setModuleId] = useState('');
   const [chapter, setChapter] = useState('');
-  const [keyConcept,setKeyConcept] = useState('');
+  const [keyConcept, setKeyConcept] = useState('');
   const [open, setOpen] = useState(false);
-  const [bookImage, setBookImage] = useState(
-    // 'https://erp-revamp.s3.ap-south-1.amazonaws.com/dev/ibooks/'
-    // 'https://d3ka3pry54wyko.cloudfront.net/dev/ibooks/'
-    // 'https://erp-revamp.s3.ap-south-1.amazonaws.com/'
-    'https://d3ka3pry54wyko.cloudfront.net/'
-
-  );
+  const [bookImage, setBookImage] = useState('https://d3ka3pry54wyko.cloudfront.net/');
   const [bookId, setbookId] = useState('');
   const [chapterId, setchapterId] = useState('');
   const [bookUid, setbookUid] = useState('');
   const [localStorageName, setlocalStorageName] = useState('');
   const [environment, setenvironment] = useState('');
   const [type, settype] = useState('');
-  const [bookName, setbookName] = useState('')
+  const [bookName, setbookName] = useState('');
 
   const getDomainName = () => {
     let token = JSON.parse(localStorage.getItem('userDetails')).token || {};
-    const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
+    const { host } = new URL(axiosInstance.defaults.baseURL);
     const hostSplitArray = host.split('.');
     const subDomainLevels = hostSplitArray.length - 2;
     let domain = '';
@@ -108,56 +94,27 @@ const AllBooksPage = () => {
     return subDomain;
   };
 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   axiosInstance
-  //     .get(
-  //       `${endpoints.ibook.studentBook
-  //       }?domain_name=${getDomainName()}&book_status=1&page=${pageNo}&page_size=${limit}`
-  //     )
-  //     .then((result) => {
-  //       if (result.data.status_code === 200) {
-  //         setBooksData(result.data.result.result);
-  //         setTotalPages(Math.ceil(result.data.result.count / limit));
-
-  //         console.log(Math.ceil(result.data.result.count / limit), 'pagination');
-  //         if (result?.data.result?.result[0]?.path === 'prod/ibooks/') {
-  //           // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/prod/ibooks/');
-  //           // setBookImage('https://erp-revamp.s3.ap-south-1.amazonaws.com/');
-  //           setBookImage('https://d3ka3pry54wyko.cloudfront.net/');
-
-  //         }
-  //         setLoading(false);
-  //       } else {
-  //         setLoading(false);
-  //         setAlert('error', result.data.message);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       setLoading(false);
-  //       setAlert('error', error.message);
-  //     });
-  // }, [pageNo]);
-
   useEffect(() => {
-
-    if(branch != ''){
-      getEbook(acadmicYear , branch , grade , subject , volume, board,moduleId,chapter,keyConcept)
+    if (branch != '') {
+      getEbook(
+        acadmicYear,
+        branch,
+        grade,
+        subject,
+        volume,
+        board,
+        moduleId,
+        chapter,
+        keyConcept
+      );
     }
-  },[pageNo])
+  }, [pageNo]);
   const handlePagination = (event, page) => {
     setPageNo(page);
   };
 
   const handleBookOpen = (item) => {
-    // history.push(
-    //   `/intelligent-book/${item?.id}/${item?.book_uid}/${item?.local_storage_id}/${item?.path}`
-    // );
-
-    console.log('item111', item)
-
-    const path = item?.path.split("/")
-
+    const path = item?.path.split('/');
     setbookId(item?.id);
     setchapterId();
     setbookName(item.book_name);
@@ -166,10 +123,19 @@ const AllBooksPage = () => {
     setenvironment(path[0]);
     settype(path[1]);
     setOpen(true);
-
   };
 
-  const handleFilter = (acad, branch, grade, sub, vol, board, moduleId, chapter, keyConcept) => {
+  const handleFilter = (
+    acad,
+    branch,
+    grade,
+    sub,
+    vol,
+    board,
+    moduleId,
+    chapter,
+    keyConcept
+  ) => {
     setAcadmicYear(acad);
     setBranch(branch);
     setGrade(grade);
@@ -179,10 +145,20 @@ const AllBooksPage = () => {
     setModuleId(moduleId);
     setChapter(chapter);
     setKeyConcept(keyConcept);
-    getEbook(acad, branch, grade, sub, vol,board, moduleId,chapter, keyConcept);
+    getEbook(acad, branch, grade, sub, vol, board, moduleId, chapter, keyConcept);
   };
 
-  const getEbook = (acad, branch, grade, subject, vol, board, moduleId, chapter, keyConcept) => {
+  const getEbook = (
+    acad,
+    branch,
+    grade,
+    subject,
+    vol,
+    board,
+    moduleId,
+    chapter,
+    keyConcept
+  ) => {
     const filterAcad = `${acad ? `&academic_year=${acad?.id}` : ''}`;
     const filterBranch = `${branch ? `&branch=${branch}` : ''}`;
     const filterGrade = `${grade ? `&grade=${grade?.central_grade}` : ''}`;
@@ -191,44 +167,54 @@ const AllBooksPage = () => {
     const filterBoard = `${board?.length !== 0 ? `&board_id=${board}` : ''}`;
     const filterModule = `${moduleId?.length !== 0 ? `&lt_module=${moduleId?.id}` : ''}`;
     const filterChapter = `${chapter?.length !== 0 ? `&chapter_id=${chapter?.id}` : ''}`;
-    const filterKeyConcept = `${keyConcept?.length !== 0 ? `&key_concept_id=${keyConcept?.id}` : ''}`
-    if(!branch){
-      setAlert('warning','Please Select Branch')
-      setBooksData([])
-      setTotalPages('')
+    const filterKeyConcept = `${
+      keyConcept?.length !== 0 ? `&key_concept_id=${keyConcept?.id}` : ''
+    }`;
+    if (!branch) {
+      setAlert('warning', 'Please Select Branch');
+      setBooksData([]);
+      setTotalPages('');
       return;
-    } else if(!grade){
-      setAlert('warning', 'Please Select Grade') 
-      setBooksData([])
-      setTotalPages('')
+    } else if (!grade) {
+      setAlert('warning', 'Please Select Grade');
+      setBooksData([]);
+      setTotalPages('');
       return;
-    } else if(!subject){
-      setAlert('warning', 'Please Select Subject')
-      setBooksData([])
-      setTotalPages('')
+    } else if (!subject) {
+      setAlert('warning', 'Please Select Subject');
+      setBooksData([]);
+      setTotalPages('');
       return;
-    } else if(!vol){
-      setAlert('warning', 'Please Select Volume')
-      setBooksData([])
-      setTotalPages('')
+    } else if (!vol) {
+      setAlert('warning', 'Please Select Volume');
+      setBooksData([]);
+      setTotalPages('');
       return;
-    } else if(!board?.length > 0){
-      setAlert('warning', "Please Select Board")
-      setBooksData([])
-      setTotalPages('')
-    }
-    else if(branch || grade || subject || vol || moduleId?.length > 0 || chapter?.length >0 || keyConcept?.length >0){
+    } else if (!board?.length > 0) {
+      setAlert('warning', 'Please Select Board');
+      setBooksData([]);
+      setTotalPages('');
+    } else if (
+      branch ||
+      grade ||
+      subject ||
+      vol ||
+      moduleId?.length > 0 ||
+      chapter?.length > 0 ||
+      keyConcept?.length > 0
+    ) {
       setLoading(true);
       axiosInstance
         .get(
-          `${endpoints.ibook.studentBook
+          `${
+            endpoints.ibook.studentBook
           }?domain_name=${getDomainName()}&book_status=1&page=${pageNo}&page_size=${limit}${filterBranch}${filterGrade}${filterSubject}${filterVolumes}${filterBoard}${filterModule}${filterChapter}${filterKeyConcept}`
         )
         .then((result) => {
           if (result.data.status_code === 200) {
             setBooksData(result.data.result.result);
             setTotalPages(Math.ceil(result.data.result.count / limit));
-            setAlert('success',result.data.message)
+            setAlert('success', result.data.message);
             setLoading(false);
           } else {
             setLoading(false);
@@ -239,18 +225,17 @@ const AllBooksPage = () => {
           setLoading(false);
           setAlert('error', error.message);
         });
-    } else{
-      // setAlert('error',"Please Select the Filters")
-      setLoading(false)
-      setBooksData([])
-      setTotalPages('')
+    } else {
+      setLoading(false);
+      setBooksData([]);
+      setTotalPages('');
     }
   };
 
-  useEffect(()=>{
-    setBooksData([])
-    setTotalPages('')
-  },[clearFilter])
+  useEffect(() => {
+    setBooksData([]);
+    setTotalPages('');
+  }, [clearFilter]);
   const handleClose = () => {
     setOpen(false);
   };
@@ -268,7 +253,11 @@ const AllBooksPage = () => {
             />
           </Grid>
           <Grid item md={12} xs={12} style={{ margin: '10px 0px' }}>
-            <Filter handleFilter={handleFilter} clearFilter={clearFilter} setclearFilter={setclearFilter}/>
+            <Filter
+              handleFilter={handleFilter}
+              clearFilter={clearFilter}
+              setclearFilter={setclearFilter}
+            />
           </Grid>
         </Grid>
 
@@ -282,112 +271,112 @@ const AllBooksPage = () => {
             }
             spacing={5}
           >
-            {booksData?.length > 0 ? <>
-            {booksData &&
-              booksData.map((item, index) => {
-                return (
-                  <Grid item md={3} xs={12} key={item?.id}>
-                    <Grid container spacing={2}>
-                      <Grid item md={12} xs={12}>
-                        <Card
-                          style={{
-                            width: '100%',
-                            height: '160px',
-                            borderRadius: 10,
-                            padding: '5px',
-                            boxShadow: '1px 1px 8px #c3c3c3',
-                            backgroundColor: item?.ebook_type === '2' ? '#fefbe8' : '',
-                          }}
-                        >
-                          <Grid container spacing={2}>
-                            <Grid item md={6} xs={6}>
-                              <img
-                                src={`${bookImage}${item.path}${item.book_image}`}
-                                alt='crash'
-                                width='100%'
-                                height='150px'
-                                style={{
-                                  borderRadius: '8px',
-                                  // border: '1px solid lightgray',
-                                }}
-                              />
-                            </Grid>
-                            <Grid item md={6} xs={6} style={{ textAlign: 'left' }}>
-                              <Grid container spacing={1}>
-                                <Grid
-                                  item
-                                  md={12}
-                                  xs={12}
-                                  style={{
-                                    padding: '0px 10px',
-                                    margin: '0px',
-                                    textAlign: 'right',
-                                  }}
-                                ></Grid>
-                                <Grid item md={12} xs={12}>
-                                  <Typography
-                                    className={classes.textEffect}
+            {booksData?.length > 0 ? (
+              <>
+                {booksData &&
+                  booksData.map((item, index) => {
+                    return (
+                      <Grid item md={3} xs={12} key={item?.id}>
+                        <Grid container spacing={2}>
+                          <Grid item md={12} xs={12}>
+                            <Card
+                              style={{
+                                width: '100%',
+                                height: '160px',
+                                borderRadius: 10,
+                                padding: '5px',
+                                boxShadow: '1px 1px 8px #c3c3c3',
+                                backgroundColor:
+                                  item?.ebook_type === '2' ? '#fefbe8' : '',
+                              }}
+                            >
+                              <Grid container spacing={2}>
+                                <Grid item md={6} xs={6}>
+                                  <img
+                                    src={`${bookImage}${item.path}${item.book_image}`}
+                                    alt='crash'
+                                    width='100%'
+                                    height='150px'
                                     style={{
-                                      overflow: 'hidden',
-                                      whiteSpace: 'nowrap',
-                                      textOverflow: 'ellipsis',
-                                      cursor:'pointer'
+                                      borderRadius: '8px',
                                     }}
-                                    title={item?.book_name || ''}
-                                  >
-                                    {item.book_name}
-                                  </Typography>
+                                  />
                                 </Grid>
+                                <Grid item md={6} xs={6} style={{ textAlign: 'left' }}>
+                                  <Grid container spacing={1}>
+                                    <Grid
+                                      item
+                                      md={12}
+                                      xs={12}
+                                      style={{
+                                        padding: '0px 10px',
+                                        margin: '0px',
+                                        textAlign: 'right',
+                                      }}
+                                    ></Grid>
+                                    <Grid item md={12} xs={12}>
+                                      <Typography
+                                        className={classes.textEffect}
+                                        style={{
+                                          overflow: 'hidden',
+                                          whiteSpace: 'nowrap',
+                                          textOverflow: 'ellipsis',
+                                          cursor: 'pointer',
+                                        }}
+                                        title={item?.book_name || ''}
+                                      >
+                                        {item.book_name}
+                                      </Typography>
+                                    </Grid>
 
-                                <Grid item md={12} xs={12}>
-                                  <Typography
-                                    color="secondary"
-                                    style={{
-                                      fontSize: '9px',
-                                      margin: '10px 0',
-                                    }}
-                                  >
-                                    Publication on:{' '}
-                                    {`${moment(item?.created_at).format('MM-DD-YYYY')}`}
-                                  </Typography>
-                                </Grid>
-                                <Grid item md={12} xs={12}>
-                                  <Button
-                                    size='small'
-                                    color='primary'
-                                    variant='contained'
-                                    style={{
-                                      width: '100px',
-                                      height: '25px',
-                                      fontSize: '15px',
-                                      borderRadius: '6px',
-                                      color: "white"
-                                    }}
-                                    onClick={() => handleBookOpen(item)}
-                                  >
-                                    Read
-                                  </Button>
+                                    <Grid item md={12} xs={12}>
+                                      <Typography
+                                        color='secondary'
+                                        style={{
+                                          fontSize: '9px',
+                                          margin: '10px 0',
+                                        }}
+                                      >
+                                        Publication on:{' '}
+                                        {`${moment(item?.created_at).format(
+                                          'MM-DD-YYYY'
+                                        )}`}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid item md={12} xs={12}>
+                                      <Button
+                                        size='small'
+                                        color='primary'
+                                        variant='contained'
+                                        style={{
+                                          width: '100px',
+                                          height: '25px',
+                                          fontSize: '15px',
+                                          borderRadius: '6px',
+                                          color: 'white',
+                                        }}
+                                        onClick={() => handleBookOpen(item)}
+                                      >
+                                        Read
+                                      </Button>
+                                    </Grid>
+                                  </Grid>
                                 </Grid>
                               </Grid>
-                            </Grid>
+                            </Card>
                           </Grid>
-                        </Card>
+                        </Grid>
                       </Grid>
-                    </Grid>
-                  </Grid>
-                );
-              })}
-              </> : ''}
+                    );
+                  })}
+              </>
+            ) : (
+              ''
+            )}
           </Grid>
         </Paper>
 
-        <Dialog
-          fullScreen
-          open={open}
-          // onClose={handleClose}
-          style={{ zIndex: '10000' }}
-        // TransitionComponent={Transition}
-        >
+        <Dialog fullScreen open={open} style={{ zIndex: '10000' }}>
           <Grid container>
             <Grid item sm={12}>
               <AppBar>
@@ -428,13 +417,6 @@ const AllBooksPage = () => {
 
         {booksData?.length > 0 && (
           <Grid item xs={12} md={12} style={{ textAlign: 'center' }}>
-            {/* <Pagination
-              onChange={handlePagination}
-              count={totalPages}
-              color='primary'
-              page={pageNo}
-              style={{ paddingLeft: '45%' }}
-            /> */}
             <Pagination
               totalPages={totalPages}
               currentPage={pageNo}
@@ -442,7 +424,6 @@ const AllBooksPage = () => {
             />
           </Grid>
         )}
-        
       </Layout>
     </>
   );

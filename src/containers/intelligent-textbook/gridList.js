@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable react/jsx-wrap-multilines */
 import React, { useState, useContext } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import {
@@ -23,10 +21,6 @@ import { withRouter } from 'react-router-dom';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
-import IbookPdf from './IbookPDF';
-// import EditIbook from './EditIbook';
-// import ConfirmDialog from '../components/confirm-dialog';
-import noimg from '../../assets/images/no-img.jpg';
 import unfiltered from '../../assets/images/unfiltered.svg';
 import { Close } from '@material-ui/icons';
 
@@ -82,9 +76,7 @@ function GridList(props) {
   const [openEdit, setOpenEdit] = useState(false);
   const [conFirmDelete, setConFirmDelete] = useState(false);
   const opnePop = Boolean(openPopOver);
-  // const chapterImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/';
   const chapterImage = 'https://d3ka3pry54wyko.cloudfront.net/';
-
 
   const handleMenuOpen = (event, item) => {
     setOpenPopOver(event.currentTarget);
@@ -129,7 +121,6 @@ function GridList(props) {
 
   function handleClosePopOver() {
     setOpenPopOver(null);
-    // setEditData({});
   }
 
   function handleEdit(item, index) {
@@ -141,7 +132,6 @@ function GridList(props) {
 
   function handleCloseEditModel(data) {
     setOpenEdit(false);
-    // setEditData({});
     if (data === 'success') {
       callBack();
     }
@@ -335,32 +325,11 @@ function GridList(props) {
                                   wings
                                 </Typography>
                               </Grid>
-                              {/* <Grid item md={12} xs={12}>
-                                <Typography
-                                  title={item && item.ebook_author}
-                                  className={classes.textEffect}
-                                  style={{ fontSize: '10px', color: '#042955' }}
-                                >
-                                  Author :&nbsp;
-                                  {item && item.ebook_author}
-                                </Typography>
-                              </Grid> */}
                               <Grid item md={12} xs={12}>
                                 <Typography
-                                  // title={
-                                  //   item &&
-                                  //   new Date(
-                                  //     item?.school_mapping?.updated_at
-                                  //   ).toLocaleDateString()
-                                  // }
-                                  // className={classes.textEffect}
                                   style={{ fontSize: '10px', color: '#042955' }}
                                 >
                                   Publication on&nbsp; 23 june 2021
-                                  {/* {item &&
-                                    new Date(
-                                      item?.school_mapping?.updated_at
-                                    ).toLocaleDateString()} */}
                                 </Typography>
                               </Grid>
                               <Grid item md={12} xs={12}>
@@ -409,21 +378,9 @@ function GridList(props) {
       <Dialog
         fullScreen
         open={open}
-        // onClose={handleClose}
         style={{ zIndex: '10000' }}
         TransitionComponent={Transition}
       >
-        {/* <Grid>
-          <IbookPdf
-            pageNumber={pageNumber}
-            timeStore={timeSpent}
-            id={selectedItem?.id}
-            url={`${pdfUrl && pdfUrl}`}
-            passLoad={loading}
-            goBackFunction={handleClose}
-            name={selectedItem?.ebook_name}
-          />
-        </Grid> */}
         <Grid container>
           <Grid item sm={12}>
             <AppBar>
@@ -451,7 +408,6 @@ function GridList(props) {
             </AppBar>
 
             <iframe
-              // src={`http://35.154.221.179:3000/1602923626_13_13_82/index.html#/reader/chapter/11`}
               src={`https://photography.kotobee.com/#/reader`}
               id='bookReader'
               className='bookReader'

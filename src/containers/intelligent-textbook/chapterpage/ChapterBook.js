@@ -4,12 +4,8 @@ import Paper from '@material-ui/core/Paper';
 import {
   Grid,
   useTheme,
-  SvgIcon,
   Card,
   IconButton,
-  Popover,
-  MenuList,
-  MenuItem,
   Button,
   Typography,
   Dialog,
@@ -21,12 +17,9 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Layout from '../../Layout';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-// import './ChapterBook.css';
 import Loading from '../../../components/loader/loader';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import noimg from '../../../assets/images/Chapter-icon.png';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { Close } from '@material-ui/icons';
 import ViewBook from './ViewBook';
 import moment from 'moment';
@@ -43,13 +36,10 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   chapterImage: {
-    // border: '1px solid red',
     width: '270px',
     margin: 'auto',
-    // alignItems: 'center',
   },
   chapternotfound: {
-    // border: '1px solid red',
     width: '200px',
     margin: 'auto',
     textAlign: 'center',
@@ -64,7 +54,6 @@ const ChapterBook = (props) => {
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const [booksData, setBooksData] = useState([]);
   const [open, setOpen] = useState(false);
-  const [iframeSrc, setiframeSrc] = useState('');
   const {
     match: { params: { bookId, bookUid, localStorageName, environment, type } } = {},
   } = props;
@@ -73,13 +62,10 @@ const ChapterBook = (props) => {
   const [totalPages, setTotalPages] = useState('');
   const [pageNo, setPageNo] = useState(1);
   const limit = 8;
-  // const chapterImage = 'https://erp-revamp.s3.ap-south-1.amazonaws.com/';
   const chapterImage = 'https://d3ka3pry54wyko.cloudfront.net/';
-
 
   const handlePagination = (event, page) => {
     setPageNo(page);
-    // console.log(page, 'Page');
   };
 
   useEffect(() => {
@@ -106,7 +92,6 @@ const ChapterBook = (props) => {
 
   const handleClose = () => {
     setOpen(false);
-    // setSelectedItem('');
   };
 
   const handleClickOpen = (item) => {
@@ -168,7 +153,6 @@ const ChapterBook = (props) => {
                                 height='150px'
                                 style={{
                                   borderRadius: '8px',
-                                  // border: '1px solid lightgray',
                                 }}
                               />
                             </Grid>
@@ -187,7 +171,7 @@ const ChapterBook = (props) => {
                                 <Grid item md={12} xs={12}>
                                   <Typography
                                     title='wings'
-                                    color="secondary"
+                                    color='secondary'
                                     className={classes.textEffect}
                                     style={{
                                       fontSize: '16px',
@@ -204,7 +188,7 @@ const ChapterBook = (props) => {
                                 )}
                                 <Grid item md={12} xs={12}>
                                   <Typography
-                                  color = "secondary"
+                                    color='secondary'
                                     style={{
                                       fontSize: '9px',
                                       margin: '10px 0',
@@ -224,7 +208,7 @@ const ChapterBook = (props) => {
                                       height: '25px',
                                       fontSize: '15px',
                                       borderRadius: '6px',
-                                      color:"white"
+                                      color: 'white',
                                     }}
                                     onClick={() => handleClickOpen(item)}
                                   >
@@ -242,13 +226,7 @@ const ChapterBook = (props) => {
             )}
           </Grid>
         </Paper>
-        <Dialog
-          fullScreen
-          open={open}
-          // onClose={handleClose}
-          style={{ zIndex: '10000' }}
-          // TransitionComponent={Transition}
-        >
+        <Dialog fullScreen open={open} style={{ zIndex: '10000' }}>
           <Grid container>
             <Grid item sm={12}>
               <AppBar>
@@ -286,22 +264,6 @@ const ChapterBook = (props) => {
             </Grid>
           </Grid>
         </Dialog>
-        {/* {booksData.length === 0 && !loading && (
-          <Grid container spacing={3}>
-            <Grid item md={12} xs={12}>
-              <div className={classes.chapterImage}>
-                <SvgIcon component={() => <img src={unfiltered} alt='crash' />} />
-                <Typography
-                  variant='h6'
-                  color='secondary'
-                  className={classes.chapternotfound}
-                >
-                  NO DATA FOUND
-                </Typography>
-              </div>
-            </Grid>
-          </Grid>
-        )} */}
         {booksData.length === 0 && !loading && (
           <Grid container direction='column' spacing={2} alignItems='center'>
             <Grid>

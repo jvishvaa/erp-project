@@ -3,20 +3,12 @@ import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
 import DateRangeIcon from '@material-ui/icons/DateRange';
 import moment from 'moment';
 import {
-  Grid,
   TextField,
-  Button,
-  SvgIcon,
-  Badge,
-  IconButton,
-  useMediaQuery,
   InputAdornment,
 } from '@material-ui/core';
 import {
   LocalizationProvider,
   DateRangePicker,
-  DateRange,
-  DateRangeDelimiter,
 } from '@material-ui/pickers-4.2';
 import './orchadio.css';
 
@@ -31,10 +23,8 @@ const MobileDatepicker = (props) => {
           disableCloseOnSelect={false}
           startText='Date Range'
           PopperProps={{ open: datePopperOpen }}
-          // endText='End-date'
           value={dateRange}
           keyboardIcon={<DateRangeIcon />}
-          // calendars='1'
           onChange={(newValue) => {
             const [startDate, endDate] = newValue;
             const sevenDaysAfter = moment(startDate).add(6, 'days');

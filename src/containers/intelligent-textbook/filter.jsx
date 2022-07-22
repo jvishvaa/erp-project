@@ -4,14 +4,12 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../config/endpoints';
 import axios from 'axios';
 import axiosInstance from '../../config/axios';
-import ClearIcon from '../../components/icon/ClearIcon';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Loading from '../../components/loader/loader';
 import { getModuleInfo } from '../../utility-functions';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { result } from 'lodash';
 
 const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -24,7 +22,6 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
     useSelector((state) => state.commonFilterReducer?.selectedYear)
   );
 
-  // const currentYear = sessionStorage.getItem('acad_session')
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
   const [selectedBranch, setSelectedBranch] = useState('');
   const [selectedGrade, setSelectedGrade] = useState('');
@@ -60,11 +57,9 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
 
   let boardFilterArr = [
     'orchids.letseduvate.com',
-    // 'localhost:3000',
-    // 'dev.olvorchidnaigaon.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
-    'test.orchids.letseduvate.com'
-  ]
+    'test.orchids.letseduvate.com',
+  ];
   useEffect(() => {
     axiosInstance
       .get(
@@ -104,17 +99,6 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
         setAlert('error', error.message);
       });
   }, []);
-  // useEffect(() => {
-  //   setSelectedVolume('');
-  //   setBranchList([]);
-  //   setGradeList([]);
-  //   setSubjectList([]);
-  //   setSelectedBranch('');
-  //   setSelectedGrade('');
-  //   setSelectedSubject('');
-  //   setSelectedBoard([]);
-  //   setSelectedBoardId([])
-  // }, [clearFilter]);
 
   function ApiCal() {
     axios
@@ -166,19 +150,12 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
   }
 
   useEffect(() => {
-    // withAxiosInstance(
-    //   `${endpoints.userManagement.academicYear}?module_id=${
-    //     getModuleInfo('Ebook View').id
-    //   }`,
-    //   'acad'
-    // );
     withAxiosInstance(
       `${endpoints.communication.branches}?session_year=${selectedAcad?.id}&module_id=${
         getModuleInfo('Ebook View').id
       }`,
       'branch'
     );
-    // ApiCal();
   }, []);
 
   const handleBoard = (event, value) => {
@@ -302,8 +279,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
     }
   };
 
-  function handleClear() {
-    // handleFilter();
+  function handleClear() {  
     setclearFilter(true);
     setSelectedVolume('');
     setGradeList([]);
@@ -330,7 +306,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
         handleBoard('', data);
       }
     }
-  }, [volumeList, boardList]);  
+  }, [volumeList, boardList]);
 
   return (
     <>
@@ -462,7 +438,6 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
               ''
             }
             value={selectedSubject}
-            // getOptionLabel={(option) => option?.erp_sub_name||''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -498,7 +473,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
                   .get(`academic/get-board-list/`)
                   .then((result) => {
                     if (result?.data.status_code === 200) {
-                      if(!boardFilterArr.includes(window.location.host)) {
+                      if (!boardFilterArr.includes(window.location.host)) {
                         setBoardList(result?.data?.result);
                       }
                       setLoading(false);
@@ -531,39 +506,33 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
             )}
           />
         </Grid>
-        {(boardFilterArr.includes(window.location.host)) && 
-        <Grid item md={3} xs={12}>
+        {(boardFilterArr.includes(window.location.host)) && (
+          <Grid item md={3} xs={12}>
+            <Autocomplete
+              multiple
+              style={{ width: '100%' }}
+              size='small'
+              className='dropdownIcon'
+              onChange={handleBoard}
+              id='board'
+              options={boardList || []}
+              value={selectedBoard || []}
+              getOptionLabel={(option) => option?.board_name || ''}
+              getOptionSelected={(option, value) => option?.id == value?.id}
+              // filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Board'
+                  placeholder='Board'
+                />
+              )}
+            />
+          </Grid>
+        )}
+        <Grid item xs={12} sm={3}>
           <Autocomplete
-            multiple
-            style={{ width: '100%' }}
-            size='small'
-            className='dropdownIcon'
-            onChange={handleBoard}
-            id='board'
-            options={boardList || []}
-            value={selectedBoard || []}
-            getOptionLabel={(option) => option?.board_name || ''}
-            getOptionSelected={(option, value) => option?.id == value?.id}
-            // filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Board'
-                placeholder='Board'
-              />
-            )}
-          />
-        </Grid>
-        } 
-        <Grid
-          item
-          xs={12}
-          sm={3}
-          // className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-        >
-          <Autocomplete
-            // multiple
             style={{ width: '100%' }}
             size='small'
             onChange={handleModule}
@@ -583,12 +552,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
             )}
           />
         </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={3}
-          // className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-        >
+        <Grid item xs={12} sm={3}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -609,12 +573,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
             )}
           />
         </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={3}
-          // className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-        >
+        <Grid item xs={12} sm={3}>
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
@@ -623,7 +582,6 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
             className='dropdownIcon'
             value={selectedKeyConcept || ''}
             options={keyConceptList || []}
-            // options={keyConceptDropdown}
             getOptionLabel={(option) => option?.topic_name}
             filterSelectedOptions
             renderInput={(params) => (
@@ -641,7 +599,6 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
             <Divider />
           </Grid>
         )}
-        {/* <Grid item md={9}></Grid> */}
         <Grid item md={3} xs={12}>
           <Grid container spacing={2}>
             <Grid item md={6} xs={6}>

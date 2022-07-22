@@ -1,32 +1,10 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useDispatch } from 'react-redux';
-import Paper from '@material-ui/core/Paper';
-import {
-  Grid,
-  useTheme,
-  SvgIcon,
-  Card,
-  IconButton,
-  Popover,
-  MenuList,
-  MenuItem,
-  Button,
-  Typography,
-  Dialog,
-  AppBar,
-} from '@material-ui/core';
-import { Pagination } from '@material-ui/lab';
+import { useTheme } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import Layout from '../../Layout';
 import endpoints from '../../../config/endpoints';
-import axiosInstance from '../../../config/axios';
-import Loading from '../../../components/loader/loader';
-import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import noimg from '../../../assets/images/Chapter-icon.png';
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
-import { Close } from '@material-ui/icons';
 import axios from 'axios';
 import Auth from './auth';
 
@@ -444,17 +422,9 @@ const ViewBook = (props) => {
         'hard coded for dev',
         `https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}${chapterId}?vi=0`
       )}
-      <div
-        style={{
-          // position: 'relative',
-          // overflow: 'hidden',
-          // width: '100%',
-          // paddingTop: '56.25%',
-        }}
-      >
+      <div style={{}}>
         <iframe
           src={`https://d3ka3pry54wyko.cloudfront.net/${bookPath}${bookUrl}?vi=0`}
-          // src={`https://dev.olvorchidnaigaon.letseduvate.com/ibook-static/${bookPath}${bookUrl}${chapterId}?vi=0`}
           id='bookReader'
           className='bookReader'
           style={{
@@ -466,7 +436,7 @@ const ViewBook = (props) => {
             width: '100%',
             height: '100vh',
             border: 'none',
-            paddingTop:'35px',
+            paddingTop: '35px',
           }}
           title='Tutorials'
         ></iframe>
