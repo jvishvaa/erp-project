@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { connect } from 'react-redux';
 import { Grid, makeStyles, AppBar, IconButton, Tooltip } from '@material-ui/core';
@@ -6,7 +5,6 @@ import { ArrowBack, ArrowForward, ZoomOutMap, Undo, Close } from '@material-ui/i
 import CreateIcon from '@material-ui/icons/Create';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
-import axios from 'axios';
 import ClearIcon from '../../components/icon/ClearIcon';
 import './canvas.css';
 const useStyles = makeStyles((theme) => ({
@@ -27,15 +25,15 @@ const useStyles = makeStyles((theme) => ({
     height: 60,
   },
   pagercoustom: {
-    display: "flex",
-    margin: "0px",
-    padding: "10px",
+    display: 'flex',
+    margin: '0px',
+    padding: '10px',
     backgroundColor: theme.palette.primary.main,
-    color: "#fff",
-    position: "fixed",
-    width: "100%",
+    color: '#fff',
+    position: 'fixed',
+    width: '100%',
     bottom: 0,
-  }
+  },
 }));
 const EbookPdf = (props) => {
   const [page, setPage] = useState(1);
@@ -52,24 +50,24 @@ const EbookPdf = (props) => {
   const [domineName, setDomineName] = useState('');
 
   useEffect(() => {
-    const { host } = new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
-    const hostSplitArray = host.split('.')
-    const subDomainLevels = hostSplitArray.length - 2
-    let domain = ''
-    let subDomain = ''
-    let subSubDomain = ''
+    const { host } = new URL(axiosInstance.defaults.baseURL);
+    const hostSplitArray = host.split('.');
+    const subDomainLevels = hostSplitArray.length - 2;
+    let domain = '';
+    let subDomain = '';
+    let subSubDomain = '';
     if (hostSplitArray.length > 2) {
-      domain = hostSplitArray.slice(hostSplitArray.length - 2).join('')
+      domain = hostSplitArray.slice(hostSplitArray.length - 2).join('');
     }
     if (subDomainLevels === 2) {
-      subSubDomain = hostSplitArray[0]
-      subDomain = hostSplitArray[1]
+      subSubDomain = hostSplitArray[0];
+      subDomain = hostSplitArray[1];
     } else if (subDomainLevels === 1) {
-      subDomain = hostSplitArray[0]
+      subDomain = hostSplitArray[0];
     }
-    const domainTobeSent = subDomain
+    const domainTobeSent = subDomain;
     setDomineName(domainTobeSent);
-  })
+  });
 
   const restrictCopyAndSave = (event) => {
     document.oncontextmenu = document.body.oncontextmenu = function () {
@@ -142,14 +140,8 @@ const EbookPdf = (props) => {
       };
       const AnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}`;
       axiosInstance
-        .post(AnnotateURL, data1,
-        //    {
-        //   headers: {
-        //     'x-api-key': 'vikash@12345#1231',
-        //   },
-        // }
-      )
-        .then((res) => { })
+        .post(AnnotateURL, data1)
+        .then((res) => {})
         .catch((error) => {
           console.log(error);
         });
@@ -176,13 +168,7 @@ const EbookPdf = (props) => {
       const imgUrl = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}&page_number=${page}`;
       setLoading(true);
       axiosInstance
-        .get(`${imgUrl}`,
-        // {
-        //   headers: {
-        //     'x-api-key': 'vikash@12345#1231',
-        //   },
-        // }
-      )
+        .get(`${imgUrl}`)
         .then((res) => {
           setLoading(false);
           setBookPage(res.data.ebook_image);
@@ -199,7 +185,6 @@ const EbookPdf = (props) => {
             res.data.anotate_image
           ) {
             context.clearRect(0, 0, canvas.width, canvas.height);
-            // eslint-disable-next-line no-undef
             const imgObj = new Image();
             imgObj.src = res.data.anotate_image;
             imgObj.onload = () => {
@@ -236,13 +221,7 @@ const EbookPdf = (props) => {
         user_id:
           localStorage.getItem('userDetails') &&
           JSON.parse(localStorage.getItem('userDetails'))?.user_id,
-      },
-        // {
-        //   headers: {
-        //     'x-api-key': 'vikash@12345#1231',
-        //   },
-        // }
-      )
+      })
       .then((res) => {
         props.goBackFunction();
       })
@@ -262,14 +241,8 @@ const EbookPdf = (props) => {
     });
     const deleteAnnotateURL = `${endpoints.ebook.AnnotateEbook}?ebook_id=${props.id}&page_number=${page}`;
     axiosInstance
-      .delete(deleteAnnotateURL,
-      //   {
-      //   headers: {
-      //     'x-api-key': 'vikash@12345#1231',
-      //   },
-      // }
-    )
-      .then((res) => { })
+      .delete(deleteAnnotateURL)
+      .then((res) => {})
       .catch((error) => {
         console.log(error);
       });
@@ -280,7 +253,6 @@ const EbookPdf = (props) => {
     input.addEventListener('keyup', function (event) {
       if (event.keyCode === 13) {
         event.preventDefault();
-        // getSplittedImages();
       }
     });
   };
@@ -306,7 +278,7 @@ const EbookPdf = (props) => {
                     aria-label='Close'
                     style={{ color: 'white' }}
                   >
-                    <Close onClick={handleClose} style = {{color : "white"}} />
+                    <Close onClick={handleClose} style={{ color: 'white' }} />
                     &nbsp;&nbsp;
                     <span onClick={handleClose} style={{ fontSize: '17px' }}>
                       Close
@@ -324,13 +296,17 @@ const EbookPdf = (props) => {
                       <IconButton
                         size='small'
                         style={{
-                          // color: mode === 'pen' ? '#ef6869' : 'white',
                           background: mode === 'pen' ? 'white' : '',
                         }}
                         onClick={() => setMode('pen')}
                         title='pen'
                       >
-                        <CreateIcon style={{ fontSize: '25px', color: mode === 'pen' ? '' : 'white', }} />
+                        <CreateIcon
+                          style={{
+                            fontSize: '25px',
+                            color: mode === 'pen' ? '' : 'white',
+                          }}
+                        />
                       </IconButton>
                     </li>
                     <li>
@@ -342,7 +318,10 @@ const EbookPdf = (props) => {
                         onClick={() => setMode('eraser')}
                         title='eraser'
                       >
-                        <ClearIcon color={mode === 'pen' ? 'white' : ''} style={{ fontSize: '20px' }} />
+                        <ClearIcon
+                          color={mode === 'pen' ? 'white' : ''}
+                          style={{ fontSize: '20px' }}
+                        />
                       </IconButton>
                     </li>
                     &nbsp; &nbsp;
@@ -413,7 +392,6 @@ const EbookPdf = (props) => {
               margin: '0 auto',
               marginLeft: 'auto',
               marginRight: 'auto',
-              // cursor: mode === 'pen' ? 'crosshair' : 'pointer',
               transition: 'all 0.3s ease 0s',
               'margin-top': isZoomed ? '18%' : '5%',
               transform: isZoomed ? 'scale(1.5,1.5)' : 'scale(1,1)',
@@ -428,17 +406,17 @@ const EbookPdf = (props) => {
             <Grid container spacing={2}>
               <Grid item xs={4} sm={4} md={4}>
                 <ArrowBack
-                  style={{ color: "white" }}
+                  style={{ color: 'white' }}
                   className='next-prev left-icon'
                   disabled={page === 1}
                   onClick={
                     page === 1
                       ? ''
                       : () => {
-                        if (page > 1) {
-                          setPage(page - 1);
+                          if (page > 1) {
+                            setPage(page - 1);
+                          }
                         }
-                      }
                   }
                 >
                   previous
@@ -452,9 +430,17 @@ const EbookPdf = (props) => {
                   value={page}
                   onChange={(event) => {
                     const { value } = event.target;
-                    setPage(Number(value) > totalPages ? page : Number(value.replace(/[^\w\s]/gi, "")));
+                    setPage(
+                      Number(value) > totalPages
+                        ? page
+                        : Number(value.replace(/[^\w\s]/gi, ''))
+                    );
                     if (value) {
-                      setPage(Number(value) > totalPages ? page : Number(value.replace(/[^\w\s]/gi, "")));
+                      setPage(
+                        Number(value) > totalPages
+                          ? page
+                          : Number(value.replace(/[^\w\s]/gi, ''))
+                      );
                     }
                   }}
                   onKeyPress={dynamicPageNumber}
@@ -464,15 +450,15 @@ const EbookPdf = (props) => {
               </Grid>
               <Grid item xs={4} sm={4} md={4}>
                 <ArrowForward
-                  style={{ color: "white" }}
+                  style={{ color: 'white' }}
                   className='next-prev right-icon'
                   fontFamily='large'
                   onClick={
                     page === totalPages
                       ? ''
                       : () => {
-                        setPage(page + 1);
-                      }
+                          setPage(page + 1);
+                        }
                   }
                 >
                   Next
@@ -485,7 +471,5 @@ const EbookPdf = (props) => {
     </Grid>
   );
 };
-const mapStateToProps = (state) => ({
-  // user: state.authentication.user
-});
+const mapStateToProps = (state) => ({});
 export default connect(mapStateToProps)(EbookPdf);

@@ -1,13 +1,9 @@
-import React, { Component, useEffect, useContext , useState} from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useEffect, useContext , useState} from 'react';
 import moment from 'moment';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
 import axiosInstance from '../../../config/axios.js';
 import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
@@ -15,20 +11,14 @@ import PropTypes from 'prop-types';
 import Dropzone from 'react-dropzone';
 import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import Card from '@material-ui/core/Card';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
-import Input from '@material-ui/core/Input';
 import 'date-fns';
 import MomentUtils from '@date-io/moment';
 import Modal from '@material-ui/core/Modal';
 import Backdrop from '@material-ui/core/Backdrop';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import Fade from '@material-ui/core/Fade';
-import FormControl from '@material-ui/core/FormControl';
-import DateFnsUtils from '@date-io/date-fns';
 import {
   MuiPickersUtilsProvider,
   KeyboardTimePicker,
@@ -39,10 +29,8 @@ import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumb
 import Layout from '../../Layout';
 import axios from '../../../config/axios';
 import endpoints from '../../../config/endpoints';
-import MobileDatepicker from './datePicker';
 import Loading from '../../../components/loader/loader';
 import { useHistory } from 'react-router';
-import FormHelperText from '@material-ui/core/FormHelperText';
 import './addorcido.scss';
 
 
@@ -72,12 +60,6 @@ TabPanel.propTypes = {
   value: PropTypes.any.isRequired,
 };
 
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -91,8 +73,6 @@ const useStyles = makeStyles((theme) => ({
   tabRoot: {
     width: '100%',
     flexGrow: 1,
-    // backgroundColor: theme.palette.background.paper,
-    // margin: '20px',
   },
   cardRoot: {
     maxHeight: 224,
@@ -117,7 +97,6 @@ const useStyles = makeStyles((theme) => ({
 function AddNewOrchadio() {
   const classes = useStyles();
   const [tabValue, settabValue] = React.useState(0);
-  const [arr, setArr] = React.useState([1, 2, 3, 8, 9]);
   const [startDate, setStartDate] = React.useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = React.useState(null);
   const [selectedBranch, setSelectedBranch] = React.useState([]);
@@ -140,11 +119,6 @@ function AddNewOrchadio() {
   const [ liveTime , setLiveTime ] = useState('');
   const history = useHistory();
   const moduleId = localStorage.getItem('moduleIdOrchido');
-  console.log(moduleId, "moduleId");
-  // const [errorDuration, setErrorDuration] = useState(false)
-
-  // const [branchList, setBranchList] = useState([]);
-  // const [selectedBranch, setSelectedBranch] = useState([]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -169,18 +143,7 @@ function AddNewOrchadio() {
   const handleTabChange = (event, newValue) => {
     settabValue(newValue);
   };
-  // const getBranch = () => {
-  //   axios
-  //     .get(`${endpoints.communication.branches}`)
-  //     .then((result) => {
-  //       if (result.data.status_code === 200) {
-  //         setBranchList(result.data.data);
-  //       } else {
-  //         console.log(result.data.message);
-  //       }
-  //     })
-  //     .catch((error) => {});
-  // };
+
   useEffect(() => {
       callApi(
         `${endpoints.userManagement.academicYear}?module_id=${moduleId}`,
@@ -213,9 +176,6 @@ function AddNewOrchadio() {
         setLoading(false);
       });
   }
-  // useEffect(() => {
-  //   getBranch();
-  // }, []);
 
   const getDaysAfter = (date, amount) => {
     return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
@@ -223,19 +183,7 @@ function AddNewOrchadio() {
   const getDaysBefore = (date, amount) => {
     return date ? date.subtract(amount, 'days').format('YYYY-MM-DD') : undefined;
   };
-  const handleBranch = (event, value) => {
-    const branchId = [];
-    setSelectedBranch(value);
-    value.map((item) => {
-      branchId.push(item.id);
-    });
-    console.log(branchId);
-    setBranchId(branchId);
-    // this.setState({ data: [], selectedBranch: value }, () => {
-    //   this.getGrade();
-  };
   const getFileNameAndSize = (filess) => {
-    // console.log(filess, 'll');
     if (files.length) {
       const fileName =
         files &&
@@ -256,9 +204,7 @@ bytes
     
     const formData = new FormData();
     formData.append('branch_name', branchId);
-    // for (let i = 0; i < files.length; i++) {
     formData.append('file', files[0]);
-    //   }
     setLoading(true);
     const src = [];
     axios
@@ -280,14 +226,10 @@ bytes
     console.log(files);
     if (!files) {
       setAlert('error', 'Please select only audio file format');
-
-      // this.props.alert.warning('Please select only image file format')
       return;
     }
     if (files.length > 1) {
       setAlert('error', 'You can select only a single audio at once');
-
-      // this.props.alert.warning('You can select only a single image at once')
       return;
     }
     if(files[0].type !== "audio/mpeg"){
@@ -299,17 +241,6 @@ bytes
     }
     
 
-    // console.log(URL.createObjectURL(files[0]));
-  };
-  const handleStartDateChange = (date) => {
-    const endDate = getDaysAfter(date.clone(), 6);
-    setEndDate(endDate);
-    setStartDate(date.format('YYYY-MM-DD'));
-  };
-  const handleEndDateChange = (date) => {
-    const startDate = getDaysBefore(date.clone(), 6);
-    setStartDate(startDate);
-    setEndDate(date.format('YYYY-MM-DD'));
   };
   const minsHoursSec = (duration) => {
     const mins_num = parseFloat(duration, 10); // don't forget the second param
@@ -317,7 +248,6 @@ bytes
     let minutes = Math.floor(mins_num - (hours * 3600) / 60);
     let seconds = Math.floor(mins_num * 60 - hours * 3600 - minutes * 60);
 
-    // Appends 0 when unit is less than 10
     if (hours < 10) {
       hours = `0${hours}`;
     }
@@ -330,14 +260,6 @@ bytes
     return `${hours}:${minutes}:${seconds}`;
   };
 
-  // const durationCondition = () =>{
-  //   if(duration === 0 || duration === null || duration === undefined){
-  //     setErrorDuration(true)
-  //     return false
-  //   }
-  //   return true
-  // }
-
   const handleRedirect = () => {
     const searchParams = new URLSearchParams(window.location.search);
     const redirectionView = +searchParams.get('wb_view');
@@ -349,15 +271,8 @@ bytes
   };
 
   const handleSubmit = () => {
-    // console.log(duration,'duration')
     if (branchId && albumTitle && files.length && selectedTime && selectedDate && duration && duration !== '0') {
-      // if(duration === '0'){
-      //   setAlert('error', 'Duration can not be 0');
-      // }
-      // else{
-      //   audioUpload();
-      //   if (audioLink.length) {
-      console.log(files[0]);
+
       const dt = [
         {
           datetime: `${moment(selectedDate).format('DD-MM-YYYY')} ${liveTime}`,
@@ -381,9 +296,6 @@ bytes
           if (result.data.status_code === 200) {
             
             setAlert('success', result.data.message);
-            // history.push({
-            //   pathname: '/orchadio/manage-orchadio',
-            // });
             handleRedirect();
           } else {
             console.log(result.data.message);
@@ -399,42 +311,7 @@ bytes
       setAlert('error', 'Duration can not be empty and zero');
     }
   };
-  const handleFilter = () => {
-    const {
-      pageNo,
-      pageSize,
-      tabValue,
-      startDate,
-      endDate,
-      status,
-      moduleId,
-    } = this.state;
-    let tabStatus = [];
-    if (tabValue === 0) {
-      tabStatus = [8, 5];
-    } else if (tabValue === 1) {
-      tabStatus = [3, 6, 4];
-    } else if (tabValue === 2) {
-      tabStatus = [2];
-    } else if (tabValue === 3) {
-      tabStatus = [1];
-    }
-    // axios
-    //   .get(
-    //     `${endpoints.blog.Blog}?page_number=${pageNo}&page_size=${pageSize}&status=${tabStatus}&module_id=${moduleId}&start_date=${startDate}&end_date=${endDate}`
-    //   )
-    //   .then((result) => {
-    //     if (result.data.status_code === 200) {
-    //       this.setState({
-    //         data: result.data.result.data,
-    //         totalBlogs: result.data.result.total_blogs,
-    //       });
-    //     } else {
-    //       console.log(result.data.message);
-    //     }
-    //   })
-    //   .catch((error) => {});
-  };
+
   return (
     <div className='addOrchido-container-div' id="addOrchidoContainer" >
       <Layout className='layout-container'>
@@ -447,12 +324,6 @@ bytes
             <CommonBreadcrumbs componentName='Orchadio' />
             <div className='create_group_filter_container'>
               <Grid container className="addOrchidofilterContainer" >
-                  {/* <div className='mobile-date-picker'> */}
-                    {/* <MobileDatepicker
-                      onChange={(date) => handleEndDateChange(date)}
-                      handleStartDateChange={handleStartDateChange}
-                      handleEndDateChange={handleEndDateChange}
-                    /> */}
                     <Grid item md={3} xs={12} className="academicList" >
             <Autocomplete
               style={{ width: '100%' }}
@@ -487,13 +358,11 @@ bytes
           </Grid>
           <Grid item md={3} xs={12}>
             <Autocomplete
-              // multiple
               style={{ width: '100%' }}
               size='small'
               onChange={(event, value) => {
                 setSelectedBranch([]);
                 if (value) {
-                  // const ids = value.map((el)=>el)
                   const selectedId = value.branch.id;
                   setSelectedBranch(value);
                   console.log(value);
@@ -515,7 +384,6 @@ bytes
               )}
             />
           </Grid>
-                  {/* </div> */}
               </Grid>
             </div>
             <div className='create_group_filter_container'>
@@ -537,7 +405,6 @@ bytes
                     placeholder='Title should not be more than 100 character'
                     variant='outlined'
                     multiline
-                    // endAdornment={<InputAdornment position='end'>Kg</InputAdornment>}
                   />
                 </Grid>
               </Grid>
@@ -591,7 +458,6 @@ bytes
                               )}
                             </div>
                             {getFileNameAndSize(files)}
-                            {/* {files} */}
                           </CardContent>
                         </Card>
                       )}
@@ -600,23 +466,7 @@ bytes
                 ) : (
                   ''
                 )}
-                {/* // <Grid item xs={3}> */}
-
-                {/* <Button
-                  style={{
-                    fontSize: 'small',
-                    width: 150,
-                    position: 'absolute',
-                    marginTop: '115px',
-                  }}
-                  onChanch={(event) => onDrop(event.target.files[0])}
-                  color='primary'
-                  size='small'
-                  variant='contained'
-                >
-                  Attach
-                </Button> */}
-                {/* </Grid> */}
+                
                 <Grid item xs={8} md={3}>
                   {isMobile ? (
                     <>
@@ -657,7 +507,6 @@ bytes
                       width: 150,
                       position: 'absolute',
                       marginTop: '30px',
-                      //   marginTop: '115px',
                     }}
                     onClick={handleOpen}
                     color='primary'
@@ -704,9 +553,6 @@ bytes
                         }}
                         variant='outlined'
                       />
-                      {/* { errorDuration && 
-                      <FormHelperText style={{color:"red"}}>Duration can't be zero</FormHelperText>
-                      } */}
                       <div style={{ marginTop: 20 }}>
                         <MuiPickersUtilsProvider utils={MomentUtils}>
                           <Grid container justify='space-around'>
@@ -736,37 +582,11 @@ bytes
                             />
                           </Grid>
                         </MuiPickersUtilsProvider>
-                        {/* <MuiPickersUtilsProvider utils={DateFnsUtils}> */}
-                        {/* <KeyboardDatePicker
-                          disableToolbar
-                          variant='inline'
-                          format='MM/dd/yyyy'
-                          margin='normal'
-                          id='date-picker-inline'
-                          label='Date picker inline'
-                          value={selectedDate}
-                          onChange={handleDateChange}
-                          KeyboardButtonProps={{
-                            'aria-label': 'change date',
-                          }}
-                        /> */}
-                        {/* <KeyboardTimePicker
-                          margin='normal'
-                          id='time-picker'
-                          label='Time picker'
-                          value={selectedDate}
-                          onChange={handleDateChange}
-                          KeyboardButtonProps={{
-                            'aria-label': 'change time',
-                          }}
-                        /> */}
-                        {/* </MuiPickersUtilsProvider> */}
                         <Button
                           style={{
                             fontSize: 'small',
                             width: 150,
                             position: 'absolute',
-                            //   marginTop: '115px',
                           }}
                           onClick={handleSubmit}
                           color='primary'
@@ -776,20 +596,10 @@ bytes
                           Submit
                         </Button>
                       </div>
-                      {/* <TextField
-                      fullWidth
-                      style={{ marginLeft: 20 }}
-                      id='outlined-basic'
-                      label='Duration in minutes'
-                      variant='outlined'
-                      multiline
-                    /> */}
                     </div>
                   </Fade>
                 </Modal>
               </Grid>
-              {/* </Card> */}
-              {/* </Grid> */}
             </div>
           </div>
         </div>

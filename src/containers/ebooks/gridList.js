@@ -1,5 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable react/jsx-wrap-multilines */
 import React, { useState } from 'react';
 import { withStyles, makeStyles } from '@material-ui/core/styles';
 import {
@@ -16,7 +14,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { withRouter } from 'react-router-dom';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
-import axios from 'axios';
 import EbookPdf from './EbookPDF';
 
 import unfiltered from '../../assets/images/unfiltered.svg';
@@ -76,7 +73,7 @@ function GridList(props) {
     if (ebookName && ebookName.includes('NCERT')) {
       window.open(necrtUrl);
     } else {
-      const {host}= new URL(axiosInstance.defaults.baseURL) // "dev.olvorchidnaigaon.letseduvate.com"
+      const {host}= new URL(axiosInstance.defaults.baseURL) 
       const hostSplitArray = host.split('.')
       const subDomainLevels = hostSplitArray.length - 2
       let domain = ''
@@ -95,12 +92,7 @@ function GridList(props) {
       setLoading(true);
       setOpen(true);
       axiosInstance
-        .get(`${endpoints.ebook.EbookUser}?ebook_id=${data.id}`
-        // , {
-        //   headers: {
-        //     'x-api-key': 'vikash@12345#1231',
-        //   },
-        // }
+        .get(`${endpoints.ebook.EbookUser}?ebook_id=${data.id}`        
         )
         .then(({ data }) => {
           console.log(data);
