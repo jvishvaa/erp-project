@@ -79,7 +79,7 @@ const TeacherdashboardNew = () => {
           </div>
           <div className='col-md-4 th-custom-col-padding'>
             <Assessment />
-            <Announcement scrollHeight={'400px'} />
+            <Announcement scrollHeight={'420px'} />
           </div>
         </div>
       </div>
