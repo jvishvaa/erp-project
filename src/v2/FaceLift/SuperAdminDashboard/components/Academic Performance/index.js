@@ -33,7 +33,13 @@ const AcademicPerformance = (props) => {
       })
       .then((response) => {
         if (response.status === 200) {
-          setCurriculumStats(response?.data?.result[0]?.percentage_completed);
+          const avgcompletion =
+            response.data?.result.reduce(
+              (total, next) => total + next.percentage_completed,
+              0
+            ) / response.data?.result.length;
+
+          setCurriculumStats(avgcompletion);
         }
       })
       .catch((error) => console.log(error));
@@ -65,7 +71,7 @@ const AcademicPerformance = (props) => {
       })
       .then((response) => {
         if (response.status === 200) {
-          setAttendanceStats(response?.data?.result[1]?.percentage_attendance);
+          setAttendanceStats(response?.data?.result[0]?.percentage_attendance);
         }
       })
       .catch((error) => console.log(error));

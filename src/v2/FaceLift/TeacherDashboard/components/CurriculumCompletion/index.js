@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'v2/config/axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
-import { message, Tooltip } from 'antd';
+import { message, Tooltip, Spin } from 'antd';
+import { ReloadOutlined } from '@ant-design/icons';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 
 const CurriculumCompletion = () => {
@@ -13,8 +14,10 @@ const CurriculumCompletion = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [curriculumData, setCurriculumData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchCurriculumData = (params = {}) => {
+    setLoading(true);
     axios
       .get(`${endpoints.teacherDashboard.curriculumCompletion}`, {
         params: { ...params },
@@ -25,26 +28,38 @@ const CurriculumCompletion = () => {
       .then((response) => {
         if (response.status === 200) {
           setCurriculumData(response?.data?.result);
+          setLoading(false);
         }
       })
       .catch((error) => {
         message.error(error.message);
+        setLoading(false);
       });
   };
 
-  useEffect(() => {
+  const getCurriculumData = () => {
     if (selectedAcademicYear)
       fetchCurriculumData({ session_year: selectedAcademicYear?.id });
-  }, [selectedAcademicYear]);
+  };
 
   return (
-    <div className='th-bg-white th-br-5 py-3 px-2 mt-3 shadow-sm'>
+    <div
+      className='th-bg-white th-br-5 py-3 px-2 mt-3 shadow-sm'
+      style={{ minHeight: 260 }}
+    >
       <div className='row justify-content-between'>
         <div className='col-12 th-16 mt-2 th-fw-500 th-black-1'>
-          Curriculum Completion
+          Curriculum Completion{' '}
+          <span className='th-12 pl-2 pl-md-0 th-pointer th-primary'>
+            <ReloadOutlined onClick={getCurriculumData} className='pl-md-3' />
+          </span>
         </div>
       </div>
-      {curriculumData?.length > 0 ? (
+      {loading ? (
+        <div className='th-width-100 text-center mt-5'>
+          <Spin tip='Loading...'></Spin>
+        </div>
+      ) : curriculumData?.length > 0 ? (
         <div className='my-1 p-2'>
           <div className='th-custom-col-padding'>
             <div className='px-2'>
