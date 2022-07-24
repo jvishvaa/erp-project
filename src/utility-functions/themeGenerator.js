@@ -99,7 +99,7 @@ export function themeGenerator() {
   } = colors || {};
 
   // const isV2Color = IsV2Checker();
-  const isV2Color = isV2 && isV2Button ? true : false ;
+  const isV2Color = isV2 && (isV2Button === null || isV2Button ) ? true : false ;
   
   return createMuiTheme({
     palette: {
