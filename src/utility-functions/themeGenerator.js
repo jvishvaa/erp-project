@@ -2,9 +2,13 @@ import { createMuiTheme } from '@material-ui/core/styles';
 import { colorLuminance } from '../utility-functions';
 import axiosInstance from '../config/axios';
 import endpoints from '../config/endpoints';
+import { IsV2Checker } from 'v2/isV2Checker';
+
 const colorsys = require('colorsys')
 
-  const isV2 = JSON.parse(sessionStorage.getItem('selected_branch'))?.isV2;
+  const isV2 = sessionStorage.getItem('selected_branch')
+  ? JSON.parse(sessionStorage.getItem('selected_branch'))?.isV2
+  : '';
   const isV2Button = JSON.parse(localStorage.getItem('selectedVersion'));
 
 export function fetchThemeApi() {
@@ -94,6 +98,9 @@ export function themeGenerator() {
     lightestprimary = '#fff6f6  '
   } = colors || {};
 
+  // const isV2Color = IsV2Checker();
+  const isV2Color = isV2 && isV2Button ? true : false ;
+  
   return createMuiTheme({
     palette: {
       primary: {
@@ -115,6 +122,12 @@ export function themeGenerator() {
         primary: '#ffffff',
         secondary: '#f9f9f9',
       },
+      v2Color1: {
+        primaryV2: isV2Color ? '#4a77e8' : '#FFD9D9',
+      },
+      v2Color2: {
+        primaryV2: isV2Color ? '#4a77e8' : '#ef676a',
+      }
     },
     typography: {
       fontSize: 16,
@@ -141,7 +154,6 @@ export function themeGenerator() {
       fontWeight: '600 !important',
       color: `${primarytemp} !important`,
     },
-
     //Css for view more card
     rootViewMore: {
       border: `1px solid ${primarytemp}`,
