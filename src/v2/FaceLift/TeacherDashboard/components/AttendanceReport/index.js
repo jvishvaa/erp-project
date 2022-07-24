@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import NumberCard from 'v2/FaceLift/myComponents/NumberCard';
-import { Select } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { Select, Spin } from 'antd';
+import { DownOutlined, ReloadOutlined } from '@ant-design/icons';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -50,6 +50,8 @@ const { Option } = Select;
 const AttendanceReport = () => {
   const history = useHistory();
   const [attendanceFilter, setAttendanceFilter] = useState('today');
+  const [counter, setCounter] = useState(false);
+  const [loading, setLoading] = useState(false);
   const handleChange = (value) => {
     setAttendanceFilter(value);
   };
@@ -59,6 +61,7 @@ const AttendanceReport = () => {
   const [classwiseAttendanceData, setClasswiseAttendanceData] = useState([]);
 
   const fetchClasswiseAttendanceData = (params = {}) => {
+    setLoading(true);
     axios
       .get(`${endpoints.teacherDashboard.classwiseAttendance}`, {
         params: { ...params },
@@ -69,44 +72,64 @@ const AttendanceReport = () => {
       .then((response) => {
         if (response.status === 200) {
           setClasswiseAttendanceData(response?.data?.result);
+          setLoading(false);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
   };
 
-  useEffect(() => {
-    if (selectedAcademicYear)
+  const getAttendanceData = () => {
+    if (selectedAcademicYear) {
+      setCounter(true);
+
       fetchClasswiseAttendanceData({
         session_year: selectedAcademicYear?.id,
         date_range: attendanceFilter,
       });
-  }, [attendanceFilter, selectedAcademicYear]);
+    }
+  };
+
+  useEffect(() => {
+    if (counter) getAttendanceData();
+  }, [attendanceFilter]);
 
   return (
     <div className='col-md-12'>
       <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
         <div className='row justify-content-between'>
-          <div className='col-6 th-16 mt-2 th-fw-500 th-black-1'>
+          <div className='col-7 pr-0 pr-md-0 th-16 mt-2 th-fw-500 th-black-1'>
             Students Attendance Report
+            <span className='th-12 pl-2 pl-md-0 th-pointer th-primary'>
+              <ReloadOutlined onClick={getAttendanceData} className='pl-md-3' />
+            </span>
           </div>
-          <div className='col-6 text-right'>
-            <Select
-              value={attendanceFilter}
-              className='th-primary th-bg-grey th-br-4 th-select'
-              bordered={false}
-              placement='bottomRight'
-              suffixIcon={<DownOutlined className='th-primary' />}
-              dropdownMatchSelectWidth={false}
-              onChange={handleChange}
-            >
-              <Option value={'today'}>Today</Option>
-              <Option value={'week'}>Last Week</Option>
-              <Option value={'month'}>Last Month</Option>
-            </Select>
-          </div>
+          {counter && (
+            <div className='col-5 px-0 text-right'>
+              <Select
+                value={attendanceFilter}
+                className='th-primary th-bg-grey th-br-4 th-select'
+                bordered={false}
+                placement='bottomRight'
+                suffixIcon={<DownOutlined className='th-primary' />}
+                dropdownMatchSelectWidth={false}
+                onChange={handleChange}
+              >
+                <Option value={'today'}>Today</Option>
+                <Option value={'week'}>Last Week</Option>
+                <Option value={'month'}>Last Month</Option>
+              </Select>
+            </div>
+          )}
         </div>
-        <div className='col-md-12 mt-2'>
-          {classwiseAttendanceData.length > 0 ? (
+        <div className='col-md-12 mt-2' style={{ height: '140px' }}>
+          {loading ? (
+            <div className='th-width-100 text-center'>
+              <Spin tip='Loading...'></Spin>
+            </div>
+          ) : classwiseAttendanceData.length > 0 ? (
             <Slider {...settings} className='th-slick'>
               {classwiseAttendanceData?.map((item, i) => (
                 <div

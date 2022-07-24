@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { message } from 'antd';
-import { RightOutlined } from '@ant-design/icons';
+import React, { useState } from 'react';
+import { message, Spin } from 'antd';
+import { RightOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axios from 'v2/config/axios';
 import { useSelector } from 'react-redux';
@@ -14,8 +14,10 @@ const Assessment = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [assessmentData, setAssessmentData] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchAssessmentData = (params = {}) => {
+    setLoading(true);
     axios
       .get(`${endpoints.teacherDashboard.assessment}`, {
         params: { ...params },
@@ -26,24 +28,35 @@ const Assessment = () => {
       .then((response) => {
         if (response.status === 200) {
           setAssessmentData(response?.data?.result);
+          setLoading(false);
         }
       })
       .catch((error) => {
         message.error(error.message);
+        setLoading(false);
       });
   };
 
-  useEffect(() => {
+  const getAssessmentData = () => {
     if (selectedAcademicYear)
       fetchAssessmentData({ session_year: selectedAcademicYear?.id });
-  }, [selectedAcademicYear]);
+  };
 
   return (
     <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ minHeight: 260 }}>
       <div className='row justify-content-between'>
-        <div className='col-12 th-16 mt-2 th-fw-500 th-black-1'>Assessment</div>
+        <div className='col-12 th-16 mt-2 th-fw-500 th-black-1'>
+          Assessment
+          <span className='th-12 pl-2 pl-md-0 th-pointer th-primary'>
+            <ReloadOutlined onClick={getAssessmentData} className='pl-md-3' />
+          </span>
+        </div>
       </div>
-      {assessmentData?.length > 0 ? (
+      {loading ? (
+        <div className='th-width-100 text-center mt-5'>
+          <Spin tip='Loading...'></Spin>
+        </div>
+      ) : assessmentData?.length > 0 ? (
         <div className='my-1 p-2'>
           <div className='th-custom-col-padding'>
             <div className='px-2'>
