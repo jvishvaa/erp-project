@@ -198,7 +198,7 @@ const Blogs = () => {
           {createBlogs && createBlogs.map((blog , index) => (
           <Card className='card-container' onClick={() => handleBlog(blog)}  >
             <CardActionArea  >
-             <img src={blog.blog_header_image} className='card-image'  />
+             <img src={`${endpoints.s3UDAAN_BUCKET}${blog.blog_header_image.substring(31)}`} className='card-image'  />
               <CardContent>
                 <Typography variant='body2' color='textSecondary' component='p' className='card-title' >
                 { ReactHtmlParser( blog.blog_title)}

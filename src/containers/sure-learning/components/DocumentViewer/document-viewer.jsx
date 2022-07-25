@@ -5,6 +5,8 @@ import ChevronRightOutlinedIcon from '@material-ui/icons/ChevronRight';
 import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
 import ChevronLeftOutlinedIcon from '@material-ui/icons/ChevronLeft';
 import './pdf.scss';  
+import endpoints from 'config/endpoints';
+
 
 const DocumentViewer = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -39,6 +41,7 @@ const DocumentViewer = (props) => {
   const nextPage = () => {
     changePage(1);
   };
+console.log(props.pdfUrl,"pdfurl")
 
   return (
     <div>
@@ -51,7 +54,7 @@ const DocumentViewer = (props) => {
         }}
         className="pdfView"
       >
-        <Document file={props.pdfUrl} onLoadSuccess={onDocumentLoadSuccess}>
+        <Document file={`${endpoints.s3UDAAN_BUCKET}${props.pdfUrl.substring(31)}`} onLoadSuccess={onDocumentLoadSuccess}>
           <Page pageNumber={pageNumber} />
         </Document>
       </div>
