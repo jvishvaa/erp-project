@@ -353,7 +353,6 @@ const InductionUnit = () => {
                 {document &&
                   document.map((document, index) => (
                     <Grid item md={12} xs={12} key={index}>
-                      {/* <VideoModule file={video.file} title={video.title} /> */}
                       <DocumentViewer pdfUrl={document.file} />
                     </Grid>
                   ))}
