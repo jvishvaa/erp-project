@@ -137,7 +137,6 @@ const TressreVideoViewer = ({ classes }) => {
         });
     }
   }, [moduleId]);
-
   return (
     <Layout>
       <CommonBreadcrumbs
@@ -165,7 +164,7 @@ const TressreVideoViewer = ({ classes }) => {
                 return (
                   <Grid item>
                     <video width='320' height='240' controls>
-                      <source src={item.file} type='video/mp4' />
+                      <source src={`${endpoints.s3UDAAN_BUCKET}${item.file.substring(31)}`} type='video/mp4' />
                     </video>
                     <Typography variant='h5'>
                       <strong>{item.title}</strong>

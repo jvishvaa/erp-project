@@ -8,6 +8,8 @@ import {
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import './learning.scss';
+import endpoints from 'config/endpoints';
+
 
 const VideoModel = ({
   classes, file, title,
@@ -18,6 +20,7 @@ const VideoModel = ({
             <Typography variant="h5">{title}</Typography>
           </div>
           <div id='videolearn'>
+            ff
               <video
                 id="background-video"
                 controls
@@ -27,9 +30,9 @@ const VideoModel = ({
                 width="100%"
                 className='video-play'
               >
-                <source src={file} type="video/mp4" />
+                <source src={file?`${endpoints.s3UDAAN_BUCKET}${file.substring(31)}`:""} type="video/mp4" />
                 <track
-                  src={file}
+                  src={file?`${endpoints.s3UDAAN_BUCKET}${file.substring(31)}`:""}
                   kind="captions"
                   srcLang="en"
                   label="english_captions"
