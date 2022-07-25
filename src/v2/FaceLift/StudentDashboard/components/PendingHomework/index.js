@@ -45,7 +45,7 @@ const PendingHomework = () => {
   };
 
   return (
-    <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ height: 240 }}>
+    <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ minHeight: 240 }}>
       <div className='row justify-content-between'>
         <div className='col-12 th-16 mt-2 th-fw-400 th-black-1'>
           Pending Homeworks

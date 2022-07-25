@@ -50,9 +50,11 @@ const Shortcut = (props) => {
     {
       title: 'Attendance Overview',
       url: '/curriculum-completion-branchWise',
-      branchData: selectedBranchList.length > 0 ? selectedBranchs : [selectedBranch],
-      module_id: moduleId,
-      iscurriculam: false,
+      state: {
+        branchData: selectedBranchList.length > 0 ? selectedBranchs : [selectedBranch],
+        module_id: moduleId,
+        iscurriculam: false,
+      },
     },
   ];
 
