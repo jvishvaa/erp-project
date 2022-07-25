@@ -141,7 +141,7 @@ const TressreVideoViewer = ({ classes }) => {
     <Layout>
       <CommonBreadcrumbs
         componentName='Sure Learning'
-        childComponentName='Treasure Box 1'
+        childComponentName='Treasure Box'
         isAcademicYearVisible={true}
       />
       <div style={{ padding: '0 0 0 20px' }}>

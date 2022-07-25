@@ -267,7 +267,7 @@ const AllChapters = () => {
       <div className={classes.parentDiv}>
         <CommonBreadcrumbs
           componentName='Sure Learning'
-          childComponentName='Induction Training 1'
+          childComponentName='Induction Training'
           isAcademicYearVisible={true}
         />
         <Grid container spacing={2} style={{ marginTop: '5px', marginLeft: '15px' }}>
@@ -341,7 +341,7 @@ const AllChapters = () => {
                             cursor: 'pointer',
                           }}
                         >
-                          Click me g
+                          Click me
                         </Typography>
                         {/* <StyledButton  size='small'>Click here</StyledButton> */}
                       </CardActions>

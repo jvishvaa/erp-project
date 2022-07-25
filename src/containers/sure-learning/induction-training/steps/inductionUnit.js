@@ -318,7 +318,7 @@ const InductionUnit = () => {
               style={{ margin: '0 10px', width: '10%' }}
               onClick={handleBack}
             >
-              Back ff
+              Back
             </Button>
             <Button
               color='primary'

@@ -258,7 +258,7 @@ function MyNotes() {
                   >
                     <CardMedia
                       style={{ height: 140, width: '100%', backgroundColor: 'white' }}
-                    > ggg
+                    >
                       <video
                         id='background-video'
                         controls

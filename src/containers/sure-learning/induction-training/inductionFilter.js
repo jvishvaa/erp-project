@@ -353,7 +353,7 @@ const InductionFilter = (props) => {
       <div className={classes.parentDiv}>
         <CommonBreadcrumbs
           componentName='Sure Learning'
-          childComponentName='Induction Training 1'
+          childComponentName='Induction Training'
           isAcademicYearVisible={true}
         />
 
@@ -470,7 +470,7 @@ const InductionFilter = (props) => {
               <StyledButton onClick={handleFilter}>Filter</StyledButton>
             </Grid>*/}
               <Grid md={2} sm={2} xs={6} className={classes.FeedbackFormDialog}>
-                <FeedbackFormDialog type='Induction training 1' />
+                <FeedbackFormDialog type='Induction training' />
               </Grid>
               <Grid md={6} sm={2} xs={6} />
             </div>
