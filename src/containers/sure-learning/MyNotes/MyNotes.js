@@ -258,7 +258,7 @@ function MyNotes() {
                   >
                     <CardMedia
                       style={{ height: 140, width: '100%', backgroundColor: 'white' }}
-                    >
+                    > ggg
                       <video
                         id='background-video'
                         controls
@@ -268,9 +268,9 @@ function MyNotes() {
                         width='100%'
                         className={classes.video}
                       >
-                        <source src={item.learning_module.video} type='video/mp4' />
+                        <source src={`${endpoints.s3UDAAN_BUCKET}${item.learning_module.video.substring(31)}`} type='video/mp4' />
                         <track
-                          src={item.learning_module.video}
+                          src={`${endpoints.s3UDAAN_BUCKET}${item.learning_module.video.substring(31)}`}
                           kind='captions'
                           srcLang='en'
                           label='english_captions'
@@ -399,7 +399,7 @@ function MyNotes() {
                         sm={7}
                         xs={12}
                         style={{ border: '1px solid lightgray' }}
-                      >
+                      > don
                         <video
                           src={sessionStorage.getItem('itemVedio')}
                           width='100%'
