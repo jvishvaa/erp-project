@@ -399,7 +399,7 @@ function MyNotes() {
                         sm={7}
                         xs={12}
                         style={{ border: '1px solid lightgray' }}
-                      > don
+                      >
                         <video
                           src={sessionStorage.getItem('itemVedio')}
                           width='100%'

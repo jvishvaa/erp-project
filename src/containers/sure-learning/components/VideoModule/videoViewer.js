@@ -27,7 +27,6 @@ const VideoModel = ({
           <Grid item md={1} />
           <Grid item md={10} xs={12}>
             <Grid item md={12} xs={12} style={{ margin: '12px 0px', padding: '20px' }}>
-              hh
               <video
                 id="background-video"
                 controls
