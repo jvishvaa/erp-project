@@ -177,6 +177,7 @@ export const fetchBranchList = (session_year) => (dispatch) => {
           localStorage.setItem('isV2', branchList[0]?.isV2);
           dispatch({ type: SELECTED_BRANCH, payload: branchList[0] });
           sessionStorage.setItem('isSessionChanged', false);
+          window.location.reload();
         }
 
         dispatch({ type: BRANCH_LIST, payload: branchList });
