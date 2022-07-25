@@ -8,6 +8,8 @@ import {
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
 import styles from './TrainingUnit.style';
+import endpoints from 'config/endpoints';
+
 
 const VideoModel = ({
   classes, file, title,
@@ -34,9 +36,9 @@ const VideoModel = ({
                 width="100%"
                 className={classes.video}
               >
-                <source src={file} type="video/mp4" />
+                <source src={`${endpoints.s3UDAAN_BUCKET}${file.substring(31)}`} type="video/mp4" />
                 <track
-                  src={file}
+                  src={`${endpoints.s3UDAAN_BUCKET}${file.substring(31)}`}
                   kind="captions"
                   srcLang="en"
                   label="english_captions"
