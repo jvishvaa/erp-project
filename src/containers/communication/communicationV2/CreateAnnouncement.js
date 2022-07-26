@@ -133,13 +133,6 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
   const [isButtonVisible, setIsButtonVisible] = useState([])
 
   let titlebody = textEditorContent
-  let channelsArr = [
-      'orchids.letseduvate.com',
-      'localhost:3000',
-      'dev.olvorchidnaigaon.letseduvate.com',
-      'qa.olvorchidnaigaon.letseduvate.com',
-      'ui-revamp1.letseduvate.com',
-  ]
   let smsTxt = `
   Greetings of the day ! 
   
@@ -841,7 +834,6 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
             </span>
           )}
           <div style={{ height: '20px', width: '100%' }}></div>
-          {channelsArr.includes(window.location.host) && <div>
             <Grid container spacing={2} style={{ justifyContent: 'center' }}>
             {(smsArr.includes(user_level) || is_superuser) &&  
             <Tooltip title={<div style={{ whiteSpace: 'pre-line' }}>{smsTxt} </div>}>
@@ -935,7 +927,6 @@ const emailArr = [1,11,4,5,8,9,10,3,2,14]
               </Grid>
               </Tooltip>}
             </Grid>
-          </div>}
           <div style={{ height: '20px', width: '100%' }}></div>
         </div>
       </DialogContent>
