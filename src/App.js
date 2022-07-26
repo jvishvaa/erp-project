@@ -421,6 +421,7 @@ import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
 // Version 2
 import V2Router from 'v2RouterConfig/v2Router';
+import { IsV2Checker } from 'v2/isV2Checker';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -428,11 +429,7 @@ function App({ alert, isMsAPI, erpConfig }) {
     erpConfig();
   }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
-  const isV2 = useSelector(
-    (state) =>
-      state.commonFilterReducer.selectedBranch?.isV2 &&
-      state.commonFilterReducer.selectedVersion
-  );
+  const isV2 = IsV2Checker();
 
   return (
     // <ErrorBoundary404 HomeButton={false}>

@@ -20,7 +20,9 @@ const DetailsModal = (props) => {
   const showTab = props.showTab;
 
   const imageAttachments = data?.attachments.filter((item) =>
-    ['jpg', 'jpeg', 'png'].includes(item.split('.')[item.split('.').length - 1])
+    ['jpg', 'jpeg', 'png'].includes(
+      item.split('.')[item.split('.').length - 1].toLowerCase()
+    )
   );
   const hasImageAttachments = imageAttachments.length > 0 ? true : false;
 
@@ -156,7 +158,10 @@ const DetailsModal = (props) => {
                 </div>
               ))}
             </div>
-            <div className='row mt-4 py-3 th-grey '>
+            <div
+              className='row mt-4 py-3 th-grey '
+              style={{ overflowY: 'auto', maxHeight: 130 }}
+            >
               <p>{extractContent(data?.content)}</p>
             </div>
             {data?.attachments.length > 0 && (

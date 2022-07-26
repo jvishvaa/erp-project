@@ -4,7 +4,8 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import { useHistory } from 'react-router-dom';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
-import { message } from 'antd';
+import { message, Spin } from 'antd';
+import { ReloadOutlined } from '@ant-design/icons';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 
 const PendingHomework = () => {
@@ -13,7 +14,10 @@ const PendingHomework = () => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [homeworkReportData, setHomeworkReportData] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   const fetchHomeworkReportData = (params = {}) => {
+    setLoading(true);
     axios
       .get(`${endpoints.studentDashboard.pendingHomework}`, {
         params: { ...params },
@@ -24,31 +28,40 @@ const PendingHomework = () => {
       .then((response) => {
         if (response.status === 200) {
           setHomeworkReportData(response?.data?.result);
+          setLoading(false);
         }
       })
       .catch((error) => {
         message.error(error.message);
+        setLoading(false);
       });
   };
 
-  useEffect(() => {
+  const getHomeWorkReportData = () => {
     if (selectedAcademicYear)
       fetchHomeworkReportData({
         session_year_id: selectedAcademicYear?.id,
       });
-  }, [selectedAcademicYear]);
+  };
 
   return (
-    <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ minHeight: 240 }}>
+    <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ height: 240 }}>
       <div className='row justify-content-between'>
         <div className='col-12 th-16 mt-2 th-fw-400 th-black-1'>
           Pending Homeworks
           <span>
             {homeworkReportData?.length > 0 ? ` (${homeworkReportData?.length})` : ''}
           </span>
+          <span className='th-12 pl-2 pl-md-0 th-pointer th-primary'>
+            <ReloadOutlined onClick={getHomeWorkReportData} className='pl-md-3' />
+          </span>
         </div>
       </div>
-      {homeworkReportData?.length > 0 ? (
+      {loading ? (
+        <div className='th-width-100 text-center mt-5'>
+          <Spin tip='Loading...'></Spin>
+        </div>
+      ) : homeworkReportData?.length > 0 ? (
         <div className='my-1 p-2'>
           <div className='th-custom-col-padding'>
             <div className='px-2'>

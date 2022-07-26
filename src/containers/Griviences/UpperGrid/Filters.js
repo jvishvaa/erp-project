@@ -26,6 +26,7 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import { useHistory } from 'react-router-dom';
+import { IsV2Checker } from 'v2/isV2Checker';
 
 const useStyles = makeStyles((theme)=>({
   root: {
@@ -102,7 +103,7 @@ const useStyles = makeStyles((theme)=>({
     height: '223px',
     width: '80px',
     padding: '20px',
-    backgroundColor: '#FFD9D9',
+    backgroundColor: `${theme.palette.v2Color1.primaryV2} !important`,
     borderRadius: '10px 10px 10px 10px',
     alignItems: 'center',
     cursor: 'pointer',
@@ -337,6 +338,8 @@ const Filters = (props) => {
     setExpanded(panel);
   };
 
+  let isV2 = IsV2Checker();
+
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const handleListItemClick = (event, ids, academicYear) => {
     //setSelectedIndex(id);
@@ -514,7 +517,7 @@ const Filters = (props) => {
                 <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
                   <Typography color = "secondary">Academic Year</Typography>
                 </AccordionSummary>
-                <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
+                <AccordionDetails style={{ backgroundColor: isV2 ? '#4a77e8' : '#FFD9D9'}}>
                   <div className={classes.contentDiv}>
                     <List component="nav" aria-label="secondary mailbox folder" className={classes.listItems}>
                       {academicYear.map((el,id) => (
@@ -536,7 +539,7 @@ const Filters = (props) => {
                 <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
                   <Typography color = "secondary">Branch</Typography>
                 </AccordionSummary>
-                <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
+                <AccordionDetails style={{ backgroundColor: isV2 ? '#4a77e8' : '#FFD9D9'}}>
                   <div className={classes.contentDiv}>
                     <List component="nav" aria-label="secondary mailbox folder" className={classes.listItems}>
                       {branch.length > 0 && branch.map((el,id) => (
@@ -567,7 +570,7 @@ const Filters = (props) => {
                 <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
                   <Typography color = "secondary">Grade</Typography>
                 </AccordionSummary>
-                <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
+                <AccordionDetails style={{ backgroundColor: isV2 ? '#4a77e8' : '#FFD9D9'}}>
                   <div className={classes.contentDiv}>
                     <List component="nav" aria-label="secondary mailbox folder" className={classes.listItems}>
                       {grade.length > 0 && grade.map((el,id) => (
@@ -598,7 +601,7 @@ const Filters = (props) => {
               <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
                 <Typography color = "secondary">Section</Typography>
               </AccordionSummary>
-              <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
+              <AccordionDetails style={{ backgroundColor: isV2 ? '#4a77e8' : '#FFD9D9'}}>
                 <div className={classes.contentDiv}>
                   <List component="nav" aria-label="secondary mailbox folder" className={classes.listItems}>
                     {sections.length > 0 && sections.map((el,id) => (
@@ -629,7 +632,7 @@ const Filters = (props) => {
               <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
                 <Typography color = "secondary">Type</Typography>
               </AccordionSummary>
-              <AccordionDetails style={{ backgroundColor: '#FFD9D9'}}>
+              <AccordionDetails style={{ backgroundColor: isV2 ? '#4a77e8' : '#FFD9D9'}}>
                 <div className={classes.contentDiv}>
                   <List component="nav" aria-label="secondary mailbox folder" className={classes.listItems}>
                     {types.length > 0 && types.map((el,id) => (

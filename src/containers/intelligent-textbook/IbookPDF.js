@@ -1,6 +1,4 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-// import axios from 'axios'
 import { connect } from 'react-redux';
 import { Grid, makeStyles, AppBar, IconButton, Tooltip } from '@material-ui/core';
 import { ArrowBack, ArrowForward, ZoomOutMap, Undo, Close } from '@material-ui/icons';
@@ -8,11 +6,7 @@ import CreateIcon from '@material-ui/icons/Create';
 import endpoints from '../../config/endpoints';
 import axiosInstance from '../../config/axios';
 import ClearIcon from '../../components/icon/ClearIcon';
-// import PenImage from '../../assets/images/icons8-pen-26.png';
-// import EraserImage from '../../assets/images/icons8-eraser-24.png';
 import './canvas.css';
-// import axios from 'axios';
-// import AnnotateCanvas from './annotate'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,15 +26,15 @@ const useStyles = makeStyles((theme) => ({
     height: 60,
   },
   pagercoustom: {
-    display: "flex",
-    margin: "0px",
-    padding: "10px",
+    display: 'flex',
+    margin: '0px',
+    padding: '10px',
     backgroundColor: theme.palette.primary.main,
-    color: "#fff",
-    position: "fixed",
-    width: "100%",
+    color: '#fff',
+    position: 'fixed',
+    width: '100%',
     bottom: 0,
-  }
+  },
 }));
 const IbookPdf = (props) => {
   const [page, setPage] = useState(1);
@@ -172,7 +166,6 @@ const IbookPdf = (props) => {
             res.data.anotate_image
           ) {
             context.clearRect(0, 0, canvas.width, canvas.height);
-            // eslint-disable-next-line no-undef
             const imgObj = new Image();
             imgObj.src = res.data.anotate_image;
             imgObj.onload = () => {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Layout from 'containers/Layout';
 import { useSelector } from 'react-redux';
-import { Select } from 'antd';
+import { Select, message } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import AttendanceReport from './components/AttendanceReport';
 import Announcement from './components/Announcement';
@@ -19,9 +19,7 @@ const SuperAdmindashboardNew = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const [selectedBranchList, setSelectedBranchList] = useState([]);
-  const handleBranchChange = (e) => {
-    setSelectedBranchList([...e]);
-  };
+  const [feesBranch, setFeesBranch] = useState([]);
   const branchOptions = branchList?.map((each) => {
     return (
       <Option
@@ -35,6 +33,21 @@ const SuperAdmindashboardNew = () => {
       </Option>
     );
   });
+  const handleBranchChange = (e) => {
+    if (e.length === 1 && e.some((item) => item.key === 'all')) {
+      const all = branchOptions.slice();
+      const allBranches = all.map((item) => item?.props);
+      setSelectedBranchList(allBranches);
+    } else if (e.some((item) => item.key === 'all') && e.length > 1) {
+      message.error('Either select all branch or other options');
+      return;
+    } else {
+      setSelectedBranchList([...e]);
+    }
+  };
+  const handleFeesBranch = (e) => {
+    setFeesBranch(e);
+  };
 
   return (
     <Layout>
@@ -53,9 +66,6 @@ const SuperAdmindashboardNew = () => {
               showArrow={true}
               allowClear={true}
               suffixIcon={<DownOutlined className='th-primary' />}
-              // placeholder={
-              //   <span className='th-primary'>{selectedBranch?.branch?.branch_name}</span>
-              // }
               placeholder='Select Branches'
               dropdownMatchSelectWidth={false}
               bordered={false}
@@ -65,6 +75,7 @@ const SuperAdmindashboardNew = () => {
                 return options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
               }}
             >
+              <Option key='all'>All</Option>
               {branchOptions}
             </Select>
           </div>
@@ -73,14 +84,14 @@ const SuperAdmindashboardNew = () => {
 
         <div className='row pt-3'>
           <div className='col-md-4 th-custom-col-padding'>
-            <FeesOverview />
+            <FeesOverview handleFeesBranch={handleFeesBranch} />
           </div>
           <div className='col-md-4 th-custom-col-padding'>
             <AcademicPerformance selectedBranchList={selectedBranchList} />
             <CalendarCard />
           </div>
           <div className='col-md-4 th-custom-col-padding'>
-            <Shortcut selectedBranchList={selectedBranchList} />
+            <Shortcut selectedBranchList={selectedBranchList} feesBranch={feesBranch} />
             <Announcement />
           </div>
         </div>

@@ -4,12 +4,9 @@ export default class Auth {
       this.isAuthenticated = this.isAuthenticated.bind(this)
     }
   
-    setSession (authResult) {
-      // Set the time that the access token will expire at
-      //const expiresAt = JSON.stringify((authResult.expires_at * 1000) + new Date().getTime())
+    setSession (authResult) {      
       localStorage.removeItem('userDetails')
-      localStorage.setItem('userDetails', JSON.stringify(authResult))
-      //localStorage.setItem('expires_at', expiresAt)
+      localStorage.setItem('userDetails', JSON.stringify(authResult)) 
     }
   
     updateUserDetails(newDetails){
@@ -17,18 +14,13 @@ export default class Auth {
       localStorage.setItem('userDetails', JSON.stringify(newDetails))
     }
   
-    logout () {
-      // Clear access token from local storage
+    logout () {  
       localStorage.removeItem('userDetails')
       localStorage.removeItem('expires_at')
       window.location.replace('/')
     }
   
-    isAuthenticated () {
-      // Check whether the current time is past the
-      // access token's expiry time
-      // const expiresAt = JSON.parse(localStorage.getItem('expires_at'))
-      // return new Date().getTime() < expiresAt && userProfile
+    isAuthenticated () {     
       let userProfile
       try {
         userProfile = JSON.parse(localStorage.getItem('userDetails'))

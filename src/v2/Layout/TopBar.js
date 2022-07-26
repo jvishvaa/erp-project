@@ -43,6 +43,7 @@ import StaffIcon from 'assets/dashboardIcons/topbarIcons/defaultProfile.svg';
 import RupeeSymbol from 'v2/Assets/dashboardIcons/topbarIcons/rupee-symbol.png';
 import { Select, Switch } from 'antd';
 import './styles.scss';
+import { IsV2Checker } from 'v2/isV2Checker';
 // import { Item } from 'semantic-ui-react';
 const { Option } = Select;
 
@@ -283,15 +284,40 @@ const Appbar = ({ children, history, ...props }) => {
     window.location.reload();
   };
 
+  function reseteTheme() {
+    const themecolors = [
+      {
+        theme_key: 'primary_color',
+        theme_value: '#FF6B6B',
+      },
+      {
+        theme_key: 'second_color',
+        theme_value: '#014B7E',
+      },
+    ];
+    localStorage.setItem('themeDetails', JSON.stringify(themecolors));
+    axiosInstance
+      .post(`${endpoints.themeAPI.school_theme}`, themecolors)
+      .then((res) => {
+        console.log(res);
+        if (res.status === 200) {
+          window.location.reload();
+          setAlert('success', res.data.message);
+        } else {
+          setAlert('error', res.data.description);
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   const handleVersion = (status) => {
     dispatch(selectedVersion(status));
     localStorage.setItem('selectedVersion', status);
+    reseteTheme();
   };
-  const isV2 = useSelector(
-    (state) =>
-      state.commonFilterReducer.selectedBranch?.isV2 &&
-      state.commonFilterReducer.selectedVersion
-  );
+  const isV2 = IsV2Checker();
 
   return (
     <>
@@ -515,9 +541,10 @@ const Appbar = ({ children, history, ...props }) => {
             {isMobile ? null : (
               <Switch
                 checked={isV2}
-                checkedChildren={props.drawerOpen ? 'V1' : 'Older Version'}
-                unCheckedChildren={props.drawerOpen ? 'V2' : 'Newer Version'}
+                checkedChildren={'Older Version'}
+                unCheckedChildren={'Newer Version'}
                 onChange={handleVersion}
+                className='th-top-switch'
               />
             )}
             {isMobile ? null : (

@@ -9,7 +9,7 @@ const {
     baseURL,
     baseURLMPQ,
   },
-  s3: { BUCKET: s3BUCKET, ERP_BUCKET },
+  s3: { BUCKET: s3BUCKET, ERP_BUCKET,UDAAN_BUCKET:s3UDAAN_BUCKET },
 } = ENVCONFIG;
 
 // const baseURLCentral = 'http://13.232.30.169/qbox';
@@ -870,4 +870,5 @@ export default {
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
   // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
   baseURLCentral,
+  s3UDAAN_BUCKET:s3UDAAN_BUCKET,
 };

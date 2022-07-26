@@ -16,17 +16,16 @@ import { useHistory } from 'react-router-dom';
 import useStyles from './useStyles';
 import endpoints from '../../config/endpoints';
 import { useDispatch, useSelector } from 'react-redux';
+import { IsV2Checker } from 'v2/isV2Checker';
 
 const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
   const history = useHistory();
   const classes = useStyles();
   const userMenuOpen = openMenu === 'user-management';
   const masterMenuOpen = openMenu === 'master-management';
-  const isV2 = useSelector(
-    (state) =>
-      state.commonFilterReducer.selectedBranch?.isV2 &&
-      state.commonFilterReducer.selectedVersion
-  );
+
+  const isV2 = IsV2Checker();
+
   return (
     <>
       {window.location.host !== endpoints.aolConfirmURL && (

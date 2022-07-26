@@ -103,7 +103,7 @@ const useStyles = makeStyles({
     padding: '20px',
     marginRight: '-15px',
     marginLeft: '-15px',
-    backgroundColor: '#FFD9D9',
+    backgroundColor: `${theme.palette.v2Color1.primaryV2} !important`,
     borderRadius: '10px',
     transition: 'all 0.5s cubic-bezier(1,0,1,0)',
     zIndex: 1,
