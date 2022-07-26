@@ -7,7 +7,7 @@ const ShortcutCard = (props) => {
 
   return (
     <div className='row px-2'>
-      <div className='col-md-12 my-2 th-bg-grey th-br-2 p-2'>
+      <div className='col-md-12 my-2 th-bg-grey th-br-2 p-2 th-pointer'>
         <div
           className='th-fw-400 th-14'
           onClick={() =>

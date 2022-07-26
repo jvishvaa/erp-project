@@ -41,14 +41,19 @@ const Assessment = () => {
     if (selectedAcademicYear)
       fetchAssessmentData({ session_year_id: selectedAcademicYear?.id });
   };
-
+  useEffect(() => {
+    getAssessmentData();
+  }, []);
   return (
-    <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm mt-3' style={{ height: 240 }}>
+    <div
+      className='th-bg-white th-br-5 py-3 px-2 shadow-sm mt-3'
+      style={{ minHeight: 240 }}
+    >
       <div className='row justify-content-between'>
         <div className='col-12 th-16 mt-2 th-fw-500 th-black-1'>
           Assessment
           <span className='th-12 pl-2 pl-md-0 th-pointer th-primary'>
-            <ReloadOutlined onClick={getAssessmentData} className='pl-md-3' />
+            {/* <ReloadOutlined onClick={getAssessmentData} className='pl-md-3' /> */}
           </span>
         </div>
       </div>

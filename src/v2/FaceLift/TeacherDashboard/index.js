@@ -13,9 +13,11 @@ import axios from 'v2/config/axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import endpoints from 'v2/config/endpoints';
 import Shortcut from './components/Shortcut';
+import { getRole } from 'v2/generalAnnouncementFunctions';
 
 const TeacherdashboardNew = () => {
   const [todaysAttendance, setTodaysAttendance] = useState([]);
+  const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
   const time = new Date().getHours();
 
   const fetchTodaysAttendance = (params = {}) => {
@@ -46,7 +48,9 @@ const TeacherdashboardNew = () => {
         <div className='row th-16 py-3 justify-content-between'>
           <div className='col-md-6 th-black-1 th-20 th-fw-400'>
             {' '}
-            Good {time < 12 ? 'Morning' : time < 16 ? 'AfterNoon' : 'Evening'}, Teacher
+            Good {time < 12 ? 'Morning' : time < 16 ? 'Afternoon' : 'Evening'},
+            <span className='text-capitalize pr-2'>{first_name}</span>
+            <span className='th-14'>({getRole(user_level)})</span>
           </div>
           <div className='col-md-6 text-right'>
             <div className='pr-3'>
