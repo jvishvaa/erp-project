@@ -151,7 +151,7 @@ const QuestionBankFilters = ({
   const handleClear = () => {
     setClearFlag((prev) => !prev);
     setFilterData({
-      year: '',
+      year: filterData?.year,
       branch: '',
       volume: '',
       grade: '',
@@ -174,7 +174,7 @@ const QuestionBankFilters = ({
   function handleAcademicYear(event, value) {
     setFilterData({
       ...filterData,
-      year: '',
+      // year: '',
       branch: '',
       grade: '',
       subject: '',
@@ -210,6 +210,7 @@ const QuestionBankFilters = ({
   }
 
   function handleBranch(event, value) {
+    console.log(filterData,"KL")
     setPage(1)
     setFilterData({
       ...filterData,
