@@ -151,7 +151,7 @@ const QuestionBankFilters = ({
   const handleClear = () => {
     setClearFlag((prev) => !prev);
     setFilterData({
-      year: '',
+      year: filterData?.year,
       branch: '',
       volume: '',
       grade: '',
