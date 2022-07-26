@@ -15,6 +15,8 @@ import axiosInstance from '../../../../config/axios';
 import axios from 'axios';
 import { addQuestionPaperToTest } from '../../../../redux/actions';
 import Divider from '@material-ui/core/Divider';
+import ConfirmPopOver from '../../../../../src/containers/time-table/ConfirmPopOver';
+
 
 // import '../../lesson-plan-view/lesson.css';
 // import downloadAll from '../../../../assets/images/downloadAll.svg';
@@ -39,6 +41,8 @@ const AssessmentCard = ({
   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
+  const [openModal, setOpenModal] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState();
 
   const history = useHistory();
   const handlePeriodMenuOpen = (index, id) => {
@@ -215,7 +219,7 @@ const AssessmentCard = ({
       }
     >
       <Grid container spacing={2}>
-        <Grid item xs={8}>
+        <Grid item xs={9}>
           <Box>
             <Typography
               className={classes.title}
@@ -242,7 +246,7 @@ const AssessmentCard = ({
           </Box>
         </Grid>
         {/* {period.is_verified && ( */}
-        <Grid item xs={4} className={classes.textRight}>
+        <Grid item xs={3} className={classes.textRight}>
           <Box>
             <span
               className='period_card_menu'
@@ -255,29 +259,45 @@ const AssessmentCard = ({
               {showPeriodIndex === index && showMenu ? (
                 <div className='tooltipContainer'>
                   {period.is_verified && (
-                    <span className={` ${classes.tooltiptext} tooltiptext`} style={{ width: '105px' }}>
-                      <span onClick={handleAssign}>Assign Test</span>
+                    <span className={` ${classes.tooltiptext} tooltiptext`} style={{ width: '140px' }}>
+                      <span onClick={handleAssign} style={{ marginBottom: 10 }}>Assign Test</span>
                       <Divider />
                       {!period.is_central && (
-                        <span onClick={handleDelete}>Delete</span>
+                        <span onClick={() => {
+                          setConfirmMessage('delete');
+                          setOpenModal(true);
+                        }} style={{ marginTop: 10 }}>Delete</span>
                       )
                       }
                     </span>
                   )}
                   {!period.is_verified && (
-                    <span className='tooltiptext'>
-                      <span onClick={handlePublish}>Publish Paper</span>
+                    <span className='tooltiptext' style={{ width: '160px' }}>
+                      <span onClick={handlePublish} style={{ marginBottom: 10 }}>Publish Paper</span>
                       <Divider />
-                      <span onClick={handleDelete}>Delete</span>
+                      <span onClick={() => {
+                        setConfirmMessage('delete');
+                        setOpenModal(true);
+                      }} style={{ marginTop: 10 }}>Delete</span>
                     </span>
                   )}
+                  {
+                    openModal && (
+                      <ConfirmPopOver
+                        submit={() => handleDelete()}
+                        openModal={openModal}
+                        setOpenModal={setOpenModal}
+                        operation={confirmMessage}
+                      />
+                    )
+                  }
                 </div>
               ) : null}
             </span>
           </Box>
         </Grid>
-        <Grid item xs={12} sm={12} />
-        <Grid item xs={6}>
+        {/* <Grid item xs={12} sm={12} /> */}
+        <Grid item xs={8}>
           <Box>
             <Typography
               className={classes.content}
@@ -301,7 +321,7 @@ const AssessmentCard = ({
             </Typography>
           </Box> */}
         </Grid>
-        <Grid item xs={6} className={classes.textRight}>
+        <Grid item xs={4} className={classes.textRight}>
           {!periodColor && (
             <Button
               variant='contained'
