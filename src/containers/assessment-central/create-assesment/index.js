@@ -69,7 +69,7 @@ const CreateAssesment = ({
   initResetFormState,
 }) => {
   const [CentralFilter,setCentralFilter] = useState(false)
-  const[flag,setFlag] = useState(false);
+  const [flag,setFlag] = useState(false);
   const [branch,setBranch] = useState([])
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [branchId,setBranchId] = useState([]);
