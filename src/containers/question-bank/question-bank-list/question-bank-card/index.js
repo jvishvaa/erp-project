@@ -8,7 +8,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogActions from '@material-ui/core/DialogActions';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Button, useTheme, IconButton, SvgIcon } from '@material-ui/core';
+import { Button, useTheme, IconButton, SvgIcon, Checkbox } from '@material-ui/core';
 import Box from '@material-ui/core/Box';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import useStyles from './useStyles';
@@ -29,6 +29,11 @@ const QuestionBankCard = ({
   onClick,
   showAddToQuestionPaper,
   periodColor,
+  toggleComplete,
+  isSelectAll,
+  redFlag,
+  checkbox,
+  periodData
 }) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
@@ -38,6 +43,8 @@ const QuestionBankCard = ({
   const [showPeriodIndex, setShowPeriodIndex] = useState();
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [questionName, setQuestionName] = useState(period.question_answer);
+  const [isChecked,setIsChecked]= useState(false);
+  const [selectedPublished, setSelectedPublished] = useState([]);
 
   const handlePeriodMenuOpen = (index, id) => {
     setShowMenu(true);
@@ -194,7 +201,17 @@ const QuestionBankCard = ({
     >
       <Grid container spacing={2}>
         <Grid item xs={8}>
-          <Box>
+          <Box style={{display:'flex', alignItems:'center'}}>
+            {period?.question_status === '3' ? 
+              <Checkbox
+              id={period?.id}
+              checked={period?.checked}
+              onChange={(e) => toggleComplete(e,period,index)} 
+              name={period?.id}
+              size="small"
+             inputProps={{ 'aria-label': 'primary checkbox' }}
+             />
+          : ''}
             <Typography
               className={classes.title}
               variant='p'
