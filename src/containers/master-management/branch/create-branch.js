@@ -11,18 +11,24 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
   const [branchName, setBranchName] = useState('');
   const [branchCode, setBranchCode] = useState('');
   const [address, setAddress] = useState('');
+  const [file, setFile] = useState();
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    const request = new FormData();
+    request.append('branch_name',branchName)
+    request.append('branch_code', branchCode)
+    request.append('address',address)
+    if(file){
+      request.append('logo', file)
+    }
     axiosInstance
-      .post(endpoints.masterManagement.createBranch, {
-        branch_name: branchName,
-        branch_code: branchCode,
-        address: address,
-      })
+      .post(endpoints.masterManagement.createBranch,
+        request
+      )
       .then((result) => {
         if (result.data.status_code >= 200 && result.data.status_code <= 299) {
           setBranchName('');
@@ -54,7 +60,7 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
               variant='outlined'
               size='small'
               value={branchName}
-              inputProps={{ pattern: '^[a-zA-Z0-9 ]+', maxLength: 20 }}
+              inputProps={{ pattern: '^[a-zA-Z0-9 ]+', maxLength: 50 }}
               name='branchname'
               onChange={(e) => setBranchName(e.target.value)}
               required
@@ -88,11 +94,26 @@ const CreateBranch = ({ setLoading, handleGoBack }) => {
               multiline
               rows={4}
               rowsMax={6}
-              inputProps={{ maxLength: 250 }}
+              inputProps={{ maxLength: 500 }}
               value={address}
               name='address'
               onChange={(e) => setAddress(e.target.value)}
               required
+            />
+          </Grid>
+        </Grid>
+        <Grid container spacing={5}>
+          <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
+            <input
+              id='upload'
+              label='Upload Logo'
+              variant='outlined'
+              size='small'
+              style={{ width: '100%' }}
+              // value={viewFile}
+              name='File'
+              type='file'
+              onChange={(e) => setFile(e.target.files[0])}
             />
           </Grid>
         </Grid>
