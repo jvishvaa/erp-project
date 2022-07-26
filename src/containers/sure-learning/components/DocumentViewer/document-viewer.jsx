@@ -54,7 +54,6 @@ console.log(props.pdfUrl,"pdfurl")
         }}
         className="pdfView"
       >
-        hh22
         <Document file={`${endpoints.s3UDAAN_BUCKET}${props.pdfUrl.substring(31)}`} onLoadSuccess={onDocumentLoadSuccess}>
           <Page pageNumber={pageNumber} />
         </Document>

@@ -463,6 +463,7 @@ export default {
     s3: 'https://d3ka3pry54wyko.cloudfront.net',
     examTypeList: '/assessment/exam-type-list/',
     downloadAssessmentPdf: '/assessment/test1/',
+    getGroups : '/assessment/list-create-groups/',
   },
 
   assessment: {

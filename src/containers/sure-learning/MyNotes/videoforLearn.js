@@ -20,7 +20,6 @@ const VideoModel = ({
             <Typography variant="h5">{title}</Typography>
           </div>
           <div id='videolearn'>
-            ff
               <video
                 id="background-video"
                 controls

@@ -22,6 +22,7 @@ import {
   Checkbox,
   Box,
   Input,
+  Switch
 } from '@material-ui/core';
 import { connect, useSelector } from 'react-redux';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -113,6 +114,13 @@ const Assesment = () => {
   const isSuperAdmin = userLevel === 1
   console.log('super','orchids',isSuperAdmin,isSuperuser)
   const [loading,setLoading] = useState(false)
+  const [gradeId,setGradeId] = useState('')
+  const [selectedBranchId,setSelectedBranchId] = useState([])
+  const [sectionToggle,setSectionToggle] = useState(false)
+  const [sectionList,setSectionList] = useState([])
+  const [sectionFlag,setSectionFlag] = useState(false)
+  const [groupList,setGroupList] = useState([])
+  const [groupFlag,setGroupFlag] = useState(false)
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -141,6 +149,8 @@ const Assesment = () => {
       grade: '',
       subject: [],
       assesment_type: '',
+      section : [],
+      group : ''
     },
     onSubmit: (values) => {
       filterResults(1);
@@ -211,6 +221,8 @@ const Assesment = () => {
       assesment_type: assesmentType,
       date,
       status,
+      section,
+      group
     } = formik.values;
     console.log(formik.values);
     filterData1 = {
@@ -223,6 +235,8 @@ const Assesment = () => {
     // const acadSessionId = branch?.id;
     const acadSessionIds = branch.map((element) => element?.id) || [];
     const subjectIds = subject.map(({ subject_id }) => subject_id);
+    const sectionMappingIds = section.map((i)=>i?.id)
+    const groupIds = group?.id
     try {
       setFetchingTests(true);
       const { results, totalPages } = await fetchAssesmentTests(
@@ -235,7 +249,12 @@ const Assesment = () => {
         status.id,
         date,
         page,
-        9
+        9,
+        sectionToggle,
+        sectionMappingIds,
+        groupIds,
+        sectionFlag,
+        groupFlag
       );
       setShowFilteredList(true);
       setFilteredAssesmentTestsTotalPage(totalPages);
@@ -276,6 +295,7 @@ const Assesment = () => {
       if (formik.values.branch.length) {
         const branchIds =
           formik.values.branch.map((element) => element?.branch?.id) || [];
+          setSelectedBranchId(branchIds)
         getGrades(formik.values.academic?.id, branchIds);
         if (formik.values.grade) {
           const acadSessionIds = formik.values.branch.map((element) => element?.id) || [];
@@ -371,6 +391,10 @@ const Assesment = () => {
     formik.setFieldValue('branch', []);
     formik.setFieldValue('grade', []);
     formik.setFieldValue('subject', []);
+    formik.setFieldValue('section', []);
+    formik.setFieldValue('group', '');
+    setSectionList([])
+    setGroupList([]) 
     if (value.length > 0) {
       const branchIds = value?.map((element) => element?.branch?.id) || [];
       getGrades(formik.values.academic?.id, branchIds);
@@ -378,13 +402,83 @@ const Assesment = () => {
     }
   };
 
+  const fetchSection =  (acadSessionId,branchId,gradeId,moduleId) => {
+      axiosInstance.get(
+        `${endpoints.academics.sections}?session_year=${
+          acadSessionId
+        }&branch_id=${branchId}&grade_id=${gradeId}&module_id=${moduleId}`
+      ).then((res)=>{
+        if (res?.data?.status_code === 200) {
+          const transformData = res?.data?.data.map((item) => ({
+            section_id: item.section_id,
+            section__section_name: item.section__section_name,
+            id: item.id,
+          }));
+          transformData.unshift({
+            section_id: 'all',
+            section__section_name: 'Select All',
+            id: 'section_mapping_id',
+          });
+          setSectionList(transformData);
+        }
+      })  
+  };
+
+  const handleSection = (e, value) => {
+    formik.setFieldValue('section',[])
+    setSectionFlag(false)
+    if (value.length) {
+      value =
+        value.filter(({ section_id }) => section_id === 'all').length === 1
+          ? [...sectionList].filter(({ section_id }) => section_id !== 'all')
+          : value;
+        formik.setFieldValue('section',value)
+        setSectionFlag(true)
+    } 
+  };
+
+  const fetchGroupList = (acadId, grade) => {
+    axiosInstance
+      .get(
+        `${
+          endpoints.assessmentErp.getGroups
+        }?acad_session=${acadId}&grade=${grade}&is_active=${true}&group_type=${1}`
+      )
+      .then((result) => {
+        if (result?.status === 200) {
+          setGroupList(result?.data);
+        }
+      });
+  };
+
+  const handleGroup = (e, value) => {
+    setGroupFlag(false)
+    formik.setFieldValue('group','')
+    formik.setFieldValue('section', []);
+    formik.setFieldValue('group', '');
+    if (value) {
+      const sections = value?.group_section_mapping.map((i)=>i?.section_mapping_id)
+      formik.setFieldValue('group',value)
+      setGroupFlag(true)
+    }
+  };
+
   const handleGrade = (event, value) => {
     formik.setFieldValue('grade', []);
     formik.setFieldValue('subject', []);
+    formik.setFieldValue('section', []);
+    formik.setFieldValue('group', '');
+    setSectionList([])
+    setGroupList([]) 
     if (value) {
       const acadSessionIds = formik.values.branch.map((element) => element?.id) || [];
       getSubjects(acadSessionIds, value?.grade_id);
       formik.setFieldValue('grade', value);
+      const branchIds = formik?.values?.branch.map((i)=>i?.branch?.id)
+      const sectionData = fetchSection(selectedAcademicYear?.id,branchIds,value?.grade_id,moduleId)
+      setSectionList(sectionData)
+      const groupData = fetchGroupList(acadSessionIds,value?.grade_id)
+      setGroupList(groupData)
     }
   };
 
@@ -453,6 +547,11 @@ const Assesment = () => {
     }
   };
 
+  const handleSectionToggle = (event) => {
+    setSectionToggle(event.target.checked);
+    formik.setFieldValue('section', []);
+    formik.setFieldValue('group', '');
+  };
   return (
     <Layout>
       {loading && <Loader />}
@@ -680,6 +779,81 @@ const Assesment = () => {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
+                  <Grid
+                    container
+                    alignItems='center'
+                    justifyContent='center'
+                    xs={12}
+                    md={3}
+                  >
+                    <Typography>Section</Typography>
+                    <Switch
+                      checked={sectionToggle}
+                      onChange={handleSectionToggle}
+                      color='default'
+                      inputProps={{ 'aria-label': 'checkbox with default color' }}
+                    />
+                    <Typography>Group</Typography>
+                  </Grid>
+                  {!sectionToggle ? (
+                    <Grid item xs={12} md={3}>
+                      <FormControl fullWidth variant='outlined'>
+                        <Autocomplete
+                          id='section_name'
+                          name='section_name'
+                          multiple
+                          limitTags={2}
+                          className='dropdownIcon'
+                          onChange={handleSection}
+                          value={formik.values.section || []}
+                          options={sectionList || []}
+                          getOptionLabel={(option) => option?.section__section_name || ''}
+                          filterSelectedOptions
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Section'
+                              placeholder='Section'
+                            />
+                          )}
+                          size='small'
+                        />
+                        {/* <FormHelperText style={{ color: 'red' }}>
+                        {formik.errors.assesment_type ? formik.errors.assesment_type : ''}
+                      </FormHelperText> */}
+                      </FormControl>
+                    </Grid>
+                  ) : (
+                    <Grid item xs={12} md={3}>
+                      <FormControl fullWidth variant='outlined'>
+                          <Autocomplete
+                            id='Group'
+                            name='group'
+                            // multiple
+                            // limitTags={2}
+                            className='dropdownIcon'
+                            onChange={handleGroup}
+                            value={formik?.values?.group || []}
+                            options={groupList || []}
+                            getOptionLabel={(option) => option?.group_name || ''}
+                            filterSelectedOptions
+                            renderInput={(params) => (
+                              <TextField
+                                {...params}
+                                variant='outlined'
+                                label='Group'
+                                placeholder='Group'
+                              />
+                            )}
+                            size='small'
+                          />
+                        {/* <FormHelperText style={{ color: 'red' }}>
+                        {formik.errors.assesment_type ? formik.errors.assesment_type : ''}
+                      </FormHelperText> */}
+                      </FormControl>
+                    </Grid>
+                  )}
                 </Grid>
               </div>
             </AccordionDetails>
@@ -697,7 +871,7 @@ const Assesment = () => {
                     variant='contained'
                     className='cancelButton labelColor'
                     onClick={() => {
-                      handleClearAll()
+                      handleClearAll();
                     }}
                   >
                     Clear All
