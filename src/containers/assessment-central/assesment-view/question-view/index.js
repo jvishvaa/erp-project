@@ -118,7 +118,7 @@ const QuestionView = ({ question, showHeader, index }) => {
                 {ReactHtmlParser(question.question_answer[0].question)}
               </div>
               <div className={classes.answersContainer}>
-                <div className={classes.answersHeader}>Options:</div>
+                <div className={classes.answersHeader}>Answers</div>
                 <Divider className='secondary-divider' />
                 <div className='options-container'>
                   {question?.question_answer[0]?.options?.map((optionObj, subIndex) => (
@@ -165,7 +165,7 @@ const QuestionView = ({ question, showHeader, index }) => {
                   {ReactHtmlParser(question.question_answer[0].question)}
                 </div>
                 <div className='answers-container'>
-                  <div className={classes.answersHeader}>Options:</div>
+                  <div className={classes.answersHeader}>Answers</div>
                   <Divider className='secondary-divider' />
                   <div className='options-container'>
                     {question.question_answer[0]?.options.map((optionObj, subIndex) => (
