@@ -90,7 +90,7 @@ const AttendanceReport = (props) => {
 
   const showAllData = () => {
     const branchListAttendance = selectedBranchList;
-    if (selectedBranchList.length !== branchList.length) {
+    if (selectedBranchList?.length !== branchList?.length) {
       const acadIds = branchListAttendance?.map((o, i) => (o.id = o.acadId));
     }
     history.push({

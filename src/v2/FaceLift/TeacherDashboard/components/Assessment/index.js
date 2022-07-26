@@ -66,7 +66,7 @@ const Assessment = () => {
             <div className='px-2'>
               <div className='row justify-content-between mb-1'>
                 <div className='col-4 th-grey th-fw-400 th-12'>Grade</div>
-                <div className='col-4 th-grey th-fw-400 th-12'>Subject</div>
+                <div className='col-4 th-grey th-fw-400 th-12 text-center'>Subject</div>
                 <div className='col-4 th-grey th-fw-400 th-12 px-0 text-center'>
                   Avg. Score
                 </div>
