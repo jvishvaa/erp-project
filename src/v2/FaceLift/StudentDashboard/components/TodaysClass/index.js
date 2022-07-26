@@ -82,13 +82,17 @@ const TodaysClass = () => {
     });
   };
 
+  useEffect(() => {
+    getTodaysClassData();
+  }, []);
+
   return (
     <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ minHeight: 240 }}>
       <div className='row justify-content-between'>
         <div className='col-6 th-16 mt-2 th-fw-400 th-black-1'>
           Today's Class{' '}
           <span className='th-12 pl-2 pl-md-0 th-pointer th-primary'>
-            <ReloadOutlined onClick={getTodaysClassData} />
+            {/* <ReloadOutlined onClick={getTodaysClassData} /> */}
           </span>
         </div>
         <div className='col-6 mt-2 px-1 text-right'>

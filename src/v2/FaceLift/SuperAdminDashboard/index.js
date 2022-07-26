@@ -84,15 +84,15 @@ const SuperAdmindashboardNew = () => {
 
         <div className='row pt-3'>
           <div className='col-md-4 th-custom-col-padding'>
-            <FeesOverview handleFeesBranch={handleFeesBranch} />
+            <Shortcut selectedBranchList={selectedBranchList} feesBranch={feesBranch} />
+            <Announcement />
           </div>
           <div className='col-md-4 th-custom-col-padding'>
             <AcademicPerformance selectedBranchList={selectedBranchList} />
             <CalendarCard />
           </div>
           <div className='col-md-4 th-custom-col-padding'>
-            <Shortcut selectedBranchList={selectedBranchList} feesBranch={feesBranch} />
-            <Announcement />
+            <FeesOverview handleFeesBranch={handleFeesBranch} />
           </div>
         </div>
       </div>

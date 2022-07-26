@@ -26,7 +26,7 @@ const ReportsCard = (props) => {
     <div className='th-custom-col-padding'>
       <div className='px-2'>
         <div className='row justify-content-between mb-1'>
-          <div className='col-4 th-grey th-fw-400 th-12'>Grade</div>
+          <div className='col-3 th-grey th-fw-400 th-12'>Grade</div>
           <div className='col-4 th-grey th-fw-400 th-12 text-center'>Subject</div>
           <div className='col-4 th-grey th-fw-400 th-12 px-0 text-center'>
             {type === 'classwork-report' || type === 'homework-report'
@@ -71,7 +71,7 @@ const ReportsCard = (props) => {
                 <div className='row justify-content-between'>
                   <div className='row justify-content-between th-green th-12 th-fw-400'>
                     <div className='col-4 text-right'></div>
-                    <div className='col-4 pl-1'>Submitted</div>
+                    <div className='col-4 text-center'>Submitted</div>
                     <div className='col-4 text-center'>
                       {type == 'classwork'
                         ? item?.classwork_submitted
@@ -80,7 +80,7 @@ const ReportsCard = (props) => {
                   </div>
                   <div className='row justify-content-between th-red th-12 th-fw-400'>
                     <div className='col-4 text-right'></div>
-                    <div className='col-4 pl-1'>Pending</div>
+                    <div className='col-4 text-center'>Pending</div>
                     <div className='col-4 text-center'>
                       {type == 'classwork'
                         ? item?.unsubmitted_classwork

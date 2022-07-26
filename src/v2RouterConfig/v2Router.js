@@ -91,8 +91,8 @@ const V2Router = () => {
                               // return <DefaultDashboard />;
                               case 10:
                                 return <SuperAdmindashboardNew match={match} />;
-                              default:
-                                return <AcadCalendar match={match} />;
+                              // default:
+                              //   return <AcadCalendar match={match} />;
                             }
                           }}
                         </Route>

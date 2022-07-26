@@ -22,7 +22,7 @@ const Shortcut = (props) => {
       title: 'View All Attendance',
       url: '/staff-attendance-report/branch-wise',
       state: {
-        acadId: selectedBranchList?.length > 0 ? branchListAttendance : branchList,
+        acadId: selectedBranchList?.length > 0 ? branchListAttendance : [selectedBranch],
       },
     },
     {

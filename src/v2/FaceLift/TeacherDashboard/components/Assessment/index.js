@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { message, Spin } from 'antd';
 import { RightOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
@@ -42,13 +42,17 @@ const Assessment = () => {
       fetchAssessmentData({ session_year: selectedAcademicYear?.id });
   };
 
+  useEffect(() => {
+    getAssessmentData();
+  }, []);
+
   return (
     <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ minHeight: 260 }}>
       <div className='row justify-content-between'>
         <div className='col-12 th-16 mt-2 th-fw-500 th-black-1'>
           Assessment
           <span className='th-12 pl-2 pl-md-0 th-pointer th-primary'>
-            <ReloadOutlined onClick={getAssessmentData} className='pl-md-3' />
+            {/* <ReloadOutlined onClick={getAssessmentData} className='pl-md-3' /> */}
           </span>
         </div>
       </div>

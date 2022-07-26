@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import OverviewCard from 'v2/FaceLift/myComponents/OverViewCard';
 import avgTestScore from 'assets/dashboardIcons/academicPerformanceIcons/avgTestScore.svg';
 import { useSelector } from 'react-redux';
@@ -97,10 +97,22 @@ const AcademicPerformance = (props) => {
           session_year_id: selectedAcademicYear?.id,
         });
       } else {
-        message.warning('Please select alteast one branch');
+        fetchCurriculumStats({
+          branch_id: selectedBranch?.id,
+          acad_session_id: selectedAcademicYear?.id,
+        });
+        fetchTestScoreStats({ acad_session_id: selectedBranch?.id });
+        fetchAttendanceStats({
+          acad_session: selectedBranch?.id,
+          session_year_id: selectedAcademicYear?.id,
+        });
       }
     }
   };
+
+  useEffect(() => {
+    getAcademicOverviewData();
+  }, []);
 
   const AcademicPerformanceData = [
     {
