@@ -16,6 +16,7 @@ import {
   TextField,
   Button,
   SvgIcon,
+  Switch,
 } from '@material-ui/core';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
@@ -40,7 +41,7 @@ import {
   fetchAssesmentTypes,
   resetFormState,
 } from '../../../redux/actions';
-
+import Loader from './../../../components/loader/loader';
 import './styles.scss';
 import AssesmentTest from './assesment-test';
 
@@ -67,11 +68,11 @@ const CreateAssesment = ({
   initQuestionsLength,
   initResetFormState,
 }) => {
-  const [CentralFilter, setCentralFilter] = useState(false)
-  const [flag, setFlag] = useState(false);
-  const [branch, setBranch] = useState([])
+  const [CentralFilter,setCentralFilter] = useState(false)
+  const [flag,setFlag] = useState(false);
+  const [branch,setBranch] = useState([])
   const [branchDropdown, setBranchDropdown] = useState([]);
-  const [branchId, setBranchId] = useState([]);
+  const [branchId,setBranchId] = useState([]);
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const clearForm = query.get('clear');
@@ -92,6 +93,19 @@ const CreateAssesment = ({
   const [moduleId, setModuleId] = useState('');
   const { setAlert } = useContext(AlertNotificationContext);
   const [assesmentTypes, setAssesmentTypes] = useState([]);
+  const [sectionToggle, setSectionToggle] = useState(false);
+  const [gradeId, setGradeId] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
+  const [selectedSectionMappingId, setSelectedSectionMappingId] = useState([]);
+  const [selectedSectionData, setSelectedSectionData] = useState([]);
+  const [selectedGroupData, setSelectedGroupData] = useState({});
+  const [selectedGroupId, setSelectedGroupId] = useState('');
+  const [branchFromErp, setBranchFromErp] = useState([]);
+  const [branchIdFromErp, setBranchIdFromErp] = useState([]);
+  const [selectedBranchId,setSelectedBranchId] = useState([])
+  const [groupList,setGroupList] = useState([])
+  const [groupSectionMappingId,setGroupSectionMappingId] = useState([])
+  const [loading, setLoading] = useState(false);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -147,31 +161,112 @@ const CreateAssesment = ({
   // }, [moduleId]);
 
   useEffect(() => {
-    if (selectedQuestionPaper?.is_central && moduleId) {
+    if(selectedQuestionPaper?.is_central && moduleId){
       setCentralFilter(true)
       axiosInstance
-        .get(
-          `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
-        )
-        .then((result) => {
-          if (result?.data?.status_code === 200) {
-            const selectAllObject = {
-              session_year: {},
-              id: 'all',
-              branch: { id: 'all', branch_name: 'Select All' },
-            };
-            const data = [selectAllObject, ...result?.data?.data?.results];
-            setBranchDropdown(data);
-          } else {
-            setAlert('error', result?.data?.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error?.message);
-        });
-
+      .get(
+        `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
+      )
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          const selectAllObject = {
+            session_year: {},
+            id: 'all',
+            branch: { id: 'all', branch_name: 'Select All' },
+          };
+          const data = [selectAllObject,...result?.data?.data?.results];
+          setBranchDropdown(data);
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+      });
     }
-  }, [selectedQuestionPaper?.is_central, moduleId])
+  },[selectedQuestionPaper?.is_central, moduleId]);
+
+  const getSection = (gradeID) => {
+    let branchID = selectedQuestionPaper?.is_central ? selectedBranchId : branchIdFromErp
+    setLoading(true);
+    axiosInstance
+      .get(
+        `${endpoints.academics.sections}?session_year=${
+          selectedAcademicYear?.id
+        }&branch_id=${branchID}&grade_id=${gradeID}&module_id=${moduleId}`
+      )
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          const transformData = res?.data?.data.map((item) => ({
+            section_id: item.section_id,
+            section__section_name: item.section__section_name,
+            id: item.id,
+          }));
+          transformData.unshift({
+            section_id: 'all',
+            section__section_name: 'Select All',
+            id: 'section_mapping_id',
+          });
+          setSectionList(transformData);
+        } else {
+          setSectionList([]);
+        }
+        setLoading(false);
+      })
+      .finally((e) => setLoading(false));
+  };
+
+  useEffect(() => {
+    if (selectedQuestionPaper && !selectedQuestionPaper?.is_central && moduleId && branchIdFromErp) {
+      getSection(selectedQuestionPaper?.grade);
+    }
+  }, [branchIdFromErp]);
+
+  useEffect(()=>{
+    if(branch.length>0){
+      getSection(selectedQuestionPaper?.grade)
+    }
+  },[branch])
+
+  const handleSection = (e, value) => {
+    if (value.length) {
+      value =
+        value.filter(({ section_id }) => section_id === 'all').length === 1
+          ? [...sectionList].filter(({ section_id }) => section_id !== 'all')
+          : value;
+      setSelectedSectionData(value);
+      setSelectedSectionMappingId(value.map((i) => i.id));
+    } else {
+      setSelectedSectionData([]);
+      setSelectedSectionMappingId([]);
+    }
+  };
+
+  const getGroup = () => {
+    let acadId = selectedQuestionPaper?.is_central ? branchId : selectedQuestionPaper?.academic_session
+    axiosInstance.get(`${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${selectedQuestionPaper?.grade}&is_active=${true}&group_type=${1}`).then((result)=>{
+      if(result?.status === 200){
+        setGroupList(result?.data)
+      }
+    })
+  }
+
+  useEffect(()=>{
+    if(selectedQuestionPaper){
+      getGroup()
+    }
+  },[selectedQuestionPaper,branchId])
+
+  const handleGroup = (e, value) => {
+    setSelectedGroupData({});
+    setSelectedGroupId('');
+    if (value) {
+      const sections = value?.group_section_mapping.map((i)=>i?.section_mapping_id)
+      setGroupSectionMappingId(sections)
+      setSelectedGroupData(value);
+      setSelectedGroupId(value?.id);
+    }
+  };
 
   useEffect(() => {
     if (clearForm) {
@@ -181,7 +276,7 @@ const CreateAssesment = ({
   const handleCreateAssesmentTest = async () => {
     const qMap = new Map();
 
-    if (CentralFilter === true && flag !== true) {
+    if(CentralFilter === true && flag !== true){
       setAlert('warning', 'Please Select Branch');
       return;
     }
@@ -190,7 +285,7 @@ const CreateAssesment = ({
       return;
     }
 
-    if (testDuration < 0 || testDuration > 1440) {
+    if (testDuration < 0 || testDuration > 1441) {
       setAlert('warning', 'Please enter valid duration.');
       return;
     }
@@ -209,6 +304,14 @@ const CreateAssesment = ({
     }
     if (!formik.values.test_mode?.id) {
       setAlert('error', 'Select Test Mode');
+      return;
+    }
+    if (!sectionToggle && selectedSectionMappingId.length === 0) {
+      setAlert('error', 'Please Select Section');
+      return;
+    }
+    if (sectionToggle && groupSectionMappingId.length === 0) {
+      setAlert('error', 'Please Select Group');
       return;
     }
 
@@ -332,6 +435,16 @@ const CreateAssesment = ({
     if (!paperchecked) {
       reqObj = { ...reqObj, test_mark: testMarksArr };
     }
+    if(!sectionToggle && selectedSectionData?.length > 0){
+      reqObj = {...reqObj,section_mapping : selectedSectionMappingId}
+    }
+    if(sectionToggle && groupSectionMappingId.length>0){
+      reqObj = {...reqObj,
+      "has_sub_groups" : true,
+      'group_id' : selectedGroupId,
+      'section_mapping' : groupSectionMappingId
+      }
+    }
 
     try {
       const { results = {} } = (await initCreateAssesment(reqObj)) || {};
@@ -451,20 +564,52 @@ const CreateAssesment = ({
     setMarksAssignMode(e.target.checked);
   };
 
-  const handleBranch = (event, value) => {
+  const handleBranch = (event,value) => {
     setFlag(false)
     setBranch([])
-    if (value?.length > 0) {
+    if(value?.length > 0){
       value =
-        value.filter(({ id }) => id === 'all').length === 1
-          ? [...branchDropdown].filter(({ id }) => id !== 'all')
-          : value;
+      value.filter(({ id }) => id === 'all').length === 1
+        ? [...branchDropdown].filter(({ id }) => id !== 'all')
+        : value;
       const branchIds = value.map((element) => element?.id) || [];
+      const selectedbranch = value.map((element) => element?.branch?.id) || [];
       setBranchId(branchIds)
+      setSelectedBranchId(selectedbranch)
       setBranch(value)
       setFlag(true)
+      setSelectedSectionData([])
+      setSelectedSectionMappingId([])
     }
-  }
+  };
+  const getBranch = () => {
+    setLoading(true);
+    axiosInstance
+      .get(
+        `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
+      )
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          let data = result?.data?.data?.results;
+          let filterBranch = data.filter(
+            (item) => selectedQuestionPaper?.academic_session.indexOf(item?.id) !== -1
+          );
+          let ids = filterBranch.map((i) => i?.branch?.id);
+          setBranchFromErp(filterBranch);
+          setBranchIdFromErp(ids);
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+      })
+      .finally((e) => setLoading(false));
+  };
+  useEffect(() => {
+    if (selectedQuestionPaper && !selectedQuestionPaper?.is_central && moduleId) {
+      getBranch();
+    }
+  }, [selectedQuestionPaper,moduleId]);
   useEffect(() => {
     if (selectedQuestionPaper) {
       // initFetchQuestionPaperDetails(3);
@@ -473,8 +618,18 @@ const CreateAssesment = ({
     getAssesmentTypes();
     // initFetchQuestionPaperDetails(3);
   }, [selectedQuestionPaper]);
+
+  const handleSectionToggle = (event) => {
+    setSectionToggle(event.target.checked);
+    setSelectedGroupData({})
+    setGroupSectionMappingId([])
+    setSelectedGroupId('')
+    setSelectedSectionData([])
+    setSelectedSectionMappingId([])
+  };
   return (
     <Layout>
+      {loading && <Loader />}
       <div className='create-assesment-container'>
         <CommonBreadcrumbs
           componentName='Assessment'
@@ -551,6 +706,7 @@ const CreateAssesment = ({
                                 variant='outlined'
                                 label='Test Mode'
                                 placeholder='Test Mode'
+                                required
                               />
                             )}
                             size='small'
@@ -573,6 +729,7 @@ const CreateAssesment = ({
                                 variant='outlined'
                                 label='Assessment Type'
                                 placeholder='Assessment Type'
+                                required
                               />
                             )}
                             size='small'
@@ -589,7 +746,9 @@ const CreateAssesment = ({
                               onChange={handleBranch}
                               value={branch || []}
                               options={branchDropdown || []}
-                              getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                              getOptionLabel={(option) =>
+                                option?.branch?.branch_name || ''
+                              }
                               filterSelectedOptions
                               renderInput={(params) => (
                                 <TextField
@@ -597,17 +756,118 @@ const CreateAssesment = ({
                                   variant='outlined'
                                   label='Branch'
                                   placeholder='Branch'
+                                  required
                                 />
                               )}
                               size='small'
                             />
                           </Grid>
-
-                        ) : ''}
+                        ) : (
+                          ''
+                        )}
+                        {(selectedQuestionPaper && !selectedQuestionPaper.is_central) && (
+                          <Grid item xs={12} md={4}>
+                            <Autocomplete
+                              id='branch_name'
+                              name='branch_name'
+                              multiple
+                              limitTags={2}
+                              className='dropdownIcon'
+                              // onChange={handleBranch}
+                              disabled
+                              value={branchFromErp || []}
+                              options={[]}
+                              getOptionLabel={(option) =>
+                                option?.branch?.branch_name || ''
+                              }
+                              // filterSelectedOptions
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  variant='outlined'
+                                  label='Branch'
+                                  placeholder='Branch'
+                                  required
+                                />
+                              )}
+                              size='small'
+                            />
+                          </Grid>
+                        )}
                       </Grid>
-                      <FormHelperText style={{ color: 'red' }}>
-                        {formik.errors.branch ? formik.errors.branch : ''}
-                      </FormHelperText>
+                      {selectedQuestionPaper &&(
+                        <Grid container alignItems='center' style={{ marginTop: 15 }}>
+                        <Grid
+                          container
+                          alignItems='center'
+                          justifyContent='center'
+                          xs={12}
+                          md={4}
+                        >
+                          <Typography>Section</Typography>
+                          <Switch
+                            checked={sectionToggle}
+                            onChange={handleSectionToggle}
+                            color='default'
+                            inputProps={{ 'aria-label': 'checkbox with default color' }}
+                          />
+                          <Typography>Group</Typography>
+                        </Grid>
+                        {sectionToggle ? (
+                          <Grid item xs={12} md={4}>
+                            <Autocomplete
+                              id='Group'
+                              name='group'
+                              // multiple
+                              // limitTags={2}
+                              className='dropdownIcon'
+                              onChange={handleGroup}
+                              value={selectedGroupData || []}
+                              options={groupList || []}
+                              getOptionLabel={(option) => option?.group_name || ''}
+                              filterSelectedOptions
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  variant='outlined'
+                                  label='Group'
+                                  placeholder='Group'
+                                  required
+                                />
+                              )}
+                              size='small'
+                            />
+                          </Grid>
+                        ) : (
+                          <Grid item xs={12} md={4}>
+                            <Autocomplete
+                              id='section_name'
+                              name='section_name'
+                              multiple
+                              limitTags={2}
+                              className='dropdownIcon'
+                              onChange={handleSection}
+                              value={selectedSectionData || []}
+                              options={sectionList || []}
+                              getOptionLabel={(option) =>
+                                option?.section__section_name || ''
+                              }
+                              filterSelectedOptions
+                              renderInput={(params) => (
+                                <TextField
+                                  {...params}
+                                  variant='outlined'
+                                  label='Section'
+                                  placeholder='Section'
+                                  required
+                                />
+                              )}
+                              size='small'
+                            />
+                          </Grid>
+                        )}
+                      </Grid>
+                      )}
                     </FormControl>
                   </Grid>
                 </Grid>

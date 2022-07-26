@@ -32,12 +32,12 @@ const useStyles = makeStyles((theme) => ({
   },
   option: {
     backgroundColor: '#f3f3f3',
-        padding: "1rem",
-        margin: '1rem 0',
-        borderRadius: '10px',
-        display: 'flex',
-        justifyContent:'space-between',
-        alignItems: 'center',
+    padding: "1rem",
+    margin: '1rem 0',
+    borderRadius: '10px',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
 }));
 
@@ -96,7 +96,7 @@ const QuestionView = ({ question, showHeader, index }) => {
     return `${
       // viewMoreData?.parent?.is_central ? endpoints.s3 : endpoints.assessmentErp.s3
       question?.is_central === true ? endpoints.s3 : endpoints.assessmentErp.s3
-    }/${fileSrc}`;
+      }/${fileSrc}`;
   };
   return (
     <div className='question-view-container' key={Math.random()}>
@@ -118,39 +118,39 @@ const QuestionView = ({ question, showHeader, index }) => {
                 {ReactHtmlParser(question.question_answer[0].question)}
               </div>
               <div className={classes.answersContainer}>
-                <div className={classes.answersHeader}>Answers</div>
+                <div className={classes.answersHeader}>Options:</div>
                 <Divider className='secondary-divider' />
                 <div className='options-container'>
                   {question?.question_answer[0]?.options?.map((optionObj, subIndex) => (
                     <div className={classes.option} key={`option-item-${index}`}>
                       {ReactHtmlParser(optionObj[`option${subIndex + 1}`]?.optionValue)}
                       {`${optionObj[`option${subIndex + 1}`]?.images}`?.length > 0 && (
-                      <div>
-                        <a
-                          onClick={() => {
-                            openPreview({
-                              currentAttachmentIndex: 0,
-                              attachmentsArray: (() => {
-                                const images =
-                                  `${optionObj[`option${subIndex + 1}`]?.images}`.split(',') || {};
+                        <div>
+                          <a
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: (() => {
+                                  const images =
+                                    `${optionObj[`option${subIndex + 1}`]?.images}`.split(',') || {};
 
-                                const attachmentsArray = [];
-                                images.forEach((image) => {
-                                  const attachmentObj = {
-                                    src: getS3DomainURL(image),
-                                    name: `${image}`.split('.').slice(0, -1).join('.'),
-                                    extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-                                  };
-                                  attachmentsArray.push(attachmentObj);
-                                });
-                                return attachmentsArray;
-                              })(),
-                            });
-                          }}
-                        >
-                          <SvgIcon component={() => <VisibilityIcon />} />
-                        </a>
-                      </div>
+                                  const attachmentsArray = [];
+                                  images.forEach((image) => {
+                                    const attachmentObj = {
+                                      src: getS3DomainURL(image),
+                                      name: `${image}`.split('.').slice(0, -1).join('.'),
+                                      extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                    };
+                                    attachmentsArray.push(attachmentObj);
+                                  });
+                                  return attachmentsArray;
+                                })(),
+                              });
+                            }}
+                          >
+                            <SvgIcon component={() => <VisibilityIcon />} />
+                          </a>
+                        </div>
                       )}
                     </div>
                   ))}
@@ -165,40 +165,40 @@ const QuestionView = ({ question, showHeader, index }) => {
                   {ReactHtmlParser(question.question_answer[0].question)}
                 </div>
                 <div className='answers-container'>
-                  <div className={classes.answersHeader}>Answers</div>
+                  <div className={classes.answersHeader}>Options:</div>
                   <Divider className='secondary-divider' />
                   <div className='options-container'>
                     {question.question_answer[0]?.options.map((optionObj, subIndex) => (
                       <div className='option' key={`option-item-${index}`}>
                         {ReactHtmlParser(optionObj[`option${subIndex + 1}`].optionValue)}
                         {`${optionObj[`option${subIndex + 1}`]?.images}`?.length > 0 && (
-                      <div>
-                        <a
-                          onClick={() => {
-                            openPreview({
-                              currentAttachmentIndex: 0,
-                              attachmentsArray: (() => {
-                                const images =
-                                  `${optionObj[`option${subIndex + 1}`]?.images}`.split(',') || {};
+                          <div>
+                            <a
+                              onClick={() => {
+                                openPreview({
+                                  currentAttachmentIndex: 0,
+                                  attachmentsArray: (() => {
+                                    const images =
+                                      `${optionObj[`option${subIndex + 1}`]?.images}`.split(',') || {};
 
-                                const attachmentsArray = [];
-                                images.forEach((image) => {
-                                  const attachmentObj = {
-                                    src: getS3DomainURL(image),
-                                    name: `${image}`.split('.').slice(0, -1).join('.'),
-                                    extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-                                  };
-                                  attachmentsArray.push(attachmentObj);
+                                    const attachmentsArray = [];
+                                    images.forEach((image) => {
+                                      const attachmentObj = {
+                                        src: getS3DomainURL(image),
+                                        name: `${image}`.split('.').slice(0, -1).join('.'),
+                                        extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                      };
+                                      attachmentsArray.push(attachmentObj);
+                                    });
+                                    return attachmentsArray;
+                                  })(),
                                 });
-                                return attachmentsArray;
-                              })(),
-                            });
-                          }}
-                        >
-                          <SvgIcon component={() => <VisibilityIcon />} />
-                        </a>
-                      </div>
-                      )}
+                              }}
+                            >
+                              <SvgIcon component={() => <VisibilityIcon />} />
+                            </a>
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>
@@ -361,9 +361,8 @@ const QuestionView = ({ question, showHeader, index }) => {
                 <ReactPlayer
                   playing={false}
                   controls={true}
-                  url={`${
-                    question?.is_central ? endpoints.s3 : endpoints.assessmentErp.s3
-                  }/${question?.question_answer[0]?.video}`}
+                  url={`${question?.is_central ? endpoints.s3 : endpoints.assessmentErp.s3
+                    }/${question?.question_answer[0]?.video}`}
                   style={{ maxWidth: '100%' }}
                 />
               </div>
