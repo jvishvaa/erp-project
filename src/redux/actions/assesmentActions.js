@@ -42,7 +42,12 @@ export const fetchAssesmentTests = async (
   statusId,
   date,
   page,
-  pageSize
+  pageSize,
+  hasGroup,
+  sectionMappingId,
+  groupIds,
+  sectionFlag,
+  groupFlag
 ) => {
   try {
     let url = '';
@@ -62,19 +67,40 @@ export const fetchAssesmentTests = async (
           endpoints.assessmentErp.listAssessment
         }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&test_type=${testTypeId}&is_completed=${
           statusId === 1 ? 'False' : statusId === 2 ? 'True' : null
-        }&start_date=${startDate}&end_date=${endDate}&page=${page}&page_size=${pageSize}`;
+        }&start_date=${startDate}&end_date=${endDate}&page=${page}&page_size=${pageSize}
+        &has_sub_group=${hasGroup ? true : false}`;
+        if(!hasGroup && sectionFlag){
+          url += `&section_mappings=${sectionMappingId}`
+        }
+        if(hasGroup && groupFlag){
+          url += `&groups=${groupIds}`
+        }
       } else if (type === 'physical-test') {
         url = `${
           endpoints.assessmentErp.listAssessment
         }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&test_type=${testTypeId}&is_completed=${
           statusId === 1 ? 'False' : statusId === 2 ? 'True' : null
-        }&start_date=${startDate}&end_date=${endDate}&test_mode=2&page=${page}&page_size=${pageSize}`;
+        }&start_date=${startDate}&end_date=${endDate}&test_mode=2&page=${page}&page_size=${pageSize}
+        &has_sub_group=${hasGroup ? true : false}`;
+        if(!hasGroup && sectionFlag){
+          url += `&section_mappings=${sectionMappingId}`
+        }
+        if(hasGroup && groupFlag){
+          url += `&groups=${groupIds}`
+        }
       } else if (type === 'online-pattern') {
         url = `${
           endpoints.assessmentErp.listAssessment
         }?academic_session=${acadSessionId}&grade=${gradeId}&subjects=${subjectIds}&test_type=${testTypeId}&is_completed=${
           statusId === 1 ? 'False' : statusId === 2 ? 'True' : null
-        }&academic_session=${acadSessionId}&start_date=${startDate}&end_date=${endDate}&test_mode=1&page=${page}&page_size=${pageSize}`;
+        }&academic_session=${acadSessionId}&start_date=${startDate}&end_date=${endDate}&test_mode=1&page=${page}&page_size=${pageSize}
+        &has_sub_group=${hasGroup ? true : false}`;
+        if(!hasGroup && sectionFlag){
+          url += `&section_mappings=${sectionMappingId}`
+        }
+        if(hasGroup && groupFlag){
+          url += `&groups=${groupIds}`
+        }
       }
     }
     const response = await axiosInstance.get(url);
