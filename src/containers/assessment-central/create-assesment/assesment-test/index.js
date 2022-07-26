@@ -89,11 +89,10 @@ const AssesmentTest = ({
     let fieldName = event.target.name;
     if (fieldName === 'duration') {
       value = Math.round(+event.target.value);
-      if (value <= 240) {
+      if (value <= 1440) {
         onTestDurationChange(+value);
       } else {
-        // setAlert('error', "Duration can't be more than 1440 minutes / 24 hours / 1 day!");
-        setAlert('error', "Duration can't be more than 4 hours");
+        setAlert('error', "Duration can't be more than 24 hours");
       }
     }
     if (fieldName === 'testid') {
@@ -196,7 +195,7 @@ const AssesmentTest = ({
                   <Grid xs={12} sm={6}>
                     <div className='detail'>
                       <div className={classes.label} style={{ marginRight: isMobile && '1rem' }}>
-                        Test Date
+                        Test Date And Time
                       </div>
                       <div className='input-container'>
                         <TextField
@@ -217,12 +216,12 @@ const AssesmentTest = ({
                   </Grid>
                   <Grid xs={12} sm={6}>
                     <div className='detail'>
-                      <div className={classes.label}>Test Duration</div>
+                      <div className={classes.label}>Test Duration(Min)</div>
                       <div className='input-container duration'>
                         <TextField
                           variant='outlined'
                           inputProps={{
-                            maxLength: 3,
+                            maxLength: 4,
                           }}
                           size='small'
                           className='bg-white'
