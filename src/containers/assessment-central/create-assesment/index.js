@@ -187,25 +187,22 @@ const CreateAssesment = ({
   },[selectedQuestionPaper?.is_central, moduleId]);
 
   const getSection = (gradeID) => {
-    let branchID = selectedQuestionPaper?.is_central ? selectedBranchId : branchIdFromErp
+    let branchID = selectedQuestionPaper?.is_central ? branchId : branchIdFromErp
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.academics.sections}?session_year=${
-          selectedAcademicYear?.id
-        }&branch_id=${branchID}&grade_id=${gradeID}&module_id=${moduleId}`
+        `${endpoints.academics.sectionsV2}?acad_session=${
+          branchID}&grade=${gradeID}&is_central=${selectedQuestionPaper?.is_central}`
       )
       .then((res) => {
-        if (res?.data?.status_code === 200) {
-          const transformData = res?.data?.data.map((item) => ({
-            section_id: item.section_id,
-            section__section_name: item.section__section_name,
+        if (res?.data?.status_code == 200) {
+          const transformData = res?.data?.result.map((item) => ({
+            section_name: item.section_name,
             id: item.id,
           }));
           transformData.unshift({
-            section_id: 'all',
-            section__section_name: 'Select All',
-            id: 'section_mapping_id',
+            section_name: 'Select All',
+            id: 'all',
           });
           setSectionList(transformData);
         } else {
@@ -231,8 +228,8 @@ const CreateAssesment = ({
   const handleSection = (e, value) => {
     if (value.length) {
       value =
-        value.filter(({ section_id }) => section_id === 'all').length === 1
-          ? [...sectionList].filter(({ section_id }) => section_id !== 'all')
+        value.filter(({ id }) => id === 'all').length === 1
+          ? [...sectionList].filter(({ id }) => id !== 'all')
           : value;
       setSelectedSectionData(value);
       setSelectedSectionMappingId(value.map((i) => i.id));
@@ -600,7 +597,7 @@ const CreateAssesment = ({
           let filterBranch = data.filter(
             (item) => selectedQuestionPaper?.academic_session.indexOf(item?.id) !== -1
           );
-          let ids = filterBranch.map((i) => i?.branch?.id);
+          let ids = filterBranch.map((i) => i?.id);
           setBranchFromErp(filterBranch);
           setBranchIdFromErp(ids);
           setLoading(false);
@@ -856,7 +853,7 @@ const CreateAssesment = ({
                               value={selectedSectionData || []}
                               options={sectionList || []}
                               getOptionLabel={(option) =>
-                                option?.section__section_name || ''
+                                option?.section_name || ''
                               }
                               filterSelectedOptions
                               renderInput={(params) => (
