@@ -87,13 +87,16 @@ const AttendanceReport = (props) => {
   };
 
   const finalAttendanceData = mergeIconReportData(iconsData, attendanceReportData);
+
   const showAllData = () => {
     const branchListAttendance = selectedBranchList;
-    const acadIds = branchListAttendance?.map((o, i) => (o.id = o.acadId));
+    if (selectedBranchList?.length !== branchList?.length) {
+      const acadIds = branchListAttendance?.map((o, i) => (o.id = o.acadId));
+    }
     history.push({
       pathname: '/staff-attendance-report/branch-wise',
       state: {
-        acadId: selectedBranchList?.length > 0 ? branchListAttendance : branchList,
+        acadId: selectedBranchList?.length > 0 ? branchListAttendance : [selectedBranch],
       },
     });
   };
@@ -101,22 +104,23 @@ const AttendanceReport = (props) => {
   const getAttendanceData = () => {
     if (selectedAcademicYear) {
       if (selectedBranchList.length > 0) {
-        const selectedBranch = selectedBranchList?.map((item) => item?.acadId).join(',');
+        const selectedBranchs = selectedBranchList?.map((item) => item?.acadId).join(',');
         fetchAttendanceReportData({
           session_year_id: selectedAcademicYear?.id,
           date_range_type: attendanceFilter,
-          acad_session_id: selectedBranch,
+          acad_session_id: selectedBranchs,
         });
       } else {
         fetchAttendanceReportData({
           session_year_id: selectedAcademicYear?.id,
           date_range_type: attendanceFilter,
+          acad_session_id: selectedBranch?.branch?.id,
         });
       }
     }
   };
   useEffect(() => {
-    if (attendanceReportData?.length > 0) getAttendanceData();
+    getAttendanceData();
   }, [attendanceFilter]);
 
   return (
@@ -135,23 +139,21 @@ const AttendanceReport = (props) => {
             </div>
           </div>
 
-          {attendanceReportData?.length > 0 ? (
-            <div className='col-4 col-md-6 text-right'>
-              <Select
-                value={attendanceFilter}
-                className='th-primary th-bg-grey th-br-4 th-select th-pointer'
-                bordered={false}
-                placement='bottomRight'
-                suffixIcon={<DownOutlined className='th-primary' />}
-                dropdownMatchSelectWidth={false}
-                onChange={handleChange}
-              >
-                <Option value={'today'}>Today</Option>
-                <Option value={'week'}>Last Week</Option>
-                <Option value={'month'}>Last Month</Option>
-              </Select>
-            </div>
-          ) : null}
+          <div className='col-4 col-md-6 text-right'>
+            <Select
+              value={attendanceFilter}
+              className='th-primary th-bg-grey th-br-4 th-select th-pointer'
+              bordered={false}
+              placement='bottomRight'
+              suffixIcon={<DownOutlined className='th-primary' />}
+              dropdownMatchSelectWidth={false}
+              onChange={handleChange}
+            >
+              <Option value={'today'}>Today</Option>
+              <Option value={'week'}>Last Week</Option>
+              <Option value={'month'}>Last Month</Option>
+            </Select>
+          </div>
         </div>
         <div className='row pt-2'>
           {loading ? (

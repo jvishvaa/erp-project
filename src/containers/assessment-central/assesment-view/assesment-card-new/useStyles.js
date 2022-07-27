@@ -35,11 +35,13 @@ const useStyles = makeStyles((theme) => ({
     background: "#fff"
   },
   checkCentral: {
-    color: theme.palette.primary.primarylightest,
+    // color: theme.palette.primary.primarylightest,
+    color: 'lightestprimary',
     fontSize: "0.99rem"
   },
   checkCentralNot: {
-    color: theme.palette.primary.main,
+    // color: theme.palette.primary.main,
+    color: 'primarytemp',
     fontSize: "0.99rem"
   }
 }));

@@ -70,8 +70,7 @@ const CalendarCard = () => {
       fetchHolidaysData({
         start_date: monthStartDate,
         end_date: monthEndDate,
-        branch: selectedBranch?.branch?.id,
-        session_year: selectedAcademicYear?.id,
+        session_year: selectedBranch?.id,
       });
     }
   }, [monthStartDate, monthEndDate, selectedBranch]);

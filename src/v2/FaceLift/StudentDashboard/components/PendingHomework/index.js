@@ -44,8 +44,12 @@ const PendingHomework = () => {
       });
   };
 
+  useEffect(() => {
+    getHomeWorkReportData();
+  }, []);
+
   return (
-    <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ height: 240 }}>
+    <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ minHeight: 240 }}>
       <div className='row justify-content-between'>
         <div className='col-12 th-16 mt-2 th-fw-400 th-black-1'>
           Pending Homeworks
@@ -53,7 +57,7 @@ const PendingHomework = () => {
             {homeworkReportData?.length > 0 ? ` (${homeworkReportData?.length})` : ''}
           </span>
           <span className='th-12 pl-2 pl-md-0 th-pointer th-primary'>
-            <ReloadOutlined onClick={getHomeWorkReportData} className='pl-md-3' />
+            {/* <ReloadOutlined onClick={getHomeWorkReportData} className='pl-md-3' /> */}
           </span>
         </div>
       </div>

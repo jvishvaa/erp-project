@@ -12,7 +12,7 @@ const Shortcut = (props) => {
   );
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
   const branchListAttendance = selectedBranchList;
-  if (selectedBranchList.length !== branchList.length) {
+  if (selectedBranchList?.length !== branchList?.length) {
     const acadIds = branchListAttendance?.map((o, i) => (o.id = o.acadId));
   }
   const selectedBranchs = selectedBranchList?.map((item) => item?.selectedBranch);
@@ -22,14 +22,14 @@ const Shortcut = (props) => {
       title: 'View All Attendance',
       url: '/staff-attendance-report/branch-wise',
       state: {
-        acadId: selectedBranchList?.length > 0 ? branchListAttendance : branchList,
+        acadId: selectedBranchList?.length > 0 ? branchListAttendance : [selectedBranch],
       },
     },
     {
       title: 'Fees Overview',
       url: '/fees-table-status',
       state: {
-        branch: feesBranch.length > 0 ? feesBranch : [selectedBranch],
+        branch: feesBranch?.length > 0 ? feesBranch : [selectedBranch],
         filter: true,
       },
     },
@@ -38,7 +38,7 @@ const Shortcut = (props) => {
       title: 'Curriculum Completion',
       url: '/curriculum-completion-branchWise',
       state: {
-        branchData: selectedBranchList.length > 0 ? selectedBranchs : [selectedBranch],
+        branchData: selectedBranchList?.length > 0 ? selectedBranchs : [selectedBranch],
         module_id: moduleId,
         iscurriculam: true,
       },
@@ -50,9 +50,11 @@ const Shortcut = (props) => {
     {
       title: 'Attendance Overview',
       url: '/curriculum-completion-branchWise',
-      branchData: selectedBranchList.length > 0 ? selectedBranchs : [selectedBranch],
-      module_id: moduleId,
-      iscurriculam: false,
+      state: {
+        branchData: selectedBranchList?.length > 0 ? selectedBranchs : [selectedBranch],
+        module_id: moduleId,
+        iscurriculam: false,
+      },
     },
   ];
 

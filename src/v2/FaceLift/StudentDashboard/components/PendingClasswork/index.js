@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'v2/config/axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import endpoints from 'v2/config/endpoints';
@@ -45,8 +45,12 @@ const PendingClasswork = () => {
       });
   };
 
+  useEffect(() => {
+    getClassWorkReportData();
+  }, []);
+
   return (
-    <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ height: 240 }}>
+    <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ minHeight: 240 }}>
       <div className='row justify-content-between'>
         <div className='col-12 th-16 mt-2 th-fw-400 th-black-1'>
           Pending Classworks{' '}
@@ -54,7 +58,7 @@ const PendingClasswork = () => {
             {classWorkReportData?.length > 0 ? ` (${classWorkReportData?.length})` : ''}
           </span>
           <span className='th-12 pl-2 pl-md-0 th-pointer th-primary'>
-            <ReloadOutlined onClick={getClassWorkReportData} className='pl-md-3' />
+            {/* <ReloadOutlined onClick={getClassWorkReportData} className='pl-md-3' /> */}
           </span>
         </div>
       </div>
