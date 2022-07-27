@@ -107,13 +107,13 @@ const AttendanceReport = (props) => {
         const selectedBranchs = selectedBranchList?.map((item) => item?.acadId).join(',');
         fetchAttendanceReportData({
           session_year_id: selectedAcademicYear?.id,
-          date_range_type: attendanceFilter,
+          date_range_type: 'today',
           acad_session_id: selectedBranchs,
         });
       } else {
         fetchAttendanceReportData({
           session_year_id: selectedAcademicYear?.id,
-          date_range_type: attendanceFilter,
+          date_range_type: 'today',
           acad_session_id: selectedBranch?.branch?.id,
         });
       }
@@ -121,7 +121,7 @@ const AttendanceReport = (props) => {
   };
   useEffect(() => {
     getAttendanceData();
-  }, [attendanceFilter]);
+  }, []);
 
   return (
     <div className='col-md-12'>
@@ -137,22 +137,6 @@ const AttendanceReport = (props) => {
               ) : null}
               <ReloadOutlined onClick={getAttendanceData} className='pl-md-3' />
             </div>
-          </div>
-
-          <div className='col-4 col-md-6 text-right'>
-            <Select
-              value={attendanceFilter}
-              className='th-primary th-bg-grey th-br-4 th-select th-pointer'
-              bordered={false}
-              placement='bottomRight'
-              suffixIcon={<DownOutlined className='th-primary' />}
-              dropdownMatchSelectWidth={false}
-              onChange={handleChange}
-            >
-              <Option value={'today'}>Today</Option>
-              <Option value={'week'}>Last Week</Option>
-              <Option value={'month'}>Last Month</Option>
-            </Select>
           </div>
         </div>
         <div className='row pt-2'>

@@ -45,7 +45,7 @@ const ListCard = (props) => {
         >
           {extractContent(content)}
         </div>
-        <div className='col-md-2 col-3 px-0 px-md-4 th-grey text-right'>
+        <div className='col-md-2 col-3 px-2 px-md-4 th-grey text-right'>
           {showTab == 1 ? (
             getTimeInterval(date)
           ) : showTab == 2 ? (

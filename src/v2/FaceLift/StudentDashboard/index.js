@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Layout from 'containers/Layout';
 import Announcement from './components/Announcement';
 import CalendarCard from '../myComponents/CalendarCard';
@@ -8,35 +8,12 @@ import Blogs from './components/Blogs';
 import Discussions from './components/Discussions';
 import Assessment from './components/Assessment';
 import TodaysClass from './components/TodaysClass';
-import axios from 'v2/config/axios';
-import { X_DTS_HOST } from 'v2/reportApiCustomHost';
-import endpoints from 'v2/config/endpoints';
 import { getRole } from 'v2/generalAnnouncementFunctions';
 
 const TeacherdashboardNew = () => {
   const [todaysAttendance, setTodaysAttendance] = useState([]);
   const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
   const time = new Date().getHours();
-  const fetchTodaysAttendance = (params = {}) => {
-    axios
-      .get(`${endpoints.teacherDashboard.todaysAttendance}`, {
-        params: { ...params },
-        headers: {
-          'X-DTS-Host': X_DTS_HOST,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          setTodaysAttendance(response?.data?.result?.attendence_status);
-        }
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-  };
-  useEffect(() => {
-    fetchTodaysAttendance();
-  }, []);
   return (
     <Layout>
       <div className=''>
@@ -45,26 +22,6 @@ const TeacherdashboardNew = () => {
             Good {time < 12 ? 'Morning' : time < 16 ? 'Afternoon' : 'Evening'},
             <span className='text-capitalize pr-2'>{first_name}</span>
             <span className='th-14'>({getRole(user_level)})</span>
-          </div>
-          <div className='col-md-6 text-right'>
-            <div className='pr-3'>
-              <span
-                className=' th-green th-13 th-fw-500 px-4 py-2 th-bg-white text-capitalize'
-                style={{ borderRadius: '6px 0px 0px 6px' }}
-              >
-                {todaysAttendance ? (
-                  <span
-                    className={`${
-                      todaysAttendance === 'present' ? 'th-green' : 'th-red'
-                    }`}
-                  >
-                    {todaysAttendance}
-                  </span>
-                ) : (
-                  <span className='th-red'>Unmarked</span>
-                )}
-              </span>
-            </div>
           </div>
         </div>
 
