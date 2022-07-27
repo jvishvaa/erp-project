@@ -25,6 +25,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData }) => {
     total_mark: totalMark,
     created_at: createdDate,
     updated_at: updatedDate,
+    sectionMap : section_mapping
   } = test;
 
   const handleData = () => {
