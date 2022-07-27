@@ -317,7 +317,7 @@ const OfflineStudentAssessment = () => {
                         setSectionList(result?.data?.data);
                         console.log(result?.data?.data);
                         console.log(history?.location?.state);
-                        if(history?.location?.state?.test?.section_mapping?.length > 0){
+                        if(history?.location?.state?.test?.section_mapping[0] != null){
                             const filterSection = result?.data?.data.filter((ele) => history?.location?.state?.test?.section_mapping.includes(ele?.id))
                             console.log(filterSection);
                             // setSelectedSection(filterSection)
