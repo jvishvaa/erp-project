@@ -21,6 +21,7 @@ import AnnouncementList from 'v2/FaceLift/Announcement/announcementList';
 import CreateAnnouncement from 'v2/FaceLift/Announcement/CreateAnnouncement/CreateAnnouncement';
 import StudentDashboardNew from 'v2/FaceLift/StudentDashboard';
 import V1Router from './v1RouterConst';
+import AcadCalendar from 'containers/academicCalendar/fullcalendar/acadCalendar';
 
 const V2Router = () => {
   useEffect(() => {
@@ -69,7 +70,7 @@ const V2Router = () => {
                               case 10:
                                 return <SuperAdmindashboardNew match={match} />;
                               default:
-                                return <SuperAdmindashboardNew match={match} />;
+                                return <AcadCalendar match={match} />;
                             }
                           }}
                         </Route>
