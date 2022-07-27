@@ -32,6 +32,7 @@ export default {
     branches: '/erp_user/branch/',
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
+    sectionsV2: '/erp_user/v2/sectionmapping/',
     courses: '/aol/courses/',
     attendance: '/academic/student_attendance_between_date_range/',
     showAttendance: '/academic/show_attendance/',
