@@ -83,8 +83,6 @@ const AttendanceReport = () => {
 
   const getAttendanceData = () => {
     if (selectedAcademicYear) {
-      setCounter(true);
-
       fetchClasswiseAttendanceData({
         session_year: selectedAcademicYear?.id,
         date_range: attendanceFilter,
@@ -93,7 +91,7 @@ const AttendanceReport = () => {
   };
 
   useEffect(() => {
-    if (counter) getAttendanceData();
+    getAttendanceData();
   }, [attendanceFilter]);
 
   return (
@@ -103,33 +101,32 @@ const AttendanceReport = () => {
           <div className='col-7 pr-0 pr-md-0 th-16 mt-2 th-fw-500 th-black-1'>
             Students Attendance Report
             <span className='th-12 pl-2 pl-md-0 th-pointer th-primary'>
-              <ReloadOutlined onClick={getAttendanceData} className='pl-md-3' />
+              {/* <ReloadOutlined onClick={getAttendanceData} className='pl-md-3' /> */}
             </span>
           </div>
-          {counter && (
-            <div className='col-5 px-0 text-right'>
-              <Select
-                value={attendanceFilter}
-                className='th-primary th-bg-grey th-br-4 th-select'
-                bordered={false}
-                placement='bottomRight'
-                suffixIcon={<DownOutlined className='th-primary' />}
-                dropdownMatchSelectWidth={false}
-                onChange={handleChange}
-              >
-                <Option value={'today'}>Today</Option>
-                <Option value={'week'}>Last Week</Option>
-                <Option value={'month'}>Last Month</Option>
-              </Select>
-            </div>
-          )}
+
+          <div className='col-5 px-0 text-right'>
+            <Select
+              value={attendanceFilter}
+              className='th-primary th-bg-grey th-br-4 th-select'
+              bordered={false}
+              placement='bottomRight'
+              suffixIcon={<DownOutlined className='th-primary' />}
+              dropdownMatchSelectWidth={false}
+              onChange={handleChange}
+            >
+              <Option value={'today'}>Today</Option>
+              <Option value={'week'}>Last Week</Option>
+              <Option value={'month'}>Last Month</Option>
+            </Select>
+          </div>
         </div>
         <div className='col-md-12 mt-2' style={{ height: '140px' }}>
           {loading ? (
             <div className='th-width-100 text-center'>
               <Spin tip='Loading...'></Spin>
             </div>
-          ) : classwiseAttendanceData.length > 0 ? (
+          ) : classwiseAttendanceData?.length > 0 ? (
             <Slider {...settings} className='th-slick'>
               {classwiseAttendanceData?.map((item, i) => (
                 <div

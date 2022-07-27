@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'v2/config/axios';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
@@ -42,6 +42,10 @@ const CurriculumCompletion = () => {
       fetchCurriculumData({ session_year: selectedAcademicYear?.id });
   };
 
+  useEffect(() => {
+    getCurriculumData();
+  }, []);
+
   return (
     <div
       className='th-bg-white th-br-5 py-3 px-2 mt-3 shadow-sm'
@@ -51,7 +55,7 @@ const CurriculumCompletion = () => {
         <div className='col-12 th-16 mt-2 th-fw-500 th-black-1'>
           Curriculum Completion{' '}
           <span className='th-12 pl-2 pl-md-0 th-pointer th-primary'>
-            <ReloadOutlined onClick={getCurriculumData} className='pl-md-3' />
+            {/* <ReloadOutlined onClick={getCurriculumData} className='pl-md-3' /> */}
           </span>
         </div>
       </div>

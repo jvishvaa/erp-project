@@ -104,7 +104,13 @@ export const getSortedAnnouncements = (announcementData, showDate) => {
               '[]'
             )
           ? 'This Week'
-          : 'This Month';
+          : moment(data.created_time).isBetween(
+              moment().subtract(30, 'd'),
+              moment().subtract(7, 'd'),
+              '[]'
+            )
+          ? 'This Month'
+          : 'Earlier';
       if (!initialValue[key]) {
         initialValue[key] = [];
       }

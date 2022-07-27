@@ -9,11 +9,13 @@ import FeesOverview from './components/Fees';
 import AcademicPerformance from './components/Academic Performance';
 import CalendarCard from '../myComponents/CalendarCard';
 import Shortcut from './components/Shortcut';
+import { getRole } from 'v2/generalAnnouncementFunctions';
 
 const { Option } = Select;
 
 const SuperAdmindashboardNew = () => {
   const time = new Date().getHours();
+  const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -54,8 +56,9 @@ const SuperAdmindashboardNew = () => {
       <div className=''>
         <div className='row'>
           <div className='col-md-8 th-16 py-3'>
-            Good {time < 12 ? 'Morning' : time < 16 ? 'AfterNoon' : 'Evening'}, Super
-            Admin
+            Good {time < 12 ? 'Morning' : time < 16 ? 'Afternoon' : 'Evening'},{' '}
+            <span className='text-capitalize pr-2'>{first_name}</span>
+            <span className='th-14'>({getRole(user_level)})</span>
           </div>
           <div className='col-md-4 th-16 py-3'>
             <Select
@@ -84,15 +87,15 @@ const SuperAdmindashboardNew = () => {
 
         <div className='row pt-3'>
           <div className='col-md-4 th-custom-col-padding'>
-            <FeesOverview handleFeesBranch={handleFeesBranch} />
+            <Shortcut selectedBranchList={selectedBranchList} feesBranch={feesBranch} />
+            <Announcement />
           </div>
           <div className='col-md-4 th-custom-col-padding'>
             <AcademicPerformance selectedBranchList={selectedBranchList} />
             <CalendarCard />
           </div>
           <div className='col-md-4 th-custom-col-padding'>
-            <Shortcut selectedBranchList={selectedBranchList} feesBranch={feesBranch} />
-            <Announcement />
+            <FeesOverview handleFeesBranch={handleFeesBranch} />
           </div>
         </div>
       </div>
