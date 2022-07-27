@@ -288,6 +288,7 @@ const AssessmentCard = ({
                         openModal={openModal}
                         setOpenModal={setOpenModal}
                         operation={confirmMessage}
+                        opendelete={true}
                       />
                     )
                   }
