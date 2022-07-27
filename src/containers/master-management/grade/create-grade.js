@@ -51,34 +51,38 @@ const CreateGrade = ({ setLoading, handleGoBack }) => {
       <div style={{ width: '95%', margin: '20px auto' }}>
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
-            <TextField
-              id='gradename'
-              label='Grade Name'
-              style={{ width: '100%' }}
-              variant='outlined'
-              size='small'
-              value={gradeName}
-              inputProps={{ pattern: '^[a-zA-Z0-9 +_-]+', maxLength: 20 }}
-              name='gradename'
-              onChange={(e) => setGradeName(capitalize(e.target.value))}
-              required
-            />
+            <abbr title={gradeName} style={{ textDecoration: 'none' }}>
+              <TextField
+                id='gradename'
+                label='Grade Name'
+                style={{ width: '100%' }}
+                variant='outlined'
+                size='small'
+                value={gradeName}
+                inputProps={{ pattern: '^[a-zA-Z0-9 +_-]+', maxLength: 50 }}
+                name='gradename'
+                onChange={(e) => setGradeName(capitalize(e.target.value))}
+                required
+              />
+            </abbr>
           </Grid>
         </Grid>
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
-            <TextField
-              id='gradetype'
-              label='Grade Type'
-              variant='outlined'
-              size='small'
-              style={{ width: '100%' }}
-              value={gradeType}
-              inputProps={{ maxLength: 20 }}
-              name='gradetype'
-              onChange={(e) => setGradeType(e.target.value)}
-              required
-            />
+            <abbr title={gradeType} style={{ textDecoration: 'none' }}>
+              <TextField
+                id='gradetype'
+                label='Grade Type'
+                variant='outlined'
+                size='small'
+                style={{ width: '100%' }}
+                value={gradeType}
+                inputProps={{ maxLength: 50 }}
+                name='gradetype'
+                onChange={(e) => setGradeType(e.target.value)}
+                required
+              />
+            </abbr>
           </Grid>
         </Grid>
       </div>

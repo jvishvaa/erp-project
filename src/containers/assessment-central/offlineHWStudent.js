@@ -298,32 +298,6 @@ const OfflineStudentAssessment = () => {
 
 
 
-
-    // const handleBranch = (event = {}, value = []) => {
-    //     if (value?.length) {
-    //         const ids = value.map((el) => el);
-    //         const selectedId = value.map((el) => el?.branch?.id);
-    //         setSelectedBranch(ids);
-    //         setSelectedBranchIds(selectedId)
-    //         if (value) {
-    //             axiosInstance
-    //                 .get(`erp_user/grademapping/?session_year=${selectedAcademicYear?.id}&branch_id=${selectedId.toString()}&module_id=${moduleId}`)
-    //                 .then((result) => {
-    //                     setGradeList(result?.data?.data);
-    //                     console.log(result, 'branch');
-    //                 })
-    //                 .catch((error) => {
-    //                     console.log('');
-    //                 });
-    //         }
-    //     }
-    //     if (value?.length === 0) {
-    //         console.log("no branch");
-    //         setSelectedGrade([])
-    //         setGradeList([])
-    //     }
-    // };
-
     const handleBranch = (e, value) => {
         setSelectedBranch(value)
         setSelectedSection(null)
@@ -342,6 +316,13 @@ const OfflineStudentAssessment = () => {
                     .then((result) => {
                         setSectionList(result?.data?.data);
                         console.log(result?.data?.data);
+                        console.log(history?.location?.state);
+                        if(history?.location?.state?.test?.section_mapping[0] != null){
+                            const filterSection = result?.data?.data.filter((ele) => history?.location?.state?.test?.section_mapping.includes(ele?.id))
+                            console.log(filterSection);
+                            // setSelectedSection(filterSection)
+                            setSectionList(filterSection)
+                        }
                     })
                     .catch((error) => {
                         console.log('');
@@ -367,6 +348,7 @@ const OfflineStudentAssessment = () => {
         setLoading(true)
         console.log(history?.location?.state?.test, 'test');
         console.log(selectedGrade);
+        // const secId = selectedSection.map((ele) => ele?.id)
         const payload = {
             branchId: selectedBranch?.id,
             gradeId: selectedGrade?.grade_id,
@@ -524,6 +506,8 @@ const OfflineStudentAssessment = () => {
                                 className='dropdownIcon'
                                 value={selectedSection || ''}
                                 options={sectionList || ''}
+                                // disabled={history?.location?.state?.test?.section_mapping?.length > 1 ? "true" : "false"}
+                                // disabled='true'
                                 getOptionLabel={(option) => option?.section__section_name || ''}
                                 filterSelectedOptions
                                 renderInput={(params) => (
@@ -567,7 +551,8 @@ const OfflineStudentAssessment = () => {
                                 />
                             </FormControl> */}
                         </div>
-                        {studentList?.user_reponse?.length > 0 ?
+                        {console.log(studentList)}
+                        {studentList?.length > 0 ?
                             <TableContainer
                                 className={`table table-shadow view_users_table ${classes.container}`}
                             >
@@ -583,7 +568,7 @@ const OfflineStudentAssessment = () => {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {studentList?.user_reponse.map((items, i) => (
+                                        {studentList?.map((items, i) => (
                                             <TableRow key={items.id}>
                                                 <TableCell className={classes.tableCell}>
                                                     {i + 1}

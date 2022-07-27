@@ -12,7 +12,7 @@ import { handleDownloadPdf } from '../../../../src/utility-functions';
 
 const AssesmentDetails = ({ test, onClick, onClose, filterData }) => {
   const history = useHistory();
-
+  console.log(test , "filter");
   const {
     test_id: id,
     id: assessmentId,
@@ -25,6 +25,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData }) => {
     total_mark: totalMark,
     created_at: createdDate,
     updated_at: updatedDate,
+    sectionMap : section_mapping
   } = test;
 
   const handleData = () => {
