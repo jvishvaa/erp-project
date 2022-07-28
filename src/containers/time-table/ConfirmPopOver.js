@@ -7,6 +7,7 @@ export default function ConfirmPopOver({
   submit,
   message,
   operation,
+  opendelete,
 }) {
   const retureMessage = () => {
     switch (operation) {
@@ -65,7 +66,7 @@ export default function ConfirmPopOver({
             handleCloseModal();
           }}
         >
-          Submit
+          {opendelete ? 'Delete' : 'Submit'}
         </Button>}
       </DialogActions>
     </Dialog>

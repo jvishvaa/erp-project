@@ -55,34 +55,38 @@ const EditGrade = ({ id, name, type, handleGoBack, setLoading }) => {
       <div style={{ width: '95%', margin: '20px auto' }}>
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
-            <TextField
-              className='create__class-textfield'
-              id='gradename'
-              label='Grade Name'
-              variant='outlined'
-              style={{ width: '100%' }}
-              size='small'
-              inputProps={{ maxLength: 20 }}
-              value={gradeName}
-              name='gradename'
-              onChange={(e) => setGradeName(e.target.value)}
-            />
+            <abbr title={gradeName} style={{ textDecoration: 'none' }}>
+              <TextField
+                className='create__class-textfield'
+                id='gradename'
+                label='Grade Name'
+                variant='outlined'
+                style={{ width: '100%' }}
+                size='small'
+                inputProps={{ maxLength: 50 }}
+                value={gradeName}
+                name='gradename'
+                onChange={(e) => setGradeName(e.target.value)}
+              />
+            </abbr>
           </Grid>
         </Grid>
         <Grid container spacing={5}>
           <Grid item xs={12} sm={4} className={isMobile ? '' : 'addEditPadding'}>
-            <TextField
-              className='create__class-textfield'
-              id='gradetype'
-              label='Grade Type'
-              variant='outlined'
-              size='small'
-              style={{ width: '100%' }}
-              inputProps={{ maxLength: 20 }}
-              value={gradeType}
-              name='gradetype'
-              onChange={(e) => setGradeType(e.target.value)}
-            />
+            <abbr title={gradeType} style={{ textDecoration: 'none' }}>
+              <TextField
+                className='create__class-textfield'
+                id='gradetype'
+                label='Grade Type'
+                variant='outlined'
+                size='small'
+                style={{ width: '100%' }}
+                inputProps={{ maxLength: 50 }}
+                value={gradeType}
+                name='gradetype'
+                onChange={(e) => setGradeType(e.target.value)}
+              />
+            </abbr>
           </Grid>
         </Grid>
       </div>

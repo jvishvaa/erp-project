@@ -126,6 +126,8 @@ const ViewMoreCard = ({
               size='small'
               className={classes.margin}
               onClick={() => handleOpenEdit()}
+              variant='contained'
+              color='primary'
             >
               Edit
             </Button>
@@ -195,7 +197,7 @@ const ViewMoreCard = ({
           <div className='downloadAllText' />
         </div>
       </div>
-    </Paper>
+    </Paper >
   );
 };
 
