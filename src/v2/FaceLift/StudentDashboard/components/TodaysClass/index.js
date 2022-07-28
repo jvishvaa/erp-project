@@ -12,28 +12,10 @@ const TodaysClass = () => {
   const history = useHistory();
   const { role_details } = JSON.parse(localStorage.getItem('userDetails')) || '';
   const [todaysClassData, setTodaysClassData] = useState([]);
-  const [moduleId, setModuleId] = useState('');
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [loading, setLoading] = useState(false);
   const [counter, setCounter] = useState(false);
-
-  useEffect(() => {
-    if (NavData && NavData.length) {
-      NavData.forEach((item) => {
-        if (
-          item.parent_modules === 'Ebook' &&
-          item.child_module &&
-          item.child_module.length > 0
-        ) {
-          item.child_module.forEach((item) => {
-            if (item.child_name === 'Ebook View') {
-              setModuleId(item.child_id);
-            }
-          });
-        }
-      });
-    }
-  }, []);
+  let moduleId;
 
   const upcomingClasses = () => {
     let count = 0;
@@ -72,6 +54,8 @@ const TodaysClass = () => {
 
   const getTodaysClassData = () => {
     setCounter(true);
+
+    console.log('student', moduleId);
     fetchTodaysClassData({
       user_id: role_details.erp_user_id,
       page_number: 1,
@@ -82,9 +66,25 @@ const TodaysClass = () => {
     });
   };
 
+  if (NavData && NavData.length) {
+    NavData.forEach((item) => {
+      if (
+        item.parent_modules === 'Ebook' &&
+        item.child_module &&
+        item.child_module.length > 0
+      ) {
+        item.child_module.forEach((item) => {
+          if (item.child_name === 'Ebook View') {
+            moduleId = item.child_id;
+          }
+        });
+      }
+    });
+  }
+
   useEffect(() => {
     getTodaysClassData();
-  }, []);
+  }, [moduleId]);
 
   return (
     <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm' style={{ minHeight: 240 }}>

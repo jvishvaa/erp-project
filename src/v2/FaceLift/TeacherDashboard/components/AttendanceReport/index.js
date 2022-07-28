@@ -121,7 +121,7 @@ const AttendanceReport = () => {
             </Select>
           </div>
         </div>
-        <div className='col-md-12 mt-2' style={{ height: '140px' }}>
+        <div className='col-md-12 mt-2' style={{ maxheight: '140px' }}>
           {loading ? (
             <div className='th-width-100 text-center'>
               <Spin tip='Loading...'></Spin>

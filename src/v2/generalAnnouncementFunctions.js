@@ -100,7 +100,7 @@ export const getSortedAnnouncements = (announcementData, showDate) => {
           ? `Yesterday ${showDate ? `(${date})` : ''}`
           : moment(data.created_time).isBetween(
               moment().subtract(7, 'd'),
-              moment().subtract(2, 'd'),
+              moment().subtract(1, 'd'),
               '[]'
             )
           ? 'This Week'

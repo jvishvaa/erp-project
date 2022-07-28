@@ -53,16 +53,18 @@ const NumberCard = (props) => {
             <span className='th-12'>Absent</span>
           </div>
         </div>
-        <div className='d-flex pt-1'>
-          <div>
-            <span className='th-14 pr-1'>{marked}</span>
-            <span className='th-12'>Marked</span>
+        {!props?.isAttendance && (
+          <div className='d-flex pt-1'>
+            <div>
+              <span className='th-14 pr-1'>{marked}</span>
+              <span className='th-12'>Marked</span>
+            </div>
+            <div className='pl-1'>
+              <span className='th-14 pr-1'>{unmarked}</span>
+              <span className='th-12'>Unmarked</span>
+            </div>
           </div>
-          <div className='pl-1'>
-            <span className='th-14 pr-1'>{unmarked}</span>
-            <span className='th-12'>Unmarked</span>
-          </div>
-        </div>
+        )}
       </div>
       <div className='pt-2'>
         <Box position='relative' display='inline-flex'>
