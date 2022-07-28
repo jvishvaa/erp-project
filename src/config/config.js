@@ -8,6 +8,7 @@ const local = {
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
+    UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
   },
   apiGateway: {
     baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
@@ -32,6 +33,8 @@ const dev = {
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
+    UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
+
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -53,6 +56,8 @@ const qa = {
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
+    UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
+
   },
   apiGateway: {
     // baseURL: `${window.location.origin}/qbox`,
@@ -76,6 +81,8 @@ const stage = {
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
+    UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
+
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -94,6 +101,8 @@ const prod = {
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
+    UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
+
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
