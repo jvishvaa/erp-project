@@ -86,9 +86,9 @@ const Assessment = () => {
                         {item?.subject_name}
                       </div>
                       <div className='col-4 text-center th-16 th-fw-600 th-green-1 px-0'>
-                        <span className='d-flex align-items-center justify-content-end'>
+                        <span className='d-flex align-items-center justify-content-end pr-2 pr-md-1'>
                           {item?.avg_score}
-                          <RightOutlined className='th-black-1' />
+                          <RightOutlined className='th-black-1 pl-3' />
                         </span>
                       </div>
                     </div>
