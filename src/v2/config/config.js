@@ -14,6 +14,7 @@ const local = {
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://dev.classes.letseduvate.com',
     msReportsUrl: 'https://dev.reports.letseduvate.com',
+    msReportsUrlNew: 'https://reports.dev-k8.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
   },
@@ -34,6 +35,7 @@ const dev = {
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://dev.classes.letseduvate.com',
     msReportsUrl: 'https://dev.reports.letseduvate.com',
+    msReportsUrlNew: 'https://reports.dev-k8.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
   },
@@ -53,6 +55,7 @@ const qa = {
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://qa.classes.letseduvate.com',
     msReportsUrl: 'https://qa.reports.letseduvate.com',
+    msReportsUrlNew: 'https://qa.reports.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
   },
@@ -94,7 +97,7 @@ const DEV = 'DEV';
 const QA = 'QA';
 const STAGE = 'STAGE';
 const env = { [PROD]: prod, [DEV]: dev, [QA]: qa, [STAGE]: stage };
-const config = env[process.env.REACT_APP_UI_ENV] || dev;
+const config = env[process.env.REACT_APP_UI_ENV] || qa;
 
 export default {
   // Add common config values here

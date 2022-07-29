@@ -66,8 +66,10 @@ const Assessment = () => {
           <div className='th-custom-col-padding'>
             <div className='px-2'>
               <div className='row justify-content-between mb-1'>
-                <div className='col-6 th-grey th-fw-400 th-12'>Subject</div>
-                <div className='col-3 th-primary th-fw-400 th-12'>Your Score</div>
+                <div className='col-5 th-grey th-fw-400 th-12'>Subject</div>
+                <div className='col-4 th-primary th-fw-400 th-12 text-center'>
+                  Your Score
+                </div>
                 <div className='col-3 th-grey th-fw-400 th-12 text-center'>
                   Avg. Test Score
                 </div>
@@ -80,10 +82,10 @@ const Assessment = () => {
                     onClick={() => history.push('./assessment')}
                   >
                     <div className='row justify-content-between py-3 th-br-6 align-items-center'>
-                      <div className='col-6 th-black-1 th-14 th-fw-400'>
+                      <div className='col-5 th-black-1 th-14 th-fw-400'>
                         {item?.subject_name}
                       </div>
-                      <div className='col-3 th-black-1 th-14 th-fw-400 '>
+                      <div className='col-4 th-black-1 th-14 th-fw-400 text-center'>
                         {item?.student_latest_score}%
                       </div>
                       <div className='col-3 text-center th-14 th-fw-400 th-black-1'>

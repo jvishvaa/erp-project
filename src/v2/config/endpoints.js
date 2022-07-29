@@ -9,6 +9,7 @@ const {
     baseURL,
     baseURLMPQ,
     msOriginUrl,
+    msReportsUrlNew,
   },
   s3: { BUCKET: s3BUCKET, ERP_BUCKET },
 } = ENVCONFIG;
@@ -69,9 +70,9 @@ export default {
   },
   studentDashboard: {
     todaysClasses: `${msOriginUrl}/api/oncls/v1/student-oncls/`,
-    pendingHomework: `https://reports.dev-k8.letseduvate.com/api/acad_performance/v1/student-hw-report-dash/`,
-    pendingClasswork: `https://reports.dev-k8.letseduvate.com/api/acad_performance/v1/student-cw-report-dash/`,
-    assessment: `https://reports.dev-k8.letseduvate.com/api/acad_performance/v1/student-assesment-report-dash/`,
+    pendingHomework: `${msReportsUrlNew}/api/acad_performance/v1/student-hw-report-dash/`,
+    pendingClasswork: `${msReportsUrlNew}/api/acad_performance/v1/student-cw-report-dash/`,
+    assessment: `${msReportsUrlNew}/api/acad_performance/v1/student-assesment-report-dash/`,
   },
   createAnnouncement: {
     membersCount: `/announcement/members/`,

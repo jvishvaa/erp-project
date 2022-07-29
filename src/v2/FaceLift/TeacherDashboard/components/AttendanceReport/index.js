@@ -129,10 +129,7 @@ const AttendanceReport = () => {
           ) : classwiseAttendanceData?.length > 0 ? (
             <Slider {...settings} className='th-slick'>
               {classwiseAttendanceData?.map((item, i) => (
-                <div
-                  className='th-custom-col-padding pr-3'
-                  onClick={() => history.push('./gradewise-attendance')}
-                >
+                <div className='th-custom-col-padding pr-3'>
                   <NumberCard data={item} isAttendance={true} />
                 </div>
               ))}

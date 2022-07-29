@@ -34,7 +34,6 @@ const dev = {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
-
   },
   apiGateway: {
     baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
@@ -59,7 +58,6 @@ const qa = {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
-
   },
   apiGateway: {
     // baseURL: `${window.location.origin}/qbox`,
@@ -84,7 +82,6 @@ const stage = {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
-
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -104,7 +101,6 @@ const prod = {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
-
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -128,7 +124,7 @@ const DEV = 'DEV';
 const QA = 'QA';
 const STAGE = 'STAGE';
 const env = { [PROD]: prod, [DEV]: dev, [QA]: qa, [STAGE]: stage };
-const config = env[process.env.REACT_APP_UI_ENV] || dev;
+const config = env[process.env.REACT_APP_UI_ENV] || qa;
 
 export default {
   // Add common config values here
