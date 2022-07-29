@@ -68,11 +68,11 @@ const CreateAssesment = ({
   initQuestionsLength,
   initResetFormState,
 }) => {
-  const [CentralFilter,setCentralFilter] = useState(false)
-  const [flag,setFlag] = useState(false);
-  const [branch,setBranch] = useState([])
+  const [CentralFilter, setCentralFilter] = useState(false);
+  const [flag, setFlag] = useState(false);
+  const [branch, setBranch] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
-  const [branchId,setBranchId] = useState([]);
+  const [branchId, setBranchId] = useState([]);
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const clearForm = query.get('clear');
@@ -102,9 +102,9 @@ const CreateAssesment = ({
   const [selectedGroupId, setSelectedGroupId] = useState('');
   const [branchFromErp, setBranchFromErp] = useState([]);
   const [branchIdFromErp, setBranchIdFromErp] = useState([]);
-  const [selectedBranchId,setSelectedBranchId] = useState([])
-  const [groupList,setGroupList] = useState([])
-  const [groupSectionMappingId,setGroupSectionMappingId] = useState([])
+  const [selectedBranchId, setSelectedBranchId] = useState([]);
+  const [groupList, setGroupList] = useState([]);
+  const [groupSectionMappingId, setGroupSectionMappingId] = useState([]);
   const [loading, setLoading] = useState(false);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -114,7 +114,7 @@ const CreateAssesment = ({
       test_mode: '',
       test_type: '',
     },
-    onSubmit: (values) => { },
+    onSubmit: (values) => {},
     validateOnChange: false,
     validateOnBlur: false,
   });
@@ -151,7 +151,7 @@ const CreateAssesment = ({
       const data = await fetchAssesmentTypes();
       setAssesmentTypes(data);
       formik.setFieldValue('test_type', data);
-    } catch (e) { }
+    } catch (e) {}
   };
   // useEffect(() => {
   //   if (moduleId) {
@@ -161,38 +161,37 @@ const CreateAssesment = ({
   // }, [moduleId]);
 
   useEffect(() => {
-    if(selectedQuestionPaper?.is_central && moduleId){
-      setCentralFilter(true)
+    if (selectedQuestionPaper?.is_central && moduleId) {
+      setCentralFilter(true);
       axiosInstance
-      .get(
-        `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
-      )
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          const selectAllObject = {
-            session_year: {},
-            id: 'all',
-            branch: { id: 'all', branch_name: 'Select All' },
-          };
-          const data = [selectAllObject,...result?.data?.data?.results];
-          setBranchDropdown(data);
-        } else {
-          setAlert('error', result?.data?.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error?.message);
-      });
+        .get(
+          `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
+        )
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            const selectAllObject = {
+              session_year: {},
+              id: 'all',
+              branch: { id: 'all', branch_name: 'Select All' },
+            };
+            const data = [selectAllObject, ...result?.data?.data?.results];
+            setBranchDropdown(data);
+          } else {
+            setAlert('error', result?.data?.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error?.message);
+        });
     }
-  },[selectedQuestionPaper?.is_central, moduleId]);
+  }, [selectedQuestionPaper?.is_central, moduleId]);
 
   const getSection = (gradeID) => {
-    let branchID = selectedQuestionPaper?.is_central ? branchId : branchIdFromErp
+    let branchID = selectedQuestionPaper?.is_central ? branchId : branchIdFromErp;
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.academics.sectionsV2}?acad_session=${
-          branchID}&grade=${gradeID}&is_central=${selectedQuestionPaper?.is_central}`
+        `${endpoints.academics.sectionsV2}?acad_session=${branchID}&grade=${gradeID}&is_central=${selectedQuestionPaper?.is_central}`
       )
       .then((res) => {
         if (res?.data?.status_code == 200) {
@@ -214,16 +213,21 @@ const CreateAssesment = ({
   };
 
   useEffect(() => {
-    if (selectedQuestionPaper && !selectedQuestionPaper?.is_central && moduleId && branchIdFromErp) {
+    if (
+      selectedQuestionPaper &&
+      !selectedQuestionPaper?.is_central &&
+      moduleId &&
+      branchIdFromErp
+    ) {
       getSection(selectedQuestionPaper?.grade);
     }
   }, [branchIdFromErp]);
 
-  useEffect(()=>{
-    if(branch.length>0){
-      getSection(selectedQuestionPaper?.grade)
+  useEffect(() => {
+    if (branch.length > 0) {
+      getSection(selectedQuestionPaper?.grade);
     }
-  },[branch])
+  }, [branch]);
 
   const handleSection = (e, value) => {
     if (value.length) {
@@ -240,26 +244,34 @@ const CreateAssesment = ({
   };
 
   const getGroup = () => {
-    let acadId = selectedQuestionPaper?.is_central ? branchId : selectedQuestionPaper?.academic_session
-    axiosInstance.get(`${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${selectedQuestionPaper?.grade}&is_active=${true}&group_type=${1}`).then((result)=>{
-      if(result?.status === 200){
-        setGroupList(result?.data)
-      }
-    })
-  }
+    let acadId = selectedQuestionPaper?.is_central
+      ? branchId
+      : selectedQuestionPaper?.academic_session;
+    axiosInstance
+      .get(
+        `${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${
+          selectedQuestionPaper?.grade
+        }&is_active=${true}&group_type=${1}`
+      )
+      .then((result) => {
+        if (result?.status === 200) {
+          setGroupList(result?.data);
+        }
+      });
+  };
 
-  useEffect(()=>{
-    if(selectedQuestionPaper){
-      getGroup()
+  useEffect(() => {
+    if (selectedQuestionPaper) {
+      getGroup();
     }
-  },[selectedQuestionPaper,branchId])
+  }, [selectedQuestionPaper, branchId]);
 
   const handleGroup = (e, value) => {
     setSelectedGroupData({});
     setSelectedGroupId('');
     if (value) {
-      const sections = value?.group_section_mapping.map((i)=>i?.section_mapping_id)
-      setGroupSectionMappingId(sections)
+      const sections = value?.group_section_mapping.map((i) => i?.section_mapping_id);
+      setGroupSectionMappingId(sections);
       setSelectedGroupData(value);
       setSelectedGroupId(value?.id);
     }
@@ -273,7 +285,7 @@ const CreateAssesment = ({
   const handleCreateAssesmentTest = async () => {
     const qMap = new Map();
 
-    if(CentralFilter === true && flag !== true){
+    if (CentralFilter === true && flag !== true) {
       setAlert('warning', 'Please Select Branch');
       return;
     }
@@ -425,22 +437,24 @@ const CreateAssesment = ({
       is_question_wise: !paperchecked,
       grade: selectedQuestionPaper['grade'],
       subjects: selectedQuestionPaper['subjects'],
-      acad_session: CentralFilter === true ? branchId : selectedQuestionPaper['academic_session'],
+      acad_session:
+        CentralFilter === true ? branchId : selectedQuestionPaper['academic_session'],
       is_central: selectedQuestionPaper['is_central'],
     };
 
     if (!paperchecked) {
       reqObj = { ...reqObj, test_mark: testMarksArr };
     }
-    if(!sectionToggle && selectedSectionData?.length > 0){
-      reqObj = {...reqObj,section_mapping : selectedSectionMappingId}
+    if (!sectionToggle && selectedSectionData?.length > 0) {
+      reqObj = { ...reqObj, section_mapping: selectedSectionMappingId };
     }
-    if(sectionToggle && groupSectionMappingId.length>0){
-      reqObj = {...reqObj,
-      "has_sub_groups" : true,
-      'group_id' : selectedGroupId,
-      'section_mapping' : groupSectionMappingId
-      }
+    if (sectionToggle && groupSectionMappingId.length > 0) {
+      reqObj = {
+        ...reqObj,
+        has_sub_groups: true,
+        group_id: selectedGroupId,
+        section_mapping: groupSectionMappingId,
+      };
     }
 
     try {
@@ -561,22 +575,28 @@ const CreateAssesment = ({
     setMarksAssignMode(e.target.checked);
   };
 
-  const handleBranch = (event,value) => {
-    setFlag(false)
-    setBranch([])
-    if(value?.length > 0){
+  const handleBranch = (event, value) => {
+    setFlag(false);
+    setBranch([]);
+    setSelectedSectionData([]);
+    setSelectedSectionMappingId([]);
+    setSectionList([]);
+    setGroupList([]);
+    setSelectedGroupData({});
+    setSelectedGroupId('');
+    if (value?.length > 0) {
       value =
-      value.filter(({ id }) => id === 'all').length === 1
-        ? [...branchDropdown].filter(({ id }) => id !== 'all')
-        : value;
+        value.filter(({ id }) => id === 'all').length === 1
+          ? [...branchDropdown].filter(({ id }) => id !== 'all')
+          : value;
       const branchIds = value.map((element) => element?.id) || [];
       const selectedbranch = value.map((element) => element?.branch?.id) || [];
-      setBranchId(branchIds)
-      setSelectedBranchId(selectedbranch)
-      setBranch(value)
-      setFlag(true)
-      setSelectedSectionData([])
-      setSelectedSectionMappingId([])
+      setBranchId(branchIds);
+      setSelectedBranchId(selectedbranch);
+      setBranch(value);
+      setFlag(true);
+      setSelectedSectionData([]);
+      setSelectedSectionMappingId([]);
     }
   };
   const getBranch = () => {
@@ -606,7 +626,7 @@ const CreateAssesment = ({
     if (selectedQuestionPaper && !selectedQuestionPaper?.is_central && moduleId) {
       getBranch();
     }
-  }, [selectedQuestionPaper,moduleId]);
+  }, [selectedQuestionPaper, moduleId]);
   useEffect(() => {
     if (selectedQuestionPaper) {
       // initFetchQuestionPaperDetails(3);
@@ -618,11 +638,11 @@ const CreateAssesment = ({
 
   const handleSectionToggle = (event) => {
     setSectionToggle(event.target.checked);
-    setSelectedGroupData({})
-    setGroupSectionMappingId([])
-    setSelectedGroupId('')
-    setSelectedSectionData([])
-    setSelectedSectionMappingId([])
+    setSelectedGroupData({});
+    setGroupSectionMappingId([]);
+    setSelectedGroupId('');
+    setSelectedSectionData([]);
+    setSelectedSectionMappingId([]);
   };
   return (
     <Layout>
@@ -638,7 +658,7 @@ const CreateAssesment = ({
             className='collapsible-section'
             square
             expanded={expandFilter}
-            onChange={() => { }}
+            onChange={() => {}}
           >
             <AccordionSummary>
               <div className='header mv-20'>
@@ -762,7 +782,7 @@ const CreateAssesment = ({
                         ) : (
                           ''
                         )}
-                        {(selectedQuestionPaper && !selectedQuestionPaper.is_central) && (
+                        {selectedQuestionPaper && !selectedQuestionPaper.is_central && (
                           <Grid item xs={12} md={4}>
                             <Autocomplete
                               id='branch_name'
@@ -792,9 +812,9 @@ const CreateAssesment = ({
                           </Grid>
                         )}
                       </Grid>
-                      {selectedQuestionPaper &&(
+                      {selectedQuestionPaper && (
                         <Grid container alignItems='center' style={{ marginTop: 15 }}>
-                        <Grid
+                          {/* <Grid
                           container
                           alignItems='center'
                           justifyContent='center'
@@ -809,61 +829,59 @@ const CreateAssesment = ({
                             inputProps={{ 'aria-label': 'checkbox with default color' }}
                           />
                           <Typography>Group</Typography>
+                        </Grid> */}
+                          {sectionToggle ? (
+                            <Grid item xs={12} md={4}>
+                              <Autocomplete
+                                id='Group'
+                                name='group'
+                                // multiple
+                                // limitTags={2}
+                                className='dropdownIcon'
+                                onChange={handleGroup}
+                                value={selectedGroupData || []}
+                                options={groupList || []}
+                                getOptionLabel={(option) => option?.group_name || ''}
+                                filterSelectedOptions
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    variant='outlined'
+                                    label='Group'
+                                    placeholder='Group'
+                                    required
+                                  />
+                                )}
+                                size='small'
+                              />
+                            </Grid>
+                          ) : (
+                            <Grid item xs={12} md={4}>
+                              <Autocomplete
+                                id='section_name'
+                                name='section_name'
+                                multiple
+                                limitTags={2}
+                                className='dropdownIcon'
+                                onChange={handleSection}
+                                value={selectedSectionData || []}
+                                options={sectionList || []}
+                                getOptionLabel={(option) => option?.section_name || ''}
+                                filterSelectedOptions
+                                renderInput={(params) => (
+                                  <TextField
+                                    {...params}
+                                    variant='outlined'
+                                    label='Section'
+                                    placeholder='Section'
+                                    required
+                                  />
+                                )}
+                                size='small'
+                              />
+                            </Grid>
+                          )}
                         </Grid>
-                        {sectionToggle ? (
-                          <Grid item xs={12} md={4}>
-                            <Autocomplete
-                              id='Group'
-                              name='group'
-                              // multiple
-                              // limitTags={2}
-                              className='dropdownIcon'
-                              onChange={handleGroup}
-                              value={selectedGroupData || []}
-                              options={groupList || []}
-                              getOptionLabel={(option) => option?.group_name || ''}
-                              filterSelectedOptions
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  variant='outlined'
-                                  label='Group'
-                                  placeholder='Group'
-                                  required
-                                />
-                              )}
-                              size='small'
-                            />
-                          </Grid>
-                        ) : (
-                          <Grid item xs={12} md={4}>
-                            <Autocomplete
-                              id='section_name'
-                              name='section_name'
-                              multiple
-                              limitTags={2}
-                              className='dropdownIcon'
-                              onChange={handleSection}
-                              value={selectedSectionData || []}
-                              options={sectionList || []}
-                              getOptionLabel={(option) =>
-                                option?.section_name || ''
-                              }
-                              filterSelectedOptions
-                              renderInput={(params) => (
-                                <TextField
-                                  {...params}
-                                  variant='outlined'
-                                  label='Section'
-                                  placeholder='Section'
-                                  required
-                                />
-                              )}
-                              size='small'
-                            />
-                          </Grid>
-                        )}
-                      </Grid>
                       )}
                     </FormControl>
                   </Grid>
@@ -949,7 +967,8 @@ const mapStateToProps = (state) => ({
 });
 const mapDispatchToProps = (dispatch) => ({
   initSetFilter: (filter, data) => dispatch(setFilterForCreateAssesment(filter, data)),
-  initFetchQuestionPaperDetails: (id, data) => dispatch(fetchQuestionPaperDetails(id, data)),
+  initFetchQuestionPaperDetails: (id, data) =>
+    dispatch(fetchQuestionPaperDetails(id, data)),
   initCreateAssesment: (data) => dispatch(createAssesment(data)),
   initChangeTestFormFields: (field, data) => dispatch(changeTestFormField(field, data)),
   initResetFormState: () => dispatch(resetFormState()),

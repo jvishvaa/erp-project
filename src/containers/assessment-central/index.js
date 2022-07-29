@@ -22,7 +22,7 @@ import {
   Checkbox,
   Box,
   Input,
-  Switch
+  Switch,
 } from '@material-ui/core';
 import { connect, useSelector } from 'react-redux';
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -57,7 +57,7 @@ import unfiltered from '../../assets/images/unfiltered.svg';
 import selectfilter from '../../assets/images/selectfilter.svg';
 import axios from './../../config/axios';
 import endpoints from 'config/endpoints';
-import Loader from './../../components/loader/loader'
+import Loader from './../../components/loader/loader';
 import FileSaver from 'file-saver';
 import axiosInstance from './../../config/axios';
 
@@ -78,7 +78,7 @@ const Assesment = () => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
-  const fileRef = useRef()
+  const fileRef = useRef();
 
   // const [statuses, setStatuses] = useState([]);
   const [academicDropdown, setAcademicDropdown] = useState([]);
@@ -95,8 +95,9 @@ const Assesment = () => {
   const [assesmentTestsTotalPage, setAssesmentTestsTotalPage] = useState(0);
   const [filteredAssesmentTests, setFilteredAssesmentTests] = useState([]);
   const [filteredAssesmentTestsPage, setFilteredAssesmentTestPage] = useState(1);
-  const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] =
-    useState(0);
+  const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] = useState(
+    0
+  );
   const [showFilteredList, setShowFilteredList] = useState(false);
   const [selectedAssesmentTest, setSelectedAssesmentTest] = useState();
   const [fetchingTests, setFetchingTests] = useState(false);
@@ -109,18 +110,17 @@ const Assesment = () => {
   const [moduleId, setModuleId] = useState('');
   const [bulkUpload, setBulkUpload] = useState(false);
   const [file, setFile] = useState(null);
-  const isSuperuser = JSON.parse(localStorage.getItem('userDetails'))?.is_superuser ;
+  const isSuperuser = JSON.parse(localStorage.getItem('userDetails'))?.is_superuser;
   const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level || {};
-  const isSuperAdmin = userLevel === 1
-  console.log('super','orchids',isSuperAdmin,isSuperuser)
-  const [loading,setLoading] = useState(false)
-  const [gradeId,setGradeId] = useState('')
-  const [selectedBranchId,setSelectedBranchId] = useState([])
-  const [sectionToggle,setSectionToggle] = useState(false)
-  const [sectionList,setSectionList] = useState([])
-  const [sectionFlag,setSectionFlag] = useState(false)
-  const [groupList,setGroupList] = useState([])
-  const [groupFlag,setGroupFlag] = useState(false)
+  const isSuperAdmin = userLevel === 1;
+  const [loading, setLoading] = useState(false);
+  const [gradeId, setGradeId] = useState('');
+  const [selectedBranchId, setSelectedBranchId] = useState([]);
+  const [sectionToggle, setSectionToggle] = useState(false);
+  const [sectionList, setSectionList] = useState([]);
+  const [sectionFlag, setSectionFlag] = useState(false);
+  const [groupList, setGroupList] = useState([]);
+  const [groupFlag, setGroupFlag] = useState(false);
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -149,8 +149,8 @@ const Assesment = () => {
       grade: '',
       subject: [],
       assesment_type: '',
-      section : [],
-      group : ''
+      section: [],
+      group: '',
     },
     onSubmit: (values) => {
       filterResults(1);
@@ -222,21 +222,21 @@ const Assesment = () => {
       date,
       status,
       section,
-      group
+      group,
     } = formik.values;
     console.log(formik.values);
     filterData1 = {
-      branch : formik.values.branch,
-      grade : formik.values.grade,
+      branch: formik.values.branch,
+      grade: formik.values.grade,
       subject: formik.values.subject,
-    }
+    };
     console.log(filterData1);
-    setFilterData(filterData1)
+    setFilterData(filterData1);
     // const acadSessionId = branch?.id;
     const acadSessionIds = branch.map((element) => element?.id) || [];
     const subjectIds = subject.map(({ subject_id }) => subject_id);
-    const sectionMappingIds = section.map((i)=>i?.id)
-    const groupIds = group?.id
+    const sectionMappingIds = section.map((i) => i?.id);
+    const groupIds = group?.id;
     try {
       setFetchingTests(true);
       const { results, totalPages } = await fetchAssesmentTests(
@@ -295,7 +295,7 @@ const Assesment = () => {
       if (formik.values.branch.length) {
         const branchIds =
           formik.values.branch.map((element) => element?.branch?.id) || [];
-          setSelectedBranchId(branchIds)
+        setSelectedBranchId(branchIds);
         getGrades(formik.values.academic?.id, branchIds);
         if (formik.values.grade) {
           const acadSessionIds = formik.values.branch.map((element) => element?.id) || [];
@@ -393,8 +393,8 @@ const Assesment = () => {
     formik.setFieldValue('subject', []);
     formik.setFieldValue('section', []);
     formik.setFieldValue('group', '');
-    setSectionList([])
-    setGroupList([]) 
+    setSectionList([]);
+    setGroupList([]);
     if (value.length > 0) {
       const branchIds = value?.map((element) => element?.branch?.id) || [];
       getGrades(formik.values.academic?.id, branchIds);
@@ -402,12 +402,12 @@ const Assesment = () => {
     }
   };
 
-  const fetchSection =  (acadSessionId,branchId,gradeId,moduleId) => {
-      axiosInstance.get(
-        `${endpoints.academics.sections}?session_year=${
-          acadSessionId
-        }&branch_id=${branchId}&grade_id=${gradeId}&module_id=${moduleId}`
-      ).then((res)=>{
+  const fetchSection = (acadSessionId, branchId, gradeId, moduleId) => {
+    axiosInstance
+      .get(
+        `${endpoints.academics.sections}?session_year=${acadSessionId}&branch_id=${branchId}&grade_id=${gradeId}&module_id=${moduleId}`
+      )
+      .then((res) => {
         if (res?.data?.status_code === 200) {
           const transformData = res?.data?.data.map((item) => ({
             section_id: item.section_id,
@@ -421,20 +421,20 @@ const Assesment = () => {
           });
           setSectionList(transformData);
         }
-      })  
+      });
   };
 
   const handleSection = (e, value) => {
-    formik.setFieldValue('section',[])
-    setSectionFlag(false)
+    formik.setFieldValue('section', []);
+    setSectionFlag(false);
     if (value.length) {
       value =
         value.filter(({ section_id }) => section_id === 'all').length === 1
           ? [...sectionList].filter(({ section_id }) => section_id !== 'all')
           : value;
-        formik.setFieldValue('section',value)
-        setSectionFlag(true)
-    } 
+      formik.setFieldValue('section', value);
+      setSectionFlag(true);
+    }
   };
 
   const fetchGroupList = (acadId, grade) => {
@@ -452,14 +452,14 @@ const Assesment = () => {
   };
 
   const handleGroup = (e, value) => {
-    setGroupFlag(false)
-    formik.setFieldValue('group','')
+    setGroupFlag(false);
+    formik.setFieldValue('group', '');
     formik.setFieldValue('section', []);
     formik.setFieldValue('group', '');
     if (value) {
-      const sections = value?.group_section_mapping.map((i)=>i?.section_mapping_id)
-      formik.setFieldValue('group',value)
-      setGroupFlag(true)
+      const sections = value?.group_section_mapping.map((i) => i?.section_mapping_id);
+      formik.setFieldValue('group', value);
+      setGroupFlag(true);
     }
   };
 
@@ -468,17 +468,22 @@ const Assesment = () => {
     formik.setFieldValue('subject', []);
     formik.setFieldValue('section', []);
     formik.setFieldValue('group', '');
-    setSectionList([])
-    setGroupList([]) 
+    setSectionList([]);
+    setGroupList([]);
     if (value) {
       const acadSessionIds = formik.values.branch.map((element) => element?.id) || [];
       getSubjects(acadSessionIds, value?.grade_id);
       formik.setFieldValue('grade', value);
-      const branchIds = formik?.values?.branch.map((i)=>i?.branch?.id)
-      const sectionData = fetchSection(selectedAcademicYear?.id,branchIds,value?.grade_id,moduleId)
-      setSectionList(sectionData)
-      const groupData = fetchGroupList(acadSessionIds,value?.grade_id)
-      setGroupList(groupData)
+      const branchIds = formik?.values?.branch.map((i) => i?.branch?.id);
+      const sectionData = fetchSection(
+        selectedAcademicYear?.id,
+        branchIds,
+        value?.grade_id,
+        moduleId
+      );
+      setSectionList(sectionData);
+      const groupData = fetchGroupList(acadSessionIds, value?.grade_id);
+      setGroupList(groupData);
     }
   };
 
@@ -489,12 +494,12 @@ const Assesment = () => {
     }
   };
 
-  const handleClearAll =(event,value) =>{
+  const handleClearAll = (event, value) => {
     formik.handleReset();
     setFilteredAssesmentTests([]);
     setFilteredAssesmentTestsTotalPage(0);
     setFilteredAssesmentTestPage(1);
-  }
+  };
 
   const handleFileChange = (event) => {
     const { files } = event.target || {};
@@ -503,7 +508,7 @@ const Assesment = () => {
       setFile(fil);
     } else {
       setFile(null);
-      fileRef.current.value = null
+      fileRef.current.value = null;
       setAlert(
         'error',
         'Only excel file is acceptable either with .xls or .xlsx extension'
@@ -518,32 +523,35 @@ const Assesment = () => {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     });
     FileSaver.saveAs(blob, 'upload_mark_status.xls');
-  }
+  };
 
   const uploadMarks = () => {
     const data = new FormData();
     data.append('file', file);
     if (file) {
-      setLoading(true)
+      setLoading(true);
       axiosInstance
         .post(`${endpoints.assessment.bulkUploadMarks}`, data)
         .then((result) => {
-          setLoading(false)
-          if(result?.status === 200){
-            setAlert('success','File successfully uploaded')
-            excelDownload(result.data)
-            fileRef.current.value = null
-            setFile(null)
-          }else{
-            setAlert('error',result?.error)
-            fileRef.current.value = null
-            setFile(null)
+          setLoading(false);
+          if (result?.status === 200) {
+            setAlert('success', 'File successfully uploaded');
+            excelDownload(result.data);
+          } else {
+            setAlert('error', result?.error);
           }
-        }).catch((error)=>{setAlert('error',error?.response?.data?.error)})
-        .finally(()=>setLoading(false));
+          fileRef.current.value = null;
+          setFile(null);
+        })
+        .catch((error) => {
+          setAlert('error', error?.response?.data?.error);
+          fileRef.current.value = null;
+          setFile(null);
+        })
+        .finally(() => setLoading(false));
     }
-    if(!file){
-      setAlert('warning','Please select file')
+    if (!file) {
+      setAlert('warning', 'Please select file');
     }
   };
 
@@ -779,7 +787,7 @@ const Assesment = () => {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  <Grid
+                  {/* <Grid
                     container
                     alignItems='center'
                     justifyContent='center'
@@ -794,7 +802,7 @@ const Assesment = () => {
                       inputProps={{ 'aria-label': 'checkbox with default color' }}
                     />
                     <Typography>Group</Typography>
-                  </Grid>
+                  </Grid> */}
                   {!sectionToggle ? (
                     <Grid item xs={12} md={3}>
                       <FormControl fullWidth variant='outlined'>
@@ -827,27 +835,27 @@ const Assesment = () => {
                   ) : (
                     <Grid item xs={12} md={3}>
                       <FormControl fullWidth variant='outlined'>
-                          <Autocomplete
-                            id='Group'
-                            name='group'
-                            // multiple
-                            // limitTags={2}
-                            className='dropdownIcon'
-                            onChange={handleGroup}
-                            value={formik?.values?.group || []}
-                            options={groupList || []}
-                            getOptionLabel={(option) => option?.group_name || ''}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                              <TextField
-                                {...params}
-                                variant='outlined'
-                                label='Group'
-                                placeholder='Group'
-                              />
-                            )}
-                            size='small'
-                          />
+                        <Autocomplete
+                          id='Group'
+                          name='group'
+                          // multiple
+                          // limitTags={2}
+                          className='dropdownIcon'
+                          onChange={handleGroup}
+                          value={formik?.values?.group || []}
+                          options={groupList || []}
+                          getOptionLabel={(option) => option?.group_name || ''}
+                          filterSelectedOptions
+                          renderInput={(params) => (
+                            <TextField
+                              {...params}
+                              variant='outlined'
+                              label='Group'
+                              placeholder='Group'
+                            />
+                          )}
+                          size='small'
+                        />
                         {/* <FormHelperText style={{ color: 'red' }}>
                         {formik.errors.assesment_type ? formik.errors.assesment_type : ''}
                       </FormHelperText> */}
@@ -909,55 +917,57 @@ const Assesment = () => {
                   </Button>
                 </div>
               </Grid>
-              {(isSuperAdmin || isSuperuser) &&  <Grid item container md={6} xs={6} justifyContent='flex-end'>
-                <div className='btn-container'>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={bulkUpload}
-                        onChange={() => setBulkUpload(!bulkUpload)}
-                        name='checked'
-                        color='primary'
-                      />
-                    }
-                    label={<Typography color='secondary'>Upload Marks</Typography>}
-                  />
-                </div>
-
-                {bulkUpload ? (
-                  <div>
-                    <Input
-                      type='file'
-                      inputRef={fileRef}
-                      inputProps={{ accept: '.xlsx,.xls' }}
-                      onChange={handleFileChange}
+              {(isSuperAdmin || isSuperuser) && (
+                <Grid item container md={6} xs={6} justifyContent='flex-end'>
+                  <div className='btn-container'>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={bulkUpload}
+                          onChange={() => setBulkUpload(!bulkUpload)}
+                          name='checked'
+                          color='primary'
+                        />
+                      }
+                      label={<Typography color='secondary'>Upload Marks</Typography>}
                     />
-                    <div>Accepted Files : [.xlsx,.xls] files</div>
-                    <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
-                      <Box p={1}>
-                        {`Download Format: `}
-                        <a
-                          style={{ cursor: 'pointer' }}
-                          href='assets/download-format/Response.xlsx'
-                          download='format.xlsx'
-                        >
-                          Download format
-                        </a>
-                      </Box>
-                    </Box>
-                    <Button
-                      variant='contained'
-                      color='primary'
-                      onClick={() => uploadMarks()}
-                      style={{marginLeft:'22%'}}
-                    >
-                      Upload
-                    </Button>
                   </div>
-                ) : (
-                  <div></div>
-                )}
-              </Grid>}
+
+                  {bulkUpload ? (
+                    <div>
+                      <Input
+                        type='file'
+                        inputRef={fileRef}
+                        inputProps={{ accept: '.xlsx,.xls' }}
+                        onChange={handleFileChange}
+                      />
+                      <div>Accepted Files : [.xlsx,.xls] files</div>
+                      <Box display='flex' flexDirection='row' style={{ color: 'gray' }}>
+                        <Box p={1}>
+                          {`Download Format: `}
+                          <a
+                            style={{ cursor: 'pointer' }}
+                            href='assets/download-format/Response.xlsx'
+                            download='format.xlsx'
+                          >
+                            Download format
+                          </a>
+                        </Box>
+                      </Box>
+                      <Button
+                        variant='contained'
+                        color='primary'
+                        onClick={() => uploadMarks()}
+                        style={{ marginLeft: '22%' }}
+                      >
+                        Upload
+                      </Button>
+                    </div>
+                  ) : (
+                    <div></div>
+                  )}
+                </Grid>
+              )}
             </Grid>
           </div>
           <div className='tabs-container'>

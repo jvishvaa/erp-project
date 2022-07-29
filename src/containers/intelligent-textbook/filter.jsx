@@ -4,14 +4,12 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import endpoints from '../../config/endpoints';
 import axios from 'axios';
 import axiosInstance from '../../config/axios';
-// import ClearIcon from '../../components/icon/ClearIcon';
 import { useSelector } from 'react-redux';
 import FilterFilledIcon from '../../components/icon/FilterFilledIcon';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import Loading from '../../components/loader/loader';
 import { getModuleInfo } from '../../utility-functions';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-// import { result } from 'lodash';
 
 const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -282,7 +280,6 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
   };
 
   function handleClear() {
-    // handleFilter();
     setclearFilter(true);
     setSelectedVolume('');
     setGradeList([]);

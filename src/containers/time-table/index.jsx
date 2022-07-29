@@ -100,8 +100,8 @@ const TimeTable = (props) => {
   const [getTTFlag, setGetTTFlag] = useState(false);
   const [isTimeTable, setIsTimeTable] = useState(false);
   const [showFilter, setShowFilter] = useState(true);
-  const [periodType, setPeriodType] = useState()
-  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'))
+  const [periodType, setPeriodType] = useState();
+  const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -154,7 +154,7 @@ const TimeTable = (props) => {
     if (value?.length) {
       setDays(value);
     } else {
-      setDays([])
+      setDays([]);
     }
     console.log(days, 'selected days');
   };
@@ -191,17 +191,16 @@ const TimeTable = (props) => {
 
   const handleClickAPI = () => {
     // setFilterChange(true)
-    setIsTimeTable(true)
+    setIsTimeTable(true);
   };
 
   const periodTypeList = async () => {
     const data = await getPeriodTypes();
     if (data?.status_code === 200) {
       setLectureList(data?.result);
-      setPeriodType(data?.result[1])
-      setperiodTypeId(data?.result[1]?.id)
+      setPeriodType(data?.result[1]);
+      setperiodTypeId(data?.result[1]?.id);
     }
-
   };
 
   useEffect(() => {
@@ -240,11 +239,14 @@ const TimeTable = (props) => {
   };
   const callingSubjectAPI = () => {
     axiosInstance
-      .get(`/erp_user/v2/mapped-subjects-list/?section_mapping=${section_mappingId}&session_year=${sessionYear?.id}`, {
-        params: {
-          session_year: acadamicYearID,
-        },
-      })
+      .get(
+        `/erp_user/v2/mapped-subjects-list/?section_mapping=${section_mappingId}&session_year=${sessionYear?.id}`,
+        {
+          params: {
+            session_year: acadamicYearID,
+          },
+        }
+      )
       .then((res) => {
         setSubject(res.data.result);
       })
@@ -267,35 +269,35 @@ const TimeTable = (props) => {
       });
   };
   const addPeriod = () => {
-    if (periodType?.type === "Lecture") {
+    if (periodType?.type === 'Lecture') {
       if (!assignedTeacherID || !sectionIdOption || days.length === 0) {
         setAlert('Warning', 'Please Fill all Fields');
       } else {
-        createPeriodAPI()
+        createPeriodAPI();
       }
-    } else if (periodType?.type === "Examination") {
+    } else if (periodType?.type === 'Examination') {
       if (days.length === 0) {
         setAlert('Warning', 'Please Select Days');
       } else {
-        createPeriodAPI()
+        createPeriodAPI();
       }
-    } else if (periodType?.type === "Competitions") {
+    } else if (periodType?.type === 'Competitions') {
       if (days.length === 0 || !assignedTeacherID) {
         setAlert('Warning', 'Please Fill all Fields');
       } else {
-        createPeriodAPI()
+        createPeriodAPI();
       }
-    } else if (periodType?.type === "Miscellaneous Event") {
+    } else if (periodType?.type === 'Miscellaneous Event') {
       if (days.length === 0 && !assignedTeacherID) {
         setAlert('Warning', 'Please Select All Fields');
       } else {
-        createPeriodAPI()
+        createPeriodAPI();
       }
-    } else if (periodType?.type === "Break") {
+    } else if (periodType?.type === 'Break') {
       if (days.length === 0) {
         setAlert('Warning', 'Please Select Days');
       } else {
-        createPeriodAPI()
+        createPeriodAPI();
       }
     }
   };
@@ -315,14 +317,14 @@ const TimeTable = (props) => {
     if (data.status_code === 200) {
       setAlert('success', data.message);
       handleCloseNewPeriod();
-      setDays([])
+      setDays([]);
       setGetTTFlag(true);
     } else {
       setAlert('warning', data?.response?.data?.developer_msg);
     }
-  }
+  };
   const handlePeriodType = (value) => {
-    setPeriodType(value)
+    setPeriodType(value);
     setperiodTypeId(value?.id);
   };
   return (
@@ -360,25 +362,27 @@ const TimeTable = (props) => {
                   )}
                 />
               </div>
-              {(periodType?.type === "Lecture" || periodType?.type === "Examination") && <div className={classes.formTextFields}>
-                <Autocomplete
-                  fullWidth
-                  id='combo-box-demo'
-                  options={subject || []}
-                  getOptionLabel={(option) => option?.subject_name}
-                  onChange={(event, option) => setSectionIdOption(option?.id)}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      size='small'
-                      fullWidth
-                      label='Subject'
-                      variant='outlined'
-                    />
-                  )}
-                />
-              </div>}
+              {(periodType?.type === 'Lecture' || periodType?.type === 'Examination') && (
+                <div className={classes.formTextFields}>
+                  <Autocomplete
+                    fullWidth
+                    id='combo-box-demo'
+                    options={subject || []}
+                    getOptionLabel={(option) => option?.subject_name}
+                    onChange={(event, option) => setSectionIdOption(option?.id)}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        size='small'
+                        fullWidth
+                        label='Subject'
+                        variant='outlined'
+                      />
+                    )}
+                  />
+                </div>
+              )}
               <div style={{ display: 'flex' }}>
                 <MuiPickersUtilsProvider utils={MomentUtils}>
                   <div className={classes.formTextFields}>
@@ -413,25 +417,30 @@ const TimeTable = (props) => {
                   </div>
                 </MuiPickersUtilsProvider>
               </div>
-              {(periodType?.type === "Lecture" || periodType?.type === "Examination" || periodType?.type === "Competitions" || periodType?.type === "Miscellaneous Event") && <div className={classes.formTextFields}>
-                <Autocomplete
-                  fullWidth
-                  id='combo-box-demo'
-                  options={assignedTeacher || []}
-                  getOptionLabel={(option) => option?.name}
-                  onChange={(event, option) => setAssignedTeacherID(option?.user_id)}
-                  filterSelectedOptions
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      size='small'
-                      fullWidth
-                      label='Assigned Teacher'
-                      variant='outlined'
-                    />
-                  )}
-                />
-              </div>}
+              {(periodType?.type === 'Lecture' ||
+                periodType?.type === 'Examination' ||
+                periodType?.type === 'Competitions' ||
+                periodType?.type === 'Miscellaneous Event') && (
+                <div className={classes.formTextFields}>
+                  <Autocomplete
+                    fullWidth
+                    id='combo-box-demo'
+                    options={assignedTeacher || []}
+                    getOptionLabel={(option) => option?.name}
+                    onChange={(event, option) => setAssignedTeacherID(option?.user_id)}
+                    filterSelectedOptions
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        size='small'
+                        fullWidth
+                        label='Assigned Teacher'
+                        variant='outlined'
+                      />
+                    )}
+                  />
+                </div>
+              )}
               <div className={classes.formTextFields}>
                 <Autocomplete
                   fullWidth
@@ -532,7 +541,7 @@ const TimeTable = (props) => {
               <div className='table-header-data'>{sectinName}</div>
             </div> */}
             <div className='date-container'>
-              {isTimeTable &&
+              {isTimeTable && (
                 <DateAndCalander
                   openNewPeriod={openNewPeriod}
                   grade_ID={gradeID}
@@ -546,13 +555,10 @@ const TimeTable = (props) => {
                   isTimeTable={isTimeTable}
                   HideAutocomplete={(value) => setShowFilter(!value)}
                 />
-              }
+              )}
               {!isTimeTable && <NoFilterData selectfilter={true} />}
-
             </div>
-
           </div>
-
         </>
         {loading && <Loader />}
       </Layout>
