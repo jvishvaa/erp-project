@@ -45,7 +45,7 @@ const SearchBar = ({ children, history, ...props }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
-
+  const [searchFocus, setSearchFocus] = useState(false)
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const themeContext = useTheme();
@@ -152,17 +152,22 @@ const SearchBar = ({ children, history, ...props }) => {
       setSearchUserDetails([]);
       setTotalPage(0);
       setCurrentPage(1);
+      setSearchFocus(false)
     }, 500);
   };
+
+  const handleFocus = ()=>{
+    setSearchFocus(true)
+  }
 
   return (
     <>
       {superUser && !isMobile ? (
         <Box className={clsx(classes.searchBar)}>
           <Box className={classes.search}>
-            <Paper component='form' className={classes.searchInputContainer}>
+            <Paper component='form' className={searchFocus?classes.searchInputContaineronFocus:classes.searchInputContainer}>
               <div className={classes.searchIcon}>
-                <SearchIcon />
+                <SearchIcon className={searchFocus?null:classes.searchIcononFocus} />
               </div>
               <InputBase
                 classes={{
@@ -177,6 +182,8 @@ const SearchBar = ({ children, history, ...props }) => {
                 inputRef={searchInputRef}
                 onChange={changeQuery}
                 onBlur={handleTextSearchClear}
+                onFocus={handleFocus}
+
               />
               {searchedText ? (
                 <IconButton
@@ -205,7 +212,7 @@ const SearchBar = ({ children, history, ...props }) => {
                   searchInputRef.current.getBoundingClientRect().top + 44
                   : searchInputRef.current &&
                   searchInputRef.current.getBoundingClientRect().top + 32,
-                left: '50px',
+                left: '0px',
                 right: `calc(${isMobile ? '92vw' : '100vw'} - ${searchInputRef.current &&
                   searchInputRef.current.getBoundingClientRect().left +
                   searchInputRef.current.getBoundingClientRect().width
@@ -344,7 +351,7 @@ const SearchBar = ({ children, history, ...props }) => {
        {superUser && isMobile &&(
         <Box className={clsx(classes.searchBar1)}>
           <Box className={classes.search}>
-            <Paper component='form' className={classes.searchInputContainer}>
+            <Paper component='form' className={classes.searchInputContainer1}>
               <div className={classes.searchIcon}>
                 <SearchIcon />
               </div>
@@ -355,12 +362,13 @@ const SearchBar = ({ children, history, ...props }) => {
                 }}
                 style={{ innerWidth: '100%' }}
                 value={searchedText}
-                className={classes.searchInput}
+                className={classes.searchInputMobile}
                 placeholder='Search'
                 inputProps={{ 'aria-label': 'search across site' }}
                 inputRef={searchInputRef}
                 onChange={changeQuery}
                 onBlur={handleTextSearchClear}
+                
               />
               {searchedText ? (
                 <IconButton

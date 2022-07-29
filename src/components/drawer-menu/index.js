@@ -5,15 +5,18 @@ import SuperUserMenu from './super-user-menu';
 import './styles.scss';
 import { TramOutlined } from '@material-ui/icons';
 
-
 const resolveMenu = (url) => {
   if (url.includes('user-management')) return 'User Management';
   if (url.includes('lesson-plan')) return 'Lesson Plan';
   if (url.includes('master-management')) return 'Master Management';
   if (url.includes('subject/grade')) return 'Master Management';
+  
+
   if (url.includes('online-class')) return 'Online Class';
   if (url.includes('classwork')) return 'Online Class';
   if (url.includes('homework')) return 'Homework';
+
+
   if (url.includes('communication')) return 'Communication';
   if (url.includes('homework')) return 'Homework';
   if (url.includes('blog')) return 'Blogs';
@@ -79,6 +82,7 @@ const resolveMenu = (url) => {
   if (url.includes('ShippingPayment')) return 'Finance';
   if (url.includes('ManagePayments')) return 'Finance';
 
+  // if (url.includes('Appointment')) return 'Appointments';
   return null;
 };
 
@@ -89,6 +93,7 @@ const DrawerMenu = ({ navigationItems, superUser, onClick ,flag ,drawerOpen}) =>
   useEffect(() => {
     setOpenMenu(resolveMenu(location.pathname));
   }, []);
+
   return (
     <>
       {/* {superUser && ( */}
@@ -110,25 +115,23 @@ const DrawerMenu = ({ navigationItems, superUser, onClick ,flag ,drawerOpen}) =>
           .map((item,index) => (
             <MenuItem
               item={item}
-              menuOpen={item.parent_modules === openMenu}
               index={index}
+              menuOpen={item.parent_modules === openMenu}
               onChangeMenuState={() => {
+                // window.location.reload();
                 if (item.parent_modules === openMenu) {
                   setOpenMenu(null);
                   setOpenParent(false);
 
-
                 } else {
                   setOpenMenu(item.parent_modules);
                   setOpenParent(true);
-
                 }
               }}
               openMenu={openMenu}
               navigationItems = {navigationItems}
               openParent = {openParent}
               drawerOpen={drawerOpen}
-
               onClick={onClick}
               flag={flag}
             />

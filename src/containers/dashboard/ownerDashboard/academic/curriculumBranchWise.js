@@ -123,7 +123,7 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   TableHeaderColor: {
-    backgroundColor: '#FFD9D9',
+    backgroundColor: `${theme.palette.v2Color1.primaryV2} !important`,
     border: '1px solid #D7E0E7',
     borderRadius: '8px 8px 0px 0px',
     color:'black',
@@ -147,7 +147,7 @@ const useStyles = makeStyles((theme) => ({
   },
   tableHeadText : {
     fontWeight:'bolder',
-    color:'#F39494',
+    color:`${theme.palette.v2Color1.primaryV2} !important`,
     font: 'normal normal medium 20px/24px Rubik',
     textAlign:'left'
   }

@@ -10,7 +10,7 @@ import { IconButton } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import { connect } from 'react-redux';
-import { login, aolLogin, isMsAPI} from '../../redux/actions';
+import { login, aolLogin, isMsAPI } from '../../redux/actions';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 
@@ -18,7 +18,7 @@ function LoginForm(props) {
   const { onLogin, isMsAPI, aolOnLogin, setLoading, history } = props;
   const classes = useStyles();
   const [uname, pass, checked] =
-  JSON.parse(localStorage.getItem('rememberDetails')) || [];
+    JSON.parse(localStorage.getItem('rememberDetails')) || [];
   const [username, setUsername] = useState('' || uname);
   const [password, setPassword] = useState('' || pass);
   const [check, setCheck] = useState(false || checked);
@@ -41,8 +41,8 @@ function LoginForm(props) {
   //     });
   // };
   const fetchERPSystemConfig = async (status) => {
-    let data = await JSON.parse(localStorage.getItem('userDetails')) || {};
-    const branch  = data?.role_details?.branch;
+    let data = (await JSON.parse(localStorage.getItem('userDetails'))) || {};
+    const branch = data?.role_details?.branch;
     let payload = [];
     const result = axiosInstance
       .get(endpoints.checkAcademicView.isAcademicView)
@@ -53,10 +53,10 @@ function LoginForm(props) {
           } else if (res?.data?.result[0] == 'False') {
             return false;
           } else if (res?.data?.result[0]) {
-            let resData = res?.data?.result[0]
-          const selectedId = branch?.map((el) => el?.id);
-          let checkData = resData?.some(item => selectedId.includes(Number(item)))
-          console.log(checkData, "check");
+            let resData = res?.data?.result[0];
+            const selectedId = branch?.map((el) => el?.id);
+            let checkData = resData?.some((item) => selectedId.includes(Number(item)));
+            console.log(checkData, 'check');
             return checkData;
           }
         }
@@ -89,19 +89,20 @@ function LoginForm(props) {
           fetchERPSystemConfig(response?.isLogin).then((res) => {
             let erpConfig;
             let userData = JSON.parse(localStorage.getItem('userDetails'));
-            if(res === true || res.length > 0) {
+            if (res === true || res.length > 0) {
               erpConfig = res;
-              let refURL = localStorage.getItem('refURL')
-              if(refURL){
-                localStorage.removeItem('refURL')
-                window.location.href = refURL; 
-              } else if(userData?.user_level !== 4 ){
-              history.push('/acad-calendar');
-              console.log(userData?.user_level , "level");
+              let refURL = localStorage.getItem('refURL');
+              if (refURL) {
+                localStorage.removeItem('refURL');
+
+                window.location.href = refURL;
+              } else if (userData?.user_level !== 4) {
+                history.push('/acad-calendar');
+                console.log(userData?.user_level, 'level');
               } else {
-              history.push('/dashboard');
+                history.push('/dashboard');
               }
-            } else if(res === false) {
+            } else if (res === false) {
               erpConfig = res;
               history.push('/dashboard');
             } else {
@@ -109,10 +110,8 @@ function LoginForm(props) {
               history.push('/dashboard');
             }
             userData['erp_config'] = erpConfig;
-            localStorage.setItem(
-              'userDetails',
-              JSON.stringify(userData)
-            );
+            localStorage.setItem('userDetails', JSON.stringify(userData));
+            window.location.reload();
           });
         } else {
           setAlert('error', response?.message);

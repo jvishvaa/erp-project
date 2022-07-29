@@ -5,6 +5,13 @@ const INITIAL_STATE = {
   academicYearList: '' || JSON.parse(sessionStorage.getItem('acad_session_list')),
   isMsAPIKey: !!JSON.parse(localStorage.getItem('isMsAPI')),
   erpConFigKey: !!JSON.parse(localStorage.getItem('erp_config')),
+  selectedBranch: sessionStorage.getItem('selected_branch')
+    ? JSON.parse(sessionStorage.getItem('selected_branch'))
+    : '',
+  branchList: '' || JSON.parse(sessionStorage.getItem('branch_list')),
+  selectedVersion: localStorage.getItem('selectedVersion')
+    ? JSON.parse(localStorage.getItem('selectedVersion'))
+    : true,
 };
 
 export const getDefaultYear = (data) => {
@@ -33,6 +40,23 @@ const commonReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         erpConFigKey: action.payload,
+      };
+    case commonActions.SELECTED_BRANCH:
+      return {
+        ...state,
+        selectedBranch: !sessionStorage.getItem('selected_branch')
+          ? JSON.parse(sessionStorage.getItem('branch_list'))[0]
+          : action.payload,
+      };
+    case commonActions.BRANCH_LIST:
+      return {
+        ...state,
+        branchList: action.payload,
+      };
+    case commonActions.SELECTED_VERSION:
+      return {
+        ...state,
+        selectedVersion: action.payload,
       };
     default:
       return state;

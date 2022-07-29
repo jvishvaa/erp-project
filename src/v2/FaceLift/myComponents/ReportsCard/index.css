@@ -1,0 +1,31 @@
+.th-accordion .MuiIconButton-edgeEnd {
+  margin-right: 6px !important;
+}
+
+.th-accordion .MuiAccordionSummary-root {
+  padding: 0px !important;
+}
+
+.th-accordion .MuiIconButton-root {
+  padding: 0px !important;
+}
+
+.th-accordion .MuiSvgIcon-root {
+  color: #000000 !important;
+}
+
+.th-accordion .MuiPaper-elevation1 {
+  box-shadow: none !important;
+}
+
+.MuiAccordion-root::before {
+  height: 0px !important;
+}
+
+.th-accordion-summary .MuiAccordionSummary-content {
+  margin: 2px 0 !important;
+}
+
+.MuiAccordion-root.Mui-expanded {
+  margin: 2px 0 !important;
+}
