@@ -2030,7 +2030,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/teacherdashboards'>
                               {({ match }) => <TeacherDash match={match} />}
                             </Route>
-                            <Route path='/comm_dashboard'>
+                            <Route path='/announcement-list'>
                               {({ match }) => <NewCommunication match={match} />}
                             </Route>
                             {/* Academic Report */}

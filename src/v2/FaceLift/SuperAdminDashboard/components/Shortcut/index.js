@@ -19,14 +19,14 @@ const Shortcut = (props) => {
 
   const shortcutsData = [
     {
-      title: 'View All Attendance',
+      title: 'All Staff Attendance',
       url: '/staff-attendance-report/branch-wise',
       state: {
         acadId: selectedBranchList?.length > 0 ? branchListAttendance : [selectedBranch],
       },
     },
     {
-      title: 'Fees Overview',
+      title: 'Fees',
       url: '/fees-table-status',
       state: {
         branch: feesBranch?.length > 0 ? feesBranch : [selectedBranch],
@@ -35,7 +35,7 @@ const Shortcut = (props) => {
     },
 
     {
-      title: 'Curriculum Completion',
+      title: 'Curriculum',
       url: '/curriculum-completion-branchWise',
       state: {
         branchData: selectedBranchList?.length > 0 ? selectedBranchs : [selectedBranch],
@@ -44,11 +44,11 @@ const Shortcut = (props) => {
       },
     },
     {
-      title: 'Avg. Test Score',
+      title: 'Academic Report',
       url: '/academic-report',
     },
     {
-      title: 'Attendance Overview',
+      title: 'Attendance Report',
       url: '/curriculum-completion-branchWise',
       state: {
         branchData: selectedBranchList?.length > 0 ? selectedBranchs : [selectedBranch],
