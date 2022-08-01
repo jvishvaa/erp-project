@@ -1609,7 +1609,7 @@ const V1Router = [
   </Route>,
   <Route path='/teacherdash'>{({ match }) => <TeacherDashboard match={match} />}</Route>,
   <Route path='/teacherdashboards'>{({ match }) => <TeacherDash match={match} />}</Route>,
-  <Route path='/comm_dashboard'>
+  <Route path='/announcement-list'>
     {({ match }) => <NewCommunication match={match} />}
   </Route>,
 

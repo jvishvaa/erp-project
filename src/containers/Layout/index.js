@@ -205,7 +205,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Announcement': {
-        history.push('/comm_dashboard');
+        history.push('/announcement-list');
         break;
       }
       case 'Send Message': {

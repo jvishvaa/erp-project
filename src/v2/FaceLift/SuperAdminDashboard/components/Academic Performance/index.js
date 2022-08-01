@@ -121,7 +121,7 @@ const AcademicPerformance = (props) => {
       icon: curriculumCompletion,
     },
     {
-      title: 'Avg. Test Score',
+      title: 'Academic Report',
       value: testScoreStats,
       icon: avgTestScore,
     },
