@@ -22,7 +22,7 @@ const TodaysClass = () => {
     {
       todaysClassData.length > 0 &&
         todaysClassData.map((item) => {
-          if (moment(item?.online_class?.start_time).isBefore(moment())) {
+          if (moment(item?.online_class?.start_time).isAfter(moment())) {
             count++;
           }
         });
@@ -54,14 +54,12 @@ const TodaysClass = () => {
 
   const getTodaysClassData = () => {
     setCounter(true);
-
-    console.log('student', moduleId);
     fetchTodaysClassData({
       user_id: role_details.erp_user_id,
       page_number: 1,
       page_size: 20,
       class_type: 0,
-      class_status: 2,
+      class_status: 1,
       module_id: moduleId,
     });
   };
@@ -111,7 +109,7 @@ const TodaysClass = () => {
             <div className='th-width-100 text-center mt-5'>
               <Spin tip='Loading...'></Spin>
             </div>
-          ) : todaysClassData?.length > 1 ? (
+          ) : todaysClassData?.length > 0 ? (
             <div
               className='mt-2'
               style={{ overflowY: 'auto', overflowX: 'hidden', height: 130 }}

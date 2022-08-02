@@ -51,7 +51,7 @@ const OverviewCard = (props) => {
     switch (type) {
       case 'Curriculum Completion':
         return handleCurriculumCompletion(true);
-      case 'Avg. Test Score':
+      case 'Academic Report':
         return handleTestScore();
       case 'Attendance Report':
         return handleCurriculumCompletion(false);
@@ -85,12 +85,17 @@ const OverviewCard = (props) => {
           <img src={icon} />
         </div>
         <div className='my-2 th-fw-500 th-14 th-black-1 pr-4'>{title}</div>
-        <div className='th-20 th-fw-600 pb-2'>
-          <span>{percentage}%</span>
-        </div>
-        <div>
-          <BorderLinearProgress variant='determinate' value={percentage} />
-        </div>
+        {title === 'Attendance Report' && (
+          <>
+            {' '}
+            <div className='th-20 th-fw-600 pb-2'>
+              <span>{percentage}%</span>
+            </div>
+            <div>
+              <BorderLinearProgress variant='determinate' value={percentage} />
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

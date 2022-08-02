@@ -3,7 +3,7 @@ import OverviewCard from 'v2/FaceLift/myComponents/OverViewCard';
 import avgTestScore from 'assets/dashboardIcons/academicPerformanceIcons/avgTestScore.svg';
 import { useSelector } from 'react-redux';
 import { ReloadOutlined } from '@ant-design/icons';
-import { message } from 'antd';
+import { message, Spin } from 'antd';
 import attendanceReport from 'assets/dashboardIcons/academicPerformanceIcons/attendanceReport.svg';
 import curriculumCompletion from 'assets/dashboardIcons/academicPerformanceIcons/curriculumCompletion.svg';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
@@ -22,8 +22,10 @@ const AcademicPerformance = (props) => {
   const [curriculumStats, setCurriculumStats] = useState('');
   const [testScoreStats, setTestScoreStats] = useState('');
   const [attendacneStats, setAttendanceStats] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const fetchCurriculumStats = (params = {}) => {
+    setLoading(true);
     axios
       .get(`${endpoints.adminDashboard.curriculumStats}`, {
         params: { ...params },
@@ -56,9 +58,13 @@ const AcademicPerformance = (props) => {
       .then((response) => {
         if (response.status === 200) {
           setTestScoreStats(response?.data?.result?.overall_avg);
+          setLoading(false);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
   };
 
   const fetchAttendanceStats = (params = {}) => {
@@ -72,9 +78,13 @@ const AcademicPerformance = (props) => {
       .then((response) => {
         if (response.status === 200) {
           setAttendanceStats(response?.data?.result[0]?.percentage_attendance);
+          setLoading(false);
         }
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+        setLoading(false);
+      });
   };
 
   const getAcademicOverviewData = () => {
@@ -138,17 +148,23 @@ const AcademicPerformance = (props) => {
         Academic Performance Overview{' '}
         <ReloadOutlined onClick={getAcademicOverviewData} className='pl-3' />
       </div>
-      <div className='row justify-content-between '>
-        {curriculumStats || testScoreStats || attendacneStats ? (
-          AcademicPerformanceData?.map((item) => (
+      {loading ? (
+        <div className='th-width-100 pt-5 text-center'>
+          <Spin tip='Loading...'></Spin>
+        </div>
+      ) : (
+        <div className='row justify-content-between '>
+          {/* {curriculumStats || testScoreStats || attendacneStats ? (  */}
+          {AcademicPerformanceData?.map((item) => (
             <OverviewCard data={item} selectedBranchList={selectedBranchList} />
-          ))
-        ) : (
-          <div className='col text-center'>
-            <img src={NoDataIcon} />
-          </div>
-        )}
-      </div>
+          ))}
+          {/* ) : (
+            <div className='col text-center'>
+              <img src={NoDataIcon} />
+            </div>
+          )} */}
+        </div>
+      )}
     </div>
   );
 };

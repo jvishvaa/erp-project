@@ -51,7 +51,7 @@ const qa = {
     baseURL: 'https://qa.olvorchidnaigaon.letseduvate.com/qbox',
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseURLCentral: 'https://qa.mgmt.letseduvate.com/qbox',
-    baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
+    baseFinanceURL: 'https://qafinance.school.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://qa.classes.letseduvate.com',
     msReportsUrl: 'https://qa.reports.letseduvate.com',

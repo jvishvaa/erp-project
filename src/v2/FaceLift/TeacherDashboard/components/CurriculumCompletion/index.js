@@ -75,33 +75,39 @@ const CurriculumCompletion = () => {
                 </div>
               </div>
               <div style={{ overflowY: 'auto', overflowX: 'hidden', height: 130 }}>
-                {curriculumData?.map((item, i) => (
-                  <div className='th-bg-grey mb-2 th-br-6' style={{ cursor: 'pointer' }}>
+                {curriculumData?.map((item, i) => {
+                  let section = item.section_name.charAt(item.section_name.length - 1);
+                  return (
                     <div
-                      className='row justify-content-between py-3 th-br-6 align-items-center'
-                      // onClick={() => history.push('./curriculum-report')}
+                      className='th-bg-grey mb-2 th-br-6'
+                      style={{ cursor: 'pointer' }}
                     >
-                      <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 text-truncate'>
-                        <Tooltip
-                          placement='top'
-                          title={
-                            <span>
-                              {item?.grade_name} {item?.section_name}
-                            </span>
-                          }
-                        >
-                          {item?.grade_name} {item?.section_name}
-                        </Tooltip>
-                      </div>
-                      <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 pl-1 text-center'>
-                        {item?.subject_name}
-                      </div>
-                      <div className='col-4 text-center th-16 th-fw-600 th-green-1 pr-0'>
-                        {item?.percentage_completion}%{' '}
+                      <div
+                        className='row justify-content-between py-3 th-br-6 align-items-center'
+                        // onClick={() => history.push('./curriculum-report')}
+                      >
+                        <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 text-truncate text-capitalize'>
+                          <Tooltip
+                            placement='top'
+                            title={
+                              <span className='text-capitalize'>
+                                {item?.grade_name} {section}
+                              </span>
+                            }
+                          >
+                            {item?.grade_name} {section}
+                          </Tooltip>
+                        </div>
+                        <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 pl-1 text-center'>
+                          {item?.subject_name}
+                        </div>
+                        <div className='col-4 text-center th-16 th-fw-600 th-green-1 pr-0'>
+                          {item?.percentage_completion}%{' '}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>

@@ -125,7 +125,10 @@ const AttendanceReport = (props) => {
 
   return (
     <div className='col-md-12'>
-      <div className='th-bg-white th-br-5 py-3 px-2 shadow-sm'>
+      <div
+        className='th-bg-white th-br-5 py-3 px-2 shadow-sm'
+        style={{ minHeight: '160px' }}
+      >
         <div className='row justify-content-between'>
           <div className='col-8 col-md-6 th-16 th-fw-500 th-black-1 d-flex flex-column flex-md-row align-items-md-center'>
             Attendance Report{' '}

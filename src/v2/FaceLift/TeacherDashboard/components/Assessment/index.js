@@ -74,7 +74,10 @@ const Assessment = () => {
 
               <div style={{ overflowY: 'auto', overflowX: 'hidden', height: 130 }}>
                 {assessmentData?.map((item, i) => (
-                  <div className='th-bg-grey mb-2 th-br-6' style={{ cursor: 'pointer' }}>
+                  <div
+                    className='th-bg-grey mb-2 th-br-6 text-capitalize'
+                    style={{ cursor: 'pointer' }}
+                  >
                     <div
                       className='row justify-content-between py-3 th-br-6 align-items-center'
                       onClick={() => history.push('./assessment-reports')}
