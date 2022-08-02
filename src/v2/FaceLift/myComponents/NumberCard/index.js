@@ -31,7 +31,7 @@ const NumberCard = (props) => {
 
   return (
     <div
-      className='d-flex justify-content-between align-items-center py-1 mt-2 th-br-6 px-3 py-2 th-bg-grey'
+      className='d-flex justify-content-between align-items-center py-1 mt-2 th-br-6 px-3 py-2 th-bg-grey text-capitalize'
       style={{ cursor: props?.isAttendance ? 'pointer' : 'inherit' }}
     >
       <div className='th-black-1 th-13 '>

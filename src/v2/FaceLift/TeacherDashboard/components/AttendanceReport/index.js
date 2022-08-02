@@ -121,15 +121,15 @@ const AttendanceReport = () => {
             </Select>
           </div>
         </div>
-        <div className='col-md-12 mt-2' style={{ maxheight: '140px' }}>
+        <div className='col-md-12 ' style={{ height: 140 }}>
           {loading ? (
-            <div className='th-width-100 text-center'>
+            <div className='th-width-100 text-center '>
               <Spin tip='Loading...'></Spin>
             </div>
           ) : classwiseAttendanceData?.length > 0 ? (
-            <Slider {...settings} className='th-slick'>
+            <Slider {...settings} className='th-slick pt-3'>
               {classwiseAttendanceData?.map((item, i) => (
-                <div className='th-custom-col-padding pr-3'>
+                <div className='th-custom-col-padding pr-3 mt-2'>
                   <NumberCard data={item} isAttendance={true} />
                 </div>
               ))}
