@@ -1,3 +1,7 @@
+const webUrl = window.location.host;
+const hostUrl = webUrl.split('.');
+const chechUrl = hostUrl[0] === 'orchids' ? true : false;
+
 const local = {
   s3: {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
@@ -89,6 +93,9 @@ const prod = {
     msReportsUrl: 'https://reports.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     finance: 'https://revamp.finance.letseduvate.com',
+    baseFinanceURL: chechUrl
+      ? 'https://revamp.finance.letseduvate.com/qbox'
+      : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
   },
 };
 
