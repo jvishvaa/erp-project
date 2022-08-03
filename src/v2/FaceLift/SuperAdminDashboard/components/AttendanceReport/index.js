@@ -147,7 +147,7 @@ const AttendanceReport = (props) => {
             <div className='th-width-100 text-center mt-5 mt-md-0'>
               <Spin tip='Loading...'></Spin>
             </div>
-          ) : attendanceReportData?.length > 100 ? (
+          ) : attendanceReportData?.length > 0 ? (
             finalAttendanceData?.map((item, i) => (
               <div
                 className='col-md-3 th-custom-col-padding'
