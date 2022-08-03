@@ -13,8 +13,13 @@ const CurriculumCompletion = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
+  const [moduleId, setModuleId] = useState('');
   const [curriculumData, setCurriculumData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
   const fetchCurriculumData = (params = {}) => {
     setLoading(true);
@@ -45,7 +50,23 @@ const CurriculumCompletion = () => {
   useEffect(() => {
     getCurriculumData();
   }, []);
-
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Ebook' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Ebook View') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, []);
   return (
     <div
       className='th-bg-white th-br-5 py-3 px-2 mt-3 shadow-sm'
@@ -84,7 +105,16 @@ const CurriculumCompletion = () => {
                     >
                       <div
                         className='row justify-content-between py-3 th-br-6 align-items-center'
-                        // onClick={() => history.push('./curriculum-report')}
+                        onClick={() =>
+                          history.push({
+                            pathname: '/curriculum-completion-branchWise',
+                            state: {
+                              branchData: [selectedBranch],
+                              module_id: moduleId,
+                              iscurriculam: true,
+                            },
+                          })
+                        }
                       >
                         <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 text-truncate text-capitalize'>
                           <Tooltip

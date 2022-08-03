@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { message, Spin } from 'antd';
+import { message, Spin, Tooltip } from 'antd';
 import { RightOutlined, ReloadOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import axios from 'v2/config/axios';
@@ -73,30 +73,42 @@ const Assessment = () => {
               </div>
 
               <div style={{ overflowY: 'auto', overflowX: 'hidden', height: 130 }}>
-                {assessmentData?.map((item, i) => (
-                  <div
-                    className='th-bg-grey mb-2 th-br-6 text-capitalize'
-                    style={{ cursor: 'pointer' }}
-                  >
+                {assessmentData?.map((item, i) => {
+                  let section = item.section_name.charAt(item.section_name.length - 1);
+                  return (
                     <div
-                      className='row justify-content-between py-3 th-br-6 align-items-center'
-                      onClick={() => history.push('./assessment-reports')}
+                      className='th-bg-grey mb-2 th-br-6 text-capitalize'
+                      style={{ cursor: 'pointer' }}
                     >
-                      <div className='col-4 th-black-1 th-14 th-fw-400 pr-0'>
-                        {item?.grade_name}
-                      </div>
-                      <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 pl-1 text-center'>
-                        {item?.subject_name}
-                      </div>
-                      <div className='col-4 text-center th-16 th-fw-600 th-green-1 px-0'>
-                        <span className='d-flex align-items-center justify-content-end pr-2 pr-md-1'>
-                          {item?.avg_score}
-                          <RightOutlined className='th-black-1 pl-3' />
-                        </span>
+                      <div
+                        className='row justify-content-between py-3 th-br-6 align-items-center'
+                        onClick={() => history.push('./assessment-reports')}
+                      >
+                        <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 text-truncate'>
+                          <Tooltip
+                            placement='top'
+                            title={
+                              <span className='text-capitalize'>
+                                {item?.grade_name} {section}
+                              </span>
+                            }
+                          >
+                            {item?.grade_name} {section}
+                          </Tooltip>
+                        </div>
+                        <div className='col-4 th-black-1 th-14 th-fw-400 pr-0 pl-1 text-center'>
+                          {item?.subject_name}
+                        </div>
+                        <div className='col-4 text-center th-16 th-fw-600 th-green-1 px-0'>
+                          <span className='d-flex align-items-center justify-content-end pr-2 pr-md-1'>
+                            {item?.avg_score}
+                            <RightOutlined className='th-black-1 pl-3' />
+                          </span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>

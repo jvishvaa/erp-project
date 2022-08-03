@@ -4,11 +4,15 @@ import ShortcutCard from 'v2/FaceLift/myComponents/ShortcutCard';
 const Shortcut = () => {
   const shortcutsData = [
     {
-      title: 'ClassWork Report',
+      title: 'Academic Report',
+      url: '/academic-report',
+    },
+    {
+      title: 'ClassWorks',
       url: '/erp-online-class-teacher-view',
     },
     {
-      title: 'Homework Report',
+      title: 'Homeworks',
       url: '/homework/teacher',
     },
     {

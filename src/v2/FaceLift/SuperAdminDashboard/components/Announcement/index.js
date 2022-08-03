@@ -11,6 +11,9 @@ const Announcements = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
   const history = useHistory();
   const [announcementData, setAnnouncementData] = useState([]);
 
@@ -30,7 +33,10 @@ const Announcements = () => {
 
   useEffect(() => {
     if (selectedAcademicYear)
-      fetchAnnouncementData({ session_year: selectedAcademicYear?.id });
+      fetchAnnouncementData({
+        session_year: selectedAcademicYear?.id,
+        branch_id: selectedBranch?.branch?.id,
+      });
   }, [selectedAcademicYear]);
 
   return (

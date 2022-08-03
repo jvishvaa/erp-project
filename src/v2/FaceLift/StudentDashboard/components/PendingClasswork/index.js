@@ -84,7 +84,7 @@ const PendingClasswork = () => {
                     onClick={() => history.push('./erp-online-class-student-view')}
                   >
                     <div className='row justify-content-between py-3 th-br-6 align-items-center'>
-                      <div className='col-4 th-black-2 th-14 th-fw-400 pr-0 text-left pl-1 text-truncate'>
+                      <div className='col-4 th-black-2 th-14 th-fw-400 text-left text-truncate'>
                         {item?.subject_name}
                       </div>
                       <div className='col-4 th-black-2 th-14 th-fw-400 pr-0 pl-2 text-truncate text-center'>
