@@ -38,7 +38,7 @@ const useStyles = makeStyles({
     borderRadius: '10px',
   },
   accordionSummary: {
-    backgroundColor: '#FFD9D9',
+    backgroundColor: `${theme.palette.v2Color1.primaryV2} !important`,
     borderRadius: '10px 10px 0 0',
   },
   accordionTitle: {
@@ -88,7 +88,7 @@ const AccordionSummary = withStyles({
 const AccordionDetails = withStyles((theme) => ({
   root: {
     transform: 'rotate(90deg)',
-    backgroundColor: '#FFD9D9',
+    backgroundColor: `${theme.palette.v2Color1.primaryV2} !important`,
     borderRadius: '0 0 10px 10px',
     height: '210px',
     width: '215px',

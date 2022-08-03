@@ -12,7 +12,7 @@ import { handleDownloadPdf } from '../../../../src/utility-functions';
 
 const AssesmentDetails = ({ test, onClick, onClose, filterData }) => {
   const history = useHistory();
-
+  console.log(test , "filter");
   const {
     test_id: id,
     id: assessmentId,

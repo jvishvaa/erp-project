@@ -15,14 +15,16 @@ import HomeWorkIcon from '@material-ui/icons/HomeWork';
 import { useHistory } from 'react-router-dom';
 import useStyles from './useStyles';
 import endpoints from '../../config/endpoints';
-
-
+import { useDispatch, useSelector } from 'react-redux';
+import { IsV2Checker } from 'v2/isV2Checker';
 
 const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
   const history = useHistory();
   const classes = useStyles();
   const userMenuOpen = openMenu === 'user-management';
   const masterMenuOpen = openMenu === 'master-management';
+
+  const isV2 = IsV2Checker();
 
   return (
     <>
@@ -36,9 +38,11 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
         >
           {' '}
           <ListItemIcon className={classes.menuItemIcon}>
-            <HomeWorkIcon/>
+            <HomeWorkIcon />
           </ListItemIcon>
-          <ListItemText className='menu-item-text'>Dashboard</ListItemText>
+          <ListItemText className={isV2 ? 'menu-item-text-v2' : 'menu-item-text'}>
+            Dashboard
+          </ListItemText>
         </ListItem>
       )}
       {/* <ListItem
@@ -71,7 +75,7 @@ const SuperUserMenu = ({ openMenu, onClickMenuItem, onChangeMenuState }) => {
         </ListItemIcon>
         <ListItemText className='menu-item-text'>Role Management</ListItemText>
       </ListItem> */}
-      
+
       {/*
         <ListItem
           button
