@@ -6,6 +6,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     margin: '37px',
     padding: '19px',
+    overflowY: 'auto',
+    height: '100%',
   },
   gap: {
     margin: '0px 24px',

@@ -1,0 +1,50 @@
+.th-calendar.react-calendar {
+  width: 100%;
+  background-color: #ffffff !important;
+  border: none !important;
+  font-family: 'Inter', sans-serif !important;
+}
+
+.th-calendar .react-calendar__month-view__weekdays__weekday abbr[title] {
+  text-decoration: none !important;
+  cursor: pointer;
+  color: #4e5879;
+}
+
+.th-calendar .react-calendar__navigation__label__labelText--from {
+  font-size: 14px;
+  font-weight: 400 !important;
+  color: #1b4ccb !important;
+  background-color: #ffffff !important;
+}
+.th-calendar .react-calendar__navigation__arrow {
+  color: #1b4ccb !important;
+  font-weight: bold !important;
+  background-color: #ffffff !important;
+}
+
+.th-calendar .react-calendar__navigation {
+  display: flex;
+  justify-content: center !important;
+}
+
+.th-calendar .react-calendar__navigation__label {
+  flex-grow: 0.3 !important;
+  background-color: #ffffff !important;
+  pointer-events: none !important;
+}
+
+.th-calendar .react-calendar__tile {
+  border-radius: 6px !important;
+  height: 45px !important;
+  font-size: 14px;
+}
+
+.th-calendar .react-calendar__month-view__days {
+  height: 228px;
+  overflow-y: auto;
+}
+
+.th-calendar .react-calendar__year-view__months {
+  height: 254px;
+}

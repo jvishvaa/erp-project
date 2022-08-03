@@ -16,6 +16,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import { theme } from 'highcharts';
 import { ClassSharp } from '@material-ui/icons';
 import './styles.scss';
+import { useDispatch, useSelector } from 'react-redux';
+import { IsV2Checker } from 'v2/isV2Checker';
 
 const MenuItem = withRouter(({ history, ...props }) => {
   const {
@@ -33,6 +35,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
   const [flag, setFlag] = useState(true);
   const [childValue, setChildValue] = useState(!flag);
   const [child, setChild] = useState('');
+
+  const isV2 = IsV2Checker();
 
   const useStyles = makeStyles((theme) => ({
     // listitem: {
@@ -105,6 +109,9 @@ const MenuItem = withRouter(({ history, ...props }) => {
     // { name: 'Teacher View Class', Path: '/online-class/teacher-view-class' },
     // { name: 'Role Management', Path: '/role-management' },
     { name: 'View Role', Path: '/role-management' },
+    { name: 'Teacher Attendance', Path: '/teacher-attendance' },
+    { name: 'Teacher Attendance Verify', Path: '/teacher-attendance-verify' },
+
     { name: 'Deposit', Path: '/finance/DepositTab' },
     { name: 'Create Coupon', Path: '/finance/CreateCoupon' },
     { name: 'Assign Coupon', Path: '/finance/AssignCoupon' },
@@ -155,7 +162,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Student Homework Report', Path: '/homework/student-report' },
     // { name: 'Student Homework Report', Path: '/classwork-report-teacher-view' },
     { name: 'Assessment', Path: '/assessment' },
-    {name:' Individual Student Report',Path:'/assessment-student-report'},
+    { name: 'Individual Student Report', Path: '/assessment-student-report' },
     { name: 'Communication', Path: '/communication' },
     { name: 'Add Group', Path: '/communication/addgroup' },
     { name: 'View&Edit Group', Path: '/communication/viewgroup' },
@@ -193,9 +200,13 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Teacher Forum', Path: '/teacher-forum' },
     { name: 'Student Forum', Path: '/student-forum' },
     { name: 'Assessment Report', Path: '/assessment-reports' },
-    { name:'Student Report',path:'/assessment-student-report'},
 
-    { name:'Weekly Quiz Performance',path:'/assessment-weekly-quiz-performance-report'},
+    { name: 'Student Report', Path: '/assessment-student-report' },
+
+    {
+      name: 'Weekly Quiz Performance',
+      Path: '/assessment-weekly-quiz-performance-report',
+    },
     // { name: 'Report Card Settings', Path: '/assessment/report-card-settings' },
     { name: 'Marks Upload', Path: '/assessment/marks-upload' },
     { name: 'Report Card', Path: '/assessment/report-card' },
@@ -207,8 +218,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Student Attendance Report', Path: '/student-attendance-report' },
     { name: 'Student Strength', Path: '/student-strength' },
 
-    { name: 'Grievance Teacher', Path: '/griviences/admin-view' },
-    { name: 'Grievance Student', Path: '/griviences/student-view' },
+    { name: 'Griviences Teacher', Path: '/griviences/admin-view' },
+    { name: 'Griviences Student', Path: '/griviences/student-view' },
     {
       name: 'Manage Orchadio',
       Path: '/orchadio/manage-orchadio',
@@ -499,7 +510,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
     },
     {
       name: 'Books & Uniform',
-      Path: '/finance/student_store'
+      Path: '/finance/BooksAndUniform',
     },
     {
       name: 'Shipping Payment',
@@ -528,10 +539,6 @@ const MenuItem = withRouter(({ history, ...props }) => {
     {
       name: 'Order Status Upload',
       Path: '/Store/OrderStatusUpload',
-    },
-    {
-      name: 'Connection pod',
-      Path: '/online-class/connection-pod'
     },
     {
       name: 'Subject Training',
@@ -581,10 +588,35 @@ const MenuItem = withRouter(({ history, ...props }) => {
       name: 'Trainer Driven Courses',
       Path: '/trainerDriven',
     },
+    { name: 'Connection pod', Path: '/online-class/connection-pod' },
     // {
     //   name: 'Self Driven Courses',
     //   Path: '/assignedCoursesByCordinator',
     // },
+    {
+      name: 'Mark Attendance',
+      Path: '/teacher-attendance',
+    },
+    {
+      name: 'View Attendance',
+      Path: '/teacher-attendance-verify',
+    },
+    {
+      name: 'Create Area',
+      Path: '/observation-area',
+    },
+    {
+      name: 'Create Observation',
+      Path: '/observation',
+    },
+    {
+      name: 'Evaluation',
+      Path: '/observation-report',
+    },
+    {
+      name: 'Observation Report',
+      Path: '/pdf-table',
+    },
     {
       name: 'Trainee Courses',
       Path: '/sure-learning-trainee-courses',
@@ -606,7 +638,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/sure-learning-course-wise-user-report',
     },
     {
-      name: 'Branch wise Report',
+      name: 'Branch wise report',
       Path: '/sure-learning-branch-level-detailed-report',
     },
     {
@@ -618,11 +650,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/assignedCoursesByCordinator',
     },
     {
-      name: 'Mark Attendance',
-      Path: '/teacher-attendance',
-    },
-    {
-      name: 'Assign Lead Teacher',
+      name: 'Assign Lead Teacher\n',
       Path: '/sure-learning-assign-lead-teacher',
     },
     {
@@ -634,11 +662,11 @@ const MenuItem = withRouter(({ history, ...props }) => {
       Path: '/sure-learning-weekly-report',
     },
     {
-      name: 'Class Intitiation Form',
+      name: 'Class Initiation Form',
       Path: '/sure_learning/class_initiation_form',
     },
     {
-      name: 'Intiate Class',
+      name: 'Initiate Class',
       Path: '/sure_learning/initiate_class',
     },
     {
@@ -648,22 +676,6 @@ const MenuItem = withRouter(({ history, ...props }) => {
     {
       name: 'Assign Teacher',
       Path: '/sure-learning/assign-teacher',
-    },
-    {
-      name:'View Attendance',
-      Path:'/teacher-attendance-verify',
-    },
-    {
-      name:'All/Completed Courses',
-      Path:'/sure_learning/completed_courses',
-    },
-    {
-      name:'Enroll for sure learning',
-      Path:'/sure-learning-access',
-    },
-    {
-      name:'Resource',
-      Path:'/sure_learning/resources',
     },
   ];
 
@@ -774,7 +786,10 @@ const MenuItem = withRouter(({ history, ...props }) => {
           {/* <MenuIcon name={item.parent_modules} /> */}
           {menuIcon(item.parent_modules)}
         </ListItemIcon>
-        <ListItemText primary={item.parent_modules} className='menu-item-text' />
+        <ListItemText
+          primary={item.parent_modules}
+          className={isV2 ? 'menu-item-text-v2' : 'menu-item-text'}
+        />
         {item.child_module && item.child_module.length > 0 ? (
           menuOpen ? (
             <ExpandLess className={classes.expandIcons} />
@@ -795,7 +810,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
                 style={{ background: 'none' }}
                 className={
                   selectedIndex &&
-                    child.child_name === menuSelectionArray[selectedIndex].name
+                  child.child_name === menuSelectionArray[selectedIndex].name
                     ? classes.menuSelectionText
                     : classes.menuItemhover
                 }
@@ -809,7 +824,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
                 </ListItemIcon>
                 <ListItemText
                   primary={child.child_name}
-                  className='menu-item-text-expand'
+                  className={isV2 ? 'menu-item-text-expand-v2' : 'menu-item-text-expand'}
                 />
               </ListItem>
             ))}

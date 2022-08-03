@@ -1,5 +1,5 @@
 const webUrl = window.location.host;
-const hostUrl = webUrl.split('.')
+const hostUrl = webUrl.split('.');
 
 const chechUrl = hostUrl[0] === 'orchids' ? true : false;
 const local = {
@@ -19,7 +19,7 @@ const local = {
     // baseURL: 'http://localhost:8000/qbox',
     // baseURL: `${window.location.origin}/qbox`,
     baseURLCentral: 'https://dev.mgmt.letseduvate.com/qbox',
-    baseFinanceURL:'https://dev.erpfinance.letseduvate.com/qbox',
+    baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://dev.classes.letseduvate.com',
     msReportsUrl: 'https://dev.reports.letseduvate.com',
@@ -34,10 +34,10 @@ const dev = {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
-
   },
   apiGateway: {
-    baseURL: `${window.location.origin}/qbox`,
+    baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
+    baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
     baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
@@ -47,6 +47,7 @@ const dev = {
     msReportsUrl: 'https://dev.reports.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://uidev.erpfinance.letseduvate.com',
+    baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
   },
 };
 
@@ -57,7 +58,6 @@ const qa = {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
-
   },
   apiGateway: {
     // baseURL: `${window.location.origin}/qbox`,
@@ -66,7 +66,7 @@ const qa = {
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     baseURLCentral: 'https://qa.mgmt.letseduvate.com/qbox',
-    baseFinanceURL:'https://dev.erpfinance.letseduvate.com/qbox',
+    baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://qa.classes.letseduvate.com',
     msReportsUrl: 'https://qa.reports.letseduvate.com',
@@ -82,7 +82,6 @@ const stage = {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
-
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -102,7 +101,6 @@ const prod = {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
-
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -110,7 +108,9 @@ const prod = {
     baseURLMPQ: 'https://mpquiz.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     baseURLCentral: 'https://mgmt.letseduvate.com/qbox',
-    baseFinanceURL: chechUrl ? 'https://revamp.finance.letseduvate.com/qbox' : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
+    baseFinanceURL: chechUrl
+      ? 'https://revamp.finance.letseduvate.com/qbox'
+      : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://classes.letseduvate.com',
     msReportsUrl: 'https://reports.letseduvate.com',

@@ -1,0 +1,7 @@
+.ant-drawer-content-wrapper {
+  z-index: 2000;
+  margin-top: 10%;
+}
+.ant-drawer {
+  z-index: 2000;
+}

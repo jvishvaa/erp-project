@@ -50,6 +50,7 @@ import {
 import AddIcon from '@material-ui/icons/Add';
 import Loader from '../../../components/loader/loader';
 import RestoreIcon from '@material-ui/icons/Restore';
+import { IsV2Checker } from 'v2/isV2Checker';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -170,6 +171,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     { label: 'Status', key: 'status' },
   ];
 
+  let isV2 = IsV2Checker();
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -712,6 +714,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
             <Tooltip title='Create User' placement='bottom' arrow>
               <IconButton
                 className='create-user-button'
+                style={isV2 ? {backgroundColor: '#4a77e8' } : null }
                 onClick={() => {
                   history.push('/user-management/create-user');
                 }}
