@@ -55,6 +55,8 @@ const V2Router = () => {
                             switch (userLevel) {
                               case 1:
                                 return <SuperAdmindashboardNew match={match} />;
+                              case 2:
+                                return <SuperAdmindashboardNew match={match} />;
 
                               case 4:
                                 return <SuperAdmindashboardNew match={match} />;

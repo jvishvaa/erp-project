@@ -14,6 +14,9 @@ const Announcements = (props) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
 
   const fetchAnnouncementData = (params = {}) => {
     axios
@@ -35,7 +38,10 @@ const Announcements = (props) => {
 
   useEffect(() => {
     if (selectedAcademicYear)
-      fetchAnnouncementData({ session_year: selectedAcademicYear?.id });
+      fetchAnnouncementData({
+        session_year: selectedAcademicYear?.id,
+        branch_id: selectedBranch?.branch?.id,
+      });
   }, [selectedAcademicYear]);
 
   return (

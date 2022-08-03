@@ -127,7 +127,7 @@ const AttendanceReport = (props) => {
     <div className='col-md-12'>
       <div
         className='th-bg-white th-br-5 py-3 px-2 shadow-sm'
-        style={{ minHeight: '160px' }}
+        style={{ height: window.innerWidth < 768 ? '500px' : '160px' }}
       >
         <div className='row justify-content-between'>
           <div className='col-8 col-md-6 th-16 th-fw-500 th-black-1 d-flex flex-column flex-md-row align-items-md-center'>
@@ -144,10 +144,10 @@ const AttendanceReport = (props) => {
         </div>
         <div className='row pt-2'>
           {loading ? (
-            <div className='th-width-100 text-center'>
+            <div className='th-width-100 text-center mt-5 mt-md-0'>
               <Spin tip='Loading...'></Spin>
             </div>
-          ) : attendanceReportData?.length > 0 ? (
+          ) : attendanceReportData?.length > 100 ? (
             finalAttendanceData?.map((item, i) => (
               <div
                 className='col-md-3 th-custom-col-padding'
@@ -157,8 +157,8 @@ const AttendanceReport = (props) => {
               </div>
             ))
           ) : (
-            <div className='col text-center'>
-              <img src={NoDataIcon} />
+            <div className='col text-center mt-5 mt-md-0'>
+              <img src={NoDataIcon} height={window.innerWidth < 768 ? '100%' : '110px'} />
             </div>
           )}
         </div>

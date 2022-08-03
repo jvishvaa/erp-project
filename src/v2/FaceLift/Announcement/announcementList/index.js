@@ -265,7 +265,7 @@ const AnnouncementList = () => {
 
           <div className='row'>
             <div className='col-12'>
-              <div className='card-container th-tabs'>
+              <div className='th-bg-white th-tabs'>
                 <Tabs type='card' onChange={onChange} activeKey={showTab}>
                   <TabPane
                     tab={
