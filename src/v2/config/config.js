@@ -1,4 +1,7 @@
+const webUrl = window.location.host;
+const hostUrl = webUrl.split('.');
 const chechUrl = hostUrl[0] === 'orchids' ? true : false;
+
 const local = {
   s3: {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
