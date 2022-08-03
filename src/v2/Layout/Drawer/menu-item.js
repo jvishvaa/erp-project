@@ -210,8 +210,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Student Attendance Report', Path: '/student-attendance-report' },
     { name: 'Student Strength', Path: '/student-strength' },
 
-    { name: 'Griviences Teacher', Path: '/griviences/admin-view' },
-    { name: 'Griviences Student', Path: '/griviences/student-view' },
+    { name: 'Grievance Teacher', Path: '/griviences/admin-view' },
+    { name: 'Grievance Student', Path: '/griviences/student-view' },
     {
       name: 'Manage Orchadio',
       Path: '/orchadio/manage-orchadio',

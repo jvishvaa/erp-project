@@ -91,6 +91,7 @@ const prod = {
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://classes.letseduvate.com',
     msReportsUrl: 'https://reports.letseduvate.com',
+    msReportsUrlNew: 'https://reports.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
     finance: 'https://revamp.finance.letseduvate.com',
     baseFinanceURL: chechUrl
