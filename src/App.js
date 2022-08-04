@@ -2033,6 +2033,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/announcement-list'>
                               {({ match }) => <NewCommunication match={match} />}
                             </Route>
+                            <Route path='/create-announcement'>
+                              {({ match }) => <NewCommunication match={match} />}
+                            </Route>
                             {/* Academic Report */}
                             <Route path='/academic-report'>
                               {({ match }) => <AcademicReport match={match} />}

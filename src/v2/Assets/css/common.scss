@@ -8,6 +8,12 @@ body {
   height: 6px;
 }
 
+.th-question::-webkit-scrollbar {
+  width: 5px;
+  height: 8px;
+  background-color: rgb(82, 50, 50);
+}
+
 ::-webkit-scrollbar-track {
   background: #ffffff;
   border-radius: 10px;
@@ -195,11 +201,11 @@ body {
   background: #1b4ccb;
 }
 
-.ant-picker-input:first-child>input {
+.ant-picker-input:first-child > input {
   text-align: right;
 }
 
-.ant-picker-input>input {
+.ant-picker-input > input {
   color: #32334a !important;
   font-size: 13px;
 }
@@ -265,7 +271,6 @@ body {
 .ant-select-multiple .ant-select-selection-item-content {
   max-width: 100px !important;
 }
-
 
 .th-topbar-select .ant-select-selection-item {
   width: 110px !important;
