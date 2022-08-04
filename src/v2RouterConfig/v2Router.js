@@ -29,7 +29,12 @@ const V2Router = () => {
     erpConfig();
   }, []);
   const [theme, setTheme] = useState(() => themeGenerator());
-  const { user_level: userLevel } = JSON.parse(localStorage.getItem('userDetails')) || '';
+  let { user_level: userLevel } = JSON.parse(localStorage.getItem('userDetails')) || '';
+  const { is_superuser: superuser } =
+    JSON.parse(localStorage.getItem('userDetails')) || '';
+  if (superuser == true) {
+    userLevel = 1;
+  }
 
   return (
     <Router>

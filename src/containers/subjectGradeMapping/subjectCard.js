@@ -152,12 +152,11 @@ const Subjectcard = (props) => {
                         </IconButton>
                         {showPeriodIndex === index && showMenu ? (
                           <div
-                            className='tooltip'
                             style={{ display: 'flex', justifyContent: 'space-between' }}
                           >
                             <span className={` ${classes.tooltiptext} tooltiptext`}>
                               <div
-                                className='tooltip'
+                                // className='tooltip'
                                 title='Delete'
                                 onClick={(e) => handleClick(e)}
                               >
@@ -186,16 +185,17 @@ const Subjectcard = (props) => {
                                 </Typography>
                                 <div>
                                   <Button
-                                    variant="contained"
-                                    className="labelColor cancelButton"
-                                    onClick={(e) => handleClose()}>
+                                    variant='contained'
+                                    className='labelColor cancelButton'
+                                    onClick={(e) => handleClose()}
+                                  >
                                     Cancel
                                   </Button>
                                   <Button
-                                    variant="contained"
-                                    color="primary"
+                                    variant='contained'
+                                    color='primary'
                                     onClick={() => callDelete(list.id, index)}
-                                    style={{ float: 'right', color: "white" }}
+                                    style={{ float: 'right', color: 'white' }}
                                   >
                                     Confirm
                                   </Button>

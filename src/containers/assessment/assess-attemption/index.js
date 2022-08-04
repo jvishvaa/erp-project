@@ -8,53 +8,68 @@ const AssessmentAttemption = (props) => {
   const testContainerRef = useRef(null);
 
   function checkBrowserFullScreen() {
-    window.addEventListener("keydown" || "keyup", function (e) {
+    window.addEventListener('keydown' || 'keyup', function (e) {
       if (e.ctrlKey) {
-        e.preventDefault ? e.preventDefault() : e.returnValue = false;
-        return false
+        e.preventDefault ? e.preventDefault() : (e.returnValue = false);
+        return false;
       }
-    })
-
+    });
   }
   function openFullscreen() {
     const elem = document.getElementsByTagName('body')[0];
     if (elem.requestFullscreen) {
       // elem.requestFullscreen();
-      elem.requestFullscreen({ navigationUI: "show" }).then(function () {
-        checkBrowserFullScreen()
-      })
-        .catch(function (error) {
-        });
-    } else if (elem.webkitRequestFullscreen) { /* Safari */
-      elem.webkitRequestFullscreen({ navigationUI: "show" }).then(function () {
-        checkBrowserFullScreen()
-      })
-        .catch(function (error) {
-        });;
-    } else if (elem.msRequestFullscreen) { /* IE11 */
-      elem.msRequestFullscreen({ navigationUI: "show" }).then(function () {
-        checkBrowserFullScreen()
-      })
-        .catch(function (error) {
-        });;
-    }
-    else if (elem.mozRequestFullScreen) { /* Mozilla firefox */
-      elem.mozRequestFullScreen({ navigationUI: "show" }).then(function () {
-        checkBrowserFullScreen()
-      })
-        .catch(function (error) {
-        });;
+      elem
+        .requestFullscreen({ navigationUI: 'show' })
+        .then(function () {
+          checkBrowserFullScreen();
+        })
+        .catch(function (error) {});
+    } else if (elem.webkitRequestFullscreen) {
+      /* Safari */
+      elem
+        .webkitRequestFullscreen({ navigationUI: 'show' })
+        .then(function () {
+          checkBrowserFullScreen();
+        })
+        .catch(function (error) {});
+    } else if (elem.msRequestFullscreen) {
+      /* IE11 */
+      elem
+        .msRequestFullscreen({ navigationUI: 'show' })
+        .then(function () {
+          checkBrowserFullScreen();
+        })
+        .catch(function (error) {});
+    } else if (elem.mozRequestFullScreen) {
+      /* Mozilla firefox */
+      elem
+        .mozRequestFullScreen({ navigationUI: 'show' })
+        .then(function () {
+          checkBrowserFullScreen();
+        })
+        .catch(function (error) {});
     }
   }
   useEffect(() => {
-    openFullscreen()
+    openFullscreen();
     // toggleFullScreen()
-  }, [])
+  }, []);
 
   return (
     <>
       {/* <Layout> */}
-      <div style={{ background: 'white' }} id="testContainer" ref={testContainerRef}>
+      <div
+        style={{
+          background: 'white',
+          height: '90vh',
+          overflowX: 'hidden',
+          overflowY: 'scroll',
+        }}
+        id='testContainer'
+        className='th-question'
+        ref={testContainerRef}
+      >
         {/* <button onClick={openFullscreen}>Toggle</button> */}
         <AssessmentHandlerContextProvider assessmentId={assessmentId}>
           <AssessmentAttemptionUI />
