@@ -400,7 +400,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
                 item
                 md={3}
                 xs={12}
-                // style={{ marginTop: '8px', display: location.state.grades.length !== 0 ? '' : 'none', }}
+                style={{ marginTop: '8px' }}
               >
                 <Autocomplete
                   size='small'
