@@ -25,7 +25,9 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData }) => {
     total_mark: totalMark,
     created_at: createdDate,
     updated_at: updatedDate,
-    sectionMap : section_mapping
+    sectionMap : section_mapping,
+    question_paper_id : question_paper_id,
+    test_id : test_id
   } = test;
 
   const handleData = () => {
@@ -63,6 +65,13 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData }) => {
       .catch((error) => {
         setAlert(error?.message);
       });
+  };
+
+  const handleTest = () => {
+    history.push(
+      `/assessment/${question_paper_id}/${assessmentId}/attempt/`
+    );
+    console.log(test);
   };
 
   return (
@@ -204,6 +213,11 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData }) => {
                   </Button>
                 </Grid>
                 : ''}
+                  <Grid item xs={12} style={{margin: '4% 0'}} >
+                  <Button variant='contained' color='primary' onClick={handleTest}>
+                    Preview
+                  </Button>
+                </Grid>
             </Grid>
           </div>
         </div>
