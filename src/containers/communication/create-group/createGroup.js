@@ -876,6 +876,7 @@ if(value.length > 0){
                               variant='outlined'
                               label='Branch'
                               placeholder='Branch'
+                              required
                             />
                           )}
                         />
@@ -904,6 +905,7 @@ if(value.length > 0){
                               variant='outlined'
                               label='Grade'
                               placeholder='Grade'
+                              required
                             />
                           )}
                         />
@@ -931,6 +933,7 @@ if(value.length > 0){
                               variant='outlined'
                               label='Section'
                               placeholder='Section'
+                              required
                             />
                           )}
                         />

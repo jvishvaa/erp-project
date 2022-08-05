@@ -127,6 +127,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const [editData , SetEditData] = useState()
   const [searchData,setSearchData] = useState('')
   const [isNewSeach, setIsNewSearch] = useState(true);
+  const [isFilter,setisFilter] = useState(false)
 
 
   // const delayedCallback = _.debounce(() => {
@@ -148,9 +149,9 @@ const ViewGroup = withRouter(({ history, ...props }) => {
       try {
       setLoading(true);
       let url = `${endpoints.communication.userGroups}?page=${currentPage}&page_size=15&group_type=1&acad_session=${selectedbranch?.id}&grade=${selectedGrade?.grade_id}`
-      // if(searchData){
-      //   url += `&search=${searchData}`
-      // }
+      if(searchData){
+        url += `&search=${searchData}`
+      }
       const result = await axiosInstance.get(url);
       const resultGroups = [];
       if (result.status === 200) {
@@ -258,7 +259,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
       let search = e.target.value;
       // setSearchText(e.target.value);
       setSearchData(e.target.value)
-      if(search.length > 1) {
+      if(search.length >= 0) {
         debounceCallback(search);
       }
       else {
@@ -268,7 +269,10 @@ const ViewGroup = withRouter(({ history, ...props }) => {
 
   }
 
-
+const handlefilter = () => {
+  setisFilter(true)
+  getGroupsData()
+}
   const handleBranch = (e,value={}) =>{	
     setSelectedbranch()
     setSelectedGrade()
@@ -411,32 +415,21 @@ const handleSection = (e, value) => {
   //   }
   // }, [editing]);
 
-  function handleUpdate(task , data) {
-    if(task === 'add'){
+  function handleCreate() {
       history.push({
         pathname: '/addgroup',
         // state: { ...data,
         // isEdit : true
         // },
       });
-    }else{
-      history.push({
-        pathname: '/communication/updategroup',
-        state: { ...data ,
-          isEdit : true
-        },
-
-      });
-    }
-   
   }
 
-  // useEffect(() => {
-  //   if (isNewSeach && moduleId) {
-  //     setIsNewSearch(false);
-  //     getGroupsData();
-  //   }
-  // }, [isNewSeach, moduleId]);
+  useEffect(() => {
+    if (isNewSeach && moduleId && isFilter ) {
+      setIsNewSearch(false);
+      getGroupsData();
+    }
+  }, [isNewSeach, moduleId,isFilter]);
 
   const handleEdit= (item) => {
     SetEditData(item)
@@ -498,6 +491,7 @@ const handleSection = (e, value) => {
                         variant='outlined'
                         label='Branch'
                         placeholder='Branch'
+                        required
                       />
                     )}
                   />
@@ -520,6 +514,7 @@ const handleSection = (e, value) => {
                         variant='outlined'
                         label='Grade'
                         placeholder='Grade'
+                        required
                       />
                     )}
                   />
@@ -553,23 +548,23 @@ const handleSection = (e, value) => {
                     variant='contained'
                     width='100%'
                     style={{ color: 'white' }}
-                    onClick={() => getGroupsData()}
+                    onClick={() => handlefilter()}
                   >
                     Filter
                   </Button>
                 </Grid>
-                <Grid item md={3} xs={12}>
+                <Grid item md={3} xs={12} style={{display:'flex',justifyContent:'flex-end'}}>
                   <Button
                     color='primary'
                     variant='contained'
                     width='100%'
                     style={{ color: 'white' }}
-                    onClick={() => handleUpdate('add','')}
+                    onClick={() => handleCreate()}
                   >
                     Create Group
                   </Button>
                 </Grid>
-                {/* <Grid item md={4}>
+                <Grid item md={4}>
                   <Paper elevation={3} className='search'>
                     <div>
                       <SearchIcon />
@@ -579,7 +574,7 @@ const handleSection = (e, value) => {
                       onChange={(e) => handleSearch(e)}
                     />
                   </Paper>
-                </Grid> */}
+                </Grid>
               </Grid>
             </div>
             {deleteAlert ? (
@@ -624,7 +619,7 @@ const handleSection = (e, value) => {
                 </span>
               )}
               {groupsData.length === 0 ? (
-                <NoFilterData data='Please Select Filter to See Data' />
+                <NoFilterData data='No Data Found' />
               ) : (
                 <Paper className={` view_group_table_wrapper ${classes.root}`}>
                   <TableContainer
