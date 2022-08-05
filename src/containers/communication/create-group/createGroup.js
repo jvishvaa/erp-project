@@ -310,7 +310,7 @@ if(isEdit && completeData.length){
     setNext(true);
     let getUserListUrl;
     if (!edit) {
-      getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15&module_id=${moduleId}`;
+      getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15&module_id=${moduleId}&level=13`;
     }
     // if (isEdit) {
     //   getUserListUrl = `${endpoints.communication.edit}${1}/retrieve-update-group/?page=${pageno}&page_size=15&module_id=${moduleId}`;
