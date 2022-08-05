@@ -806,7 +806,7 @@ const CreateAssesment = ({
                       </Grid>
                       {selectedQuestionPaper && (
                         <Grid container alignItems='center' style={{ marginTop: 15 }}>
-                          {/* <Grid
+                          <Grid
                           container
                           alignItems='center'
                           justifyContent='center'
@@ -821,7 +821,7 @@ const CreateAssesment = ({
                             inputProps={{ 'aria-label': 'checkbox with default color' }}
                           />
                           <Typography>Group</Typography>
-                        </Grid> */}
+                        </Grid>
                           {sectionToggle ? (
                             <Grid item xs={12} md={4}>
                               <Autocomplete
