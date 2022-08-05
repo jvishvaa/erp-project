@@ -440,7 +440,7 @@ const QuestionBankFilters = ({
           if (result?.data?.status_code === 200) {
             setLoading(false);
             // setModuleDropdown(result?.data?.result?.module_list);
-            setModuleDropdown(result.data.result.module_list);
+            setModuleDropdown(result.data.result);
             setCentralGsMappingId(result?.data?.result?.central_gs_mapping_id);
             // setCentralSubjectName(result?.data?.result?.central_subject_name);
             // setCentralGradeName(result?.data?.result?.central_grade_name);
