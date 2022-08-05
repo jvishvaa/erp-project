@@ -13,6 +13,12 @@ import Loading from '../../../components/loader/loader';
 import axios from 'axios';
 // import { connect } from 'react-redux';
 import './question-bank.css';
+import ENVCONFIG from '../../../../src/config/config';
+import { setFilter } from 'redux/actions';
+
+const {
+  apiGateway: { baseURLCentral, xAPIKey },
+} = ENVCONFIG;
 
 const QuestionBankFilters = ({
   questionList,
@@ -46,6 +52,13 @@ const QuestionBankFilters = ({
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [topicDropdown, setTopicDropdown] = useState([]);
   const [queTypeDropdown, setQueTypeDropdown] = useState([]);
+  const [centralGsMappingId, setCentralGsMappingId] = useState();
+  const [boardDropdown, setBoardDropdown] = useState([]);
+  const [selectedBoardId, setSelectedBoardId] = useState([]);
+  const [selectedModuleId, setSelectedModuleId] = useState([]);
+  const [moduleDropdown, setModuleDropdown] = useState([]);
+  const [selectedKeyConceptId, setSelectedKeyConceptId] = useState([]);
+  const [keyConceptDropdown, setKeyConceptDropdown] = useState([]);
 
   const question_level_options = [
     { value: 1, Question_level: 'Easy' },
@@ -216,6 +229,7 @@ const QuestionBankFilters = ({
       branch: '',
       grade: '',
       subject: '',
+      board: '', module: '',
       chapter: '',
       question_level: '',
       question_category: '',
@@ -315,6 +329,7 @@ const QuestionBankFilters = ({
       grade: '',
       section: '',
       subject: '',
+      board: '', module: '',
       chapter: '',
       question_level: '',
       question_category: '',
@@ -357,6 +372,7 @@ const QuestionBankFilters = ({
     setFilterData({
       ...filterData,
       subject: '',
+      board: '', module: '',
       chapter: '',
       question_level: '',
       question_category: '',
@@ -368,13 +384,16 @@ const QuestionBankFilters = ({
     if (value) {
       setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
       if (value) {
-        axiosInstance
-          .get(
-            `${endpoints.questionBank.chapterList}?branch_id=${filterData?.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade=${filterData?.grade?.grade_id}&subject_id=${value?.id}&subject=${value?.subject_id}`
+        axios
+          .get(`${baseURLCentral}/central-admin/boards/`,
+            {
+              headers: { 'x-api-key': 'vikash@12345#1231' }
+            }
           )
           .then((result) => {
             if (result?.data?.status_code === 200) {
-              setChapterDropdown(result?.data?.result);
+              // setChapterDropdown(result?.data?.result);
+              setBoardDropdown(result?.data?.result)
               setLoading(false);
             } else {
               setAlert('error', result?.data?.message);
@@ -388,6 +407,96 @@ const QuestionBankFilters = ({
       }
     } else {
       setLoading(false);
+    }
+  };
+
+
+  const handleBoard = (event = {}, values = []) => {
+    setPage(1)
+    setFilterData({ ...filterData, board: '', module: '', chapter: '', keyconcept: '' });
+    setChapterDropdown([]);
+    setKeyConceptDropdown([]);
+    setModuleDropdown([]);
+    if (values.length > 0) {
+      setChapterDropdown([]);
+      setKeyConceptDropdown([]);
+      setLoading(true);
+      const ids = values.map((el) => el);
+      const selectedId = values.map((el) => el?.id);
+      setSelectedBoardId(selectedId);
+      setFilterData({
+        ...filterData,
+        chapter: '',
+        board: ids,
+        module: '',
+        keyconcept: '',
+      });
+      // axios
+      axiosInstance
+        .get(
+          `academic/get-central-module-list/?subject_id=${filterData?.subject?.subject_id}&grade_id=${filterData.grade.grade_id}&branch_id=${filterData?.branch?.branch?.id}&board=${selectedId}`,
+        )
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setLoading(false);
+            // setModuleDropdown(result?.data?.result?.module_list);
+            setModuleDropdown(result.data.result.module_list);
+            setCentralGsMappingId(result?.data?.result?.central_gs_mapping_id);
+            // setCentralSubjectName(result?.data?.result?.central_subject_name);
+            // setCentralGradeName(result?.data?.result?.central_grade_name);
+          } else {
+            setAlert('error', result?.data?.message);
+            setChapterDropdown([]);
+            setLoading(false);
+            setSelectedBoardId([]);
+            setModuleDropdown([]);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          setAlert('error', error.message);
+          setSelectedBoardId([]);
+          setModuleDropdown([]);
+        });
+    } else {
+      setChapterDropdown([]);
+      setLoading(false);
+      setSelectedBoardId([]);
+      setModuleDropdown([]);
+    }
+  };
+
+  const handleModule = (event = {}, value = []) => {
+    setPage(1)
+    setLoading(true);
+    setFilterData({ ...filterData, module: '', chapter: '', keyconcept: '' });
+    if (value) {
+      setLoading(true);
+      setSelectedModuleId(value?.id);
+      setFilterData({ ...filterData, chapter: '', module: value, keyconcept: '' });
+      axiosInstance
+        .get(
+          `${endpoints.questionBank.chapterList}?branch_id=${filterData?.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade=${filterData?.grade?.grade_id}&subject_id=${filterData?.subject?.id}&subject=${filterData?.subject?.subject_id}&board_id=${selectedBoardId}&module_id=${value?.id}`,
+        )
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setLoading(false);
+            setChapterDropdown(result?.data?.result);
+            // setChapterDropdown(result?.data?.result?.chapter_list);
+          } else {
+            setLoading(false);
+            setAlert('error', result.data.message);
+            setChapterDropdown([]);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          setAlert('error', error.message);
+          setChapterDropdown([]);
+        });
+    } else {
+      setLoading(false);
+      setChapterDropdown([]);
     }
   };
 
@@ -555,6 +664,62 @@ const QuestionBankFilters = ({
                 variant='outlined'
                 label='Subject'
                 placeholder='Subject'
+              />
+            )}
+          />
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={3}
+          className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+        >
+          <Autocomplete
+            multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleBoard}
+            id='board'
+            className='dropdownIcon'
+            value={filterData.board || []}
+            options={boardDropdown || []}
+            getOptionLabel={(option) => option?.board_name || ''}
+            // filterSelectedOptions
+            getOptionSelected={(option, value) => option?.id == value?.id}
+            renderInput={(params) => (
+              <TextField {...params} variant='outlined' label='Board' placeholder='Board'
+              // required 
+              />
+            )}
+          />
+        </Grid>
+        <Grid
+          item
+          xs={12}
+          sm={3}
+          className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+        >
+          <Autocomplete
+            // multiple
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleModule}
+            id='module'
+            className='dropdownIcon'
+            value={filterData.module || []}
+            options={moduleDropdown || []}
+            getOptionLabel={(option) => option?.lt_module_name || ''}
+            filterSelectedOptions
+            // getOptionSelected={(option, value) =>
+            //     option?.id == value?.id
+            //   }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Module'
+                placeholder='Module'
+              // required
               />
             )}
           />
