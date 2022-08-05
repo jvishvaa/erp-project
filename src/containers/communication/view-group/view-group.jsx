@@ -315,7 +315,9 @@ const handleSection = (e, value) => {
     try {
       setLoading(true);
       const statusChange = await axiosInstance.put(
-        `${endpoints.communication.editGroup}${id}/update-retrieve-delete-groups/?is_active=${groupsData[index].active ? !groupsData[index].active : true}`
+        `${endpoints.communication.editGroup}${id}/update-retrieve-delete-groups/`,{
+          is_active :groupsData[index].active ? !groupsData[index].active : true
+        }
       );
       if (statusChange.status === 200) {
         setLoading(false);
