@@ -471,7 +471,7 @@ const handleSection = (e, value) => {
             <div className='view_group_breadcrumb_container'>
               <CommonBreadcrumbs
                 componentName='User Management'
-                childComponentName='View Group'
+                childComponentName='User Groups'
               />
               <Grid container item spacing={3}>
                 <Grid item md={3} xs={12}>

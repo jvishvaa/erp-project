@@ -163,7 +163,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
         endpoints.communication.communicationUserList
       }?page=1&page_size=500&module_id=${moduleId}&session_year=${
         selectedAcademicYear?.id
-      }&branch=${branchId}&grade=${gradeId}${`&section=${sectionId}`}&level=13`,
+      }&branch=${branchId}&grade=${gradeId}${`&section=${sectionId}`}&level=${13}&exclude_parent_data=${true}`, 
       'fullGroup'
     );
   }
