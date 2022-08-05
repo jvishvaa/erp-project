@@ -1,36 +1,48 @@
-import React, {useContext,useState} from 'react';
+import React, { useContext, useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import { Button, useTheme, IconButton ,Divider,SvgIcon} from '@material-ui/core';
+import { Button, useTheme, IconButton, Divider, SvgIcon } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import Box from '@material-ui/core/Box';
 import useStyles from './useStyles';
-import './dairy-card.css'
+import './dairy-card.css';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
-import cardAttachment from '../../../assets/images/cardAttachment.svg'
+import cardAttachment from '../../../assets/images/cardAttachment.svg';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
-import {Context} from '../context/context'
-import {useLocation} from 'react-router-dom';
+import { Context } from '../context/context';
+import { useLocation } from 'react-router-dom';
 import Dialog from '@material-ui/core/Dialog';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 
-const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore ,setLoading,  index, periodColor, setPeriodColor, setSelectedIndex, handleDairyType, deleteFlag,setDeleteFlag}) => {
-
+const PeriodCard = ({
+  lesson,
+  setPeriodDataForView,
+  setViewMoreData,
+  setViewMore,
+  setLoading,
+  index,
+  periodColor,
+  setPeriodColor,
+  setSelectedIndex,
+  handleDairyType,
+  deleteFlag,
+  setDeleteFlag,
+}) => {
   const themeContext = useTheme();
   const { setAlert } = useContext(AlertNotificationContext);
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
   const [showMenu, setShowMenu] = useState(false);
   const [showPeriodIndex, setShowPeriodIndex] = useState();
-  const history=useHistory()
-  const [state, setState] = useContext(Context)
+  const history = useHistory();
+  const [state, setState] = useContext(Context);
   const location = useLocation();
   const isTeacher = location.pathname === '/diary/teacher' ? true : false;
   const [deleteAlert, setDeleteAlert] = useState(false);
@@ -46,7 +58,7 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
     setDeleteAlert(false);
   };
   const handleDeleteOpen = () => {
-       setDeleteAlert(true);
+    setDeleteAlert(true);
   };
   const handlePeriodMenuClose = (index) => {
     setShowMenu(false);
@@ -54,26 +66,26 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
   };
 
   const handleViewMore = () => {
-    setLoading(true)
+    setLoading(true);
     // axiosInstance.get(`${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}`)
     //   .then(result => {
     //     if (result.data.status_code === 200) {
-          setLoading(false);
-          setViewMore(true);
-          setViewMoreData(lesson);
-          setPeriodDataForView(lesson);
-          setSelectedIndex(index);
-          setPeriodColor(true);
-          handleDairyType(1);
-        // } else {
-        //   setLoading(false);
-        //   setViewMore(false);
-        //   setViewMoreData({});
-        //   setAlert('error', result.data.message);
-        //   setPeriodDataForView();
-        //   setSelectedIndex(-1);
-        //   setPeriodColor(true);
-        // }
+    setLoading(false);
+    setViewMore(true);
+    setViewMoreData(lesson);
+    setPeriodDataForView(lesson);
+    setSelectedIndex(index);
+    setPeriodColor(true);
+    handleDairyType(1);
+    // } else {
+    //   setLoading(false);
+    //   setViewMore(false);
+    //   setViewMoreData({});
+    //   setAlert('error', result.data.message);
+    //   setPeriodDataForView();
+    //   setSelectedIndex(-1);
+    //   setPeriodColor(true);
+    // }
     //   })
     //   .catch((error) => {
     //     setViewMore(false);
@@ -83,30 +95,30 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
     //     setSelectedIndex(-1);
     //     setPeriodColor(true);
     //   })
-  }
-  const handleDelete=(e,index)=>{
-    axiosInstance.delete(`${endpoints.generalDairy.updateDelete}${e.id}/update-delete-dairy/`)
-    .then((result)=>{
-
-      if(result.data.status_code===200){
-        setAlert('success',result.data.message)
-        setDeleteFlag(!deleteFlag)
-      }else{
-        setAlert('errpr', 'ERROR!')
-      }
-
-    })
-
-
-  }
-  const handleEdit=(data)=>{
+  };
+  const handleDelete = (e, index) => {
+    axiosInstance
+      .delete(`${endpoints.generalDairy.updateDelete}${e.id}/update-delete-dairy/`)
+      .then((result) => {
+        if (result.data.status_code === 200) {
+          setAlert('success', result.data.message);
+          setDeleteFlag(!deleteFlag);
+        } else {
+          setAlert('errpr', 'ERROR!');
+        }
+      });
+  };
+  const handleEdit = (data) => {
     // // setEditData(e)
-    setState({isEdit:true,editData:data});
-    history.push('/create/general-diary')
-  }
+    setState({ isEdit: true, editData: data });
+    history.push('/create/general-diary');
+  };
 
   return (
-    <Paper className={periodColor?classes.selectedRoot:classes.root} style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}>
+    <Paper
+      className={periodColor ? classes.selectedRoot : classes.root}
+      style={isMobile ? { margin: '0rem auto' } : { margin: '0rem auto -1.1rem auto' }}
+    >
       <Grid container spacing={2}>
         <Grid item xs={10}>
           <Box>
@@ -117,11 +129,14 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               color='primary'
               noWrap
             >
-              Topic: <span className= {classes.topictitle}>{lesson.title}</span>
+              Topic: <span className={classes.topictitle}>{lesson.title}</span>
             </Typography>
           </Box>
-          <Typography color = "secondary" style={{fontSize: '15px',marginTop: '10px'}}> General Diary</Typography>
-          <Divider className='divider'/>
+          <Typography color='secondary' style={{ fontSize: '15px', marginTop: '10px' }}>
+            {' '}
+            General Diary
+          </Typography>
+          <Divider className='divider' />
           <Box mt={2}>
             <Typography
               className={classes.content}
@@ -130,20 +145,14 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               color='secondary'
               noWrap
             >
-             Message: {lesson.message}
+              Message: {lesson.message}
             </Typography>
           </Box>
         </Grid>
         <Dialog open={deleteAlert} onClose={handleDeleteCancel}>
-          <DialogTitle
-            id='draggable-dialog-title'
-          >
-            Delete Dairy
-          </DialogTitle>
+          <DialogTitle id='draggable-dialog-title'>Delete Dairy</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Are you sure you want to delete ?
-            </DialogContentText>
+            <DialogContentText>Are you sure you want to delete ?</DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleDeleteCancel} className='labelColor cancelButton'>
@@ -153,7 +162,8 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               color='primary'
               variant='contained'
               style={{ color: 'white' }}
-              onClick={(e) => handleDelete(lesson)}>
+              onClick={(e) => handleDelete(lesson)}
+            >
               Confirm
             </Button>
           </DialogActions>
@@ -165,23 +175,26 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
               onClick={() => handlePeriodMenuOpen(index)}
               onMouseLeave={handlePeriodMenuClose}
             >
-              {isTeacher?
-              <IconButton
-              className="moreHorizIcon"
-              color='primary'
-              >
-                <MoreHorizIcon />
-              </IconButton> : ''
-              }
-              {(showPeriodIndex === index &&
-                showMenu) ? (
-                  <div className="tooltip" style={{display:'flex',justifyContent:'space-between'}}>
-                  <span className={` ${classes.tooltiptext} tooltiptext`} >
-                        <Button className={classes.tooltip} onClick={handleDeleteOpen}>Delete</Button>
-                        {/* <Button className='tooltip' onClick={e=> handleEdit(lesson)}> Edit</Button> */}
-                    </span>
-                  </div>
-                ) : null}
+              {isTeacher ? (
+                <IconButton className='moreHorizIcon' color='primary'>
+                  <MoreHorizIcon />
+                </IconButton>
+              ) : (
+                ''
+              )}
+              {showPeriodIndex === index && showMenu ? (
+                <div
+                  // className='tooltip'
+                  style={{ display: 'flex', justifyContent: 'space-between' }}
+                >
+                  <span className={` ${classes.tooltiptext} tooltiptext`}>
+                    <Button className={classes.tooltip} onClick={handleDeleteOpen}>
+                      Delete
+                    </Button>
+                    {/* <Button className='tooltip' onClick={e=> handleEdit(lesson)}> Edit</Button> */}
+                  </span>
+                </div>
+              ) : null}
             </span>
           </Box>
         </Grid>
@@ -190,44 +203,56 @@ const PeriodCard = ({ lesson, setPeriodDataForView, setViewMoreData, setViewMore
           <Box>
             <Typography
               className={classes.title}
-              style={{fontSize: '15px'}}
+              style={{ fontSize: '15px' }}
               variant='p'
               component='p'
               color='secondary'
             >
-              Created By -<p className = {classes.createdby}>{lesson.created_by.first_name} {lesson.created_at.substring(0, 10)}</p>
-              </Typography>
+              Created By -
+              <p className={classes.createdby}>
+                {lesson.created_by.first_name} {lesson.created_at.substring(0, 10)}
+              </p>
+            </Typography>
           </Box>
           <div>
-            <IconButton style={{fontSize:'1rem',color:'#042955',marginLeft:'.5rem'}}>
-                <SvgIcon
+            <IconButton
+              style={{ fontSize: '1rem', color: '#042955', marginLeft: '.5rem' }}
+            >
+              <SvgIcon
                 component={() => (
                   <img
-                    style={{ height: '21px', width: '21px', marginLeft: '-18px', marginRight: '5px' }}
+                    style={{
+                      height: '21px',
+                      width: '21px',
+                      marginLeft: '-18px',
+                      marginRight: '5px',
+                    }}
                     src={cardAttachment}
                     alt='attachment'
                   />
-                )}/>
+                )}
+              />
               {lesson.documents ? lesson.documents.length : 0} Files
             </IconButton>
             {/* <label></label> */}
           </div>
         </Grid>
-       <Grid></Grid>
-        <Grid item xs={6} className={classes.textRight}> 
+        <Grid></Grid>
+        <Grid item xs={6} className={classes.textRight}>
           {/* {!viewMore && */}
 
-         {!periodColor && 
-          <Button
-            variant='contained'
-            style={{color:'white', width: '100%' }}
-            color="primary"
-            size='small'
-            onClick={handleViewMore}
-          >
-            VIEW MORE
-          </Button>}
-           {/* } */}
+          {!periodColor && (
+            <Button
+              variant='contained'
+              style={{ color: 'white', width: '100%' }}
+              color='primary'
+              size='small'
+              onClick={handleViewMore}
+            >
+              VIEW MORE
+            </Button>
+          )}
+          {/* } */}
         </Grid>
       </Grid>
     </Paper>

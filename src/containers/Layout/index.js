@@ -3,31 +3,20 @@
 /* eslint-disable no-use-before-define */
 
 /* eslint-disable react/prop-types */
-import React, { useContext, useState, useEffect, useRef, createContext } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import React, { useState, useEffect, useRef, createContext } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import CloseIcon from '@material-ui/icons/Close';
-import MenuIcon from '@material-ui/icons/Menu';
-import {
-  ListItemIcon,
-  Box,
-  List,
-  ListItemText,
-  ListItem,
-  Drawer,
-  useMediaQuery,
-  useTheme,
-  Divider,
-  IconButton,
-} from '@material-ui/core';
-import clsx from 'clsx';
-import { fetchAcademicYearList } from '../../redux/actions';
-import DrawerMenu from '../../components/drawer-menu';
+import { Box, useMediaQuery, useTheme } from '@material-ui/core';
 import endpoints from '../../config/endpoints';
 import useStyles from './useStyles';
 import './styles.scss';
+import 'v2/Assets/css/antdTab.css';
+import 'v2/Assets/css/antdModal.css';
+import 'v2/Assets/css/table.scss';
+import 'v2/Assets/css/antdDrawer.css';
 import Appbar from './Appbar';
-import SearchBar from './SearchBar';
+import TopBar from 'v2/Layout/TopBar';
+import SideBarV2 from 'v2/Layout/SideBar';
 import {
   fetchThemeApi,
   isFetchThemeRequired,
@@ -35,39 +24,34 @@ import {
 import Footer from '../footer/index';
 import AppSearchBarUseStyles from './AppSearchBarUseStyles';
 import ENVCONFIG from 'config/config';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import logo from '../../assets/images/logo.png';
-// import { isMsAPI } from '../../utility-functions/index';
-
+import SideBar from './Sidebar';
+import { IsV2Checker } from 'v2/isV2Checker';
 export const ContainerContext = createContext();
 
+// const isV2 = localStorage.getItem('isV2');
+
 const Layout = ({ children, history }) => {
-  const classAppBar = AppSearchBarUseStyles();
   const containerRef = useRef(null);
   const dispatch = useDispatch();
+  const isV2 = IsV2Checker();
+
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
   const [navigationData, setNavigationData] = useState(false);
   const [superUser, setSuperUser] = useState(false);
   const searchParams = new URLSearchParams(window.location.search);
   const isLayoutHidden = searchParams.get('wb_view');
+  let token = JSON.parse(localStorage.getItem('userDetails'))?.token || '';
 
   const {
     apiGateway: { baseURLCentral, baseUdaan, baseEvent },
     s3: { BUCKET: s3BUCKET, ERP_BUCKET },
   } = ENVCONFIG;
 
-  let token = JSON.parse(localStorage.getItem('userDetails'))?.token || '';
-
-  let userId = JSON.stringify(localStorage.getItem('userDetails')) || {};
   const erp_config = JSON.parse(localStorage.getItem('userDetails'))?.erp_config;
   var CryptoJS = require('crypto-js');
 
-  var erp_details = CryptoJS.AES.encrypt(
-    JSON.stringify(userId),
-    'erp-details'
-  ).toString();
+  var erp_details = CryptoJS.AES.encrypt(JSON.stringify(token), 'erp-details').toString();
 
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
@@ -75,10 +59,6 @@ const Layout = ({ children, history }) => {
       setNavigationData(JSON.parse(navigationData));
     }
     let userDetails = localStorage.getItem('userDetails');
-    // if (!userDetails) {
-    //   console.log(">>>>> location --- ", window.location.href);
-    //   window.location.href = '/';
-    // }
     if (userDetails) {
       userDetails = JSON.parse(userDetails);
       const { is_superuser = false } = userDetails;
@@ -88,6 +68,15 @@ const Layout = ({ children, history }) => {
       containerRef.scrollTop = 0;
     }
   }, []);
+  // useEffect(() => {
+  //   if (isV2) {
+  //     if (window.innerWidth < 768) {
+  //       setDrawerOpen(false);
+  //     } else {
+  //       setDrawerOpen(true);
+  //     }
+  //   }
+  // }, [window.innerWidth]);
 
   useEffect(() => {
     if (isLogout) {
@@ -96,17 +85,10 @@ const Layout = ({ children, history }) => {
     }
   }, [isLogout]);
 
-  // const academicYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
-  // useEffect(() => {
-  //   if (!academicYear) dispatch(fetchAcademicYearList());
-  // }, [academicYear]);
-
   useEffect(() => {
     if (isFetchThemeRequired()) {
       fetchThemeApi();
     }
-    // if(!localStorage.hasOwnProperty("isMsAPI")){ }
-    // isMsAPI();
   }, []);
 
   const classes = useStyles();
@@ -223,7 +205,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Announcement': {
-        history.push('/comm_dashboard');
+        history.push('/announcement-list');
         break;
       }
       case 'Send Message': {
@@ -295,12 +277,12 @@ const Layout = ({ children, history }) => {
         history.push('/user-management/section-shuffling');
         break;
       }
-      case 'Access-Blocker': {
-        history.push('/user-management/access-blocker');
-        break;
-      }
       case 'Virtual School': {
         history.push('/virtual-school');
+        break;
+      }
+      case 'Access-Blocker': {
+        history.push('/user-management/access-blocker');
         break;
       }
       case 'Assign Role': {
@@ -511,6 +493,10 @@ const Layout = ({ children, history }) => {
         history.push('/assessment-reports');
         break;
       }
+      // case 'Report Card Settings': {
+      //   history.push('/assessment/report-card-settings');
+      //   break;
+      // }
       case 'Report Card': {
         history.push('/assessment/report-card');
         break;
@@ -690,7 +676,7 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Student Wallet': {
-        history.push('/finance/StudentWallet');
+        history.push('/finance/studentwallet');
         break;
       }
       case 'Fee Collection': {
@@ -871,7 +857,7 @@ const Layout = ({ children, history }) => {
         //   break;
         // }
         // else {
-        history.push('/timetable/teacherview')
+        history.push('/timetable/teacherview');
         break;
         // }
       }
@@ -885,6 +871,23 @@ const Layout = ({ children, history }) => {
         history.push('/timetable/studentview');
         break;
         // }
+
+        if (erp_config === 'true' || erp_config?.length > 0) {
+          history.push('/time-table/teacher-view');
+          break;
+        } else {
+          history.push('/timetable/teacherview');
+          break;
+        }
+      }
+      case 'Student Time Table': {
+        if (erp_config === 'true' || erp_config?.length > 0) {
+          history.push('/time-table/student-view');
+          break;
+        } else {
+          history.push('/timetable/studentview');
+          break;
+        }
       }
       case 'Book Appointment': {
         history.push('/appointments');
@@ -916,10 +919,6 @@ const Layout = ({ children, history }) => {
       }
       case 'Teacher Classwork Report': {
         history.push('/classwork-report-teacher-view');
-        break;
-      }
-      case 'Event Tracker': {
-        window.location.href = `${baseEvent}?${token}`;
         break;
       }
       case 'Subject Training': {
@@ -982,15 +981,20 @@ const Layout = ({ children, history }) => {
         break;
       }
 
-      case 'Class Intitiation Form': {
+      case 'Class Initiation Form': {
         history.push('/sure_learning/class_initiation_form');
         break;
       }
-      case 'Intiate Class': {
+      case 'Initiate Class': {
         history.push('/sure_learning/initiate_class');
         break;
       }
-      case 'Resource': {
+
+      case 'Initiate Class': {
+        history.push('/sure_learning/initiate_class');
+        break;
+      }
+      case 'Resources': {
         history.push('/sure_learning/resources');
         break;
       }
@@ -998,6 +1002,33 @@ const Layout = ({ children, history }) => {
         history.push('/sure_learning/assessment_report');
         break;
       }
+
+      case 'View Finance': {
+        window.location.href = `https://uidev.erpfinance.letseduvate.com/sso/${token}`;
+        break;
+      }
+      case 'Event Tracker': {
+        // window.location.href = `http://dev-et.letseduvate.com/?${erp_details}`;
+        window.location.href = `${baseEvent}?${token}`;
+        break;
+      }
+      case 'Create Area': {
+        history.push('/observation-area');
+        break;
+      }
+      case 'Create Observation': {
+        history.push('/observation');
+        break;
+      }
+      case 'Evaluation': {
+        history.push('/observation-report');
+        break;
+      }
+      case 'Observation Report': {
+        history.push('/pdf-table');
+        break;
+      }
+
       case 'Class Section Wise Strength': {
         history.push('/student_count_report');
         break;
@@ -1006,6 +1037,7 @@ const Layout = ({ children, history }) => {
         history.push('/online-class/connection-pod');
         break;
       }
+
       case 'Assign User Level': {
         history.push('/user-level-table');
         break;
@@ -1030,7 +1062,7 @@ const Layout = ({ children, history }) => {
         history.push('/sure-learning-course-wise-user-report');
         break;
       }
-      case 'Branch wise Report': {
+      case 'Branch wise report': {
         history.push('/sure-learning-branch-level-detailed-report');
         break;
       }
@@ -1042,7 +1074,7 @@ const Layout = ({ children, history }) => {
         history.push('/assignedCoursesByCordinator');
         break;
       }
-      case 'Assign Lead Teacher': {
+      case 'Assign Lead Teacher\n': {
         history.push('/sure-learning-assign-lead-teacher');
         break;
       }
@@ -1058,10 +1090,6 @@ const Layout = ({ children, history }) => {
         history.push('/sure-learning/assign-teacher');
         break;
       }
-      case 'Enroll for sure learning': {
-        history.push('/sure-learning-access');
-        break;
-      }
       default:
         break;
     }
@@ -1074,107 +1102,50 @@ const Layout = ({ children, history }) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
 
-  const handleDrawer = () => {
-    return (
-      <Drawer
-        open={drawerOpen}
-        variant={isMobile ? '' : 'permanent'}
-        // className={clsx(classes.drawer, {
-        //   [classes.drawerPaper]: drawerOpen,
-        //   [classes.drawerPaperClose]: !drawerOpen,
-        // })}
-        className={`${clsx(classes.drawer, {
-          [classes.drawerPaper]: drawerOpen,
-          [classes.drawerPaperClose]: !drawerOpen,
-        })} drawerScrollBar`}
-        classes={{
-          paper: clsx({
-            [classes.drawer]: true,
-            [classes.drawerPaper]: drawerOpen,
-            [classes.drawerPaperClose]: !drawerOpen,
-          }),
-        }}
-        onClose={() => setDrawerOpen(false)}
-      >
-        {isMobile ? <div className={classes.appBarSpacer} /> : null}
-        {isMobile ? <SearchBar /> : null}
-        {isMobile ? null : (
-          <div
-            style={{
-              paddingBottom: 10,
-              background: '#fafafa',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-            }}
-          >
-            <img src={logo} alt='logo' style={{ height: '36px', paddingLeft: '15px' }} />
-            <IconButton onClick={() => setDrawerOpen((prevState) => !prevState)}>
-              {themeContext.direction === 'rtl' ? (
-                <ChevronRightIcon />
-              ) : (
-                <ChevronLeftIcon />
-              )}
-            </IconButton>
-          </div>
-        )}
-        <Divider />
-        <List>
-          <ListItem
-            className={classes.menuControlContainer}
-            onClick={() => setDrawerOpen((prevState) => !prevState)}
-          >
-            {drawerOpen ? null : (
-              <>
-                <ListItemIcon className={classes.menuItemIcon}>
-                  <MenuIcon />
-                </ListItemIcon>
-              </>
-            )}
-            {/* <ListItemText className='menu-item-text'>Menu</ListItemText> */}
-          </ListItem>
-          {drawerOpen
-            ? navigationData &&
-            navigationData.length > 0 && (
-              <DrawerMenu
-                superUser={superUser}
-                drawerOpen={drawerOpen}
-                navigationItems={navigationData}
-                onClick={handleRouting}
-              // flag={flag}
-              />
-            )
-            : navigationData &&
-            navigationData.length > 0 && (
-              <DrawerMenu
-                superUser={superUser}
-                navigationItems={navigationData}
-                onClick={handleOpen}
-                drawerOpen={drawerOpen}
-              />
-            )}
-        </List>
-      </Drawer>
-    );
-  };
   return (
-    <div className={classes.rootColumn}>
-      <div className={classes.root}>
-        {!isLayoutHidden && handleDrawer()}
-        <main className={classes.content}>
-          <Box className={classes.appBarSpacer} />
-          {!isLayoutHidden && <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />}
-          <ContainerContext.Provider value={{ containerRef }}>
-            <Box className={classes.container} ref={containerRef}>
-              <Box>{children}</Box>
-              <Box mt={3} className={classes.footerBar}>
-                <Footer />
+    <>
+      <div className={classes.rootColumn}>
+        <div className={classes.root}>
+          {!isLayoutHidden &&
+            (isV2 ? (
+              <SideBarV2
+                drawerOpen={drawerOpen}
+                navigationData={navigationData}
+                handleOpen={handleOpen}
+                superUser={superUser}
+                handleRouting={handleRouting}
+                setDrawerOpen={setDrawerOpen}
+              />
+            ) : (
+              <SideBar
+                drawerOpen={drawerOpen}
+                navigationData={navigationData}
+                handleOpen={handleOpen}
+                superUser={superUser}
+                handleRouting={handleRouting}
+                setDrawerOpen={setDrawerOpen}
+              />
+            ))}
+          <main className={classes.content}>
+            <Box className={classes.appBarSpacer} />
+            {!isLayoutHidden &&
+              (isV2 ? (
+                <TopBar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
+              ) : (
+                <Appbar drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
+              ))}
+            <ContainerContext.Provider value={{ containerRef }}>
+              <Box className={classes.container} ref={containerRef}>
+                <Box>{children}</Box>
+                <Box mt={0} className={classes.footerBar}>
+                  <Footer />
+                </Box>
               </Box>
-            </Box>
-          </ContainerContext.Provider>
-        </main>
+            </ContainerContext.Provider>
+          </main>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

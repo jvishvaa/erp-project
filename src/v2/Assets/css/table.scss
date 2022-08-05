@@ -1,0 +1,62 @@
+/* .ant-table-wrapper {
+  border: 1px solid #d7e0e7;
+  padding: 0px !important;
+  border-radius: 10px !important;
+} */
+
+thead[class*='ant-table-thead'] th {
+  background-color: #1b4ccb !important;
+}
+
+.ant-table-tbody>tr>td {
+  border-bottom: none !important;
+}
+
+.ant-table-container table>thead>tr:first-child th:first-child {
+  border-top-left-radius: 10px !important;
+}
+
+.ant-table-container table>thead>tr:first-child th:last-child {
+  border-top-right-radius: 10px !important;
+}
+
+.ant-table-thead>tr>th {
+  border-bottom: none !important;
+}
+
+.ant-table-thead>tr>th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+  width: 0px !important;
+}
+
+.ant-table {
+  border-radius: 10px !important;
+  background: #fff0 !important;
+}
+
+.ant-table-tbody>tr.ant-table-row:hover>td,
+.ant-table-tbody>tr>td.ant-table-cell-row-hover {
+  background: inherit !important;
+}
+
+.th-table .ant-table-tbody>tr:last-child>td.ant-table-cell:last-child {
+  border-bottom-right-radius: 10px !important;
+}
+
+.th-table .ant-table-tbody>tr:last-child>td.ant-table-cell:first-child {
+  border-bottom-left-radius: 10px !important;
+}
+
+
+.th-table {
+  border: 1px solid #d7e0e7;
+  padding: 0px !important;
+  border-radius: 10px !important;
+}
+
+// .ant-table-tbody>tr>td {
+//   padding: 16px 0px !important;
+// }
+
+.ant-table-tbody>tr>td>.ant-table-wrapper:only-child .ant-table {
+  margin: -16px !important;
+}

@@ -279,7 +279,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
     }
   };
 
-  function handleClear() {  
+  function handleClear() {
     setclearFilter(true);
     setSelectedVolume('');
     setGradeList([]);
@@ -506,7 +506,7 @@ const Filter = ({ handleFilter, clearFilter, setclearFilter }) => {
             )}
           />
         </Grid>
-        {(boardFilterArr.includes(window.location.host)) && (
+        {boardFilterArr.includes(window.location.host) && (
           <Grid item md={3} xs={12}>
             <Autocomplete
               multiple

@@ -12,8 +12,7 @@ import bullet from './bullet.svg';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { AlertNotificationContext } from '../../../../../context-api/alert-context/alert-state';
 import { useHistory } from 'react-router-dom';
-import {useSelector } from 'react-redux';
-
+import { useSelector } from 'react-redux';
 
 const style = {
   position: 'absolute',
@@ -201,9 +200,7 @@ export default function Announcement(props) {
   const [oldPost, setOldPost] = useState([]);
   const [isEnabled, setIsEnabled] = React.useState(false);
   const [page, setPage] = React.useState();
-  const sessionYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedYear
-  );
+  const sessionYear = useSelector((state) => state.commonFilterReducer?.selectedYear);
 
   const [loading, setLoading] = useState(false);
   //we are making request to show roles in modal
@@ -220,7 +217,7 @@ export default function Announcement(props) {
   };
   //making request to show announcements
   const updateAnnouncement = () => {
-    let url =  `/announcement/v2/inbox/?session_year=${sessionYear?.id}`
+    let url = `/announcement/v2/inbox/?session_year=${sessionYear?.id}`;
     apiRequest('get', url, null, null, false, 5000)
       .then((result) => {
         if (result?.data?.status_code === 200) {
@@ -233,9 +230,9 @@ export default function Announcement(props) {
         console.log('error');
       });
   };
-const announcementRedirect = () => {
-  history.push('/comm_dashboard')
-}
+  const announcementRedirect = () => {
+    history.push('/announcement-list');
+  };
 
   const nextpagehandler = () => {
     let url = nextPage?.split('page=')[1];
@@ -260,7 +257,7 @@ const announcementRedirect = () => {
   };
   useEffect(() => {
     getRoleData();
-    if(sessionYear){
+    if (sessionYear) {
       updateAnnouncement();
     }
     // nextpagehandler();
@@ -304,7 +301,7 @@ const announcementRedirect = () => {
       direction='column'
       spacing={1}
       className={classes.box}
-      style={{ height: matches ? '320px' : '160px',marginBottom: '10px' }}
+      style={{ height: matches ? '320px' : '160px', marginBottom: '10px' }}
       xs={12}
     >
       <Grid>
@@ -312,9 +309,7 @@ const announcementRedirect = () => {
           <Grid container item>
             <Grid item xs={12}>
               <div>
-                <span className={classes.announcementhead}>
-                  Announcements
-                </span>
+                <span className={classes.announcementhead}>Announcements</span>
                 <hr />
               </div>
             </Grid>
@@ -354,7 +349,9 @@ const announcementRedirect = () => {
                                       position: 'relative',
                                     }}
                                   >
-                                    {d?.title?.length >20 ? `${d?.title.slice(0,20)}...` : d?.title}
+                                    {d?.title?.length > 20
+                                      ? `${d?.title.slice(0, 20)}...`
+                                      : d?.title}
                                   </div>
                                 </div>
                                 <p>

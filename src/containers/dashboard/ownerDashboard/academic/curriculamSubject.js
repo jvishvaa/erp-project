@@ -148,13 +148,13 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
   },
   tableStateMent: {
-    color: '#F39494',
+    color: `${theme.palette.v2Color1.primaryV2} !important`,
     fontWeight: 'bolder',
     fontSize: '20px',
     textAlign: 'left',
   },
   TableHeaderColor: {
-    backgroundColor: '#FFD9D9',
+    backgroundColor: `${theme.palette.v2Color1.primaryV2} !important`,
     border: '1px solid #D7E0E7',
     borderRadius: '8px 8px 0px 0px',
     fontWeight: 'bolder',
