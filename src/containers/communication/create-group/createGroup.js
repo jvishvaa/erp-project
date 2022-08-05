@@ -14,6 +14,8 @@ import { AlertNotificationContext } from '../../../context-api/alert-context/ale
 import Loading from '../../../components/loader/loader';
 import Layout from '../../Layout';
 import './create-group.css';
+import UserTable from './userTable';
+import NoFilterData from 'components/noFilteredData/noFilterData';
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -155,7 +157,6 @@ if(isEdit && completeData.length){
   const selecteduserData =  completeData.filter((user) => 
     usersData.findIndex((obj) => obj.id !== user?.id)
     )
-    console.log(selecteduserData,'@@@@')
 }
 
 
@@ -373,7 +374,7 @@ if(isEdit && completeData.length){
           { field: 'email', headerName: 'Email Id', width: 250 },
           { field: 'erp_id', headerName: 'Erp Id', width: 150 },
           { field: 'gender', headerName: 'Gender', width: 150 },
-          { field: 'contact', headerName: 'Contact', width: 150 },
+          // { field: 'contact', headerName: 'Contact', width: 150 },
         ]);
         result.data.data.results.forEach((items) => {
           rows.push({
@@ -382,7 +383,7 @@ if(isEdit && completeData.length){
             email: items.user.email,
             erp_id: items.erp_id,
             gender: items.gender,
-            contact: items.contact,
+            // contact: items.contact,
           });
           selectionRows.push({
             id: items.id,
@@ -392,7 +393,7 @@ if(isEdit && completeData.length){
               email: items.user.email,
               erp_id: items.erp_id,
               gender: items.gender,
-              contact: items.contact,
+              // contact: items.contact,
             },
             selected: selectAll
               ? true
@@ -811,7 +812,7 @@ if(value.length > 0){
           </div>
           {next ? (
             <div className='create_group_user_list_wrapper'>
-              {usersRow.length ? (
+              {/* {usersRow.length ? (
                 <div className='create_group_select_all_wrapper'>
                   <input
                     type='checkbox'
@@ -821,9 +822,9 @@ if(value.length > 0){
                   />
                   <span>Select All</span>
                 </div>
-              ) : null}
+              ) : null} */}
               <span className='create_group_error_span'>{selectectUserError}</span>
-              <CustomSelectionTable
+              {/* <CustomSelectionTable
                 header={headers}
                 rows={usersRow}
                 completeData={completeData}
@@ -833,6 +834,17 @@ if(value.length > 0){
                 selectedUsers={selectedUsers}
                 changePage={setPageno}
                 setSelectedUsers={setSelectedUsers}
+              /> */}
+              <UserTable
+              header={headers}
+              rows={usersRow}
+              completeData={completeData}
+              totalRows={totalPage}
+              pageno={pageno}
+              setSelectAll={setSelectAll}
+              selectedUsers={selectedUsers}
+              changePage={setPageno}
+              setSelectedUsers={setSelectedUsers}
               />
             </div>
           ) : (

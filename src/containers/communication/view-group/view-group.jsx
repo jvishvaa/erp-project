@@ -570,6 +570,7 @@ const handleSection = (e, value) => {
                       <SearchIcon />
                     </div>
                     <InputBase
+                    style = {{width : '100%'}}
                       placeholder=' Search'
                       onChange={(e) => handleSearch(e)}
                     />

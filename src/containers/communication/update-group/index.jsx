@@ -14,8 +14,11 @@ import {
   Typography,
   Checkbox,
   Button,
+  InputBase,
+  Paper
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import SearchIcon from '@material-ui/icons/Search';
 import Layout from '../../Layout';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
@@ -57,6 +60,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [fullUserList, setFullUserList] = useState('');
+  const [ userListCopy,setUserListCopy] = useState()
   const [selectedUser, setSelectedUser] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState([]);
   const [selectedGrades, setSelectedGrades] = useState([]);
@@ -96,7 +100,8 @@ const UpdateGroup = ({ handleEditing, editData }) => {
       });
       if (result.status === 200) {
         if (type === 'fullGroup') {
-          setFullUserList(result.data.data);
+          setFullUserList(result?.data?.data?.results);
+          setUserListCopy(result?.data?.data?.results)
         }
         if (type === 'selectedGroup') {
           const array = [];
@@ -266,16 +271,30 @@ const UpdateGroup = ({ handleEditing, editData }) => {
   function handelSelectAll() {
     if (
       selectedUser.length ===
-      (fullUserList && fullUserList.results && fullUserList.results.length)
+      (fullUserList && fullUserList.length)
     ) {
       setSelectedUser([]);
     } else {
       const array = [];
-      const n = fullUserList && fullUserList.results.length;
+      const n = fullUserList && fullUserList.length;
       for (let i = 0; i < n; i += 1) {
-        array.push(fullUserList.results[i].id);
+        array.push(fullUserList[i].id);
       }
       setSelectedUser(array);
+    }
+  }
+
+  const handleSearch = (e) => {
+    if(e.target.value.length > 0){
+      let filterData = userListCopy?.filter((item) =>{
+        let name = item.user.first_name +' '+ item.user.last_name
+        if(name.toLowerCase().startsWith(e.target.value.toLowerCase()))
+             return item
+      })
+      setFullUserList(filterData)
+      
+    }else{
+      setFullUserList(userListCopy)
     }
   }
 
@@ -288,7 +307,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
       setAlert('warning', 'Select Users');
       return;
     }
-    let userListIds = fullUserList?.results?.map((item) => item?.id);
+    let userListIds = fullUserList?.map((item) => item?.id);
     let finalUserList = userListIds?.filter((id) => selectedUser?.includes(id));
 
     if (!finalUserList || finalUserList.length == 0) {
@@ -456,8 +475,20 @@ const UpdateGroup = ({ handleEditing, editData }) => {
               </Grid>
             </Grid>
           </Card>
+          <Grid item md={4} style={{marginLeft :'1%'}}>
+                  <Paper elevation={3} className='search'>
+                    <div>
+                      <SearchIcon />
+                    </div>
+                    <InputBase
+                      style = {{width : '100%'}}
+                      placeholder=' Search'
+                      onChange={(e) => handleSearch(e)}
+                    />
+                  </Paper>
+            </Grid>
         </Grid>
-        {(fullUserList && fullUserList.results.length !== 0 && (
+        {(fullUserList && fullUserList.length !== 0 && (
           <Grid item md={12} xs={12} style={{ margin: '0px 10px', padding: '10px' }}>
             <Card style={{ width: '100%', overflow: 'auto' }}>
               <Table>
@@ -471,8 +502,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
                         checked={
                           selectedUser.length ===
                           (fullUserList &&
-                            fullUserList.results &&
-                            fullUserList.results.length)
+                            fullUserList?.length)
                         }
                       />
                     </TableCell>
@@ -482,13 +512,13 @@ const UpdateGroup = ({ handleEditing, editData }) => {
                     <TableCell float='left'>Email Id</TableCell>
                     <TableCell float='left'>Erp Id</TableCell>
                     <TableCell float='left'>Gender</TableCell>
-                    <TableCell float='left'>Contact</TableCell>
+                    {/* <TableCell float='left'>Contact</TableCell> */}
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {fullUserList &&
-                    fullUserList.results.length !== 0 &&
-                    fullUserList.results.map((item, index) => {
+                    fullUserList.length !== 0 &&
+                    fullUserList.map((item, index) => {
                       const isItemSelectedId = isSelected(item.id);
                       return (
                         <TableRow
@@ -521,7 +551,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
                           </TableCell>
                           <TableCell float='left'>{item.erp_id || ''}</TableCell>
                           <TableCell float='left'>{item.gender || ''}</TableCell>
-                          <TableCell float='left'>{item.contact || ''}</TableCell>
+                          {/* <TableCell float='left'>{item.contact || ''}</TableCell> */}
                         </TableRow>
                       );
                     })}
@@ -555,7 +585,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
             xs={6}
             style={{
               textAlign: 'right',
-              display: fullUserList && fullUserList.results.length !== 0 ? '' : 'none',
+              display: fullUserList && fullUserList.length !== 0 ? '' : 'none',
             }}
           >
             <Button
