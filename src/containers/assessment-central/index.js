@@ -787,7 +787,7 @@ const Assesment = () => {
                       </FormHelperText>
                     </FormControl>
                   </Grid>
-                  {/* <Grid
+                  <Grid
                     container
                     alignItems='center'
                     justifyContent='center'
@@ -802,7 +802,7 @@ const Assesment = () => {
                       inputProps={{ 'aria-label': 'checkbox with default color' }}
                     />
                     <Typography>Group</Typography>
-                  </Grid> */}
+                  </Grid>
                   {!sectionToggle ? (
                     <Grid item xs={12} md={3}>
                       <FormControl fullWidth variant='outlined'>
