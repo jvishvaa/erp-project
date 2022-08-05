@@ -23,25 +23,68 @@ import endpoints from '../../../config/endpoints';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
 
-const UpdateGroup = () => {
+const UpdateGroup = ({ handleEditing, editData }) => {
   const { setAlert } = useContext(AlertNotificationContext);
-  const location = useLocation();
+  // const location = useLocation();
+  const {
+    isEdit,
+    branch,
+    grades,
+    groupId,
+    groupname,
+    //  sectionmappingIds,
+    sectionIds,
+    sessionYearId,
+    sections,
+    active,
+    gradeId,
+    branchId,
+    usersData,
+    sectionData,
+  } = editData;
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
-  const [groupName, setGroupName] = useState(location.state.groupName || '');
+  const [groupName, setGroupName] = useState();
   const [selectedRole, setSelectedRole] = useState('');
   const [loading, setLoading] = useState(false);
 
   const [moduleId, setModuleid] = useState('');
-  const [branchId, setBranchId] = useState([]);
-  const [gradeId, setGradeId] = useState([]);
+  const [branchid, setBranchId] = useState([]);
+  const [gradeid, setGradeId] = useState([]);
   const [sectionId, setSectionId] = useState([]);
-
+  const [section, setSection] = useState([]);
+  const [sectionList, setSectionList] = useState([]);
+  const [branchList, setBranchList] = useState([]);
+  const [gradeList, setGradeList] = useState([]);
   const [fullUserList, setFullUserList] = useState('');
   const [selectedUser, setSelectedUser] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedGrades, setSelectedGrades] = useState([]);
+  const [sectionMappingIds, setSectionMappingIds] = useState([]);
+  const [selectedSections, setSelectedSections] = useState([]);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+
+  useEffect(() => {
+    if (editData) {
+      setSelectedBranch({ id: branchId, branch_name: branch });
+      setSelectedGrades({ grade_id: gradeId, grade__grade_name: grades });
+      setGroupName(groupname);
+      //  setisEdit(isEdit)
+      setSelectedSections(sectionData);
+      setGradeId(gradeId);
+      setSectionId(sectionIds);
+      setSelectedUser(usersData?.map((item) => item?.id));
+      setSectionMappingIds(sectionData?.map((item) => item?.id));
+      //    getSectionApi(gradeId)
+    }
+  }, [editData]);
+
+  useEffect(() => {
+    if (selectedBranch?.id)
+      getSectionApi({ grade_id: gradeId, grade__grade_name: grades });
+  }, [isEdit, selectedBranch]);
 
   const getApiCall = async (api, type) => {
     try {
@@ -59,7 +102,7 @@ const UpdateGroup = () => {
           const array = [];
           const n = result.data.data && result.data.data.results.length;
           for (let i = 0; i < n; i += 1) {
-            if(result.data.data.results[i].is_assigned === true) {
+            if (result.data.data.results[i].is_assigned === true) {
               array.push(result.data.data.results[i].id);
             }
           }
@@ -73,39 +116,107 @@ const UpdateGroup = () => {
     }
   };
 
+  const getSectionApi = async (value) => {
+    try {
+      setLoading(true);
+      const result = await axiosInstance.get(
+        `${endpoints.communication.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${selectedBranch?.id}&grade_id=${value?.grade_id}&module_id=${moduleId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      const resultOptions = [];
+      if (result.status === 200) {
+        result.data.data.map((items) => resultOptions.push(items.section__section_name));
+        setSection(resultOptions);
+        setSectionList(result.data.data);
+        if (selectedSections && selectedSections.length > 0) {
+          // for retaining neccessary selected sections when grade is changed
+          const selectedSectionsArray = result.data.data.filter(
+            (obj) =>
+              selectedSections.findIndex((sec) => obj.section_id == sec.section_id) > -1
+          );
+          console.log(selectedSectionsArray, 'selectedSectionsArray');
+          setSelectedSections(selectedSectionsArray);
+        }
+        setLoading(false);
+      } else {
+        setAlert('error', result.data.message);
+        setLoading(false);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+      setLoading(false);
+    }
+  };
+
   function getFullGroupList() {
     getApiCall(
       `${
         endpoints.communication.communicationUserList
-      }?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&session_year=${selectedAcademicYear?.id}&branch=${branchId}${gradeId.length !== 0 ? `&grade=${gradeId}`: ''}${
-        sectionId.length !== 0 ? `&section=${sectionId}` : ''
-      }`,
+      }?page=1&page_size=500&module_id=${moduleId}&session_year=${
+        selectedAcademicYear?.id
+      }&branch=${branchId}&grade=${gradeId}${`&section=${sectionId}`}`,
       'fullGroup'
     );
   }
 
   function getSelectedGroupList() {
     getApiCall(
-      `${endpoints.communication.editGroup}${
-        location.state.groupId
-      }/retrieve-update-group/?page=1&page_size=500&module_id=${moduleId}&role=${selectedRole}&session_year=${selectedAcademicYear?.id}&branch=${branchId}${gradeId.length !== 0 ? `&grade=${gradeId}`: ''}${
+      `${
+        endpoints.communication.edit
+      }${1}/retrieve-update-group/?page=1&page_size=500&module_id=${moduleId}&session_year=${
+        selectedAcademicYear?.id
+      }&branch=${branchId}&grade=${gradeid}${
         sectionId.length !== 0 ? `&section=${sectionId}` : ''
       }`,
       'selectedGroup'
     );
   }
 
-  useEffect(() => {
-    if (moduleId) {
-      getFullGroupList();
-      getSelectedGroupList();
+  const handleSection = (e, value) => {
+    setSelectedSections([]);
+    if (value.length > 0) {
+      const items = value.map((el) => el);
+      const ids = value.map((el) => el.section_id);
+      const mappingIds = value.map((el) => el?.id);
+      setSelectedSections(items);
+      setSectionId(ids);
+      setSectionMappingIds(mappingIds);
+    } else {
+      setSelectedSections([]);
     }
-  }, [moduleId]);
+  };
+
+  // useEffect(() => {
+  //   let sectionsId =[]
+  //   if (selectedSections.length && !selectedSections.includes('All')) {
+  //     selectedSections.forEach((items) => {
+  //         sectionsId.push(items.section_id);
+  //       });
+  //       setSectionId(sectionsId)
+  //   }
+  // },[selectedSections])
+
+  useEffect(() => {
+    if (moduleId && branchId && gradeId && selectedSections) {
+      getFullGroupList();
+      // getSelectedGroupList();
+      // let sectionsId = []
+      // if (selectedSections.length && !selectedSections.includes('All')) {
+      //   let sectionsId =  selectedSections.map((items) => items.section_id);
+      //   setSectionId(sectionsId)
+
+      // }
+    }
+  }, [moduleId, branchId, gradeId, selectedSections]);
 
   function getIds(data, key) {
     const id = [];
     for (let i = 0; i < data.length; i += 1) {
-      if(key === 'section'){
+      if (key === 'section') {
         id.push(data[i].section_id);
       } else {
         id.push(data[i].id);
@@ -118,21 +229,21 @@ const UpdateGroup = () => {
     const childModules =
       NavData &&
       NavData.length !== 0 &&
-      NavData.filter((item) => item.parent_modules === 'Communication').length !== 0 &&
-      NavData.filter((item) => item.parent_modules === 'Communication')[0].child_module;
+      NavData.filter((item) => item.parent_modules === 'User Management').length !== 0 &&
+      NavData.filter((item) => item.parent_modules === 'User Management')[0].child_module;
     const Module =
       childModules &&
       childModules.length !== 0 &&
-      childModules.filter((item) => item.child_name === 'View&Edit Group').length !== 0 &&
-      childModules.filter((item) => item.child_name === 'View&Edit Group')[0].child_id;
+      childModules.filter((item) => item.child_name === 'User Groups').length !== 0 &&
+      childModules.filter((item) => item.child_name === 'User Groups')[0].child_id;
     setModuleid(Module);
-    setSelectedRole(getIds(location.state.roleType, 'role'));
-    setBranchId(getIds(location.state.branch, 'branch'));
-    setGradeId(getIds(location.state.grades, 'grade'));
-    setSectionId(getIds(location.state.sections, 'section'));
+    // setSelectedRole(getIds(location.state.roleType, 'role'));
+    setBranchId(branchid);
+    setGradeId(gradeid);
+    setSectionId(sectionIds);
   }, []);
 
-  const isSelected = (name) => selectedUser.indexOf(name) !== -1;
+  const isSelected = (id) => selectedUser.indexOf(id) !== -1;
 
   const handleClick = (event, name) => {
     const selectedIndex = selectedUser.indexOf(name);
@@ -177,25 +288,34 @@ const UpdateGroup = () => {
       setAlert('warning', 'Select Users');
       return;
     }
+    let userListIds = fullUserList?.results?.map((item) => item?.id);
+    let finalUserList = userListIds?.filter((id) => selectedUser?.includes(id));
+
+    if (!finalUserList || finalUserList.length == 0) {
+      setAlert('warning', 'Please Select Users');
+      return;
+    }
     const data = {
       group_name: groupName,
-      role: selectedRole,
-      branch: branchId,
-      grade: gradeId,
-      section_mapping: sectionId,
-      erp_users: selectedUser,
+      // role: selectedRole,
+      // branch: branchid,
+      // grade: gradeid,
+      section_mapping: sectionMappingIds,
+      erpusers: finalUserList,
+      is_active: active,
     };
     setLoading(true);
     axiosInstance
       .put(
-        `${endpoints.communication.editGroup}${location.state.groupId}/retrieve-update-group/`,
+        `${endpoints.communication.editGroup}${groupId}/update-retrieve-delete-groups/`,
         { ...data }
       )
       .then((response) => {
         setLoading(false);
         if (response.data.status_code === 200) {
           setAlert('success', response.data.message);
-          window.history.back();
+          handleEditing(false);
+          // window.history.back();
         } else {
           setAlert('error', response.data.message);
         }
@@ -232,7 +352,7 @@ const UpdateGroup = () => {
                   color='primary'
                 />
               </Grid>
-              <Grid item md={3} xs={12} style={{ marginTop: '8px' }}>
+              {/* <Grid item md={3} xs={12} style={{ marginTop: '8px' }}>
                 <Autocomplete
                   size='small'
                   value={location.state.roleType}
@@ -253,16 +373,16 @@ const UpdateGroup = () => {
                     />
                   )}
                 />
-              </Grid>
+              </Grid> */}
               <Grid item md={3} xs={12} style={{ marginTop: '8px' }}>
                 <Autocomplete
                   size='small'
-                  multiple
-                  value={location.state.branch}
+                  // multiple
+                  value={selectedBranch}
                   id='branch_id'
                   disabled
                   className='create_group_branch'
-                  options={location.state.branch}
+                  options={branchList || []}
                   getOptionLabel={(option) => option?.branch_name}
                   filterSelectedOptions
                   renderInput={(params) => (
@@ -276,16 +396,21 @@ const UpdateGroup = () => {
                   )}
                 />
               </Grid>
-              <Grid item md={3} xs={12} style={{ marginTop: '8px', display: location.state.grades.length !== 0 ? '' : 'none', }}>
+              <Grid
+                item
+                md={3}
+                xs={12}
+                // style={{ marginTop: '8px', display: location.state.grades.length !== 0 ? '' : 'none', }}
+              >
                 <Autocomplete
                   size='small'
-                  multiple
-                  value={location.state.grades}
+                  // multiple
+                  value={selectedGrades}
                   id='grade_id'
                   disabled
                   className='create_group_branch'
-                  options={location.state.grades}
-                  getOptionLabel={(option) => option?.grade_name}
+                  options={gradeList || []}
+                  getOptionLabel={(option) => option?.grade__grade_name}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
@@ -304,17 +429,18 @@ const UpdateGroup = () => {
                 xs={12}
                 style={{
                   marginTop: '8px',
-                  display: location.state.sections.length !== 0 ? '' : 'none',
+                  // display: selectedSections.length !== 0 ? '' : 'none',
                 }}
               >
                 <Autocomplete
                   size='small'
                   multiple
-                  value={location.state.sections}
+                  value={selectedSections}
                   id='grade_id'
-                  disabled
+                  // disabled
+                  onChange={handleSection}
                   className='create_group_branch'
-                  options={location.state.sections}
+                  options={sectionList || []}
                   getOptionLabel={(option) => option?.section__section_name}
                   filterSelectedOptions
                   renderInput={(params) => (
@@ -418,7 +544,7 @@ const UpdateGroup = () => {
             <Button
               variant='contained'
               color='secondary'
-              onClick={() => window.history.back()}
+              onClick={() => handleEditing(false)}
             >
               Back
             </Button>
@@ -432,7 +558,12 @@ const UpdateGroup = () => {
               display: fullUserList && fullUserList.results.length !== 0 ? '' : 'none',
             }}
           >
-            <Button variant='contained' color='primary' onClick={() => updateGroupApi()} style={{ color:'white' }}>
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={() => updateGroupApi()}
+              style={{ color: 'white' }}
+            >
               Update Group
             </Button>
           </Grid>
