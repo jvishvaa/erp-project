@@ -31,7 +31,7 @@ const dev = {
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
   },
   apiGateway: {
-    baseURL: `${window.location.origin}/qbox`,
+    baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
     baseUdaan: 'https://dev.udaansurelearning.com/qbox',
     baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
     baseURLMPQ: 'https://dev.mpquiz.letseduvate.com',
