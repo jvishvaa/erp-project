@@ -20,6 +20,7 @@ import TabPanel from '../../components/tab-panel';
 import SwipeableViews from 'react-swipeable-views';
 import { parseJwt } from '../../utility-functions';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
+import LoginMobileForm from './login-mobile-form';
 
 function TermsAndCondition() {
   return (
@@ -128,7 +129,7 @@ function SignIn({ history, setTheme }) {
   return (
     <>
       {!loading && (
-        <Container component='main' maxWidth='xs'>
+        <Container component='main' maxWidth='sm'>
           <CssBaseline />
           <div className={classes.paper}>
             <Avatar className={classes.avatar}>
@@ -140,7 +141,7 @@ function SignIn({ history, setTheme }) {
             <TabPanel
               tabValue={tabValue}
               setTabValue={setTabValue}
-              tabValues={['Password', 'OTP']}
+              tabValues={['Password', 'OTP', 'Mobile']}
               fullWidth={true}
               style={tabStyle}
             />
@@ -150,6 +151,7 @@ function SignIn({ history, setTheme }) {
             >
               <LoginForm history={history} setLoading={setLoading} />
               <LoginOTPForm history={history} setLoading={setLoading} />
+              <LoginMobileForm history={history} setLoading={setLoading}/>
             </SwipeableViews>
           </div>
           <Box mt={4}>

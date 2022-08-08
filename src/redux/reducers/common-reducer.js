@@ -4,9 +4,9 @@ const INITIAL_STATE = {
   selectedYear: '' || JSON.parse(sessionStorage.getItem('acad_session')),
   academicYearList: '' || JSON.parse(sessionStorage.getItem('acad_session_list')),
   isMsAPIKey: !!JSON.parse(localStorage.getItem('isMsAPI')),
-  erpConFigKey: !!JSON.parse(localStorage.getItem('erp_config')),
-  selectedBranch: sessionStorage.getItem('selected_branch')
-    ? JSON.parse(sessionStorage.getItem('selected_branch'))
+  erpConFigKey: !!JSON.parse(localStorage?.getItem('erp_config')),
+  selectedBranch: sessionStorage?.getItem('selected_branch')
+    ? JSON.parse(sessionStorage?.getItem('selected_branch'))
     : '',
   branchList: '' || JSON.parse(sessionStorage.getItem('branch_list')),
   selectedVersion: localStorage.getItem('selectedVersion')

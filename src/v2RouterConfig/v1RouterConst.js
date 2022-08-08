@@ -416,6 +416,7 @@ import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/c
 import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStudent';
 import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
+import UserProfile from 'containers/login/profiles';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -423,6 +424,9 @@ const V1Router = [
   <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>,
   <Route path='/role-management'>
     {({ match }) => <RoleManagement match={match} />}
+  </Route>,
+  <Route path='/userprofile'>
+  {({ match }) => <UserProfile match={match} />}
   </Route>,
   <Route path='/user-management'>
     {({ match }) => <UserManagement match={match} />}
