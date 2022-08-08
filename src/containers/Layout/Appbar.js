@@ -42,7 +42,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import './styles.scss';
 import { Switch } from 'antd';
 import { IsV2Checker } from 'v2/isV2Checker';
-
+import { isMsAPI } from 'utility-functions';
 const Appbar = ({ children, history, ...props }) => {
   const classes = AppSearchBarUseStyles();
   const dispatch = useDispatch();
@@ -69,10 +69,15 @@ const Appbar = ({ children, history, ...props }) => {
   let apps = JSON.parse(localStorage.getItem('apps'));
   let branchList = useSelector((state) => state.commonFilterReducer.branchList);
   let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
+  // let profileList = JSON.parse(localStorage.getItem('profileData')) || {};
+  let selectedProfileDetails = JSON.parse(localStorage?.getItem('selectProfileDetails')) || {};
+  let {is_verified} = JSON.parse(localStorage.getItem('profileDetails')) || {};
+  let mobileLoginDetails = JSON.parse(localStorage.getItem('mobileLoginDetails')) || {}; 
   const { role_details: roleDetails } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
   const [branch, setBranch] = useState(selectedBranch?.branch?.branch_name);
-
+  const [profile,setProfile] = useState(selectedProfileDetails.name);
+  const profileDetails = JSON.parse(localStorage.getItem('profileDetails')) || {};
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
@@ -314,6 +319,101 @@ const Appbar = ({ children, history, ...props }) => {
     }
     window.location.reload();
   };
+
+  const fetchERPSystemConfig = async (status) => {
+    let data = (await JSON.parse(localStorage.getItem('userDetails'))) || {};
+    const branch = data?.role_details?.branch;
+    let payload = [];
+    const result = axiosInstance
+      .get(endpoints.checkAcademicView.isAcademicView)
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          if (res?.data?.result[0] == 'True') {
+            return true;
+          } else if (res?.data?.result[0] == 'False') {
+            return false;
+          } else if (res?.data?.result[0]) {
+            let resData = res?.data?.result[0];
+            const selectedId = branch?.map((el) => el?.id);
+            let checkData = resData?.some((item) => selectedId.includes(Number(item)));
+            return checkData;
+          }
+        }
+      });
+    return result;
+  };
+
+  const handleSwitchChange = (event) => {
+    let filterItem = profileDetails?.data?.filter((item) => item.name === event.target.value)
+    let savedProfile = localStorage.setItem('selectProfileDetails', JSON.stringify(filterItem[0])) || {}
+    setProfile(filterItem[0]?.name)
+    // setProfileName(event?.target?.value.name)
+    const  phone_number  = JSON.parse(localStorage?.getItem('profileNumber')) || {};
+    localStorage.removeItem("userDetails");
+    localStorage.removeItem("navigationData");
+    if(phone_number && event){
+        let payload = {
+            contact:  phone_number,
+            erp_id: filterItem[0]?.erp_id,
+            hmac: filterItem[0]?.hmac,
+          };
+        axiosInstance
+        .post(
+          endpoints.auth.mobileLogin,
+          payload
+        )
+        .then((result) => {
+          if (result.status === 200) {
+            localStorage.setItem(
+              'mobileLoginDetails',
+              JSON.stringify(result)
+            );
+            localStorage.setItem(
+                'userDetails',
+                JSON.stringify(result.data?.login_response?.result?.user_details)
+              );
+              localStorage.setItem(
+                'navigationData',
+                JSON.stringify(result.data?.login_response?.result?.navigation_data)
+              );
+            setAlert('success', result.data.message);
+            isMsAPI();
+            fetchERPSystemConfig(is_verified).then((res) =>{
+                let erpConfig;
+                let userData = JSON.parse(localStorage.getItem('userDetails'));
+                if(res === true|| res.length >0) {
+                    erpConfig =res;
+                    let refURL = localStorage.getItem('refURL');
+                    if(refURL){
+                        localStorage.removeItem('refURL');
+                        window.location.href = refURL;
+                    } else if(userData?.user_level !== 4){
+                        history.push('/acad-calendar');
+                    } else {
+                        history.push('/dashboard');
+                    }
+                } else if(res === false) {
+                    erpConfig=res;
+                    history.push('/dashboard')
+                } else {
+                    erpConfig=res;
+                    history.push('/dashboard');
+                }
+                userData['erp_config'] = erpConfig;
+                localStorage.setItem('userDetails', JSON.stringify(userData));
+                window.location.reload();
+            })
+          } else {
+            setAlert('error', result.data.message);
+            // setDisableLogin(false)
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
+    }
+
+  }
   const handleChange = (event) => {
     setAcademicYear(event.target.value);
     let acdemicCurrentYear;
@@ -616,6 +716,41 @@ const Appbar = ({ children, history, ...props }) => {
                     ))}
                   </Select>
                 </FormControl>
+                {profileDetails?.is_verified === true ? (
+                <FormControl variant='standard' sx={{ m: 1, minWidth: 100 }}>
+                   <div className='px-2 th-black-2 th-14'> Logged In As : {profile}</div>
+                  {/* <Select
+                    // onChange={handleBranchChange}
+                    onChange={handleSwitchChange}
+                    labelId='demo-simple-select-label'
+                    id='demo-simple-select'
+                    value={profile}
+                    className={classes.branch}
+                    inputProps={{
+                      'aria-label': 'Without label',
+                      classes: {
+                        icon: 'th-select-icon-grey',
+                      },
+                    }}
+                    MenuProps={{
+                      anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      },
+                      transformOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      },
+                    }}
+                  >
+                    {profileDetails?.data?.map((item) => (
+                      <MenuItem value={item?.name}>
+                        <>{item?.name}</>
+                      </MenuItem>
+                    ))}
+                  </Select> */}
+                </FormControl>
+                ) : ''}
                 <FormControl variant='standard' sx={{ m: 1, minWidth: 100 }}>
                   <Select
                     labelId='demo-simple-select-label'

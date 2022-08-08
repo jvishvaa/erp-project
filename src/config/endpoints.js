@@ -23,6 +23,7 @@ const {
 export default {
   auth: {
     login: '/auth/login/',
+    mobileLogin: '/erp_user/erp-contact-login/'
   },
   checkAcademicView: {
     isAcademicView: '/period/period-erp-system-config/',

@@ -10,7 +10,6 @@ import '../../../styles/question_view.css';
 import '../../../styles/anim.css';
 
 function QuestionHandler(props) {
-  debugger
   const {
     fetchQuizQp,
     quizQp: { fetch, fetching, fetchFailed, message },

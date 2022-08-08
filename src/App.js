@@ -419,6 +419,7 @@ import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/c
 import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStudent';
 import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
+import UserProfile from 'containers/login/profiles';
 // Version 2
 import V2Router from 'v2RouterConfig/v2Router';
 import { IsV2Checker } from 'v2/isV2Checker';
@@ -450,6 +451,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                       <ViewStore>
                         <DailyDairyStore>
                           <Switch>
+                          <Route path='/userprofile'>
+                              {({ match }) => <UserProfile match={match} />}
+                            </Route>
                             <Route path='/profile'>
                               {({ match }) => <Profile match={match} />}
                             </Route>
@@ -2052,6 +2056,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/student-mark'>
                               {({ match }) => <StudentMark match={match} />}
                             </Route>
+                          
                             <Route path='*'>
                               <ErrorBoundary404 HomeButton={true} />
                             </Route>

@@ -186,7 +186,6 @@ useEffect(()=>{
 },[isUuid]);
 
 const handleCreateLobby = ()=>{
-  debugger
   const { host } = new URL(axiosInstance.defaults.baseURL); // "dev.olvorchidnaigaon.letseduvate.com"
   const hostSplitArray = host.split('.');
   const subDomainLevels = hostSplitArray.length - 2;

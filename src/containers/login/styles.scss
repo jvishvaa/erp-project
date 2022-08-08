@@ -1,0 +1,12 @@
+.card_style {
+    width: 400 !important;
+    cursor: pointer;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    margin: 20px 20px;
+
+    &:hover {
+        border-radius: 10px;
+        box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+      }
+}
