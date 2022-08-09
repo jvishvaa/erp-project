@@ -9,11 +9,12 @@ import { AlertNotificationContext } from 'context-api/alert-context/alert-state'
 import { isMsAPI } from 'utility-functions';
 import './styles.scss';
 import { Grid } from '@material-ui/core';
+import Loader from 'components/loader/loader';
 const UserProfiles = () => {
   const history = useHistory();
   const { profileData } = history.location.state;
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const [loading, setLoading] = useState(false);
   const tabStyle = {
     width: '100%',
     margin: '3% auto',
@@ -45,6 +46,7 @@ const UserProfiles = () => {
   };
 
   const profileLogin = (item) => {
+    setLoading(true)
     localStorage.setItem('selectProfileDetails', JSON.stringify(item));
     const phone_number = JSON.parse(localStorage?.getItem('profileNumber')) || {};
     if (phone_number && item) {
@@ -57,6 +59,7 @@ const UserProfiles = () => {
         .post(endpoints.auth.mobileLogin, payload)
         .then((result) => {
           if (result.status === 200) {
+            setLoading(false)
             localStorage.setItem('mobileLoginDetails', JSON.stringify(result));
             localStorage.setItem(
               'userDetails',
@@ -96,10 +99,12 @@ const UserProfiles = () => {
             });
           } else {
             setAlert('error', result.data.message);
+            setLoading(false)
             // setDisableLogin(false)
           }
         })
         .catch((error) => {
+          setLoading(false)
           setAlert('error', error.message);
         });
     }
@@ -107,57 +112,66 @@ const UserProfiles = () => {
   return (
     <>
       <div style={{ margin: '50px' }}>
-        <div style={{ marginLeft: '30px' }}>
-          <p style={{ fontWeight: '600', fontSize: '30px' }}>Welcome,</p>
-          <p style={{ fontSize: '20px' }}>Select Profile to explore account</p>
-        </div>
-
-        <Grid container spacing={2}>
-          <Grid container item>
-          <Grid item
-            md={12}
-            // xs={12}
-            style={{ display: 'flex', justifyContent: 'flex-start', flexWrap:'wrap', }}
-          >
-            {profileData?.profile_data?.data?.map((item, i) => (
-              <Card
-                size='small'
-                title={item?.branch_name}
-                style={{
-                  width: 400,
-                }}
-                className='card_style'
-                onClick={() => profileLogin(item)}
-              >
-                <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                  <Avatar
-                    style={{ width: '60px', height: '60px' }}
-                    size='large'
-                    icon={<UserOutlined />}
-                  />
-                  <div
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      margin: 'inherit',
-                    }}
-                  >
-                    <p
-                      style={{ marginLeft: '10px', fontWeight: '800', fontSize: '16px' }}
+        {loading ? (
+          <Loader/>
+        ): (
+          <>
+          <div style={{ marginLeft: '30px' }}>
+            <p style={{ fontWeight: '600', fontSize: '30px' }}>Welcome,</p>
+            <p style={{ fontSize: '20px' }}>Select Profile to explore account</p>
+          </div>
+          <Grid container spacing={2}>
+            <Grid container item style={{ height:"750px", overflowY:"scroll"}}>
+            <Grid item
+              md={12}
+              // xs={12}
+              style={{ display: 'flex', justifyContent: 'flex-start', flexWrap:'wrap', }}
+            >
+              {profileData?.profile_data?.data?.map((item, i) => (
+                <Card
+                  size='small'
+                  title={item?.branch_name}
+                  style={{
+                    width: 400,
+                    height: 150
+                  }}
+                  className='card_style'
+                  onClick={() => profileLogin(item)}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+                    <Avatar
+                      style={{ width: '60px', height: '60px' }}
+                      size='large'
+                      icon={<UserOutlined />}
+                    />
+                    <div
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        margin: 'inherit',
+                      }}
                     >
-                      {item?.name}
-                    </p>
-                    <p style={{ marginLeft: '10px', fontSize: '10px' }}>{item?.erp_id}</p>
+                      <p
+                        style={{ marginLeft: '10px', fontWeight: '800', fontSize: '16px' }}
+                      >
+                        {item?.name}
+                      </p>
+                      <p style={{ marginLeft: '10px', fontSize: '10px' }}>{item?.erp_id}</p>
+                    </div>
                   </div>
-                </div>
-                <p>{item?.grade_name}</p>
-                {/* <p>Card content</p> */}
-              </Card>
-            ))}
-          </Grid>
+                  <p>{item?.grade_name}</p>
+                  {/* <p>Card content</p> */}
+                </Card>
+              ))}
+            </Grid>
 
+            </Grid>
           </Grid>
-        </Grid>
+          
+          </>
+          
+        )}
+
       </div>
     </>
   );
