@@ -128,6 +128,8 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const [searchData,setSearchData] = useState('')
   const [isNewSeach, setIsNewSearch] = useState(true);
   const [isFilter,setisFilter] = useState(false)
+  const [selectedgroupType,setSelectedGroupTypes] = useState([])
+  const [groupTypes,setGroupTypes] = useState([])
 
 
   // const delayedCallback = _.debounce(() => {
@@ -145,10 +147,11 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const getGroupsData = async () => {
     if(!selectedbranch) return setAlert('error','Please Select Branch')
     else if(!selectedGrade) return setAlert('error','Please Select Grade')
+    else if(!selectedgroupType || selectedgroupType.length === 0 ) return setAlert('error','Please Select Group Type')
     else {
       try {
       setLoading(true);
-      let url = `${endpoints.communication.userGroups}?page=${currentPage}&page_size=15&group_type=1&acad_session=${selectedbranch?.id}&grade=${selectedGrade?.grade_id}`
+      let url = `${endpoints.communication.userGroups}?page=${currentPage}&page_size=15&group_type=${selectedgroupType?.group_type_number}&acad_session=${selectedbranch?.id}&grade=${selectedGrade?.grade_id}`
       if(searchData){
         url += `&search=${searchData}`
       }
@@ -289,14 +292,32 @@ const handlefilter = () => {
     }	
   }
 
+  const getGroupTypes = () => {
+    axiosInstance.
+    get(
+      `${endpoints.communication.editGroup}list-group-types/`
+    ).then((res) => {
+      if (res?.status === 200) {
+        setGroupTypes(res.data)
+      }
+    })
+  }
 
+  const handleGroupType = (e,value) => {
+    if(value){
+      setSelectedGroupTypes(value)
+    }else{
+      setSelectedGroupTypes([])
+    }
+  }
 const handleGrade = (e, value)=> {
   if(value){
     setSelectedGrade(value)
-    getSection(value)
+    getGroupTypes()
+    // getSection(value)
   }else{
     setSelectedGrade()
-    setSelectedSection([])
+    // setSelectedSection([])
   }
 }
 
@@ -520,29 +541,30 @@ const handleSection = (e, value) => {
                   />
                 </Grid>
 
-                {/* <Grid item md={3} xs={12}>
+                <Grid item md={3} xs={12}>
                   <Autocomplete
-                    multiple
+                    // multiple
                     style={{ width: '100%' }}
                     size='small'
-                    onChange={handleSection}
-                    id='section'
+                    onChange={handleGroupType}
+                    id='grouptype'
                     // className='dropdownIcon'
-                    value={selectedSection || []}
-                    options={sectionList || []}
-                    getOptionLabel={(option) => option?.section__section_name || ''}
+                    value={selectedgroupType || []}
+                    options={groupTypes|| []}
+                    getOptionLabel={(option) => option?.group_type_name || ''}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         variant='outlined'
-                        label='Section'
-                        placeholder='Section'
+                        label='Group Type'
+                        placeholder='Group Type'
+                        required
                       />
                     )}
                   />
-                </Grid> */}
-                <Grid item md={3} xs={12}>
+                </Grid>
+                <Grid item md={1} xs={12}>
                   <Button
                     color='primary'
                     variant='contained'
@@ -553,7 +575,7 @@ const handleSection = (e, value) => {
                     Filter
                   </Button>
                 </Grid>
-                <Grid item md={3} xs={12} style={{display:'flex',justifyContent:'flex-end'}}>
+                <Grid item md={2} xs={12} style={{display:'flex',justifyContent:'flex-end'}}>
                   <Button
                     color='primary'
                     variant='contained'

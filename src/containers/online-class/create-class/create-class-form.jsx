@@ -36,6 +36,7 @@ import { fetchBranchesForCreateUser } from '../../../redux/actions';
 import Loader from '../../../components/loader/loader';
 import ReminderDialog from './reminderDialog';
 import APIREQUEST from '../../../config/apiRequest';
+import endpoints from './../../../config/endpoints'
 
 const CreateClassForm = (props) => {
   const tutorEmailRef = useRef(null);
@@ -56,6 +57,10 @@ const CreateClassForm = (props) => {
   const [branches, setBranches] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [classWork, setToggleClasswork] = useState(true);
+  const [selectedGroupData, setSelectedGroupData] = useState([]);
+  const [selectedGroupId, setSelectedGroupId] = useState('');
+  const [groupSectionMappingId,setGroupSectionMappingId] = useState([])
+  const [selectedAcadSessionId,setSelectedAcadSessionId] = useState([])
 
   const {
     listGradesCreateClass,
@@ -94,27 +99,86 @@ const CreateClassForm = (props) => {
     setClassTypeId,
     setLoading,
     loading,
+    listGroup,
+    groupList,
+    clearGroup
   } = useContext(CreateclassContext);
 
   const [toggle, setToggle] = useState(false);
   // const [toggleZoom, setToggleZoom] = useState(false);
+  const [sectionToggle, setSectionToggle] = useState(false);
 
   const { setAlert } = useContext(AlertNotificationContext);
   const { user_id: userId, is_superuser: isSuperUser } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const fetchBranches = (acadId) => {
-    fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
-      const transformedData = data?.map((obj) => ({
-        id: obj.id,
-        branch_name: obj.branch_name,
-      }));
-      transformedData.unshift({
-        branch_name: 'Select All',
-        id: 'all',
+    // fetchBranchesForCreateUser(acadId, moduleId).then((data) => {
+    //   const transformedData = data?.map((obj) => ({
+    //     id: obj.id,
+    //     branch_name: obj.branch_name,
+    //   }));
+    //   transformedData.unshift({
+    //     branch_name: 'Select All',
+    //     id: 'all',
+    //   });
+    //   setBranches(transformedData);
+    // });
+    axiosInstance
+      .get(
+        `${endpoints.academics.branches}?session_year=${acadId}&module_id=${moduleId}`
+      )
+      .then((data) => {
+        const transformedData = data?.data?.data?.results?.map((obj) => ({
+          id: obj?.branch?.id,
+          branch_name: obj?.branch?.branch_name,
+          acadSession : obj?.id,
+        }));
+        transformedData.unshift({
+          branch_name: 'Select All',
+          id: 'all',
+          acadSession : 'Acad session'
+        });
+        setBranches(transformedData);
       });
-      setBranches(transformedData);
-    });
+  };
+
+  const handleSectionToggle = (event) => {
+    setSectionToggle(event.target.checked);
+    setSelectedGroupData([])
+    setSelectedGroupId('');
+    setSelectedBranches([]);
+    setSelectedGrades([]);
+    setSelectedSections([]);
+    setSelectedSubject([]);
+    dispatch(clearSections());
+    dispatch(clearSubjects());
+    dispatch(clearCourses());
+    dispatch(clearGroup());
+    setOnlineClass((prevState) => ({ ...prevState, sectionIds: [], subject: [] }));
+  };
+
+  const handleGroup = (e, value) => {
+    setSelectedGroupData([]);
+    setSelectedGroupId('');
+    if (value) {
+      let sectionIds =[];
+      const sections = value?.forEach((item) => {
+        let ids = item?.group_section_mapping.map((i)=>i?.section_mapping_id)
+        sectionIds.push(ids.toString())
+      })
+      let groupIds = value?.map((item) => item?.id)
+      setGroupSectionMappingId(sectionIds)
+      setSelectedGroupData(value);
+      setSelectedGroupId(groupIds.toString());
+      clearTutorEmailsList()
+      setOnlineClass((prevState) => ({
+        ...prevState,
+        tutorEmail: '',
+        // sectionIds: [],
+        coHosts: [],
+      }));
+    }
   };
 
   const [daysList, setDays] = useState([
@@ -192,6 +256,7 @@ const CreateClassForm = (props) => {
       dispatch(clearSections());
       dispatch(clearSubjects());
       dispatch(clearCourses());
+      dispatch(clearGroup());
       setAlert('success', 'Successfully created the class');
       dispatch(listGradesCreateClass(onlineClass?.branchIds, moduleId, selectedYear.id));
     }
@@ -215,13 +280,17 @@ const CreateClassForm = (props) => {
     dispatch(clearSections());
     dispatch(clearSubjects());
     dispatch(clearCourses());
+    dispatch(clearGroup());
+    setSelectedGroupData([])
     if (value?.length > 0) {
       value =
         value.filter(({ id }) => id === 'all').length === 1
           ? [...branches].filter(({ id }) => id !== 'all')
           : value;
       const ids = value.map((obj) => obj.id);
+      const acadSessionId = value.map((obj)=>obj.acadSession)
       setSelectedBranches(value);
+      setSelectedAcadSessionId(acadSessionId)
       dispatch(listGradesCreateClass(ids, moduleId, selectedYear.id));
       setOnlineClass((prevState) => ({
         ...prevState,
@@ -243,10 +312,12 @@ const CreateClassForm = (props) => {
   const handleGrade = (event, value) => {
     dispatch(clearFilteredStudents());
     setSelectedGrades(value);
+    setSelectedGroupData([])
     if (value?.length > 0) {
       const ids = value.map((el) => el.grade_id);
       setOnlineClass((prevState) => ({ ...prevState, gradeIds: ids }));
       dispatch(clearTutorEmailValidation());
+      dispatch(listGroup(selectedAcadSessionId,ids))
       if (selectedClassType?.id > 0) dispatch(listCoursesCreateClass(ids));
     } else {
       setOnlineClass((prevState) => ({
@@ -528,6 +599,8 @@ const CreateClassForm = (props) => {
     request['grade'] = gradeIds.filter(unique);
     request['branch'] = branchIds;
 
+    if(sectionToggle) request['groups'] = selectedGroupId
+
     if (selectedClassType?.id === 0) {
       request['subject_id'] = subject.join(',');
     } else if (selectedClassType?.id > 0) {
@@ -543,7 +616,8 @@ const CreateClassForm = (props) => {
     request['is_recurring'] = toggle ? 1 : 0;
     // request['is_zoom'] = toggleZoom ? '0' : '1';
     request['class_type'] = selectedClassType?.id;
-    request['section_mapping_ids'] = sectionIds.join(',');
+    if(!sectionToggle) request['section_mapping_ids'] = sectionIds.join(',');
+    if(sectionToggle) request['section_mapping_ids'] = [...new Set(groupSectionMappingId)].toString()
     request['is_classwork'] = classWork ? true : false;
 
     if (duration > 240) {
@@ -619,6 +693,7 @@ const CreateClassForm = (props) => {
     setToggle(false);
     // setToggleZoom(false);
     setSelectedDays([]);
+    setSelectedGroupData([])
     setOnlineClass((prevState) => ({
       ...prevState,
       ...initialFormStructure,
@@ -632,6 +707,7 @@ const CreateClassForm = (props) => {
     dispatch(clearSections());
     dispatch(clearSubjects());
     dispatch(clearCourses());
+    dispatch(clearGroup());
   };
 
   const fetchTutorEmails = () => {
@@ -640,6 +716,9 @@ const CreateClassForm = (props) => {
       gradeIds: onlineClass.gradeIds.join(','),
       acadYears: onlineClass.acadId,
     };
+    if(sectionToggle && selectedGroupData.length > 0){
+      data['section_mappings'] = groupSectionMappingId
+    }
     listTutorEmails(data);
   };
 
@@ -732,7 +811,7 @@ const CreateClassForm = (props) => {
   ]);
 
   useEffect(() => {
-    if (onlineClass.branchIds?.length && selectedGrades?.length && onlineClass.acadId) {
+    if (onlineClass.branchIds?.length && selectedGrades?.length && onlineClass.acadId && !sectionToggle) {
       fetchTutorEmails();
       tutorEmailRef.current.scrollIntoView();
       tutorEmailRef.current.focus();
@@ -740,6 +819,17 @@ const CreateClassForm = (props) => {
       clearTutorEmailsList();
     }
   }, [selectedGrades]);
+
+  useEffect(() => {
+    if (onlineClass.branchIds?.length && selectedGrades?.length && onlineClass.acadId && sectionToggle) {
+      fetchTutorEmails();
+      tutorEmailRef.current.scrollIntoView();
+      tutorEmailRef.current.focus();
+    } else {
+      clearTutorEmailsList();
+    }
+
+  }, [selectedGroupData.length]);
 
   useEffect(() => {
     if (!onlineClass.tutorEmail) {
@@ -752,8 +842,9 @@ const CreateClassForm = (props) => {
     onlineClass.title.trim() === '' ||
     !onlineClass.duration ||
     !onlineClass.gradeIds?.length ||
-    !onlineClass.sectionIds?.length ||
-    !onlineClass.subject?.length ||
+    (!sectionToggle && !onlineClass.sectionIds?.length) ||
+    (sectionToggle && !selectedGroupId) ||
+    (!onlineClass.subject?.length) ||
     !onlineClass.selectedDate ||
     !onlineClass.selectedTime ||
     !onlineClass.tutorEmail ||
@@ -815,12 +906,29 @@ const CreateClassForm = (props) => {
                 label='Title'
                 variant='outlined'
                 size='small'
-                className='dropdownIcon'
                 name='title'
                 onChange={handleChange}
                 required
               />
             </Grid>
+            {
+              <Grid container alignItems='center' xs={12} md={2}>
+                <Grid
+                  container
+                  alignItems='center'
+                  justifyContent='center'
+                >
+                  <Typography>Section</Typography>
+                  <Switch
+                    checked={sectionToggle}
+                    onChange={handleSectionToggle}
+                    color='default'
+                    inputProps={{ 'aria-label': 'checkbox with default color' }}
+                  />
+                  <Typography>Group</Typography>
+                </Grid>
+              </Grid>
+            }
             <Grid item xs={12} sm={2}>
               <Autocomplete
                 size='small'
@@ -844,7 +952,7 @@ const CreateClassForm = (props) => {
                 )}
               />
             </Grid>
-            <Grid item xs={12} sm={2}>
+            <Grid item xs={12} sm={3}>
               <Autocomplete
                 size='small'
                 limitTags={2}
@@ -894,7 +1002,7 @@ const CreateClassForm = (props) => {
                 />
               </Grid>
             )}
-            {onlineClass.tutorEmail ? (
+            {(onlineClass.tutorEmail && !sectionToggle ) && (
               <Grid item xs={12} sm={2}>
                 <Autocomplete
                   multiple
@@ -923,10 +1031,33 @@ const CreateClassForm = (props) => {
                   )}
                 />
               </Grid>
-            ) : (
-              ''
             )}
-            {onlineClass.tutorEmail && onlineClass.sectionIds?.length > 0 ? (
+            {sectionToggle && (
+              <Grid item xs={12} sm={2}>
+              <Autocomplete
+                id='Group'
+                name='group'
+                multiple
+                // limitTags={2}
+                className='dropdownIcon'
+                onChange={handleGroup}
+                value={selectedGroupData || []}
+                options={groupList || []}
+                getOptionLabel={(option) => option?.group_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Group'
+                    placeholder='Group'
+                  />
+                )}
+                size='small'
+              />
+            </Grid>
+            )}
+            {onlineClass.tutorEmail && (onlineClass.sectionIds?.length > 0 || selectedGroupData?.length > 0) ? (
               <>
                 {selectedClassType?.id === 0 && (
                   <Grid item xs={12} sm={2}>
@@ -1193,7 +1324,7 @@ const CreateClassForm = (props) => {
               {tutorEmailsLoading ? <CircularProgress color='secondary' /> : ''}
             </Grid>
           </Grid>
-          <Grid container className='create-class-container' spacing={2}>
+          {!sectionToggle && <Grid container className='create-class-container' spacing={2}>
             <Grid item>
               <Button
                 variant='contained'
@@ -1206,7 +1337,7 @@ const CreateClassForm = (props) => {
                 Filter students
               </Button>
             </Grid>
-          </Grid>
+          </Grid>}
           <Grid container className='swipe-container'>
             <SwipeableDrawer
               className='my__swipable'
