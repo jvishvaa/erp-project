@@ -14,6 +14,16 @@ export const uploadFile = async (file) => {
   }
 };
 
+export const AssessuploadFile = async (file) => {
+  try {
+    const response = await axiosInstance.post('/academic/upload-question-file/', file);
+    return response.data.data;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+
 export const uploadOMRFile = async (file) => {
   try {
     const response = await axiosInstance.post('/assessment/upload-omr-sheet/', file);
