@@ -30,7 +30,7 @@ const UploadDocument = (props) => {
       }
 
       axios
-        .post(`${endpoints.dailyDairy.upload}`, formData)
+        .post(`${endpoints.dailyDiary.upload}`, formData)
         .then((res) => {
           if (res?.data?.status_code === 200) {
             message.success('Attachment Added');
