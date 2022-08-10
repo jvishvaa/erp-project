@@ -294,7 +294,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
               <div
                 className={` ${classes.navCard} nav-card`}
                 onClick={() => {
-                  window.history.back('/homework/teacher');
+                  history.push('/homework/teacher');
                 }}
               >
                 <div

@@ -543,14 +543,16 @@ const GeneralDiary = () => {
                   Back
                 </Button>
               </div>
-              <div className='col-md-2 col-6'>
-                <Button
-                  className='th-width-100 th-br-6 th-bg-primary th-white th-pointer'
-                  onClick={publishGeneralDiary}
-                >
-                  Submit
-                </Button>
-              </div>
+              {generalDairyUsers?.length > 0 && (
+                <div className='col-md-2 col-6'>
+                  <Button
+                    className='th-width-100 th-br-6 th-bg-primary th-white th-pointer'
+                    onClick={publishGeneralDiary}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>

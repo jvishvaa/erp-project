@@ -632,39 +632,6 @@ const CreateDailyDairy = (details, onSubmit) => {
         .finally(() => setLoading(false));
     }
   };
-  const checkAssignedHomework = () => {
-    if (!subjectIds) {
-      setAlert('error', 'Please select all filters');
-      return;
-    }
-    const params = {
-      section_mapping: sectionMappingID,
-      subject: subjectIds,
-      date: moment().format('YYYY-MM-DD'),
-      user_id: user_id,
-    };
-    axiosInstance
-      .get(`${endpoints?.dailyDairy?.assignHomeworkDiary}`, { params })
-      .then((result) => {
-        if (result?.data?.status == 200) {
-          if (result?.data?.data.length > 0) {
-            setAssignedHomework(result?.data?.data);
-            setAssignedHomeworkModal(true);
-          } else {
-            const session_year = filterData?.year?.id;
-            const branchID = state.isEdit ? editData.branch : filterData?.branch?.id;
-            const gradeID = state.isEdit ? editData.grade[0] : filterData?.grade?.id;
-            const subjectID = state.isEdit ? editData.subject : filterData?.subject?.id;
-            history.push(
-              `/homework/add/${moment().format(
-                'YYYY-MM-DD'
-              )}/${session_year}/${branchID}/${gradeID}/${subjectName}/${subjectID}`
-            );
-          }
-        }
-      })
-      .catch((error) => setAlert('error', error?.message));
-  };
 
   let imageCount = 1;
   useEffect(() => {
@@ -700,7 +667,29 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
   }, []);
   const classes = useStyles();
-
+  const checkAssignedHomework = () => {
+    if (!subjectIds) {
+      setAlert('error', 'Please select all filters');
+      return;
+    }
+    const params = {
+      section_mapping: sectionMappingID,
+      subject: subjectIds,
+      date: moment().format('YYYY-MM-DD'),
+      user_id: user_id,
+    };
+    axiosInstance
+      .get(`${endpoints?.dailyDairy?.assignHomeworkDiary}`, { params })
+      .then((result) => {
+        if (result?.data?.status == 200) {
+          if (result?.data?.data.length > 0) {
+            setAssignedHomework(result?.data?.data);
+            setAssignedHomeworkModal(true);
+          }
+        }
+      })
+      .catch((error) => setAlert('error', error?.message));
+  };
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -998,10 +987,10 @@ const CreateDailyDairy = (details, onSubmit) => {
                 xs={12}
                 sm={4}
                 className={isMobile ? '' : 'filterPadding'}
-                onClick={() => checkAssignedHomework()}
                 style={{ position: 'relative' }}
               >
                 <TextField
+                  onClick={() => checkAssignedHomework()}
                   id='outlined-multiline-static'
                   label='Homework'
                   multiline
@@ -1012,10 +1001,10 @@ const CreateDailyDairy = (details, onSubmit) => {
                   variant='outlined'
                   onChange={(e) => setHomework(e.target.value)}
                 />
-                {!declined && (
+                {!declined && subjectIds && !homework && (
                   <img
                     src={AddHomework}
-                    className='py-3'
+                    className='py-3 th-pointer'
                     onClick={RedirectToHomework}
                     style={{ position: 'absolute', right: '10%', top: '30%' }}
                   />

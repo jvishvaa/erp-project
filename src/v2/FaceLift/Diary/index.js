@@ -1,17 +1,7 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import Layout from 'containers/Layout';
-import {
-  Breadcrumb,
-  Select,
-  Tabs,
-  Button,
-  DatePicker,
-  message,
-  Form,
-  Card,
-  Drawer,
-} from 'antd';
+import { Breadcrumb, Select, Tabs, Button, DatePicker, message, Form } from 'antd';
 import moment from 'moment';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -28,12 +18,12 @@ const Diary = () => {
   );
   const [moduleId, setModuleId] = useState();
   const [periodData, setPeriodData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [academicYearID, setAcademicYearID] = useState();
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [branchID, setBranchID] = useState();
   const [gradeDropdown, setGradeDropdown] = useState();
   const [gradeID, setGradeID] = useState();
-  const [visible, setVisible] = useState(false);
   const [sectionDropdown, setSectionDropdown] = useState();
   const [sectionID, setSectionID] = useState();
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
@@ -61,14 +51,11 @@ const Diary = () => {
     }
   };
 
-  const parameter = (lesson, index) => {
-    console.log(lesson, 'parentlesson');
-  };
-
   const fetchDiaryList = () => {
     if (!branchID || !sectionID || !academicYearID || !gradeID) {
       message.error('Please Select All Filters');
     } else {
+      setLoading(true);
       const params = {
         module_id: moduleId,
         session_year: academicYearID,
@@ -85,9 +72,13 @@ const Diary = () => {
         .then((result) => {
           if (result?.data?.status_code == 200) {
             setPeriodData(result?.data?.result?.results.reverse());
+            setLoading(false);
           }
         })
-        .catch((error) => message.error('error', error?.message));
+        .catch((error) => {
+          message.error('error', error?.message);
+          setLoading(false);
+        });
     }
   };
 
@@ -413,22 +404,12 @@ const Diary = () => {
           <Tabs defaultActiveKey='1' onChange={onChange} className='th-width-100 px-3'>
             <TabPane tab='All' key='1' className='th-pointer'>
               <div className='row'>
-                {periodData?.map((diary, i) => (
-                  <div className='col-md-4'>
-                    <DiaryCard
-                      diary={diary}
-                      showTab={showTab}
-                      fetchDiaryList={fetchDiaryList}
-                    />
+                {loading ? (
+                  <div className='th-width-100 text-center mt-5'>
+                    <Spin tip='Loading...'></Spin>
                   </div>
-                ))}
-              </div>
-            </TabPane>
-            <TabPane tab='Daily Diary' key='2' className='th-pointer'>
-              <div className='row'>
-                {periodData
-                  ?.filter((item) => item.dairy_type == 2)
-                  .map((diary, i) => (
+                ) : (
+                  periodData?.map((diary, i) => (
                     <div className='col-md-4'>
                       <DiaryCard
                         diary={diary}
@@ -436,22 +417,50 @@ const Diary = () => {
                         fetchDiaryList={fetchDiaryList}
                       />
                     </div>
-                  ))}
+                  ))
+                )}
+              </div>
+            </TabPane>
+            <TabPane tab='Daily Diary' key='2' className='th-pointer'>
+              <div className='row'>
+                {loading ? (
+                  <div className='th-width-100 text-center mt-5'>
+                    <Spin tip='Loading...'></Spin>
+                  </div>
+                ) : (
+                  periodData
+                    ?.filter((item) => item.dairy_type == 2)
+                    .map((diary, i) => (
+                      <div className='col-md-4'>
+                        <DiaryCard
+                          diary={diary}
+                          showTab={showTab}
+                          fetchDiaryList={fetchDiaryList}
+                        />
+                      </div>
+                    ))
+                )}
               </div>
             </TabPane>
             <TabPane tab='General Diary' key='3' className='th-pointer'>
               <div className='row'>
-                {periodData
-                  ?.filter((item) => item.dairy_type == 1)
-                  .map((diary, i) => (
-                    <div className='col-md-4 mb-2'>
-                      <DiaryCard
-                        diary={diary}
-                        showTab={showTab}
-                        fetchDiaryList={fetchDiaryList}
-                      />
-                    </div>
-                  ))}
+                {loading ? (
+                  <div className='th-width-100 text-center mt-5'>
+                    <Spin tip='Loading...'></Spin>
+                  </div>
+                ) : (
+                  periodData
+                    ?.filter((item) => item.dairy_type == 1)
+                    .map((diary, i) => (
+                      <div className='col-md-4 mb-2'>
+                        <DiaryCard
+                          diary={diary}
+                          showTab={showTab}
+                          fetchDiaryList={fetchDiaryList}
+                        />
+                      </div>
+                    ))
+                )}
               </div>
             </TabPane>
           </Tabs>

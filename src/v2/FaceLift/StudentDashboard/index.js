@@ -10,7 +10,7 @@ import Assessment from './components/Assessment';
 import TodaysClass from './components/TodaysClass';
 import { getRole } from 'v2/generalAnnouncementFunctions';
 
-const TeacherdashboardNew = () => {
+const StudentDashboardNew = () => {
   const [todaysAttendance, setTodaysAttendance] = useState([]);
   const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
   const time = new Date().getHours();
@@ -46,4 +46,4 @@ const TeacherdashboardNew = () => {
   );
 };
 
-export default TeacherdashboardNew;
+export default StudentDashboardNew;

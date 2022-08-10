@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 import uploadIcon from 'v2/Assets/dashboardIcons/announcementListIcons/uploadIcon.svg';
 import UploadDocument from '../UploadDocument';
+import AddHomework from '../../../../assets/images/AddHomework.svg';
 import moment from 'moment';
 
 const DailyDiary = () => {
@@ -240,6 +241,9 @@ const DailyDiary = () => {
     if (e) {
       setSubjectID(e.value);
       setSubjectName(e.children);
+      setDeclined(false);
+      setAssignedHomework([]);
+      setHwMappingID();
       const params = {
         session_year: selectedBranch.branch.id,
         subject_id: e.id,
@@ -409,6 +413,19 @@ const DailyDiary = () => {
     }
   };
 
+  const RedirectToHomework = () => {
+    if (!subjectID) {
+      message.error('Please select all filters');
+      return;
+    }
+    let session_year = academicYearID;
+    history.push(
+      `/homework/add/${moment().format(
+        'YYYY-MM-DD'
+      )}/${session_year}/${branchID}/${gradeID}/${subjectName}/${subjectID}`
+    );
+  };
+
   const checkAssignedHomework = () => {
     if (!subjectID) {
       message.error('Please select all filters');
@@ -427,13 +444,6 @@ const DailyDiary = () => {
           if (result?.data?.data.length > 0) {
             setAssignedHomework(result?.data?.data);
             setAssignedHomeworkModal(true);
-          } else {
-            let session_year = academicYearID;
-            history.push(
-              `/homework/add/${moment().format(
-                'YYYY-MM-DD'
-              )}/${session_year}/${branchID}/${gradeID}/${subjectName}/${subjectID}`
-            );
           }
         }
       })
@@ -650,9 +660,10 @@ const DailyDiary = () => {
                       }}
                     />
                   </div>
-                  <div className='col-md-4 py-2' onClick={() => checkAssignedHomework()}>
+                  <div className='col-md-4 py-2 d-flex' style={{ position: 'relative' }}>
                     <TextArea
                       className='th-width-100 th-br-6'
+                      onClick={() => checkAssignedHomework()}
                       value={homework}
                       onChange={(e) => setHomework(e.target.value)}
                       placeholder='Add Homework'
@@ -661,6 +672,14 @@ const DailyDiary = () => {
                         maxRows: 5,
                       }}
                     />
+                    {!declined && subjectID && !homework && (
+                      <img
+                        src={AddHomework}
+                        className='py-3'
+                        onClick={RedirectToHomework}
+                        style={{ position: 'absolute', right: '10%' }}
+                      />
+                    )}
                   </div>
 
                   <div className='col-12'>
