@@ -45,6 +45,7 @@ import {
         setSelectAll,
         name,
         showContactInfo,
+        selectedBranch
       } = props || {};
       const [selectedIds,setSelectedIds] = useState([])
       const [completeDatacopy , setCompleteDatacopy] = useState([])
@@ -173,11 +174,16 @@ import {
                     />
                   </TableCell>
                   {/* <TableCell float='left'>S.No</TableCell> */}
-                  <TableCell float='left'>ID</TableCell>
+                  {/* <TableCell float='left'>ID</TableCell> */}
                   <TableCell float='left'>Name</TableCell>
-                  <TableCell float='left'>Email Id</TableCell>
+                  {/* <TableCell float='left'>Email Id</TableCell> */}
                   <TableCell float='left'>Erp Id</TableCell>
-                  <TableCell float='left'>Gender</TableCell>
+                  <TableCell float='left'>Branch</TableCell>
+                  <TableCell float='left'>Grade</TableCell>
+                  <TableCell float='left'>Section</TableCell>
+
+
+                  {/* <TableCell float='left'>Gender</TableCell> */}
                   {/* <TableCell float='left'>Contact</TableCell> */}
                 </TableRow>
               </TableHead>
@@ -208,18 +214,20 @@ import {
                         </TableCell>
                         {/* <TableCell float='left'>{index + 1}</TableCell> */}
                         <TableCell float='left'>
-                          {(item.data && item.data.id) || ''}
-                        </TableCell>
-                        <TableCell float='left'>
                           {(item.data && item.data.fullName) || ''}
                           {/* &nbsp;
                           {(item.user && item.user.last_name) || ''} */}
                         </TableCell>
-                        <TableCell float='left'>
-                          {(item.data && item.data.email) || ''}
-                        </TableCell>
                         <TableCell float='left'>{item.data.erp_id || ''}</TableCell>
-                        <TableCell float='left'>{item.data.gender || ''}</TableCell>
+
+                        <TableCell float='left'>
+                          {(item.data && selectedBranch && selectedBranch?.branch_name) || ''}
+                        </TableCell>
+                       
+                        <TableCell float='left'>
+                          {(item.data && item.data.section_mapping && item.data.section_mapping[0]?.grade?.grade_name) || ''}
+                        </TableCell>
+                        <TableCell float='left'>{item.data && item.data.section_mapping && item.data.section_mapping[0]?.section?.section_name || ''}</TableCell>
                         {/* <TableCell float='left'>{item.contact || ''}</TableCell> */}
                       </TableRow>
                     );
