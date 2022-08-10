@@ -33,6 +33,7 @@ import ReactHtmlParser from 'react-html-parser'
 import './styles.scss';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import Popover from '@material-ui/core/Popover';
 
 const useStyles = makeStyles((theme) => ({
     root: theme.commonTableRoot,
@@ -103,7 +104,10 @@ const useStyles = makeStyles((theme) => ({
     },
     eyeIcon: {
         color: theme.palette.secondary.main,
-    }
+    },
+    typography: {
+        padding: theme.spacing(2),
+    },
 }));
 
 const guidelines = [
@@ -207,10 +211,36 @@ const StudentMark = () => {
     const [values, setValues] = useState({ val: [] });
     const [studentmarks, setStudentMarks] = useState();
     const [nextFlag, setNextFlag] = useState(false);
+    const [studentImgs, setStudentImgs] = useState([]);
+    console.log('treepathcheck', studentImgs)
     let markQues = selectedUserData?.total_marks / selectedUserData?.total_question;
 
     const { openPreview, closePreview } =
         React.useContext(AttachmentPreviewerContext) || {};
+
+    const [anchorEl, setAnchorEl] = React.useState(null);
+
+    const handleClick = (event) => {
+        axiosInstance
+            .get(`${endpoints.assessment.studentImgs}?test_id=${history?.location?.state?.test_id}&user=${history?.location?.state?.user}`)
+            .then((result) => {
+                console.log(result);
+                setStudentImgs(result?.data?.assessment_files)
+            })
+            .catch((error) => {
+                console.log('');
+            });
+
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const open = Boolean(anchorEl);
+    const id = open ? 'simple-popover' : undefined;
+
 
     useEffect(() => {
         if (NavData && NavData.length) {
@@ -460,6 +490,8 @@ const StudentMark = () => {
         })
     }
 
+    console.log('tree', history?.location?.state?.test_id, selectedUser)
+
     const handleStudent = (e, val) => {
         if (nextFlag === false) {
             if (values?.val[0] !== undefined) {
@@ -539,13 +571,59 @@ const StudentMark = () => {
                             </div>
 
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', width: '40%' }}>
-                            <div style={{ width: '30%' }}>
-                                <StyledButton onClick={handleSave} style={{ fontWeight: '600', width: '100%' }} >Save</StyledButton>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '40%' }}>
+                            <div style={{ width: '20%' }}>
+                                <StyledButton onClick={handleSave} style={{ fontWeight: '600', width: '90%' }} >Save</StyledButton>
                             </div>
-                            <div style={{ width: '30%' }}>
-                                <StyledClearButton onClick={handleSkip} style={{ fontWeight: '600', width: '100%', margin: '0' }} >Skip</StyledClearButton>
+                            <div style={{ width: '20%' }}>
+                                <StyledClearButton onClick={handleSkip} style={{ fontWeight: '600', width: '90%', margin: '0' }} >Skip</StyledClearButton>
                             </div>
+                            <div style={{ width: '25%' }}>
+                                <StyledClearButton onClick={handleClick} style={{ fontWeight: '600', width: '90%', margin: '0' }} >View Files</StyledClearButton>
+                            </div>
+                            <Popover
+                                id={id}
+                                open={open}
+                                anchorEl={anchorEl}
+                                onClose={handleClose}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'center',
+                                }}
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'center',
+                                }}
+                            >
+                                <Typography className={classes.typography}>
+                                    <h5>Files added by the student.</h5>
+                                    {studentImgs?.map((list, i) => {
+                                        return (
+                                            <>
+                                                <div style={{ display: 'flex' }} >
+                                                    <SvgIcon
+                                                        component={() => <VisibilityIcon style={{ cursor: 'pointer' }} className={classes.eyeIcon} onClick={() => {
+                                                            const fileSrc = `${endpoints.lessonPlan.s3erp}homework/${list}`;
+                                                            openPreview({
+                                                                currentAttachmentIndex: 0,
+                                                                attachmentsArray: [
+                                                                    {
+                                                                        src: fileSrc,
+                                                                        name: list.split('.')[list.split('.').length - 2],
+                                                                        extension:
+                                                                            '.' + list.split('.')[list.split('.').length - 1],
+                                                                    },
+                                                                ],
+                                                            });
+                                                        }} />}
+                                                    />
+                                                    <h6>{list}</h6>
+                                                </div>
+                                            </>
+                                        )
+                                    })}
+                                </Typography>
+                            </Popover>
                             {/* <div>
                                 <StyledButton onClick={lastUser} startIcon={<NavigateBeforeIcon style={{ fontSize: '30px' }} />} style={{ fontWeight: '600' }} />
                             </div> */}
@@ -562,21 +640,21 @@ const StudentMark = () => {
                             <Table stickyHeader aria-label='sticky table'>
                                 <TableHead className={`${classes.columnHeader} table-header-row`}>
                                     <TableRow>
-                                        <TableCell className={classes.tableCell} style={{fontSize: '12px'}} >Number</TableCell>
-                                        <TableCell className={classes.tableCell} style={{fontSize: '12px'}} >Question</TableCell>
-                                        <TableCell className={classes.tableCell} style={{fontSize: '12px'}} >Max Marks Per Question</TableCell>
-                                        <TableCell className={classes.tableCell} style={{fontSize: '12px'}} >Negative Marks</TableCell>
-                                        <TableCell className={classes.tableCell} style={{fontSize: '12px'}} >Marks</TableCell>
+                                        <TableCell className={classes.tableCell} style={{ fontSize: '12px' }} >Number</TableCell>
+                                        <TableCell className={classes.tableCell} style={{ fontSize: '12px' }} >Question</TableCell>
+                                        <TableCell className={classes.tableCell} style={{ fontSize: '12px' }} >Max Marks Per Question</TableCell>
+                                        <TableCell className={classes.tableCell} style={{ fontSize: '12px' }} >Negative Marks</TableCell>
+                                        <TableCell className={classes.tableCell} style={{ fontSize: '12px' }} >Marks</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {dummyArr.map((items, i) => (
                                         <TableRow key={items.id}>
-                                            <TableCell className={classes.tableCell} style={{fontSize: '13px', width: '10%'}} >
+                                            <TableCell className={classes.tableCell} style={{ fontSize: '13px', width: '10%' }} >
                                                 Question - {i + 1}
                                             </TableCell>
-                                            <TableCell className={classes.tableCell} style={{ maxWidth: '400px' , minWidth: '200px', height: '100px' , fontSize: '13px' }} >
-                                                <div className='questnArea'  style={{textAlign: 'justify'}} >
+                                            <TableCell className={classes.tableCell} style={{ maxWidth: '400px', minWidth: '200px', height: '100px', fontSize: '13px' }} >
+                                                <div className='questnArea' style={{ textAlign: 'justify' }} >
                                                     {ReactHtmlParser(quesList[i]?.question_answer[0]?.question)}
                                                     <span style={{ marginLeft: '5px' }}>
                                                         {quesList[i]?.question_answer[0]?.question
@@ -612,15 +690,15 @@ const StudentMark = () => {
                                                     </span>
                                                 </div>
                                             </TableCell>
-                                            <TableCell className={classes.tableCell} style={{width: '14%'}} >
+                                            <TableCell className={classes.tableCell} style={{ width: '14%' }} >
                                                 {quesList[i]?.question_mark[0]}
                                             </TableCell>
                                             <TableCell className={classes.tableCell}>
                                                 {quesList[i]?.question_mark[1]}
                                             </TableCell>
                                             {/* <TableCell className={classes.tableCell}>{items?.erp_user?.name}</TableCell> */}
-                                            <TableCell className={classes.tableCell} id="blockArea"  style={{width: '13%'}} >
-                                                <TextField required variant='outlined' value={values?.val?.length > 0 ? values?.val[i] : ''} placeholder='Enter Mark' style={{width: '50%'}} type='number' onChange={(e) => handleMarksEnter(e, i)} />
+                                            <TableCell className={classes.tableCell} id="blockArea" style={{ width: '13%' }} >
+                                                <TextField required variant='outlined' value={values?.val?.length > 0 ? values?.val[i] : ''} placeholder='Enter Mark' style={{ width: '50%' }} type='number' onChange={(e) => handleMarksEnter(e, i)} />
                                             </TableCell>
 
                                         </TableRow>
@@ -646,7 +724,7 @@ const StudentMark = () => {
                     </Paper>
                 </div>
             </div>
-        </Layout>
+        </Layout >
     );
 };
 

@@ -26,6 +26,7 @@ const QuestionPaperCard = ({
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const { containerRef } = React.useContext(ContainerContext);
   const classes = useStyles();
+  console.log('treehandleview', handleViewMore, testId)
 
   const {
     id: questionPaperId,
