@@ -36,6 +36,10 @@ import {
   UPDATE_CLASS_TYPE,
   SET_EDIT_DATA,
   SET_EDIT_DATA_FALSE,
+  LIST_GROUP_REQUEST,
+  LIST_GROUP_SUCCESS,
+  LIST_GROUP_FAILURE,
+  CLEAR_GROUP_LIST
 } from './create-class-constants';
 import axiosInstance from '../../../../config/axios';
 import endpoints from '../../../../config/endpoints';
@@ -67,6 +71,7 @@ const CreateclassProvider = (props) => {
     tutorEmails: [],
     tutorEmailsLoading: false,
     classTypeId: null,
+    groupList : []
   };
 
   const [state, dispatch] = useReducer(createClassReducer, initalState);
@@ -109,13 +114,13 @@ const CreateclassProvider = (props) => {
   // };
 
   const listTutorEmails = async (reqData) => {
-    const { branchIds, gradeIds,acadYears } = reqData;
+    const { branchIds, gradeIds,acadYears,section_mappings } = reqData;
     dispatch(request(LIST_TUTOR_EMAILS_REQUEST));
 
     try {
-      const { data } = await axiosInstance.get(
-        `/erp_user/teacher-list/?branch_id=${branchIds}&grade_id=${gradeIds}&session_year=${acadYears}`
-      );
+      let url = `/erp_user/teacher-list/?branch_id=${branchIds}&grade_id=${gradeIds}&session_year=${acadYears}`
+      if(section_mappings) url += `&section_mappings=${section_mappings}`
+      const { data } = await axiosInstance.get(url);
       if (data.status === 'success')
         dispatch(success(data.data, LIST_TUTOR_EMAILS_SUCCESS));
       else throw new Error(data?.message);
@@ -213,6 +218,23 @@ const CreateclassProvider = (props) => {
       else throw new Error(data.message);
     } catch (error) {
       dispatch(failure(error, LIST_STUDENT_FAILURE));
+    }
+  };
+
+  const listGroup = async (
+    acadId,
+    grade
+  ) => {
+    dispatch(request(LIST_GROUP_REQUEST));
+    try {
+      const data  = await axiosInstance.get(
+        `${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${
+          grade}&is_active=${true}&group_type=${2}`
+      );
+      if (data.status == 200) dispatch(success(data.data, LIST_GROUP_SUCCESS));
+      else throw new Error(data.message);
+    } catch (error) {
+      dispatch(failure(error, LIST_GROUP_FAILURE));
     }
   };
 
@@ -335,6 +357,10 @@ const createSpecialOnlineClass = async (formdata) => {
     return { type: CLEAR_COURSE_DROP };
   };
 
+  const clearGroup = () => {
+    return { type: CLEAR_GROUP_LIST };
+  };
+
   const listFilteredStudents = (students) => {
     return { type: LIST_FILTERED_STUDENTS, payload: students };
   };
@@ -380,6 +406,8 @@ const createSpecialOnlineClass = async (formdata) => {
         clearCourses,
         setEditData,
         setEditDataFalse,
+        listGroup,
+        clearGroup
       }}
     >
       {children}

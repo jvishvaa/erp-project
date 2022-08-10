@@ -54,6 +54,7 @@ const ErpAdminViewClass = ({ history }) => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [selectedBranch, setSelectedBranch] = useState([]);
+  const [selectedAcadId,setSelectedAcadId] = useState([])
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState([]);
   const [sectionList, setSectionList] = useState([]);
@@ -75,6 +76,12 @@ const ErpAdminViewClass = ({ history }) => {
   const [maxStartDate, setMaxStartDate] = useState();
   const [dateRangeTechPer, setDateRangeTechPer] = useState([]);
   const [historicalData, setHistoricalData] = useState(false);
+  const [sectionToggle, setSectionToggle] = useState(false);
+  const [selectedGroupData, setSelectedGroupData] = useState([]);
+  const [selectedGroupId, setSelectedGroupId] = useState('');
+  const [groupSectionMappingId,setGroupSectionMappingId] = useState([]);
+  const [groupList,setGroupList] = useState([])
+
 
   const [classTypes, setClassTypes] = useState([
     { id: 0, type: 'Compulsory Class' },
@@ -150,6 +157,7 @@ const ErpAdminViewClass = ({ history }) => {
           grade = [],
           section = [],
           subject = [],
+          group = [],
           course = {},
           date = getminMaxDate().datearr,
           page: pageNumber = 1,
@@ -266,6 +274,7 @@ const ErpAdminViewClass = ({ history }) => {
         const url = isMsOriginURL
           ? `/reports/v1/retrieve-online-class_no_filter/`
           : `/oncls/v1/retrieve-online-class_no_filter/`;
+          if(sectionToggle) url += `&section` 
 
         APIREQUEST(
           'get',
@@ -468,28 +477,37 @@ const ErpAdminViewClass = ({ history }) => {
         window.location.pathname === '/erp-online-class-teacher-view'
       ) {
         if (selectedCourse?.id) {
+
+          let url =  `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
+          }&class_type=${selectedClassType?.id
+          }&start_date=${startDateTechPer?.format(
+            'YYYY-MM-DD'
+          )}&end_date=${endDateTechPer?.format('YYYY-MM-DD')}&course_id=${selectedCourse?.id
+          }&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
+          }&module_id=${moduleId}`
+          if(sectionToggle) url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`
+          if(!sectionToggle) url += `&section_mapping_ids=${selectedSection.map(
+            (el) => el?.id
+          )}`
           callApi(
-            `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
-            }&section_mapping_ids=${selectedSection.map((el) => el?.id)}&class_type=${selectedClassType?.id
-            }&start_date=${startDateTechPer?.format(
-              'YYYY-MM-DD'
-            )}&end_date=${endDateTechPer?.format('YYYY-MM-DD')}&course_id=${selectedCourse?.id
-            }&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
-            }&module_id=${moduleId}`,
+           url,
             'filter'
           );
         } else {
+          let url = `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
+          }&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${selectedClassType?.id
+          }&start_date=${startDateTechPer?.format(
+            'YYYY-MM-DD'
+          )}&end_date=${endDateTechPer?.format(
+            'YYYY-MM-DD'
+          )}&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
+          }&module_id=${moduleId}`
+          if(sectionToggle) url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`
+          if(!sectionToggle) url += `&section_mapping_ids=${selectedSection.map(
+            (el) => el?.id
+          )}`
           callApi(
-            `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
-            }&section_mapping_ids=${selectedSection.map(
-              (el) => el?.id
-            )}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${selectedClassType?.id
-            }&start_date=${startDateTechPer?.format(
-              'YYYY-MM-DD'
-            )}&end_date=${endDateTechPer?.format(
-              'YYYY-MM-DD'
-            )}&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
-            }&module_id=${moduleId}`,
+            url,
             'filter'
           );
         }
@@ -518,28 +536,37 @@ const ErpAdminViewClass = ({ history }) => {
         window.location.pathname === '/erp-online-class-teacher-view'
       ) {
         if (selectedCourse?.id) {
+          let url =  `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
+          }&class_type=${selectedClassType?.id
+          }&start_date=${startDateTechPer.format(
+            'YYYY-MM-DD'
+          )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${selectedCourse?.id
+          }&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
+          }&module_id=${moduleId}`
+
+          if(sectionToggle) url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`
+          if(!sectionToggle) url += `&section_mapping_ids=${selectedSection.map(
+            (el) => el?.id
+          )}`
           callApi(
-            `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
-            }&section_mapping_ids=${selectedSection.map((el) => el?.id)}&class_type=${selectedClassType?.id
-            }&start_date=${startDateTechPer.format(
-              'YYYY-MM-DD'
-            )}&end_date=${endDateTechPer.format('YYYY-MM-DD')}&course_id=${selectedCourse?.id
-            }&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
-            }&module_id=${moduleId}`,
+           url,
             'filter'
           );
-        } else if (selectedSubject?.length > 0) {
+        } else if (selectedSubject?.length > 0 || selectedGroupId) {
+          let url =  `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
+          }&class_type=${selectedClassType?.id
+          }&start_date=${startDateTechPer.format(
+            'YYYY-MM-DD'
+          )}&end_date=${endDateTechPer.format(
+            'YYYY-MM-DD'
+          )}&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
+          }&module_id=${moduleId}&subject_id=${selectedSubject.map((el) => el?.subject__id)}`
+          if(sectionToggle) url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`
+          if(!sectionToggle) url += `&section_mapping_ids=${selectedSection.map(
+            (el) => el?.id
+          )}`
           callApi(
-            `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
-            }&section_mapping_ids=${selectedSection.map(
-              (el) => el?.id
-            )}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${selectedClassType?.id
-            }&start_date=${startDateTechPer.format(
-              'YYYY-MM-DD'
-            )}&end_date=${endDateTechPer.format(
-              'YYYY-MM-DD'
-            )}&page_number=${page}&page_size=${limit}&class_status=${tabValue + 1
-            }&module_id=${moduleId}`,
+           url,
             'filter'
           );
         }
@@ -593,6 +620,8 @@ const ErpAdminViewClass = ({ history }) => {
     setPage(1);
     setTabValue(0);
     setHistoricalData(false);
+    setSelectedGroupData([])
+    setGroupList([])
   }
 
   function handleFilter() {
@@ -647,8 +676,12 @@ const ErpAdminViewClass = ({ history }) => {
         setAlert('warning', 'Select Grade');
         return;
       }
-      if (!selectedSection?.length > 0) {
+      if (!sectionToggle && !selectedSection?.length > 0) {
         setAlert('warning', 'Select Section');
+        return;
+      }
+      if (sectionToggle && !selectedGroupId) {
+        setAlert('warning', 'Select Group');
         return;
       }
       if (selectedClassType?.id !== 0) {
@@ -674,6 +707,7 @@ const ErpAdminViewClass = ({ history }) => {
           subject: selectedSubject,
           course: selectedCourse,
           date: dateRangeTechPer,
+          group : selectedGroupData,
           page,
           tabValue,
           historicalData,
@@ -681,26 +715,33 @@ const ErpAdminViewClass = ({ history }) => {
       );
 
       if (selectedCourse?.id) {
-        callApi(
-          `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
-          }&section_mapping_ids=${selectedSection.map((el) => el?.id)}&class_type=${selectedClassType?.id
-          }&start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(
-            endDateTechPer
-          ).format('YYYY-MM-DD')}&course_id=${selectedCourse?.id
-          }&page_number=${1}&page_size=${limit}&class_status=${tabValue + 1
-          }&module_id=${moduleId}`,
+        let url = `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
+        }&class_type=${selectedClassType?.id
+        }&start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(
+          endDateTechPer
+        ).format('YYYY-MM-DD')}&course_id=${selectedCourse?.id
+        }&page_number=${1}&page_size=${limit}&class_status=${tabValue + 1
+        }&module_id=${moduleId}`
+        if(sectionToggle) url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`
+        if(!sectionToggle) url += `&section_mapping_ids=${selectedSection.map(
+          (el) => el?.id
+        )}`
+        callApi(url ,
           'filter'
         );
       } else {
+        let url = `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
+        }&class_type=${selectedClassType?.id
+        }&start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(
+          endDateTechPer
+        ).format('YYYY-MM-DD')}&class_status=${tabValue + 1
+        }&module_id=${moduleId}&page_number=${1}&page_size=${limit}&subject_id=${selectedSubject.map((el) => el?.subject__id)}`
+        if(sectionToggle) url += `&section_mapping_ids=${[...new Set(groupSectionMappingId)].toString()}`
+        if(!sectionToggle) url += `&section_mapping_ids=${selectedSection.map(
+          (el) => el?.id
+        )}`
         callApi(
-          `${endpoints.aol.classes}?is_aol=0&session_year=${selectedAcademicYear?.id
-          }&section_mapping_ids=${selectedSection.map(
-            (el) => el?.id
-          )}&subject_id=${selectedSubject.map((el) => el?.subject__id)}&class_type=${selectedClassType?.id
-          }&start_date=${moment(startDateTechPer).format('YYYY-MM-DD')}&end_date=${moment(
-            endDateTechPer
-          ).format('YYYY-MM-DD')}&class_status=${tabValue + 1
-          }&module_id=${moduleId}&page_number=${1}&page_size=${limit}`,
+          url,
           'filter'
         );
       }
@@ -766,6 +807,8 @@ const ErpAdminViewClass = ({ history }) => {
     setSubjectList([]);
     setSelectedViewMore('');
     setFilterList([]);
+    setSelectedGroupData([])
+    setSelectedGroupId([])
     setPage(1);
     setTotalCount(0);
     setTabValue(0);
@@ -778,7 +821,9 @@ const ErpAdminViewClass = ({ history }) => {
     if (value?.length) {
       const ids = value.map((el) => el);
       const selectedId = value.map((el) => el?.branch?.id);
+      const acadId = value.map((el)=>el.id)
       setSelectedBranch(ids);
+      setSelectedAcadId(acadId)
       callApi(
         `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id
         }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
@@ -800,6 +845,8 @@ const ErpAdminViewClass = ({ history }) => {
 
   const handleGrade = (event = {}, value = []) => {
     setSelectedGrade([]);
+    setSelectedGroupData([])
+    setGroupList([])
     if (value?.length) {
       value =
         value.filter(({ grade_id }) => grade_id === 'all').length === 1
@@ -809,6 +856,7 @@ const ErpAdminViewClass = ({ history }) => {
       const selectedId = value.map((el) => el?.grade_id) || [];
       const branchId = selectedBranch.map((el) => el?.branch?.id) || [];
       setSelectedGrade(ids);
+      getGroup(selectedId)
       callApi(
         `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
         'section'
@@ -921,6 +969,63 @@ const ErpAdminViewClass = ({ history }) => {
       localStorage.setItem('filterData', JSON.stringify({ ...data, historicalData }));
     }
   }, [historicalData]);
+
+  const handleSectionToggle = (event) => {
+    setSectionToggle(event.target.checked);
+    setSelectedGroupData([])
+    setSelectedGroupId('')
+    setSelectedSection([])
+  };
+
+  const getGroup = (gradeId) => {
+    axiosInstance
+      .get(
+        `${endpoints.assessmentErp.getGroups}?acad_session=${selectedAcadId}&grade=${
+          
+          gradeId}&is_active=${true}&group_type=${2}`
+      )
+      .then((result) => {
+        if (result?.status === 200) {
+          setGroupList(result?.data);
+        }
+      });
+  };
+
+  const handleGroup = (e, value) => {
+    setSelectedGroupData([]);
+    setSelectedGroupId('');
+    if (value) {
+      let sectionIds =[];
+      let branchIds = [];
+      let GradeIds = [];
+      let sessionIds = []
+      let secMappingIds = []
+      const retrieveIds = value?.forEach((item) => {
+        let secids = item?.group_section_mapping.map((i)=>i?.group_section_id)
+        let branchids = item?.group_section_mapping.map((i)=>i?.group_branch_id)
+        let gradeids = item?.group_section_mapping.map((i)=>i?.group_grade_id)
+        let sessids = item?.group_section_mapping.map((i)=>i?.group_session_year_id)
+        let secmapids = item?.group_section_mapping.map((i)=>i?.section_mapping_id)
+ 
+
+        sectionIds.push(secids.toString());
+        branchIds.push(branchids.toString());
+        GradeIds.push(gradeids.toString());
+        sessionIds.push(sessids.toString());
+        secMappingIds.push(secmapids.toString())
+
+      })
+      let groupIds = value?.map((item) => item?.id)
+      setGroupSectionMappingId(secMappingIds)
+      setSelectedGroupData(value);
+      setSelectedGroupId(groupIds.toString());
+
+    callApi(
+      `${endpoints.academics.subjects}?branch=${branchIds}&session_year=${sessionIds}&grade=${GradeIds}&section=${sectionIds.toString()}&module_id=${moduleId}`,
+      'subject'
+    );
+      }
+  };
 
   const HistoricalDataEle = () => {
     return JSON.parse(localStorage.getItem('isMsAPI')) ? (
@@ -1061,7 +1166,19 @@ const ErpAdminViewClass = ({ history }) => {
                         )}
                       />
                     </Grid>
-                    <Grid item md={3} xs={12}>
+                    <Grid container alignItems='center' xs={12} md={3}>
+                      <Grid container alignItems='center' justifyContent='center'>
+                        <Typography>Section</Typography>
+                        <Switch
+                          checked={sectionToggle}
+                          onChange={handleSectionToggle}
+                          color='default'
+                          inputProps={{ 'aria-label': 'checkbox with default color' }}
+                        />
+                        <Typography>Group</Typography>
+                      </Grid>
+                    </Grid>
+                    {!sectionToggle && (<Grid item md={3} xs={12}>
                       <Autocomplete
                         multiple
                         style={{ width: '100%' }}
@@ -1083,7 +1200,33 @@ const ErpAdminViewClass = ({ history }) => {
                           />
                         )}
                       />
+                    </Grid>)}
+                    {sectionToggle && (
+                      <Grid item xs={12} md={3}>
+                      <Autocomplete
+                        id='Group'
+                        name='group'
+                        multiple
+                        // limitTags={2}
+                        className='dropdownIcon'
+                        onChange={handleGroup}
+                        value={selectedGroupData || []}
+                        options={groupList || []}
+                        getOptionLabel={(option) => option?.group_name || ''}
+                        filterSelectedOptions
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant='outlined'
+                            label='Group'
+                            placeholder='Group'
+                            // required
+                          />
+                        )}
+                        size='small'
+                      />
                     </Grid>
+                    )}
 
                     {selectedClassType?.id === 0 && (
                       <Grid item md={3} xs={12}>

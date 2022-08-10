@@ -94,6 +94,8 @@ const {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [isedit,setisEdit] = useState(false)
+  const [selectedgroupType,setSelectedGroupTypes] = useState([])
+  const [groupTypes,setGroupTypes] = useState([])
 
   const getRoleApi = async () => {
     try {
@@ -522,6 +524,15 @@ if(isEdit && completeData.length){
       setLoading(false);
     }
   };
+
+  const handleGroupType = (e,value) => {
+    if(value){
+      setSelectedGroupTypes(value)
+    }else{
+      setSelectedGroupTypes([])
+    }
+  }
+
   const createGroup = async () => {
     const rolesId = [];
     const branchId = [];
@@ -596,7 +607,7 @@ if(isEdit && completeData.length){
         //   grade: selectedGrades?.id,
           section_mapping: sectionArray,
           erpusers: selectionArray,
-          group_type : 1
+          group_type : selectedgroupType?.group_type_number
         },
         {
           headers: {
@@ -673,12 +684,23 @@ const handlegrade = (e,value) => {
     setSelectedGrades([])
   }
 }
+const getGroupTypes = () => {
+  axiosInstance.
+  get(
+    `${endpoints.communication.editGroup}list-group-types/`
+  ).then((res) => {
+    if (res?.status === 200) {
+      setGroupTypes(res.data)
+    }
+  })
+}
 
 const handleSection = (e , value) => {
     setSelectedSections([])
 if(value.length > 0){
       const items = value.map((el) => el);
       setSelectedSections(items)
+      getGroupTypes()
 }else{
   setSelectedSections([])
 }
@@ -718,19 +740,20 @@ if(value.length > 0){
     //   setRoleError('Please select a role');
     //   return;
     // }
-    if (!selectedBranch) {
-      setRoleError('');
-      setBranchError('Please select a branch');
+    if (!selectedBranch || selectedBranch.length === 0 ) {
+      setAlert('error','Please select Branch')
       return;
     }
-    if (!selectedGrades) {
-      setRoleError('');
-      setBranchError('Please select a Grade');
+    if (!selectedGrades || selectedGrades.length === 0) {
+      setAlert('error','Please select Grade')
       return;
     }
-    if (!selectedSections) {
-      setRoleError('');
-      setBranchError('Please select a Section');
+    if (!selectedSections || selectedSections.length === 0) {
+      setAlert('error','Please select Section')
+      return;
+    }
+    if(!selectedgroupType || selectedgroupType.length === 0){
+      setAlert('error','Please select Group Type')
       return;
     }
     window.scrollTo(0, 0);
@@ -945,6 +968,34 @@ if(value.length > 0){
                               variant='outlined'
                               label='Section'
                               placeholder='Section'
+                              required
+                            />
+                          )}
+                        />
+                      </div>
+                      <span className='create_group_error_span'>{branchError}</span>
+                    </div>
+                  </Grid>
+                  <Grid xs={12} lg={3} className='create_group_items' item>
+                    <div>
+                      <div className='create_group_branch_wrapper'>
+                        <Autocomplete
+                          size='small'
+                          // multiple
+                          onChange={handleGroupType}
+                          id='message_log-branch'
+                          className='create_group_branch'
+                          value={selectedgroupType || []}
+                          options={groupTypes|| []}
+                          getOptionLabel={(option) => option?.group_type_name || ''}
+                          filterSelectedOptions
+                          renderInput={(params) => (
+                            <TextField
+                              className='message_log-textfield'
+                              {...params}
+                              variant='outlined'
+                              label='Group Type'
+                              placeholder='Group Type'
                               required
                             />
                           )}
