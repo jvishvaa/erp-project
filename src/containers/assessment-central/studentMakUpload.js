@@ -225,7 +225,7 @@ const StudentMark = () => {
             .get(`${endpoints.assessment.studentImgs}?test_id=${history?.location?.state?.test_id}&user=${history?.location?.state?.user}`)
             .then((result) => {
                 console.log(result);
-                setStudentImgs(result?.data?.assessment_files)
+                setStudentImgs(result?.data?.result)
             })
             .catch((error) => {
                 console.log('');
@@ -490,7 +490,6 @@ const StudentMark = () => {
         })
     }
 
-    console.log('tree', history?.location?.state?.test_id, selectedUser)
 
     const handleStudent = (e, val) => {
         if (nextFlag === false) {
