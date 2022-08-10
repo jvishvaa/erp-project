@@ -274,7 +274,6 @@ const ErpAdminViewClass = ({ history }) => {
         const url = isMsOriginURL
           ? `/reports/v1/retrieve-online-class_no_filter/`
           : `/oncls/v1/retrieve-online-class_no_filter/`;
-          if(sectionToggle) url += `&section` 
 
         APIREQUEST(
           'get',
