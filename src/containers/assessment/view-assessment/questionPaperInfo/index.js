@@ -428,7 +428,7 @@ const QuestionPaperInfo = ({
               {getTestStatus() ? <b style={{ fontSize: '20px' }}>Take Test</b> : 'Not Started'}
             </Button>
           )}</> :
-          <div style={{ backgroundColor: 'pink' }}>
+          <div>
             <h4>Upload Here</h4>
             <input
               className='file-upload-input'
