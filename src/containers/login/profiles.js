@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Card } from 'antd';
+import { Card, Image } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { Avatar } from 'antd';
 import { useHistory } from 'react-router-dom';
@@ -10,6 +10,11 @@ import { isMsAPI } from 'utility-functions';
 import './styles.scss';
 import { Grid } from '@material-ui/core';
 import Loader from 'components/loader/loader';
+import { green } from '@material-ui/core/colors';
+import ENVCONFIG from 'config/config.js'
+
+
+
 const UserProfiles = () => {
   const history = useHistory();
   const { profileData } = history.location.state;
@@ -109,6 +114,7 @@ const UserProfiles = () => {
         });
     }
   };
+
   return (
     <>
       <div style={{ margin: '50px' }}>
@@ -116,33 +122,35 @@ const UserProfiles = () => {
           <Loader/>
         ): (
           <>
-          <div style={{ marginLeft: '30px' }}>
+          <Grid container spacing={2}>
+          </Grid>
+          <Grid container spacing={2}>
+            <Grid item md={12} style={{marginLeft:'25px'}}>
             <p style={{ fontWeight: '600', fontSize: '30px' }}>Welcome,</p>
             <p style={{ fontSize: '20px' }}>Select Profile to explore account</p>
-          </div>
-          <Grid container spacing={2}>
-            <Grid container item style={{ height:"750px", overflowY:"scroll"}}>
+            </Grid>
+
             <Grid item
               md={12}
-              // xs={12}
-              style={{ display: 'flex', justifyContent: 'flex-start', flexWrap:'wrap', }}
+              className='card_container'
             >
               {profileData?.profile_data?.data?.map((item, i) => (
                 <Card
                   size='small'
                   title={item?.branch_name}
+                  headStyle={{ backgroundColor: '#e0e0e0', color: 'black', width:400 }}
                   style={{
                     width: 400,
-                    height: 150
+                    height: 150,
                   }}
                   className='card_style'
                   onClick={() => profileLogin(item)}
+
                 >
                   <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
                     <Avatar
-                      style={{ width: '60px', height: '60px' }}
-                      size='large'
-                      icon={<UserOutlined />}
+                      size={64}
+                      src = {`${ENVCONFIG?.s3?.ERP_BUCKET}${item?.profile}`}   
                     />
                     <div
                       style={{
@@ -152,20 +160,26 @@ const UserProfiles = () => {
                       }}
                     >
                       <p
-                        style={{ marginLeft: '10px', fontWeight: '800', fontSize: '16px' }}
+                        style={{ marginLeft: '10px', fontWeight: '800', fontSize: '18px', margin: '0px 10px' }}
                       >
                         {item?.name}
                       </p>
-                      <p style={{ marginLeft: '10px', fontSize: '10px' }}>{item?.erp_id}</p>
+                      <p style={{ marginLeft: '10px', fontSize: '12px', color:'green', fontWeight:'bolder',margin:'0px 10px'}}>{item?.erp_id}</p>
+                      <div style={{display:"flex", color:'green', margin:'2px 10px'}}>
+                      <p style={{ fontSize: '12px', fontWeight:'bolder' }}>{item?.grade_name}</p>
+                      <p style={{fontSize:'12px', marginLeft:'10px'}}> | </p>
+                      <p style={{ marginLeft: '10px', fontSize: '12px', fontWeight:'bolder' }}>{item?.section_name}</p>
+
+                      </div>
+
                     </div>
                   </div>
-                  <p>{item?.grade_name}</p>
-                  {/* <p>Card content</p> */}
+                  {/* <p>{item?.grade_name}</p> */}
                 </Card>
               ))}
             </Grid>
 
-            </Grid>
+            {/* </Grid> */}
           </Grid>
           
           </>
