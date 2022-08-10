@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 import uploadIcon from 'v2/Assets/dashboardIcons/announcementListIcons/uploadIcon.svg';
 import UploadDocument from '../UploadDocument';
+import AddHomework from '../../../../assets/images/AddHomework.svg';
 import moment from 'moment';
 
 const DailyDiary = () => {
@@ -33,8 +34,8 @@ const DailyDiary = () => {
   const [sectionID, setSectionID] = useState([]);
   const [sectionMappingID, setSectionMappingID] = useState([]);
   const [subjectID, setSubjectID] = useState();
+  const [subjectName, setSubjectName] = useState();
   const [chapterID, setChapterID] = useState();
-  const [filePath, setFilePath] = useState([]);
   const [recap, setRecap] = useState('');
   const [classwork, setClasswork] = useState('');
   const [summary, setSummary] = useState('');
@@ -84,7 +85,6 @@ const DailyDiary = () => {
 
   const handleBack = () => {
     history.push('/diary/teacher');
-    // setState({ isEdit: false, editData: [] });
   };
 
   const handleEdit = () => {
@@ -240,6 +240,10 @@ const DailyDiary = () => {
     });
     if (e) {
       setSubjectID(e.value);
+      setSubjectName(e.children);
+      setDeclined(false);
+      setAssignedHomework([]);
+      setHwMappingID();
       const params = {
         session_year: selectedBranch.branch.id,
         subject_id: e.id,
@@ -409,7 +413,24 @@ const DailyDiary = () => {
     }
   };
 
+  const RedirectToHomework = () => {
+    if (!subjectID) {
+      message.error('Please select all filters');
+      return;
+    }
+    let session_year = academicYearID;
+    history.push(
+      `/homework/add/${moment().format(
+        'YYYY-MM-DD'
+      )}/${session_year}/${branchID}/${gradeID}/${subjectName}/${subjectID}`
+    );
+  };
+
   const checkAssignedHomework = () => {
+    if (!subjectID) {
+      message.error('Please select all filters');
+      return;
+    }
     const params = {
       section_mapping: sectionMappingID,
       subject: subjectID,
@@ -639,21 +660,32 @@ const DailyDiary = () => {
                       }}
                     />
                   </div>
-                  <div className='col-md-4 py-2' onClick={() => checkAssignedHomework()}>
+                  <div className='col-md-4 py-2 d-flex' style={{ position: 'relative' }}>
                     <TextArea
                       className='th-width-100 th-br-6'
+                      onClick={() => checkAssignedHomework()}
                       value={homework}
                       onChange={(e) => setHomework(e.target.value)}
-                      placeholder='Homework'
+                      placeholder='Add Homework'
                       autoSize={{
                         minRows: 3,
                         maxRows: 5,
                       }}
                     />
+                    {!declined && subjectID && !homework && (
+                      <img
+                        src={AddHomework}
+                        className='py-3'
+                        onClick={RedirectToHomework}
+                        style={{ position: 'absolute', right: '10%' }}
+                      />
+                    )}
                   </div>
 
                   <div className='col-12'>
-                    <span className='th-grey th-14'>Upload Attachments</span>
+                    <span className='th-grey th-14'>
+                      Upload Attachments (Accepted files: [ .jpeg,.jpg,.png,.pdf ])
+                    </span>
                     <div
                       className='row justify-content-start align-items-center th-br-4 py-1 mt-1'
                       style={{ border: '1px solid #D9D9D9' }}
@@ -704,22 +736,6 @@ const DailyDiary = () => {
                       </div>
                     </div>
                   </div>
-
-                  {/* <div className='col-md-4 py-2'>
-                    <input
-                      type='file'
-                      // style={{ display: 'none' }}
-                      id='raised-button-file'
-                      accept='image/*, .pdf'
-                      onChange={handleFileUpload}
-                      placeholder='ADD DOCUMENT'
-                    />
-                    
-
-                    <div className='my-2 th-primary'>
-                      Accepted files: [ jpeg,jpg,png,pdf ]
-                    </div>
-                  </div> */}
                 </div>
               </div>
             </div>
@@ -731,7 +747,7 @@ const DailyDiary = () => {
               </div>
               <div className='col-md-2 col-6'>
                 <Button
-                  className='th-width-100 th-br-6 th-pointer'
+                  className='th-width-100 th-br-6 th-bg-primary th-white th-pointer'
                   onClick={isEdit ? handleEdit : handleSubmit}
                 >
                   {isEdit ? 'Update' : 'Submit'}
@@ -743,7 +759,6 @@ const DailyDiary = () => {
         <Modal
           visible={!declined && assignedHomeworkModal}
           title='Assign Existing Homework'
-          // onOk={handleOk}
           onCancel={closeAssignedHomeworkModal}
           footer={[
             <Button key='back' onClick={closeAssignedHomeworkModal}>

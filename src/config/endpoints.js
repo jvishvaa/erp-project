@@ -23,7 +23,7 @@ const {
 export default {
   auth: {
     login: '/auth/login/',
-    mobileLogin: '/erp_user/erp-contact-login/'
+    mobileLogin: '/erp_user/erp-contact-login/',
   },
   checkAcademicView: {
     isAcademicView: '/period/period-erp-system-config/',
@@ -345,6 +345,7 @@ export default {
     branches: '/academic/chapters/',
     updateDelete: '/academic/',
     chapterList: '/academic/logged-in-users-subjects/',
+    assignHomeworkDiary: '/academic/assign-homework-dairy/',
   },
   onlineCourses: {
     createCourse: '/aol/courses/',
@@ -490,8 +491,6 @@ export default {
     studentMarks: '/assessment/ru-offline-asmnt/',
     OMRResponse: '/assessment/list-omr-sheets/',
     bulkUploadMarks: `/assessment/upload-omr-result-excel/`,
-    imageupload: '/assessment/assessment-document-upload/',
-    studentImgs: '/assessment/assessment-document-upload/',
   },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,

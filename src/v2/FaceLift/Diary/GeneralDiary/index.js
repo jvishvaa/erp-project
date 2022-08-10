@@ -234,6 +234,10 @@ const GeneralDiary = () => {
       message.error('Please select Section');
       return;
     }
+    if (studentCheckedID.length < 1) {
+      message.error('Please select atleast one student');
+      return;
+    }
 
     let payload = {
       title: title,
@@ -252,6 +256,7 @@ const GeneralDiary = () => {
       .then((res) => {
         if (res.data.status_code === 200) {
           message.success('General Diary Created Succssfully');
+          history.push('/diary/teacher');
         }
       })
       .catch((error) => {
@@ -469,7 +474,9 @@ const GeneralDiary = () => {
                     />
                   </div>
                   <div className='col-12'>
-                    <span className='th-grey th-14'>Upload Attachments</span>
+                    <span className='th-grey th-14'>
+                      Upload Attachments (Accepted files: [ .jpeg,.jpg,.png,.pdf ])
+                    </span>
                     <div
                       className='row justify-content-start align-items-center th-br-4 py-1 mt-1'
                       style={{ border: '1px solid #D9D9D9' }}
@@ -536,14 +543,16 @@ const GeneralDiary = () => {
                   Back
                 </Button>
               </div>
-              <div className='col-md-2 col-6'>
-                <Button
-                  className='th-width-100 th-br-6 th-bg-primary th-white th-pointer'
-                  onClick={publishGeneralDiary}
-                >
-                  Submit
-                </Button>
-              </div>
+              {generalDairyUsers?.length > 0 && (
+                <div className='col-md-2 col-6'>
+                  <Button
+                    className='th-width-100 th-br-6 th-bg-primary th-white th-pointer'
+                    onClick={publishGeneralDiary}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>

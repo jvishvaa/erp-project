@@ -15,7 +15,13 @@ const { Option } = Select;
 
 const SuperAdmindashboardNew = () => {
   const time = new Date().getHours();
-  const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
+  const { first_name } = JSON.parse(localStorage.getItem('userDetails'));
+  let { user_level: userLevel } = JSON.parse(localStorage.getItem('userDetails')) || '';
+  const { is_superuser: superuser } =
+    JSON.parse(localStorage.getItem('userDetails')) || '';
+  if (superuser == true) {
+    userLevel = 1;
+  }
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -58,7 +64,7 @@ const SuperAdmindashboardNew = () => {
           <div className='col-md-8 th-16 py-3'>
             Good {time < 12 ? 'Morning' : time < 16 ? 'Afternoon' : 'Evening'},{' '}
             <span className='text-capitalize pr-2'>{first_name}</span>
-            <span className='th-14'>({getRole(user_level)})</span>
+            <span className='th-14'>({getRole(userLevel)})</span>
           </div>
           <div className='col-md-4 th-16 py-3'>
             <Select
