@@ -44,7 +44,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
     branchId,
     usersData,
     sectionData,
-    group_type,
+    // group_type,
   } = editData;
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -75,7 +75,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
 
   useEffect(() => {
     if (editData) {
-      getGroupTypes()
+      // getGroupTypes()
       setSelectedBranch({ id: branchId, branch_name: branch });
       setSelectedGrades({ grade_id: gradeId, grade__grade_name: grades });
       setGroupName(groupname);
@@ -94,12 +94,12 @@ const UpdateGroup = ({ handleEditing, editData }) => {
       getSectionApi({ grade_id: gradeId, grade__grade_name: grades });
   }, [isEdit, selectedBranch]);
 
-  useEffect(() => {
-    if(groupTypes.length > 0){
-        let groupType =  groupTypes.filter((item) => item.group_type_number === group_type)
-      setSelectedGroupTypes(groupType[0])
-    }
-  },[groupTypes])
+  // useEffect(() => {
+  //   if(groupTypes.length > 0){
+  //       let groupType =  groupTypes.filter((item) => item.group_type_number === group_type)
+  //     setSelectedGroupTypes(groupType[0])
+  //   }
+  // },[groupTypes])
 
   const getApiCall = async (api, type) => {
     try {
@@ -132,16 +132,16 @@ const UpdateGroup = ({ handleEditing, editData }) => {
     }
   };
 
-  const getGroupTypes = () => {
-    axiosInstance.
-    get(
-      `${endpoints.communication.editGroup}list-group-types/`
-    ).then((res) => {
-      if (res?.status === 200) {
-        setGroupTypes(res.data)
-      }
-    })
-  }
+  // const getGroupTypes = () => {
+  //   axiosInstance.
+  //   get(
+  //     `${endpoints.communication.editGroup}list-group-types/`
+  //   ).then((res) => {
+  //     if (res?.status === 200) {
+  //       setGroupTypes(res.data)
+  //     }
+  //   })
+  // }
   const getSectionApi = async (value) => {
     try {
       setLoading(true);
@@ -348,7 +348,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
       // role: selectedRole,
       // branch: branchid,
       // grade: gradeid,
-      group_type : selectedgroupType?.group_type_number,
+      // group_type : selectedgroupType?.group_type_number,
       section_mapping: sectionMappingIds,
       erpusers: finalUserList,
       is_active: active,
@@ -503,7 +503,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
                   )}
                 />
               </Grid>
-              <Grid xs={12} lg={3} className='create_group_items' item>
+              {/* <Grid xs={12} lg={3} className='create_group_items' item>
                     <div>
                       <div className='create_group_branch_wrapper'>
                         <Autocomplete
@@ -529,7 +529,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
                         />
                       </div>
                     </div>
-                  </Grid>
+                  </Grid> */}
             </Grid>
           </Card>
           <Grid item md={4} style={{marginLeft :'1%'}}>
