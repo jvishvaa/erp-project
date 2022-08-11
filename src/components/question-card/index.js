@@ -139,7 +139,7 @@ const QuestionCard = ({
     'orchids.letseduvate.com',
     'localhost:3000',
     'dev.olvorchidnaigaon.letseduvate.com',
-    'ui-revamp1.olvorchidnaigaon.letseduvate.com',
+    'ui-revamp1.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
   ];
   const handleScroll = (dir) => {
@@ -418,8 +418,7 @@ const QuestionCard = ({
       .get('academic/get-module-list/', { params: { ...params } })
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          console.log('module', result?.data?.result);
-          setModuleListData(result?.data?.result);
+          setModuleListData(result?.data?.result?.module_list);
         }
       })
       .catch((error) => {
@@ -457,6 +456,9 @@ const QuestionCard = ({
     setTopicListData([]);
     if (each) {
       setSelectedVolumeId(each?.id);
+      if (boardFilterArr.includes(window.location.host)) {
+        fetchBoardListData();
+      }
     }
   };
 
