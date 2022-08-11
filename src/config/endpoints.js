@@ -61,6 +61,7 @@ export default {
   },
   profile: {
     userDetails: '/erp_user/user-data/',
+    Profilestories: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
