@@ -147,11 +147,11 @@ const ViewGroup = withRouter(({ history, ...props }) => {
   const getGroupsData = async () => {
     if(!selectedbranch) return setAlert('error','Please Select Branch')
     else if(!selectedGrade) return setAlert('error','Please Select Grade')
-    else if(!selectedgroupType || selectedgroupType.length === 0 ) return setAlert('error','Please Select Group Type')
+    // else if(!selectedgroupType || selectedgroupType.length === 0 ) return setAlert('error','Please Select Group Type')
     else {
       try {
       setLoading(true);
-      let url = `${endpoints.communication.userGroups}?page=${currentPage}&page_size=15&group_type=${selectedgroupType?.group_type_number}&acad_session=${selectedbranch?.id}&grade=${selectedGrade?.grade_id}`
+      let url = `${endpoints.communication.userGroups}?page=${currentPage}&page_size=15&acad_session=${selectedbranch?.id}&grade=${selectedGrade?.grade_id}` //&group_type=${selectedgroupType?.group_type_number}
       if(searchData){
         url += `&search=${searchData}`
       }
@@ -178,7 +178,7 @@ const ViewGroup = withRouter(({ history, ...props }) => {
             usersData : items?.group_users,
             sessionYearId : items?.group_section_mapping.length ? items?.group_section_mapping[0].group_session_year_id : '',
             active : items?.is_active,
-            group_type : items?.group_type
+            // group_type : items?.group_type
           });
         });
         setGroupsData(resultGroups);
@@ -542,7 +542,7 @@ const handleSection = (e, value) => {
                   />
                 </Grid>
 
-                <Grid item md={3} xs={12}>
+                {/* <Grid item md={3} xs={12}>
                   <Autocomplete
                     // multiple
                     style={{ width: '100%' }}
@@ -564,7 +564,7 @@ const handleSection = (e, value) => {
                       />
                     )}
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item md={1} xs={12}>
                   <Button
                     color='primary'
@@ -576,7 +576,7 @@ const handleSection = (e, value) => {
                     Filter
                   </Button>
                 </Grid>
-                <Grid item md={2} xs={12} style={{display:'flex',justifyContent:'flex-end'}}>
+                <Grid item md={2} xs={12}>
                   <Button
                     color='primary'
                     variant='contained'
@@ -688,7 +688,7 @@ const handleSection = (e, value) => {
                             tabIndex={-1}
                             key={`group_table_index${i}`}
                           >
-                            <TableCell className={classes.tableCell}>
+                            <TableCell className={classes.tableCell} style={{width:'25%'}}>
                               {items?.groupname}
                             </TableCell>
                             {/* <TableCell className={`${isHidden ? 'hide' : 'show'} ${classes.tableCell}`}>

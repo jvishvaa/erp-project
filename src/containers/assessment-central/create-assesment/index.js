@@ -244,8 +244,8 @@ const CreateAssesment = ({
   };
 
   const getGroup = () => {
-      let acadId = selectedQuestionPaper?.is_central ? branchId : selectedQuestionPaper?.academic_session	
-      axiosInstance.get(`${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${selectedQuestionPaper?.grade}&is_active=${true}&group_type=${1}&is_assessment=${true}&is_central_grade=${selectedQuestionPaper?.is_central}`).then((result)=>{	
+      let acadId = selectedQuestionPaper?.is_central ? branchId : selectedQuestionPaper?.academic_session	  //&group_type=${1}
+      axiosInstance.get(`${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${selectedQuestionPaper?.grade}&is_active=${true}&is_assessment=${true}&is_central_grade=${selectedQuestionPaper?.is_central}`).then((result)=>{
         if(result?.status === 200){	
           setGroupList(result?.data)	
         }	

@@ -442,7 +442,7 @@ const Assesment = () => {
       .get(
         `${
           endpoints.assessmentErp.getGroups
-        }?acad_session=${acadId}&grade=${grade}&is_active=${true}&group_type=${1}`
+        }?acad_session=${acadId}&grade=${grade}&is_active=${true}`     //&group_type=${1}
       )
       .then((result) => {
         if (result?.status === 200) {
