@@ -333,9 +333,9 @@ const QuestionPaperInfo = ({
       </div>
       <div className={classes.testInfoHeader}>
         <div>
-          <h3 className={classes.cardTitleHeading}>
+          <h4 className={classes.cardTitleHeading}>
             {testTitle || (fetching ? 'Loading...' : fetchFailed ? `${message}` : '')}
-          </h3>
+          </h4>
           <h4 className={classes.cardDescription}>
             {[gradeName, ...(subjects || [])].join(', ')}
           </h4>
@@ -350,17 +350,23 @@ const QuestionPaperInfo = ({
   const takeTestUI = (
     <div style={{ padding: '10px' }}>
       <div>
-        <h4 className={classes.cardTitleHeading}>Description:</h4>
+        <h5 className={classes.cardTitleHeading}>Description:</h5>
         <div>
           &nbsp; &nbsp;
-          {ReactHtmlParser(testDescription)}
+          <h6>
+
+            {ReactHtmlParser(testDescription)}
+          </h6>
         </div>
       </div>
       <div>
-        <h4 className={classes.cardTitleHeading}>Instructions</h4>
+        <h5 className={classes.cardTitleHeading}>Instructions</h5>
         <div>
           &nbsp; &nbsp;
-          {ReactHtmlParser(testInstructions)}
+          <h6>
+
+            {ReactHtmlParser(testInstructions)}
+          </h6>
         </div>
       </div>
       {questionsArray && questionsArray.length ? (
@@ -386,7 +392,7 @@ const QuestionPaperInfo = ({
         >
           Take Test
         </Button> */}
-        {!test_mode == 2 ? <>
+        {test_mode == 1 ? <>
           {testEndTime < new Date().getTime() ? (
             <Button
               style={{
@@ -433,7 +439,7 @@ const QuestionPaperInfo = ({
             <input
               className='file-upload-input'
               type='file'
-              style={{ display: 'none' }}
+              // style={{ display: 'none' }}
               name='attachments'
               accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
               onChange={(e) => {
@@ -455,8 +461,9 @@ const QuestionPaperInfo = ({
                 <IconButton
                   onClick={() => fileUploadInput.current.click()}
                   title='Attach files'
+                  style={{ display: 'none' }}
                 >
-                  <Badge badgeContent={attachmentPreviews.length} color='primary'>
+                  <Badge badgeContent={attachmentPreviews.length} color='primary' style={{ display: 'none' }}>
                     <AttachFileIcon color='primary' />
                   </Badge>
                 </IconButton>
@@ -596,7 +603,7 @@ const QuestionPaperInfo = ({
                 </div>
               </Grid>
             )}
-            <Grid item xs={12} className='attachments-grid'>
+            <Grid item xs={12} className='attachments-grid' style={{ paddingTop: '20px' }}>
               <Button
                 className={classes.cardStartButton}
                 variant='contained'
