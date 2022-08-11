@@ -177,7 +177,8 @@ const ViewGroup = withRouter(({ history, ...props }) => {
             })),
             usersData : items?.group_users,
             sessionYearId : items?.group_section_mapping.length ? items?.group_section_mapping[0].group_session_year_id : '',
-            active : items?.is_active
+            active : items?.is_active,
+            group_type : items?.group_type
           });
         });
         setGroupsData(resultGroups);

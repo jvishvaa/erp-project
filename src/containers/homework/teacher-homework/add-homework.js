@@ -181,7 +181,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
       try {
         const response = await onAddHomework(reqObj, isEdit, hwId);
         setAlert('success', 'Homework added');
-        history.push('/homework/teacher');
+        history.goBack();
       } catch (error) {
         setAlert('error', 'Failed to add homework');
       }
@@ -294,7 +294,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
               <div
                 className={` ${classes.navCard} nav-card`}
                 onClick={() => {
-                  window.history.back('/homework/teacher');
+                  history.push('/homework/teacher');
                 }}
               >
                 <div

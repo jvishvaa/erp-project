@@ -44,6 +44,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
     branchId,
     usersData,
     sectionData,
+    group_type,
   } = editData;
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -69,9 +70,12 @@ const UpdateGroup = ({ handleEditing, editData }) => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const [selectedgroupType,setSelectedGroupTypes] = useState([])
+  const [groupTypes,setGroupTypes] = useState([])
 
   useEffect(() => {
     if (editData) {
+      getGroupTypes()
       setSelectedBranch({ id: branchId, branch_name: branch });
       setSelectedGrades({ grade_id: gradeId, grade__grade_name: grades });
       setGroupName(groupname);
@@ -89,6 +93,13 @@ const UpdateGroup = ({ handleEditing, editData }) => {
     if (selectedBranch?.id)
       getSectionApi({ grade_id: gradeId, grade__grade_name: grades });
   }, [isEdit, selectedBranch]);
+
+  useEffect(() => {
+    if(groupTypes.length > 0){
+        let groupType =  groupTypes.filter((item) => item.group_type_number === group_type)
+      setSelectedGroupTypes(groupType[0])
+    }
+  },[groupTypes])
 
   const getApiCall = async (api, type) => {
     try {
@@ -121,6 +132,16 @@ const UpdateGroup = ({ handleEditing, editData }) => {
     }
   };
 
+  const getGroupTypes = () => {
+    axiosInstance.
+    get(
+      `${endpoints.communication.editGroup}list-group-types/`
+    ).then((res) => {
+      if (res?.status === 200) {
+        setGroupTypes(res.data)
+      }
+    })
+  }
   const getSectionApi = async (value) => {
     try {
       setLoading(true);
@@ -268,6 +289,14 @@ const UpdateGroup = ({ handleEditing, editData }) => {
     setSelectedUser(newSelected);
   };
 
+  const handleGroupType = (e,value) => {
+    if(value){
+      setSelectedGroupTypes(value)
+    }else{
+      setSelectedGroupTypes([])
+    }
+  }
+
   function handelSelectAll() {
     if (
       selectedUser.length ===
@@ -319,6 +348,7 @@ const UpdateGroup = ({ handleEditing, editData }) => {
       // role: selectedRole,
       // branch: branchid,
       // grade: gradeid,
+      group_type : selectedgroupType?.group_type_number,
       section_mapping: sectionMappingIds,
       erpusers: finalUserList,
       is_active: active,
@@ -473,6 +503,33 @@ const UpdateGroup = ({ handleEditing, editData }) => {
                   )}
                 />
               </Grid>
+              <Grid xs={12} lg={3} className='create_group_items' item>
+                    <div>
+                      <div className='create_group_branch_wrapper'>
+                        <Autocomplete
+                          size='small'
+                          // multiple
+                          onChange={handleGroupType}
+                          id='message_log-branch'
+                          className='create_group_branch'
+                          value={selectedgroupType || []}
+                          options={groupTypes|| []}
+                          getOptionLabel={(option) => option?.group_type_name || ''}
+                          filterSelectedOptions
+                          renderInput={(params) => (
+                            <TextField
+                              className='message_log-textfield'
+                              {...params}
+                              variant='outlined'
+                              label='Group Type'
+                              placeholder='Group Type'
+                              required
+                            />
+                          )}
+                        />
+                      </div>
+                    </div>
+                  </Grid>
             </Grid>
           </Card>
           <Grid item md={4} style={{marginLeft :'1%'}}>
