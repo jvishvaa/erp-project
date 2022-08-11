@@ -491,6 +491,8 @@ export default {
     studentMarks: '/assessment/ru-offline-asmnt/',
     OMRResponse: '/assessment/list-omr-sheets/',
     bulkUploadMarks: `/assessment/upload-omr-result-excel/`,
+    imageupload: '/assessment/assessment-document-upload/',
+    studentImgs: '/assessment/assessment-document-upload/',
   },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,
