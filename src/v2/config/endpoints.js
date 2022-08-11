@@ -75,6 +75,9 @@ export default {
     pendingClasswork: `${msReportsUrlNew}/api/acad_performance/v1/student-cw-report-dash/`,
     assessment: `${msReportsUrlNew}/api/acad_performance/v1/student-assesment-report-dash/`,
   },
+  doodle: {
+    checkDoodle: `/erp_user/doodle-api/`,
+  },
   createAnnouncement: {
     membersCount: `/announcement/members/`,
     uploadFile: `announcement/upload-announcement-file/`,

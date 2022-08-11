@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import moment from 'moment';
 import {
   Grid,
   TextField,
@@ -39,12 +40,20 @@ import {
   fetchAcademicYears as getAcademicYears,
   fetchSubjects as getSubjects,
 } from '../../../redux/actions/index';
+import AddHomework from '../../../assets/images/AddHomework.svg';
 import { Context } from '../context/context';
+
 const CreateDailyDairy = (details, onSubmit) => {
+  const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [academicYears, setAcademicYears] = useState([]);
+  const [assignedHomework, setAssignedHomework] = useState('');
+  const [assignedHomeworkModal, setAssignedHomeworkModal] = useState('');
+  const [hwMappingID, setHwMappingID] = useState();
+  const [declined, setDeclined] = useState(false);
   const [branches, setBranches] = useState([]);
   const [grades, setGrades] = useState([]);
   const [sections, setSections] = useState([]);
+  const [sectionMappingID, setSectionMappingID] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [filePath, setFilePath] = useState([]);
@@ -53,6 +62,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [academicYear, setAcademicYear] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [subjectIds, setSubjectIds] = useState('');
+  const [subjectName, setSubjectName] = useState('');
   const [subjectDropdown, setSubjectDropdown] = useState([]);
   const [recap, setRecap] = useState('');
   const [detail, setDetails] = useState('');
@@ -104,6 +114,18 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
   }, []);
 
+  const RedirectToHomework = () => {
+    const session_year = filterData?.year?.id;
+    const branchID = state.isEdit ? editData.branch : filterData?.branch?.id;
+    const gradeID = state.isEdit ? editData.grade[0] : filterData?.grade?.id;
+    const subjectID = state.isEdit ? editData.subject : filterData?.subject?.id;
+    history.push(
+      `/homework/add/${moment().format(
+        'YYYY-MM-DD'
+      )}/${session_year}/${branchID}/${gradeID}/${subjectName}/${subjectID}`
+    );
+  };
+
   const formik = useFormik({
     initialValues: {
       academic_year: details.academic_year,
@@ -120,7 +142,6 @@ const CreateDailyDairy = (details, onSubmit) => {
     validateOnChange: false,
     validateOnBlur: false,
   });
-
 
   useEffect(() => {
     if (moduleId) {
@@ -168,10 +189,10 @@ const CreateDailyDairy = (details, onSubmit) => {
       fetchBranchesForCreateUser(value?.id, moduleId).then((data) => {
         const transformedData = data
           ? data?.map((obj) => ({
-            id: obj.id,
-            branch_name: obj.branch_name,
-            academicYearId: obj?.acadId
-          }))
+              id: obj.id,
+              branch_name: obj.branch_name,
+              academicYearId: obj?.acadId,
+            }))
           : [];
         setBranches(transformedData);
       });
@@ -180,13 +201,13 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleChangeBranch = (values) => {
     if (values) {
-      setAcadId(values[0])
+      setAcadId(values[0]);
       fetchGrades(searchAcademicYear?.id, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
-            id: grade.grade_id,
-            grade_name: grade.grade__grade_name,
-          }))
+              id: grade.grade_id,
+              grade_name: grade.grade__grade_name,
+            }))
           : [];
         setGrades(transformedData);
       });
@@ -203,10 +224,10 @@ const CreateDailyDairy = (details, onSubmit) => {
       fetchSections(searchAcademicYear?.id, branch, [values], moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
-            id: section.section_id,
-            section_name: `${section.section__section_name}`,
-            section_mapping_id: section.id,
-          }))
+              id: section.section_id,
+              section_name: `${section.section__section_name}`,
+              section_mapping_id: section.id,
+            }))
           : [];
         const filteredSelectedSections =
           formik.values.section &&
@@ -225,11 +246,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const fetchSubjects = (branch, grade, section) => {
-    if (
-      branch &&
-      grade &&
-      section
-    ) {
+    if (branch && grade && section) {
       getSubjects(searchAcademicYear?.id, branch, grade, section, moduleId).then(
         (data) => {
           const transformedData = data.map((obj) => ({
@@ -256,6 +273,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
     setFilterData({ ...filterData, section: '', subject: '', chapter: '' });
     if (value) {
+      setSectionMappingID(value?.section_mapping_id);
       setFilterData({ ...filterData, section: value, subject: '', chapter: '' });
       formik.setFieldValue('section', value);
       const {
@@ -273,6 +291,8 @@ const CreateDailyDairy = (details, onSubmit) => {
     formik.setFieldValue('subjects', '' || []);
     setFilterData({ ...filterData, subject: '', chapter: '' });
     if (value) {
+      setDeclined(false);
+      setSubjectName(value?.subject_name);
       setFilterData({ ...filterData, subject: value, chapter: '' });
       formik.setFieldValue('subjects', value);
       formik.setFieldValue('chapters', '' || []);
@@ -296,6 +316,25 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const validateFileSize = (size) => {
     return size / 1024 / 1024 > 25 ? false : true;
+  };
+  const closeAssignedHomeworkModal = () => {
+    setAssignedHomeworkModal(false);
+    setDeclined(true);
+  };
+
+  const mapAssignedHomework = () => {
+    axios
+      .post(`${endpoints?.dailyDairy?.assignHomeworkDiary}`, {
+        hw_id: assignedHomework[0]?.id,
+      })
+      .then((result) => {
+        if (result?.data?.status_code == 201) {
+          setHwMappingID(result?.data?.data?.hw_dairy_mapping_id);
+          setAssignedHomeworkModal(false);
+          setHomework(assignedHomework[0].description);
+        }
+      })
+      .catch((error) => setAlert('error', error?.message));
   };
 
   const handleImageChange = (event) => {
@@ -341,7 +380,7 @@ const CreateDailyDairy = (details, onSubmit) => {
           // let imageData = editData.documents;
           // imageData.push(result?.data?.result);
           // setFilePath(imageData);
-          setFilePath([...filePath, result?.data?.result])
+          setFilePath([...filePath, result?.data?.result]);
         } else {
           setFilePath([...filePath, result?.data?.result]);
         }
@@ -398,44 +437,46 @@ const CreateDailyDairy = (details, onSubmit) => {
         createDairyEntry,
         filePath && filePath.length > 0
           ? {
-            academic_year: acadId?.academicYearId,
-            module_id: moduleId,
-            branch: formik.values?.branch?.id,
-            grade,
-            section,
-            section_mapping: [mapId],
-            subject: subjectIds,
-            chapter: formik.values.chapters?.id,
-            documents: filePath,
-            teacher_report: {
-              previous_class: recap,
-              summary,
-              class_work: detail,
-              tools_used: tools,
-              homework,
-            },
-            dairy_type: 2,
-            is_central: formik.values?.chapters?.is_central,
-          }
+              academic_year: acadId?.academicYearId,
+              module_id: moduleId,
+              branch: formik.values?.branch?.id,
+              grade,
+              section,
+              section_mapping: [mapId],
+              subject: subjectIds,
+              chapter: formik.values.chapters?.id,
+              documents: filePath,
+              teacher_report: {
+                previous_class: recap,
+                summary,
+                class_work: detail,
+                tools_used: tools,
+                homework,
+              },
+              dairy_type: 2,
+              is_central: formik.values?.chapters?.is_central,
+              hwMappingID: hwMappingID,
+            }
           : {
-            academic_year: acadId?.academicYearId,
-            branch: formik.values?.branch?.id,
-            module_id: moduleId,
-            grade,
-            section,
-            section_mapping: [mapId],
-            subject: subjectIds,
-            chapter: formik.values?.chapters?.id,
-            teacher_report: {
-              previous_class: recap,
-              summary,
-              class_work: detail,
-              tools_used: tools,
-              homework,
+              academic_year: acadId?.academicYearId,
+              branch: formik.values?.branch?.id,
+              module_id: moduleId,
+              grade,
+              section,
+              section_mapping: [mapId],
+              subject: subjectIds,
+              chapter: formik.values?.chapters?.id,
+              teacher_report: {
+                previous_class: recap,
+                summary,
+                class_work: detail,
+                tools_used: tools,
+                homework,
+              },
+              dairy_type: 2,
+              is_central: formik.values?.chapters?.is_central,
+              hwMappingID: hwMappingID,
             },
-            dairy_type: 2,
-            is_central: formik.values?.chapters?.is_central,
-          },
         {
           headers: {
             // 'application/json' is the modern content-type for JSON, but some
@@ -460,7 +501,6 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleEdited = () => {
-
     let payload = {
       academic_year: acadId?.academicYearId,
       branch: editData.branch.id,
@@ -469,28 +509,21 @@ const CreateDailyDairy = (details, onSubmit) => {
       subject: editData.subject.id,
       chapter: editData.chapter.id,
       teacher_report: {
-        previous_class:
-          recap && recap.length > 0 ? recap : editData.teacher_report.recap,
+        previous_class: recap && recap.length > 0 ? recap : editData.teacher_report.recap,
         summary:
-          summary && summary.length > 0
-            ? summary
-            : editData.teacher_report.summary,
+          summary && summary.length > 0 ? summary : editData.teacher_report.summary,
         class_work:
-          detail && detail.length > 0
-            ? detail
-            : editData.teacher_report.class_work,
+          detail && detail.length > 0 ? detail : editData.teacher_report.class_work,
         tools_used:
           tools && tools.length > 0 ? tools : editData.teacher_report.tools_used,
         homework:
-          homework && homework.length > 0
-            ? homework
-            : editData.teacher_report.homework,
+          homework && homework.length > 0 ? homework : editData.teacher_report.homework,
       },
       dairy_type: 2,
-    }
+    };
 
     if (filePath?.length) {
-      payload['documents'] = filePath
+      payload['documents'] = filePath;
     }
 
     axiosInstance
@@ -527,18 +560,18 @@ const CreateDailyDairy = (details, onSubmit) => {
                     style={
                       isMobile
                         ? {
-                          marginLeft: '',
-                          width: '20px',
-                          height: '20px',
-                          // padding: '5px',
-                          cursor: 'pointer',
-                        }
+                            marginLeft: '',
+                            width: '20px',
+                            height: '20px',
+                            // padding: '5px',
+                            cursor: 'pointer',
+                          }
                         : {
-                          width: '20px',
-                          height: '20px',
-                          // padding: '5px',
-                          cursor: 'pointer',
-                        }
+                            width: '20px',
+                            height: '20px',
+                            // padding: '5px',
+                            cursor: 'pointer',
+                          }
                     }
                     src={deleteIcon}
                     alt='given'
@@ -564,7 +597,8 @@ const CreateDailyDairy = (details, onSubmit) => {
         .post(`${endpoints.circular.deleteFile}`, {
           file_name: `${file}`,
           daily_diary_id: `${editData?.id}`,
-        }).then((result) => {
+        })
+        .then((result) => {
           if (result?.data?.status_code === 204) {
             list.splice(i, 1);
             setFilePath(list);
@@ -595,11 +629,9 @@ const CreateDailyDairy = (details, onSubmit) => {
         .catch((error) => {
           setAlert('error', error?.message);
         })
-        .finally(() =>
-          setLoading(false)
-        );
-    };
-  }
+        .finally(() => setLoading(false));
+    }
+  };
 
   let imageCount = 1;
   useEffect(() => {
@@ -635,7 +667,29 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
   }, []);
   const classes = useStyles();
-
+  const checkAssignedHomework = () => {
+    if (!subjectIds) {
+      setAlert('error', 'Please select all filters');
+      return;
+    }
+    const params = {
+      section_mapping: sectionMappingID,
+      subject: subjectIds,
+      date: moment().format('YYYY-MM-DD'),
+      user_id: user_id,
+    };
+    axiosInstance
+      .get(`${endpoints?.dailyDairy?.assignHomeworkDiary}`, { params })
+      .then((result) => {
+        if (result?.data?.status == 200) {
+          if (result?.data?.data.length > 0) {
+            setAssignedHomework(result?.data?.data);
+            setAssignedHomeworkModal(true);
+          }
+        }
+      })
+      .catch((error) => setAlert('error', error?.message));
+  };
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
@@ -928,8 +982,15 @@ const CreateDailyDairy = (details, onSubmit) => {
                   onChange={(e) => setTools(e.target.value)}
                 />
               </Grid>
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+              <Grid
+                item
+                xs={12}
+                sm={4}
+                className={isMobile ? '' : 'filterPadding'}
+                style={{ position: 'relative' }}
+              >
                 <TextField
+                  onClick={() => checkAssignedHomework()}
                   id='outlined-multiline-static'
                   label='Homework'
                   multiline
@@ -940,6 +1001,14 @@ const CreateDailyDairy = (details, onSubmit) => {
                   variant='outlined'
                   onChange={(e) => setHomework(e.target.value)}
                 />
+                {!declined && subjectIds && !homework && (
+                  <img
+                    src={AddHomework}
+                    className='py-3 th-pointer'
+                    onClick={RedirectToHomework}
+                    style={{ position: 'absolute', right: '10%', top: '30%' }}
+                  />
+                )}
               </Grid>
 
               <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
@@ -1013,6 +1082,26 @@ const CreateDailyDairy = (details, onSubmit) => {
               {state.isEdit ? 'Update' : 'Submit'}
             </Button>
           </div>
+          <Dialog
+            open={!declined && assignedHomeworkModal}
+            onClose={closeAssignedHomeworkModal}
+            aria-labelledby='alert-dialog-title'
+            aria-describedby='alert-dialog-description'
+          >
+            <DialogContent>
+              <DialogContentText id='alert-dialog-description'>
+                Homework already exists, do you want to link it to Diary?
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={closeAssignedHomeworkModal} color='primary'>
+                No
+              </Button>
+              <Button onClick={mapAssignedHomework} color='primary' autoFocus>
+                Yes
+              </Button>
+            </DialogActions>
+          </Dialog>
         </div>
       </Layout>
     </>

@@ -257,6 +257,7 @@ const CreateClassForm = (props) => {
       dispatch(clearSubjects());
       dispatch(clearCourses());
       dispatch(clearGroup());
+      setSelectedGroupData([])
       setAlert('success', 'Successfully created the class');
       dispatch(listGradesCreateClass(onlineClass?.branchIds, moduleId, selectedYear.id));
     }

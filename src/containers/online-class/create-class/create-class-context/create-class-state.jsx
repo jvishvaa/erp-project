@@ -229,7 +229,7 @@ const CreateclassProvider = (props) => {
     try {
       const data  = await axiosInstance.get(
         `${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${
-          grade}&is_active=${true}&group_type=${2}`
+          grade}&is_active=${true}` //&group_type=${2}
       );
       if (data.status == 200) dispatch(success(data.data, LIST_GROUP_SUCCESS));
       else throw new Error(data.message);

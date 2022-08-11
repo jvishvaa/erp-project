@@ -158,6 +158,7 @@ const ErpAdminViewClass = ({ history }) => {
           section = [],
           subject = [],
           group = [],
+          sectionToggle = false,
           course = {},
           date = getminMaxDate().datearr,
           page: pageNumber = 1,
@@ -183,6 +184,8 @@ const ErpAdminViewClass = ({ history }) => {
                 const branchIds =
                   branch.filter((el) => el?.branch?.id > 0).map((el) => el?.branch?.id) ||
                   [];
+                let acadIds = branch.filter((el) => el?.id > 0).map((el) => el?.id) ||[];
+                setSelectedAcadId(acadIds)
                 callApi(
                   `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
                   'gradeList'
@@ -192,10 +195,17 @@ const ErpAdminViewClass = ({ history }) => {
                   const gradeIds =
                     grade.filter((el) => el?.grade_id > 0).map((el) => el?.grade_id) ||
                     [];
+                  getGroup(gradeIds,acadIds)
                   callApi(
                     `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}&module_id=${moduleId}`,
                     'section'
                   );
+                  if(sectionToggle){
+                    setSectionToggle(sectionToggle)
+                    // setSelectedGroupData(group)
+                    handleGroup('',group)
+                    setSelectedSubject(subject)
+                  }
                   if (classtype?.id > 0) {
                     callApi(
                       `${endpoints.teacherViewBatches.courseListApi}?grade=${gradeIds}`,
@@ -274,7 +284,6 @@ const ErpAdminViewClass = ({ history }) => {
         const url = isMsOriginURL
           ? `/reports/v1/retrieve-online-class_no_filter/`
           : `/oncls/v1/retrieve-online-class_no_filter/`;
-          if(sectionToggle) url += `&section` 
 
         APIREQUEST(
           'get',
@@ -708,6 +717,7 @@ const ErpAdminViewClass = ({ history }) => {
           course: selectedCourse,
           date: dateRangeTechPer,
           group : selectedGroupData,
+          sectionToggle : sectionToggle,
           page,
           tabValue,
           historicalData,
@@ -839,6 +849,9 @@ const ErpAdminViewClass = ({ history }) => {
     setSubjectList([]);
     setSelectedSubject([]);
     setFilterList([]);
+    setSelectedGroupData([])
+    setGroupList([])
+
     setPage(1);
     setTabValue(0);
   };
@@ -856,7 +869,7 @@ const ErpAdminViewClass = ({ history }) => {
       const selectedId = value.map((el) => el?.grade_id) || [];
       const branchId = selectedBranch.map((el) => el?.branch?.id) || [];
       setSelectedGrade(ids);
-      getGroup(selectedId)
+      getGroup(selectedId,selectedAcadId)
       callApi(
         `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
         'section'
@@ -875,6 +888,8 @@ const ErpAdminViewClass = ({ history }) => {
     setSubjectList([]);
     setSelectedSubject([]);
     setFilterList([]);
+    setSelectedGroupData([])
+    setGroupList([])
     setPage(1);
     setTabValue(0);
   };
@@ -975,14 +990,16 @@ const ErpAdminViewClass = ({ history }) => {
     setSelectedGroupData([])
     setSelectedGroupId('')
     setSelectedSection([])
+    setSelectedSubject([])
+    setSubjectList([])
   };
 
-  const getGroup = (gradeId) => {
+  const getGroup = (gradeId,AcadId) => {
     axiosInstance
       .get(
-        `${endpoints.assessmentErp.getGroups}?acad_session=${selectedAcadId}&grade=${
+        `${endpoints.assessmentErp.getGroups}?acad_session=${AcadId}&grade=${
           
-          gradeId}&is_active=${true}&group_type=${2}`
+          gradeId}&is_active=${true}` //&group_type=${2}
       )
       .then((result) => {
         if (result?.status === 200) {
@@ -993,6 +1010,8 @@ const ErpAdminViewClass = ({ history }) => {
 
   const handleGroup = (e, value) => {
     setSelectedGroupData([]);
+    setSelectedSubject([])
+    setSubjectList([])
     setSelectedGroupId('');
     if (value) {
       let sectionIds =[];

@@ -578,7 +578,7 @@ const StudentMark = () => {
                                 <StyledClearButton onClick={handleSkip} style={{ fontWeight: '600', width: '90%', margin: '0' }} >Skip</StyledClearButton>
                             </div>
                             <div style={{ width: '25%' }}>
-                                <StyledClearButton onClick={handleClick} style={{ fontWeight: '600', width: '90%', margin: '0' }} >View Files</StyledClearButton>
+                                <StyledButton onClick={handleClick} style={{ fontWeight: '600', width: '90%', margin: '0' }} >View Files</StyledButton>
                             </div>
                             <Popover
                                 id={id}

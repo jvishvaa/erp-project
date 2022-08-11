@@ -86,7 +86,7 @@ export const fetchAssesmentTests = async (
           url += `&section_mappings=${sectionMappingId}`
         }
         if(hasGroup && groupFlag){
-          url += `&groups=${groupIds}`
+          url += `&group=${groupIds}`
         }
       } else if (type === 'online-pattern') {
         url = `${
@@ -99,7 +99,7 @@ export const fetchAssesmentTests = async (
           url += `&section_mappings=${sectionMappingId}`
         }
         if(hasGroup && groupFlag){
-          url += `&groups=${groupIds}`
+          url += `&group=${groupIds}`
         }
       }
     }

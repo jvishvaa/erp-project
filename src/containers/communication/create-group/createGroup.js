@@ -395,6 +395,7 @@ if(isEdit && completeData.length){
               email: items.user.email,
               erp_id: items.erp_id,
               gender: items.gender,
+              section_mapping : items.section_mapping,
               // contact: items.contact,
             },
             selected: selectAll
@@ -607,7 +608,7 @@ if(isEdit && completeData.length){
         //   grade: selectedGrades?.id,
           section_mapping: sectionArray,
           erpusers: selectionArray,
-          group_type : selectedgroupType?.group_type_number
+          // group_type : selectedgroupType?.group_type_number
         },
         {
           headers: {
@@ -638,7 +639,11 @@ if(isEdit && completeData.length){
         setLoading(false);
       }
     } catch (error) {
-      setAlert('error', error.message);
+      if(error.response.data.message.includes("this group name already exist")){
+        setAlert('error', "Group Name already Exist");
+      }else{
+        setAlert('error', error.response.data.message);
+      }
       setLoading(false);
     }
   };
@@ -700,7 +705,7 @@ const handleSection = (e , value) => {
 if(value.length > 0){
       const items = value.map((el) => el);
       setSelectedSections(items)
-      getGroupTypes()
+      // getGroupTypes()
 }else{
   setSelectedSections([])
 }
@@ -752,10 +757,10 @@ if(value.length > 0){
       setAlert('error','Please select Section')
       return;
     }
-    if(!selectedgroupType || selectedgroupType.length === 0){
-      setAlert('error','Please select Group Type')
-      return;
-    }
+    // if(!selectedgroupType || selectedgroupType.length === 0){
+    //   setAlert('error','Please select Group Type')
+    //   return;
+    // }
     window.scrollTo(0, 0);
     setGroupNameError('');
     setRoleError('');
@@ -868,28 +873,13 @@ if(value.length > 0){
               selectedUsers={selectedUsers}
               changePage={setPageno}
               setSelectedUsers={setSelectedUsers}
+              selectedBranch = {selectedBranch}
               />
             </div>
           ) : (
             <>
               <div className='create_group_filter_container'>
                 <Grid container className='create_group_container' spacing={5}>
-                  <Grid xs={12} lg={3} className='create_group_items' item>
-                    <div className='group_name_wrapper'>
-                      <TextField
-                        className='create_group-textfield'
-                        id='class-Group name'
-                        label='Group name'
-                        variant='outlined'
-                        size='small'
-                        name='Group name'
-                        value={groupName}
-                        onChange={addGroupName}
-                        required
-                      />
-                      <span className='create_group_error_span'>{groupNameError}</span>
-                    </div>
-                  </Grid>
                   <Grid xs={12} lg={3} className='create_group_items' item>
                     <div>
                       <div className='create_group_branch_wrapper'>
@@ -977,6 +967,22 @@ if(value.length > 0){
                     </div>
                   </Grid>
                   <Grid xs={12} lg={3} className='create_group_items' item>
+                    <div className='group_name_wrapper'>
+                      <TextField
+                        className='create_group-textfield'
+                        id='class-Group name'
+                        label='Group name'
+                        variant='outlined'
+                        size='small'
+                        name='Group name'
+                        value={groupName}
+                        onChange={addGroupName}
+                        required
+                      />
+                      <span className='create_group_error_span'>{groupNameError}</span>
+                    </div>
+                  </Grid>
+                  {/* <Grid xs={12} lg={3} className='create_group_items' item>
                     <div>
                       <div className='create_group_branch_wrapper'>
                         <Autocomplete
@@ -1003,79 +1009,9 @@ if(value.length > 0){
                       </div>
                       <span className='create_group_error_span'>{branchError}</span>
                     </div>
-                  </Grid>
-                  {/* <Grid xs={12} lg={4} className='create_group_items' item>
-                    <div className='create_group_role'>
-                      <CustomMultiSelect
-                        selections={selectedRoles}
-                        setSelections={setSelectedRoles}
-                        nameOfDropdown='User Role'
-                        optionNames={roles}
-                      />
-                      <span className='create_group_error_span'>{roleError}</span>
-                    </div>
                   </Grid> */}
-                  {/* <Grid xs={0} lg={4} className='create_group_items_mobile_none' item /> */}
-                  {/* <Grid xs={12} lg={12} className='under_line_create_group' /> */}
                 </Grid>
               </div>
-
-              {/* {selectedRoles.length && !selectedRoles.includes('All') ? (
-                <div className='create_group_filter_container'> */}
-              <Grid container className='create_group_container' spacing={5}>
-                {/* <Grid xs={12} lg={4} className='create_group_items' item>
-                      <div>
-                        <div className='create_group_branch_wrapper'>
-                          <Autocomplete
-                            size='small'
-                            onChange={handleAcademicYears}
-                            value={selectedAcademic}
-                            id='academic_year'
-                            className='create_group_branch'
-                            options={academicYears}
-                            getOptionLabel={(option) => option?.session_year}
-                            filterSelectedOptions
-                            renderInput={(params) => (
-                              <TextField
-                                className='message_log-textfield'
-                                {...params}
-                                variant='outlined'
-                                label='Academic Years'
-                                placeholder='Academic Years'
-                              />
-                            )}
-                          />
-                        </div>
-                      </div>
-                    </Grid> */}
-
-                {/* <Grid xs={12} lg={4} className='create_group_items' item>
-                      {selectedBranch && gradeList.length ? (
-                        <div>
-                          <CustomMultiSelect
-                            selections={selectedGrades}
-                            setSelections={setSelectedGrades}
-                            nameOfDropdown='Grade'
-                            optionNames={grade}
-                          />
-                          <span className='create_group_error_span'>{gradeError}</span>
-                        </div>
-                      ) : null}
-                    </Grid> */}
-                <Grid xs={12} lg={4} className='create_group_items' item>
-                  {selectedGrades.length && sectionList.length ? (
-                    <CustomMultiSelect
-                      selections={selectedSections}
-                      setSelections={setSelectedSections}
-                      nameOfDropdown='Section'
-                      optionNames={section}
-                    />
-                  ) : null}
-                </Grid>
-                <Grid xs={12} lg={12} className='under_line_create_group' />
-              </Grid>
-              {/* </div> */}
-              {/* ) : null} */}
             </>
           )}
 
