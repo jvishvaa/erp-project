@@ -1009,7 +1009,6 @@ const ErpAdminViewClass = ({ history }) => {
   };
 
   const handleGroup = (e, value) => {
-    debugger
     setSelectedGroupData([]);
     setSelectedSubject([])
     setSubjectList([])
