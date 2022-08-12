@@ -89,6 +89,7 @@ function LoginOTPForm({ onLogin, history, isMsAPI }) {
               'userDetails',
               JSON.stringify(userData)
             );
+            window.location.reload();
           });
         }
          else {
