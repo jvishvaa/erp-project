@@ -171,6 +171,9 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
           let tempArray = result?.data?.result?.results?.map((items)=>{
             items["checked"] = false;
           })
+          if(result?.data?.result?.count == 0){
+            setAlert('error', 'Data Not Available')
+          }
           setTotalCount(result?.data?.result?.count);
           setLoading(false);
           setPeriodData(result?.data?.result?.results);
