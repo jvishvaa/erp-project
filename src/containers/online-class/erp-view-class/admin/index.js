@@ -276,7 +276,6 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
   };
 
   function noFilterGetClasses() {
-    debugger
     const filterdata = JSON.parse(localStorage.getItem('filterData'));
     if (!filterdata?.branch) {
       var [startDateTechPer, endDateTechPer] = getminMaxDate().datearr;
@@ -709,7 +708,6 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
           return;
         }
       }
-      debugger
       setLoading(true);
       localStorage.setItem(
         'filterData',
