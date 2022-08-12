@@ -339,13 +339,14 @@ class ViewEbook extends Component {
       this.state;
 
     return (
-      <div className='layout-container-div ebookscroll' style={{
-        background: 'white',
+  
+        <Layout className='layout-container'>
+        <div className='layout-container-div ebookscroll' style={{
+        // background: 'white',
         height: '90vh',
         overflowX: 'hidden',
         overflowY: 'scroll',
       }}>
-        <Layout className='layout-container'>
           <div
             className='message_log_wrapper'
             style={{ backgroundColor: '#F9F9F9' }}
@@ -421,8 +422,9 @@ class ViewEbook extends Component {
               </div>
             </div>
           </div>
+          </div>
         </Layout>
-      </div>
+      
     );
   }
 }
