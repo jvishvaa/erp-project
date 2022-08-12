@@ -48,16 +48,18 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.secondary.main,
     width: '100%',
   },
-  evaluatedAttachment:{
+  evaluatedAttachment: {
     flexShrink: 0,
     width: '250px',
-  }
+  },
 }));
 
 const StudentSubmitHW = withRouter(({ history, ...props }) => {
   const fileUploadInput = useRef(null);
-  const [ homeWorkId ,setHomeworkId] = useState(history?.location?.state?.homeworkId)
-  const [homeworkdata,setHomeworkData] = useState(history?.location?.state?.homeworkdata)
+  const [homeWorkId, setHomeworkId] = useState(history?.location?.state?.homeworkId);
+  const [homeworkdata, setHomeworkData] = useState(
+    history?.location?.state?.homeworkdata
+  );
   const [attachmentPreviews, setAttachmentPreviews] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [fileUploadInProgress, setFileUploadInProgress] = useState(false);
@@ -66,11 +68,11 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
   const classes = useStyles();
   const [resultdata, setresultdata] = useState();
   const [loading, setLoading] = useState(false);
-  const [EvaluatedFiles,setEvaluatedFiles] = useState()
+  const [EvaluatedFiles, setEvaluatedFiles] = useState();
   const [overallRemark, setOverallRemark] = useState('');
   const [overallScore, setOverallScore] = useState('');
-  const [instruction,setInstruction] = useState()
-  const [hwName,setHwName] = useState()
+  const [instruction, setInstruction] = useState();
+  const [hwName, setHwName] = useState();
 
   //For Preview//
   const [showPrev, setshowPrev] = useState(0);
@@ -87,7 +89,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
   const [HWstatus, setStatus] = useState();
 
   //submitted files
-  const [submittedFiles, setSubmittedFiles] = useState([])
+  const [submittedFiles, setSubmittedFiles] = useState([]);
 
   const mediaContent = {
     file_content: penToolUrl,
@@ -124,7 +126,8 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
     if (bulkDataDisplay.length >= totalMaxAttachment[totalMaxAttachment.length - 1]) {
       setAlert(
         'warning',
-        `Can\'t upload more than ${totalMaxAttachment[totalMaxAttachment.length - 1]
+        `Can\'t upload more than ${
+          totalMaxAttachment[totalMaxAttachment.length - 1]
         } attachments in total.`
       );
       handleCloseCorrectionModal();
@@ -155,44 +158,45 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
   ////////////////////////////////////////////////////////////
   useEffect(() => {
     setLoading(true);
-    let status ;
-    if(homeworkdata?.status === "un-opened"){
-      status = 1
-      setStatus(1)
-    }else if(homeworkdata?.hw_status){
-      status = homeworkdata?.hw_status; 
-        setStatus(homeworkdata?.hw_status);
+    let status;
+    if (homeworkdata?.status === 'un-opened') {
+      status = 1;
+      setStatus(1);
+    } else if (homeworkdata?.hw_status) {
+      status = homeworkdata?.hw_status;
+      setStatus(homeworkdata?.hw_status);
     }
     axiosInstance
       .get(
-        `${endpoints.homework.hwDelete}${homeWorkId}/hw-questions/?hw_status=${status}&module_id=${1}`
+        `${
+          endpoints.homework.hwDelete
+        }${homeWorkId}/hw-questions/?hw_status=${status}&module_id=${1}`
       )
       .then((result) => {
         if (result.data.status_code === 200 || result.data.status_code === 201) {
-          if(homeworkdata?.status === "un-opened" || homeworkdata?.hw_status === '1'){
+          if (homeworkdata?.status === 'un-opened' || homeworkdata?.hw_status === '1') {
             setresultdata(result.data.data);
             setSubjectQuestions(result.data.data?.hw_questions);
-            setInstruction(result?.data?.data?.description)
-            setHwName(result?.data?.data?.homework_name)
-          }else if(homeworkdata?.hw_status === '2' || homeworkdata?.hw_status === '3'){
-           if(homeworkdata?.hw_status === '2'){
-            let submittedFile = result?.data?.data?.hw_questions?.submitted_files;
+            setInstruction(result?.data?.data?.description);
+            setHwName(result?.data?.data?.homework_name);
+          } else if (homeworkdata?.hw_status === '2' || homeworkdata?.hw_status === '3') {
+            if (homeworkdata?.hw_status === '2') {
+              let submittedFile = result?.data?.data?.hw_questions?.submitted_files;
 
-            if(submittedFile?.length){
-              setAttachments((prevState) => [...prevState, ...submittedFile]);
-              setAttachmentPreviews((prevState) => [...prevState, ...submittedFile]);
-          }
-          setSubmittedFiles(submittedFile)  
+              if (submittedFile?.length) {
+                setAttachments((prevState) => [...prevState, ...submittedFile]);
+                setAttachmentPreviews((prevState) => [...prevState, ...submittedFile]);
+              }
+              setSubmittedFiles(submittedFile);
             }
-           
-   
+
             setresultdata(result.data.data);
-            setInstruction(result?.data?.data?.homework?.description)
-            setHwName(result?.data?.data?.homework?.homework_name)
-          setEvaluatedFiles(result?.data?.data?.hw_questions?.evaluated_files)
-          setOverallRemark(result.data.data?.overall_remark)
-          setOverallScore(result.data.data?.score)
-          setSubjectQuestions(result.data.data?.hw_questions?.questions);
+            setInstruction(result?.data?.data?.homework?.description);
+            setHwName(result?.data?.data?.homework?.homework_name);
+            setEvaluatedFiles(result?.data?.data?.hw_questions?.evaluated_files);
+            setOverallRemark(result.data.data?.overall_remark);
+            setOverallScore(result.data.data?.score);
+            setSubjectQuestions(result.data.data?.hw_questions?.questions);
           }
           setAlert('success', result.data.message);
           setLoading(false);
@@ -205,29 +209,26 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
         setAlert('error', error.message);
         setLoading(false);
       });
-// if(homeworkdata?.hw_status){
-//   axiosInstance
-//       .get(`/academic/${history?.location?.homeworkId}/hw-questions/?hw_status=${2}`)
-//       .then((result) => {
-//           let submittedFile = result?.data?.data?.hw_questions?.submitted_files;
-//         if (result.data.status_code === 200 || result.data.status_code === 201) {
-//             if(submittedFile?.length){
-//                 setAttachments((prevState) => [...prevState, ...submittedFile]);
-//                 setAttachmentPreviews((prevState) => [...prevState, ...submittedFile]);
-//             }
-//             setSubmittedFiles(submittedFile)
-//           setAlert('success', result.data.message);
-//         } else {
-//           setAlert('error', result.data.message);
-//         }
-//       })
-//       .catch((error) => {
-//         setAlert('error', error.message);
-//       });
-// }
-      
-
-
+    // if(homeworkdata?.hw_status){
+    //   axiosInstance
+    //       .get(`/academic/${history?.location?.homeworkId}/hw-questions/?hw_status=${2}`)
+    //       .then((result) => {
+    //           let submittedFile = result?.data?.data?.hw_questions?.submitted_files;
+    //         if (result.data.status_code === 200 || result.data.status_code === 201) {
+    //             if(submittedFile?.length){
+    //                 setAttachments((prevState) => [...prevState, ...submittedFile]);
+    //                 setAttachmentPreviews((prevState) => [...prevState, ...submittedFile]);
+    //             }
+    //             setSubmittedFiles(submittedFile)
+    //           setAlert('success', result.data.message);
+    //         } else {
+    //           setAlert('error', result.data.message);
+    //         }
+    //       })
+    //       .catch((error) => {
+    //         setAlert('error', error.message);
+    //       });
+    // }
   }, [homeWorkId]);
 
   const handleFileUpload = async (file) => {
@@ -326,11 +327,11 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
   const handleHomeworkSubmit = () => {
     let attachmentData = [
       {
-        "homework_question": '',
-        "attachments": [],
-        "comments": ""
-      }
-    ]
+        homework_question: '',
+        attachments: [],
+        comments: '',
+      },
+    ];
     let requestData = {
       homework: resultdata?.id, //
       is_question_wise: false,
@@ -338,33 +339,35 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
       comment: '',
     };
     if (attachments.length !== 0) {
-        if (HWstatus === 1) {
-          axiosInstance
-            .post(`${endpoints.homeworkStudent.submitHomework}`, requestData)
-            .then((result) => {
-              if (result.data.status_code === 201) {
-                setAlert('success', result.data.message);
-                //   handleHomeworkCancel();
-                history.goBack();
-              } else setAlert('error', result.data.message);
-            })
-            .catch((error) => {
-              setAlert('error', error.message);
-            });
-        }else{
-            axiosInstance.put(`${endpoints.homeworkStudent.hwupdate}${homeWorkId}/update-hw/`, requestData)
-          .then(result => {
+      if (HWstatus === 1) {
+        axiosInstance
+          .post(`${endpoints.homeworkStudent.submitHomework}`, requestData)
+          .then((result) => {
+            if (result.data.status_code === 201) {
+              setAlert('success', result.data.message);
+              //   handleHomeworkCancel();
+              history.goBack();
+            } else setAlert('error', result.data.message);
+          })
+          .catch((error) => {
+            setAlert('error', error.message);
+          });
+      } else {
+        axiosInstance
+          .put(
+            `${endpoints.homeworkStudent.hwupdate}${homeWorkId}/update-hw/`,
+            requestData
+          )
+          .then((result) => {
             if (result.data.status_code === 200) {
               setAlert('success', result.data.message);
               history.goBack();
-            }
-            else
-              setAlert('error', result.data.message);
+            } else setAlert('error', result.data.message);
           })
-          .catch(error => {
+          .catch((error) => {
             setAlert('error', error.message);
-          })
-        }
+          });
+      }
     } else setAlert('error', 'No file attached!');
   };
 
@@ -406,7 +409,11 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                 value={resultdata?.homework?.subject?.subject_slag || 'Subject'}
                 disabled
                 InputProps={{
-                  endAdornment: <div style={{ width: '70px' }}>{moment(resultdata?.homework?.class_date).format("Do MMM")}</div>,
+                  endAdornment: (
+                    <div style={{ width: '70px' }}>
+                      {moment(resultdata?.homework?.class_date).format('Do MMM')}
+                    </div>
+                  ),
                 }}
                 //   onChange={(e) => { setError(false); setDescription(e.target.value) }}
                 // multiline
@@ -497,7 +504,11 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                                         key={`homework_student_question_attachment_${i}`}
                                         fileUrl={item}
                                         fileName={`Attachment-${i + 1}`}
-                                        urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                        urlPrefix={
+                                          item.includes('lesson_plan_file')
+                                            ? `${endpoints.discussionForum.s3}`
+                                            : `${endpoints.discussionForum.s3}/homework`
+                                        }
                                         index={i}
                                         onOpenInPenTool={(item) =>
                                           openInPenTool(item, index)
@@ -518,13 +529,20 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                                       key={`homework_student_question_attachment_${i}`}
                                       fileUrl={url}
                                       fileName={`Attachment-${i + 1}`}
-                                      urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                      urlPrefix={
+                                        url.includes('lesson_plan_file')
+                                          ? `${endpoints.discussionForum.s3}`
+                                          : `${endpoints.discussionForum.s3}/homework`
+                                      }
                                       index={i}
                                       onOpenInPenTool={(url) => openInPenTool(url, index)}
                                       actions={[
                                         'preview',
                                         'download',
-                                        question.is_pen_editor_enable && (homeworkdata?.status === 'un-opened' || homeworkdata?.hw_status === '2') && 'pentool',
+                                        question.is_pen_editor_enable &&
+                                          (homeworkdata?.status === 'un-opened' ||
+                                            homeworkdata?.hw_status === '2') &&
+                                          'pentool',
                                       ]}
                                     />
                                   </div>
@@ -656,7 +674,11 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                             key={`homework_student_question_attachment_${pdfindex}`}
                             fileUrl={url}
                             fileName={`${1 + cindex}`}
-                            urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                            urlPrefix={
+                              url.includes('lesson_plan_file')
+                                ? `${endpoints.discussionForum.s3}`
+                                : `${endpoints.discussionForum.s3}/homework`
+                            }
                             index={pdfindex}
                             actions={['preview', 'download', 'delete']}
                             onDelete={(index, deletePdf) =>
@@ -750,12 +772,16 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                       return Object.values(url).map((item, i) => {
                         let imageIndex = Object.keys(url)[i];
                         return (
-                          <div className = {classes.evaluatedAttachment}>
+                          <div className={classes.evaluatedAttachment}>
                             <Attachment
                               key={`homework_student_question_attachment_${i}`}
                               fileUrl={item}
                               fileName={`${i + 1 + cindex}`}
-                              urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                              urlPrefix={
+                                item.includes('lesson_plan_file')
+                                  ? `${endpoints.discussionForum.s3}`
+                                  : `${endpoints.discussionForum.s3}/homework`
+                              }
                               index={i}
                               actions={['preview', 'download']}
                               // onDelete={(index, deletePdf) =>
@@ -775,7 +801,11 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                             key={`homework_student_question_attachment_${pdfindex}`}
                             fileUrl={url}
                             fileName={`${1 + cindex}`}
-                            urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                            urlPrefix={
+                              url.includes('lesson_plan_file')
+                                ? `${endpoints.discussionForum.s3}`
+                                : `${endpoints.discussionForum.s3}/homework`
+                            }
                             index={pdfindex}
                             actions={['preview', 'download']}
                             // onDelete={(index, deletePdf) =>
@@ -886,5 +916,5 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
       </Grid>
     </Layout>
   );
-})
+});
 export default StudentSubmitHW;

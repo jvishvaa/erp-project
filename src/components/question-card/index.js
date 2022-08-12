@@ -33,6 +33,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import Button from '@material-ui/core/Button';
 import CreateIcon from '@material-ui/icons/Create';
 import DeleteIcon from '@material-ui/icons/Delete';
+import SearchIcon from '@material-ui/icons/Search';
 import ArrowBackIosIcon from '@material-ui/icons/ArrowBackIos';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import SimpleReactLightbox, { SRLWrapper } from 'simple-react-lightbox';
@@ -137,6 +138,7 @@ const QuestionCard = ({
   const [topicListData, setTopicListData] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState('');
   const [resourcesData, setResourcesData] = useState();
+
   const [isResource, setIsResource] = useState(false);
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -178,7 +180,6 @@ const QuestionCard = ({
   };
 
   const handleFileUpload = async (file) => {
-    console.log('File', file);
     if (!file) {
       return null;
     }
@@ -199,7 +200,9 @@ const QuestionCard = ({
           fd.append('file', file);
           setFileUploadInProgress(true);
           const filePath = await uploadFile(fd);
+          console.log('URL2', filePath);
           const final = Object.assign({}, filePath);
+          console.log('URL3', final);
           if (file.type === 'application/pdf') {
             setAttachments((prevState) => [...prevState, final]);
             setAttachmentPreviews((prevState) => [...prevState, final]);
@@ -406,14 +409,6 @@ const QuestionCard = ({
       });
   };
   const fetchResourceYear = () => {
-    // axios
-    //   .get(`${endpoints.lessonPlan.academicYearList}`, {
-    //     headers: {
-    //       'x-api-key': 'vikash@12345#1231',
-    //     },
-    //   })
-    //   .then((result) => {
-    //     if (result?.data?.status_code === 200) {
     axios
       .get(`${endpoints.lessonPlan.academicYearList}`, {
         headers: {
@@ -638,25 +633,7 @@ const QuestionCard = ({
                       </>
                     )}
                   </div>
-                  <div>
-                    {/* {attachmentPreviews.slice(0, 2).map((url) => (
-                      <img
-                        src={url}
-                        alt='preview'
-                        style={{ width: '45px', margin: '5px' }}
-                      />
-                    ))}
-                    {attachmentPreviews.length > 2 && (
-                      <Typography
-                        component='h5'
-                        color='primary'
-                        onClick={openAttchmentsModal}
-                        style={{ cursor: 'pointer', marginTop: '5px' }}
-                      >
-                        View all attachments
-                      </Typography>
-                    )} */}
-                  </div>
+                  <div></div>
                 </Grid>
               </Grid>
               {attachmentPreviews.length > 0 && (
@@ -700,7 +677,7 @@ const QuestionCard = ({
                                     fileName={`Attachment-${i + 1 + cindex}`}
                                     urlPrefix={
                                       item.includes('lesson_plan_file')
-                                        ? `${endpoints.lessonPlan.s3erp}`
+                                        ? `${endpoints.discussionForum.s3}/`
                                         : `${endpoints.discussionForum.s3}/homework`
                                     }
                                     index={i}
@@ -724,7 +701,7 @@ const QuestionCard = ({
                                   fileName={`Attachment-${1 + cindex}`}
                                   urlPrefix={
                                     url.includes('lesson_plan_file')
-                                      ? `${endpoints.lessonPlan.s3erp}`
+                                      ? `${endpoints.discussionForum.s3}`
                                       : `${endpoints.discussionForum.s3}/homework`
                                   }
                                   index={pdfindex}
@@ -747,7 +724,7 @@ const QuestionCard = ({
                                     <img
                                       src={
                                         item.includes('lesson_plan_file')
-                                          ? `${endpoints.lessonPlan.s3erp}${item}`
+                                          ? `${endpoints.discussionForum.s3}${item}`
                                           : `${endpoints.discussionForum.s3}/homework/${item}`
                                       }
                                       onError={(e) => {
@@ -762,7 +739,7 @@ const QuestionCard = ({
                                   <img
                                     src={
                                       url.includes('lesson_plan_file')
-                                        ? `${endpoints.lessonPlan.s3erp}${url}`
+                                        ? `${endpoints.discussionForum.s3}${url}`
                                         : `${endpoints.discussionForum.s3}/homework/${url}`
                                     }
                                     onError={(e) => {
@@ -855,8 +832,8 @@ const QuestionCard = ({
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} md={4}>
-                {/* <Box className='question-ctrl-inner-container'>Quiz</Box> */}
+              {/* <Grid item xs={12} md={4}>
+                
                 <Box className='question-ctrl-inner-container th-pointer'>
                   <Button
                     onClick={handleResourcesDrawerOpen}
@@ -866,7 +843,7 @@ const QuestionCard = ({
                     Resources
                   </Button>
                 </Box>
-              </Grid>
+              </Grid> */}
             </Grid>
           </CardContent>
         </Card>
@@ -920,16 +897,6 @@ const QuestionCard = ({
             </Popover>
           </Grid>
         )}
-        {/*        
-        <IconButton
-          style={{ display: 'block' }}
-          onClick={() => {
-            removeQuestion(index);
-          }}
-          title='Remove Question'
-        >
-          <CancelIcon className='disabled-icon' />
-        </IconButton>{' '} */}
       </Grid>
       <Drawer
         anchor='right'
@@ -1081,7 +1048,7 @@ const QuestionCard = ({
             <Button
               variant='contained'
               color='primary'
-              startIcon={<DeleteIcon />}
+              startIcon={<SearchIcon />}
               onClick={() => {
                 fetchResources();
               }}
@@ -1095,7 +1062,8 @@ const QuestionCard = ({
           container
           style={{
             overflowY: 'scroll',
-            maxHeight: '400px',
+            overflowX: 'hidden',
+            maxHeight: window.innerWidth < 768 ? '30vh' : '50vh',
             marginTop: 20,
           }}
         >
