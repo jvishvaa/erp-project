@@ -22,6 +22,7 @@ import TabPanel from '../../../../components/tab-panel';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import { AlertNotificationContext } from '../../../../context-api/alert-context/alert-state';
+import './student-report-card.css'
 
 const StudentReportCard = () => {
   const themeContext = useTheme();
@@ -129,6 +130,12 @@ const StudentReportCard = () => {
           childComponentName='Report-Card'
           isAcademicYearVisible={true}
         />
+        <div className='student-report-card' style={{
+        // background: 'white',
+        height: '90vh',
+        overflowX: 'hidden',
+        overflowY: 'scroll',
+      }} >
         <Grid
           container
           spacing={isMobile ? 3 : 5}
@@ -174,6 +181,7 @@ const StudentReportCard = () => {
             </Grid>
           )}
         </Grid>
+        </div>
       </Layout>
     </>
   );

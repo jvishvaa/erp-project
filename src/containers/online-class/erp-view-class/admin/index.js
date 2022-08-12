@@ -35,8 +35,10 @@ import TabPanel from './tab-panel/TabPanel';
 import APIREQUEST from '../../../../config/apiRequest';
 
 const ErpAdminViewClass = ({ history }) => {
-  JSON.parse(localStorage.getItem('filterData'))?.classtype?.id > 0 &&
-    localStorage.removeItem('filterData');
+let filteredData = JSON.parse(localStorage.getItem('filterData'))
+      if(filteredData?.classtype?.id > 0 && filteredData?.classtype?.id !== 4){
+        localStorage.removeItem('filterData');
+      }
   const [branchList, setBranchList] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
   const [loading, setLoading] = useState(false);
@@ -85,6 +87,8 @@ const ErpAdminViewClass = ({ history }) => {
 
   const [classTypes, setClassTypes] = useState([
     { id: 0, type: 'Compulsory Class' },
+    { id: 4, type: 'Remedial Classes' },
+
     /* { id: 1, type: 'Optional Class' },
     { id: 2, type: 'Special Class' },
     { id: 3, type: 'Parent Class' }, */
@@ -581,7 +585,7 @@ const ErpAdminViewClass = ({ history }) => {
         }
       } else if (
         window.location.pathname === '/erp-online-class-student-view' &&
-        selectedClassType?.id >= 0 &&
+        (selectedClassType?.id >= 0)&&
         moduleId
       ) {
         setLoading(true);
@@ -693,7 +697,7 @@ const ErpAdminViewClass = ({ history }) => {
         setAlert('warning', 'Select Group');
         return;
       }
-      if (selectedClassType?.id !== 0) {
+      if (selectedClassType?.id !== 0 && selectedClassType?.id !== 4) {
         if (!selectedCourse) {
           setAlert('warning', 'Select Course');
           return;
@@ -874,7 +878,7 @@ const ErpAdminViewClass = ({ history }) => {
         `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
         'section'
       );
-      if (selectedClassType?.id > 0) {
+      if (selectedClassType?.id > 0 && selectedClassType?.id !== 4) {
         callApi(
           `${endpoints.teacherViewBatches.courseListApi}?grade=${selectedId}`,
           'course'
@@ -1247,7 +1251,7 @@ const ErpAdminViewClass = ({ history }) => {
                     </Grid>
                     )}
 
-                    {selectedClassType?.id === 0 && (
+                    {(selectedClassType?.id === 0 || selectedClassType?.id === 4) && (
                       <Grid item md={3} xs={12}>
                         <Autocomplete
                           multiple
@@ -1273,7 +1277,7 @@ const ErpAdminViewClass = ({ history }) => {
                       </Grid>
                     )}
 
-                    {selectedClassType?.id > 0 && (
+                    {(selectedClassType?.id > 0 && selectedClassType?.id !== 4 ) && (
                       <Grid item md={3} xs={12}>
                         <Autocomplete
                           style={{ width: '100%' }}
