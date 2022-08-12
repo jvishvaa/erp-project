@@ -441,7 +441,7 @@ const Assesment = () => {
     axiosInstance
       .get(
         `${endpoints.assessmentErp.getGroups
-        }?acad_session=${acadId}&grade=${grade}&is_active=${true}&group_type=${1}`
+        }?acad_session=${acadId}&grade=${grade}&is_active=${true}`
       )
       .then((result) => {
         if (result?.status === 200) {
@@ -995,8 +995,6 @@ const Assesment = () => {
                     classes={{
                       flexContainer: classes.tabsFlexContainer,
                     }}
-                    textColor='secondary'
-                    indicatorColor='secondary'
                   >
                     <Tab label='All' value='all' className='right-border' />
                     <Tab
