@@ -19,6 +19,7 @@ import TabPanel from './tab-panel';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import BreadcrumbToggler from '../../../components/breadcrumb-toggler';
+import './assesment-view-scroll.css';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -137,6 +138,13 @@ const AssessmentView = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
+        <div
+         className='assesment-scroll'
+         style={{
+           height: '90vh',
+           overflowX: 'scroll',
+           overflowY: 'scroll',
+         }}>
         <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
           <CommonBreadcrumbs
             componentName='Assessment'
@@ -264,6 +272,7 @@ const AssessmentView = () => {
             </div>
           )}
         </Paper>
+        </div>
       </Layout>
     </>
   );

@@ -45,6 +45,7 @@ import CustomMultiSelect from '../../communication/custom-multiselect/custom-mul
 import { Context } from '../context/context';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
+import './diary-scroll.css'
 
 // import CustomSelectionTable from '../../communication/custom-selection-table/custom-selection-table';
 import DiaryCustomSelectionTable from '../../communication/diary-curstom-selection-table/diary-custom-selection-table';
@@ -1092,6 +1093,13 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
+      <div
+        className='general-dairy-scroll'
+        style={{
+          height: '90vh',
+          overflowX: 'hidden',
+          overflowY: 'scroll',
+        }}>
         <CommonBreadcrumbs
           componentName='General Diary'
           childComponentName='Create New'
@@ -1437,6 +1445,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               </Button>
             </div>
           </div>
+        </div>
         </div>
       </Layout>
     </>
