@@ -26,7 +26,7 @@ const StudentDashboardNew = () => {
   const doodleInfo = () => {
     return (
       <div className='row p-2 flex-column'>
-        <div className='th-20 th-fw-600 th-black-1'>{title}</div>
+        <div className='th-20 th-fw-600 th-primary'>{title}</div>
         <div
           className='th-14 th-fw-400 th-black-2 py-3'
           style={{ height: 200, width: '75vw', overflowY: 'auto' }}
@@ -39,9 +39,9 @@ const StudentDashboardNew = () => {
 
   const fetchDoodle = () => {
     axios
-      .get(`${endpoints.doodle.checkDoodle}`)
+      .get(`${endpoints.doodle.checkDoodle}?config_key=doodle_availability`)
       .then((response) => {
-        if (response?.data[0]?.config_value[0] == 1) {
+        if (response?.data?.result[0] === 'True') {
           setShowDoodle(true);
         }
       })

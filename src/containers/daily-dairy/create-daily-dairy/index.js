@@ -8,6 +8,8 @@ import {
   useTheme,
   SvgIcon,
   FormHelperText,
+  InputLabel,
+  OutlinedInput,
 } from '@material-ui/core';
 import {
   Dialog,
@@ -19,11 +21,13 @@ import {
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { useStyles } from '../../user-management/useStyles';
-
+import cuid from 'cuid';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Layout from '../../Layout';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
@@ -43,12 +47,21 @@ import {
 import AddHomework from '../../../assets/images/AddHomework.svg';
 import { Context } from '../context/context';
 import './daily-diary-scrollbar.css'
+import HomeworkAsigned from '../../../assets/images/hw-given.svg';
+import QuestionCard from '../../../components/question-card';
+import { useDispatch, useSelector } from 'react-redux';
+import { addHomeWork } from 'redux/actions/teacherHomeworkActions';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
 
 const CreateDailyDairy = (details, onSubmit) => {
+  const dispatch = useDispatch();
   const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [academicYears, setAcademicYears] = useState([]);
+  const [queIndexCounter, setQueIndexCounter] = useState(0);
   const [assignedHomework, setAssignedHomework] = useState('');
   const [assignedHomeworkModal, setAssignedHomeworkModal] = useState('');
+  const [hwId, sethwId] = useState();
   const [hwMappingID, setHwMappingID] = useState();
   const [declined, setDeclined] = useState(false);
   const [branches, setBranches] = useState([]);
@@ -74,7 +87,8 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   const [files, setFiles] = useState([]);
-
+  const [showIcon, setShowIcon] = useState(false);
+  const [showHomeworkForm, setShowHomeworkForm] = useState(false);
   // context
   const [state, setState] = useContext(Context);
   const { isEdit, editData } = state;
@@ -96,7 +110,91 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [acadId, setAcadId] = useState();
+  const [homeworkTitle, setHomeworkTitle] = useState('');
+  const [homeworkInstructions, setHomeworkInstructions] = useState('');
+  const [submissionDate, setSubmissionDate] = useState(moment().format('YYYY-MM-DD'));
+  const [questionList, setQuestionList] = useState([
+    {
+      id: cuid(),
+      question: '',
+      attachments: [],
+      is_attachment_enable: false,
+      max_attachment: 2,
+      penTool: false,
+    },
+  ]);
 
+  const handleChange = (index, field, value) => {
+    const form = questionList[index];
+    const modifiedForm = { ...form, [field]: value };
+    setQuestionList((prevState) => [
+      ...prevState.slice(0, index),
+      modifiedForm,
+      ...prevState.slice(index + 1),
+    ]);
+  };
+
+  const removeQuestion = (index) => {
+    setQuestionList((prevState) => [
+      ...prevState.slice(0, index),
+      ...prevState.slice(index + 1),
+    ]);
+  };
+
+  const addNewQuestion = (index) => {
+    setQuestionList((prevState) => [
+      ...prevState.slice(0, index),
+      {
+        id: cuid(),
+        question: '',
+        attachments: [],
+        is_attachment_enable: false,
+        max_attachment: 2,
+        penTool: false,
+      },
+      ...prevState.slice(index),
+    ]);
+  };
+
+  const handleAddHomeWork = async () => {
+    // const isFormValid = validateHomework();
+    // if (isFormValid) {
+    //const sectionId = params.section.split(',').map( n => parseInt(n, 10))
+    const reqObj = {
+      name: homeworkTitle,
+      description: homeworkInstructions,
+      section_mapping: [sectionMappingID],
+      subject: filterData?.subject?.id,
+      date: moment().format('YYYY-MM-DD'),
+      last_submission_date: submissionDate,
+      questions: questionList.map((q) => {
+        const qObj = q;
+        delete qObj.errors;
+        delete qObj.id;
+        return qObj;
+      }),
+    };
+    try {
+      // const response = await onAddHomework(reqObj, isEdit, hwId);
+      const response = await dispatch(addHomeWork(reqObj, isEdit, hwId));
+      setAlert('success', 'Homework added');
+      setShowHomeworkForm(false);
+      checkAssignedHomework({
+        section_mapping: sectionMappingID,
+        subject: subjectIds,
+        date: moment().format('YYYY-MM-DD'),
+        user_id: user_id,
+      });
+      // history.goBack();
+    } catch (error) {
+      setAlert('error', 'Failed to add homework');
+    }
+    // }
+  };
+
+  const handleSubmissionDateChange = (event, value) => {
+    setSubmissionDate(value);
+  };
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -256,8 +354,8 @@ const CreateDailyDairy = (details, onSubmit) => {
             subject_name: obj.subject__subject_name,
           }));
           setSubjectDropdown(transformedData);
-          const filteredSelectedSubjects = formik.values.subjects.filter(
-            (sub) => transformedData.findIndex((data) => data.id === sub.id) > -1
+          const filteredSelectedSubjects = formik?.values?.subjects?.filter(
+            (sub) => transformedData.findIndex((data) => data?.id === sub?.id) > -1
           );
           formik.setFieldValue('subjects', filteredSelectedSubjects);
         }
@@ -291,13 +389,22 @@ const CreateDailyDairy = (details, onSubmit) => {
     formik.setFieldValue('chapters', '' || []);
     formik.setFieldValue('subjects', '' || []);
     setFilterData({ ...filterData, subject: '', chapter: '' });
+    setAssignedHomework();
+    setHomework();
+    setShowIcon(false);
     if (value) {
-      setDeclined(false);
       setSubjectName(value?.subject_name);
       setFilterData({ ...filterData, subject: value, chapter: '' });
       formik.setFieldValue('subjects', value);
       formik.setFieldValue('chapters', '' || []);
       setSubjectIds(value?.id);
+
+      checkAssignedHomework({
+        section_mapping: sectionMappingID,
+        subject: value?.id,
+        date: moment().format('YYYY-MM-DD'),
+        user_id: user_id,
+      });
       axiosInstance
         .get(
           `${endpoints.questionBank.chapterList}?subject_id=${value?.ids}&subject=${value?.id}&session_year=${filterData?.branch?.id}`
@@ -332,7 +439,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         if (result?.data?.status_code == 201) {
           setHwMappingID(result?.data?.data?.hw_dairy_mapping_id);
           setAssignedHomeworkModal(false);
-          setHomework(assignedHomework[0].description);
+          setHomework(assignedHomework[0]?.homework_name);
         }
       })
       .catch((error) => setAlert('error', error?.message));
@@ -668,25 +775,19 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
   }, []);
   const classes = useStyles();
-  const checkAssignedHomework = () => {
-    if (!subjectIds) {
-      setAlert('error', 'Please select all filters');
-      return;
-    }
-    const params = {
-      section_mapping: sectionMappingID,
-      subject: subjectIds,
-      date: moment().format('YYYY-MM-DD'),
-      user_id: user_id,
-    };
+  const checkAssignedHomework = (params = {}) => {
+    // if (!subjectIds) {
+    //   setAlert('error', 'Please select all filters');
+    //   return;
+    // }
     axiosInstance
-      .get(`${endpoints?.dailyDairy?.assignHomeworkDiary}`, { params })
+      .get(`${endpoints?.dailyDairy?.assignHomeworkDiary}`, { params: { ...params } })
       .then((result) => {
         if (result?.data?.status == 200) {
           if (result?.data?.data.length > 0) {
             setAssignedHomework(result?.data?.data);
-            setAssignedHomeworkModal(true);
           }
+          setShowIcon(true);
         }
       })
       .catch((error) => setAlert('error', error?.message));
@@ -915,11 +1016,23 @@ const CreateDailyDairy = (details, onSubmit) => {
                   />
                 )}
               />
-              <FormHelperText style={{ color: 'red' }}>
-                {formik.errors?.chapters ? formik.errors?.chapters : ''}
-              </FormHelperText>
             </FormControl>
           </Grid>
+          {showIcon && !assignedHomework && (
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={showHomeworkForm}
+                    onChange={() => setShowHomeworkForm((prevState) => !prevState)}
+                    name='checkedB'
+                    color='primary'
+                  />
+                }
+                label='Assign Homework'
+              />
+            </Grid>
+          )}
         </Grid>
 
         {/* <<<<<<<<<< EDITOR PART  >>>>>>>>>> */}
@@ -1004,19 +1117,38 @@ const CreateDailyDairy = (details, onSubmit) => {
                   multiline
                   rows='3'
                   color='primary'
+                  value={state.isEdit ? editData.teacher_report.homework : homework}
                   style={{ width: '100%', marginTop: '1.25rem' }}
-                  defaultValue={state.isEdit ? editData.teacher_report.homework : []}
+                  // defaultValue={state.isEdit ? editData.teacher_report.homework : []}
                   variant='outlined'
                   onChange={(e) => setHomework(e.target.value)}
                 />
-                {!declined && subjectIds && !homework && (
-                  <img
-                    src={AddHomework}
-                    className='py-3 th-pointer'
-                    onClick={RedirectToHomework}
-                    style={{ position: 'absolute', right: '10%', top: '30%' }}
-                  />
-                )}
+                {showIcon ? (
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      position: 'relative',
+                      left: '10%',
+                      bottom: '30%',
+                    }}
+                  >
+                    {assignedHomework ? (
+                      <>
+                        <span>
+                          <img
+                            src={HomeworkAsigned}
+                            className='py-3 th-pointer'
+                            onClick={() => {
+                              setAssignedHomeworkModal(true);
+                            }}
+                          />
+                        </span>
+                        <span>Homework Exists(click to Assign)</span>
+                      </>
+                    ) : null}
+                  </div>
+                ) : null}
               </Grid>
 
               <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
@@ -1072,6 +1204,139 @@ const CreateDailyDairy = (details, onSubmit) => {
               </Grid>
             </Grid>
           </div>
+          {showHomeworkForm && (
+            <Grid
+              container
+              spacing={isMobile ? 3 : 5}
+              style={{ width: '100%', margin: '10px 0px' }}
+            >
+              <div
+                className={classes.descriptionBorder}
+                style={{ width: '100%', padding: '2%' }}
+              >
+                <Grid className='homework-create-questions-container' container md={12}>
+                  <Grid item xs={12} sm={4} style={{ margin: '10px 0px' }}>
+                    <MuiPickersUtilsProvider utils={MomentUtils}>
+                      <KeyboardDatePicker
+                        size='small'
+                        variant='dialog'
+                        format='YYYY-MM-DD'
+                        // margin='none'
+                        // className='button'
+                        className='dropdownIcon'
+                        id='date-picker'
+                        label='Due Date'
+                        inputVariant='outlined'
+                        fullWidth
+                        value={submissionDate}
+                        onChange={handleSubmissionDateChange}
+                        // className='dropdown'
+                        style={{ width: '100%' }}
+                        KeyboardButtonProps={{
+                          'aria-label': 'change date',
+                        }}
+                      />
+                    </MuiPickersUtilsProvider>
+                  </Grid>
+                  <Grid item xs={12} className='form-field'>
+                    <FormControl variant='outlined' fullWidth size='small'>
+                      <InputLabel htmlFor='component-outlined'>Title</InputLabel>
+                      <OutlinedInput
+                        id='title'
+                        name='title'
+                        // onChange={() => {}}
+                        inputProps={{ maxLength: 20 }}
+                        label='Title'
+                        autoFocus
+                        value={homeworkTitle}
+                        onChange={(e) => {
+                          setHomeworkTitle(e.target.value);
+                        }}
+                        //error={errors.name ? true : false}
+                        //helperText="Title is required"
+                      />
+                      {/* <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText> */}
+                    </FormControl>
+                  </Grid>
+                  <Grid
+                    item
+                    xs={12}
+                    className='form-field'
+                    style={{ margin: '10px 0px' }}
+                  >
+                    <FormControl variant='outlined' fullWidth size='small'>
+                      <InputLabel htmlFor='component-outlined'>Instruction</InputLabel>
+                      <OutlinedInput
+                        id='description'
+                        name='Instruction'
+                        onChange={(e) => {
+                          setHomeworkInstructions(e.target.value);
+                        }}
+                        inputProps={{ maxLength: 150 }}
+                        multiline
+                        rows={4}
+                        rowsMax={6}
+                        label='Instruction'
+                        value={homeworkInstructions}
+                        //error={true}
+                        //helperText="Description required"
+                      />
+                      <FormHelperText style={{ color: 'red' }}>
+                        {/* {errors.description} */}
+                      </FormHelperText>
+                    </FormControl>
+                  </Grid>
+                  <Grid item xs={12} className='form-field'>
+                    {questionList?.map((question, index) => (
+                      <QuestionCard
+                        key={question.id}
+                        question={question}
+                        isEdit={false}
+                        index={index}
+                        addNewQuestion={addNewQuestion}
+                        handleChange={handleChange}
+                        removeQuestion={removeQuestion}
+                        sessionYear={academicYear}
+                        branch={filterData?.branch?.id}
+                        grade={filterData?.grade?.id}
+                        subject={filterData?.subject?.id}
+                      />
+                    ))}
+                  </Grid>
+
+                  <Grid container item xs={12} spacing={1} style={{ marginTop: '10px' }}>
+                    <Grid item xs={12} md={6} className='form-field'>
+                      <div className='finish-btn-container'>
+                        <Button
+                          variant='contained'
+                          style={{ color: 'white', width: '100%' }}
+                          color='secondary'
+                          onClick={() => {
+                            setQueIndexCounter(queIndexCounter + 1);
+                            addNewQuestion(queIndexCounter + 1);
+                          }}
+                        >
+                          Add Another Question
+                        </Button>
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} md={6} className='form-field'>
+                      <div className='finish-btn-container'>
+                        <Button
+                          variant='contained'
+                          style={{ color: 'white', width: '100%' }}
+                          color='primary'
+                          onClick={handleAddHomeWork}
+                        >
+                          Finish
+                        </Button>
+                      </div>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </div>
+            </Grid>
+          )}
           <div>
             <Button
               variant='contained'

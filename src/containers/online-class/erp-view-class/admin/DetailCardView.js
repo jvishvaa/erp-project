@@ -920,7 +920,7 @@ const DetailCardView = ({
                     Resources
                   </Button>
                 )}
-                {selectedClassType && selectedClassType.id !== 0 && (
+                {selectedClassType && selectedClassType.id !== 0 &&  selectedClassType.id !== 4 && (
                   <Button
                     fullWidth
                     size='small'

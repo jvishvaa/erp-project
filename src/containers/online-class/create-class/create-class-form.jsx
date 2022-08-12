@@ -196,6 +196,7 @@ const CreateClassForm = (props) => {
     /* { id: 1, type: 'Optional Class' },
     { id: 2, type: 'Special Class' },
     { id: 3, type: 'Parent Class' }, */
+    { id: 4, type: 'Remedial Classes' },
   ]);
 
   useEffect(() => {
@@ -319,7 +320,7 @@ const CreateClassForm = (props) => {
       setOnlineClass((prevState) => ({ ...prevState, gradeIds: ids }));
       dispatch(clearTutorEmailValidation());
       dispatch(listGroup(selectedAcadSessionId,ids))
-      if (selectedClassType?.id > 0) dispatch(listCoursesCreateClass(ids));
+      if (selectedClassType?.id > 0 && selectedClassType?.id !== 4) dispatch(listCoursesCreateClass(ids));
     } else {
       setOnlineClass((prevState) => ({
         ...prevState,
@@ -387,7 +388,7 @@ const CreateClassForm = (props) => {
   useEffect(() => {
     const { gradeIds, sectionIds, subject, branchIds } = onlineClass;
     let listStudentUrl = `branch_ids=${branchIds.join(',')}`;
-    if (selectedClassType?.id === 0) {
+    if (selectedClassType?.id === 0 || selectedClassType?.id === 4) {
       if (gradeIds?.length && sectionIds?.length && subject?.length) {
         listStudentUrl = `section_mapping_ids=${sectionIds.join(
           ','
@@ -397,7 +398,7 @@ const CreateClassForm = (props) => {
       } else {
         clearStudentsList();
       }
-    } else if (selectedClassType?.id > 0) {
+    } else if (selectedClassType?.id > 0 && selectedClassType?.id !== 4) {
       if (gradeIds?.length > 0 && sectionIds?.length > 0) {
         listStudentUrl = `section_mapping_ids=${sectionIds.join(',')}`;
         dispatch(listStudents(listStudentUrl));
@@ -421,12 +422,12 @@ const CreateClassForm = (props) => {
   const toggleDrawer = () => {
     const { gradeIds, sectionIds, courseId, subject } = onlineClass;
     if (
-      selectedClassType?.id === 0 &&
+      (selectedClassType?.id === 0 || selectedClassType?.id === 4 )&&
       (!gradeIds?.length || !sectionIds?.length || !subject?.length)
     ) {
       setAlert('error', 'Please provide values for grades, sections and subjects');
       return;
-    } else if (selectedClassType?.id > 0 && (!gradeIds?.length || !courseId)) {
+    } else if ((selectedClassType?.id > 0 && selectedClassType?.id !== 4) && (!gradeIds?.length || !courseId)) {
       setAlert('error', 'Please provide value for course');
       return;
     } else {
@@ -602,9 +603,9 @@ const CreateClassForm = (props) => {
 
     if(sectionToggle) request['groups'] = selectedGroupId
 
-    if (selectedClassType?.id === 0) {
+    if (selectedClassType?.id === 0 || selectedClassType?.id === 4) {
       request['subject_id'] = subject.join(',');
-    } else if (selectedClassType?.id > 0) {
+    } else if (selectedClassType?.id > 0 && selectedClassType?.id !== 4) {
       request['course'] = courseId;
     }
     request['tutor_id'] = tutorEmail.tutor_id;
@@ -627,15 +628,15 @@ const CreateClassForm = (props) => {
       return;
     }
 
-    if (selectedClassType?.id === 0) {
+    if (selectedClassType?.id === 0 || selectedClassType?.id === 4) {
       request['week_days'] = days;
     } else {
       if (!Array.isArray(days)) request['week_days'] = [days];
       else request['week_days'] = days.map((ob) => ob);
     }
 
-    if (selectedClassType?.id === 0) {
-      if (filteredStudents?.length > 0) request['student_ids'] = filteredStudents;
+    if (selectedClassType?.id === 0 || selectedClassType?.id === 4) {
+      if (filteredStudents?.length > 0 && selectedClassType?.id !== 4) request['student_ids'] = filteredStudents;
       if (joinLimit > 0) {
         request['join_limit'] = joinLimit;
         dispatch(createNewOnlineClass(request));
@@ -643,7 +644,7 @@ const CreateClassForm = (props) => {
         setLoading(false);
         setAlert('warning', 'Join limit should be atleast 1.');
       }
-    } else if (selectedClassType?.id > 0) {
+    } else if (selectedClassType?.id > 0 && selectedClassType?.id !== 4) {
       request['price'] = 0;
       request['final_price'] = 0;
       if (joinLimit > 0 && filteredStudents?.length > 0) {
@@ -978,7 +979,7 @@ const CreateClassForm = (props) => {
                 )}
               />
             </Grid>
-            {selectedClassType?.id > 0 && (
+            {(selectedClassType?.id > 0 && selectedClassType?.id !== 4) && (
               <Grid item xs={12} sm={2}>
                 <Autocomplete
                   size='small'
@@ -1060,7 +1061,7 @@ const CreateClassForm = (props) => {
             )}
             {onlineClass.tutorEmail && (onlineClass.sectionIds?.length > 0 || selectedGroupData?.length > 0) ? (
               <>
-                {selectedClassType?.id === 0 && (
+                {(selectedClassType?.id === 0 || selectedClassType?.id === 4)&& (
                   <Grid item xs={12} sm={2}>
                     <Autocomplete
                       multiple
@@ -1111,7 +1112,7 @@ const CreateClassForm = (props) => {
                     size='small'
                     className='create__class-textfield dropdownIcon'
                     id='class-join-limit'
-                    label={selectedClassType?.id > 0 ? 'Batch Size' : 'Join limit'}
+                    label={(selectedClassType?.id > 0 || selectedClassType?.id !== 4) ? 'Batch Size' : 'Join limit'}
                     variant='outlined'
                     type='number'
                     name='joinLimit'
