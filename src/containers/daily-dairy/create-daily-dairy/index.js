@@ -42,6 +42,7 @@ import {
 } from '../../../redux/actions/index';
 import AddHomework from '../../../assets/images/AddHomework.svg';
 import { Context } from '../context/context';
+import './daily-diary-scrollbar.css'
 
 const CreateDailyDairy = (details, onSubmit) => {
   const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -695,6 +696,13 @@ const CreateDailyDairy = (details, onSubmit) => {
       {loading ? <Loading message='Loading...' /> : null}
 
       <Layout>
+      <div
+        className='daily-dairy-scroll'
+        style={{
+          height: '90vh',
+          overflowX: 'hidden',
+          overflowY: 'scroll',
+        }}>
         <CommonBreadcrumbs
           componentName='Daily Diary'
           childComponentName={state.isEdit ? 'Edit Dairy' : 'Create New'}
@@ -1102,6 +1110,7 @@ const CreateDailyDairy = (details, onSubmit) => {
               </Button>
             </DialogActions>
           </Dialog>
+        </div>
         </div>
       </Layout>
     </>

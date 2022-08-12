@@ -333,6 +333,13 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
+        <div
+        className='question-bank-scroll'
+        style={{
+          height: '90vh',
+          overflowX: 'scroll',
+          overflowY: 'scroll',
+        }}>
         <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
           <CommonBreadcrumbs
             componentName='Assessment'
@@ -490,6 +497,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
             </div>
           )}
         </Paper>
+        </div>
       </Layout>
     </>
   );
