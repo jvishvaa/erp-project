@@ -31,6 +31,7 @@ const GeneralDiary = () => {
   const [moduleId, setModuleId] = useState();
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [branchID, setBranchID] = useState();
+  const [acadID, setAcadID] = useState();
   const [branchName, setBranchName] = useState('');
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [sectionDropdown, setSectionDropdown] = useState([]);
@@ -122,7 +123,7 @@ const GeneralDiary = () => {
 
   const branchOptions = branchDropdown?.map((each) => {
     return (
-      <Option key={each?.branch?.id} value={each?.branch?.id}>
+      <Option key={each?.branch?.id} value={each?.branch?.id} acadId={each?.id}>
         {each?.branch?.branch_name}
       </Option>
     );
@@ -138,6 +139,7 @@ const GeneralDiary = () => {
     if (each) {
       setBranchID(each.value);
       setBranchName(each.children);
+      setAcadID(each?.acadId);
       const params = {
         session_year: academicYearID,
         branch_id: each.value,
@@ -242,7 +244,7 @@ const GeneralDiary = () => {
     let payload = {
       title: title,
       message: description,
-      academic_year: academicYearID,
+      academic_year: acadID,
       branch: branchID,
       grade: [gradeID],
       section_mapping: [sectionMappingID],

@@ -21,7 +21,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
 import { Grid, withStyles, Popover, SvgIcon } from '@material-ui/core';
-import MenuItem from '@material-ui/core/MenuItem';
+import { useSelector } from 'react-redux';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -98,12 +98,15 @@ const QuestionCard = ({
   index,
   handleChange,
   removeQuestion,
-  sessionYear,
   grade,
   branch,
   subject,
 }) => {
   const classes = useStyles();
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+  let sessionYear;
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const [attachments, setAttachments] = useState([]);
@@ -133,7 +136,7 @@ const QuestionCard = ({
   const [selectedChapter, setSelectedChapter] = useState('');
   const [topicListData, setTopicListData] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState('');
-  const [resourcesData, setResourcesData] = useState([]);
+  const [resourcesData, setResourcesData] = useState();
   const [isResource, setIsResource] = useState(false);
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -231,8 +234,14 @@ const QuestionCard = ({
   const id = open ? 'simple-popover' : undefined;
 
   const assignResource = (resource) => {
-    setAttachmentPreviews((prevState) => [...prevState, resource]);
-    setAttachments((prevState) => [...prevState, resource]);
+    const extension = resource.split('.')[resource.split('.').length - 1];
+    if (extension == 'pdf') {
+      setAttachments((prevState) => [...prevState, resource]);
+      setAttachmentPreviews((prevState) => [...prevState, resource]);
+    } else {
+      setAttachmentPreviews((prevState) => [...prevState, resource]);
+      setAttachments((prevState) => [...prevState, resource]);
+    }
   };
 
   const removeAttachment = (pageIndex, pdfIndex, deletePdf, item) => {
@@ -328,6 +337,7 @@ const QuestionCard = ({
     if (showDrawer) {
       fetchVolumeListData();
       fetchBoardListData();
+      fetchResourceYear();
     }
   }, [showDrawer]);
 
@@ -361,7 +371,7 @@ const QuestionCard = ({
           `academic/get-period-resources/?chapter=${selectedChapter}&topic_id=${selectedTopic}`,
           {
             headers: {
-              'X-DTS-HOST': 'dev.olvorchidnaigaon.letseduvate.com',
+              'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
               Authorization: `Bearer ${token}`,
             },
           }
@@ -389,6 +399,32 @@ const QuestionCard = ({
           // console.log('volume', result?.data?.result);
         } else {
           setAlert('error', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+      });
+  };
+  const fetchResourceYear = () => {
+    // axios
+    //   .get(`${endpoints.lessonPlan.academicYearList}`, {
+    //     headers: {
+    //       'x-api-key': 'vikash@12345#1231',
+    //     },
+    //   })
+    //   .then((result) => {
+    //     if (result?.data?.status_code === 200) {
+    axios
+      .get(`${endpoints.lessonPlan.academicYearList}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          sessionYear = result?.data?.result?.results?.filter(
+            (item) => item?.session_year == selectedAcademicYear.session_year
+          )[0]?.id;
         }
       })
       .catch((error) => {
@@ -663,8 +699,8 @@ const QuestionCard = ({
                                     fileUrl={item}
                                     fileName={`Attachment-${i + 1 + cindex}`}
                                     urlPrefix={
-                                      url.includes('lesson_plan_file')
-                                        ? `${endpoints.homework.resourcesS3}`
+                                      item.includes('lesson_plan_file')
+                                        ? `${endpoints.lessonPlan.s3erp}`
                                         : `${endpoints.discussionForum.s3}/homework`
                                     }
                                     index={i}
@@ -688,7 +724,7 @@ const QuestionCard = ({
                                   fileName={`Attachment-${1 + cindex}`}
                                   urlPrefix={
                                     url.includes('lesson_plan_file')
-                                      ? `${endpoints.homework.resourcesS3}`
+                                      ? `${endpoints.lessonPlan.s3erp}`
                                       : `${endpoints.discussionForum.s3}/homework`
                                   }
                                   index={pdfindex}
@@ -701,7 +737,6 @@ const QuestionCard = ({
                               </div>
                             );
                         })}
-
                         <div style={{ position: 'absolute', visibility: 'hidden' }}>
                           <SRLWrapper>
                             {attachmentPreviews.map((url, i) => {
@@ -711,8 +746,8 @@ const QuestionCard = ({
                                   return (
                                     <img
                                       src={
-                                        url.includes('lesson_plan_file')
-                                          ? `${endpoints.homework.resourcesS3}`
+                                        item.includes('lesson_plan_file')
+                                          ? `${endpoints.lessonPlan.s3erp}${item}`
                                           : `${endpoints.discussionForum.s3}/homework/${item}`
                                       }
                                       onError={(e) => {
@@ -727,7 +762,7 @@ const QuestionCard = ({
                                   <img
                                     src={
                                       url.includes('lesson_plan_file')
-                                        ? `${endpoints.homework.resourcesS3}`
+                                        ? `${endpoints.lessonPlan.s3erp}${url}`
                                         : `${endpoints.discussionForum.s3}/homework/${url}`
                                     }
                                     onError={(e) => {
@@ -822,12 +857,14 @@ const QuestionCard = ({
               </Grid>
               <Grid item xs={12} md={4}>
                 {/* <Box className='question-ctrl-inner-container'>Quiz</Box> */}
-                <Box
-                  className='question-ctrl-inner-container th-pointer'
-                  onClick={handleResourcesDrawerOpen}
-                  style={{ border: '1px solid #d9d9d9', marginTop: 15 }}
-                >
-                  Resources
+                <Box className='question-ctrl-inner-container th-pointer'>
+                  <Button
+                    onClick={handleResourcesDrawerOpen}
+                    variant='contained'
+                    color='primary'
+                  >
+                    Resources
+                  </Button>
                 </Box>
               </Grid>
             </Grid>
@@ -1062,8 +1099,8 @@ const QuestionCard = ({
             marginTop: 20,
           }}
         >
-          {resourcesData?.length > 0 ? (
-            resourcesData?.map((item, i) => {
+          {resourcesData ? (
+            Object.entries(resourcesData).map((item) => {
               return (
                 <Accordion style={{ margin: '10px 5px', width: '100%' }}>
                   <AccordionSummary
@@ -1071,57 +1108,62 @@ const QuestionCard = ({
                     aria-controls='panel1bh-content'
                     id='panel1bh-header'
                   >
-                    <Typography>{Object.keys(item)[0]}</Typography>
+                    <Typography>{item[0]}</Typography>
                   </AccordionSummary>
                   <AccordionDetails>
                     <Grid container>
-                      {Object.values(item)[0]?.map((each) => {
-                        let resourceType = Object.keys(each)[0];
-                        let resourceName = Object.values(each)[0][0];
-                        // console.log('Resources', Object.keys(each)[0]);
-                        // console.log('Resources1', Object.values(each)[0][0]);
+                      {Object.entries(item[1])?.map((each) => {
                         return (
                           <Grid container style={{ width: '100%' }}>
                             <Grid md={6}>
-                              <Typography>{resourceType}</Typography>
+                              <Typography>{each[0]}</Typography>
                             </Grid>
-                            <Grid md={2}>
-                              <FormControlLabel
-                                control={
-                                  <Checkbox
-                                    // checked={state.checkedB}
-                                    onChange={() => assignResource(resourceName)}
-                                    name='checkedB'
-                                    color='primary'
-                                  />
-                                }
-                                label='Assign'
-                              />
-                            </Grid>
-                            <Grid md={3} className='text-center'>
-                              <a
-                                onClick={() => {
-                                  openPreview({
-                                    currentAttachmentIndex: 0,
-                                    attachmentsArray: [
-                                      {
-                                        src: `${endpoints.lessonPlan.s3}${resourceName}`,
-                                        name: resourceName,
-                                        extension:
-                                          '.' +
-                                          resourceName.split('.')[
-                                            resourceName.split('.').length - 1
+                            {each[1]?.map((resource) => {
+                              let resourceName = resource.split('_')[
+                                resource.split('_').length - 1
+                              ];
+                              return (
+                                <Grid container style={{ width: '100%' }}>
+                                  <Grid md={3} className='text-center'>
+                                    <FormControlLabel
+                                      control={
+                                        <Checkbox
+                                          // checked={state.checkedB}
+                                          onChange={() => assignResource(resource)}
+                                          name='checkedB'
+                                          color='primary'
+                                        />
+                                      }
+                                      label='Assign'
+                                    />
+                                  </Grid>
+                                  <Grid md={3} className='text-center'>
+                                    <a
+                                      onClick={() => {
+                                        openPreview({
+                                          currentAttachmentIndex: 0,
+                                          attachmentsArray: [
+                                            {
+                                              src: `${endpoints.lessonPlan.s3erp}${resource}`,
+                                              name: resource,
+                                              extension:
+                                                '.' +
+                                                resource.split('.')[
+                                                  resource.split('.').length - 1
+                                                ],
+                                            },
                                           ],
-                                      },
-                                    ],
-                                  });
-                                }}
-                                rel='noopener noreferrer'
-                                target='_blank'
-                              >
-                                <SvgIcon component={() => <VisibilityIcon />} />
-                              </a>
-                            </Grid>
+                                        });
+                                      }}
+                                      rel='noopener noreferrer'
+                                      target='_blank'
+                                    >
+                                      <SvgIcon component={() => <VisibilityIcon />} />
+                                    </a>
+                                  </Grid>
+                                </Grid>
+                              );
+                            })}
                           </Grid>
                         );
                       })}
@@ -1137,7 +1179,11 @@ const QuestionCard = ({
           )}
         </Grid>
         <Grid className='mt-3'>
-          <Button className='mr-3' variant='primary' onClick={() => setShowDrawer(false)}>
+          <Button
+            className='mr-3'
+            variant='contained'
+            onClick={() => setShowDrawer(false)}
+          >
             Back
           </Button>
           {resourcesData?.length > 0 && (

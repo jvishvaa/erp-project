@@ -76,7 +76,7 @@ export default {
     assessment: `${msReportsUrlNew}/api/acad_performance/v1/student-assesment-report-dash/`,
   },
   doodle: {
-    checkDoodle: `/erp_user/doodle-api/`,
+    checkDoodle: `/assessment/check-sys-config/`,
   },
   createAnnouncement: {
     membersCount: `/announcement/members/`,

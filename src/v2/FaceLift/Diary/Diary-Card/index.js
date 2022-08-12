@@ -262,27 +262,8 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
                       <div className='col-8 pl-0' md={6}>
                         <div className='th-primary text-truncate'>{fileName}</div>
                       </div>
-                      <div className='col-2'>
-                        <a
-                          onClick={() => {
-                            openPreview({
-                              currentAttachmentIndex: 0,
-                              attachmentsArray: [
-                                {
-                                  src: `${endpoints.announcementList.s3erp}${each}`,
-                                  name: fileName,
-                                  extension: '.' + extension,
-                                },
-                              ],
-                            });
-                          }}
-                          rel='noopener noreferrer'
-                          target='_blank'
-                        >
-                          <EyeFilled />
-                        </a>
-                      </div>
-                      <div className='col-2'>
+                      
+                      <div className='col-4'>
                         <a href={`${endpoints.announcementList.s3erp}${each}`} download>
                           <ArrowDownOutlined className='th-primary th-pointer' />
                         </a>
