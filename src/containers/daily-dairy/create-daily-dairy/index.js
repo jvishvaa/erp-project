@@ -89,6 +89,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [files, setFiles] = useState([]);
   const [showIcon, setShowIcon] = useState(false);
   const [showHomeworkForm, setShowHomeworkForm] = useState(false);
+  const [homeworkCreated, setHomeworkCreated] = useState(false);
   // context
   const [state, setState] = useContext(Context);
   const { isEdit, editData } = state;
@@ -157,9 +158,14 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleAddHomeWork = async () => {
-    // const isFormValid = validateHomework();
-    // if (isFormValid) {
-    //const sectionId = params.section.split(',').map( n => parseInt(n, 10))
+    if (!homeworkTitle) {
+      setAlert('error', 'Please add Homework Title');
+      return;
+    }
+    if (!homeworkInstructions) {
+      setAlert('error', 'Please add Homework Instructions');
+      return;
+    }
     const reqObj = {
       name: homeworkTitle,
       description: homeworkInstructions,
@@ -185,7 +191,9 @@ const CreateDailyDairy = (details, onSubmit) => {
         date: moment().format('YYYY-MM-DD'),
         user_id: user_id,
       });
-      // history.goBack();
+      setHomeworkTitle('');
+      setHomeworkInstructions('');
+      setHomeworkCreated(true);
     } catch (error) {
       setAlert('error', 'Failed to add homework');
     }
@@ -212,18 +220,6 @@ const CreateDailyDairy = (details, onSubmit) => {
       });
     }
   }, []);
-
-  const RedirectToHomework = () => {
-    const session_year = filterData?.year?.id;
-    const branchID = state.isEdit ? editData.branch : filterData?.branch?.id;
-    const gradeID = state.isEdit ? editData.grade[0] : filterData?.grade?.id;
-    const subjectID = state.isEdit ? editData.subject : filterData?.subject?.id;
-    history.push(
-      `/homework/add/${moment().format(
-        'YYYY-MM-DD'
-      )}/${session_year}/${branchID}/${gradeID}/${subjectName}/${subjectID}`
-    );
-  };
 
   const formik = useFormik({
     initialValues: {
@@ -390,8 +386,9 @@ const CreateDailyDairy = (details, onSubmit) => {
     formik.setFieldValue('subjects', '' || []);
     setFilterData({ ...filterData, subject: '', chapter: '' });
     setAssignedHomework();
-    setHomework();
+    setHomework('');
     setShowIcon(false);
+    setHomeworkCreated(false);
     if (value) {
       setSubjectName(value?.subject_name);
       setFilterData({ ...filterData, subject: value, chapter: '' });
@@ -431,7 +428,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const mapAssignedHomework = () => {
-    axios
+    axiosInstance
       .post(`${endpoints?.dailyDairy?.assignHomeworkDiary}`, {
         hw_id: assignedHomework[0]?.id,
       })
@@ -741,6 +738,11 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
   };
 
+  useEffect(() => {
+    if (assignedHomework && homeworkCreated) {
+      mapAssignedHomework();
+    }
+  }, [assignedHomework]);
   let imageCount = 1;
   useEffect(() => {
     if (editData?.documents) {
@@ -776,10 +778,9 @@ const CreateDailyDairy = (details, onSubmit) => {
   }, []);
   const classes = useStyles();
   const checkAssignedHomework = (params = {}) => {
-    // if (!subjectIds) {
-    //   setAlert('error', 'Please select all filters');
-    //   return;
-    // }
+    if (!subjectIds) {
+      return;
+    }
     axiosInstance
       .get(`${endpoints?.dailyDairy?.assignHomeworkDiary}`, { params: { ...params } })
       .then((result) => {
@@ -1111,7 +1112,14 @@ const CreateDailyDairy = (details, onSubmit) => {
                 style={{ position: 'relative' }}
               >
                 <TextField
-                  onClick={() => checkAssignedHomework()}
+                  onClick={() =>
+                    checkAssignedHomework({
+                      section_mapping: sectionMappingID,
+                      subject: subjectIds,
+                      date: moment().format('YYYY-MM-DD'),
+                      user_id: user_id,
+                    })
+                  }
                   id='outlined-multiline-static'
                   label='Homework'
                   multiline
@@ -1133,19 +1141,18 @@ const CreateDailyDairy = (details, onSubmit) => {
                       bottom: '30%',
                     }}
                   >
-                    {assignedHomework ? (
-                      <>
+                    {assignedHomework && !homework ? (
+                      <div
+                        onClick={() => {
+                          setAssignedHomeworkModal(true);
+                        }}
+                        className='th-pointer'
+                      >
                         <span>
-                          <img
-                            src={HomeworkAsigned}
-                            className='py-3 th-pointer'
-                            onClick={() => {
-                              setAssignedHomeworkModal(true);
-                            }}
-                          />
+                          <img src={HomeworkAsigned} className='py-3 th-pointer' />
                         </span>
-                        <span>Homework Exists(click to Assign)</span>
-                      </>
+                        <span className='ml-2'>Homework Exists(click to Assign)</span>
+                      </div>
                     ) : null}
                   </div>
                 ) : null}
@@ -1309,8 +1316,8 @@ const CreateDailyDairy = (details, onSubmit) => {
                       <div className='finish-btn-container'>
                         <Button
                           variant='contained'
-                          style={{ color: 'white', width: '100%' }}
-                          color='secondary'
+                          // style={{ color: 'white', width: '100%' }}
+                          // color='secondary'
                           onClick={() => {
                             setQueIndexCounter(queIndexCounter + 1);
                             addNewQuestion(queIndexCounter + 1);

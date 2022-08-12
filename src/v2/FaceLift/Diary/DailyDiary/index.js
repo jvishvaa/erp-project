@@ -75,6 +75,7 @@ const DailyDiary = () => {
   const [homeworkInstructions, setHomeworkInstructions] = useState('');
   const [showIcon, setShowIcon] = useState(false);
   const [queIndexCounter, setQueIndexCounter] = useState(0);
+  const [homeworkCreated, setHomeworkCreated] = useState(false);
   const [submissionDate, setSubmissionDate] = useState(moment().format('YYYY-MM-DD'));
   const [questionList, setQuestionList] = useState([
     {
@@ -310,8 +311,9 @@ const DailyDiary = () => {
       chapter: null,
     });
     setAssignedHomework();
-    setHomework();
+    setHomework('');
     setShowIcon(false);
+    setHomeworkCreated(false);
     if (e) {
       setSubjectID(e.value);
       setSubjectName(e.children);
@@ -324,7 +326,7 @@ const DailyDiary = () => {
       };
       checkAssignedHomework({
         section_mapping: sectionMappingID,
-        subject: e?.id,
+        subject: e?.value,
         date: moment().format('YYYY-MM-DD'),
         user_id: user_id,
       });
@@ -493,20 +495,10 @@ const DailyDiary = () => {
     }
   };
 
-  const RedirectToHomework = () => {
+  const checkAssignedHomework = (params = {}) => {
     if (!subjectID) {
-      message.error('Please select all filters');
       return;
     }
-    let session_year = academicYearID;
-    history.push(
-      `/homework/add/${moment().format(
-        'YYYY-MM-DD'
-      )}/${session_year}/${branchID}/${gradeID}/${subjectName}/${subjectID}`
-    );
-  };
-
-  const checkAssignedHomework = (params = {}) => {
     axios
       .get(`${endpoints?.dailyDiary?.assignHomeworkDiary}`, { params: { ...params } })
       .then((result) => {
@@ -519,7 +511,11 @@ const DailyDiary = () => {
       })
       .catch((error) => message.error('error', error?.message));
   };
-
+  useEffect(() => {
+    if (assignedHomework && homeworkCreated) {
+      mapAssignedHomework();
+    }
+  }, [assignedHomework]);
   const mapAssignedHomework = () => {
     axios
       .post(`${endpoints?.dailyDiary?.assignHomeworkDiary}`, {
@@ -539,6 +535,14 @@ const DailyDiary = () => {
     // const isFormValid = validateHomework();
     // if (isFormValid) {
     //const sectionId = params.section.split(',').map( n => parseInt(n, 10))
+    if (!homeworkTitle) {
+      message.error('Please fill Homework Title');
+      return;
+    }
+    if (!homeworkInstructions) {
+      message.error('Please fill Homework Instructions');
+      return;
+    }
     const reqObj = {
       name: homeworkTitle,
       description: homeworkInstructions,
@@ -564,6 +568,9 @@ const DailyDiary = () => {
         date: moment().format('YYYY-MM-DD'),
         user_id: user_id,
       });
+      setHomeworkTitle('');
+      setHomeworkInstructions('');
+      setHomeworkCreated(true);
       // history.goBack();
     } catch (error) {
       message.error('Failed to add homework');
@@ -714,7 +721,7 @@ const DailyDiary = () => {
                   checked={showHomeworkForm}
                   onChange={() => setShowHomeworkForm((prevState) => !prevState)}
                 >
-                  Asign Homework
+                  Assign Homework
                 </Checkbox>
               )}
             </Form>
@@ -743,8 +750,8 @@ const DailyDiary = () => {
                       onChange={(e) => setClasswork(e.target.value)}
                       placeholder='Details of ClassWork'
                       autoSize={{
-                        minRows: 3,
-                        maxRows: 5,
+                        minRows: 4,
+                        maxRows: 6,
                       }}
                     />
                   </div>
@@ -775,9 +782,15 @@ const DailyDiary = () => {
                   </div>
                   <div className='col-md-4 py-2 d-flex' style={{ position: 'relative' }}>
                     <TextArea
-                      // onClick={() => checkAssignedHomework()}
                       className='th-width-100 th-br-6'
-                      onClick={() => checkAssignedHomework()}
+                      onClick={() =>
+                        checkAssignedHomework({
+                          section_mapping: sectionMappingID,
+                          subject: subjectID,
+                          date: moment().format('YYYY-MM-DD'),
+                          user_id: user_id,
+                        })
+                      }
                       value={homework}
                       onChange={(e) => setHomework(e.target.value)}
                       placeholder='Add Homework'
@@ -796,19 +809,18 @@ const DailyDiary = () => {
                           bottom: '0%',
                         }}
                       >
-                        {assignedHomework ? (
-                          <>
+                        {assignedHomework && !homework ? (
+                          <div
+                            onClick={() => {
+                              setAssignedHomeworkModal(true);
+                            }}
+                            className='th-pointer'
+                          >
                             <span>
-                              <img
-                                src={AsignHomework}
-                                className='py-3'
-                                onClick={() => {
-                                  setAssignedHomeworkModal(true);
-                                }}
-                              />
+                              <img src={AsignHomework} className='py-3' />
                             </span>
                             <span className='ml-2'>Homework Exists(click to Assign)</span>
-                          </>
+                          </div>
                         ) : null}
                       </div>
                     ) : null}
