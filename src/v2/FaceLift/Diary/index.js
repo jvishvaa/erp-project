@@ -410,7 +410,7 @@ const Diary = () => {
                   </div>
                 ) : (
                   periodData?.map((diary, i) => (
-                    <div className='col-md-4'>
+                    <div className='col-md-4 mb-2'>
                       <DiaryCard
                         diary={diary}
                         showTab={showTab}
@@ -431,7 +431,7 @@ const Diary = () => {
                   periodData
                     ?.filter((item) => item.dairy_type == 2)
                     .map((diary, i) => (
-                      <div className='col-md-4'>
+                      <div className='col-md-4 mb-2'>
                         <DiaryCard
                           diary={diary}
                           showTab={showTab}
