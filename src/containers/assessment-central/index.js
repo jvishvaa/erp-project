@@ -563,7 +563,13 @@ const Assesment = () => {
   return (
     <Layout>
       {loading && <Loader />}
-      <div className='assesment-container'>
+      <div className='assesment-container assessment-ques' style={{
+        background: 'white',
+        height: '90vh',
+        overflowX: 'hidden',
+        overflowY: 'scroll',
+      }} >
+
         <div
           className='lesson-plan-breadcrumb-wrapper'
           style={{ display: 'flex', justifyContent: 'space-between' }}
