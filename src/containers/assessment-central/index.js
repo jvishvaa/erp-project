@@ -210,7 +210,7 @@ const Assesment = () => {
     try {
       const data = await fetchAssesmentTypes();
       setAssesmentTypes(data);
-    } catch (e) { }
+    } catch (e) {}
   };
   let filterData1 = [];
   const filterResults = async (page) => {
@@ -440,8 +440,9 @@ const Assesment = () => {
   const fetchGroupList = (acadId, grade) => {
     axiosInstance
       .get(
-        `${endpoints.assessmentErp.getGroups
-        }?acad_session=${acadId}&grade=${grade}&is_active=${true}&group_type=${1}`
+        `${
+          endpoints.assessmentErp.getGroups
+        }?acad_session=${acadId}&grade=${grade}&is_active=${true}`     //&group_type=${1}
       )
       .then((result) => {
         if (result?.status === 200) {
@@ -562,12 +563,7 @@ const Assesment = () => {
   return (
     <Layout>
       {loading && <Loader />}
-      <div className='assesment-container assessment-ques' style={{
-        background: 'white',
-        height: '90vh',
-        overflowX: 'hidden',
-        overflowY: 'scroll',
-      }} >
+      <div className='assesment-container'>
         <div
           className='lesson-plan-breadcrumb-wrapper'
           style={{ display: 'flex', justifyContent: 'space-between' }}
@@ -612,7 +608,7 @@ const Assesment = () => {
             className='collapsible-section'
             square
             expanded={expandFilter}
-            onChange={() => { }}
+            onChange={() => {}}
           >
             <AccordionSummary></AccordionSummary>
             <AccordionDetails>
@@ -995,8 +991,6 @@ const Assesment = () => {
                     classes={{
                       flexContainer: classes.tabsFlexContainer,
                     }}
-                    textColor='secondary'
-                    indicatorColor='secondary'
                   >
                     <Tab label='All' value='all' className='right-border' />
                     <Tab
@@ -1055,7 +1049,7 @@ const Assesment = () => {
                               <Grid item md={selectedAssesmentTest ? 6 : 4}>
                                 <AssesmentCard
                                   value={test}
-                                  onEdit={() => { }}
+                                  onEdit={() => {}}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
@@ -1121,7 +1115,7 @@ const Assesment = () => {
                               <Grid item md={selectedAssesmentTest ? 6 : 4}>
                                 <AssesmentCard
                                   value={test}
-                                  onEdit={() => { }}
+                                  onEdit={() => {}}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
@@ -1186,7 +1180,7 @@ const Assesment = () => {
                               <Grid item md={selectedAssesmentTest ? 6 : 4}>
                                 <AssesmentCard
                                   value={test}
-                                  onEdit={() => { }}
+                                  onEdit={() => {}}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
