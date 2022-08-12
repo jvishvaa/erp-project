@@ -16,6 +16,7 @@ import GridList from './gridList';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import { getModuleInfo } from '../../utility-functions';
+import './viewEbook.css'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -338,11 +339,22 @@ class ViewEbook extends Component {
       this.state;
 
     return (
-      <div className='layout-container-div'>
+      <div className='layout-container-div ebookscroll' style={{
+        background: 'white',
+        height: '90vh',
+        overflowX: 'hidden',
+        overflowY: 'scroll',
+      }}>
         <Layout className='layout-container'>
-          <div className='message_log_wrapper' style={{ backgroundColor: '#F9F9F9' }}>
+          <div
+            className='message_log_wrapper'
+            style={{ backgroundColor: '#F9F9F9' }}
+          >
             <div style={{ backgroundColor: '#F9F9F9' }}>
-              <div className='create_group_filter_container'>
+              <div
+                className='create_group_filter_container'
+               
+              >
                 <Grid container spacing={2}>
                   <Grid item md={12} xs={12} style={{ textAlign: 'left' }}>
                     <CommonBreadcrumbs

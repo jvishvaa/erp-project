@@ -215,6 +215,12 @@ const GeneralDairyList = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
+      <div className='assessment-ques' style={{
+        background: 'white',
+        height: '90vh',
+        overflowX: 'hidden',
+        overflowY: 'scroll',
+      }} >
         <CommonBreadcrumbs componentName='Diary' childComponentName={path} />
         <GeneralDairyFilter
           handleDairyList={handleDairyList}
@@ -350,6 +356,7 @@ const GeneralDairyList = () => {
             </div>
           )}
         </Paper>
+        </div>
       </Layout>
     </>
   );
