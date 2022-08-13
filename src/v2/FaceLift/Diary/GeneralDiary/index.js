@@ -251,6 +251,7 @@ const GeneralDiary = () => {
       section: [sectionID],
       user_id: studentCheckedID,
       dairy_type: 1,
+      documents: uploadedFiles,
     };
 
     axios
@@ -462,12 +463,12 @@ const GeneralDiary = () => {
               title={() => 'Filter Students'}
               rowKey={(record) => record?.id}
               dataSource={generalDairyUsers}
-              pagination={{ defaultPageSize: 4, position: 'bottomRight' }}
+              pagination={false}
               bordered={false}
               rowClassName={(record, index) =>
                 index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
               }
-              style={{ width: '100%', height: '400px' }}
+              style={{ width: '100%' }}
             />
           ) : (
             ''
