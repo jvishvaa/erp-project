@@ -1,0 +1,8 @@
+.th-diaryDrawer .ant-drawer-body {
+  padding: 0px 10px !important;
+}
+.th-diaryDrawer .ant-drawer-header {
+  padding: 10px 15px !important;
+  border-bottom: 2px solid #d9d9d9;
+  margin-bottom: 10px;
+}

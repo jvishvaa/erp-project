@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import Announcement from './components/Announcement';
 import CalendarCard from '../myComponents/CalendarCard';
@@ -9,11 +9,31 @@ import Discussions from './components/Discussions';
 import Assessment from './components/Assessment';
 import TodaysClass from './components/TodaysClass';
 import { getRole } from 'v2/generalAnnouncementFunctions';
+import Doodle from 'v2/FaceLift/Doodle/Doodle';
+import { Popover, message } from 'antd';
+import axios from 'v2/config/axios';
+import endpoints from 'v2/config/endpoints';
 
-const TeacherdashboardNew = () => {
-  const [todaysAttendance, setTodaysAttendance] = useState([]);
+const StudentDashboardNew = () => {
+  const [showDoodle, setShowDoodle] = useState(false);
   const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
   const time = new Date().getHours();
+
+  const fetchDoodle = () => {
+    axios
+      .get(`${endpoints.doodle.checkDoodle}?config_key=doodle_availability`)
+      .then((response) => {
+        if (response?.data?.result[0] === 'True') {
+          setShowDoodle(true);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
+
+  useEffect(() => {
+    fetchDoodle();
+  }, []);
+
   return (
     <Layout>
       <div className=''>
@@ -24,7 +44,7 @@ const TeacherdashboardNew = () => {
             <span className='th-14'>({getRole(user_level)})</span>
           </div>
         </div>
-
+        {showDoodle && <Doodle />}
         <div className='row pt-3'>
           <div className='col-md-4 th-custom-col-padding'>
             <TodaysClass />
@@ -46,4 +66,4 @@ const TeacherdashboardNew = () => {
   );
 };
 
-export default TeacherdashboardNew;
+export default StudentDashboardNew;

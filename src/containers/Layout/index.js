@@ -189,15 +189,15 @@ const Layout = ({ children, history }) => {
         break;
       }
       case 'Add Group': {
-        history.push('/communication/addgroup');
+        history.push('/addgroup');
         break;
       }
       case 'View Role': {
         history.push('/role-management');
         break;
       }
-      case 'View&Edit Group': {
-        history.push('/communication/viewgroup');
+      case 'User Groups': {
+        history.push('/viewgroup');
         break;
       }
       case 'View Publication': {

@@ -244,20 +244,12 @@ const CreateAssesment = ({
   };
 
   const getGroup = () => {
-    let acadId = selectedQuestionPaper?.is_central
-      ? branchId
-      : selectedQuestionPaper?.academic_session;
-    axiosInstance
-      .get(
-        `${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${
-          selectedQuestionPaper?.grade
-        }&is_active=${true}&group_type=${1}`
-      )
-      .then((result) => {
-        if (result?.status === 200) {
-          setGroupList(result?.data);
-        }
-      });
+      let acadId = selectedQuestionPaper?.is_central ? branchId : selectedQuestionPaper?.academic_session	  //&group_type=${1}
+      axiosInstance.get(`${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${selectedQuestionPaper?.grade}&is_active=${true}&is_assessment=${true}&is_central_grade=${selectedQuestionPaper?.is_central}`).then((result)=>{
+        if(result?.status === 200){	
+          setGroupList(result?.data)	
+        }	
+      })
   };
 
   useEffect(() => {
@@ -452,7 +444,7 @@ const CreateAssesment = ({
       reqObj = {
         ...reqObj,
         has_sub_groups: true,
-        group_id: selectedGroupId,
+        group: selectedGroupId,
         section_mapping: groupSectionMappingId,
       };
     }
@@ -814,7 +806,7 @@ const CreateAssesment = ({
                       </Grid>
                       {selectedQuestionPaper && (
                         <Grid container alignItems='center' style={{ marginTop: 15 }}>
-                          {/* <Grid
+                          <Grid
                           container
                           alignItems='center'
                           justifyContent='center'
@@ -829,7 +821,7 @@ const CreateAssesment = ({
                             inputProps={{ 'aria-label': 'checkbox with default color' }}
                           />
                           <Typography>Group</Typography>
-                        </Grid> */}
+                        </Grid>
                           {sectionToggle ? (
                             <Grid item xs={12} md={4}>
                               <Autocomplete

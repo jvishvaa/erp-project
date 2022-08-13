@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import { useSelector } from 'react-redux';
 import { Select, message } from 'antd';
@@ -10,12 +10,22 @@ import AcademicPerformance from './components/Academic Performance';
 import CalendarCard from '../myComponents/CalendarCard';
 import Shortcut from './components/Shortcut';
 import { getRole } from 'v2/generalAnnouncementFunctions';
+import Doodle from 'v2/FaceLift/Doodle/Doodle';
+import axios from 'v2/config/axios';
+import endpoints from 'v2/config/endpoints';
 
 const { Option } = Select;
 
 const SuperAdmindashboardNew = () => {
   const time = new Date().getHours();
-  const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
+  const [showDoodle, setShowDoodle] = useState(false);
+  const { first_name } = JSON.parse(localStorage.getItem('userDetails'));
+  let { user_level: userLevel } = JSON.parse(localStorage.getItem('userDetails')) || '';
+  const { is_superuser: superuser } =
+    JSON.parse(localStorage.getItem('userDetails')) || '';
+  if (superuser == true) {
+    userLevel = 1;
+  }
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
@@ -50,6 +60,20 @@ const SuperAdmindashboardNew = () => {
   const handleFeesBranch = (e) => {
     setFeesBranch(e);
   };
+  const fetchDoodle = () => {
+    axios
+      .get(`${endpoints.doodle.checkDoodle}?config_key=doodle_availability`)
+      .then((response) => {
+        if (response?.data?.result[0] === 'True') {
+          setShowDoodle(true);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
+
+  useEffect(() => {
+    fetchDoodle();
+  }, []);
 
   return (
     <Layout>
@@ -58,7 +82,7 @@ const SuperAdmindashboardNew = () => {
           <div className='col-md-8 th-16 py-3'>
             Good {time < 12 ? 'Morning' : time < 16 ? 'Afternoon' : 'Evening'},{' '}
             <span className='text-capitalize pr-2'>{first_name}</span>
-            <span className='th-14'>({getRole(user_level)})</span>
+            <span className='th-14'>({getRole(userLevel)})</span>
           </div>
           <div className='col-md-4 th-16 py-3'>
             <Select
@@ -83,6 +107,7 @@ const SuperAdmindashboardNew = () => {
             </Select>
           </div>
         </div>
+        {showDoodle && <Doodle />}
         <AttendanceReport selectedBranchList={selectedBranchList} />
 
         <div className='row pt-3'>

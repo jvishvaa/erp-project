@@ -15,6 +15,12 @@
   display: flex;
 }
 
+.assessment-ques::-webkit-scrollbar {
+  width: 8px !important ;
+  height: 10px !important;
+  background-color: rgb(82, 50, 50) !important;
+}
+
 .periodDataUnavailable {
   display: flex;
   flex-direction: column;

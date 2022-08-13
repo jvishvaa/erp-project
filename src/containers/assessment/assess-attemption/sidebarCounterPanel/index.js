@@ -113,6 +113,8 @@ const SidebarCounterPanel = (props) => {
   const [open, setOpen] = useState(false);
   const [isAutoSubmit, setIsAutoSubmit] = useState(false);
   const [openModal, setOpenModal] = useState(false);
+  const userLevel = JSON.parse(localStorage.getItem('userDetails'))?.user_level || {};
+
   const handleOpen = () => {
     setOpen(true);
   };
@@ -157,7 +159,7 @@ const SidebarCounterPanel = (props) => {
       const { message, status_code: statusCodeResponse } = res.data || {};
       const statusCode = Number(statusCodeResponse);
       if (statusCode > 199 && statusCode < 300) {
-        localStorage.setItem("is_test_comp",true)
+        localStorage.setItem("is_test_comp", true)
         setAlert(
           'success',
           isAutoSubmit ? 'Test timed out! Thanks for taking the test.' : `${message}`
@@ -189,6 +191,11 @@ const SidebarCounterPanel = (props) => {
       });
     }
   }, [isAutoSubmit]);
+
+  const goBackFunc = () => {
+    props.history.push('/assesment')
+    exitFullScreen()
+  }
 
   const body = (
     <div style={modalStyle} className={classes.paper}>
@@ -294,18 +301,34 @@ const SidebarCounterPanel = (props) => {
         >
           Instructions
         </Button>
-        <Button
-          className='contained'
-          variant='contained'
-          color='primary'
-          style={{ color: 'white', fontFamily: 'Andika New Basic, sans- serif' }}
-          // disabled={!isReadyToSubmit}
-          onClick={() => {
-            setOpenModal(true);
-          }}
-        >
-          Submit
-        </Button>
+        {userLevel == 13 ?
+          <Button
+            className='contained'
+            variant='contained'
+            color='primary'
+            style={{ color: 'white', fontFamily: 'Andika New Basic, sans- serif' }}
+            // disabled={!isReadyToSubmit}
+            onClick={() => {
+              setOpenModal(true);
+            }}
+          >
+            Submit
+          </Button>
+          :
+          <Button
+            className='contained'
+            variant='contained'
+            color='primary'
+            style={{ color: 'white', fontFamily: 'Andika New Basic, sans- serif' }}
+            // disabled={!isReadyToSubmit}
+            onClick={() => {
+              // setOpenModal(true);
+              goBackFunc()
+            }}
+          >
+            Back
+          </Button>
+        }
       </div>
       <Modal
         open={open}

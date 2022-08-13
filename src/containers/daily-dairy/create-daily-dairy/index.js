@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import moment from 'moment';
 import {
   Grid,
   TextField,
@@ -7,6 +8,8 @@ import {
   useTheme,
   SvgIcon,
   FormHelperText,
+  InputLabel,
+  OutlinedInput,
 } from '@material-ui/core';
 import {
   Dialog,
@@ -18,11 +21,13 @@ import {
 import FormControl from '@material-ui/core/FormControl';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
 import axios from 'axios';
 import { useFormik } from 'formik';
 import { useStyles } from '../../user-management/useStyles';
-
+import cuid from 'cuid';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import Layout from '../../Layout';
 import CommonBreadcrumbs from '../../../components/common-breadcrumbs/breadcrumbs';
@@ -39,12 +44,32 @@ import {
   fetchAcademicYears as getAcademicYears,
   fetchSubjects as getSubjects,
 } from '../../../redux/actions/index';
+import AssignedHomework from '../../../assets/images/hw-given.svg';
+import InfoIcon from '@material-ui/icons/Info';
 import { Context } from '../context/context';
+import './daily-diary-scrollbar.css';
+import HomeworkAsigned from '../../../assets/images/hw-given.svg';
+import QuestionCard from '../../../components/question-card';
+import { useDispatch, useSelector } from 'react-redux';
+import { addHomeWork } from 'redux/actions/teacherHomeworkActions';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
+import MomentUtils from '@date-io/moment';
+import './daily-diary-scrollbar.css';
+
 const CreateDailyDairy = (details, onSubmit) => {
+  const dispatch = useDispatch();
+  const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [academicYears, setAcademicYears] = useState([]);
+  const [queIndexCounter, setQueIndexCounter] = useState(0);
+  const [assignedHomework, setAssignedHomework] = useState('');
+  const [assignedHomeworkModal, setAssignedHomeworkModal] = useState('');
+  const [hwId, sethwId] = useState();
+  const [hwMappingID, setHwMappingID] = useState();
+  const [declined, setDeclined] = useState(false);
   const [branches, setBranches] = useState([]);
   const [grades, setGrades] = useState([]);
   const [sections, setSections] = useState([]);
+  const [sectionMappingID, setSectionMappingID] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [filePath, setFilePath] = useState([]);
@@ -53,6 +78,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [academicYear, setAcademicYear] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [subjectIds, setSubjectIds] = useState('');
+  const [subjectName, setSubjectName] = useState('');
   const [subjectDropdown, setSubjectDropdown] = useState([]);
   const [recap, setRecap] = useState('');
   const [detail, setDetails] = useState('');
@@ -63,7 +89,9 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [loading, setLoading] = useState(false);
   const history = useHistory();
   const [files, setFiles] = useState([]);
-
+  const [showIcon, setShowIcon] = useState(false);
+  const [showHomeworkForm, setShowHomeworkForm] = useState(false);
+  const [homeworkCreated, setHomeworkCreated] = useState(false);
   // context
   const [state, setState] = useContext(Context);
   const { isEdit, editData } = state;
@@ -85,7 +113,98 @@ const CreateDailyDairy = (details, onSubmit) => {
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [acadId, setAcadId] = useState();
+  const [homeworkTitle, setHomeworkTitle] = useState('');
+  const [homeworkInstructions, setHomeworkInstructions] = useState('');
+  const [submissionDate, setSubmissionDate] = useState(moment().format('YYYY-MM-DD'));
+  const [questionList, setQuestionList] = useState([
+    {
+      id: cuid(),
+      question: '',
+      attachments: [],
+      is_attachment_enable: false,
+      max_attachment: 2,
+      penTool: false,
+    },
+  ]);
 
+  const handleChange = (index, field, value) => {
+    const form = questionList[index];
+    const modifiedForm = { ...form, [field]: value };
+    setQuestionList((prevState) => [
+      ...prevState.slice(0, index),
+      modifiedForm,
+      ...prevState.slice(index + 1),
+    ]);
+  };
+
+  const removeQuestion = (index) => {
+    setQuestionList((prevState) => [
+      ...prevState.slice(0, index),
+      ...prevState.slice(index + 1),
+    ]);
+  };
+
+  const addNewQuestion = (index) => {
+    setQuestionList((prevState) => [
+      ...prevState.slice(0, index),
+      {
+        id: cuid(),
+        question: '',
+        attachments: [],
+        is_attachment_enable: false,
+        max_attachment: 2,
+        penTool: false,
+      },
+      ...prevState.slice(index),
+    ]);
+  };
+
+  const handleAddHomeWork = async () => {
+    if (!homeworkTitle) {
+      setAlert('error', 'Please add Homework Title');
+      return;
+    }
+    if (!homeworkInstructions) {
+      setAlert('error', 'Please add Homework Instructions');
+      return;
+    }
+    const reqObj = {
+      name: homeworkTitle,
+      description: homeworkInstructions,
+      section_mapping: [sectionMappingID],
+      subject: filterData?.subject?.id,
+      date: moment().format('YYYY-MM-DD'),
+      last_submission_date: submissionDate,
+      questions: questionList.map((q) => {
+        const qObj = q;
+        delete qObj.errors;
+        delete qObj.id;
+        return qObj;
+      }),
+    };
+    try {
+      // const response = await onAddHomework(reqObj, isEdit, hwId);
+      const response = await dispatch(addHomeWork(reqObj, isEdit, hwId));
+      setAlert('success', 'Homework added');
+      setShowHomeworkForm(false);
+      checkAssignedHomework({
+        section_mapping: sectionMappingID,
+        subject: subjectIds,
+        date: moment().format('YYYY-MM-DD'),
+        user_id: user_id,
+      });
+      setHomeworkTitle('');
+      setHomeworkInstructions('');
+      setHomeworkCreated(true);
+    } catch (error) {
+      setAlert('error', 'Failed to add homework');
+    }
+    // }
+  };
+
+  const handleSubmissionDateChange = (event, value) => {
+    setSubmissionDate(value);
+  };
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -120,7 +239,6 @@ const CreateDailyDairy = (details, onSubmit) => {
     validateOnChange: false,
     validateOnBlur: false,
   });
-
 
   useEffect(() => {
     if (moduleId) {
@@ -168,10 +286,10 @@ const CreateDailyDairy = (details, onSubmit) => {
       fetchBranchesForCreateUser(value?.id, moduleId).then((data) => {
         const transformedData = data
           ? data?.map((obj) => ({
-            id: obj.id,
-            branch_name: obj.branch_name,
-            academicYearId: obj?.acadId
-          }))
+              id: obj.id,
+              branch_name: obj.branch_name,
+              academicYearId: obj?.acadId,
+            }))
           : [];
         setBranches(transformedData);
       });
@@ -180,13 +298,13 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const handleChangeBranch = (values) => {
     if (values) {
-      setAcadId(values[0])
+      setAcadId(values[0]);
       fetchGrades(searchAcademicYear?.id, values, moduleId).then((data) => {
         const transformedData = data
           ? data.map((grade) => ({
-            id: grade.grade_id,
-            grade_name: grade.grade__grade_name,
-          }))
+              id: grade.grade_id,
+              grade_name: grade.grade__grade_name,
+            }))
           : [];
         setGrades(transformedData);
       });
@@ -203,10 +321,10 @@ const CreateDailyDairy = (details, onSubmit) => {
       fetchSections(searchAcademicYear?.id, branch, [values], moduleId).then((data) => {
         const transformedData = data
           ? data.map((section) => ({
-            id: section.section_id,
-            section_name: `${section.section__section_name}`,
-            section_mapping_id: section.id,
-          }))
+              id: section.section_id,
+              section_name: `${section.section__section_name}`,
+              section_mapping_id: section.id,
+            }))
           : [];
         const filteredSelectedSections =
           formik.values.section &&
@@ -225,11 +343,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const fetchSubjects = (branch, grade, section) => {
-    if (
-      branch &&
-      grade &&
-      section
-    ) {
+    if (branch && grade && section) {
       getSubjects(searchAcademicYear?.id, branch, grade, section, moduleId).then(
         (data) => {
           const transformedData = data.map((obj) => ({
@@ -238,8 +352,8 @@ const CreateDailyDairy = (details, onSubmit) => {
             subject_name: obj.subject__subject_name,
           }));
           setSubjectDropdown(transformedData);
-          const filteredSelectedSubjects = formik.values.subjects.filter(
-            (sub) => transformedData.findIndex((data) => data.id === sub.id) > -1
+          const filteredSelectedSubjects = formik?.values?.subjects?.filter(
+            (sub) => transformedData.findIndex((data) => data?.id === sub?.id) > -1
           );
           formik.setFieldValue('subjects', filteredSelectedSubjects);
         }
@@ -256,6 +370,7 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
     setFilterData({ ...filterData, section: '', subject: '', chapter: '' });
     if (value) {
+      setSectionMappingID(value?.section_mapping_id);
       setFilterData({ ...filterData, section: value, subject: '', chapter: '' });
       formik.setFieldValue('section', value);
       const {
@@ -272,11 +387,23 @@ const CreateDailyDairy = (details, onSubmit) => {
     formik.setFieldValue('chapters', '' || []);
     formik.setFieldValue('subjects', '' || []);
     setFilterData({ ...filterData, subject: '', chapter: '' });
+    setAssignedHomework();
+    setHomework('');
+    setShowIcon(false);
+    setHomeworkCreated(false);
     if (value) {
+      setSubjectName(value?.subject_name);
       setFilterData({ ...filterData, subject: value, chapter: '' });
       formik.setFieldValue('subjects', value);
       formik.setFieldValue('chapters', '' || []);
       setSubjectIds(value?.id);
+
+      checkAssignedHomework({
+        section_mapping: sectionMappingID,
+        subject: value?.id,
+        date: moment().format('YYYY-MM-DD'),
+        user_id: user_id,
+      });
       axiosInstance
         .get(
           `${endpoints.questionBank.chapterList}?subject_id=${value?.ids}&subject=${value?.id}&session_year=${filterData?.branch?.id}`
@@ -296,6 +423,25 @@ const CreateDailyDairy = (details, onSubmit) => {
 
   const validateFileSize = (size) => {
     return size / 1024 / 1024 > 25 ? false : true;
+  };
+  const closeAssignedHomeworkModal = () => {
+    setAssignedHomeworkModal(false);
+    setDeclined(true);
+  };
+
+  const mapAssignedHomework = () => {
+    axiosInstance
+      .post(`${endpoints?.dailyDairy?.assignHomeworkDiary}`, {
+        hw_id: assignedHomework[0]?.id,
+      })
+      .then((result) => {
+        if (result?.data?.status_code == 201) {
+          setHwMappingID(result?.data?.data?.hw_dairy_mapping_id);
+          setAssignedHomeworkModal(false);
+          setHomework(assignedHomework[0]?.homework_name);
+        }
+      })
+      .catch((error) => setAlert('error', error?.message));
   };
 
   const handleImageChange = (event) => {
@@ -341,7 +487,7 @@ const CreateDailyDairy = (details, onSubmit) => {
           // let imageData = editData.documents;
           // imageData.push(result?.data?.result);
           // setFilePath(imageData);
-          setFilePath([...filePath, result?.data?.result])
+          setFilePath([...filePath, result?.data?.result]);
         } else {
           setFilePath([...filePath, result?.data?.result]);
         }
@@ -398,44 +544,46 @@ const CreateDailyDairy = (details, onSubmit) => {
         createDairyEntry,
         filePath && filePath.length > 0
           ? {
-            academic_year: acadId?.academicYearId,
-            module_id: moduleId,
-            branch: formik.values?.branch?.id,
-            grade,
-            section,
-            section_mapping: [mapId],
-            subject: subjectIds,
-            chapter: formik.values.chapters?.id,
-            documents: filePath,
-            teacher_report: {
-              previous_class: recap,
-              summary,
-              class_work: detail,
-              tools_used: tools,
-              homework,
-            },
-            dairy_type: 2,
-            is_central: formik.values?.chapters?.is_central,
-          }
+              academic_year: acadId?.academicYearId,
+              module_id: moduleId,
+              branch: formik.values?.branch?.id,
+              grade,
+              section,
+              section_mapping: [mapId],
+              subject: subjectIds,
+              chapter: formik.values.chapters?.id,
+              documents: filePath,
+              teacher_report: {
+                previous_class: recap,
+                summary,
+                class_work: detail,
+                tools_used: tools,
+                homework,
+              },
+              dairy_type: 2,
+              is_central: formik.values?.chapters?.is_central,
+              hwMappingID: hwMappingID,
+            }
           : {
-            academic_year: acadId?.academicYearId,
-            branch: formik.values?.branch?.id,
-            module_id: moduleId,
-            grade,
-            section,
-            section_mapping: [mapId],
-            subject: subjectIds,
-            chapter: formik.values?.chapters?.id,
-            teacher_report: {
-              previous_class: recap,
-              summary,
-              class_work: detail,
-              tools_used: tools,
-              homework,
+              academic_year: acadId?.academicYearId,
+              branch: formik.values?.branch?.id,
+              module_id: moduleId,
+              grade,
+              section,
+              section_mapping: [mapId],
+              subject: subjectIds,
+              chapter: formik.values?.chapters?.id,
+              teacher_report: {
+                previous_class: recap,
+                summary,
+                class_work: detail,
+                tools_used: tools,
+                homework,
+              },
+              dairy_type: 2,
+              is_central: formik.values?.chapters?.is_central,
+              hwMappingID: hwMappingID,
             },
-            dairy_type: 2,
-            is_central: formik.values?.chapters?.is_central,
-          },
         {
           headers: {
             // 'application/json' is the modern content-type for JSON, but some
@@ -460,7 +608,6 @@ const CreateDailyDairy = (details, onSubmit) => {
   };
 
   const handleEdited = () => {
-
     let payload = {
       academic_year: acadId?.academicYearId,
       branch: editData.branch.id,
@@ -469,28 +616,21 @@ const CreateDailyDairy = (details, onSubmit) => {
       subject: editData.subject.id,
       chapter: editData.chapter.id,
       teacher_report: {
-        previous_class:
-          recap && recap.length > 0 ? recap : editData.teacher_report.recap,
+        previous_class: recap && recap.length > 0 ? recap : editData.teacher_report.recap,
         summary:
-          summary && summary.length > 0
-            ? summary
-            : editData.teacher_report.summary,
+          summary && summary.length > 0 ? summary : editData.teacher_report.summary,
         class_work:
-          detail && detail.length > 0
-            ? detail
-            : editData.teacher_report.class_work,
+          detail && detail.length > 0 ? detail : editData.teacher_report.class_work,
         tools_used:
           tools && tools.length > 0 ? tools : editData.teacher_report.tools_used,
         homework:
-          homework && homework.length > 0
-            ? homework
-            : editData.teacher_report.homework,
+          homework && homework.length > 0 ? homework : editData.teacher_report.homework,
       },
       dairy_type: 2,
-    }
+    };
 
     if (filePath?.length) {
-      payload['documents'] = filePath
+      payload['documents'] = filePath;
     }
 
     axiosInstance
@@ -527,18 +667,18 @@ const CreateDailyDairy = (details, onSubmit) => {
                     style={
                       isMobile
                         ? {
-                          marginLeft: '',
-                          width: '20px',
-                          height: '20px',
-                          // padding: '5px',
-                          cursor: 'pointer',
-                        }
+                            marginLeft: '',
+                            width: '20px',
+                            height: '20px',
+                            // padding: '5px',
+                            cursor: 'pointer',
+                          }
                         : {
-                          width: '20px',
-                          height: '20px',
-                          // padding: '5px',
-                          cursor: 'pointer',
-                        }
+                            width: '20px',
+                            height: '20px',
+                            // padding: '5px',
+                            cursor: 'pointer',
+                          }
                     }
                     src={deleteIcon}
                     alt='given'
@@ -564,7 +704,8 @@ const CreateDailyDairy = (details, onSubmit) => {
         .post(`${endpoints.circular.deleteFile}`, {
           file_name: `${file}`,
           daily_diary_id: `${editData?.id}`,
-        }).then((result) => {
+        })
+        .then((result) => {
           if (result?.data?.status_code === 204) {
             list.splice(i, 1);
             setFilePath(list);
@@ -595,12 +736,15 @@ const CreateDailyDairy = (details, onSubmit) => {
         .catch((error) => {
           setAlert('error', error?.message);
         })
-        .finally(() =>
-          setLoading(false)
-        );
-    };
-  }
+        .finally(() => setLoading(false));
+    }
+  };
 
+  useEffect(() => {
+    if (assignedHomework && homeworkCreated) {
+      mapAssignedHomework();
+    }
+  }, [assignedHomework]);
   let imageCount = 1;
   useEffect(() => {
     if (editData?.documents) {
@@ -635,383 +779,629 @@ const CreateDailyDairy = (details, onSubmit) => {
     }
   }, []);
   const classes = useStyles();
-
+  const checkAssignedHomework = (params = {}) => {
+    axiosInstance
+      .get(`${endpoints?.dailyDairy?.assignHomeworkDiary}`, { params: { ...params } })
+      .then((result) => {
+        if (result?.data?.status == 200) {
+          if (result?.data?.data.length > 0) {
+            setAssignedHomework(result?.data?.data);
+          }
+          setShowIcon(true);
+        }
+      })
+      .catch((error) => setAlert('error', error?.message));
+  };
   return (
     <>
       {loading ? <Loading message='Loading...' /> : null}
 
       <Layout>
-        <CommonBreadcrumbs
-          componentName='Daily Diary'
-          childComponentName={state.isEdit ? 'Edit Dairy' : 'Create New'}
-        />
-        <Grid
-          container
-          spacing={isMobile ? 3 : 5}
-          style={{ width: widerWidth, margin: wider }}
+        <div
+          className='daily-dairy-scroll'
+          style={{
+            height: '90vh',
+            overflowX: 'hidden',
+            overflowY: 'scroll',
+          }}
         >
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <FormControl fullWidth className={classes.margin} variant='outlined'>
-              <Autocomplete
-                size='small'
-                style={{ width: '100%' }}
-                onChange={handleAcademicYear}
-                id='year'
-                className='dropdownIcon'
-                options={academicYear}
-                getOptionLabel={(option) => option?.session_year}
-                value={state.isEdit ? editData.academic_year : searchAcademicYear}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Academic Year'
-                    placeholder='Academic Year'
-                  />
-                )}
-              />
-              <FormHelperText style={{ color: 'red' }}>
-                {formik.errors.academic_year ? formik.errors.academic_year : ''}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <Autocomplete
-              id='branch'
-              name='branch'
-              onChange={(e, value) => {
-                if (state?.isEdit) {
-                  editData.branch = value;
-                }
-                setFilterData({
-                  ...filterData,
-                  branch: value,
-                  grade: '',
-                  section: [],
-                  subject: [],
-                  chapter: '',
-                });
-                state?.isEdit
-                  ? formik.setFieldValue('branch', value)
-                  : formik.setFieldValue('branch', value);
-                formik.setFieldValue('grade', []);
-                formik.setFieldValue('section', []);
-                formik.setFieldValue('subjects', []);
-                handleChangeBranch(value ? [value] : null);
-              }}
-              // value={state.isEdit ? editData.branch : formik.values.branch || {}}
-              value={state.isEdit ? editData.branch : filterData?.branch}
-              options={branches}
-              className='dropdownIcon'
-              getOptionLabel={(option) => option?.branch_name || ''}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
+          <CommonBreadcrumbs
+            componentName='Daily Diary'
+            childComponentName={state.isEdit ? 'Edit Dairy' : 'Create New'}
+          />
+          <Grid
+            container
+            spacing={isMobile ? 3 : 5}
+            style={{ width: widerWidth, margin: wider }}
+          >
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <FormControl fullWidth className={classes.margin} variant='outlined'>
+                <Autocomplete
+                  size='small'
+                  style={{ width: '100%' }}
+                  onChange={handleAcademicYear}
+                  id='year'
+                  className='dropdownIcon'
+                  options={academicYear}
+                  getOptionLabel={(option) => option?.session_year}
+                  value={state.isEdit ? editData.academic_year : searchAcademicYear}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Academic Year'
+                      placeholder='Academic Year'
+                    />
+                  )}
                 />
-              )}
-              size='small'
-            />
-            <FormHelperText style={{ color: 'red' }}>
-              {errors.branches ? errors.branches : ''}
-            </FormHelperText>
-          </Grid>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <FormControl fullWidth className={classes.margin} variant='outlined'>
+                <FormHelperText style={{ color: 'red' }}>
+                  {formik.errors.academic_year ? formik.errors.academic_year : ''}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
-                id='grade'
-                name='grade'
+                id='branch'
+                name='branch'
                 onChange={(e, value) => {
                   if (state?.isEdit) {
-                    editData.grade[0] = value;
+                    editData.branch = value;
                   }
                   setFilterData({
                     ...filterData,
-                    grade: value,
-                    section: '',
-                    subject: '',
+                    branch: value,
+                    grade: '',
+                    section: [],
+                    subject: [],
                     chapter: '',
                   });
-                  formik.setFieldValue('grade', value);
+                  state?.isEdit
+                    ? formik.setFieldValue('branch', value)
+                    : formik.setFieldValue('branch', value);
+                  formik.setFieldValue('grade', []);
                   formik.setFieldValue('section', []);
                   formik.setFieldValue('subjects', []);
-                  handleChangeGrade(value || null, [formik.values.branch]);
+                  handleChangeBranch(value ? [value] : null);
                 }}
-                // multiple
-                // value={state.isEdit ? editData.grade[0] : formik.values.grade}
-                value={state.isEdit ? editData.grade[0] : filterData?.grade || {}}
-                options={grades}
+                // value={state.isEdit ? editData.branch : formik.values.branch || {}}
+                value={state.isEdit ? editData.branch : filterData?.branch}
+                options={branches}
                 className='dropdownIcon'
-                getOptionLabel={(option) => option?.grade_name || ''}
+                getOptionLabel={(option) => option?.branch_name || ''}
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     variant='outlined'
-                    label='Grade'
-                    placeholder='Grade'
+                    label='Branch'
+                    placeholder='Branch'
                   />
                 )}
-                getOptionSelected={(option, value) => option?.id == value?.id}
                 size='small'
               />
               <FormHelperText style={{ color: 'red' }}>
-                {formik.errors.grade ? formik.errors.grade : ''}
+                {errors.branches ? errors.branches : ''}
               </FormHelperText>
-            </FormControl>
-          </Grid>
-        </Grid>
-        <Grid
-          container
-          spacing={isMobile ? 3 : 5}
-          style={{ width: widerWidth, margin: wider }}
-        >
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <FormControl fullWidth className={classes.margin} variant='outlined'>
-              <Autocomplete
-                id='section'
-                name='section'
-                onChange={(e, value) => handleSection(e, value)}
-                value={state.isEdit ? editData.section[0] : filterData?.section || {}}
-                options={sections}
-                getOptionLabel={(option) =>
-                  option.section_name || option.section__section_name
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Section'
-                    placeholder='Section'
-                  />
-                )}
-                getOptionSelected={(option, value) => option?.id == value?.id}
-                size='small'
-              />
-              <FormHelperText style={{ color: 'red' }}>
-                {formik.errors.section ? formik.errors.section : ''}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <FormControl
-              color='secondary'
-              fullWidth
-              className={classes.margin}
-              variant='outlined'
-            >
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleSubject}
-                id='subj'
-                value={state.isEdit ? editData.subject : filterData?.subject || {}}
-                options={subjectDropdown}
-                className='dropdownIcon'
-                getOptionLabel={(option) => option?.subject_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Subject'
-                    placeholder='Subject'
-                  />
-                )}
-              />
-              <FormHelperText style={{ color: 'red' }}>
-                {formik.errors?.subjects ? formik.errors?.subjects : ''}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <FormControl fullWidth className={classes.margin} variant='outlined'>
-              <Autocomplete
-                id='chapters'
-                style={{ width: '100%' }}
-                size='small'
-                onChange={(e, value) => {
-                  if (state?.isEdit) {
-                    editData.chapter[0] = value;
-                  }
-                  setFilterData({ ...filterData, chapter: value });
-                  formik.setFieldValue('chapters', value);
-                }}
-                value={state.isEdit ? editData?.chapter[0] : filterData?.chapter || {}}
-                options={chapterDropdown}
-                className='dropdownIcon'
-                getOptionLabel={(option) => option?.chapter_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Chapter'
-                    placeholder='Chapter'
-                  />
-                )}
-              />
-              <FormHelperText style={{ color: 'red' }}>
-                {formik.errors?.chapters ? formik.errors?.chapters : ''}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-        </Grid>
-
-        {/* <<<<<<<<<< EDITOR PART  >>>>>>>>>> */}
-        <div>
-          <div className={classes.descriptionBorder}>
-            <Grid
-              container
-              spacing={isMobile ? 3 : 5}
-              style={{ width: widerWidth, margin: wider }}
-            >
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <TextField
-                  id='outlined-multiline-static'
-                  label='Recap of previous class'
-                  multiline
-                  rows='3'
-                  color='primary'
-                  style={{ width: '100%', marginTop: '1.25rem' }}
-                  defaultValue={
-                    state.isEdit ? editData.teacher_report.previous_class : []
-                  }
-                  variant='outlined'
-                  onChange={(e) => setRecap(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <TextField
-                  id='outlined-multiline-static'
-                  label='Details of classwork'
-                  multiline
-                  rows='3'
-                  color='primary'
-                  style={{ width: '100%', marginTop: '1.25rem' }}
-                  defaultValue={state.isEdit ? editData.teacher_report.class_work : []}
-                  variant='outlined'
-                  onChange={(e) => setDetails(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <TextField
-                  id='outlined-multiline-static'
-                  label='Summary'
-                  multiline
-                  rows='3'
-                  color='primary'
-                  style={{ width: '100%', marginTop: '1.25rem' }}
-                  defaultValue={state.isEdit ? editData.teacher_report.summary : []}
-                  variant='outlined'
-                  onChange={(e) => setSummary(e.target.value)}
-                />
-              </Grid>
             </Grid>
-            <Grid
-              container
-              spacing={isMobile ? 3 : 5}
-              style={{ width: widerWidth, margin: wider }}
-            >
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <TextField
-                  id='outlined-multiline-static'
-                  label='Tools Used'
-                  multiline
-                  rows='3'
-                  color='primary'
-                  style={{ width: '100%', marginTop: '1.25rem' }}
-                  defaultValue={state.isEdit ? editData.teacher_report.tools_used : []}
-                  variant='outlined'
-                  onChange={(e) => setTools(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <TextField
-                  id='outlined-multiline-static'
-                  label='Homework'
-                  multiline
-                  rows='3'
-                  color='primary'
-                  style={{ width: '100%', marginTop: '1.25rem' }}
-                  defaultValue={state.isEdit ? editData.teacher_report.homework : []}
-                  variant='outlined'
-                  onChange={(e) => setHomework(e.target.value)}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                  {filePath?.length > 0 &&
-                    filePath?.map((file, i) => (
-                      <FileRow
-                        key={`homework_student_question_attachment_${i}`}
-                        file={file}
-                        index={i}
-                        onClose={() => removeFileHandler(i, file)}
-                      />
-                    ))}
-                </div>
-                <div style={isMobile ? { marginTop: '1%' } : { marginTop: '10%' }}>
-                  <Button
-                    startIcon={
-                      <SvgIcon
-                        component={() => (
-                          <img
-                            style={{ height: '20px', width: '20px' }}
-                            src={attachmenticon}
-                          />
-                        )}
-                      />
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <FormControl fullWidth className={classes.margin} variant='outlined'>
+                <Autocomplete
+                  id='grade'
+                  name='grade'
+                  onChange={(e, value) => {
+                    if (state?.isEdit) {
+                      editData.grade[0] = value;
                     }
-                    className={classes.attchmentbutton}
-                    title='Attach Supporting File'
-                    variant='contained'
-                    size='medium'
-                    disableRipple
-                    disableElevation
-                    disableFocusRipple
-                    disableTouchRipple
-                    component='label'
-                    style={{ textTransform: 'none' }}
-                  >
-                    <input
-                      type='file'
-                      style={{ display: 'none' }}
-                      id='raised-button-file'
-                      accept='image/*, .pdf'
-                      onChange={handleImageChange}
+                    setFilterData({
+                      ...filterData,
+                      grade: value,
+                      section: '',
+                      subject: '',
+                      chapter: '',
+                    });
+                    formik.setFieldValue('grade', value);
+                    formik.setFieldValue('section', []);
+                    formik.setFieldValue('subjects', []);
+                    handleChangeGrade(value || null, [formik.values.branch]);
+                  }}
+                  // multiple
+                  // value={state.isEdit ? editData.grade[0] : formik.values.grade}
+                  value={state.isEdit ? editData.grade[0] : filterData?.grade || {}}
+                  options={grades}
+                  className='dropdownIcon'
+                  getOptionLabel={(option) => option?.grade_name || ''}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Grade'
+                      placeholder='Grade'
                     />
-                    Add Document
-                  </Button>
-                  <br />
-                  <small className={classes.acceptedfiles}>
-                    {' '}
-                    Accepted files: [ jpeg,jpg,png,pdf ]
-                  </small>
+                  )}
+                  getOptionSelected={(option, value) => option?.id == value?.id}
+                  size='small'
+                />
+                <FormHelperText style={{ color: 'red' }}>
+                  {formik.errors.grade ? formik.errors.grade : ''}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+          </Grid>
+          <Grid
+            container
+            spacing={isMobile ? 3 : 5}
+            style={{ width: widerWidth, margin: wider }}
+          >
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <FormControl fullWidth className={classes.margin} variant='outlined'>
+                <Autocomplete
+                  id='section'
+                  name='section'
+                  onChange={(e, value) => handleSection(e, value)}
+                  value={state.isEdit ? editData.section[0] : filterData?.section || {}}
+                  options={sections}
+                  getOptionLabel={(option) =>
+                    option.section_name || option.section__section_name
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Section'
+                      placeholder='Section'
+                    />
+                  )}
+                  getOptionSelected={(option, value) => option?.id == value?.id}
+                  size='small'
+                />
+                <FormHelperText style={{ color: 'red' }}>
+                  {formik.errors.section ? formik.errors.section : ''}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <FormControl
+                color='secondary'
+                fullWidth
+                className={classes.margin}
+                variant='outlined'
+              >
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleSubject}
+                  id='subj'
+                  value={state.isEdit ? editData.subject : filterData?.subject || {}}
+                  options={subjectDropdown}
+                  className='dropdownIcon'
+                  getOptionLabel={(option) => option?.subject_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Subject'
+                      placeholder='Subject'
+                    />
+                  )}
+                />
+                <FormHelperText style={{ color: 'red' }}>
+                  {formik.errors?.subjects ? formik.errors?.subjects : ''}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <FormControl fullWidth className={classes.margin} variant='outlined'>
+                <Autocomplete
+                  id='chapters'
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={(e, value) => {
+                    if (state?.isEdit) {
+                      editData.chapter[0] = value;
+                    }
+                    setFilterData({ ...filterData, chapter: value });
+                    formik.setFieldValue('chapters', value);
+                  }}
+                  value={state.isEdit ? editData?.chapter[0] : filterData?.chapter || {}}
+                  options={chapterDropdown}
+                  className='dropdownIcon'
+                  getOptionLabel={(option) => option?.chapter_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Chapter'
+                      placeholder='Chapter'
+                    />
+                  )}
+                />
+              </FormControl>
+            </Grid>
+            {showIcon && !assignedHomework && (
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={showHomeworkForm}
+                      onChange={() => setShowHomeworkForm((prevState) => !prevState)}
+                      name='checkedB'
+                      color='primary'
+                    />
+                  }
+                  label='Assign Homework'
+                />
+              </Grid>
+            )}
+          </Grid>
+
+          {/* <<<<<<<<<< EDITOR PART  >>>>>>>>>> */}
+          <div>
+            <div className={classes.descriptionBorder}>
+              <Grid
+                container
+                spacing={isMobile ? 3 : 5}
+                style={{ width: widerWidth, margin: wider }}
+              >
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+                  <TextField
+                    id='outlined-multiline-static'
+                    label='Recap of previous class'
+                    multiline
+                    rows='3'
+                    color='primary'
+                    style={{ width: '100%', marginTop: '1.25rem' }}
+                    defaultValue={
+                      state.isEdit ? editData.teacher_report.previous_class : []
+                    }
+                    variant='outlined'
+                    onChange={(e) => setRecap(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+                  <TextField
+                    id='outlined-multiline-static'
+                    label='Details of classwork'
+                    multiline
+                    rows='3'
+                    color='primary'
+                    style={{ width: '100%', marginTop: '1.25rem' }}
+                    defaultValue={state.isEdit ? editData.teacher_report.class_work : []}
+                    variant='outlined'
+                    onChange={(e) => setDetails(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+                  <TextField
+                    id='outlined-multiline-static'
+                    label='Summary'
+                    multiline
+                    rows='3'
+                    color='primary'
+                    style={{ width: '100%', marginTop: '1.25rem' }}
+                    defaultValue={state.isEdit ? editData.teacher_report.summary : []}
+                    variant='outlined'
+                    onChange={(e) => setSummary(e.target.value)}
+                  />
+                </Grid>
+              </Grid>
+              <Grid
+                container
+                spacing={isMobile ? 3 : 5}
+                style={{ width: widerWidth, margin: wider }}
+              >
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+                  <TextField
+                    id='outlined-multiline-static'
+                    label='Tools Used'
+                    multiline
+                    rows='3'
+                    color='primary'
+                    style={{ width: '100%', marginTop: '1.25rem' }}
+                    defaultValue={state.isEdit ? editData.teacher_report.tools_used : []}
+                    variant='outlined'
+                    onChange={(e) => setTools(e.target.value)}
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sm={4}
+                  className={isMobile ? '' : 'filterPadding'}
+                  style={{ position: 'relative' }}
+                >
+                  <TextField
+                    // onClick={() =>
+                    //   checkAssignedHomework({
+                    //     section_mapping: sectionMappingID,
+                    //     subject: subjectIds,
+                    //     date: moment().format('YYYY-MM-DD'),
+                    //     user_id: user_id,
+                    //   })
+                    // }
+                    id='outlined-multiline-static'
+                    label='Homework'
+                    multiline
+                    rows='3'
+                    color='primary'
+                    value={state.isEdit ? editData.teacher_report.homework : homework}
+                    style={{ width: '100%', marginTop: '1.25rem' }}
+                    defaultValue={state.isEdit ? editData.teacher_report.homework : []}
+                    variant='outlined'
+                    onChange={(e) => setHomework(e.target.value)}
+                  />
+                  {showIcon ? (
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        position: 'relative',
+                        left: '10%',
+                        bottom: '30%',
+                      }}
+                    >
+                      {assignedHomework && !homework ? (
+                        <div
+                          onClick={() => {
+                            setAssignedHomeworkModal(true);
+                          }}
+                          className='th-pointer'
+                        >
+                          <span>
+                            {/* <img src={HomeworkAsigned} className='py-3 th-pointer' /> */}
+                            <InfoIcon className='th-primary' />
+                          </span>
+                          <span className='ml-2 th-fw-500'>
+                            Homework Exists (click to Assign)
+                          </span>
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
+                  {hwMappingID && homework ? (
+                    <div className='pl-3'>
+                      <span>
+                        <img src={AssignedHomework} className='py-3' />
+                      </span>
+                      <span className='ml-2 py-3 th-black-2 th-16 th-primary'>
+                        Homework Mapped to Diary
+                      </span>
+                    </div>
+                  ) : null}
+                </Grid>
+
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                    {filePath?.length > 0 &&
+                      filePath?.map((file, i) => (
+                        <FileRow
+                          key={`homework_student_question_attachment_${i}`}
+                          file={file}
+                          index={i}
+                          onClose={() => removeFileHandler(i, file)}
+                        />
+                      ))}
+                  </div>
+                  <div style={isMobile ? { marginTop: '1%' } : { marginTop: '10%' }}>
+                    <Button
+                      startIcon={
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              style={{ height: '20px', width: '20px' }}
+                              src={attachmenticon}
+                            />
+                          )}
+                        />
+                      }
+                      className={classes.attchmentbutton}
+                      title='Attach Supporting File'
+                      variant='contained'
+                      size='medium'
+                      disableRipple
+                      disableElevation
+                      disableFocusRipple
+                      disableTouchRipple
+                      component='label'
+                      style={{ textTransform: 'none' }}
+                    >
+                      <input
+                        type='file'
+                        style={{ display: 'none' }}
+                        id='raised-button-file'
+                        accept='image/*, .pdf'
+                        onChange={handleImageChange}
+                      />
+                      Add Document
+                    </Button>
+                    <br />
+                    <small className={classes.acceptedfiles}>
+                      {' '}
+                      Accepted files: [ jpeg,jpg,png,pdf ]
+                    </small>
+                  </div>
+                </Grid>
+              </Grid>
+            </div>
+            {showHomeworkForm && (
+              <Grid
+                container
+                spacing={isMobile ? 3 : 5}
+                style={{ width: '100%', margin: '10px 0px' }}
+              >
+                <div
+                  className={classes.descriptionBorder}
+                  style={{ width: '100%', padding: '2%' }}
+                >
+                  <Grid className='homework-create-questions-container' container md={12}>
+                    <Grid item xs={12} sm={4} style={{ margin: '10px 0px' }}>
+                      <MuiPickersUtilsProvider utils={MomentUtils}>
+                        <KeyboardDatePicker
+                          minDate={new Date()}
+                          size='small'
+                          variant='dialog'
+                          format='YYYY-MM-DD'
+                          // margin='none'
+                          // className='button'
+                          className='dropdownIcon'
+                          id='date-picker'
+                          label='Due Date'
+                          inputVariant='outlined'
+                          fullWidth
+                          value={submissionDate}
+                          onChange={handleSubmissionDateChange}
+                          // className='dropdown'
+                          style={{ width: '100%' }}
+                          KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                          }}
+                        />
+                      </MuiPickersUtilsProvider>
+                    </Grid>
+                    <Grid item xs={12} className='form-field'>
+                      <FormControl variant='outlined' fullWidth size='small'>
+                        <InputLabel htmlFor='component-outlined'>Title</InputLabel>
+                        <OutlinedInput
+                          id='title'
+                          name='title'
+                          // onChange={() => {}}
+                          inputProps={{ maxLength: 20 }}
+                          label='Title'
+                          autoFocus
+                          value={homeworkTitle}
+                          onChange={(e) => {
+                            setHomeworkTitle(e.target.value);
+                          }}
+                          //error={errors.name ? true : false}
+                          //helperText="Title is required"
+                        />
+                        {/* <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText> */}
+                      </FormControl>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      className='form-field'
+                      style={{ margin: '10px 0px' }}
+                    >
+                      <FormControl variant='outlined' fullWidth size='small'>
+                        <InputLabel htmlFor='component-outlined'>Instruction</InputLabel>
+                        <OutlinedInput
+                          id='description'
+                          name='Instruction'
+                          onChange={(e) => {
+                            setHomeworkInstructions(e.target.value);
+                          }}
+                          inputProps={{ maxLength: 150 }}
+                          multiline
+                          rows={4}
+                          rowsMax={6}
+                          label='Instruction'
+                          value={homeworkInstructions}
+                          //error={true}
+                          //helperText="Description required"
+                        />
+                        <FormHelperText style={{ color: 'red' }}>
+                          {/* {errors.description} */}
+                        </FormHelperText>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} className='form-field'>
+                      {questionList?.map((question, index) => (
+                        <QuestionCard
+                          key={question.id}
+                          question={question}
+                          isEdit={false}
+                          index={index}
+                          addNewQuestion={addNewQuestion}
+                          handleChange={handleChange}
+                          removeQuestion={removeQuestion}
+                          sessionYear={academicYear}
+                          branch={filterData?.branch?.id}
+                          grade={filterData?.grade?.id}
+                          subject={filterData?.subject?.id}
+                        />
+                      ))}
+                    </Grid>
+
+                    <Grid
+                      container
+                      item
+                      xs={12}
+                      spacing={1}
+                      style={{ marginTop: '10px' }}
+                    >
+                      <Grid item xs={12} md={6} className='form-field'>
+                        <div className='finish-btn-container'>
+                          <Button
+                            variant='contained'
+                            // style={{ color: 'white', width: '100%' }}
+                            // color='secondary'
+                            onClick={() => {
+                              setQueIndexCounter(queIndexCounter + 1);
+                              addNewQuestion(queIndexCounter + 1);
+                            }}
+                          >
+                            Add Another Question
+                          </Button>
+                        </div>
+                      </Grid>
+                      <Grid item xs={12} md={6} className='form-field'>
+                        <div className='finish-btn-container'>
+                          <Button
+                            variant='contained'
+                            style={{ color: 'white', width: '100%' }}
+                            color='primary'
+                            onClick={handleAddHomeWork}
+                          >
+                            Finish
+                          </Button>
+                        </div>
+                      </Grid>
+                    </Grid>
+                  </Grid>
                 </div>
               </Grid>
-            </Grid>
-          </div>
-          <div>
-            <Button
-              variant='contained'
-              style={{ marginLeft: '37px', marginTop: '20px' }}
-              onClick={handleBack}
-              className='labelColor cancelButton'
+            )}
+            <div>
+              <Button
+                variant='contained'
+                style={{ marginLeft: '37px', marginTop: '20px' }}
+                onClick={handleBack}
+                className='labelColor cancelButton'
+              >
+                BACK
+              </Button>
+              <Button
+                variant='contained'
+                color='primary'
+                style={{ marginLeft: '20px', marginTop: '20px', color: 'white' }}
+                onClick={state.isEdit ? handleEdited : handleSubmit}
+              >
+                {state.isEdit ? 'Update' : 'Submit'}
+              </Button>
+            </div>
+            <Dialog
+              open={!declined && assignedHomeworkModal}
+              onClose={closeAssignedHomeworkModal}
+              aria-labelledby='alert-dialog-title'
+              aria-describedby='alert-dialog-description'
             >
-              BACK
-            </Button>
-            <Button
-              variant='contained'
-              color='primary'
-              style={{ marginLeft: '20px', marginTop: '20px', color: 'white' }}
-              onClick={state.isEdit ? handleEdited : handleSubmit}
-            >
-              {state.isEdit ? 'Update' : 'Submit'}
-            </Button>
+              <DialogContent>
+                <DialogContentText id='alert-dialog-description'>
+                  Homework already exists, do you want to link it to Diary?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={closeAssignedHomeworkModal} color='primary'>
+                  No
+                </Button>
+                <Button onClick={mapAssignedHomework} color='primary' autoFocus>
+                  Yes
+                </Button>
+              </DialogActions>
+            </Dialog>
           </div>
         </div>
       </Layout>

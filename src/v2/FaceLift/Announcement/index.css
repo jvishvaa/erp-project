@@ -14,15 +14,3 @@
   border: 1px solid #d9d9d9 !important;
   border-radius: 4px;
 }
-
-.th-upload-modal .ant-modal-header {
-  background-color: #1b4ccb !important;
-  border-radius: 10px 10px 0px 0px !important;
-}
-.th-upload-modal .ant-modal-title {
-  color: #ffffff !important;
-  font-weight: 500 !important;
-}
-.th-upload-modal .ant-modal-close-x {
-  color: #ffffff !important;
-}

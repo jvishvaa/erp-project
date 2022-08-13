@@ -117,3 +117,10 @@
 // left: 0;
 // right: -17px; /* Increase/Decrease this value for cross-browser compatibility */
 // overflow-y: scroll;
+.th-resourcesDrawer .MuiDrawer-paperAnchorRight {
+  left: auto;
+  right: 0;
+  width: 80vw !important;
+  top: 10% !important;
+  padding: 20px !important;
+}

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import {useSelector} from 'react-redux'
+import { useSelector } from 'react-redux';
 import Divider from '@material-ui/core/Divider';
 import { useHistory, withRouter, useLocation } from 'react-router-dom';
 import {
@@ -45,6 +45,7 @@ import CustomMultiSelect from '../../communication/custom-multiselect/custom-mul
 import { Context } from '../context/context';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
+import './diary-scroll.css';
 
 // import CustomSelectionTable from '../../communication/custom-selection-table/custom-selection-table';
 import DiaryCustomSelectionTable from '../../communication/diary-curstom-selection-table/diary-custom-selection-table';
@@ -54,7 +55,6 @@ import clsx from 'clsx';
 import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Toolbar from '@material-ui/core/Toolbar';
 import { filter } from 'lodash';
-
 
 // import CustomSelectionTable from '../../../containers/communication/custom-selection-table';
 function descendingComparator(a, b, orderBy) {
@@ -109,8 +109,6 @@ const StyledTab = withStyles((theme) => ({
 }))((props) => <Tab disableRipple {...props} />);
 
 const useStyles = makeStyles((theme) => ({
-
-
   paper: {
     width: '100%',
     marginBottom: theme.spacing(2),
@@ -162,19 +160,18 @@ const useStyles = makeStyles((theme) => ({
   },
   descriptionBorder: {
     border: `1px solid ${theme.palette.primary.main}`,
-    borderRadius: "10px",
-    marginLeft: "2.3125rem",
-    marginRight: "2.3125rem",
+    borderRadius: '10px',
+    marginLeft: '2.3125rem',
+    marginRight: '2.3125rem',
     opacity: 1,
   },
   attchmentbutton: {
-    textTransform: "none",
-    background: "white",
+    textTransform: 'none',
+    background: 'white',
     border: `1px solid ${theme.palette.primary.main}`,
-    borderRadius: "10px",
-    marginLeft: "1.75rem",
-  }
-
+    borderRadius: '10px',
+    marginLeft: '1.75rem',
+  },
 }));
 const headCells = [
   { id: 'si_no', label: 'S.No.' },
@@ -211,11 +208,7 @@ function EnhancedTableHead(props) {
               onClick={createSortHandler(headCell.id)}
             >
               {headCell.label}
-              {orderBy === headCell.id ? (
-                <span>
-                  {order === 'desc' ? '' : ''}
-                </span>
-              ) : null}
+              {orderBy === headCell.id ? <span>{order === 'desc' ? '' : ''}</span> : null}
             </TableSortLabel>
           </TableCell>
         ))}
@@ -249,13 +242,13 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-        color: theme.palette.secondary.main,
-        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-      }
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
       : {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.secondary.dark,
-      },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
   title: {
     flex: '1 1 100%',
   },
@@ -295,7 +288,6 @@ const EnhancedTableToolbar = (props) => {
 EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
-
 
 const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const {
@@ -368,8 +360,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
   const { setIsEdit, setEditData } = setState;
   const [files, setFiles] = useState([]);
 
-
-
   const [order, setOrder] = useState('');
   const [orderBy, setOrderBy] = useState('');
   const [selected, setSelected] = useState([]);
@@ -383,7 +373,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     (state) => state.commonFilterReducer?.selectedYear
   );
   const [acadId, setAcadId] = useState();
-  
+
   // useEffect(() => {});
 
   const selectionArray = [];
@@ -408,17 +398,14 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     setSectionDropdown([]);
   };
 
-
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
     setOrderBy(property);
   };
 
-
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-
       const newSelecteds = completeData.map((n) => n.id);
 
       setSelected(newSelecteds);
@@ -458,14 +445,12 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     setPage(0);
   };
 
-  const isSelected = (name) =>
-    selected.indexOf(name) !== -1
+  const isSelected = (name) => selected.indexOf(name) !== -1;
 
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, props.rows?.length - page * rowsPerPage);
 
   const addIndex = () => {
-
     return usersRow.map((student, index) => ({ ...student, sl: index + 1 }));
   };
 
@@ -507,10 +492,17 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     }
   }, [location.pathname]);
   const handleBranch = (event, value) => {
-    setFilterData({ ...filterData, branch: [], grade: [], subject: '', chapter: '', section: [] });
+    setFilterData({
+      ...filterData,
+      branch: [],
+      grade: [],
+      subject: '',
+      chapter: '',
+      section: [],
+    });
     setOverviewSynopsis([]);
     if (value) {
-      setAcadId(value)
+      setAcadId(value);
       setFilterData({
         ...filterData,
         branch: [value],
@@ -521,8 +513,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       });
       axiosInstance
         .get(
-          `${endpoints.communication.grades}?session_year=${searchAcademicYear?.id
-          }&branch_id=${value?.branch?.id}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+          `${endpoints.communication.grades}?session_year=${
+            searchAcademicYear?.id
+          }&branch_id=${value?.branch?.id}&module_id=${
+            location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
           }`
         )
         // axiosInstance.get(`${endpoints.communication.grades}?branch_id=${value.id}&module_id=${location.pathname === "/diary/student"?studentModuleId:teacherModuleId}`)
@@ -536,7 +530,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         .catch((error) => {
           // setAlert('error', error.message);
           setGradeDropdown([]);
-          setSectionDropdown([])
+          setSectionDropdown([]);
           // setSubjectDropdown([]);
           // setChapterDropdown([]);
         });
@@ -566,11 +560,14 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.sections}?session_year=${searchAcademicYear?.id
-          }&branch_id=${filterData?.branch[0]?.branch?.id}&grade_id=${value?.grade_id
-          }&module_id=${location.pathname === '/lesson-plan/student-view'
-            ? studentModuleId
-            : teacherModuleId
+          `${endpoints.masterManagement.sections}?session_year=${
+            searchAcademicYear?.id
+          }&branch_id=${filterData?.branch[0]?.branch?.id}&grade_id=${
+            value?.grade_id
+          }&module_id=${
+            location.pathname === '/lesson-plan/student-view'
+              ? studentModuleId
+              : teacherModuleId
           }`
         )
         .then((result) => {
@@ -661,8 +658,10 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       setFilterData({ ...filterData, branch: '', grade: '', section: '' });
       axiosInstance
         .get(
-          `${endpoints.masterManagement.branchMappingTable}?session_year=${value.id
-          }&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+          `${endpoints.masterManagement.branchMappingTable}?session_year=${
+            value.id
+          }&module_id=${
+            location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
           }`
         )
         .then((result) => {
@@ -679,7 +678,6 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     displayUsersList();
   }, [pageno, searchAcademicYear]);
 
-  
   useEffect(() => {
     if (selectedBranch) {
       setGrade([]);
@@ -700,7 +698,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     if (teacherModuleId || studentModuleId) {
       axiosInstance
         .get(
-          `${endpoints.userManagement.academicYear}?module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+          `${endpoints.userManagement.academicYear}?module_id=${
+            location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
           }`
         )
         .then((result) => {
@@ -738,12 +737,13 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       return;
     }
     let getUserListUrl;
-    getUserListUrl = `${endpoints.generalDairy.studentList}?academic_year=${searchAcademicYear?.id
-      }&active=${!isEmail ? '0' : '1'
-    }&bgs_mapping=${filterData?.section?.map(
+    getUserListUrl = `${endpoints.generalDairy.studentList}?academic_year=${
+      searchAcademicYear?.id
+    }&active=${!isEmail ? '0' : '1'}&bgs_mapping=${filterData?.section?.map(
       (s) => s.id
-    )}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
-      }`;
+    )}&module_id=${
+      location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+    }`;
 
     if (selectedSections.length && !selectedSections.includes('All')) {
       sectionList
@@ -790,8 +790,8 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
               selected: selectAll
                 ? true
                 : selectedUsers.length
-                  ? selectedUsers[pageno - 1].selected.includes(items.id)
-                  : false,
+                ? selectedUsers[pageno - 1].selected.includes(items.id)
+                : false,
             });
           });
         setUsersRow(rows);
@@ -826,13 +826,14 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     }
   };
 
-  
   const getGradeApi = async () => {
     try {
       setLoading(true);
       const result = await axiosInstance.get(
-        `${endpoints.communication.grades}?session_year=${searchAcademicYear?.id
-        }&branch_id=${selectedBranch.id}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+        `${endpoints.communication.grades}?session_year=${
+          searchAcademicYear?.id
+        }&branch_id=${selectedBranch.id}&module_id=${
+          location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
         }`,
         {
           headers: {
@@ -868,8 +869,12 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
           gradesId.push(items.grade_id);
         });
       const result = await axiosInstance.get(
-        `${endpoints.communication.sections}?branch_id=${selectedBranch.id
-        }&session_year=${selectedAcademicYear?.id}&grade_id=${gradesId.toString()}&module_id=${location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
+        `${endpoints.communication.sections}?branch_id=${
+          selectedBranch.id
+        }&session_year=${
+          selectedAcademicYear?.id
+        }&grade_id=${gradesId.toString()}&module_id=${
+          location.pathname === '/diary/student' ? studentModuleId : teacherModuleId
         }`,
         {
           headers: {
@@ -931,10 +936,9 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       }
 
       if (selectAll) {
-        completeData
-          .forEach((items) => {
-            selectionArray.push(items.id);
-          });
+        completeData.forEach((items) => {
+          selectionArray.push(items.id);
+        });
         // selectionArray.push(0);
       }
 
@@ -946,33 +950,33 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
         assignRoleApi,
         filePath && filePath.length > 0
           ? {
-            title,
-            message: description,
-            // module_name:filterData.role.value,
-            documents: filePath,
-            // branch:filterData.branch.map(function (b) {
-            //     return b.id
-            //   }),
-            academic_year:acadId?.id,
-            branch: filterData?.branch[0]?.branch?.id,
-            // grades:[54],
-            grade: filterData.grade.map((g) => g.grade_id),
-            section_mapping: filterData.section.map((s) => s.id),
-            section: filterData.section.map((g) => g.section_id),
-            user_id: selected,
-            dairy_type: 1,
-          }
+              title,
+              message: description,
+              // module_name:filterData.role.value,
+              documents: filePath,
+              // branch:filterData.branch.map(function (b) {
+              //     return b.id
+              //   }),
+              academic_year: acadId?.id,
+              branch: filterData?.branch[0]?.branch?.id,
+              // grades:[54],
+              grade: filterData.grade.map((g) => g.grade_id),
+              section_mapping: filterData.section.map((s) => s.id),
+              section: filterData.section.map((g) => g.section_id),
+              user_id: selected,
+              dairy_type: 1,
+            }
           : {
-            title,
-            message: description,
-            academic_year:filterData?.branch[0]?.id,
-            branch: filterData?.branch[0]?.branch?.id,
-            grade: filterData.grade.map((g) => g.grade_id),
-            section_mapping: filterData.section.map((s) => s.id),
-            section: filterData.section.map((g) => g.section_id),
-            user_id: selected,
-            dairy_type: 1,
-          },
+              title,
+              message: description,
+              academic_year: filterData?.branch[0]?.id,
+              branch: filterData?.branch[0]?.branch?.id,
+              grade: filterData.grade.map((g) => g.grade_id),
+              section_mapping: filterData.section.map((s) => s.id),
+              section: filterData.section.map((g) => g.section_id),
+              user_id: selected,
+              dairy_type: 1,
+            },
         {
           headers: {
             'content-type': 'application/json',
@@ -998,9 +1002,7 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     setFiles(file);
     return (
       <div className='file_row_image_new'>
-        <div className='file_name_container_new'>
-          {index + 1}
-        </div>
+        <div className='file_name_container_new'>{index + 1}</div>
         <div>
           <span onClick={onClose}>
             <SvgIcon
@@ -1009,18 +1011,18 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
                   style={
                     isMobile
                       ? {
-                        marginLeft: '',
-                        width: '20px',
-                        height: '20px',
-                        // padding: '5px',
-                        cursor: 'pointer',
-                      }
+                          marginLeft: '',
+                          width: '20px',
+                          height: '20px',
+                          // padding: '5px',
+                          cursor: 'pointer',
+                        }
                       : {
-                        width: '20px',
-                        height: '20px',
-                        // padding: '5px',
-                        cursor: 'pointer',
-                      }
+                          width: '20px',
+                          height: '20px',
+                          // padding: '5px',
+                          cursor: 'pointer',
+                        }
                   }
                   src={deleteIcon}
                   alt='given'
@@ -1032,28 +1034,26 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
       </div>
     );
   };
-  const removeFileHandler = (i,file) => {
-      const list = [...filePath];
-      axiosInstance
-        .post(`${endpoints.circular.deleteFile}`, {
-          file_name: `${file}`,
-        })
-        .then((result) => {
-          if (result.data.status_code === 204) {
-            list.splice(i, 1);
-            setFilePath(list);
-            setAlert('success', result.data.message);
-          } else {
-            setAlert('error', result.data.message);
-          }
-        })
-        .catch((error) => {
-          setAlert('error', error.message);
-        })
-        .finally(() =>
-          setLoading(false)
-        );
-    };
+  const removeFileHandler = (i, file) => {
+    const list = [...filePath];
+    axiosInstance
+      .post(`${endpoints.circular.deleteFile}`, {
+        file_name: `${file}`,
+      })
+      .then((result) => {
+        if (result.data.status_code === 204) {
+          list.splice(i, 1);
+          setFilePath(list);
+          setAlert('success', result.data.message);
+        } else {
+          setAlert('error', result.data.message);
+        }
+      })
+      .catch((error) => {
+        setAlert('error', error.message);
+      })
+      .finally(() => setLoading(false));
+  };
 
   const handleEdited = () => {
     axiosInstance
@@ -1092,349 +1092,352 @@ const CreateGeneralDairy = withRouter(({ history, ...props }) => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
-        <CommonBreadcrumbs
-          componentName='General Diary'
-          childComponentName='Create New'
-        />
-        <div style={{ overflow: 'hidden' }}>
-          <Grid
-            container
-            spacing={isMobile ? 3 : 5}
-            style={{ width: widerWidth, margin: wider }}
-          >
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <Autocomplete
-                size='small'
-                style={{ width: '100%' }}
-                onChange={handleAcademicYear}
-                id='year'
-                value={searchAcademicYear || ''}
-                options={academicYear || []}
-                getOptionLabel={(option) => option?.session_year}
-                filterSelectedOptions
-                className='dropdownIcon'
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Academic Year'
-                    placeholder='Academic Year'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleBranch}
-                id='grade'
-                className='dropdownIcon'
-                value={filterData?.branch[0] || ''}
-                options={branchDropdown || []}
-                getOptionLabel={(option) => option?.branch?.branch_name || ''}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Branch'
-                    placeholder='Branch'
-                  />
-                )}
-              />
-            </Grid>
+        <div
+          className='general-dairy-scroll'
+          style={{
+            height: '90vh',
+            overflowX: 'hidden',
+            overflowY: 'scroll',
+          }}
+        >
+          <CommonBreadcrumbs
+            componentName='General Diary'
+            childComponentName='Create New'
+          />
+          <div style={{ overflow: 'hidden' }}>
             <Grid
-              item
-              xs={12}
-              sm={3}
-              className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+              container
+              spacing={isMobile ? 3 : 5}
+              style={{ width: widerWidth, margin: wider }}
             >
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleGrade}
-                id='grade'
-                className='dropdownIcon'
-                value={filterData?.grade[0] || ''}
-                options={gradeDropdown}
-                getOptionLabel={(option) => option?.grade__grade_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Grade'
-                    placeholder='Grade'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleSection}
-                id='grade'
-                className='dropdownIcon'
-                value={filterData?.section[0] || ''}
-                options={sectionDropdown}
-                getOptionLabel={(option) => option?.section__section_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Section'
-                    placeholder='Section'
-                  />
-                )}
-              />
-            </Grid>
-            <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
-              <Button
-                variant='contained'
-                style={{ color: 'white', width: '100%' }}
-                color='primary'
-                size='medium'
-                type='submit'
-                disabled={!filterData?.section[0]}
-                // onClick={displayUsersList}
-                onClick={(event) => displayUsersList(event)}
-              >
-                FILTER
-              </Button>
-            </Grid>
-          </Grid>
-
-          {totalPage ? (
-            <div>
-              <span className='create_group_error_span'>{selectectUserError}</span>
-              <Paper className={classes.paper}>
-                <EnhancedTableToolbar numSelected={selected?.length} />
-
-                <TableContainer>
-                  <Table
-                    // className={`${classes.table} styled__table`}
-                    aria-labelledby='tableTitle'
-                    aria-label='enhanced table'
-                  >
-                    <EnhancedTableHead
-                      // classes={classes}
-                      numSelected={selected?.length}
-                      order={order}
-                      orderBy={orderBy}
-                      onSelectAllClick={handleSelectAllClick}
-                      onRequestSort={handleRequestSort}
-                      rowCount={usersRow?.length}
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  size='small'
+                  style={{ width: '100%' }}
+                  onChange={handleAcademicYear}
+                  id='year'
+                  value={searchAcademicYear || ''}
+                  options={academicYear || []}
+                  getOptionLabel={(option) => option?.session_year}
+                  filterSelectedOptions
+                  className='dropdownIcon'
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Academic Year'
+                      placeholder='Academic Year'
                     />
-                    <TableBody className='styled__table-body'>
-                      {stableSort(addIndex(usersRow), getComparator(order, orderBy))
-                        .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                        .map((row, index) => {
-                          const isItemSelected = isSelected(row.si_no);
-                          const labelId = `enhanced-table-checkbox-${index}`;
-
-                          return (
-                            <TableRow
-                              hover
-                              onClick={(event) => handleClick(event, row.si_no)}
-                              role='checkbox'
-                              aria-checked={isItemSelected}
-                              tabIndex={-1}
-                              key={row.si_no}
-                              selected={isItemSelected}
-                            >
-                              <TableCell align='center'>{row.sl}</TableCell>
-                              <TableCell align='center'>{row.erp_id}</TableCell>
-
-                              <TableCell >{row.name}</TableCell>
-                              <TableCell padding='checkbox'>
-                                <Checkbox
-                                  checked={isItemSelected}
-
-                                  inputProps={{ 'aria-labelledby': labelId }}
-                                />
-                              </TableCell>
-
-                            </TableRow>
-                          );
-                        })}
-                      {emptyRows > 0 && (
-                        <TableRow>
-                          <TableCell colSpan={6} />
-                        </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <TablePagination
-                  rowsPerPageOptions={[]}
-                  component='div'
-                  count={usersRow.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  onChangePage={handleChangePage}
-                  onChangeRowsPerPage={handleChangeRowsPerPage}
+                  )}
                 />
-              </Paper>
-
-            </div>
-          ) : (
-            <div className='periodDataUnavailable'>
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={
-                      isMobile
-                        ? { height: '100px', width: '200px' }
-                        : { height: '160px', width: '290px' }
-                    }
-                    src={unfiltered}
-                  />
-                )}
-              />
-              <SvgIcon
-                component={() => (
-                  <img
-                    style={
-                      isMobile
-                        ? { height: '20px', width: '250px' }
-                        : { height: '50px', width: '400px', marginLeft: '5%' }
-                    }
-                    src={selectfilter}
-                  />
-                )}
-              />
-            </div>
-          )}
-
-          {/* <<<<<<<<<< EDITOR PART  >>>>>>>>>> */}
-          <div>
-            <div className={classes.descriptionBorder}>
-              <Grid
-                container
-                spacing={isMobile ? 3 : 5}
-                style={{ width: widerWidth, margin: wider }}
-              >
-                <Grid item xs={12}>
-                  <TextField
-                    id='outlined-multiline-static'
-                    label='Title'
-                    multiline
-                    rows='1'
-                    color='primary'
-                    style={{ width: '100%', marginTop: '1.25rem' }}
-                    defaultValue={state.isEdit ? editData.title : []}
-                    // value={title}
-                    variant='outlined'
-                    onChange={(e) => setTitle(e.target.value)}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    id='outlined-multiline-static'
-                    label='Description'
-                    multiline
-                    rows='6'
-                    color='primary'
-                    style={{ width: '100%' }}
-                    defaultValue={state.isEdit ? editData.description : []}
-                    // value={description}
-                    variant='outlined'
-                    onChange={(e) => setDescription(e.target.value)}
-                  />
-                </Grid>
               </Grid>
-              <div className='attachmentContainer'>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: '10px',
-                    padding: '10px',
-                  }}
-                  className='scrollsable'
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleBranch}
+                  id='grade'
+                  className='dropdownIcon'
+                  value={filterData?.branch[0] || ''}
+                  options={branchDropdown || []}
+                  getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Branch'
+                      placeholder='Branch'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sm={3}
+                className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+              >
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleGrade}
+                  id='grade'
+                  className='dropdownIcon'
+                  value={filterData?.grade[0] || ''}
+                  options={gradeDropdown}
+                  getOptionLabel={(option) => option?.grade__grade_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Grade'
+                      placeholder='Grade'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleSection}
+                  id='grade'
+                  className='dropdownIcon'
+                  value={filterData?.section[0] || ''}
+                  options={sectionDropdown}
+                  getOptionLabel={(option) => option?.section__section_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Section'
+                      placeholder='Section'
+                    />
+                  )}
+                />
+              </Grid>
+              <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
+                <Button
+                  variant='contained'
+                  style={{ color: 'white', width: '100%' }}
+                  color='primary'
+                  size='medium'
+                  type='submit'
+                  disabled={!filterData?.section[0]}
+                  // onClick={displayUsersList}
+                  onClick={(event) => displayUsersList(event)}
                 >
-                  {filePath?.length > 0
-                    ? filePath?.map((file, i) => (
-                      <FileRow
-                        key={`homework_student_question_attachment_${i}`}
-                        file={file}
-                        index={i}
-                        onClose={() => removeFileHandler(i,file)}
-                      />
-                    ))
-                    : null}
-                </div>
+                  FILTER
+                </Button>
+              </Grid>
+            </Grid>
 
-                <div
-                  style={isMobile ? { marginLeft: '114px' } : { marginBottom: '14px' }}
-                  className='attachmentButtonContainer'
-                >
-                  <Button
-                    startIcon={
-                      <SvgIcon
-                        component={() => (
-                          <img
-                            style={{ height: '20px', width: '20px' }}
-                            src={attachmenticon}
-                          />
-                        )}
+            {totalPage ? (
+              <div>
+                <span className='create_group_error_span'>{selectectUserError}</span>
+                <Paper className={classes.paper}>
+                  <EnhancedTableToolbar numSelected={selected?.length} />
+
+                  <TableContainer>
+                    <Table
+                      // className={`${classes.table} styled__table`}
+                      aria-labelledby='tableTitle'
+                      aria-label='enhanced table'
+                    >
+                      <EnhancedTableHead
+                        // classes={classes}
+                        numSelected={selected?.length}
+                        order={order}
+                        orderBy={orderBy}
+                        onSelectAllClick={handleSelectAllClick}
+                        onRequestSort={handleRequestSort}
+                        rowCount={usersRow?.length}
                       />
-                    }
-                    className={classes.attchmentbutton}
-                    title='Attach Supporting File'
-                    variant='contained'
-                    size='medium'
-                    disableRipple
-                    disableElevation
-                    disableFocusRipple
-                    disableTouchRipple
-                    component='label'
-                    style={{ textTransform: 'none', marginLeft: '-100px' }}
-                  >
-                    <input
-                      type='file'
-                      // style={{ display: 'none' }}
+                      <TableBody className='styled__table-body'>
+                        {stableSort(addIndex(usersRow), getComparator(order, orderBy))
+                          .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                          .map((row, index) => {
+                            const isItemSelected = isSelected(row.si_no);
+                            const labelId = `enhanced-table-checkbox-${index}`;
+
+                            return (
+                              <TableRow
+                                hover
+                                onClick={(event) => handleClick(event, row.si_no)}
+                                role='checkbox'
+                                aria-checked={isItemSelected}
+                                tabIndex={-1}
+                                key={row.si_no}
+                                selected={isItemSelected}
+                              >
+                                <TableCell align='center'>{row.sl}</TableCell>
+                                <TableCell align='center'>{row.erp_id}</TableCell>
+
+                                <TableCell>{row.name}</TableCell>
+                                <TableCell padding='checkbox'>
+                                  <Checkbox
+                                    checked={isItemSelected}
+                                    inputProps={{ 'aria-labelledby': labelId }}
+                                  />
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
+                        {emptyRows > 0 && (
+                          <TableRow>
+                            <TableCell colSpan={6} />
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  <TablePagination
+                    rowsPerPageOptions={[]}
+                    component='div'
+                    count={usersRow.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onChangePage={handleChangePage}
+                    onChangeRowsPerPage={handleChangeRowsPerPage}
+                  />
+                </Paper>
+              </div>
+            ) : (
+              <div className='periodDataUnavailable'>
+                <SvgIcon
+                  component={() => (
+                    <img
                       style={
                         isMobile
-                          ? { display: 'none', marginLeft: '10px' }
-                          : { display: 'none' }
+                          ? { height: '100px', width: '200px' }
+                          : { height: '160px', width: '290px' }
                       }
-                      id='raised-button-file'
-                      accept='image/*, .pdf'
-                      onChange={handleImageChange}
+                      src={unfiltered}
                     />
-                    {'Add Document'}
-                  </Button>
-                  <small
-                    className={classes.acceptedfiles}
+                  )}
+                />
+                <SvgIcon
+                  component={() => (
+                    <img
+                      style={
+                        isMobile
+                          ? { height: '20px', width: '250px' }
+                          : { height: '50px', width: '400px', marginLeft: '5%' }
+                      }
+                      src={selectfilter}
+                    />
+                  )}
+                />
+              </div>
+            )}
+
+            {/* <<<<<<<<<< EDITOR PART  >>>>>>>>>> */}
+            <div>
+              <div className={classes.descriptionBorder}>
+                <Grid
+                  container
+                  spacing={isMobile ? 3 : 5}
+                  style={{ width: widerWidth, margin: wider }}
+                >
+                  <Grid item xs={12}>
+                    <TextField
+                      id='outlined-multiline-static'
+                      label='Title'
+                      multiline
+                      rows='1'
+                      color='primary'
+                      style={{ width: '100%', marginTop: '1.25rem' }}
+                      defaultValue={state.isEdit ? editData.title : []}
+                      // value={title}
+                      variant='outlined'
+                      onChange={(e) => setTitle(e.target.value)}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <TextField
+                      id='outlined-multiline-static'
+                      label='Description'
+                      multiline
+                      rows='6'
+                      color='primary'
+                      style={{ width: '100%' }}
+                      defaultValue={state.isEdit ? editData.description : []}
+                      // value={description}
+                      variant='outlined'
+                      onChange={(e) => setDescription(e.target.value)}
+                    />
+                  </Grid>
+                </Grid>
+                <div className='attachmentContainer'>
+                  <div
+                    style={{
+                      display: 'flex',
+                      flexWrap: 'wrap',
+                      gap: '10px',
+                      padding: '10px',
+                    }}
+                    className='scrollsable'
                   >
-                    {' '}
-                    Accepted files: [jpeg,jpg,png,pdf]
-                  </small>
+                    {filePath?.length > 0
+                      ? filePath?.map((file, i) => (
+                          <FileRow
+                            key={`homework_student_question_attachment_${i}`}
+                            file={file}
+                            index={i}
+                            onClose={() => removeFileHandler(i, file)}
+                          />
+                        ))
+                      : null}
+                  </div>
+
+                  <div
+                    style={isMobile ? { marginLeft: '114px' } : { marginBottom: '14px' }}
+                    className='attachmentButtonContainer'
+                  >
+                    <Button
+                      startIcon={
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              style={{ height: '20px', width: '20px' }}
+                              src={attachmenticon}
+                            />
+                          )}
+                        />
+                      }
+                      className={classes.attchmentbutton}
+                      title='Attach Supporting File'
+                      variant='contained'
+                      size='medium'
+                      disableRipple
+                      disableElevation
+                      disableFocusRipple
+                      disableTouchRipple
+                      component='label'
+                      style={{ textTransform: 'none', marginLeft: '-100px' }}
+                    >
+                      <input
+                        type='file'
+                        // style={{ display: 'none' }}
+                        style={
+                          isMobile
+                            ? { display: 'none', marginLeft: '10px' }
+                            : { display: 'none' }
+                        }
+                        id='raised-button-file'
+                        accept='image/*, .pdf'
+                        onChange={handleImageChange}
+                      />
+                      {'Add Document'}
+                    </Button>
+                    <small className={classes.acceptedfiles}>
+                      {' '}
+                      Accepted files: [jpeg,jpg,png,pdf]
+                    </small>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div>
-              <Button
-                variant="contained"
-                style={{ marginLeft: '37px', marginTop: "20px" }}
-                onClick={() => history.goBack()}
-                className='labelColor cancelButton'
-              >
-                BACK
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                style={{ marginLeft: '20px', marginTop: "20px", color: "white" }}
-                onClick={state.isEdit ? handleEdited : handleSubmit}
-
-              >
-                SUBMIT
-              </Button>
+              <div>
+                <Button
+                  variant='contained'
+                  style={{ marginLeft: '37px', marginTop: '20px' }}
+                  onClick={() => history.goBack()}
+                  className='labelColor cancelButton'
+                >
+                  BACK
+                </Button>
+                <Button
+                  variant='contained'
+                  color='primary'
+                  style={{ marginLeft: '20px', marginTop: '20px', color: 'white' }}
+                  onClick={state.isEdit ? handleEdited : handleSubmit}
+                >
+                  SUBMIT
+                </Button>
+              </div>
             </div>
           </div>
         </div>

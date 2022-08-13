@@ -171,6 +171,9 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
           let tempArray = result?.data?.result?.results?.map((items)=>{
             items["checked"] = false;
           })
+          if(result?.data?.result?.count == 0){
+            setAlert('error', 'Data Not Available')
+          }
           setTotalCount(result?.data?.result?.count);
           setLoading(false);
           setPeriodData(result?.data?.result?.results);
@@ -330,6 +333,13 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
+        <div
+        className='question-bank-scroll'
+        style={{
+          height: '90vh',
+          overflowX: 'scroll',
+          overflowY: 'scroll',
+        }}>
         <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
           <CommonBreadcrumbs
             componentName='Assessment'
@@ -487,6 +497,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
             </div>
           )}
         </Paper>
+        </div>
       </Layout>
     </>
   );

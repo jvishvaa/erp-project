@@ -34,6 +34,10 @@ import {
   CLEAR_SUBJECT_DROP,
   CLEAR_COURSE_DROP,
   SET_EDIT_DATA_FALSE,
+  LIST_GROUP_REQUEST,
+  LIST_GROUP_SUCCESS,
+  LIST_GROUP_FAILURE,
+  CLEAR_GROUP_LIST
 } from './create-class-constants';
 
 const createClassReducer = (state, action) => {
@@ -192,6 +196,20 @@ const createClassReducer = (state, action) => {
     //UPDATE_CLASS_TYPE
     case UPDATE_CLASS_TYPE:
       return { ...state, classTypeId: action.payload };
+
+    //GROUP_DATA 
+    case LIST_GROUP_REQUEST : 
+      return {...state,loading : true }
+
+    case LIST_GROUP_SUCCESS:
+      return { ...state, groupList: action.payload, loading: false };
+
+    case LIST_GROUP_FAILURE:
+      return { ...state, groupList: action.payload, loading: false };
+
+    case CLEAR_GROUP_LIST:
+      return { ...state, groupList: [] };
+
 
     //EDIT DATA
     case SET_EDIT_DATA:
