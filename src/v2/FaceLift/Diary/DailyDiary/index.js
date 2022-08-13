@@ -20,6 +20,7 @@ import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/small
 import uploadIcon from 'v2/Assets/dashboardIcons/announcementListIcons/uploadIcon.svg';
 import UploadDocument from '../UploadDocument';
 import AsignHomework from '../../../../assets/images/hw-given.svg';
+import InfoIcon from '@material-ui/icons/Info';
 import QuestionCard from 'components/question-card';
 import moment from 'moment';
 import cuid from 'cuid';
@@ -161,7 +162,7 @@ const DailyDiary = () => {
 
   const handleEdit = () => {
     let payload = {
-      academic_year: academicYearID,
+      academic_year: acadID,
       branch: branchID,
       section: [sectionID],
       subject: subjectID,
@@ -182,7 +183,7 @@ const DailyDiary = () => {
       )
       .then((result) => {
         if (result?.data?.status_code === 200) {
-          message.success('Diary Edited Successfully');
+          message.success('Daily Diary Edited Successfully');
 
           history.push('/diary/teacher');
         }
@@ -213,10 +214,6 @@ const DailyDiary = () => {
       message.error('Please select Subject');
       return;
     }
-    if (!chapterID) {
-      message.error('Please select Chapter');
-      return;
-    }
     let payload = {
       academic_year: acadID,
       branch: branchID,
@@ -245,7 +242,7 @@ const DailyDiary = () => {
       .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
       .then((res) => {
         if (res.data.status_code === 200) {
-          message.success('Diary Created Succssfully');
+          message.success('Daily Diary Created Succssfully');
           history.push('/diary/teacher');
         }
       })
@@ -319,19 +316,19 @@ const DailyDiary = () => {
       setSubjectName(e.children);
       setDeclined(false);
       setHwMappingID();
-      const params = {
-        session_year: selectedBranch.branch.id,
-        subject_id: e.id,
-        subject: e.value,
-      };
       checkAssignedHomework({
         section_mapping: sectionMappingID,
         subject: e?.value,
         date: moment().format('YYYY-MM-DD'),
         user_id: user_id,
       });
+      const params = {
+        session_year: selectedBranch.branch.id,
+        subject_id: e.id,
+        subject: e.value,
+      };
       axios
-        .get(`${endpoints.academics.chapter}`, { params })
+        .get(`${endpoints.academics.chapter}`, { params: { ...params } })
         .then((result) => {
           if (result?.data?.status_code == 200) {
             setChapterDropdown(result?.data?.result);
@@ -496,9 +493,9 @@ const DailyDiary = () => {
   };
 
   const checkAssignedHomework = (params = {}) => {
-    if (!subjectID) {
-      return;
-    }
+    // if (!subjectID) {
+    //   return;
+    // }
     axios
       .get(`${endpoints?.dailyDiary?.assignHomeworkDiary}`, { params: { ...params } })
       .then((result) => {
@@ -597,6 +594,7 @@ const DailyDiary = () => {
 
   useEffect(() => {
     if (history?.location?.state?.data) {
+      console.log('EditData', history?.location?.state?.data);
       let editData = history.location.state.data;
       setIsEdit(history?.location?.state?.isEdit);
       setDiaryID(history.location.state.data?.id);
@@ -608,7 +606,7 @@ const DailyDiary = () => {
         subject: editData?.subject?.subject_name,
         chapter: editData?.chapter[0]?.chapter_name,
       });
-      setAcademicYearID(editData?.academic_year?.id);
+      setAcadID(editData?.academic_year?.id);
       setBranchID(editData?.branch?.id);
       setSectionID(editData?.section[0]?.id);
       setSectionMappingID(editData?.section_mapping[0]);
@@ -638,12 +636,20 @@ const DailyDiary = () => {
                 <div className='col-md-4 py-2'>
                   <Form.Item name='academic'>
                     <Select
+                      disabled={isEdit}
                       className='th-width-100 th-br-6'
                       onChange={handleAcademicYear}
                       placeholder='Academic Year'
                       allowClear
                       onClear={handleClearAcademic}
                       value={academicYearID}
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
                     >
                       {yearOptions}
                     </Select>
@@ -653,11 +659,19 @@ const DailyDiary = () => {
                 <div className='col-md-4 py-2'>
                   <Form.Item name='branch'>
                     <Select
+                      disabled={isEdit}
                       className='th-width-100 th-br-6'
                       onChange={(e, value) => handleBranch(value)}
                       placeholder='Branch'
                       allowClear
                       onClear={handleClearBranch}
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
                     >
                       {branchOptions}
                     </Select>
@@ -666,11 +680,19 @@ const DailyDiary = () => {
                 <div className='col-md-4 py-2'>
                   <Form.Item name='grade'>
                     <Select
+                      disabled={isEdit}
                       className='th-width-100 th-br-6'
                       onChange={handleGrade}
                       placeholder='Grade'
                       allowClear
                       onClear={handleClearGrade}
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
                     >
                       {gradeOptions}
                     </Select>
@@ -680,11 +702,19 @@ const DailyDiary = () => {
                 <div className='col-md-4 py-2'>
                   <Form.Item name='section'>
                     <Select
+                      disabled={isEdit}
                       className='th-width-100 th-br-6'
                       onChange={(e, value) => handleSection(value)}
                       placeholder='Section'
                       allowClear
                       onClear={handleClearSection}
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
                     >
                       {sectionOptions}
                     </Select>
@@ -693,11 +723,19 @@ const DailyDiary = () => {
                 <div className='col-md-4 py-2'>
                   <Form.Item name='subject'>
                     <Select
+                      disabled={isEdit}
                       className='th-width-100 th-br-6'
                       onChange={(e, value) => handleSubject(value)}
                       placeholder='Subject'
                       allowClear
                       onClear={handleClearSubject}
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
                     >
                       {subjectOptions}
                     </Select>
@@ -706,10 +744,18 @@ const DailyDiary = () => {
                 <div className='col-md-4 py-2'>
                   <Form.Item name='chapter'>
                     <Select
+                      disabled={isEdit}
                       className='th-width-100 th-br-6'
                       onChange={handleChapter}
                       placeholder='Chapter'
                       allowClear
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
                     >
                       {chapterOptions}
                     </Select>
@@ -737,10 +783,8 @@ const DailyDiary = () => {
                       value={recap}
                       onChange={(e) => setRecap(e.target.value)}
                       placeholder='Recap of Previous Class'
-                      autoSize={{
-                        minRows: 4,
-                        maxRows: 6,
-                      }}
+                      rows={4}
+                      style={{ resize: 'none' }}
                     />
                   </div>
                   <div className='col-md-4 py-2'>
@@ -749,10 +793,8 @@ const DailyDiary = () => {
                       value={classwork}
                       onChange={(e) => setClasswork(e.target.value)}
                       placeholder='Details of ClassWork'
-                      autoSize={{
-                        minRows: 4,
-                        maxRows: 6,
-                      }}
+                      rows={4}
+                      style={{ resize: 'none' }}
                     />
                   </div>
                   <div className='col-md-4 py-2'>
@@ -761,10 +803,8 @@ const DailyDiary = () => {
                       value={summary}
                       onChange={(e) => setSummary(e.target.value)}
                       placeholder='Summary'
-                      autoSize={{
-                        minRows: 4,
-                        maxRows: 6,
-                      }}
+                      rows={4}
+                      style={{ resize: 'none' }}
                     />
                   </div>
 
@@ -774,30 +814,17 @@ const DailyDiary = () => {
                       value={tools}
                       onChange={(e) => setTools(e.target.value)}
                       placeholder='Tools Used'
-                      autoSize={{
-                        minRows: 4,
-                        maxRows: 6,
-                      }}
+                      rows={4}
+                      style={{ resize: 'none' }}
                     />
                   </div>
                   <div className='col-md-4 py-2 d-flex' style={{ position: 'relative' }}>
                     <TextArea
                       className='th-width-100 th-br-6'
-                      onClick={() =>
-                        checkAssignedHomework({
-                          section_mapping: sectionMappingID,
-                          subject: subjectID,
-                          date: moment().format('YYYY-MM-DD'),
-                          user_id: user_id,
-                        })
-                      }
                       value={homework}
                       onChange={(e) => setHomework(e.target.value)}
+                      rows={4}
                       placeholder='Add Homework'
-                      autoSize={{
-                        minRows: 4,
-                        maxRows: 6,
-                      }}
                     />
                     {showIcon ? (
                       <div
@@ -806,7 +833,7 @@ const DailyDiary = () => {
                           alignItems: 'center',
                           position: 'absolute',
                           left: '10%',
-                          bottom: '0%',
+                          bottom: '10%',
                         }}
                       >
                         {assignedHomework && !homework ? (
@@ -817,12 +844,27 @@ const DailyDiary = () => {
                             className='th-pointer'
                           >
                             <span>
-                              <img src={AsignHomework} className='py-3' />
+                              {/* <img src={AsignHomework} className='py-3' /> */}
+                              <InfoIcon className='th-primary' />
                             </span>
-                            <span className='ml-2'>Homework Exists(click to Assign)</span>
+                            <span className='ml-2 th-fw-500'>
+                              Homework Exists (click to assign)
+                            </span>
                           </div>
                         ) : null}
                       </div>
+                    ) : null}
+                  </div>
+                  <div className='col-md-4 py-2'>
+                    {hwMappingID && homework ? (
+                      <>
+                        <span>
+                          <img src={AsignHomework} className='py-3' />
+                        </span>
+                        <span className='ml-2 py-3 th-black-2 th-16 th-primary'>
+                          Homework Mapped to Diary
+                        </span>
+                      </>
                     ) : null}
                   </div>
 
@@ -834,7 +876,7 @@ const DailyDiary = () => {
                       className='row justify-content-start align-items-center th-br-4 py-1 mt-1'
                       style={{ border: '1px solid #D9D9D9' }}
                     >
-                      <div className='col-md-10 col-8'>
+                      <div className='col-8'>
                         <div className='row'>
                           {uploadedFiles?.map((item, index) => {
                             const fullName = item?.split('_')[
@@ -866,16 +908,15 @@ const DailyDiary = () => {
                           })}
                         </div>
                       </div>
-                      <div
-                        className='col-md-2 col-4 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'
-                        onClick={handleShowModal}
-                      >
-                        <span className='th-12'>
-                          {' '}
-                          <u>Upload</u>
-                        </span>
-                        <span className='ml-3 pb-2'>
-                          <img src={uploadIcon} />
+                      <div className='col-4 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'>
+                        <span onClick={handleShowModal}>
+                          <span className='th-12'>
+                            {' '}
+                            <u>Upload</u>
+                          </span>
+                          <span className='ml-3 pb-2'>
+                            <img src={uploadIcon} />
+                          </span>
                         </span>
                       </div>
                     </div>
@@ -894,6 +935,9 @@ const DailyDiary = () => {
                     <span className='th-br-4 p-1 th-bg-white'>
                       <img src={calendarIcon} className='pl-2' />
                       <DatePicker
+                        disabledDate={(current) =>
+                          current.isBefore(moment().subtract(1, 'day'))
+                        }
                         allowClear={false}
                         bordered={false}
                         placement='bottomRight'
@@ -992,7 +1036,7 @@ const DailyDiary = () => {
             </Button>,
           ]}
         >
-          <div className='row px-2 py-3'>
+          <div className='row px-4 py-3'>
             Homework already exists, do you want to link it to Diary?
           </div>
         </Modal>

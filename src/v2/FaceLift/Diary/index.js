@@ -276,6 +276,13 @@ const Diary = () => {
                       placeholder='Academic Year'
                       allowClear
                       onClear={handleClearAcademic}
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
                     >
                       {yearOptions}
                     </Select>
@@ -289,6 +296,13 @@ const Diary = () => {
                       placeholder='Branch'
                       allowClear
                       onClear={handleClearBranch}
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
                     >
                       {branchOptions}
                     </Select>

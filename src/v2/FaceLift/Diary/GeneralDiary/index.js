@@ -358,6 +358,13 @@ const GeneralDiary = () => {
                     placeholder='Academic Year'
                     allowClear
                     onClear={handleClearAcademic}
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
                   >
                     {yearOptions}
                   </Select>
@@ -372,6 +379,13 @@ const GeneralDiary = () => {
                     placeholder='Branch'
                     allowClear
                     onClear={handleClearBranch}
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
                   >
                     {branchOptions}
                   </Select>
@@ -385,6 +399,13 @@ const GeneralDiary = () => {
                     placeholder='Grade'
                     allowClear
                     onClear={handleClearGrade}
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
                   >
                     {gradeOptions}
                   </Select>
@@ -398,6 +419,13 @@ const GeneralDiary = () => {
                     onChange={(e, value) => handleSection(value)}
                     placeholder='Section'
                     allowClear
+                    showSearch
+                    optionFilterProp='children'
+                    filterOption={(input, options) => {
+                      return (
+                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                      );
+                    }}
                   >
                     {sectionOptions}
                   </Select>
@@ -515,16 +543,15 @@ const GeneralDiary = () => {
                           })}
                         </div>
                       </div>
-                      <div
-                        className='col-md-2 col-4 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'
-                        onClick={handleShowModal}
-                      >
-                        <span className='th-12'>
-                          {' '}
-                          <u>Upload</u>
-                        </span>
-                        <span className='ml-3 pb-2'>
-                          <img src={uploadIcon} />
+                      <div className='col-md-2 col-4 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'>
+                        <span onClick={handleShowModal}>
+                          <span className='th-12'>
+                            {' '}
+                            <u>Upload</u>
+                          </span>
+                          <span className='ml-3 pb-2'>
+                            <img src={uploadIcon} />
+                          </span>
                         </span>
                       </div>
                     </div>
