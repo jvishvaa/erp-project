@@ -20,7 +20,7 @@ import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/small
 import uploadIcon from 'v2/Assets/dashboardIcons/announcementListIcons/uploadIcon.svg';
 import UploadDocument from '../UploadDocument';
 import AsignHomework from '../../../../assets/images/hw-given.svg';
-import AddHomework from '../../../../assets/images/AddHomework.svg';
+import InfoIcon from '@material-ui/icons/Info';
 import QuestionCard from 'components/question-card';
 import moment from 'moment';
 import cuid from 'cuid';
@@ -833,7 +833,7 @@ const DailyDiary = () => {
                           alignItems: 'center',
                           position: 'absolute',
                           left: '10%',
-                          bottom: '0%',
+                          bottom: '10%',
                         }}
                       >
                         {assignedHomework && !homework ? (
@@ -844,9 +844,10 @@ const DailyDiary = () => {
                             className='th-pointer'
                           >
                             <span>
-                              <img src={AsignHomework} className='py-3' />
+                              {/* <img src={AsignHomework} className='py-3' /> */}
+                              <InfoIcon className='th-primary' />
                             </span>
-                            <span className='ml-2'>
+                            <span className='ml-2 th-fw-500'>
                               Homework Exists (click to assign)
                             </span>
                           </div>
@@ -858,7 +859,7 @@ const DailyDiary = () => {
                     {hwMappingID && homework ? (
                       <>
                         <span>
-                          <img src={AddHomework} className='py-3' />
+                          <img src={AsignHomework} className='py-3' />
                         </span>
                         <span className='ml-2 py-3 th-black-2 th-16 th-primary'>
                           Homework Mapped to Diary

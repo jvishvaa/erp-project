@@ -44,7 +44,8 @@ import {
   fetchAcademicYears as getAcademicYears,
   fetchSubjects as getSubjects,
 } from '../../../redux/actions/index';
-import AddHomework from '../../../assets/images/AddHomework.svg';
+import AssignedHomework from '../../../assets/images/hw-given.svg';
+import InfoIcon from '@material-ui/icons/Info';
 import { Context } from '../context/context';
 import './daily-diary-scrollbar.css';
 import HomeworkAsigned from '../../../assets/images/hw-given.svg';
@@ -1148,9 +1149,12 @@ const CreateDailyDairy = (details, onSubmit) => {
                           className='th-pointer'
                         >
                           <span>
-                            <img src={HomeworkAsigned} className='py-3 th-pointer' />
+                            {/* <img src={HomeworkAsigned} className='py-3 th-pointer' /> */}
+                            <InfoIcon className='th-primary' />
                           </span>
-                          <span className='ml-2'>Homework Exists (click to Assign)</span>
+                          <span className='ml-2 th-fw-500'>
+                            Homework Exists (click to Assign)
+                          </span>
                         </div>
                       ) : null}
                     </div>
@@ -1158,7 +1162,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                   {hwMappingID && homework ? (
                     <div className='pl-3'>
                       <span>
-                        <img src={AddHomework} className='py-3' />
+                        <img src={AssignedHomework} className='py-3' />
                       </span>
                       <span className='ml-2 py-3 th-black-2 th-16 th-primary'>
                         Homework Mapped to Diary
