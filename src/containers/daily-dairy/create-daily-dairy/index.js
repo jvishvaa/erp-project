@@ -46,13 +46,14 @@ import {
 } from '../../../redux/actions/index';
 import AddHomework from '../../../assets/images/AddHomework.svg';
 import { Context } from '../context/context';
-import './daily-diary-scrollbar.css'
+import './daily-diary-scrollbar.css';
 import HomeworkAsigned from '../../../assets/images/hw-given.svg';
 import QuestionCard from '../../../components/question-card';
 import { useDispatch, useSelector } from 'react-redux';
 import { addHomeWork } from 'redux/actions/teacherHomeworkActions';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
+import './daily-diary-scrollbar.css';
 
 const CreateDailyDairy = (details, onSubmit) => {
   const dispatch = useDispatch();
@@ -778,9 +779,6 @@ const CreateDailyDairy = (details, onSubmit) => {
   }, []);
   const classes = useStyles();
   const checkAssignedHomework = (params = {}) => {
-    if (!subjectIds) {
-      return;
-    }
     axiosInstance
       .get(`${endpoints?.dailyDairy?.assignHomeworkDiary}`, { params: { ...params } })
       .then((result) => {
@@ -798,591 +796,609 @@ const CreateDailyDairy = (details, onSubmit) => {
       {loading ? <Loading message='Loading...' /> : null}
 
       <Layout>
-      <div
-        className='daily-dairy-scroll'
-        style={{
-          height: '90vh',
-          overflowX: 'hidden',
-          overflowY: 'scroll',
-        }}>
-        <CommonBreadcrumbs
-          componentName='Daily Diary'
-          childComponentName={state.isEdit ? 'Edit Dairy' : 'Create New'}
-        />
-        <Grid
-          container
-          spacing={isMobile ? 3 : 5}
-          style={{ width: widerWidth, margin: wider }}
+        <div
+          className='daily-dairy-scroll'
+          style={{
+            height: '90vh',
+            overflowX: 'hidden',
+            overflowY: 'scroll',
+          }}
         >
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <FormControl fullWidth className={classes.margin} variant='outlined'>
-              <Autocomplete
-                size='small'
-                style={{ width: '100%' }}
-                onChange={handleAcademicYear}
-                id='year'
-                className='dropdownIcon'
-                options={academicYear}
-                getOptionLabel={(option) => option?.session_year}
-                value={state.isEdit ? editData.academic_year : searchAcademicYear}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Academic Year'
-                    placeholder='Academic Year'
-                  />
-                )}
-              />
-              <FormHelperText style={{ color: 'red' }}>
-                {formik.errors.academic_year ? formik.errors.academic_year : ''}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <Autocomplete
-              id='branch'
-              name='branch'
-              onChange={(e, value) => {
-                if (state?.isEdit) {
-                  editData.branch = value;
-                }
-                setFilterData({
-                  ...filterData,
-                  branch: value,
-                  grade: '',
-                  section: [],
-                  subject: [],
-                  chapter: '',
-                });
-                state?.isEdit
-                  ? formik.setFieldValue('branch', value)
-                  : formik.setFieldValue('branch', value);
-                formik.setFieldValue('grade', []);
-                formik.setFieldValue('section', []);
-                formik.setFieldValue('subjects', []);
-                handleChangeBranch(value ? [value] : null);
-              }}
-              // value={state.isEdit ? editData.branch : formik.values.branch || {}}
-              value={state.isEdit ? editData.branch : filterData?.branch}
-              options={branches}
-              className='dropdownIcon'
-              getOptionLabel={(option) => option?.branch_name || ''}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
+          <CommonBreadcrumbs
+            componentName='Daily Diary'
+            childComponentName={state.isEdit ? 'Edit Dairy' : 'Create New'}
+          />
+          <Grid
+            container
+            spacing={isMobile ? 3 : 5}
+            style={{ width: widerWidth, margin: wider }}
+          >
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <FormControl fullWidth className={classes.margin} variant='outlined'>
+                <Autocomplete
+                  size='small'
+                  style={{ width: '100%' }}
+                  onChange={handleAcademicYear}
+                  id='year'
+                  className='dropdownIcon'
+                  options={academicYear}
+                  getOptionLabel={(option) => option?.session_year}
+                  value={state.isEdit ? editData.academic_year : searchAcademicYear}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Academic Year'
+                      placeholder='Academic Year'
+                    />
+                  )}
                 />
-              )}
-              size='small'
-            />
-            <FormHelperText style={{ color: 'red' }}>
-              {errors.branches ? errors.branches : ''}
-            </FormHelperText>
-          </Grid>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <FormControl fullWidth className={classes.margin} variant='outlined'>
+                <FormHelperText style={{ color: 'red' }}>
+                  {formik.errors.academic_year ? formik.errors.academic_year : ''}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
               <Autocomplete
-                id='grade'
-                name='grade'
+                id='branch'
+                name='branch'
                 onChange={(e, value) => {
                   if (state?.isEdit) {
-                    editData.grade[0] = value;
+                    editData.branch = value;
                   }
                   setFilterData({
                     ...filterData,
-                    grade: value,
-                    section: '',
-                    subject: '',
+                    branch: value,
+                    grade: '',
+                    section: [],
+                    subject: [],
                     chapter: '',
                   });
-                  formik.setFieldValue('grade', value);
+                  state?.isEdit
+                    ? formik.setFieldValue('branch', value)
+                    : formik.setFieldValue('branch', value);
+                  formik.setFieldValue('grade', []);
                   formik.setFieldValue('section', []);
                   formik.setFieldValue('subjects', []);
-                  handleChangeGrade(value || null, [formik.values.branch]);
+                  handleChangeBranch(value ? [value] : null);
                 }}
-                // multiple
-                // value={state.isEdit ? editData.grade[0] : formik.values.grade}
-                value={state.isEdit ? editData.grade[0] : filterData?.grade || {}}
-                options={grades}
+                // value={state.isEdit ? editData.branch : formik.values.branch || {}}
+                value={state.isEdit ? editData.branch : filterData?.branch}
+                options={branches}
                 className='dropdownIcon'
-                getOptionLabel={(option) => option?.grade_name || ''}
+                getOptionLabel={(option) => option?.branch_name || ''}
                 renderInput={(params) => (
                   <TextField
                     {...params}
                     variant='outlined'
-                    label='Grade'
-                    placeholder='Grade'
+                    label='Branch'
+                    placeholder='Branch'
                   />
                 )}
-                getOptionSelected={(option, value) => option?.id == value?.id}
                 size='small'
               />
               <FormHelperText style={{ color: 'red' }}>
-                {formik.errors.grade ? formik.errors.grade : ''}
+                {errors.branches ? errors.branches : ''}
               </FormHelperText>
-            </FormControl>
-          </Grid>
-        </Grid>
-        <Grid
-          container
-          spacing={isMobile ? 3 : 5}
-          style={{ width: widerWidth, margin: wider }}
-        >
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <FormControl fullWidth className={classes.margin} variant='outlined'>
-              <Autocomplete
-                id='section'
-                name='section'
-                onChange={(e, value) => handleSection(e, value)}
-                value={state.isEdit ? editData.section[0] : filterData?.section || {}}
-                options={sections}
-                getOptionLabel={(option) =>
-                  option.section_name || option.section__section_name
-                }
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Section'
-                    placeholder='Section'
-                  />
-                )}
-                getOptionSelected={(option, value) => option?.id == value?.id}
-                size='small'
-              />
-              <FormHelperText style={{ color: 'red' }}>
-                {formik.errors.section ? formik.errors.section : ''}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <FormControl
-              color='secondary'
-              fullWidth
-              className={classes.margin}
-              variant='outlined'
-            >
-              <Autocomplete
-                style={{ width: '100%' }}
-                size='small'
-                onChange={handleSubject}
-                id='subj'
-                value={state.isEdit ? editData.subject : filterData?.subject || {}}
-                options={subjectDropdown}
-                className='dropdownIcon'
-                getOptionLabel={(option) => option?.subject_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Subject'
-                    placeholder='Subject'
-                  />
-                )}
-              />
-              <FormHelperText style={{ color: 'red' }}>
-                {formik.errors?.subjects ? formik.errors?.subjects : ''}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <FormControl fullWidth className={classes.margin} variant='outlined'>
-              <Autocomplete
-                id='chapters'
-                style={{ width: '100%' }}
-                size='small'
-                onChange={(e, value) => {
-                  if (state?.isEdit) {
-                    editData.chapter[0] = value;
-                  }
-                  setFilterData({ ...filterData, chapter: value });
-                  formik.setFieldValue('chapters', value);
-                }}
-                value={state.isEdit ? editData?.chapter[0] : filterData?.chapter || {}}
-                options={chapterDropdown}
-                className='dropdownIcon'
-                getOptionLabel={(option) => option?.chapter_name}
-                filterSelectedOptions
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    variant='outlined'
-                    label='Chapter'
-                    placeholder='Chapter'
-                  />
-                )}
-              />
-            </FormControl>
-          </Grid>
-          {showIcon && !assignedHomework && (
+            </Grid>
             <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={showHomeworkForm}
-                    onChange={() => setShowHomeworkForm((prevState) => !prevState)}
-                    name='checkedB'
-                    color='primary'
-                  />
-                }
-                label='Assign Homework'
-              />
+              <FormControl fullWidth className={classes.margin} variant='outlined'>
+                <Autocomplete
+                  id='grade'
+                  name='grade'
+                  onChange={(e, value) => {
+                    if (state?.isEdit) {
+                      editData.grade[0] = value;
+                    }
+                    setFilterData({
+                      ...filterData,
+                      grade: value,
+                      section: '',
+                      subject: '',
+                      chapter: '',
+                    });
+                    formik.setFieldValue('grade', value);
+                    formik.setFieldValue('section', []);
+                    formik.setFieldValue('subjects', []);
+                    handleChangeGrade(value || null, [formik.values.branch]);
+                  }}
+                  // multiple
+                  // value={state.isEdit ? editData.grade[0] : formik.values.grade}
+                  value={state.isEdit ? editData.grade[0] : filterData?.grade || {}}
+                  options={grades}
+                  className='dropdownIcon'
+                  getOptionLabel={(option) => option?.grade_name || ''}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Grade'
+                      placeholder='Grade'
+                    />
+                  )}
+                  getOptionSelected={(option, value) => option?.id == value?.id}
+                  size='small'
+                />
+                <FormHelperText style={{ color: 'red' }}>
+                  {formik.errors.grade ? formik.errors.grade : ''}
+                </FormHelperText>
+              </FormControl>
             </Grid>
-          )}
-        </Grid>
-
-        {/* <<<<<<<<<< EDITOR PART  >>>>>>>>>> */}
-        <div>
-          <div className={classes.descriptionBorder}>
-            <Grid
-              container
-              spacing={isMobile ? 3 : 5}
-              style={{ width: widerWidth, margin: wider }}
-            >
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <TextField
-                  id='outlined-multiline-static'
-                  label='Recap of previous class'
-                  multiline
-                  rows='3'
-                  color='primary'
-                  style={{ width: '100%', marginTop: '1.25rem' }}
-                  defaultValue={
-                    state.isEdit ? editData.teacher_report.previous_class : []
+          </Grid>
+          <Grid
+            container
+            spacing={isMobile ? 3 : 5}
+            style={{ width: widerWidth, margin: wider }}
+          >
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <FormControl fullWidth className={classes.margin} variant='outlined'>
+                <Autocomplete
+                  id='section'
+                  name='section'
+                  onChange={(e, value) => handleSection(e, value)}
+                  value={state.isEdit ? editData.section[0] : filterData?.section || {}}
+                  options={sections}
+                  getOptionLabel={(option) =>
+                    option.section_name || option.section__section_name
                   }
-                  variant='outlined'
-                  onChange={(e) => setRecap(e.target.value)}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Section'
+                      placeholder='Section'
+                    />
+                  )}
+                  getOptionSelected={(option, value) => option?.id == value?.id}
+                  size='small'
                 />
-              </Grid>
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <TextField
-                  id='outlined-multiline-static'
-                  label='Details of classwork'
-                  multiline
-                  rows='3'
-                  color='primary'
-                  style={{ width: '100%', marginTop: '1.25rem' }}
-                  defaultValue={state.isEdit ? editData.teacher_report.class_work : []}
-                  variant='outlined'
-                  onChange={(e) => setDetails(e.target.value)}
-                />
-              </Grid>
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <TextField
-                  id='outlined-multiline-static'
-                  label='Summary'
-                  multiline
-                  rows='3'
-                  color='primary'
-                  style={{ width: '100%', marginTop: '1.25rem' }}
-                  defaultValue={state.isEdit ? editData.teacher_report.summary : []}
-                  variant='outlined'
-                  onChange={(e) => setSummary(e.target.value)}
-                />
-              </Grid>
+                <FormHelperText style={{ color: 'red' }}>
+                  {formik.errors.section ? formik.errors.section : ''}
+                </FormHelperText>
+              </FormControl>
             </Grid>
-            <Grid
-              container
-              spacing={isMobile ? 3 : 5}
-              style={{ width: widerWidth, margin: wider }}
-            >
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <TextField
-                  id='outlined-multiline-static'
-                  label='Tools Used'
-                  multiline
-                  rows='3'
-                  color='primary'
-                  style={{ width: '100%', marginTop: '1.25rem' }}
-                  defaultValue={state.isEdit ? editData.teacher_report.tools_used : []}
-                  variant='outlined'
-                  onChange={(e) => setTools(e.target.value)}
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <FormControl
+                color='secondary'
+                fullWidth
+                className={classes.margin}
+                variant='outlined'
+              >
+                <Autocomplete
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleSubject}
+                  id='subj'
+                  value={state.isEdit ? editData.subject : filterData?.subject || {}}
+                  options={subjectDropdown}
+                  className='dropdownIcon'
+                  getOptionLabel={(option) => option?.subject_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Subject'
+                      placeholder='Subject'
+                    />
+                  )}
                 />
+                <FormHelperText style={{ color: 'red' }}>
+                  {formik.errors?.subjects ? formik.errors?.subjects : ''}
+                </FormHelperText>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+              <FormControl fullWidth className={classes.margin} variant='outlined'>
+                <Autocomplete
+                  id='chapters'
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={(e, value) => {
+                    if (state?.isEdit) {
+                      editData.chapter[0] = value;
+                    }
+                    setFilterData({ ...filterData, chapter: value });
+                    formik.setFieldValue('chapters', value);
+                  }}
+                  value={state.isEdit ? editData?.chapter[0] : filterData?.chapter || {}}
+                  options={chapterDropdown}
+                  className='dropdownIcon'
+                  getOptionLabel={(option) => option?.chapter_name}
+                  filterSelectedOptions
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      variant='outlined'
+                      label='Chapter'
+                      placeholder='Chapter'
+                    />
+                  )}
+                />
+              </FormControl>
+            </Grid>
+            {showIcon && !assignedHomework && (
+              <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={showHomeworkForm}
+                      onChange={() => setShowHomeworkForm((prevState) => !prevState)}
+                      name='checkedB'
+                      color='primary'
+                    />
+                  }
+                  label='Assign Homework'
+                />
+              </Grid>
+            )}
+          </Grid>
+
+          {/* <<<<<<<<<< EDITOR PART  >>>>>>>>>> */}
+          <div>
+            <div className={classes.descriptionBorder}>
+              <Grid
+                container
+                spacing={isMobile ? 3 : 5}
+                style={{ width: widerWidth, margin: wider }}
+              >
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+                  <TextField
+                    id='outlined-multiline-static'
+                    label='Recap of previous class'
+                    multiline
+                    rows='3'
+                    color='primary'
+                    style={{ width: '100%', marginTop: '1.25rem' }}
+                    defaultValue={
+                      state.isEdit ? editData.teacher_report.previous_class : []
+                    }
+                    variant='outlined'
+                    onChange={(e) => setRecap(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+                  <TextField
+                    id='outlined-multiline-static'
+                    label='Details of classwork'
+                    multiline
+                    rows='3'
+                    color='primary'
+                    style={{ width: '100%', marginTop: '1.25rem' }}
+                    defaultValue={state.isEdit ? editData.teacher_report.class_work : []}
+                    variant='outlined'
+                    onChange={(e) => setDetails(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+                  <TextField
+                    id='outlined-multiline-static'
+                    label='Summary'
+                    multiline
+                    rows='3'
+                    color='primary'
+                    style={{ width: '100%', marginTop: '1.25rem' }}
+                    defaultValue={state.isEdit ? editData.teacher_report.summary : []}
+                    variant='outlined'
+                    onChange={(e) => setSummary(e.target.value)}
+                  />
+                </Grid>
               </Grid>
               <Grid
-                item
-                xs={12}
-                sm={4}
-                className={isMobile ? '' : 'filterPadding'}
-                style={{ position: 'relative' }}
+                container
+                spacing={isMobile ? 3 : 5}
+                style={{ width: widerWidth, margin: wider }}
               >
-                <TextField
-                  onClick={() =>
-                    checkAssignedHomework({
-                      section_mapping: sectionMappingID,
-                      subject: subjectIds,
-                      date: moment().format('YYYY-MM-DD'),
-                      user_id: user_id,
-                    })
-                  }
-                  id='outlined-multiline-static'
-                  label='Homework'
-                  multiline
-                  rows='3'
-                  color='primary'
-                  value={state.isEdit ? editData.teacher_report.homework : homework}
-                  style={{ width: '100%', marginTop: '1.25rem' }}
-                  // defaultValue={state.isEdit ? editData.teacher_report.homework : []}
-                  variant='outlined'
-                  onChange={(e) => setHomework(e.target.value)}
-                />
-                {showIcon ? (
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      position: 'relative',
-                      left: '10%',
-                      bottom: '30%',
-                    }}
-                  >
-                    {assignedHomework && !homework ? (
-                      <div
-                        onClick={() => {
-                          setAssignedHomeworkModal(true);
-                        }}
-                        className='th-pointer'
-                      >
-                        <span>
-                          <img src={HomeworkAsigned} className='py-3 th-pointer' />
-                        </span>
-                        <span className='ml-2'>Homework Exists(click to Assign)</span>
-                      </div>
-                    ) : null}
-                  </div>
-                ) : null}
-              </Grid>
-
-              <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                  {filePath?.length > 0 &&
-                    filePath?.map((file, i) => (
-                      <FileRow
-                        key={`homework_student_question_attachment_${i}`}
-                        file={file}
-                        index={i}
-                        onClose={() => removeFileHandler(i, file)}
-                      />
-                    ))}
-                </div>
-                <div style={isMobile ? { marginTop: '1%' } : { marginTop: '10%' }}>
-                  <Button
-                    startIcon={
-                      <SvgIcon
-                        component={() => (
-                          <img
-                            style={{ height: '20px', width: '20px' }}
-                            src={attachmenticon}
-                          />
-                        )}
-                      />
-                    }
-                    className={classes.attchmentbutton}
-                    title='Attach Supporting File'
-                    variant='contained'
-                    size='medium'
-                    disableRipple
-                    disableElevation
-                    disableFocusRipple
-                    disableTouchRipple
-                    component='label'
-                    style={{ textTransform: 'none' }}
-                  >
-                    <input
-                      type='file'
-                      style={{ display: 'none' }}
-                      id='raised-button-file'
-                      accept='image/*, .pdf'
-                      onChange={handleImageChange}
-                    />
-                    Add Document
-                  </Button>
-                  <br />
-                  <small className={classes.acceptedfiles}>
-                    {' '}
-                    Accepted files: [ jpeg,jpg,png,pdf ]
-                  </small>
-                </div>
-              </Grid>
-            </Grid>
-          </div>
-          {showHomeworkForm && (
-            <Grid
-              container
-              spacing={isMobile ? 3 : 5}
-              style={{ width: '100%', margin: '10px 0px' }}
-            >
-              <div
-                className={classes.descriptionBorder}
-                style={{ width: '100%', padding: '2%' }}
-              >
-                <Grid className='homework-create-questions-container' container md={12}>
-                  <Grid item xs={12} sm={4} style={{ margin: '10px 0px' }}>
-                    <MuiPickersUtilsProvider utils={MomentUtils}>
-                      <KeyboardDatePicker
-                        size='small'
-                        variant='dialog'
-                        format='YYYY-MM-DD'
-                        // margin='none'
-                        // className='button'
-                        className='dropdownIcon'
-                        id='date-picker'
-                        label='Due Date'
-                        inputVariant='outlined'
-                        fullWidth
-                        value={submissionDate}
-                        onChange={handleSubmissionDateChange}
-                        // className='dropdown'
-                        style={{ width: '100%' }}
-                        KeyboardButtonProps={{
-                          'aria-label': 'change date',
-                        }}
-                      />
-                    </MuiPickersUtilsProvider>
-                  </Grid>
-                  <Grid item xs={12} className='form-field'>
-                    <FormControl variant='outlined' fullWidth size='small'>
-                      <InputLabel htmlFor='component-outlined'>Title</InputLabel>
-                      <OutlinedInput
-                        id='title'
-                        name='title'
-                        // onChange={() => {}}
-                        inputProps={{ maxLength: 20 }}
-                        label='Title'
-                        autoFocus
-                        value={homeworkTitle}
-                        onChange={(e) => {
-                          setHomeworkTitle(e.target.value);
-                        }}
-                        //error={errors.name ? true : false}
-                        //helperText="Title is required"
-                      />
-                      {/* <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText> */}
-                    </FormControl>
-                  </Grid>
-                  <Grid
-                    item
-                    xs={12}
-                    className='form-field'
-                    style={{ margin: '10px 0px' }}
-                  >
-                    <FormControl variant='outlined' fullWidth size='small'>
-                      <InputLabel htmlFor='component-outlined'>Instruction</InputLabel>
-                      <OutlinedInput
-                        id='description'
-                        name='Instruction'
-                        onChange={(e) => {
-                          setHomeworkInstructions(e.target.value);
-                        }}
-                        inputProps={{ maxLength: 150 }}
-                        multiline
-                        rows={4}
-                        rowsMax={6}
-                        label='Instruction'
-                        value={homeworkInstructions}
-                        //error={true}
-                        //helperText="Description required"
-                      />
-                      <FormHelperText style={{ color: 'red' }}>
-                        {/* {errors.description} */}
-                      </FormHelperText>
-                    </FormControl>
-                  </Grid>
-                  <Grid item xs={12} className='form-field'>
-                    {questionList?.map((question, index) => (
-                      <QuestionCard
-                        key={question.id}
-                        question={question}
-                        isEdit={false}
-                        index={index}
-                        addNewQuestion={addNewQuestion}
-                        handleChange={handleChange}
-                        removeQuestion={removeQuestion}
-                        sessionYear={academicYear}
-                        branch={filterData?.branch?.id}
-                        grade={filterData?.grade?.id}
-                        subject={filterData?.subject?.id}
-                      />
-                    ))}
-                  </Grid>
-
-                  <Grid container item xs={12} spacing={1} style={{ marginTop: '10px' }}>
-                    <Grid item xs={12} md={6} className='form-field'>
-                      <div className='finish-btn-container'>
-                        <Button
-                          variant='contained'
-                          // style={{ color: 'white', width: '100%' }}
-                          // color='secondary'
-                          onClick={() => {
-                            setQueIndexCounter(queIndexCounter + 1);
-                            addNewQuestion(queIndexCounter + 1);
-                          }}
-                        >
-                          Add Another Question
-                        </Button>
-                      </div>
-                    </Grid>
-                    <Grid item xs={12} md={6} className='form-field'>
-                      <div className='finish-btn-container'>
-                        <Button
-                          variant='contained'
-                          style={{ color: 'white', width: '100%' }}
-                          color='primary'
-                          onClick={handleAddHomeWork}
-                        >
-                          Finish
-                        </Button>
-                      </div>
-                    </Grid>
-                  </Grid>
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+                  <TextField
+                    id='outlined-multiline-static'
+                    label='Tools Used'
+                    multiline
+                    rows='3'
+                    color='primary'
+                    style={{ width: '100%', marginTop: '1.25rem' }}
+                    defaultValue={state.isEdit ? editData.teacher_report.tools_used : []}
+                    variant='outlined'
+                    onChange={(e) => setTools(e.target.value)}
+                  />
                 </Grid>
-              </div>
-            </Grid>
-          )}
-          <div>
-            <Button
-              variant='contained'
-              style={{ marginLeft: '37px', marginTop: '20px' }}
-              onClick={handleBack}
-              className='labelColor cancelButton'
+                <Grid
+                  item
+                  xs={12}
+                  sm={4}
+                  className={isMobile ? '' : 'filterPadding'}
+                  style={{ position: 'relative' }}
+                >
+                  <TextField
+                    // onClick={() =>
+                    //   checkAssignedHomework({
+                    //     section_mapping: sectionMappingID,
+                    //     subject: subjectIds,
+                    //     date: moment().format('YYYY-MM-DD'),
+                    //     user_id: user_id,
+                    //   })
+                    // }
+                    id='outlined-multiline-static'
+                    label='Homework'
+                    multiline
+                    rows='3'
+                    color='primary'
+                    value={state.isEdit ? editData.teacher_report.homework : homework}
+                    style={{ width: '100%', marginTop: '1.25rem' }}
+                    defaultValue={state.isEdit ? editData.teacher_report.homework : []}
+                    variant='outlined'
+                    onChange={(e) => setHomework(e.target.value)}
+                  />
+                  {showIcon ? (
+                    <div
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        position: 'relative',
+                        left: '10%',
+                        bottom: '30%',
+                      }}
+                    >
+                      {assignedHomework && !homework ? (
+                        <div
+                          onClick={() => {
+                            setAssignedHomeworkModal(true);
+                          }}
+                          className='th-pointer'
+                        >
+                          <span>
+                            <img src={HomeworkAsigned} className='py-3 th-pointer' />
+                          </span>
+                          <span className='ml-2'>Homework Exists (click to Assign)</span>
+                        </div>
+                      ) : null}
+                    </div>
+                  ) : null}
+                  {hwMappingID && homework ? (
+                    <div className='pl-3'>
+                      <span>
+                        <img src={AddHomework} className='py-3' />
+                      </span>
+                      <span className='ml-2 py-3 th-black-2 th-16 th-primary'>
+                        Homework Mapped to Diary
+                      </span>
+                    </div>
+                  ) : null}
+                </Grid>
+
+                <Grid item xs={12} sm={4} className={isMobile ? '' : 'filterPadding'}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                    {filePath?.length > 0 &&
+                      filePath?.map((file, i) => (
+                        <FileRow
+                          key={`homework_student_question_attachment_${i}`}
+                          file={file}
+                          index={i}
+                          onClose={() => removeFileHandler(i, file)}
+                        />
+                      ))}
+                  </div>
+                  <div style={isMobile ? { marginTop: '1%' } : { marginTop: '10%' }}>
+                    <Button
+                      startIcon={
+                        <SvgIcon
+                          component={() => (
+                            <img
+                              style={{ height: '20px', width: '20px' }}
+                              src={attachmenticon}
+                            />
+                          )}
+                        />
+                      }
+                      className={classes.attchmentbutton}
+                      title='Attach Supporting File'
+                      variant='contained'
+                      size='medium'
+                      disableRipple
+                      disableElevation
+                      disableFocusRipple
+                      disableTouchRipple
+                      component='label'
+                      style={{ textTransform: 'none' }}
+                    >
+                      <input
+                        type='file'
+                        style={{ display: 'none' }}
+                        id='raised-button-file'
+                        accept='image/*, .pdf'
+                        onChange={handleImageChange}
+                      />
+                      Add Document
+                    </Button>
+                    <br />
+                    <small className={classes.acceptedfiles}>
+                      {' '}
+                      Accepted files: [ jpeg,jpg,png,pdf ]
+                    </small>
+                  </div>
+                </Grid>
+              </Grid>
+            </div>
+            {showHomeworkForm && (
+              <Grid
+                container
+                spacing={isMobile ? 3 : 5}
+                style={{ width: '100%', margin: '10px 0px' }}
+              >
+                <div
+                  className={classes.descriptionBorder}
+                  style={{ width: '100%', padding: '2%' }}
+                >
+                  <Grid className='homework-create-questions-container' container md={12}>
+                    <Grid item xs={12} sm={4} style={{ margin: '10px 0px' }}>
+                      <MuiPickersUtilsProvider utils={MomentUtils}>
+                        <KeyboardDatePicker
+                          minDate={new Date()}
+                          size='small'
+                          variant='dialog'
+                          format='YYYY-MM-DD'
+                          // margin='none'
+                          // className='button'
+                          className='dropdownIcon'
+                          id='date-picker'
+                          label='Due Date'
+                          inputVariant='outlined'
+                          fullWidth
+                          value={submissionDate}
+                          onChange={handleSubmissionDateChange}
+                          // className='dropdown'
+                          style={{ width: '100%' }}
+                          KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                          }}
+                        />
+                      </MuiPickersUtilsProvider>
+                    </Grid>
+                    <Grid item xs={12} className='form-field'>
+                      <FormControl variant='outlined' fullWidth size='small'>
+                        <InputLabel htmlFor='component-outlined'>Title</InputLabel>
+                        <OutlinedInput
+                          id='title'
+                          name='title'
+                          // onChange={() => {}}
+                          inputProps={{ maxLength: 20 }}
+                          label='Title'
+                          autoFocus
+                          value={homeworkTitle}
+                          onChange={(e) => {
+                            setHomeworkTitle(e.target.value);
+                          }}
+                          //error={errors.name ? true : false}
+                          //helperText="Title is required"
+                        />
+                        {/* <FormHelperText style={{ color: 'red' }}>{errors.name}</FormHelperText> */}
+                      </FormControl>
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      className='form-field'
+                      style={{ margin: '10px 0px' }}
+                    >
+                      <FormControl variant='outlined' fullWidth size='small'>
+                        <InputLabel htmlFor='component-outlined'>Instruction</InputLabel>
+                        <OutlinedInput
+                          id='description'
+                          name='Instruction'
+                          onChange={(e) => {
+                            setHomeworkInstructions(e.target.value);
+                          }}
+                          inputProps={{ maxLength: 150 }}
+                          multiline
+                          rows={4}
+                          rowsMax={6}
+                          label='Instruction'
+                          value={homeworkInstructions}
+                          //error={true}
+                          //helperText="Description required"
+                        />
+                        <FormHelperText style={{ color: 'red' }}>
+                          {/* {errors.description} */}
+                        </FormHelperText>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} className='form-field'>
+                      {questionList?.map((question, index) => (
+                        <QuestionCard
+                          key={question.id}
+                          question={question}
+                          isEdit={false}
+                          index={index}
+                          addNewQuestion={addNewQuestion}
+                          handleChange={handleChange}
+                          removeQuestion={removeQuestion}
+                          sessionYear={academicYear}
+                          branch={filterData?.branch?.id}
+                          grade={filterData?.grade?.id}
+                          subject={filterData?.subject?.id}
+                        />
+                      ))}
+                    </Grid>
+
+                    <Grid
+                      container
+                      item
+                      xs={12}
+                      spacing={1}
+                      style={{ marginTop: '10px' }}
+                    >
+                      <Grid item xs={12} md={6} className='form-field'>
+                        <div className='finish-btn-container'>
+                          <Button
+                            variant='contained'
+                            // style={{ color: 'white', width: '100%' }}
+                            // color='secondary'
+                            onClick={() => {
+                              setQueIndexCounter(queIndexCounter + 1);
+                              addNewQuestion(queIndexCounter + 1);
+                            }}
+                          >
+                            Add Another Question
+                          </Button>
+                        </div>
+                      </Grid>
+                      <Grid item xs={12} md={6} className='form-field'>
+                        <div className='finish-btn-container'>
+                          <Button
+                            variant='contained'
+                            style={{ color: 'white', width: '100%' }}
+                            color='primary'
+                            onClick={handleAddHomeWork}
+                          >
+                            Finish
+                          </Button>
+                        </div>
+                      </Grid>
+                    </Grid>
+                  </Grid>
+                </div>
+              </Grid>
+            )}
+            <div>
+              <Button
+                variant='contained'
+                style={{ marginLeft: '37px', marginTop: '20px' }}
+                onClick={handleBack}
+                className='labelColor cancelButton'
+              >
+                BACK
+              </Button>
+              <Button
+                variant='contained'
+                color='primary'
+                style={{ marginLeft: '20px', marginTop: '20px', color: 'white' }}
+                onClick={state.isEdit ? handleEdited : handleSubmit}
+              >
+                {state.isEdit ? 'Update' : 'Submit'}
+              </Button>
+            </div>
+            <Dialog
+              open={!declined && assignedHomeworkModal}
+              onClose={closeAssignedHomeworkModal}
+              aria-labelledby='alert-dialog-title'
+              aria-describedby='alert-dialog-description'
             >
-              BACK
-            </Button>
-            <Button
-              variant='contained'
-              color='primary'
-              style={{ marginLeft: '20px', marginTop: '20px', color: 'white' }}
-              onClick={state.isEdit ? handleEdited : handleSubmit}
-            >
-              {state.isEdit ? 'Update' : 'Submit'}
-            </Button>
+              <DialogContent>
+                <DialogContentText id='alert-dialog-description'>
+                  Homework already exists, do you want to link it to Diary?
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={closeAssignedHomeworkModal} color='primary'>
+                  No
+                </Button>
+                <Button onClick={mapAssignedHomework} color='primary' autoFocus>
+                  Yes
+                </Button>
+              </DialogActions>
+            </Dialog>
           </div>
-          <Dialog
-            open={!declined && assignedHomeworkModal}
-            onClose={closeAssignedHomeworkModal}
-            aria-labelledby='alert-dialog-title'
-            aria-describedby='alert-dialog-description'
-          >
-            <DialogContent>
-              <DialogContentText id='alert-dialog-description'>
-                Homework already exists, do you want to link it to Diary?
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={closeAssignedHomeworkModal} color='primary'>
-                No
-              </Button>
-              <Button onClick={mapAssignedHomework} color='primary' autoFocus>
-                Yes
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
         </div>
       </Layout>
     </>

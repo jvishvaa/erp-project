@@ -164,7 +164,7 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
           </Space>
         }
       >
-        <div className='row'>
+        <div className='row pb-2'>
           {diary?.dairy_type == 2 ? (
             <>
               <div
@@ -262,8 +262,7 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
                       <div className='col-8 pl-0' md={6}>
                         <div className='th-primary text-truncate'>{fileName}</div>
                       </div>
-                      
-                      <div className='col-4'>
+                      <div className='col-4 text-center'>
                         <a href={`${endpoints.announcementList.s3erp}${each}`} download>
                           <ArrowDownOutlined className='th-primary th-pointer' />
                         </a>
