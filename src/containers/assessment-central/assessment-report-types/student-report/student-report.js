@@ -19,6 +19,7 @@ import { Grid, TextField } from '@material-ui/core';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment';
+import './student-report.css'
 
 const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
   const { setAlert } = useContext(AlertNotificationContext);
@@ -347,6 +348,12 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
 
   return (
     <Layout>
+       <div className='student-report' style={{
+        // background: 'white',
+        height: '90vh',
+        overflowX: 'scroll',
+        overflowY: 'scroll',
+      }} >
       <CommonBreadcrumbs
         componentName='Assessment'
         isAcademicYearVisible={true}
@@ -451,6 +458,7 @@ const StudentReport = ({ widerWidth, isMobile, selectedReportType }) => {
           </TableContainer>
         </Grid>
       </Grid>
+      </div>
     </Layout>
   );
 };

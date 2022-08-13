@@ -10,6 +10,11 @@
   left: 0px;
 }
 
+.attendancescroll::-webkit-scrollbar {
+  width: 8px !important ;
+  height: 10px !important;
+  background-color: rgb(82, 50, 50) !important;
+}
 .second-col {
   width: 150px;
   min-width: 150px;

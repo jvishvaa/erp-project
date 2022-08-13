@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Switch, Route, useHistory } from 'react-router-dom';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { useDispatch, useSelector } from 'react-redux';
-import CreateGroup from 'containers/communication/create-group/create-group';
+import CreateGroup from 'containers/communication/create-group/createGroup';
 import ViewGroup from 'containers/communication/view-group/view-group';
 import UpdateGroup from 'containers/communication/update-group/index';
 import MessageCredit from 'containers/communication/message-credit/message-credit';
@@ -416,6 +416,7 @@ import CurriculumBranchWise from 'containers/dashboard/ownerDashboard/academic/c
 import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStudent';
 import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
+import UserProfile from 'containers/login/profiles';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -423,6 +424,9 @@ const V1Router = [
   <Route path='/profile'>{({ match }) => <Profile match={match} />}</Route>,
   <Route path='/role-management'>
     {({ match }) => <RoleManagement match={match} />}
+  </Route>,
+  <Route path='/userprofile'>
+  {({ match }) => <UserProfile match={match} />}
   </Route>,
   <Route path='/user-management'>
     {({ match }) => <UserManagement match={match} />}
@@ -575,16 +579,16 @@ const V1Router = [
   <Route exact path='/blog/student/view-blog'>
     {({ match }) => <BlogView match={match} />}
   </Route>,
-  <Route exact path='/communication/addgroup'>
+  <Route exact path='/addgroup'>
     {({ match }) => <CreateGroup match={match} />}
   </Route>,
   <Route exact path='/communication/smscredit'>
     {({ match }) => <MessageCredit match={match} />}
   </Route>,
-  <Route exact path='/communication/viewgroup'>
+  <Route exact path='/viewgroup'>
     {({ match }) => <ViewGroup match={match} />}
   </Route>,
-  <Route exact path='/communication/updategroup'>
+  <Route exact path='/updategroup'>
     {({ match }) => <UpdateGroup match={match} />}
   </Route>,
   <Route exact path='/communication/sendmessage'>

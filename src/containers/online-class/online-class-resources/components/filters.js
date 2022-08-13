@@ -74,6 +74,8 @@ const Filter = (props) => {
     /* { id: 1, type: 'Optional Class' },
     { id: 2, type: 'Special Class' },
     { id: 3, type: 'Parent Class' }, */
+    { id: 4, type: 'Remedial Classes' },
+
   ]);
   const [selectedClassType, setSelectedClassType] = useState('');
   const [moduleId, setModuleId] = useState();
@@ -294,7 +296,7 @@ const Filter = (props) => {
       setAlert('warning', 'Select Section');
       return;
     }
-    if (selectedClassType.id !== 0) {
+    if (selectedClassType.id !== 0 && selectedClassType.id !== 4) {
       if (!selectedCourse) {
         setAlert('warning', 'Select Course');
         return;
@@ -669,7 +671,7 @@ const Filter = (props) => {
             )}
           />
         </Grid>
-        {selectedClassType?.id === 0 && gradeList.length > 0 ? (
+        {(selectedClassType?.id === 0 || selectedClassType.id === 4) && gradeList.length > 0 ? (
           <Grid item md={3} xs={12}>
             <Autocomplete
               multiple

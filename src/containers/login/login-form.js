@@ -98,7 +98,6 @@ function LoginForm(props) {
                 window.location.href = refURL;
               } else if (userData?.user_level !== 4) {
                 history.push('/acad-calendar');
-                console.log(userData?.user_level, 'level');
               } else {
                 history.push('/dashboard');
               }

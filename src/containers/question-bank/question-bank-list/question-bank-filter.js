@@ -11,8 +11,15 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import Loading from '../../../components/loader/loader';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 // import { connect } from 'react-redux';
 import './question-bank.css';
+import ENVCONFIG from '../../../../src/config/config';
+import { setFilter } from 'redux/actions';
+
+const {
+  apiGateway: { baseURLCentral, xAPIKey },
+} = ENVCONFIG;
 
 const QuestionBankFilters = ({
   questionList,
@@ -46,6 +53,14 @@ const QuestionBankFilters = ({
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [topicDropdown, setTopicDropdown] = useState([]);
   const [queTypeDropdown, setQueTypeDropdown] = useState([]);
+  const [centralGsMappingId, setCentralGsMappingId] = useState();
+  const [boardDropdown, setBoardDropdown] = useState([]);
+  const [selectedBoardId, setSelectedBoardId] = useState([]);
+  const [selectedModuleId, setSelectedModuleId] = useState([]);
+  const [moduleDropdown, setModuleDropdown] = useState([]);
+  const [selectedKeyConceptId, setSelectedKeyConceptId] = useState([]);
+  const [keyConceptDropdown, setKeyConceptDropdown] = useState([]);
+  const location = useLocation();
 
   const question_level_options = [
     { value: 1, Question_level: 'Easy' },
@@ -64,6 +79,14 @@ const QuestionBankFilters = ({
     { id: 1, flag: false, name: 'ERP' },
     { id: 2, flag: true, name: 'CENTRAL' },
   ];
+
+  let boardFilterArr = [
+    'orchids.letseduvate.com',
+    'localhost:3000',
+    'localhost:3001',
+    'dev.olvorchidnaigaon.letseduvate.com',
+    'qa.olvorchidnaigaon.letseduvate.com'
+  ]
 
   const [filterData, setFilterData] = useState({
     year: '',
@@ -105,6 +128,15 @@ const QuestionBankFilters = ({
       history.goBack();
     }
   }, [questionList?.length]);
+
+  useEffect(() => {
+    if (!boardFilterArr.includes(window.location.host)) {
+      if (filterData?.subject && boardDropdown.length > 0) {
+        let data = boardDropdown?.filter((item) => item?.board_name === 'CBSE');
+        handleBoard('', data);
+      }
+    }
+  }, [filterData?.subject, boardDropdown])
 
   useEffect(() => {
     if (moduleId && selectedAcademicYear) {
@@ -216,6 +248,7 @@ const QuestionBankFilters = ({
       branch: '',
       grade: '',
       subject: '',
+      board: '', module: '',
       chapter: '',
       question_level: '',
       question_category: '',
@@ -315,6 +348,7 @@ const QuestionBankFilters = ({
       grade: '',
       section: '',
       subject: '',
+      board: '', module: '',
       chapter: '',
       question_level: '',
       question_category: '',
@@ -357,6 +391,7 @@ const QuestionBankFilters = ({
     setFilterData({
       ...filterData,
       subject: '',
+      board: '', module: '',
       chapter: '',
       question_level: '',
       question_category: '',
@@ -368,13 +403,19 @@ const QuestionBankFilters = ({
     if (value) {
       setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
       if (value) {
-        axiosInstance
-          .get(
-            `${endpoints.questionBank.chapterList}?branch_id=${filterData?.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade=${filterData?.grade?.grade_id}&subject_id=${value?.id}&subject=${value?.subject_id}`
+        axios
+          .get(`${baseURLCentral}/central-admin/boards/`,
+            {
+              headers: { 'x-api-key': 'vikash@12345#1231' }
+            }
           )
           .then((result) => {
             if (result?.data?.status_code === 200) {
-              setChapterDropdown(result?.data?.result);
+              // setChapterDropdown(result?.data?.result);
+              if (!boardFilterArr.includes(window.location.host)) {
+                setBoardDropdown(result?.data?.result)
+              }
+              setBoardDropdown(result?.data?.result)
               setLoading(false);
             } else {
               setAlert('error', result?.data?.message);
@@ -388,6 +429,120 @@ const QuestionBankFilters = ({
       }
     } else {
       setLoading(false);
+    }
+    if (filterData?.is_erp_central?.name == 'ERP') {
+      if (value) {
+        axiosInstance
+          .get(
+            `${endpoints.questionBank.chapterList}?branch_id=${filterData?.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade=${filterData?.grade?.grade_id}&subject_id=${value?.id}&subject=${value?.subject_id}`,
+          )
+          .then((result) => {
+            if (result?.data?.status_code === 200) {
+              setLoading(false);
+              setChapterDropdown(result?.data?.result);
+              // setChapterDropdown(result?.data?.result?.chapter_list);
+            } else {
+              setLoading(false);
+              setAlert('error', result.data.message);
+              setChapterDropdown([]);
+            }
+          })
+          .catch((error) => {
+            setLoading(false);
+            setAlert('error', error.message);
+            setChapterDropdown([]);
+          });
+      }
+    }
+  };
+
+
+  const handleBoard = (event = {}, values = []) => {
+    setPage(1)
+    setFilterData({ ...filterData, board: '', module: '', chapter: '', keyconcept: '' });
+    setChapterDropdown([]);
+    setKeyConceptDropdown([]);
+    setModuleDropdown([]);
+    if (values.length > 0) {
+      setChapterDropdown([]);
+      setKeyConceptDropdown([]);
+      setLoading(true);
+      const ids = values.map((el) => el);
+      const selectedId = values.map((el) => el?.id);
+      setSelectedBoardId(selectedId);
+      setFilterData({
+        ...filterData,
+        chapter: '',
+        board: ids,
+        module: '',
+        keyconcept: '',
+      });
+      // axios
+      axiosInstance
+        .get(
+          `academic/get-central-module-list/?subject_id=${filterData?.subject?.subject_id}&grade_id=${filterData.grade.grade_id}&branch_id=${filterData?.branch?.branch?.id}&board=${selectedId}`,
+        )
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setLoading(false);
+            // setModuleDropdown(result?.data?.result?.module_list);
+            setModuleDropdown(result.data.result);
+            setCentralGsMappingId(result?.data?.result?.central_gs_mapping_id);
+            // setCentralSubjectName(result?.data?.result?.central_subject_name);
+            // setCentralGradeName(result?.data?.result?.central_grade_name);
+          } else {
+            setAlert('error', result?.data?.message);
+            setChapterDropdown([]);
+            setLoading(false);
+            setSelectedBoardId([]);
+            setModuleDropdown([]);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          setAlert('error', error.message);
+          setSelectedBoardId([]);
+          setModuleDropdown([]);
+        });
+    } else {
+      setChapterDropdown([]);
+      setLoading(false);
+      setSelectedBoardId([]);
+      setModuleDropdown([]);
+    }
+  };
+
+  const handleModule = (event = {}, value = []) => {
+    setPage(1)
+    setLoading(true);
+    setFilterData({ ...filterData, module: '', chapter: '', keyconcept: '' });
+    if (value) {
+      setLoading(true);
+      setSelectedModuleId(value?.id);
+      setFilterData({ ...filterData, chapter: '', module: value, keyconcept: '' });
+      axiosInstance
+        .get(
+          `${endpoints.questionBank.chapterList}?branch_id=${filterData?.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade=${filterData?.grade?.grade_id}&subject_id=${filterData?.subject?.id}&subject=${filterData?.subject?.subject_id}&board_id=${selectedBoardId}&module_id=${value?.id}`,
+        )
+        .then((result) => {
+          if (result?.data?.status_code === 200) {
+            setLoading(false);
+            setChapterDropdown(result?.data?.result);
+            // setChapterDropdown(result?.data?.result?.chapter_list);
+          } else {
+            setLoading(false);
+            setAlert('error', result.data.message);
+            setChapterDropdown([]);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          setAlert('error', error.message);
+          setChapterDropdown([]);
+        });
+    } else {
+      setLoading(false);
+      setChapterDropdown([]);
     }
   };
 
@@ -542,6 +697,27 @@ const QuestionBankFilters = ({
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
+            onChange={handleIsErpCentral}
+            id='Question Type'
+            className='dropdownIcon'
+            value={filterData?.is_erp_central || {}}
+            options={is_ERP_CENTRAL || []}
+            getOptionLabel={(option) => option?.name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Question From'
+                placeholder='Question From'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
             onChange={handleSubject}
             id='subject'
             className='dropdownIcon'
@@ -559,6 +735,67 @@ const QuestionBankFilters = ({
             )}
           />
         </Grid>
+
+        {filterData?.is_erp_central?.name == 'CENTRAL' ?
+          <>
+            {(boardFilterArr.includes(window.location.host)) &&
+              <Grid
+                item
+                xs={12}
+                sm={3}
+                className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+              >
+                <Autocomplete
+                  multiple
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleBoard}
+                  id='board'
+                  className='dropdownIcon'
+                  value={filterData.board || []}
+                  options={boardDropdown || []}
+                  getOptionLabel={(option) => option?.board_name || ''}
+                  // filterSelectedOptions
+                  getOptionSelected={(option, value) => option?.id == value?.id}
+                  renderInput={(params) => (
+                    <TextField {...params} variant='outlined' label='Board' placeholder='Board'
+                    // required 
+                    />
+                  )}
+                />
+              </Grid>}
+            <Grid
+              item
+              xs={12}
+              sm={3}
+              className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+            >
+              <Autocomplete
+                // multiple
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleModule}
+                id='module'
+                className='dropdownIcon'
+                value={filterData.module || []}
+                options={moduleDropdown || []}
+                getOptionLabel={(option) => option?.lt_module_name || ''}
+                filterSelectedOptions
+                // getOptionSelected={(option, value) =>
+                //     option?.id == value?.id
+                //   }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Module'
+                    placeholder='Module'
+                  // required
+                  />
+                )}
+              />
+            </Grid>
+          </> : null}
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
@@ -664,27 +901,7 @@ const QuestionBankFilters = ({
             )}
           />
         </Grid>
-        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-          <Autocomplete
-            style={{ width: '100%' }}
-            size='small'
-            onChange={handleIsErpCentral}
-            id='Question Type'
-            className='dropdownIcon'
-            value={filterData?.is_erp_central || {}}
-            options={is_ERP_CENTRAL || []}
-            getOptionLabel={(option) => option?.name || ''}
-            filterSelectedOptions
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                variant='outlined'
-                label='Question From'
-                placeholder='Question From'
-              />
-            )}
-          />
-        </Grid>
+
 
         {!isMobile && (
           <Grid item xs={12} sm={12}>

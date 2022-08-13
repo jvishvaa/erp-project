@@ -1017,12 +1017,10 @@ const MultipleChoice = ({
                   <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
                     <Button
                       variant='contained'
+                      style={{ color: 'white', width: '100%' }}
                       color='primary'
                       size='medium'
-                      className={classes.draftbtn}
-                      style={{
-
-                      }}
+                      // className={classes.draftbtn}
                       onClick={handleSave}
                     >
                       Save as Draft

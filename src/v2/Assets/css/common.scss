@@ -101,6 +101,9 @@ body {
 .th-bg-grey {
   background-color: #f8f8f8 !important;
 }
+.th-bg-yellow {
+  background-color: #fffde8 !important;
+}
 
 #th-select {
   background: #f8f8f8 !important;
@@ -298,4 +301,16 @@ body {
 
 .th-top-switch .ant-switch-checked .ant-switch-handle {
   left: calc(100% - 15px - 2px) !important;
+}
+
+.th-upload-modal .ant-modal-header {
+  background-color: #1b4ccb !important;
+  border-radius: 10px 10px 0px 0px !important;
+}
+.th-upload-modal .ant-modal-title {
+  color: #ffffff !important;
+  font-weight: 500 !important;
+}
+.th-upload-modal .ant-modal-close-x {
+  color: #ffffff !important;
 }

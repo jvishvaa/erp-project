@@ -34,6 +34,8 @@ function StudentAttendance({ history }) {
     { id: 1, type: 'Optional Class' },
     { id: 2, type: 'Special Class' },
     { id: 3, type: 'Parent Class' },
+    { id: 4, type: 'Remedial Classes' },
+
   ]);
   const [selectedClassType, setSelectedClassType] = useState('');
   const [dateRangeTechPer, setDateRangeTechPer] = useState([

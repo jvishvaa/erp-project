@@ -30,6 +30,7 @@ export default {
     grades: '/erp_user/grademapping/',
     sections: '/erp_user/sectionmapping/',
     testTypes: '/assessment/exam-type-list/',
+    chapter: '/assessment/chapters/',
     courses: '/aol/courses/',
     attendance: '/academic/student_attendance_between_date_range/',
     showAttendance: '/academic/show_attendance/',
@@ -74,6 +75,9 @@ export default {
     pendingClasswork: `${msReportsUrlNew}/api/acad_performance/v1/student-cw-report-dash/`,
     assessment: `${msReportsUrlNew}/api/acad_performance/v1/student-assesment-report-dash/`,
   },
+  doodle: {
+    checkDoodle: `/assessment/check-sys-config/`,
+  },
   createAnnouncement: {
     membersCount: `/announcement/members/`,
     uploadFile: `announcement/upload-announcement-file/`,
@@ -85,6 +89,20 @@ export default {
     monthly: `/period/calendar-v2/`,
     weekly: `/period/calendar/`,
     daily: `/period/calendar/`,
+  },
+  generalDiary: {
+    diaryList: '/academic/general-dairy-messages/',
+  },
+  dailyDiary: {
+    createDiary: '/academic/create-dairy/',
+    branches: '/academic/chapters/',
+    updateDelete: '/academic/',
+    chapterList: '/academic/logged-in-users-subjects/',
+    questionList: '/assessment/questions-list/',
+    upload: '/academic/dairy-upload/',
+    removeFile: '/academic/delete-file/',
+    generalDiaryUsers: '/academic/general-dairy-users/',
+    assignHomeworkDiary: '/academic/assign-homework-dairy/',
   },
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },
   s3: s3BUCKET,

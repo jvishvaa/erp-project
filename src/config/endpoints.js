@@ -9,7 +9,7 @@ const {
     baseURL,
     baseURLMPQ,
   },
-  s3: { BUCKET: s3BUCKET, ERP_BUCKET,UDAAN_BUCKET:s3UDAAN_BUCKET },
+  s3: { BUCKET: s3BUCKET, ERP_BUCKET, UDAAN_BUCKET: s3UDAAN_BUCKET },
 } = ENVCONFIG;
 
 // const baseURLCentral = 'http://13.232.30.169/qbox';
@@ -23,6 +23,7 @@ const {
 export default {
   auth: {
     login: '/auth/login/',
+    mobileLogin: '/erp_user/erp-contact-login/',
   },
   checkAcademicView: {
     isAcademicView: '/period/period-erp-system-config/',
@@ -52,15 +53,15 @@ export default {
     notifyAttendance: '/erp_user/sms-notifying-students/',
     markAllAttendance: '/erp_user/mark-attendance-of-all-students/',
     dataupdate: '/erp_user/present_absent',
-    checkOMR : '/assessment/check-sys-config/?config_key=enable_omr_uploads_branches',
+    checkOMR: '/assessment/check-sys-config/?config_key=enable_omr_uploads_branches',
     buttonStatus: `/assessment/check-sys-config/?config_key=config_properties&config_type=json`,
-
   },
   appBar: {
     schoolLogo: `${baseURLCentral}/central-admin/school_logo/`,
   },
   profile: {
     userDetails: '/erp_user/user-data/',
+    Profilestories: 'https://d3ka3pry54wyko.cloudfront.net/',
   },
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
@@ -83,7 +84,7 @@ export default {
     deletePeriod: '/period/period/',
     editPeriod: '/period/period/',
     collidingPeriod: 'period/deactivate_period/',
-    teacherTimeTable: '/period/teacher-retrieve-week-periods/'
+    teacherTimeTable: '/period/teacher-retrieve-week-periods/',
   },
   communicationRoles: {
     roles: '/academic/booked-appointment-role-list/',
@@ -98,9 +99,12 @@ export default {
     viewUser: '/communication/v1/view-users/',
     userListV2: '/communication/erp-user-info-v2/',
     communicationUserList: '/communication/communication-user-list/',
+    userGroups: `assessment/list-create-groups/`,
     studentUserList: '/communication/student-user-list/',
     createGroup: '/communication/communication-group/',
-    editGroup: '/communication/',
+    addGroup: '/assessment/list-create-groups/',
+    editGroup: '/assessment/',
+    edit: '/communication/',
     getGroups: '/communication/communication-group/',
     groupList: '/communication/groups-list/',
     getMessageTypes: '/communication/message-types/',
@@ -195,6 +199,7 @@ export default {
     upload: '/academic/upload-homework/',
     HwSubmittedDetail: '/academic/homework-submitted-data/',
     submitToUnsubmit: '/academic/homework-submitted-unsubmitted/',
+    resourcesS3: 'https://d2r9gkgplfhsr2.cloudfront.net',
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',
@@ -341,6 +346,7 @@ export default {
     branches: '/academic/chapters/',
     updateDelete: '/academic/',
     chapterList: '/academic/logged-in-users-subjects/',
+    assignHomeworkDiary: '/academic/assign-homework-dairy/',
   },
   onlineCourses: {
     createCourse: '/aol/courses/',
@@ -464,7 +470,7 @@ export default {
     s3: 'https://d3ka3pry54wyko.cloudfront.net',
     examTypeList: '/assessment/exam-type-list/',
     downloadAssessmentPdf: '/assessment/test1/',
-    getGroups : '/assessment/list-create-groups/',
+    getGroups: '/assessment/list-create-groups/',
   },
 
   assessment: {
@@ -485,7 +491,9 @@ export default {
     offlineAssesment: '/assessment/offline-assessment-list/',
     studentMarks: '/assessment/ru-offline-asmnt/',
     OMRResponse: '/assessment/list-omr-sheets/',
-    bulkUploadMarks : `/assessment/upload-omr-result-excel/`
+    bulkUploadMarks: `/assessment/upload-omr-result-excel/`,
+    imageupload: '/assessment/assessment-document-upload/',
+    studentImgs: '/assessment/assessment-document-upload/',
   },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,
@@ -546,7 +554,7 @@ export default {
     erpQuestionList: '/assessment/questions-list/',
     erpViewMoreData: '/assessment/question-details/',
     erpQuestionPublishing: '/assessment/publish-question/',
-    erpQuestionNewPublishing: `/assessment/publish-multiple-question/`
+    erpQuestionNewPublishing: `/assessment/publish-multiple-question/`,
   },
   assementQP: {
     assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,
@@ -871,5 +879,5 @@ export default {
   aolConfirmURL: 'aol.letseduvate.com', //WARNING: Uncomment this code before pushing
   // aolConfirmURL:'localhost:3000', //WARNING: Comment this code before pushing
   baseURLCentral,
-  s3UDAAN_BUCKET:s3UDAAN_BUCKET,
+  s3UDAAN_BUCKET: s3UDAAN_BUCKET,
 };

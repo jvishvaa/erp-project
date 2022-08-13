@@ -1,0 +1,33 @@
+.card_container {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  height: 70vh;
+  width: calc(100vw -20pc) !important;
+  overflow-y: scroll;
+}
+
+.card_style {
+    width: 22%;
+    height: 150px !important;
+    height: fit-content;
+    cursor: pointer;
+    border-radius: 5px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
+    margin: 20px 20px;
+    &:hover {
+        border-radius: 5px;
+        box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
+      }
+
+      @media (min-width: 1280px) and (max-width: 1919px) {
+        width: 30%;
+      }
+      @media (min-width: 960px) and (max-width: 1279px) {
+        width: 45%;
+      }
+      @media (max-width: 600px) {
+        width: 45%;
+      }
+
+}

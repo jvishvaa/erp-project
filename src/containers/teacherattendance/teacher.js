@@ -527,6 +527,12 @@ export default function TeacherAttendance(props) {
   const prod = 'orchids.letseduvate.com'
   return (
     <Layout>
+      <div className='attendancescroll' style={{
+        background: 'white',
+        height: '90vh',
+        overflowX: 'hidden',
+        overflowY: 'scroll',
+      }}>
       <Grid
         container
         direction='row'
@@ -798,6 +804,7 @@ export default function TeacherAttendance(props) {
           </Button>
         </DialogActions>
       </Dialog>
+      </div>
     </Layout>
   );
 }

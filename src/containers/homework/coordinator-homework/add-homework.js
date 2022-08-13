@@ -9,7 +9,7 @@ import {
   TextField,
   Grid,
   withStyles,
-  makeStyles
+  makeStyles,
 } from '@material-ui/core';
 import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
 import cuid from 'cuid';
@@ -42,15 +42,16 @@ const useStyles = makeStyles((theme) => ({
   headerText: {
     color: theme.palette.secondary.main,
     fontWeight: 600,
-    fontSize: "1rem",
+    fontSize: '1rem',
     ['@media screen(min-width:780px)']: {
-      fontSize: "0.85rem",
-    }
-  },navCard:{
-    border : `1px solid ${theme.palette.primary.main}`
-  }
-}))
-const StyledOutlinedButton = withStyles((theme)=>({
+      fontSize: '0.85rem',
+    },
+  },
+  navCard: {
+    border: `1px solid ${theme.palette.primary.main}`,
+  },
+}));
+const StyledOutlinedButton = withStyles((theme) => ({
   root: {
     height: '42px',
     color: theme.palette.primary.main,
@@ -58,7 +59,7 @@ const StyledOutlinedButton = withStyles((theme)=>({
     backgroundColor: 'transparent',
     '& .MuiSvgIcon-root': {
       color: theme.palette.primary.main,
-      fontSize:'20px'
+      fontSize: '20px',
     },
     '@media (min-width: 600px)': {
       marginRight: '10px',
@@ -67,7 +68,7 @@ const StyledOutlinedButton = withStyles((theme)=>({
 }))(Button);
 
 const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
-  const classes = useStyles()
+  const classes = useStyles();
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [errors, setErrors] = useState({ name: '', description: '' });
@@ -133,7 +134,7 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
       const reqObj = {
         name,
         description,
-        section_mapping: sectionDisplay.map(data => parseInt(data.id, 10)),
+        section_mapping: sectionDisplay.map((data) => parseInt(data.id, 10)),
         subject: params.id,
         date: params.date,
         last_submission_date: dateValue,
@@ -174,7 +175,7 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
     setQuestions((prevState) => [
       ...prevState.slice(0, index),
       ...prevState.slice(index + 1),
-    ]);    
+    ]);
   };
 
   const handleChange = (index, field, value) => {
@@ -215,20 +216,23 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
   }, []);
 
   useEffect(() => {
-    if(teacherModuleId && sessionYear && branch && grade) {
-      axiosInstance.get(`${endpoints.academics.sections}?session_year=${sessionYear}&branch_id=${branch}&grade_id=${grade}&module_id=${teacherModuleId}`)
-      .then((result) => {
-        if (result.data.status_code === 200) {
-          setSections(result.data?.data);
-        } else {
-          setAlert('error', result.data.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error.message);
-      });
+    if (teacherModuleId && sessionYear && branch && grade) {
+      axiosInstance
+        .get(
+          `${endpoints.academics.sections}?session_year=${sessionYear}&branch_id=${branch}&grade_id=${grade}&module_id=${teacherModuleId}`
+        )
+        .then((result) => {
+          if (result.data.status_code === 200) {
+            setSections(result.data?.data);
+          } else {
+            setAlert('error', result.data.message);
+          }
+        })
+        .catch((error) => {
+          setAlert('error', error.message);
+        });
     }
-  },[teacherModuleId, sessionYear, branch, grade])
+  }, [teacherModuleId, sessionYear, branch, grade]);
 
   const handleSection = (event, value) => {
     //setSearchSection([]);
@@ -240,15 +244,15 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
       setSectionDisplay(value);
     }
   };
-
+  console.log('ppp2', sessionYear, grade, branch);
   return (
     <Layout>
       <CommonBreadcrumbs
-          componentName='Homework'
-          childComponentName='Add Homework'
-          isAcademicYearVisible={true}
-        />
-      <div className={ `${classes.ahcc} add-homework-container-coordinator`}>
+        componentName='Homework'
+        childComponentName='Add Homework'
+        isAcademicYearVisible={true}
+      />
+      <div className={`${classes.ahcc} add-homework-container-coordinator`}>
         <Grid container spacing={2} className='add-homework-inner-container'>
           <Grid item xs={12} className='add-homework-title-container' md={3}>
             <div className='nav-cards-container'>
@@ -258,13 +262,17 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
                   history.push('/homework/coordinator/');
                 }}
               >
-                <div className={` ${classes.headerText} text-center non_selected_homework_type_item`}>
+                <div
+                  className={` ${classes.headerText} text-center non_selected_homework_type_item`}
+                >
                   All Homeworks
                 </div>
               </div>
               <div className={` ${classes.navCard} nav-card`}>
                 <div className={`${classes.headerText} text-center`}>{params.date}</div>
-                <div className={`${classes.headerText} text-center`}>{params.subject}</div>
+                <div className={`${classes.headerText} text-center`}>
+                  {params.subject}
+                </div>
               </div>
             </div>
           </Grid>
@@ -362,6 +370,10 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
                   addNewQuestion={addNewQuestion}
                   handleChange={handleChange}
                   removeQuestion={removeQuestion}
+                  sessionYear={sessionYear}
+                  branch={branch}
+                  grade={grade}
+                  subject={params?.id}
                 />
               ))}
 
@@ -369,7 +381,7 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
                 <Grid item xs={12} md={6} className='form-field'>
                   <div className='finish-btn-container'>
                     <StyledOutlinedButton
-                      startIcon={<AddCircleOutlineIcon color="primary"/>}
+                      startIcon={<AddCircleOutlineIcon color='primary' />}
                       onClick={() => {
                         setQueIndexCounter(queIndexCounter + 1);
                         addNewQuestion(queIndexCounter + 1);
@@ -383,10 +395,11 @@ const AddHomeworkCord = ({ onAddHomework, onSetSelectedHomework }) => {
                 <Grid item xs={12} md={6}>
                   <div className='finish-btn-container'>
                     <Button
-                    style={{color: 'white', width: '100%' }}  
-                    color='primary' 
-                    variant = "contained" 
-                    onClick={handleAddHomeWork}>
+                      style={{ color: 'white', width: '100%' }}
+                      color='primary'
+                      variant='contained'
+                      onClick={handleAddHomeWork}
+                    >
                       Finish
                     </Button>
                   </div>

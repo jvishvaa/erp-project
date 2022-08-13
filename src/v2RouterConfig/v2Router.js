@@ -22,6 +22,10 @@ import CreateAnnouncement from 'v2/FaceLift/Announcement/CreateAnnouncement/Crea
 import StudentDashboardNew from 'v2/FaceLift/StudentDashboard';
 import V1Router from './v1RouterConst';
 import AcadCalendar from 'containers/academicCalendar/fullcalendar/acadCalendar';
+import Diary from 'v2/FaceLift/Diary';
+import DailyDiary from 'v2/FaceLift/Diary/DailyDiary';
+import GeneralDiary from 'v2/FaceLift/Diary/GeneralDiary';
+
 
 const V2Router = () => {
   useEffect(() => {
@@ -86,6 +90,15 @@ const V2Router = () => {
                         </Route>
                         <Route path='/create-announcement'>
                           {({ match }) => <CreateAnnouncement match={match} />}
+                        </Route>
+                        <Route path='/diary/teacher'>
+                          {({ match }) => <Diary match={match} />}
+                        </Route>
+                        <Route path='/create/daily-diary'>
+                          {({ match }) => <DailyDiary match={match} />}
+                        </Route>
+                        <Route path='/create/general-diary'>
+                          {({ match }) => <GeneralDiary match={match} />}
                         </Route>
                         s{/* v1 router */}
                         {V1Router?.map((item) => {
