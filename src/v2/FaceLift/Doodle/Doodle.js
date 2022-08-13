@@ -4,9 +4,9 @@ import { Popover, message } from 'antd';
 import { InfoCircleOutlined } from '@ant-design/icons';
 
 const Doodle = () => {
-  let title = 'Happy 76th Independence Day';
+  let title = '75 Years of Independence';
   let description =
-    "This 15th August marks the 75 years of Independence in India. The Government of India decided to celebrate the 75 years of Independence of India, with great excitement and tribute to freedom fighters. So, they decided to do various programs and the government named the celebration as 'Azadi Ka Amrit Mahotsav'. Amrit Mahotsav meaning Nectar of grand celebration which signifies the 75 years of India's independence from British Raj.The government of India also started a campaign 'Har Ghar Tiranga' where it will provide the National flag to every household. While the government had promised to supply the flag made of polyester to every homes it has not reached the supply.";
+    "This 15th August marks the 75 years of Independence in India. The Government of India decided to celebrate the 75 years of Independence of India, with great excitement and tribute to freedom fighters. So, they decided to do various programs and the government named the celebration as 'Azadi Ka Amrit Mahotsav'. Amrit Mahotsav meaning Nectar of grand celebration which signifies the 75 years of India's independence from British Raj.The government of India also started a campaign 'Har Ghar Tiranga' where it will provide the National flag to every household. ";
   const doodleInfo = () => {
     return (
       <div className='row p-2 flex-column'>
