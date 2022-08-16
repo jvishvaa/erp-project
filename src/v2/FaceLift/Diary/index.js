@@ -1,7 +1,17 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import Layout from 'containers/Layout';
-import { Breadcrumb, Select, Tabs, Button, DatePicker, message, Form, Spin } from 'antd';
+import {
+  Breadcrumb,
+  Select,
+  Tabs,
+  Button,
+  DatePicker,
+  message,
+  Form,
+  Spin,
+  Pagination,
+} from 'antd';
 import moment from 'moment';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -63,7 +73,6 @@ const Diary = () => {
         grades: gradeID,
         sections: sectionID,
         page: 1,
-        page_size: 6,
         start_date: startDate,
         end_date: endDate,
       };
@@ -276,6 +285,13 @@ const Diary = () => {
                       placeholder='Academic Year'
                       allowClear
                       onClear={handleClearAcademic}
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
                     >
                       {yearOptions}
                     </Select>
@@ -289,6 +305,13 @@ const Diary = () => {
                       placeholder='Branch'
                       allowClear
                       onClear={handleClearBranch}
+                      showSearch
+                      optionFilterProp='children'
+                      filterOption={(input, options) => {
+                        return (
+                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        );
+                      }}
                     >
                       {branchOptions}
                     </Select>

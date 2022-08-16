@@ -74,6 +74,10 @@ const UserProfiles = () => {
               'navigationData',
               JSON.stringify(result.data?.login_response?.result?.navigation_data)
             );
+            localStorage.setItem(
+              'apps',
+              JSON.stringify(result?.data?.login_response?.result?.apps)
+            );
             setAlert('success', result.data.message);
             isMsAPI();
             fetchERPSystemConfig(profileData?.isLogin).then((res) => {

@@ -435,13 +435,14 @@ const QuestionPaperInfo = ({
             </Button>
           )}</> :
           <div>
-            <h4>Upload Here</h4>
+            <h5>Upload the image file here.</h5>
             <input
               className='file-upload-input'
               type='file'
               // style={{ display: 'none' }}
               name='attachments'
-              accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
+              // accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
+              accept='.png, .jpg, .jpeg, .PNG, .JPG, .JPEG,'
               onChange={(e) => {
                 handleFileUpload(e.target.files[0]);
                 e.target.value = null;
@@ -469,7 +470,7 @@ const QuestionPaperInfo = ({
                 </IconButton>
                 <small className={classes.acceptedfiles}>
                   {' '}
-                  Accepted files: jpeg,jpg,mp3,mp4,pdf,png
+                  Accepted files: .png, .jpg, .jpeg, .PNG, .JPG, .JPEG,
                   {/*sizeValied ? 'Accepted files: jpeg,jpg,mp3,mp4,pdf,png' : 'Document size should be less than 5MB !'*/}
                 </small>
               </>
