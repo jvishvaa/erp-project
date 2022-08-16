@@ -238,7 +238,7 @@ const Appbar = ({ children, history, ...props }) => {
   }, [acdemicCurrentYear, academicYearlist]);
 
   useEffect(() => {
-    if (branchList === '') {
+    if (branchList === '' || branchList === null) {
       dispatch(fetchBranchList(acdemicCurrentYear?.id));
     }
   }, []);
@@ -347,6 +347,10 @@ const Appbar = ({ children, history, ...props }) => {
   };
 
   const handleSwitchChange = (event) => {
+    sessionStorage.removeItem("branch_list")
+    sessionStorage.removeItem('selected_branch')
+    sessionStorage.removeItem('acad_session_list')
+    sessionStorage.removeItem('acad_session')
     let filterItem = profileDetails?.data?.filter((item) => item.name === event)
     let savedProfile = localStorage.setItem('selectProfileDetails', JSON.stringify(filterItem[0])) || {}
     setProfile(filterItem[0]?.name)
@@ -657,8 +661,7 @@ const Appbar = ({ children, history, ...props }) => {
                   sx={{ m: 1, minWidth: 100 }}
                 >
                   <div className='px-2 th-black-2 th-14'> Logged In As : {profile}</div>
-                  {/* <Select
-                    // onChange={handleBranchChange}
+                  <Select
                     onChange={handleSwitchChange}
                     value={profile}
                     className='th-primary th-bg-white th-br-4 text-left th-topbar-select'
@@ -679,7 +682,7 @@ const Appbar = ({ children, history, ...props }) => {
                         </Option>
                       );
                     })}
-                  </Select> */}
+                  </Select>
                 </FormControl>
               </div>
             )}
