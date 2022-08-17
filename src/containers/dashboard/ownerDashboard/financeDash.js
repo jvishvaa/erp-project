@@ -289,6 +289,7 @@ const useStyles = makeStyles((theme) => ({
 const FinanceOwnerDashboard = (props) => {
   const classes = useStyles();
   const history = useHistory();
+  debugger
 
   const [academicPerformanceDetailsOpen, setAcademicPerformanceDetailsOpen] = useState(
     false
@@ -1491,7 +1492,7 @@ const FinanceOwnerDashboard = (props) => {
                           <CircularProgress />
                         ) : (
                           <>
-                            {props?.staffOverAll[0] ? (
+                            {props && props?.staffOverAll?.length && props?.staffOverAll[0] ? (
                               <Grid
                                 container
                                 spacing={1}
