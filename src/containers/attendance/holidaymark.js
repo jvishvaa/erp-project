@@ -60,7 +60,7 @@ const HolidayMark = () => {
     button: {
       display: 'flex',
       justifyContent: 'space-evenly',
-      width: '20%',
+      // width: '20%',
     },
   }));
 
@@ -342,7 +342,6 @@ const HolidayMark = () => {
 
   const gradeEdit = () => {
     const acadId = history?.location?.state?.acadId;
-    
     let filterBranch = branchList.filter((item) => acadId.indexOf(item?.acadSession) !== -1);
     const selectedSession = filterBranch.map((el) => el?.acadSession)
     setSelectedSession(selectedSession)
@@ -539,10 +538,11 @@ const HolidayMark = () => {
           </Grid>
           <Grid container direction='row' className={classes.root}>
             <div className={classes.button}>
-              <Button variant='contained' onClick={onunHandleClearAll}>
+              <Button variant='contained' onClick={onunHandleClearAll} style={{margin:'5px'}}>
                 Clear All
               </Button>
               <Button
+              style={{margin:'5px'}}
                 variant='contained'
                 color='primary'
                 onClick={handleBackButtonClick}
@@ -550,6 +550,7 @@ const HolidayMark = () => {
                 Go Back
               </Button>
               <Button
+              style={{margin:'5px'}}
                 variant='contained'
                 type='submit'
                 value='Submit'
