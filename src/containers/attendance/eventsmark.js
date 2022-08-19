@@ -39,6 +39,7 @@ const EventsMark = () => {
   const [holidayDesc, setHolidayDesc] = useState('');
   const [minStartDate, setMinStartDate] = useState();
   const [maxStartDate, setMaxStartDate] = useState();
+  const [eventIdSave, setEventIdSave] = useState('')
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
@@ -132,25 +133,17 @@ const EventsMark = () => {
     if (isEdit) {
       const startDate = new Date(startDateTechPer)
       const endDate = new Date(endDateTechPer)
-       const edit_id = history?.location?.state?.eventId
       axiosInstance
-        .patch(`${endpoints.academics.getEvents}?id=${history?.location?.state?.eventId}`, {
-          // title: holidayName,
-          // description: holidayDesc,
-          // holiday_start_date: moment(startDateTechPer)?.format('YYYY-MM-DD'),
-          // holiday_end_date: moment(endDateTechPer)?.format('YYYY-MM-DD'),
-          // branch: selectedBranch.map((el) => el?.branch?.id),
-          // grade: selectedGrade.map((el) => el?.grade_id),
-          // holiday_id: history?.location?.state?.data?.id,
-          // acad_session: selectedSession,
+        .patch(`${endpoints.academics.getEvents}?id=${eventIdSave}`, {
           event_name: holidayName,
           description:holidayDesc,
           start_date: moment(startDate).format('YYYY-MM-DD'),
           end_date: moment(endDate).format('YYYY-MM-DD'),
           is_full_day: false,
           grade_ids: selectedGrade.map((el) => el?.grade_id),
-          academic_year: selectedAcademicYear?.id,
-          branch_ids: selectedBranch.map((el) => el?.id),
+          // academic_year: selectedAcademicYear?.id,
+          // branch_ids: selectedBranch.map((el) => el?.id),
+          academic_session_ids: selectedSession,
           start_time: "00:01",
           end_time: "23:59",
         })
@@ -165,16 +158,6 @@ const EventsMark = () => {
     } else {
       axiosInstance
         .post(endpoints.academics.getEvents, {
-
-        //   title: holidayName,
-        //   description: holidayDesc,
-        //   holiday_start_date: startDateTechPer.format('YYYY-MM-DD'),
-        //   holiday_end_date: endDateTechPer.format('YYYY-MM-DD'),
-        //   branch: selectedBranch.map((el) => el?.branch?.id),
-        //   grade: selectedGrade.map((el) => el?.grade_id),
-        //   academic_year: selectedAcademicYear?.id,
-        //   grade: selectedGrade.map((el) => el?.grade_id),
-        //   acad_session: selectedSession,
           event_name: holidayName,
           description:holidayDesc,
           start_date: startDateTechPer.format('YYYY-MM-DD'),
@@ -243,7 +226,6 @@ const EventsMark = () => {
           if (key === 'branchList') {
            
             if(result?.data?.data?.length !== 0){
-              // debugger;
               const transformedData = result?.data?.data?.results?.map((obj) => ({
                 id: obj?.branch?.id,
                 branch_name: obj?.branch?.branch_name,
@@ -341,8 +323,14 @@ const EventsMark = () => {
           );
         }
       }
-      if (history?.location?.state?.data?.grade?.length && gradeList !== []) {
-        const ids = history?.location?.state?.data?.grade.map((el, index) => el);
+      // if (history?.location?.state?.data?.grade?.length && gradeList !== []) {
+      //   const ids = history?.location?.state?.data?.grade.map((el, index) => el);
+
+      //   let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
+      //   setSelectedGrade(filterBranch);
+      // }
+      if (history?.location?.state?.data?.section_mapping_data) {
+        const ids = history?.location?.state?.data?.section_mapping_data.map((el, index) => el?.grade_id);
 
         let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
         setSelectedGrade(filterBranch);
@@ -359,9 +347,12 @@ const EventsMark = () => {
   }, [isEdited, branchList]);
 
   const gradeEdit = () => {
+    setEventIdSave(history?.location?.state?.data?.id)
     const acadId = history?.location?.state?.data?.section_mapping_data.map((item) => item?.acad_session__branch_id);
     
     let filterBranch = branchList.filter((item) => acadId.indexOf(item.id) !== -1);
+    const selectedSession = filterBranch.map((el) => el?.acadSession)
+    setSelectedSession(selectedSession)
     setSelectedBranch(filterBranch);
 
     const allBranchIds = filterBranch.map((i) => {
@@ -377,8 +368,8 @@ const EventsMark = () => {
   };
 
   useEffect(() => {
-    if (history?.location?.state?.data?.grade?.length) {
-      const ids = history?.location?.state?.data?.grade.map((el, index) => el);
+    if (history?.location?.state?.data?.section_mapping_data) {
+      const ids = history?.location?.state?.data?.section_mapping_data.map((el, index) => el?.grade_id);
       let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
       setSelectedGrade(filterBranch);
     }

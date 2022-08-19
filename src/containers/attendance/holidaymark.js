@@ -344,6 +344,8 @@ const HolidayMark = () => {
     const acadId = history?.location?.state?.acadId;
     
     let filterBranch = branchList.filter((item) => acadId.indexOf(item?.acadSession) !== -1);
+    const selectedSession = filterBranch.map((el) => el?.acadSession)
+    setSelectedSession(selectedSession)
     setSelectedBranch(filterBranch);
 
     const allBranchIds = filterBranch.map((i) => {
