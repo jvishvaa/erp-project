@@ -21,10 +21,10 @@ import endpoints from 'v2/config/endpoints';
 
 const GeneralDiary = () => {
   const selectedAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedAcademicYear
+    (state) => state.commonFilterReducer?.selectedYear
   );
-  const academicYearList = useSelector(
-    (state) => state.commonFilterReducer?.academicYearList
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
   );
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [loading, setLoading] = useState(false);
@@ -62,8 +62,8 @@ const GeneralDiary = () => {
     setShowUploadModal(false);
   };
   const handleShowModal = () => {
-    if (!branchID && !gradeID) {
-      message.error('Please select branch and grade first');
+    if (!selectedBranch?.branch?.id && !gradeID) {
+      message.error('Please select grade first');
       return;
     } else {
       setShowUploadModal(true);
@@ -105,13 +105,13 @@ const GeneralDiary = () => {
     if (e) {
       setGradeID(e);
       const params = {
-        session_year: academicYearID,
-        branch_id: branchID,
+        branch_id: selectedBranch?.branch?.id,
         grade_id: e,
         module_id: moduleId,
+        session_year: selectedAcademicYear?.id,
       };
       axios
-        .get(`${endpoints.academics.sections}`, { params: { ...params } })
+        .get(`${endpoints.academics.sections}`, { params })
         .then((result) => {
           if (result?.data?.status_code == 200) {
             setSectionDropdown(result?.data?.data);
@@ -129,105 +129,27 @@ const GeneralDiary = () => {
     );
   });
 
-  const handleBranch = (each) => {
-    formRef.current.setFieldsValue({
-      grade: null,
-      section: null,
-    });
-    setGradeDropdown([]);
-    setSectionDropdown([]);
-    if (each) {
-      setBranchID(each.value);
-      setBranchName(each.children);
-      setAcadID(each?.acadId);
-      const params = {
-        session_year: academicYearID,
-        branch_id: each.value,
-        module_id: moduleId,
-      };
-      axios
-        .get(`${endpoints.academics.grades}`, { params: { ...params } })
-        .then((result) => {
-          if (result?.data?.status_code == 200) {
-            const gradeData = result?.data?.data || [];
-            setGradeDropdown(gradeData);
-          }
-        })
-        .catch((error) => message.error('error', error?.message));
-    }
-  };
-
-  const yearOptions = academicYearList?.map((each) => {
-    return (
-      <Option key={each?.id} value={each?.id}>
-        {each?.session_year}
-      </Option>
-    );
-  });
-
-  const handleStudentCheckbox = (e, id) => {
-    if (e.target.checked) {
-      setStudentCheckedID([...studentCheckedID, id]);
-    } else {
-      const index = studentCheckedID.indexOf(id);
-      if (index > -1) {
-        const newList = studentCheckedID.slice();
-        newList.splice(index, 1);
-        setStudentCheckedID(newList);
-      }
-    }
-  };
-
-  const handleClearAcademic = () => {
-    setBranchDropdown([]);
-    setGradeDropdown([]);
-    setSectionDropdown([]);
-  };
-
-  const handleClearBranch = () => {
-    setGradeDropdown([]);
-    setSectionDropdown([]);
+  const fetchGradeData = () => {
+    const params = {
+      session_year: selectedAcademicYear?.id,
+      branch_id: selectedBranch?.branch?.id,
+      module_id: moduleId,
+    };
+    axios
+      .get(`${endpoints.academics.grades}`, { params })
+      .then((result) => {
+        if (result?.data?.status_code == 200) {
+          setGradeDropdown(result?.data?.data);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
   };
 
   const handleClearGrade = () => {
     setSectionDropdown([]);
   };
 
-  const handleAcademicYear = (e) => {
-    formRef.current.setFieldsValue({
-      branch: null,
-      grade: null,
-      section: null,
-    });
-    setBranchDropdown([]);
-    setGradeDropdown([]);
-    setSectionDropdown([]);
-    if (e) {
-      setAcademicYearID(e);
-      const params = {
-        session_year: e,
-        module_id: moduleId,
-      };
-      axios
-        .get(`${endpoints.academics.branches}`, { params: { ...params } })
-        .then((result) => {
-          if (result?.data?.status_code == 200) {
-            setBranchDropdown(result?.data?.data?.results);
-          }
-        })
-        .catch((error) => message.error('error', error?.message));
-    }
-  };
-
   const publishGeneralDiary = () => {
-    if (!academicYearID) {
-      message.error('Please select Academic Year');
-      return;
-    }
-    if (!branchID) {
-      message.error('Please select Branch');
-      return;
-    }
     if (!gradeID) {
       message.error('Please select Grade');
       return;
@@ -236,7 +158,7 @@ const GeneralDiary = () => {
       message.error('Please select Section');
       return;
     }
-    if (studentCheckedID.length < 1) {
+    if (!studentCheckedID.length > 0) {
       message.error('Please select atleast one student');
       return;
     }
@@ -244,8 +166,8 @@ const GeneralDiary = () => {
     let payload = {
       title: title,
       message: description,
-      academic_year: acadID,
-      branch: branchID,
+      academic_year: selectedBranch?.id,
+      branch: selectedBranch?.branch?.id,
       grade: [gradeID],
       section_mapping: [sectionMappingID],
       section: [sectionID],
@@ -273,7 +195,7 @@ const GeneralDiary = () => {
       active: 0,
       bgs_mapping: sectionMappingID,
       module_id: moduleId,
-      academic_year: academicYearID,
+      academic_year: selectedAcademicYear?.id,
     };
     axios
       .get(`${endpoints?.dailyDiary?.generalDiaryUsers}`, { params: { ...params } })
@@ -287,6 +209,13 @@ const GeneralDiary = () => {
         message.error('error', error.message);
         setLoading(false);
       });
+  };
+  const studentsSelected = (studentCheckedID) => {
+    setStudentCheckedID(studentCheckedID);
+  };
+  const rowSelection = {
+    selectedRowKeys: studentCheckedID,
+    onChange: studentsSelected,
   };
 
   useEffect(() => {
@@ -306,6 +235,12 @@ const GeneralDiary = () => {
       });
     }
   }, [window.location.pathname]);
+
+  useEffect(() => {
+    if (selectedBranch && moduleId) {
+      fetchGradeData();
+    }
+  }, [moduleId]);
 
   const columns = [
     {
@@ -329,14 +264,7 @@ const GeneralDiary = () => {
       width: '30%',
       dataIndex: 'name',
     },
-    {
-      title: '',
-      align: 'center',
-      width: '10%',
-      render: (text, row) => (
-        <Checkbox onChange={(e) => handleStudentCheckbox(e, row?.id)} />
-      ),
-    },
+    Table.SELECTION_COLUMN,
   ];
   return (
     <Layout>
@@ -351,7 +279,7 @@ const GeneralDiary = () => {
         <div className='col-12 mt-3 px-2'>
           <Form id='filterForm' ref={formRef} layout={'horizontal'}>
             <div className='row py-2 text-left'>
-              <div className='col-md-3 py-2'>
+              {/* <div className='col-md-3 py-2'>
                 <Form.Item name='academic'>
                   <Select
                     className='th-width-100 th-br-6'
@@ -370,9 +298,9 @@ const GeneralDiary = () => {
                     {yearOptions}
                   </Select>
                 </Form.Item>
-              </div>
+              </div> */}
 
-              <div className='col-md-3 py-2'>
+              {/* <div className='col-md-3 py-2'>
                 <Form.Item name='branch'>
                   <Select
                     className='th-width-100 th-br-6'
@@ -391,7 +319,7 @@ const GeneralDiary = () => {
                     {branchOptions}
                   </Select>
                 </Form.Item>
-              </div>
+              </div> */}
               <div className='col-md-3 py-2'>
                 <Form.Item name='grade'>
                   <Select
@@ -468,6 +396,7 @@ const GeneralDiary = () => {
               rowClassName={(record, index) =>
                 index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
               }
+              rowSelection={{ ...rowSelection }}
               style={{ width: '100%' }}
             />
           ) : (
@@ -506,10 +435,11 @@ const GeneralDiary = () => {
                   </div>
                   <div className='col-12'>
                     <span className='th-grey th-14'>
+                      {' '}
                       Upload Attachments (Accepted files: [ .jpeg,.jpg,.png,.pdf ])
                     </span>
                     <div
-                      className='row justify-content-start align-items-center th-br-4 py-1 mt-1'
+                      className='row justify-content-start align-items-center th-br-4 py-1 mt-1 th-bg-white'
                       style={{ border: '1px solid #D9D9D9' }}
                     >
                       <div className='col-md-10 col-8'>
@@ -527,7 +457,7 @@ const GeneralDiary = () => {
                             ];
 
                             return (
-                              <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
+                              <div className='th-br-15  col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
                                 <span className='th-12 th-black-1 text-truncate'>
                                   {fileName}
                                 </span>
@@ -588,7 +518,7 @@ const GeneralDiary = () => {
         </div>
         <UploadDocument
           show={showUploadModal}
-          branchName={branchName}
+          branchName={selectedBranch?.branch?.branch_name}
           gradeID={gradeID}
           section={sectionMappingID}
           handleClose={handleUploadModalClose}
