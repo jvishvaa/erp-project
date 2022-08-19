@@ -417,6 +417,7 @@ import OfflineStudentAssessment from 'containers/assessment-central/offlineHWStu
 import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
 import UserProfile from 'containers/login/profiles';
+import EventsMark from 'containers/attendance/eventsmark';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -1471,6 +1472,9 @@ const V1Router = [
   <Route path='/studentrefer'>{({ match }) => <StudentRefer match={match} />}</Route>,
   <Route path='/successrefer'>{({ match }) => <ReferSuccess match={match} />}</Route>,
   <Route path='/holidaymarking'>{({ match }) => <HolidayMark match={match} />}</Route>,
+  <Route path='/eventmarking'>
+  {({ match }) => <EventsMark match={match} />}
+</Route>,
   <Route path='/student_count_report'>
     {({ match }) => <StudentCountReport match={match} />}
   </Route>,

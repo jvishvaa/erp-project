@@ -423,6 +423,7 @@ import UserProfile from 'containers/login/profiles';
 // Version 2
 import V2Router from 'v2RouterConfig/v2Router';
 import { IsV2Checker } from 'v2/isV2Checker';
+import EventsMark from 'containers/attendance/eventsmark';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -1857,6 +1858,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route path='/holidaymarking'>
                               {({ match }) => <HolidayMark match={match} />}
+                            </Route>
+                            <Route path='/eventmarking'>
+                              {({ match }) => <EventsMark match={match} />}
                             </Route>
                             <Route path='/student_count_report'>
                               {({ match }) => <StudentCountReport match={match} />}
