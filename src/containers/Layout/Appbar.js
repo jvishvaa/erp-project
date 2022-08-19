@@ -344,6 +344,10 @@ const Appbar = ({ children, history, ...props }) => {
   };
 
   const handleSwitchChange = (event) => {
+    sessionStorage.removeItem("branch_list")
+    sessionStorage.removeItem('selected_branch')
+    sessionStorage.removeItem('acad_session_list')
+    sessionStorage.removeItem('acad_session')
     let filterItem = profileDetails?.data?.filter((item) => item.name === event.target.value)
     let savedProfile = localStorage.setItem('selectProfileDetails', JSON.stringify(filterItem[0])) || {}
     setProfile(filterItem[0]?.name)
@@ -433,7 +437,7 @@ const Appbar = ({ children, history, ...props }) => {
     window.location.reload();
   };
   useEffect(() => {
-    if (branchList === '') {
+    if (branchList === '' || branchList === null ) {
       dispatch(fetchBranchList(acdemicCurrentYear?.id));
     }
   }, []);
@@ -682,7 +686,41 @@ const Appbar = ({ children, history, ...props }) => {
                 onChange={handleVersion}
               />
             ) : null}
-
+              {profileDetails?.is_verified === true ? (
+                <FormControl variant='standard' sx={{ m : 1, minWidth: 100 }} style={{display:'contents'}}>
+                   <div className='px-2 th-black-2 th-14'> Logged In As : {profile}</div>
+                  <Select
+                    // onChange={handleBranchChange}
+                    onChange={handleSwitchChange}
+                    labelId='demo-simple-select-label'
+                    id='demo-simple-select'
+                    value={profile}
+                    className={classes.branch}
+                    inputProps={{
+                      'aria-label': 'Without label',
+                      classes: {
+                        icon: 'th-select-icon-grey',
+                      },
+                    }}
+                    MenuProps={{
+                      anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      },
+                      transformOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      },
+                    }}
+                  >
+                    {profileDetails?.data?.map((item) => (
+                      <MenuItem value={item?.name}>
+                        <>{item?.name}</>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                ) : ''}
             {isMobile ? null : (
               <div className={classes.grow} style={{ margin: '0' }}>
                 <FormControl variant='standard' sx={{ m: 1, minWidth: 100 }}>
@@ -716,41 +754,6 @@ const Appbar = ({ children, history, ...props }) => {
                     ))}
                   </Select>
                 </FormControl>
-                {profileDetails?.is_verified === true ? (
-                <FormControl variant='standard' sx={{ m: 1, minWidth: 100 }}>
-                   <div className='px-2 th-black-2 th-14'> Logged In As : {profile}</div>
-                  {/* <Select
-                    // onChange={handleBranchChange}
-                    onChange={handleSwitchChange}
-                    labelId='demo-simple-select-label'
-                    id='demo-simple-select'
-                    value={profile}
-                    className={classes.branch}
-                    inputProps={{
-                      'aria-label': 'Without label',
-                      classes: {
-                        icon: 'th-select-icon-grey',
-                      },
-                    }}
-                    MenuProps={{
-                      anchorOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      },
-                      transformOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      },
-                    }}
-                  >
-                    {profileDetails?.data?.map((item) => (
-                      <MenuItem value={item?.name}>
-                        <>{item?.name}</>
-                      </MenuItem>
-                    ))}
-                  </Select> */}
-                </FormControl>
-                ) : ''}
                 <FormControl variant='standard' sx={{ m: 1, minWidth: 100 }}>
                   <Select
                     labelId='demo-simple-select-label'

@@ -118,6 +118,12 @@ const LessonPlan = () => {
     <>
       {loading ? <Loading message='Loading...' /> : null}
       <Layout>
+        <div className='assessment-ques' style={{
+        background: 'white',
+        height: '90vh',
+        overflowX: 'hidden',
+        overflowY: 'scroll',
+      }} >
         <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
           <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='View' />
         </BreadcrumbToggler>
@@ -244,6 +250,7 @@ const LessonPlan = () => {
             </div>
           )}
         </Paper>
+        </div>
       </Layout>
       <FeedbackLesson handleClickOpenFeed={handleClickOpenFeed} periodDataForView={periodDataForView} openFeed={openFeed} handleCloseFeed={handleCloseFeed} />
     </>

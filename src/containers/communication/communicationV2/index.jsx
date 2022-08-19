@@ -551,6 +551,13 @@ const NewCommunication = () => {
 
   return (
     <Layout>
+      <div 
+      className='announcement-scroll'
+      style={{
+        height: '90vh',
+        overflowX: 'scroll',
+        overflowY: 'scroll',
+      }}>
       {loading && <Loader />}
       <div
         style={{
@@ -1377,6 +1384,7 @@ const NewCommunication = () => {
           />
         )}
       </Grid>
+      </div>
     </Layout>
   );
 };

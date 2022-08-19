@@ -8,7 +8,8 @@
 }
 
 .card_style {
-    width: 400 !important;
+    width: 22%;
+    height: 150px !important;
     height: fit-content;
     cursor: pointer;
     border-radius: 5px;
@@ -18,4 +19,15 @@
         border-radius: 5px;
         box-shadow: 0 19px 38px rgba(0,0,0,0.30), 0 15px 12px rgba(0,0,0,0.22);
       }
+
+      @media (min-width: 1280px) and (max-width: 1919px) {
+        width: 30%;
+      }
+      @media (min-width: 960px) and (max-width: 1279px) {
+        width: 45%;
+      }
+      @media (max-width: 600px) {
+        width: 45%;
+      }
+
 }

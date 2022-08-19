@@ -56,21 +56,29 @@ export const login = (payload, isOtpLogin, ) => (dispatch) => {
         }
         dispatch({
           type: LOGIN_SUCCESS,
-          userDetails: actualData.result.user_details,
-          navigationData: actualData.result.navigation_data,
+          userDetails: actualData?.result?.user_details,
+          navigationData: actualData?.result?.navigation_data,
         });
         localStorage.setItem(
           'userDetails',
-          JSON.stringify(actualData.result.user_details)
+          JSON.stringify(actualData?.result?.user_details)
         );
         localStorage.setItem(
           'navigationData',
-          JSON.stringify(actualData.result.navigation_data)
+          JSON.stringify(actualData?.result?.navigation_data)
         );
-        localStorage.setItem(
-          'apps',
-          JSON.stringify(response?.data?.result?.apps)
-        );
+        if(isOtpLogin === true){
+          localStorage.setItem(
+            'apps',
+            JSON.stringify(response?.data?.login_response?.result?.apps)
+          );
+        }else {
+          localStorage.setItem(
+            'apps',
+            JSON.stringify(response?.data?.result?.apps)
+          );
+
+        }
         const result = { isLogin: true, message: actualData.message };
         return result;
       }

@@ -919,7 +919,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                   fileName={`Attachment-${i + 1}`}
                                   urlPrefix={
                                     file.includes('lesson_plan_file')
-                                      ? `${endpoints.homework.resourcesS3}`
+                                      ? `${endpoints.discussionForum.s3}`
                                       : `${endpoints.discussionForum.s3}/homework`
                                   }
                                   index={i}
@@ -934,7 +934,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                 <img
                                   src={
                                     url.includes('lesson_plan_file')
-                                      ? `${endpoints.lessonPlan.s3}${url}`
+                                      ? `${endpoints.discussionForum.s3}${url}`
                                       : `${endpoints.discussionForum.s3}/homework/${url}`
                                   }
                                   onError={(e) => {
@@ -1049,7 +1049,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                       fileName={`Attachment-${i + 1}`}
                                       urlPrefix={
                                         file.includes('lesson_plan_file')
-                                          ? `${endpoints.homework.resourcesS3}`
+                                          ? `${endpoints.discussionForum.s3}`
                                           : `${endpoints.discussionForum.s3}/homework`
                                       }
                                       index={i}
@@ -1066,7 +1066,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                       <img
                                         src={
                                           url.includes('lesson_plan_file')
-                                            ? `${endpoints.lessonPlan.s3}${url}`
+                                            ? `${endpoints.discussionForum.s3}${url}`
                                             : `${endpoints.discussionForum.s3}/homework/${url}`
                                         }
                                         onError={(e) => {
@@ -1131,7 +1131,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                           fileName={`Attachment-${i + 1}`}
                                           urlPrefix={
                                             url.includes('lesson_plan_file')
-                                              ? `${endpoints.homework.resourcesS3}`
+                                              ? `${endpoints.discussionForum.s3}`
                                               : `${endpoints.discussionForum.s3}/homework`
                                           }
                                           index={i}
@@ -1158,20 +1158,29 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                         fileName={`Attachment-${i + 1}`}
                                         urlPrefix={
                                           url.includes('lesson_plan_file')
-                                            ? `${endpoints.homework.resourcesS3}`
+                                            ? `${endpoints.discussionForum.s3}`
                                             : `${endpoints.discussionForum.s3}/homework`
                                         }
                                         index={i}
                                         onOpenInPenTool={(url) =>
                                           openInPenTool(url, index)
                                         }
-                                        actions={[
-                                          'preview',
-                                          'download',
-                                          homeworkSubmission.status === 1 &&
-                                            question.is_pen_editor_enable &&
-                                            'pentool',
-                                        ]}
+                                        actions={
+                                          url.includes('pdf')
+                                            ? [
+                                                'download',
+                                                homeworkSubmission.status === 1 &&
+                                                  question.is_pen_editor_enable &&
+                                                  'pentool',
+                                              ]
+                                            : [
+                                                'preview',
+                                                'download',
+                                                homeworkSubmission.status === 1 &&
+                                                  question.is_pen_editor_enable &&
+                                                  'pentool',
+                                              ]
+                                        }
                                       />
                                     </div>
                                   );
@@ -1185,7 +1194,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                           <img
                                             src={
                                               url.includes('lesson_plan_file')
-                                                ? `${endpoints.lessonPlan.s3}${item}`
+                                                ? `${endpoints.discussionForum.s3}${item}`
                                                 : `${endpoints.discussionForum.s3}/homework/${item}`
                                             }
                                             onError={(e) => {
@@ -1201,7 +1210,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                         <img
                                           src={
                                             url.includes('lesson_plan_file')
-                                              ? `${endpoints.lessonPlan.s3}${url}`
+                                              ? `${endpoints.discussionForum.s3}${url}`
                                               : `${endpoints.discussionForum.s3}/homework/${url}`
                                           }
                                           onError={(e) => {
@@ -1315,7 +1324,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                           fileName={`Attachment-${i + 1}`}
                                           urlPrefix={
                                             url.includes('lesson_plan_file')
-                                              ? `${endpoints.homework.resourcesS3}`
+                                              ? `${endpoints.discussionForum.s3}`
                                               : `${endpoints.discussionForum.s3}/homework`
                                           }
                                           index={i}
@@ -1332,7 +1341,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                         <img
                                           src={
                                             url.includes('lesson_plan_file')
-                                              ? `${endpoints.lessonPlan.s3}${url}`
+                                              ? `${endpoints.discussionForum.s3}${url}`
                                               : `${endpoints.discussionForum.s3}/homework/${url}`
                                           }
                                           onError={(e) => {
@@ -1364,7 +1373,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                           fileName={`Attachment-${i + 1}`}
                                           urlPrefix={
                                             url.includes('lesson_plan_file')
-                                              ? `${endpoints.homework.resourcesS3}`
+                                              ? `${endpoints.discussionForum.s3}`
                                               : `${endpoints.discussionForum.s3}/homework`
                                           }
                                           index={i}
@@ -1448,7 +1457,7 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                       fileName={`Attachment-${i + 1}`}
                                       urlPrefix={
                                         url.includes('lesson_plan_file')
-                                          ? `${endpoints.homework.resourcesS3}`
+                                          ? `${endpoints.discussionForum.s3}`
                                           : `${endpoints.discussionForum.s3}/homework`
                                       }
                                       index={i}

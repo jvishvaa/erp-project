@@ -381,8 +381,8 @@ const UpdateGroup = ({ handleEditing, editData }) => {
         <Grid item md={12} xs={12}>
           <div className='view_group_breadcrumb_container'>
             <CommonBreadcrumbs
-              componentName='Communication'
-              childComponentName='Update Group'
+              componentName='Update Group'
+              // childComponentName='Update Group'
             />
           </div>
         </Grid>

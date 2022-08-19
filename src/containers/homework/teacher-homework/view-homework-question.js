@@ -10,7 +10,6 @@ import endpoints from '../../../config/endpoints';
 import placeholder from '../../../assets/images/placeholder_small.jpg';
 
 const ViewHomeworkQuestion = ({ question, index }) => {
-
   const [showAttachmentArrows, setShowAttachmentArrows] = useState(false);
   const scrollableContainer = useRef(null);
   const attachmentsOuterContainer = useRef(null);
@@ -24,7 +23,6 @@ const ViewHomeworkQuestion = ({ question, index }) => {
   };
 
   useLayoutEffect(() => {
-  
     if (scrollableContainer.current) {
       if (
         scrollableContainer.current.clientWidth < scrollableContainer.current.scrollWidth
@@ -65,31 +63,47 @@ const ViewHomeworkQuestion = ({ question, index }) => {
               }}
             >
               {question.question_files.map((url, i) => {
-                 if (typeof url == 'object') {
-                    return Object.values(url).map((item, i) => {
-                  return <div className='attachment'>
-                    <Attachment
-                      key={`homework_student_question_attachment_${i}`}
-                      fileUrl={item}
-                      fileName={`Attachment-${i + 1}`}
-                      urlPrefix={`${endpoints.discussionForum.s3}/homework`}
-                      index={i}
-                      actions={['preview', 'download']}
-                    />
-                  </div>
-                    })}
-                    else  return <div className='attachment'>
-                    <Attachment
-                      key={`homework_student_question_attachment_${i}`}
-                      fileUrl={url}
-                      fileName={`Attachment-${i + 1}`}
-                      urlPrefix={`${endpoints.discussionForum.s3}/homework`}
-                      index={i}
-                      actions={['preview', 'download']}
-                    />
-                  </div> 
-                
-                    })}
+                if (typeof url == 'object') {
+                  return Object.values(url).map((item, i) => {
+                    return (
+                      <div className='attachment'>
+                        <Attachment
+                          key={`homework_student_question_attachment_${i}`}
+                          fileUrl={item}
+                          fileName={`Attachment-${i + 1}`}
+                          urlPrefix={
+                            item.includes('lesson_plan_file')
+                              ? `${endpoints.discussionForum.s3}`
+                              : `${endpoints.discussionForum.s3}/homework`
+                          }
+                          index={i}
+                          actions={
+                            url.includes('pdf') ? ['download'] : ['preview', 'download']
+                          }
+                        />
+                      </div>
+                    );
+                  });
+                } else
+                  return (
+                    <div className='attachment'>
+                      <Attachment
+                        key={`homework_student_question_attachment_${i}`}
+                        fileUrl={url}
+                        fileName={`Attachment-${i + 1}`}
+                        urlPrefix={
+                          url.includes('lesson_plan_file')
+                            ? `${endpoints.discussionForum.s3}`
+                            : `${endpoints.discussionForum.s3}/homework`
+                        }
+                        index={i}
+                        actions={
+                          url.includes('pdf') ? ['download'] : ['preview', 'download']
+                        }
+                      />
+                    </div>
+                  );
+              })}
               <div
                 style={{
                   position: 'absolute',
@@ -102,23 +116,36 @@ const ViewHomeworkQuestion = ({ question, index }) => {
                   {question.question_files.map((url, i) => {
                     if (typeof url == 'object') {
                       return Object.values(url).map((item, i) => {
-                    return <img
-                      src={`${endpoints.discussionForum.s3}/homework/${item}`}
-                      onError={(e) => {
-                        e.target.src = placeholder;
-                      }}
-                      alt={`Attachment-${i + 1}`}
-                      style={{ width: '0', height: '0' }}
-                    />
-                    })}
-                    else return <img
-                    src={`${endpoints.discussionForum.s3}/homework/${url}`}
-                    onError={(e) => {
-                      e.target.src = placeholder;
-                    }}
-                    alt={`Attachment-${i + 1}`}
-                    style={{ width: '0', height: '0' }}
-                  />
+                        return (
+                          <img
+                            src={
+                              item.includes('lesson_plan_file')
+                                ? `${endpoints.discussionForum.s3}/${item}`
+                                : `${endpoints.discussionForum.s3}/homework/${item}`
+                            }
+                            onError={(e) => {
+                              e.target.src = placeholder;
+                            }}
+                            alt={`Attachment-${i + 1}`}
+                            style={{ width: '0', height: '0' }}
+                          />
+                        );
+                      });
+                    } else
+                      return (
+                        <img
+                          src={
+                            url.includes('lesson_plan_file')
+                              ? `${endpoints.discussionForum.s3}/${url}`
+                              : `${endpoints.discussionForum.s3}/homework/${url}`
+                          }
+                          onError={(e) => {
+                            e.target.src = placeholder;
+                          }}
+                          alt={`Attachment-${i + 1}`}
+                          style={{ width: '0', height: '0' }}
+                        />
+                      );
                   })}
                 </SRLWrapper>
               </div>

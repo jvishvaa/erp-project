@@ -35,6 +35,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 
 import { Select } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
+import './teacherattendance.css'
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -650,6 +651,12 @@ export default function TeacherAttendanceVerify() {
 
   return (
     <Layout>
+       <div className='attendancescroll' style={{
+        background: 'white',
+        height: '90vh',
+        overflowX: 'hidden',
+        overflowY: 'scroll',
+      }} >
       <Grid
         container
         direction='row'
@@ -905,6 +912,7 @@ export default function TeacherAttendanceVerify() {
           </Table>
         </TableContainer>
       </Grid>
+      </div>
     </Layout>
   );
 }

@@ -7,23 +7,20 @@ import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import DiaryCard from 'v2/FaceLift/Diary/Diary-Card/index';
-import { DownOutlined, CheckOutlined } from '@ant-design/icons';
+import { DownOutlined } from '@ant-design/icons';
 
 const Diary = () => {
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
-  const academicYearList = useSelector(
-    (state) => state.commonFilterReducer?.academicYearList
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
   );
   const [moduleId, setModuleId] = useState();
   const [periodData, setPeriodData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [academicYearID, setAcademicYearID] = useState();
-  const [branchDropdown, setBranchDropdown] = useState([]);
-  const [branchID, setBranchID] = useState();
   const [gradeDropdown, setGradeDropdown] = useState();
   const [gradeID, setGradeID] = useState();
+  const [loading, setLoading] = useState(false);
   const [sectionDropdown, setSectionDropdown] = useState();
   const [sectionID, setSectionID] = useState();
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
@@ -52,18 +49,18 @@ const Diary = () => {
   };
 
   const fetchDiaryList = () => {
-    if (!branchID || !sectionID || !academicYearID || !gradeID) {
+    if (!sectionID || !gradeID) {
       message.error('Please Select All Filters');
     } else {
       setLoading(true);
       const params = {
         module_id: moduleId,
-        session_year: academicYearID,
-        branch: branchID,
+        session_year: selectedAcademicYear?.id,
+        branch: selectedBranch?.branch?.id,
         grades: gradeID,
         sections: sectionID,
         page: 1,
-        page_size: 6,
+        // page_size: 6,
         start_date: startDate,
         end_date: endDate,
       };
@@ -90,33 +87,18 @@ const Diary = () => {
     history.push('/create/daily-diary');
   };
 
-  const handleClearAcademic = () => {
-    setBranchDropdown([]);
-    setGradeDropdown([]);
-    setSectionDropdown([]);
-  };
-
-  const handleClearBranch = () => {
-    setGradeDropdown([]);
-    setSectionDropdown([]);
-  };
-
   const handleClearGrade = () => {
     setSectionDropdown([]);
   };
 
   const handleClearAll = () => {
     formRef.current.setFieldsValue({
-      year: null,
-      branch: null,
       grade: [],
       section: [],
     });
-    setBranchDropdown([]);
+
     setGradeDropdown([]);
     setSectionDropdown([]);
-    setAcademicYearID();
-    setBranchID();
     setGradeID();
     setSectionID();
   };
@@ -152,8 +134,8 @@ const Diary = () => {
     if (grades) {
       setGradeID(grades);
       const params = {
-        session_year: academicYearID,
-        branch_id: branchID,
+        session_year: selectedAcademicYear?.id,
+        branch_id: selectedBranch?.branch?.id,
         grade_id: grades,
         module_id: moduleId,
       };
@@ -169,72 +151,21 @@ const Diary = () => {
     }
   };
 
-  const branchOptions = branchDropdown?.map((each) => {
-    return (
-      <Option key={each?.branch?.id} value={each?.branch?.id}>
-        {each?.branch?.branch_name}
-      </Option>
-    );
-  });
-
-  const handleBranch = (e, value) => {
-    formRef.current.setFieldsValue({
-      grade: [],
-      section: [],
-    });
-    setGradeDropdown([]);
-    setSectionDropdown([]);
-    if (e) {
-      setBranchID(e);
-      const params = {
-        session_year: academicYearID,
-        branch_id: e,
-        module_id: moduleId,
-      };
-      axios
-        .get(`${endpoints.academics.grades}`, { params })
-        .then((result) => {
-          if (result?.data?.status_code == 200) {
-            const gradeData = result?.data?.data || [];
-            setGradeDropdown(gradeData);
-          }
-        })
-        .catch((error) => message.error('error', error?.message));
-    }
-  };
-
-  const yearOptions = academicYearList?.map((each) => {
-    return (
-      <Option key={each?.id} value={each?.id}>
-        {each?.session_year}
-      </Option>
-    );
-  });
-
-  const handleAcademicYear = (e) => {
-    formRef.current.setFieldsValue({
-      branch: null,
-      grade: [],
-      section: [],
-    });
-    setBranchDropdown([]);
-    setGradeDropdown([]);
-    setSectionDropdown([]);
-    if (e) {
-      setAcademicYearID(e);
-      const params = {
-        session_year: e,
-        module_id: moduleId,
-      };
-      axios
-        .get(`${endpoints.academics.branches}`, { params })
-        .then((result) => {
-          if (result?.data?.status_code == 200) {
-            setBranchDropdown(result?.data?.data?.results);
-          }
-        })
-        .catch((error) => message.error('error', error?.message));
-    }
+  const fetchGradeData = () => {
+    const params = {
+      session_year: selectedAcademicYear?.id,
+      branch_id: selectedBranch?.branch?.id,
+      module_id: moduleId,
+    };
+    axios
+      .get(`${endpoints.academics.grades}`, { params: { ...params } })
+      .then((result) => {
+        if (result?.data?.status_code == 200) {
+          const gradeData = result?.data?.data || [];
+          setGradeDropdown(gradeData);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
   };
 
   useEffect(() => {
@@ -255,6 +186,12 @@ const Diary = () => {
     }
   }, [window.location.pathname]);
 
+  useEffect(() => {
+    if (selectedBranch && moduleId) {
+      fetchGradeData();
+    }
+  }, [moduleId]);
+
   return (
     <Layout>
       <div className='row'>
@@ -268,33 +205,7 @@ const Diary = () => {
           <div className='col-12 px-2 px-md-3'>
             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
               <div className='row py-2'>
-                <div className='col-md-3 pl-md-2'>
-                  <Form.Item name='year'>
-                    <Select
-                      className='th-width-100 th-br-6 text-left'
-                      onChange={handleAcademicYear}
-                      placeholder='Academic Year'
-                      allowClear
-                      onClear={handleClearAcademic}
-                    >
-                      {yearOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className='col-md-3'>
-                  <Form.Item name='branch'>
-                    <Select
-                      className='th-width-100 th-br-4 text-left'
-                      onChange={handleBranch}
-                      placeholder='Branch'
-                      allowClear
-                      onClear={handleClearBranch}
-                    >
-                      {branchOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className='col-md-3'>
+                <div className='col-md-4 px-2'>
                   <Form.Item name='grade'>
                     <Select
                       mode='multiple'
@@ -318,7 +229,7 @@ const Diary = () => {
                     </Select>
                   </Form.Item>
                 </div>
-                <div className='col-md-3'>
+                <div className='col-md-4'>
                   <Form.Item name='section'>
                     <Select
                       mode='multiple'
@@ -341,20 +252,17 @@ const Diary = () => {
                     </Select>
                   </Form.Item>
                 </div>
+                <div className='col-md-4'>
+                  <RangePicker
+                    className='th-width-100 th-br-4'
+                    onChange={(value) => handleDateChange(value)}
+                    defaultValue={[moment(), moment()]}
+                    format={dateFormat}
+                    separator={'to'}
+                  />
+                </div>
               </div>
             </Form>
-          </div>
-        </div>
-
-        <div className='row p-2'>
-          <div className='col-md-3'>
-            <RangePicker
-              className='th-width-100 th-br-4'
-              onChange={(value) => handleDateChange(value)}
-              defaultValue={[moment(), moment()]}
-              format={dateFormat}
-              separator={'to'}
-            />
           </div>
         </div>
 
@@ -410,7 +318,7 @@ const Diary = () => {
                   </div>
                 ) : (
                   periodData?.map((diary, i) => (
-                    <div className='col-md-4'>
+                    <div className='col-md-4 mb-2'>
                       <DiaryCard
                         diary={diary}
                         showTab={showTab}
@@ -431,7 +339,7 @@ const Diary = () => {
                   periodData
                     ?.filter((item) => item.dairy_type == 2)
                     .map((diary, i) => (
-                      <div className='col-md-4'>
+                      <div className='col-md-4 mb-2'>
                         <DiaryCard
                           diary={diary}
                           showTab={showTab}

@@ -440,9 +440,8 @@ const Assesment = () => {
   const fetchGroupList = (acadId, grade) => {
     axiosInstance
       .get(
-        `${
-          endpoints.assessmentErp.getGroups
-        }?acad_session=${acadId}&grade=${grade}&is_active=${true}`     //&group_type=${1}
+        `${endpoints.assessmentErp.getGroups
+        }?acad_session=${acadId}&grade=${grade}&is_active=${true}`
       )
       .then((result) => {
         if (result?.status === 200) {
@@ -563,7 +562,13 @@ const Assesment = () => {
   return (
     <Layout>
       {loading && <Loader />}
-      <div className='assesment-container'>
+      <div className='assesment-container assessment-ques' style={{
+        background: 'white',
+        height: '90vh',
+        overflowX: 'hidden',
+        overflowY: 'scroll',
+      }} >
+
         <div
           className='lesson-plan-breadcrumb-wrapper'
           style={{ display: 'flex', justifyContent: 'space-between' }}
@@ -991,8 +996,6 @@ const Assesment = () => {
                     classes={{
                       flexContainer: classes.tabsFlexContainer,
                     }}
-                    textColor='secondary'
-                    indicatorColor='secondary'
                   >
                     <Tab label='All' value='all' className='right-border' />
                     <Tab

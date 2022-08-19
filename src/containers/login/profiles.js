@@ -74,6 +74,10 @@ const UserProfiles = () => {
               'navigationData',
               JSON.stringify(result.data?.login_response?.result?.navigation_data)
             );
+            localStorage.setItem(
+              'apps',
+              JSON.stringify(result?.data?.login_response?.result?.apps)
+            );
             setAlert('success', result.data.message);
             isMsAPI();
             fetchERPSystemConfig(profileData?.isLogin).then((res) => {
@@ -138,20 +142,33 @@ const UserProfiles = () => {
                 <Card
                   size='small'
                   title={item?.branch_name}
-                  headStyle={{ backgroundColor: '#e0e0e0', color: 'black', width:400 }}
-                  style={{
-                    width: 400,
-                    height: 150,
-                  }}
+                  headStyle={{ backgroundColor: '#e0e0e0', color: 'black' }}
+                  // style={{
+                  //   width: 400,
+                  //   height: 150,
+                  // }}
                   className='card_style'
                   onClick={() => profileLogin(item)}
 
                 >
                   <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-                    <Avatar
-                      size={64}
-                      src = {`${ENVCONFIG?.s3?.ERP_BUCKET}${item?.profile}`}   
-                    />
+                  {window.location.href.slice(8, 10) == 'qa' ||
+                        window.location.href.slice(8, 18) == 'ui-revamp1' ||
+                        window.location.href.slice(7, 12) == 'local' ? (
+                          <>
+                          <Avatar
+                          size={64}
+                          src={`${endpoints.profile.Profilestories}dev/media/${item?.profile}`}
+                          icon={item?.profile  === "" ?   <UserOutlined/> : ''}   
+                        />
+                          </>
+                        ) : (
+                          <Avatar
+                          size={64}
+                          src={`${endpoints.profile.Profilestories}prod/media/${item?.profile}`}
+                          icon={item?.profile  === "" ?   <UserOutlined/> : ''}   
+                        />
+                        )}
                     <div
                       style={{
                         display: 'flex',

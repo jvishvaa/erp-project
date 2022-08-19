@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Layout from 'containers/Layout';
 import { useSelector } from 'react-redux';
 import { Select, message } from 'antd';
@@ -10,11 +10,15 @@ import AcademicPerformance from './components/Academic Performance';
 import CalendarCard from '../myComponents/CalendarCard';
 import Shortcut from './components/Shortcut';
 import { getRole } from 'v2/generalAnnouncementFunctions';
+import Doodle from 'v2/FaceLift/Doodle/Doodle';
+import axios from 'v2/config/axios';
+import endpoints from 'v2/config/endpoints';
 
 const { Option } = Select;
 
 const SuperAdmindashboardNew = () => {
   const time = new Date().getHours();
+  const [showDoodle, setShowDoodle] = useState(false);
   const { first_name } = JSON.parse(localStorage.getItem('userDetails'));
   let { user_level: userLevel } = JSON.parse(localStorage.getItem('userDetails')) || '';
   const { is_superuser: superuser } =
@@ -56,6 +60,20 @@ const SuperAdmindashboardNew = () => {
   const handleFeesBranch = (e) => {
     setFeesBranch(e);
   };
+  const fetchDoodle = () => {
+    axios
+      .get(`${endpoints.doodle.checkDoodle}?config_key=doodle_availability`)
+      .then((response) => {
+        if (response?.data?.result[0] === 'True') {
+          setShowDoodle(true);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
+
+  useEffect(() => {
+    fetchDoodle();
+  }, []);
 
   return (
     <Layout>
@@ -89,6 +107,7 @@ const SuperAdmindashboardNew = () => {
             </Select>
           </div>
         </div>
+        {showDoodle && <Doodle />}
         <AttendanceReport selectedBranchList={selectedBranchList} />
 
         <div className='row pt-3'>
