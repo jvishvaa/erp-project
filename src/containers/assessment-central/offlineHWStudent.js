@@ -195,7 +195,7 @@ const OfflineStudentAssessment = () => {
   const [selectedBranch, setSelectedBranch] = useState(
     history?.location?.state?.data?.branch[0]
   );
-  console.log('orchids','history',history?.location?.state?.test?.id)
+
   const [selectedBranchId, setSelectedBranchIds] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState(
