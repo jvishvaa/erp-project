@@ -144,7 +144,7 @@ const AttedanceCalender = () => {
         );
       } 
 
-    } else if(user_level == 1 || user_level == 2 || user_level == 4 || user_level == 5){
+    } else if(user_level == 1 || user_level == 2 || user_level == 4 || user_level == 5 || user_level == 8){
       if(moduleId){
 
         const dummyBranchId= multiBranchIdLocal.map((item) => item?.branch?.id)
@@ -378,7 +378,8 @@ const AttedanceCalender = () => {
               {}
               if(user_level == 1 ||
                 user_level == 2 ||
-                user_level == 4 || 
+                user_level == 4 ||
+                user_level == 8 ||  
                 user_level == 5 ){
                   
                   const branchIds = branch.map((item) => item?.branch?.id);
@@ -622,7 +623,8 @@ const AttedanceCalender = () => {
     if (counter === 2) {
       if(user_level == 1 ||
         user_level == 2 ||
-        user_level == 4 || 
+        user_level == 4 ||
+        user_level == 8 ||  
         user_level == 5 ){
           axiosInstance
           .get(
@@ -1195,6 +1197,7 @@ const AttedanceCalender = () => {
           {user_level == 4 || 
           user_level == 2 || 
           user_level == 1 ||
+          user_level == 8 ||
           user_level == 5 ? (
             <Grid item md={3} xs={12}>
               <Autocomplete
@@ -1248,7 +1251,6 @@ const AttedanceCalender = () => {
 
           ): ''}
           <Grid item md={3} xs={12}>
-            {console.log(selectedBranch,"vg")}
             <Autocomplete
               // multiple
               style={{ width: '100%' }}
@@ -1256,7 +1258,7 @@ const AttedanceCalender = () => {
               onChange={(event, value) => {
                 setSelectedGrade([]);
                 if (value) {
-                  if(user_level == 4 || user_level == 1 || user_level == 2 || user_level == 5){
+                  if(user_level == 4 || user_level == 1 || user_level == 2 || user_level == 5 ||  user_level == 8){
                     const branchId = selectedBranch.map((item) => item?.branch?.id);
                     const selectedId = value.grade_id;
                     setSelectedGrade(value);
