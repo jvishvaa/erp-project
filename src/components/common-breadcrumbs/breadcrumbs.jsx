@@ -15,7 +15,7 @@ const CommonBreadcrumbs = withRouter(({ history, ...props }) => {
   const classes = useStyles();
 
   return (
-    <Box className={classes.root}>
+    <Box className={classes.root} style={{width:'98%'}}>
       <Box>
         <Breadcrumbs maxItems={2} separator={<NavigateNextIcon className={classes.navigationIcon} />} aria-label="breadcrumb">
           {breadcrumbList?.map((breadcrumb) =>
