@@ -68,40 +68,40 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto',
     bottom: 0,
   },
-  navCard:{
-    border : `1px solid ${theme.palette.primary.main}`
+  navCard: {
+    border: `1px solid ${theme.palette.primary.main}`,
   },
-   homeworkblock:{
-    color : theme.palette.secondary.main,
-    fontWeight: 600
-  },
-   headerText: {
+  homeworkblock: {
     color: theme.palette.secondary.main,
     fontWeight: 600,
-    fontSize: "1rem",
-    ['@media screen(min-width:768px)']: {
-      fontSize: "0.85rem",
-    }
   },
-  homeworkSubmitwrapper:{
-    border: `1px solid ${theme.palette.primary.main}`,  
-    borderRadius: "10px",
-    padding: "20px",
+  headerText: {
+    color: theme.palette.secondary.main,
+    fontWeight: 600,
+    fontSize: '1rem',
     ['@media screen(min-width:768px)']: {
-      margin: "10px",
-      width: "90% !important",
-      height: "auto !important",
-    }
+      fontSize: '0.85rem',
+    },
   },
-  instructionText:{
-    display : 'flex',
-    border:`1px solid ${theme.palette.primary.main}`,
+  homeworkSubmitwrapper: {
+    border: `1px solid ${theme.palette.primary.main}`,
+    borderRadius: '10px',
+    padding: '20px',
+    ['@media screen(min-width:768px)']: {
+      margin: '10px',
+      width: '90% !important',
+      height: 'auto !important',
+    },
+  },
+  instructionText: {
+    display: 'flex',
+    border: `1px solid ${theme.palette.primary.main}`,
     borderRadius: '5px',
     height: '38px',
-    alignItems : 'center'
-  }
+    alignItems: 'center',
+  },
 }));
-let savedFiles =[]
+let savedFiles = [];
 const ViewHomework = withRouter(
   ({
     history,
@@ -133,16 +133,16 @@ const ViewHomework = withRouter(
     const [homeworkId, setHomeworkId] = useState(null);
     const [currentEvaluatedFileName, setcurrentEvaluatedFileName] = useState(null);
     const [imageIndex, setImageIndex] = useState();
-    const [mediaContained, setMediaContained] = useState()
-    const [hwStatus, setHwStatus] = useState()
-    const [instruction, setInstruction] = useState(null)
+    const [mediaContained, setMediaContained] = useState();
+    const [hwStatus, setHwStatus] = useState();
+    const [instruction, setInstruction] = useState(null);
     // const [imageIndex, setimageIndex] = useState(index);
 
     const scrollableContainer = useRef(null);
     const scrollableContainerEvaluated = useRef(null);
 
     const handleScroll = (dir) => {
-      console.log( collatedSubmissionFiles.length ,  "direction");
+      console.log(collatedSubmissionFiles.length, 'direction');
       if (dir === 'left') {
         scrollableContainer.current.scrollLeft -= 150;
       } else {
@@ -151,7 +151,7 @@ const ViewHomework = withRouter(
     };
 
     const handleScrollEvaluate = (dir) => {
-      console.log( collatedSubmissionFiles.length ,  "direction");
+      console.log(collatedSubmissionFiles.length, 'direction');
       if (dir === 'left') {
         scrollableContainerEvaluated.current.scrollLeft -= 150;
       } else {
@@ -197,16 +197,20 @@ const ViewHomework = withRouter(
     };
 
     const evaluateAnswer = async () => {
+      var filterMediaFile = collatedSubmissionFiles?.filter(
+        (el) => el?.split('.')[2] !== 'mp4' && el?.split('.')[2] !== 'mp3'
+      );
       let currentQuestion;
       if (isQuestionwise) {
         currentQuestion = questionsState[activeQuestion - 1];
       } else {
         currentQuestion = collatedQuestionState;
 
-        if (
-          currentQuestion.corrected_submission.length < collatedSubmissionFiles.length
-        ) {
-          setAlert('error', `Please evaluate all the attachments ${currentQuestion.corrected_submission.length} < ${collatedSubmissionFiles.length}`);
+        if (currentQuestion.corrected_submission.length < filterMediaFile?.length) {
+          setAlert(
+            'error',
+            `Please evaluate all the attachments ${currentQuestion.corrected_submission.length} < ${collatedSubmissionFiles.length}`
+          );
           return;
         }
       }
@@ -243,11 +247,11 @@ const ViewHomework = withRouter(
       } else {
         const currentQuestion = { ...collatedQuestionState };
         // if(hwStatus!=3){
-          currentQuestion.corrected_submission.splice(index, 1);
+        currentQuestion.corrected_submission.splice(index, 1);
         // }else{
-          currentQuestion.evaluated_files.splice(index, 1);
+        currentQuestion.evaluated_files.splice(index, 1);
         // }
-        
+
         // const currentQuestion = JSON.parse(JSON.stringify(collatedQuestionState))
         setCollatedQuestionState(currentQuestion);
       }
@@ -274,81 +278,80 @@ const ViewHomework = withRouter(
         // modifiedQuestion.evaluated_files.push(currentEvaluatedFileName);
         modifiedQuestion.evaluated_files.push(filePath);
 
-
         setCollatedQuestionState(modifiedQuestion);
       }
-      console.log("fileInfo",file)
+      console.log('fileInfo', file);
       setPenToolUrl(null);
       setcurrentEvaluatedFileName(null);
-      savedFiles[imageIndex]=0;
-      
-      let length= savedFiles.length;
-      let flag=1;
-      let i;
-      for(i=1;i<length;i++){
-        let idx=(imageIndex+i)%length
-        if(savedFiles[idx]===1){
-          let fileUrl
-          if(!isQuestionwise)
-            fileUrl=collatedSubmissionFiles
-          else  
-            fileUrl=submittedHomeworkDetails && submittedHomeworkDetails[0].submitted_files
+      savedFiles[imageIndex] = 0;
 
-          let file_content = `${endpoints.discussionForum.s3}/homework/${fileUrl[idx]}`
+      let length = savedFiles.length;
+      let flag = 1;
+      let i;
+      for (i = 1; i < length; i++) {
+        let idx = (imageIndex + i) % length;
+        if (savedFiles[idx] === 1) {
+          let fileUrl;
+          if (!isQuestionwise) fileUrl = collatedSubmissionFiles;
+          else
+            fileUrl =
+              submittedHomeworkDetails && submittedHomeworkDetails[0].submitted_files;
+
+          let file_content = `${endpoints.discussionForum.s3}/homework/${fileUrl[idx]}`;
           // let fileName=`Attachment-${idx}`
-          let fileName=`${fileUrl[idx]}`
-          openInPenTool(file_content,fileName,idx);
-          flag=0;
+          let fileName = `${fileUrl[idx]}`;
+          openInPenTool(file_content, fileName, idx);
+          flag = 0;
           break;
         }
       }
-      if(flag){
-        handleCloseCorrectionModal(); 
+      if (flag) {
+        handleCloseCorrectionModal();
         return;
       }
     };
 
     const setImage = (idx) => {
-      let length= savedFiles.length;
-      let flag=1;
-      if(idx>imageIndex){
-        for(let i=idx;i<length;i++){
-          if(savedFiles[i]===1){
-            idx=i;
-            flag=0;
+      let length = savedFiles.length;
+      let flag = 1;
+      if (idx > imageIndex) {
+        for (let i = idx; i < length; i++) {
+          if (savedFiles[i] === 1) {
+            idx = i;
+            flag = 0;
             break;
           }
         }
-        if(flag){
-          console.log("warning last image")
+        if (flag) {
+          console.log('warning last image');
           return;
         }
-      }else{
-        for(let i=idx;i>=0;i--){
-          if(savedFiles[i]===1){
-            idx=i;
-            flag=0;
+      } else {
+        for (let i = idx; i >= 0; i--) {
+          if (savedFiles[i] === 1) {
+            idx = i;
+            flag = 0;
             break;
           }
         }
-        if(flag){
-          console.log("warning first image")
+        if (flag) {
+          console.log('warning first image');
           return;
         }
       }
       let fileUrl;
-      if(!isQuestionwise)
-        fileUrl=collatedSubmissionFiles
-      else  
-        fileUrl=submittedHomeworkDetails && submittedHomeworkDetails[0]?.submitted_files
+      if (!isQuestionwise) fileUrl = collatedSubmissionFiles;
+      else
+        fileUrl =
+          submittedHomeworkDetails && submittedHomeworkDetails[0]?.submitted_files;
       let ab = {
         // file_content : "https://erp-revamp.s3.ap-south-1.amazonaws.com/homework/0/None/2021-07-05 17:50:34.041304/dummy.png",
-        file_content : `${endpoints.discussionForum.s3}/homework/${fileUrl[idx]}`,
-        id : 1,
-        splitted_media: null
-      }
-      openInPenTool(ab.file_content,fileUrl[idx],idx)
-      setMediaContained(ab)
+        file_content: `${endpoints.discussionForum.s3}/homework/${fileUrl[idx]}`,
+        id: 1,
+        splitted_media: null,
+      };
+      openInPenTool(ab.file_content, fileUrl[idx], idx);
+      setMediaContained(ab);
       // console.log("hello212",mediaContained)
     };
 
@@ -372,7 +375,7 @@ const ViewHomework = withRouter(
       setRemark(overallRemark);
       setScore(score);
       setHwStatus(hw_status);
-      setInstruction(data?.instruction)
+      setInstruction(data?.instruction);
       if (isQuestionwise) {
         const initialQuestionsState = hwQuestions.map((q) => ({
           id: q.id,
@@ -390,36 +393,36 @@ const ViewHomework = withRouter(
           evaluated_files: hwQuestions.evaluated_files,
           remarks: hwQuestions.remark,
           comments: hwQuestions.teacher_comment,
-          student_comment: hwQuestions.student_comment
+          student_comment: hwQuestions.student_comment,
         });
       }
     };
-    
+
     const handleCollatedQuestionState = (field, value) => {
       setCollatedQuestionState((prev) => ({ ...prev, [field]: value }));
     };
     // let savedFiles =[]
-    const trackSavedFile = (length) =>{
-      for(let i=0;i<length;i++){
-        console.log("hi")
-        savedFiles[i]=1;
+    const trackSavedFile = (length) => {
+      for (let i = 0; i < length; i++) {
+        console.log('hi');
+        savedFiles[i] = 1;
       }
-    }
+    };
 
     useEffect(() => {
-      if(collatedSubmissionFiles && !isQuestionwise){
-          console.log("hi1",collatedSubmissionFiles.length)
-          trackSavedFile(collatedSubmissionFiles.length)
-      }else if(submittedHomeworkDetails && isQuestionwise){
-          trackSavedFile(submittedHomeworkDetails[0]?.submitted_files?.length)
+      if (collatedSubmissionFiles && !isQuestionwise) {
+        console.log('hi1', collatedSubmissionFiles.length);
+        trackSavedFile(collatedSubmissionFiles.length);
+      } else if (submittedHomeworkDetails && isQuestionwise) {
+        trackSavedFile(submittedHomeworkDetails[0]?.submitted_files?.length);
       }
-    }, [collatedSubmissionFiles,submittedHomeworkDetails]);
+    }, [collatedSubmissionFiles, submittedHomeworkDetails]);
 
     useEffect(() => {
       fetchHomeworkDetails();
     }, []);
-    
-    console.log("savedfiles",savedFiles);
+
+    console.log('savedfiles', savedFiles);
     useEffect(() => {
       if (penToolUrl) {
         setPenToolOpen(true);
@@ -444,29 +447,45 @@ const ViewHomework = withRouter(
         <Grid container spacing={2} className='message_log_container'>
           <Grid item xs={12} className='add-homework-title-container' md={2}>
             <div className='nav-cards-container'>
-            <div className={` ${classes.navCard} nav-card`} onClick={onClose}>
+              <div className={` ${classes.navCard} nav-card`} onClick={onClose}>
                 <div className={` ${classes.headerText} text-center`}>All Homeworks</div>
               </div>
               <div className={` ${classes.navCard} nav-card`}>
                 <div className={` ${classes.headerText} text-center`}>{date}</div>
-                <div className={` ${classes.headerText} text-center`}>{subject?.split('_')[1]}</div>
-                <div className={` ${classes.headerText} text-center`}>{subject?.split('_')[2]}</div>
+                <div className={` ${classes.headerText} text-center`}>
+                  {subject?.split('_')[1]}
+                </div>
+                <div className={` ${classes.headerText} text-center`}>
+                  {subject?.split('_')[2]}
+                </div>
               </div>
             </div>
           </Grid>
           <Grid item xs={12} md={10}>
             <div className={classes.homeworkSubmitwrapper}>
-            <div className = {classes.instructionText}>
-              {
-                instruction?<span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>
-                  Instructions : {instruction}</span>:
-                  <span style = {{marginLeft:'6px',fontWeight : 'bold',textTransform : 'capitalize'}}>
+              <div className={classes.instructionText}>
+                {instruction ? (
+                  <span
+                    style={{
+                      marginLeft: '6px',
+                      fontWeight: 'bold',
+                      textTransform: 'capitalize',
+                    }}
+                  >
+                    Instructions : {instruction}
+                  </span>
+                ) : (
+                  <span
+                    style={{
+                      marginLeft: '6px',
+                      fontWeight: 'bold',
+                      textTransform: 'capitalize',
+                    }}
+                  >
                     No Instruction
-                    </span>
-              }
-       
-         
-          </div>
+                  </span>
+                )}
+              </div>
               <div className='homework_block_wrapper no-border'>
                 <div className={` ${classes.homeworkblock} homework_submit_tag`}>
                   Homework - {subject && subject}, {date}
@@ -516,23 +535,28 @@ const ViewHomework = withRouter(
 
               {!isQuestionwise &&
                 submittedHomeworkDetails?.length &&
-                submittedHomeworkDetails.map((question,i) => (
+                submittedHomeworkDetails.map((question, i) => (
                   <>
-                  <div
-                    className='homework-question-container'
-                    key={`homework_student_question_${1}`}
-                  >
-                    <div className='homework-question'>
-                      <div className='question'>{question.question}</div>
+                    <div
+                      className='homework-question-container'
+                      key={`homework_student_question_${1}`}
+                    >
+                      <div className='homework-question'>
+                        <div className='question'>{question.question}</div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="overallContainer">
-                  {collatedQuestionState?.student_comment && collatedQuestionState.student_comment[i] &&
-                    <div className="scoreBox1" style={{width:'49%',margin:'1%',marginLeft:'2%'}}>
-                      Student Comment : {collatedQuestionState.student_comment[i]}
-                    </div>}
-                </div>
-                </>
+                    <div className='overallContainer'>
+                      {collatedQuestionState?.student_comment &&
+                        collatedQuestionState.student_comment[i] && (
+                          <div
+                            className='scoreBox1'
+                            style={{ width: '49%', margin: '1%', marginLeft: '2%' }}
+                          >
+                            Student Comment : {collatedQuestionState.student_comment[i]}
+                          </div>
+                        )}
+                    </div>
+                  </>
                 ))}
               {!isQuestionwise && (
                 <>
@@ -569,7 +593,11 @@ const ViewHomework = withRouter(
                                     key={`homework_student_question_attachment_${i}`}
                                     fileUrl={url}
                                     fileName={`Attachment-${i + 1}`}
-                                    urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                                    urlPrefix={
+                                      url.includes('lesson_plan_file')
+                                        ? `${endpoints.discussionForum.s3}`
+                                        : `${endpoints.discussionForum.s3}/homework`
+                                    }
                                     index={i}
                                     actions={actions}
                                     onOpenInPenTool={openInPenTool}
@@ -610,149 +638,162 @@ const ViewHomework = withRouter(
                       </div>
                     </div>
                   )}
-                  {hwStatus==="3" && collatedQuestionState.evaluated_files?.length > 0 && (
-                    console.log({collatedQuestionState}),
-                    <div className='attachments-container with-margin'>
-                      <Typography component='h4' color='primary' className='header'>
-                        Evaluated Attachments
-                      </Typography>
-                      <div className='attachments-list-outer-container'>
-                        <div className='prev-btn'>
-                          {collatedQuestionState.evaluated_files?.length > 2 && (
-                            <IconButton onClick={() => handleScrollEvaluate('left')}>
-                              <ArrowBackIosIcon />
-                            </IconButton>
-                          )}
-                        </div>
-                        <SimpleReactLightbox>
-                          <div
-                            className='attachments-list'
-                            ref={scrollableContainerEvaluated}
-                            onScroll={(e) => {
-                              e.preventDefault();
-                            }}
-                          >
-                            {collatedQuestionState.evaluated_files.map((url, i) => (
-                              <div className='attachment'>
-                                <Attachment
-                                  key={`homework_student_question_attachment_${i}`}
-                                  fileUrl={url}
-                                  fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
-                                  index={i}
-                                  actions={['preview', 'download', 'delete']}
-                                  onOpenInPenTool={openInPenTool}
-                                  onDelete={deleteEvaluated}
-                                />
-                              </div>
-                            ))}
+                  {hwStatus === '3' &&
+                    collatedQuestionState.evaluated_files?.length > 0 &&
+                    (console.log({ collatedQuestionState }),
+                    (
+                      <div className='attachments-container with-margin'>
+                        <Typography component='h4' color='primary' className='header'>
+                          Evaluated Attachments
+                        </Typography>
+                        <div className='attachments-list-outer-container'>
+                          <div className='prev-btn'>
+                            {collatedQuestionState.evaluated_files?.length > 2 && (
+                              <IconButton onClick={() => handleScrollEvaluate('left')}>
+                                <ArrowBackIosIcon />
+                              </IconButton>
+                            )}
+                          </div>
+                          <SimpleReactLightbox>
                             <div
-                              style={{
-                                position: 'absolute',
-                                width: '0',
-                                height: '0',
-                                visibility: 'hidden',
+                              className='attachments-list'
+                              ref={scrollableContainerEvaluated}
+                              onScroll={(e) => {
+                                e.preventDefault();
                               }}
                             >
-                              <SRLWrapper>
-                                {collatedQuestionState.evaluated_files?.length &&
-                                  collatedQuestionState.evaluated_files.map(
-                                    (url, i) => (
-                                      <img
-                                        src={`${endpoints.discussionForum.s3}/homework/${url}`}
-                                        onError={(e) => {
-                                          e.target.src = placeholder;
-                                        }}
-                                        alt={`Attachment-${i + 1}`}
-                                        style={{ width: '0', height: '0' }}
-                                      />
-                                    )
-                                  )}
-                              </SRLWrapper>
-                            </div>{' '}
+                              {collatedQuestionState.evaluated_files.map((url, i) => (
+                                <div className='attachment'>
+                                  <Attachment
+                                    key={`homework_student_question_attachment_${i}`}
+                                    fileUrl={url}
+                                    fileName={`Attachment-${i + 1}`}
+                                    urlPrefix={
+                                      url.includes('lesson_plan_file')
+                                        ? `${endpoints.discussionForum.s3}`
+                                        : `${endpoints.discussionForum.s3}/homework`
+                                    }
+                                    index={i}
+                                    actions={['preview', 'download', 'delete']}
+                                    onOpenInPenTool={openInPenTool}
+                                    onDelete={deleteEvaluated}
+                                  />
+                                </div>
+                              ))}
+                              <div
+                                style={{
+                                  position: 'absolute',
+                                  width: '0',
+                                  height: '0',
+                                  visibility: 'hidden',
+                                }}
+                              >
+                                <SRLWrapper>
+                                  {collatedQuestionState.evaluated_files?.length &&
+                                    collatedQuestionState.evaluated_files.map(
+                                      (url, i) => (
+                                        <img
+                                          src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                                          onError={(e) => {
+                                            e.target.src = placeholder;
+                                          }}
+                                          alt={`Attachment-${i + 1}`}
+                                          style={{ width: '0', height: '0' }}
+                                        />
+                                      )
+                                    )}
+                                </SRLWrapper>
+                              </div>{' '}
+                            </div>
+                          </SimpleReactLightbox>
+                          <div className='next-btn'>
+                            {collatedQuestionState.evaluated_files?.length > 2 && (
+                              <IconButton onClick={() => handleScrollEvaluate('right')}>
+                                <ArrowForwardIosIcon color='primary' />
+                              </IconButton>
+                            )}
                           </div>
-                        </SimpleReactLightbox>
-                        <div className='next-btn'>
-                          {collatedQuestionState.evaluated_files?.length > 2 && (
-                            <IconButton onClick={() => handleScrollEvaluate('right')}>
-                              <ArrowForwardIosIcon color='primary' />
-                            </IconButton>
-                          )}
                         </div>
                       </div>
-                    </div>
-                  )}
-                  {hwStatus!=="3" && collatedQuestionState.corrected_submission?.length > 0 && (
-                    <div className='attachments-container with-margin'>
-                      <Typography component='h4' color='primary' className='header'>
-                        Evaluated Attachments
-                      </Typography>
-                      <div className='attachments-list-outer-container'>
-                        <div className='prev-btn'>
-                          {collatedQuestionState.corrected_submission?.length > 2 && (
-                            <IconButton onClick={() => handleScrollEvaluate('left')}>
-                              <ArrowBackIosIcon />
-                            </IconButton>
-                          )}
-                        </div>
-                        <SimpleReactLightbox>
-                          <div
-                            className='attachments-list'
-                            ref={scrollableContainerEvaluated}
-                            onScroll={(e) => {
-                              e.preventDefault();
-                            }}
-                          >
-                            {collatedQuestionState.corrected_submission.map((url, i) => (
-                              <div className='attachment'>
-                                <Attachment
-                                  key={`homework_student_question_attachment_${i}`}
-                                  fileUrl={url}
-                                  fileName={`Attachment-${i + 1}`}
-                                  urlPrefix={`${endpoints.discussionForum.s3}/homework`}
-                                  index={i}
-                                  actions={['preview', 'download', 'delete']}
-                                  onOpenInPenTool={openInPenTool}
-                                  onDelete={deleteEvaluated}
-                                />
-                              </div>
-                            ))}
+                    ))}
+                  {hwStatus !== '3' &&
+                    collatedQuestionState.corrected_submission?.length > 0 && (
+                      <div className='attachments-container with-margin'>
+                        <Typography component='h4' color='primary' className='header'>
+                          Evaluated Attachments
+                        </Typography>
+                        <div className='attachments-list-outer-container'>
+                          <div className='prev-btn'>
+                            {collatedQuestionState.corrected_submission?.length > 2 && (
+                              <IconButton onClick={() => handleScrollEvaluate('left')}>
+                                <ArrowBackIosIcon />
+                              </IconButton>
+                            )}
+                          </div>
+                          <SimpleReactLightbox>
                             <div
-                              style={{
-                                position: 'absolute',
-                                width: '0',
-                                height: '0',
-                                visibility: 'hidden',
+                              className='attachments-list'
+                              ref={scrollableContainerEvaluated}
+                              onScroll={(e) => {
+                                e.preventDefault();
                               }}
                             >
-                              <SRLWrapper>
-                                {collatedQuestionState.corrected_submission?.length &&
-                                  collatedQuestionState.corrected_submission.map(
-                                    (url, i) => (
-                                      <img
-                                        src={`${endpoints.discussionForum.s3}/homework/${url}`}
-                                        onError={(e) => {
-                                          e.target.src = placeholder;
-                                        }}
-                                        alt={`Attachment-${i + 1}`}
-                                        style={{ width: '0', height: '0' }}
-                                      />
-                                    )
-                                  )}
-                              </SRLWrapper>
-                            </div>{' '}
+                              {collatedQuestionState.corrected_submission.map(
+                                (url, i) => (
+                                  <div className='attachment'>
+                                    <Attachment
+                                      key={`homework_student_question_attachment_${i}`}
+                                      fileUrl={url}
+                                      fileName={`Attachment-${i + 1}`}
+                                      urlPrefix={
+                                        url.includes('lesson_plan_file')
+                                          ? `${endpoints.discussionForum.s3}`
+                                          : `${endpoints.discussionForum.s3}/homework`
+                                      }
+                                      index={i}
+                                      actions={['preview', 'download', 'delete']}
+                                      onOpenInPenTool={openInPenTool}
+                                      onDelete={deleteEvaluated}
+                                    />
+                                  </div>
+                                )
+                              )}
+                              <div
+                                style={{
+                                  position: 'absolute',
+                                  width: '0',
+                                  height: '0',
+                                  visibility: 'hidden',
+                                }}
+                              >
+                                <SRLWrapper>
+                                  {collatedQuestionState.corrected_submission?.length &&
+                                    collatedQuestionState.corrected_submission.map(
+                                      (url, i) => (
+                                        <img
+                                          src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                                          onError={(e) => {
+                                            e.target.src = placeholder;
+                                          }}
+                                          alt={`Attachment-${i + 1}`}
+                                          style={{ width: '0', height: '0' }}
+                                        />
+                                      )
+                                    )}
+                                </SRLWrapper>
+                              </div>{' '}
+                            </div>
+                          </SimpleReactLightbox>
+                          <div className='next-btn'>
+                            {collatedQuestionState.corrected_submission?.length > 2 && (
+                              <IconButton onClick={() => handleScrollEvaluate('right')}>
+                                <ArrowForwardIosIcon color='primary' />
+                              </IconButton>
+                            )}
                           </div>
-                        </SimpleReactLightbox>
-                        <div className='next-btn'>
-                          {collatedQuestionState.corrected_submission?.length > 2 && (
-                            <IconButton onClick={() => handleScrollEvaluate('right')}>
-                              <ArrowForwardIosIcon color='primary' />
-                            </IconButton>
-                          )}
                         </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                   <div
                     className='comments-remarks-container'
                     style={{ display: 'flex', width: '95%', margin: '0 auto' }}
@@ -850,7 +891,7 @@ const ViewHomework = withRouter(
                       variant='contained'
                       color='primary'
                       onClick={handleFinalEvaluationForHomework}
-                      style={{ marginLeft: '10px'}}
+                      style={{ marginLeft: '10px' }}
                     >
                       EVALUATION DONE
                     </Button>
@@ -875,7 +916,7 @@ const ViewHomework = withRouter(
           <DescriptiveTestcorrectionModule
             index={imageIndex}
             urlPrefix={`${endpoints.discussionForum.s3}/homework`}
-            fileUrl={(!isQuestionwise && collatedSubmissionFiles )}
+            fileUrl={!isQuestionwise && collatedSubmissionFiles}
             savedFiles={savedFiles}
             desTestDetails={desTestDetails}
             mediaContent={mediaContent}

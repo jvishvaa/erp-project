@@ -44,17 +44,16 @@ import {
   fetchAcademicYears as getAcademicYears,
   fetchSubjects as getSubjects,
 } from '../../../redux/actions/index';
-import AssignedHomework from '../../../assets/images/hw-given.svg';
-import InfoIcon from '@material-ui/icons/Info';
 import { Context } from '../context/context';
-import './daily-diary-scrollbar.css';
-import HomeworkAsigned from '../../../assets/images/hw-given.svg';
+// import AddHomework from '../../../assets/images/AddHomework.svg';
+import AssignedHomework from '../../../assets/images/hw-given.svg';
 import QuestionCard from '../../../components/question-card';
 import { useDispatch, useSelector } from 'react-redux';
 import { addHomeWork } from 'redux/actions/teacherHomeworkActions';
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import MomentUtils from '@date-io/moment';
 import './daily-diary-scrollbar.css';
+import InfoIcon from '@material-ui/icons/Info';
 
 const CreateDailyDairy = (details, onSubmit) => {
   const dispatch = useDispatch();
@@ -424,6 +423,7 @@ const CreateDailyDairy = (details, onSubmit) => {
   const validateFileSize = (size) => {
     return size / 1024 / 1024 > 25 ? false : true;
   };
+
   const closeAssignedHomeworkModal = () => {
     setAssignedHomeworkModal(false);
     setDeclined(true);
@@ -600,10 +600,10 @@ const CreateDailyDairy = (details, onSubmit) => {
         setState({ editData: [], isEdit: false });
         history.push('/diary/teacher');
       } else {
-        setAlert('error', response?.data?.message);
+        setAlert('error', 'Diary Already Exists');
       }
     } catch (error) {
-      setAlert('error', error?.message);
+      setAlert('error', 'Diary Already Exists');
     }
   };
 
@@ -778,6 +778,18 @@ const CreateDailyDairy = (details, onSubmit) => {
         });
     }
   }, []);
+
+  const RedirectToHomework = () => {
+    const session_year = filterData?.year?.id;
+    const branchID = state.isEdit ? editData.branch : filterData?.branch?.id;
+    const gradeID = state.isEdit ? editData.grade[0] : filterData?.grade?.id;
+    const subjectID = state.isEdit ? editData.subject : filterData?.subject?.id;
+    history.push(
+      `/homework/add/${moment().format(
+        'YYYY-MM-DD'
+      )}/${session_year}/${branchID}/${gradeID}/${subjectName}/${subjectID}`
+    );
+  };
   const classes = useStyles();
   const checkAssignedHomework = (params = {}) => {
     axiosInstance
@@ -1238,7 +1250,6 @@ const CreateDailyDairy = (details, onSubmit) => {
                     <Grid item xs={12} sm={4} style={{ margin: '10px 0px' }}>
                       <MuiPickersUtilsProvider utils={MomentUtils}>
                         <KeyboardDatePicker
-                          minDate={new Date()}
                           size='small'
                           variant='dialog'
                           format='YYYY-MM-DD'

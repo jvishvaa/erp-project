@@ -3,9 +3,6 @@ import { Modal, Upload, message, Button } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import endpoints from 'v2/config/endpoints';
 import axios from 'v2/config/axios';
-import imageFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/imageFileIcon.svg';
-import excelFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/excelFileIcon.svg';
-import pdfFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/pdfFileIcon.svg';
 import dragDropIcon from 'v2/Assets/dashboardIcons/announcementListIcons/dragDropIcon.svg';
 
 const UploadDocument = (props) => {
