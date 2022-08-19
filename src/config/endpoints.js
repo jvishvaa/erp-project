@@ -495,6 +495,7 @@ export default {
     bulkUploadMarks: `/assessment/upload-omr-result-excel/`,
     imageupload: '/assessment/assessment-document-upload/',
     studentImgs: '/assessment/assessment-document-upload/',
+    reUpload : '/assessment/enable-assessment-re-upload/',
   },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,
