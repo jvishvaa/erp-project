@@ -85,7 +85,10 @@ const QuestionPaperInfo = ({
   const firstUpdate = useRef(true);
   const fileUploadInput = useRef(null);
   const attachmentsRef = useRef(null);
-  const [showPrev, setshowPrev] = useState(false);
+  const attachmentsInitialRef = useRef(null);
+  const [showPrev, setshowPrev] = useState(0);
+  const [showPrevAgain, setshowPrevAgain] = useState(0);
+
   const handleScroll = (dir) => {
     if (dir === 'left') {
       attachmentsRef.current.scrollLeft -= 150;
@@ -93,6 +96,36 @@ const QuestionPaperInfo = ({
       attachmentsRef.current.scrollLeft += 150;
     }
   };
+
+  const handleScrollAgain = (dir) => {
+    if (dir === 'left') {
+      attachmentsInitialRef.current.scrollLeft -= 150;
+    } else {
+      attachmentsInitialRef.current.scrollLeft += 150;
+    }
+  };
+
+  useEffect(() => {
+    let count = 0;
+    attachmentPreviews.forEach((e) => {
+      if (typeof e == 'string') count = count + 1;
+      else {
+        count = Object.keys(e).length + count;
+      }
+    });
+    setshowPrev(count > 2);
+  }, [attachmentPreviews]);
+
+  useEffect(() => {
+    let count = 0;
+    showagain.forEach((e) => {
+      if (typeof e == 'string') count = count + 1;
+      else {
+        count = Object.keys(e).length + count;
+      }
+    });
+    setshowPrevAgain(count > 2);
+  }, [showagain]);
 
   useEffect(() => {
     countSubQuestions();
@@ -527,7 +560,7 @@ const QuestionPaperInfo = ({
             )
             }
             {attachmentPreviews.length > 0 && (
-              <Grid item xs={12} className='attachments-grid'>
+              <Grid item xs={12} style={{width:'44vw'}} className='attachments-grid'>
                 <div className='attachments-list-outer-container'>
                   <div className='prev-btn'>
                     {showPrev && (
@@ -673,19 +706,19 @@ const QuestionPaperInfo = ({
             </>) : (
               <>
               {showagain.length > 0 && (
-              <Grid item xs={12} className='attachments-grid'>
+              <Grid item xs={12} style={{width:'44vw'}} className='attachments-grid'>
                 <div className='attachments-list-outer-container'>
                   <div className='prev-btn'>
-                    {/* {showPrev && (
-                      <IconButton onClick={() => handleScroll('left')}>
+                    {setshowPrevAgain && (
+                      <IconButton onClick={() => handleScrollAgain('left')}>
                         <ArrowBackIosIcon />
                       </IconButton>
-                    )} */}
+                    )}
                   </div>
                   <SimpleReactLightbox>
                     <div
                       className='attachments-list'
-                      ref={attachmentsRef}
+                      ref={attachmentsInitialRef}
                       onScroll={(e) => {
                         e.preventDefault();
                       }}
@@ -755,7 +788,7 @@ const QuestionPaperInfo = ({
 
                       <div style={{ position: 'absolute', visibility: 'hidden' }}>
                         <SRLWrapper>
-                          {attachmentPreviews.map((url, i) => {
+                          {showagain.map((url, i) => {
                             console.log('URLSRL', url);
                             if (typeof url == 'object') {
                               return Object.values(url).map((item, i) => {
@@ -793,11 +826,11 @@ const QuestionPaperInfo = ({
                     </div>
                   </SimpleReactLightbox>
                   <div className='next-btn'>
-                    {/* {showPrev && (
-                      <IconButton onClick={() => handleScroll('right')}>
+                    {showPrevAgain && (
+                      <IconButton onClick={() => handleScrollAgain('right')}>
                         <ArrowForwardIosIcon color='primary' />
                       </IconButton>
-                    )} */}
+                    )}
                   </div>
                 </div>
               </Grid>
