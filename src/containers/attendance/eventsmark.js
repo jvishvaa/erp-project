@@ -62,7 +62,7 @@ const EventsMark = () => {
     button: {
       display: 'flex',
       justifyContent: 'space-evenly',
-    width: '20%',
+    // width: '20%',
     },
   }));
 
@@ -545,10 +545,11 @@ const EventsMark = () => {
           </Grid>
           <Grid container direction='row' className={classes.root}>
             <div className={classes.button}>
-              <Button variant='contained' onClick={onunHandleClearAll}>
+              <Button style={{margin: '5px'}} variant='contained' onClick={onunHandleClearAll}>
                 Clear All
               </Button>
               <Button
+              style={{margin:'5px '}}
                 variant='contained'
                 color='primary'
                 onClick={handleBackButtonClick}
@@ -556,6 +557,7 @@ const EventsMark = () => {
                 Go Back
               </Button>
               <Button
+               style={{margin: '5px'}}
                 variant='contained'
                 type='submit'
                 value='Submit'

@@ -10,14 +10,31 @@ import Assessment from './components/Assessment';
 import TodaysClass from './components/TodaysClass';
 import { getRole } from 'v2/generalAnnouncementFunctions';
 import Doodle from 'v2/FaceLift/Doodle/Doodle';
-import { Popover, message } from 'antd';
+import { Popover, message, Button } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
+import { useHistory } from 'react-router-dom';
+import { UsergroupAddOutlined } from '@ant-design/icons';
 
 const StudentDashboardNew = () => {
   const [showDoodle, setShowDoodle] = useState(false);
   const { first_name, user_level } = JSON.parse(localStorage.getItem('userDetails'));
   const time = new Date().getHours();
+  const history = useHistory();
+  const [checkOrigin, setCheckOrigin] = useState(false);
+
+  useEffect(() => {
+    const origin = window.location.origin;
+    if (
+      origin.indexOf('orchids.') > -1 ||
+      origin.indexOf('dev.') > -1 ||
+      origin.indexOf('qa.') > -1 ||
+      origin.indexOf('localhost') > -1 ||
+      origin.indexOf('ui-revamp1.') > -1
+    ) {
+      setCheckOrigin(true);
+    }
+  }, []);
 
   const fetchDoodle = () => {
     axios
@@ -34,6 +51,10 @@ const StudentDashboardNew = () => {
     fetchDoodle();
   }, []);
 
+  const studentrefer = () => {
+    history.push('/studentrefer');
+  };
+  
   return (
     <Layout>
       <div className=''>
@@ -43,6 +64,25 @@ const StudentDashboardNew = () => {
             <span className='text-capitalize pr-2'>{first_name}</span>
             <span className='th-14'>({getRole(user_level)})</span>
           </div>
+          {checkOrigin ? (
+            <>
+            {user_level === 13 ? (
+              <div className='col-md-6 th-black-1 th-20 th-fw-400' style={{display:'flex', flexDirection:'row-reverse'}}>
+              <Button
+              onClick={studentrefer} 
+              >
+               <UsergroupAddOutlined />
+                Orchids Ambassador Program
+              </Button>
+            </div>
+
+            ) : (
+              ''
+            )}
+             </>
+          ) : (
+            ''
+          )}
         </div>
         {showDoodle && <Doodle />}
         <div className='row pt-3'>
