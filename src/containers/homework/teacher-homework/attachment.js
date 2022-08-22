@@ -10,7 +10,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import placeholder from '../../../assets/images/placeholder_small.jpg';
 import { isVideo, isAudio } from '../../../utility-functions';
 import './styles.scss';
-import PDFImage from 'v2/Assets/images/pdfImage.png';
+import PDFIcon from 'v2/Assets/images/pdfImage.png';
+import PowerPointIcon from 'v2/Assets/images/PowerPointIcon.png';
 
 const Attachment = (props) => {
   const {
@@ -113,7 +114,9 @@ const Attachment = (props) => {
                 e.target.src = placeholder;
               } else {
                 if (fileUrl.includes('pdf')) {
-                  e.target.src = PDFImage;
+                  e.target.src = PDFIcon;
+                } else if (fileUrl.includes('ppt')) {
+                  e.target.src = PowerPointIcon;
                 }
               }
             }}
@@ -133,29 +136,130 @@ const Attachment = (props) => {
   } else {
     if (isVideoFile) {
       markup = (
-        <div className='file-card-container'>
-          <video controls className='video-file'>
-            <source src={`${urlPrefix}/${fileUrl}`} />
-            Your browser does not support the audio element.
-          </video>
-        </div>
+        <>
+          <div className='file-card-container'>
+            <div className='overlay-container' style={{ zIndex: 2 }}>
+              <div className='overlay'>
+                <Typography
+                  component='h6'
+                  style={{ color: '#ffffff', textAlign: 'center', position: 'absolute' }}
+                >
+                  {fileName}
+                </Typography>
+
+                <div className='action-buttons' style={{ display: 'flex' }}>
+                  {actions?.includes('download') && (
+                    <IconButton size='small'>
+                      <a href={`${urlPrefix}/${fileUrl}`} download target='_blank'>
+                        <GetAppIcon style={{ color: '#ffffff' }} />
+                      </a>
+                    </IconButton>
+                  )}
+                  {actions?.includes('pentool') && (
+                    <IconButton
+                      size='small'
+                      onClick={() =>
+                        onOpenInPenTool(`${urlPrefix}/${fileUrl}`, fileUrl, index)
+                      }
+                    >
+                      <CreateIcon style={{ color: '#ffffff' }} />
+                    </IconButton>
+                  )}
+                  {actions?.includes('delete') && (
+                    <IconButton
+                      size='small'
+                      onClick={(e) => {
+                        setOpenModal(true);
+                      }}
+                    >
+                      <DeleteIcon style={{ color: '#ffffff' }} />
+                    </IconButton>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className='file-card-container'>
+              <video controls className='video-file'>
+                <source src={`${urlPrefix}/${fileUrl}`} />
+                Your browser does not support the audio element.
+              </video>
+            </div>
+          </div>
+          {openModal && (
+            <ConformDeleteMOdel
+              submit={(status) => onDelete(index, status)}
+              openModal={openModal}
+              setOpenModal={setOpenModal}
+              ispdf={ispdf}
+            />
+          )}
+        </>
       );
     }
     if (isAudioFile) {
       markup = (
-        <div className='file-card-container'>
-          <audio controls className='video-file'>
-            <source src={`${urlPrefix}/${fileUrl}`} />
-            Your browser does not support the audio element.
-          </audio>
-          {/* actions?.includes('delete') && (
-            <div>
-              <IconButton size='small' onClick={() => onDelete(index)}>
-                <DeleteIcon style={{ color: '#ffffff' }} />
-              </IconButton>
+        <>
+          <div className='file-card-container'>
+            <div className='overlay-container' style={{ zIndex: 2 }}>
+              <div className='overlay'>
+                <Typography
+                  component='h6'
+                  style={{
+                    color: '#ffffff',
+                    textAlign: 'center',
+                    position: 'absolute',
+                  }}
+                >
+                  {fileName}
+                </Typography>
+
+                <div className='action-buttons' style={{ display: 'flex' }}>
+                  {actions?.includes('download') && (
+                    <IconButton size='small'>
+                      <a href={`${urlPrefix}/${fileUrl}`} download target='_blank'>
+                        <GetAppIcon style={{ color: '#ffffff' }} />
+                      </a>
+                    </IconButton>
+                  )}
+                  {actions?.includes('pentool') && (
+                    <IconButton
+                      size='small'
+                      onClick={() =>
+                        onOpenInPenTool(`${urlPrefix}/${fileUrl}`, fileUrl, index)
+                      }
+                    >
+                      <CreateIcon style={{ color: '#ffffff' }} />
+                    </IconButton>
+                  )}
+                  {actions?.includes('delete') && (
+                    <IconButton
+                      size='small'
+                      onClick={(e) => {
+                        setOpenModal(true);
+                      }}
+                    >
+                      <DeleteIcon style={{ color: '#ffffff' }} />
+                    </IconButton>
+                  )}
+                </div>
+              </div>
             </div>
-          ) */}
-        </div>
+            <div className='file-card-container'>
+              <audio controls className='video-file'>
+                <source src={`${urlPrefix}/${fileUrl}`} />
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          </div>
+          {openModal && (
+            <ConformDeleteMOdel
+              submit={(status) => onDelete(index, status)}
+              openModal={openModal}
+              setOpenModal={setOpenModal}
+              ispdf={ispdf}
+            />
+          )}
+        </>
       );
     }
   }

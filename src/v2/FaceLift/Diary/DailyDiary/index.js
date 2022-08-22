@@ -11,7 +11,7 @@ import {
   Checkbox,
   DatePicker,
 } from 'antd';
-import { DownOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { DownOutlined, InfoCircleFilled } from '@ant-design/icons';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -204,6 +204,10 @@ const DailyDiary = () => {
   };
 
   const handleSubmit = () => {
+    if (showHomeworkForm) {
+      message.error('Please submit the homework first');
+      return;
+    }
     if (!gradeID) {
       message.error('Please select Grade');
       return;
@@ -214,6 +218,10 @@ const DailyDiary = () => {
     }
     if (!subjectID) {
       message.error('Please select Subject');
+      return;
+    }
+    if (!chapterID) {
+      message.error('Please select Chapter');
       return;
     }
     let payload = {
@@ -476,7 +484,11 @@ const DailyDiary = () => {
     };
     try {
       const response = await dispatch(addHomeWork(reqObj, isEdit, hwId));
-      message.success('Homework added');
+      if (isDiaryEdit) {
+        message.success('Homework Updated Successfully');
+      } else {
+        message.success('Homework Edited Successfully');
+      }
       setShowHomeworkForm(false);
       checkAssignedHomework({
         section_mapping: sectionMappingID,
@@ -763,7 +775,10 @@ const DailyDiary = () => {
                         {assignedHomework && !homework ? (
                           <div onClick={mapAssignedHomework} className='th-pointer'>
                             <span>
-                              <InfoCircleOutlined className='th-black-1' />
+                              <InfoCircleFilled
+                                className='th-primary'
+                                style={{ fontSize: 20 }}
+                              />
                             </span>
                             <span className='ml-2 th-fw-500'>
                               Homework Exists (click to map to diary)

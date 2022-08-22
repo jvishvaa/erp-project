@@ -96,12 +96,12 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
       <div className='col-md-12 py-3'>
         <div className='row th-16 th-fw-700 d-flex justify-content-between th-black-1'>
           {' '}
-          <div>
+          <div className='col-10 text-truncate pl-0'>
             {diary?.dairy_type == 2
               ? diary?.subject?.subject_name
               : `Topic: ${diary?.title}`}
           </div>
-          <div>
+          <div className='col-2'>
             <Popover
               content={
                 <>
@@ -182,7 +182,7 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
         className='th-diaryDrawer'
         title={
           <div>
-            <div className='th-fw-600 th-primary th-18'>
+            <div className='th-fw-600 th-primary th-18 text-capitalize'>
               {diary?.dairy_type == 2 ? diary?.subject?.subject_name : diary?.title}
             </div>
             <div className='th-fw-400 mt-2'>Created On:</div>
@@ -309,13 +309,19 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
 
                   return (
                     <div className='row py-2'>
-                      <div className='col-8 pl-0' md={6}>
-                        <div className='th-primary text-truncate'>{fileName}</div>
+                      <div className='col-8 pl-0'>
+                        <div
+                          className='th-primary text-truncate'
+                          style={{ width: '200px' }}
+                        >
+                          {fileName}
+                        </div>
                       </div>
                       <div className='col-4 text-center'>
-                        <a href={`${endpoints.announcementList.s3erp}${each}`} download>
-                          <ArrowDownOutlined className='th-primary th-pointer' />
-                        </a>
+                        <ArrowDownOutlined
+                          className='th-primary th-pointer'
+                          onClick={() => handleDownloadAll([each])}
+                        />
                       </div>
                     </div>
                   );

@@ -7,7 +7,6 @@ import dragDropIcon from 'v2/Assets/dashboardIcons/announcementListIcons/dragDro
 
 const UploadDocument = (props) => {
   const [fileList, setFileList] = useState([]);
-
   const getSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -54,7 +53,12 @@ const UploadDocument = (props) => {
       setFileList(newFileList);
     },
     beforeUpload: (...file) => {
-      setFileList([...fileList, ...file[1]]);
+      const type = file[0]?.type.split('/')[1];
+      if (['jpeg', 'jpg', 'png', 'pdf'].includes(type)) {
+        setFileList([...fileList, ...file[1]]);
+      } else {
+        message.error('Please add image and pdf files only');
+      }
       return false;
     },
     fileList,
