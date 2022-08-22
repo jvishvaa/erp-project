@@ -289,7 +289,6 @@ const useStyles = makeStyles((theme) => ({
 const FinanceOwnerDashboard = (props) => {
   const classes = useStyles();
   const history = useHistory();
-  debugger
 
   const [academicPerformanceDetailsOpen, setAcademicPerformanceDetailsOpen] = useState(
     false
