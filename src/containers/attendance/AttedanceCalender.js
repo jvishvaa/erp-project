@@ -231,7 +231,7 @@ const AttedanceCalender = () => {
             });
             axiosInstance
             .get(
-              `${endpoints.academics.getEvents}?session_year=${selectedBranch.id}&start_date=${formatDateToday}&end_date=${formatDateToday}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
+              `${endpoints.academics.getEvents}?session_year=${selectedBranch.id}&start_date=${formatDateToday}&end_date=${formatDateToday}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}&level=${user_level}`
             )
             .then((res) => {
               // setHolidayDetails(res.data.holiday_detail);
@@ -255,7 +255,7 @@ const AttedanceCalender = () => {
 
             axiosInstance
             .get(
-              `${endpoints.academics.getEvents}?session_year=${sessionId?.id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
+              `${endpoints.academics.getEvents}?session_year=${sessionId?.id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}&level=${user_level}`
             )
             .then((res) => {
               setEventDetails(res?.data?.holiday_detail)
@@ -567,7 +567,7 @@ const AttedanceCalender = () => {
       });
       axiosInstance
       .get(
-        `${endpoints.academics.getEvents}?session_year=${selectedAcademicYearId}&start_date=${formatDate}&end_date=${formatDate}&grade=${selectedGrade.grade_id}`
+        `${endpoints.academics.getEvents}?session_year=${selectedAcademicYearId}&start_date=${formatDate}&end_date=${formatDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
       )
       .then((res) => {
         // setHolidayDetails(res.data.holiday_detail);
@@ -640,7 +640,7 @@ const AttedanceCalender = () => {
   
           axiosInstance
           .get(
-            `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&start_date=${startDate}&end_date=${endDate}&level=${user_level}`
+            `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
           )
           .then((res) => {
             setLoading(false);
@@ -668,7 +668,7 @@ const AttedanceCalender = () => {
     
             axiosInstance
             .get(
-              `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&start_date=${startDate}&end_date=${endDate}&level=${user_level}`
+              `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
             )
             .then((res) => {
               setLoading(false);
@@ -728,7 +728,7 @@ const AttedanceCalender = () => {
         });
         axiosInstance
         .get(
-          `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&start_date=${startDate}&end_date=${endDate}&level=${user_level}`
+          `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
         )
         .then((res) => {
           // setHolidayDetails(res.data.holiday_detail);
@@ -780,7 +780,7 @@ const AttedanceCalender = () => {
       });
       axiosInstance
       .get(
-        `${endpoints.academics.getEvents}?session_year=${branchIds}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
+        `${endpoints.academics.getEvents}?session_year=${branchIds}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}&level=${user_level}`
       )
       .then((res) => {
         // setHolidayDetails(res.data.holiday_detail);
@@ -886,7 +886,7 @@ const AttedanceCalender = () => {
 
         axiosInstance
         .get(
-          `${endpoints.academics.getEvents}?session_year=${branchIds}&start_date=${startDate}&end_date=${endDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
+          `${endpoints.academics.getEvents}?session_year=${branchIds}&start_date=${startDate}&end_date=${endDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}&level=${user_level}`
         )
         .then((res) => {
           // setHolidayDetails(res.data.holiday_detail);
@@ -1091,7 +1091,7 @@ const AttedanceCalender = () => {
       });
       axiosInstance
       .get(
-        `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&start_date=${startDate}&end_date=${endDate}&level=${user_level}`
+        `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade?.grade_id}&level=${user_level}`
       )
       .then((res) => {
         // setHolidayDetails(res.data.holiday_detail);
@@ -1581,7 +1581,13 @@ const AttedanceCalender = () => {
 
         <div className='eventWhole'>
         {/* <div className='startDate'> <b>  From </b> {moment(startDate).format('DD-MM-YYYY')}</div> */}
+        {startDate === endDate ? (
+          <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')}</div>
+
+        ) : (
           <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div>
+
+        )}
           <Paper
             elevation={3}
             className={[classes.root, classes.paperSize]}
@@ -1772,7 +1778,13 @@ const AttedanceCalender = () => {
           </Paper>
         </div>
         <div className='eventWhole'>
+          {/* <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div> */}
+          {startDate === endDate ? (
+          <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')}</div>
+
+        ) : (
           <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div>
+        )}
           <Paper
             elevation={3}
             className={[classes.root, classes.paperSize]}
