@@ -26,6 +26,7 @@ import Orchids from 'assets/images/orchids.png';
 import { CSVLink } from 'react-csv';
 import TablePagination from '@material-ui/core/TablePagination';
 import { useHistory } from 'react-router';
+import Loader from 'components/loader/loader';
 
 import './referstudent.scss';
 import axios from 'axios';
@@ -150,6 +151,7 @@ const StudentRefer = () => {
   const classes = useStyles({});
   const fileRef = useRef();
   const { setAlert } = useContext(AlertNotificationContext);
+  const [loading, setLoading] = useState(false);
 
   const [moduleId, setModuleId] = useState('');
   // const [selectedAcademicYear, setSelectedAcadmeicYear] = useState('');
@@ -175,8 +177,11 @@ const StudentRefer = () => {
 
   const [mailError, setMailError] = useState('');
   const [valid, setValid] = useState(true);
-  const regexEmail =    
-  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  // const regexEmail =    
+  // /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+  const regexEmail =/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
   const nameRegex = /^[a-zA-Z ]+$/;
 
   useEffect(() => {
@@ -327,38 +332,71 @@ const StudentRefer = () => {
   }
 
   const handleSubmit = () => {
-    branchCheck();  
+    setLoading(true)
+    if(cityError){
+      setAlert('error', cityError)
+      setLoading(false)
+      return;
 
-    const data = {
-      parent_name: parent,
-      student_name: student,
-      city: selectedBranch,
-      email_id: mail,
-      phone_number: phone,
-      referral_code: userDetails?.erp
-    };
-    if (student && parent && valid) {
-      axiosInstance
-        .post(`${endpoints.referral.studentRefer}`, data, {
-          headers: {
-            Authorization: `Bearer ${userDetails?.token}`,
-          },
-        })
-        .then((results) => {
-          // setAlert('success', 'Successfully Added');
-          // history.push('/dashboard');
-          handleRedirect(results)
-        })
-        .catch((error) => {
-          setAlert('error', 'Already Registered !');
-        });
-    } else {
-      setAlert('error', 'All Fields are Mandatory');
+    }else if(studentError){
+      setAlert('error', studentError)
+      setLoading(false)
+      return;
+
+    }else if(parentError){
+      setAlert('error',parentError)
+      setLoading(false)
+      return;
+
+    }else if (phoneError){
+      setAlert('error', phoneError)
+      setLoading(false)
+      return;
+
+    }else if(mailError){
+      setAlert('error', mailError)
+      setLoading(false)
+      return;
+
+    } 
+    else{
+      branchCheck();  
+      const data = {
+        parent_name: parent,
+        student_name: student,
+        city: selectedBranch,
+        email_id: mail,
+        phone_number: phone,
+        referral_code: userDetails?.erp
+      };
+      if (student && parent && valid) {
+        axiosInstance
+          .post(`${endpoints.referral.studentRefer}`, data, {
+            headers: {
+              Authorization: `Bearer ${userDetails?.token}`,
+            },
+          })
+          .then((results) => {
+            // setAlert('success', 'Successfully Added');
+            // history.push('/dashboard');
+            handleRedirect(results)
+            setLoading(false)
+          })
+          .catch((error) => {
+            setLoading(false)
+            setAlert('error', 'Already Registered !');
+          });
+      } else {
+        setLoading(false)
+        setAlert('error', 'All Fields are Mandatory');
+      }
+
     }
   };
 
   return (
     <Layout className='student-refer-whole-container'>
+
       <div className={classes.parentDiv}>
         <CommonBreadcrumbs
           componentName='Student Refer'
@@ -367,6 +405,9 @@ const StudentRefer = () => {
         />
         <Paper>
           <div className='student-refer-container'>
+            {loading ? (
+              <Loader/>
+            ): (
             <div className='image-class'>
               <div className='leftimage'>
                 <div className='main-img'>
@@ -390,7 +431,7 @@ const StudentRefer = () => {
                     label='City'
                     variant='outlined'
                     size='small'
-                    className='input-boxes border'
+                    className='input-boxes'
                     onChange={(e) => handleCity(e)}
                     helperText={cityError}
                     error={cityError.length !== 0}
@@ -422,6 +463,9 @@ const StudentRefer = () => {
                   <TextField
                     id='outlined-basic'
                     label='Phone Number'
+                    inputProps={{
+                      maxLength: 10,
+                    }}
                     variant='outlined'
                     className='input-boxes'
                     helperText={phoneError}
@@ -449,6 +493,7 @@ const StudentRefer = () => {
                 </div>
               </div>
             </div>
+            )}
           </div>
         </Paper>
       </div>
