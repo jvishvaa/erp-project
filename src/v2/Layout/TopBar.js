@@ -175,23 +175,31 @@ const Appbar = ({ children, history, ...props }) => {
           <Typography color='secondary'>Settings</Typography>
         </MenuItem>
       ) : null}
-      <MenuItem onClick={() => setisSwitch(!isSwitch)}>
-        <IconButton aria-label='settings' color='inherit'>
-          <SupervisorAccountIcon color='primary' style={{ fontSize: '2rem' }} />
-        </IconButton>
-        <Typography color='secondary'>Switch Profile</Typography>
-        {!isSwitch && <KeyboardArrowDownIcon />}
-        {isSwitch && <KeyboardArrowUpIcon />}
+      { profileDetails?.is_verified && 
+      (
+      <>
+      <MenuItem
+        onClick={() => setisSwitch(!isSwitch)}
+      >
+          <IconButton aria-label='settings' color='inherit'>
+            <SupervisorAccountIcon color='primary' style={{ fontSize: '2rem' }} />
+          </IconButton>
+          <Typography color='secondary'>Switch Profile</Typography>
+          {!isSwitch && <KeyboardArrowDownIcon />}
+          {isSwitch && <KeyboardArrowUpIcon />}
+
       </MenuItem>
-      {isSwitch &&
-        profileToShown?.map((item) => (
-          <MenuItem onClick={() => handleSwitchChange(item)}>
-            {/* <IconButton aria-label='settings' color='inherit'>
+      {isSwitch && profileToShown?.map((item) => (
+        <MenuItem onClick={() => handleSwitchChange(item)}>
+          {/* <IconButton aria-label='settings' color='inherit'>
             <SettingsIcon color='primary' style={{ fontSize: '2rem' }} />
           </IconButton> */}
-            <Typography color='secondary'>{item?.name}</Typography>
-          </MenuItem>
-        ))}
+          <Typography color='secondary'>{item?.name}</Typography>
+        </MenuItem>
+
+      ))}
+      
+      </>)}
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
           <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />

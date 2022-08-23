@@ -219,6 +219,9 @@ const Appbar = ({ children, history, ...props }) => {
           <Typography color='secondary'>Settings</Typography>
         </MenuItem>
       ) : null}
+      { profileDetails?.is_verified && 
+      (
+      <>
       <MenuItem
         onClick={() => setisSwitch(!isSwitch)}
       >
@@ -239,6 +242,8 @@ const Appbar = ({ children, history, ...props }) => {
         </MenuItem>
 
       ))}
+      
+      </>)}
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
           <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
@@ -373,7 +378,6 @@ const Appbar = ({ children, history, ...props }) => {
       });
     return result;
   };
-
   const handleSwitchChange = (item) => {
     sessionStorage.removeItem("branch_list")
     sessionStorage.removeItem('selected_branch')
