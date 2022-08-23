@@ -100,7 +100,7 @@ export default {
     userList: '/communication/erp-user-info/',
     viewUser: '/communication/v1/view-users/',
     userListV2: '/communication/erp-user-info-v2/',
-    communicationUserList: '/communication/communication-user-list/',
+    communicationUserList: '/communication/communication-user-list-v2/',
     userGroups: `assessment/list-create-groups/`,
     studentUserList: '/communication/student-user-list/',
     createGroup: '/communication/communication-group/',
