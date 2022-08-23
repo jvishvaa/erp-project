@@ -130,7 +130,6 @@ const QuestionCard = ({
   const [selectedTopicID, setSelectedTopicID] = useState('');
   // const [resourcesData, setResourcesData] = useState();
   const [resourcesData, setResourcesData] = useState();
-
   const [selectedResources, setSelectedResources] = useState([]);
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -194,11 +193,19 @@ const QuestionCard = ({
           const filePath = await uploadFile(fd);
           const final = Object.assign({}, filePath);
           if (file.type === 'application/pdf') {
-            setAttachments((prevState) => [...prevState, final]);
-            setAttachmentPreviews((prevState) => [...prevState, final]);
+            if (attachmentPreviews.includes(final)) {
+              setAlert('error', 'File already Added');
+            } else {
+              setAttachments((prevState) => [...prevState, final]);
+              setAttachmentPreviews((prevState) => [...prevState, final]);
+            }
           } else {
-            setAttachments((prevState) => [...prevState, filePath]);
-            setAttachmentPreviews((prevState) => [...prevState, filePath]);
+            if (attachmentPreviews.includes(filePath)) {
+              setAlert('error', 'File already Added');
+            } else {
+              setAttachments((prevState) => [...prevState, filePath]);
+              setAttachmentPreviews((prevState) => [...prevState, filePath]);
+            }
           }
           setFileUploadInProgress(false);
           setAlert('success', 'File uploaded successfully');
@@ -227,8 +234,13 @@ const QuestionCard = ({
   const id = open ? 'simple-popover' : undefined;
 
   const assignResource = (resource) => {
-    setAttachmentPreviews((prevState) => [...prevState, ...resource]);
-    setAttachments((prevState) => [...prevState, ...resource]);
+    if (attachmentPreviews?.some((ai) => resource?.includes(ai))) {
+      setAlert('error', 'File already Added');
+    } else {
+      setAttachmentPreviews((prevState) => [...prevState, ...resource]);
+      setAttachments((prevState) => [...prevState, ...resource]);
+    }
+
     setSelectedResources([]);
   };
 
@@ -854,8 +866,14 @@ const QuestionCard = ({
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} md={2}>
-                <Box className='question-ctrl-inner-container th-pointer'>
+              <Grid
+                item
+                xs={12}
+                md={2}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              >
+                {/* <Box className='question-ctrl-inner-container th-pointer'> */}
+                <div>
                   <Button
                     onClick={handleResourcesDrawerOpen}
                     variant='contained'
@@ -863,7 +881,8 @@ const QuestionCard = ({
                   >
                     Resources
                   </Button>
-                </Box>
+                </div>
+                <div className='th-12 pt-2'>(From Leson Plan)</div>
               </Grid>
             </Grid>
           </CardContent>
@@ -1098,7 +1117,7 @@ const QuestionCard = ({
                               return (
                                 <>
                                   <Grid container style={{ width: '100%' }}>
-                                    <Grid md={6} className='text-left'>
+                                    <Grid md={8} className='text-left'>
                                       <Typography className='text-truncate th-width-90'>
                                         {resourceName[1]}
                                       </Typography>
@@ -1119,9 +1138,10 @@ const QuestionCard = ({
                                           />
                                         }
                                         label='Assign'
+                                        style={{ minWidth: '50px' }}
                                       />
                                     </Grid>
-                                    <Grid md={3} className='text-center'>
+                                    <Grid md={1} className='text-center pt-2'>
                                       <a
                                         onClick={() => {
                                           openPreview({

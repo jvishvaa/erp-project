@@ -438,7 +438,23 @@ const CreateDailyDairy = (details, onSubmit) => {
         if (result?.data?.status_code == 201) {
           setHwMappingID(result?.data?.data?.hw_dairy_mapping_id);
           setAssignedHomeworkModal(false);
-          setHomework(assignedHomework[0]?.homework_name);
+          axiosInstance
+            .get(`academic/${assignedHomework[0]?.id}/hw-questions/?hw_status=1`)
+            .then((result) => {
+              if (result?.data?.status_code == 200) {
+                const info = `Title: ${result?.data?.data?.homework_name}\nDescription: ${
+                  result?.data?.data?.description
+                } \nLast Submission Date: ${moment(
+                  result?.data?.data?.last_submission_dt
+                ).format(
+                  'YYYY-MM-DD'
+                )} \nQuestions:\n${result?.data?.data?.hw_questions?.map(
+                  (item, index) => `${index + 1}. ${item?.question}`
+                )}`;
+                setHomework(info);
+              }
+            })
+            .catch((error) => setAlert('error', error?.message));
         }
       })
       .catch((error) => setAlert('error', error?.message));
@@ -1124,14 +1140,6 @@ const CreateDailyDairy = (details, onSubmit) => {
                   style={{ position: 'relative' }}
                 >
                   <TextField
-                    // onClick={() =>
-                    //   checkAssignedHomework({
-                    //     section_mapping: sectionMappingID,
-                    //     subject: subjectIds,
-                    //     date: moment().format('YYYY-MM-DD'),
-                    //     user_id: user_id,
-                    //   })
-                    // }
                     id='outlined-multiline-static'
                     label='Homework'
                     multiline
@@ -1156,7 +1164,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                       {assignedHomework && !homework ? (
                         <div
                           onClick={() => {
-                            setAssignedHomeworkModal(true);
+                            mapAssignedHomework();
                           }}
                           className='th-pointer'
                         >
@@ -1277,7 +1285,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                           id='title'
                           name='title'
                           // onChange={() => {}}
-                          inputProps={{ maxLength: 20 }}
+                          inputProps={{ maxLength: 150 }}
                           label='Title'
                           autoFocus
                           value={homeworkTitle}
@@ -1304,7 +1312,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                           onChange={(e) => {
                             setHomeworkInstructions(e.target.value);
                           }}
-                          inputProps={{ maxLength: 150 }}
+                          inputProps={{ maxLength: 250 }}
                           multiline
                           rows={4}
                           rowsMax={6}

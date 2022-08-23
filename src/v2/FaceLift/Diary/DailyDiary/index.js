@@ -10,6 +10,7 @@ import {
   Modal,
   Checkbox,
   DatePicker,
+  Spin,
 } from 'antd';
 import { DownOutlined, InfoCircleFilled } from '@ant-design/icons';
 import Layout from 'containers/Layout';
@@ -73,6 +74,8 @@ const DailyDiary = () => {
   const [homeworkCreated, setHomeworkCreated] = useState(false);
   const [submissionDate, setSubmissionDate] = useState(moment().format('YYYY-MM-DD'));
   const [homeworkDetails, setHomeworkDetails] = useState(false);
+  const [questionEdit, setQuestionEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [questionList, setQuestionList] = useState([
     {
       id: cuid(),
@@ -204,8 +207,8 @@ const DailyDiary = () => {
   };
 
   const handleSubmit = () => {
-    if (showHomeworkForm) {
-      message.error('Please submit the homework first');
+    if (showHomeworkForm && !homework) {
+      message.error('Please finish the homework first');
       return;
     }
     if (!gradeID) {
@@ -224,6 +227,7 @@ const DailyDiary = () => {
       message.error('Please select Chapter');
       return;
     }
+    setLoading(true);
     let payload = {
       academic_year: acadID,
       branch: branchID,
@@ -252,11 +256,13 @@ const DailyDiary = () => {
       .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
       .then((res) => {
         if (res?.data?.status_code == 200) {
+          setLoading(false);
           message.success('Daily Diary Created Succssfully');
           history.push('/diary/teacher');
         }
       })
       .catch((error) => {
+        setLoading(false);
         message.error('Daily Diary Already Exists');
       });
   };
@@ -441,6 +447,7 @@ const DailyDiary = () => {
     }
   }, [assignedHomework]);
   const mapAssignedHomework = () => {
+    setQuestionEdit(true);
     axios
       .post(`${endpoints?.dailyDiary?.assignHomeworkDiary}`, {
         hw_id: assignedHomework[0]?.id,
@@ -450,6 +457,16 @@ const DailyDiary = () => {
           setHwMappingID(result?.data?.data?.hw_dairy_mapping_id);
           setAssignedHomeworkModal(false);
           setHomework(assignedHomework[0].homework_name);
+          axios
+            .get(`academic/${assignedHomework[0]?.id}/hw-questions/?hw_status=1`)
+            .then((result) => {
+              if (result?.data?.status_code == 200) {
+                setHomeworkDetails(result?.data?.data);
+                setShowHomeworkForm(true);
+                setHomeworkCreated(true);
+              }
+            })
+            .catch((error) => message.error('error', error?.message));
         }
       })
       .catch((error) => message.error('error', error?.message));
@@ -468,6 +485,7 @@ const DailyDiary = () => {
       message.error('Please add questions');
       return;
     }
+    setQuestionEdit(true);
     const reqObj = {
       name: homeworkTitle,
       description: homeworkInstructions,
@@ -482,23 +500,23 @@ const DailyDiary = () => {
         return qObj;
       }),
     };
+
     try {
       const response = await dispatch(addHomeWork(reqObj, isEdit, hwId));
-      if (isDiaryEdit) {
-        message.success('Homework Updated Successfully');
-      } else {
-        message.success('Homework Edited Successfully');
-      }
-      setShowHomeworkForm(false);
+      message.success('Homework added');
+      // setShowHomeworkForm(false);
       checkAssignedHomework({
         section_mapping: sectionMappingID,
         subject: subjectID,
         date: moment().format('YYYY-MM-DD'),
         user_id: user_id,
       });
-      setHomeworkTitle('');
-      setHomeworkInstructions('');
+      // setHomeworkTitle('');
+      // setHomeworkInstructions('');
       setHomeworkCreated(true);
+
+      setQuestionList(reqObj?.questions);
+
       // history.goBack();
     } catch (error) {
       message.error('Failed to add homework');
@@ -695,266 +713,284 @@ const DailyDiary = () => {
                     </Select>
                   </Form.Item>
                 </div>
-                {showIcon && !assignedHomework && (
-                  <div className='col-md-4 py-2'>
-                    <Checkbox
-                      checked={showHomeworkForm}
-                      onChange={() => setShowHomeworkForm((prevState) => !prevState)}
-                    >
-                      Assign Homework
-                    </Checkbox>
-                  </div>
-                )}
               </div>
             </Form>
-            <div className='row'>
-              <div className='col-12'>
-                <div
-                  className='row px-2 py-3 th-br-10'
-                  style={{ border: '1px solid #d9d9d9' }}
-                >
-                  <div className='col-md-4 py-2'>
-                    <TextArea
-                      className='th-width-100 th-br-6'
-                      value={recap}
-                      onChange={(e) => setRecap(e.target.value)}
-                      placeholder='Recap of Previous Class'
-                      rows={4}
-                      style={{ resize: 'none' }}
-                    />
-                  </div>
-                  <div className='col-md-4 py-2'>
-                    <TextArea
-                      className='th-width-100 th-br-6'
-                      value={classwork}
-                      onChange={(e) => setClasswork(e.target.value)}
-                      placeholder='Details of ClassWork'
-                      rows={4}
-                      style={{ resize: 'none' }}
-                    />
-                  </div>
-                  <div className='col-md-4 py-2'>
-                    <TextArea
-                      className='th-width-100 th-br-6'
-                      value={summary}
-                      onChange={(e) => setSummary(e.target.value)}
-                      placeholder='Summary'
-                      rows={4}
-                      style={{ resize: 'none' }}
-                    />
-                  </div>
+            {loading ? (
+              <div className='d-flex justify-content-center align-items-center h-50'>
+                <Spin tip='Creating Diary...' size='large' />
+              </div>
+            ) : (
+              <>
+                <div className='row'>
+                  <div className='col-12'>
+                    <div
+                      className='row px-2 py-3 th-br-10'
+                      style={{ border: '1px solid #d9d9d9' }}
+                    >
+                      <div className='col-md-4 py-2'>
+                        <TextArea
+                          className='th-width-100 th-br-6'
+                          value={recap}
+                          onChange={(e) => setRecap(e.target.value)}
+                          placeholder='Recap of Previous Class'
+                          rows={4}
+                          style={{ resize: 'none' }}
+                        />
+                      </div>
+                      <div className='col-md-4 py-2'>
+                        <TextArea
+                          className='th-width-100 th-br-6'
+                          value={classwork}
+                          onChange={(e) => setClasswork(e.target.value)}
+                          placeholder='Details of ClassWork'
+                          rows={4}
+                          style={{ resize: 'none' }}
+                        />
+                      </div>
+                      <div className='col-md-4 py-2'>
+                        <TextArea
+                          className='th-width-100 th-br-6'
+                          value={summary}
+                          onChange={(e) => setSummary(e.target.value)}
+                          placeholder='Summary'
+                          rows={4}
+                          style={{ resize: 'none' }}
+                        />
+                      </div>
 
-                  <div className='col-md-4 py-2'>
-                    <TextArea
-                      className='th-width-100 th-br-6'
-                      value={tools}
-                      onChange={(e) => setTools(e.target.value)}
-                      placeholder='Tools Used'
-                      rows={4}
-                      style={{ resize: 'none' }}
-                    />
-                  </div>
-                  <div className='col-md-4 py-2 d-flex' style={{ position: 'relative' }}>
-                    <TextArea
-                      className='th-width-100 th-br-6'
-                      value={homework}
-                      onChange={(e) => setHomework(e.target.value)}
-                      rows={4}
-                      placeholder='Add Homework'
-                    />
-                    {showIcon ? (
+                      <div className='col-md-4 py-2'>
+                        <TextArea
+                          className='th-width-100 th-br-6'
+                          value={tools}
+                          onChange={(e) => setTools(e.target.value)}
+                          placeholder='Tools Used'
+                          rows={4}
+                          style={{ resize: 'none' }}
+                        />
+                      </div>
                       <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          position: 'absolute',
-                          left: '10%',
-                          bottom: '10%',
-                        }}
+                        className='col-md-4 py-2 d-flex'
+                        style={{ position: 'relative' }}
                       >
-                        {assignedHomework && !homework ? (
-                          <div onClick={mapAssignedHomework} className='th-pointer'>
-                            <span>
-                              <InfoCircleFilled
-                                className='th-primary'
-                                style={{ fontSize: 20 }}
-                              />
-                            </span>
-                            <span className='ml-2 th-fw-500'>
-                              Homework Exists (click to map to diary)
-                            </span>
+                        {/* <TextArea
+                          className='th-width-100 th-br-6'
+                          value={homework}
+                          onChange={(e) => setHomework(e.target.value)}
+                          rows={4}
+                          placeholder='Add Homework'
+                        /> */}
+                        {showIcon && !assignedHomework && (
+                          <div className='col-12 py-2'>
+                            <Checkbox
+                              checked={showHomeworkForm}
+                              onChange={() =>
+                                setShowHomeworkForm((prevState) => !prevState)
+                              }
+                            >
+                              Assign Homework
+                            </Checkbox>
+                          </div>
+                        )}
+
+                        {showIcon ? (
+                          <div
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                            }}
+                          >
+                            {assignedHomework && !homework ? (
+                              <div onClick={mapAssignedHomework} className='th-pointer'>
+                                <span>
+                                  <InfoCircleFilled
+                                    className='th-primary'
+                                    style={{ fontSize: 20 }}
+                                  />
+                                </span>
+                                <span className='ml-2 th-fw-500'>
+                                  Homework Exists (click to map to diary)
+                                </span>
+                              </div>
+                            ) : null}
                           </div>
                         ) : null}
                       </div>
-                    ) : null}
-                  </div>
-                  <div className='col-md-4 py-2'>
-                    {hwMappingID && homework ? (
-                      <>
-                        <span>
-                          <img src={AsignHomework} className='py-3' />
+                      <div className='col-md-4 py-2'>
+                        {hwMappingID && homework ? (
+                          <>
+                            <span>
+                              <img src={AsignHomework} className='py-3' />
+                            </span>
+                            <span className='ml-2 py-3 th-black-2 th-16 th-primary'>
+                              Homework Mapped to Diary
+                            </span>
+                          </>
+                        ) : null}
+                      </div>
+
+                      <div className='col-12'>
+                        <span className='th-grey th-14'>
+                          Upload Attachments (Accepted files: [ .jpeg,.jpg,.png,.pdf ])
                         </span>
-                        <span className='ml-2 py-3 th-black-2 th-16 th-primary'>
-                          Homework Mapped to Diary
-                        </span>
-                      </>
-                    ) : null}
-                  </div>
+                        <div
+                          className='row justify-content-start align-items-center th-br-4 py-1 mt-1 th-bg-white'
+                          style={{ border: '1px solid #D9D9D9' }}
+                        >
+                          <div className='col-8'>
+                            <div className='row'>
+                              {uploadedFiles?.map((item, index) => {
+                                const fullName = item?.split('_')[
+                                  item?.split('_').length - 1
+                                ];
 
-                  <div className='col-12'>
-                    <span className='th-grey th-14'>
-                      Upload Attachments (Accepted files: [ .jpeg,.jpg,.png,.pdf ])
-                    </span>
-                    <div
-                      className='row justify-content-start align-items-center th-br-4 py-1 mt-1 th-bg-white'
-                      style={{ border: '1px solid #D9D9D9' }}
-                    >
-                      <div className='col-8'>
-                        <div className='row'>
-                          {uploadedFiles?.map((item, index) => {
-                            const fullName = item?.split('_')[
-                              item?.split('_').length - 1
-                            ];
+                                const fileName = fullName.split('.')[
+                                  fullName?.split('.').length - 2
+                                ];
+                                const extension = fullName.split('.')[
+                                  fullName?.split('.').length - 1
+                                ];
 
-                            const fileName = fullName.split('.')[
-                              fullName?.split('.').length - 2
-                            ];
-                            const extension = fullName.split('.')[
-                              fullName?.split('.').length - 1
-                            ];
+                                return (
+                                  <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
+                                    <span className='th-12 th-black-1 text-truncate'>
+                                      {fileName}
+                                    </span>
+                                    <span className='th-12 th-black-1 '>
+                                      .{extension}
+                                    </span>
 
-                            return (
-                              <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
-                                <span className='th-12 th-black-1 text-truncate'>
-                                  {fileName}
-                                </span>
-                                <span className='th-12 th-black-1 '>.{extension}</span>
-
-                                <span className='ml-md-3 ml-1 th-pointer '>
-                                  <img
-                                    src={smallCloseIcon}
-                                    onClick={() => handleRemoveUploadedFile(index)}
-                                  />
-                                </span>
-                              </div>
-                            );
-                          })}
+                                    <span className='ml-md-3 ml-1 th-pointer '>
+                                      <img
+                                        src={smallCloseIcon}
+                                        onClick={() => handleRemoveUploadedFile(index)}
+                                      />
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                          <div className='col-4 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'>
+                            <span onClick={handleShowModal}>
+                              <span className='th-12'>
+                                {' '}
+                                <u>Upload</u>
+                              </span>
+                              <span className='ml-3 pb-2'>
+                                <img src={uploadIcon} />
+                              </span>
+                            </span>
+                          </div>
                         </div>
                       </div>
-                      <div className='col-4 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'>
-                        <span onClick={handleShowModal}>
-                          <span className='th-12'>
-                            {' '}
-                            <u>Upload</u>
-                          </span>
-                          <span className='ml-3 pb-2'>
-                            <img src={uploadIcon} />
-                          </span>
+                    </div>
+                  </div>
+                </div>
+                {showHomeworkForm && (
+                  <div className='row px-3 mt-3'>
+                    <div
+                      className='col-12 py-2 px-3 th-br-6'
+                      style={{ border: '1px solid #d9d9d9' }}
+                    >
+                      <div className='row align-items-center'>
+                        <span className='th-black-1'>Due Date</span>
+                        <span className='th-br-4 p-1 th-bg-white'>
+                          <img src={calendarIcon} className='pl-2' />
+                          <DatePicker
+                            disabledDate={(current) =>
+                              current.isBefore(moment().subtract(1, 'day'))
+                            }
+                            allowClear={false}
+                            bordered={false}
+                            placeholder={submissionDate}
+                            placement='bottomRight'
+                            onChange={(event, value) => handleSubmissionDate(value)}
+                            showToday={false}
+                            suffixIcon={<DownOutlined className='th-black-1' />}
+                            className='th-black-2 pl-0 th-date-picker'
+                            format={'YYYY-MM-DD'}
+                          />
                         </span>
                       </div>
+                      <div className='row py-2'>
+                        <Input
+                          className='th-width-100 th-br-6'
+                          value={homeworkTitle}
+                          onChange={(e) => setHomeworkTitle(e.target.value)}
+                          placeholder='Title'
+                        />
+                      </div>
+                      <div className='row py-2'>
+                        <Input
+                          className='th-width-100 th-br-6'
+                          value={homeworkInstructions}
+                          onChange={(e) => setHomeworkInstructions(e.target.value)}
+                          placeholder='Instructions'
+                        />
+                      </div>
+                      <div className='row py-2'>
+                        {questionList?.map((question, index) => (
+                          <QuestionCard
+                            key={question.id}
+                            question={question}
+                            isEdit={isDiaryEdit || questionEdit}
+                            index={index}
+                            addNewQuestion={addNewQuestion}
+                            handleChange={handleChange}
+                            removeQuestion={removeQuestion}
+                            sessionYear={selectedAcademicYear?.id}
+                            branch={selectedBranch?.branch?.id}
+                            grade={gradeID}
+                            subject={subjectID}
+                          />
+                        ))}
+                      </div>
+                      {!homeworkCreated && (
+                        <div className='row'>
+                          <div className='col-6'>
+                            <Button
+                              className='th-width-100 th-br-6 th-pointer'
+                              onClick={() => {
+                                setQueIndexCounter(queIndexCounter + 1);
+                                addNewQuestion(queIndexCounter + 1);
+                              }}
+                            >
+                              Add Another Question
+                            </Button>
+                          </div>
+                          <div className='col-6'>
+                            <Button
+                              className='th-width-100 th-bg-primary th-white th-br-6 th-pointer'
+                              onClick={handleAddHomeWork}
+                            >
+                              {isDiaryEdit ? 'Update' : 'Finish'}
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </div>
+                  </div>
+                )}
+                <div className='row pt-3'>
+                  <div className='col-md-2 col-6'>
+                    <Button
+                      className='th-width-100 th-br-6 th-pointer'
+                      onClick={handleBack}
+                    >
+                      Back
+                    </Button>
+                  </div>
+                  <div className='col-md-2 col-6'>
+                    <Button
+                      className='th-width-100 th-bg-primary th-white th-br-6 th-pointer'
+                      onClick={isDiaryEdit ? handleEdit : handleSubmit}
+                    >
+                      {isDiaryEdit ? 'Update' : 'Submit'}
+                    </Button>
                   </div>
                 </div>
-              </div>
-            </div>
-            {showHomeworkForm && (
-              <div className='row px-3 mt-3'>
-                <div
-                  className='col-12 py-2 px-3 th-br-6'
-                  style={{ border: '1px solid #d9d9d9' }}
-                >
-                  <div className='row align-items-center'>
-                    <span className='th-black-1'>Due Date</span>
-                    <span className='th-br-4 p-1 th-bg-white'>
-                      <img src={calendarIcon} className='pl-2' />
-                      <DatePicker
-                        disabledDate={(current) =>
-                          current.isBefore(moment().subtract(1, 'day'))
-                        }
-                        allowClear={false}
-                        bordered={false}
-                        placeholder={submissionDate}
-                        placement='bottomRight'
-                        onChange={(event, value) => handleSubmissionDate(value)}
-                        showToday={false}
-                        suffixIcon={<DownOutlined className='th-black-1' />}
-                        className='th-black-2 pl-0 th-date-picker'
-                        format={'YYYY-MM-DD'}
-                      />
-                    </span>
-                  </div>
-                  <div className='row py-2'>
-                    <Input
-                      className='th-width-100 th-br-6'
-                      value={homeworkTitle}
-                      onChange={(e) => setHomeworkTitle(e.target.value)}
-                      placeholder='Title'
-                    />
-                  </div>
-                  <div className='row py-2'>
-                    <Input
-                      className='th-width-100 th-br-6'
-                      value={homeworkInstructions}
-                      onChange={(e) => setHomeworkInstructions(e.target.value)}
-                      placeholder='Instructions'
-                    />
-                  </div>
-                  <div className='row py-2'>
-                    {questionList?.map((question, index) => (
-                      <QuestionCard
-                        key={question.id}
-                        question={question}
-                        isEdit={isDiaryEdit}
-                        index={index}
-                        addNewQuestion={addNewQuestion}
-                        handleChange={handleChange}
-                        removeQuestion={removeQuestion}
-                        sessionYear={selectedAcademicYear?.id}
-                        branch={selectedBranch?.branch?.id}
-                        grade={gradeID}
-                        subject={subjectID}
-                      />
-                    ))}
-                  </div>
-                  <div className='row'>
-                    <div className='col-6'>
-                      <Button
-                        className='th-width-100 th-br-6 th-pointer'
-                        onClick={() => {
-                          setQueIndexCounter(queIndexCounter + 1);
-                          addNewQuestion(queIndexCounter + 1);
-                        }}
-                      >
-                        Add Another Question
-                      </Button>
-                    </div>
-                    <div className='col-6'>
-                      <Button
-                        className='th-width-100 th-bg-primary th-white th-br-6 th-pointer'
-                        onClick={handleAddHomeWork}
-                      >
-                        {isDiaryEdit ? 'Update' : 'Finish'}
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              </>
             )}
-            <div className='row pt-3'>
-              <div className='col-md-2 col-6'>
-                <Button className='th-width-100 th-br-6 th-pointer' onClick={handleBack}>
-                  Back
-                </Button>
-              </div>
-              <div className='col-md-2 col-6'>
-                <Button
-                  className='th-width-100 th-bg-primary th-white th-br-6 th-pointer'
-                  onClick={isDiaryEdit ? handleEdit : handleSubmit}
-                >
-                  {isDiaryEdit ? 'Update' : 'Submit'}
-                </Button>
-              </div>
-            </div>
           </div>
         </div>
         <Modal
