@@ -28,6 +28,7 @@ function getDaysAfter(date, amount) {
 }
 
 const EventsMark = () => {
+  const [flag,setFlag] = useState(false);
   const [evnetcategoryType, setEventcategoryType] = useState([]);
   const [selectedSession, setSelectedSession] = useState([]);
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
@@ -74,13 +75,14 @@ const EventsMark = () => {
   };
 
   const handleBranch = (event = {}, value = []) => {
+    setFlag(true);
     setSelectedBranch([]);
     setGradeList([]);
     if (value?.length) {
       value = value.filter(({id}) => id === 'all').length === 1 
       ? [...branchList].filter(({id}) => id !== 'all') : value;
       const ids = value.map((el) => el);
-      const selectedSession = value.map((el) => el?.id);
+      const selectedSession = value.map((el) => el?.acadSession);
       setSelectedSession(selectedSession);
       const selectedId = value.map((el) => el?.id);
       setSelectedBranch(ids);
@@ -134,7 +136,7 @@ const EventsMark = () => {
       const startDate = new Date(startDateTechPer)
       const endDate = new Date(endDateTechPer)
       axiosInstance
-        .patch(`${endpoints.academics.getEvents}?id=${eventIdSave}`, {
+        .patch(`${endpoints.academics.getEvents}}?id=${eventIdSave}`, {
           event_name: holidayName,
           description:holidayDesc,
           start_date: moment(startDate).format('YYYY-MM-DD'),
@@ -143,7 +145,7 @@ const EventsMark = () => {
           grade_ids: selectedGrade.map((el) => el?.grade_id),
           // academic_year: selectedAcademicYear?.id,
           // branch_ids: selectedBranch.map((el) => el?.id),
-          academic_session_ids: selectedSession,
+          acad_session: selectedSession,
           start_time: "00:01",
           end_time: "23:59",
         })
@@ -164,8 +166,9 @@ const EventsMark = () => {
           end_date: endDateTechPer.format('YYYY-MM-DD'),
           is_full_day: false,
           grade_ids: selectedGrade.map((el) => el?.grade_id),
-          academic_year: selectedAcademicYear?.id,
-          branch_ids: selectedBranch.map((el) => el?.id),
+          // academic_year: selectedAcademicYear?.id,
+          acad_session: selectedSession,
+          // branch_ids: selectedBranch.map((el) => el?.id),
           start_time: "00:01",
           end_time: "23:59",
         })
@@ -303,40 +306,53 @@ const EventsMark = () => {
       setIsEdit(true);
       setHolidayDesc(history?.location?.state?.data?.description);
       setHolidayName(history?.location?.state?.data?.event_name);
-      handleGrade(history?.location?.state?.data?.section_mapping_data.map((item) => item?.grade_id));
+      handleGrade(history?.location?.state?.data?.grades);
       setDateRangeTechPer([
         moment(history?.location?.state?.data?.start_time).format('MM/DD/YYYY'),
         moment(history?.location?.state?.data?.end_time).format('MM/DD/YYYY'),
       ]);
 
-      if (history?.location?.state?.data?.branch?.length) {
-        const ids = history?.location?.state?.data?.branch.map((el, index) => el);
+      // if (history?.location?.state?.data?.branch?.length) {
+      //   const ids = history?.location?.state?.data?.branch.map((el, index) => el);
 
-        let filterBranch = branchList.filter(
-          (item) => ids.indexOf(item?.id) !== -1
-        );
-        setSelectedBranch(filterBranch);
-        if (moduleId) {
-          callApi(
-            `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${history?.location?.state?.data?.branch}&module_id=${moduleId}`,
-            'gradeList'
-          );
-        }
-      }
+      //   let filterBranch = branchList.filter(
+      //     (item) => ids.indexOf(item?.id) !== -1
+      //   );
+      //   setSelectedBranch(filterBranch);
+      //   if (moduleId) {
+      //     callApi(
+      //       `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${history?.location?.state?.data?.branch}&module_id=${moduleId}`,
+      //       'gradeList'
+      //     );
+      //   }
+      // }
       // if (history?.location?.state?.data?.grade?.length && gradeList !== []) {
       //   const ids = history?.location?.state?.data?.grade.map((el, index) => el);
 
       //   let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
       //   setSelectedGrade(filterBranch);
       // }
-      if (history?.location?.state?.data?.section_mapping_data) {
-        const ids = history?.location?.state?.data?.section_mapping_data.map((el, index) => el?.grade_id);
+      // if (history?.location?.state?.data?.grades?.length) {
+      //   const ids = history?.location?.state?.data?.grades.map((el,index) => el);
 
-        let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
-        setSelectedGrade(filterBranch);
-      }
+      //   let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
+      //   setSelectedGrade(filterBranch);
+      // }
     }
   }, [branchList]);
+
+  useEffect(() => {
+      if(flag == false){
+        if(isEdit && branchList.length >0 ){
+          const gradeId = history?.location?.state?.gradeId;
+          let filterGrade = gradeList.filter((item) => gradeId.indexOf(item?.grade_id) !== -1);
+          setSelectedGrade(filterGrade);
+  
+      }
+
+      }
+
+  },[gradeList])
 
   const isEdited = history?.location?.state?.isEdit;
 
@@ -348,9 +364,9 @@ const EventsMark = () => {
 
   const gradeEdit = () => {
     setEventIdSave(history?.location?.state?.data?.id)
-    const acadId = history?.location?.state?.data?.section_mapping_data.map((item) => item?.acad_session__branch_id);
+    const acadId = history?.location?.state?.data?.acad_session;
     
-    let filterBranch = branchList.filter((item) => acadId.indexOf(item.id) !== -1);
+    let filterBranch = branchList.filter((item) => acadId.indexOf(item?.acadSession) !== -1);
     const selectedSession = filterBranch.map((el) => el?.acadSession)
     setSelectedSession(selectedSession)
     setSelectedBranch(filterBranch);
@@ -363,17 +379,17 @@ const EventsMark = () => {
       'gradeList'
     );
     // const gradeId = history?.location?.state?.gradeId;
-    const gradeId = history?.location?.state?.payload?.grade_id?.grade_id;
-    let filterGrade = gradeList.filter((item) => gradeId.indexOf(item.id) !== -1);
+    // const gradeId = history?.location?.state?.payload?.grade_id?.grade_id;
+    // let filterGrade = gradeList.filter((item) => gradeId.indexOf(item.id) !== -1);
   };
 
-  useEffect(() => {
-    if (history?.location?.state?.data?.section_mapping_data) {
-      const ids = history?.location?.state?.data?.section_mapping_data.map((el, index) => el?.grade_id);
-      let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
-      setSelectedGrade(filterBranch);
-    }
-  }, [gradeList]);
+  // useEffect(() => {
+  //   if (history?.location?.state?.data?.section_mapping_data) {
+  //     const ids = history?.location?.state?.data?.section_mapping_data.map((el, index) => el?.grade_id);
+  //     let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
+  //     setSelectedGrade(filterBranch);
+  //   }
+  // }, [gradeList]);
 
   const onunHandleClearAll = (e) => {
     setSelectedBranch();
