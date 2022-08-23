@@ -8,6 +8,7 @@ import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import DiaryCard from 'v2/FaceLift/Diary/Diary-Card/index';
 import { DownOutlined } from '@ant-design/icons';
+import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
 
 const Diary = () => {
   const selectedAcademicYear = useSelector(
@@ -17,7 +18,7 @@ const Diary = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
   const [moduleId, setModuleId] = useState();
-  const [periodData, setPeriodData] = useState([]);
+  const [diaryListData, setDiaryListData] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState();
   const [gradeID, setGradeID] = useState();
   const [loading, setLoading] = useState(false);
@@ -26,6 +27,7 @@ const Diary = () => {
   const [startDate, setStartDate] = useState(moment().format('YYYY-MM-DD'));
   const [endDate, setEndDate] = useState(moment().format('YYYY-MM-DD'));
   const [showTab, setShowTab] = useState('1');
+  const [dataFiltered, setDataFiltered] = useState(false);
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
@@ -53,6 +55,7 @@ const Diary = () => {
       message.error('Please Select All Filters');
     } else {
       setLoading(true);
+      setDataFiltered(true);
       const params = {
         module_id: moduleId,
         session_year: selectedAcademicYear?.id,
@@ -68,7 +71,7 @@ const Diary = () => {
         .get(`${endpoints.generalDiary.diaryList}`, { params })
         .then((result) => {
           if (result?.data?.status_code == 200) {
-            setPeriodData(result?.data?.result?.results.reverse());
+            setDiaryListData(result?.data?.result?.results);
             setLoading(false);
           }
         })
@@ -96,11 +99,11 @@ const Diary = () => {
       grade: [],
       section: [],
     });
-
-    setGradeDropdown([]);
     setSectionDropdown([]);
     setGradeID();
     setSectionID();
+    setDiaryListData([]);
+    setDataFiltered(false);
   };
 
   const sectionOptions = sectionDropdown?.map((each) => {
@@ -205,7 +208,7 @@ const Diary = () => {
           <div className='col-12 px-2 px-md-3'>
             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
               <div className='row py-2'>
-                <div className='col-md-4 px-2'>
+                <div className='col-md-4 px-md-2'>
                   <Form.Item name='grade'>
                     <Select
                       mode='multiple'
@@ -316,8 +319,8 @@ const Diary = () => {
                   <div className='th-width-100 text-center mt-5'>
                     <Spin tip='Loading...'></Spin>
                   </div>
-                ) : (
-                  periodData?.map((diary, i) => (
+                ) : diaryListData.length > 0 ? (
+                  diaryListData?.map((diary, i) => (
                     <div className='col-md-4 mb-2'>
                       <DiaryCard
                         diary={diary}
@@ -326,6 +329,12 @@ const Diary = () => {
                       />
                     </div>
                   ))
+                ) : (
+                  dataFiltered && (
+                    <div className='row justify-content-center pt-5'>
+                      <img src={NoDataIcon} />
+                    </div>
+                  )
                 )}
               </div>
             </TabPane>
@@ -335,8 +344,8 @@ const Diary = () => {
                   <div className='th-width-100 text-center mt-5'>
                     <Spin tip='Loading...'></Spin>
                   </div>
-                ) : (
-                  periodData
+                ) : diaryListData?.filter((item) => item.dairy_type == 2).length > 0 ? (
+                  diaryListData
                     ?.filter((item) => item.dairy_type == 2)
                     .map((diary, i) => (
                       <div className='col-md-4 mb-2'>
@@ -347,6 +356,12 @@ const Diary = () => {
                         />
                       </div>
                     ))
+                ) : (
+                  dataFiltered && (
+                    <div className='row justify-content-center pt-5'>
+                      <img src={NoDataIcon} />
+                    </div>
+                  )
                 )}
               </div>
             </TabPane>
@@ -356,8 +371,8 @@ const Diary = () => {
                   <div className='th-width-100 text-center mt-5'>
                     <Spin tip='Loading...'></Spin>
                   </div>
-                ) : (
-                  periodData
+                ) : diaryListData.length > 0 ? (
+                  diaryListData
                     ?.filter((item) => item.dairy_type == 1)
                     .map((diary, i) => (
                       <div className='col-md-4 mb-2'>
@@ -368,6 +383,12 @@ const Diary = () => {
                         />
                       </div>
                     ))
+                ) : (
+                  dataFiltered && (
+                    <div className='row justify-content-center pt-5'>
+                      <img src={NoDataIcon} />
+                    </div>
+                  )
                 )}
               </div>
             </TabPane>

@@ -78,7 +78,8 @@ const WelcomeComponent = ({ erp_config, isMsAPIKey, changeView }) => {
       origin.indexOf('orchids.') > -1 ||
       origin.indexOf('dev.') > -1 ||
       origin.indexOf('qa.') > -1 ||
-      origin.indexOf('localhost') > -1
+      origin.indexOf('localhost') > -1 ||
+      origin.indexOf('ui-revamp1.') > -1
     ) {
       setCheckOrigin(true);
     }

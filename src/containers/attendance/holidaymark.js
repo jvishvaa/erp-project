@@ -78,7 +78,7 @@ const HolidayMark = () => {
       value = value.filter(({id}) => id === 'all').length === 1 
       ? [...branchList].filter(({id}) => id !== 'all') : value;
       const ids = value.map((el) => el);
-      const selectedSession = value.map((el) => el?.id);
+      const selectedSession = value.map((el) => el?.acadSession);
       setSelectedSession(selectedSession);
       const selectedId = value.map((el) => el?.id);
       setSelectedBranch(ids);

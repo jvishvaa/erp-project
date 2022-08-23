@@ -47,15 +47,6 @@ import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
 import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
-const StyledButton = withStyles({
-  root: {
-    color: '#FFFFFF',
-    backgroundColor: '#FF6B6B',
-    '&:hover': {
-      backgroundColor: '#FF6B6B',
-    },
-  },
-})(Button);
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -123,15 +114,21 @@ const QuestionCard = ({
   const [questionData, setquestionData] = useState();
   const [edit, setisEdit] = useState(isEdit);
   const [volumeListData, setVolumeListData] = useState([]);
+  const [selectedVolume, setSelectedVolume] = useState('');
   const [selectedVolumeId, setSelectedVolumeId] = useState('');
   const [boardListData, setBoardListData] = useState([]);
   const [selectedBoards, setSelectedBoards] = useState('');
+  const [selectedBoardsID, setSelectedBoardsID] = useState([]);
   const [moduleListData, setModuleListData] = useState([]);
   const [selectedModule, setSelectedModule] = useState('');
+  const [selectedModuleID, setSelectedModuleID] = useState('');
   const [chapterListData, setChapterListData] = useState([]);
   const [selectedChapter, setSelectedChapter] = useState('');
+  const [selectedChapterID, setSelectedChapterID] = useState('');
   const [topicListData, setTopicListData] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState('');
+  const [selectedTopicID, setSelectedTopicID] = useState('');
+  // const [resourcesData, setResourcesData] = useState();
   const [resourcesData, setResourcesData] = useState();
 
   const [selectedResources, setSelectedResources] = useState([]);
@@ -359,7 +356,7 @@ const QuestionCard = ({
     } else {
       axiosInstance
         .get(
-          `academic/get-period-resources/?chapter=${selectedChapter}&topic_id=${selectedTopic}`,
+          `academic/get-period-resources/?chapter=${selectedChapterID}&topic_id=${selectedTopicID}`,
           {
             headers: {
               'X-DTS-HOST': X_DTS_HOST,
@@ -469,12 +466,22 @@ const QuestionCard = ({
   };
 
   const handleVolume = (each) => {
+    setBoardListData([]);
     setModuleListData([]);
     setChapterListData([]);
     setTopicListData([]);
-    setBoardListData([]);
-    setSelectedBoards([]);
+
+    setSelectedBoards();
+    setSelectedModule();
+    setSelectedTopic();
+    setSelectedChapter();
+
+    setSelectedBoardsID();
+    setSelectedModuleID();
+    setSelectedTopicID();
+    setSelectedChapterID();
     if (each) {
+      setSelectedVolume(each);
       setSelectedVolumeId(each?.id);
       if (boardFilterArr.includes(window.location.host)) {
         fetchBoardListData();
@@ -483,18 +490,27 @@ const QuestionCard = ({
   };
 
   const handleBoard = (each) => {
+    setModuleListData([]);
     setChapterListData([]);
     setTopicListData([]);
-    const boards = each?.map((item) => item?.id).join(',');
-    if (boards) {
-      setSelectedBoards(boards);
+    setSelectedModule();
+    setSelectedTopic();
+    setSelectedChapter();
+    setSelectedModuleID();
+    setSelectedTopicID();
+    setSelectedChapterID();
+
+    const boardsID = each?.map((item) => item?.id).join(',');
+    if (each) {
+      setSelectedBoards(each);
+      setSelectedBoardsID(boardsID);
       fetchModuleListData({
         subject_id: subject,
         volume: selectedVolumeId,
         academic_year: sessionYear,
         grade_id: grade,
         branch_id: branch,
-        board: boards,
+        board: boardsID,
       });
     }
   };
@@ -502,7 +518,14 @@ const QuestionCard = ({
   const handleModule = (each) => {
     setChapterListData([]);
     setTopicListData([]);
+    setSelectedTopic();
+    setSelectedChapter();
+    setSelectedModuleID();
+    setSelectedTopicID();
+    setSelectedChapterID();
     if (each) {
+      setSelectedModule(each);
+      setSelectedModuleID(each?.id);
       fetchChapterListData({
         subject_id: subject,
         volume: selectedVolumeId,
@@ -517,8 +540,13 @@ const QuestionCard = ({
 
   const handleChapter = (each) => {
     setTopicListData([]);
+    setSelectedTopic();
+    setSelectedModuleID();
+    setSelectedTopicID();
+    setSelectedChapterID();
     if (each) {
-      setSelectedChapter(each?.id);
+      setSelectedChapter(each);
+      setSelectedChapterID(each?.id);
       fetchTopicListData({
         chapter: each?.id,
       });
@@ -526,7 +554,11 @@ const QuestionCard = ({
   };
 
   const handleKeyConcept = (each) => {
-    setSelectedTopic(each?.id);
+    setSelectedTopicID();
+    if (each) {
+      setSelectedTopic(each);
+      setSelectedTopicID(each?.id);
+    }
   };
 
   return (
@@ -666,7 +698,7 @@ const QuestionCard = ({
                                     }
                                     index={i}
                                     actions={
-                                      item.includes('pdf')
+                                      item.includes('pdf') || item.includes('ppt')
                                         ? ['download', 'delete']
                                         : ['preview', 'download', 'delete']
                                     }
@@ -696,7 +728,7 @@ const QuestionCard = ({
                                   }
                                   index={pdfindex}
                                   actions={
-                                    url.includes('pdf')
+                                    url.includes('pdf') || url.includes('ppt')
                                       ? ['download', 'delete']
                                       : ['preview', 'download', 'delete']
                                   }
@@ -781,7 +813,7 @@ const QuestionCard = ({
                 </Box>
               </Grid>
               {enableAttachments && (
-                <Grid item xs={12} md={4} className='question-ctrl-outer-container'>
+                <Grid item xs={12} md={3} className='question-ctrl-outer-container'>
                   <Box className='question-ctrl-inner-container max-attachments'>
                     <div className='question-ctrl-label'>Maximum number of files</div>
                     <Select
@@ -799,7 +831,7 @@ const QuestionCard = ({
                   </Box>
                 </Grid>
               )}
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={3}>
                 <Box className='question-ctrl-inner-container'>
                   <IconButton className='question-cntrl-file-upload'>
                     <CreateIcon color='primary' />
@@ -822,7 +854,7 @@ const QuestionCard = ({
                   />
                 </Box>
               </Grid>
-              <Grid item xs={12} md={4}>
+              <Grid item xs={12} md={2}>
                 <Box className='question-ctrl-inner-container th-pointer'>
                   <Button
                     onClick={handleResourcesDrawerOpen}
@@ -875,12 +907,14 @@ const QuestionCard = ({
                 </Typography>
                 <div>
                   <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
-                  <StyledButton
+                  <Button
+                    variant='contained'
+                    color='primary'
                     onClick={() => removeQuestion(index)}
                     style={{ float: 'right' }}
                   >
                     Confirm
-                  </StyledButton>
+                  </Button>
                 </div>
               </div>
             </Popover>
@@ -902,7 +936,7 @@ const QuestionCard = ({
               onChange={(e, value) => handleVolume(value)}
               id='volume'
               className='dropdownIcon'
-              // value={volumeListData?.volume || ''}
+              value={selectedVolume}
               options={volumeListData || []}
               getOptionLabel={(option) => option?.volume_name || ''}
               filterSelectedOptions
@@ -926,7 +960,7 @@ const QuestionCard = ({
                 onChange={(e, value) => handleBoard(value)}
                 id='board'
                 className='dropdownIcon'
-                // value={selectedBoards || []}
+                value={selectedBoards || []}
                 options={boardListData || []}
                 getOptionLabel={(option) => option?.board_name || ''}
                 // filterSelectedOptions
@@ -951,7 +985,7 @@ const QuestionCard = ({
               onChange={(e, value) => handleModule(value)}
               id='module'
               className='dropdownIcon'
-              // value={filterData.module || []}
+              value={selectedModule || []}
               options={moduleListData || []}
               getOptionLabel={(option) => option?.lt_module_name || ''}
               filterSelectedOptions
@@ -976,7 +1010,7 @@ const QuestionCard = ({
               onChange={(e, value) => handleChapter(value)}
               id='chapter'
               className='dropdownIcon'
-              // value={filterData?.chapter || ''}
+              value={selectedChapter || ''}
               options={chapterListData || []}
               getOptionLabel={(option) => option?.chapter_name || ''}
               filterSelectedOptions
@@ -998,6 +1032,7 @@ const QuestionCard = ({
               onChange={(e, value) => handleKeyConcept(value)}
               id='keyConcept'
               className='dropdownIcon'
+              value={selectedTopic || ''}
               options={topicListData || []}
               getOptionLabel={(option) => option?.topic_name}
               filterSelectedOptions
@@ -1044,7 +1079,7 @@ const QuestionCard = ({
                     aria-controls='panel1bh-content'
                     id='panel1bh-header'
                   >
-                    <Typography>{item[0]}</Typography>
+                    <div className='th-fw-700'>{item[0]}</div>
                   </AccordionSummary>
                   <AccordionDetails>
                     <Grid container>
@@ -1052,57 +1087,66 @@ const QuestionCard = ({
                         return (
                           <Grid container style={{ width: '100%' }}>
                             <Grid md={6}>
-                              <Typography>{each[0]}</Typography>
+                              <Typography variant='button' display='block'>
+                                {each[0]}
+                              </Typography>
                             </Grid>
                             {each[1]?.map((resource) => {
-                              let resourceName = resource.split('_')[
-                                resource.split('_').length - 1
-                              ];
+                              let resourceName = resource.split(
+                                `${each[0].toLowerCase()}/`
+                              );
                               return (
-                                <Grid container style={{ width: '100%' }}>
-                                  <Grid md={3} className='text-center'>
-                                    <FormControlLabel
-                                      control={
-                                        <Checkbox
-                                          // checked={state.checkedB}
-                                          onChange={() =>
-                                            setSelectedResources((prevState) => [
-                                              ...prevState,
-                                              resource,
-                                            ])
-                                          }
-                                          name='checkedB'
-                                          color='primary'
-                                        />
-                                      }
-                                      label='Assign'
-                                    />
+                                <>
+                                  <Grid container style={{ width: '100%' }}>
+                                    <Grid md={6} className='text-left'>
+                                      <Typography className='text-truncate th-width-90'>
+                                        {resourceName[1]}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid md={2} className='text-right'>
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            // checked={state.checkedB}
+                                            onChange={() =>
+                                              setSelectedResources((prevState) => [
+                                                ...prevState,
+                                                resource,
+                                              ])
+                                            }
+                                            name='checkedB'
+                                            color='primary'
+                                          />
+                                        }
+                                        label='Assign'
+                                      />
+                                    </Grid>
+                                    <Grid md={3} className='text-center'>
+                                      <a
+                                        onClick={() => {
+                                          openPreview({
+                                            currentAttachmentIndex: 0,
+                                            attachmentsArray: [
+                                              {
+                                                src: `${endpoints.lessonPlan.s3erp}${resource}`,
+                                                name: resource,
+                                                extension:
+                                                  '.' +
+                                                  resource.split('.')[
+                                                    resource.split('.').length - 1
+                                                  ],
+                                              },
+                                            ],
+                                          });
+                                        }}
+                                        rel='noopener noreferrer'
+                                        target='_blank'
+                                      >
+                                        <SvgIcon component={() => <VisibilityIcon />} />
+                                      </a>
+                                    </Grid>
                                   </Grid>
-                                  <Grid md={3} className='text-center'>
-                                    <a
-                                      onClick={() => {
-                                        openPreview({
-                                          currentAttachmentIndex: 0,
-                                          attachmentsArray: [
-                                            {
-                                              src: `${endpoints.lessonPlan.s3erp}${resource}`,
-                                              name: resource,
-                                              extension:
-                                                '.' +
-                                                resource.split('.')[
-                                                  resource.split('.').length - 1
-                                                ],
-                                            },
-                                          ],
-                                        });
-                                      }}
-                                      rel='noopener noreferrer'
-                                      target='_blank'
-                                    >
-                                      <SvgIcon component={() => <VisibilityIcon />} />
-                                    </a>
-                                  </Grid>
-                                </Grid>
+                                </>
                               );
                             })}
                           </Grid>
@@ -1123,13 +1167,17 @@ const QuestionCard = ({
           <Button
             className='mr-3'
             variant='contained'
-            onClick={() => setShowDrawer(false)}
+            onClick={() => {
+              setShowDrawer(false);
+              assignResource([]);
+            }}
           >
             Back
           </Button>
           {resourcesData && (
             <Button
-              variant='default'
+              variant='contained'
+              color='primary'
               onClick={() => {
                 setShowDrawer(false);
                 assignResource([...selectedResources]);

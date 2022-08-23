@@ -49,6 +49,7 @@ const QuestionPaperInfo = ({
   const [showSubmit,setShowSubmit] = useState({})
   const [reloadFlag,setReloadFlag] = useState(false)
   const [showagain,setShowagain] = useState([])
+  const [allImage,setAllImage] = useState([])
 
   const {
     assessmentId: assessmentIdFromContext = null,
@@ -223,28 +224,48 @@ const QuestionPaperInfo = ({
         setAttachments((pre)=>[...pre,...result?.data?.result])
         setAttachmentPreviews((prevState) => [...prevState, ...result?.data?.result]);
         setShowagain(result?.data?.result)
+        const preImgnames = result?.data?.result.map((i)=>i.split("/")[3])
+        setAllImage((pre)=>[...pre,...preImgnames])
       }});
   };
 
   useEffect(()=>getAssesmentDocument(),[reloadFlag])
+
+  const imageValidator = (file)=>{
+    if(file.name.toLowerCase().lastIndexOf('.jpg') > 0 || file.name.toLowerCase().lastIndexOf('.png') > 0  || file.name.toLowerCase().lastIndexOf('.jpeg') > 0){
+      if(file.size < 52428800){
+          const isFileValid = {
+              msg: 'Accepted files: jpeg,jpg,png',
+              msgColor: '#014b7e',
+              isValid: true
+          };
+          return isFileValid;
+      }
+  }
+}
 
   const handleFileUpload = async (file) => {
     console.log('File', file);
     if (!file) {
       return null;
     }
-    const isValid = FileValidators(file);
-    !isValid?.isValid && isValid?.msg && setAlert('error', isValid?.msg);
+    // const isValid = FileValidators(file);
+    const isValid = imageValidator(file)
+    const uniqueImages = allImage.includes(file.name)
+    if(!uniqueImages) setAllImage((pre)=>[...pre,file.name])
+    if(uniqueImages && allImage.length>0) setAlert('warning',"File already uploaded");
+    !isValid?.isValid && setAlert('error',"Please upload image file and less than 50mb");
+    
 
-    if (isValid?.isValid) {
+    if (isValid?.isValid && !uniqueImages) {
       try {
         if (
-          file.name.toLowerCase().lastIndexOf('.pdf') > 0 ||
+          // file.name.toLowerCase().lastIndexOf('.pdf') > 0 ||
           file.name.toLowerCase().lastIndexOf('.jpeg') > 0 ||
           file.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
-          file.name.toLowerCase().lastIndexOf('.png') > 0 ||
-          file.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
-          file.name.toLowerCase().lastIndexOf('.mp4') > 0
+          file.name.toLowerCase().lastIndexOf('.png') > 0 
+          // file.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
+          // file.name.toLowerCase().lastIndexOf('.mp4') > 0
         ) {
           const fd = new FormData();
           fd.append('file', file);
@@ -633,6 +654,8 @@ const QuestionPaperInfo = ({
                                   removeAttachment(index, pdfindex, deletePdf)
                                   const images = attachments.filter((i)=> i !== attachments[pdfindex])
                                   setAttachments(images)
+                                  const sameImage = allImage.filter((i)=> i !== allImage[pdfindex])
+                                  setAllImage(sameImage)
                                 }}
                                 ispdf={false}
                               />

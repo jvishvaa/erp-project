@@ -1,17 +1,7 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import Layout from 'containers/Layout';
-import {
-  Breadcrumb,
-  Form,
-  Select,
-  Input,
-  Table,
-  Button,
-  Spin,
-  message,
-  Checkbox,
-} from 'antd';
+import { Breadcrumb, Form, Select, Input, Table, Button, Spin, message } from 'antd';
 import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/smallCloseIcon.svg';
 import uploadIcon from 'v2/Assets/dashboardIcons/announcementListIcons/uploadIcon.svg';
 import UploadDocument from '../UploadDocument';
@@ -29,13 +19,8 @@ const GeneralDiary = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [loading, setLoading] = useState(false);
   const [moduleId, setModuleId] = useState();
-  const [branchDropdown, setBranchDropdown] = useState([]);
-  const [branchID, setBranchID] = useState();
-  const [acadID, setAcadID] = useState();
-  const [branchName, setBranchName] = useState('');
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [sectionDropdown, setSectionDropdown] = useState([]);
-  const [academicYearID, setAcademicYearID] = useState();
   const [sectionID, setSectionID] = useState();
   const [sectionMappingID, setSectionMappingID] = useState();
   const [gradeID, setGradeID] = useState();
@@ -81,7 +66,6 @@ const GeneralDiary = () => {
 
   const handleBack = () => {
     history.push('/diary/teacher');
-    // setState({ isEdit: false, editData: [] });
   };
 
   const handleSection = (e) => {
@@ -121,14 +105,6 @@ const GeneralDiary = () => {
     }
   };
 
-  const branchOptions = branchDropdown?.map((each) => {
-    return (
-      <Option key={each?.branch?.id} value={each?.branch?.id} acadId={each?.id}>
-        {each?.branch?.branch_name}
-      </Option>
-    );
-  });
-
   const fetchGradeData = () => {
     const params = {
       session_year: selectedAcademicYear?.id,
@@ -162,6 +138,14 @@ const GeneralDiary = () => {
       message.error('Please select atleast one student');
       return;
     }
+    if (!title) {
+      message.error('Please add title');
+      return;
+    }
+    if (!description) {
+      message.error('Please add message');
+      return;
+    }
 
     let payload = {
       title: title,
@@ -190,6 +174,14 @@ const GeneralDiary = () => {
   };
 
   const fetchGeneralDiaryusers = () => {
+    if (!gradeID) {
+      message.error('Please select Grade');
+      return;
+    }
+    if (!sectionID) {
+      message.error('Please select Section');
+      return;
+    }
     setLoading(true);
     const params = {
       active: 0,
@@ -279,47 +271,6 @@ const GeneralDiary = () => {
         <div className='col-12 mt-3 px-2'>
           <Form id='filterForm' ref={formRef} layout={'horizontal'}>
             <div className='row py-2 text-left'>
-              {/* <div className='col-md-3 py-2'>
-                <Form.Item name='academic'>
-                  <Select
-                    className='th-width-100 th-br-6'
-                    onChange={handleAcademicYear}
-                    placeholder='Academic Year'
-                    allowClear
-                    onClear={handleClearAcademic}
-                    showSearch
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                  >
-                    {yearOptions}
-                  </Select>
-                </Form.Item>
-              </div> */}
-
-              {/* <div className='col-md-3 py-2'>
-                <Form.Item name='branch'>
-                  <Select
-                    className='th-width-100 th-br-6'
-                    onChange={(e, value) => handleBranch(value)}
-                    placeholder='Branch'
-                    allowClear
-                    onClear={handleClearBranch}
-                    showSearch
-                    optionFilterProp='children'
-                    filterOption={(input, options) => {
-                      return (
-                        options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                      );
-                    }}
-                  >
-                    {branchOptions}
-                  </Select>
-                </Form.Item>
-              </div> */}
               <div className='col-md-3 py-2'>
                 <Form.Item name='grade'>
                   <Select
