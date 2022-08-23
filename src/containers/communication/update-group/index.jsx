@@ -182,11 +182,9 @@ const UpdateGroup = ({ handleEditing, editData }) => {
     getApiCall(
       `${
         endpoints.communication.communicationUserList
-      }?page=1&page_size=500&module_id=${moduleId}&session_year=${
-        selectedAcademicYear?.id
-      }&branch=${branchId}&grade=${gradeId}${`&section=${sectionId}`}&level=${13}&exclude_parent_data=${true}`, 
+      }?page=1&page_size=500&section_mapping_id=${sectionMappingIds}&level=13`,
       'fullGroup'
-    );
+    ); //&branch=${branchId}&grade=${gradeId}&module_id=${moduleId}
   }
 
   function getSelectedGroupList() {

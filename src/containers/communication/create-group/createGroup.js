@@ -312,52 +312,22 @@ if(isEdit && completeData.length){
     setNext(true);
     let getUserListUrl;
     if (!edit) {
-      getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15&module_id=${moduleId}&level=${13}&exclude_parent_data=${true}`;
+      getUserListUrl = `${endpoints.communication.communicationUserList}?page=${pageno}&page_size=15&level=13`; //&module_id=${moduleId}
     }
-    // if (isEdit) {
-    //   getUserListUrl = `${endpoints.communication.edit}${1}/retrieve-update-group/?page=${pageno}&page_size=15&module_id=${moduleId}`;
-    // }
-    // if (selectedRoles.length && !selectedRoles.includes('All')) {
-    //   roleList
-    //     .filter((item) => selectedRoles.includes(item['role_name']))
-    //     .forEach((items) => {
-    //       rolesId.push(items.id);
-    //     });
-    // }
-    // if (selectedBranch.length && !selectedBranch.includes('All')) {
-    //   selectedBranch.map((branchs) => branchsId.push(branchs?.id));
-    // }
-    // if (selectedGrades.length && !selectedGrades.includes('All')) {
-    //   gradeList
-    //     .filter((item) => selectedGrades.includes(item['grade__grade_name']))
-    //     .forEach((items) => {
-    //       gradesId.push(items.grade_id);
-    //     });
-    // }
-
-    // if (selectedGrades.length && !selectedGrades.includes('All')) {
-    //   gradeList
-    //     .filter((item) => selectedGrades.includes(item['grade__grade_name']))
-    //     .forEach((items) => {
-    //       gradesId.push(items.grade_id);
-    //     });
-    // }
+    
     if (selectedSections.length && !selectedSections.includes('All')) {
       selectedSections.forEach((items) => {
-          sectionsId.push(items.section_id);
+          sectionsId.push(items?.id);
         });
     }
-    // if (rolesId.length && !selectedRoles.includes('All')) {
-    //   getUserListUrl += `&role=${rolesId.toString()}`;
+    // if (selectedBranch) {
+    //   getUserListUrl += `&session_year=${selectedAcademicYear?.id}&branch=${selectedBranch?.id}`;
     // }
-    if (selectedBranch) {
-      getUserListUrl += `&session_year=${selectedAcademicYear?.id}&branch=${selectedBranch?.id}`;
-    }
-    if (selectedGrades) {
-      getUserListUrl += `&grade=${selectedGrades?.grade_id}`;
-    }
+    // if (selectedGrades) {
+    //   getUserListUrl += `&grade=${selectedGrades?.grade_id}`;
+    // }
     if (sectionsId.length > 0) {
-      getUserListUrl += `&section=${sectionsId.toString()}`;
+      getUserListUrl += `&section_mapping_id=${sectionsId.toString()}`;
     }
 
     try {
@@ -852,17 +822,6 @@ if(value.length > 0){
                 </div>
               ) : null} */}
               <span className='create_group_error_span'>{selectectUserError}</span>
-              {/* <CustomSelectionTable
-                header={headers}
-                rows={usersRow}
-                completeData={completeData}
-                totalRows={totalPage}
-                pageno={pageno}
-                setSelectAll={setSelectAll}
-                selectedUsers={selectedUsers}
-                changePage={setPageno}
-                setSelectedUsers={setSelectedUsers}
-              /> */}
               <UserTable
               header={headers}
               rows={usersRow}
