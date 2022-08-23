@@ -243,7 +243,7 @@ const GeneralDiary = () => {
     },
 
     {
-      title: <span className='th-white th-fw-700'>EDP_ID</span>,
+      title: <span className='th-white th-fw-700'>ERP_ID</span>,
       dataIndex: 'score',
       align: 'center',
       width: '30%',
@@ -366,10 +366,9 @@ const GeneralDiary = () => {
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder='Title'
-                      autoSize={{
-                        minRows: 3,
-                        maxRows: 5,
-                      }}
+                      maxLength='150'
+                      rows={3}
+                      style={{ resize: 'none' }}
                     />
                   </div>
                   <div className='col-12 py-2'>
@@ -378,10 +377,9 @@ const GeneralDiary = () => {
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder='Description'
-                      autoSize={{
-                        minRows: 3,
-                        maxRows: 5,
-                      }}
+                      maxLength='250'
+                      rows={4}
+                      style={{ resize: 'none' }}
                     />
                   </div>
                   <div className='col-12'>

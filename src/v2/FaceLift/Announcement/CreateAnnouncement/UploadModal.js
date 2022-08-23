@@ -11,6 +11,8 @@ import dragDropIcon from 'v2/Assets/dashboardIcons/announcementListIcons/dragDro
 
 const UploadModal = (props) => {
   const [fileList, setFileList] = useState([]);
+  const [fileTypeError, setFileTypeError] = useState(false);
+  const [fileSizeError, setFileSizeError] = useState(false);
 
   const getFileIcon = (type) => {
     switch (type) {
@@ -25,6 +27,8 @@ const UploadModal = (props) => {
       case 'xls':
         return excelFileIcon;
       case 'pdf':
+        return pdfFileIcon;
+      default:
         return pdfFileIcon;
     }
   };
@@ -64,6 +68,7 @@ const UploadModal = (props) => {
     showUploadList: false,
     disabled: false,
     multiple: true,
+    accept: '.jpeg,.jpg,.png,.pdf,.mp3,.mp4',
     onRemove: (file) => {
       const index = fileList.indexOf(file);
       const newFileList = fileList.slice();
@@ -71,11 +76,35 @@ const UploadModal = (props) => {
       setFileList(newFileList);
     },
     beforeUpload: (...file) => {
-      setFileList([...fileList, ...file[1]]);
+      const type = file[0]?.type.split('/')[1];
+      if (['jpeg', 'jpg', 'png', 'pdf', 'mp4', 'mpeg'].includes(type)) {
+        if ((file[0]?.size > 5, 80, 85, 272)) {
+          setFileSizeError(true);
+        } else {
+          setFileList([...fileList, ...file[1]]);
+          setFileSizeError(false);
+        }
+        setFileTypeError(false);
+      } else {
+        setFileTypeError(true);
+      }
       return false;
     },
     fileList,
   };
+
+  const uniqueFiles = [];
+
+  const uniqueFilesList = fileList.filter((element) => {
+    const isDuplicate = uniqueFiles.includes(element.name);
+
+    if (!isDuplicate) {
+      uniqueFiles.push(element.name);
+
+      return true;
+    }
+  });
+
   return (
     <>
       <Modal
@@ -133,12 +162,23 @@ const UploadModal = (props) => {
             >
               Browse Files
             </Button>
+            <p className='pt-2'>Accepted Files [images,pdf,mp3,mp4]</p>
           </Dragger>
+          {fileTypeError && (
+            <div className='row pt-3 justify-content-center th-red'>
+              This file type is not allowed
+            </div>
+          )}
+          {fileSizeError && (
+            <div className='row pt-3 justify-content-center th-red'>
+              This file size must be less than 50 MB
+            </div>
+          )}
           {fileList?.length > 0 && (
             <span className='th-black-1 mt-3'>Selected Files</span>
           )}
           <div className='row my-2 th-grey' style={{ height: 150, overflowY: 'auto' }}>
-            {fileList?.map((item) => {
+            {uniqueFilesList?.map((item) => {
               const filename = item?.name?.split('.')[0];
               const extension = item?.type?.split('/')[1];
 

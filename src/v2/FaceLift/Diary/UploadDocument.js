@@ -7,6 +7,8 @@ import dragDropIcon from 'v2/Assets/dashboardIcons/announcementListIcons/dragDro
 
 const UploadDocument = (props) => {
   const [fileList, setFileList] = useState([]);
+  const [fileTypeError, setFileTypeError] = useState(false);
+
   const getSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -56,13 +58,26 @@ const UploadDocument = (props) => {
       const type = file[0]?.type.split('/')[1];
       if (['jpeg', 'jpg', 'png', 'pdf'].includes(type)) {
         setFileList([...fileList, ...file[1]]);
+        setFileTypeError(false);
       } else {
-        message.error('Please add image and pdf files only');
+        setFileTypeError(true);
       }
       return false;
     },
     fileList,
   };
+
+  const uniqueFiles = [];
+
+  const uniqueFilesList = fileList.filter((element) => {
+    const isDuplicate = uniqueFiles.includes(element.name);
+
+    if (!isDuplicate) {
+      uniqueFiles.push(element.name);
+
+      return true;
+    }
+  });
   return (
     <>
       <Modal
@@ -121,11 +136,16 @@ const UploadDocument = (props) => {
               Browse Files
             </Button>
           </Dragger>
+          {fileTypeError && (
+            <div className='row pt-3 justify-content-center th-red'>
+              Please add image and pdf files only
+            </div>
+          )}
           {fileList?.length > 0 && (
             <span className='th-black-1 mt-3'>Selected Files</span>
           )}
           <div className='row my-2 th-grey' style={{ height: 150, overflowY: 'auto' }}>
-            {fileList?.map((item) => {
+            {uniqueFilesList?.map((item) => {
               const filename = item?.name?.split('.')[0];
               const extension = item?.type?.split('/')[1];
 

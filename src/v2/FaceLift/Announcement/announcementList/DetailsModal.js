@@ -44,6 +44,8 @@ const DetailsModal = (props) => {
         return excelFileIcon;
       case 'pdf':
         return pdfFileIcon;
+      default:
+        return pdfFileIcon;
     }
   };
   const handleDownload = (files) => {
@@ -167,7 +169,7 @@ const DetailsModal = (props) => {
             {data?.attachments.length > 0 && (
               <div className='row my-3 th-grey'>
                 <div className='col-6 tex-left th-black-2 th-fw-500 pl-0'>
-                  Attachments:
+                  Attachments({data?.attachments.length}):
                 </div>
                 <div className='col-6 text-right th-primary th-12 pr-0'>
                   <u
