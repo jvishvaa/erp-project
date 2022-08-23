@@ -235,7 +235,7 @@ const AttedanceCalender = () => {
             )
             .then((res) => {
               // setHolidayDetails(res.data.holiday_detail);
-              setEventDetails(res.data.holiday_detail)
+              setEventDetails(res?.data?.Event_detail)
               console.log(res.data.holiday_detail,"JK 1")
             })
             .catch((error) => {
@@ -258,7 +258,7 @@ const AttedanceCalender = () => {
               `${endpoints.academics.getEvents}?session_year=${sessionId?.id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}&level=${user_level}`
             )
             .then((res) => {
-              setEventDetails(res?.data?.holiday_detail)
+              setEventDetails(res?.data?.Event_detail)
               // console.log(res.data.holiday_detail,"JK 2")
             })
             .catch((error) => {
@@ -571,7 +571,7 @@ const AttedanceCalender = () => {
       )
       .then((res) => {
         // setHolidayDetails(res.data.holiday_detail);
-        setEventDetails(res.data.holiday_detail)
+        setEventDetails(res?.data?.Event_detail)
         console.log(res,"JK 3")
       })
       .catch((error) => {
@@ -645,7 +645,7 @@ const AttedanceCalender = () => {
           .then((res) => {
             setLoading(false);
             // setHolidayDetails(res.data.holiday_detail);
-            setEventDetails(res.data.holiday_detail)
+            setEventDetails(res?.data?.Event_detail)
             // console.log(res,"JK 44")
           })
           .catch((error) => {
@@ -673,7 +673,7 @@ const AttedanceCalender = () => {
             .then((res) => {
               setLoading(false);
               // setHolidayDetails(res.data.holiday_detail);
-              setEventDetails(res.data.holiday_detail)
+              setEventDetails(res?.data?.Event_detail)
               // console.log(res,"JK 4")
             })
             .catch((error) => {
@@ -732,7 +732,7 @@ const AttedanceCalender = () => {
         )
         .then((res) => {
           // setHolidayDetails(res.data.holiday_detail);
-          setEventDetails(res.data.holiday_detail)
+          setEventDetails(res?.data?.Event_detail)
           // console.log(res,"JK 5")
         })
         .catch((error) => {
@@ -784,7 +784,7 @@ const AttedanceCalender = () => {
       )
       .then((res) => {
         // setHolidayDetails(res.data.holiday_detail);
-        setEventDetails(res.data.holiday_detail)
+        setEventDetails(res?.data?.Event_detail)
         // console.log(res," JK 6")
       setLoading(false)
       })
@@ -836,7 +836,7 @@ const AttedanceCalender = () => {
         .then((res) => {
           // console.log(res, 'JK 7');
           // setHolidayDetails(res.data.holiday_detail);
-          setEventDetails(res.data.holiday_detail)
+          setEventDetails(res?.data?.Event_detail)
           setLoading(false)
         })
         .catch((error) => {
@@ -890,7 +890,7 @@ const AttedanceCalender = () => {
         )
         .then((res) => {
           // setHolidayDetails(res.data.holiday_detail);
-          setEventDetails(res.data.holiday_detail)
+          setEventDetails(res?.data?.Event_detail)
           console.log(res,"JK 8")
           setLoading(false)
         })
@@ -1024,8 +1024,8 @@ const AttedanceCalender = () => {
   };
 
   const handleEditEvents = (e) => {
-    const dummyAcad = e.section_mapping_data.map((item) => item?.acad_session_id)
-    const dummyGrade= e.section_mapping_data.map((item) => item?.grade_id)
+    // const dummyAcad = e.section_mapping_data.map((item) => item?.acad_session_id)
+    // const dummyGrade= e.section_mapping_data.map((item) => item?.grade_id)
     const payload = {
       academic_year_id: selectedAcademicYear,
       branch_id: selectedBranch,
@@ -1041,8 +1041,8 @@ const AttedanceCalender = () => {
       state: {
         data: eventData,
         payload: payload,
-        acadId: e.dummyAcad,
-        gradeId: e.dummyGrade,
+        acadId: e?.acad_session,
+        gradeId: e?.grades,
         isEdit: true,
         eventId: e.id,
       },
@@ -1095,7 +1095,7 @@ const AttedanceCalender = () => {
       )
       .then((res) => {
         // setHolidayDetails(res.data.holiday_detail);
-        setEventDetails(res.data.holiday_detail)
+        setEventDetails(res?.data?.Event_detail)
       })
       .catch((error) => {
         console.log(error, 'err');
