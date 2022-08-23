@@ -498,6 +498,7 @@ const Assesment = () => {
     setFilteredAssesmentTests([]);
     setFilteredAssesmentTestsTotalPage(0);
     setFilteredAssesmentTestPage(1);
+    setSelectedAssesmentTest(null);
   };
 
   const handleFileChange = (event) => {
