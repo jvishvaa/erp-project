@@ -1491,7 +1491,7 @@ const FinanceOwnerDashboard = (props) => {
                           <CircularProgress />
                         ) : (
                           <>
-                            {props && props?.staffOverAll?.length && props?.staffOverAll[0] ? (
+                            {props && props?.staffOverAll?.length  && props?.staffOverAll[0] ? (
                               <Grid
                                 container
                                 spacing={1}

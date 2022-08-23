@@ -72,8 +72,6 @@ const OnlineclassViewProvider = (props) => {
 
   const [state, dispatch] = useReducer(onlineClassReducer, initalState);
 
-  const { role_details: roleDetails } =
-    JSON.parse(localStorage.getItem('userDetails')) || {};
 
   // all the actions related
 

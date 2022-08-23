@@ -235,6 +235,9 @@ const AppSearchBarUseStyles = makeStyles((theme) => ({
     // },
   },
   sectionDesktop: {
+    '& .MuiIconButton-root' : {
+      borderRadius:'0px',
+    },
     padding: '0px 15px 0px 0px',
     display: 'none',
     color: '#FF6B6B',
