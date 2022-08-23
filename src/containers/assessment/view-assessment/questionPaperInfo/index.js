@@ -33,6 +33,7 @@ import Attachment from '../../../../containers/homework/teacher-homework/attachm
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { connect, useSelector } from 'react-redux';
 import axiosInstance from '../../../../config/axios';
+import Loader from './../../../../components/loader/loader';
 const QuestionPaperInfo = ({
   assessmentId,
   assessmentDate,
@@ -871,6 +872,7 @@ const QuestionPaperInfo = ({
   return (
     <Paper elevation={2} className={classes.paper}>
       <div className={classes.testInfo}>
+        {fileUploadInProgress && <Loader />}
         {headersUI}
         {isTestAttempted ? assessmentAnalysis : takeTestUI}
         {/* {takeTestUI} */}
