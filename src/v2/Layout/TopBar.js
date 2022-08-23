@@ -27,6 +27,10 @@ import logoMobile from '../../assets/images/logo_mobile.png';
 import orchidsLogo from '../../assets/images/orchids.png';
 import SearchBar from './SearchBar';
 import TopBarStyles from './TopBarStyles';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+
 import {
   currentSelectedYear,
   currentSelectedBranch,
@@ -64,16 +68,18 @@ const Appbar = ({ children, history, ...props }) => {
   const [centralSchoolName, setcentralSchoolName] = useState('');
   const [superUser, setSuperUser] = useState(false);
   const [isLogout, setIsLogout] = useState(false);
-  let {is_verified} = JSON.parse(localStorage.getItem('profileDetails')) || {};
+  let { is_verified } = JSON.parse(localStorage.getItem('profileDetails')) || {};
   const [navigationData, setNavigationData] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const [isSwitch, setisSwitch] = useState(false);
+  const [profileToShown, setProfileToShown] = useState([]);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   let userData = JSON.parse(localStorage.getItem('userDetails'));
   let apps = JSON.parse(localStorage.getItem('apps'));
   const { role_details: roleDetails } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
-    let selectedProfileDetails = JSON.parse(localStorage?.getItem('selectProfileDetails')) || {};
+  let selectedProfileDetails =
+    JSON.parse(localStorage?.getItem('selectProfileDetails')) || {};
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -82,7 +88,7 @@ const Appbar = ({ children, history, ...props }) => {
   const [academicYear, setAcademicYear] = useState('');
   const [branch, setBranch] = useState(selectedBranch?.branch?.branch_name);
   const profileDetails = JSON.parse(localStorage.getItem('profileDetails')) || {};
-  const [profile,setProfile] = useState(selectedProfileDetails.name);
+  const [profile, setProfile] = useState(selectedProfileDetails.name);
 
   useEffect(() => {
     const navigationData = localStorage.getItem('navigationData');
@@ -100,6 +106,14 @@ const Appbar = ({ children, history, ...props }) => {
     }
     if (containerRef.scrollTop > 50) {
       containerRef.scrollTop = 0;
+    }
+  }, []);
+  useEffect(() => {
+    if (profileDetails) {
+      let unselectedprofiles = profileDetails?.data?.filter(
+        (item) => item.name !== selectedProfileDetails?.name
+      );
+      setProfileToShown(unselectedprofiles);
     }
   }, []);
 
@@ -161,6 +175,23 @@ const Appbar = ({ children, history, ...props }) => {
           <Typography color='secondary'>Settings</Typography>
         </MenuItem>
       ) : null}
+      <MenuItem onClick={() => setisSwitch(!isSwitch)}>
+        <IconButton aria-label='settings' color='inherit'>
+          <SupervisorAccountIcon color='primary' style={{ fontSize: '2rem' }} />
+        </IconButton>
+        <Typography color='secondary'>Switch Profile</Typography>
+        {!isSwitch && <KeyboardArrowDownIcon />}
+        {isSwitch && <KeyboardArrowUpIcon />}
+      </MenuItem>
+      {isSwitch &&
+        profileToShown?.map((item) => (
+          <MenuItem onClick={() => handleSwitchChange(item)}>
+            {/* <IconButton aria-label='settings' color='inherit'>
+            <SettingsIcon color='primary' style={{ fontSize: '2rem' }} />
+          </IconButton> */}
+            <Typography color='secondary'>{item?.name}</Typography>
+          </MenuItem>
+        ))}
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
           <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
@@ -346,23 +377,23 @@ const Appbar = ({ children, history, ...props }) => {
     return result;
   };
 
-  const handleSwitchChange = (event) => {
+  const handleSwitchChange = (item) => {
     sessionStorage.removeItem("branch_list")
     sessionStorage.removeItem('selected_branch')
     sessionStorage.removeItem('acad_session_list')
     sessionStorage.removeItem('acad_session')
-    let filterItem = profileDetails?.data?.filter((item) => item.name === event)
-    let savedProfile = localStorage.setItem('selectProfileDetails', JSON.stringify(filterItem[0])) || {}
-    setProfile(filterItem[0]?.name)
+    // let filterItem = profileDetails?.data?.filter((item) => item.name === (event.target.value || item?.name))
+    let savedProfile = localStorage.setItem('selectProfileDetails', JSON.stringify(item)) || {}
+    setProfile(item?.name)
     // setProfileName(event?.target?.value.name)
     const  phone_number  = JSON.parse(localStorage?.getItem('profileNumber')) || {};
     localStorage.removeItem("userDetails");
     localStorage.removeItem("navigationData");
-    if(phone_number && event){
+    if(phone_number && item){
         let payload = {
             contact:  phone_number,
-            erp_id: filterItem[0]?.erp_id,
-            hmac: filterItem[0]?.hmac,
+            erp_id: item?.erp_id,
+            hmac: item?.hmac,
           };
         axiosInstance
         .post(
@@ -651,7 +682,7 @@ const Appbar = ({ children, history, ...props }) => {
                 className='th-top-switch'
               />
             )}
-            {profileDetails?.is_verified === true ? (
+            {/* {profileDetails?.is_verified === true ? (
               <>
               {isMobile ? null : (
               <div className={classes.grow} style={{ margin: '0' }}>
@@ -687,40 +718,40 @@ const Appbar = ({ children, history, ...props }) => {
               </div>
             )}
               </>
-            ) : ""}
-              {isMobile ? null : (
-               <div className={classes.grow} style={{ margin: '0' }}>
-                 <FormControl
-                   className='d-flex flex-row align-items-center th-bg-white th-br-4 '
-                   variant='standard'
-                   sx={{ m: 1, minWidth: 100 }}
-                 >
-                   <div className='px-2 th-black-2 th-14'> Select Branch:</div>
-                   <Select
-                     onChange={handleBranchChange}
-                     value={branch ? branch : branchList ? branchList[0] : ''}
-                     className='th-primary th-bg-white th-br-4 text-left th-topbar-select'
-                     placement='bottomRight'
-                     bordered={false}
-                     showSearch={true}
-                     suffixIcon={<DownOutlined className='th-primary' />}
-                     dropdownMatchSelectWidth={false}
-                     optionFilterProp='children'
-                     filterOption={(input, option) =>
-                       option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                     }
-                   >
-                     {branchList?.map((item) => {
-                       return (
-                         <Option value={item?.branch?.branch_name}>
-                           {item?.branch?.branch_name}
-                         </Option>
-                       );
-                     })}
-                   </Select>
-                 </FormControl>
-               </div>
-             )}
+            ) : ""} */}
+            {isMobile ? null : (
+              <div className={classes.grow} style={{ margin: '0' }}>
+                <FormControl
+                  className='d-flex flex-row align-items-center th-bg-white th-br-4 '
+                  variant='standard'
+                  sx={{ m: 1, minWidth: 100 }}
+                >
+                  <div className='px-2 th-black-2 th-14'> Select Branch:</div>
+                  <Select
+                    onChange={handleBranchChange}
+                    value={branch ? branch : branchList ? branchList[0] : ''}
+                    className='th-primary th-bg-white th-br-4 text-left th-topbar-select'
+                    placement='bottomRight'
+                    bordered={false}
+                    showSearch={true}
+                    suffixIcon={<DownOutlined className='th-primary' />}
+                    dropdownMatchSelectWidth={false}
+                    optionFilterProp='children'
+                    filterOption={(input, option) =>
+                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    }
+                  >
+                    {branchList?.map((item) => {
+                      return (
+                        <Option value={item?.branch?.branch_name}>
+                          {item?.branch?.branch_name}
+                        </Option>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
+              </div>
+            )}
 
             {isMobile ? null : (
               <div className={classes.grow} style={{ margin: '0' }}>
@@ -835,13 +866,22 @@ const Appbar = ({ children, history, ...props }) => {
                   >
                     {/* <AppBarProfileIcon imageSrc={roleDetails?.user_profile} /> */}
 
-                    <img
-                      width='20px'
-                      height='20px'
-                      src={
-                        roleDetails?.user_profile ? roleDetails?.user_profile : StaffIcon
-                      }
-                    />
+                    {profileDetails?.is_verified ? (
+                      <Typography>
+                        {profile}
+                        <KeyboardArrowDownIcon />
+                      </Typography>
+                    ) : (
+                      <img
+                        width='20px'
+                        height='20px'
+                        src={
+                          roleDetails?.user_profile
+                            ? roleDetails?.user_profile
+                            : StaffIcon
+                        }
+                      />
+                    )}
                   </IconButton>
                 </div>
               </>
