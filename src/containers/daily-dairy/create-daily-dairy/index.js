@@ -190,7 +190,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         section_mapping: sectionMappingID,
         subject: subjectIds,
         date: moment().format('YYYY-MM-DD'),
-        user_id: user_id,
+        // user_id: user_id,
       });
       setHomeworkTitle('');
       setHomeworkInstructions('');
@@ -401,7 +401,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         section_mapping: sectionMappingID,
         subject: value?.id,
         date: moment().format('YYYY-MM-DD'),
-        user_id: user_id,
+        // user_id: user_id,
       });
       axiosInstance
         .get(
@@ -612,14 +612,15 @@ const CreateDailyDairy = (details, onSubmit) => {
       );
       const { message, status_code: statusCode } = response.data;
       if (statusCode === 200) {
-        setAlert('success', message);
-        setState({ editData: [], isEdit: false });
-        history.push('/diary/teacher');
-      } else {
-        setAlert('error', 'Diary Already Exists');
+        if (message === 'Daily Dairy created successfully') {
+          setAlert('success', message);
+          history.push('/diary/teacher');
+        } else {
+          setAlert('error', message);
+        }
       }
     } catch (error) {
-      setAlert('error', 'Diary Already Exists');
+      setAlert('error', error?.message);
     }
   };
 
@@ -1285,7 +1286,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                           id='title'
                           name='title'
                           // onChange={() => {}}
-                          inputProps={{ maxLength: 150 }}
+                          inputProps={{ maxLength: 30 }}
                           label='Title'
                           autoFocus
                           value={homeworkTitle}
