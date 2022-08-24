@@ -136,7 +136,7 @@ const EventsMark = () => {
       const startDate = new Date(startDateTechPer)
       const endDate = new Date(endDateTechPer)
       axiosInstance
-        .patch(`${endpoints.academics.getEvents}}?id=${eventIdSave}`, {
+        .patch(`${endpoints.academics.getEvents}?id=${eventIdSave}`, {
           event_name: holidayName,
           description:holidayDesc,
           start_date: moment(startDate).format('YYYY-MM-DD'),
