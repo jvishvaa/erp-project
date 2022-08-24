@@ -88,6 +88,8 @@ function LoginMobileForm({ onLogin, history, isMsAPI }) {
           setDisableLogin(false);
         }
       });
+    } else {
+      setAlert('error','Please Enter OTP')
     }
   };
 
