@@ -26,7 +26,6 @@ import Diary from 'v2/FaceLift/Diary';
 import DailyDiary from 'v2/FaceLift/Diary/DailyDiary';
 import GeneralDiary from 'v2/FaceLift/Diary/GeneralDiary';
 
-
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
@@ -85,12 +84,12 @@ const V2Router = () => {
                             }
                           }}
                         </Route>
-                        <Route path='/announcement-list'>
+                        {/* <Route path='/announcement-list'>
                           {({ match }) => <AnnouncementList match={match} />}
                         </Route>
                         <Route path='/create-announcement'>
                           {({ match }) => <CreateAnnouncement match={match} />}
-                        </Route>
+                        </Route> */}
                         <Route path='/diary/teacher'>
                           {({ match }) => <Diary match={match} />}
                         </Route>

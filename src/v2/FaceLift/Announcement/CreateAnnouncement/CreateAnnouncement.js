@@ -427,14 +427,15 @@ const CreateAnnouncement = () => {
                         height: 200,
                         menubar: false,
                         statusbar: false,
+                        toolbar: false,
                         plugins: [
                           'autolink lists link image charmap print preview anchor',
                           'searchreplace code fullscreen',
                           'insertdatetime media table paste code',
                         ],
-                        toolbar:
-                          'bold italic fontsizeselect | alignleft aligncenter ' +
-                          'alignright alignjustify | bullist numlist outdent indent | ',
+                        // toolbar:
+                        //   'bold italic fontsizeselect | alignleft aligncenter ' +
+                        //   'alignright alignjustify | bullist numlist outdent indent | ',
 
                         content_style:
                           'body { font-family:Inter,sans-serif; font-size:16px;margin:1rem; border:0px solid #D9D9D9 }',
