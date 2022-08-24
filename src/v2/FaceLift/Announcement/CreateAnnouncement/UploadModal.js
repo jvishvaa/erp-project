@@ -13,6 +13,7 @@ const UploadModal = (props) => {
   const [fileList, setFileList] = useState([]);
   const [fileTypeError, setFileTypeError] = useState(false);
   const [fileSizeError, setFileSizeError] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const getFileIcon = (type) => {
     switch (type) {
@@ -42,7 +43,7 @@ const UploadModal = (props) => {
   };
 
   const handleUpload = () => {
-    fileList.forEach((file) => {
+    uniqueFilesList.forEach((file) => {
       const formData = new FormData();
       formData.append('branch_id', props?.branchId);
 
@@ -56,6 +57,7 @@ const UploadModal = (props) => {
             props.setUploadedFiles((pre) => [...pre, res?.data?.data]);
             setFileList([]);
             props.handleClose();
+            setUploading(false);
           }
         })
         .catch((e) => {
@@ -78,7 +80,7 @@ const UploadModal = (props) => {
     beforeUpload: (...file) => {
       const type = file[0]?.type.split('/')[1];
       if (['jpeg', 'jpg', 'png', 'pdf', 'mp4', 'mpeg'].includes(type)) {
-        if ((file[0]?.size > 5, 80, 85, 272)) {
+        if (file[0]?.size > 58085272) {
           setFileSizeError(true);
         } else {
           setFileList([...fileList, ...file[1]]);
@@ -127,8 +129,10 @@ const UploadModal = (props) => {
             <Button
               className='th-fw-500 th-br-4 th-bg-primary th-white'
               onClick={() => {
+                setUploading(true);
                 handleUpload();
               }}
+              disabled={uploading}
             >
               Upload
             </Button>
