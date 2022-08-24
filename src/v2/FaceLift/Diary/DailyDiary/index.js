@@ -326,7 +326,7 @@ const DailyDiary = () => {
         section_mapping: sectionMappingID,
         subject: e?.value,
         date: moment().format('YYYY-MM-DD'),
-        user_id: user_id,
+        // user_id: user_id,
       });
       const params = {
         session_year: selectedBranch.branch.id,
@@ -514,7 +514,7 @@ const DailyDiary = () => {
         section_mapping: sectionMappingID,
         subject: subjectID,
         date: moment().format('YYYY-MM-DD'),
-        user_id: user_id,
+        // user_id: user_id,
       });
       // setHomeworkTitle('');
       // setHomeworkInstructions('');

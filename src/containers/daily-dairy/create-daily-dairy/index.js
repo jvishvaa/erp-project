@@ -190,7 +190,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         section_mapping: sectionMappingID,
         subject: subjectIds,
         date: moment().format('YYYY-MM-DD'),
-        user_id: user_id,
+        // user_id: user_id,
       });
       setHomeworkTitle('');
       setHomeworkInstructions('');
@@ -401,7 +401,7 @@ const CreateDailyDairy = (details, onSubmit) => {
         section_mapping: sectionMappingID,
         subject: value?.id,
         date: moment().format('YYYY-MM-DD'),
-        user_id: user_id,
+        // user_id: user_id,
       });
       axiosInstance
         .get(
