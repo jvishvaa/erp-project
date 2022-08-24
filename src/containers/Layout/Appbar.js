@@ -5,6 +5,7 @@ import { Divider, FormControl, MenuItem, Select, AppBar, Grid } from '@material-
 import clsx from 'clsx';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
+import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
 import Menu from '@material-ui/core/Menu';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -17,6 +18,7 @@ import Grow from '@material-ui/core/Grow';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import SettingsIcon from '@material-ui/icons/Settings';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import { withRouter } from 'react-router-dom';
 import axios from 'axios';
 import endpoints from '../../config/endpoints';
@@ -63,7 +65,9 @@ const Appbar = ({ children, history, ...props }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchUserDetails, setSearchUserDetails] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
+  const [profileToShown,setProfileToShown] = useState([])
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
+  const [isSwitch , setisSwitch] = useState(false)
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   let userData = JSON.parse(localStorage.getItem('userDetails'));
   let apps = JSON.parse(localStorage.getItem('apps'));
@@ -115,6 +119,13 @@ const Appbar = ({ children, history, ...props }) => {
       setGlobalSearchError(false);
     }
   };
+  useEffect(() => {
+    if(profileDetails){
+      let unselectedprofiles = profileDetails?.data?.filter((item) => item.name !== selectedProfileDetails?.name)
+      setProfileToShown(unselectedprofiles)
+    }
+  }, [])
+  
   const autocompleteSearch = (q, pageId, isDelete) => {
     if (q !== '') {
       setSearching(true);
@@ -208,6 +219,31 @@ const Appbar = ({ children, history, ...props }) => {
           <Typography color='secondary'>Settings</Typography>
         </MenuItem>
       ) : null}
+      { profileDetails?.is_verified && 
+      (
+      <>
+      <MenuItem
+        onClick={() => setisSwitch(!isSwitch)}
+      >
+          <IconButton aria-label='settings' color='inherit'>
+            <SupervisorAccountIcon color='primary' style={{ fontSize: '2rem' }} />
+          </IconButton>
+          <Typography color='secondary'>Switch Profile</Typography>
+          {!isSwitch && <KeyboardArrowDownIcon />}
+          {isSwitch && <KeyboardArrowUpIcon />}
+
+      </MenuItem>
+      {isSwitch && profileToShown?.map((item) => (
+        <MenuItem onClick={() => handleSwitchChange(item)}>
+          {/* <IconButton aria-label='settings' color='inherit'>
+            <SettingsIcon color='primary' style={{ fontSize: '2rem' }} />
+          </IconButton> */}
+          <Typography color='secondary'>{item?.name}</Typography>
+        </MenuItem>
+
+      ))}
+      
+      </>)}
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
           <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
@@ -342,20 +378,23 @@ const Appbar = ({ children, history, ...props }) => {
       });
     return result;
   };
-
-  const handleSwitchChange = (event) => {
-    let filterItem = profileDetails?.data?.filter((item) => item.name === event.target.value)
-    let savedProfile = localStorage.setItem('selectProfileDetails', JSON.stringify(filterItem[0])) || {}
-    setProfile(filterItem[0]?.name)
+  const handleSwitchChange = (item) => {
+    sessionStorage.removeItem("branch_list")
+    sessionStorage.removeItem('selected_branch')
+    sessionStorage.removeItem('acad_session_list')
+    sessionStorage.removeItem('acad_session')
+    // let filterItem = profileDetails?.data?.filter((item) => item.name === (event.target.value || item?.name))
+    let savedProfile = localStorage.setItem('selectProfileDetails', JSON.stringify(item)) || {}
+    setProfile(item?.name)
     // setProfileName(event?.target?.value.name)
     const  phone_number  = JSON.parse(localStorage?.getItem('profileNumber')) || {};
     localStorage.removeItem("userDetails");
     localStorage.removeItem("navigationData");
-    if(phone_number && event){
+    if(phone_number && item){
         let payload = {
             contact:  phone_number,
-            erp_id: filterItem[0]?.erp_id,
-            hmac: filterItem[0]?.hmac,
+            erp_id: item?.erp_id,
+            hmac: item?.hmac,
           };
         axiosInstance
         .post(
@@ -433,7 +472,7 @@ const Appbar = ({ children, history, ...props }) => {
     window.location.reload();
   };
   useEffect(() => {
-    if (branchList === '') {
+    if (branchList === '' || branchList === null ) {
       dispatch(fetchBranchList(acdemicCurrentYear?.id));
     }
   }, []);
@@ -682,7 +721,41 @@ const Appbar = ({ children, history, ...props }) => {
                 onChange={handleVersion}
               />
             ) : null}
-
+              {/* {profileDetails?.is_verified === true ? (
+                <FormControl variant='standard' sx={{ m : 1, minWidth: 100 }} style={{display:'contents'}}>
+                   <div className='px-2 th-black-2 th-14'> Logged In As : {profile}</div>
+                  <Select
+                    // onChange={handleBranchChange}
+                    onChange={handleSwitchChange}
+                    labelId='demo-simple-select-label'
+                    id='demo-simple-select'
+                    value={profile}
+                    className={classes.branch}
+                    inputProps={{
+                      'aria-label': 'Without label',
+                      classes: {
+                        icon: 'th-select-icon-grey',
+                      },
+                    }}
+                    MenuProps={{
+                      anchorOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      },
+                      transformOrigin: {
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                      },
+                    }}
+                  >
+                    {profileDetails?.data?.map((item) => (
+                      <MenuItem value={item?.name}>
+                        <>{item?.name}</>
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+                ) : ''} */}
             {isMobile ? null : (
               <div className={classes.grow} style={{ margin: '0' }}>
                 <FormControl variant='standard' sx={{ m: 1, minWidth: 100 }}>
@@ -716,41 +789,6 @@ const Appbar = ({ children, history, ...props }) => {
                     ))}
                   </Select>
                 </FormControl>
-                {profileDetails?.is_verified === true ? (
-                <FormControl variant='standard' sx={{ m: 1, minWidth: 100 }}>
-                   <div className='px-2 th-black-2 th-14'> Logged In As : {profile}</div>
-                  {/* <Select
-                    // onChange={handleBranchChange}
-                    onChange={handleSwitchChange}
-                    labelId='demo-simple-select-label'
-                    id='demo-simple-select'
-                    value={profile}
-                    className={classes.branch}
-                    inputProps={{
-                      'aria-label': 'Without label',
-                      classes: {
-                        icon: 'th-select-icon-grey',
-                      },
-                    }}
-                    MenuProps={{
-                      anchorOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      },
-                      transformOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                      },
-                    }}
-                  >
-                    {profileDetails?.data?.map((item) => (
-                      <MenuItem value={item?.name}>
-                        <>{item?.name}</>
-                      </MenuItem>
-                    ))}
-                  </Select> */}
-                </FormControl>
-                ) : ''}
                 <FormControl variant='standard' sx={{ m: 1, minWidth: 100 }}>
                   <Select
                     labelId='demo-simple-select-label'
@@ -800,7 +838,12 @@ const Appbar = ({ children, history, ...props }) => {
                 onClick={handleMobileMenuOpen}
                 color='inherit'
               >
-                <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
+                {profileDetails?.is_verified ?
+                <Typography>{profile}
+                <KeyboardArrowDownIcon />
+                </Typography>
+              :   <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
+            }
               </IconButton>
             </div>
           </div>

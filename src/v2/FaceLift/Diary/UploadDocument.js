@@ -3,13 +3,12 @@ import { Modal, Upload, message, Button } from 'antd';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import endpoints from 'v2/config/endpoints';
 import axios from 'v2/config/axios';
-import imageFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/imageFileIcon.svg';
-import excelFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/excelFileIcon.svg';
-import pdfFileIcon from 'v2/Assets/dashboardIcons/announcementListIcons/pdfFileIcon.svg';
 import dragDropIcon from 'v2/Assets/dashboardIcons/announcementListIcons/dragDropIcon.svg';
 
 const UploadDocument = (props) => {
   const [fileList, setFileList] = useState([]);
+  const [fileTypeError, setFileTypeError] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const getSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
@@ -20,7 +19,7 @@ const UploadDocument = (props) => {
   };
 
   const handleUpload = () => {
-    fileList.forEach((file) => {
+    uniqueFilesList.forEach((file) => {
       const formData = new FormData();
       formData.append('branch_name', props?.branchName);
       formData.append('grades', props?.gradeID);
@@ -37,6 +36,7 @@ const UploadDocument = (props) => {
             props.setUploadedFiles((pre) => [...pre, res?.data?.result]);
             setFileList([]);
             props.handleClose();
+            setUploading(false);
           }
         })
         .catch((e) => {
@@ -57,11 +57,29 @@ const UploadDocument = (props) => {
       setFileList(newFileList);
     },
     beforeUpload: (...file) => {
-      setFileList([...fileList, ...file[1]]);
+      const type = file[0]?.type.split('/')[1];
+      if (['jpeg', 'jpg', 'png', 'pdf'].includes(type)) {
+        setFileList([...fileList, ...file[1]]);
+        setFileTypeError(false);
+      } else {
+        setFileTypeError(true);
+      }
       return false;
     },
     fileList,
   };
+
+  const uniqueFiles = [];
+
+  const uniqueFilesList = fileList.filter((element) => {
+    const isDuplicate = uniqueFiles.includes(element.name);
+
+    if (!isDuplicate) {
+      uniqueFiles.push(element.name);
+
+      return true;
+    }
+  });
   return (
     <>
       <Modal
@@ -84,8 +102,10 @@ const UploadDocument = (props) => {
             <Button
               className='th-fw-500 th-br-4 th-bg-primary th-white'
               onClick={() => {
+                setUploading(true);
                 handleUpload();
               }}
+              disabled={uploading}
             >
               Upload
             </Button>
@@ -120,11 +140,16 @@ const UploadDocument = (props) => {
               Browse Files
             </Button>
           </Dragger>
+          {fileTypeError && (
+            <div className='row pt-3 justify-content-center th-red'>
+              Please add image and pdf files only
+            </div>
+          )}
           {fileList?.length > 0 && (
             <span className='th-black-1 mt-3'>Selected Files</span>
           )}
           <div className='row my-2 th-grey' style={{ height: 150, overflowY: 'auto' }}>
-            {fileList?.map((item) => {
+            {uniqueFilesList?.map((item) => {
               const filename = item?.name?.split('.')[0];
               const extension = item?.type?.split('/')[1];
 

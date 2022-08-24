@@ -105,18 +105,75 @@ const AttedanceCalender = () => {
   const [selectedAcademicYearId, setSelectedAcademicYearId] = useState([]);
   const [teacherView, setTeacherView] = useState(true);
   const [holidayDetails, setHolidayDetails] = useState('');
+  const [eventDetails, setEventDetails] = useState('');
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl2, setAnchorEl2] = React.useState(null);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const [holidayId, setHolidayid] = useState('');
   const [holidayData, setHolidayData] = useState('');
+  const [eventId,setEventid] = useState('');
+  const [eventData, setEventData] = useState('')
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
-
+  const { user_level } =
+    JSON.parse(localStorage.getItem('userDetails')) || {};
   let path = window.location.pathname;
 
   let userName = JSON.parse(localStorage.getItem('userDetails'))?.erp || {};
   let studentDetails = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const sessionId = JSON.parse(sessionStorage.getItem('acad_session')) || {};
+  const selectedBranchLocal = JSON.parse(sessionStorage.getItem('selected_branch')) || {};
 
+  const multiBranchIdLocal = JSON.parse(sessionStorage.getItem('branch_list'))
+
+  const dummyBranchId= multiBranchIdLocal.map((item) => item?.branch?.id)
+  const dummyAcadId = multiBranchIdLocal.map((item) => item?.id)
+
+  useEffect(() => {
+    if(user_level === 11){
+      if(selectedBranchLocal && moduleId){
+        const selectedId = selectedBranchLocal?.branch?.id;
+        const selectedAcademicYearId = selectedBranchLocal?.id;
+        setSelectedAcademicYearId(selectedAcademicYearId)
+        setSelectedBranch(selectedBranchLocal)
+  
+        callApi(
+          `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id
+          }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+          'gradeList'
+        );
+      } 
+
+    } else if(user_level == 1 || user_level == 2 || user_level == 4 || user_level == 5 || user_level == 8){
+      if(moduleId){
+        const dummyBranchId= multiBranchIdLocal.map((item) => item?.branch?.id)
+        const dummyAcadId = multiBranchIdLocal.map((item) => item?.id)
+        setSelectedAcademicYearId(dummyAcadId)
+        setSelectedBranch(multiBranchIdLocal)
+        callApi(
+          `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id
+          }&branch_id=${dummyBranchId.toString()}&module_id=${moduleId}`,
+          'gradeList'
+        );
+      }
+
+
+    }else {
+      if(moduleId){
+        const selectedId = selectedBranchLocal?.branch?.id;
+        const selectedAcademicYearId = selectedBranchLocal?.id;
+        setSelectedAcademicYearId(selectedAcademicYearId)
+        setSelectedBranch(selectedBranchLocal)
+
+        callApi(
+          `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id
+          }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+          'gradeList'
+        );
+      }
+
+    }
+  },[moduleId])
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -185,13 +242,37 @@ const AttedanceCalender = () => {
             .catch((error) => {
               console.log(error, 'err');
             });
+            axiosInstance
+            .get(
+              `${endpoints.academics.getEvents}?session_year=${selectedBranch.id}&acad_session=${selectedAcademicYearId}&start_date=${formatDateToday}&end_date=${formatDateToday}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}&level=${user_level}`
+            )
+            .then((res) => {
+              // setHolidayDetails(res.data.holiday_detail);
+              setEventDetails(res?.data?.Event_detail)
+              console.log(res.data.holiday_detail,"JK 1")
+            })
+            .catch((error) => {
+              console.log(error, 'err');
+            });
         } else {
           axiosInstance
             .get(
-              `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
+              `${endpoints.academics.getHoliday}?session_year=${selectedBranch?.id}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
             )
             .then((res) => {
               setHolidayDetails(res.data.holiday_detail);
+            })
+            .catch((error) => {
+              console.log(error, 'err');
+            });
+
+            axiosInstance
+            .get(
+              `${endpoints.academics.getEvents}?session_year=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}&level=${user_level}`
+            )
+            .then((res) => {
+              setEventDetails(res?.data?.Event_detail)
+              // console.log(res.data.holiday_detail,"JK 2")
             })
             .catch((error) => {
               console.log(error, 'err');
@@ -299,7 +380,7 @@ const AttedanceCalender = () => {
           section = {},
         } = JSON.parse(localStorage.getItem('teacherFilters')) || {};
         if (window.location.pathname === '/attendance-calendar/teacher-view') {
-          if (academic?.id) {
+          if (academic?.id && moduleId) {
             const acadId = academic?.id || '';
             callApi(
               `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
@@ -307,22 +388,36 @@ const AttedanceCalender = () => {
             );
             if (Object.keys(branch).length !== 0) {
               setSelectedBranch(branch);
-              const branchIds = branch.branch.id;
-              callApi(
-                `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
-                'gradeList'
-              );
-              if (Object.keys(grade).length !== 0) {
-                setSelectedGrade(grade);
-                const gradeIds = grade.grade_id;
-                callApi(
-                  `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}&module_id=${moduleId}`,
-                  'section'
-                );
-                if (section) {
-                  setSelectedSection(section);
+              {}
+              if(user_level == 1 ||
+                user_level == 2 ||
+                user_level == 4 ||
+                user_level == 8 ||  
+                user_level == 5 ){
+                  
+                  const branchIds = branch.map((item) => item?.branch?.id);
+                  callApi(
+                    `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
+                    'gradeList'
+                  );
+                }else {
+                  const branchIds = branch.branch.id;
+                  callApi(
+                    `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
+                    'gradeList'
+                  );
                 }
-              }
+              // if (Object.keys(grade).length !== 0) {
+              //   setSelectedGrade(grade);
+              //   const gradeIds = grade.grade_id;
+              //   callApi(
+              //     `${endpoints.academics.sections}?session_year=${acadId}&branch_id=${branchIds}&grade_id=${gradeIds}&module_id=${moduleId}`,
+              //     'section'
+              //   );
+              //   if (section) {
+              //     setSelectedSection(section);
+              //   }
+              // }
             }
           }
         }
@@ -331,14 +426,29 @@ const AttedanceCalender = () => {
   }, [moduleId, window.location.pathname]);
 
   const handleClearAll = () => {
-    setSelectedBranch([]);
+    if(user_level == 11){
+       // setSelectedBranch([]);
     setSelectedGrade([]);
     setSelectedSection([]);
     setStudentDataAll(null);
     setCurrentEvent(null);
     setHolidayDetails('');
-    setGradeList([]);
+    // setGradeList([]);
     setSectionList([]);
+    setEventDetails('')
+       
+    }else{
+      setSelectedBranch([]);
+      setSelectedGrade([]);
+      setSelectedSection([]);
+      setStudentDataAll(null);
+      setCurrentEvent(null);
+      setHolidayDetails('');
+      setGradeList([]);
+      setSectionList([]);
+      setEventDetails('')
+
+    }
   };
 
   function callApi(api, key) {
@@ -468,6 +578,18 @@ const AttedanceCalender = () => {
       .catch((error) => {
         console.log(error, 'err');
       });
+      axiosInstance
+      .get(
+        `${endpoints.academics.getEvents}?session_year=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${formatDate}&end_date=${formatDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
+      )
+      .then((res) => {
+        // setHolidayDetails(res.data.holiday_detail);
+        setEventDetails(res?.data?.Event_detail)
+        // console.log(res,"JK 3")
+      })
+      .catch((error) => {
+        console.log(error, 'err');
+      });
   };
   const handlePassData = (endDate, startDate, starttime) => {
     setStartDate(starttime);
@@ -506,23 +628,73 @@ const AttedanceCalender = () => {
       setAlert('warning', 'Select Grade');
       return;
     }
-    if (selectedSection.length == 0) {
-      setAlert('warning', 'Select Section');
-      return;
-    }
+    // if (selectedSection.length == 0) {
+    //   setAlert('warning', 'Select Section');
+    //   return;
+    // }
     // setLoading(true);
     if (counter === 2) {
-      axiosInstance
-        .get(
-          `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
-        )
-        .then((res) => {
-          setLoading(false);
-          setHolidayDetails(res.data.holiday_detail);
-        })
-        .catch((error) => {
-          setLoading(false);
-        });
+      if(user_level == 1 ||
+        user_level == 2 ||
+        user_level == 4 ||
+        user_level == 8 ||  
+        user_level == 5 ){
+          axiosInstance
+          .get(
+            `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
+          )
+          .then((res) => {
+            setLoading(false);
+            setHolidayDetails(res.data.holiday_detail);
+          })
+          .catch((error) => {
+            setLoading(false);
+          });
+  
+          axiosInstance
+          .get(
+            `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
+          )
+          .then((res) => {
+            setLoading(false);
+            // setHolidayDetails(res.data.holiday_detail);
+            setEventDetails(res?.data?.Event_detail)
+            // console.log(res,"JK 44")
+          })
+          .catch((error) => {
+            setLoading(false);
+          });
+
+
+        }else{
+          axiosInstance
+            .get(
+              `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
+            )
+            .then((res) => {
+              setLoading(false);
+              setHolidayDetails(res.data.holiday_detail);
+            })
+            .catch((error) => {
+              setLoading(false);
+            });
+    
+            axiosInstance
+            .get(
+              `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
+            )
+            .then((res) => {
+              setLoading(false);
+              // setHolidayDetails(res.data.holiday_detail);
+              setEventDetails(res?.data?.Event_detail)
+              // console.log(res,"JK 4")
+            })
+            .catch((error) => {
+              setLoading(false);
+            });
+
+        }
+
     }
     if (counter === 1) {
       getToday();
@@ -559,10 +731,22 @@ const AttedanceCalender = () => {
       // }
       axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
+          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
         )
         .then((res) => {
           setHolidayDetails(res.data.holiday_detail);
+        })
+        .catch((error) => {
+          console.log(error, 'err');
+        });
+        axiosInstance
+        .get(
+          `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
+        )
+        .then((res) => {
+          // setHolidayDetails(res.data.holiday_detail);
+          setEventDetails(res?.data?.Event_detail)
+          // console.log(res,"JK 5")
         })
         .catch((error) => {
           console.log(error, 'err');
@@ -607,6 +791,19 @@ const AttedanceCalender = () => {
       .catch((error) => {
         console.log(error, 'err');
       });
+      axiosInstance
+      .get(
+        `${endpoints.academics.getEvents}?session_year=${branchIds}&acad_session=${selectedAcademicYearId}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}&level=${user_level}`
+      )
+      .then((res) => {
+        // setHolidayDetails(res.data.holiday_detail);
+        setEventDetails(res?.data?.Event_detail)
+        // console.log(res," JK 6")
+      setLoading(false)
+      })
+      .catch((error) => {
+        console.log(error, 'err');
+      });
   };
 
   const getStudentRange = () => {
@@ -640,6 +837,19 @@ const AttedanceCalender = () => {
         .then((res) => {
           console.log(res, 'holiday');
           setHolidayDetails(res.data.holiday_detail);
+          setLoading(false)
+        })
+        .catch((error) => {
+          console.log(error, 'err');
+        });
+        axiosInstance
+        .get(
+          `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${gradesId}&level=${user_level}`
+        )
+        .then((res) => {
+          // console.log(res, 'JK 7');
+          // setHolidayDetails(res.data.holiday_detail);
+          setEventDetails(res?.data?.Event_detail)
           setLoading(false)
         })
         .catch((error) => {
@@ -681,6 +891,20 @@ const AttedanceCalender = () => {
         )
         .then((res) => {
           setHolidayDetails(res.data.holiday_detail);
+          setLoading(false)
+        })
+        .catch((error) => {
+          console.log(error, 'err');
+        });
+
+        axiosInstance
+        .get(
+          `${endpoints.academics.getEvents}?session_year=${branchIds}&acad_session=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}&level=${user_level}`
+        )
+        .then((res) => {
+          // setHolidayDetails(res.data.holiday_detail);
+          setEventDetails(res?.data?.Event_detail)
+          console.log(res,"JK 8")
           setLoading(false)
         })
         .catch((error) => {
@@ -749,6 +973,27 @@ const AttedanceCalender = () => {
     });
   };
 
+  const handleEventHoliday = () => {
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: moment(startDate).format('YYYY-MM-DD'),
+      endDate: moment(endDate).format('YYYY-MM-DD'),
+      counter: counter,
+    };
+
+    history.push({
+      pathname: '/eventmarking',
+      state: {
+        payload: payload,
+        isEdit: false,
+      },
+    });
+  };
+
+
   const handleMarkAttendance = () => {
     const payload = {
       academic_year_id: selectedAcademicYear,
@@ -791,6 +1036,32 @@ const AttedanceCalender = () => {
     });
   };
 
+  const handleEditEvents = (e) => {
+    // const dummyAcad = e.section_mapping_data.map((item) => item?.acad_session_id)
+    // const dummyGrade= e.section_mapping_data.map((item) => item?.grade_id)
+    const payload = {
+      academic_year_id: selectedAcademicYear,
+      branch_id: selectedBranch,
+      grade_id: selectedGrade,
+      section_id: selectedSection,
+      startDate: moment(startDate).format('YYYY-MM-DD'),
+      endDate: moment(endDate).format('YYYY-MM-DD'),
+      counter: counter,
+    };
+
+    history.push({
+      pathname: '/eventmarking',
+      state: {
+        data: eventData,
+        payload: payload,
+        acadId: e?.acad_session,
+        gradeId: e?.grades,
+        isEdit: true,
+        eventId: e.id,
+      },
+    });
+  };
+
   const handleDeleteHoliday = (data) => {
     axiosInstance
       .get(
@@ -805,13 +1076,39 @@ const AttedanceCalender = () => {
       });
   };
 
+  const handleDeleteEvents = (data) => {
+    axiosInstance
+      .delete(
+        `${endpoints.academics.getEvents}?id=${eventId}`
+      )
+      .then((res) => {
+        getholidayrefresh();
+        // handleClosePop();
+        handleClosePopEvent()
+      })
+      .catch((error) => {
+        console.log(error, 'err');
+      });
+  };
+
   const getholidayrefresh = () => {
     axiosInstance
       .get(
-        `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
+        `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade?.grade_id}`
       )
       .then((res) => {
         setHolidayDetails(res.data.holiday_detail);
+      })
+      .catch((error) => {
+        console.log(error, 'err');
+      });
+      axiosInstance
+      .get(
+        `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade?.grade_id}&level=${user_level}`
+      )
+      .then((res) => {
+        // setHolidayDetails(res.data.holiday_detail);
+        setEventDetails(res?.data?.Event_detail)
       })
       .catch((error) => {
         console.log(error, 'err');
@@ -824,11 +1121,23 @@ const AttedanceCalender = () => {
     setHolidayData(data);
   };
 
+  const handleClickPopEvents = (event, data) => {
+    setAnchorEl2(event.currentTarget);
+    setEventData(data)
+    setEventid(data?.id)
+    // setHolidayid(data.id);
+    // setHolidayData(data);
+  };
+
   const handleClosePop = () => {
     setAnchorEl(null);
   };
 
+  const handleClosePopEvent = () => {
+    setAnchorEl2(null);
+  };
   const openPop = Boolean(anchorEl);
+  const operPopEvent = Boolean(anchorEl2)
   const id = openPop ? 'simple-popover' : undefined;
 
   const StyledFilterButton = withStyles((theme) => ({
@@ -898,44 +1207,62 @@ const AttedanceCalender = () => {
           spacing={3}
           id='selectionContainer'
         >
-          <Grid item md={3} xs={12}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={(event, value) => {
-                setSelectedBranch([]);
-                if (value) {
-                  const selectedId = value.branch.id;
-                  const selectedAcademicYearId = value.id;
-                  setSelectedAcademicYearId(selectedAcademicYearId);
-                  setSelectedBranch(value);
-                  callApi(
-                    `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id
-                    }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
-                    'gradeList'
-                  );
+          {user_level == 4 || 
+          user_level == 2 || 
+          user_level == 1 ||
+          user_level == 8 ||
+          user_level == 5 ? (
+            <Grid item md={3} xs={12}>
+              <Autocomplete
+                multiple
+                limitTags={2}
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(event, value) => {
+                  setSelectedBranch([]);
+                  if (value?.length && moduleId) {
+                    const ids = value.map((el) => el)
+                    const selectedId = value.map((el) => el?.branch?.id)
+                    const acadId =value.map((el) => el?.id)
+                    // console.log(value,"KL888")
+                    // const selectedId = value.branch.id;
+                    // const selectedAcademicYearId = value.id;
+                    // setSelectedAcademicYearId(selectedAcademicYearId);
+                    // setSelectedBranch(value);
+                    setSelectedAcademicYearId(acadId)
+                    setSelectedBranch(ids)
+                    callApi(
+                      `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id
+                      }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
+                      'gradeList'
+                    );
+                  }
+                  setGradeList([]);
+                  setSelectedGrade([]);
+                  setSectionList([]);
+                  setSelectedSection([]);
+                }}
+                id='branch_id'
+                className='dropdownIcon'
+                value={selectedBranch || []}
+                options={branchList || []}
+                getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                // filterSelectedOptions
+                getOptionSelected={(option, value) => 
+                  option?.branch?.id == value?.branch?.id
                 }
-                setGradeList([]);
-                setSelectedGrade([]);
-                setSectionList([]);
-                setSelectedSection([]);
-              }}
-              id='branch_id'
-              className='dropdownIcon'
-              value={selectedBranch || ''}
-              options={branchList || ''}
-              getOptionLabel={(option) => option?.branch?.branch_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                />
-              )}
-            />
-          </Grid>
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Branch'
+                    placeholder='Branch'
+                  />
+                )}
+              />
+            </Grid> 
+
+          ): ''}
           <Grid item md={3} xs={12}>
             <Autocomplete
               // multiple
@@ -944,13 +1271,25 @@ const AttedanceCalender = () => {
               onChange={(event, value) => {
                 setSelectedGrade([]);
                 if (value) {
-                  const selectedId = value.grade_id;
-                  const branchId = selectedBranch.branch.id;
-                  setSelectedGrade(value);
-                  callApi(
-                    `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
-                    'section'
-                  );
+                  if(user_level == 4 || user_level == 1 || user_level == 2 || user_level == 5 ||  user_level == 8){
+                    const branchId = selectedBranch.map((item) => item?.branch?.id);
+                    const selectedId = value.grade_id;
+                    setSelectedGrade(value);
+                    callApi(
+                      `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                      'section'
+                    );
+                  }else{
+
+                    const selectedId = value.grade_id;
+                    // const branchId = selectedBranch.branch.map((item) => item?.id);
+                    const branchId = selectedBranch.branch.id;
+                    setSelectedGrade(value);
+                    callApi(
+                      `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
+                      'section'
+                    );
+                  }
                 }
                 setSectionList([]);
                 setSelectedSection([]);
@@ -971,7 +1310,7 @@ const AttedanceCalender = () => {
               )}
             />
           </Grid>
-          <Grid item md={3} xs={12}>
+          {/* <Grid item md={3} xs={12}>
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
@@ -1001,7 +1340,7 @@ const AttedanceCalender = () => {
                 />
               )}
             />
-          </Grid>
+          </Grid> */}
           <Grid item md={3} xs={12} style={{ display: 'flex' }}>
             {teacherView === true ? (
               <StyledClearButton
@@ -1049,7 +1388,7 @@ const AttedanceCalender = () => {
         style={{ background: 'white' }}
         id='completeContainer'
       >
-        <div className='whole-calender-filter' style={{ marginLeft: '180px' }}>
+        <div className='whole-calender-filter'>
           <Grid className='calenderGrid'>
             <div className='buttonContainer'>
               <div className='today'>
@@ -1253,8 +1592,15 @@ const AttedanceCalender = () => {
           </Paper>
         </div>
 
-        <div className='eventWhole' style={{ marginRight: '200px' }}>
-          <div className='startDate'> To {moment(endDate).format('DD-MM-YYYY')}</div>
+        <div className='eventWhole'>
+        {/* <div className='startDate'> <b>  From </b> {moment(startDate).format('DD-MM-YYYY')}</div> */}
+        {startDate === endDate ? (
+          <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')}</div>
+
+        ) : (
+          <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div>
+
+        )}
           <Paper
             elevation={3}
             className={[classes.root, classes.paperSize]}
@@ -1281,7 +1627,7 @@ const AttedanceCalender = () => {
                     style={{ color: 'white' }}
                   >
                     <span className={classes.contentData} id='event-text'>
-                      Mark Holiday
+                      Add Holiday
                     </span>
                   </Button>
                 ) : (
@@ -1432,6 +1778,203 @@ const AttedanceCalender = () => {
                               className={classes.typography}
                               style={{ cursor: 'pointer' }}
                               onClick={() => handleDeleteHoliday(data)}
+                            >
+                              Delete
+                            </Typography>
+                          </div>
+                        </Popover>
+                      </>
+                    ))}
+                </div>
+              </div>
+            )}
+          </Paper>
+        </div>
+        <div className='eventWhole'>
+          {/* <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div> */}
+          {startDate === endDate ? (
+          <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')}</div>
+
+        ) : (
+          <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div>
+        )}
+          <Paper
+            elevation={3}
+            className={[classes.root, classes.paperSize]}
+            id='eventContainer'
+          >
+            <Grid
+              container
+              direction='row'
+              className='eventContainer'
+              style={{ marginRight: '150px' }}
+            >
+              <Grid item md={6} xs={12}>
+                <Typography variant='h6' color='primary' className='eventPara'>
+                  Events
+                </Typography>
+              </Grid>
+              <Grid item md={6} xs={12} className='event-btn'>
+                {teacherView === true ? (
+                  <Button
+                    size='small'
+                    onClick={handleEventHoliday}
+                    color='primary'
+                    variant='contained'
+                    style={{ color: 'white' }}
+                  >
+                    <span className={classes.contentData} id='event-text'>
+                      Add Event
+                    </span>
+                  </Button>
+                ) : (
+                  <div></div>
+                )}
+              </Grid>
+              <div className='event-details'>
+                <Grid item md={5}>
+                  <Typography className={classes.contentsmall} id='eventpara'>
+                    Events Details
+                  </Typography>
+                </Grid>
+                <Grid item md={7} className='detailsPara'>
+                  <Typography className={classes.contentsmall} id='updated'></Typography>
+                </Grid>
+              </div>
+            </Grid>
+            {eventDetails?.length === 0 ? (
+              <div className='noImgEvent'>
+                <img src={Group} width='100%' className='noDataImgEvent' />
+              </div>
+            ) : (
+              <div className='eventGrid'>
+                <Divider className='event-divider' />
+                <div className='eventList'>
+                  {eventDetails &&
+                    eventDetails?.map((data) => (
+                      <>
+                        <Typography
+                          className={[classes.contentsmall, classes.root]}
+                          id='eventData'
+                        >
+                          <br />
+                          <Grid
+                            container
+                            direction='row'
+                            className='eventDetailsfirst'
+                            style={{ display: 'flex', justifyContent: 'space-between' }}
+                          >
+                            <div
+                              style={{
+                                display: 'flex',
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                width: '100%',
+                              }}
+                            >
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  flexDirection: 'row',
+                                  justifyContent: 'space-between',
+                                  width: '100%',
+                                }}
+                              >
+                                <div style={{ display: 'flex' }}>
+                                  <div
+                                    className='flagBgHoliday'
+                                    style={{ marginRight: '5px' }}
+                                  >
+                                    <img src={flag} className='flagImg' />
+                                  </div>
+
+                                  <Typography
+                                    className='eventNameData'
+                                    style={{
+                                      fontSize: '15px',
+                                      width: '180px',
+                                      overflow: 'hidden',
+                                      whiteSpace: 'nowrap',
+                                      textOverflow: 'ellipsis',
+                                    }}
+                                  >
+                                    {' '}
+                                    {data?.event_name}{' '}
+                                  </Typography>
+                                </div>
+                              </div>
+                              <>
+                                {teacherView ? (
+                                  <IconButton style={{ padding: '1px' }}>
+                                    <MoreVertIcon
+                                      onClick={(e) => handleClickPopEvents(e, data)}
+                                    />
+                                  </IconButton>
+                                ) : (
+                                  ''
+                                )}
+                              </>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                width: '100%',
+                              }}
+                            >
+                              <p>From</p>
+                              <p>To</p>
+                            </div>
+                            <div
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                width: '100%',
+                              }}
+                            >
+                              <Typography style={{ fontSize: '15px' }}>
+                                {moment(data?.start_time).format(
+                                  'DD-MM-YYYY'
+                                )}
+                              </Typography>
+                              <Typography style={{ fontSize: '15px' }}>
+                                {moment(data?.end_time).format(
+                                  'DD-MM-YYYY'
+                                )}
+                              </Typography>
+                            </div>
+                          </Grid>
+                          <Typography className={classes.contentData}>
+                            {data.description}
+                          </Typography>
+                        </Typography>
+                        <Popover
+                          id={id}
+                          open={operPopEvent}
+                          anchorEl={anchorEl2}
+                          onClose={handleClosePopEvent}
+                          anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                          }}
+                          transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                          }}
+                        >
+                          <div style={{ padding: '10px' }}>
+                            <Typography
+                              className={classes.typography}
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleEditEvents(data)}
+                            >
+                              Edit
+                            </Typography>
+                            <Divider />
+                            <Typography
+                              className={classes.typography}
+                              style={{ cursor: 'pointer' }}
+                              onClick={() => handleDeleteEvents(data)}
                             >
                               Delete
                             </Typography>

@@ -31,6 +31,15 @@ function LoginMobileForm({ onLogin, history, isMsAPI }) {
       setOtp(otpValue);
     }
   };
+
+  useEffect(() => {
+    let profileData = JSON.parse(localStorage.getItem('profileDetails'))
+    if(profileData){
+      // history.push(`/userprofile`); 
+      localStorage.removeItem('profileDetails')
+      history.push('/')
+    }
+  },[history])
   const fetchERPSystemConfig = async (status) => {
     let data = await JSON.parse(localStorage.getItem('userDetails')) || {};
     const { branch } = data?.role_details;
@@ -79,10 +88,18 @@ function LoginMobileForm({ onLogin, history, isMsAPI }) {
           setDisableLogin(false);
         }
       });
+    } else {
+      setAlert('error','Please Enter OTP')
     }
   };
 
   const handleSend = () => {
+    if(username.length === 0) {
+      return setAlert('error','Please Enter Mobile Number')
+    }
+    if(username.length !== 10){
+      return setAlert('error','Please Enter Valid Mobile Number')
+    }
     const params = { contact: `${'+91-'}${username}` };
     localStorage.setItem('profileNumber', JSON.stringify(`${'+91-'}${username}`))
     handleSendMobileOtp(params).then((response) => {

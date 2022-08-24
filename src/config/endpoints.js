@@ -46,6 +46,7 @@ export default {
     markAttendance: '/academic/bulk_create_attendance/',
     students: '/academic/get_student_list/',
     getHoliday: '/academic/holiday/',
+    getEvents: '/academic/events/',
     teacherAttendanceData: '/erp_user/erpuser-attendance-erp/',
     teacherAttendanceSent: '/erp_user/erpuser-attendance/',
     getTeacherAttendanceData: '/erp_user/erpuser-attendance-monthly-reports/',
@@ -62,6 +63,7 @@ export default {
   profile: {
     userDetails: '/erp_user/user-data/',
     Profilestories: 'https://d3ka3pry54wyko.cloudfront.net/',
+    studentDetails: '/erp_user/fetch-user-info/',
   },
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
@@ -98,7 +100,7 @@ export default {
     userList: '/communication/erp-user-info/',
     viewUser: '/communication/v1/view-users/',
     userListV2: '/communication/erp-user-info-v2/',
-    communicationUserList: '/communication/communication-user-list/',
+    communicationUserList: '/communication/communication-user-list-v2/',
     userGroups: `assessment/list-create-groups/`,
     studentUserList: '/communication/student-user-list/',
     createGroup: '/communication/communication-group/',
@@ -494,6 +496,7 @@ export default {
     bulkUploadMarks: `/assessment/upload-omr-result-excel/`,
     imageupload: '/assessment/assessment-document-upload/',
     studentImgs: '/assessment/assessment-document-upload/',
+    reUpload : '/assessment/enable-assessment-re-upload/',
   },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,

@@ -71,9 +71,7 @@ const SubmittedQuestion = ({
   // }, [scrollableContainer.current]);
 
   useEffect(() => {
-    
     if (submittedAttachmentsInnerContainer.current) {
-     
       if (
         submittedAttachmentsInnerContainer.current.clientWidth <
         submittedAttachmentsInnerContainer.current.scrollWidth
@@ -84,7 +82,6 @@ const SubmittedQuestion = ({
       }
     }
     if (evaluatedAttachmentsInnerContainer.current) {
-    
       if (
         evaluatedAttachmentsInnerContainer.current.clientWidth <
         evaluatedAttachmentsInnerContainer.current.scrollWidth
@@ -108,7 +105,7 @@ const SubmittedQuestion = ({
   if (question) {
     qu.push(question);
   }
-  
+
   return (
     <div className='homework-question-container' key={`homework_student_question_${1}`}>
       <div
@@ -185,7 +182,11 @@ const SubmittedQuestion = ({
                         key={`homework_student_question_attachment_${i}`}
                         fileUrl={url}
                         fileName={`Attachment-${i + 1}`}
-                        urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                        urlPrefix={
+                          url.includes('lesson_plan_file')
+                            ? `${endpoints.discussionForum.s3}`
+                            : `${endpoints.discussionForum.s3}/homework`
+                        }
                         index={i}
                         actions={actions}
                         onOpenInPenTool={onOpenInPenTool}
@@ -258,7 +259,11 @@ const SubmittedQuestion = ({
                         key={`homework_student_question_attachment_${i}`}
                         fileUrl={url}
                         fileName={`Attachment-${i + 1}`}
-                        urlPrefix={`${endpoints.discussionForum.s3}/homework`}
+                        urlPrefix={
+                          url.includes('lesson_plan_file')
+                            ? `${endpoints.discussionForum.s3}`
+                            : `${endpoints.discussionForum.s3}/homework`
+                        }
                         index={i}
                         actions={['preview', 'delete', 'download']}
                         onOpenInPenTool={onOpenInPenTool}
@@ -305,7 +310,11 @@ const SubmittedQuestion = ({
                   <SRLWrapper>
                     {correctedQuestions.map((url, i) => (
                       <img
-                        src={`${endpoints.discussionForum.s3}/homework/${url}`}
+                        src={
+                          url.includes('lesson_plan_file')
+                            ? `${endpoints.discussionForum.s3}${url}`
+                            : `${endpoints.discussionForum.s3}/homework/${url}`
+                        }
                         onError={(e) => {
                           e.target.src = placeholder;
                         }}
@@ -327,11 +336,12 @@ const SubmittedQuestion = ({
           </div>
         </div>
       )}
-      <div className="overallContainer">
-        {question?.student_comment &&
-          <div className="scoreBox1" style={{width:'49%',marginBottom:'1%'}}>
+      <div className='overallContainer'>
+        {question?.student_comment && (
+          <div className='scoreBox1' style={{ width: '49%', marginBottom: '1%' }}>
             Student Comment : {question?.student_comment}
-          </div>}
+          </div>
+        )}
       </div>
       <div className='comments-remarks-container' style={{ display: 'flex' }}>
         {/* ------------------------------this is working_comment code------------------------------- */}

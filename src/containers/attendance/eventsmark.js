@@ -16,6 +16,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { makeStyles } from '@material-ui/core/styles';
 import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
+// import endpoints from 'v2/config/endpoints';
 import Grid from '@material-ui/core/Grid';
 import TextField from '@material-ui/core/TextField';
 import '../Calendar/Styles.css';
@@ -26,7 +27,8 @@ function getDaysAfter(date, amount) {
   return date ? date.add(amount, 'days').format('YYYY-MM-DD') : undefined;
 }
 
-const HolidayMark = () => {
+const EventsMark = () => {
+  const [flag,setFlag] = useState(false);
   const [evnetcategoryType, setEventcategoryType] = useState([]);
   const [selectedSession, setSelectedSession] = useState([]);
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
@@ -38,6 +40,7 @@ const HolidayMark = () => {
   const [holidayDesc, setHolidayDesc] = useState('');
   const [minStartDate, setMinStartDate] = useState();
   const [maxStartDate, setMaxStartDate] = useState();
+  const [eventIdSave, setEventIdSave] = useState('')
   const [loading, setLoading] = useState(false);
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
@@ -60,7 +63,7 @@ const HolidayMark = () => {
     button: {
       display: 'flex',
       justifyContent: 'space-evenly',
-      // width: '20%',
+    // width: '20%',
     },
   }));
 
@@ -72,6 +75,7 @@ const HolidayMark = () => {
   };
 
   const handleBranch = (event = {}, value = []) => {
+    setFlag(true);
     setSelectedBranch([]);
     setGradeList([]);
     if (value?.length) {
@@ -116,11 +120,11 @@ const HolidayMark = () => {
       return;
     }
     if (!holidayName) {
-      setAlert('warning', 'Enter Holiday Name');
+      setAlert('warning', 'Enter Events Name');
       return;
     }
     if (!holidayDesc) {
-      setAlert('warning', 'Enter Holiday Description');
+      setAlert('warning', 'Enter Events Description');
       return;
     }
     if (selectedBranch.length == 0) {
@@ -129,16 +133,21 @@ const HolidayMark = () => {
     }
 
     if (isEdit) {
+      const startDate = new Date(startDateTechPer)
+      const endDate = new Date(endDateTechPer)
       axiosInstance
-        .put(endpoints.academics.getHoliday, {
-          title: holidayName,
-          description: holidayDesc,
-          holiday_start_date: moment(startDateTechPer)?.format('YYYY-MM-DD'),
-          holiday_end_date: moment(endDateTechPer)?.format('YYYY-MM-DD'),
-          branch: selectedBranch.map((el) => el?.branch?.id),
-          grade: selectedGrade.map((el) => el?.grade_id),
-          holiday_id: history?.location?.state?.data?.id,
+        .patch(`${endpoints.academics.getEvents}?id=${eventIdSave}`, {
+          event_name: holidayName,
+          description:holidayDesc,
+          start_date: moment(startDate).format('YYYY-MM-DD'),
+          end_date: moment(endDate).format('YYYY-MM-DD'),
+          is_full_day: false,
+          grade_ids: selectedGrade.map((el) => el?.grade_id),
+          // academic_year: selectedAcademicYear?.id,
+          // branch_ids: selectedBranch.map((el) => el?.id),
           acad_session: selectedSession,
+          start_time: "00:01",
+          end_time: "23:59",
         })
         .then((result) => {
           setAlert('success', result.data.message);
@@ -150,16 +159,18 @@ const HolidayMark = () => {
         });
     } else {
       axiosInstance
-        .post(endpoints.academics.getHoliday, {
-          title: holidayName,
-          description: holidayDesc,
-          holiday_start_date: startDateTechPer.format('YYYY-MM-DD'),
-          holiday_end_date: endDateTechPer.format('YYYY-MM-DD'),
-          branch: selectedBranch.map((el) => el?.id),
-          grade: selectedGrade.map((el) => el?.grade_id),
-          academic_year: selectedAcademicYear?.id,
-          grade: selectedGrade.map((el) => el?.grade_id),
+        .post(endpoints.academics.getEvents, {
+          event_name: holidayName,
+          description:holidayDesc,
+          start_date: startDateTechPer.format('YYYY-MM-DD'),
+          end_date: endDateTechPer.format('YYYY-MM-DD'),
+          is_full_day: false,
+          grade_ids: selectedGrade.map((el) => el?.grade_id),
+          // academic_year: selectedAcademicYear?.id,
           acad_session: selectedSession,
+          // branch_ids: selectedBranch.map((el) => el?.id),
+          start_time: "00:01",
+          end_time: "23:59",
         })
 
         .then((result) => {
@@ -216,43 +227,37 @@ const HolidayMark = () => {
             setAcademicYear(result?.data?.data || []);
           }
           if (key === 'branchList') {
-            if(result?.data?.length !== 0){
+           
+            if(result?.data?.data?.length !== 0){
               const transformedData = result?.data?.data?.results?.map((obj) => ({
                 id: obj?.branch?.id,
                 branch_name: obj?.branch?.branch_name,
                 acadSession : obj?.id,
-              }))
-              if(transformedData){
-                transformedData.unshift({
-                  branch_name: 'Select All',
-                  id: 'all',
-                  acadSession : 'Acad session'
-                });
-                // setBranchList(result?.data?.data?.results || []);
-                setBranchList(transformedData);
+              }));
+              transformedData.unshift({
+                branch_name: 'Select All',
+                id: 'all',
+                acadSession : 'Acad session'
+              });
+              // setBranchList(result?.data?.data?.results || []);
+              setBranchList(transformedData);
 
-              }
             }
           }
-          if (key === 'gradeList') {
-            if(result?.data?.length !== 0){
-              const transformedData = result?.data?.data?.map((obj) => ({
-                grade_id: obj?.grade_id,
-                grade__grade_name : obj?.grade__grade_name,
-                acadSession : obj?.id,
-              }));
-              if(transformedData){
-                transformedData.unshift({
-                  grade__grade_name : 'Select All',
-                  grade_id: 'all',
-                  acadSession : 'Acad session'
-                });
-                // setGradeList(result.data.data || []);
-                setGradeList(transformedData);
-
-              }
-
-            }
+          if (key === 'gradeList') {            
+            const transformedData = result?.data?.data?.map((obj) => ({
+              grade_id: obj?.grade_id,
+              grade__grade_name : obj?.grade__grade_name,
+              acadSession : obj?.id,
+            }));
+            transformedData.unshift({
+              grade__grade_name : 'Select All',
+              grade_id: 'all',
+              acadSession : 'Acad session'
+            });
+            // setBranchList(result?.data?.data?.results || []);
+            setGradeList(transformedData);
+            // setGradeList(result.data.data || []);
           }
           if (key === 'section') {
             setSectionList(result.data.data);
@@ -285,8 +290,6 @@ const HolidayMark = () => {
       });
     }
   }, [window.location.pathname]);
-  console.log(moduleId, 'MODULE_ID');
-
   useEffect(() => {
     callApi(
       `${endpoints.communication.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`,
@@ -302,18 +305,18 @@ const HolidayMark = () => {
     if (history?.location?.state?.data) {
       setIsEdit(true);
       setHolidayDesc(history?.location?.state?.data?.description);
-      setHolidayName(history?.location?.state?.data?.title);
-      handleGrade(history?.location?.state?.data?.grade);
+      setHolidayName(history?.location?.state?.data?.event_name);
+      handleGrade(history?.location?.state?.data?.grades);
       setDateRangeTechPer([
-        moment(history?.location?.state?.data?.holiday_start_date).format('MM/DD/YYYY'),
-        moment(history?.location?.state?.data?.holiday_end_date).format('MM/DD/YYYY'),
+        moment(history?.location?.state?.data?.start_time).format('MM/DD/YYYY'),
+        moment(history?.location?.state?.data?.end_time).format('MM/DD/YYYY'),
       ]);
 
       // if (history?.location?.state?.data?.branch?.length) {
       //   const ids = history?.location?.state?.data?.branch.map((el, index) => el);
 
       //   let filterBranch = branchList.filter(
-      //     (item) => ids.indexOf(item.branch.id) !== -1
+      //     (item) => ids.indexOf(item?.id) !== -1
       //   );
       //   setSelectedBranch(filterBranch);
       //   if (moduleId) {
@@ -323,14 +326,33 @@ const HolidayMark = () => {
       //     );
       //   }
       // }
-      if (history?.location?.state?.data?.grade?.length && gradeList !== []) {
-        const ids = history?.location?.state?.data?.grade.map((el, index) => el);
+      // if (history?.location?.state?.data?.grade?.length && gradeList !== []) {
+      //   const ids = history?.location?.state?.data?.grade.map((el, index) => el);
 
-        let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
-        setSelectedGrade(filterBranch);
-      }
+      //   let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
+      //   setSelectedGrade(filterBranch);
+      // }
+      // if (history?.location?.state?.data?.grades?.length) {
+      //   const ids = history?.location?.state?.data?.grades.map((el,index) => el);
+
+      //   let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
+      //   setSelectedGrade(filterBranch);
+      // }
     }
   }, [branchList]);
+
+  useEffect(() => {
+      if(flag == false){
+        if(isEdit && branchList.length >0 ){
+          const gradeId = history?.location?.state?.gradeId;
+          let filterGrade = gradeList.filter((item) => gradeId.indexOf(item?.grade_id) !== -1);
+          setSelectedGrade(filterGrade);
+  
+      }
+
+      }
+
+  },[gradeList])
 
   const isEdited = history?.location?.state?.isEdit;
 
@@ -341,7 +363,9 @@ const HolidayMark = () => {
   }, [isEdited, branchList]);
 
   const gradeEdit = () => {
-    const acadId = history?.location?.state?.acadId;
+    setEventIdSave(history?.location?.state?.data?.id)
+    const acadId = history?.location?.state?.data?.acad_session;
+    
     let filterBranch = branchList.filter((item) => acadId.indexOf(item?.acadSession) !== -1);
     const selectedSession = filterBranch.map((el) => el?.acadSession)
     setSelectedSession(selectedSession)
@@ -350,23 +374,22 @@ const HolidayMark = () => {
     const allBranchIds = filterBranch.map((i) => {
       return i?.id;
     });
-    if(moduleId){
-      callApi(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${allBranchIds}&module_id=${moduleId}`,
-        'gradeList'
-      );
-    }
-    const gradeId = history?.location?.state?.gradeId;
-    let filterGrade = gradeList.filter((item) => gradeId.indexOf(item.id) !== -1);
+    callApi(
+      `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${allBranchIds}&module_id=${moduleId}`,
+      'gradeList'
+    );
+    // const gradeId = history?.location?.state?.gradeId;
+    // const gradeId = history?.location?.state?.payload?.grade_id?.grade_id;
+    // let filterGrade = gradeList.filter((item) => gradeId.indexOf(item.id) !== -1);
   };
 
-  useEffect(() => {
-    if (history?.location?.state?.data?.grade?.length) {
-      const ids = history?.location?.state?.data?.grade.map((el, index) => el);
-      let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
-      setSelectedGrade(filterBranch);
-    }
-  }, [gradeList]);
+  // useEffect(() => {
+  //   if (history?.location?.state?.data?.section_mapping_data) {
+  //     const ids = history?.location?.state?.data?.section_mapping_data.map((el, index) => el?.grade_id);
+  //     let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
+  //     setSelectedGrade(filterBranch);
+  //   }
+  // }, [gradeList]);
 
   const onunHandleClearAll = (e) => {
     setSelectedBranch();
@@ -392,7 +415,7 @@ const HolidayMark = () => {
     <>
       <Layout>
         <div className='profile_breadcrumb_wrapper'>
-          <CommonBreadcrumbs componentName='Add Holiday' isAcademicYearVisible={true} />
+          <CommonBreadcrumbs  componentName='Add Events' isAcademicYearVisible={true} />
         </div>
         <form>
           <Grid container direction='row' spacing={2} className={classes.root}>
@@ -503,7 +526,7 @@ const HolidayMark = () => {
                 variant='outlined'
                 size='small'
                 id='eventname'
-                label='Holiday Name'
+                label='Events Name'
                 value={holidayName}
                 fullWidth
                 onChange={handleChangeHoliday}
@@ -524,7 +547,7 @@ const HolidayMark = () => {
             <Grid item md={6} xs={12}>
               <TextField
                 id='outlined-multiline-static'
-                label='Add Holiday Description'
+                label='Add Events Description'
                 labelwidth='170'
                 name='description'
                 fullWidth
@@ -538,11 +561,11 @@ const HolidayMark = () => {
           </Grid>
           <Grid container direction='row' className={classes.root}>
             <div className={classes.button}>
-              <Button variant='contained' onClick={onunHandleClearAll} style={{margin:'5px'}}>
+              <Button style={{margin: '5px'}} variant='contained' onClick={onunHandleClearAll}>
                 Clear All
               </Button>
               <Button
-              style={{margin:'5px'}}
+              style={{margin:'5px '}}
                 variant='contained'
                 color='primary'
                 onClick={handleBackButtonClick}
@@ -550,14 +573,14 @@ const HolidayMark = () => {
                 Go Back
               </Button>
               <Button
-              style={{margin:'5px'}}
+               style={{margin: '5px'}}
                 variant='contained'
                 type='submit'
                 value='Submit'
                 color='primary'
                 onClick={handleSubmit}
               >
-                Save Holiday
+                Save Events
               </Button>
             </div>
           </Grid>
@@ -568,4 +591,4 @@ const HolidayMark = () => {
   );
 };
 
-export default HolidayMark;
+export default EventsMark;
