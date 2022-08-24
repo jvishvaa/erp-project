@@ -121,6 +121,15 @@ const Assesment = () => {
   const [sectionFlag, setSectionFlag] = useState(false);
   const [groupList, setGroupList] = useState([]);
   const [groupFlag, setGroupFlag] = useState(false);
+  const [isRestoreUnable,setIsRestoreUnable] = useState(false)
+  const testFilterData = JSON.parse(sessionStorage.getItem('createTestData')) || {}
+  const testFilterDropdownList = JSON.parse(sessionStorage.getItem('dropDownData')) || {}
+  let isRestoreFields = history?.location?.state?.dataRestore || false
+
+  useEffect(()=>{
+   if(isRestoreFields) setIsRestoreUnable(true)
+  },[])
+
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -377,7 +386,30 @@ const Assesment = () => {
       return;
     }
     formik.handleSubmit();
+    sessionStorage.setItem('createTestData',JSON.stringify(formik?.values))
+    sessionStorage.setItem('dropDownData',JSON.stringify({branch : branchDropdown ,grade : grades , subject : subjects , assesmentTypes : assesmentTypes,section : sectionList,group:groupList}))
   };
+
+  useEffect(()=>{
+   if(isRestoreUnable){
+    formik.setFieldValue('status',testFilterData?.status)
+    formik.setFieldValue('branch', testFilterData?.branch);
+    formik.setFieldValue('grade', testFilterData?.grade);
+    formik.setFieldValue('subject', testFilterData?.subject);
+    formik.setFieldValue('section', testFilterData?.section);
+    formik.setFieldValue('group', testFilterData?.group);
+    formik.setFieldValue('assesment_type', testFilterData?.assesment_type)
+    formik.setFieldValue('date', testFilterData?.date)
+    setBranchDropdown(testFilterDropdownList?.branch)
+    setGrades(testFilterDropdownList?.grade)
+    setSubjects(testFilterDropdownList?.subject)
+    setAssesmentTypes(testFilterDropdownList?.assesmentTypes)
+    setGroupList(testFilterDropdownList?.group)
+    setSectionList(testFilterDropdownList?.section)
+    history.replace({ state: { dataRestore : false} })
+   }
+   
+},[isRestoreUnable])
 
   const handleAcademicYear = (event = {}, value = '') => {
     formik.setFieldValue('academic', '');
