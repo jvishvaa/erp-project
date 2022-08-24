@@ -8,6 +8,7 @@ import dragDropIcon from 'v2/Assets/dashboardIcons/announcementListIcons/dragDro
 const UploadDocument = (props) => {
   const [fileList, setFileList] = useState([]);
   const [fileTypeError, setFileTypeError] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const getSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
@@ -18,7 +19,7 @@ const UploadDocument = (props) => {
   };
 
   const handleUpload = () => {
-    fileList.forEach((file) => {
+    uniqueFilesList.forEach((file) => {
       const formData = new FormData();
       formData.append('branch_name', props?.branchName);
       formData.append('grades', props?.gradeID);
@@ -35,6 +36,7 @@ const UploadDocument = (props) => {
             props.setUploadedFiles((pre) => [...pre, res?.data?.result]);
             setFileList([]);
             props.handleClose();
+            setUploading(false);
           }
         })
         .catch((e) => {
@@ -100,8 +102,10 @@ const UploadDocument = (props) => {
             <Button
               className='th-fw-500 th-br-4 th-bg-primary th-white'
               onClick={() => {
+                setUploading(true);
                 handleUpload();
               }}
+              disabled={uploading}
             >
               Upload
             </Button>

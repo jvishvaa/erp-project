@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, createRef } from 'react';
 import Layout from 'containers/Layout';
-import { Breadcrumb, Checkbox, Select, Input, Button, message, Form } from 'antd';
+import { Breadcrumb, Checkbox, Select, Input, Button, message, Form, Spin } from 'antd';
 import axios from 'axios';
 import axiosInstance from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -47,6 +47,7 @@ const CreateAnnouncement = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [userLevelList, setUserLevelList] = useState([]);
   const [moduleId, setModuleId] = useState('');
+  const [loading, setLoading] = useState(false);
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const isStudentIncluded = selectedUserLevels?.includes(13);
 
@@ -248,6 +249,10 @@ const CreateAnnouncement = () => {
   });
 
   const handlePublish = (asDraft) => {
+    if (!selectedCategory) {
+      message.error('Please select type');
+      return;
+    }
     if (!title) {
       message.error('Please add title');
       return;
@@ -295,6 +300,7 @@ const CreateAnnouncement = () => {
     if (uploadedFiles?.length > 0) {
       payLoad['attachments'] = uploadedFiles.flat(1) || [];
     }
+    setLoading(true);
     axiosInstance
       .post(`${endpoints.createAnnouncement.publishAnnouncement}`, payLoad)
       .then((res) => {
@@ -304,10 +310,12 @@ const CreateAnnouncement = () => {
               ? 'Announcement Saved as Draft'
               : 'Announcement Published Successfully'
           );
+          setLoading(false);
           history.push('./announcement-list');
         }
       })
       .catch((error) => {
+        setLoading(false);
         message.error(error.message);
       });
   };
@@ -371,81 +379,114 @@ const CreateAnnouncement = () => {
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
-        <div className='col-md-12 mt-3'>
-          <div className='row th-bg-white p-2'>
-            <div className='row py-2'>
-              <div className='col-md-2'>
-                <span className='th-grey th-14'>Type</span>
-                <Select
-                  value={selectedCategory}
-                  className='th-grey th-bg-grey th-br-4 w-100 mt-1'
-                  placement='bottomRight'
-                  suffixIcon={<DownOutlined className='th-black-1' />}
-                  dropdownMatchSelectWidth={false}
-                  onChange={handleChange}
-                  menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
-                >
-                  {categoryOptions}
-                </Select>
-              </div>
-              <div className='col-md-5 py-3 py-md-0'>
-                <span className='th-grey th-14'>Title</span>
-                <Input
-                  className='th-br-4 mt-1 th-16'
-                  showCount
-                  maxLength='30'
-                  onChange={(e) => setTitle(e.target.value)}
-                />
-                <div className='text-right'>
-                  <span className='th-red th-12 text-right'>Max. 30 Characters</span>
+        {loading ? (
+          <div
+            className='row justify-content-center align-items-center'
+            style={{ height: '20vh' }}
+          >
+            <Spin size='large' />
+          </div>
+        ) : (
+          <div className='col-md-12 mt-3'>
+            <div className='row th-bg-white p-2'>
+              <div className='row py-2'>
+                <div className='col-md-2'>
+                  <span className='th-grey th-14'>Type</span>
+                  <Select
+                    value={selectedCategory}
+                    className='th-grey th-bg-grey th-br-4 w-100 mt-1'
+                    placement='bottomRight'
+                    suffixIcon={<DownOutlined className='th-black-1' />}
+                    dropdownMatchSelectWidth={false}
+                    onChange={handleChange}
+                    menuItemSelectedIcon={<CheckOutlined className='th-primary' />}
+                  >
+                    {categoryOptions}
+                  </Select>
                 </div>
-              </div>
-            </div>
-            <div className='row py-2'>
-              <div className='col-12'>
-                <span className='th-grey th-14'>Description</span>
-                <div className='th-editor py-2'>
-                  <Editor
-                    onInit={(evt, editor) => (editorRef.current = editor)}
-                    init={{
-                      height: 200,
-                      menubar: false,
-                      statusbar: false,
-                      plugins: [
-                        'autolink lists link image charmap print preview anchor',
-                        'searchreplace code fullscreen',
-                        'insertdatetime media table paste code',
-                      ],
-                      toolbar:
-                        'bold italic fontsizeselect | alignleft aligncenter ' +
-                        'alignright alignjustify | bullist numlist outdent indent | ',
-
-                      content_style:
-                        'body { font-family:Inter,sans-serif; font-size:16px;margin:1rem; border:0px solid #D9D9D9 }',
-                    }}
+                <div className='col-md-5 py-3 py-md-0'>
+                  <span className='th-grey th-14'>Title</span>
+                  <Input
+                    className='th-br-4 mt-1 th-16'
+                    showCount
+                    maxLength='30'
+                    onChange={(e) => setTitle(e.target.value)}
                   />
+                  <div className='text-right'>
+                    <span className='th-red th-12 text-right'>Max. 30 Characters</span>
+                  </div>
                 </div>
               </div>
-              <Form
-                id='filterForm'
-                className='row text-left'
-                ref={formRef}
-                layout={'horizontal'}
-              >
-                <div className='row mt-3 py-2'>
-                  <div className='col-md-4'>
-                    <span className='th-grey th-14'>Branch</span>
-                    <Form.Item name='branch'>
+              <div className='row py-2'>
+                <div className='col-12'>
+                  <span className='th-grey th-14'>Description</span>
+                  <div className='th-editor py-2'>
+                    <Editor
+                      onInit={(evt, editor) => (editorRef.current = editor)}
+                      init={{
+                        height: 200,
+                        menubar: false,
+                        statusbar: false,
+                        plugins: [
+                          'autolink lists link image charmap print preview anchor',
+                          'searchreplace code fullscreen',
+                          'insertdatetime media table paste code',
+                        ],
+                        toolbar:
+                          'bold italic fontsizeselect | alignleft aligncenter ' +
+                          'alignright alignjustify | bullist numlist outdent indent | ',
+
+                        content_style:
+                          'body { font-family:Inter,sans-serif; font-size:16px;margin:1rem; border:0px solid #D9D9D9 }',
+                      }}
+                    />
+                  </div>
+                </div>
+                <Form
+                  id='filterForm'
+                  className='row text-left'
+                  ref={formRef}
+                  layout={'horizontal'}
+                >
+                  <div className='row mt-3 py-2'>
+                    <div className='col-md-4'>
+                      <span className='th-grey th-14'>Branch</span>
+                      <Form.Item name='branch'>
+                        <Select
+                          showSearch
+                          className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                          placement='bottomRight'
+                          suffixIcon={<DownOutlined className='th-grey' />}
+                          dropdownMatchSelectWidth={false}
+                          onChange={(e) => handleBranchChange(e)}
+                          allowClear={true}
+                          onClear={handleClearBranch}
+                          optionFilterProp='children'
+                          filterOption={(input, options) => {
+                            return (
+                              options.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase()) >= 0
+                            );
+                          }}
+                        >
+                          {branchOptions}
+                        </Select>
+                      </Form.Item>
+                    </div>
+                    <div className='col-md-8 py-3 py-md-0'>
+                      <span className='th-grey th-14'>Choose User Level</span>
                       <Select
-                        showSearch
+                        mode='multiple'
+                        maxTagCount={5}
+                        allowClear={true}
+                        suffixIcon={<DownOutlined className='th-grey' />}
                         className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
                         placement='bottomRight'
-                        suffixIcon={<DownOutlined className='th-grey' />}
+                        showArrow={true}
+                        onChange={(e, value) => handleUserLevel(e, value)}
+                        onClear={handleClearUserLevel}
                         dropdownMatchSelectWidth={false}
-                        onChange={(e) => handleBranchChange(e)}
-                        allowClear={true}
-                        onClear={handleClearBranch}
-                        optionFilterProp='children'
                         filterOption={(input, options) => {
                           return (
                             options.children.toLowerCase().indexOf(input.toLowerCase()) >=
@@ -453,193 +494,171 @@ const CreateAnnouncement = () => {
                           );
                         }}
                       >
-                        {branchOptions}
+                        {userLevelListOptions}
                       </Select>
-                    </Form.Item>
-                  </div>
-                  <div className='col-md-8 py-3 py-md-0'>
-                    <span className='th-grey th-14'>Choose User Level</span>
-                    <Select
-                      mode='multiple'
-                      maxTagCount={5}
-                      allowClear={true}
-                      suffixIcon={<DownOutlined className='th-grey' />}
-                      className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
-                      placement='bottomRight'
-                      showArrow={true}
-                      onChange={(e, value) => handleUserLevel(e, value)}
-                      onClear={handleClearUserLevel}
-                      dropdownMatchSelectWidth={false}
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {userLevelListOptions}
-                    </Select>
-                  </div>
-                </div>
-                {isStudentIncluded && (
-                  <div className='row mt-3 py-2'>
-                    <div className='col-md-6'>
-                      <span className='th-grey th-14'>Grades</span>
-                      <Form.Item name='grade'>
-                        <Select
-                          mode='multiple'
-                          className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
-                          placement='bottomRight'
-                          showArrow={true}
-                          suffixIcon={<DownOutlined className='th-grey' />}
-                          maxTagCount={3}
-                          allowClear={true}
-                          dropdownMatchSelectWidth={false}
-                          onChange={(e, value) => handleGrade(value)}
-                          onClear={handleClearGrade}
-                          filterOption={(input, options) => {
-                            return (
-                              options.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            );
-                          }}
-                        >
-                          {gradeOptions}
-                        </Select>
-                      </Form.Item>
-                    </div>
-                    <div className='col-md-6'>
-                      <span className='th-grey th-14'>Sections</span>
-                      <Form.Item name='section'>
-                        <Select
-                          mode='multiple'
-                          className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
-                          placement='bottomRight'
-                          showArrow={true}
-                          suffixIcon={<DownOutlined className='th-grey' />}
-                          maxTagCount={3}
-                          allowClear={true}
-                          dropdownMatchSelectWidth={false}
-                          onChange={(e, value) => handleSection(value)}
-                          onClear={handleClearSection}
-                          filterOption={(input, options) => {
-                            return (
-                              options.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            );
-                          }}
-                        >
-                          {sectionOptions}
-                        </Select>
-                      </Form.Item>
                     </div>
                   </div>
-                )}
-              </Form>
-
-              <div className='row mt-3 py-2'>
-                <div className='col-md-6 py-3 py-md-0'>
-                  <span className='th-grey th-14'>Members</span>
-                  <Input
-                    className='th-br-4 mt-1 th-input th-16'
-                    value={
-                      membersCount !== null ? `${membersCount} Members Selected` : ''
-                    }
-                    // addonAfter={
-                    //   membersCount !== null && (
-                    //     <u
-                    //       className='th-primary th-14 mr-3 th-pointer'
-                    //       onClick={() => setShowMembersModal(true)}
-                    //     >
-                    //       Select Particular Members
-                    //     </u>
-                    //   )
-                    // }
-                  />
-                </div>
-              </div>
-              <div className='row py-2 mt-3'>
-                <div className='col-12'>
-                  <span className='th-grey th-14'>Upload Attachments</span>
-                  <div
-                    className='row justify-content-start align-items-center th-br-4 py-1 mt-1'
-                    style={{ border: '1px solid #D9D9D9' }}
-                  >
-                    <div className='col-md-10 col-9'>
-                      <div className='row'>
-                        {uploadedFiles?.map((item, index) => {
-                          const fullName = item[0]?.split('/')[
-                            item[0]?.split('/').length - 1
-                          ];
-
-                          const fileName = fullName.split('.')[
-                            fullName?.split('.').length - 2
-                          ];
-                          const extension = fullName.split('.')[
-                            fullName?.split('.').length - 1
-                          ];
-                          return (
-                            <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
-                              <span className='th-12 th-black-1 text-truncate'>
-                                {fileName}
-                              </span>
-                              <span className='th-12 th-black-1 '>.{extension}</span>
-
-                              <span className='ml-md-3 ml-1 th-pointer '>
-                                <img
-                                  src={smallCloseIcon}
-                                  onClick={() => handleRemoveUploadedFile(index)}
-                                />
-                              </span>
-                            </div>
-                          );
-                        })}
+                  {isStudentIncluded && (
+                    <div className='row mt-3 py-2'>
+                      <div className='col-md-6'>
+                        <span className='th-grey th-14'>Grades</span>
+                        <Form.Item name='grade'>
+                          <Select
+                            mode='multiple'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                            placement='bottomRight'
+                            showArrow={true}
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            maxTagCount={3}
+                            allowClear={true}
+                            dropdownMatchSelectWidth={false}
+                            onChange={(e, value) => handleGrade(value)}
+                            onClear={handleClearGrade}
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                          >
+                            {gradeOptions}
+                          </Select>
+                        </Form.Item>
+                      </div>
+                      <div className='col-md-6'>
+                        <span className='th-grey th-14'>Sections</span>
+                        <Form.Item name='section'>
+                          <Select
+                            mode='multiple'
+                            className='th-grey th-bg-grey th-br-4 w-100 text-left mt-1'
+                            placement='bottomRight'
+                            showArrow={true}
+                            suffixIcon={<DownOutlined className='th-grey' />}
+                            maxTagCount={3}
+                            allowClear={true}
+                            dropdownMatchSelectWidth={false}
+                            onChange={(e, value) => handleSection(value)}
+                            onClear={handleClearSection}
+                            filterOption={(input, options) => {
+                              return (
+                                options.children
+                                  .toLowerCase()
+                                  .indexOf(input.toLowerCase()) >= 0
+                              );
+                            }}
+                          >
+                            {sectionOptions}
+                          </Select>
+                        </Form.Item>
                       </div>
                     </div>
+                  )}
+                </Form>
+
+                <div className='row mt-3 py-2'>
+                  <div className='col-md-6 py-3 py-md-0'>
+                    <span className='th-grey th-14'>Members</span>
+                    <Input
+                      className='th-br-4 mt-1 th-input th-16'
+                      value={
+                        membersCount !== null ? `${membersCount} Members Selected` : ''
+                      }
+                      // addonAfter={
+                      //   membersCount !== null && (
+                      //     <u
+                      //       className='th-primary th-14 mr-3 th-pointer'
+                      //       onClick={() => setShowMembersModal(true)}
+                      //     >
+                      //       Select Particular Members
+                      //     </u>
+                      //   )
+                      // }
+                    />
+                  </div>
+                </div>
+                <div className='row py-2 mt-3'>
+                  <div className='col-12'>
+                    <span className='th-grey th-14'>Upload Attachments</span>
                     <div
-                      className='col-md-2 col-3 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'
-                      onClick={handleShowModal}
+                      className='row justify-content-start align-items-center th-br-4 py-1 mt-1'
+                      style={{ border: '1px solid #D9D9D9' }}
                     >
-                      <span className='th-12'>
-                        {' '}
-                        <u>Upload</u>
-                      </span>
-                      <span className='ml-3 pb-2'>
-                        <img src={uploadIcon} />
-                      </span>
+                      <div className='col-md-10 col-9'>
+                        <div className='row'>
+                          {uploadedFiles?.map((item, index) => {
+                            const fullName = item[0]?.split('/')[
+                              item[0]?.split('/').length - 1
+                            ];
+
+                            const fileName = fullName.split('.')[
+                              fullName?.split('.').length - 2
+                            ];
+                            const extension = fullName.split('.')[
+                              fullName?.split('.').length - 1
+                            ];
+                            return (
+                              <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
+                                <span className='th-12 th-black-1 text-truncate'>
+                                  {fileName}
+                                </span>
+                                <span className='th-12 th-black-1 '>.{extension}</span>
+
+                                <span className='ml-md-3 ml-1 th-pointer '>
+                                  <img
+                                    src={smallCloseIcon}
+                                    onClick={() => handleRemoveUploadedFile(index)}
+                                  />
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                      <div
+                        className='col-md-2 col-3 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'
+                        onClick={handleShowModal}
+                      >
+                        <span className='th-12'>
+                          {' '}
+                          <u>Upload</u>
+                        </span>
+                        <span className='ml-3 pb-2'>
+                          <img src={uploadIcon} />
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className='row mt-4 py-2'>
-                <div className='col-md-8 d-flex align-items-center'>
-                  <Checkbox.Group
-                    options={intimationOptions}
-                    onChange={(e) => setIntimation(e)}
-                  />
-                </div>
-                <div className='col-md-4 d-flex justify-content-md-end py-4 py-md-0'>
-                  <Button
-                    className='th-bg-grey th-black-2 th-br-4 th-fw-500 th-14 th-pointer col-md-6 col-5 mr-5 mr-md-2'
-                    style={{ border: '1px solid #D9D9D9' }}
-                    onClick={() => handlePublish(true)}
-                  >
-                    Save as Draft
-                  </Button>
+                <div className='row mt-4 py-2'>
+                  <div className='col-md-8 d-flex align-items-center'>
+                    <Checkbox.Group
+                      options={intimationOptions}
+                      onChange={(e) => setIntimation(e)}
+                    />
+                  </div>
+                  <div className='col-md-4 d-flex justify-content-md-end py-4 py-md-0'>
+                    <Button
+                      className='th-bg-grey th-black-2 th-br-4 th-fw-500 th-14 th-pointer col-md-6 col-5 mr-5 mr-md-2'
+                      style={{ border: '1px solid #D9D9D9' }}
+                      onClick={() => handlePublish(true)}
+                    >
+                      Save as Draft
+                    </Button>
 
-                  <Button
-                    className='th-bg-primary th-white th-br-4 th-fw-500 th-14 th-pointer col-md-6 col-5'
-                    onClick={() => handlePublish(false)}
-                  >
-                    Publish
-                  </Button>
+                    <Button
+                      className='th-bg-primary th-white th-br-4 th-fw-500 th-14 th-pointer col-md-6 col-5'
+                      onClick={() => handlePublish(false)}
+                    >
+                      Publish
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
         <UploadModal
           show={showUploadModal}
           branchId={branchId}
