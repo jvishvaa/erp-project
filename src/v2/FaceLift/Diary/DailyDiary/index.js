@@ -257,7 +257,7 @@ const DailyDiary = () => {
       .then((res) => {
         if (res?.data?.status_code == 200) {
           setLoading(false);
-          if (res?.data?.result?.length > 0) {
+          if (res?.data?.message === 'Daily Dairy created successfully') {
             message.success('Daily Diary Created Succssfully');
             history.push('/diary/teacher');
           } else {

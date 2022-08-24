@@ -612,7 +612,7 @@ const CreateDailyDairy = (details, onSubmit) => {
       );
       const { message, status_code: statusCode } = response.data;
       if (statusCode === 200) {
-        if (response?.data?.result?.length > 0) {
+        if (message === 'Daily Dairy created successfully') {
           setAlert('success', message);
           history.push('/diary/teacher');
         } else {
