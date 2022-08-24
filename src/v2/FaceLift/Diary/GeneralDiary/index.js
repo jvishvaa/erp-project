@@ -123,6 +123,8 @@ const GeneralDiary = () => {
 
   const handleClearGrade = () => {
     setSectionDropdown([]);
+    setSectionID();
+    setGradeID();
   };
 
   const publishGeneralDiary = () => {

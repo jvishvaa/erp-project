@@ -128,8 +128,8 @@ const QuestionCard = ({
   const [topicListData, setTopicListData] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState('');
   const [selectedTopicID, setSelectedTopicID] = useState('');
-  // const [resourcesData, setResourcesData] = useState();
   const [resourcesData, setResourcesData] = useState();
+
   const [selectedResources, setSelectedResources] = useState([]);
   let boardFilterArr = [
     'orchids.letseduvate.com',
@@ -802,31 +802,42 @@ const QuestionCard = ({
               )}
             </Grid>
             <Grid container className='question-ctrls-container'>
-              <Grid item xs={12} md={3} className='question-ctrls-inner'>
-                <Box className='question-ctrl-inner-container'>
-                  <IconButton className='question-cntrl-file-upload'>
-                    <CloudUploadIcon color='primary' />
-                  </IconButton>
-                  <FormControlLabel
-                    className='question-ctrl'
-                    control={
-                      <Switch
-                        onChange={(e) => {
-                          setEnableAttachments(e.target.checked);
-                        }}
-                        name='checkedA'
-                        color='primary'
-                        checked={enableAttachments}
-                      />
-                    }
-                    label='File Upload'
-                    labelPlacement='start'
-                  />
-                </Box>
+              <Grid
+                item
+                xs={12}
+                md={3}
+                // className='question-ctrls-inner'
+                style={{ display: 'flex' }}
+              >
+                {/* <Box className='question-ctrl-inner-container'> */}
+
+                <IconButton>
+                  {/* <IconButton className='question-cntrl-file-upload'> */}
+                  <CloudUploadIcon color='primary' />
+                </IconButton>
+                <FormControlLabel
+                  // className='question-ctrl'ss
+                  control={
+                    <Switch
+                      onChange={(e) => {
+                        setEnableAttachments(e.target.checked);
+                      }}
+                      name='checkedA'
+                      color='primary'
+                      checked={enableAttachments}
+                    />
+                  }
+                  label='File Upload'
+                  labelPlacement='start'
+                  style={{ minWidth: '50px' }}
+                />
+
+                {/* </Box> */}
               </Grid>
               {enableAttachments && (
                 <Grid item xs={12} md={3} className='question-ctrl-outer-container'>
-                  <Box className='question-ctrl-inner-container max-attachments'>
+                  {/* <Box className='question-ctrl-inner-container max-attachments'> */}
+                  <div>
                     <div className='question-ctrl-label'>Maximum number of files</div>
                     <Select
                       native
@@ -840,16 +851,19 @@ const QuestionCard = ({
                         <option value={index + 1}>{index + 1}</option>
                       ))}
                     </Select>
-                  </Box>
+                  </div>
+                  {/* </Box> */}
                 </Grid>
               )}
-              <Grid item xs={12} md={3}>
-                <Box className='question-ctrl-inner-container'>
-                  <IconButton className='question-cntrl-file-upload'>
+              <Grid item xs={12} md={3} style={{ display: 'flex' }}>
+                {/* <Box className='question-ctrl-inner-container'> */}
+                <div>
+                  {/* <IconButton className='question-cntrl-file-upload'> */}
+                  <IconButton>
                     <CreateIcon color='primary' />
                   </IconButton>
                   <FormControlLabel
-                    className='question-ctrl'
+                    // className='question-ctrl'
                     control={
                       <Switch
                         name='penTool'
@@ -863,8 +877,10 @@ const QuestionCard = ({
                     }
                     label='Pen tool'
                     labelPlacement='start'
+                    style={{ minWidth: '50px' }}
                   />
-                </Box>
+                </div>
+                {/* </Box> */}
               </Grid>
               <Grid
                 item
@@ -1098,7 +1114,7 @@ const QuestionCard = ({
                     aria-controls='panel1bh-content'
                     id='panel1bh-header'
                   >
-                    <div className='th-fw-700'>{item[0]}</div>
+                    <div className='th-fw-700 th-20'>{item[0]}</div>
                   </AccordionSummary>
                   <AccordionDetails>
                     <Grid container>
@@ -1106,9 +1122,7 @@ const QuestionCard = ({
                         return (
                           <Grid container style={{ width: '100%' }}>
                             <Grid md={6}>
-                              <Typography variant='button' display='block'>
-                                {each[0]}
-                              </Typography>
+                              <div className='th-fw-600'>{each[0]}</div>
                             </Grid>
                             {each[1]?.map((resource) => {
                               let resourceName = resource.split(

@@ -918,6 +918,7 @@ const DailyDiary = () => {
                           value={homeworkTitle}
                           onChange={(e) => setHomeworkTitle(e.target.value)}
                           placeholder='Title'
+                          maxLength={120}
                         />
                       </div>
                       <div className='row py-2'>
@@ -926,6 +927,7 @@ const DailyDiary = () => {
                           value={homeworkInstructions}
                           onChange={(e) => setHomeworkInstructions(e.target.value)}
                           placeholder='Instructions'
+                          maxLength={250}
                         />
                       </div>
                       <div className='row py-2'>
