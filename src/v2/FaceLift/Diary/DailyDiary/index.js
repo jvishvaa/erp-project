@@ -257,13 +257,17 @@ const DailyDiary = () => {
       .then((res) => {
         if (res?.data?.status_code == 200) {
           setLoading(false);
-          message.success('Daily Diary Created Succssfully');
-          history.push('/diary/teacher');
+          if (res?.data?.result?.length > 0) {
+            message.success('Daily Diary Created Succssfully');
+            history.push('/diary/teacher');
+          } else {
+            message.error('Daily Diary Already Exists');
+          }
         }
       })
       .catch((error) => {
         setLoading(false);
-        message.error('Daily Diary Already Exists');
+        message.error(error?.message);
       });
   };
 
@@ -919,7 +923,7 @@ const DailyDiary = () => {
                           value={homeworkTitle}
                           onChange={(e) => setHomeworkTitle(e.target.value)}
                           placeholder='Title'
-                          maxLength={120}
+                          maxLength={30}
                         />
                       </div>
                       <div className='row py-2'>

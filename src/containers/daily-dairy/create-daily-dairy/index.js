@@ -612,14 +612,15 @@ const CreateDailyDairy = (details, onSubmit) => {
       );
       const { message, status_code: statusCode } = response.data;
       if (statusCode === 200) {
-        setAlert('success', message);
-        setState({ editData: [], isEdit: false });
-        history.push('/diary/teacher');
-      } else {
-        setAlert('error', 'Diary Already Exists');
+        if (response?.data?.result?.length > 0) {
+          setAlert('success', message);
+          history.push('/diary/teacher');
+        } else {
+          setAlert('error', message);
+        }
       }
     } catch (error) {
-      setAlert('error', 'Diary Already Exists');
+      setAlert('error', error?.message);
     }
   };
 
@@ -1285,7 +1286,7 @@ const CreateDailyDairy = (details, onSubmit) => {
                           id='title'
                           name='title'
                           // onChange={() => {}}
-                          inputProps={{ maxLength: 150 }}
+                          inputProps={{ maxLength: 30 }}
                           label='Title'
                           autoFocus
                           value={homeworkTitle}
