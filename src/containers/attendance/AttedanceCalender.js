@@ -731,7 +731,7 @@ const AttedanceCalender = () => {
       // }
       axiosInstance
         .get(
-          `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
+          `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
         )
         .then((res) => {
           setHolidayDetails(res.data.holiday_detail);

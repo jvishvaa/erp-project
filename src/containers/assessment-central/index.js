@@ -638,6 +638,7 @@ const Assesment = () => {
                             variant='outlined'
                             label='Status'
                             placeholder='Status'
+                            required
                           />
                         )}
                         size='small'
@@ -706,6 +707,7 @@ const Assesment = () => {
                             variant='outlined'
                             label='Branch'
                             placeholder='Branch'
+                            required
                           />
                         )}
                         size='small'
@@ -731,6 +733,7 @@ const Assesment = () => {
                             variant='outlined'
                             label='Grade'
                             placeholder='Grade'
+                            required
                           />
                         )}
                         size='small'
@@ -757,6 +760,7 @@ const Assesment = () => {
                             variant='outlined'
                             label='Subject'
                             placeholder='Subject'
+                            required
                           />
                         )}
                         size='small'
@@ -784,6 +788,7 @@ const Assesment = () => {
                             variant='outlined'
                             label='Assessment Type'
                             placeholder='Assessment Type'
+                            required
                           />
                         )}
                         size='small'
