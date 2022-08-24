@@ -10,8 +10,9 @@ import {
   Modal,
   Checkbox,
   DatePicker,
+  Spin,
 } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
+import { DownOutlined, InfoCircleFilled } from '@ant-design/icons';
 import Layout from 'containers/Layout';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -20,7 +21,6 @@ import smallCloseIcon from 'v2/Assets/dashboardIcons/announcementListIcons/small
 import uploadIcon from 'v2/Assets/dashboardIcons/announcementListIcons/uploadIcon.svg';
 import UploadDocument from '../UploadDocument';
 import AsignHomework from '../../../../assets/images/hw-given.svg';
-import InfoIcon from '@material-ui/icons/Info';
 import QuestionCard from 'components/question-card';
 import moment from 'moment';
 import cuid from 'cuid';
@@ -31,27 +31,21 @@ const DailyDiary = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
-  const academicYearList = useSelector(
-    (state) => state.commonFilterReducer?.academicYearList
-  );
   const selectedAcademicYear = useSelector(
-    (state) => state.commonFilterReducer?.selectedAcademicYear
+    (state) => state.commonFilterReducer?.selectedYear
   );
   const dispatch = useDispatch();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState();
   const [hwId, sethwId] = useState();
-  const [academicYearID, setAcademicYearID] = useState();
-  const [branchDropdown, setBranchDropdown] = useState([]);
-  const [branchID, setBranchID] = useState();
-  const [acadID, setAcadID] = useState();
-  const [branchName, setBranchName] = useState('');
+  const [branchID, setBranchID] = useState(selectedBranch?.branch?.id);
+  const [acadID, setAcadID] = useState(selectedBranch?.id);
   const [gradeDropdown, setGradeDropdown] = useState([]);
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [gradeID, setGradeID] = useState([]);
   const [sectionDropdown, setSectionDropdown] = useState([]);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
-  const [sectionMapping, setSectionMapping] = useState([]);
+  // const [sectionMapping, setSectionMapping] = useState([]);
   const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [sectionID, setSectionID] = useState([]);
   const [sectionMappingID, setSectionMappingID] = useState([]);
@@ -67,6 +61,7 @@ const DailyDiary = () => {
   const [assignedHomeworkModal, setAssignedHomeworkModal] = useState('');
   const [declined, setDeclined] = useState(false);
   const [hwMappingID, setHwMappingID] = useState();
+  const [isDiaryEdit, setIsDiaryEdit] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [diaryID, setDiaryID] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -78,6 +73,9 @@ const DailyDiary = () => {
   const [queIndexCounter, setQueIndexCounter] = useState(0);
   const [homeworkCreated, setHomeworkCreated] = useState(false);
   const [submissionDate, setSubmissionDate] = useState(moment().format('YYYY-MM-DD'));
+  const [homeworkDetails, setHomeworkDetails] = useState(false);
+  const [questionEdit, setQuestionEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [questionList, setQuestionList] = useState([
     {
       id: cuid(),
@@ -88,6 +86,21 @@ const DailyDiary = () => {
       penTool: false,
     },
   ]);
+
+  const questionModify = (questions) => {
+    let arr = [];
+    questions.map((question) => {
+      arr.push({
+        id: question.homework_id,
+        question: question.question,
+        attachments: question.question_files,
+        is_attachment_enable: question.is_attachment_enable,
+        max_attachment: question.max_attachment,
+        penTool: question.is_pen_editor_enable,
+      });
+    });
+    return arr;
+  };
 
   const formRef = createRef();
   const history = useHistory();
@@ -194,12 +207,8 @@ const DailyDiary = () => {
   };
 
   const handleSubmit = () => {
-    if (!academicYearID) {
-      message.error('Please select Academic Year');
-      return;
-    }
-    if (!branchID) {
-      message.error('Please select Branch');
+    if (showHomeworkForm && !homework) {
+      message.error('Please finish the homework first');
       return;
     }
     if (!gradeID) {
@@ -214,6 +223,11 @@ const DailyDiary = () => {
       message.error('Please select Subject');
       return;
     }
+    if (!chapterID) {
+      message.error('Please select Chapter');
+      return;
+    }
+    setLoading(true);
     let payload = {
       academic_year: acadID,
       branch: branchID,
@@ -241,29 +255,20 @@ const DailyDiary = () => {
     axios
       .post(`${endpoints?.dailyDiary?.createDiary}`, payload)
       .then((res) => {
-        if (res.data.status_code === 200) {
-          message.success('Daily Diary Created Succssfully');
-          history.push('/diary/teacher');
+        if (res?.data?.status_code == 200) {
+          setLoading(false);
+          if (res?.data?.message === 'Daily Dairy created successfully') {
+            message.success('Daily Diary Created Succssfully');
+            history.push('/diary/teacher');
+          } else {
+            message.error('Daily Diary Already Exists');
+          }
         }
       })
       .catch((error) => {
-        message.error(error.message);
+        setLoading(false);
+        message.error(error?.message);
       });
-  };
-
-  const handleClearAcademic = () => {
-    setBranchDropdown([]);
-    setGradeDropdown([]);
-    setSectionDropdown([]);
-    setSubjectDropdown([]);
-    setChapterDropdown([]);
-  };
-
-  const handleClearBranch = () => {
-    setGradeDropdown([]);
-    setSectionDropdown([]);
-    setSubjectDropdown([]);
-    setChapterDropdown([]);
   };
 
   const handleClearGrade = () => {
@@ -311,6 +316,7 @@ const DailyDiary = () => {
     setHomework('');
     setShowIcon(false);
     setHomeworkCreated(false);
+    setShowHomeworkForm(false);
     if (e) {
       setSubjectID(e.value);
       setSubjectName(e.children);
@@ -320,7 +326,7 @@ const DailyDiary = () => {
         section_mapping: sectionMappingID,
         subject: e?.value,
         date: moment().format('YYYY-MM-DD'),
-        user_id: user_id,
+        // user_id: user_id,
       });
       const params = {
         session_year: selectedBranch.branch.id,
@@ -358,8 +364,8 @@ const DailyDiary = () => {
       setSectionID(each?.value);
       setSectionMappingID(each?.mappingId);
       const params = {
-        session_year: academicYearID,
-        branch: branchID,
+        session_year: selectedAcademicYear?.id,
+        branch: selectedBranch?.branch?.id,
         grade: gradeID,
         section: each.value,
         module_id: moduleId,
@@ -368,8 +374,7 @@ const DailyDiary = () => {
         .get(`${endpoints.academics.subjects}`, { params })
         .then((result) => {
           if (result?.data?.status_code == 200) {
-            const subjectData = result?.data?.data || [];
-            setSubjectDropdown(subjectData);
+            setSubjectDropdown(result?.data?.data);
           }
         })
         .catch((error) => message.error('error', error?.message));
@@ -395,8 +400,8 @@ const DailyDiary = () => {
     if (e) {
       setGradeID(e);
       const params = {
-        session_year: academicYearID,
-        branch_id: branchID,
+        session_year: selectedAcademicYear?.id,
+        branch_id: selectedBranch?.branch?.id,
         grade_id: e,
         module_id: moduleId,
       };
@@ -406,96 +411,29 @@ const DailyDiary = () => {
           if (result?.data?.status_code == 200) {
             const sectionData = result?.data?.data || [];
             setSectionDropdown(sectionData);
-            gradeDropdown.map((each) => {
-              if (each?.grade_id === e) {
-                setSectionMapping(each.id);
-              }
-            });
           }
         })
         .catch((error) => message.error('error', error?.message));
     }
   };
 
-  //For Branch
-  const branchOptions = branchDropdown?.map((each) => {
-    return (
-      <Option key={each?.branch?.id} value={each?.branch?.id} acadId={each?.id}>
-        {each?.branch?.branch_name}
-      </Option>
-    );
-  });
-
-  const handleBranch = (each) => {
-    formRef.current.setFieldsValue({
-      grade: null,
-      section: null,
-      subject: null,
-      chapter: null,
-    });
-    setGradeDropdown([]);
-    setSectionDropdown([]);
-    if (each) {
-      setBranchID(each.value);
-      setBranchName(each.children);
-      setAcadID(each.acadId);
-      const params = {
-        session_year: academicYearID,
-        branch_id: each.value,
-        module_id: moduleId,
-      };
-      axios
-        .get(`${endpoints.academics.grades}`, { params })
-        .then((result) => {
-          if (result?.data?.status_code == 200) {
-            const gradeData = result?.data?.data || [];
-            setGradeDropdown(gradeData);
-          }
-        })
-        .catch((error) => message.error('error', error?.message));
-    }
-  };
-
-  const yearOptions = academicYearList?.map((each) => {
-    return (
-      <Option key={each?.id} value={each?.id}>
-        {each?.session_year}
-      </Option>
-    );
-  });
-
-  const handleAcademicYear = (e) => {
-    formRef.current.setFieldsValue({
-      branch: null,
-      grade: null,
-      section: null,
-      subject: null,
-      chapter: null,
-    });
-    setBranchDropdown([]);
-    setGradeDropdown([]);
-    setSectionDropdown([]);
-    if (e) {
-      setAcademicYearID(e);
-      const params = {
-        session_year: e,
-        module_id: moduleId,
-      };
-      axios
-        .get(`${endpoints.academics.branches}`, { params })
-        .then((result) => {
-          if (result?.data?.status_code == 200) {
-            setBranchDropdown(result?.data?.data?.results);
-          }
-        })
-        .catch((error) => message.error('error', error?.message));
-    }
+  const fetchGradeData = () => {
+    const params = {
+      session_year: selectedAcademicYear?.id,
+      branch_id: selectedBranch?.branch?.id,
+      module_id: moduleId,
+    };
+    axios
+      .get(`${endpoints.academics.grades}`, { params })
+      .then((result) => {
+        if (result?.data?.status_code == 200) {
+          setGradeDropdown(result?.data?.data);
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
   };
 
   const checkAssignedHomework = (params = {}) => {
-    // if (!subjectID) {
-    //   return;
-    // }
     axios
       .get(`${endpoints?.dailyDiary?.assignHomeworkDiary}`, { params: { ...params } })
       .then((result) => {
@@ -514,6 +452,7 @@ const DailyDiary = () => {
     }
   }, [assignedHomework]);
   const mapAssignedHomework = () => {
+    setQuestionEdit(true);
     axios
       .post(`${endpoints?.dailyDiary?.assignHomeworkDiary}`, {
         hw_id: assignedHomework[0]?.id,
@@ -523,15 +462,22 @@ const DailyDiary = () => {
           setHwMappingID(result?.data?.data?.hw_dairy_mapping_id);
           setAssignedHomeworkModal(false);
           setHomework(assignedHomework[0].homework_name);
+          axios
+            .get(`academic/${assignedHomework[0]?.id}/hw-questions/?hw_status=1`)
+            .then((result) => {
+              if (result?.data?.status_code == 200) {
+                setHomeworkDetails(result?.data?.data);
+                setShowHomeworkForm(true);
+                setHomeworkCreated(true);
+              }
+            })
+            .catch((error) => message.error('error', error?.message));
         }
       })
       .catch((error) => message.error('error', error?.message));
   };
 
   const handleAddHomeWork = async () => {
-    // const isFormValid = validateHomework();
-    // if (isFormValid) {
-    //const sectionId = params.section.split(',').map( n => parseInt(n, 10))
     if (!homeworkTitle) {
       message.error('Please fill Homework Title');
       return;
@@ -540,6 +486,11 @@ const DailyDiary = () => {
       message.error('Please fill Homework Instructions');
       return;
     }
+    if (!questionList[0].question) {
+      message.error('Please add questions');
+      return;
+    }
+    setQuestionEdit(true);
     const reqObj = {
       name: homeworkTitle,
       description: homeworkInstructions,
@@ -554,26 +505,56 @@ const DailyDiary = () => {
         return qObj;
       }),
     };
+
     try {
-      // const response = await onAddHomework(reqObj, isEdit, hwId);
       const response = await dispatch(addHomeWork(reqObj, isEdit, hwId));
       message.success('Homework added');
-      setShowHomeworkForm(false);
+      // setShowHomeworkForm(false);
       checkAssignedHomework({
         section_mapping: sectionMappingID,
         subject: subjectID,
         date: moment().format('YYYY-MM-DD'),
-        user_id: user_id,
+        // user_id: user_id,
       });
-      setHomeworkTitle('');
-      setHomeworkInstructions('');
+      // setHomeworkTitle('');
+      // setHomeworkInstructions('');
       setHomeworkCreated(true);
+
+      setQuestionList(reqObj?.questions);
+
       // history.goBack();
     } catch (error) {
       message.error('Failed to add homework');
     }
     // }
   };
+
+  const fetchHomeworkDetails = (params = {}) => {
+    axios
+      .get(`${endpoints?.dailyDiary?.assignHomeworkDiary}`, { params: { ...params } })
+      .then((result) => {
+        if (result?.data?.status == 200) {
+          if (result?.data?.data.length > 0) {
+            sethwId(result?.data?.data[0]?.id);
+            axios
+              .get(`academic/${result?.data?.data[0]?.id}/hw-questions/?hw_status=1`)
+              .then((result) => {
+                if (result?.data?.status_code == 200) {
+                  setHomeworkDetails(result?.data?.data);
+                  setShowHomeworkForm(true);
+                  setIsEdit(true);
+                }
+              })
+              .catch((error) => message.error('error', error?.message));
+          } else {
+            setShowIcon(true);
+            setAssignedHomework();
+          }
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
+  };
+
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -593,14 +574,17 @@ const DailyDiary = () => {
   }, [window.location.pathname]);
 
   useEffect(() => {
+    if (moduleId && selectedBranch) {
+      fetchGradeData();
+    }
+  }, [moduleId]);
+
+  useEffect(() => {
     if (history?.location?.state?.data) {
-      console.log('EditData', history?.location?.state?.data);
       let editData = history.location.state.data;
-      setIsEdit(history?.location?.state?.isEdit);
+      setIsDiaryEdit(history?.location?.state?.isDiaryEdit);
       setDiaryID(history.location.state.data?.id);
       formRef.current.setFieldsValue({
-        academic: editData?.academic_year?.session_year,
-        branch: editData?.branch?.branch_name,
         grade: editData?.grade[0]?.grade_name,
         section: editData?.section[0]?.section__section_name,
         subject: editData?.subject?.subject_name,
@@ -608,6 +592,7 @@ const DailyDiary = () => {
       });
       setAcadID(editData?.academic_year?.id);
       setBranchID(editData?.branch?.id);
+      setGradeID(editData?.grade[0]?.id);
       setSectionID(editData?.section[0]?.id);
       setSectionMappingID(editData?.section_mapping[0]);
       setSubjectID(editData?.subject?.id);
@@ -617,8 +602,24 @@ const DailyDiary = () => {
       setTools(editData?.teacher_report?.tools_used);
       setHomework(editData?.teacher_report?.homework);
       setUploadedFiles(editData?.documents);
+      fetchHomeworkDetails({
+        section_mapping: editData?.section_mapping[0],
+        subject: editData?.subject?.id,
+        date: moment(editData?.created_at).format('YYYY-MM-DD'),
+        user_id: user_id,
+      });
     }
   }, []);
+
+  useEffect(() => {
+    if (homeworkDetails) {
+      setQuestionList(questionModify(homeworkDetails?.hw_questions));
+      setSubmissionDate(moment(homeworkDetails?.last_submission_dt).format('YYYY-MM-DD'));
+      setHomeworkTitle(homeworkDetails?.homework_name);
+      setHomeworkInstructions(homeworkDetails?.description);
+    }
+  }, [homeworkDetails]);
+
   return (
     <Layout>
       <div className='row'>
@@ -634,53 +635,9 @@ const DailyDiary = () => {
             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
               <div className='row py-2 text-left'>
                 <div className='col-md-4 py-2'>
-                  <Form.Item name='academic'>
-                    <Select
-                      disabled={isEdit}
-                      className='th-width-100 th-br-6'
-                      onChange={handleAcademicYear}
-                      placeholder='Academic Year'
-                      allowClear
-                      onClear={handleClearAcademic}
-                      value={academicYearID}
-                      showSearch
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {yearOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-
-                <div className='col-md-4 py-2'>
-                  <Form.Item name='branch'>
-                    <Select
-                      disabled={isEdit}
-                      className='th-width-100 th-br-6'
-                      onChange={(e, value) => handleBranch(value)}
-                      placeholder='Branch'
-                      allowClear
-                      onClear={handleClearBranch}
-                      showSearch
-                      optionFilterProp='children'
-                      filterOption={(input, options) => {
-                        return (
-                          options.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                        );
-                      }}
-                    >
-                      {branchOptions}
-                    </Select>
-                  </Form.Item>
-                </div>
-                <div className='col-md-4 py-2'>
                   <Form.Item name='grade'>
                     <Select
-                      disabled={isEdit}
+                      disabled={isDiaryEdit}
                       className='th-width-100 th-br-6'
                       onChange={handleGrade}
                       placeholder='Grade'
@@ -702,7 +659,7 @@ const DailyDiary = () => {
                 <div className='col-md-4 py-2'>
                   <Form.Item name='section'>
                     <Select
-                      disabled={isEdit}
+                      disabled={isDiaryEdit}
                       className='th-width-100 th-br-6'
                       onChange={(e, value) => handleSection(value)}
                       placeholder='Section'
@@ -723,7 +680,7 @@ const DailyDiary = () => {
                 <div className='col-md-4 py-2'>
                   <Form.Item name='subject'>
                     <Select
-                      disabled={isEdit}
+                      disabled={isDiaryEdit}
                       className='th-width-100 th-br-6'
                       onChange={(e, value) => handleSubject(value)}
                       placeholder='Subject'
@@ -744,7 +701,7 @@ const DailyDiary = () => {
                 <div className='col-md-4 py-2'>
                   <Form.Item name='chapter'>
                     <Select
-                      disabled={isEdit}
+                      disabled={isDiaryEdit}
                       className='th-width-100 th-br-6'
                       onChange={handleChapter}
                       placeholder='Chapter'
@@ -762,265 +719,285 @@ const DailyDiary = () => {
                   </Form.Item>
                 </div>
               </div>
-              {showIcon && !assignedHomework && (
-                <Checkbox
-                  checked={showHomeworkForm}
-                  onChange={() => setShowHomeworkForm((prevState) => !prevState)}
-                >
-                  Assign Homework
-                </Checkbox>
-              )}
             </Form>
-            <div className='row'>
-              <div className='col-12'>
-                <div
-                  className='row px-2 py-3 th-br-10'
-                  style={{ border: '1px solid #d9d9d9' }}
-                >
-                  <div className='col-md-4 py-2'>
-                    <TextArea
-                      className='th-width-100 th-br-6'
-                      value={recap}
-                      onChange={(e) => setRecap(e.target.value)}
-                      placeholder='Recap of Previous Class'
-                      rows={4}
-                      style={{ resize: 'none' }}
-                    />
-                  </div>
-                  <div className='col-md-4 py-2'>
-                    <TextArea
-                      className='th-width-100 th-br-6'
-                      value={classwork}
-                      onChange={(e) => setClasswork(e.target.value)}
-                      placeholder='Details of ClassWork'
-                      rows={4}
-                      style={{ resize: 'none' }}
-                    />
-                  </div>
-                  <div className='col-md-4 py-2'>
-                    <TextArea
-                      className='th-width-100 th-br-6'
-                      value={summary}
-                      onChange={(e) => setSummary(e.target.value)}
-                      placeholder='Summary'
-                      rows={4}
-                      style={{ resize: 'none' }}
-                    />
-                  </div>
+            {loading ? (
+              <div className='d-flex justify-content-center align-items-center h-50'>
+                <Spin tip='Creating Diary...' size='large' />
+              </div>
+            ) : (
+              <>
+                <div className='row'>
+                  <div className='col-12'>
+                    <div
+                      className='row px-2 py-3 th-br-10'
+                      style={{ border: '1px solid #d9d9d9' }}
+                    >
+                      <div className='col-md-4 py-2'>
+                        <TextArea
+                          className='th-width-100 th-br-6'
+                          value={recap}
+                          onChange={(e) => setRecap(e.target.value)}
+                          placeholder='Recap of Previous Class'
+                          rows={4}
+                          style={{ resize: 'none' }}
+                        />
+                      </div>
+                      <div className='col-md-4 py-2'>
+                        <TextArea
+                          className='th-width-100 th-br-6'
+                          value={classwork}
+                          onChange={(e) => setClasswork(e.target.value)}
+                          placeholder='Details of ClassWork'
+                          rows={4}
+                          style={{ resize: 'none' }}
+                        />
+                      </div>
+                      <div className='col-md-4 py-2'>
+                        <TextArea
+                          className='th-width-100 th-br-6'
+                          value={summary}
+                          onChange={(e) => setSummary(e.target.value)}
+                          placeholder='Summary'
+                          rows={4}
+                          style={{ resize: 'none' }}
+                        />
+                      </div>
 
-                  <div className='col-md-4 py-2'>
-                    <TextArea
-                      className='th-width-100 th-br-6'
-                      value={tools}
-                      onChange={(e) => setTools(e.target.value)}
-                      placeholder='Tools Used'
-                      rows={4}
-                      style={{ resize: 'none' }}
-                    />
-                  </div>
-                  <div className='col-md-4 py-2 d-flex' style={{ position: 'relative' }}>
-                    <TextArea
-                      className='th-width-100 th-br-6'
-                      value={homework}
-                      onChange={(e) => setHomework(e.target.value)}
-                      rows={4}
-                      placeholder='Add Homework'
-                    />
-                    {showIcon ? (
+                      <div className='col-md-4 py-2'>
+                        <TextArea
+                          className='th-width-100 th-br-6'
+                          value={tools}
+                          onChange={(e) => setTools(e.target.value)}
+                          placeholder='Tools Used'
+                          rows={4}
+                          style={{ resize: 'none' }}
+                        />
+                      </div>
                       <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          position: 'absolute',
-                          left: '10%',
-                          bottom: '10%',
-                        }}
+                        className='col-md-4 py-2 d-flex'
+                        style={{ position: 'relative' }}
                       >
-                        {assignedHomework && !homework ? (
+                        {/* <TextArea
+                          className='th-width-100 th-br-6'
+                          value={homework}
+                          onChange={(e) => setHomework(e.target.value)}
+                          rows={4}
+                          placeholder='Add Homework'
+                        /> */}
+                        {showIcon && !assignedHomework && (
+                          <div className='col-12 py-2'>
+                            <Checkbox
+                              checked={showHomeworkForm}
+                              onChange={() =>
+                                setShowHomeworkForm((prevState) => !prevState)
+                              }
+                            >
+                              Assign Homework
+                            </Checkbox>
+                          </div>
+                        )}
+
+                        {showIcon ? (
                           <div
-                            onClick={() => {
-                              setAssignedHomeworkModal(true);
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
                             }}
-                            className='th-pointer'
                           >
-                            <span>
-                              {/* <img src={AsignHomework} className='py-3' /> */}
-                              <InfoIcon className='th-primary' />
-                            </span>
-                            <span className='ml-2 th-fw-500'>
-                              Homework Exists (click to assign)
-                            </span>
+                            {assignedHomework && !homework ? (
+                              <div onClick={mapAssignedHomework} className='th-pointer'>
+                                <span>
+                                  <InfoCircleFilled
+                                    className='th-primary'
+                                    style={{ fontSize: 20 }}
+                                  />
+                                </span>
+                                <span className='ml-2 th-fw-500'>
+                                  Homework Exists (click to map to diary)
+                                </span>
+                              </div>
+                            ) : null}
                           </div>
                         ) : null}
                       </div>
-                    ) : null}
-                  </div>
-                  <div className='col-md-4 py-2'>
-                    {hwMappingID && homework ? (
-                      <>
-                        <span>
-                          <img src={AsignHomework} className='py-3' />
+                      <div className='col-md-4 py-2'>
+                        {hwMappingID && homework ? (
+                          <>
+                            <span>
+                              <img src={AsignHomework} className='py-3' />
+                            </span>
+                            <span className='ml-2 py-3 th-black-2 th-16 th-primary'>
+                              Homework Mapped to Diary
+                            </span>
+                          </>
+                        ) : null}
+                      </div>
+
+                      <div className='col-12'>
+                        <span className='th-grey th-14'>
+                          Upload Attachments (Accepted files: [ .jpeg,.jpg,.png,.pdf ])
                         </span>
-                        <span className='ml-2 py-3 th-black-2 th-16 th-primary'>
-                          Homework Mapped to Diary
-                        </span>
-                      </>
-                    ) : null}
-                  </div>
+                        <div
+                          className='row justify-content-start align-items-center th-br-4 py-1 mt-1 th-bg-white'
+                          style={{ border: '1px solid #D9D9D9' }}
+                        >
+                          <div className='col-8'>
+                            <div className='row'>
+                              {uploadedFiles?.map((item, index) => {
+                                const fullName = item?.split('_')[
+                                  item?.split('_').length - 1
+                                ];
 
-                  <div className='col-12'>
-                    <span className='th-grey th-14'>
-                      Upload Attachments (Accepted files: [ .jpeg,.jpg,.png,.pdf ])
-                    </span>
-                    <div
-                      className='row justify-content-start align-items-center th-br-4 py-1 mt-1'
-                      style={{ border: '1px solid #D9D9D9' }}
-                    >
-                      <div className='col-8'>
-                        <div className='row'>
-                          {uploadedFiles?.map((item, index) => {
-                            const fullName = item?.split('_')[
-                              item?.split('_').length - 1
-                            ];
+                                const fileName = fullName.split('.')[
+                                  fullName?.split('.').length - 2
+                                ];
+                                const extension = fullName.split('.')[
+                                  fullName?.split('.').length - 1
+                                ];
 
-                            const fileName = fullName.split('.')[
-                              fullName?.split('.').length - 2
-                            ];
-                            const extension = fullName.split('.')[
-                              fullName?.split('.').length - 1
-                            ];
+                                return (
+                                  <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
+                                    <span className='th-12 th-black-1 text-truncate'>
+                                      {fileName}
+                                    </span>
+                                    <span className='th-12 th-black-1 '>
+                                      .{extension}
+                                    </span>
 
-                            return (
-                              <div className='th-br-15 col-md-3 col-5 px-1 px-md-3 py-2 th-bg-grey text-center d-flex align-items-center'>
-                                <span className='th-12 th-black-1 text-truncate'>
-                                  {fileName}
-                                </span>
-                                <span className='th-12 th-black-1 '>.{extension}</span>
-
-                                <span className='ml-md-3 ml-1 th-pointer '>
-                                  <img
-                                    src={smallCloseIcon}
-                                    onClick={() => handleRemoveUploadedFile(index)}
-                                  />
-                                </span>
-                              </div>
-                            );
-                          })}
+                                    <span className='ml-md-3 ml-1 th-pointer '>
+                                      <img
+                                        src={smallCloseIcon}
+                                        onClick={() => handleRemoveUploadedFile(index)}
+                                      />
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                          <div className='col-4 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'>
+                            <span onClick={handleShowModal}>
+                              <span className='th-12'>
+                                {' '}
+                                <u>Upload</u>
+                              </span>
+                              <span className='ml-3 pb-2'>
+                                <img src={uploadIcon} />
+                              </span>
+                            </span>
+                          </div>
                         </div>
                       </div>
-                      <div className='col-4 th-primary text-right th-pointer pl-0 pr-1 pr-md-2'>
-                        <span onClick={handleShowModal}>
-                          <span className='th-12'>
-                            {' '}
-                            <u>Upload</u>
-                          </span>
-                          <span className='ml-3 pb-2'>
-                            <img src={uploadIcon} />
-                          </span>
+                    </div>
+                  </div>
+                </div>
+                {showHomeworkForm && (
+                  <div className='row px-3 mt-3'>
+                    <div
+                      className='col-12 py-2 px-3 th-br-6'
+                      style={{ border: '1px solid #d9d9d9' }}
+                    >
+                      <div className='row align-items-center'>
+                        <span className='th-black-1'>Due Date</span>
+                        <span className='th-br-4 p-1 th-bg-white'>
+                          <img src={calendarIcon} className='pl-2' />
+                          <DatePicker
+                            disabledDate={(current) =>
+                              current.isBefore(moment().subtract(1, 'day'))
+                            }
+                            allowClear={false}
+                            bordered={false}
+                            placeholder={submissionDate}
+                            placement='bottomRight'
+                            onChange={(event, value) => handleSubmissionDate(value)}
+                            showToday={false}
+                            suffixIcon={<DownOutlined className='th-black-1' />}
+                            className='th-black-2 pl-0 th-date-picker'
+                            format={'YYYY-MM-DD'}
+                          />
                         </span>
                       </div>
+                      <div className='row py-2'>
+                        <Input
+                          className='th-width-100 th-br-6'
+                          value={homeworkTitle}
+                          onChange={(e) => setHomeworkTitle(e.target.value)}
+                          placeholder='Title'
+                          maxLength={30}
+                        />
+                      </div>
+                      <div className='row py-2'>
+                        <Input
+                          className='th-width-100 th-br-6'
+                          value={homeworkInstructions}
+                          onChange={(e) => setHomeworkInstructions(e.target.value)}
+                          placeholder='Instructions'
+                          maxLength={250}
+                        />
+                      </div>
+                      <div className='row py-2'>
+                        {questionList?.map((question, index) => (
+                          <QuestionCard
+                            key={question.id}
+                            question={question}
+                            isEdit={isDiaryEdit || questionEdit}
+                            index={index}
+                            addNewQuestion={addNewQuestion}
+                            handleChange={handleChange}
+                            removeQuestion={removeQuestion}
+                            sessionYear={selectedAcademicYear?.id}
+                            branch={selectedBranch?.branch?.id}
+                            grade={gradeID}
+                            subject={subjectID}
+                          />
+                        ))}
+                      </div>
+                      {!homeworkCreated && (
+                        <div className='row'>
+                          <div className='col-6'>
+                            <Button
+                              className='th-width-100 th-br-6 th-pointer'
+                              onClick={() => {
+                                setQueIndexCounter(queIndexCounter + 1);
+                                addNewQuestion(queIndexCounter + 1);
+                              }}
+                            >
+                              Add Another Question
+                            </Button>
+                          </div>
+                          <div className='col-6'>
+                            <Button
+                              className='th-width-100 th-bg-primary th-white th-br-6 th-pointer'
+                              onClick={handleAddHomeWork}
+                            >
+                              {isDiaryEdit ? 'Update' : 'Finish'}
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </div>
+                  </div>
+                )}
+                <div className='row pt-3'>
+                  <div className='col-md-2 col-6'>
+                    <Button
+                      className='th-width-100 th-br-6 th-pointer'
+                      onClick={handleBack}
+                    >
+                      Back
+                    </Button>
+                  </div>
+                  <div className='col-md-2 col-6'>
+                    <Button
+                      className='th-width-100 th-bg-primary th-white th-br-6 th-pointer'
+                      onClick={isDiaryEdit ? handleEdit : handleSubmit}
+                    >
+                      {isDiaryEdit ? 'Update' : 'Submit'}
+                    </Button>
                   </div>
                 </div>
-              </div>
-            </div>
-            {showHomeworkForm && (
-              <div className='row px-3 mt-3'>
-                <div
-                  className='col-12 py-2 px-3 th-br-6'
-                  style={{ border: '1px solid #d9d9d9' }}
-                >
-                  <div className='row align-items-center'>
-                    <span className='th-black-1'>Due Date</span>
-                    <span className='th-br-4 p-1 th-bg-white'>
-                      <img src={calendarIcon} className='pl-2' />
-                      <DatePicker
-                        disabledDate={(current) =>
-                          current.isBefore(moment().subtract(1, 'day'))
-                        }
-                        allowClear={false}
-                        bordered={false}
-                        placement='bottomRight'
-                        onChange={(event, value) => handleSubmissionDate(value)}
-                        showToday={false}
-                        suffixIcon={<DownOutlined className='th-black-1' />}
-                        className='th-black-2 pl-0 th-date-picker'
-                        format={'YYYY-MM-DD'}
-                      />
-                    </span>
-                  </div>
-                  <div className='row py-2'>
-                    <Input
-                      className='th-width-100 th-br-6'
-                      value={homeworkTitle}
-                      onChange={(e) => setHomeworkTitle(e.target.value)}
-                      placeholder='Title'
-                    />
-                  </div>
-                  <div className='row py-2'>
-                    <Input
-                      className='th-width-100 th-br-6'
-                      value={homeworkInstructions}
-                      onChange={(e) => setHomeworkInstructions(e.target.value)}
-                      placeholder='Instructions'
-                    />
-                  </div>
-                  <div className='row py-2'>
-                    {questionList?.map((question, index) => (
-                      <QuestionCard
-                        key={question.id}
-                        question={question}
-                        isEdit={false}
-                        index={index}
-                        addNewQuestion={addNewQuestion}
-                        handleChange={handleChange}
-                        removeQuestion={removeQuestion}
-                        sessionYear={selectedAcademicYear?.id}
-                        branch={selectedBranch?.branch?.id}
-                        grade={gradeID}
-                        subject={subjectID}
-                      />
-                    ))}
-                  </div>
-                  <div className='row'>
-                    <div className='col-6'>
-                      <Button
-                        className='th-width-100 th-br-6 th-pointer'
-                        onClick={() => {
-                          setQueIndexCounter(queIndexCounter + 1);
-                          addNewQuestion(queIndexCounter + 1);
-                        }}
-                      >
-                        Add Another Question
-                      </Button>
-                    </div>
-                    <div className='col-6'>
-                      <Button
-                        className='th-width-100 th-bg-primary th-white th-br-6 th-pointer'
-                        onClick={handleAddHomeWork}
-                      >
-                        Finish
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              </>
             )}
-            <div className='row pt-3'>
-              <div className='col-md-2 col-6'>
-                <Button className='th-width-100 th-br-6 th-pointer' onClick={handleBack}>
-                  Back
-                </Button>
-              </div>
-              <div className='col-md-2 col-6'>
-                <Button
-                  className='th-width-100 th-br-6 th-bg-primary th-white th-pointer'
-                  onClick={isEdit ? handleEdit : handleSubmit}
-                >
-                  {isEdit ? 'Update' : 'Submit'}
-                </Button>
-              </div>
-            </div>
           </div>
         </div>
         <Modal
@@ -1042,7 +1019,7 @@ const DailyDiary = () => {
         </Modal>
         <UploadDocument
           show={showUploadModal}
-          branchName={branchName}
+          branchName={selectedBranch?.branch?.branch_name}
           gradeID={gradeID}
           handleClose={handleUploadModalClose}
           setUploadedFiles={handleUploadedFiles}

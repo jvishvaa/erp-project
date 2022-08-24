@@ -464,6 +464,7 @@ const GeneralDairyFilter = ({
                 <TextField
                   {...params}
                   variant='outlined'
+                required
                   label='Academic Year'
                   placeholder='Academic Year'
                 />
@@ -486,6 +487,7 @@ const GeneralDairyFilter = ({
                   {...params}
                   variant='outlined'
                   label='Branch'
+                  required
                   placeholder='Branch'
                 />
               )}
@@ -514,6 +516,7 @@ const GeneralDairyFilter = ({
                 variant='outlined'
                 label='Grade'
                 placeholder='Grade'
+                required
               />
             )}
           />
@@ -538,6 +541,7 @@ const GeneralDairyFilter = ({
                 variant='outlined'
                 label='Section'
                 placeholder='Section'
+                required
               />
             )}
           />
@@ -566,6 +570,7 @@ const GeneralDairyFilter = ({
                 variant='outlined'
                 label='Subject'
                 placeholder='Subject'
+                required
               />
             )}
           />
@@ -593,6 +598,7 @@ const GeneralDairyFilter = ({
                     }}
                     size='small'
                     style={{ minWidth: '100%' }}
+                required
                   />
                 </>
               );

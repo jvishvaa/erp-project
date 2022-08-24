@@ -1,12 +1,6 @@
 /* eslint-disable react/jsx-wrap-multilines */
-import React, { useState, useRef, useEffect, useContext, useCallback } from 'react';
-import {
-  IconButton,
-  OutlinedInput,
-  FormHelperText,
-  Typography,
-  Badge,
-} from '@material-ui/core';
+import React, { useState, useRef, useEffect, useContext } from 'react';
+import { IconButton, FormHelperText, Typography, Badge } from '@material-ui/core';
 import Accordion from '@material-ui/core/Accordion';
 import AccordionDetails from '@material-ui/core/AccordionDetails';
 import AccordionSummary from '@material-ui/core/AccordionSummary';
@@ -51,16 +45,8 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import axiosInstance from '../../config/axios';
 import axios from 'axios';
 import { makeStyles } from '@material-ui/core/styles';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
-const StyledButton = withStyles({
-  root: {
-    color: '#FFFFFF',
-    backgroundColor: '#FF6B6B',
-    '&:hover': {
-      backgroundColor: '#FF6B6B',
-    },
-  },
-})(Button);
 const useStyles = makeStyles((theme) => ({
   formControl: {
     margin: theme.spacing(1),
@@ -128,18 +114,23 @@ const QuestionCard = ({
   const [questionData, setquestionData] = useState();
   const [edit, setisEdit] = useState(isEdit);
   const [volumeListData, setVolumeListData] = useState([]);
+  const [selectedVolume, setSelectedVolume] = useState('');
   const [selectedVolumeId, setSelectedVolumeId] = useState('');
   const [boardListData, setBoardListData] = useState([]);
   const [selectedBoards, setSelectedBoards] = useState('');
+  const [selectedBoardsID, setSelectedBoardsID] = useState([]);
   const [moduleListData, setModuleListData] = useState([]);
   const [selectedModule, setSelectedModule] = useState('');
+  const [selectedModuleID, setSelectedModuleID] = useState('');
   const [chapterListData, setChapterListData] = useState([]);
   const [selectedChapter, setSelectedChapter] = useState('');
+  const [selectedChapterID, setSelectedChapterID] = useState('');
   const [topicListData, setTopicListData] = useState([]);
   const [selectedTopic, setSelectedTopic] = useState('');
+  const [selectedTopicID, setSelectedTopicID] = useState('');
   const [resourcesData, setResourcesData] = useState();
 
-  const [isResource, setIsResource] = useState(false);
+  const [selectedResources, setSelectedResources] = useState([]);
   let boardFilterArr = [
     'orchids.letseduvate.com',
     'localhost:3000',
@@ -200,15 +191,21 @@ const QuestionCard = ({
           fd.append('file', file);
           setFileUploadInProgress(true);
           const filePath = await uploadFile(fd);
-          console.log('URL2', filePath);
           const final = Object.assign({}, filePath);
-          console.log('URL3', final);
           if (file.type === 'application/pdf') {
-            setAttachments((prevState) => [...prevState, final]);
-            setAttachmentPreviews((prevState) => [...prevState, final]);
+            if (attachmentPreviews.includes(final)) {
+              setAlert('error', 'File already Added');
+            } else {
+              setAttachments((prevState) => [...prevState, final]);
+              setAttachmentPreviews((prevState) => [...prevState, final]);
+            }
           } else {
-            setAttachments((prevState) => [...prevState, filePath]);
-            setAttachmentPreviews((prevState) => [...prevState, filePath]);
+            if (attachmentPreviews.includes(filePath)) {
+              setAlert('error', 'File already Added');
+            } else {
+              setAttachments((prevState) => [...prevState, filePath]);
+              setAttachmentPreviews((prevState) => [...prevState, filePath]);
+            }
           }
           setFileUploadInProgress(false);
           setAlert('success', 'File uploaded successfully');
@@ -237,14 +234,14 @@ const QuestionCard = ({
   const id = open ? 'simple-popover' : undefined;
 
   const assignResource = (resource) => {
-    const extension = resource.split('.')[resource.split('.').length - 1];
-    if (extension == 'pdf') {
-      setAttachments((prevState) => [...prevState, resource]);
-      setAttachmentPreviews((prevState) => [...prevState, resource]);
+    if (attachmentPreviews?.some((ai) => resource?.includes(ai))) {
+      setAlert('error', 'File already Added');
     } else {
-      setAttachmentPreviews((prevState) => [...prevState, resource]);
-      setAttachments((prevState) => [...prevState, resource]);
+      setAttachmentPreviews((prevState) => [...prevState, ...resource]);
+      setAttachments((prevState) => [...prevState, ...resource]);
     }
+
+    setSelectedResources([]);
   };
 
   const removeAttachment = (pageIndex, pdfIndex, deletePdf, item) => {
@@ -371,10 +368,10 @@ const QuestionCard = ({
     } else {
       axiosInstance
         .get(
-          `academic/get-period-resources/?chapter=${selectedChapter}&topic_id=${selectedTopic}`,
+          `academic/get-period-resources/?chapter=${selectedChapterID}&topic_id=${selectedTopicID}`,
           {
             headers: {
-              'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+              'X-DTS-HOST': X_DTS_HOST,
               Authorization: `Bearer ${token}`,
             },
           }
@@ -399,7 +396,6 @@ const QuestionCard = ({
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setVolumeListData(result?.data?.result?.results);
-          // console.log('volume', result?.data?.result);
         } else {
           setAlert('error', result?.data?.message);
         }
@@ -482,10 +478,22 @@ const QuestionCard = ({
   };
 
   const handleVolume = (each) => {
+    setBoardListData([]);
     setModuleListData([]);
     setChapterListData([]);
     setTopicListData([]);
+
+    setSelectedBoards();
+    setSelectedModule();
+    setSelectedTopic();
+    setSelectedChapter();
+
+    setSelectedBoardsID();
+    setSelectedModuleID();
+    setSelectedTopicID();
+    setSelectedChapterID();
     if (each) {
+      setSelectedVolume(each);
       setSelectedVolumeId(each?.id);
       if (boardFilterArr.includes(window.location.host)) {
         fetchBoardListData();
@@ -494,18 +502,27 @@ const QuestionCard = ({
   };
 
   const handleBoard = (each) => {
+    setModuleListData([]);
     setChapterListData([]);
     setTopicListData([]);
-    const boards = each?.map((item) => item?.id).join(',');
-    if (boards) {
-      setSelectedBoards(boards);
+    setSelectedModule();
+    setSelectedTopic();
+    setSelectedChapter();
+    setSelectedModuleID();
+    setSelectedTopicID();
+    setSelectedChapterID();
+
+    const boardsID = each?.map((item) => item?.id).join(',');
+    if (each) {
+      setSelectedBoards(each);
+      setSelectedBoardsID(boardsID);
       fetchModuleListData({
         subject_id: subject,
         volume: selectedVolumeId,
         academic_year: sessionYear,
         grade_id: grade,
         branch_id: branch,
-        board: boards,
+        board: boardsID,
       });
     }
   };
@@ -513,7 +530,14 @@ const QuestionCard = ({
   const handleModule = (each) => {
     setChapterListData([]);
     setTopicListData([]);
+    setSelectedTopic();
+    setSelectedChapter();
+    setSelectedModuleID();
+    setSelectedTopicID();
+    setSelectedChapterID();
     if (each) {
+      setSelectedModule(each);
+      setSelectedModuleID(each?.id);
       fetchChapterListData({
         subject_id: subject,
         volume: selectedVolumeId,
@@ -528,8 +552,13 @@ const QuestionCard = ({
 
   const handleChapter = (each) => {
     setTopicListData([]);
+    setSelectedTopic();
+    setSelectedModuleID();
+    setSelectedTopicID();
+    setSelectedChapterID();
     if (each) {
-      setSelectedChapter(each?.id);
+      setSelectedChapter(each);
+      setSelectedChapterID(each?.id);
       fetchTopicListData({
         chapter: each?.id,
       });
@@ -537,7 +566,11 @@ const QuestionCard = ({
   };
 
   const handleKeyConcept = (each) => {
-    setSelectedTopic(each?.id);
+    setSelectedTopicID();
+    if (each) {
+      setSelectedTopic(each);
+      setSelectedTopicID(each?.id);
+    }
   };
 
   return (
@@ -574,13 +607,11 @@ const QuestionCard = ({
               <Grid item container>
                 <Grid item xs={12}>
                   <FormControl variant='outlined' fullWidth size='small'>
-                    {/* <InputLabel htmlFor='component-outlined'>Question</InputLabel> */}
                     <TextField
                       id='question'
                       name='question'
                       onChange={(e) => {
                         setquestionData(e.target.value);
-                        // onChange('question', questionData);
                       }}
                       label='Question'
                       autoFocus
@@ -604,7 +635,6 @@ const QuestionCard = ({
                       onChange={(e) => {
                         handleFileUpload(e.target.files[0]);
                         e.target.value = null;
-                        // onChange('attachments', Array.from(e.target.files)[]);
                       }}
                       ref={fileUploadInput}
                     />
@@ -628,7 +658,6 @@ const QuestionCard = ({
                         <small className={classes.acceptedfiles}>
                           {' '}
                           Accepted files: jpeg,jpg,mp3,mp4,pdf,png
-                          {/*sizeValied ? 'Accepted files: jpeg,jpg,mp3,mp4,pdf,png' : 'Document size should be less than 5MB !'*/}
                         </small>
                       </>
                     )}
@@ -655,7 +684,6 @@ const QuestionCard = ({
                         }}
                       >
                         {attachmentPreviews.map((url, pdfindex) => {
-                          console.log('URL', url);
                           let cindex = 0;
                           attachmentPreviews.forEach((item, index) => {
                             if (index < pdfindex) {
@@ -677,17 +705,23 @@ const QuestionCard = ({
                                     fileName={`Attachment-${i + 1 + cindex}`}
                                     urlPrefix={
                                       item.includes('lesson_plan_file')
-                                        ? `${endpoints.discussionForum.s3}/`
+                                        ? `${endpoints.discussionForum.s3}`
                                         : `${endpoints.discussionForum.s3}/homework`
                                     }
                                     index={i}
-                                    actions={['preview', 'download', 'delete']}
+                                    actions={
+                                      item.includes('pdf') || item.includes('ppt')
+                                        ? ['download', 'delete']
+                                        : ['preview', 'download', 'delete']
+                                    }
                                     onDelete={(index, deletePdf) =>
                                       removeAttachment(imageIndex, pdfindex, deletePdf, {
                                         item,
                                       })
                                     }
-                                    ispdf={true}
+                                    ispdf={
+                                      item.includes('lesson_plan_file') ? false : true
+                                    }
                                   />
                                 </div>
                               );
@@ -705,7 +739,11 @@ const QuestionCard = ({
                                       : `${endpoints.discussionForum.s3}/homework`
                                   }
                                   index={pdfindex}
-                                  actions={['preview', 'download', 'delete']}
+                                  actions={
+                                    url.includes('pdf') || url.includes('ppt')
+                                      ? ['download', 'delete']
+                                      : ['preview', 'download', 'delete']
+                                  }
                                   onDelete={(index, deletePdf) =>
                                     removeAttachment(index, pdfindex, deletePdf)
                                   }
@@ -717,14 +755,13 @@ const QuestionCard = ({
                         <div style={{ position: 'absolute', visibility: 'hidden' }}>
                           <SRLWrapper>
                             {attachmentPreviews.map((url, i) => {
-                              console.log('URLSRL', url);
                               if (typeof url == 'object') {
                                 return Object.values(url).map((item, i) => {
                                   return (
                                     <img
                                       src={
                                         item.includes('lesson_plan_file')
-                                          ? `${endpoints.discussionForum.s3}${item}`
+                                          ? `${endpoints.discussionForum.s3}/${item}`
                                           : `${endpoints.discussionForum.s3}/homework/${item}`
                                       }
                                       onError={(e) => {
@@ -739,7 +776,7 @@ const QuestionCard = ({
                                   <img
                                     src={
                                       url.includes('lesson_plan_file')
-                                        ? `${endpoints.discussionForum.s3}${url}`
+                                        ? `${endpoints.discussionForum.s3}/${url}`
                                         : `${endpoints.discussionForum.s3}/homework/${url}`
                                     }
                                     onError={(e) => {
@@ -765,33 +802,42 @@ const QuestionCard = ({
               )}
             </Grid>
             <Grid container className='question-ctrls-container'>
-              <Grid item xs={12} md={3} className='question-ctrls-inner'>
-                <Box className='question-ctrl-inner-container'>
-                  <IconButton className='question-cntrl-file-upload'>
-                    <CloudUploadIcon color='primary' />
-                  </IconButton>
-                  <FormControlLabel
-                    className='question-ctrl'
-                    control={
-                      <Switch
-                        onChange={(e) => {
-                          setEnableAttachments(e.target.checked);
-                          // onChange('is_attachment_enable', e.target.checked);
-                        }}
-                        name='checkedA'
-                        color='primary'
-                        checked={enableAttachments}
-                        // value = {enableAttachments}
-                      />
-                    }
-                    label='File Upload'
-                    labelPlacement='start'
-                  />
-                </Box>
+              <Grid
+                item
+                xs={12}
+                md={3}
+                // className='question-ctrls-inner'
+                style={{ display: 'flex' }}
+              >
+                {/* <Box className='question-ctrl-inner-container'> */}
+
+                <IconButton>
+                  {/* <IconButton className='question-cntrl-file-upload'> */}
+                  <CloudUploadIcon color='primary' />
+                </IconButton>
+                <FormControlLabel
+                  // className='question-ctrl'ss
+                  control={
+                    <Switch
+                      onChange={(e) => {
+                        setEnableAttachments(e.target.checked);
+                      }}
+                      name='checkedA'
+                      color='primary'
+                      checked={enableAttachments}
+                    />
+                  }
+                  label='File Upload'
+                  labelPlacement='start'
+                  style={{ minWidth: '50px' }}
+                />
+
+                {/* </Box> */}
               </Grid>
               {enableAttachments && (
-                <Grid item xs={12} md={4} className='question-ctrl-outer-container'>
-                  <Box className='question-ctrl-inner-container max-attachments'>
+                <Grid item xs={12} md={3} className='question-ctrl-outer-container'>
+                  {/* <Box className='question-ctrl-inner-container max-attachments'> */}
+                  <div>
                     <div className='question-ctrl-label'>Maximum number of files</div>
                     <Select
                       native
@@ -799,23 +845,25 @@ const QuestionCard = ({
                       id='demo-customized-select'
                       defaultValue={2}
                       onChange={(e) => setmaxAttachment(e.target.value)}
-                      // onChange('max_attachment', e.target.value)}
                       value={maxattachment}
                     >
                       {Array.from({ length: 10 }, (_, index) => (
                         <option value={index + 1}>{index + 1}</option>
                       ))}
                     </Select>
-                  </Box>
+                  </div>
+                  {/* </Box> */}
                 </Grid>
               )}
-              <Grid item xs={12} md={4}>
-                <Box className='question-ctrl-inner-container'>
-                  <IconButton className='question-cntrl-file-upload'>
+              <Grid item xs={12} md={3} style={{ display: 'flex' }}>
+                {/* <Box className='question-ctrl-inner-container'> */}
+                <div>
+                  {/* <IconButton className='question-cntrl-file-upload'> */}
+                  <IconButton>
                     <CreateIcon color='primary' />
                   </IconButton>
                   <FormControlLabel
-                    className='question-ctrl'
+                    // className='question-ctrl'
                     control={
                       <Switch
                         name='penTool'
@@ -829,12 +877,19 @@ const QuestionCard = ({
                     }
                     label='Pen tool'
                     labelPlacement='start'
+                    style={{ minWidth: '50px' }}
                   />
-                </Box>
+                </div>
+                {/* </Box> */}
               </Grid>
-              {/* <Grid item xs={12} md={4}>
-                
-                <Box className='question-ctrl-inner-container th-pointer'>
+              <Grid
+                item
+                xs={12}
+                md={2}
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+              >
+                {/* <Box className='question-ctrl-inner-container th-pointer'> */}
+                <div>
                   <Button
                     onClick={handleResourcesDrawerOpen}
                     variant='contained'
@@ -842,8 +897,9 @@ const QuestionCard = ({
                   >
                     Resources
                   </Button>
-                </Box>
-              </Grid> */}
+                </div>
+                <div className='th-12 pt-2'>(From Leson Plan)</div>
+              </Grid>
             </Grid>
           </CardContent>
         </Card>
@@ -886,12 +942,14 @@ const QuestionCard = ({
                 </Typography>
                 <div>
                   <CancelButton onClick={(e) => handleClose()}>Cancel</CancelButton>
-                  <StyledButton
+                  <Button
+                    variant='contained'
+                    color='primary'
                     onClick={() => removeQuestion(index)}
                     style={{ float: 'right' }}
                   >
                     Confirm
-                  </StyledButton>
+                  </Button>
                 </div>
               </div>
             </Popover>
@@ -901,25 +959,19 @@ const QuestionCard = ({
       <Drawer
         anchor='right'
         open={showDrawer}
-        // open={true}
         onClose={handleResourcesDrawerClose}
         style={{ overflowY: 'scroll', height: '80vh' }}
         className='th-resourcesDrawer'
       >
         <Grid container spacing={5} className='resourcesDrawer' style={{ width: '100%' }}>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            // className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-          >
+          <Grid item xs={12} sm={4}>
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
               onChange={(e, value) => handleVolume(value)}
               id='volume'
               className='dropdownIcon'
-              // value={volumeListData?.volume || ''}
+              value={selectedVolume}
               options={volumeListData || []}
               getOptionLabel={(option) => option?.volume_name || ''}
               filterSelectedOptions
@@ -935,12 +987,7 @@ const QuestionCard = ({
             />
           </Grid>
           {boardFilterArr.includes(window.location.host) && (
-            <Grid
-              item
-              xs={12}
-              sm={4}
-              // className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-            >
+            <Grid item xs={12} sm={4}>
               <Autocomplete
                 multiple
                 style={{ width: '100%' }}
@@ -948,7 +995,7 @@ const QuestionCard = ({
                 onChange={(e, value) => handleBoard(value)}
                 id='board'
                 className='dropdownIcon'
-                // value={boardListData}
+                value={selectedBoards || []}
                 options={boardListData || []}
                 getOptionLabel={(option) => option?.board_name || ''}
                 // filterSelectedOptions
@@ -965,12 +1012,7 @@ const QuestionCard = ({
               />
             </Grid>
           )}
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            // className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-          >
+          <Grid item xs={12} sm={4}>
             <Autocomplete
               // multiple
               style={{ width: '100%' }}
@@ -978,7 +1020,7 @@ const QuestionCard = ({
               onChange={(e, value) => handleModule(value)}
               id='module'
               className='dropdownIcon'
-              // value={filterData.module || []}
+              value={selectedModule || []}
               options={moduleListData || []}
               getOptionLabel={(option) => option?.lt_module_name || ''}
               filterSelectedOptions
@@ -996,19 +1038,14 @@ const QuestionCard = ({
               )}
             />
           </Grid>
-          <Grid
-            item
-            xs={12}
-            sm={4}
-            // className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-          >
+          <Grid item xs={12} sm={4}>
             <Autocomplete
               style={{ width: '100%' }}
               size='small'
               onChange={(e, value) => handleChapter(value)}
               id='chapter'
               className='dropdownIcon'
-              // value={filterData?.chapter || ''}
+              value={selectedChapter || ''}
               options={chapterListData || []}
               getOptionLabel={(option) => option?.chapter_name || ''}
               filterSelectedOptions
@@ -1030,6 +1067,7 @@ const QuestionCard = ({
               onChange={(e, value) => handleKeyConcept(value)}
               id='keyConcept'
               className='dropdownIcon'
+              value={selectedTopic || ''}
               options={topicListData || []}
               getOptionLabel={(option) => option?.topic_name}
               filterSelectedOptions
@@ -1076,7 +1114,7 @@ const QuestionCard = ({
                     aria-controls='panel1bh-content'
                     id='panel1bh-header'
                   >
-                    <Typography>{item[0]}</Typography>
+                    <div className='th-fw-700 th-20'>{item[0]}</div>
                   </AccordionSummary>
                   <AccordionDetails>
                     <Grid container>
@@ -1084,52 +1122,65 @@ const QuestionCard = ({
                         return (
                           <Grid container style={{ width: '100%' }}>
                             <Grid md={6}>
-                              <Typography>{each[0]}</Typography>
+                              <div className='th-fw-600'>{each[0]}</div>
                             </Grid>
                             {each[1]?.map((resource) => {
-                              let resourceName = resource.split('_')[
-                                resource.split('_').length - 1
-                              ];
+                              let resourceName = resource.split(
+                                `${each[0].toLowerCase()}/`
+                              );
                               return (
-                                <Grid container style={{ width: '100%' }}>
-                                  <Grid md={3} className='text-center'>
-                                    <FormControlLabel
-                                      control={
-                                        <Checkbox
-                                          // checked={state.checkedB}
-                                          onChange={() => assignResource(resource)}
-                                          name='checkedB'
-                                          color='primary'
-                                        />
-                                      }
-                                      label='Assign'
-                                    />
+                                <>
+                                  <Grid container style={{ width: '100%' }}>
+                                    <Grid md={8} className='text-left'>
+                                      <Typography className='text-truncate th-width-90'>
+                                        {resourceName[1]}
+                                      </Typography>
+                                    </Grid>
+                                    <Grid md={2} className='text-right'>
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            // checked={state.checkedB}
+                                            onChange={() =>
+                                              setSelectedResources((prevState) => [
+                                                ...prevState,
+                                                resource,
+                                              ])
+                                            }
+                                            name='checkedB'
+                                            color='primary'
+                                          />
+                                        }
+                                        label='Assign'
+                                        style={{ minWidth: '50px' }}
+                                      />
+                                    </Grid>
+                                    <Grid md={1} className='text-center pt-2'>
+                                      <a
+                                        onClick={() => {
+                                          openPreview({
+                                            currentAttachmentIndex: 0,
+                                            attachmentsArray: [
+                                              {
+                                                src: `${endpoints.lessonPlan.s3erp}${resource}`,
+                                                name: resource,
+                                                extension:
+                                                  '.' +
+                                                  resource.split('.')[
+                                                    resource.split('.').length - 1
+                                                  ],
+                                              },
+                                            ],
+                                          });
+                                        }}
+                                        rel='noopener noreferrer'
+                                        target='_blank'
+                                      >
+                                        <SvgIcon component={() => <VisibilityIcon />} />
+                                      </a>
+                                    </Grid>
                                   </Grid>
-                                  <Grid md={3} className='text-center'>
-                                    <a
-                                      onClick={() => {
-                                        openPreview({
-                                          currentAttachmentIndex: 0,
-                                          attachmentsArray: [
-                                            {
-                                              src: `${endpoints.lessonPlan.s3erp}${resource}`,
-                                              name: resource,
-                                              extension:
-                                                '.' +
-                                                resource.split('.')[
-                                                  resource.split('.').length - 1
-                                                ],
-                                            },
-                                          ],
-                                        });
-                                      }}
-                                      rel='noopener noreferrer'
-                                      target='_blank'
-                                    >
-                                      <SvgIcon component={() => <VisibilityIcon />} />
-                                    </a>
-                                  </Grid>
-                                </Grid>
+                                </>
                               );
                             })}
                           </Grid>
@@ -1150,12 +1201,22 @@ const QuestionCard = ({
           <Button
             className='mr-3'
             variant='contained'
-            onClick={() => setShowDrawer(false)}
+            onClick={() => {
+              setShowDrawer(false);
+              assignResource([]);
+            }}
           >
             Back
           </Button>
-          {resourcesData?.length > 0 && (
-            <Button variant='default' onClick={() => setShowDrawer(false)}>
+          {resourcesData && (
+            <Button
+              variant='contained'
+              color='primary'
+              onClick={() => {
+                setShowDrawer(false);
+                assignResource([...selectedResources]);
+              }}
+            >
               Submit
             </Button>
           )}

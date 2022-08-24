@@ -33,6 +33,7 @@ import Attachment from '../../../../containers/homework/teacher-homework/attachm
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { connect, useSelector } from 'react-redux';
 import axiosInstance from '../../../../config/axios';
+import Loader from './../../../../components/loader/loader';
 const QuestionPaperInfo = ({
   assessmentId,
   assessmentDate,
@@ -46,6 +47,10 @@ const QuestionPaperInfo = ({
   const [attachmentPreviews, setAttachmentPreviews] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [sizeValied, setSizeValied] = useState({});
+  const [showSubmit,setShowSubmit] = useState({})
+  const [reloadFlag,setReloadFlag] = useState(false)
+  const [showagain,setShowagain] = useState([])
+  const [allImage,setAllImage] = useState([])
 
   const {
     assessmentId: assessmentIdFromContext = null,
@@ -82,7 +87,10 @@ const QuestionPaperInfo = ({
   const firstUpdate = useRef(true);
   const fileUploadInput = useRef(null);
   const attachmentsRef = useRef(null);
+  const attachmentsInitialRef = useRef(null);
   const [showPrev, setshowPrev] = useState(0);
+  const [showPrevAgain, setshowPrevAgain] = useState(0);
+
   const handleScroll = (dir) => {
     if (dir === 'left') {
       attachmentsRef.current.scrollLeft -= 150;
@@ -90,6 +98,36 @@ const QuestionPaperInfo = ({
       attachmentsRef.current.scrollLeft += 150;
     }
   };
+
+  const handleScrollAgain = (dir) => {
+    if (dir === 'left') {
+      attachmentsInitialRef.current.scrollLeft -= 150;
+    } else {
+      attachmentsInitialRef.current.scrollLeft += 150;
+    }
+  };
+
+  useEffect(() => {
+    let count = 0;
+    attachmentPreviews.forEach((e) => {
+      if (typeof e == 'string') count = count + 1;
+      else {
+        count = Object.keys(e).length + count;
+      }
+    });
+    setshowPrev(count > 2);
+  }, [attachmentPreviews]);
+
+  useEffect(() => {
+    let count = 0;
+    showagain.forEach((e) => {
+      if (typeof e == 'string') count = count + 1;
+      else {
+        count = Object.keys(e).length + count;
+      }
+    });
+    setshowPrevAgain(count > 2);
+  }, [showagain]);
 
   useEffect(() => {
     countSubQuestions();
@@ -128,13 +166,23 @@ const QuestionPaperInfo = ({
 
   const SubmitAssessmentAPI = () => {
     const body = { question_files: attachments, test: assessmentId }
+    const param = { upload_id : showSubmit?.upload_id ,can_reupload : false }
+    if(attachments.length === 0) param['question_files'] = [null]
+    if(attachments.length > 0) param['question_files'] = attachments
     // return {
     // setLoading(true);
     // setAssessmentId,
-    axiosInstance.post(`${endpoints.assessment.imageupload}`, body)
+   if(attachments.length === 0){
+     setAlert('warning','Please upload file')
+   }
+   if(attachments.length>0){
+    if(showSubmit.can_reupload){
+      axiosInstance.put(`${endpoints.assessment.imageupload}`, param)
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setAlert('success', result?.data?.message);
+          setReloadFlag(!reloadFlag)
+          setShowagain([])
         } else {
           setAlert('error', result?.data?.message);
         }
@@ -145,26 +193,80 @@ const QuestionPaperInfo = ({
         // setAlert('error', error?.response.data.developer_msg);
         // setLoading(false);
       });
+     }else{
+      axiosInstance.post(`${endpoints.assessment.imageupload}`, body)
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          setAlert('success', result?.data?.message);
+          setReloadFlag(!reloadFlag)
+          setShowagain([])
+        } else {
+          setAlert('error', result?.data?.message);
+        }
+        // setLoading(false);
+        // props.onClose();
+      })
+      .catch((error) => {
+        // setAlert('error', error?.response.data.developer_msg);
+        // setLoading(false);
+      });
+   }
+   }
     // }
   }
+
+  const getAssesmentDocument = () => {
+    axiosInstance
+      .get(`${endpoints.assessment.imageupload}?test_id=${assessmentId}`)
+      .then((result) => {
+        console.log(result?.data,'orchids11')
+        if(result?.data?.status_code === 200){
+        setShowSubmit(result?.data)
+        setAttachments((pre)=>[...pre,...result?.data?.result])
+        setAttachmentPreviews((prevState) => [...prevState, ...result?.data?.result]);
+        setShowagain(result?.data?.result)
+        const preImgnames = result?.data?.result.map((i)=>i.split("/")[3])
+        setAllImage((pre)=>[...pre,...preImgnames])
+      }});
+  };
+
+  useEffect(()=>getAssesmentDocument(),[reloadFlag])
+
+  const imageValidator = (file)=>{
+    if(file.name.toLowerCase().lastIndexOf('.jpg') > 0 || file.name.toLowerCase().lastIndexOf('.png') > 0  || file.name.toLowerCase().lastIndexOf('.jpeg') > 0){
+      if(file.size < 52428800){
+          const isFileValid = {
+              msg: 'Accepted files: jpeg,jpg,png',
+              msgColor: '#014b7e',
+              isValid: true
+          };
+          return isFileValid;
+      }
+  }
+}
 
   const handleFileUpload = async (file) => {
     console.log('File', file);
     if (!file) {
       return null;
     }
-    const isValid = FileValidators(file);
-    !isValid?.isValid && isValid?.msg && setAlert('error', isValid?.msg);
+    // const isValid = FileValidators(file);
+    const isValid = imageValidator(file)
+    const uniqueImages = allImage.includes(file.name)
+    if(!uniqueImages) setAllImage((pre)=>[...pre,file.name])
+    if(uniqueImages && allImage.length>0) setAlert('warning',"File already uploaded");
+    !isValid?.isValid && setAlert('error',"Please upload image file and less than 50mb");
+    
 
-    if (isValid?.isValid) {
+    if (isValid?.isValid && !uniqueImages) {
       try {
         if (
-          file.name.toLowerCase().lastIndexOf('.pdf') > 0 ||
+          // file.name.toLowerCase().lastIndexOf('.pdf') > 0 ||
           file.name.toLowerCase().lastIndexOf('.jpeg') > 0 ||
           file.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
-          file.name.toLowerCase().lastIndexOf('.png') > 0 ||
-          file.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
-          file.name.toLowerCase().lastIndexOf('.mp4') > 0
+          file.name.toLowerCase().lastIndexOf('.png') > 0 
+          // file.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
+          // file.name.toLowerCase().lastIndexOf('.mp4') > 0
         ) {
           const fd = new FormData();
           fd.append('file', file);
@@ -199,10 +301,10 @@ const QuestionPaperInfo = ({
           prevState.splice(pdfIndex, 1);
           return [...prevState];
         });
-        setAttachments((prevState) => {
-          prevState.splice(pdfIndex, 1);
-          return [...prevState];
-        });
+        // setAttachments((prevState) => {
+        //   prevState.splice(pdfIndex, 1);
+        //   return [...prevState];
+        // });
       } else {
         setAttachmentPreviews((prevState) => {
           let newObj = prevState[pdfIndex];
@@ -210,22 +312,22 @@ const QuestionPaperInfo = ({
           prevState[pdfIndex] = newObj;
           return [...prevState];
         });
-        setAttachments((prevState) => {
-          let newObj = prevState[pdfIndex];
-          delete newObj[pageIndex];
-          prevState[pdfIndex] = newObj;
-          return [...prevState];
-        });
+        // setAttachments((prevState) => {
+        //   let newObj = prevState[pdfIndex];
+        //   delete newObj[pageIndex];
+        //   prevState[pdfIndex] = newObj;
+        //   return [...prevState];
+        // });
       }
     } else {
       setAttachmentPreviews((prevState) => {
         prevState.splice(pdfIndex, 1);
         return [...prevState];
       });
-      setAttachments((prevState) => {
-        prevState.splice(pdfIndex, 1);
-        return [...prevState];
-      });
+      // setAttachments((prevState) => {
+      //   prevState.splice(pdfIndex, 1);
+      //   return [...prevState];
+      // });
     }
   };
 
@@ -435,6 +537,9 @@ const QuestionPaperInfo = ({
             </Button>
           )}</> :
           <div>
+
+            {((!showSubmit?.attempted && showSubmit?.is_test_active) || showSubmit?.can_reupload) ?
+              (<>
             <h5>Upload the image file here.</h5>
             <input
               className='file-upload-input'
@@ -477,7 +582,7 @@ const QuestionPaperInfo = ({
             )
             }
             {attachmentPreviews.length > 0 && (
-              <Grid item xs={12} className='attachments-grid'>
+              <Grid item xs={12} style={{width:'44vw'}} className='attachments-grid'>
                 <div className='attachments-list-outer-container'>
                   <div className='prev-btn'>
                     {showPrev && (
@@ -522,11 +627,11 @@ const QuestionPaperInfo = ({
                                   }
                                   index={i}
                                   actions={['preview', 'download', 'delete']}
-                                  onDelete={(index, deletePdf) =>
+                                  onDelete={(index, deletePdf) =>{
                                     removeAttachment(imageIndex, pdfindex, deletePdf, {
                                       item,
                                     })
-                                  }
+                                  }}
                                   ispdf={true}
                                 />
                               </div>
@@ -546,9 +651,13 @@ const QuestionPaperInfo = ({
                                 }
                                 index={pdfindex}
                                 actions={['preview', 'download', 'delete']}
-                                onDelete={(index, deletePdf) =>
+                                onDelete={(index, deletePdf) =>{
                                   removeAttachment(index, pdfindex, deletePdf)
-                                }
+                                  const images = attachments.filter((i)=> i !== attachments[pdfindex])
+                                  setAttachments(images)
+                                  const sameImage = allImage.filter((i)=> i !== allImage[pdfindex])
+                                  setAllImage(sameImage)
+                                }}
                                 ispdf={false}
                               />
                             </div>
@@ -618,6 +727,140 @@ const QuestionPaperInfo = ({
                 Submit Assessment
               </Button>
             </Grid>
+            </>) : (
+              <>
+              {showagain.length > 0 && (
+              <Grid item xs={12} style={{width:'44vw'}} className='attachments-grid'>
+                <div className='attachments-list-outer-container'>
+                  <div className='prev-btn'>
+                    {setshowPrevAgain && (
+                      <IconButton onClick={() => handleScrollAgain('left')}>
+                        <ArrowBackIosIcon />
+                      </IconButton>
+                    )}
+                  </div>
+                  <SimpleReactLightbox>
+                    <div
+                      className='attachments-list'
+                      ref={attachmentsInitialRef}
+                      onScroll={(e) => {
+                        e.preventDefault();
+                      }}
+                    >
+                      {showagain.map((url, pdfindex) => {
+                        console.log('URL', url);
+                        let cindex = 0;
+                        attachmentPreviews.forEach((item, index) => {
+                          if (index < pdfindex) {
+                            if (typeof item == 'string') {
+                              cindex = cindex + 1;
+                            } else {
+                              cindex = Object.keys(item).length + cindex;
+                            }
+                          }
+                        });
+                        if (typeof url == 'object') {
+                          return Object.values(url).map((item, i) => {
+                            let imageIndex = Object.keys(url)[i];
+                            return (
+                              <div className='attachment'>
+                                <Attachment
+                                  key={`homework_student_question_attachment_${i}`}
+                                  fileUrl={item}
+                                  fileName={`Attachment-${i + 1 + cindex}`}
+                                  urlPrefix={
+                                    url.includes('lesson_plan_file')
+                                      ? `${endpoints.homework.resourcesS3}`
+                                      : `${endpoints.discussionForum.s3}/homework`
+                                  }
+                                  index={i}
+                                  actions={['preview']}
+                                  // onDelete={(index, deletePdf) =>{
+                                  //   removeAttachment(imageIndex, pdfindex, deletePdf, {
+                                  //     item,
+                                  //   })
+                                  // }}
+                                  ispdf={true}
+                                />
+                              </div>
+                            );
+                          });
+                        } else
+                          return (
+                            <div className='attachment'>
+                              <Attachment
+                                key={`homework_student_question_attachment_${pdfindex}`}
+                                fileUrl={url}
+                                fileName={`Attachment-${1 + cindex}`}
+                                urlPrefix={
+                                  url.includes('lesson_plan_file')
+                                    ? `${endpoints.homework.resourcesS3}`
+                                    : `${endpoints.discussionForum.s3}/homework`
+                                }
+                                index={pdfindex}
+                                actions={['preview']}
+                                // onDelete={(index, deletePdf) =>{
+                                //   removeAttachment(index, pdfindex, deletePdf)
+                                //   const images = attachments.filter((i)=> i !== attachments[pdfindex])
+                                //   setAttachments(images)
+                                // }}
+                                ispdf={false}
+                              />
+                            </div>
+                          );
+                      })}
+
+                      <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                        <SRLWrapper>
+                          {showagain.map((url, i) => {
+                            console.log('URLSRL', url);
+                            if (typeof url == 'object') {
+                              return Object.values(url).map((item, i) => {
+                                return (
+                                  <img
+                                    src={
+                                      url.includes('lesson_plan_file')
+                                        ? `${endpoints.homework.resourcesS3}`
+                                        : `${endpoints.discussionForum.s3}/homework/${item}`
+                                    }
+                                    onError={(e) => {
+                                      e.target.src = placeholder;
+                                    }}
+                                    alt={`Attachment-${i + 1}`}
+                                  />
+                                );
+                              });
+                            } else
+                              return (
+                                <img
+                                  src={
+                                    url.includes('lesson_plan_file')
+                                      ? `${endpoints.homework.resourcesS3}`
+                                      : `${endpoints.discussionForum.s3}/homework/${url}`
+                                  }
+                                  onError={(e) => {
+                                    e.target.src = placeholder;
+                                  }}
+                                  alt={`Attachment-${i + 1}`}
+                                />
+                              );
+                          })}
+                        </SRLWrapper>
+                      </div>
+                    </div>
+                  </SimpleReactLightbox>
+                  <div className='next-btn'>
+                    {showPrevAgain && (
+                      <IconButton onClick={() => handleScrollAgain('right')}>
+                        <ArrowForwardIosIcon color='primary' />
+                      </IconButton>
+                    )}
+                  </div>
+                </div>
+              </Grid>
+            )}
+              </>
+            )}
           </div>
 
         }
@@ -629,6 +872,7 @@ const QuestionPaperInfo = ({
   return (
     <Paper elevation={2} className={classes.paper}>
       <div className={classes.testInfo}>
+        {fileUploadInProgress && <Loader />}
         {headersUI}
         {isTestAttempted ? assessmentAnalysis : takeTestUI}
         {/* {takeTestUI} */}

@@ -34,7 +34,7 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import EditIcon from '@material-ui/icons/Edit';
 import unfiltered from '../../assets/images/unfiltered.svg';
-import Loading from 'components/loader/loader';
+import Loader from './../../components/loader/loader';
 //import exportFromJSON from 'export-from-json';
 import { CSVLink } from 'react-csv';
 import TablePagination from '@material-ui/core/TablePagination';
@@ -195,6 +195,7 @@ const OfflineStudentAssessment = () => {
   const [selectedBranch, setSelectedBranch] = useState(
     history?.location?.state?.data?.branch[0]
   );
+
   const [selectedBranchId, setSelectedBranchIds] = useState([]);
   const [gradeList, setGradeList] = useState([]);
   const [selectedGrade, setSelectedGrade] = useState(
@@ -219,6 +220,8 @@ const OfflineStudentAssessment = () => {
   const [branchOMR, setBranchOMR] = useState([]);
   const [displayOMR, setDisplayOMR] = useState(false);
   const [uploadBranchOMR, setUploadBranchOMR] = useState('');
+  const [filterClicked,setFilterClicked] = useState(false)
+  const [checkBoxFlag,setCheckBoxFlag] = useState(false)
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -367,11 +370,18 @@ const OfflineStudentAssessment = () => {
         setStudentList(result?.data?.result?.user_reponse);
         setQuesList(result?.data?.result?.questions);
         setLoading(false);
+        setFilterClicked(true)
       })
       .catch((error) => {
         console.log('');
       });
   };
+
+  useEffect(()=>{
+    if(filterClicked){
+      offlineMarks()
+    }
+  },[checkBoxFlag])
 
   const uploadMarks = (data) => {
     console.log(data);
@@ -392,8 +402,33 @@ const OfflineStudentAssessment = () => {
     });
   };
 
+  const updateReUpload = (val) =>{
+    setLoading(true)
+    let testId = history?.location?.state?.test?.id
+    let param = {
+      user_id:val?.user_id,
+      test_id : testId,
+      can_reupload: !val?.can_reupload
+    }
+    axiosInstance
+      .post(
+        `${endpoints.assessment.reUpload}?`,param
+      )
+      .then((result) => {
+        setLoading(false)
+        console.log(result);
+        setCheckBoxFlag(!checkBoxFlag)
+        if(result?.data?.status_code === 200){
+          setAlert('success', result?.data?.message);
+        }
+      })
+      .catch((error) => {
+        console.log('');
+        setLoading(false)
+      });
+  }
   useEffect(() => {
-    if (filterData?.subjId) {
+    if (filterData?.subjId && !filterClicked) {
       setLoading(true);
       setSelectedSection(filterData?.selectedSection);
       axiosInstance
@@ -410,7 +445,7 @@ const OfflineStudentAssessment = () => {
           console.log('');
         });
     }
-  }, []);
+  }, [checkBoxFlag]);
 
   const handleBack = () => {
     sessionStorage.removeItem('filterData');
@@ -435,6 +470,7 @@ const OfflineStudentAssessment = () => {
 
   return (
     <Layout className='accessBlockerContainer'>
+      {loading && <Loader />}
       <div className={classes.parentDiv}>
         <CommonBreadcrumbs
           componentName='Assessment'
@@ -579,7 +615,7 @@ const OfflineStudentAssessment = () => {
                       <TableCell className={classes.tableCell}>Name</TableCell>
                       <TableCell className={classes.tableCell}>Total Marks</TableCell>
                       <TableCell className={classes.tableCell}>Action</TableCell>
-                      {/* <TableCell className={classes.tableCell}>Edit</TableCell> */}
+                      <TableCell className={classes.tableCell}>Enable Re-Upload</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -615,6 +651,25 @@ const OfflineStudentAssessment = () => {
                           ) : (
                             ''
                           )}
+                        </TableCell>
+                        <TableCell className={classes.tableCell} id='blockArea'>
+                          {items?.can_reupload && <Checkbox
+                            checked={items?.can_reupload}
+                            iconStyle={{ fill: 'red' }}
+                            onChange={(e) => {
+                              updateReUpload(items)
+                            }
+                            }
+                            inputProps={{ 'aria-label': 'controlled' }}
+                          />}
+                           {!items?.can_reupload && <Checkbox
+                            iconStyle={{ fill: 'red' }}
+                            onChange={(e) => {
+                              updateReUpload(items)
+                            }
+                            }
+                            inputProps={{ 'aria-label': 'controlled' }}
+                          />}
                         </TableCell>
                       </TableRow>
                     ))}

@@ -764,7 +764,7 @@ const QuestionTypeFilters = ({
                   variant='contained'
                   color='primary'
                   size='medium'
-                  className={classes.draftbtn}
+                  // className={classes.draftbtn}
                   onClick={handleSave}
                 >
                   Save as Draft

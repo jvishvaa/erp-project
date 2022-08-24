@@ -4,20 +4,22 @@ import fileDownload from 'js-file-download';
 import {
   PaperClipOutlined,
   EllipsisOutlined,
-  EyeFilled,
   CloseOutlined,
   ArrowDownOutlined,
 } from '@ant-design/icons';
-import { Button, message, Space, Drawer, Popover } from 'antd';
+import { Button, message, Space, Drawer, Popover, Popconfirm } from 'antd';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useHistory } from 'react-router-dom';
 import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import moment from 'moment';
 
 const DiaryCard = ({ diary, fetchDiaryList }) => {
   const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
+  const { user_id } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [visible, setVisible] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [homeworkDetails, setHomeworkDetails] = useState(false);
+
   const history = useHistory();
 
   const showDrawer = () => {
@@ -47,7 +49,7 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
       .delete(`${endpoints?.dailyDiary?.updateDelete}${id}/update-delete-dairy/`)
       .then((response) => {
         if (response?.data?.status_code === 200) {
-          message.success('Holiday Deleted Successfully');
+          message.success('Diary Deleted Successfully');
           fetchDiaryList();
         }
       })
@@ -61,9 +63,29 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
       pathname: '/create/daily-diary',
       state: {
         data: data,
-        isEdit: true,
+        isDiaryEdit: true,
       },
     });
+  };
+
+  const fetchHomeworkDetails = (params = {}) => {
+    axios
+      .get(`${endpoints?.dailyDiary?.assignHomeworkDiary}`, { params: { ...params } })
+      .then((result) => {
+        if (result?.data?.status == 200) {
+          if (result?.data?.data.length > 0) {
+            axios
+              .get(`academic/${result?.data?.data[0]?.id}/hw-questions/?hw_status=1`)
+              .then((result) => {
+                if (result?.data?.status_code == 200) {
+                  setHomeworkDetails(result?.data?.data);
+                }
+              })
+              .catch((error) => message.error('error', error?.message));
+          }
+        }
+      })
+      .catch((error) => message.error('error', error?.message));
   };
 
   return (
@@ -74,12 +96,12 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
       <div className='col-md-12 py-3'>
         <div className='row th-16 th-fw-700 d-flex justify-content-between th-black-1'>
           {' '}
-          <div>
+          <div className='col-10 text-truncate pl-0'>
             {diary?.dairy_type == 2
               ? diary?.subject?.subject_name
               : `Topic: ${diary?.title}`}
           </div>
-          <div>
+          <div className='col-2'>
             <Popover
               content={
                 <>
@@ -91,13 +113,17 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
                       <span className='th-green th-16'>Edit</span>
                     </div>
                   )}
-
-                  <div
-                    className='row justify-content-between th-pointer pt-2'
-                    onClick={() => deleteDiary(diary?.id)}
+                  <Popconfirm
+                    placement='bottomRight'
+                    title={'Are you sure you want to delete this diary?'}
+                    onConfirm={() => deleteDiary(diary?.id)}
+                    okText='Yes'
+                    cancelText='No'
                   >
-                    <span className='th-red th-16 '>Delete</span>
-                  </div>
+                    <div className='row justify-content-between th-pointer pt-2'>
+                      <span className='th-red th-16 '>Delete</span>
+                    </div>
+                  </Popconfirm>
                 </>
               }
               trigger='click'
@@ -127,12 +153,21 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
         </div>
         <Button
           className='th-white badge th-bg-primary th-br-10 mt-2'
-          onClick={showDrawer}
+          onClick={() => {
+            showDrawer();
+            if (diary?.dairy_type == 2) {
+              fetchHomeworkDetails({
+                section_mapping: diary?.section_mapping[0],
+                subject: diary?.subject?.id,
+                date: moment().format('YYYY-MM-DD'),
+                user_id: user_id,
+              });
+            }
+          }}
           visible={visible}
         >
           View More
         </Button>
-
         <div className='row py-2'>
           <div
             className='col-4 th-br-10 py-1 th-bg-grey'
@@ -147,7 +182,7 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
         className='th-diaryDrawer'
         title={
           <div>
-            <div className='th-fw-600 th-primary th-18'>
+            <div className='th-fw-600 th-primary th-18 text-capitalize'>
               {diary?.dairy_type == 2 ? diary?.subject?.subject_name : diary?.title}
             </div>
             <div className='th-fw-400 mt-2'>Created On:</div>
@@ -207,9 +242,24 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
                 className='row px-3 py-2 th-bg-grey th-br-6 flex-column th-black-2 mb-3'
                 style={{ border: '1px solid #d9d9d9' }}
               >
-                <div className='th-16 th-black-2 th-fw-500'>Homework:</div>
-                <div className='th-16 th-primary th-width-100 text-wrap'>
-                  {diary?.teacher_report?.homework}
+                <div className='th-16 th-black-2 th-fw-500'>Homework Details:</div>
+                <div className='th-16 th-black-2 th-fw-500 mt-2'>
+                  Title:
+                  <div className='th-16 th-primary th-width-100 text-wrap'>
+                    {homeworkDetails?.homework_name}
+                  </div>
+                </div>
+                <div className='th-16 th-black-2 th-fw-500'>
+                  Instructions:
+                  <div className='th-16 th-primary th-width-100 text-wrap'>
+                    {homeworkDetails?.description}
+                  </div>
+                </div>
+                <div className='th-16 th-black-2 th-fw-500'>
+                  Last Submission Date:
+                  <div className='th-16 th-primary th-width-100 text-wrap'>
+                    {moment(homeworkDetails?.last_submission_dt).format('YYYY-MM-DD')}
+                  </div>
                 </div>
               </div>
             </>
@@ -259,13 +309,19 @@ const DiaryCard = ({ diary, fetchDiaryList }) => {
 
                   return (
                     <div className='row py-2'>
-                      <div className='col-8 pl-0' md={6}>
-                        <div className='th-primary text-truncate'>{fileName}</div>
+                      <div className='col-8 pl-0'>
+                        <div
+                          className='th-primary text-truncate'
+                          style={{ width: '200px' }}
+                        >
+                          {fileName}
+                        </div>
                       </div>
                       <div className='col-4 text-center'>
-                        <a href={`${endpoints.announcementList.s3erp}${each}`} download>
-                          <ArrowDownOutlined className='th-primary th-pointer' />
-                        </a>
+                        <ArrowDownOutlined
+                          className='th-primary th-pointer'
+                          onClick={() => handleDownloadAll([each])}
+                        />
                       </div>
                     </div>
                   );

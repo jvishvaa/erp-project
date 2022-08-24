@@ -16,6 +16,7 @@ import CommonBreadcrumbs from '../../components/common-breadcrumbs/breadcrumbs';
 import { AlertNotificationContext } from '../../context-api/alert-context/alert-state';
 import ChangePassword from './change-password/change-password';
 import Layout from '../Layout';
+import { connect, useSelector } from 'react-redux';
 import './profile.css';
 const useStyles = makeStyles((theme) => ({
   textfields: {
@@ -40,7 +41,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Profile = (props) => {
   const { setAlert } = useContext(AlertNotificationContext);
-  const { role_details: roleDetailes } =
+  const { role_details: roleDetailes , user_level: userLevel} =
     JSON.parse(localStorage.getItem('userDetails')) || {};
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [update, setUpdate] = useState(false);
@@ -54,6 +55,9 @@ const Profile = (props) => {
   const classes = useStyles();
   const [userDetails,setuserDetails] = useState()
   const [inputDetails, setInputDetails] = useState()
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
 
   const getUserDetails = async () => {
     try {
@@ -135,6 +139,124 @@ const Profile = (props) => {
       setAlert('error', error.message);
     }
   };
+
+
+  const getStudentDetails = async () => {
+    try {
+      const result = await axiosInstance.get(
+        `${endpoints.profile.studentDetails}?session_year_id=${selectedAcademicYear?.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(result);
+      const userDetails  = result?.data?.data || {};
+      console.log(userDetails);
+      if (result?.data?.data) {
+        setInputFields([
+          {
+            name: 'name',
+            type: 'text', 
+            value:  userDetails?.name,
+            placeholder: 'Name',
+            editable: false,
+            requireOTPAuthentication: false,
+          },
+          {
+            name: 'Fathers Name',
+            type: 'text',
+            value: userDetails?.parent_details?.length > 0 ? userDetails?.parent_details[0].father_name : '',
+            placeholder: 'Fathers Name',
+            editable: false,
+            requireOTPAuthentication: true,
+          },
+          {
+            name: 'Mothers Name',
+            type: 'text',
+            value: userDetails?.parent_details?.length > 0 ? userDetails?.parent_details[0].mother_name : '',
+            placeholder: 'Mothers Name',
+            editable: false,
+            requireOTPAuthentication: true,
+          },
+          {
+            name: 'Address',
+            type: 'text',
+            value: userDetails?.address,
+            placeholder: 'Address',
+            editable: false,
+            requireOTPAuthentication: true,
+          },
+          {
+            name: 'email',
+            type: 'text',
+            value:  userDetails?.email,
+            placeholder: 'Email Id',
+            editable: false,
+            requireOTPAuthentication: true,
+          },
+          {
+            name: 'ERP ID',
+            type: 'text',
+            value: userDetails?.erp_id,
+            placeholder: 'Erp Id',
+            editable: false,
+            requireOTPAuthentication: true,
+          },
+          {
+            name: 'Branch',
+            type: 'text',
+            value: userDetails?.session_details[0]?.acad_session__branch__branch_name,
+            placeholder: 'Branch',
+            editable: false,
+            requireOTPAuthentication: true,
+          },
+          {
+            name: 'Grade',
+            type: 'text',
+            value: userDetails?.session_details[0]?.grade__grade_name,
+            placeholder: 'Grade',
+            editable: false,
+            requireOTPAuthentication: true,
+          },
+          {
+            name: 'Section',
+            type: 'text',
+            value: userDetails?.session_details[0]?.section__section_name,
+            placeholder: 'Section',
+            editable: false,
+            requireOTPAuthentication: true,
+          },
+          {
+            name: 'phone no',
+            type: 'text',
+            value: userDetails?.contact,
+            placeholder: 'Phone Number',
+            editable: false,
+            requireOTPAuthentication: true,
+          },
+          {
+            name: 'DOB',
+            type: 'date',
+            value: userDetails?.date_of_birth,
+            placeholder: 'Date of Birth',
+            editable: false,
+            requireOTPAuthentication: true,
+          },
+         
+        ]);
+        setUserId(roleDetailes?.erp_user_id);
+        setProfileImage(userDetails?.profile);
+      } else {
+        setAlert('error', result.data.message);
+      }
+    } catch (error) {
+      setAlert('error', error.message);
+    }
+  };
+
+
   const editDetails = () => {
     seteditable(true)
     setInputDetails(inputFields)
@@ -180,7 +302,11 @@ const Profile = (props) => {
         setUserImage(null);
         setuserDetails(null)
         setUserImageData(null);
-        getUserDetails();
+        if(userLevel == 13){
+          getStudentDetails()
+        } else {
+          getUserDetails();
+        }
         seteditable(false)
       } else {
         setAlert('error', response.data.message);
@@ -196,8 +322,12 @@ const Profile = (props) => {
     setInputFields(inputDetails)
   };
   useEffect(() => {
-    getUserDetails();
-  }, []);
+    if(userLevel == 13){
+      getStudentDetails()
+    } else {
+      getUserDetails();
+    }
+  }, [userLevel]);
   return (
     <>
       <Layout>
