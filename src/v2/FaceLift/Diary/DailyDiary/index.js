@@ -312,6 +312,7 @@ const DailyDiary = () => {
     setHomework('');
     setShowIcon(false);
     setHomeworkCreated(false);
+    setShowHomeworkForm(false);
     if (e) {
       setSubjectID(e.value);
       setSubjectName(e.children);

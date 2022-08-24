@@ -86,6 +86,8 @@ const GeneralDiary = () => {
       section: null,
     });
     setSectionDropdown([]);
+    setSectionMappingID();
+    setSectionID();
     if (e) {
       setGradeID(e);
       const params = {
@@ -123,8 +125,9 @@ const GeneralDiary = () => {
 
   const handleClearGrade = () => {
     setSectionDropdown([]);
-    setSectionID();
     setGradeID();
+    setSectionID();
+    setSectionMappingID();
   };
 
   const publishGeneralDiary = () => {
@@ -180,7 +183,7 @@ const GeneralDiary = () => {
       message.error('Please select Grade');
       return;
     }
-    if (!sectionID) {
+    if (!sectionMappingID) {
       message.error('Please select Section');
       return;
     }

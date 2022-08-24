@@ -189,8 +189,7 @@ const DetailsModal = (props) => {
                           <img src={getFileIcon(extension)} />
                         </div>
                         <div className='col-5 text-truncate'>{filename}</div>
-                        <div className='col-2 px-0'>188 kb</div>
-                        <div className='col-2 pr-0'>.{extension}</div>
+                        <div className='col-4 pr-0'>.{extension}</div>
                         <div className='col-2 text-center'>
                           <a
                             href={`${endpoints.announcementList.s3erp}announcement/${item}`}
