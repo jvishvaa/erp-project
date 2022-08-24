@@ -882,13 +882,12 @@ const QuestionCard = ({
                 </div>
                 {/* </Box> */}
               </Grid>
-              <Grid
+              {/* <Grid
                 item
                 xs={12}
                 md={2}
                 style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-              >
-                {/* <Box className='question-ctrl-inner-container th-pointer'> */}
+              >                
                 <div>
                   <Button
                     onClick={handleResourcesDrawerOpen}
@@ -899,7 +898,7 @@ const QuestionCard = ({
                   </Button>
                 </div>
                 <div className='th-12 pt-2'>(From Leson Plan)</div>
-              </Grid>
+              </Grid> */}
             </Grid>
           </CardContent>
         </Card>
