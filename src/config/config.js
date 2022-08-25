@@ -34,6 +34,7 @@ const dev = {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
+    CENTRAL_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
   },
   apiGateway: {
     baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
@@ -58,6 +59,7 @@ const qa = {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
+    CENTRAL_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
   },
   apiGateway: {
     // baseURL: `${window.location.origin}/qbox`,
@@ -82,6 +84,7 @@ const stage = {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
+    CENTRAL_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -101,6 +104,7 @@ const prod = {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
+    CENTRAL_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
