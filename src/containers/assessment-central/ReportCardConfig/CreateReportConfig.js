@@ -160,6 +160,7 @@ function CreateReportConfig() {
         console.log(result, 'debug')
         setAlert('success', result.data.message);
         history.goBack()
+        handleClose()
         // }
       }).catch((error) => {
 
