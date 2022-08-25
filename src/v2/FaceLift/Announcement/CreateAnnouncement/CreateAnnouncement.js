@@ -13,7 +13,6 @@ import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 import UploadModal from './UploadModal';
 import MembersModal from './MembersModal';
 import { useHistory } from 'react-router-dom';
-import { Editor } from '@tinymce/tinymce-react';
 
 const { Option } = Select;
 
@@ -30,7 +29,7 @@ const CreateAnnouncement = () => {
   const history = useHistory();
   const formRef = createRef();
   const branchList = useSelector((state) => state.commonFilterReducer?.branchList);
-  const editorRef = useRef(null);
+
   const [intimation, setIntimation] = useState([]);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showMembersModal, setShowMembersModal] = useState(false);
@@ -51,6 +50,8 @@ const CreateAnnouncement = () => {
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const isStudentIncluded = selectedUserLevels?.includes(13);
 
+  const { TextArea } = Input;
+
   const handleUploadModalClose = () => {
     setShowUploadModal(false);
   };
@@ -68,6 +69,7 @@ const CreateAnnouncement = () => {
     setUploadedFiles(newFileList);
   };
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
 
   const handleChange = (value) => {
     setSelectedCategory(value);
@@ -257,7 +259,7 @@ const CreateAnnouncement = () => {
       message.error('Please add title');
       return;
     }
-    if (!editorRef?.current?.getContent()) {
+    if (!description) {
       message.error('Please add description');
       return;
     }
@@ -279,7 +281,7 @@ const CreateAnnouncement = () => {
       session_year: selectedAcademicYear?.id,
       role_id: selectedUserLevels,
       title: title,
-      content: editorRef.current.getContent(),
+      content: description,
       category: selectedCategory,
     };
     if (asDraft) {
@@ -421,26 +423,7 @@ const CreateAnnouncement = () => {
                 <div className='col-12'>
                   <span className='th-grey th-14'>Description</span>
                   <div className='th-editor py-2'>
-                    <Editor
-                      onInit={(evt, editor) => (editorRef.current = editor)}
-                      init={{
-                        height: 200,
-                        menubar: false,
-                        statusbar: false,
-                        toolbar: false,
-                        plugins: [
-                          'autolink lists link image charmap print preview anchor',
-                          'searchreplace code fullscreen',
-                          'insertdatetime media table paste code',
-                        ],
-                        // toolbar:
-                        //   'bold italic fontsizeselect | alignleft aligncenter ' +
-                        //   'alignright alignjustify | bullist numlist outdent indent | ',
-
-                        content_style:
-                          'body { font-family:Inter,sans-serif; font-size:16px;margin:1rem; border:0px solid #D9D9D9 }',
-                      }}
-                    />
+                    <TextArea rows={4} onChange={(e) => setDescription(e.target.value)} />
                   </div>
                 </div>
                 <Form

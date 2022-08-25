@@ -6,6 +6,7 @@ const local = {
   s3: {
     BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net',
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
+    UDAAN_BUCKET: 'https://d3rxnono6u9knq.cloudfront.net',
   },
   apiGateway: {
     baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
@@ -29,6 +30,7 @@ const dev = {
     ERP_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net/',
     // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
     // ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    CENTRAL_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
   },
   apiGateway: {
     baseURL: 'https://dev.olvorchidnaigaon.letseduvate.com/qbox',
@@ -49,6 +51,7 @@ const qa = {
   s3: {
     BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
     ERP_BUCKET: 'https://erp-revamp.s3.ap-south-1.amazonaws.com/',
+    CENTRAL_BUCKET: 'https://d3ka3pry54wyko.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
   },
   apiGateway: {
     // baseURL: `${window.location.origin}/qbox`,
@@ -69,6 +72,7 @@ const stage = {
   s3: {
     BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
     ERP_BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+    CENTRAL_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,
@@ -83,6 +87,7 @@ const prod = {
   s3: {
     BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
     ERP_BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com/',
+    CENTRAL_BUCKET: 'https://d2r9gkgplfhsr2.cloudfront.net', // ALERT!!! QA & DEV in D3 but PROD in D2
   },
   apiGateway: {
     baseURL: `${window.location.origin}/qbox`,

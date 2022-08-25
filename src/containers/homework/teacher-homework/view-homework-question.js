@@ -73,7 +73,7 @@ const ViewHomeworkQuestion = ({ question, index }) => {
                           fileName={`Attachment-${i + 1}`}
                           urlPrefix={
                             item.includes('lesson_plan_file')
-                              ? `${endpoints.discussionForum.s3}`
+                              ? `${endpoints.homework.resourcesFiles}`
                               : `${endpoints.discussionForum.s3}/homework`
                           }
                           index={i}
@@ -93,7 +93,7 @@ const ViewHomeworkQuestion = ({ question, index }) => {
                         fileName={`Attachment-${i + 1}`}
                         urlPrefix={
                           url.includes('lesson_plan_file')
-                            ? `${endpoints.discussionForum.s3}`
+                            ? `${endpoints.homework.resourcesFiles}`
                             : `${endpoints.discussionForum.s3}/homework`
                         }
                         index={i}
@@ -120,7 +120,7 @@ const ViewHomeworkQuestion = ({ question, index }) => {
                           <img
                             src={
                               item.includes('lesson_plan_file')
-                                ? `${endpoints.discussionForum.s3}/${item}`
+                                ? `${endpoints.homework.resourcesFiles}/${item}`
                                 : `${endpoints.discussionForum.s3}/homework/${item}`
                             }
                             onError={(e) => {
@@ -136,7 +136,7 @@ const ViewHomeworkQuestion = ({ question, index }) => {
                         <img
                           src={
                             url.includes('lesson_plan_file')
-                              ? `${endpoints.discussionForum.s3}/${url}`
+                              ? `${endpoints.homework.resourcesFiles}/${url}`
                               : `${endpoints.discussionForum.s3}/homework/${url}`
                           }
                           onError={(e) => {
