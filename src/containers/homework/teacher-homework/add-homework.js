@@ -382,7 +382,7 @@ const AddHomework = ({ onAddHomework, onSetSelectedHomework }) => {
                     id='title'
                     name='title'
                     // onChange={() => {}}
-                    inputProps={{ maxLength: 100 }}
+                    inputProps={{ maxLength: 30 }}
                     label='Title'
                     autoFocus
                     onChange={(e) => {

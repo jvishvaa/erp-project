@@ -705,7 +705,7 @@ const QuestionCard = ({
                                     fileName={`Attachment-${i + 1 + cindex}`}
                                     urlPrefix={
                                       item.includes('lesson_plan_file')
-                                        ? `${endpoints.discussionForum.s3}`
+                                        ? `${endpoints.homework.resourcesFiles}`
                                         : `${endpoints.discussionForum.s3}/homework`
                                     }
                                     index={i}
@@ -735,7 +735,7 @@ const QuestionCard = ({
                                   fileName={`Attachment-${1 + cindex}`}
                                   urlPrefix={
                                     url.includes('lesson_plan_file')
-                                      ? `${endpoints.discussionForum.s3}`
+                                      ? `${endpoints.homework.resourcesFiles}`
                                       : `${endpoints.discussionForum.s3}/homework`
                                   }
                                   index={pdfindex}
@@ -761,7 +761,7 @@ const QuestionCard = ({
                                     <img
                                       src={
                                         item.includes('lesson_plan_file')
-                                          ? `${endpoints.discussionForum.s3}/${item}`
+                                          ? `${endpoints.homework.resourcesFiles}/${item}`
                                           : `${endpoints.discussionForum.s3}/homework/${item}`
                                       }
                                       onError={(e) => {
@@ -776,7 +776,7 @@ const QuestionCard = ({
                                   <img
                                     src={
                                       url.includes('lesson_plan_file')
-                                        ? `${endpoints.discussionForum.s3}/${url}`
+                                        ? `${endpoints.homework.resourcesFiles}/${url}`
                                         : `${endpoints.discussionForum.s3}/homework/${url}`
                                     }
                                     onError={(e) => {
@@ -882,12 +882,13 @@ const QuestionCard = ({
                 </div>
                 {/* </Box> */}
               </Grid>
-              {/* <Grid
+              <Grid
                 item
                 xs={12}
                 md={2}
                 style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
-              >                
+              >
+                {/* <Box className='question-ctrl-inner-container th-pointer'> */}
                 <div>
                   <Button
                     onClick={handleResourcesDrawerOpen}
@@ -898,7 +899,7 @@ const QuestionCard = ({
                   </Button>
                 </div>
                 <div className='th-12 pt-2'>(From Leson Plan)</div>
-              </Grid> */}
+              </Grid>
             </Grid>
           </CardContent>
         </Card>
@@ -1161,7 +1162,7 @@ const QuestionCard = ({
                                             currentAttachmentIndex: 0,
                                             attachmentsArray: [
                                               {
-                                                src: `${endpoints.lessonPlan.s3erp}${resource}`,
+                                                src: `${endpoints.homework.resourcesFiles}/${resource}`,
                                                 name: resource,
                                                 extension:
                                                   '.' +
