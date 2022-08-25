@@ -203,15 +203,16 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Marks Upload', Path: '/assessment/marks-upload' },
     { name: 'Report Card', Path: '/assessment/report-card' },
     { name: 'Report Card Pipeline', Path: '/assessment/report-card-pipeline' },
+    { name: 'Report Card Category', Path: '/assessment/category' },
+    { name: 'Report Card Config', Path: '/assessment/report-config' },
     { name: 'Question Bank', Path: '/question-bank' },
     { name: 'Question Paper', Path: '/assessment-question' },
     { name: 'Create Test', Path: '/assesment' },
     { name: 'Take Test', Path: '/assessment' },
     { name: 'Student Attendance Report', Path: '/student-attendance-report' },
     { name: 'Student Strength', Path: '/student-strength' },
-
-    { name: 'Grievance Teacher', Path: '/griviences/admin-view' },
-    { name: 'Grievance Student', Path: '/griviences/student-view' },
+    { name: 'Griviences Teacher', Path: '/griviences/admin-view' },
+    { name: 'Griviences Student', Path: '/griviences/student-view' },
     {
       name: 'Manage Orchadio',
       Path: '/orchadio/manage-orchadio',
@@ -736,8 +737,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
             menuOpen && childValue && drawerOpen === false
               ? classes.menuItemIconWhite
               : item.child_module?.some((childItem) => childItem['child_name'] === child)
-              ? classes.menuItemIconWhite
-              : classes.menuItemIcon
+                ? classes.menuItemIconWhite
+                : classes.menuItemIcon
           }
           onClick={() => {
             onClick(true);
@@ -791,7 +792,7 @@ const MenuItem = withRouter(({ history, ...props }) => {
                 style={{ background: 'none' }}
                 className={
                   selectedIndex &&
-                  child.child_name === menuSelectionArray[selectedIndex].name
+                    child.child_name === menuSelectionArray[selectedIndex].name
                     ? classes.menuSelectionText
                     : classes.menuItemhover
                 }

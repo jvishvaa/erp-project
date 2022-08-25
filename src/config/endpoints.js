@@ -564,6 +564,10 @@ export default {
     erpViewMoreData: '/assessment/question-details/',
     erpQuestionPublishing: '/assessment/publish-question/',
     erpQuestionNewPublishing: `/assessment/publish-multiple-question/`,
+    categoryList: `${baseURLCentral}/assessment/list-categories/`,
+    categoryMapping: `${baseURL}/assessment/report-card-question-category-mapping/`,
+    categoryQuestion: `${baseURL}/assessment/report-card-question-category/`,
+    reportConfig: `${baseURL}/assessment/report-card-config-api/`,
   },
   assementQP: {
     assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,

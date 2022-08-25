@@ -418,6 +418,8 @@ import UploadOMR from 'containers/assessment-central/UploadOMR';
 import StudentMark from 'containers/assessment-central/studentMakUpload';
 import UserProfile from 'containers/login/profiles';
 import EventsMark from 'containers/attendance/eventsmark';
+import CategoryTable from 'containers/question-bank/category/category-table';
+import CategoryMapping from 'containers/subjectGradeMapping/CategoryMapping';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -427,7 +429,7 @@ const V1Router = [
     {({ match }) => <RoleManagement match={match} />}
   </Route>,
   <Route path='/userprofile'>
-  {({ match }) => <UserProfile match={match} />}
+    {({ match }) => <UserProfile match={match} />}
   </Route>,
   <Route path='/user-management'>
     {({ match }) => <UserManagement match={match} />}
@@ -486,6 +488,9 @@ const V1Router = [
   </Route>,
   <Route exact path='/assessment/marks-upload'>
     {({ match }) => <ReportCard match={match} />}
+  </Route>,
+  <Route exact path='/assessment/category'>
+    {({ match }) => <CategoryTable match={match} />}
   </Route>,
   <Route exact path='/assessment/report-card'>
     {({ match }) => <StudentReportCard match={match} />}
@@ -680,6 +685,9 @@ const V1Router = [
   </Route>,
   <Route exact path='/master-management/subject/grade/mapping'>
     {({ match }) => <Subjectgrade match={match} />}
+  </Route>,
+  <Route exact path='/master-management/category-mapping'>
+    {({ match }) => <CategoryMapping match={match} />}
   </Route>,
   <Route exact path='/master-management/event-category'>
     {({ match }) => <EventCategory match={match} />}
@@ -1473,8 +1481,8 @@ const V1Router = [
   <Route path='/successrefer'>{({ match }) => <ReferSuccess match={match} />}</Route>,
   <Route path='/holidaymarking'>{({ match }) => <HolidayMark match={match} />}</Route>,
   <Route path='/eventmarking'>
-  {({ match }) => <EventsMark match={match} />}
-</Route>,
+    {({ match }) => <EventsMark match={match} />}
+  </Route>,
   <Route path='/student_count_report'>
     {({ match }) => <StudentCountReport match={match} />}
   </Route>,
