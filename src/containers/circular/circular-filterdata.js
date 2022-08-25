@@ -64,6 +64,8 @@ const CircularFilters = ({
   const [moduleId, setModuleId] = useState();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
 
+  const domainUrl = window.location.host.split('.')
+
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
@@ -453,36 +455,40 @@ const CircularFilters = ({
       </Grid>
       {window.location.pathname === '/teacher-circular' && (
         <>
-          <div>
-            <Divider
-              orientation='vertical'
-              style={{
-                backgroundColor: '#014e7b',
-                height: '40px',
-                marginTop: '1rem',
-                marginLeft: '2rem',
-                marginRight: '1.25rem',
-              }}
-            />
-          </div>
-          {isMobile && <Grid item xs={3} sm={0} />}
-          <Grid
-            item
-            xs={6}
-            sm={2}
-            className={isMobile ? 'createButton' : 'createButton addButtonPadding'}
-          >
-            <Button
-              startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-              variant='contained'
-              style={{color:'white', width: '100%' }}
-              color='primary'
-              onClick={() => history.push('/create-circular')}
-              size='medium'
-            >
-              CREATE
-            </Button>
-          </Grid>
+          {domainUrl[0] == "orchids" ? '' :
+            <>
+              <div>
+                <Divider
+                  orientation='vertical'
+                  style={{
+                    backgroundColor: '#014e7b',
+                    height: '40px',
+                    marginTop: '1rem',
+                    marginLeft: '2rem',
+                    marginRight: '1.25rem',
+                  }}
+                />
+              </div>
+              {isMobile && <Grid item xs={3} sm={0} />}
+              <Grid
+                item
+                xs={6}
+                sm={2}
+                className={isMobile ? 'createButton' : 'createButton addButtonPadding'}
+              >
+                <Button
+                  startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                  variant='contained'
+                  style={{ color: 'white', width: '100%' }}
+                  color='primary'
+                  onClick={() => history.push('/create-circular')}
+                  size='medium'
+                >
+                  CREATE
+                </Button>
+              </Grid>
+            </>
+          }
         </>
       )}
       {isMobile && <Grid item xs={3} sm={0} />}
