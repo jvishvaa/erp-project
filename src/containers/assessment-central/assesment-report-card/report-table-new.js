@@ -113,9 +113,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
               </td>
               <td width='15%' className='text-center'>
                 <img
-                  src={
-                    'https://d3ka3pry54wyko.cloudfront.net/dev/media/logos/orchids_logo.png'
-                  }
+                  src={`https://d3ka3pry54wyko.cloudfront.net/${schoolData?.branch_logo}`}
                   width={'120px'}
                 />
               </td>
@@ -194,11 +192,12 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                     {eachScholastic?.sub_component?.map((eachSem) => {
                       return (
                         <td
-                          className={`th-width-${
-                            88 / eachScholastic?.sub_component?.length + 1
-                          } th-fw-600`} //calculating column width
+                          className={`th-fw-600`}
                           colSpan={eachSem?.marks_with_subject?.length + 1}
-                          style={{ backgroundColor: '#fdbf8e' }}
+                          style={{
+                            backgroundColor: '#fdbf8e',
+                            width: `${88 / eachScholastic?.sub_component?.length}%`,
+                          }} //calculating column width
                         >
                           {eachSem?.sub_component_name}
                         </td>
@@ -363,11 +362,12 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                     {eachScholastic?.sub_component?.map((eachSem) => {
                       return (
                         <td
-                          className={`th-width-${
-                            88 / eachScholastic?.sub_component?.length + 1
-                          } th-fw-600`} //calculating column width
+                          className={`th-fw-600`} //calculating column width
                           colSpan={eachSem?.marks_with_subject?.length + 1}
-                          style={{ backgroundColor: '#fdbf8e' }}
+                          style={{
+                            backgroundColor: '#fdbf8e',
+                            width: `${88 / eachScholastic?.sub_component?.length}%`,
+                          }}
                         >
                           {eachSem?.sub_component_name}
                         </td>
