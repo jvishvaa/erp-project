@@ -368,13 +368,7 @@ const QuestionCard = ({
     } else {
       axiosInstance
         .get(
-          `academic/get-period-resources/?chapter=${selectedChapterID}&topic_id=${selectedTopicID}`,
-          {
-            headers: {
-              'X-DTS-HOST': X_DTS_HOST,
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          `academic/get-period-resources/?chapter=${selectedChapterID}&topic_id=${selectedTopicID}`
         )
         .then((result) => {
           if (result?.data?.status === 200) {
