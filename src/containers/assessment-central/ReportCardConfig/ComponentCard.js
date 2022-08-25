@@ -1,34 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
-import Loading from '../../../components/loader/loader';
-import Layout from '../../Layout';
 import {
   Grid,
   TextField,
   Button,
   makeStyles,
-  Paper,
-  Table,
-  TableContainer,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableBody,
-  IconButton,
-  Box,
+  Paper
 } from '@material-ui/core';
-import Autocomplete from '@material-ui/lab/Autocomplete';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import RemoveIcon from '@material-ui/icons/Remove';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
-import axiosInstance from 'config/axios';
-import endpoints from 'config/endpoints';
-import { useHistory } from 'react-router-dom';
 import SubComponentCard from './SubComponentCard';
 import cuid from 'cuid';
-// import InputAdornment from '@mui/material/InputAdornment';
-// import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,41 +26,41 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function ComponentCard(props) {
-  const classes = useStyles();
-  const [componentName, setComponentName] = useState('');
-  const [questions, setQuestions] = useState([
-    // {
-    //   id: cuid(),
-    //   question: '',
-    //   attachments: [],
-    //   is_attachment_enable: false,
-    //   max_attachment: 2,
-    //   penTool: false,
-    // },
-  ]);
-  const [queIndexCounter1, setQueIndexCounter1] = useState(0);
-  const addNewQuestion = (index) => {
-    setQuestions((prevState) => [
-      ...prevState.slice(0, index),
-      {
-        id: cuid(),
-        question: '',
-        attachments: [],
-        is_attachment_enable: false,
-        max_attachment: 2,
-        penTool: false,
-      },
-      ...prevState.slice(index),
-    ]);
-  };
 
-  const removeQuestion = (index) => {
-    setQuestions((prevState) => [
-      ...prevState.slice(0, index),
-      ...prevState.slice(index + 1),
-    ]);
-  };
+function ComponentCard({ componentId, components, setComponentDetails }) {
+  const classes = useStyles();
+
+  const index = components.findIndex(
+    columnDetail => columnDetail.id === componentId
+  );
+  const subComponents = components[index].subComponents
+
+  const [response, setResponse] = useState('');
+  console.log('treeresponse', response)
+
+
+  const getCurriculumData = () => {
+    axiosInstance.get(`${endpoints.reportCardConfig.reportcardcomponent}`).then((res) => {
+      console.log('tree', res.data.result)
+      const modifiedResponse = res.data.result.map(
+        (obj) => (obj && obj.component_type) || {}
+      );
+      // setResponse(modifiedResponse)
+      setResponse(res.data.result)
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  const [rhul, setRult] = useState([])
+  console.log('debugtest', rhul)
+  console.log('debugtest', rhul.map((val) => val.component_type))
+
+  const ComponentCardsendingid = rhul.map((val) => val.id)
+
+  useEffect(() => {
+    getCurriculumData()
+  }, [])
 
   return (
     <>
@@ -85,42 +69,105 @@ function ComponentCard(props) {
           <Grid
             item
             xs={12}
-            sm={3}
+            sm={6}
             className={'filterPadding'}
-            // style={{margin: '20px 10px 20px 20px !important'}}
-            //   style={{ background: 'pink' }}
+            style={{ display: 'flex' }}
           >
-            <TextField
-              style={{ width: '100%' }}
+            <Grid item xs={12} sm={6} >
+              <Autocomplete
+                style={{ width: '100%' }}
+                size='small'
+                onChange={(event, data) => {
+                  console.log('orchids', data)
+                  if (data) {
+                    for (let val of response) {
+                      if (data?.component_name === val?.component_name) {
+                        setRult((pre) => [...pre, val])
+                      }
+                    }
+                  }
+                  else {
+                    setRult([])
+                  }
+                }}
+                id='Question Level'
+                className='dropdownIcon'
+                // value={ || {}}
+                // options={question_level_options || []}
+                options={response || []}
+                getOptionLabel={(option) => option?.component_type_value || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='CURRICULUM TYPE'
+                    placeholder='CURRICULUM TYPE'
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} >
+              <Autocomplete
+                style={{ width: '100%', marginLeft: '5px' }}
+                size='small'
+                // onChange={handleQuestionLevel}
+                onChange={() => {
+                  const newComponent = components[index];
+                  newComponent.ComponentID = ComponentCardsendingid[0];
+                  setComponentDetails(
+                    components.map(columnDetail => {
+                      if (columnDetail.id === componentId) {
+                        return newComponent;
+                      }
+                      return columnDetail;
+                    })
+                  );
+                }}
+                id='Question Level'
+                className='dropdownIcon'
+                // value={ || {}}
+                // options={question_level_options || []}
+                options={rhul || []}
+                getOptionLabel={(option) => option?.component_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='CURRICULUM NAME'
+                    placeholder='CURRICULUM NAME'
+                  />
+                )}
+              />
+            </Grid>
+            {/* <TextField
+              style={{ width: '100%', marginLeft: 4 }}
               id='subname'
-              label='Component Name'
+              label='CURRICULUM NAME'
               variant='outlined'
               size='small'
               name='subname'
               autoComplete='off'
-              value={componentName}
-              //   InputProps={{
-              //     endAdornment: (
-              //       <Box>
-              //         <AddOutlinedIcon
-              //           onClick={() => {
-              //             setQueIndexCounter1(queIndexCounter1 + 1);
-              //             addNewQuestion1(queIndexCounter1 + 1);
-              //           }}
-              //         />
-              //       </Box>
-              //     ),
-              //   }}
-                onChange={(e) => {
-                  // setPage(1);
-                  setComponentName(e.target.value);
-                }}
-            />
+              value={components[index].name}
+              onChange={(e) => {
+                const newComponent = components[index];
+                newComponent.name = e.target.value;
+                setComponentDetails(
+                  components.map(columnDetail => {
+                    if (columnDetail.id === componentId) {
+                      return newComponent;
+                    }
+                    return columnDetail;
+                  })
+                );
+              }}
+            /> */}
           </Grid>
           <Grid
             item
             xs={12}
-            sm={1}
+            sm={2}
             className={'filterPadding'}
             style={{ paddingLeft: '0px !important' }}
           >
@@ -132,46 +179,64 @@ function ComponentCard(props) {
               style={{ color: 'white' }}
               title='Create Sub-Component'
               onClick={() => {
-                setQueIndexCounter1(queIndexCounter1 + 1);
-                addNewQuestion(queIndexCounter1 + 1);
+                const subCompnentUniqueId = cuid();
+                const newComponent = [...subComponents, {
+                  id: subCompnentUniqueId,
+                  subComponentsID: '',
+                  columns: [],
+                }]
+                const newColumn = components[index];
+                newColumn.subComponents = newComponent;
+                setComponentDetails(
+                  components.map(columnDetail => {
+                    if (columnDetail.id === componentId) {
+                      return newColumn;
+                    }
+                    return columnDetail;
+                  })
+                );
               }}
             >
-              {/* Sub-Component */}
+              Add Term
             </Button>
           </Grid>
-          {questions?.length !== 0 ? (
-          <Grid
-            item
-            xs={12}
-            sm={1}
-            className={'filterPadding'}
-            style={{ paddingLeft: '0px !important' }}
-          >
-            <Button
-              startIcon={<RemoveIcon style={{ fontSize: '30px' }} />}
-              variant='contained'
-              color='primary'
-              size='small'
-              style={{ color: 'white' }}
-              title='Remove Sub-Component'
-              onClick={() => {
-                setQueIndexCounter1(queIndexCounter1 - 1);
-                removeQuestion(queIndexCounter1 - 1);
-              }}
+          {subComponents.length !== 0 ? (
+            <Grid
+              item
+              xs={12}
+              sm={2}
+              className={'filterPadding'}
+              style={{ paddingLeft: '0px !important' }}
             >
-              {/* Sub-Component */}
-            </Button>
-          </Grid>) : <></>}
+              <Button
+                startIcon={<RemoveIcon style={{ fontSize: '30px' }} />}
+                variant='contained'
+                color='primary'
+                size='small'
+                style={{ color: 'white' }}
+                title='Remove Sub-Component'
+                onClick={() => {
+                  const newColumn = components[index];
+                  const resultantSubComponents = [...subComponents];
+                  resultantSubComponents.pop()
+                  newColumn.subComponents = resultantSubComponents;
+                  setComponentDetails(
+                    components.map(columnDetail => {
+                      if (columnDetail.id === componentId) {
+                        return newColumn;
+                      }
+                      return columnDetail;
+                    })
+                  );
+                }}
+              > Delete Term
+              </Button>
+            </Grid>) : <></>}
 
-          {questions.map((question, index) => (
-            <SubComponentCard
-            // key={question.id}
-            // question={question}
-            // index={index}
-            // addNewQuestion={addNewQuestion}
-            // handleChange={handleChange}
-            // removeQuestion={removeQuestion}
-            />
+          {subComponents.map((subComponent) => (
+            <SubComponentCard key={subComponent.id} subComponentId={subComponent.id} componentId={componentId}
+              components={components}
+              setComponentDetails={setComponentDetails} />
           ))}
         </Grid>
       </Paper>

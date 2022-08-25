@@ -1,143 +1,240 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import CommonBreadcrumbs from 'components/common-breadcrumbs/breadcrumbs';
-import Loading from '../../../components/loader/loader';
+// import Loading from '../../../components/loader/loader';
 import Layout from '../../Layout';
 import {
   Grid,
   TextField,
-  Button,
-  makeStyles,
-  Paper,
-  Table,
-  TableContainer,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableBody,
-  IconButton,
+  Button
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
-import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
-import DeleteOutlinedIcon from '@material-ui/icons/DeleteOutlined';
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
-import { useHistory } from 'react-router-dom';
 import cuid from 'cuid';
-import ComponentCard from './ComponentCard';
 import RemoveIcon from '@material-ui/icons/Remove';
+import { useSelector } from 'react-redux';
+import ComponentCard from './ComponentCard';
+import { useHistory } from 'react-router';
+import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+
 
 function CreateReportConfig() {
-  //   const classes = useStyles();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+
+
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+
+  const [components, setComponentDetails] = useState([])
+
+  const [branchList, setBranchList] = useState([]);
+  const [gradeList, setGradeList] = useState([]);
+  const [moduleId, setModuleId] = useState('');
+  const [selectedbranch, setSelectedbranch] = useState();
+  const [selectedGrade, setSelectedGrade] = useState();
   const history = useHistory();
-  const [loading, setLoading] = useState(false);
-  // const [allData, setAllData] = useState();
-  const [questions, setQuestions] = useState([
-    // {
-    //   id: cuid(),
-    //   question: '',
-    //   attachments: [],
-    //   is_attachment_enable: false,
-    //   max_attachment: 2,
-    //   penTool: false,
-    // },
-  ]);
-  const [queIndexCounter, setQueIndexCounter] = useState(0);
-  const addNewQuestion = (index) => {
-    setQuestions((prevState) => [
-      ...prevState.slice(0, index),
+
+  const createComponent = () => {
+    const compnentUniqueId = cuid();
+    setComponentDetails(prevState => [
+      ...prevState,
       {
-        id: cuid(),
-        component_name: '',
-        sub_component_name: [
-          {
-            column: [
-              {
-                column_name: '',
-                // summary: [],    // only for showing
-                test_selection_id: [],  //
-                weightAge: 0,
-                logic: {},
-              },
-            ],
-          },
-        ],
-        // question: '',
-        // attachments: [],
-        // is_attachment_enable: false,
-        // max_attachment: 2,
-        // penTool: false,
+        acad_session: selectedbranch?.session_year?.id,
+        grade: selectedGrade?.grade_id,
+        id: compnentUniqueId,
+        ComponentID: -1,
+        subComponents: []
       },
-      ...prevState.slice(index),
     ]);
+  }
+
+  console.log("DEBUG components", components);
+  console.log("DEBUG selectedbranch", selectedbranch, selectedGrade);
+
+
+
+  useEffect(() => {
+    if (moduleId) getBranch()
+  }, [moduleId]);
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'User Management' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'User Groups') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
+  }, [window.location.pathname]);
+
+  const getBranch = () => {
+    axiosInstance
+      .get(
+        `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
+      )
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          // const allBranchData = res?.data?.data?.results.map((item) => item.branch);
+          setBranchList(res?.data?.data?.results);
+        } else {
+          setBranchList([]);
+        }
+      });
   };
 
-  const removeQuestion = (index) => {
-    setQuestions((prevState) => [
-      ...prevState.slice(0, index),
-      ...prevState.slice(index + 1),
-    ]);
+  const getGrade = (value) => {
+    axiosInstance
+      .get(
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`
+      )
+      .then((res) => {
+        if (res?.data?.status_code === 200) {
+          setGradeList(res?.data?.data);
+        } else {
+          setBranchList([]);
+        }
+      });
   };
+
+  const { setAlert } = useContext(AlertNotificationContext);
+  const handleBranch = (e, value = {}) => {
+    setSelectedbranch()
+    setSelectedGrade()
+    // const Ids = value.map((i)=>i.id)
+    if (value) {
+      setSelectedbranch(value)
+      getGrade(value)
+      // setSelectBranchId(Ids)	
+    } else {
+      // setSelectBranchId([])	
+      setSelectedbranch()
+      setSelectedGrade()
+    }
+  }
+
+  const handleGrade = (e, value) => {
+    if (value) {
+      setSelectedGrade(value)
+      // getGroupTypes()
+      // getSection(value)
+    } else {
+      setSelectedGrade()
+    }
+  }
+
+  // const submitAllReportCardData = () => {
+  //   axiosInstance.get(`${endpoints.reportCardConfig.submitAPI}`).then((res) => {
+  //     console.log('tree', res.data.result)
+  //     setResponse(res.data.result)
+  //   }).catch(err => {
+  //     console.log(err)
+  //   })
+  // }
+  // const requestData = {
+
+  // }
+  const submitAllReportCardData = () => {
+    axiosInstance.post(`${endpoints.reportCardConfig.submitAPI}`, components)
+      .then(result => {
+        // if (result.data.status_code === 200) {
+        console.log(result, 'debug')
+        setAlert('success', result.data.message);
+        history.goBack()
+        // }
+      }).catch((error) => {
+
+        // setAlert('error', error?.response?.data?.description)
+      })
+  }
 
   return (
     <>
-      {loading ? <Loading message='Loading...' /> : null}
+      {/* {loading ? <Loading message='Loading...' /> : null} */}
       <Layout>
         <div>
           <div style={{ width: '95%', margin: '20px auto' }}>
             <CommonBreadcrumbs
               componentName='Assessment'
               childComponentName='Report Card Config'
-              //   childComponentNameNext={
-              // addFlag && !tableFlag
-              //   ? 'Add Category'
-              //   : editFlag && !tableFlag
-              //   ? 'Edit Category'
-              //   : null
-              //   }
             />
           </div>
         </div>
         <hr />
-        {/* <Grid container spacing={5} style={{ margin: '0px' }}>
-          <Grid item xs={12} sm={3} className={'addButtonPadding'}>
+        <Grid container spacing={1} style={{ display: 'flex' }}>
+          <Grid item md={3} xs={12} style={{ marginLeft: '20px' }}>
             <Autocomplete
-              style={{ width: 350 }}
-              // value={selectedCentralCategory}
-              id='tags-outlined'
-              options={'centralCategory'}
-              getOptionLabel={(option) => 'option.category_name'}
-              filterSelectedOptions
+              style={{ width: '100%' }}
               size='small'
+              onChange={handleBranch}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedbranch || []}
+              options={branchList || []}
+              getOptionLabel={(option) => option?.branch?.branch_name || ''}
+              filterSelectedOptions
               renderInput={(params) => (
-                <TextField {...params} variant='outlined' label='Grade' />
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Branch'
+                  placeholder='Branch'
+                  required
+                />
               )}
-              onChange={(e, value) => {
-                // setSelectedCentralCategory(value);
-              }}
-              getOptionSelected={(option, value) => value && option.id == value.id}
             />
           </Grid>
-        </Grid> */}
-        <Grid container spacing={1} style={{ margin: '0px' }}>
-          <Grid item xs={12} sm={3} className={'addButtonPadding'}>
-            <Button
-              startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
-              variant='contained'
-              color='primary'
-              size='medium'
-              style={{ color: 'white' }}
-              title='Create'
-              onClick={() => {
-                setQueIndexCounter(queIndexCounter + 1);
-                addNewQuestion(queIndexCounter + 1);
-              }}
-            >
-              Create Component
-            </Button>
+
+          <Grid item md={3} xs={12}>
+            <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={handleGrade}
+              id='branch_id'
+              className='dropdownIcon'
+              value={selectedGrade || ''}
+              options={gradeList || []}
+              getOptionLabel={(option) => option?.grade__grade_name || ''}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Grade'
+                  placeholder='Grade'
+                  required
+                />
+              )}
+            />
           </Grid>
-          {questions?.length !== 0 ? (
-            <Grid item xs={12} sm={3} className={'addButtonPadding'}>
+        </Grid>
+        <Grid container spacing={1} style={{ margin: '0px' }}>
+          {selectedGrade?.grade_id &&
+            <Grid item xs={12} sm={4} className={'addButtonPadding'}>
+              <Button
+                startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
+                variant='contained'
+                color='primary'
+                size='medium'
+                style={{ color: 'white' }}
+                title='Create'
+                onClick={createComponent}
+              >
+                {/* Create Component */}
+                Create ReportCard Curriculum
+              </Button>
+            </Grid>}
+          {components?.length !== 0 ? (
+            <Grid item xs={12} sm={4} className={'addButtonPadding'}>
               <Button
                 startIcon={<RemoveIcon style={{ fontSize: '30px' }} />}
                 variant='contained'
@@ -146,28 +243,42 @@ function CreateReportConfig() {
                 style={{ color: 'white' }}
                 title='Remove'
                 onClick={() => {
-                  setQueIndexCounter(queIndexCounter - 1);
-                  removeQuestion(queIndexCounter - 1);
+                  const prevState = [...components];
+                  prevState.pop()
+                  setComponentDetails(prevState)
                 }}
               >
-                Remove Component
+                {/* Remove Component
+                 */}
+                Remove ReportCard Curriculum
               </Button>
             </Grid>
           ) : (
             <></>
           )}
-          {questions.map((question, index) => (
+          {components?.length > 0 && components?.map((component) => (
             <ComponentCard
-              key={question.id}
-              question={question}
-              setQuestions={setQuestions}
-              index={index}
-              // addNewQuestion={addNewQuestion}
-              // handleChange={handleChange}
-              // removeQuestion={removeQuestion}
+              key={component.id}
+              componentId={component.id}
+              components={components}
+              setComponentDetails={setComponentDetails}
             />
           ))}
+
         </Grid>
+        {components.length > 0 &&
+          <Button
+            variant='contained'
+            color='primary'
+            style={{ marginLeft: '20px' }}
+            onClick={() => {
+              submitAllReportCardData();
+            }}
+            title='Report Card Submitted'
+            className='btn reportcrd-btn'
+          >
+            Submit Report Card
+          </Button>}
       </Layout>
     </>
   );

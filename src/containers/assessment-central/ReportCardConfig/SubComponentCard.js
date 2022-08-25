@@ -2,89 +2,121 @@ import React, { useEffect, useState } from 'react';
 import {
   Grid,
   TextField,
-  Button,
-  makeStyles,
-  Paper,
-  Table,
-  TableContainer,
-  TableCell,
-  TableHead,
-  TableRow,
-  TableBody,
-  IconButton,
-  Box,
+  Button
 } from '@material-ui/core';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
 import cuid from 'cuid';
 import ColumnCard from './ColumnCard';
 import RemoveIcon from '@material-ui/icons/Remove';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import axiosInstance from '../../../config/axios';
+import endpoints from '../../../config/endpoints';
 
-function SubComponentCard() {
-  const [subComponentName, setSubComponentName] = useState('');
-  const [questions, setQuestions] = useState([
-    // {
-    //   id: cuid(),
-    //   question: '',
-    //   attachments: [],
-    //   is_attachment_enable: false,
-    //   max_attachment: 2,
-    //   penTool: false,
-    // },
-  ]);
-  const [queIndexCounter1, setQueIndexCounter1] = useState(0);
-  const addNewQuestion1 = (index) => {
-    setQuestions((prevState) => [
-      ...prevState.slice(0, index),
-      {
-        id: cuid(),
-        question: '',
-        attachments: [],
-        is_attachment_enable: false,
-        max_attachment: 2,
-        penTool: false,
-      },
-      ...prevState.slice(index),
-    ]);
-  };
 
-  const removeQuestion = (index) => {
-    setQuestions((prevState) => [
-      ...prevState.slice(0, index),
-      ...prevState.slice(index + 1),
-    ]);    
-  };
+function SubComponentCard({ subComponentId, componentId,
+  components,
+  setComponentDetails }) {
+
+  const index = components.findIndex(
+    componentDetail => componentDetail.id === componentId
+  );
+
+  const subComponents = components[index].subComponents
+  const [response, setResponse] = useState('');
+  console.log('debugresponse', response)
+  const [newValue, setNewValue] = useState([])
+
+
+  // console.log("DEBUG all data", components, index, subComponents, )
+
+  const subComponentIndex = subComponents.findIndex(componentSubComponentDetail => componentSubComponentDetail.id === subComponentId)
+  const columns = subComponents[subComponentIndex]?.columns
+
+  const getreportcardsubcomponent = () => {
+    axiosInstance.get(`${endpoints.reportCardConfig.reportcardsubcomponent}`).then((res) => {
+      console.log('tree', res.data.result)
+      // const modifiedResponse = res.data.result.map(
+      //   (obj) => (obj && obj.component_type) || {}
+      // );
+      // setResponse(modifiedResponse)
+      setResponse(res.data.result)
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  useEffect(() => {
+    getreportcardsubcomponent()
+  }, [])
+
+
   return (
     <>
       <Grid container spacing={2} style={{ margin: '0px' }}>
         <Grid item xs={12} sm={3} className={'filterPadding'}>
-          <TextField
+
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            // onChange={handleQuestionLevel}
+            onChange={(event, data) => {
+              const newComponent = components[index];
+              console.log('debug', data)
+              setComponentDetails(
+                components.map(componentDetail => {
+                  if (componentDetail.id === componentId) {
+                    const newSubComponent = componentDetail.subComponents[subComponentIndex]
+                    newSubComponent.subComponentsID = data?.id;
+                    newComponent.subComponents[subComponentIndex] = newSubComponent
+                    return newComponent;
+                  }
+                  return componentDetail;
+                })
+              );
+            }}
+            id='Question Level'
+            className='dropdownIcon'
+            // value={new}
+            // options={question_level_options || []}
+            options={response || []}
+            getOptionLabel={(option) => option?.sub_component_name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Term/Semester'
+                placeholder='Term/Semester'
+              />
+            )}
+          />
+
+          {/* <TextField
             style={{ width: '100%' }}
             id='subname'
-            label='Sub-component Name'
+            label='Term/Semester'
             variant='outlined'
             size='small'
             name='subname'
             autoComplete='off'
-            value={subComponentName}
-            // InputProps={{
-            //   endAdornment: (
-            //     <Box>
-            //       <AddOutlinedIcon
-            //         onClick={() => {
-            //           setQueIndexCounter1(queIndexCounter1 + 1);
-            //           addNewQuestion1(queIndexCounter1 + 1);
-            //         }}
-            //       />
-            //     </Box>
-            //   ),
-            // }}
-              onChange={(e) => {
-                // setPage(1);
-                setSubComponentName(e.target.value);
-              }}
-          />
+            value={components[index].subComponents[subComponentIndex].name}
+            onChange={(e) => {
+              const newComponent = components[index];
+              setComponentDetails(
+                components.map(componentDetail => {
+                  if (componentDetail.id === componentId) {
+                    const newSubComponent = componentDetail.subComponents[subComponentIndex]
+                    newSubComponent.name = e.target.value;
+                    newComponent.subComponents[subComponentIndex] = newSubComponent
+                    return newComponent;
+                  }
+                  return componentDetail;
+                })
+              );
+            }}
+          /> */}
         </Grid>
-        <Grid item xs={12} sm={1} className={'filterPadding'} style={{paddingLeft: '0px !important'}}>
+        <Grid item xs={12} sm={2} className={'filterPadding'} style={{ paddingLeft: '0px !important' }}>
           <Button
             startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
             variant='contained'
@@ -93,32 +125,95 @@ function SubComponentCard() {
             style={{ color: 'white' }}
             title='Create Column'
             onClick={() => {
-              setQueIndexCounter1(queIndexCounter1 + 1);
-              addNewQuestion1(queIndexCounter1 + 1);
+              //add column to the subcomponent
+              const columnUniqueId = cuid();
+              const newComponent = components[index];
+              setComponentDetails(
+                components.map(componentDetail => {
+                  if (componentDetail.id === componentId) {
+                    const newSubComponent = componentDetail.subComponents[subComponentIndex]
+                    const newColumns = [...componentDetail.subComponents[subComponentIndex].columns, {
+                      id: columnUniqueId,
+                      name: '',
+                      selectedTest: [],
+                      weightage: "",
+                      logic: 0,
+                    }]
+                    newSubComponent.columns = newColumns;
+                    newComponent.subComponents[subComponentIndex] = newSubComponent
+                    return newComponent;
+                  }
+                  return componentDetail;
+                })
+              );
             }}
           >
-            {/* Column */}
+            Add Assessment
           </Button>
         </Grid>
-        {questions?.length !== 0 ? (
-        <Grid item xs={12} sm={1} className={'filterPadding'} style={{paddingLeft: '0px !important'}}>
+        {/* <Grid
+          item
+          xs={12}
+          sm={1}
+          className={"filterPadding"}
+          style={{ paddingLeft: "0px !important" }}
+        >
           <Button
-            startIcon={<RemoveIcon style={{ fontSize: '30px' }} />}
-            variant='contained'
-            color='primary'
-            size='small'
-            style={{ color: 'white' }}
-            title='Remove Column'
+            startIcon={<RemoveIcon style={{ fontSize: "30px" }} />}
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ color: "white" }}
+            title="Remove Column"
             onClick={() => {
-              setQueIndexCounter1(queIndexCounter1 - 1);
-              removeQuestion(queIndexCounter1 - 1);
+              const newColumn = components[index];
+              let resultantSubComponents = [...subComponents];
+              resultantSubComponents = resultantSubComponents.filter(
+                subCom => subCom.id !== componentId
+              );
+              newColumn.subComponents = resultantSubComponents;
+              setComponentDetails(
+                components.map(columnDetail => {
+                  if (columnDetail.id === componentId) {
+                    return newColumn;
+                  }
+                  return columnDetail;
+                })
+              );
             }}
-          >
-            {/* Column */}
-          </Button>
-        </Grid>) : <></>}
-        {questions?.map((question, index) => (
-          <ColumnCard />
+          ></Button>
+        </Grid> */}
+        {/* {columns.length !== 0 ? (
+          <Grid item xs={12} sm={1} className={'filterPadding'} style={{ paddingLeft: '0px !important' }}>
+            <Button
+              startIcon={<RemoveIcon style={{ fontSize: '30px' }} />}
+              variant='contained'
+              color='primary'
+              size='small'
+              style={{ color: 'white' }}
+              title='Remove Column'
+              onClick={() => {
+                // remove the subcomponent
+                const newComponent = components[index];
+                setComponentDetails(
+                  components.map(componentDetail => {
+                    if (componentDetail.id === componentId) {
+                      const newSubComponent = componentDetail.subComponents[subComponentIndex]
+                      newSubComponent.columns = [];
+                      newComponent.subComponents[subComponentIndex] = newSubComponent
+                      return newComponent;
+                    }
+                    return componentDetail;
+                  })
+                );
+              }}
+            >
+            </Button>
+          </Grid>) : <></>} */}
+        {columns?.map((column) => (
+          <ColumnCard key={columns.id} subComponentId={subComponentId} componentId={componentId} columnId={column.id}
+            components={components}
+            setComponentDetails={setComponentDetails} />
         ))}
       </Grid>
     </>

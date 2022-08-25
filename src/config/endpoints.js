@@ -504,6 +504,12 @@ export default {
     studentImgs: '/assessment/assessment-document-upload/',
     reUpload: '/assessment/enable-assessment-re-upload/',
   },
+  reportCardConfig: {
+    reportcardcomponent: '/assessment/report-card-component/',
+    reportcardsubcomponent: '/assessment/report-card-sub-component/',
+    reportcardconfigsummary: '/assessment/report-card-config-summary/',
+    submitAPI: '/assessment/report-card-config-api/',
+  },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,
     reportTopicWise: `/assessment/report-topic-wise/`,

@@ -74,7 +74,7 @@ const statuses = [
   { id: 2, name: 'Completed' },
 ];
 
-const Assesment = () => {
+const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
@@ -555,6 +555,24 @@ const Assesment = () => {
     }
   };
 
+  const [addedId, setAddedId] = useState([]);
+  console.log('debugaddedId', addedId);
+
+  const selectAssetmentCard = (id, checked) => {
+    console.log('debugaddedidcheck', id, checked)
+    if (checked) {
+      console.log('debugpushing id', checked)
+      setAddedId([...addedId, id]);
+    } else {
+      const previousArr = [...addedId]
+      const index = addedId.indexOf(id);
+      previousArr.splice(index, 1)
+      console.log('debugnewremovedid', previousArr, index)
+      setAddedId(previousArr);
+    }
+  }
+
+
   const handleSectionToggle = (event) => {
     setSectionToggle(event.target.checked);
     formik.setFieldValue('section', []);
@@ -928,7 +946,8 @@ const Assesment = () => {
                   </Button>
                 </div>
               </Grid>
-              {(isSuperAdmin || isSuperuser) && (
+
+              {/* {(isSuperAdmin || isSuperuser) && (
                 <Grid item container md={6} xs={6} justifyContent='flex-end'>
                   <div className='btn-container'>
                     <FormControlLabel
@@ -978,7 +997,31 @@ const Assesment = () => {
                     <div></div>
                   )}
                 </Grid>
-              )}
+              )} */}
+
+              {handleClose && addedId.length > 0 && <Grid item md={5} xs={6} style={{ display: 'flex' }}>
+                <div className='btn-container'>
+                  <h6 >Total Selected: {addedId.length}</h6>
+                </div>
+                <div className='btn-container' style={{ marginLeft: '5px' }}>
+                  <Button
+                    style={{ width: '100%', color: 'white' }}
+                    variant='contained'
+                    startIcon={<AddIcon style={{ fontSize: '30px' }} />}
+                    color='primary'
+                    size='medium'
+                    onClick={() => {
+                      console.log('aded the idasse', addedId)
+                      handleColumnSelectedTestChange(
+                        addedId
+                      )
+                      handleClose()
+                    }}
+                  >
+                    Add Selected
+                  </Button>
+                </div>
+              </Grid>}
             </Grid>
           </div>
           <div className='tabs-container'>
@@ -1065,6 +1108,9 @@ const Assesment = () => {
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
                                   activeTab={activeTab}
+                                  addedId={addedId}
+                                  selectAssetmentCard={selectAssetmentCard}
+                                  handleClose={handleClose}
                                 />
                               </Grid>
                             ))}
