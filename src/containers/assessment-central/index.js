@@ -407,6 +407,7 @@ const Assesment = () => {
     setGroupList(testFilterDropdownList?.group)
     setSectionList(testFilterDropdownList?.section)
     history.replace({ state: { dataRestore : false} })
+    if(testFilterData?.status?.id) formik.handleSubmit();
    }
    
 },[isRestoreUnable])
