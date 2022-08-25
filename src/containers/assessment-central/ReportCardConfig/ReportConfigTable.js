@@ -190,7 +190,6 @@ const ReportConfigTable = () => {
       acad_session: selectedbranch?.session_year?.id,
       grade: selectedGrade?.grade_id,
     }
-    console.log('run', params)
     axiosInstance
       .get(url)
       .then((res) => {
@@ -209,7 +208,6 @@ const ReportConfigTable = () => {
     setLoading(true);
     let url = `${endpoints.questionBank.reportConfig}${id}/`
 
-    console.log('runid', id)
     axiosInstance
       .delete(url)
       .then((res) => {
@@ -381,8 +379,6 @@ const ReportConfigTable = () => {
               </TableHead>
               <TableBody>
                 {configData.map((data, index) => {
-                  console.log('debug', configData)
-                  console.log('debug', data)
                   return (
                     <TableRow hover subject='checkbox' tabIndex={-1} key={index}>
                       <TableCell className={classes.tableCell}>
@@ -403,8 +399,6 @@ const ReportConfigTable = () => {
                       <TableCell className={classes.tableCell}>
                         <IconButton
                           onClick={() => {
-                            console.log('rundata', data)
-
                             DeleteData(data?.id)
                           }}
                           title='Delete'

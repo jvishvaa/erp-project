@@ -23,22 +23,13 @@ function SubComponentCard({ subComponentId, componentId,
 
   const subComponents = components[index].subComponents
   const [response, setResponse] = useState('');
-  console.log('debugresponse', response)
   const [newValue, setNewValue] = useState([])
-
-
-  // console.log("DEBUG all data", components, index, subComponents, )
 
   const subComponentIndex = subComponents.findIndex(componentSubComponentDetail => componentSubComponentDetail.id === subComponentId)
   const columns = subComponents[subComponentIndex]?.columns
 
   const getreportcardsubcomponent = () => {
     axiosInstance.get(`${endpoints.reportCardConfig.reportcardsubcomponent}`).then((res) => {
-      console.log('tree', res.data.result)
-      // const modifiedResponse = res.data.result.map(
-      //   (obj) => (obj && obj.component_type) || {}
-      // );
-      // setResponse(modifiedResponse)
       setResponse(res.data.result)
     }).catch(err => {
       console.log(err)
@@ -61,7 +52,6 @@ function SubComponentCard({ subComponentId, componentId,
             // onChange={handleQuestionLevel}
             onChange={(event, data) => {
               const newComponent = components[index];
-              console.log('debug', data)
               setComponentDetails(
                 components.map(componentDetail => {
                   if (componentDetail.id === componentId) {

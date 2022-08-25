@@ -60,11 +60,6 @@ function CreateReportConfig() {
     ]);
   }
 
-  console.log("DEBUG components", components);
-  console.log("DEBUG selectedbranch", selectedbranch, selectedGrade);
-
-
-
   useEffect(() => {
     if (moduleId) getBranch()
   }, [moduleId]);
@@ -142,22 +137,10 @@ function CreateReportConfig() {
     }
   }
 
-  // const submitAllReportCardData = () => {
-  //   axiosInstance.get(`${endpoints.reportCardConfig.submitAPI}`).then((res) => {
-  //     console.log('tree', res.data.result)
-  //     setResponse(res.data.result)
-  //   }).catch(err => {
-  //     console.log(err)
-  //   })
-  // }
-  // const requestData = {
-
-  // }
   const submitAllReportCardData = () => {
     axiosInstance.post(`${endpoints.reportCardConfig.submitAPI}`, components)
       .then(result => {
         // if (result.data.status_code === 200) {
-        console.log(result, 'debug')
         setAlert('success', result.data.message);
         history.goBack()
         handleClose()

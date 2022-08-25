@@ -67,18 +67,15 @@ function ColumnCard({ subComponentId, componentId, columnId,
 
   const subComponents = components[index].subComponents
   const [table, setTable] = useState([])
-  console.log('treeretable', table)
 
   const subComponentIndex = subComponents.findIndex(componentSubComponentDetail => componentSubComponentDetail.id === subComponentId)
   const columns = subComponents[subComponentIndex]?.columns
 
   const columnIndex = columns.findIndex(column => column.id === columnId)
-  console.log("DEBUG all data", components, columnId, columnIndex)
 
   const getreportcardsubcomponent = () => {
     axiosInstance.get(`${endpoints.reportCardConfig.reportcardconfigsummary}`).then((res) => {
       setTable(res.data.result)
-      console.log('treereport', res.data.result)
     }).catch(err => {
       console.log(err)
     })
@@ -125,7 +122,6 @@ function ColumnCard({ subComponentId, componentId, columnId,
   ]);
 
   const [value, setValue] = useState(question_level_options[columns[columnIndex].logic - 1])
-  console.log("DEBUG value column", value, columns[columnIndex].logic)
 
   return (
     <>
@@ -241,9 +237,6 @@ function ColumnCard({ subComponentId, componentId, columnId,
                       <TableBody>
                         {table.map((row, index) => (
                           <TableRow key={index}>
-                            {console.log('treerow', row)}
-                            {console.log('treerow1', row.data)}
-
                             <TableCell align="right">{row.branch.branch_name}&nbsp;(g)
                             </TableCell>
                             {row.data.map((row) =>
@@ -296,9 +289,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
               id='Question Level'
               className='dropdownIcon'
               onChange={(event, data) => {
-                console.log('debug Hello', data)
                 const newComponent = components[index];
-                console.log("DEBUG testing", typeof (data?.value))
                 setValue(question_level_options[data?.value - 1])
                 setComponentDetails(
                   components.map(componentDetail => {
@@ -366,12 +357,10 @@ function ColumnCard({ subComponentId, componentId, columnId,
                   components.map(componentDetail => {
                     if (componentDetail.id === componentId) {
                       const newSubComponent = { ...componentDetail.subComponents[subComponentIndex] }
-                      console.log("DEBUG newSubComponent", { ...newSubComponent }, columnId)
                       const originalColumns = [...componentDetail.subComponents[subComponentIndex].columns]
                       const resultantColumns = originalColumns.filter(
                         column => column.id !== columnId
                       );
-                      console.log("DEBUG newresultantCols", resultantColumns)
                       newSubComponent.columns = resultantColumns;
                       newComponent.subComponents[subComponentIndex] = newSubComponent
                       return newComponent;
