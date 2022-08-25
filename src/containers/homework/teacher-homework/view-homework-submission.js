@@ -595,7 +595,7 @@ const ViewHomework = withRouter(
                                     fileName={`Attachment-${i + 1}`}
                                     urlPrefix={
                                       url.includes('lesson_plan_file')
-                                        ? `${endpoints.discussionForum.s3}`
+                                        ? `${endpoints.homework.resourcesFiles}`
                                         : `${endpoints.discussionForum.s3}/homework`
                                     }
                                     index={i}
@@ -670,7 +670,7 @@ const ViewHomework = withRouter(
                                     fileName={`Attachment-${i + 1}`}
                                     urlPrefix={
                                       url.includes('lesson_plan_file')
-                                        ? `${endpoints.discussionForum.s3}`
+                                        ? `${endpoints.homework.resourcesFiles}`
                                         : `${endpoints.discussionForum.s3}/homework`
                                     }
                                     index={i}
@@ -747,7 +747,7 @@ const ViewHomework = withRouter(
                                       fileName={`Attachment-${i + 1}`}
                                       urlPrefix={
                                         url.includes('lesson_plan_file')
-                                          ? `${endpoints.discussionForum.s3}`
+                                          ? `${endpoints.homework.resourcesFiles}`
                                           : `${endpoints.discussionForum.s3}/homework`
                                       }
                                       index={i}
