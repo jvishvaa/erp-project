@@ -115,14 +115,17 @@ function ColumnCard({ subComponentId, componentId, columnId,
       })
     );
   };
-  console.log("check", components)
 
 
-  const question_level_options = [
+
+  const [question_level_options, setQ] = useState([
     { value: 1, Question_level: 'Top 4 Average' },
     { value: 2, Question_level: 'Best of All' },
     { value: 3, Question_level: 'Avg excluding lowest 2' },
-  ];
+  ]);
+
+  const [value, setValue] = useState(question_level_options[columns[columnIndex].logic - 1])
+  console.log("DEBUG value column", value, columns[columnIndex].logic)
 
   return (
     <>
@@ -293,8 +296,10 @@ function ColumnCard({ subComponentId, componentId, columnId,
               id='Question Level'
               className='dropdownIcon'
               onChange={(event, data) => {
-                console.log('right', data)
+                console.log('debug Hello', data)
                 const newComponent = components[index];
+                console.log("DEBUG testing", typeof (data?.value))
+                setValue(question_level_options[data?.value - 1])
                 setComponentDetails(
                   components.map(componentDetail => {
                     if (componentDetail.id === componentId) {
@@ -306,7 +311,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
                     return componentDetail;
                   }))
               }}
-              // value={filterData?.question_level || {}}
+              value={value}
               options={question_level_options || []}
               getOptionLabel={(option) => option?.Question_level || ''}
               filterSelectedOptions

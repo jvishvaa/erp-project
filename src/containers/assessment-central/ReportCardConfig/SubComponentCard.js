@@ -211,7 +211,7 @@ function SubComponentCard({ subComponentId, componentId,
             </Button>
           </Grid>) : <></>} */}
         {columns?.map((column) => (
-          <ColumnCard key={columns.id} subComponentId={subComponentId} componentId={componentId} columnId={column.id}
+          <ColumnCard key={column.id} subComponentId={subComponentId} componentId={componentId} columnId={column.id}
             components={components}
             setComponentDetails={setComponentDetails} />
         ))}

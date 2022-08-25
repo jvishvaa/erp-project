@@ -5,7 +5,9 @@ import Layout from '../../Layout';
 import {
   Grid,
   TextField,
-  Button
+  Button,
+  Modal,
+  Paper
 } from '@material-ui/core';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import AddOutlinedIcon from '@material-ui/icons/AddOutlined';
@@ -35,6 +37,14 @@ function CreateReportConfig() {
   const [selectedbranch, setSelectedbranch] = useState();
   const [selectedGrade, setSelectedGrade] = useState();
   const history = useHistory();
+
+  const [open, setOpen] = React.useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
   const createComponent = () => {
     const compnentUniqueId = cuid();
@@ -264,6 +274,60 @@ function CreateReportConfig() {
               setComponentDetails={setComponentDetails}
             />
           ))}
+          <Modal
+            open={open}
+            onClose={handleClose}
+            // aria-labelledby="simple-modal-title"
+            // aria-describedby="simple-modal-description"
+            // className={classes.modal}
+            style={{
+              marginLeft: 700,
+              margintop: 1000,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "400px", height: "500px",
+              // position: 'absolute',
+              // top: 0,
+              // bottom: 0,
+              // left: 0,
+              // right: 0,
+            }}
+          >
+            <div
+            // className={classes.paper}
+            // style={{ width: "200px", height: "300px" }}
+            >
+              <Paper elevation={2} style={{ padding: 30 }}>
+                <h3 style={{ margin: 20 }}>Are you sure you want to submit?</h3>
+                <div style={{ display: "flex", marginBottom: '30px' }}>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    style={{ marginLeft: '20px' }}
+                    onClick={() => {
+                      submitAllReportCardData();
+                    }}
+                    title='Report Card Submitted'
+                    className='btn reportcrd-btn'
+                  >
+                    Submit Report Card
+                  </Button>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    style={{ marginLeft: '20px' }}
+                    onClick={handleClose}
+                    title='Report Card Submitted'
+                    className='btn reportcrd-btn'
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </Paper>
+            </div>
+
+          </Modal>
 
         </Grid>
         {components.length > 0 &&
@@ -271,9 +335,7 @@ function CreateReportConfig() {
             variant='contained'
             color='primary'
             style={{ marginLeft: '20px' }}
-            onClick={() => {
-              submitAllReportCardData();
-            }}
+            onClick={handleOpen}
             title='Report Card Submitted'
             className='btn reportcrd-btn'
           >
