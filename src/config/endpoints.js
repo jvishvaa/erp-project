@@ -9,7 +9,12 @@ const {
     baseURL,
     baseURLMPQ,
   },
-  s3: { BUCKET: s3BUCKET, ERP_BUCKET, UDAAN_BUCKET: s3UDAAN_BUCKET },
+  s3: {
+    BUCKET: s3BUCKET,
+    ERP_BUCKET,
+    UDAAN_BUCKET: s3UDAAN_BUCKET,
+    CENTRAL_BUCKET: CENTRAL_BUCKET,
+  },
 } = ENVCONFIG;
 
 // const baseURLCentral = 'http://13.232.30.169/qbox';
@@ -201,7 +206,8 @@ export default {
     upload: '/academic/upload-homework/',
     HwSubmittedDetail: '/academic/homework-submitted-data/',
     submitToUnsubmit: '/academic/homework-submitted-unsubmitted/',
-    resourcesS3: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    // resourcesS3: 'https://d2r9gkgplfhsr2.cloudfront.net',
+    resourcesFiles: `${CENTRAL_BUCKET}`,
   },
   homeworkStudent: {
     getStudentSubjects: '/academic/student-homework/',
@@ -496,7 +502,7 @@ export default {
     bulkUploadMarks: `/assessment/upload-omr-result-excel/`,
     imageupload: '/assessment/assessment-document-upload/',
     studentImgs: '/assessment/assessment-document-upload/',
-    reUpload : '/assessment/enable-assessment-re-upload/',
+    reUpload: '/assessment/enable-assessment-re-upload/',
   },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,
