@@ -393,10 +393,12 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
               <TabPanel
                 tabValue={tabValue}
                 setTabValue={setTabValue}
-                tabValues={['Front', 'Back']}
+                tabValues={['Front']}
               />
             </Box>
-            <Box style={{ margin: '20px auto', width: '95%' }}>{renderReportCardNew()}</Box>
+            <Box style={{ margin: '20px auto', width: '95%' }}>
+              {renderReportCardNew()}
+            </Box>
           </>
         )}
 
@@ -470,27 +472,30 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
                         <TableCell className={classes.tableCell}>
                           {limit * (page - 1) + index + 1}
                         </TableCell>
-                        {selectedReportType?.id === 1 || selectedReportType?.id === 12 && (
-                          <TableCell className={classes.tableCell}>
-                            {rowData?.section_name}
-                          </TableCell>
-                        )}
-                        {selectedReportType?.id === 1 || selectedReportType?.id === 12 && (
-                          <TableCell className={classes.tableCell}>
-                            {rowData?.class_average}
-                          </TableCell>
-                        )}
-                        {selectedReportType?.id === 1 || selectedReportType?.id === 12 && (
-                          <TableCell className={classes.tableCell}>
-                            <div className={classes.teacherNameParent}>
-                              {rowData?.teacher_name?.map((obj) => {
-                                return (
-                                  <div className={classes.teacherNameChild}>{obj}</div>
-                                );
-                              })}
-                            </div>
-                          </TableCell>
-                        )}
+                        {selectedReportType?.id === 1 ||
+                          (selectedReportType?.id === 12 && (
+                            <TableCell className={classes.tableCell}>
+                              {rowData?.section_name}
+                            </TableCell>
+                          ))}
+                        {selectedReportType?.id === 1 ||
+                          (selectedReportType?.id === 12 && (
+                            <TableCell className={classes.tableCell}>
+                              {rowData?.class_average}
+                            </TableCell>
+                          ))}
+                        {selectedReportType?.id === 1 ||
+                          (selectedReportType?.id === 12 && (
+                            <TableCell className={classes.tableCell}>
+                              <div className={classes.teacherNameParent}>
+                                {rowData?.teacher_name?.map((obj) => {
+                                  return (
+                                    <div className={classes.teacherNameChild}>{obj}</div>
+                                  );
+                                })}
+                              </div>
+                            </TableCell>
+                          ))}
                         {selectedReportType?.id === 2 && (
                           <TableCell className={classes.tableCell}>
                             {rowData?.topic}
@@ -503,33 +508,33 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
                         )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                            <TableCell className={classes.tableCell}>
-                              {rowData?.erp_no}
-                            </TableCell>
-                          )}
+                          <TableCell className={classes.tableCell}>
+                            {rowData?.erp_no}
+                          </TableCell>
+                        )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                            <TableCell className={classes.tableCell}>
-                              {rowData?.user_name}
-                            </TableCell>
-                          )}
+                          <TableCell className={classes.tableCell}>
+                            {rowData?.user_name}
+                          </TableCell>
+                        )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                            <TableCell className={classes.tableCell}>
-                              {selectedReportType?.id === 3
-                                ? rowData?.total_mark
-                                : rowData?.marks_obtained}
-                            </TableCell>
-                          )}
+                          <TableCell className={classes.tableCell}>
+                            {selectedReportType?.id === 3
+                              ? rowData?.total_mark
+                              : rowData?.marks_obtained}
+                          </TableCell>
+                        )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                            <TableCell className={classes.tableCell}>
-                              {selectedReportType?.id === 3
-                                ? rowData?.comparsion
-                                : +rowData?.marks_obtained -
+                          <TableCell className={classes.tableCell}>
+                            {selectedReportType?.id === 3
+                              ? rowData?.comparsion
+                              : +rowData?.marks_obtained -
                                 +assessmentReportListData?.comparison}
-                            </TableCell>
-                          )}
+                          </TableCell>
+                        )}
                       </TableRow>
                     );
                   })}
