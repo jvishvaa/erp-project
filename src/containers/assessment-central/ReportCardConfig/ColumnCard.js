@@ -165,7 +165,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
               Test Selection
             </Button>
             {/* {columns[columnIndex].selectedTest.length > 0 && <h6>Selected Test Id's: {columns[columnIndex].selectedTest.join(',')}</h6>} */}
-            {columns[columnIndex].selectedTest.length > 0 && <h6 style={{ marginTop: "8px" }}>Selected Test Id's= {columns[columnIndex].selectedTest.length}</h6>}
+            {columns[columnIndex].selectedTest.length > 0 && <h6 style={{ marginTop: "8px" }}>No of test selected= {columns[columnIndex].selectedTest.length}</h6>}
             <Modal
               open={open}
               onClose={handleClose}
