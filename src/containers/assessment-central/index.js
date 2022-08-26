@@ -74,7 +74,7 @@ const statuses = [
   { id: 2, name: 'Completed' },
 ];
 
-const Assesment = () => {
+const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
@@ -121,6 +121,15 @@ const Assesment = () => {
   const [sectionFlag, setSectionFlag] = useState(false);
   const [groupList, setGroupList] = useState([]);
   const [groupFlag, setGroupFlag] = useState(false);
+  const [isRestoreUnable,setIsRestoreUnable] = useState(false)
+  const testFilterData = JSON.parse(sessionStorage.getItem('createTestData')) || {}
+  const testFilterDropdownList = JSON.parse(sessionStorage.getItem('dropDownData')) || {}
+  let isRestoreFields = history?.location?.state?.dataRestore || false
+
+  useEffect(()=>{
+   if(isRestoreFields) setIsRestoreUnable(true)
+  },[])
+
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -377,7 +386,31 @@ const Assesment = () => {
       return;
     }
     formik.handleSubmit();
+    sessionStorage.setItem('createTestData',JSON.stringify(formik?.values))
+    sessionStorage.setItem('dropDownData',JSON.stringify({branch : branchDropdown ,grade : grades , subject : subjects , assesmentTypes : assesmentTypes,section : sectionList,group:groupList}))
   };
+
+  useEffect(()=>{
+   if(isRestoreUnable){
+    formik.setFieldValue('status',testFilterData?.status)
+    formik.setFieldValue('branch', testFilterData?.branch);
+    formik.setFieldValue('grade', testFilterData?.grade);
+    formik.setFieldValue('subject', testFilterData?.subject);
+    formik.setFieldValue('section', testFilterData?.section);
+    formik.setFieldValue('group', testFilterData?.group);
+    formik.setFieldValue('assesment_type', testFilterData?.assesment_type)
+    formik.setFieldValue('date', testFilterData?.date)
+    setBranchDropdown(testFilterDropdownList?.branch)
+    setGrades(testFilterDropdownList?.grade)
+    setSubjects(testFilterDropdownList?.subject)
+    setAssesmentTypes(testFilterDropdownList?.assesmentTypes)
+    setGroupList(testFilterDropdownList?.group)
+    setSectionList(testFilterDropdownList?.section)
+    history.replace({ state: { dataRestore : false} })
+    if(testFilterData?.status?.id) formik.handleSubmit();
+   }
+   
+},[isRestoreUnable])
 
   const handleAcademicYear = (event = {}, value = '') => {
     formik.setFieldValue('academic', '');
@@ -554,6 +587,24 @@ const Assesment = () => {
       setAlert('warning', 'Please select file');
     }
   };
+
+  const [addedId, setAddedId] = useState([]);
+  console.log('debugaddedId', addedId);
+
+  const selectAssetmentCard = (id, checked) => {
+    console.log('debugaddedidcheck', id, checked)
+    if (checked) {
+      console.log('debugpushing id', checked)
+      setAddedId([...addedId, id]);
+    } else {
+      const previousArr = [...addedId]
+      const index = addedId.indexOf(id);
+      previousArr.splice(index, 1)
+      console.log('debugnewremovedid', previousArr, index)
+      setAddedId(previousArr);
+    }
+  }
+
 
   const handleSectionToggle = (event) => {
     setSectionToggle(event.target.checked);
@@ -928,7 +979,8 @@ const Assesment = () => {
                   </Button>
                 </div>
               </Grid>
-              {(isSuperAdmin || isSuperuser) && (
+
+              {/* {(isSuperAdmin || isSuperuser) && (
                 <Grid item container md={6} xs={6} justifyContent='flex-end'>
                   <div className='btn-container'>
                     <FormControlLabel
@@ -978,7 +1030,31 @@ const Assesment = () => {
                     <div></div>
                   )}
                 </Grid>
-              )}
+              )} */}
+
+              {handleClose && addedId.length > 0 && <Grid item md={5} xs={6} style={{ display: 'flex' }}>
+                <div className='btn-container'>
+                  <h6 >Total Selected: {addedId.length}</h6>
+                </div>
+                <div className='btn-container' style={{ marginLeft: '5px' }}>
+                  <Button
+                    style={{ width: '100%', color: 'white' }}
+                    variant='contained'
+                    startIcon={<AddIcon style={{ fontSize: '30px' }} />}
+                    color='primary'
+                    size='medium'
+                    onClick={() => {
+                      console.log('aded the idasse', addedId)
+                      handleColumnSelectedTestChange(
+                        addedId
+                      )
+                      handleClose()
+                    }}
+                  >
+                    Add Selected
+                  </Button>
+                </div>
+              </Grid>}
             </Grid>
           </div>
           <div className='tabs-container'>
@@ -1065,6 +1141,9 @@ const Assesment = () => {
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
                                   activeTab={activeTab}
+                                  addedId={addedId}
+                                  selectAssetmentCard={selectAssetmentCard}
+                                  handleClose={handleClose}
                                 />
                               </Grid>
                             ))}

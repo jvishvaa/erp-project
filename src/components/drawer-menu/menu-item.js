@@ -211,6 +211,8 @@ const MenuItem = withRouter(({ history, ...props }) => {
     { name: 'Marks Upload', Path: '/assessment/marks-upload' },
     { name: 'Report Card', Path: '/assessment/report-card' },
     { name: 'Report Card Pipeline', Path: '/assessment/report-card-pipeline' },
+    { name: 'Report Card Category', Path: '/assessment/category' },
+    { name: 'Report Config', Path: '/assessment/report-config' },
     { name: 'Question Bank', Path: '/question-bank' },
     { name: 'Question Paper', Path: '/assessment-question' },
     { name: 'Create Test', Path: '/assesment' },

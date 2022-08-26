@@ -449,7 +449,8 @@ const OfflineStudentAssessment = () => {
 
   const handleBack = () => {
     sessionStorage.removeItem('filterData');
-    history.goBack();
+    // history.goBack();
+    history.push({pathname : '/assesment',state :{ dataRestore : true}})
   };
 
   const uploadOMR = () => {
