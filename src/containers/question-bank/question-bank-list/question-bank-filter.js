@@ -14,7 +14,6 @@ import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 // import { connect } from 'react-redux';
 import './question-bank.css';
-import { CategoryFilter } from 'containers/discussionForum/discussion/CategoryFilter';
 import ENVCONFIG from '../../../../src/config/config';
 import { setFilter } from 'redux/actions';
 
@@ -22,8 +21,6 @@ const {
   apiGateway: { baseURLCentral, xAPIKey },
 } = ENVCONFIG;
 
-
-// handlePeriodList
 const QuestionBankFilters = ({
   questionList,
   questionId,
@@ -56,9 +53,6 @@ const QuestionBankFilters = ({
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [topicDropdown, setTopicDropdown] = useState([]);
   const [queTypeDropdown, setQueTypeDropdown] = useState([]);
-  const [categoryDropdown, setCategoryDropdown] = useState([]);
-  const [categoryDependent, setCategoryDependent] = useState(true);
-  // const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [centralGsMappingId, setCentralGsMappingId] = useState();
   const [boardDropdown, setBoardDropdown] = useState([]);
   const [selectedBoardId, setSelectedBoardId] = useState([]);
@@ -99,7 +93,6 @@ const QuestionBankFilters = ({
     branch: '',
     volume: '',
     grade: '',
-    category: '',
     subject: '',
     chapter: '',
     quesType: '',
@@ -185,43 +178,6 @@ const QuestionBankFilters = ({
       .catch((error) => {
         setAlert('error', error?.message);
       });
-
-    // axios
-    // .get(`${endpoints.questionBank.categoryMapping}`, {
-    //   Authorization: `Bearer ${token}`,
-    // })
-    // .then((result) => {
-    //   if (result?.data?.status_code === 200) {
-    //     // setQueTypeDropdown(result?.data?.result?.filter((obj) => obj?.id !== 5));
-    //     setCategoryDropdown(result?.data?.result);
-    //     setLoading(false);
-    //   } else {
-    //     setAlert('error', result?.data?.message);
-    //   }
-    // })
-    // .catch((error) => {
-    //   setAlert('error', error?.message);
-    // });  
-
-
-    axiosInstance
-      .get(
-        `${endpoints.questionBank.categoryMapping}`
-      )
-      .then((result) => {
-        // debugger
-        // console.log(filterData.category)
-        if (result?.status === 200) {
-          // setBranchDropdown(result?.data?.data?.results);
-          setCategoryDropdown(result?.data);
-          setLoading(false);
-        } else {
-          setAlert('error', result?.data?.message);
-        }
-      })
-      .catch((error) => {
-        setAlert('error', error?.message);
-      });
   }, []);
 
   const handleClear = () => {
@@ -231,7 +187,6 @@ const QuestionBankFilters = ({
       branch: '',
       volume: '',
       grade: '',
-      category: '',
       subject: '',
       chapter: '',
       topicId: '',
@@ -253,7 +208,6 @@ const QuestionBankFilters = ({
       ...filterData,
       year: '',
       branch: '',
-      category: '',
       grade: '',
       subject: '',
       chapter: '',
@@ -293,7 +247,6 @@ const QuestionBankFilters = ({
       ...filterData,
       branch: '',
       grade: '',
-      category: '',
       subject: '',
       board: '', module: '',
       chapter: '',
@@ -431,52 +384,6 @@ const QuestionBankFilters = ({
     } else {
       setLoading(false);
     }
-  };
-
-  const handleCategory = (event, value) => {
-    setPage(1)
-
-    setFilterData({
-      ...filterData,
-      category: '',
-      chapter: '',
-      question_level: '',
-      question_category: '',
-      quesType: '',
-      quesLevel: '',
-    });
-    setCategoryDependent(true);
-    if (value) {
-      setFilterData({ ...filterData, category: value, chapter: '', topic: '' });
-      setCategoryDependent(value?.is_subject_dependent)
-    }
-
-    // setPeriodData([]);
-    // setLoading(true);
-    // if (value) {
-    //   setFilterData({ ...filterData, subject: value, chapter: '', topic: '' });
-    //   if (value) {
-    //     axiosInstance
-    //       .get(
-    //         `${endpoints.questionBank.categoryList}?branch_id=${filterData?.branch?.branch?.id}&session_year=${selectedAcademicYear?.id}&grade=${filterData?.grade?.grade_id}&subject_id=${value?.id}&subject=${value?.subject_id}`
-    //       )
-    //       .then((result) => {
-    //         if (result?.data?.status_code === 200) {
-    //           setChapterDropdown(result?.data?.result);
-    //           setLoading(false);
-    //         } else {
-    //           setAlert('error', result?.data?.message);
-    //         }
-    //       })
-    //       .catch((error) => {
-    //         setAlert('error', error?.message);
-    //       });
-    //   } else {
-    //     setLoading(false);
-    //   }
-    // } else {
-    //   setLoading(false);
-    // }
   };
 
   const handleSubject = (event, value) => {
@@ -712,7 +619,7 @@ const QuestionBankFilters = ({
       setAlert('error', 'Select Grade!');
       return;
     }
-    if (!filterData?.subject && categoryDependent) {
+    if (!filterData?.subject) {
       setAlert('error', 'Select Subject!');
       return;
     }
@@ -720,8 +627,6 @@ const QuestionBankFilters = ({
       setAlert('error', 'Select Question From!');
       return;
     }
-
-
     handlePeriodList(
       filterData?.quesType?.id,
       filterData?.question_category,
@@ -733,7 +638,6 @@ const QuestionBankFilters = ({
       filterData?.chapter,
       filterData?.is_erp_central,
       0,
-      filterData?.category
     );
     setSelectedIndex(-1);
   };
@@ -793,12 +697,178 @@ const QuestionBankFilters = ({
           <Autocomplete
             style={{ width: '100%' }}
             size='small'
-            onChange={handleCategory}
-            id='category'
+            onChange={handleIsErpCentral}
+            id='Question Type'
             className='dropdownIcon'
-            value={filterData?.category || {}}
-            options={categoryDropdown || []}
-            getOptionLabel={(option) => option?.central_category_name || ''}
+            value={filterData?.is_erp_central || {}}
+            options={is_ERP_CENTRAL || []}
+            getOptionLabel={(option) => option?.name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Question From'
+                placeholder='Question From'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleSubject}
+            id='subject'
+            className='dropdownIcon'
+            value={filterData?.subject || {}}
+            options={subjectDropdown || []}
+            getOptionLabel={(option) => option?.subject_name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Subject'
+                placeholder='Subject'
+              />
+            )}
+          />
+        </Grid>
+
+        {filterData?.is_erp_central?.name == 'CENTRAL' ?
+          <>
+            {(boardFilterArr.includes(window.location.host)) &&
+              <Grid
+                item
+                xs={12}
+                sm={3}
+                className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+              >
+                <Autocomplete
+                  multiple
+                  style={{ width: '100%' }}
+                  size='small'
+                  onChange={handleBoard}
+                  id='board'
+                  className='dropdownIcon'
+                  value={filterData.board || []}
+                  options={boardDropdown || []}
+                  getOptionLabel={(option) => option?.board_name || ''}
+                  // filterSelectedOptions
+                  getOptionSelected={(option, value) => option?.id == value?.id}
+                  renderInput={(params) => (
+                    <TextField {...params} variant='outlined' label='Board' placeholder='Board'
+                    // required 
+                    />
+                  )}
+                />
+              </Grid>}
+            <Grid
+              item
+              xs={12}
+              sm={3}
+              className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
+            >
+              <Autocomplete
+                // multiple
+                style={{ width: '100%' }}
+                size='small'
+                onChange={handleModule}
+                id='module'
+                className='dropdownIcon'
+                value={filterData.module || []}
+                options={moduleDropdown || []}
+                getOptionLabel={(option) => option?.lt_module_name || ''}
+                filterSelectedOptions
+                // getOptionSelected={(option, value) =>
+                //     option?.id == value?.id
+                //   }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Module'
+                    placeholder='Module'
+                  // required
+                  />
+                )}
+              />
+            </Grid>
+          </> : null}
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleChapter}
+            id='chapter'
+            className='dropdownIcon'
+            value={filterData?.chapter || {}}
+            options={chapterDropdown || []}
+            getOptionLabel={(option) => option?.chapter_name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Chapter'
+                placeholder='Chapter'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleTopic}
+            id='topic'
+            className='dropdownIcon'
+            value={filterData?.topicId || {}}
+            options={topicDropdown || []}
+            getOptionLabel={(option) => option?.topic_name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Topic'
+                placeholder='Topic'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleQuestionLevel}
+            id='Question Level'
+            className='dropdownIcon'
+            value={filterData?.question_level || {}}
+            options={question_level_options || []}
+            getOptionLabel={(option) => option?.Question_level || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='Question Level'
+                placeholder='Question Level'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleQuestionCategory}
+            id='Category'
+            className='dropdownIcon'
+            value={filterData?.question_category || {}}
+            options={question_categories_options || []}
+            getOptionLabel={(option) => option?.q_cat || ''}
             filterSelectedOptions
             renderInput={(params) => (
               <TextField
@@ -810,173 +880,6 @@ const QuestionBankFilters = ({
             )}
           />
         </Grid>
-        {categoryDependent ? (<>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleSubject}
-              id='subject'
-              className='dropdownIcon'
-              value={filterData?.subject || {}}
-              options={subjectDropdown || []}
-              getOptionLabel={(option) => option?.subject_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Subject'
-                  placeholder='Subject'
-                />
-              )}
-            />
-          </Grid>
-
-          {filterData?.is_erp_central?.name == 'CENTRAL' ?
-            <>
-              {(boardFilterArr.includes(window.location.host)) &&
-                <Grid
-                  item
-                  xs={12}
-                  sm={3}
-                  className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-                >
-                  <Autocomplete
-                    multiple
-                    style={{ width: '100%' }}
-                    size='small'
-                    onChange={handleBoard}
-                    id='board'
-                    className='dropdownIcon'
-                    value={filterData.board || []}
-                    options={boardDropdown || []}
-                    getOptionLabel={(option) => option?.board_name || ''}
-                    // filterSelectedOptions
-                    getOptionSelected={(option, value) => option?.id == value?.id}
-                    renderInput={(params) => (
-                      <TextField {...params} variant='outlined' label='Board' placeholder='Board'
-                      // required 
-                      />
-                    )}
-                  />
-                </Grid>}
-              <Grid
-                item
-                xs={12}
-                sm={3}
-                className={isMobile ? 'roundedBox' : 'filterPadding roundedBox'}
-              >
-                <Autocomplete
-                  // multiple
-                  style={{ width: '100%' }}
-                  size='small'
-                  onChange={handleModule}
-                  id='module'
-                  className='dropdownIcon'
-                  value={filterData.module || []}
-                  options={moduleDropdown || []}
-                  getOptionLabel={(option) => option?.lt_module_name || ''}
-                  filterSelectedOptions
-                  // getOptionSelected={(option, value) =>
-                  //     option?.id == value?.id
-                  //   }
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      variant='outlined'
-                      label='Module'
-                      placeholder='Module'
-                    // required
-                    />
-                  )}
-                />
-              </Grid>
-            </> : null}
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleChapter}
-              id='chapter'
-              className='dropdownIcon'
-              value={filterData?.chapter || {}}
-              options={chapterDropdown || []}
-              getOptionLabel={(option) => option?.chapter_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Chapter'
-                  placeholder='Chapter'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleTopic}
-              id='topic'
-              className='dropdownIcon'
-              value={filterData?.topicId || {}}
-              options={topicDropdown || []}
-              getOptionLabel={(option) => option?.topic_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Topic'
-                  placeholder='Topic'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleQuestionLevel}
-              id='Question Level'
-              className='dropdownIcon'
-              value={filterData?.question_level || {}}
-              options={question_level_options || []}
-              getOptionLabel={(option) => option?.Question_level || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Question Level'
-                  placeholder='Question Level'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-            <Autocomplete
-              style={{ width: '100%' }}
-              size='small'
-              onChange={handleQuestionCategory}
-              id='Category'
-              className='dropdownIcon'
-              value={filterData?.question_category || {}}
-              options={question_categories_options || []}
-              getOptionLabel={(option) => option?.q_cat || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Question Category'
-                  placeholder='Question Category'
-                />
-              )}
-            />
-          </Grid></>) : <></>}
         <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
           <Autocomplete
             style={{ width: '100%' }}
