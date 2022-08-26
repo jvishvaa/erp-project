@@ -193,7 +193,7 @@ const SidebarCounterPanel = (props) => {
   }, [isAutoSubmit]);
 
   const goBackFunc = () => {
-    props.history.push('/assesment')
+    props.history.push({pathname : '/assesment',state :{ dataRestore : true}})
     exitFullScreen()
   }
 
