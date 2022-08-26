@@ -5,7 +5,8 @@ import MuiAccordionSummary from '@material-ui/core/AccordionSummary';
 import MuiAccordionDetails from '@material-ui/core/AccordionDetails';
 import Typography from '@material-ui/core/Typography';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
+
   verticalDiv: {
     transform: 'rotate(-90deg)',
     // height: '200px',
@@ -45,7 +46,7 @@ const useStyles = makeStyles({
     color: '#014B7E',
     fontSize: '20px',
   },
-});
+}));
 
 const Accordion = withStyles({
   root: {
@@ -116,9 +117,8 @@ export default function CategoryFilterComponent() {
         <AccordionSummary
           aria-controls='panel1d-content'
           id='panel1d-header'
-          className={`${
-            expanded === 'panel1' ? classes.accordionSummary : classes.academicPanel
-          }`}
+          className={`${expanded === 'panel1' ? classes.accordionSummary : classes.academicPanel
+            }`}
         >
           <Typography className={classes.accordionTitle}>Academic Year</Typography>
         </AccordionSummary>
@@ -134,9 +134,8 @@ export default function CategoryFilterComponent() {
         <AccordionSummary
           aria-controls='panel2d-content'
           id='panel2d-header'
-          className={`${
-            expanded === 'panel2' ? classes.accordionSummary : classes.subjectPanel
-          }`}
+          className={`${expanded === 'panel2' ? classes.accordionSummary : classes.subjectPanel
+            }`}
         >
           <Typography className={classes.accordionTitle}>Subject</Typography>
         </AccordionSummary>
@@ -148,9 +147,8 @@ export default function CategoryFilterComponent() {
         <AccordionSummary
           aria-controls='panel3d-content'
           id='panel3d-header'
-          className={`${
-            expanded === 'panel3' ? classes.accordionSummary : classes.gradePanel
-          }`}
+          className={`${expanded === 'panel3' ? classes.accordionSummary : classes.gradePanel
+            }`}
         >
           <Typography className={classes.accordionTitle}>Grade</Typography>
         </AccordionSummary>
@@ -166,9 +164,8 @@ export default function CategoryFilterComponent() {
         <AccordionSummary
           aria-controls='panel3d-content'
           id='panel3d-header'
-          className={`${
-            expanded === 'panel4' ? classes.accordionSummary : classes.sectionPanel
-          }`}
+          className={`${expanded === 'panel4' ? classes.accordionSummary : classes.sectionPanel
+            }`}
         >
           <Typography className={classes.accordionTitle}>Section</Typography>
         </AccordionSummary>

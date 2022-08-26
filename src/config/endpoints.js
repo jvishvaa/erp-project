@@ -504,6 +504,12 @@ export default {
     studentImgs: '/assessment/assessment-document-upload/',
     reUpload: '/assessment/enable-assessment-re-upload/',
   },
+  reportCardConfig: {
+    reportcardcomponent: '/assessment/report-card-component/',
+    reportcardsubcomponent: '/assessment/report-card-sub-component/',
+    reportcardconfigsummary: '/assessment/report-card-config-summary/',
+    submitAPI: '/assessment/report-card-config-api/',
+  },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,
     reportTopicWise: `/assessment/report-topic-wise/`,
@@ -564,6 +570,10 @@ export default {
     erpViewMoreData: '/assessment/question-details/',
     erpQuestionPublishing: '/assessment/publish-question/',
     erpQuestionNewPublishing: `/assessment/publish-multiple-question/`,
+    categoryList: `${baseURLCentral}/assessment/list-categories/`,
+    categoryMapping: `${baseURL}/assessment/report-card-question-category-mapping/`,
+    categoryQuestion: `${baseURL}/assessment/report-card-question-category/`,
+    reportConfig: `${baseURL}/assessment/report-card-config-api/`,
   },
   assementQP: {
     assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,
