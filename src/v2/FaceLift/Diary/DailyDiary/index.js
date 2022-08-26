@@ -257,13 +257,17 @@ const DailyDiary = () => {
       .then((res) => {
         if (res?.data?.status_code == 200) {
           setLoading(false);
-          message.success('Daily Diary Created Succssfully');
-          history.push('/diary/teacher');
+          if (res?.data?.message === 'Daily Dairy created successfully') {
+            message.success('Daily Diary Created Succssfully');
+            history.push('/diary/teacher');
+          } else {
+            message.error('Daily Diary Already Exists');
+          }
         }
       })
       .catch((error) => {
         setLoading(false);
-        message.error('Daily Diary Already Exists');
+        message.error(error?.message);
       });
   };
 
@@ -312,6 +316,7 @@ const DailyDiary = () => {
     setHomework('');
     setShowIcon(false);
     setHomeworkCreated(false);
+    setShowHomeworkForm(false);
     if (e) {
       setSubjectID(e.value);
       setSubjectName(e.children);
@@ -321,7 +326,7 @@ const DailyDiary = () => {
         section_mapping: sectionMappingID,
         subject: e?.value,
         date: moment().format('YYYY-MM-DD'),
-        user_id: user_id,
+        // user_id: user_id,
       });
       const params = {
         session_year: selectedBranch.branch.id,
@@ -509,7 +514,7 @@ const DailyDiary = () => {
         section_mapping: sectionMappingID,
         subject: subjectID,
         date: moment().format('YYYY-MM-DD'),
-        user_id: user_id,
+        // user_id: user_id,
       });
       // setHomeworkTitle('');
       // setHomeworkInstructions('');
@@ -918,7 +923,7 @@ const DailyDiary = () => {
                           value={homeworkTitle}
                           onChange={(e) => setHomeworkTitle(e.target.value)}
                           placeholder='Title'
-                          maxLength={120}
+                          maxLength={30}
                         />
                       </div>
                       <div className='row py-2'>

@@ -26,7 +26,6 @@ import Diary from 'v2/FaceLift/Diary';
 import DailyDiary from 'v2/FaceLift/Diary/DailyDiary';
 import GeneralDiary from 'v2/FaceLift/Diary/GeneralDiary';
 
-
 const V2Router = () => {
   useEffect(() => {
     isMsAPI();
