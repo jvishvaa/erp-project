@@ -38,6 +38,7 @@ import { KeyboardDateTimePicker, MuiPickersUtilsProvider } from '@material-ui/pi
 import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import moment from 'moment';
+import AssesmentReportNew from '../assesment-report-card/newReportPrint';
 import { returnAdmin } from 'containers/Finance/src/components/Finance/store/actions';
 
 const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType }) => {
@@ -66,6 +67,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
   const [columns, setColumns] = useState([]);
 
   const [reportCardData, setReportCardData] = useState([]);
+  const [reportCardDataNew, setReportCardDataNew] = useState([]);
   const [isPreview, setIsPreview] = useState(false);
   const [tabValue, setTabValue] = useState(0);
 
@@ -307,6 +309,20 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
     }
   };
 
+  const renderReportCardNew = () => {
+    switch (tabValue) {
+      case 0:
+        return <AssesmentReportNew reportCardDataNew={reportCardDataNew} />;
+      case 1:
+        return (
+          <AssessmentReportBack
+            schoolInfo={reportCardDataNew['school_info']}
+            observationFeedback={reportCardDataNew['observation_feedback']}
+          />
+        );
+    }
+  };
+
   const getTransformedReportData = (data) => {
     if (data) {
       const transformedResponse = data.map((item) => ({ is_checked: false, ...item }));
@@ -343,6 +359,7 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
             setSelectedERP={setSelectedERP}
             pageSize={limit}
             setReportCardData={setReportCardData}
+            setReportCardDataNew={setReportCardDataNew}
             classTopicAverage={
               selectedReportType?.id === 3
                 ? reportData?.[0]?.class_average
@@ -367,6 +384,19 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
               />
             </Box>
             <Box style={{ margin: '20px auto', width: '95%' }}>{renderReportCard()}</Box>
+          </>
+        )}
+
+        {selectedReportType?.id === 14 && isPreview && (
+          <>
+            <Box style={{ margin: '20px auto', width: '95%' }}>
+              <TabPanel
+                tabValue={tabValue}
+                setTabValue={setTabValue}
+                tabValues={['Front', 'Back']}
+              />
+            </Box>
+            <Box style={{ margin: '20px auto', width: '95%' }}>{renderReportCardNew()}</Box>
           </>
         )}
 
@@ -473,33 +503,33 @@ const AssessmentReportTypes = ({ assessmentReportListData, selectedReportType })
                         )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                          <TableCell className={classes.tableCell}>
-                            {rowData?.erp_no}
-                          </TableCell>
-                        )}
+                            <TableCell className={classes.tableCell}>
+                              {rowData?.erp_no}
+                            </TableCell>
+                          )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                          <TableCell className={classes.tableCell}>
-                            {rowData?.user_name}
-                          </TableCell>
-                        )}
+                            <TableCell className={classes.tableCell}>
+                              {rowData?.user_name}
+                            </TableCell>
+                          )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                          <TableCell className={classes.tableCell}>
-                            {selectedReportType?.id === 3
-                              ? rowData?.total_mark
-                              : rowData?.marks_obtained}
-                          </TableCell>
-                        )}
+                            <TableCell className={classes.tableCell}>
+                              {selectedReportType?.id === 3
+                                ? rowData?.total_mark
+                                : rowData?.marks_obtained}
+                            </TableCell>
+                          )}
                         {(selectedReportType?.id === 3 ||
                           selectedReportType?.id === 4) && (
-                          <TableCell className={classes.tableCell}>
-                            {selectedReportType?.id === 3
-                              ? rowData?.comparsion
-                              : +rowData?.marks_obtained -
+                            <TableCell className={classes.tableCell}>
+                              {selectedReportType?.id === 3
+                                ? rowData?.comparsion
+                                : +rowData?.marks_obtained -
                                 +assessmentReportListData?.comparison}
-                          </TableCell>
-                        )}
+                            </TableCell>
+                          )}
                       </TableRow>
                     );
                   })}
