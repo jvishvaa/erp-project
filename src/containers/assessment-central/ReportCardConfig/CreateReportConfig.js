@@ -51,7 +51,8 @@ function CreateReportConfig() {
     setComponentDetails(prevState => [
       ...prevState,
       {
-        acad_session: selectedbranch?.session_year?.id,
+        // acad_session: selectedbranch?.session_year?.id,
+        acad_session: selectedbranch ? selectedbranch.map(branch => branch.id) : [],
         grade: selectedGrade?.grade_id,
         id: compnentUniqueId,
         ComponentID: -1,
@@ -100,7 +101,7 @@ function CreateReportConfig() {
   const getGrade = (value) => {
     axiosInstance
       .get(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value.map(branch => branch.id).join(',')}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -136,6 +137,7 @@ function CreateReportConfig() {
       setSelectedGrade()
     }
   }
+
 
   const submitAllReportCardData = () => {
     axiosInstance.post(`${endpoints.reportCardConfig.submitAPI}`, components)
@@ -176,6 +178,7 @@ function CreateReportConfig() {
               options={branchList || []}
               getOptionLabel={(option) => option?.branch?.branch_name || ''}
               filterSelectedOptions
+              multiple
               renderInput={(params) => (
                 <TextField
                   {...params}
