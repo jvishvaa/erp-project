@@ -129,8 +129,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     gradeId,
     chapterObj,
     isErpCentral = false,
-    newValue = 0,
-    category
+    newValue = 0
   ) => {
     setLoading(true);
     setPeriodData([]);
@@ -144,12 +143,8 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setTabChapterId(chapterObj);
     setTabIsErpCentral(isErpCentral);
     setTabValue(newValue);
-    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}`;
+    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&page_size=${limit}&page=${page}`;
     requestUrl += `&request_type=${isErpCentral?.flag ? 2 : 1}`;
-    requestUrl += `&category=${isErpCentral?.flag ? category?.central_category_id : category?.erp_category_id }`;
-    if (subjMapId) {
-      requestUrl += `subject=${subjMapId}`;
-    }
     if (newValue) {
       requestUrl += `&question_status=${newValue}`;
     }
