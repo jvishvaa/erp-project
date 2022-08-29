@@ -130,7 +130,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     chapterObj,
     isErpCentral = false,
     newValue = 0,
-    category
+    erp_category,
   ) => {
     setLoading(true);
     setPeriodData([]);
@@ -146,9 +146,8 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setTabValue(newValue);
     let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}`;
     requestUrl += `&request_type=${isErpCentral?.flag ? 2 : 1}`;
-    requestUrl += `&category=${isErpCentral?.flag ? category?.central_category_id : category?.erp_category_id }`;
     if (subjMapId) {
-      requestUrl += `subject=${subjMapId}`;
+      requestUrl += `&subject=${subjMapId}`;
     }
     if (newValue) {
       requestUrl += `&question_status=${newValue}`;
@@ -167,6 +166,9 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     }
     if (topicId) {
       requestUrl += `&topic=${topicId?.id}`;
+    }
+    if (erp_category) {
+      requestUrl += `&category=${erp_category?.erp_category_id}`;
     }
     setFilter(false)
     axiosInstance
