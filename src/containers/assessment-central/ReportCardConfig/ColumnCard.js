@@ -208,7 +208,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
               >
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                   <div>Summary</div>
-                  <div onClick={handleSumClose} style={{ position: 'relative', top: 0, left: 0 }}>X</div>
+                  <div onClick={handleSumClose} style={{ position: 'relative', top: 0, left: 0, cursor: 'pointer' }}>X</div>
                 </div>
                 <div>
                   <TableContainer component={Paper}>

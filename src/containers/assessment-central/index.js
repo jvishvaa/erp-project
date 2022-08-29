@@ -121,14 +121,14 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const [sectionFlag, setSectionFlag] = useState(false);
   const [groupList, setGroupList] = useState([]);
   const [groupFlag, setGroupFlag] = useState(false);
-  const [isRestoreUnable,setIsRestoreUnable] = useState(false)
+  const [isRestoreUnable, setIsRestoreUnable] = useState(false)
   const testFilterData = JSON.parse(sessionStorage.getItem('createTestData')) || {}
   const testFilterDropdownList = JSON.parse(sessionStorage.getItem('dropDownData')) || {}
   let isRestoreFields = history?.location?.state?.dataRestore || false
 
-  useEffect(()=>{
-   if(isRestoreFields) setIsRestoreUnable(true)
-  },[])
+  useEffect(() => {
+    if (isRestoreFields) setIsRestoreUnable(true)
+  }, [])
 
 
   useEffect(() => {
@@ -386,31 +386,31 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       return;
     }
     formik.handleSubmit();
-    sessionStorage.setItem('createTestData',JSON.stringify(formik?.values))
-    sessionStorage.setItem('dropDownData',JSON.stringify({branch : branchDropdown ,grade : grades , subject : subjects , assesmentTypes : assesmentTypes,section : sectionList,group:groupList}))
+    sessionStorage.setItem('createTestData', JSON.stringify(formik?.values))
+    sessionStorage.setItem('dropDownData', JSON.stringify({ branch: branchDropdown, grade: grades, subject: subjects, assesmentTypes: assesmentTypes, section: sectionList, group: groupList }))
   };
 
-  useEffect(()=>{
-   if(isRestoreUnable){
-    formik.setFieldValue('status',testFilterData?.status)
-    formik.setFieldValue('branch', testFilterData?.branch);
-    formik.setFieldValue('grade', testFilterData?.grade);
-    formik.setFieldValue('subject', testFilterData?.subject);
-    formik.setFieldValue('section', testFilterData?.section);
-    formik.setFieldValue('group', testFilterData?.group);
-    formik.setFieldValue('assesment_type', testFilterData?.assesment_type)
-    formik.setFieldValue('date', testFilterData?.date)
-    setBranchDropdown(testFilterDropdownList?.branch)
-    setGrades(testFilterDropdownList?.grade)
-    setSubjects(testFilterDropdownList?.subject)
-    setAssesmentTypes(testFilterDropdownList?.assesmentTypes)
-    setGroupList(testFilterDropdownList?.group)
-    setSectionList(testFilterDropdownList?.section)
-    history.replace({ state: { dataRestore : false} })
-    if(testFilterData?.status?.id) formik.handleSubmit();
-   }
-   
-},[isRestoreUnable])
+  useEffect(() => {
+    if (isRestoreUnable) {
+      formik.setFieldValue('status', testFilterData?.status)
+      formik.setFieldValue('branch', testFilterData?.branch);
+      formik.setFieldValue('grade', testFilterData?.grade);
+      formik.setFieldValue('subject', testFilterData?.subject);
+      formik.setFieldValue('section', testFilterData?.section);
+      formik.setFieldValue('group', testFilterData?.group);
+      formik.setFieldValue('assesment_type', testFilterData?.assesment_type)
+      formik.setFieldValue('date', testFilterData?.date)
+      setBranchDropdown(testFilterDropdownList?.branch)
+      setGrades(testFilterDropdownList?.grade)
+      setSubjects(testFilterDropdownList?.subject)
+      setAssesmentTypes(testFilterDropdownList?.assesmentTypes)
+      setGroupList(testFilterDropdownList?.group)
+      setSectionList(testFilterDropdownList?.section)
+      history.replace({ state: { dataRestore: false } })
+      if (testFilterData?.status?.id) formik.handleSubmit();
+    }
+
+  }, [isRestoreUnable])
 
   const handleAcademicYear = (event = {}, value = '') => {
     formik.setFieldValue('academic', '');
@@ -963,22 +963,23 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                   </Button>
                 </div>
               </Grid>
-              <Grid item md={2} xs={6}>
-                <div className='btn-container'>
-                  <Button
-                    style={{ width: '100%', color: 'white' }}
-                    variant='contained'
-                    startIcon={<AddIcon style={{ fontSize: '30px' }} />}
-                    color='primary'
-                    size='medium'
-                    onClick={() => {
-                      history.push('/create-assesment?clear=true');
-                    }}
-                  >
-                    Create New
-                  </Button>
-                </div>
-              </Grid>
+              {!handleClose &&
+                <Grid item md={2} xs={6}>
+                  <div className='btn-container'>
+                    <Button
+                      style={{ width: '100%', color: 'white' }}
+                      variant='contained'
+                      startIcon={<AddIcon style={{ fontSize: '30px' }} />}
+                      color='primary'
+                      size='medium'
+                      onClick={() => {
+                        history.push('/create-assesment?clear=true');
+                      }}
+                    >
+                      Create New
+                    </Button>
+                  </div>
+                </Grid>}
 
               {/* {(isSuperAdmin || isSuperuser) && (
                 <Grid item container md={6} xs={6} justifyContent='flex-end'>
@@ -1032,7 +1033,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                 </Grid>
               )} */}
 
-              {handleClose && addedId.length > 0 && <Grid item md={5} xs={6} style={{ display: 'flex' }}>
+              {handleClose && addedId.length > 0 && <Grid item md={4} xs={4} style={{ display: 'flex' }}>
                 <div className='btn-container'>
                   <h6 >Total Selected: {addedId.length}</h6>
                 </div>
@@ -1055,6 +1056,25 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                   </Button>
                 </div>
               </Grid>}
+              {handleClose &&
+                <Grid item md={2} xs={2} style={{ display: 'flex' }}>
+                  <Button
+                    style={{ color: 'white', height: '40px', marginTop: 26 }}
+                    variant='contained'
+                    startIcon={<AddIcon style={{ fontSize: '30px' }} />}
+                    color='primary'
+                    size='medium'
+                    onClick={() => {
+                      console.log('aded the idasse', addedId)
+                      handleColumnSelectedTestChange(
+                        addedId
+                      )
+                      handleClose()
+                    }}
+                  >
+                    BACK
+                  </Button>
+                </Grid>}
             </Grid>
           </div>
           <div className='tabs-container'>
@@ -1159,6 +1179,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                             setSelectedAssesmentTest(null);
                           }}
                           filterData={filterData}
+                          handleClose={handleClose}
                         />
                       </Grid>
                     )}
@@ -1224,6 +1245,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                             setSelectedAssesmentTest(null);
                           }}
                           filterData={filterData}
+                          handleClose={handleClose}
                         />
                       </Grid>
                     )}

@@ -509,6 +509,7 @@ export default {
     reportcardsubcomponent: '/assessment/report-card-sub-component/',
     reportcardconfigsummary: '/assessment/report-card-config-summary/',
     submitAPI: '/assessment/report-card-config-api/',
+    branchAPI: '/erp_user/grade/',
   },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,

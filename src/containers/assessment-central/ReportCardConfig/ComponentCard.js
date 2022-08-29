@@ -141,6 +141,7 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
                 )}
               />
             </Grid>
+
             {/* <TextField
               style={{ width: '100%', marginLeft: 4 }}
               id='subname'
@@ -163,6 +164,86 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
                 );
               }}
             /> */}
+          </Grid>
+          <Grid xs={12} sm={5}></Grid>
+          {/* <div></div> */}
+          <Grid item xs={12} sm={4} className={"filterPadding"}>
+            <TextField
+              style={{ width: "100%" }}
+              id="subname"
+              // label="Column Name"
+              label="CURRICULUM DESCRIPTION"
+              variant="outlined"
+              size="small"
+              value={components[index].component_description}
+              name="subname"
+              autoComplete="off"
+              onChange={(e) => {
+                const newComponent = components[index];
+                newComponent.component_description = e.target.value;
+                setComponentDetails(
+                  components.map(columnDetail => {
+                    if (columnDetail.id === componentId) {
+                      return newComponent;
+                    }
+                    return columnDetail;
+                  })
+                );
+              }}
+            // onChange={e => {
+            //   const newComponent = components[index];
+            //   setComponentDetails(
+            //     components.map(componentDetail => {
+            //       if (componentDetail.id === componentId) {
+            //         const newSubComponent = componentDetail.subComponents[subComponentIndex]
+            //         newSubComponent.columns[columnIndex].name = e.target.value
+            //         newComponent.subComponents[subComponentIndex] = newSubComponent
+            //         return newComponent;
+            //       }
+            //       return componentDetail;
+            //     })
+            //   );
+            // }}
+            />
+          </Grid>
+          <Grid item xs={12} sm={4} className={"filterPadding"}>
+            <TextField
+              style={{ width: "100%" }}
+              id="subname"
+              // label="Column Name"
+              label="GRADE DESCRIPTION"
+              variant="outlined"
+              size="small"
+              value={components[index].grade_description}
+              name="subname"
+              autoComplete="off"
+              onChange={(e) => {
+                const newComponent = components[index];
+                newComponent.grade_description = e.target.value;
+                setComponentDetails(
+                  components.map(columnDetail => {
+                    if (columnDetail.id === componentId) {
+                      return newComponent;
+                    }
+                    return columnDetail;
+                  })
+                );
+              }}
+            // onChange={e => {
+            //   const newComponent = components[index];
+            //   setComponentDetails(
+            //     components.map(componentDetail => {
+            //       if (componentDetail.id === componentId) {
+            //         const newSubComponent = componentDetail.subComponents[subComponentIndex]
+            //         newSubComponent.columns[columnIndex].name = e.target.value
+            //         newComponent.subComponents[subComponentIndex] = newSubComponent
+            //         return newComponent;
+            //       }
+            //       return componentDetail;
+            //     })
+            //   );
+            // }}
+            />
           </Grid>
           <Grid
             item
