@@ -575,6 +575,7 @@ export default {
     categoryMapping: `${baseURL}/assessment/report-card-question-category-mapping/`,
     categoryQuestion: `${baseURL}/assessment/report-card-question-category/`,
     reportConfig: `${baseURL}/assessment/report-card-config-api/`,
+    erpCategory : '/assessment/report-card-question-category-mapping/'
   },
   assementQP: {
     assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,

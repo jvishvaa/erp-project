@@ -34,8 +34,9 @@ const AssesmentCard = ({
   filterResults,
   addedId,
   selectAssetmentCard,
-  handleClose
+  handleClose,
 }) => {
+  console.log('handleclose', handleClose);
   const themeContext = useTheme();
   console.log("treecheckassessmentcardvalue", value);
   console.log("treecheckassessmentcardonclick", onClick);
@@ -86,15 +87,16 @@ const AssesmentCard = ({
             {value.test_type__exam_name}
           </p>
         </div>
+        {handleClose &&
+          <Checkbox
+            checked={addedId.includes(value.id)}
+            onChange={e => toggleComplete(e)}
+            name="allSelect"
+          />
+        }
         {isSuper == true ? (
           <div className="menu">
-            {handleClose &&
-              <Checkbox
-                checked={addedId.includes(value.id)}
-                onChange={e => toggleComplete(e)}
-                name="allSelect"
-              />
-            }
+
             <IconButton
               aria-label="more"
               aria-controls="long-menu"
