@@ -27,6 +27,7 @@ function getDaysAfter(date, amount) {
 }
 
 const HolidayMark = () => {
+  const [flag,setFlag] = useState(false);
   const [evnetcategoryType, setEventcategoryType] = useState([]);
   const [selectedSession, setSelectedSession] = useState([]);
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
@@ -72,6 +73,7 @@ const HolidayMark = () => {
   };
 
   const handleBranch = (event = {}, value = []) => {
+    setFlag(true);
     setSelectedBranch([]);
     setGradeList([]);
     if (value?.length) {
@@ -331,6 +333,16 @@ const HolidayMark = () => {
       }
     }
   }, [branchList]);
+
+  useEffect(() =>{
+    if(flag == false){
+      if(isEdit && branchList.length>0){
+        const ids = history?.location?.state?.data?.grade.map((el, index) => el);
+        let filterGrade = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
+        setSelectedGrade(filterGrade);
+      }
+    }
+  },[gradeList])
 
   const isEdited = history?.location?.state?.isEdit;
 
