@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
     background: "#fff"
   },
   title: {
-    fontSize: '1.1rem',
+    fontSize: '16px',
   },
   content: {
     fontSize: '0.9rem',
