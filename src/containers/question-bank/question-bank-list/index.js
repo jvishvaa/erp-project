@@ -144,7 +144,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setTabChapterId(chapterObj);
     setTabIsErpCentral(isErpCentral);
     setTabValue(newValue);
-    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&page_size=${limit}&page=${page}`;
+    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}`;
     requestUrl += `&request_type=${isErpCentral?.flag ? 2 : 1}`;
     if (subjMapId) {
       requestUrl += `&subject=${subjMapId}`;
