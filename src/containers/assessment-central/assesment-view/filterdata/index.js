@@ -39,6 +39,8 @@ const AssessmentFilters = ({
     { id: 1, flag: false, name: 'ERP' },
     { id: 2, flag: true, name: 'CENTRAL' },
   ];
+
+  const filterDataQP = JSON.parse(sessionStorage.getItem('filter')) || [];
   const [filterData, setFilterData] = useState({
     academic: '',
     branch: [],
@@ -74,25 +76,57 @@ const AssessmentFilters = ({
     }
   }, []);
 
+ 
+
   useEffect(() => {
     if (moduleId && selectedAcademicYear) {
       handleAcademicYear();
-      // axiosInstance
-      //   .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
-      //   .then((result) => {
-      //     if (result.data.status_code === 200) {
-      //       setAcademicDropdown(result.data?.data);
-      //       const defaultValue = result.data?.data?.[0];
-      //       handleAcademicYear({}, defaultValue);
-      //     } else {
-      //       setAlert('error', result.data?.message);
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     setAlert('error', error.message);
-      //   });
+      if(history?.location?.state?.isSet == 'true'){
+      if(filterDataQP?.branch){
+        handleBranch(filterDataQP , filterDataQP?.branch)
+      }
+      setFilterData({
+        branch : filterDataQP?.branch,
+        grade: filterDataQP?.grade,
+        subject: filterDataQP?.subject,
+        is_erp_central: filterDataQP?.type,
+        academic : selectedAcademicYear,
+      })
+      if(filterDataQP?.subject){
+        setSub()
+      }
+      if(filterDataQP?.qpValue){
+        setQpValue(filterDataQP?.qpValue)
+      }
+      handlePeriodList(
+        filterDataQP?.type,
+        selectedAcademicYear,
+        filterDataQP?.branch,
+        filterDataQP?.grade,
+        filterDataQP?.subject,
+        filterDataQP?.qpValue,
+      );
+      }
     }
   }, [moduleId, selectedAcademicYear]);
+
+  const setSub = () => {
+    const acadSessionIds = filterDataQP?.branch.map(({ id }) => id) || [];
+    axiosInstance
+    .get(
+      `${endpoints.assessmentErp.subjectList}?session_year=${acadSessionIds}&grade=${filterDataQP?.grade?.grade_id}`
+    )
+    .then((result) => {
+      if (result?.data?.status_code === 200) {
+        setSubjectDropdown(result?.data?.result);
+      } else {
+        setAlert('error', result?.data?.message);
+      }
+    })
+    .catch((error) => {
+      setAlert('error', error?.message);
+    });
+  }
 
   const handleClear = () => {
     setClearFlag((prev) => !prev);
@@ -168,7 +202,7 @@ const AssessmentFilters = ({
       setFilterData({ ...filterData, branch: value });
       axiosInstance
         .get(
-          `${endpoints.academics.grades}?session_year=${filterData.academic?.id}&branch_id=${branchIds}&module_id=${moduleId}`
+          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchIds}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result?.data?.status_code === 200) {

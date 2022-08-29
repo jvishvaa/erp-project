@@ -712,7 +712,12 @@ const CreateQuestionPaper = ({
                 className='cancelButton labelColor'
                 style={{ width: '100%' }}
                 onClick={() => {
-                  window.history.back()
+                  history.push({
+                    pathname: '/assessment-question',
+                    state: {
+                      isSet : 'true'
+                    }
+                  })
                 }}
               >
                 Back
