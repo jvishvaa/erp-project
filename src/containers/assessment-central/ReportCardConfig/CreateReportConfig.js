@@ -69,12 +69,12 @@ function CreateReportConfig() {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'User Management' &&
+          item.parent_modules === 'Assessment' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'User Groups') {
+            if (item.child_name === 'Report Card Config') {
               setModuleId(item.child_id);
             }
           });
@@ -101,7 +101,7 @@ function CreateReportConfig() {
   const getGrade = (value) => {
     axiosInstance
       .get(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value.map(branch => branch.id).join(',')}&module_id=${moduleId}`
+        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value.map(branch => branch?.branch?.id).join(',')}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -268,7 +268,7 @@ function CreateReportConfig() {
             // aria-describedby="simple-modal-description"
             // className={classes.modal}
             style={{
-              marginLeft: 700,
+              marginLeft: 500,
               margintop: 1000,
               display: "flex",
               alignItems: "center",
@@ -286,7 +286,7 @@ function CreateReportConfig() {
             // style={{ width: "200px", height: "300px" }}
             >
               <Paper elevation={2} style={{ padding: 30 }}>
-                <h3 style={{ margin: 20 }}>Are you sure you want to submit?</h3>
+                <h5 style={{ margin: 20 }}>Are you sure you want to submit?</h5>
                 <div style={{ display: "flex", marginBottom: '30px' }}>
                   <Button
                     variant='contained'
