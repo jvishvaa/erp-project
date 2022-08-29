@@ -15,6 +15,12 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '10px',
     width: '105%',
   },
+  verifiedColor: {
+    background: theme.palette.primary.primarylightest
+  },
+  notverified: {
+    background: "#fff"
+  },
   title: {
     fontSize: '1.1rem',
   },

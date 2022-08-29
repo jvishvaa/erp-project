@@ -186,14 +186,14 @@ const QuestionBankCard = ({
   };
   return (
     <Paper
-      className={periodColor ? classes.selectedRoot : classes.root}
+      className={`${periodColor ? classes.selectedRoot : classes.root} ${period?.question_status === '2' ? classes.verifiedColor : classes.notverified}`}
       style={
         isMobile
           ? { margin: '0rem auto' }
           : {
               margin: '0rem auto -1.1rem auto',
-              background: period?.question_status === '2' ? '#FCEEEE ' : '',
-              border: period?.question_status === '2' ? '1px solid red ' : '',
+              // background: period?.question_status === '2' ? '#FCEEEE ' : '',
+              // border: period?.question_status === '2' ? '1px solid red ' : '',
             }
         // ? { margin: '0rem auto', height: '165px' }
         // : { margin: '0rem auto -1.1rem auto', height: '165px' }

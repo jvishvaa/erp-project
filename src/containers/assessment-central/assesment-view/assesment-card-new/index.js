@@ -322,7 +322,7 @@ const AssessmentCard = ({
             </Typography>
           </Box> */}
         </Grid>
-        <Grid item xs={4} className={classes.textRight}>
+        <Grid item xs={2} className={classes.textRight} style={{marginLeft:'16%'}}>
           {!periodColor && (
             <Button
               variant='contained'
