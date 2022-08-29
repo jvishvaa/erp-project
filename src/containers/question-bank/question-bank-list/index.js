@@ -438,7 +438,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
               }
               spacing={5}
             >
-              <Grid item xs={12} sm={viewMore ? 6 : 12}>
+              <Grid item xs={12} sm={viewMore ? 7 : 12}>
                 <Grid container spacing={isMobile ? 3 : 5}>
                   {periodData.map((period, i) => (
                     <Grid

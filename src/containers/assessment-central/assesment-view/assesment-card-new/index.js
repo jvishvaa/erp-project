@@ -259,7 +259,7 @@ const AssessmentCard = ({
               {showPeriodIndex === index && showMenu ? (
                 <div className='tooltipContainer'>
                   {period.is_verified && (
-                    <span className={` ${classes.tooltiptext} tooltiptext`} style={{ width: '140px' }}>
+                    <span className={` ${classes.tooltiptext} tooltiptext`} style={{ width: '140px',marginLeft:'-100px' }}>
                       <span onClick={handleAssign} style={{ marginBottom: 10 }}>Assign Test</span>
                       <Divider />
                       {!period.is_central && (
@@ -322,7 +322,7 @@ const AssessmentCard = ({
             </Typography>
           </Box> */}
         </Grid>
-        <Grid item xs={4} className={classes.textRight}>
+        <Grid item xs={2} className={classes.textRight} style={{marginLeft:'16%'}}>
           {!periodColor && (
             <Button
               variant='contained'

@@ -50,6 +50,7 @@ const QuestionBankFilters = ({
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [topicDropdown, setTopicDropdown] = useState([]);
@@ -130,6 +131,13 @@ const QuestionBankFilters = ({
       history.goBack();
     }
   }, [questionList?.length]);
+
+  useEffect(() => {
+    if(selectedBranch && filterData?.year?.id && moduleId){
+      handleBranch('',selectedBranch)
+
+    }
+  },[selectedBranch,filterData?.year?.id,moduleId])
 
   useEffect(() => {
     if (!boardFilterArr.includes(window.location.host)) {
@@ -758,6 +766,7 @@ const QuestionBankFilters = ({
                 variant='outlined'
                 label='Subject'
                 placeholder='Subject'
+                required
               />
             )}
           />

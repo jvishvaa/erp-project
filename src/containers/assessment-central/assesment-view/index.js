@@ -208,7 +208,7 @@ const AssessmentView = () => {
                       item
                       xs={12}
                       style={isMobile ? { marginLeft: '-8px' } : null}
-                      sm={viewMore ? 12 : 8}
+                      sm={12}
                     >
                       <AssessmentCard
                         index={i}

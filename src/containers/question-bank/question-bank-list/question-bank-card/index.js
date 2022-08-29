@@ -124,9 +124,9 @@ const QuestionBankCard = ({
   const questionType = (type) => {
     switch (type) {
       case 1:
-        return 'MCQ SINGLE CHOICE';
+        return 'MCQ Single Choice';
       case 2:
-        return 'MCQ_MULTIPLE_CHOICE';
+        return 'MCQ Multiple Choice';
       case 3:
         return 'Match the Following';
       case 4:
@@ -186,21 +186,21 @@ const QuestionBankCard = ({
   };
   return (
     <Paper
-      className={periodColor ? classes.selectedRoot : classes.root}
+      className={`${periodColor ? classes.selectedRoot : classes.root} ${period?.question_status === '2' ? classes.verifiedColor : classes.notverified}`}
       style={
         isMobile
           ? { margin: '0rem auto' }
           : {
               margin: '0rem auto -1.1rem auto',
-              background: period?.question_status === '2' ? '#FCEEEE ' : '',
-              border: period?.question_status === '2' ? '1px solid red ' : '',
+              // background: period?.question_status === '2' ? '#FCEEEE ' : '',
+              // border: period?.question_status === '2' ? '1px solid red ' : '',
             }
         // ? { margin: '0rem auto', height: '165px' }
         // : { margin: '0rem auto -1.1rem auto', height: '165px' }
       }
     >
       <Grid container spacing={2}>
-        <Grid item xs={8}>
+        <Grid item sm = {11} xs={8}>
           <Box style={{display:'flex', alignItems:'center'}}>
             {period?.question_status === '3' ? 
               <Checkbox
@@ -212,56 +212,31 @@ const QuestionBankCard = ({
              inputProps={{ 'aria-label': 'primary checkbox' }}
              />
           : ''}
-            <Typography
-              className={classes.title}
-              variant='p'
-              component='p'
-              color='primary'
-            >
-              {questionType(period?.question_type)}
-            </Typography>
-          </Box>
-          <Box>
-            <Typography
-              className={classes.content}
-              variant='p'
-              component='p'
-              color='secondary'
-              noWrap
-            >
-              {period?.question_status === '1' ? 'Draft' : null}
-              {period?.question_status === '2' ? 'Published' : null}
-              {period?.question_status === '3' ? 'Review' : null}
-            </Typography>
-          </Box>
           {period.question_type === 7 ? (
-            <Box>
               <Typography
                 className={classes.content}
                 variant='p'
                 component='p'
                 color='secondary'
-                noWrap
+                // noWrap
               >
-                {extractContent(questionName[0]?.question)}
+                {extractContent(questionName[0]?.question).length > 70 ? extractContent(questionName[0]?.question).substring(0,70) + '...' : extractContent(questionName[0]?.question)}
               </Typography>
-            </Box>
           ) : (
-            <Box>
               <Typography
                 className={classes.content}
                 variant='p'
                 component='p'
                 color='secondary'
-                noWrap
+                // noWrap
               >
-                Question: {extractContent(questionName[0]?.question)}
+                Question: {extractContent(questionName[0]?.question).length > 70 ? extractContent(questionName[0]?.question).substring(0,70) + '...' : extractContent(questionName[0]?.question)}
               </Typography>
-            </Box>
           )}
+          </Box>
         </Grid>
         {!period.is_central && (
-          <Grid item xs={4} className={classes.textRight}>
+          <Grid item sm = {1} xs={4} className={classes.textRight}>
             <Box>
               <span
                 className='period_card_menu'
@@ -332,34 +307,38 @@ const QuestionBankCard = ({
             </Box>
           </Grid>
         )}
-        <Grid item xs={12} sm={12} />
-        <Grid item xs={6}>
-          <Box>
-            <Typography
-              className={classes.title}
-              variant='p'
-              component='p'
-              color='secondary'
-            >
-              {/* Created By: {period?.created_by?.first_name} */}
-            </Typography>
-          </Box>
+        <Grid item xs={12} sm={12} >
+        </Grid>
+        <Grid item sm = {8} xs={6} >
           <Box>
             <Typography
               className={classes.content}
               variant='p'
               component='p'
               color='secondary'
+              noWrap
             >
-              {/* {period.updated_at.substring(0, 10)}s */}
+              {period?.question_status === '1' ? 'Draft' : null}
+              {period?.question_status === '2' ? 'Published' : null}
+              {period?.question_status === '3' ? 'Review' : null}
+            </Typography>
+          </Box>
+          <Box>
+             <Typography
+              className={classes.title}
+              variant='p'
+              component='p'
+              color='primary'
+            >
+              {questionType(period?.question_type) }
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={6} className={classes.textRight}>
+        <Grid item  sm = {4} xs={6} className={classes.textRight}>
           {!periodColor ? (
             <Button
               variant='contained'
-              style={{ color: 'white', width: '100%' }}
+              style={{ color: 'white',marginTop:'5%' }}
               color='primary'
               size='small'
               onClick={handleViewMore}
@@ -369,7 +348,7 @@ const QuestionBankCard = ({
           ) : (
             <Button
               variant='contained'
-              style={{ color: 'white', width: '100%', visibility: 'hidden' }}
+              style={{ color: 'white', width: '72%', visibility: 'hidden',marginTop:'5%' }}
               color='primary'
               size='small'
               onClick={handleViewMore}
