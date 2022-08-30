@@ -12,6 +12,7 @@ import endpoints from 'config/endpoints';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
+import ConfirmModal from '../../../../src/containers/assessment-central/assesment-card/confirm-modal';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -103,6 +104,7 @@ const ReportConfigTable = () => {
   const [moduleId, setModuleId] = useState('');
   const [selectedbranch, setSelectedbranch] = useState();
   const [selectedGrade, setSelectedGrade] = useState();
+  const [openModal, setOpenModal] = useState(false);
 
   useEffect(() => {
     if (moduleId) getBranch()
@@ -144,10 +146,13 @@ const ReportConfigTable = () => {
   const getGrade = (value) => {
     axiosInstance
       .get(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`
+        // `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value?.branch?.id}&module_id=${moduleId}`
+        `${endpoints.reportCardConfig.branchAPI}?session_year=${selectedAcademicYear?.id}&branch_id=${value.map(branch => branch?.branch?.id).join(',')}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
+          // setGradeList(res?.data?.data);
+          console.log('new', res?.data?.data)
           setGradeList(res?.data?.data);
         } else {
           setBranchList([]);
@@ -182,26 +187,30 @@ const ReportConfigTable = () => {
   }
 
 
-
   const FilterData = () => {
-    setLoading(true);
-    let url = `${endpoints.questionBank.reportConfig}?acad_session=${selectedbranch?.session_year?.id}&grade=${selectedGrade?.grade_id}`
-    let params = {
-      acad_session: selectedbranch?.session_year?.id,
-      grade: selectedGrade?.grade_id,
-    }
-    axiosInstance
-      .get(url)
-      .then((res) => {
-        if (res?.data) {
-          setConfigData(res?.data?.result);
-          setLoading(false);
+    {
+      if (selectedbranch?.session_year?.id) {
+        setLoading(true);
+        let url = `${endpoints.questionBank.reportConfig}?acad_session=${selectedbranch?.session_year?.id}&grade=${selectedGrade?.grade_id}`
+        let params = {
+          acad_session: selectedbranch?.session_year?.id,
+          grade: selectedGrade?.grade_id,
         }
-      })
-      .catch((err) => {
-        console.log(err);
-        setLoading(false);
-      });
+        console.log('run', params)
+        axiosInstance
+          .get(url)
+          .then((res) => {
+            if (res?.data) {
+              setConfigData(res?.data?.result);
+              setLoading(false);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setLoading(false);
+          });
+      }
+    }
   }
 
   const DeleteData = (id) => {
@@ -296,6 +305,7 @@ const ReportConfigTable = () => {
               options={branchList || []}
               getOptionLabel={(option) => option?.branch?.branch_name || ''}
               filterSelectedOptions
+              multiple
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -317,7 +327,8 @@ const ReportConfigTable = () => {
               className='dropdownIcon'
               value={selectedGrade || ''}
               options={gradeList || []}
-              getOptionLabel={(option) => option?.grade__grade_name || ''}
+              // getOptionLabel={(option) => option?.grade__grade_name || ''}
+              getOptionLabel={(option) => option?.branch_name || ''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -399,12 +410,20 @@ const ReportConfigTable = () => {
                       <TableCell className={classes.tableCell}>
                         <IconButton
                           onClick={() => {
-                            DeleteData(data?.id)
+                            // DeleteData(data?.id)
+                            setOpenModal(true);
                           }}
                           title='Delete'
                         >
                           <DeleteOutlinedIcon />
                         </IconButton>
+                        {openModal && (
+                          <ConfirmModal
+                            submit={() => DeleteData(data?.id)}
+                            openModal={openModal}
+                            setOpenModal={setOpenModal}
+                          />
+                        )}
                         {/* <IconButton
                           //   onClick={(e) => handleEditSubject(configData)}
                           title='Edit'

@@ -30,6 +30,7 @@ function CreateReportConfig() {
   );
 
   const [components, setComponentDetails] = useState([])
+  console.log('debugmain', components)
 
   const [branchList, setBranchList] = useState([]);
   const [gradeList, setGradeList] = useState([]);
@@ -56,10 +57,13 @@ function CreateReportConfig() {
         grade: selectedGrade?.grade_id,
         id: compnentUniqueId,
         ComponentID: -1,
+        component_description: '',
+        grade_description: '',
         subComponents: []
       },
     ]);
   }
+
 
   useEffect(() => {
     if (moduleId) getBranch()
@@ -101,7 +105,8 @@ function CreateReportConfig() {
   const getGrade = (value) => {
     axiosInstance
       .get(
-        `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value.map(branch => branch?.branch?.id).join(',')}&module_id=${moduleId}`
+        // `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${value.map(branch => branch?.branch?.id).join(',')}&module_id=${moduleId}`
+        `${endpoints.reportCardConfig.branchAPI}?session_year=${selectedAcademicYear?.id}&branch_id=${value.map(branch => branch?.branch?.id).join(',')}&module_id=${moduleId}`
       )
       .then((res) => {
         if (res?.data?.status_code === 200) {
@@ -200,7 +205,7 @@ function CreateReportConfig() {
               className='dropdownIcon'
               value={selectedGrade || ''}
               options={gradeList || []}
-              getOptionLabel={(option) => option?.grade__grade_name || ''}
+              getOptionLabel={(option) => option?.branch_name || ''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
