@@ -71,8 +71,8 @@ export default {
     tests: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
   },
   teacherAttendance: {
-    gradewiseAttendance: `/erp_user/v2/erpuser-grade-sections/`,
-    sectionwiseAttendance: `erp_user/v2/erpuser-grade-sections-students/`,
+    gradewiseAttendance: `${msReportsUrl}/api/acad_performance/v2/erpuser-grade-sections/`,
+    sectionwiseAttendance: `${msReportsUrl}/api/acad_performance/v2/erpuser-grade-sections-students/`,
   },
   studentDashboard: {
     todaysClasses: `${msOriginUrl}/api/oncls/v1/student-oncls/`,
