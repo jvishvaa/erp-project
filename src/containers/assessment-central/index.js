@@ -390,7 +390,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     }
     formik.handleSubmit();
     sessionStorage.setItem('createTestData', JSON.stringify(formik?.values))
-    sessionStorage.setItem('dropDownData', JSON.stringify({ branch: branchDropdown, grade: grades, subject: subjects, assesmentTypes: assesmentTypes, section: sectionList, group: groupList ,isSectionToggle : sectionToggle}))
+    sessionStorage.setItem('dropDownData', JSON.stringify({ branch: branchDropdown, grade: grades, subject: subjects, assesmentTypes: assesmentTypes, section: sectionList, group: groupList ,isSectionToggle : sectionToggle,isSectionToggle : sectionToggle}))
   };
 
   useEffect(() => {
