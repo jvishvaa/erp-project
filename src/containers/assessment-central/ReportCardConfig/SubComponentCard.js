@@ -43,8 +43,8 @@ function SubComponentCard({ subComponentId, componentId,
 
   return (
     <>
-      <Grid container spacing={2} style={{ margin: '0px' }}>
-        <Grid item xs={12} sm={3} className={'filterPadding'}>
+      <Grid container spacing={2} style={{ marginLeft: '30px' }}>
+        <Grid item xs={12} sm={4} className={'filterPadding'}>
 
           <Autocomplete
             style={{ width: '100%' }}
@@ -106,7 +106,7 @@ function SubComponentCard({ subComponentId, componentId,
             }}
           /> */}
         </Grid>
-        <Grid item xs={12} sm={2} className={'filterPadding'} style={{ paddingLeft: '0px !important' }}>
+        <Grid item xs={12} sm={3} className={'filterPadding'} style={{ paddingLeft: '0px !important' }}>
           <Button
             startIcon={<AddOutlinedIcon style={{ fontSize: '30px' }} />}
             variant='contained'

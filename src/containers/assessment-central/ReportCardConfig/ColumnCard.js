@@ -125,7 +125,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
 
   return (
     <>
-      <Grid container spacing={2} style={{ margin: "0px" }}>
+      <Grid container spacing={2} style={{ marginLeft: "50px" }}>
         <Grid item xs={12} sm={6} className={"filterPadding"}>
           <TextField
             style={{ width: "100%" }}
