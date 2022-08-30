@@ -226,7 +226,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     try {
       const data = await fetchAssesmentTypes();
       setAssesmentTypes(data);
-    } catch (e) {}
+    } catch (e) { }
   };
   let filterData1 = [];
   const filterResults = async (page) => {
@@ -625,7 +625,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     // newfiltered.includes(subjectid)
     return newfiltered.includes(subjectid)
   }
-  console.log('filterbasedonsub', filterbasedonsub)
+
   // let newid = filterbasedonsub()
 
   return (
@@ -682,7 +682,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
             className='collapsible-section'
             square
             expanded={expandFilter}
-            onChange={() => {}}
+            onChange={() => { }}
           >
             <AccordionSummary></AccordionSummary>
             <AccordionDetails>
@@ -1174,7 +1174,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                               <Grid item md={selectedAssesmentTest ? 6 : 4}>
                                 <AssesmentCard
                                   value={test}
-                                  onEdit={() => {}}
+                                  onEdit={() => { }}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
@@ -1185,7 +1185,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                                   filteredAssesmentTests={filteredAssesmentTests}
                                   // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0]) 
                                   filterbasedonsub={filterbasedonsub}
-                                  isdisable={filterbasedonsub(test.subjects[0])}
+                                  isdisable={filterbasedonsub(test?.subjects[0])}
                                 />
                               </Grid>
                             ))}
@@ -1248,7 +1248,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                               <Grid item md={selectedAssesmentTest ? 6 : 4}>
                                 <AssesmentCard
                                   value={test}
-                                  onEdit={() => {}}
+                                  onEdit={() => { }}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
@@ -1314,7 +1314,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                               <Grid item md={selectedAssesmentTest ? 6 : 4}>
                                 <AssesmentCard
                                   value={test}
-                                  onEdit={() => {}}
+                                  onEdit={() => { }}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
