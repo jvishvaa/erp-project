@@ -125,6 +125,8 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const testFilterData = JSON.parse(sessionStorage.getItem('createTestData')) || {}
   const testFilterDropdownList = JSON.parse(sessionStorage.getItem('dropDownData')) || {}
   let isRestoreFields = history?.location?.state?.dataRestore || false
+  let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
+
 
   useEffect(() => {
     if (isRestoreFields) setIsRestoreUnable(true)
@@ -187,8 +189,11 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       setBranchDropdown([]);
       setGrades([]);
       setSubjects([]);
-      const data = await fetchBranches(acadId, moduleId);
-      setBranchDropdown(data);
+      if(moduleId && acadId) 
+      {const data = await fetchBranches(acadId, moduleId);
+      let branch = data.filter((item) => item?.id === selectedBranch?.id)
+      handleBranch('',branch)
+      setBranchDropdown(data);}
     } catch (e) {
       setAlert('error', 'Failed to fetch branch');
     }
@@ -710,6 +715,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                         open={datePickerOpen}
                         onClick={() => setDatePickerOpen(true)}
                         minDate={minDate}
+                        required
                       />
                       <FormHelperText style={{ color: 'red' }}>
                         {formik.errors.status ? formik.errors.status : ''}

@@ -39,6 +39,7 @@ const AssessmentFilters = ({
     { id: 1, flag: false, name: 'ERP' },
     { id: 2, flag: true, name: 'CENTRAL' },
   ];
+  let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
 
   const filterDataQP = JSON.parse(sessionStorage.getItem('filter')) || [];
   const [filterData, setFilterData] = useState({
@@ -75,6 +76,14 @@ const AssessmentFilters = ({
       });
     }
   }, []);
+
+  useEffect(() => {
+    if(selectedBranch && branchDropdown){
+      let branch = branchDropdown.filter((item) => item?.id === selectedBranch?.id)
+      handleBranch('',branch)
+
+    }
+  },[selectedBranch,branchDropdown])
 
  
 
@@ -173,6 +182,8 @@ const AssessmentFilters = ({
             branch: { id: 'all', branch_name: 'Select All' },
           };
           const data = [selectAllObject, ...result?.data?.data?.results];
+          // let branch = data.filter((item) => item?.id === selectedBranch?.id)
+          // handleBranch('',branch)
           setBranchDropdown(data);
         } else {
           setAlert('error', result?.data?.message);
@@ -185,7 +196,7 @@ const AssessmentFilters = ({
   };
 
   const handleBranch = (event, value) => {
-    setFilterData({
+   setFilterData({
       ...filterData,
       branch: [],
       grade: '',
@@ -291,7 +302,7 @@ const AssessmentFilters = ({
     setSelectedIndex(-1);
     handlePeriodList(
       filterData.is_erp_central,
-      filterData.academic,
+      filterData.academic || selectedAcademicYear,
       filterData.branch,
       filterData.grade,
       filterData.subject,
@@ -345,6 +356,7 @@ const AssessmentFilters = ({
               variant='outlined'
               label='Branch'
               placeholder='Branch'
+              required
             />
           )}
         />
@@ -361,7 +373,7 @@ const AssessmentFilters = ({
           getOptionLabel={(option) => option?.grade__grade_name || ''}
           filterSelectedOptions
           renderInput={(params) => (
-            <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
+            <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' required/>
           )}
         />
       </Grid>
@@ -382,6 +394,7 @@ const AssessmentFilters = ({
               variant='outlined'
               label='Subject'
               placeholder='Subject'
+              required
             />
           )}
         />
@@ -404,6 +417,7 @@ const AssessmentFilters = ({
               variant='outlined'
               label='Question Paper Level'
               placeholder='Question Paper Level'
+              required
             />
           )}
         />
@@ -425,6 +439,7 @@ const AssessmentFilters = ({
               variant='outlined'
               label='Question Paper From'
               placeholder='Question Paper From'
+              required
             />
           )}
         />
