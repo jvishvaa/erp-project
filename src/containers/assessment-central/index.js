@@ -1076,7 +1076,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                   <Button
                     style={{ color: 'white', height: '40px', marginTop: 26 }}
                     variant='contained'
-                    startIcon={<AddIcon style={{ fontSize: '30px' }} />}
+                    // startIcon={<AddIcon style={{ fontSize: '30px' }} />}
                     color='primary'
                     size='medium'
                     onClick={() => {
