@@ -112,10 +112,10 @@ const AttedanceCalender = () => {
   const [moduleId, setModuleId] = useState('');
   const [holidayId, setHolidayid] = useState('');
   const [holidayData, setHolidayData] = useState('');
-  const [eventId,setEventid] = useState('');
+  const [eventId, setEventid] = useState('');
   const [eventData, setEventData] = useState('')
-  const [autoFlag,setAutoFlag] = useState(false);
-  const [firstFlag,setFirstFlag] = useState(false);
+  const [autoFlag, setAutoFlag] = useState(false);
+  const [firstFlag, setFirstFlag] = useState(false);
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
   const { user_level } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -128,49 +128,52 @@ const AttedanceCalender = () => {
 
   const multiBranchIdLocal = JSON.parse(sessionStorage.getItem('branch_list'))
 
-  const dummyBranchId= multiBranchIdLocal.map((item) => item?.branch?.id)
-  const dummyAcadId = multiBranchIdLocal.map((item) => item?.id)
+  useEffect(() => {
+    if (!history?.location?.state?.backButtonStatus) {
+      setFirstFlag(true)
+    }
 
-    useEffect(()=>{
-      if(!history?.location?.state?.backButtonStatus){
-        setFirstFlag(true)
-      }
+  }, [history?.location?.state?.backButtonStatus])
 
-    },[history?.location?.state?.backButtonStatus])
-
-  useEffect(()=>{
-    if(selectedBranch.length !== 0 & selectedGrade.length !== 0 & firstFlag){
+  useEffect(() => {
+    if (selectedBranch.length !== 0 & selectedGrade.length !== 0 & firstFlag) {
       // getRangeData()
       setDate()
-      if(startDate == endDate){
+      if (startDate == endDate) {
         selectModule()
         setFirstFlag(false)
 
       }
     }
 
-  },[selectedGrade, selectedBranch, branchList, firstFlag])
+  }, [selectedGrade, selectedBranch, branchList, firstFlag, endDate])
 
   useEffect(() => {
-    if(user_level === 11){
-      if(selectedBranchLocal && moduleId){
+    if (path === '/attendance-calendar/student-view') {
+      getTodayStudent()
+    }
+  }, [branchList,])
+
+  useEffect(() => {
+    if (user_level === 11) {
+      if (selectedBranchLocal && moduleId) {
         localStorage.removeItem('teacherFilters');
         const selectedId = selectedBranchLocal?.branch?.id;
         const selectedAcademicYearId = selectedBranchLocal?.id;
         setSelectedAcademicYearId(selectedAcademicYearId)
         setSelectedBranch(selectedBranchLocal)
-  
+
         callApi(
           `${endpoints.academics.grades}?session_year=${selectedAcademicYear.id
           }&branch_id=${selectedId.toString()}&module_id=${moduleId}`,
           'gradeList'
         );
-      } 
+      }
 
-    } else if(user_level == 1 || user_level == 2 || user_level == 4 || user_level == 5 || user_level == 8){
-      if(moduleId){
+    } else if (user_level == 1 || user_level == 2 || user_level == 4 || user_level == 5 || user_level == 8) {
+      if (moduleId) {
         localStorage.removeItem('teacherFilters');
-        const dummyBranchId= multiBranchIdLocal.map((item) => item?.branch?.id)
+        const dummyBranchId = multiBranchIdLocal.map((item) => item?.branch?.id)
         const dummyAcadId = multiBranchIdLocal.map((item) => item?.id)
         setSelectedAcademicYearId(dummyAcadId)
         setSelectedBranch(multiBranchIdLocal)
@@ -182,8 +185,8 @@ const AttedanceCalender = () => {
       }
 
 
-    }else {
-      if(moduleId){
+    } else {
+      if (moduleId) {
         const selectedId = selectedBranchLocal?.branch?.id;
         const selectedAcademicYearId = selectedBranchLocal?.id;
         setSelectedAcademicYearId(selectedAcademicYearId)
@@ -196,12 +199,12 @@ const AttedanceCalender = () => {
       }
 
     }
-  },[moduleId])
+  }, [moduleId])
   useEffect(() => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Calendar & Attendance' &&
+          item.parent_modules === 'Calendar' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
@@ -258,32 +261,31 @@ const AttedanceCalender = () => {
           //   .catch((error) => {
           //     setLoading(false);
           //   });
-          if(selectedAcademicYearId.length !== 0){
-           axiosInstance
-             .get(
-               `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${formatDateToday}&end_date=${formatDateToday}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
-             )
-             .then((res) => {
-               setHolidayDetails(res.data.holiday_detail);
-             })
-             .catch((error) => {
-               console.log(error, 'err');
-             });
-             axiosInstance
-             .get(
-               `${endpoints.academics.getEvents}?session_year=${selectedBranch.id}&acad_session=${selectedAcademicYearId}&start_date=${formatDateToday}&end_date=${formatDateToday}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}&level=${user_level}`
-             )
-             .then((res) => {
-               // setHolidayDetails(res.data.holiday_detail);
-               setEventDetails(res?.data?.Event_detail)
-              //  console.log(res.data.holiday_detail,"JK 1")
-             })
-             .catch((error) => {
-               console.log(error, 'err');
-             });
+          if (selectedAcademicYearId.length !== 0) {
+            axiosInstance
+              .get(
+                `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${formatDateToday}&end_date=${formatDateToday}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
+              )
+              .then((res) => {
+                setHolidayDetails(res.data.holiday_detail);
+              })
+              .catch((error) => {
+                console.log(error, 'err');
+              });
+            axiosInstance
+              .get(
+                `${endpoints.academics.getEvents}?session_year=${selectedBranch.id}&acad_session=${selectedAcademicYearId}&start_date=${formatDateToday}&end_date=${formatDateToday}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}&level=${user_level}`
+              )
+              .then((res) => {
+                // setHolidayDetails(res.data.holiday_detail);
+                setEventDetails(res?.data?.Event_detail)
+              })
+              .catch((error) => {
+                console.log(error, 'err');
+              });
           }
         } else {
-          if(selectedAcademicYearId.length !== 0){
+          if (selectedAcademicYearId.length !== 0) {
             axiosInstance
               .get(
                 `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
@@ -294,7 +296,7 @@ const AttedanceCalender = () => {
               .catch((error) => {
                 console.log(error, 'err');
               });
-              axiosInstance
+            axiosInstance
               .get(
                 `${endpoints.academics.getEvents}?session_year=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}&level=${user_level}`
               )
@@ -418,25 +420,25 @@ const AttedanceCalender = () => {
             );
             if (Object.keys(branch).length !== 0) {
               setSelectedBranch(branch);
-              {}
-              if(user_level == 1 ||
+              { }
+              if (user_level == 1 ||
                 user_level == 2 ||
                 user_level == 4 ||
-                user_level == 8 ||  
-                user_level == 5 ){
-                  
-                  const branchIds = branch.map((item) => item?.branch?.id);
-                  callApi(
-                    `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
-                    'gradeList'
-                  );
-                }else {
-                  const branchIds = branch.branch.id;
-                  callApi(
-                    `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
-                    'gradeList'
-                  );
-                }
+                user_level == 8 ||
+                user_level == 5) {
+
+                const branchIds = branch.map((item) => item?.branch?.id);
+                callApi(
+                  `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
+                  'gradeList'
+                );
+              } else {
+                const branchIds = branch.branch.id;
+                callApi(
+                  `${endpoints.academics.grades}?session_year=${acadId}&branch_id=${branchIds}&module_id=${moduleId}`,
+                  'gradeList'
+                );
+              }
               // if (Object.keys(grade).length !== 0) {
               //   setSelectedGrade(grade);
               //   const gradeIds = grade.grade_id;
@@ -456,19 +458,19 @@ const AttedanceCalender = () => {
   }, [moduleId, window.location.pathname]);
 
   const handleClearAll = () => {
-    if(user_level == 11){
-       // setSelectedBranch([]);
-    setAutoFlag(true)
-    setSelectedGrade([]);
-    setSelectedSection([]);
-    setStudentDataAll(null);
-    setCurrentEvent(null);
-    setHolidayDetails('');
-    // setGradeList([]);
-    setSectionList([]);
-    setEventDetails('')
-       
-    }else{
+    if (user_level == 11) {
+      // setSelectedBranch([]);
+      setAutoFlag(true)
+      setSelectedGrade([]);
+      setSelectedSection([]);
+      setStudentDataAll(null);
+      setCurrentEvent(null);
+      setHolidayDetails('');
+      // setGradeList([]);
+      setSectionList([]);
+      setEventDetails('')
+
+    } else {
       setAutoFlag(true)
       setSelectedBranch([]);
       setSelectedGrade([]);
@@ -498,14 +500,14 @@ const AttedanceCalender = () => {
             setBranchList(result?.data?.data?.results || []);
           }
           if (key === 'gradeList') {
-            if(firstFlag === true){
+            if (firstFlag === true) {
               setSelectedGrade(result?.data?.data[0])
               setGradeList(result.data.data || []);
 
-            }else{
+            } else {
               setGradeList(result.data.data || []);
 
-            }           
+            }
           }
           if (key === 'section') {
             setSectionList(result.data.data);
@@ -616,14 +618,13 @@ const AttedanceCalender = () => {
       .catch((error) => {
         console.log(error, 'err');
       });
-      axiosInstance
+    axiosInstance
       .get(
         `${endpoints.academics.getEvents}?session_year=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${formatDate}&end_date=${formatDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
       )
       .then((res) => {
         // setHolidayDetails(res.data.holiday_detail);
         setEventDetails(res?.data?.Event_detail)
-        // console.log(res,"JK 3")
       })
       .catch((error) => {
         console.log(error, 'err');
@@ -672,12 +673,12 @@ const AttedanceCalender = () => {
     // }
     // setLoading(true);
     if (counter === 2) {
-      if(user_level == 1 ||
+      if (user_level == 1 ||
         user_level == 2 ||
         user_level == 4 ||
-        user_level == 8 ||  
-        user_level == 5 ){
-          axiosInstance
+        user_level == 8 ||
+        user_level == 5) {
+        axiosInstance
           .get(
             `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
           )
@@ -688,7 +689,7 @@ const AttedanceCalender = () => {
           .catch((error) => {
             setLoading(false);
           });
-          axiosInstance
+        axiosInstance
           .get(
             `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
           )
@@ -696,40 +697,38 @@ const AttedanceCalender = () => {
             setLoading(false);
             // setHolidayDetails(res.data.holiday_detail);
             setEventDetails(res?.data?.Event_detail)
-            // console.log(res,"JK 44")
           })
           .catch((error) => {
             setLoading(false);
           });
 
 
-        }else{
-          axiosInstance
-            .get(
-              `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
-            )
-            .then((res) => {
-              setLoading(false);
-              setHolidayDetails(res.data.holiday_detail);
-            })
-            .catch((error) => {
-              setLoading(false);
-            });
-            axiosInstance
-            .get(
-              `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
-            )
-            .then((res) => {
-              setLoading(false);
-              // setHolidayDetails(res.data.holiday_detail);
-              setEventDetails(res?.data?.Event_detail)
-              // console.log(res,"JK 4")
-            })
-            .catch((error) => {
-              setLoading(false);
-            });
+      } else {
+        axiosInstance
+          .get(
+            `${endpoints.academics.getHoliday}?session_year=${selectedBranch.id}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}`
+          )
+          .then((res) => {
+            setLoading(false);
+            setHolidayDetails(res.data.holiday_detail);
+          })
+          .catch((error) => {
+            setLoading(false);
+          });
+        axiosInstance
+          .get(
+            `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
+          )
+          .then((res) => {
+            setLoading(false);
+            // setHolidayDetails(res.data.holiday_detail);
+            setEventDetails(res?.data?.Event_detail)
+          })
+          .catch((error) => {
+            setLoading(false);
+          });
 
-        }
+      }
 
     }
     if (counter === 1) {
@@ -775,14 +774,13 @@ const AttedanceCalender = () => {
         .catch((error) => {
           console.log(error, 'err');
         });
-        axiosInstance
+      axiosInstance
         .get(
           `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
         )
         .then((res) => {
           // setHolidayDetails(res.data.holiday_detail);
           setEventDetails(res?.data?.Event_detail)
-          // console.log(res,"JK 5")
         })
         .catch((error) => {
           console.log(error, 'err');
@@ -791,60 +789,61 @@ const AttedanceCalender = () => {
   };
 
   const getTodayStudent = () => {
-    var date = new Date();
-    var formatDate = moment(date).format('YYYY-MM-DD');
-    let branchIds = branchList?.map((branch) => [branch.id]);
-    let gradesId = studentDetails?.role_details?.grades?.map((grade) => [
-      grade?.grade_id,
-    ]);
-    setLoading(true)
-    // axiosInstance
-    //   .get(`academic/single_student_calender/`, {
-    //     params: {
-    //       start_date: formatDate,
-    //       erp_id: userName,
-    //       session_year: sessionYear?.id,
-    //     },
-    //   })
-    //   .then((res) => {
-    //     setLoading(false);
-    //     setCurrentEvent(res.data.events);
-    //     setStudentDataAll(res.data);
-    //   })
-    //   .catch((error) => {
-    //     setLoading(false);
-    //     setAlert('error', 'no attendance');
-    //     setStudentDataAll(null);
-    //   });
-    axiosInstance
-      .get(
-        `${endpoints.academics.getHoliday}?session_year=${branchIds}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
-      )
-      .then((res) => {
-        setHolidayDetails(res.data.holiday_detail);
-      setLoading(false)
-      })
-      .catch((error) => {
-        console.log(error, 'err');
-      });
+    if (branchList.length !== 0) {
+      var date = new Date();
+      var formatDate = moment(date).format('YYYY-MM-DD');
+      let branchIds = branchList?.map((branch) => [branch.id]);
+      let gradesId = studentDetails?.role_details?.grades?.map((grade) => [
+        grade?.grade_id,
+      ]);
+      setLoading(true)
+      // axiosInstance
+      //   .get(`academic/single_student_calender/`, {
+      //     params: {
+      //       start_date: formatDate,
+      //       erp_id: userName,
+      //       session_year: sessionYear?.id,
+      //     },
+      //   })
+      //   .then((res) => {
+      //     setLoading(false);
+      //     setCurrentEvent(res.data.events);
+      //     setStudentDataAll(res.data);
+      //   })
+      //   .catch((error) => {
+      //     setLoading(false);
+      //     setAlert('error', 'no attendance');
+      //     setStudentDataAll(null);
+      //   });
       axiosInstance
-      .get(
-        `${endpoints.academics.getEvents}?session_year=${sessionId?.id}&acad_session=${branchIds}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}&level=${user_level}`
-      )
-      .then((res) => {
-        // setHolidayDetails(res.data.holiday_detail);
-        setEventDetails(res?.data?.Event_detail)
-        // console.log(res," JK 6")
-      setLoading(false)
-      })
-      .catch((error) => {
-        console.log(error, 'err');
-      });
+        .get(
+          `${endpoints.academics.getHoliday}?session_year=${branchIds}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}`
+        )
+        .then((res) => {
+          setHolidayDetails(res.data.holiday_detail);
+          setLoading(false)
+        })
+        .catch((error) => {
+          console.log(error, 'err');
+        });
+      axiosInstance
+        .get(
+          `${endpoints.academics.getEvents}?session_year=${sessionId?.id}&acad_session=${branchIds}&start_date=${formatDate}&end_date=${formatDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}&level=${user_level}`
+        )
+        .then((res) => {
+          // setHolidayDetails(res.data.holiday_detail);
+          setEventDetails(res?.data?.Event_detail)
+          setLoading(false)
+        })
+        .catch((error) => {
+          console.log(error, 'err');
+        });
+    }
   };
 
   const getStudentRange = () => {
     if (counter === 2) {
-      if(branchList?.length !== 0 ){
+      if (branchList?.length !== 0) {
         setLoading(true)
         let branchIds = branchList?.map((branch) => [branch.id]);
         let gradesId = studentDetails?.role_details?.grades?.map((grade) => [
@@ -861,7 +860,7 @@ const AttedanceCalender = () => {
           .catch((error) => {
             console.log(error, 'err');
           });
-          axiosInstance
+        axiosInstance
           .get(
             `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&acad_session=${branchIds}&start_date=${startDate}&end_date=${endDate}&grade=${gradesId}&level=${user_level}`
           )
@@ -932,14 +931,14 @@ const AttedanceCalender = () => {
         .catch((error) => {
           console.log(error, 'err');
         });
-        axiosInstance
+      axiosInstance
         .get(
           `${endpoints.academics.getEvents}?session_year=${sessionId?.id}&acad_session=${branchIds}&start_date=${startDate}&end_date=${endDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}&level=${user_level}`
         )
         .then((res) => {
           // setHolidayDetails(res.data.holiday_detail);
           setEventDetails(res?.data?.Event_detail)
-          console.log(res,"JK 8")
+          console.log(res, "JK 8")
           setLoading(false)
         })
         .catch((error) => {
@@ -1137,7 +1136,7 @@ const AttedanceCalender = () => {
       .catch((error) => {
         console.log(error, 'err');
       });
-      axiosInstance
+    axiosInstance
       .get(
         `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade?.grade_id}&level=${user_level}`
       )
@@ -1242,11 +1241,11 @@ const AttedanceCalender = () => {
           spacing={3}
           id='selectionContainer'
         >
-          {user_level == 4 || 
-          user_level == 2 || 
-          user_level == 1 ||
-          user_level == 8 ||
-          user_level == 5 ? (
+          {user_level == 4 ||
+            user_level == 2 ||
+            user_level == 1 ||
+            user_level == 8 ||
+            user_level == 5 ? (
             <Grid item md={3} xs={12}>
               <Autocomplete
                 multiple
@@ -1258,8 +1257,7 @@ const AttedanceCalender = () => {
                   if (value?.length && moduleId) {
                     const ids = value.map((el) => el)
                     const selectedId = value.map((el) => el?.branch?.id)
-                    const acadId =value.map((el) => el?.id)
-                    // console.log(value,"KL888")
+                    const acadId = value.map((el) => el?.id)
                     // const selectedId = value.branch.id;
                     // const selectedAcademicYearId = value.id;
                     // setSelectedAcademicYearId(selectedAcademicYearId);
@@ -1283,7 +1281,7 @@ const AttedanceCalender = () => {
                 options={branchList || []}
                 getOptionLabel={(option) => option?.branch?.branch_name || ''}
                 // filterSelectedOptions
-                getOptionSelected={(option, value) => 
+                getOptionSelected={(option, value) =>
                   option?.branch?.id == value?.branch?.id
                 }
                 renderInput={(params) => (
@@ -1295,9 +1293,9 @@ const AttedanceCalender = () => {
                   />
                 )}
               />
-            </Grid> 
+            </Grid>
 
-          ): ''}
+          ) : ''}
           <Grid item md={3} xs={12}>
             <Autocomplete
               // multiple
@@ -1308,7 +1306,7 @@ const AttedanceCalender = () => {
                 setHolidayDetails('')
                 setEventDetails('')
                 if (value) {
-                  if(user_level == 4 || user_level == 1 || user_level == 2 || user_level == 5 ||  user_level == 8){
+                  if (user_level == 4 || user_level == 1 || user_level == 2 || user_level == 5 || user_level == 8) {
                     const branchId = selectedBranch.map((item) => item?.branch?.id);
                     const selectedId = value.grade_id;
                     setSelectedGrade(value);
@@ -1316,7 +1314,7 @@ const AttedanceCalender = () => {
                       `${endpoints.academics.sections}?session_year=${selectedAcademicYear.id}&branch_id=${branchId}&grade_id=${selectedId}&module_id=${moduleId}`,
                       'section'
                     );
-                  }else{
+                  } else {
 
                     const selectedId = value.grade_id;
                     // const branchId = selectedBranch.branch.map((item) => item?.id);
@@ -1411,7 +1409,7 @@ const AttedanceCalender = () => {
             startIcon={<FilterFilledIcon className={classes.filterIcon} />}
             className={classes.filterButton}
             onClick={selectModule}
-            style={{marginLeft: '5%'}}
+            style={{ marginLeft: '5%' }}
           >
             filter
           </StyledFilterButton>
@@ -1630,14 +1628,14 @@ const AttedanceCalender = () => {
         </div>
 
         <div className='eventWhole'>
-        {/* <div className='startDate'> <b>  From </b> {moment(startDate).format('DD-MM-YYYY')}</div> */}
-        {startDate === endDate ? (
-          <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')}</div>
+          {/* <div className='startDate'> <b>  From </b> {moment(startDate).format('DD-MM-YYYY')}</div> */}
+          {startDate === endDate ? (
+            <div className='startDate' style={{ textAlign: 'center' }}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')}</div>
 
-        ) : (
-          <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div>
+          ) : (
+            <div className='startDate' style={{ textAlign: 'center' }}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div>
 
-        )}
+          )}
           <Paper
             elevation={3}
             className={[classes.root, classes.paperSize]}
@@ -1830,11 +1828,11 @@ const AttedanceCalender = () => {
         <div className='eventWhole'>
           {/* <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div> */}
           {startDate === endDate ? (
-          <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')}</div>
+            <div className='startDate' style={{ textAlign: 'center' }}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')}</div>
 
-        ) : (
-          <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div>
-        )}
+          ) : (
+            <div className='startDate' style={{ textAlign: 'center' }}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div>
+          )}
           <Paper
             elevation={3}
             className={[classes.root, classes.paperSize]}

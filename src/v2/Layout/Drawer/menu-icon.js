@@ -264,7 +264,7 @@ const menuIcon = (name) => {
       icon = <LaptopChromebookIcon />;
       break;
     }
-    case 'Calendar & Attendance': {
+    case 'Calendar': {
       icon = <CalendarTodayIcon />;
       break;
     }

@@ -165,9 +165,9 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
               }}
             /> */}
           </Grid>
-          <Grid xs={12} sm={5}></Grid>
+          {/* <Grid xs={12} sm={5}></Grid> */}
           {/* <div></div> */}
-          <Grid item xs={12} sm={4} className={"filterPadding"}>
+          {/* <Grid item xs={12} sm={4} className={"filterPadding"}>
             <TextField
               style={{ width: "100%" }}
               id="subname"
@@ -205,8 +205,8 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
             //   );
             // }}
             />
-          </Grid>
-          <Grid item xs={12} sm={4} className={"filterPadding"}>
+          </Grid> */}
+          {/* <Grid item xs={12} sm={4} className={"filterPadding"}>
             <TextField
               style={{ width: "100%" }}
               id="subname"
@@ -244,7 +244,7 @@ function ComponentCard({ componentId, components, setComponentDetails }) {
             //   );
             // }}
             />
-          </Grid>
+          </Grid> */}
           <Grid
             item
             xs={12}

@@ -57,8 +57,6 @@ function CreateReportConfig() {
         grade: selectedGrade?.grade_id,
         id: compnentUniqueId,
         ComponentID: -1,
-        component_description: '',
-        grade_description: '',
         subComponents: []
       },
     ]);
@@ -171,6 +169,7 @@ function CreateReportConfig() {
           </div>
         </div>
         <hr />
+        <h5 style={{ marginLeft: 30 }}>Report Card</h5>
         <Grid container spacing={1} style={{ display: 'flex' }}>
           <Grid item md={3} xs={12} style={{ marginLeft: '20px' }}>
             <Autocomplete
@@ -205,7 +204,7 @@ function CreateReportConfig() {
               className='dropdownIcon'
               value={selectedGrade || ''}
               options={gradeList || []}
-              getOptionLabel={(option) => option?.branch_name || ''}
+              getOptionLabel={(option) => option?.grade_name || ''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
@@ -232,7 +231,7 @@ function CreateReportConfig() {
                 onClick={createComponent}
               >
                 {/* Create Component */}
-                Create ReportCard Curriculum
+                Create Curriculum
               </Button>
             </Grid>}
           {components?.length !== 0 ? (
@@ -252,7 +251,7 @@ function CreateReportConfig() {
               >
                 {/* Remove Component
                  */}
-                Remove ReportCard Curriculum
+                Remove Curriculum
               </Button>
             </Grid>
           ) : (
@@ -322,7 +321,7 @@ function CreateReportConfig() {
           </Modal>
 
         </Grid>
-        {components.length > 0 &&
+        {components.length > 0 && components[0].subComponents.length > 0 && components[0].subComponents[0].columns.length > 0 &&
           <Button
             variant='contained'
             color='primary'

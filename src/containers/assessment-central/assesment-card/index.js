@@ -35,13 +35,17 @@ const AssesmentCard = ({
   addedId,
   selectAssetmentCard,
   handleClose,
+  filteredAssesmentTests,
+  isdisable,
+  filterbasedonsub
 }) => {
-  console.log('handleclose', handleClose);
   const themeContext = useTheme();
   console.log("treecheckassessmentcardvalue", value);
+  console.log('added', addedId)
   console.log("treecheckassessmentcardonclick", onClick);
   console.log("treecheckassessmentcardiselected", isSelected);
   console.log("treecheckassessmentcardfilteredresults", filterResults);
+  console.log('filterbasedonsubeeeisdisable', isdisable);
 
   const [anchorEl, setAnchorEl] = useState(null);
   const menuOpen = Boolean(anchorEl);
@@ -76,7 +80,9 @@ const AssesmentCard = ({
     const { checked } = e.target;
     console.log('treechckvlue', checked, value);
     selectAssetmentCard(value?.id, checked);
+    // filterbasedonsub()
   };
+
 
   return (
     <div className={`assesment-card ${isSelected ? "selected" : ""}`}>
@@ -88,10 +94,13 @@ const AssesmentCard = ({
           </p>
         </div>
         {handleClose &&
+          value.subject_count == 1 &&
+
           <Checkbox
             checked={addedId.includes(value.id)}
             onChange={e => toggleComplete(e)}
             name="allSelect"
+            disabled={isdisable}
           />
         }
         {isSuper == true ? (

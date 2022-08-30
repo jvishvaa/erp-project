@@ -100,8 +100,11 @@ const AttendanceReport = () => {
         <div className='row justify-content-between'>
           <div className='col-7 pr-0 pr-md-0 th-16 mt-2 th-fw-500 th-black-1'>
             Students Attendance Report
-            <span className='th-12 pl-2 pl-md-0 th-pointer th-primary'>
-              {/* <ReloadOutlined onClick={getAttendanceData} className='pl-md-3' /> */}
+            <span
+              className='th-12 pl-2 th-pointer th-primary'
+              onClick={() => history.push('/gradewise-attendance')}
+            >
+              (<u>View All Attendance &gt;</u>)
             </span>
           </div>
 

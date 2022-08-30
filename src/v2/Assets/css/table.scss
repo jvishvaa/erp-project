@@ -8,23 +8,25 @@ thead[class*='ant-table-thead'] th {
   background-color: #1b4ccb !important;
 }
 
-.ant-table-tbody>tr>td {
+.ant-table-tbody > tr > td {
   border-bottom: none !important;
 }
 
-.ant-table-container table>thead>tr:first-child th:first-child {
+.ant-table-container table > thead > tr:first-child th:first-child {
   border-top-left-radius: 10px !important;
 }
 
-.ant-table-container table>thead>tr:first-child th:last-child {
+.ant-table-container table > thead > tr:first-child th:last-child {
   border-top-right-radius: 10px !important;
 }
 
-.ant-table-thead>tr>th {
+.ant-table-thead > tr > th {
   border-bottom: none !important;
 }
 
-.ant-table-thead>tr>th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
+.ant-table-thead
+  > tr
+  > th:not(:last-child):not(.ant-table-selection-column):not(.ant-table-row-expand-icon-cell):not([colspan])::before {
   width: 0px !important;
 }
 
@@ -33,19 +35,18 @@ thead[class*='ant-table-thead'] th {
   background: #fff0 !important;
 }
 
-.ant-table-tbody>tr.ant-table-row:hover>td,
-.ant-table-tbody>tr>td.ant-table-cell-row-hover {
+.ant-table-tbody > tr.ant-table-row:hover > td,
+.ant-table-tbody > tr > td.ant-table-cell-row-hover {
   background: inherit !important;
 }
 
-.th-table .ant-table-tbody>tr:last-child>td.ant-table-cell:last-child {
+.th-table .ant-table-tbody > tr:last-child > td.ant-table-cell:last-child {
   border-bottom-right-radius: 10px !important;
 }
 
-.th-table .ant-table-tbody>tr:last-child>td.ant-table-cell:first-child {
+.th-table .ant-table-tbody > tr:last-child > td.ant-table-cell:first-child {
   border-bottom-left-radius: 10px !important;
 }
-
 
 .th-table {
   border: 1px solid #d7e0e7;
@@ -57,6 +58,10 @@ thead[class*='ant-table-thead'] th {
 //   padding: 16px 0px !important;
 // }
 
-.ant-table-tbody>tr>td>.ant-table-wrapper:only-child .ant-table {
+.ant-table-tbody > tr > td > .ant-table-wrapper:only-child .ant-table {
   margin: -16px !important;
+}
+
+.th-table .ant-table-content {
+  border-radius: 10px !important;
 }
