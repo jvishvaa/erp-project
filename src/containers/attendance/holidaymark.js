@@ -325,12 +325,12 @@ const HolidayMark = () => {
       //     );
       //   }
       // }
-      if (history?.location?.state?.data?.grade?.length && gradeList !== []) {
-        const ids = history?.location?.state?.data?.grade.map((el, index) => el);
+      // if (history?.location?.state?.data?.grade?.length && gradeList !== []) {
+      //   const ids = history?.location?.state?.data?.grade.map((el, index) => el);
 
-        let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
-        setSelectedGrade(filterBranch);
-      }
+      //   let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
+      //   setSelectedGrade(filterBranch);
+      // }
     }
   }, [branchList]);
 

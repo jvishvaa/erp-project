@@ -115,7 +115,7 @@ const AttedanceCalender = () => {
   const [eventId,setEventid] = useState('');
   const [eventData, setEventData] = useState('')
   const [autoFlag,setAutoFlag] = useState(false);
-  const [firstFlag,setFirstFlag] = useState(true);
+  const [firstFlag,setFirstFlag] = useState(false);
   const sessionYear = JSON.parse(sessionStorage.getItem('acad_session'));
   const { user_level } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -131,6 +131,12 @@ const AttedanceCalender = () => {
   const dummyBranchId= multiBranchIdLocal.map((item) => item?.branch?.id)
   const dummyAcadId = multiBranchIdLocal.map((item) => item?.id)
 
+    useEffect(()=>{
+      if(!history?.location?.state?.backButtonStatus){
+        setFirstFlag(true)
+      }
+
+    },[history?.location?.state?.backButtonStatus])
 
   useEffect(()=>{
     if(selectedBranch.length !== 0 & selectedGrade.length !== 0 & firstFlag){
@@ -221,10 +227,10 @@ const AttedanceCalender = () => {
   useEffect(() => {
     if (path === '/attendance-calendar/teacher-view') {
       if (history?.location?.state?.backButtonStatus) {
-        const multiBranchId= history?.location?.state?.payload?.branch_id.map((item) => item?.branch?.id)
-        const multiSession= history?.location?.state?.payload?.branch_id.map((item) => item?.id)
+        // const multiBranchId= history?.location?.state?.payload?.branch_id.map((item) => item?.branch?.id)
+        // const multiSession= history?.location?.state?.payload?.branch_id.map((item) => item?.id)
         setSelectedBranch(history?.location?.state?.payload?.branch_id);
-        setSelectedGrade(history?.location?.state?.payload?.grade_id);
+        // setSelectedGrade(history?.location?.state?.payload?.grade_id);
         setSelectedSection(history?.location?.state?.payload?.section_id);
         setCounter(history?.location?.state?.payload?.counter);
         setStartDate(history?.location?.state?.payload?.startDate);
@@ -252,51 +258,55 @@ const AttedanceCalender = () => {
           //   .catch((error) => {
           //     setLoading(false);
           //   });
-          axiosInstance
-            .get(
-              `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${formatDateToday}&end_date=${formatDateToday}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
-            )
-            .then((res) => {
-              setHolidayDetails(res.data.holiday_detail);
-            })
-            .catch((error) => {
-              console.log(error, 'err');
-            });
-            axiosInstance
-            .get(
-              `${endpoints.academics.getEvents}?session_year=${selectedBranch.id}&acad_session=${selectedAcademicYearId}&start_date=${formatDateToday}&end_date=${formatDateToday}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}&level=${user_level}`
-            )
-            .then((res) => {
-              // setHolidayDetails(res.data.holiday_detail);
-              setEventDetails(res?.data?.Event_detail)
-              console.log(res.data.holiday_detail,"JK 1")
-            })
-            .catch((error) => {
-              console.log(error, 'err');
-            });
+          if(selectedAcademicYearId.length !== 0){
+           axiosInstance
+             .get(
+               `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${formatDateToday}&end_date=${formatDateToday}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
+             )
+             .then((res) => {
+               setHolidayDetails(res.data.holiday_detail);
+             })
+             .catch((error) => {
+               console.log(error, 'err');
+             });
+             axiosInstance
+             .get(
+               `${endpoints.academics.getEvents}?session_year=${selectedBranch.id}&acad_session=${selectedAcademicYearId}&start_date=${formatDateToday}&end_date=${formatDateToday}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}&level=${user_level}`
+             )
+             .then((res) => {
+               // setHolidayDetails(res.data.holiday_detail);
+               setEventDetails(res?.data?.Event_detail)
+              //  console.log(res.data.holiday_detail,"JK 1")
+             })
+             .catch((error) => {
+               console.log(error, 'err');
+             });
+          }
         } else {
-          axiosInstance
-            .get(
-              `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
-            )
-            .then((res) => {
-              setHolidayDetails(res.data.holiday_detail);
-            })
-            .catch((error) => {
-              console.log(error, 'err');
-            });
-
+          if(selectedAcademicYearId.length !== 0){
             axiosInstance
-            .get(
-              `${endpoints.academics.getEvents}?session_year=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}&level=${user_level}`
-            )
-            .then((res) => {
-              setEventDetails(res?.data?.Event_detail)
-              // console.log(res.data.holiday_detail,"JK 2")
-            })
-            .catch((error) => {
-              console.log(error, 'err');
-            });
+              .get(
+                `${endpoints.academics.getHoliday}?session_year=${selectedAcademicYearId}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}`
+              )
+              .then((res) => {
+                setHolidayDetails(res.data.holiday_detail);
+              })
+              .catch((error) => {
+                console.log(error, 'err');
+              });
+              axiosInstance
+              .get(
+                `${endpoints.academics.getEvents}?session_year=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${history?.location?.state?.payload?.startDate}&end_date=${history?.location?.state?.payload?.endDate}&grade=${history?.location?.state?.payload?.grade_id?.grade_id}&level=${user_level}`
+              )
+              .then((res) => {
+                setEventDetails(res?.data?.Event_detail)
+                // console.log(res.data.holiday_detail,"JK 2")
+              })
+              .catch((error) => {
+                console.log(error, 'err');
+              });
+
+          }
         }
       } else {
         setTeacherView(true);
@@ -678,7 +688,6 @@ const AttedanceCalender = () => {
           .catch((error) => {
             setLoading(false);
           });
-  
           axiosInstance
           .get(
             `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
@@ -706,7 +715,6 @@ const AttedanceCalender = () => {
             .catch((error) => {
               setLoading(false);
             });
-    
             axiosInstance
             .get(
               `${endpoints.academics.getEvents}?session_year_id=${sessionId?.id}&acad_session=${selectedAcademicYearId}&start_date=${startDate}&end_date=${endDate}&grade=${selectedGrade.grade_id}&level=${user_level}`
@@ -924,7 +932,6 @@ const AttedanceCalender = () => {
         .catch((error) => {
           console.log(error, 'err');
         });
-
         axiosInstance
         .get(
           `${endpoints.academics.getEvents}?session_year=${sessionId?.id}&acad_session=${branchIds}&start_date=${startDate}&end_date=${endDate}&grade=${studentDetails?.role_details?.grades[0]?.grade_id}&level=${user_level}`
