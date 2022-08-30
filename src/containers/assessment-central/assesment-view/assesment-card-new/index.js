@@ -272,7 +272,7 @@ const AssessmentCard = ({
                     </span>
                   )}
                   {!period.is_verified && (
-                    <span className='tooltiptext' style={{ width: '160px' }}>
+                    <span className='tooltiptext' style={{ width: '160px',marginLeft:'-120px' }}>
                       <span onClick={handlePublish} style={{ marginBottom: 10 }}>Publish Paper</span>
                       <Divider />
                       <span onClick={() => {
