@@ -389,7 +389,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     }
     formik.handleSubmit();
     sessionStorage.setItem('createTestData', JSON.stringify(formik?.values))
-    sessionStorage.setItem('dropDownData', JSON.stringify({ branch: branchDropdown, grade: grades, subject: subjects, assesmentTypes: assesmentTypes, section: sectionList, group: groupList }))
+    sessionStorage.setItem('dropDownData', JSON.stringify({ branch: branchDropdown, grade: grades, subject: subjects, assesmentTypes: assesmentTypes, section: sectionList, group: groupList ,isSectionToggle : sectionToggle}))
   };
 
   useEffect(() => {
@@ -408,6 +408,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       setAssesmentTypes(testFilterDropdownList?.assesmentTypes)
       setGroupList(testFilterDropdownList?.group)
       setSectionList(testFilterDropdownList?.section)
+      setSectionToggle(testFilterDropdownList?.sectionToggle)
       history.replace({ state: { dataRestore: false } })
       if (testFilterData?.status?.id) formik.handleSubmit();
     }
