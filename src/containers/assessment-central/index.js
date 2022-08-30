@@ -190,12 +190,8 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       setBranchDropdown([]);
       setGrades([]);
       setSubjects([]);
-      if (moduleId && acadId) {
-        const data = await fetchBranches(acadId, moduleId);
-        let branch = data.filter((item) => item?.id === selectedBranch?.id)
-        handleBranch('', branch)
-        setBranchDropdown(data);
-      }
+      const data = await fetchBranches(acadId, moduleId);
+      setBranchDropdown(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch branch');
     }
@@ -394,7 +390,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     }
     formik.handleSubmit();
     sessionStorage.setItem('createTestData', JSON.stringify(formik?.values))
-    sessionStorage.setItem('dropDownData', JSON.stringify({ branch: branchDropdown, grade: grades, subject: subjects, assesmentTypes: assesmentTypes, section: sectionList, group: groupList }))
+    sessionStorage.setItem('dropDownData', JSON.stringify({ branch: branchDropdown, grade: grades, subject: subjects, assesmentTypes: assesmentTypes, section: sectionList, group: groupList ,isSectionToggle : sectionToggle}))
   };
 
   useEffect(() => {
@@ -413,6 +409,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       setAssesmentTypes(testFilterDropdownList?.assesmentTypes)
       setGroupList(testFilterDropdownList?.group)
       setSectionList(testFilterDropdownList?.section)
+      setSectionToggle(testFilterDropdownList?.isSectionToggle)
       history.replace({ state: { dataRestore: false } })
       if (testFilterData?.status?.id) formik.handleSubmit();
     }
