@@ -268,7 +268,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                               (eachMarks, marksIndex) => {
                                 return eachMarks?.subject?.id === x.id;
                               }
-                            )[0]?.marks_obtained;
+                            )[0]?.normalized_marks;
 
                             return (
                               <>
@@ -305,7 +305,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             className='th-width-10 th-fw-600 text-center'
                             colSpan={examTypeHeader[i][x].length}
                           >
-                            {'Out Of 500'}
+                            {eachSem.total_marks}
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_secured_marks}
@@ -438,7 +438,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                               (eachMarks, marksIndex) => {
                                 return eachMarks?.subject?.id === x.id;
                               }
-                            )[0]?.marks_obtained;
+                            )[0]?.normalized_marks;
 
                             return (
                               <>
@@ -475,7 +475,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             className='th-width-10 th-fw-600 text-center'
                             colSpan={coschSxamTypeHeader[coI][x].length}
                           >
-                            {'Out Of 500'}
+                            {eachSem.total_marks}
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_secured_marks}

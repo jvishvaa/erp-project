@@ -66,14 +66,13 @@ const AssessmentReportFilters = ({
     topic: [],
     erp: [],
   });
-  const [groupList, setGroupList] = useState([])
-  const [groupSelected, setGroupSelected] = useState([])
+  const [groupList, setGroupList] = useState([]);
+  const [groupSelected, setGroupSelected] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(null);
   const [mappingList, setMappingList] = useState([]);
   const [downloadTestId, setDownloadTestId] = useState(null);
   const [sectionToggle, setSectionToggle] = useState(false);
-
 
   const [examDate, setExamDate] = useState(null);
 
@@ -112,7 +111,7 @@ const AssessmentReportFilters = ({
         status_code: status = 400,
       } = await getReportCardStatus();
       setMappingList(result);
-    } catch (err) { }
+    } catch (err) {}
   };
 
   const handleGroup = (event, value) => {
@@ -121,8 +120,8 @@ const AssessmentReportFilters = ({
       subject: '',
       test: '',
     });
-    setGroupSelected(value)
-  }
+    setGroupSelected(value);
+  };
 
   useEffect(() => {
     if (page && isFilter) handleFilter();
@@ -232,28 +231,25 @@ const AssessmentReportFilters = ({
   };
 
   const handleNewPreview = () => {
-    setLoading(true);
     let paramObj = {
-      // session_year_id: selectedAcademicYear?.id,
       acad_session_id: filterData.branch?.id,
       erp_id: filterData.erp?.erp_id,
       grade_id: filterData.grade?.grade_id,
       section_id: filterData.section?.section_id,
-      // acad_session: 17,
-      // erp: '2105670829_OLV',
-      // grade: 3,
     };
     const isPreview = Object.values(paramObj).every(Boolean);
     if (!isPreview) {
       for (const [key, value] of Object.entries(paramObj).reverse()) {
-        if (key === 'acad_session' && !Boolean(value))
+        if (key === 'acad_session_id' && !Boolean(value))
           setAlert('error', `Please select Branch`);
         else if (!Boolean(value)) setAlert('error', `Please select ${key}.`);
       }
       return;
+    } else {
+      setLoading(true);
+      let params = `?${generateQueryParamSting({ ...paramObj })}`;
+      fetchNewReportCardData(params);
     }
-    let params = `?${generateQueryParamSting({ ...paramObj })}`;
-    fetchNewReportCardData(params);
   };
 
   const handleFilter = () => {
@@ -261,8 +257,14 @@ const AssessmentReportFilters = ({
       test: filterData.test?.id,
     };
     if (selectedReportType?.id === 3) {
-      const sectionMapIds = groupSelected?.group_section_mapping?.length > 0 ? groupSelected?.group_section_mapping.map((i) => i?.section_mapping_id) : '';
-      paramObj = { ...paramObj, section_mapping: sectionToggle ? sectionMapIds :  filterData.section?.id };
+      const sectionMapIds =
+        groupSelected?.group_section_mapping?.length > 0
+          ? groupSelected?.group_section_mapping.map((i) => i?.section_mapping_id)
+          : '';
+      paramObj = {
+        ...paramObj,
+        section_mapping: sectionToggle ? sectionMapIds : filterData.section?.id,
+      };
     }
     if (selectedReportType?.id === 4) {
       paramObj = {
@@ -314,7 +316,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   function getGrade(acadId, branchId) {
@@ -332,7 +334,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   function getSection(acadId, branchId, gradeId) {
@@ -350,7 +352,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   function getSubject(acadMappingId, gradeId) {
@@ -368,12 +370,13 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   function getTest(branchId, gradeId, subjectId) {
-    let reqUrl = !sectionToggle ? `${endpoints.assessmentErp.testList}?session_year=${selectedAcademicYear?.id}&branch=${branchId}&grade=${gradeId}&subjects=${subjectId}&section_mapping=${filterData?.section?.id}` :
-      `${endpoints.assessmentErp.testList}?session_year=${selectedAcademicYear?.id}&branch=${branchId}&grade=${gradeId}&subjects=${subjectId}&group=${groupSelected?.id}`
+    let reqUrl = !sectionToggle
+      ? `${endpoints.assessmentErp.testList}?session_year=${selectedAcademicYear?.id}&branch=${branchId}&grade=${gradeId}&subjects=${subjectId}&section_mapping=${filterData?.section?.id}`
+      : `${endpoints.assessmentErp.testList}?session_year=${selectedAcademicYear?.id}&branch=${branchId}&grade=${gradeId}&subjects=${subjectId}&group=${groupSelected?.id}`;
     axiosInstance
       .get(
         // `${endpoints.assessmentErp.testList}?session_year=${selectedAcademicYear?.id}&branch=${branchId}&grade=${gradeId}&subjects=${subjectId}`
@@ -389,7 +392,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   function getChapter(subjectId) {
@@ -405,7 +408,7 @@ const AssessmentReportFilters = ({
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   function getTopic(chapterId, isCentral) {
@@ -425,7 +428,7 @@ const AssessmentReportFilters = ({
             });
           }
         })
-        .catch((error) => { });
+        .catch((error) => {});
     } else {
       axiosInstance
         .get(`${endpoints.assessmentErp.topicList}?chapter=${chapterId}`)
@@ -439,15 +442,16 @@ const AssessmentReportFilters = ({
             });
           }
         })
-        .catch((error) => { });
+        .catch((error) => {});
     }
   }
 
   const fetchGroupList = (acadId, grade) => {
     axiosInstance
       .get(
-        `${endpoints.assessmentErp.getGroups
-        }?acad_session=${acadId}&grade=${grade?.grade_id}&is_active=${true}`    // &group_type=${1}
+        `${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${
+          grade?.grade_id
+        }&is_active=${true}` // &group_type=${1}
       )
       .then((result) => {
         if (result?.status === 200) {
@@ -468,7 +472,6 @@ const AssessmentReportFilters = ({
     // formik.setFieldValue('section', []);
     // formik.setFieldValue('group', '');
   };
-
 
   const getERP = (branchId, gradeId, sectionId) => {
     setIsLoading(true);
@@ -586,7 +589,7 @@ const AssessmentReportFilters = ({
         );
       }
       if (selectedReportType.id === 6 || selectedReportType.id === 3) {
-        fetchGroupList(filterData?.branch?.id, value)
+        fetchGroupList(filterData?.branch?.id, value);
       }
       if (selectedReportType?.id == 5 || selectedReportType?.id == 14) {
         console.log(selectedReportType?.id);
@@ -678,7 +681,8 @@ const AssessmentReportFilters = ({
     if (selectedReportType?.id === 1 && isFilter) {
       try {
         const { data } = await axiosInstance.get(
-          `${endpoints.assessmentReportTypes.reportDowloadSectionWise
+          `${
+            endpoints.assessmentReportTypes.reportDowloadSectionWise
           }?test=${JSON.stringify(filterData.test?.id)}`,
           {
             responseType: 'arraybuffer',
@@ -695,7 +699,8 @@ const AssessmentReportFilters = ({
     if (selectedReportType?.id === 2 && isFilter) {
       try {
         const { data } = await axiosInstance.get(
-          `${endpoints.assessmentReportTypes.reportDownloadTopicWise
+          `${
+            endpoints.assessmentReportTypes.reportDownloadTopicWise
           }?test=${JSON.stringify(filterData.test?.id)}`,
           {
             responseType: 'arraybuffer',
@@ -712,7 +717,8 @@ const AssessmentReportFilters = ({
     if (selectedReportType?.id === 3 && isFilter) {
       try {
         const { data } = await axiosInstance.get(
-          `${endpoints.assessmentReportTypes.reportDownloadClassAverage
+          `${
+            endpoints.assessmentReportTypes.reportDownloadClassAverage
           }?test=${JSON.stringify(filterData.test?.id)}`,
           {
             responseType: 'arraybuffer',
@@ -729,8 +735,10 @@ const AssessmentReportFilters = ({
     if (selectedReportType?.id === 4 && isFilter) {
       try {
         const { data } = await axiosInstance.get(
-          `${endpoints.assessmentReportTypes.reportDownloadTopicStudentAverage
-          }?test=${JSON.stringify(filterData.test?.id)}&section_mapping=${filterData.section?.id
+          `${
+            endpoints.assessmentReportTypes.reportDownloadTopicStudentAverage
+          }?test=${JSON.stringify(filterData.test?.id)}&section_mapping=${
+            filterData.section?.id
           }&topic=${filterData.topic?.id}`,
           {
             responseType: 'arraybuffer',
@@ -747,19 +755,22 @@ const AssessmentReportFilters = ({
 
     if (selectedReportType?.id === 6) {
       console.log(groupSelected);
-      const sectionMapIds = groupSelected?.group_section_mapping?.length > 0 ? groupSelected?.group_section_mapping.map((i) => i?.section_mapping_id) : '';
+      const sectionMapIds =
+        groupSelected?.group_section_mapping?.length > 0
+          ? groupSelected?.group_section_mapping.map((i) => i?.section_mapping_id)
+          : '';
       console.log(sectionMapIds);
-      const reqUrl = sectionToggle ? `${endpoints.assessmentReportTypes.reportPdf}?test=${JSON.stringify(
-        filterData.test?.id
-      )}&section_mapping=${sectionMapIds}` : `${endpoints.assessmentReportTypes.reportPdf}?test=${JSON.stringify(
-        filterData.test?.id
-      )}&section_mapping=${filterData.section?.id}`;
+      const reqUrl = sectionToggle
+        ? `${endpoints.assessmentReportTypes.reportPdf}?test=${JSON.stringify(
+            filterData.test?.id
+          )}&section_mapping=${sectionMapIds}`
+        : `${endpoints.assessmentReportTypes.reportPdf}?test=${JSON.stringify(
+            filterData.test?.id
+          )}&section_mapping=${filterData.section?.id}`;
       try {
-        const { data } = await axiosInstance.get(reqUrl,
-          {
-            responseType: 'arraybuffer',
-          }
-        );
+        const { data } = await axiosInstance.get(reqUrl, {
+          responseType: 'arraybuffer',
+        });
         const blob = new Blob([data], {
           type: 'application/pdf',
         });
@@ -790,8 +801,10 @@ const AssessmentReportFilters = ({
       try {
         // http://localhost:8000/qbox/assessment/download-report-consolidate/?section_mapping=5&test=90&subject_id=3
         const { data } = await axiosInstance.get(
-          `${endpoints.assessmentReportTypes.reportConsolidated}?section_mapping=${filterData.section?.id
-          }&test=${JSON.stringify(filterData.test?.id)}&subject_id=${filterData?.subject?.subject_id
+          `${endpoints.assessmentReportTypes.reportConsolidated}?section_mapping=${
+            filterData.section?.id
+          }&test=${JSON.stringify(filterData.test?.id)}&subject_id=${
+            filterData?.subject?.subject_id
           }`,
           {
             responseType: 'arraybuffer',
@@ -942,14 +955,8 @@ const AssessmentReportFilters = ({
             />
           </Grid>
         )}
-        {selectedReportType?.id == 6 || selectedReportType?.id == 3 ?
-          <Grid
-            container
-            alignItems='center'
-            justifyContent='center'
-            xs={12}
-            md={3}
-          >
+        {selectedReportType?.id == 6 || selectedReportType?.id == 3 ? (
+          <Grid container alignItems='center' justifyContent='center' xs={12} md={3}>
             <Typography>Section</Typography>
             <Switch
               checked={sectionToggle}
@@ -959,85 +966,88 @@ const AssessmentReportFilters = ({
             />
             <Typography>Group</Typography>
           </Grid>
-          : ' '}
+        ) : (
+          ' '
+        )}
 
-        {!sectionToggle ?
+        {!sectionToggle ? (
           <>
-            {(selectedReportType?.id === 6 || selectedReportType?.id == 3 ) && (
-                <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
-                  <Autocomplete
-                    style={{ width: '100%' }}
-                    size='small'
-                    onChange={handleSection}
-                    id='section'
-                    value={filterData.section || {}}
-                    options={dropdownData.section || []}
-                    getOptionLabel={(option) => option?.section__section_name || ''}
-                    filterSelectedOptions
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        variant='outlined'
-                        label='Section'
-                        placeholder='Section'
-                      />
-                    )}
-                  />
-                </Grid>
-              )}
-          </>
-          :
-          <>
-            {selectedReportType?.id == 6 || selectedReportType?.id == 3 && (
+            {(selectedReportType?.id === 6 || selectedReportType?.id == 3) && (
               <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                 <Autocomplete
                   style={{ width: '100%' }}
                   size='small'
-                  onChange={handleGroup}
-                  id='subject'
-                  value={groupSelected || {}}
-                  options={groupList || []}
-                  getOptionLabel={(option) => option?.group_name || ''}
+                  onChange={handleSection}
+                  id='section'
+                  value={filterData.section || {}}
+                  options={dropdownData.section || []}
+                  getOptionLabel={(option) => option?.section__section_name || ''}
                   filterSelectedOptions
                   renderInput={(params) => (
                     <TextField
                       {...params}
                       variant='outlined'
-                      label='Group'
-                      placeholder='Group'
+                      label='Section'
+                      placeholder='Section'
                     />
                   )}
                 />
               </Grid>
             )}
           </>
-        }
-        {(selectedReportType?.id === 4 ||
-              selectedReportType?.id === 5 ||
-              selectedReportType?.id === 7 ||
-              selectedReportType?.id === 14 ||
-              selectedReportType?.id === 8) && (
+        ) : (
+          <>
+            {selectedReportType?.id == 6 ||
+              (selectedReportType?.id == 3 && (
                 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                   <Autocomplete
                     style={{ width: '100%' }}
                     size='small'
-                    onChange={handleSection}
-                    id='section'
-                    value={filterData.section || {}}
-                    options={dropdownData.section || []}
-                    getOptionLabel={(option) => option?.section__section_name || ''}
+                    onChange={handleGroup}
+                    id='subject'
+                    value={groupSelected || {}}
+                    options={groupList || []}
+                    getOptionLabel={(option) => option?.group_name || ''}
                     filterSelectedOptions
                     renderInput={(params) => (
                       <TextField
                         {...params}
                         variant='outlined'
-                        label='Section'
-                        placeholder='Section'
+                        label='Group'
+                        placeholder='Group'
                       />
                     )}
                   />
                 </Grid>
+              ))}
+          </>
+        )}
+        {(selectedReportType?.id === 4 ||
+          selectedReportType?.id === 5 ||
+          selectedReportType?.id === 7 ||
+          selectedReportType?.id === 14 ||
+          selectedReportType?.id === 8) && (
+          <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+            <Autocomplete
+              style={{ width: '100%' }}
+              size='small'
+              onChange={handleSection}
+              id='section'
+              value={filterData.section || {}}
+              options={dropdownData.section || []}
+              getOptionLabel={(option) => option?.section__section_name || ''}
+              filterSelectedOptions
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  variant='outlined'
+                  label='Section'
+                  placeholder='Section'
+                />
               )}
+            />
+          </Grid>
+        )}
         {selectedReportType?.id !== 5 &&
           selectedReportType?.id !== 14 &&
           selectedReportType?.id !== 11 &&
@@ -1063,8 +1073,6 @@ const AssessmentReportFilters = ({
               />
             </Grid>
           )}
-
-
 
         {selectedReportType?.id !== 5 &&
           selectedReportType?.id !== 14 &&
@@ -1203,7 +1211,7 @@ const AssessmentReportFilters = ({
                   KeyboardButtonProps={{
                     'aria-label': 'change date',
                   }}
-                // style={{ marginTop: -6 }}
+                  // style={{ marginTop: -6 }}
                 />
               </Grid>
             </MuiPickersUtilsProvider>
@@ -1247,7 +1255,7 @@ const AssessmentReportFilters = ({
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
                 }}
-              // style={{ marginTop: -6 }}
+                // style={{ marginTop: -6 }}
               />
             </Grid>
           </MuiPickersUtilsProvider>
@@ -1291,7 +1299,7 @@ const AssessmentReportFilters = ({
                 KeyboardButtonProps={{
                   'aria-label': 'change date',
                 }}
-              // style={{ marginTop: -6 }}
+                // style={{ marginTop: -6 }}
               />
             </Grid>
           </MuiPickersUtilsProvider>
@@ -1377,12 +1385,12 @@ const AssessmentReportFilters = ({
           </Grid>
         )}
         {selectedReportType?.id === 6 ||
-          selectedReportType?.id === 7 ||
-          selectedReportType?.id === 8 ||
-          selectedReportType?.id === 9 ||
-          selectedReportType?.id === 10 ||
-          selectedReportType?.id === 11 ||
-          selectedReportType?.id === 13 ? null : (
+        selectedReportType?.id === 7 ||
+        selectedReportType?.id === 8 ||
+        selectedReportType?.id === 9 ||
+        selectedReportType?.id === 10 ||
+        selectedReportType?.id === 11 ||
+        selectedReportType?.id === 13 ? null : (
           <Grid item xs={6} sm={2} className={isMobile ? '' : 'addButtonPadding'}>
             <Button
               variant='contained'
@@ -1394,8 +1402,8 @@ const AssessmentReportFilters = ({
                 selectedReportType?.id === 5
                   ? handlePreview
                   : selectedReportType?.id === 14
-                    ? handleNewPreview
-                    : () => {
+                  ? handleNewPreview
+                  : () => {
                       setSelectedERP([]);
                       handleFilter();
                     }
