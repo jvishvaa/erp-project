@@ -8,6 +8,7 @@ import {
   Popover,
   FormControlLabel,
   Checkbox,
+  Tooltip,
 } from "@material-ui/core";
 import moment from "moment";
 
@@ -76,7 +77,10 @@ const AssesmentCard = ({
     handleMenuClose();
   };
 
-  const toggleComplete = (e) => {
+  const toggleComplete = (e, disabled) => {
+    if (disabled && !addedId.includes(value.id)) {
+      return
+    }
     const { checked } = e.target;
     console.log('treechckvlue', checked, value);
     selectAssetmentCard(value?.id, checked);
@@ -96,12 +100,15 @@ const AssesmentCard = ({
         {handleClose &&
           value.subject_count == 1 &&
 
-          <Checkbox
-            checked={addedId.includes(value.id)}
-            onChange={e => toggleComplete(e)}
-            name="allSelect"
-            disabled={isdisable}
-          />
+          <Tooltip title={isdisable && !addedId.includes(value.id) ? 'Multiple tests cannot be selected with same subject.' : ''}>
+            <Checkbox
+              checked={addedId.includes(value.id)}
+              onChange={e => toggleComplete(e, isdisable)}
+              title={isdisable && !addedId.includes(value.id) ? 'Multiple tests cannot be selected with same subject.' : ''}
+              name="allSelect"
+            // disabled={isdisable && !addedId.includes(value.id)}
+            />
+          </Tooltip>
         }
         {isSuper == true ? (
           <div className="menu">
