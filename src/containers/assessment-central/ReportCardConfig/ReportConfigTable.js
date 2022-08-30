@@ -103,6 +103,7 @@ const ReportConfigTable = () => {
   const [gradeList, setGradeList] = useState([]);
   const [moduleId, setModuleId] = useState('');
   const [selectedbranch, setSelectedbranch] = useState();
+  console.log('new', selectedbranch)
   const [selectedGrade, setSelectedGrade] = useState();
   const [openModal, setOpenModal] = useState(false);
 
@@ -189,9 +190,9 @@ const ReportConfigTable = () => {
 
   const FilterData = () => {
     {
-      if (selectedbranch?.session_year?.id) {
+      if (selectedGrade?.grade_id) {
         setLoading(true);
-        let url = `${endpoints.questionBank.reportConfig}?acad_session=${selectedbranch?.session_year?.id}&grade=${selectedGrade?.grade_id}`
+        let url = `${endpoints.questionBank.reportConfig}?acad_session=${selectedbranch.map(branch => branch?.id)}&grade=${selectedGrade?.grade_id}`
         let params = {
           acad_session: selectedbranch?.session_year?.id,
           grade: selectedGrade?.grade_id,
@@ -328,7 +329,7 @@ const ReportConfigTable = () => {
               value={selectedGrade || ''}
               options={gradeList || []}
               // getOptionLabel={(option) => option?.grade__grade_name || ''}
-              getOptionLabel={(option) => option?.branch_name || ''}
+              getOptionLabel={(option) => option?.grade_name || ''}
               filterSelectedOptions
               renderInput={(params) => (
                 <TextField
