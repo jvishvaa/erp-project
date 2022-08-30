@@ -9,6 +9,7 @@ import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 const GradeWiseAttendance = () => {
   const selectedAcademicYear = useSelector(
@@ -44,6 +45,9 @@ const GradeWiseAttendance = () => {
     axios
       .get(`${endpoints.teacherAttendance.gradewiseAttendance}`, {
         params: { ...params },
+        headers: {
+          'X-DTS-Host': X_DTS_HOST,
+        },
       })
       .then((response) => {
         if (response?.data?.status_code == 200) {

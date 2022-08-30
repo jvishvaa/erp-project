@@ -17,6 +17,7 @@ import {
 import { DownOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
 import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 const { Option } = Select;
 
@@ -94,9 +95,12 @@ const SectionWiseAttendance = () => {
       .get(`${endpoints.teacherAttendance.sectionwiseAttendance}`, {
         params: {
           ...params,
-          ...(studentFilter == 'present' ? { is_present: true } : {}),
-          ...(studentFilter == 'absent' ? { is_absent: true } : {}),
+          ...(studentFilter == 'present' ? { is_present: 1 } : {}),
+          ...(studentFilter == 'absent' ? { is_absent: 1 } : {}),
         },
+        headers: {
+          'X-DTS-Host': X_DTS_HOST,
+        }
       })
       .then((res) => {
         if (res?.data?.status_code == 200) {
