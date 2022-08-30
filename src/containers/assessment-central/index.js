@@ -94,6 +94,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const [assesmentTestsPage, setAssesmentTestsPage] = useState(1);
   const [assesmentTestsTotalPage, setAssesmentTestsTotalPage] = useState(0);
   const [filteredAssesmentTests, setFilteredAssesmentTests] = useState([]);
+  console.log('filteravi', filteredAssesmentTests)
   const [filteredAssesmentTestsPage, setFilteredAssesmentTestPage] = useState(1);
   const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] = useState(
     0
@@ -189,11 +190,12 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       setBranchDropdown([]);
       setGrades([]);
       setSubjects([]);
-      if(moduleId && acadId) 
-      {const data = await fetchBranches(acadId, moduleId);
-      let branch = data.filter((item) => item?.id === selectedBranch?.id)
-      handleBranch('',branch)
-      setBranchDropdown(data);}
+      if (moduleId && acadId) {
+        const data = await fetchBranches(acadId, moduleId);
+        let branch = data.filter((item) => item?.id === selectedBranch?.id)
+        handleBranch('', branch)
+        setBranchDropdown(data);
+      }
     } catch (e) {
       setAlert('error', 'Failed to fetch branch');
     }
@@ -616,6 +618,16 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     formik.setFieldValue('section', []);
     formik.setFieldValue('group', '');
   };
+
+  const filterbasedonsub = (subjectid) => {
+    let filtereddata = filteredAssesmentTests?.filter((data) => addedId?.includes(data?.id))
+    let newfiltered = filtereddata?.map((id) => id?.subjects[0])
+    // newfiltered.includes(subjectid)
+    return newfiltered.includes(subjectid)
+  }
+  console.log('filterbasedonsub', filterbasedonsub)
+  // let newid = filterbasedonsub()
+
   return (
     <Layout>
       {loading && <Loader />}
@@ -1170,6 +1182,10 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                                   addedId={addedId}
                                   selectAssetmentCard={selectAssetmentCard}
                                   handleClose={handleClose}
+                                  filteredAssesmentTests={filteredAssesmentTests}
+                                  // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0]) 
+                                  filterbasedonsub={filterbasedonsub}
+                                  isdisable={filterbasedonsub(test.subjects[0])}
                                 />
                               </Grid>
                             ))}
