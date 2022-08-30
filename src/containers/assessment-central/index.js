@@ -189,11 +189,8 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       setBranchDropdown([]);
       setGrades([]);
       setSubjects([]);
-      if(moduleId && acadId) 
-      {const data = await fetchBranches(acadId, moduleId);
-      let branch = data.filter((item) => item?.id === selectedBranch?.id)
-      handleBranch('',branch)
-      setBranchDropdown(data);}
+      const data = await fetchBranches(acadId, moduleId);
+      setBranchDropdown(data);
     } catch (e) {
       setAlert('error', 'Failed to fetch branch');
     }
