@@ -221,6 +221,7 @@ export default {
     volumes: '/lesson_plan/list-volume/',
     subjects: '/academic/lesson-plan-subjects/',
     lessonList: '/academic/lesson-completed-report/',
+    lessonListV1: '/academic/v1/lesson-completed-report/',
     lessonViewMoreData: '/academic/user-chapters-details/',
     // teacherList: '/academic/lesson_plan_user_list/',
     teacherList: '/academic/lesson-plan-user-list-v2/',
