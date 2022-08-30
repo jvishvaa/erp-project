@@ -20,6 +20,8 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const wider = isMobile ? '-10px 0px' : '-10px 0px 20px 8px';
   const widerWidth = isMobile ? '98%' : '95%';
+  let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
+
 
   const [filterData, setFilterData] = useState({
     academic: '',
@@ -397,6 +399,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
               variant='outlined'
               label='Branch'
               placeholder='Branch'
+              required
             />
           )}
         />
@@ -413,7 +416,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
           getOptionLabel={(option) => option?.grade__grade_name || ''}
           filterSelectedOptions
           renderInput={(params) => (
-            <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
+            <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' required/>
           )}
         />
       </Grid>
@@ -434,6 +437,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
               variant='outlined'
               label='Subject'
               placeholder='Subject'
+              required
             />
           )}
         />
@@ -455,6 +459,7 @@ const TopFilters = ({ setFilterDataDisplay, setIsFilter, setIsTopFilterOpen }) =
               variant='outlined'
               label='Chapter'
               placeholder='Chapter'
+              required
             />
           )}
         />

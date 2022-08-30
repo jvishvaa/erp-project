@@ -92,6 +92,8 @@ const CreateQuestionPaper = ({
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
   const { refresh = false } = history.location?.state || {};
+  let preselectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
+
 
   useEffect(() => {
     if (refresh) {
@@ -175,6 +177,8 @@ const CreateQuestionPaper = ({
         id: 'all',
         branch: { id: 'all', branch_name: 'Select All' },
       });
+      // let branch = data.filter((item) => item?.id === preselectedBranch?.id)
+      // handleBranch('',branch)
       setBranchDropdown(data);
     } catch (e) {
       // setAlert('error', 'Failed to fetch branch');
@@ -356,7 +360,7 @@ const CreateQuestionPaper = ({
       });
 
       let reqObj = {
-        academic_year: formik.values.academic?.id,
+        academic_year: formik.values.academic?.id || selectedAcademicYear?.id,
         paper_name: questionPaperName,
         grade: formik.values.grade?.grade_id,
         // academic_session: formik.values.branch.id,
@@ -605,6 +609,7 @@ const CreateQuestionPaper = ({
                           variant='outlined'
                           label='Branch'
                           placeholder='Branch'
+                          required
                         />
                       )}
                       size='small'
@@ -630,6 +635,7 @@ const CreateQuestionPaper = ({
                           variant='outlined'
                           label='Grade'
                           placeholder='Grade'
+                          required
                         />
                       )}
                       size='small'
@@ -658,6 +664,7 @@ const CreateQuestionPaper = ({
                           variant='outlined'
                           label='Subject'
                           placeholder='Subject'
+                          required
                         />
                       )}
                       size='small'
@@ -687,6 +694,7 @@ const CreateQuestionPaper = ({
                           variant='outlined'
                           label='Question Paper Level'
                           placeholder='Question Paper Level'
+                          required
                         />
                       )}
                       size='small'

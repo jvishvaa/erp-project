@@ -77,13 +77,13 @@ const AssessmentFilters = ({
     }
   }, []);
 
-  useEffect(() => {
-    if(selectedBranch && branchDropdown){
-      let branch = branchDropdown.filter((item) => item?.id === selectedBranch?.id)
-      handleBranch('',branch)
+  // useEffect(() => {
+  //   if(selectedBranch && branchDropdown){
+  //     let branch = branchDropdown.filter((item) => item?.id === selectedBranch?.id)
+  //     handleBranch('',branch)
 
-    }
-  },[selectedBranch,branchDropdown])
+  //   }
+  // },[selectedBranch,branchDropdown])
 
  
 
