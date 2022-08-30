@@ -70,6 +70,10 @@ export default {
   teacherAssessment: {
     tests: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
   },
+  teacherAttendance: {
+    gradewiseAttendance: `/erp_user/v2/erpuser-grade-sections/`,
+    sectionwiseAttendance: `erp_user/v2/erpuser-grade-sections-students/`,
+  },
   studentDashboard: {
     todaysClasses: `${msOriginUrl}/api/oncls/v1/student-oncls/`,
     pendingHomework: `${msReportsUrlNew}/api/acad_performance/v1/student-hw-report-dash/`,
