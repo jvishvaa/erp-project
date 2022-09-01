@@ -650,10 +650,10 @@ const QuestionBankFilters = ({
       setAlert('error', 'Select Grade!');
       return;
     }
-    // if (!filterData?.subject) {
-    //   setAlert('error', 'Select Subject!');
-    //   return;
-    // }
+    if (!filterData?.subject) {
+      setAlert('error', 'Select Subject!');
+      return;
+    }
     if (!filterData?.is_erp_central) {
       setAlert('error', 'Select Question From!');
       return;

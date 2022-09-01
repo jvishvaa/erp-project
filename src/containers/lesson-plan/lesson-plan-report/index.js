@@ -58,7 +58,7 @@ const LessonReport = () => {
   const [subject , setSubject] = useState()
   const [volume , setVolume] = useState()
   const [branch , setBranch] = useState()
-
+  const [ centralyear , setCentralYear ] = useState()
   const [enddate , setEndDate] = useState()
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
@@ -127,6 +127,7 @@ const LessonReport = () => {
           setViewMoreData={setViewMoreData}
           data = {data}
           updatedata = {updatedata}
+          setCentralYear={setCentralYear}
         />
 
         <Paper className={classes.root}>
@@ -165,6 +166,7 @@ const LessonReport = () => {
                         setApiParams={setApiParams}
                         startDate = {startdate}
                         endDate = {enddate}
+                        centralyear={centralyear}
                       />
                     </Grid>
                   ))}

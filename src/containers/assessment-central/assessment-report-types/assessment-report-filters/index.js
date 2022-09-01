@@ -714,7 +714,8 @@ const AssessmentReportFilters = ({
         setAlert('error', 'Failed to download attendee list');
       }
     }
-    if (selectedReportType?.id === 3 && isFilter) {
+    if (selectedReportType?.id === 3 ) {
+      if(filterData.test?.id){
       try {
         const { data } = await axiosInstance.get(
           `${
@@ -731,6 +732,9 @@ const AssessmentReportFilters = ({
       } catch (error) {
         setAlert('error', 'Failed to download attendee list');
       }
+    } else {
+      setAlert('error','Please Select Filters First')
+    }
     }
     if (selectedReportType?.id === 4 && isFilter) {
       try {
@@ -754,6 +758,7 @@ const AssessmentReportFilters = ({
     }
 
     if (selectedReportType?.id === 6) {
+      if(filterData.test?.id){
       console.log(groupSelected);
       const sectionMapIds =
         groupSelected?.group_section_mapping?.length > 0
@@ -778,6 +783,9 @@ const AssessmentReportFilters = ({
       } catch (error) {
         setAlert('error', 'Failed to download attendee list');
       }
+    } else {
+      setAlert('error','Please Select Filters First')
+    }
     }
 
     if (selectedReportType?.id === 7) {
