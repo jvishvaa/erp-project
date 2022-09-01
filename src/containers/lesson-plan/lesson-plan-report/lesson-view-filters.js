@@ -20,7 +20,8 @@ const LessonViewFilters = ({
   setViewMore,
   setViewMoreData,
   updatedata,
-  data
+  data,
+  setCentralYear
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
@@ -101,11 +102,13 @@ const LessonViewFilters = ({
     setLoading(false);
   }, [location.pathname]);
   const handleAcademicYear = (event, value) => {
+    console.log(value);
     setFilterData({ ...filterData, year: '', volume: '', branch: '', grade: ' ' });
     setSelectedSubjects([]);
     if (value) {
       console.log(value);
       setFilterData({ ...filterData, year: value, volume: '', branch: '', grade: ' ' });
+      setCentralYear(value)
       setSelectedSubjects([]);
     }
   };
@@ -250,7 +253,7 @@ const LessonViewFilters = ({
         setAcademicYear(res.data.data);
 
         const defaultYear = res?.data?.current_acad_session_data[0];
-        handleAcademicYear({}, defaultYear);
+        // handleAcademicYear({}, defaultYear);
       })
       .catch((error) => {
         setAlert('error ', error.message);

@@ -331,7 +331,7 @@ const CreateQuestionPaper = ({
         }
       }
     } catch (e) {
-      setAlert('error', 'Failed to create Question Paper');
+      setAlert('error', 'Please Select Filters First');
     }
   };
   const handleCreateQuestionPaper = async (isDraft) => {
