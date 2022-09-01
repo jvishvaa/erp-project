@@ -411,7 +411,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       setSectionList(testFilterDropdownList?.section)
       setSectionToggle(testFilterDropdownList?.isSectionToggle)
       history.replace({ state: { dataRestore: false } })
-      if (testFilterDropdownList?.isSectionToggle) setGroupFlag(true);
+      testFilterDropdownList?.isSectionToggle ? setGroupFlag(true) :  setSectionFlag(true);
       if (testFilterData?.status?.id) formik.handleSubmit();
     }
 

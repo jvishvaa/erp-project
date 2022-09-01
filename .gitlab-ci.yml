@@ -133,7 +133,7 @@ deploy_blue:
     tags:
       - test_orchids_frontend
     only:
-      - master
+      - stage
 
 
 deploy_prod:
@@ -148,7 +148,7 @@ deploy_prod:
       # - sudo npm install -g serve
       # - sudo npm install -g forever
     variables:
-      GIT_STRATEGY: clone
+      GIT_STRATEGY: none
     stage: deploy
     script:
       - whoami
