@@ -37,6 +37,7 @@ function CreateReportConfig() {
   const [moduleId, setModuleId] = useState('');
   const [selectedbranch, setSelectedbranch] = useState();
   const [selectedGrade, setSelectedGrade] = useState();
+
   const history = useHistory();
 
   const [open, setOpen] = React.useState(false);
@@ -141,19 +142,69 @@ function CreateReportConfig() {
     }
   }
 
+  const [ttrue, setTtrue] = useState(false)
+  console.log(ttrue, 'setTtrue')
+  const assessmentError = () => {
+    setAlert('error', 'Please enter Assessment Type')
+    handleClose()
+    setTtrue(false)
+  }
+  // const assessmentunderError = () => {
+  //   setAlert('error', 'Please do not enter Underscore')
+  //   handleClose()
+  //   setTtrue(false)
+  // }
+  const weightageError = () => {
+    setAlert('error', 'Please enter Metrics/Marks')
+    handleClose()
+    setTtrue(false)
+  }
+  const selectedTestError = () => {
+    setAlert('error', 'Please select the test ID')
+    handleClose()
+    setTtrue(false)
+  }
+  const logicError = () => {
+    setAlert('error', 'Please enter the logic')
+    handleClose()
+    setTtrue(false)
+  }
+  const checkfunc = () => {
+
+    // const checkdata = 
+    components.map((item) => {
+      item.subComponents.map((item) => item.columns.map((item) => {
+        if (!item?.name) return assessmentError()
+        // if (!item?.name.find(['_'])) return assessmentunderError()
+        if (item?.selectedTest?.length === 0) return selectedTestError()
+        if (!item?.weightage) return weightageError()
+        if (item?.logic === 0) return logicError()
+        else (setTtrue(true))
+      }))
+    })
+
+    // return checkdata;
+  }
+
+  useEffect(() => {
+    if (ttrue) {
+      axiosInstance.post(`${endpoints.reportCardConfig.submitAPI}`, components)
+        .then(result => {
+          // if (result.data.status_code === 200) {
+          setAlert('success', result.data.message);
+          history.goBack()
+          handleClose()
+          // }
+        }).catch((error) => {
+
+          // setAlert('error', error?.response?.data?.description)
+        })
+    }
+
+  }, [ttrue])
 
   const submitAllReportCardData = () => {
-    axiosInstance.post(`${endpoints.reportCardConfig.submitAPI}`, components)
-      .then(result => {
-        // if (result.data.status_code === 200) {
-        setAlert('success', result.data.message);
-        history.goBack()
-        handleClose()
-        // }
-      }).catch((error) => {
-
-        // setAlert('error', error?.response?.data?.description)
-      })
+    checkfunc()
   }
 
   return (
