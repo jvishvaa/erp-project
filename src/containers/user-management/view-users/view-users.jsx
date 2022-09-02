@@ -418,19 +418,15 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
     }
     let getUserListUrl = `communication/erp-user-info-excel-v2/?module_id=${moduleId}&session_year=${selectedYear.id}`;
     if (rolesId.length > 0 && selectedRoles !== 'All') {
-      rolesId.map((each, i) => {
-        getUserListUrl += `&role=${each.toString()}`;
-      });
+      getUserListUrl += `&role=${rolesId.toString()}`;
     }
     if (selectedBranch && selectedBranch !== 'All') {
       getUserListUrl += `&branch=${selectedBranch?.id}`;
     }
     // /*
-    if (gradesId.length > 0 && selectedGrades !== 'All') {
-      gradesId.map((each, i) => {
-        getUserListUrl += `&grade=${each.toString()}`;
-      });
-    }
+   if (gradesId.length > 0 && !selectedGrades.includes('All')) {
+        getUserListUrl += `&grade=${gradesId.toString()}`;
+      }
     if (classStatus && classStatus != 1 && classStatus != 0) {
       let status = classStatus - 1;
       getUserListUrl += `&status=${status.toString()}`;
