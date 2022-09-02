@@ -73,6 +73,7 @@ const TypeFiltersContainer = ({ levels, categories, filterData, setFilterData })
               variant='outlined'
               label='Question Level'
               placeholder='Question Level'
+              required
             />
           )}
         />
@@ -94,6 +95,7 @@ const TypeFiltersContainer = ({ levels, categories, filterData, setFilterData })
               variant='outlined'
               label='Category'
               placeholder='Category'
+              required
             />
           )}
         />
@@ -115,6 +117,7 @@ const TypeFiltersContainer = ({ levels, categories, filterData, setFilterData })
               variant='outlined'
               label='Question &#38; answer type'
               placeholder='Question &#38; answer type'
+              required
             />
           )}
         />
