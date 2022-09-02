@@ -629,29 +629,13 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
     setDeactivateAlert(false);
   };
   const handleEdit = (id) => {
-    // sessionStorage.setItem('userFilterData', JSON.stringify({
-    //   searchText : searchText,
-    //   role : selectedRoles,
-    //   branch : selectedBranch,
-    //   grade : selectedGrades,
-    //   section : selectedSection,
-    //   status : status
-    // }))
-    // sessionStorage.setItem('userFilterDataList', JSON.stringify({
-    //   // searchText : searchText,
-    //   roleList : roleList,
-    //   branchList : branchList,
-    //   gradeList : gradeList,
-    //   sectionList : sectionList,
-    //   // status : status
-    // }))
-
     setIsEdit(true)
-    history.push({pathname : `/user-management/edit-user/${id}`,
-                    state : {
-                      isEdit : true
-                    }
-  });
+    history.push({
+      pathname: `/user-management/edit-user/${id}`,
+      state: {
+        isEdit: true,
+      },
+    });
   };
 
   useEffect(() => {
