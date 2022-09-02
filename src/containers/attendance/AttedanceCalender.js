@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
     padding: '1rem',
     borderRadius: '10px',
     width: '100%',
-    margin: '1.5rem -0.1rem',
+    // margin: '1.5rem -0.1rem',
   },
   bord: {
     margin: theme.spacing(1),
@@ -1382,7 +1382,7 @@ const AttedanceCalender = () => {
                 variant='contained'
                 startIcon={<ClearIcon />}
                 onClick={handleClearAll}
-                style={{ width: '100%' }}
+                style={{ width: '100%', fontSize:'inherit' }}
               >
                 Clear all
               </StyledClearButton>
@@ -1395,7 +1395,7 @@ const AttedanceCalender = () => {
               className={classes.filterButton}
               onClick={selectModule}
             >
-              filter
+              Filter
             </StyledFilterButton>
           </Grid>
           <Grid item md={12} xs={12}>
@@ -1411,7 +1411,7 @@ const AttedanceCalender = () => {
             onClick={selectModule}
             style={{ marginLeft: '5%' }}
           >
-            filter
+            Filter
           </StyledFilterButton>
         </div>
       )}
@@ -1425,6 +1425,15 @@ const AttedanceCalender = () => {
       >
         <div className='whole-calender-filter'>
           <Grid className='calenderGrid'>
+            <div>
+            {startDate === endDate ? (
+                <div className='startDate' style={{textAlign:'center', fontSize:'15px'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')}</div>
+
+              ) : (
+                <div className='startDate' style={{textAlign:'center', fontSize:'15px'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div>
+
+              )}
+            </div>
             <div className='buttonContainer'>
               <div className='today'>
                 <Button
@@ -1628,14 +1637,14 @@ const AttedanceCalender = () => {
         </div>
 
         <div className='eventWhole'>
-          {/* <div className='startDate'> <b>  From </b> {moment(startDate).format('DD-MM-YYYY')}</div> */}
-          {startDate === endDate ? (
-            <div className='startDate' style={{ textAlign: 'center' }}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')}</div>
+        {/* <div className='startDate'> <b>  From </b> {moment(startDate).format('DD-MM-YYYY')}</div> */}
+        {/* {startDate === endDate ? (
+          <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')}</div>
 
           ) : (
             <div className='startDate' style={{ textAlign: 'center' }}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div>
 
-          )}
+        )} */}
           <Paper
             elevation={3}
             className={[classes.root, classes.paperSize]}
@@ -1734,6 +1743,7 @@ const AttedanceCalender = () => {
                                       overflow: 'hidden',
                                       whiteSpace: 'nowrap',
                                       textOverflow: 'ellipsis',
+                                      fontWeight:'bolder'
                                     }}
                                   >
                                     {' '}
@@ -1753,15 +1763,20 @@ const AttedanceCalender = () => {
                                 )}
                               </>
                             </div>
+                            <div style={{display:'flex', flexDirection:'row', width:'100%'}}>
+                            <Typography className={classes.contentData}>
+                            {data.description}
+                          </Typography>
+                            </div>
                             <div
                               style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 width: '100%',
+                                fontSize:'15px'
                               }}
                             >
-                              <p>From</p>
-                              <p>To</p>
+                              <p style={{marginBottom:0,marginTop:'5px'}}>Date Range</p>
                             </div>
                             <div
                               style={{
@@ -1771,20 +1786,35 @@ const AttedanceCalender = () => {
                               }}
                             >
                               <Typography style={{ fontSize: '15px' }}>
-                                {moment(data.holiday_start_date.slice(0, 10)).format(
+                                {data?.holiday_start_date == data?.holiday_end_date ? (
+                                  <>
+                                      {moment(data.holiday_start_date.slice(0, 10)).format(
+                                        'DD-MM-YYYY'
+                                      )}
+                                  </>
+
+                                ):(
+                                  <>
+                                      {moment(data.holiday_start_date.slice(0, 10)).format(
+                                  'DD-MM-YYYY'
+                                )} -   {moment(data.holiday_end_date.slice(0, 10)).format(
                                   'DD-MM-YYYY'
                                 )}
+                                  </>
+
+                                )}
+                            
                               </Typography>
-                              <Typography style={{ fontSize: '15px' }}>
+                              {/* <Typography style={{ fontSize: '15px' }}>
                                 {moment(data.holiday_end_date.slice(0, 10)).format(
                                   'DD-MM-YYYY'
                                 )}
-                              </Typography>
+                              </Typography> */}
                             </div>
                           </Grid>
-                          <Typography className={classes.contentData}>
+                          {/* <Typography className={classes.contentData}>
                             {data.description}
-                          </Typography>
+                          </Typography> */}
                         </Typography>
                         <Popover
                           id={id}
@@ -1827,12 +1857,12 @@ const AttedanceCalender = () => {
         </div>
         <div className='eventWhole'>
           {/* <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div> */}
-          {startDate === endDate ? (
-            <div className='startDate' style={{ textAlign: 'center' }}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')}</div>
+          {/* {startDate === endDate ? (
+          <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')}</div>
 
-          ) : (
-            <div className='startDate' style={{ textAlign: 'center' }}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div>
-          )}
+        ) : (
+          <div className='startDate' style={{textAlign:'center'}}><b>Date : </b>{moment(startDate).format('DD-MM-YYYY')} - {moment(endDate).format('DD-MM-YYYY')}</div>
+        )} */}
           <Paper
             elevation={3}
             className={[classes.root, classes.paperSize]}
@@ -1931,11 +1961,13 @@ const AttedanceCalender = () => {
                                       overflow: 'hidden',
                                       whiteSpace: 'nowrap',
                                       textOverflow: 'ellipsis',
+                                      fontWeight:'bolder',
                                     }}
                                   >
                                     {' '}
                                     {data?.event_name}{' '}
                                   </Typography>
+                                  
                                 </div>
                               </div>
                               <>
@@ -1950,15 +1982,21 @@ const AttedanceCalender = () => {
                                 )}
                               </>
                             </div>
+                            <div style={{display:'flex', flexDirection:'row', width:'100%'}}>
+                            <Typography className={classes.contentData}>
+                            {data.description}
+                          </Typography>
+
+                            </div>
                             <div
                               style={{
                                 display: 'flex',
                                 justifyContent: 'space-between',
                                 width: '100%',
+                                fontSize:'15px'
                               }}
                             >
-                              <p>From</p>
-                              <p>To</p>
+                              <p style={{marginBottom:0, marginTop:'5px'}}>Date Range</p>
                             </div>
                             <div
                               style={{
@@ -1968,20 +2006,24 @@ const AttedanceCalender = () => {
                               }}
                             >
                               <Typography style={{ fontSize: '15px' }}>
-                                {moment(data?.start_time).format(
-                                  'DD-MM-YYYY'
-                                )}
-                              </Typography>
-                              <Typography style={{ fontSize: '15px' }}>
-                                {moment(data?.end_time).format(
-                                  'DD-MM-YYYY'
-                                )}
+                                {data?.start_time == data?.end_time ? (
+                                  <>
+                                        {moment(data?.start_time).format(
+                                          'DD-MM-YYYY'
+                                        )}
+                                  </>
+                                ): (
+                                  <>
+                                  {moment(data?.start_time).format(
+                                    'DD-MM-YYYY'
+                                  )} -   {moment(data?.end_time).format(
+                                    'DD-MM-YYYY'
+                                  )}
+                                  </>
+                                )}                        
                               </Typography>
                             </div>
                           </Grid>
-                          <Typography className={classes.contentData}>
-                            {data.description}
-                          </Typography>
                         </Typography>
                         <Popover
                           id={id}

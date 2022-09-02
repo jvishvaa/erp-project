@@ -440,7 +440,11 @@ class EditUser extends Component {
                           color='primary'
                           style={{ color: 'rgb(140, 140, 140)' }}
                           onClick={() => {
-                            this.props.history.push('/user-management/view-users');
+                            this.props.history.push({pathname : '/user-management/view-users',
+                          state : {
+                            isEdit : true
+                          }
+                          });
                           }}
                         >
                           Back
