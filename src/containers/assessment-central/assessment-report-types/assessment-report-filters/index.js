@@ -887,6 +887,7 @@ const AssessmentReportFilters = ({
     url = '';
     setPage(1);
     setSelectedERP([]);
+    setGroupSelected()
     setIsFilter(false);
     setDropdownData({
       ...dropdownData,
@@ -1011,8 +1012,8 @@ const AssessmentReportFilters = ({
           </>
         ) : (
           <>
-            {selectedReportType?.id == 6 ||
-              (selectedReportType?.id == 3 && (
+            {(selectedReportType?.id == 6 ||
+              selectedReportType?.id == 3 ) && (
                 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                   <Autocomplete
                     style={{ width: '100%' }}
@@ -1033,7 +1034,7 @@ const AssessmentReportFilters = ({
                     )}
                   />
                 </Grid>
-              ))}
+              )}
           </>
         )}
         {(selectedReportType?.id === 4 ||
@@ -1055,7 +1056,7 @@ const AssessmentReportFilters = ({
                 <TextField
                   {...params}
                   variant='outlined'
-                  label='Section'
+                  label='Sectio'
                   placeholder='Section'
                 />
               )}
