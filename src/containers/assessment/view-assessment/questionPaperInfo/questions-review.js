@@ -17,6 +17,11 @@ function QuestionReview() {
   const { openPreview, closePreview } =
     React.useContext(AttachmentPreviewerContext) || {};
   const classes = useStyles();
+    function extractContent(s) {
+    const span = document.createElement('span');
+    span.innerHTML = s;
+    return span.textContent || span.innerText;
+  }
   const [open, setOpen] = React.useState();
   const { questionsArray = [], questionsDataObj = {} } =
     React.useContext(AssessmentReviewContext) || {};
@@ -57,6 +62,9 @@ function QuestionReview() {
             .map((keyVal) => (keyVal[1] !== '' ? keyVal.join(' : ') : ''))
             .filter(Boolean)
             .join(',');
+        }
+        if(typeof ansVar === 'string'){
+          answer = extractContent(ansVar)
         }
         answer = answer ?? `${ansVar}`;
         return answer;

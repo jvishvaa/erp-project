@@ -10,7 +10,7 @@ import endpoints from '../../../config/endpoints';
 import axiosInstance from '../../../config/axios';
 import { handleDownloadPdf } from '../../../../src/utility-functions';
 
-const AssesmentDetails = ({ test, onClick, onClose, filterData }) => {
+const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) => {
   const history = useHistory();
   console.log(test , "filter");
   const {
@@ -25,18 +25,18 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData }) => {
     total_mark: totalMark,
     created_at: createdDate,
     updated_at: updatedDate,
-    sectionMap : section_mapping,
-    question_paper_id : question_paper_id,
-    test_id : test_id
+    sectionMap: section_mapping,
+    question_paper_id: question_paper_id,
+    test_id: test_id
   } = test;
 
   const handleData = () => {
     sessionStorage.removeItem('filterData')
     history.push({
       pathname: '/offline-student',
-      state : {
-        data : filterData,
-        test : test
+      state: {
+        data: filterData,
+        test: test
       }
     })
 
@@ -198,28 +198,29 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData }) => {
               </div>
             </Grid>
           </Grid>
-          <div style={{ margin: '1rem' }}>
-            <Grid container >
-              <Grid item xs={12} >
-                <Button variant='contained' color='primary' onClick={() => downloadAssessment()}>
-                  <GetAppIcon fontSize="small" />
-                  Download Question Paper
-                </Button>
-              </Grid>
-              {test?.test_mode == 2 ?
-                <Grid item xs={12} style={{margin: '4% 0'}} >
-                  <Button variant='contained' color='primary' onClick={handleData}>
-                    Upload Marks
+          {!handleClose &&
+            <div style={{ margin: '1rem' }}>
+              <Grid container >
+                <Grid item xs={12} >
+                  <Button variant='contained' color='primary' onClick={() => downloadAssessment()}>
+                    <GetAppIcon fontSize="small" />
+                    Download Question Paper
                   </Button>
                 </Grid>
-                : ''}
-                  <Grid item xs={12} style={{margin: '4% 0'}} >
+                {test?.test_mode == 2 ?
+                  <Grid item xs={12} style={{ margin: '4% 0' }} >
+                    <Button variant='contained' color='primary' onClick={handleData}>
+                      Upload Marks
+                    </Button>
+                  </Grid>
+                  : ''}
+                <Grid item xs={12} style={{ margin: '4% 0' }} >
                   <Button variant='contained' color='primary' onClick={handleTest}>
                     Preview
                   </Button>
                 </Grid>
-            </Grid>
-          </div>
+              </Grid>
+            </div>}
         </div>
       </div>
     </div>

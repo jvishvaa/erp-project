@@ -509,6 +509,14 @@ const Layout = ({ children, history }) => {
         history.push('/assessment/report-card-pipeline');
         break;
       }
+      case 'Report Card Category': {
+        history.push('/assessment/category');
+        break;
+      }
+      case 'Report Card Config': {
+        history.push('/assessment/report-config');
+        break;
+      }
       case 'ID Card View': {
         history.push('/student-id-card');
         break;

@@ -27,6 +27,7 @@ function getDaysAfter(date, amount) {
 }
 
 const HolidayMark = () => {
+  const [flag,setFlag] = useState(false);
   const [evnetcategoryType, setEventcategoryType] = useState([]);
   const [selectedSession, setSelectedSession] = useState([]);
   const [dateRangeTechPer, setDateRangeTechPer] = useState([
@@ -72,6 +73,7 @@ const HolidayMark = () => {
   };
 
   const handleBranch = (event = {}, value = []) => {
+    setFlag(true);
     setSelectedBranch([]);
     setGradeList([]);
     if (value?.length) {
@@ -272,7 +274,7 @@ const HolidayMark = () => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Calendar & Attendance' &&
+          item.parent_modules === 'Calendar' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
@@ -323,14 +325,24 @@ const HolidayMark = () => {
       //     );
       //   }
       // }
-      if (history?.location?.state?.data?.grade?.length && gradeList !== []) {
-        const ids = history?.location?.state?.data?.grade.map((el, index) => el);
+      // if (history?.location?.state?.data?.grade?.length && gradeList !== []) {
+      //   const ids = history?.location?.state?.data?.grade.map((el, index) => el);
 
-        let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
-        setSelectedGrade(filterBranch);
-      }
+      //   let filterBranch = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
+      //   setSelectedGrade(filterBranch);
+      // }
     }
   }, [branchList]);
+
+  useEffect(() =>{
+    if(flag == false){
+      if(isEdit && branchList.length>0){
+        const ids = history?.location?.state?.data?.grade.map((el, index) => el);
+        let filterGrade = gradeList.filter((item) => ids.indexOf(item.grade_id) !== -1);
+        setSelectedGrade(filterGrade);
+      }
+    }
+  },[gradeList])
 
   const isEdited = history?.location?.state?.isEdit;
 

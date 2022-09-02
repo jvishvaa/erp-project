@@ -24,7 +24,8 @@ const PeriodCard = ({
   apiParams,
   setApiParams,
   startDate,
-  endDate
+  endDate,
+  centralyear
   
 }) => {
   const themeContext = useTheme();
@@ -32,7 +33,6 @@ const PeriodCard = ({
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
   const classes = useStyles();
   // const [showPeriodIndex, setShowPeriodIndex] = useState();
-
   const handlePeriodMenuOpen = (index, id) => {
     // setShowMenu(true);
     // setShowPeriodIndex(index);
@@ -47,16 +47,21 @@ const PeriodCard = ({
     setLoading(true);
     axiosInstance
       .get(
-        `${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${lesson.academic_year_id}&completed_by=${lesson.completed_by}&subjects=${lesson?.subject_id_id}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}&section_id=${lesson.section_id}`)
+        `${endpoints.lessonReport.lessonViewMoreData}?central_gs_mapping_id=${lesson.central_gs_mapping_id}&volume_id=${lesson.volume_id}&academic_year_id=${centralyear?.id}&completed_by=${lesson.user_id}&subjects=${lesson?.subject_id}&start_date=${startDate.format('YYYY-MM-DD')}&end_date=${endDate.format('YYYY-MM-DD')}&section_id=${lesson.section_id}`)
       .then((result) => {
+        console.log(result);
         if (result.data.status_code === 200) {
+          if(result.data.result?.length == 0){
+            setAlert('error','No Data To Show')
+          setLoading(false);
+          } else {
           setLoading(false);
           setViewMore(true);
           setViewMoreData(result?.data?.result);
           setPeriodDataForView(lesson);
           setSelectedIndex(index);
           setPeriodColor(true);
-
+          }
           //after getting card
           // setApiParams({...apiParams,central_gs_mapping_id:1,volume_id:2,acad_year_id:3,completed_by:4})
 
@@ -95,7 +100,7 @@ const PeriodCard = ({
               component='p'
               color='primary'
             >
-              {lesson?.first_name}
+              {lesson?.name}
             </Typography>
           </Box>
           <Box>
@@ -139,7 +144,7 @@ const PeriodCard = ({
               component='p'
               color='secondary'
             >
-              Completed Periods - {lesson?.completed}
+              Completed Periods - {lesson?.completed_periods}
             </Typography>
           </Box>
           <Box>

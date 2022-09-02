@@ -70,6 +70,10 @@ export default {
   teacherAssessment: {
     tests: `${msReportsUrl}/api/acad_performance/v1/test/academic-test-report/`,
   },
+  teacherAttendance: {
+    gradewiseAttendance: `${msReportsUrl}/api/acad_performance/v2/erpuser-grade-sections/`,
+    sectionwiseAttendance: `${msReportsUrl}/api/acad_performance/v2/erpuser-grade-sections-students/`,
+  },
   studentDashboard: {
     todaysClasses: `${msOriginUrl}/api/oncls/v1/student-oncls/`,
     pendingHomework: `${msReportsUrlNew}/api/acad_performance/v1/student-hw-report-dash/`,
@@ -78,6 +82,7 @@ export default {
   },
   doodle: {
     checkDoodle: `/assessment/check-sys-config/`,
+    fetchDoodle: `/erp_user/fetch-doodle/`,
   },
   createAnnouncement: {
     membersCount: `/announcement/members/`,
