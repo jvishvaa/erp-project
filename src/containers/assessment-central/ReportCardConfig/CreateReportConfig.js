@@ -96,7 +96,7 @@ function CreateReportConfig() {
           // const allBranchData = res?.data?.data?.results.map((item) => item.branch);
           setBranchList(res?.data?.data?.results);
         } else {
-          setBranchList([]);
+          // setBranchList([]);
         }
       });
   };
@@ -111,7 +111,7 @@ function CreateReportConfig() {
         if (res?.data?.status_code === 200) {
           setGradeList(res?.data?.data);
         } else {
-          setBranchList([]);
+          // setBranchList([]);
         }
       });
   };
@@ -120,6 +120,7 @@ function CreateReportConfig() {
   const handleBranch = (e, value = {}) => {
     setSelectedbranch()
     setSelectedGrade()
+    setGradeList([])
     // const Ids = value.map((i)=>i.id)
     if (value) {
       setSelectedbranch(value)
