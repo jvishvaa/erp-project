@@ -139,7 +139,7 @@ const ReportConfigTable = () => {
           // const allBranchData = res?.data?.data?.results.map((item) => item.branch);
           setBranchList(res?.data?.data?.results);
         } else {
-          setBranchList([]);
+          // setBranchList([]);
         }
       });
   };
@@ -156,7 +156,7 @@ const ReportConfigTable = () => {
           console.log('new', res?.data?.data)
           setGradeList(res?.data?.data);
         } else {
-          setBranchList([]);
+          // setBranchList([]);
         }
       });
   };
@@ -165,6 +165,7 @@ const ReportConfigTable = () => {
   const handleBranch = (e, value = {}) => {
     setSelectedbranch()
     setSelectedGrade()
+    setGradeList([])
     // const Ids = value.map((i)=>i.id)
     if (value) {
       setSelectedbranch(value)
@@ -411,7 +412,6 @@ const ReportConfigTable = () => {
                       <TableCell className={classes.tableCell}>
                         <IconButton
                           onClick={() => {
-                            // DeleteData(data?.id)
                             setOpenModal(true);
                           }}
                           title='Delete'

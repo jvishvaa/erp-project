@@ -411,7 +411,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       setSectionList(testFilterDropdownList?.section)
       setSectionToggle(testFilterDropdownList?.isSectionToggle)
       history.replace({ state: { dataRestore: false } })
-      testFilterDropdownList?.isSectionToggle ? setGroupFlag(true) :  setSectionFlag(true);
+      testFilterDropdownList?.isSectionToggle ? setGroupFlag(true) : setSectionFlag(true);
       if (testFilterData?.status?.id) formik.handleSubmit();
     }
 
@@ -1075,7 +1075,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
               {handleClose &&
                 <Grid item md={2} xs={2} style={{ display: 'flex' }}>
                   <Button
-                    style={{ color: 'white', height: '40px', marginTop: 26 }}
+                    style={{ color: 'white', height: '40px', marginTop: 30 }}
                     variant='contained'
                     // startIcon={<AddIcon style={{ fontSize: '30px' }} />}
                     color='primary'
@@ -1250,6 +1250,13 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
+                                  addedId={addedId}
+                                  selectAssetmentCard={selectAssetmentCard}
+                                  handleClose={handleClose}
+                                  filteredAssesmentTests={filteredAssesmentTests}
+                                  // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0]) 
+                                  filterbasedonsub={filterbasedonsub}
+                                  isdisable={filterbasedonsub(test.subjects[0])}
                                 />
                               </Grid>
                             ))}
@@ -1316,6 +1323,13 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
+                                  addedId={addedId}
+                                  selectAssetmentCard={selectAssetmentCard}
+                                  handleClose={handleClose}
+                                  filteredAssesmentTests={filteredAssesmentTests}
+                                  // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0]) 
+                                  filterbasedonsub={filterbasedonsub}
+                                  isdisable={filterbasedonsub(test.subjects[0])}
                                 />
                               </Grid>
                             ))}
