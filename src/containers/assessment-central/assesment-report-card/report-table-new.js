@@ -89,7 +89,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
   return (
     <React.Fragment>
       <div className='row bg-white py-2'>
-        <table className='w-100'>
+        <table className='w-100 th-report-table '>
           <tbody>
             <tr>
               <td width='15%' className='text-center'>
@@ -121,7 +121,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
           </tbody>
         </table>
 
-        <table className='w-100'>
+        <table className='w-100 th-report-table '>
           {/* Student details */}
           <tbody className='th-table-border th-12'>
             <tr>
@@ -176,7 +176,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
 
         {/* Scholastic exam */}
 
-        <table className='w-100 mt-1 th-12'>
+        <table className='w-100 mt-1 th-12 th-report-table '>
           <tbody className='th-table-border'>
             {scholasticData?.map((eachScholastic, i) => {
               return (
@@ -346,7 +346,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
 
         {/* Co Scholastic exam */}
 
-        <table className='w-100 mt-1 th-12'>
+        <table className='w-100 mt-1 th-12 th-report-table '>
           <tbody className='th-table-border'>
             {coScholasticData?.map((eachScholastic, coI) => {
               return (
