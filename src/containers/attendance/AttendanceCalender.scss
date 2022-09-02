@@ -79,7 +79,7 @@
   padding-bottom: 0;
   width: 90%;
   margin: 10px 0;
-  margin-left: 2%;
+  // margin-left: 2%;
 }
 .whole-calender-filter {
   .buttonGrid {
@@ -88,7 +88,8 @@
 }
 #completeContainer {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  padding: 30px;
 }
 .calenderGrid {
   box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.5);
@@ -332,8 +333,8 @@
 }
 #eventContainer {
   // height: fit-content !important;
-  height: 410px !important ;
-  width: 300px;
+  height: 452px !important ;
+  width: 310px;
   .add-event-button:hover {
     background-color: #ff6b6b;
   }
