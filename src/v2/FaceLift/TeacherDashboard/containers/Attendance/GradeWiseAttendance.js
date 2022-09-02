@@ -244,7 +244,7 @@ const GradeWiseAttendance = () => {
                   {attendanceCountData?.total_marked}
                 </span>
               </div>
-              <div className='col-md-2 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
+              <div className='col-md-4 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
                 Students Unmarked:{' '}
                 <span className='th-fw-500 th-red'>
                   {attendanceCountData?.total_unmarked}

@@ -6,7 +6,7 @@
     color: #000000;
 }
 
-table {
+.th-report-table {
     border-collapse: collapse;
     border-spacing: 0;
     table-layout: fixed

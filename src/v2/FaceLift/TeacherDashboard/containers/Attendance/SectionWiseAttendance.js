@@ -28,11 +28,23 @@ const columns = [
     align: 'left',
     render: (text, row) => (
       <div className='d-flex align-items-center pl-sm-0 pl-4'>
-        <Avatar
-          size={40}
-          src={`${endpoints.announcementList.s3erp}dev/media/${row?.profile}`}
-          icon={<UserOutlined />}
-        />
+        {window.location.href.includes('localhost') ||
+        window.location.href.includes('ui-revamp1') ||
+        window.location.href.includes('qa') ? (
+          <>
+            <Avatar
+              size={40}
+              src={`${endpoints.announcementList.s3erp}dev/media/${row?.profile}`}
+              icon={<UserOutlined />}
+            />
+          </>
+        ) : (
+          <Avatar
+            size={40}
+            src={`${endpoints.announcementList.s3erp}prod/media/${row?.profile}`}
+            icon={<UserOutlined />}
+          />
+        )}
         <div className='d-flex flex-column px-2 '>
           <span className='th-black-1 th-fw-400'>{row.student_name}</span>
           <span className='th-grey th-14 th-fw-400'>{row.erp_id}</span>
@@ -275,7 +287,7 @@ const SectionWiseAttendance = () => {
           <div className='col-12'>
             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
               <div className='row align-items-center'>
-                <div className='col-md-2 col-6 px-0 pr-md-2 '>
+                <div className='col-md-3 col-6 px-0 pr-md-2 '>
                   <Form.Item name='grade'>
                     <Select
                       allowClear
@@ -298,7 +310,7 @@ const SectionWiseAttendance = () => {
                     </Select>
                   </Form.Item>
                 </div>
-                <div className='col-md-2 col-6 pr-0 '>
+                <div className='col-md-3 col-6 pr-0 '>
                   <Form.Item name='section'>
                     <Select
                       allowClear
@@ -347,7 +359,7 @@ const SectionWiseAttendance = () => {
               Students Marked:{' '}
               <span className='th-green'>{attendanceCountData?.marked_students}</span>
             </div>
-            <div className='col-md-2 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
+            <div className='col-md-4 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
               Students Unmarked:{' '}
               <span className='th-red'>{attendanceCountData?.unmarked_students}</span>
             </div>
