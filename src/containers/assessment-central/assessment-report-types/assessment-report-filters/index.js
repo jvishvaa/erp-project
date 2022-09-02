@@ -1056,7 +1056,7 @@ const AssessmentReportFilters = ({
                 <TextField
                   {...params}
                   variant='outlined'
-                  label='Sectio'
+                  label='Section'
                   placeholder='Section'
                 />
               )}
