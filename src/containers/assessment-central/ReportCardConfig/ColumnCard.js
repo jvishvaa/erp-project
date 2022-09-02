@@ -142,7 +142,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
                 components.map(componentDetail => {
                   if (componentDetail.id === componentId) {
                     const newSubComponent = componentDetail.subComponents[subComponentIndex]
-                    newSubComponent.columns[columnIndex].name = e.target.value
+                    newSubComponent.columns[columnIndex].name = e.target.value.includes('_') ? e.target.value.split('').filter(char => char !== '_').join('') : e.target.value
                     newComponent.subComponents[subComponentIndex] = newSubComponent
                     return newComponent;
                   }
