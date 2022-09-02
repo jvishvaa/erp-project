@@ -82,6 +82,7 @@ export default {
   },
   doodle: {
     checkDoodle: `/assessment/check-sys-config/`,
+    fetchDoodle: `/erp_user/fetch-doodle/`,
   },
   createAnnouncement: {
     membersCount: `/announcement/members/`,
