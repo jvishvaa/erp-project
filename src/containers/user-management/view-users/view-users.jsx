@@ -382,7 +382,7 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
         setAlert('error', error.message);
       }
     } else {
-      setAlert('error', 'Please Select Any Filter');
+      setAlert('warning', 'Please Select Any Filter or Search User');
     }
   };
   const handlePagination = (event, page) => {
