@@ -30,7 +30,7 @@ const columns = [
       <div className='d-flex align-items-center pl-sm-0 pl-4'>
         <Avatar
           size={40}
-          src={`https://d3ka3pry54wyko.cloudfront.net/dev/media/${row?.profile}`}
+          src={`${endpoints.announcementList.s3erp}dev/media/${row?.profile}`}
           icon={<UserOutlined />}
         />
         <div className='d-flex flex-column px-2 '>
@@ -100,12 +100,14 @@ const SectionWiseAttendance = () => {
         },
         headers: {
           'X-DTS-Host': X_DTS_HOST,
-        }
+        },
       })
       .then((res) => {
         if (res?.data?.status_code == 200) {
           setAttendanceData(res?.data?.result?.students);
           setAttendanceCountData(res?.data?.result);
+          setLoading(false);
+        } else {
           setLoading(false);
         }
       })
