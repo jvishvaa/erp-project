@@ -221,6 +221,7 @@ export default {
     volumes: '/lesson_plan/list-volume/',
     subjects: '/academic/lesson-plan-subjects/',
     lessonList: '/academic/lesson-completed-report/',
+    lessonListV1: '/academic/v1/lesson-completed-report/',
     lessonViewMoreData: '/academic/user-chapters-details/',
     // teacherList: '/academic/lesson_plan_user_list/',
     teacherList: '/academic/lesson-plan-user-list-v2/',
@@ -504,6 +505,13 @@ export default {
     studentImgs: '/assessment/assessment-document-upload/',
     reUpload: '/assessment/enable-assessment-re-upload/',
   },
+  reportCardConfig: {
+    reportcardcomponent: '/assessment/report-card-component/',
+    reportcardsubcomponent: '/assessment/report-card-sub-component/',
+    reportcardconfigsummary: '/assessment/report-card-config-summary/',
+    submitAPI: '/assessment/report-card-config-api/',
+    branchAPI: '/erp_user/grade/',
+  },
   assessmentReportTypes: {
     reportSectionWise: `/assessment/report-section-wise/`,
     reportTopicWise: `/assessment/report-topic-wise/`,
@@ -514,6 +522,7 @@ export default {
     reportDownloadClassAverage: `/assessment/download-report-class-average/`,
     reportDownloadTopicStudentAverage: `/assessment/download-report-topic-student-average/`,
     reportCardData: '/assessment/generate-report/',
+    reportCardDataNew: '/assessment/report-card-generation/',
     reportPdf: '/assessment/download-report-pdf/',
     weeklyStudentReport: '/assessment/download-report-student-report/',
     reportConsolidated: '/assessment/download-report-consolidate/',
@@ -564,6 +573,11 @@ export default {
     erpViewMoreData: '/assessment/question-details/',
     erpQuestionPublishing: '/assessment/publish-question/',
     erpQuestionNewPublishing: `/assessment/publish-multiple-question/`,
+    categoryList: `${baseURLCentral}/assessment/list-categories/`,
+    categoryMapping: `${baseURL}/assessment/report-card-question-category-mapping/`,
+    categoryQuestion: `${baseURL}/assessment/report-card-question-category/`,
+    reportConfig: `${baseURL}/assessment/report-card-config-api/`,
+    erpCategory : '/assessment/report-card-question-category-mapping/'
   },
   assementQP: {
     assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,

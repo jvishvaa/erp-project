@@ -39,6 +39,9 @@ const AssessmentFilters = ({
     { id: 1, flag: false, name: 'ERP' },
     { id: 2, flag: true, name: 'CENTRAL' },
   ];
+  let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
+
+  const filterDataQP = JSON.parse(sessionStorage.getItem('filter')) || [];
   const [filterData, setFilterData] = useState({
     academic: '',
     branch: [],
@@ -74,25 +77,65 @@ const AssessmentFilters = ({
     }
   }, []);
 
+  // useEffect(() => {
+  //   if(selectedBranch && branchDropdown){
+  //     let branch = branchDropdown.filter((item) => item?.id === selectedBranch?.id)
+  //     handleBranch('',branch)
+
+  //   }
+  // },[selectedBranch,branchDropdown])
+
+ 
+
   useEffect(() => {
     if (moduleId && selectedAcademicYear) {
       handleAcademicYear();
-      // axiosInstance
-      //   .get(`${endpoints.userManagement.academicYear}?module_id=${moduleId}`)
-      //   .then((result) => {
-      //     if (result.data.status_code === 200) {
-      //       setAcademicDropdown(result.data?.data);
-      //       const defaultValue = result.data?.data?.[0];
-      //       handleAcademicYear({}, defaultValue);
-      //     } else {
-      //       setAlert('error', result.data?.message);
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     setAlert('error', error.message);
-      //   });
+      if(history?.location?.state?.isSet == 'true'){
+      if(filterDataQP?.branch){
+        handleBranch(filterDataQP , filterDataQP?.branch)
+      }
+      setFilterData({
+        branch : filterDataQP?.branch,
+        grade: filterDataQP?.grade,
+        subject: filterDataQP?.subject,
+        is_erp_central: filterDataQP?.type,
+        academic : selectedAcademicYear,
+      })
+      if(filterDataQP?.subject){
+        setSub()
+      }
+      if(filterDataQP?.qpValue){
+        setQpValue(filterDataQP?.qpValue)
+      }
+      handlePeriodList(
+        filterDataQP?.type,
+        selectedAcademicYear,
+        filterDataQP?.branch,
+        filterDataQP?.grade,
+        filterDataQP?.subject,
+        filterDataQP?.qpValue,
+      );
+      }
     }
   }, [moduleId, selectedAcademicYear]);
+
+  const setSub = () => {
+    const acadSessionIds = filterDataQP?.branch.map(({ id }) => id) || [];
+    axiosInstance
+    .get(
+      `${endpoints.assessmentErp.subjectList}?session_year=${acadSessionIds}&grade=${filterDataQP?.grade?.grade_id}`
+    )
+    .then((result) => {
+      if (result?.data?.status_code === 200) {
+        setSubjectDropdown(result?.data?.result);
+      } else {
+        setAlert('error', result?.data?.message);
+      }
+    })
+    .catch((error) => {
+      setAlert('error', error?.message);
+    });
+  }
 
   const handleClear = () => {
     setClearFlag((prev) => !prev);
@@ -139,6 +182,8 @@ const AssessmentFilters = ({
             branch: { id: 'all', branch_name: 'Select All' },
           };
           const data = [selectAllObject, ...result?.data?.data?.results];
+          // let branch = data.filter((item) => item?.id === selectedBranch?.id)
+          // handleBranch('',branch)
           setBranchDropdown(data);
         } else {
           setAlert('error', result?.data?.message);
@@ -151,7 +196,7 @@ const AssessmentFilters = ({
   };
 
   const handleBranch = (event, value) => {
-    setFilterData({
+   setFilterData({
       ...filterData,
       branch: [],
       grade: '',
@@ -168,7 +213,7 @@ const AssessmentFilters = ({
       setFilterData({ ...filterData, branch: value });
       axiosInstance
         .get(
-          `${endpoints.academics.grades}?session_year=${filterData.academic?.id}&branch_id=${branchIds}&module_id=${moduleId}`
+          `${endpoints.academics.grades}?session_year=${selectedAcademicYear?.id}&branch_id=${branchIds}&module_id=${moduleId}`
         )
         .then((result) => {
           if (result?.data?.status_code === 200) {
@@ -257,7 +302,7 @@ const AssessmentFilters = ({
     setSelectedIndex(-1);
     handlePeriodList(
       filterData.is_erp_central,
-      filterData.academic,
+      filterData.academic || selectedAcademicYear,
       filterData.branch,
       filterData.grade,
       filterData.subject,
@@ -311,6 +356,7 @@ const AssessmentFilters = ({
               variant='outlined'
               label='Branch'
               placeholder='Branch'
+              required
             />
           )}
         />
@@ -327,7 +373,7 @@ const AssessmentFilters = ({
           getOptionLabel={(option) => option?.grade__grade_name || ''}
           filterSelectedOptions
           renderInput={(params) => (
-            <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' />
+            <TextField {...params} variant='outlined' label='Grade' placeholder='Grade' required/>
           )}
         />
       </Grid>
@@ -348,6 +394,7 @@ const AssessmentFilters = ({
               variant='outlined'
               label='Subject'
               placeholder='Subject'
+              required
             />
           )}
         />
@@ -370,6 +417,7 @@ const AssessmentFilters = ({
               variant='outlined'
               label='Question Paper Level'
               placeholder='Question Paper Level'
+              required
             />
           )}
         />
@@ -391,6 +439,7 @@ const AssessmentFilters = ({
               variant='outlined'
               label='Question Paper From'
               placeholder='Question Paper From'
+              required
             />
           )}
         />

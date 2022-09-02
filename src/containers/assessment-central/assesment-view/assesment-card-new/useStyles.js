@@ -5,7 +5,7 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #E2E2E2',
     padding: '0.9rem',
     borderRadius: '10px',
-    width: '105%',
+    width: '100%',
     boxShadow: 'none',
   },
   backgroundColor: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme) => ({
     background: theme.palette.primary.primarylightest,
     padding: '0.9rem',
     borderRadius: '10px',
-    width: '105%',
+    width: '100%',
   },
   title: {
     fontSize: '1.1rem',

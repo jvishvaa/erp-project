@@ -20,7 +20,8 @@ const LessonViewFilters = ({
   setViewMore,
   setViewMoreData,
   updatedata,
-  data
+  data,
+  setCentralYear
 }) => {
   const { setAlert } = useContext(AlertNotificationContext);
   const themeContext = useTheme();
@@ -101,10 +102,13 @@ const LessonViewFilters = ({
     setLoading(false);
   }, [location.pathname]);
   const handleAcademicYear = (event, value) => {
+    console.log(value);
     setFilterData({ ...filterData, year: '', volume: '', branch: '', grade: ' ' });
     setSelectedSubjects([]);
     if (value) {
+      console.log(value);
       setFilterData({ ...filterData, year: value, volume: '', branch: '', grade: ' ' });
+      setCentralYear(value)
       setSelectedSubjects([]);
     }
   };
@@ -127,7 +131,7 @@ const LessonViewFilters = ({
         .get(
           `${endpoints.lessonPlan.gradeSubjectMappingList}?session_year=${
             erpYear?.id
-          }&branch=${filterData.branch.id}&grade=${
+          }&branch=${filterData.branch.branch.id}&grade=${
             value.grade_id
           }&module_id=${getModuleId()}`
         )
@@ -173,7 +177,7 @@ const LessonViewFilters = ({
       axiosInstance
         .get(
           `${endpoints.communication.grades}?session_year=${erpYear?.id}&branch_id=${
-            value.id
+            value.branch?.id
           }&module_id=${getModuleId()}`
         )
         .then((result) => {
@@ -224,7 +228,9 @@ const LessonViewFilters = ({
       subjectMapping,
       filterData.volume.id,
       startDateTechPer,
-      endDateTechPer
+      endDateTechPer,
+      filterData?.branch,
+      filterData?.year,
     );
   };
   function getModuleId() {
@@ -247,7 +253,7 @@ const LessonViewFilters = ({
         setAcademicYear(res.data.data);
 
         const defaultYear = res?.data?.current_acad_session_data[0];
-        handleAcademicYear({}, defaultYear);
+        // handleAcademicYear({}, defaultYear);
       })
       .catch((error) => {
         setAlert('error ', error.message);
@@ -311,8 +317,8 @@ const LessonViewFilters = ({
             console.log('the branches', result.data.data.results);
             setBranchDropdown(
               result.data.data.results
-                .map((item) => (item && item.branch) || false)
-                .filter(Boolean)
+                // .map((item) => (item && item.branch) || false)
+                // .filter(Boolean)
             );
             // setBranchId(result.data.data[1].id);
             // a = result.data.data[0].id
@@ -386,7 +392,7 @@ const LessonViewFilters = ({
           className='dropdownIcon'
           value={filterData?.branch}
           options={branchDropdown}
-          getOptionLabel={(option) => option?.branch_name}
+          getOptionLabel={(option) => option?.branch?.branch_name}
           filterSelectedOptions
           renderInput={(params) => (
             <TextField

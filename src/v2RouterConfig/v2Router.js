@@ -25,6 +25,8 @@ import AcadCalendar from 'containers/academicCalendar/fullcalendar/acadCalendar'
 import Diary from 'v2/FaceLift/Diary';
 import DailyDiary from 'v2/FaceLift/Diary/DailyDiary';
 import GeneralDiary from 'v2/FaceLift/Diary/GeneralDiary';
+import GradeWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/GradeWiseAttendance';
+import SectionWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/SectionWiseAttendance';
 
 const V2Router = () => {
   useEffect(() => {
@@ -98,6 +100,12 @@ const V2Router = () => {
                         </Route>
                         <Route path='/create/general-diary'>
                           {({ match }) => <GeneralDiary match={match} />}
+                        </Route>
+                        <Route path='/gradewise-attendance'>
+                          {({ match }) => <GradeWiseAttendance match={match} />}
+                        </Route>{' '}
+                        <Route path='/sectionwise-attendance'>
+                          {({ match }) => <SectionWiseAttendance match={match} />}
                         </Route>
                         s{/* v1 router */}
                         {V1Router?.map((item) => {

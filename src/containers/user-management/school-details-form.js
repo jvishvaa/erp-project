@@ -238,13 +238,13 @@ const SchoolDetailsForm = ({ details, onSubmit }) => {
             item_id: obj.id,
             subject_name: obj.subject__subject_name,
           }));
-        if (transformedData?.length > 1) {
-          transformedData.unshift({
-            id: 'all',
-            item_id: 'all',
-            subject_name: 'Select All',
-          });
-        }
+        // if (transformedData?.length > 1) {
+        //   transformedData.unshift({
+        //     id: 'all',
+        //     item_id: 'all',
+        //     subject_name: 'Select All',
+        //   });
+        // }
         setSubjects(transformedData);
         // const filteredSelectedSections = formik.values.section.filter(
         //   (sec) => transformedData.findIndex((data) => data.id === sec.id) > -1

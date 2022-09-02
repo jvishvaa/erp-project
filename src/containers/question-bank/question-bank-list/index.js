@@ -129,7 +129,8 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     gradeId,
     chapterObj,
     isErpCentral = false,
-    newValue = 0
+    newValue = 0,
+    erp_category,
   ) => {
     setLoading(true);
     setPeriodData([]);
@@ -143,8 +144,11 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     setTabChapterId(chapterObj);
     setTabIsErpCentral(isErpCentral);
     setTabValue(newValue);
-    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&subject=${subjMapId}&page_size=${limit}&page=${page}`;
+    let requestUrl = `${endpoints.questionBank.erpQuestionList}?academic_session=${yearId}&grade=${gradeId}&page_size=${limit}&page=${page}`;
     requestUrl += `&request_type=${isErpCentral?.flag ? 2 : 1}`;
+    if (subjMapId) {
+      requestUrl += `&subject=${subjMapId}`;
+    }
     if (newValue) {
       requestUrl += `&question_status=${newValue}`;
     }
@@ -162,6 +166,9 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
     }
     if (topicId) {
       requestUrl += `&topic=${topicId?.id}`;
+    }
+    if (erp_category) {
+      requestUrl += `&category=${erp_category?.erp_category_id}`;
     }
     setFilter(false)
     axiosInstance
@@ -431,7 +438,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
               }
               spacing={5}
             >
-              <Grid item xs={12} sm={viewMore ? 6 : 12}>
+              <Grid item xs={12} sm={viewMore ? 7 : 12}>
                 <Grid container spacing={isMobile ? 3 : 5}>
                   {periodData.map((period, i) => (
                     <Grid

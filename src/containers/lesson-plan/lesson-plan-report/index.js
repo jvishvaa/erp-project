@@ -15,6 +15,7 @@ import Loading from '../../../components/loader/loader';
 import PeriodCard from './period-card';
 import LessonViewFilters from './lesson-view-filters';
 import ViewMoreCard from './view-more-card';
+import { useSelector } from 'react-redux';
 import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 
@@ -53,25 +54,46 @@ const LessonReport = () => {
     completed_by: '',
   });
   const [startdate , setStartDate] = useState()
+  const [grade , setGrade] = useState()
+  const [subject , setSubject] = useState()
+  const [volume , setVolume] = useState()
+  const [branch , setBranch] = useState()
+  const [ centralyear , setCentralYear ] = useState()
   const [enddate , setEndDate] = useState()
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+  const [ yearId , setYearId ] = useState()
 
   const handlePagination = (event, page) => {
     setPage(page);
   };
 
-  const handleLessonList = (gradeId, subjectIds,subjectMapping, volumeId, startDate, endDate) => {
+  useEffect(() => {
+    if(enddate != null ){
+      handleLessonList(grade , subject , subjectMap , volume , startdate , enddate , branch , yearId )
+    }
+  },[page])
+
+  const handleLessonList = (gradeId, subjectIds,subjectMapping, volumeId, startDate, endDate , branch , year) => {
+    console.log(branch);
+    setBranch(branch)
+    setVolume(volumeId)
+    setSubject(subjectIds)
+    setGrade(gradeId)
     setLoading(true);
     setStartDate(startDate)
     setEndDate(endDate)
     setPeriodData([]);
     setSubjectMap(subjectMapping);
+    setYearId(year)
     axiosInstance
       .get(
         `${
-          endpoints.lessonReport.lessonList
+          endpoints.lessonReport.lessonListV1
         }?grade=${gradeId}&page=${page}&subjects=${subjectIds}&subject_mapping=${subjectMapping}&volume_id=${volumeId}&start_date=${startDate.format(
           'YYYY-MM-DD'
-        )}&end_date=${endDate.format('YYYY-MM-DD')}`
+        )}&end_date=${endDate.format('YYYY-MM-DD')}&acad_session=${branch?.id}&session_year=${year?.id}&branch=${branch?.branch?.id}`
       )
       .then((result) => {
         if (result?.data?.status_code === 200) {
@@ -105,6 +127,7 @@ const LessonReport = () => {
           setViewMoreData={setViewMoreData}
           data = {data}
           updatedata = {updatedata}
+          setCentralYear={setCentralYear}
         />
 
         <Paper className={classes.root}>
@@ -143,6 +166,7 @@ const LessonReport = () => {
                         setApiParams={setApiParams}
                         startDate = {startdate}
                         endDate = {enddate}
+                        centralyear={centralyear}
                       />
                     </Grid>
                   ))}

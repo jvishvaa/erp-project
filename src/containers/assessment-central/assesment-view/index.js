@@ -117,6 +117,17 @@ const AssessmentView = () => {
     const branchIds = branch.map((element) => element?.branch?.id) || [];
     const requestURL = `${endpoints.assessmentErp.listQuestionPaper}?academic_year=${academic?.id}&branch=${branchIds}&subjects=${subject?.subject_id}&grade=${grade?.grade_id}&paper_level=${qpValue?.id}&page=${page}&page_size=${limit}&request_type=${isErpCentral.id} `;
     handleGetQuestionPapers(newValue, requestURL);
+    let filterdata = {
+      branch : branch,
+      academic: academic,
+      subject: subject,
+      grade: grade,
+      qpValue: qpValue,
+      page: page,
+      limit: limit,
+      type: isErpCentral
+    }
+    sessionStorage.setItem('filter',JSON.stringify(filterdata));
   };
 
   useEffect(() => {
@@ -197,7 +208,7 @@ const AssessmentView = () => {
                       item
                       xs={12}
                       style={isMobile ? { marginLeft: '-8px' } : null}
-                      sm={viewMore ? 12 : 8}
+                      sm={12}
                     >
                       <AssessmentCard
                         index={i}
