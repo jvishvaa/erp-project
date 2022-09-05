@@ -91,6 +91,7 @@ const CreateQuestionPaper = ({
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+  const [ filterData ,setFilterData ] = useState()
   const { refresh = false } = history.location?.state || {};
   let preselectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
 
@@ -222,6 +223,7 @@ const CreateQuestionPaper = ({
     initSetFilter('selectedGrade', '');
     initSetFilter('selectedSubject', []);
     initSetFilter('selectedLevel', '');
+    setFilterData()
   };
   const handleClearFilters = () => {
     formik.setFieldValue('branch', []);
@@ -474,7 +476,8 @@ const CreateQuestionPaper = ({
       .get(url)
       .then((result) => {
         if (result.data.status_code === 200) {
-          initSetFilter('questionPaperName', result.data.result.paper_name);
+          console.log(branchDropdown);
+          setFilterData(result.data.result)
           const { questions: responseQuestions = [], sections: responseSections = [] } =
             result.data.result || {};
           handleTransformResponse(responseQuestions, responseSections); //for edit question-paper
@@ -485,7 +488,35 @@ const CreateQuestionPaper = ({
       });
   };
 
+
+
+  useEffect(() => {
+    console.log(filterData);
+    if(filterData?.academic_session){
+     let branchVal =  [...branchDropdown].filter((i) => filterData?.academic_session.includes(i?.id))
+     console.log(branchVal);
+     handleBranch(filterData?.academic_session , branchVal)
+
+    //  branchVal.map((item , index) => {
+    //    handleBranch(filterData , item)
+    //  })
+    }
+  },[branchDropdown , filterData])
+
+
+  useEffect(() => {
+    console.log(filterData?.grade);
+    console.log(formik.values.branch);
+    console.log(grades);
+    if(filterData?.grade && formik.values.branch){
+      let gradeVal = [...grades].filter((i) => filterData?.grade == i?.grade_id)
+      console.log(gradeVal);
+    }
+
+  },[grades , filterData])
+
   const handleBranch = (event, value) => {
+    console.log(value);
     formik.setFieldValue('branch', []);
     formik.setFieldValue('grade', {});
     formik.setFieldValue('subject', []);
@@ -720,6 +751,7 @@ const CreateQuestionPaper = ({
                 className='cancelButton labelColor'
                 style={{ width: '100%' }}
                 onClick={() => {
+                  setFilterData()
                   history.push({
                     pathname: '/assessment-question',
                     state: {
