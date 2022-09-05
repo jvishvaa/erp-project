@@ -38,6 +38,7 @@ export default {
             replyToAnswer: '/academic/create-answer-replay/',
             commentReplies: '/academic/comments-list/',
             homeworks: '/api/reports/v1/homework_status/',
+            homework: '/academic/homework_status/',
             blogLike: '/academic/like_blog/',
             dicussionLike: '/academic/',
             onlineclasstimestats: '/api/reports/v1/online-class-time-stats/',

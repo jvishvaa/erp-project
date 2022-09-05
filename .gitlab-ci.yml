@@ -124,7 +124,7 @@ deploy_blue:
       - sudo service uwsgi start
       - sudo rm -rf /home/ubuntu/build_test | true
       - sudo cp -r build/ /home/ubuntu/build_test
-      - forever stop blue
+      - forever stop blue || true
       - forever start -v --uid "blue" -a -l /var/log/frontend/forever.log -o /var/log/frontend/out_test.log -e /var/log/frontend/err_test.log $(which serve) -s /home/ubuntu/build_test/ -l 4000 
       # - aws s3 rm s3://erp-revamp-central/auto_scaling/build --recursive
       # - aws s3 sync /home/ubuntu/build s3://erp-revamp-central/auto_scaling/build/
@@ -134,7 +134,7 @@ deploy_blue:
     tags:
       - test_orchids_frontend
     only:
-      - master
+      - stage
 
 
 deploy_prod:
@@ -149,7 +149,7 @@ deploy_prod:
       # - sudo npm install -g serve
       # - sudo npm install -g forever
     variables:
-      GIT_STRATEGY: clone
+      GIT_STRATEGY: none
     stage: deploy
     script:
       - whoami

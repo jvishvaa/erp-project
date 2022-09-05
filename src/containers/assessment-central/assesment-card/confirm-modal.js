@@ -10,7 +10,7 @@ const ConfirmModal = ({ openModal, setOpenModal, submit }) => {
   const handleCloseModal = () => {
     setOpenModal(false);
   };
- 
+
   return (
     <Dialog
       className='reminderDialog'
@@ -25,11 +25,12 @@ const ConfirmModal = ({ openModal, setOpenModal, submit }) => {
         <div>Are you sure you want to Delete ?</div>
       </DialogTitle>
       <DialogActions>
-        <Button onClick={handleCloseModal} style={{fontWeight:600}} className='labelColor cancelButton'>
+        <Button onClick={handleCloseModal} style={{ fontWeight: 600 }} className='labelColor cancelButton'>
           Cancel
         </Button>
         <Button
           color='primary'
+          variant='contained'
           onClick={() => {
             submit();
             handleCloseModal();

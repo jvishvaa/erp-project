@@ -424,6 +424,11 @@ import UserProfile from 'containers/login/profiles';
 import V2Router from 'v2RouterConfig/v2Router';
 import { IsV2Checker } from 'v2/isV2Checker';
 import EventsMark from 'containers/attendance/eventsmark';
+import Category from './containers/question-bank/category/category-table';
+import CategoryMapping from './containers/subjectGradeMapping/CategoryMapping';
+import ReportConfigTable from 'containers/assessment-central/ReportCardConfig/ReportConfigTable';
+import CreateReportConfig from 'containers/assessment-central/ReportCardConfig/CreateReportConfig';
+
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -452,7 +457,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                       <ViewStore>
                         <DailyDairyStore>
                           <Switch>
-                          <Route path='/userprofile'>
+                            <Route path='/userprofile'>
                               {({ match }) => <UserProfile match={match} />}
                             </Route>
                             <Route path='/profile'>
@@ -547,6 +552,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route exact path='/assessment/marks-upload'>
                               {({ match }) => <ReportCard match={match} />}
+                            </Route>
+                            <Route exact path='/assessment/category'>
+                              {({ match }) => <Category match={match} />}
                             </Route>
                             <Route exact path='/assessment/report-card'>
                               {({ match }) => <StudentReportCard match={match} />}
@@ -768,6 +776,16 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route exact path='/master-management/subject/grade/mapping'>
                               {({ match }) => <Subjectgrade match={match} />}
+                            </Route>
+                            {console.log("aaya12")}
+                            <Route exact path='/master-management/category-mapping'>
+                              {({ match }) => <CategoryMapping match={match} />}
+                            </Route>
+                            <Route exact path='/assessment/report-config'>
+                              {({ match }) => <ReportConfigTable match={match} />}
+                            </Route>
+                            <Route exact path='/report-config/create'>
+                              {({ match }) => <CreateReportConfig match={match} />}
                             </Route>
                             <Route exact path='/master-management/event-category'>
                               {({ match }) => <EventCategory match={match} />}
@@ -2060,7 +2078,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/student-mark'>
                               {({ match }) => <StudentMark match={match} />}
                             </Route>
-                          
+
                             <Route path='*'>
                               <ErrorBoundary404 HomeButton={true} />
                             </Route>

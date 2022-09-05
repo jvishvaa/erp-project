@@ -2,8 +2,7 @@ import React, { useState, useEffect, createRef } from 'react';
 import Layout from 'containers/Layout';
 import moment from 'moment';
 import endpoints from 'v2/config/endpoints';
-import axiosInstance from 'v2/config/axios';
-import demoPic from 'v2/Assets/images/student_pic.png';
+import axios from 'v2/config/axios';
 import calendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
 import {
   Table,
@@ -15,65 +14,40 @@ import {
   message,
   Input,
 } from 'antd';
-import { DownOutlined, SearchOutlined } from '@ant-design/icons';
+import { DownOutlined, SearchOutlined, UserOutlined } from '@ant-design/icons';
+import { useHistory } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { X_DTS_HOST } from 'v2/reportApiCustomHost';
 
 const { Option } = Select;
-const sectionWiseAttendanceData = [
-  {
-    studentName: 'Student Odd',
-    erp: 'ERP 2022098765',
-    attendance: 'P',
-  },
-  {
-    studentName: 'Student Even',
-    erp: 'ERP 202209665',
-    attendance: 'A',
-  },
-  {
-    studentName: 'Student Odd',
-    erp: 'ERP 2022098765',
-    attendance: 'P',
-  },
-  {
-    studentName: 'Student Even',
-    erp: 'ERP 202209665',
-    attendance: 'A',
-  },
-  {
-    studentName: 'Student Odd',
-    erp: 'ERP 2022098765',
-    attendance: 'P',
-  },
-  {
-    studentName: 'Student Even',
-    erp: 'ERP 202209665',
-    attendance: 'A',
-  },
-  {
-    studentName: 'Student Odd',
-    erp: 'ERP 2022098765',
-    attendance: 'P',
-  },
-  {
-    studentName: 'Student Even',
-    erp: 'ERP 202209665',
-    attendance: 'A',
-  },
-];
+
 const columns = [
   {
     title: <span className='th-white pl-sm-0 pl-4 th-fw-600 '>STUDENT DETAILS</span>,
-    dataIndex: 'grade',
     width: '75%',
     align: 'left',
-    key: 'grade',
-    id: 1,
     render: (text, row) => (
       <div className='d-flex align-items-center pl-sm-0 pl-4'>
-        <Avatar size={40} src={demoPic} />
+        {window.location.href.includes('localhost') ||
+          window.location.href.includes('ui-revamp1') ||
+          window.location.href.includes('qa') ? (
+          <>
+            <Avatar
+              size={40}
+              src={`${endpoints.announcementList.s3erp}dev/media/${row?.profile}`}
+              icon={<UserOutlined />}
+            />
+          </>
+        ) : (
+          <Avatar
+            size={40}
+            src={`${endpoints.announcementList.s3erp}prod/media/${row?.profile}`}
+            icon={<UserOutlined />}
+          />
+        )}
         <div className='d-flex flex-column px-2 '>
-          <span className='th-black-1 th-fw-400'>{row.studentName}</span>
-          <span className='th-grey th-14 th-fw-400'>{row.erp}</span>
+          <span className='th-black-1 th-fw-400'>{row.student_name}</span>
+          <span className='th-grey th-14 th-fw-400'>{row.erp_id}</span>
         </div>
       </div>
     ),
@@ -87,35 +61,80 @@ const columns = [
     id: 2,
     render: (text, row) => (
       <span
-        className={`${row.attendance === 'P' ? 'th-green' : 'th-red'} th-16 th-fw-500`}
+        className={`${row.erpusersattendance__attendence_status === 'present' ? 'th-green' : 'th-red'
+          } th-16 th-fw-500`}
       >
-        {row.attendance}
+        {row.erpusersattendance__attendence_status === 'present' ? 'P' : 'A'}
       </span>
     ),
   },
 ];
 
 const SectionWiseAttendance = () => {
-  const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
+  const selectedAcademicYear = useSelector(
+    (state) => state.commonFilterReducer?.selectedYear
+  );
+  const selectedBranch = useSelector(
+    (state) => state.commonFilterReducer?.selectedBranch
+  );
+  const history = useHistory();
+  const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const [date, setDate] = useState(history?.location?.state?.date);
   const formRef = createRef();
+  const [moduleId, setModuleId] = useState();
   const [gradeData, setGradeData] = useState([]);
-  const [gradeId, setGradeId] = useState('');
+  const [gradeId, setGradeId] = useState(history?.location?.state?.gradeID || '');
   const [sectionData, setSectionData] = useState([]);
-  const [sectionId, setSectionId] = useState('');
+  const [sectionId, setSectionId] = useState(history?.location?.state?.sectionID || '');
+  const [attendanceData, setAttendanceData] = useState([]);
+  const [attendanceCountData, setAttendanceCountData] = useState([]);
+  const [searchedValue, setSearchedValue] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [studentFilter, setStudentFilter] = useState('all');
 
   const handleDateChange = (value) => {
     if (value) {
       setDate(moment(value).format('YYYY-MM-DD'));
     }
   };
+  const handleFilterChange = (value) => {
+    setStudentFilter(value);
+  };
+  const fetchAttendanceData = (params = {}) => {
+    setLoading(true);
+    axios
+      .get(`${endpoints.teacherAttendance.sectionwiseAttendance}`, {
+        params: {
+          ...params,
+          ...(studentFilter == 'present' ? { is_present: 1 } : {}),
+          ...(studentFilter == 'absent' ? { is_absent: 1 } : {}),
+        },
+        headers: {
+          'X-DTS-Host': X_DTS_HOST,
+        },
+      })
+      .then((res) => {
+        if (res?.data?.status_code == 200) {
+          setAttendanceData(res?.data?.result?.students);
+          setAttendanceCountData(res?.data?.result);
+          setLoading(false);
+        } else {
+          setLoading(false);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+        setLoading(false);
+      });
+  };
 
   const fetchGradeData = () => {
     const params = {
-      session_year: 1,
-      branch_id: 88,
-      module_id: 2,
+      session_year: selectedAcademicYear?.id,
+      branch_id: selectedBranch?.branch?.id,
+      module_id: moduleId,
     };
-    axiosInstance
+    axios
       .get(`${endpoints.academics.grades}`, { params })
       .then((res) => {
         if (res.data.status_code === 200) {
@@ -131,13 +150,15 @@ const SectionWiseAttendance = () => {
       section: null,
     });
     setSectionData([]);
+    setGradeId();
+    setSectionId();
     if (e) {
       setGradeId(e);
 
       fetchSectionData({
-        session_year: 1,
-        branch_id: 88,
-        module_id: 2,
+        session_year: selectedAcademicYear?.id,
+        branch_id: selectedBranch?.branch?.id,
+        module_id: moduleId,
         grade_id: e,
       });
     }
@@ -148,8 +169,12 @@ const SectionWiseAttendance = () => {
     }
   };
   const fetchSectionData = (params = {}) => {
-    axiosInstance
-      .get(`${endpoints.academics.sections}`, { params: { ...params } })
+    axios
+      .get(`${endpoints.academics.sections}`, {
+        params: {
+          ...params,
+        },
+      })
       .then((res) => {
         if (res.data.status_code === 200) {
           setSectionData(res.data.data);
@@ -182,36 +207,79 @@ const SectionWiseAttendance = () => {
   };
 
   useEffect(() => {
-    fetchGradeData();
+    if (moduleId) {
+      fetchGradeData();
+    }
+  }, [moduleId]);
+
+  useEffect(() => {
+    if (history?.location?.state) {
+      formRef.current.setFieldsValue({
+        grade: history?.location?.state?.gradeName,
+        section: history?.location?.state?.sectionName,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (sectionId) {
+      fetchAttendanceData({
+        session_year: selectedAcademicYear?.id,
+        date: date,
+        branch_id: selectedBranch?.branch?.id,
+        grade_id: gradeId,
+        section_id: sectionId,
+      });
+    }
+  }, [sectionId, date, studentFilter]);
+
+  useEffect(() => {
+    if (NavData && NavData.length) {
+      NavData.forEach((item) => {
+        if (
+          item.parent_modules === 'Ebook' &&
+          item.child_module &&
+          item.child_module.length > 0
+        ) {
+          item.child_module.forEach((item) => {
+            if (item.child_name === 'Ebook View') {
+              setModuleId(item.child_id);
+            }
+          });
+        }
+      });
+    }
   }, []);
 
   return (
     <Layout>
       <div className='row py-3 px-2'>
-        <div className='col-md-6'>
+        <div className='col-md-8'>
           <Breadcrumb separator='>'>
-            <Breadcrumb.Item href='/teacher-dashboard' className='th-grey th-fw-400'>
+            <Breadcrumb.Item href='/dashboard' className='th-grey th-pointer'>
               Dashboard
             </Breadcrumb.Item>
-            <Breadcrumb.Item href='/gradewise-attendance' className='th-grey th-fw-400'>
+            <Breadcrumb.Item href='/gradewise-attendance' className='th-grey th-pointer'>
               Attendance
             </Breadcrumb.Item>
-            <Breadcrumb.Item className='th-black-1  th-fw-400'>Students</Breadcrumb.Item>
+            <Breadcrumb.Item className='th-black-1'>Students</Breadcrumb.Item>
           </Breadcrumb>
         </div>
         <div className='col-md-4 text-right mt-2 mt-sm-0 justify-content-end'>
           <span className='th-br-4 p-1 th-bg-white'>
             <img src={calendarIcon} className='pl-2' />
             <DatePicker
+              disabledDate={(current) => current.isAfter(moment())}
               allowClear={false}
               bordered={false}
               placement='bottomRight'
-              placeholder={'Till Date'}
+              defaultValue={moment()}
+              value={moment(date)}
               onChange={(value) => handleDateChange(value)}
               showToday={false}
               suffixIcon={<DownOutlined className='th-black-1' />}
               className='th-black-2 pl-0 th-date-picker'
-              format={'DD/MM/YYYY'}
+              format={'YYYY-MM-DD'}
             />
           </span>
         </div>
@@ -219,7 +287,7 @@ const SectionWiseAttendance = () => {
           <div className='col-12'>
             <Form id='filterForm' ref={formRef} layout={'horizontal'}>
               <div className='row align-items-center'>
-                <div className='col-md-2 col-6 px-0 pr-md-2 '>
+                <div className='col-md-3 col-6 px-0 pr-md-2 '>
                   <Form.Item name='grade'>
                     <Select
                       allowClear
@@ -242,7 +310,7 @@ const SectionWiseAttendance = () => {
                     </Select>
                   </Form.Item>
                 </div>
-                <div className='col-md-2 col-6 pr-0 '>
+                <div className='col-md-3 col-6 pr-0 '>
                   <Form.Item name='section'>
                     <Select
                       allowClear
@@ -272,20 +340,39 @@ const SectionWiseAttendance = () => {
         <div className='col-12'>
           <div className='row pt-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
             <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding w-100'>
-              Total Students: <span className='th-primary'>50</span>
+              Total Students:{' '}
+              <span className='th-primary'>{attendanceCountData?.total_students}</span>
             </div>
             <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-              Students Present: <span className='th-green'>47</span>
+              Students Present:{' '}
+              <span className='th-green'>
+                {attendanceCountData?.present_students_count}
+              </span>
             </div>
             <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
-              Students Absent: <span className='th-fw-500 th-red'>03</span>
+              Students Absent:{' '}
+              <span className='th-fw-500 th-red'>
+                {attendanceCountData?.absent_students_count}
+              </span>
             </div>
+            <div className='col-md-2 col-6 pb-0 pb-sm-2 th-custom-col-padding'>
+              Students Marked:{' '}
+              <span className='th-green'>{attendanceCountData?.marked_students}</span>
+            </div>
+            <div className='col-md-4 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
+              Students Unmarked:{' '}
+              <span className='th-red'>{attendanceCountData?.unmarked_students}</span>
+            </div>
+          </div>
+
+          <div className='row pt-2 my-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
             <div className='col-md-2 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
               <Input
                 className='th-bg-grey th-br-4'
                 placeholder='Search a student'
                 suffix={<SearchOutlined className='th-grey' />}
                 bordered={false}
+                onChange={(e) => setSearchedValue(e.target.value)}
               />
             </div>
             <div className='col-md-2 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
@@ -293,10 +380,11 @@ const SectionWiseAttendance = () => {
                 defaultValue={'All Students'}
                 className='th-grey th-bg-grey th-br-4 w-100'
                 bordered={false}
+                onChange={handleFilterChange}
               >
-                <Option value='1'>All Students</Option>
-                <Option value='2'>Present</Option>
-                <Option value='2'>Absent</Option>
+                <Option value='all'>All Students</Option>
+                <Option value='present'>Present</Option>
+                <Option value='absent'>Absent</Option>
               </Select>
             </div>
           </div>
@@ -307,8 +395,13 @@ const SectionWiseAttendance = () => {
             <Table
               className='th-table'
               columns={columns}
-              rowKey={(record) => record?.id}
-              dataSource={sectionWiseAttendanceData}
+              rowKey={(record) => record?.erp_id}
+              loading={loading}
+              dataSource={attendanceData.filter(
+                (item) =>
+                  item.student_name.toLowerCase().includes(searchedValue.toLowerCase()) ||
+                  item.erp_id.toLowerCase().includes(searchedValue.toLowerCase())
+              )}
               pagination={false}
               rowClassName={(record, index) =>
                 index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'

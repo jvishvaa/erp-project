@@ -74,7 +74,7 @@ const statuses = [
   { id: 2, name: 'Completed' },
 ];
 
-const Assesment = () => {
+const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const history = useHistory();
@@ -94,6 +94,7 @@ const Assesment = () => {
   const [assesmentTestsPage, setAssesmentTestsPage] = useState(1);
   const [assesmentTestsTotalPage, setAssesmentTestsTotalPage] = useState(0);
   const [filteredAssesmentTests, setFilteredAssesmentTests] = useState([]);
+  console.log('filteravi', filteredAssesmentTests)
   const [filteredAssesmentTestsPage, setFilteredAssesmentTestPage] = useState(1);
   const [filteredAssesmentTestsTotalPage, setFilteredAssesmentTestsTotalPage] = useState(
     0
@@ -121,6 +122,17 @@ const Assesment = () => {
   const [sectionFlag, setSectionFlag] = useState(false);
   const [groupList, setGroupList] = useState([]);
   const [groupFlag, setGroupFlag] = useState(false);
+  const [isRestoreUnable, setIsRestoreUnable] = useState(false)
+  const testFilterData = JSON.parse(sessionStorage.getItem('createTestData')) || {}
+  const testFilterDropdownList = JSON.parse(sessionStorage.getItem('dropDownData')) || {}
+  let isRestoreFields = history?.location?.state?.dataRestore || false
+  let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
+
+
+  useEffect(() => {
+    if (isRestoreFields) setIsRestoreUnable(true)
+  }, [])
+
 
   useEffect(() => {
     if (NavData && NavData.length) {
@@ -210,7 +222,7 @@ const Assesment = () => {
     try {
       const data = await fetchAssesmentTypes();
       setAssesmentTypes(data);
-    } catch (e) {}
+    } catch (e) { }
   };
   let filterData1 = [];
   const filterResults = async (page) => {
@@ -377,7 +389,33 @@ const Assesment = () => {
       return;
     }
     formik.handleSubmit();
+    sessionStorage.setItem('createTestData', JSON.stringify(formik?.values))
+    sessionStorage.setItem('dropDownData', JSON.stringify({ branch: branchDropdown, grade: grades, subject: subjects, assesmentTypes: assesmentTypes, section: sectionList, group: groupList, isSectionToggle: sectionToggle }))
   };
+
+  useEffect(() => {
+    if (isRestoreUnable) {
+      formik.setFieldValue('status', testFilterData?.status)
+      formik.setFieldValue('branch', testFilterData?.branch);
+      formik.setFieldValue('grade', testFilterData?.grade);
+      formik.setFieldValue('subject', testFilterData?.subject);
+      formik.setFieldValue('section', testFilterData?.section);
+      formik.setFieldValue('group', testFilterData?.group);
+      formik.setFieldValue('assesment_type', testFilterData?.assesment_type)
+      formik.setFieldValue('date', testFilterData?.date)
+      setBranchDropdown(testFilterDropdownList?.branch)
+      setGrades(testFilterDropdownList?.grade)
+      setSubjects(testFilterDropdownList?.subject)
+      setAssesmentTypes(testFilterDropdownList?.assesmentTypes)
+      setGroupList(testFilterDropdownList?.group)
+      setSectionList(testFilterDropdownList?.section)
+      setSectionToggle(testFilterDropdownList?.isSectionToggle)
+      history.replace({ state: { dataRestore: false } })
+      testFilterDropdownList?.isSectionToggle ? setGroupFlag(true) : setSectionFlag(true);
+      if (testFilterData?.status?.id) formik.handleSubmit();
+    }
+
+  }, [isRestoreUnable])
 
   const handleAcademicYear = (event = {}, value = '') => {
     formik.setFieldValue('academic', '');
@@ -555,11 +593,39 @@ const Assesment = () => {
     }
   };
 
+  const [addedId, setAddedId] = useState([]);
+  console.log('debugaddedId', addedId);
+
+  const selectAssetmentCard = (id, checked) => {
+    console.log('debugaddedidcheck', id, checked)
+    if (checked) {
+      console.log('debugpushing id', checked)
+      setAddedId([...addedId, id]);
+    } else {
+      const previousArr = [...addedId]
+      const index = addedId.indexOf(id);
+      previousArr.splice(index, 1)
+      console.log('debugnewremovedid', previousArr, index)
+      setAddedId(previousArr);
+    }
+  }
+
+
   const handleSectionToggle = (event) => {
     setSectionToggle(event.target.checked);
     formik.setFieldValue('section', []);
     formik.setFieldValue('group', '');
   };
+
+  const filterbasedonsub = (subjectid) => {
+    let filtereddata = filteredAssesmentTests?.filter((data) => addedId?.includes(data?.id))
+    let newfiltered = filtereddata?.map((id) => id?.subjects[0])
+    // newfiltered.includes(subjectid)
+    return newfiltered.includes(subjectid)
+  }
+
+  // let newid = filterbasedonsub()
+
   return (
     <Layout>
       {loading && <Loader />}
@@ -614,7 +680,7 @@ const Assesment = () => {
             className='collapsible-section'
             square
             expanded={expandFilter}
-            onChange={() => {}}
+            onChange={() => { }}
           >
             <AccordionSummary></AccordionSummary>
             <AccordionDetails>
@@ -659,6 +725,7 @@ const Assesment = () => {
                         open={datePickerOpen}
                         onClick={() => setDatePickerOpen(true)}
                         minDate={minDate}
+                        required
                       />
                       <FormHelperText style={{ color: 'red' }}>
                         {formik.errors.status ? formik.errors.status : ''}
@@ -912,23 +979,25 @@ const Assesment = () => {
                   </Button>
                 </div>
               </Grid>
-              <Grid item md={2} xs={6}>
-                <div className='btn-container'>
-                  <Button
-                    style={{ width: '100%', color: 'white' }}
-                    variant='contained'
-                    startIcon={<AddIcon style={{ fontSize: '30px' }} />}
-                    color='primary'
-                    size='medium'
-                    onClick={() => {
-                      history.push('/create-assesment?clear=true');
-                    }}
-                  >
-                    Create New
-                  </Button>
-                </div>
-              </Grid>
-              {(isSuperAdmin || isSuperuser) && (
+              {!handleClose &&
+                <Grid item md={2} xs={6}>
+                  <div className='btn-container'>
+                    <Button
+                      style={{ width: '100%', color: 'white' }}
+                      variant='contained'
+                      startIcon={<AddIcon style={{ fontSize: '30px' }} />}
+                      color='primary'
+                      size='medium'
+                      onClick={() => {
+                        history.push('/create-assesment?clear=true');
+                      }}
+                    >
+                      Create New
+                    </Button>
+                  </div>
+                </Grid>}
+              {(isSuperAdmin || isSuperuser) && !handleClose && (
+
                 <Grid item container md={6} xs={6} justifyContent='flex-end'>
                   <div className='btn-container'>
                     <FormControlLabel
@@ -979,6 +1048,49 @@ const Assesment = () => {
                   )}
                 </Grid>
               )}
+
+              {handleClose && addedId.length > 0 && <Grid item md={4} xs={4} style={{ display: 'flex' }}>
+                <div className='btn-container'>
+                  <h6 >Total Selected: {addedId.length}</h6>
+                </div>
+                <div className='btn-container' style={{ marginLeft: '5px' }}>
+                  <Button
+                    style={{ width: '100%', color: 'white' }}
+                    variant='contained'
+                    startIcon={<AddIcon style={{ fontSize: '30px' }} />}
+                    color='primary'
+                    size='medium'
+                    onClick={() => {
+                      console.log('aded the idasse', addedId)
+                      handleColumnSelectedTestChange(
+                        addedId
+                      )
+                      handleClose()
+                    }}
+                  >
+                    Add Selected
+                  </Button>
+                </div>
+              </Grid>}
+              {handleClose &&
+                <Grid item md={2} xs={2} style={{ display: 'flex' }}>
+                  <Button
+                    style={{ color: 'white', height: '40px', marginTop: 30 }}
+                    variant='contained'
+                    // startIcon={<AddIcon style={{ fontSize: '30px' }} />}
+                    color='primary'
+                    size='medium'
+                    onClick={() => {
+                      console.log('aded the idasse', addedId)
+                      handleColumnSelectedTestChange(
+                        addedId
+                      )
+                      handleClose()
+                    }}
+                  >
+                    BACK
+                  </Button>
+                </Grid>}
             </Grid>
           </div>
           <div className='tabs-container'>
@@ -1060,11 +1172,18 @@ const Assesment = () => {
                               <Grid item md={selectedAssesmentTest ? 6 : 4}>
                                 <AssesmentCard
                                   value={test}
-                                  onEdit={() => {}}
+                                  onEdit={() => { }}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
                                   activeTab={activeTab}
+                                  addedId={addedId}
+                                  selectAssetmentCard={selectAssetmentCard}
+                                  handleClose={handleClose}
+                                  filteredAssesmentTests={filteredAssesmentTests}
+                                  // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0]) 
+                                  filterbasedonsub={filterbasedonsub}
+                                  isdisable={filterbasedonsub(test?.subjects[0])}
                                 />
                               </Grid>
                             ))}
@@ -1080,6 +1199,7 @@ const Assesment = () => {
                             setSelectedAssesmentTest(null);
                           }}
                           filterData={filterData}
+                          handleClose={handleClose}
                         />
                       </Grid>
                     )}
@@ -1126,10 +1246,17 @@ const Assesment = () => {
                               <Grid item md={selectedAssesmentTest ? 6 : 4}>
                                 <AssesmentCard
                                   value={test}
-                                  onEdit={() => {}}
+                                  onEdit={() => { }}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
+                                  addedId={addedId}
+                                  selectAssetmentCard={selectAssetmentCard}
+                                  handleClose={handleClose}
+                                  filteredAssesmentTests={filteredAssesmentTests}
+                                  // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0]) 
+                                  filterbasedonsub={filterbasedonsub}
+                                  isdisable={filterbasedonsub(test.subjects[0])}
                                 />
                               </Grid>
                             ))}
@@ -1145,6 +1272,7 @@ const Assesment = () => {
                             setSelectedAssesmentTest(null);
                           }}
                           filterData={filterData}
+                          handleClose={handleClose}
                         />
                       </Grid>
                     )}
@@ -1191,10 +1319,17 @@ const Assesment = () => {
                               <Grid item md={selectedAssesmentTest ? 6 : 4}>
                                 <AssesmentCard
                                   value={test}
-                                  onEdit={() => {}}
+                                  onEdit={() => { }}
                                   onClick={handleSelectTest}
                                   isSelected={selectedAssesmentTest?.id === test.id}
                                   filterResults={filterResults}
+                                  addedId={addedId}
+                                  selectAssetmentCard={selectAssetmentCard}
+                                  handleClose={handleClose}
+                                  filteredAssesmentTests={filteredAssesmentTests}
+                                  // isdisable= {let newid= filterbasedonsub() } newid.includes(test.subject[0]) 
+                                  filterbasedonsub={filterbasedonsub}
+                                  isdisable={filterbasedonsub(test.subjects[0])}
                                 />
                               </Grid>
                             ))}

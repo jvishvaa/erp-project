@@ -46,9 +46,11 @@ const QuestionBankFilters = ({
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
   const [branchDropdown, setBranchDropdown] = useState([]);
   const [gradeDropdown, setGradeDropdown] = useState([]);
+  const [erpCategoryDropdown, setErpGradeDropdown] = useState([]);
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
   const [subjectDropdown, setSubjectDropdown] = useState([]);
   const [chapterDropdown, setChapterDropdown] = useState([]);
   const [topicDropdown, setTopicDropdown] = useState([]);
@@ -100,6 +102,7 @@ const QuestionBankFilters = ({
     question_level: '',
     question_category: '',
     is_erp_central: is_ERP_CENTRAL[0],
+    erp_category : ''
   });
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -128,6 +131,13 @@ const QuestionBankFilters = ({
       history.goBack();
     }
   }, [questionList?.length]);
+
+  useEffect(() => {
+    if(selectedBranch && filterData?.year?.id && moduleId){
+      handleBranch('',selectedBranch)
+
+    }
+  },[selectedBranch,filterData?.year?.id,moduleId])
 
   useEffect(() => {
     if (!boardFilterArr.includes(window.location.host)) {
@@ -178,6 +188,14 @@ const QuestionBankFilters = ({
       .catch((error) => {
         setAlert('error', error?.message);
       });
+      axiosInstance
+      .get(`${endpoints.questionBank.erpCategory}`)
+      .then((result) => {
+        setErpGradeDropdown(result?.data?.result)
+      })
+      .catch((error) => {
+        setAlert('error', error?.message);
+      });
   }, []);
 
   const handleClear = () => {
@@ -193,6 +211,7 @@ const QuestionBankFilters = ({
       quesType: '',
       question_level: '',
       question_category: '',
+      erp_category: '',
     });
     setPeriodData([]);
     setSubjectDropdown([]);
@@ -216,6 +235,7 @@ const QuestionBankFilters = ({
       quesType: '',
       quesLevel: '',
       topicId: '',
+      erp_category: '',
     });
     setPeriodData([]);
     // setLoading(true);
@@ -255,6 +275,7 @@ const QuestionBankFilters = ({
       quesType: '',
       quesLevel: '',
       topicId: '',
+      erp_category: '',
     });
     setPeriodData([]);
     setLoading(true);
@@ -307,6 +328,16 @@ const QuestionBankFilters = ({
     setLoading(true);
     if (value) {
       setFilterData({ ...filterData, question_category: value });
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+  };
+  const handleerpCategory = (event, value) => {
+    setFilterData({ ...filterData, erp_category: '',  });
+    setLoading(true);
+    if (value) {
+      setFilterData({ ...filterData, erp_category: value });
       setLoading(false);
     } else {
       setLoading(false);
@@ -638,6 +669,7 @@ const QuestionBankFilters = ({
       filterData?.chapter,
       filterData?.is_erp_central,
       0,
+      filterData?.erp_category,
     );
     setSelectedIndex(-1);
   };
@@ -668,6 +700,7 @@ const QuestionBankFilters = ({
                 variant='outlined'
                 label='Branch'
                 placeholder='Branch'
+                required
               />
             )}
           />
@@ -689,6 +722,7 @@ const QuestionBankFilters = ({
                 variant='outlined'
                 label='Grade'
                 placeholder='Grade'
+                required
               />
             )}
           />
@@ -710,6 +744,7 @@ const QuestionBankFilters = ({
                 variant='outlined'
                 label='Question From'
                 placeholder='Question From'
+                required
               />
             )}
           />
@@ -731,6 +766,7 @@ const QuestionBankFilters = ({
                 variant='outlined'
                 label='Subject'
                 placeholder='Subject'
+                required
               />
             )}
           />
@@ -874,8 +910,8 @@ const QuestionBankFilters = ({
               <TextField
                 {...params}
                 variant='outlined'
-                label='Category'
-                placeholder='Category'
+                label='Question Category'
+                placeholder='Question Category'
               />
             )}
           />
@@ -897,6 +933,27 @@ const QuestionBankFilters = ({
                 variant='outlined'
                 label='Question Type'
                 placeholder='Question Type'
+              />
+            )}
+          />
+        </Grid>
+        <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
+          <Autocomplete
+            style={{ width: '100%' }}
+            size='small'
+            onChange={handleerpCategory}
+            id='Category'
+            className='dropdownIcon'
+            value={filterData?.erp_category || {}}
+            options={erpCategoryDropdown || []}
+            getOptionLabel={(option) => option?.erp_category_name || ''}
+            filterSelectedOptions
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                variant='outlined'
+                label='ERP Category'
+                placeholder='ERP Category'
               />
             )}
           />

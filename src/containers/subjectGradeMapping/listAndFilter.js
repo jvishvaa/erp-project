@@ -59,6 +59,10 @@ const ListandFilter = (props) => {
     props.history.push('/master-management/subject/grade/mapping');
   };
 
+  const navigateToCategoryPage = () => {
+    props.history.push('/master-management/category-mapping');
+  };
+
   const handleClearAll = () => {
     setFilter(false);
     setSchoolGsMapping([]);
@@ -377,6 +381,25 @@ const ListandFilter = (props) => {
                 )}
               />
               Assign Mapping
+            </StyledButton>
+          </div>
+          <div className='button-container-map'>
+            <StyledButton
+              variant='outlined'
+              color='primary'
+              style={{ color: 'white', marginTop: '4px' }}
+              onClick={navigateToCategoryPage}
+            >
+              <SvgIcon
+                component={() => (
+                  <img
+                    style={{ width: '12px', marginRight: '5px' }}
+                    src={Addicon}
+                    alt='given'
+                  />
+                )}
+              />
+              Assign Category Mapping
             </StyledButton>
           </div>
         </Grid>

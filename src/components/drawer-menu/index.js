@@ -33,7 +33,7 @@ const resolveMenu = (url) => {
 
   if (url.includes('intelligent-book')) return 'Ibook';
   if (url.includes('assessment')) return 'Assessment';
-  if (url.includes('attendance-calendar')) return 'Calendar & Attendance';
+  if (url.includes('attendance-calendar')) return 'Calendar';
   if (url.includes('ConcessionSetting')) return 'Concession';
   if (url.includes('Approval')) return 'Approvals/Requests';
   if (url.includes('UnassignFeeRequests')) return 'Approvals/Requests';

@@ -285,7 +285,7 @@ const CreateEvent = () => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'Calendar & Attendance' &&
+          item.parent_modules === 'Calendar' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
