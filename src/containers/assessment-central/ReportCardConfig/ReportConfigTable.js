@@ -115,12 +115,12 @@ const ReportConfigTable = () => {
     if (NavData && NavData.length) {
       NavData.forEach((item) => {
         if (
-          item.parent_modules === 'User Management' &&
+          item.parent_modules === 'Assessment' &&
           item.child_module &&
           item.child_module.length > 0
         ) {
           item.child_module.forEach((item) => {
-            if (item.child_name === 'User Groups') {
+            if (item.child_name === 'Report Card Config') {
               setModuleId(item.child_id);
             }
           });

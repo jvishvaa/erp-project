@@ -27,6 +27,8 @@ import DailyDiary from 'v2/FaceLift/Diary/DailyDiary';
 import GeneralDiary from 'v2/FaceLift/Diary/GeneralDiary';
 import GradeWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/GradeWiseAttendance';
 import SectionWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/SectionWiseAttendance';
+import ReportConfigTable from 'containers/assessment-central/ReportCardConfig/ReportConfigTable';
+import CreateReportConfig from 'containers/assessment-central/ReportCardConfig/CreateReportConfig';
 
 const V2Router = () => {
   useEffect(() => {
@@ -107,7 +109,14 @@ const V2Router = () => {
                         <Route path='/sectionwise-attendance'>
                           {({ match }) => <SectionWiseAttendance match={match} />}
                         </Route>
-                        s{/* v1 router */}
+
+                        <Route exact path='/assessment/report-config'>
+                          {({ match }) => <ReportConfigTable match={match} />}
+                        </Route>
+                        <Route exact path='/report-config/create'>
+                          {({ match }) => <CreateReportConfig match={match} />}
+                        </Route>
+                        {/* v1 router */}
                         {V1Router?.map((item) => {
                           return item;
                         })}
