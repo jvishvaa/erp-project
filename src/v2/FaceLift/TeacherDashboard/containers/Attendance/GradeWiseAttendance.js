@@ -56,6 +56,8 @@ const GradeWiseAttendance = () => {
           setLoading(false);
         } else {
           setLoading(false);
+          setGradewiseAttendanceData([]);
+          setAttendanceCountData([]);
         }
       })
       .catch((error) => {
