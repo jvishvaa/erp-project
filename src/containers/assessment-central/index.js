@@ -996,8 +996,8 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                     </Button>
                   </div>
                 </Grid>}
+              {(isSuperAdmin || isSuperuser) && !handleClose && (
 
-              {/* {(isSuperAdmin || isSuperuser) && (
                 <Grid item container md={6} xs={6} justifyContent='flex-end'>
                   <div className='btn-container'>
                     <FormControlLabel
@@ -1047,7 +1047,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                     <div></div>
                   )}
                 </Grid>
-              )} */}
+              )}
 
               {handleClose && addedId.length > 0 && <Grid item md={4} xs={4} style={{ display: 'flex' }}>
                 <div className='btn-container'>

@@ -29,8 +29,8 @@ const columns = [
     render: (text, row) => (
       <div className='d-flex align-items-center pl-sm-0 pl-4'>
         {window.location.href.includes('localhost') ||
-        window.location.href.includes('ui-revamp1') ||
-        window.location.href.includes('qa') ? (
+          window.location.href.includes('ui-revamp1') ||
+          window.location.href.includes('qa') ? (
           <>
             <Avatar
               size={40}
@@ -61,9 +61,8 @@ const columns = [
     id: 2,
     render: (text, row) => (
       <span
-        className={`${
-          row.erpusersattendance__attendence_status === 'present' ? 'th-green' : 'th-red'
-        } th-16 th-fw-500`}
+        className={`${row.erpusersattendance__attendence_status === 'present' ? 'th-green' : 'th-red'
+          } th-16 th-fw-500`}
       >
         {row.erpusersattendance__attendence_status === 'present' ? 'P' : 'A'}
       </span>
@@ -270,6 +269,7 @@ const SectionWiseAttendance = () => {
           <span className='th-br-4 p-1 th-bg-white'>
             <img src={calendarIcon} className='pl-2' />
             <DatePicker
+              disabledDate={(current) => current.isAfter(moment())}
               allowClear={false}
               bordered={false}
               placement='bottomRight'

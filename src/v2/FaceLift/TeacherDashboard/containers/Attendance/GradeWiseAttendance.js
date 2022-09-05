@@ -211,6 +211,7 @@ const GradeWiseAttendance = () => {
           <span className='th-br-4 p-1 th-bg-white'>
             <img src={calendarIcon} className='pl-2' />
             <DatePicker
+              disabledDate={(current) => current.isAfter(moment())}
               allowClear={false}
               bordered={false}
               placement='bottomRight'
