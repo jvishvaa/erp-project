@@ -29,6 +29,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 import AttachMoneyIcon from '@material-ui/icons/AttachMoney';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import logoMobile from '../../assets/images/logo_mobile.png';
+import LiveHelpIcon from '@material-ui/icons/LiveHelpOutlined';
 import SearchBar from './SearchBar';
 import AppSearchBarUseStyles from './AppSearchBarUseStyles';
 import {
@@ -65,9 +66,9 @@ const Appbar = ({ children, history, ...props }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchUserDetails, setSearchUserDetails] = useState([]);
   const { setAlert } = useContext(AlertNotificationContext);
-  const [profileToShown,setProfileToShown] = useState([])
+  const [profileToShown, setProfileToShown] = useState([])
   const [academicYearDropdown, setAcademicYearDropdown] = useState([]);
-  const [isSwitch , setisSwitch] = useState(false)
+  const [isSwitch, setisSwitch] = useState(false)
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
   let userData = JSON.parse(localStorage.getItem('userDetails'));
   let apps = JSON.parse(localStorage.getItem('apps'));
@@ -75,12 +76,12 @@ const Appbar = ({ children, history, ...props }) => {
   let selectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
   // let profileList = JSON.parse(localStorage.getItem('profileData')) || {};
   let selectedProfileDetails = JSON.parse(localStorage?.getItem('selectProfileDetails')) || {};
-  let {is_verified} = JSON.parse(localStorage.getItem('profileDetails')) || {};
-  let mobileLoginDetails = JSON.parse(localStorage.getItem('mobileLoginDetails')) || {}; 
+  let { is_verified } = JSON.parse(localStorage.getItem('profileDetails')) || {};
+  let mobileLoginDetails = JSON.parse(localStorage.getItem('mobileLoginDetails')) || {};
   const { role_details: roleDetails } =
     JSON.parse(localStorage.getItem('userDetails')) || {};
   const [branch, setBranch] = useState(selectedBranch?.branch?.branch_name);
-  const [profile,setProfile] = useState(selectedProfileDetails.name);
+  const [profile, setProfile] = useState(selectedProfileDetails.name);
   const profileDetails = JSON.parse(localStorage.getItem('profileDetails')) || {};
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -120,12 +121,12 @@ const Appbar = ({ children, history, ...props }) => {
     }
   };
   useEffect(() => {
-    if(profileDetails){
+    if (profileDetails) {
       let unselectedprofiles = profileDetails?.data?.filter((item) => item.name !== selectedProfileDetails?.name)
       setProfileToShown(unselectedprofiles)
     }
   }, [])
-  
+
   const autocompleteSearch = (q, pageId, isDelete) => {
     if (q !== '') {
       setSearching(true);
@@ -190,6 +191,9 @@ const Appbar = ({ children, history, ...props }) => {
   const handleFinance = () => {
     window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/${token}#/auth/login`, '_blank');
   };
+  const handleTicket = () => {
+    window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/ticket/${token}#/auth/login`, '_blank');
+  };
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const renderMobileMenu = (
@@ -219,31 +223,31 @@ const Appbar = ({ children, history, ...props }) => {
           <Typography color='secondary'>Settings</Typography>
         </MenuItem>
       ) : null}
-      { profileDetails?.is_verified && 
-      (
-      <>
-      <MenuItem
-        onClick={() => setisSwitch(!isSwitch)}
-      >
-          <IconButton aria-label='settings' color='inherit'>
-            <SupervisorAccountIcon color='primary' style={{ fontSize: '2rem' }} />
-          </IconButton>
-          <Typography color='secondary'>Switch Profile</Typography>
-          {!isSwitch && <KeyboardArrowDownIcon />}
-          {isSwitch && <KeyboardArrowUpIcon />}
+      {profileDetails?.is_verified &&
+        (
+          <>
+            <MenuItem
+              onClick={() => setisSwitch(!isSwitch)}
+            >
+              <IconButton aria-label='settings' color='inherit'>
+                <SupervisorAccountIcon color='primary' style={{ fontSize: '2rem' }} />
+              </IconButton>
+              <Typography color='secondary'>Switch Profile</Typography>
+              {!isSwitch && <KeyboardArrowDownIcon />}
+              {isSwitch && <KeyboardArrowUpIcon />}
 
-      </MenuItem>
-      {isSwitch && profileToShown?.map((item) => (
-        <MenuItem onClick={() => handleSwitchChange(item)}>
-          {/* <IconButton aria-label='settings' color='inherit'>
+            </MenuItem>
+            {isSwitch && profileToShown?.map((item) => (
+              <MenuItem onClick={() => handleSwitchChange(item)}>
+                {/* <IconButton aria-label='settings' color='inherit'>
             <SettingsIcon color='primary' style={{ fontSize: '2rem' }} />
           </IconButton> */}
-          <Typography color='secondary'>{item?.name}</Typography>
-        </MenuItem>
+                <Typography color='secondary'>{item?.name}</Typography>
+              </MenuItem>
 
-      ))}
-      
-      </>)}
+            ))}
+
+          </>)}
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
           <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
@@ -387,16 +391,16 @@ const Appbar = ({ children, history, ...props }) => {
     let savedProfile = localStorage.setItem('selectProfileDetails', JSON.stringify(item)) || {}
     setProfile(item?.name)
     // setProfileName(event?.target?.value.name)
-    const  phone_number  = JSON.parse(localStorage?.getItem('profileNumber')) || {};
+    const phone_number = JSON.parse(localStorage?.getItem('profileNumber')) || {};
     localStorage.removeItem("userDetails");
     localStorage.removeItem("navigationData");
-    if(phone_number && item){
-        let payload = {
-            contact:  phone_number,
-            erp_id: item?.erp_id,
-            hmac: item?.hmac,
-          };
-        axiosInstance
+    if (phone_number && item) {
+      let payload = {
+        contact: phone_number,
+        erp_id: item?.erp_id,
+        hmac: item?.hmac,
+      };
+      axiosInstance
         .post(
           endpoints.auth.mobileLogin,
           payload
@@ -408,39 +412,39 @@ const Appbar = ({ children, history, ...props }) => {
               JSON.stringify(result)
             );
             localStorage.setItem(
-                'userDetails',
-                JSON.stringify(result.data?.login_response?.result?.user_details)
-              );
-              localStorage.setItem(
-                'navigationData',
-                JSON.stringify(result.data?.login_response?.result?.navigation_data)
-              );
+              'userDetails',
+              JSON.stringify(result.data?.login_response?.result?.user_details)
+            );
+            localStorage.setItem(
+              'navigationData',
+              JSON.stringify(result.data?.login_response?.result?.navigation_data)
+            );
             setAlert('success', result.data.message);
             isMsAPI();
-            fetchERPSystemConfig(is_verified).then((res) =>{
-                let erpConfig;
-                let userData = JSON.parse(localStorage.getItem('userDetails'));
-                if(res === true|| res.length >0) {
-                    erpConfig =res;
-                    let refURL = localStorage.getItem('refURL');
-                    if(refURL){
-                        localStorage.removeItem('refURL');
-                        window.location.href = refURL;
-                    } else if(userData?.user_level !== 4){
-                        history.push('/acad-calendar');
-                    } else {
-                        history.push('/dashboard');
-                    }
-                } else if(res === false) {
-                    erpConfig=res;
-                    history.push('/dashboard')
+            fetchERPSystemConfig(is_verified).then((res) => {
+              let erpConfig;
+              let userData = JSON.parse(localStorage.getItem('userDetails'));
+              if (res === true || res.length > 0) {
+                erpConfig = res;
+                let refURL = localStorage.getItem('refURL');
+                if (refURL) {
+                  localStorage.removeItem('refURL');
+                  window.location.href = refURL;
+                } else if (userData?.user_level !== 4) {
+                  history.push('/acad-calendar');
                 } else {
-                    erpConfig=res;
-                    history.push('/dashboard');
+                  history.push('/dashboard');
                 }
-                userData['erp_config'] = erpConfig;
-                localStorage.setItem('userDetails', JSON.stringify(userData));
-                window.location.reload();
+              } else if (res === false) {
+                erpConfig = res;
+                history.push('/dashboard')
+              } else {
+                erpConfig = res;
+                history.push('/dashboard');
+              }
+              userData['erp_config'] = erpConfig;
+              localStorage.setItem('userDetails', JSON.stringify(userData));
+              window.location.reload();
             })
           } else {
             setAlert('error', result.data.message);
@@ -472,7 +476,7 @@ const Appbar = ({ children, history, ...props }) => {
     window.location.reload();
   };
   useEffect(() => {
-    if (branchList === '' || branchList === null ) {
+    if (branchList === '' || branchList === null) {
       dispatch(fetchBranchList(acdemicCurrentYear?.id));
     }
   }, []);
@@ -644,6 +648,11 @@ const Appbar = ({ children, history, ...props }) => {
                       <MonetizationOnIcon />
                     </IconButton>
                   </div>
+                  <div>
+                    <IconButton onClick={handleTicket} style={{ padding: '1%' }}>
+                      <LiveHelpIcon />
+                    </IconButton>
+                  </div>
                 </Grid>
               </Grid>
 
@@ -721,7 +730,7 @@ const Appbar = ({ children, history, ...props }) => {
                 onChange={handleVersion}
               />
             ) : null}
-              {/* {profileDetails?.is_verified === true ? (
+            {/* {profileDetails?.is_verified === true ? (
                 <FormControl variant='standard' sx={{ m : 1, minWidth: 100 }} style={{display:'contents'}}>
                    <div className='px-2 th-black-2 th-14'> Logged In As : {profile}</div>
                   <Select
@@ -806,9 +815,9 @@ const Appbar = ({ children, history, ...props }) => {
             )}
 
             {userData?.user_level == 1 ||
-            userData?.user_level == 25 ||
-            userData?.user_level == 13 ||
-            userData?.is_superuser == true ? (
+              userData?.user_level == 25 ||
+              userData?.user_level == 13 ||
+              userData?.is_superuser == true ? (
               <>
                 {apps?.finance == true ? (
                   <>
@@ -830,6 +839,25 @@ const Appbar = ({ children, history, ...props }) => {
               <></>
             )}
 
+            {userData?.user_level == 1 ||
+              userData?.user_level == 25 ||
+              userData?.user_level == 13 ||
+              userData?.is_superuser == true ? (
+              <>
+                {isMobile ? null : (
+                  <IconButton
+                    className={classes.grow}
+                    style={{ margin: '0' }}
+                    onClick={handleTicket}
+                  >
+                    <LiveHelpIcon />
+                  </IconButton>
+                )}
+              </>
+            ) : (
+              <></>
+            )}
+
             <div className={classes.sectionDesktop}>
               <IconButton
                 aria-label='show more'
@@ -839,11 +867,11 @@ const Appbar = ({ children, history, ...props }) => {
                 color='inherit'
               >
                 {profileDetails?.is_verified ?
-                <Typography>{profile}
-                <KeyboardArrowDownIcon />
-                </Typography>
-              :   <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
-            }
+                  <Typography>{profile}
+                    <KeyboardArrowDownIcon />
+                  </Typography>
+                  : <AppBarProfileIcon imageSrc={roleDetails?.user_profile} />
+                }
               </IconButton>
             </div>
           </div>
