@@ -168,7 +168,7 @@ const QuestionBankList = ({ sections, initAddQuestionToSection }) => {
       requestUrl += `&topic=${topicId?.id}`;
     }
     if (erp_category) {
-      requestUrl += `&category=${erp_category?.erp_category_id}`;
+      requestUrl += `&category=${isErpCentral?.flag ? erp_category?.central_category_id : erp_category?.erp_category_id}`;
     }
     setFilter(false)
     axiosInstance

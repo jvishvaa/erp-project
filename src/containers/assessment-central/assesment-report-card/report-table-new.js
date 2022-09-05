@@ -305,7 +305,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             className='th-width-10 th-fw-600 text-center'
                             colSpan={examTypeHeader[i][x].length}
                           >
-                            {eachSem.total_marks}
+                            Out Of {eachSem.total_marks}
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_secured_marks}
@@ -475,7 +475,7 @@ export default function AssesmentReportNew({ reportCardDataNew }) {
                             className='th-width-10 th-fw-600 text-center'
                             colSpan={coschSxamTypeHeader[coI][x].length}
                           >
-                            {eachSem.total_marks}
+                            Out Of {eachSem.total_marks}
                           </td>
                           <td className='th-width-12 th-fw-600 text-center'>
                             {eachSem.total_secured_marks}

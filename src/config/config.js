@@ -73,7 +73,7 @@ const qa = {
     msOriginUrl: 'https://qa.classes.letseduvate.com',
     msReportsUrl: 'https://qa.reports.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
-    finance: 'https://uidev.erpfinance.letseduvate.com',
+    finance: 'https://qafinance.school.letseduvate.com',
   },
 };
 
