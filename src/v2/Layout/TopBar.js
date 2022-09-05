@@ -839,8 +839,10 @@ const Appbar = ({ children, history, ...props }) => {
               <></>
             )}
                  {userData?.user_level == 1 ||
-            userData?.user_level == 25 ||
+            userData?.user_level == 8 ||
             userData?.user_level == 13 ||
+            userData?.user_level == 14 ||
+            userData?.user_level == 35 ||
             userData?.is_superuser == true ? (
                   <>
                     {isMobile ? null : (
