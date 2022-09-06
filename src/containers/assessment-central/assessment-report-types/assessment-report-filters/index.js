@@ -156,7 +156,7 @@ const AssessmentReportFilters = ({
     )
       .then((result) => {
         if (result?.data?.status === 200) {
-          setReportCardData(result?.data);
+          setReportCardData(result?.data.result);
           setIsPreview(true);
           setPreviewButton(true);
           setLoading(false);
