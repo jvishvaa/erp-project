@@ -98,7 +98,9 @@ const prod = {
     msReportsUrl: 'https://reports.letseduvate.com',
     msReportsUrlNew: 'https://reports.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
-    finance: 'https://revamp.finance.letseduvate.com',
+    finance: chechUrl
+    ? 'https://revamp.finance.letseduvate.com'
+    : `https://${hostUrl[0]}.finance.letseduvate.com`,
     baseFinanceURL: chechUrl
       ? 'https://revamp.finance.letseduvate.com/qbox'
       : `https://${hostUrl[0]}.finance.letseduvate.com/qbox`,
