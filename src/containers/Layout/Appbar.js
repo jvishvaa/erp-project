@@ -189,7 +189,7 @@ const Appbar = ({ children, history, ...props }) => {
   }, [isLogout]);
 
   const handleFinance = () => {
-    window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/${token}#/auth/login`, '_blank');
+    window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`, '_blank');
   };
   const handleTicket = () => {
     window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/ticket/${token}#/auth/login`, '_blank');
