@@ -77,6 +77,7 @@ export default {
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
     getUserLevel: '/erp_user/level_list/',
     assignLevel: '/erp_user/level_create/',
+    passwordChange:'/erp_user/password-reset/',
   },
   timeTable: {
     tableData: '/academic/time_table/',
