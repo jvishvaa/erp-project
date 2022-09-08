@@ -1221,13 +1221,13 @@ const AttedanceCalender = () => {
       <div className='profile_breadcrumb_wrapper'>
         {teacherView === true ? (
           <CommonBreadcrumbs
-            componentName='Calendar & Attendance'
+            componentName='Calendar'
             childComponentName='Teacher Calendar'
             isAcademicYearVisible={true}
           />
         ) : (
           <CommonBreadcrumbs
-            componentName='Calender & Attendance'
+            componentName='Calender'
             childComponentName='Student Calendar'
             isAcademicYearVisible={true}
           />
