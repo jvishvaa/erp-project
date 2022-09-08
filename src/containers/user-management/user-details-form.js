@@ -11,6 +11,14 @@ import FormLabel from '@material-ui/core/FormLabel';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Modal from '@material-ui/core/Modal'
+import  Paper  from '@material-ui/core/Paper';
+import { TextField } from '@material-ui/core';
+import {IconButton} from '@material-ui/core';
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Backdrop from '@material-ui/core/Backdrop';
 import {
   DatePicker,
   MuiPickersUtilsProvider,
@@ -29,6 +37,11 @@ import validationSchema from './schemas/user-details';
 import { useStyles } from './useStyles';
 import ImageUpload from '../../components/image-upload';
 import CustomizedSelects from './country-code';
+import { AlertNotificationContext } from 'context-api/alert-context/alert-state';
+import axiosInstance from 'config/axios';
+import endpoints from 'config/endpoints';
+import { useHistory } from 'react-router-dom';
+import Loader from 'components/loader/loader';
 const UserDetailsForm = ({
   isEdit,
   details,
@@ -42,6 +55,14 @@ const UserDetailsForm = ({
 }) => {
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
+  const [open, setOpen] = React.useState(false);
+  const [passwordFlag, setPasswordFlag] = useState(true);
+  const [conformPasswordFlag,setConformPasswordFlag] = useState(true)
+  const { setAlert } = useContext(AlertNotificationContext);
+  const [password,setPassword] = useState('')
+  const [conformPassword,setConformPassword] = useState('')
+  const history = useHistory();
+  const [loading,setLoading] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -114,7 +135,56 @@ const UserDetailsForm = ({
     formik.setFieldValue('student_country_code', code);
   };
 
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+
+  const submitPasswordDetails =() =>{
+    setLoading(true)
+    if(!password){
+      setAlert('error','Please Enter Password')
+      setLoading(false)
+      return
+    } else if(!conformPassword){
+      setAlert('error', 'Please Enter Conform Password')
+      setLoading(false)
+      return
+    }else if(password?.length < 6 && conformPassword?.length < 6){
+      setAlert('error', 'Please Enter More Than 6 Character')
+      setLoading(false)
+      return
+    }
+    else if(password !== conformPassword){
+      setAlert('error',`Password Doesn't Match`)
+      setLoading(false)
+      return
+    } else{
+     axiosInstance.post(`${endpoints.userManagement.passwordChange}`,{
+      user_id:details?.id,
+      password:password,
+     })
+     .then((res) =>{
+      if(res.data.status_code === 200){
+        setAlert('success', res?.data?.message)
+        handleClose()
+        setLoading(false)
+        history.push({
+          pathname: '/user-management/view-users',
+        })
+      } else {
+        setAlert('error', res?.data?.message)
+        handleClose()
+        setLoading(false)
+      }
+     });
+    }
+  }
   return (
+    <>
     <Grid container spacing={4} className='user-details-form-container'>
       <Grid container item xs={12}>
         <Grid item md={4} xs={12}>
@@ -260,8 +330,6 @@ const UserDetailsForm = ({
           {formik.errors.date_of_birth ? formik.errors.date_of_birth : ''}
         </FormHelperText>
       </Grid>
-      {/* </Grid> */}
-      {/* <Grid container item xs={12} spacing={4}> */}
       <Grid item md={2} xs={2}>
         <CustomizedSelects
           name={'student_country_code'}
@@ -368,6 +436,7 @@ const UserDetailsForm = ({
       <Grid item xs={12}>
         <Divider />
       </Grid>
+      <Grid item xs={12}>
       <Grid item md={4} xs={12}>
         <FormControl component='fieldset' fullWidth size='small'>
           <FormLabel component='legend'>Parent/Guardian</FormLabel>
@@ -397,15 +466,124 @@ const UserDetailsForm = ({
           </FormGroup>
         </FormControl>
       </Grid>
+            <Modal
+            open={open}
+            onClose={handleClose}
+            style={{
+              marginLeft: 500,
+              marginTop: '5%',
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "400px", height: "500px",
+            }}
+          >
+            <div
+            >
+              <Paper elevation={2} style={{ padding: 30 }}>
+                <h5 style={{ margin: 20 , textAlign:'center'}}>Change Password</h5>
+                <Divider/>
+                <Grid container direction='column' spacing={3}>
+                  <Grid item md={12}>
+                    <TextField
+                        variant='outlined'
+                        margin='normal'
+                        required
+                        fullWidth
+                        name='password'
+                        label='Password'
+                        type={passwordFlag ? 'password' : 'text'}
+                        id='password'
+                        className='passwordField'
+                        autoComplete='current-password'
+                        value={password}
+                        inputProps={{ maxLength: 20 }}
+                        onChange={(e) => {
+                        setPassword(e.target.value);
+                              }}
+                              InputProps={{
+                                maxLength: 20,
+                                endAdornment: (
+                                  <IconButton
+                                    style={{ padding: '0 0 0 2%' }}
+                                    onClick={() => setPasswordFlag((prev) => !prev)}
+                                  >
+                                    {passwordFlag ? <VisibilityOff /> : <Visibility />}
+                                  </IconButton>
+                                ),
+                              }}
+                            />
+                  </Grid>
+                  <Grid item md={12}>
+                  <TextField
+                        variant='outlined'
+                        margin='normal'
+                        required
+                        fullWidth
+                        name='confirm_password'
+                        label='Confirm Password'
+                        type={conformPasswordFlag ? 'password' : 'text'}
+                        id='confirm_password'
+                        className='passwordField'
+                        autoComplete='current-password'
+                        value={conformPassword}
+                        inputProps={{ maxLength: 20}}
+                        onChange={(e) => {
+                        setConformPassword(e.target.value);
+                              }}
+                              InputProps={{
+                                maxLength: 20,
+                                endAdornment: (
+                                  <IconButton
+                                    style={{ padding: '0 0 0 2%' }}
+                                    onClick={() => setConformPasswordFlag((prev) => !prev)}
+                                  >
+                                    {conformPasswordFlag ? <VisibilityOff /> : <Visibility />}
+                                  </IconButton>
+                                ),
+                              }}
+                            />
+                  </Grid>
+                </Grid>
+
+                <Grid item md={12}>
+                <div style={{ display: "flex", marginBottom: '20px', marginTop:'20px', justifyContent:'center' }}>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    onClick={() => {
+                      submitPasswordDetails()
+                    }}
+                    title='Report Card Submitted'
+                    className='btn reportcrd-btn'
+                  >
+                    Submit
+                  </Button>
+                  <Button
+                    variant='contained'
+                    color='primary'
+                    style={{ marginLeft: '20px' }}
+                    onClick={handleClose}
+                    title='Report Card Submitted'
+                    className='btn reportcrd-btn'
+                  >
+                    Cancel
+                  </Button>
+                </div>
+
+                </Grid>
+              </Paper>
+            </div>
+      </Modal>
+      </Grid>
       <Grid
         container
         item
         xs={12}
-        style={{ marginTop: '20px' }}
         direction={isMobile ? 'column-reverse' : 'row'}
         spacing={3}
       >
-        <Grid item md='1'>
+        <Grid item md='2'>
           <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
             <Button
               size='medium'
@@ -418,7 +596,25 @@ const UserDetailsForm = ({
             </Button>
           </Box>
         </Grid>
-        <Grid item md='1'>
+        <Grid item md='2'>
+          <Box display='flex'  justifyContent={isMobile ? 'center' : ''}>
+          {isEdit === true ? (
+          <Button
+              className={classes.formActionButton}
+              variant='contained'
+              style={{ color: 'white', width: '100%' }}
+              color='primary'
+              size='medium'
+              onClick={handleOpen}
+              disabled={isSubmitting}
+            >
+              Change Password
+            </Button>
+
+      ): ''}
+          </Box>
+        </Grid>
+        <Grid item md='2'>
           <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
             <Button
               className={classes.formActionButton}
@@ -436,7 +632,9 @@ const UserDetailsForm = ({
           </Box>
         </Grid>
       </Grid>
+      {loading && <Loader/>}
     </Grid>
+    </>
   );
 };
 
