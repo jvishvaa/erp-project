@@ -35,7 +35,7 @@ import { AlertNotificationContext } from '../../context-api/alert-context/alert-
 
 import { Select } from '@material-ui/core';
 import InputLabel from '@material-ui/core/InputLabel';
-import './teacherattendance.css'
+import './teacherattendance.css';
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -46,7 +46,6 @@ function descendingComparator(a, b, orderBy) {
   }
   return 0;
 }
-
 
 const headCells = [
   { id: 'Branch', numeric: false, disablePadding: false, label: 'Branch' },
@@ -62,9 +61,7 @@ const headCells = [
 ];
 
 function EnhancedTableHead(props) {
-  const {
-    data,
-  } = props;
+  const { data } = props;
 
   return (
     <TableHead>
@@ -87,11 +84,12 @@ function EnhancedTableHead(props) {
         >
           Name
         </TableCell>
-        {headCells && headCells?.map((headCell) => (
-          <TableCell key={headCell?.id} style={{ backgroundColor: 'LightGray' }}>
-            {headCell?.label}
-          </TableCell>
-        ))}
+        {headCells &&
+          headCells?.map((headCell) => (
+            <TableCell key={headCell?.id} style={{ backgroundColor: 'LightGray' }}>
+              {headCell?.label}
+            </TableCell>
+          ))}
         {data?.[0]?.attendance?.map((headCell) => (
           <TableCell style={{ backgroundColor: 'LightGray' }}>
             {moment(headCell?.date, 'YYYY-MM-DD').date()} <br />
@@ -121,13 +119,13 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-        color: theme.palette.secondary.main,
-        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-      }
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
       : {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.secondary.dark,
-      },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
   title: {
     flex: '1 1 100%',
     fontWeight: 'bold',
@@ -227,9 +225,9 @@ export default function TeacherAttendanceVerify() {
       'ERP ID': item.erp_id,
       Name: item.name,
       'Contact Number': item.contact,
-      Branch : item.section_mapping__acad_session__branch__branch_name,
-      Grade : item.section_mapping__grade__grade_name,
-      Section : item.section_mapping__section__section_name,
+      Branch: item.section_mapping__acad_session__branch__branch_name,
+      Grade: item.section_mapping__grade__grade_name,
+      Section: item.section_mapping__section__section_name,
       Role: item.roles__role_name,
     })
   );
@@ -261,7 +259,6 @@ export default function TeacherAttendanceVerify() {
   const [sectionList, setSectionList] = useState([]);
   const [selectedSection, setSelectedSection] = useState([]);
   const [selectedSectionIds, setSelectedSectionIds] = useState('');
-
 
   const [dropdownData, setDropdownData] = React.useState({
     branch: [],
@@ -296,7 +293,7 @@ export default function TeacherAttendanceVerify() {
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   const handleAcademicYear = (event, value) => {
@@ -341,7 +338,7 @@ export default function TeacherAttendanceVerify() {
           });
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   const fileType =
@@ -357,7 +354,7 @@ export default function TeacherAttendanceVerify() {
   };
   const getRoleApi = async () => {
     try {
-      const result = await axiosInstance.get(endpoints.communication.roles, {
+      const result = await axiosInstance.get(endpoints.userManagement.centralUserLevel, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -365,7 +362,7 @@ export default function TeacherAttendanceVerify() {
       const resultOptions = [];
       if (result.status === 200) {
         console.log(result, 'idofrole');
-        result.data.result.map((items) => resultOptions.push(items.role_name));
+        result.data.result.map((items) => resultOptions.push(items.level_name));
         setRoles(result.data.result);
       } else {
         setAlert('error', result.data.message);
@@ -411,7 +408,7 @@ export default function TeacherAttendanceVerify() {
     setDisableDownload(true);
     const result = axiosInstance
       .get(
-        `${endpoints.academics.getTeacherAttendanceData}?branch_id=${filterData.branch?.branch?.id}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&session_year=${selectedAcademicYear?.id}&month=${month}&year=${year}&roles=${rolesId}`
+        `${endpoints.academics.getTeacherAttendanceData}?branch_id=${filterData.branch?.branch?.id}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&session_year=${selectedAcademicYear?.id}&month=${month}&year=${year}&user_level=${rolesId}`
       )
       .then((result) => {
         if (result.status === 200) {
@@ -575,7 +572,6 @@ export default function TeacherAttendanceVerify() {
         'gradeList'
       );
     }
-
   };
 
   const handleGrade = (event = {}, value = []) => {
@@ -588,7 +584,8 @@ export default function TeacherAttendanceVerify() {
       setSelectedGrade(value);
       setSelectedGradeIds(selectedId);
       callApi(
-        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
+        `${endpoints.academics.sections}?session_year=${
+          selectedAcademicYear?.id
         }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
         'section'
       );
@@ -604,12 +601,12 @@ export default function TeacherAttendanceVerify() {
   const handleSection = (event = {}, value = []) => {
     if (value) {
       value =
-      value.filter(({ id }) => id === 'all').length === 1
-        ? [...sectionList].filter(({ id }) => id !== 'all')
-        : value;
-      const selectedsecctionId = value.map((item) => item.section_id || [] );
+        value.filter(({ id }) => id === 'all').length === 1
+          ? [...sectionList].filter(({ id }) => id !== 'all')
+          : value;
+      const selectedsecctionId = value.map((item) => item.section_id || []);
       // const selectedsecctionId = value?.section_id;
-      const sectionid = value.map((item) => item.id  || [])
+      const sectionid = value.map((item) => item.id || []);
       // const sectionid = value?.id;
       setSectionId(sectionid);
       setSelectedSection(value);
@@ -630,12 +627,12 @@ export default function TeacherAttendanceVerify() {
             setGradeList(result.data.data || []);
           }
           if (key === 'section') {
-            const selectAllObject ={
+            const selectAllObject = {
               session_year: {},
               id: 'all',
-              section__section_name:'Select All',
-              section_name:'Select All',
-              section_id:'all'
+              section__section_name: 'Select All',
+              section_name: 'Select All',
+              section_id: 'all',
             };
             const data = [selectAllObject, ...result?.data?.data];
             setSectionList(data);
@@ -651,267 +648,282 @@ export default function TeacherAttendanceVerify() {
 
   return (
     <Layout>
-       <div className='attendancescroll' style={{
-        background: 'white',
-        height: '90vh',
-        overflowX: 'hidden',
-        overflowY: 'scroll',
-      }} >
-      <Grid
-        container
-        direction='row'
-        style={{ paddingLeft: '22px', paddingRight: '10px' }}
+      <div
+        className='attendancescroll'
+        style={{
+          background: 'white',
+          height: '90vh',
+          overflowX: 'hidden',
+          overflowY: 'scroll',
+        }}
       >
-        <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
-          <Breadcrumbs
-            separator={<NavigateNextIcon fontSize='small' />}
-            aria-label='breadcrumb'
-          >
-            <Typography color='textPrimary' variant='h6'>
-              Attendance
-            </Typography>
-            <Typography color='textPrimary'>View Attendence</Typography>
-          </Breadcrumbs>
-        </Grid>
-        <Grid container spacing={1}>
-          <Grid item xs={12} md={1}>
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor='age-native-simple'>Month</InputLabel>
-              <Select
-                native
-                value={month}
-                onChange={handleChanges}
-                inputProps={{
-                  name: 'month',
-                  id: 'filled-month-native-simple',
-                }}
-              >
-                {months.map((option) => (
-                  <option key={option.label} value={option.value}>
-                    {option.label}
+        <Grid
+          container
+          direction='row'
+          style={{ paddingLeft: '22px', paddingRight: '10px' }}
+        >
+          <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
+            <Breadcrumbs
+              separator={<NavigateNextIcon fontSize='small' />}
+              aria-label='breadcrumb'
+            >
+              <Typography color='textPrimary' variant='h6'>
+                Attendance
+              </Typography>
+              <Typography color='textPrimary'>View Attendence</Typography>
+            </Breadcrumbs>
+          </Grid>
+          <Grid container spacing={1}>
+            <Grid item xs={12} md={1}>
+              <FormControl className={classes.formControl}>
+                <InputLabel htmlFor='age-native-simple'>Month</InputLabel>
+                <Select
+                  native
+                  value={month}
+                  onChange={handleChanges}
+                  inputProps={{
+                    name: 'month',
+                    id: 'filled-month-native-simple',
+                  }}
+                >
+                  {months.map((option) => (
+                    <option key={option.label} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12} md={1} className='mobileYear'>
+              <InputLabel htmlFor='month-native-simple'>Year</InputLabel>
+              <Select native value={year} onChange={handleYear}>
+                {years.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.value}
                   </option>
                 ))}
               </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12} md={1} className='mobileYear'>
-            <InputLabel htmlFor='month-native-simple'>Year</InputLabel>
-            <Select native value={year} onChange={handleYear}>
-              {years.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.value}
-                </option>
-              ))}
-            </Select>
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Autocomplete
-              // multiple
-              size='small'
-              // disableClearable
-              onChange={handleMultipleRoles}
-              value={rolesId}
-              className='dropdownIcon'
-              // style={{ marginTop: '15px' }}
-              id='message_log-smsType'
-              options={roles}
-              getOptionLabel={(option) => option?.role_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  className='message_log-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='Role'
-                  placeholder='Role'
-                  required
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Autocomplete
-              size='small'
-              onChange={handleBranch}
-              id='branch'
-              // style={{ marginTop: '16px' }}
-              value={filterData.branch || {}}
-              options={dropdownData.branch || []}
-              getOptionLabel={(option) => option?.branch?.branch_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  variant='outlined'
-                  label='Branch'
-                  placeholder='Branch'
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Autocomplete
-              id='combo-box-demo'
-              size='small'
-              options={gradeList}
-              onChange={handleGrade}
-              value={selectedGrade}
-              getOptionLabel={(option) => option?.grade_name}
-              renderInput={(params) => (
-                <TextField {...params} label='Grade' variant='outlined'/>
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Autocomplete
-              id='combo-box-demo'
-              multiple
-              limitTags={1}
-              size='small'
-              options={sectionList}
-              onChange={handleSection}
-              value={selectedSection}
-              getOptionLabel={(option) => option?.section__section_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField {...params} label='Section' variant='outlined' />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} md={1} >
-            <Button
-              onClick={getTeacherData}
-              variant='contained'
-              style={{ backgroundColor: '#e65c00' }}
-            >
-              Search
-            </Button>
-          </Grid>
-          <Grid item xs={12} md={1}>
-            {/* <exportToCSV data={studentAttendanceData} fileName="attendance" /> */}
-            {!disableDownload && (
-              <Button
-                variant='contained'
-                className='mobile-download'
-                style={{ backgroundColor: '#e65c00' }}
-                onClick={() => exportTo(studentAttendanceData, 'attendance')}
-              >
-                Download
-              </Button>
-            )}
-          </Grid>
-        </Grid>
-        <Grid container spacing={1}>
-          <Grid item md={4}>
-            <Paper elevation={3} className='search'>
-              <div>
-                <SearchIcon />
-              </div>
-              <InputBase
-                placeholder=' Search'
-                onChange={(e) => {
-                  setSeachedData(e.target.value);
-                }}
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Autocomplete
+                // multiple
+                size='small'
+                // disableClearable
+                onChange={handleMultipleRoles}
+                value={rolesId}
+                className='dropdownIcon'
+                // style={{ marginTop: '15px' }}
+                id='message_log-smsType'
+                options={roles}
+                getOptionLabel={(option) => option?.level_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    className='message_log-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='User Level'
+                    placeholder='User Level'
+                    required
+                  />
+                )}
               />
-            </Paper>
-          </Grid>{' '}
-          <Grid item md={8}>
-            <Grid
-              container
-              spacing={1}
-              direction='row'
-              justifyContent='space-evenly'
-              alignItems='center'
-              style={{ fontWeight: 'bold', height: '100%' }}
-            >
-              <span style={{ color: '#ff944d' }}>Index : </span>
-              <span style={{ color: '#00ff00' }}>P : Present</span>
-              <span style={{ color: 'red' }}>A : Absent </span>
-              <span style={{ color: '#800080' }}> L : Late </span>
-              <span style={{ color: '#4747d1' }}> HD : Half Day</span>
-              <span style={{ color: '#81c3b4' }}> H : Holiday </span>
-              <span style={{ color: 'rgb(118 94 111)' }}> NA : Not Available </span>
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Autocomplete
+                size='small'
+                onChange={handleBranch}
+                id='branch'
+                // style={{ marginTop: '16px' }}
+                value={filterData.branch || {}}
+                options={dropdownData.branch || []}
+                getOptionLabel={(option) => option?.branch?.branch_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    variant='outlined'
+                    label='Branch'
+                    placeholder='Branch'
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Autocomplete
+                id='combo-box-demo'
+                size='small'
+                options={gradeList}
+                onChange={handleGrade}
+                value={selectedGrade}
+                getOptionLabel={(option) => option?.grade_name}
+                renderInput={(params) => (
+                  <TextField {...params} label='Grade' variant='outlined' />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Autocomplete
+                id='combo-box-demo'
+                multiple
+                limitTags={1}
+                size='small'
+                options={sectionList}
+                onChange={handleSection}
+                value={selectedSection}
+                getOptionLabel={(option) => option?.section__section_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField {...params} label='Section' variant='outlined' />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} md={1}>
+              <Button
+                onClick={getTeacherData}
+                variant='contained'
+                style={{ backgroundColor: '#e65c00' }}
+              >
+                Search
+              </Button>
+            </Grid>
+            <Grid item xs={12} md={1}>
+              {/* <exportToCSV data={studentAttendanceData} fileName="attendance" /> */}
+              {!disableDownload && (
+                <Button
+                  variant='contained'
+                  className='mobile-download'
+                  style={{ backgroundColor: '#e65c00' }}
+                  onClick={() => exportTo(studentAttendanceData, 'attendance')}
+                >
+                  Download
+                </Button>
+              )}
             </Grid>
           </Grid>
-        </Grid>
+          <Grid container spacing={1}>
+            <Grid item md={4}>
+              <Paper elevation={3} className='search'>
+                <div>
+                  <SearchIcon />
+                </div>
+                <InputBase
+                  placeholder=' Search'
+                  onChange={(e) => {
+                    setSeachedData(e.target.value);
+                  }}
+                />
+              </Paper>
+            </Grid>{' '}
+            <Grid item md={8}>
+              <Grid
+                container
+                spacing={1}
+                direction='row'
+                justifyContent='space-evenly'
+                alignItems='center'
+                style={{ fontWeight: 'bold', height: '100%' }}
+              >
+                <span style={{ color: '#ff944d' }}>Index : </span>
+                <span style={{ color: '#00ff00' }}>P : Present</span>
+                <span style={{ color: 'red' }}>A : Absent </span>
+                <span style={{ color: '#800080' }}> L : Late </span>
+                <span style={{ color: '#4747d1' }}> HD : Half Day</span>
+                <span style={{ color: '#81c3b4' }}> H : Holiday </span>
+                <span style={{ color: 'rgb(118 94 111)' }}> NA : Not Available </span>
+              </Grid>
+            </Grid>
+          </Grid>
 
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby='tableTitle'
-            size={dense ? 'small' : 'medium'}
-            aria-label='enhanced table'
-          >
-            <EnhancedTableHead
-              classes={classes}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
-              rowCount={data?.length}
-              data={data}
-            />
-            {loading ? (
-              <Loader />
-            ) : (
-              <TableBody>
-                {data
-                  ?.filter(
-                    (item) =>
-                      item?.name?.toLowerCase()?.includes(seachedData?.toLowerCase()) ||
-                      item?.erp_id?.includes(seachedData) ||
-                      item?.contact?.includes(seachedData)
-                  )
-                  .map((value, i) => {
-                    return (
-                      <>
-                        <TableRow role='checkbox' tabIndex={-1} key={value.name}>
-                          <TableCell
-                            className='sticky-col first-col'
-                            component='th'
-                            scope='row'
-                            padding='none'
-                          >
-                            {i + 1}.
-                          </TableCell>
-                          <TableCell className='sticky-col second-col' align='right'>
-                            {value?.erp_id}
-                          </TableCell>
-                          <TableCell className='sticky-col third-col' align='right'>
-                            {value?.name}
-                          </TableCell>
-                          <TableCell align='right'>{value?.section_mapping__acad_session__branch__branch_name ? value?.section_mapping__acad_session__branch__branch_name : '-'}</TableCell>
-                          <TableCell align='right'>{value?.section_mapping__grade__grade_name ? value?.section_mapping__grade__grade_name : '-'}</TableCell>
-                          <TableCell align='right'>{value?.section_mapping__section__section_name ? value?.section_mapping__section__section_name : '-'}</TableCell>
-                          <TableCell align='right'>{value?.roles__role_name}</TableCell>
-                          <TableCell align='right'>{value?.contact}</TableCell>
-                          {value?.attendance?.map((item, index) => {
-                            return (
-                              <TableCell
-                                className='th-sticky-header'
-                                key={`att_${index}`}
-                                align='center'
-                                style={{
-                                  color: getStatusCol(item?.attendence_status),
-                                  fontWeight: 'bold',
-                                }}
-                              >
-                                {item?.attendence_status === 'NA'
-                                  ? 'NA'
-                                  : item?.attendence_status === 'halfday'
+          <TableContainer>
+            <Table
+              className={classes.table}
+              aria-labelledby='tableTitle'
+              size={dense ? 'small' : 'medium'}
+              aria-label='enhanced table'
+            >
+              <EnhancedTableHead
+                classes={classes}
+                order={order}
+                orderBy={orderBy}
+                onRequestSort={handleRequestSort}
+                rowCount={data?.length}
+                data={data}
+              />
+              {loading ? (
+                <Loader />
+              ) : (
+                <TableBody>
+                  {data
+                    ?.filter(
+                      (item) =>
+                        item?.name?.toLowerCase()?.includes(seachedData?.toLowerCase()) ||
+                        item?.erp_id?.includes(seachedData) ||
+                        item?.contact?.includes(seachedData)
+                    )
+                    .map((value, i) => {
+                      return (
+                        <>
+                          <TableRow role='checkbox' tabIndex={-1} key={value.name}>
+                            <TableCell
+                              className='sticky-col first-col'
+                              component='th'
+                              scope='row'
+                              padding='none'
+                            >
+                              {i + 1}.
+                            </TableCell>
+                            <TableCell className='sticky-col second-col' align='right'>
+                              {value?.erp_id}
+                            </TableCell>
+                            <TableCell className='sticky-col third-col' align='right'>
+                              {value?.name}
+                            </TableCell>
+                            <TableCell align='right'>
+                              {value?.section_mapping__acad_session__branch__branch_name
+                                ? value?.section_mapping__acad_session__branch__branch_name
+                                : '-'}
+                            </TableCell>
+                            <TableCell align='right'>
+                              {value?.section_mapping__grade__grade_name
+                                ? value?.section_mapping__grade__grade_name
+                                : '-'}
+                            </TableCell>
+                            <TableCell align='right'>
+                              {value?.section_mapping__section__section_name
+                                ? value?.section_mapping__section__section_name
+                                : '-'}
+                            </TableCell>
+                            <TableCell align='right'>{value?.roles__role_name}</TableCell>
+                            <TableCell align='right'>{value?.contact}</TableCell>
+                            {value?.attendance?.map((item, index) => {
+                              return (
+                                <TableCell
+                                  className='th-sticky-header'
+                                  key={`att_${index}`}
+                                  align='center'
+                                  style={{
+                                    color: getStatusCol(item?.attendence_status),
+                                    fontWeight: 'bold',
+                                  }}
+                                >
+                                  {item?.attendence_status === 'NA'
+                                    ? 'NA'
+                                    : item?.attendence_status === 'halfday'
                                     ? 'HD'
                                     : item?.attendence_status.substr(0, 1).toUpperCase()}
-                              </TableCell>
-                            );
-                          })}
-                        </TableRow>
-                      </>
-                    );
-                  })}
-              </TableBody>
-            )}
-          </Table>
-        </TableContainer>
-      </Grid>
+                                </TableCell>
+                              );
+                            })}
+                          </TableRow>
+                        </>
+                      );
+                    })}
+                </TableBody>
+              )}
+            </Table>
+          </TableContainer>
+        </Grid>
       </div>
     </Layout>
   );
