@@ -1,7 +1,7 @@
 const webUrl = window.location.host;
 const hostUrl = webUrl.split('.');
 
-const chechUrl = hostUrl[0] === 'orchids' || 'localhost:3000' ? true : false;
+const chechUrl = hostUrl[0] === 'orchids' ? true : false;
 const local = {
   s3: {
     // BUCKET: 'https://omrsheet.s3.ap-south-1.amazonaws.com',
@@ -119,9 +119,7 @@ const prod = {
     msOriginUrl: 'https://classes.letseduvate.com',
     msReportsUrl: 'https://reports.letseduvate.com',
     baseEvent: 'http://events.letseduvate.com/',
-    finance: chechUrl
-    ? 'https://revamp.finance.letseduvate.com'
-    : `https://${hostUrl[0]}.finance.letseduvate.com`,
+    finance: `https://${hostUrl[0]}.finance.letseduvate.com`,
   },
 };
 
