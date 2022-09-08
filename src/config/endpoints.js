@@ -77,7 +77,8 @@ export default {
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
     getUserLevel: '/erp_user/level_list/',
     assignLevel: '/erp_user/level_create/',
-    passwordChange:'/erp_user/password-reset/',
+    centralUserLevel: '/erp_user/central-user-level/',
+    passwordChange: '/erp_user/password-reset/',
   },
   timeTable: {
     tableData: '/academic/time_table/',
@@ -578,7 +579,7 @@ export default {
     categoryMapping: `${baseURL}/assessment/report-card-question-category-mapping/`,
     categoryQuestion: `${baseURL}/assessment/report-card-question-category/`,
     reportConfig: `${baseURL}/assessment/report-card-config-api/`,
-    erpCategory : '/assessment/report-card-question-category-mapping/'
+    erpCategory: '/assessment/report-card-question-category-mapping/',
   },
   assementQP: {
     assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,
