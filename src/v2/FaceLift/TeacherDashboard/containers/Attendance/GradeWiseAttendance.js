@@ -54,6 +54,10 @@ const GradeWiseAttendance = () => {
           setGradewiseAttendanceData(response?.data?.result?.grades);
           setAttendanceCountData(response?.data?.result);
           setLoading(false);
+        } else {
+          setLoading(false);
+          setGradewiseAttendanceData([]);
+          setAttendanceCountData([]);
         }
       })
       .catch((error) => {
@@ -207,6 +211,7 @@ const GradeWiseAttendance = () => {
           <span className='th-br-4 p-1 th-bg-white'>
             <img src={calendarIcon} className='pl-2' />
             <DatePicker
+              disabledDate={(current) => current.isAfter(moment())}
               allowClear={false}
               bordered={false}
               placement='bottomRight'
@@ -242,7 +247,7 @@ const GradeWiseAttendance = () => {
                   {attendanceCountData?.total_marked}
                 </span>
               </div>
-              <div className='col-md-2 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
+              <div className='col-md-4 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
                 Students Unmarked:{' '}
                 <span className='th-fw-500 th-red'>
                   {attendanceCountData?.total_unmarked}

@@ -156,7 +156,7 @@ const AssessmentReportFilters = ({
     )
       .then((result) => {
         if (result?.data?.status === 200) {
-          setReportCardData(result?.data);
+          setReportCardData(result?.data.result);
           setIsPreview(true);
           setPreviewButton(true);
           setLoading(false);
@@ -861,7 +861,10 @@ const AssessmentReportFilters = ({
       }
     }
     if (selectedReportType?.id === 13) {
-      console.log(filterData, 'dwa');
+      if(!filterData?.branch) return setAlert('error','Please Select Branch')
+      else if(!filterData?.grade) return setAlert('error','Please Select Grade')
+      else if(!filterData?.subject) return setAlert('error','Please Select Subject')
+      else{
       try {
         const { data } = await axiosInstance.get(
           `${endpoints.assessmentReportTypes.downloadReportTestReport}?academic_year=${selectedAcademicYear?.id}&branch_id=${filterData?.branch?.branch?.id}&grade_id=${filterData?.grade?.grade_id}&subject_id=${filterData?.subject?.subject_id}&start_date=${startDate}&end_date=${endDate}`,
@@ -877,12 +880,14 @@ const AssessmentReportFilters = ({
         setAlert('error', 'Failed to download attendee list');
       }
     }
+    }
   };
 
   const handleClear = () => {
     url = '';
     setPage(1);
     setSelectedERP([]);
+    setGroupSelected()
     setIsFilter(false);
     setDropdownData({
       ...dropdownData,
@@ -894,6 +899,8 @@ const AssessmentReportFilters = ({
       topic: [],
       erp: [],
     });
+    setStartDate(moment().format('YYYY-MM-DD'));
+    setEndDate(moment().format('YYYY-MM-DD'))
 
     setFilterData({
       branch: '',
@@ -1005,8 +1012,8 @@ const AssessmentReportFilters = ({
           </>
         ) : (
           <>
-            {selectedReportType?.id == 6 ||
-              (selectedReportType?.id == 3 && (
+            {(selectedReportType?.id == 6 ||
+              selectedReportType?.id == 3 ) && (
                 <Grid item xs={12} sm={3} className={isMobile ? '' : 'filterPadding'}>
                   <Autocomplete
                     style={{ width: '100%' }}
@@ -1027,7 +1034,7 @@ const AssessmentReportFilters = ({
                     )}
                   />
                 </Grid>
-              ))}
+              )}
           </>
         )}
         {(selectedReportType?.id === 4 ||

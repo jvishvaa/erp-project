@@ -51,6 +51,7 @@ import AddIcon from '@material-ui/icons/Add';
 import Loader from '../../../components/loader/loader';
 import RestoreIcon from '@material-ui/icons/Restore';
 import { IsV2Checker } from 'v2/isV2Checker';
+import NoFilterData from 'components/noFilteredData/noFilterData';
 
 const useStyles = makeStyles((theme) => ({
   root: theme.commonTableRoot,
@@ -109,6 +110,7 @@ const debounce = (fn, delay) => {
 };
 
 const ViewUsers = withRouter(({ history, ...props }) => {
+  console.log(history.location.state,'state')
   const classes = useStyles();
   const { setAlert } = useContext(AlertNotificationContext);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
@@ -141,6 +143,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [deactivateStatus, setDeactivateStatus] = useState(null);
   const [deactivateAlert, setDeactivateAlert] = useState(false);
   const [accordianOpen, setAccordianOpen] = useState(false);
+  const [isFilter,setIsFilter] = useState(false)
 
   const themeContext = useTheme();
   const isMobile = useMediaQuery(themeContext.breakpoints.down('sm'));
@@ -156,6 +159,13 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [restoreIndex, setRestoreIndex] = useState(null);
   const [restoreId, setRestoreId] = useState(null);
   const [restoreStatus, setRestoreStatus] = useState(null);
+  const [isEdit , setIsEdit] = useState()
+  const filteredData = JSON.parse(sessionStorage.getItem('userFilterData'))
+  const filteredDataList = JSON.parse(sessionStorage.getItem('userFilterDataList'))
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
+  const user_level = userData?.user_level;
+
+
 
   const headers = [
     { label: 'ERP ID', key: 'erp_id' },
@@ -189,6 +199,36 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       });
     }
   }, []);
+
+  useEffect(() => {
+if(history?.location?.state?.isEdit && filteredData && filteredDataList){
+  setIsEdit(false)
+  setAccordianOpen(true)
+  // getBranchApi()
+  const { searchText ,role , branch , grade , section ,status} = filteredData
+  // handleBranch('',branch)
+  setBranchList(filteredDataList?.branchList)
+  setGradeList(filteredDataList?.gradeList)
+  setSectionList(filteredDataList?.sectionList)
+  setRoleList(filteredDataList?.roleList)
+  setSearchText(searchText)
+  if(searchText.length > 0) setIsNewSearch(true)
+  setSelectedBranch(branch)
+  setSelectedGrades(grade)
+  if (grade?.length) {
+    const ids = grade?.map((el) => el?.grade_id);
+    setGradeIds(ids);
+  }
+  setSelectedRoles(role)
+  setStatus(status)
+  setSelectedSection(section)
+  if (section?.length) {
+    const sectionId = section?.map((el) => el.id);
+    setSectionIds(sectionId);
+  } 
+  history.replace({ state: { isEdit: false } })
+}
+  },[history?.location?.state?.isEdit])
 
   const getRoleApi = async () => {
     try {
@@ -258,6 +298,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   };
 
   const getUsersData = async () => {
+    setIsFilter(false)
     const rolesId = [];
     const gradesId = [];
     if (selectedRoles && selectedRoles !== 'All') {
@@ -272,6 +313,23 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       selectedBranch !== null ||
       gradeIds.length > 0
     ) {
+      sessionStorage.setItem('userFilterData', JSON.stringify({
+        searchText : searchText.length > 0 ?  searchText : '',
+        role : rolesId.length > 0 ? selectedRoles : [],
+        branch : selectedBranch ? selectedBranch : null,
+        grade : selectedGrades.length > 0 ? selectedGrades : [],
+        section : selectedSection.length > 0 ? selectedSection : [],
+        status : status
+      }))
+      sessionStorage.setItem('userFilterDataList', JSON.stringify({
+        // searchText : searchText,
+        roleList : roleList ,
+        branchList : branchList,
+        gradeList : gradeList ? gradeList : [],
+        sectionList : sectionList || [],
+        // status : status
+      }))
+      setIsFilter(true)
       setLoading(true);
       let getUserListUrl = `${endpoints.communication.viewUser}?page=${currentPage}&page_size=${limit}&module_id=${moduleId}&session_year=${selectedYear?.id}`;
       if (classStatus && classStatus != 1 && classStatus != 0) {
@@ -315,6 +373,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
               emails: items.user.email,
               role: items?.roles?.role_name,
               active: items.is_active,
+              level : items?.level
             })
           );
           setUsersData(resultUsers);
@@ -326,7 +385,7 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         setAlert('error', error.message);
       }
     } else {
-      setAlert('error', 'Please Select Any Filter');
+      setAlert('warning', 'Please Select Any Filter or Search User');
     }
   };
   const handlePagination = (event, page) => {
@@ -360,24 +419,23 @@ const ViewUsers = withRouter(({ history, ...props }) => {
         gradesId.push(each.grade_id);
       });
     }
-    let getUserListUrl = `communication/erp-user-info-excel-v2/?module_id=${moduleId}`;
+    let getUserListUrl = `communication/erp-user-info-excel-v2/?module_id=${moduleId}&session_year=${selectedYear.id}`;
     if (rolesId.length > 0 && selectedRoles !== 'All') {
-      rolesId.map((each, i) => {
-        getUserListUrl += `&role=${each.toString()}`;
-      });
+      getUserListUrl += `&role=${rolesId.toString()}`;
     }
-    if (selectedBranch != null && selectedBranch !== 'All') {
+    if (selectedBranch && selectedBranch !== 'All') {
       getUserListUrl += `&branch=${selectedBranch?.id}`;
     }
     // /*
-    if (gradesId.length > 0 && selectedGrades !== 'All') {
-      gradesId.map((each, i) => {
-        getUserListUrl += `&grade=${each.toString()}`;
-      });
-    }
+   if (gradesId.length > 0 && !selectedGrades.includes('All')) {
+        getUserListUrl += `&grade=${gradesId.toString()}`;
+      }
     if (classStatus && classStatus != 1 && classStatus != 0) {
       let status = classStatus - 1;
       getUserListUrl += `&status=${status.toString()}`;
+    }
+    if (sectionIds.length > 0) {
+      getUserListUrl += `&section_mapping_id=${sectionIds.toString()}`;
     }
     if (searchText) {
       getUserListUrl += `&search=${searchText}`;
@@ -406,10 +464,10 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const handleTextSearch = (e) => {
     let search = e.target.value;
     setSearchText(e.target.value);
-    if (search.length > 1) {
+    if (search.length > 0) {
       debounceCallback(search);
     } else {
-      setIsNewSearch(true);
+      setIsNewSearch(false);
     }
   };
 
@@ -570,7 +628,13 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     setDeactivateAlert(false);
   };
   const handleEdit = (id) => {
-    history.push(`/user-management/edit-user/${id}`);
+    setIsEdit(true)
+    history.push({
+      pathname: `/user-management/edit-user/${id}`,
+      state: {
+        isEdit: true,
+      },
+    });
   };
 
   useEffect(() => {
@@ -604,7 +668,6 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   useEffect(() => {
     if (selectedBranch) {
       setGrade(['All']);
-      setSelectedGrades([]);
       getGradeApi();
     }
   }, [selectedBranch]);
@@ -625,7 +688,12 @@ const ViewUsers = withRouter(({ history, ...props }) => {
 
   const handleBranch = (event, value) => {
     setSelectedBranch('');
+    setSelectedGrades([])
+    setSelectedSection([])
+    setSectionList([])
     setGradeList([]);
+    setGradeIds([])
+    setSectionIds([]);
     if (value) {
       setSelectedBranch(value);
     }
@@ -639,6 +707,9 @@ const ViewUsers = withRouter(({ history, ...props }) => {
     } else {
       setGradeIds([]);
       setSelectedGrades([]);
+      setSelectedSection([])
+      setSectionList([])
+      setSectionIds([]);
     }
   };
 
@@ -683,6 +754,14 @@ const ViewUsers = withRouter(({ history, ...props }) => {
       setAlert('error', error.message);
     }
   };
+
+  const isOfOrchids = [
+    'localhost:3000',
+    'ui-revamp1.letseduvate.com',
+    'qa.olvorchidnaigaon.letseduvate.com',
+    'test.orchids.letseduvate.com',
+    'orchids.letseduvate.com'
+  ];
 
   return (
     <Layout>
@@ -1033,7 +1112,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                               />
                             </IconButton>
                           ) : items.status === 'active' ? (
-                            <IconButton
+                            (isOfOrchids.includes(window.location.host) && (items.level !== 13 || user_level === 1 )) ? (
+                              <IconButton
                               aria-label='deactivate'
                               onClick={() => handleDeactivate(items.userId, i, '2')}
                               title='Deactivate'
@@ -1042,6 +1122,17 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                                 style={{ color: themeContext.palette.primary.main }}
                               />
                             </IconButton>
+                            ) : (!isOfOrchids.includes(window.location.host) && <>
+                              <IconButton
+                                aria-label='deactivate'
+                                onClick={() => handleDeactivate(items.userId, i, '2')}
+                                title='Deactivate'
+                              >
+                                <BlockIcon
+                                  style={{ color: themeContext.palette.primary.main }}
+                                />
+                              </IconButton>
+                            </>)
                           ) : (
                             <button
                               type='submit'
@@ -1100,7 +1191,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
                   alignItems: 'center',
                 }}
               >
-                <p style={{ fontWeight: '600' }}> Please Apply Filters</p>
+                {((selectedRoles && selectedRoles.length > 0) || selectedBranch || searchText.length > 0) && isFilter ? <NoFilterData data = 'No Data Found' /> :
+                <p style={{ fontWeight: '600' }}> Please Apply Filters</p>}
               </div>
             )}
             <TablePagination

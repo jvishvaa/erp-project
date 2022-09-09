@@ -63,7 +63,7 @@ const TopDetailsHeader = ({
                 )}
                 style={{
                   background: '#FDD6B3',
-                  whiteSpace: index === 3 && subIndex === 2 ? 'nowrap' : 'normal',
+                  whiteSpace: 'nowrap' ,
                 }}
               >
                 {value}

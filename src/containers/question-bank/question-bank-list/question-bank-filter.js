@@ -191,7 +191,7 @@ const QuestionBankFilters = ({
       axiosInstance
       .get(`${endpoints.questionBank.erpCategory}`)
       .then((result) => {
-        setErpGradeDropdown(result?.data)
+        setErpGradeDropdown(result?.data?.result)
       })
       .catch((error) => {
         setAlert('error', error?.message);

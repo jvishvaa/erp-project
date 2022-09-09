@@ -131,6 +131,10 @@ const EventsMark = () => {
       setAlert('warning', 'Select Branch');
       return;
     }
+    if (selectedGrade.length == 0) {
+      setAlert('warning', 'Select Grade');
+      return;
+    }
 
     if (isEdit) {
       const startDate = new Date(startDateTechPer)

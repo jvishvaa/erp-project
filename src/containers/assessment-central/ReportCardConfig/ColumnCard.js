@@ -116,9 +116,8 @@ function ColumnCard({ subComponentId, componentId, columnId,
 
 
   const [question_level_options, setQ] = useState([
-    { value: 1, Question_level: 'Top 4 Average' },
-    { value: 2, Question_level: 'Best of All' },
-    { value: 3, Question_level: 'Avg excluding lowest 2' },
+    { value: 1, Question_level: 'Best of All' },
+    { value: 2, Question_level: 'Average' },
   ]);
 
   const [value, setValue] = useState(question_level_options[columns[columnIndex].logic - 1])
@@ -143,7 +142,7 @@ function ColumnCard({ subComponentId, componentId, columnId,
                 components.map(componentDetail => {
                   if (componentDetail.id === componentId) {
                     const newSubComponent = componentDetail.subComponents[subComponentIndex]
-                    newSubComponent.columns[columnIndex].name = e.target.value
+                    newSubComponent.columns[columnIndex].name = e.target.value.includes('_') ? e.target.value.split('').filter(char => char !== '_').join('') : e.target.value
                     newComponent.subComponents[subComponentIndex] = newSubComponent
                     return newComponent;
                   }

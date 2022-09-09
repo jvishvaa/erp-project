@@ -82,6 +82,11 @@ export default {
   },
   doodle: {
     checkDoodle: `/assessment/check-sys-config/`,
+    fetchDoodle: `/erp_user/fetch-doodle/`,
+  },
+  profile: {
+    getUserStatus: '/erp_user/user-information/',
+    getPendingFeeStatus: '/apiV1/fee-defaulters-list/',
   },
   createAnnouncement: {
     membersCount: `/announcement/members/`,

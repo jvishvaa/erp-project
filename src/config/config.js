@@ -68,12 +68,12 @@ const qa = {
     baseURLMPQ: 'https://qa.mpquiz.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     baseURLCentral: 'https://qa.mgmt.letseduvate.com/qbox',
-    baseFinanceURL: 'https://dev.erpfinance.letseduvate.com/qbox',
+    baseFinanceURL: 'https://qafinance.school.letseduvate.com/qbox',
     xAPIKey: 'vikash@12345#1231',
     msOriginUrl: 'https://qa.classes.letseduvate.com',
     msReportsUrl: 'https://qa.reports.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
-    finance: 'https://uidev.erpfinance.letseduvate.com',
+    finance: 'https://qafinance.school.letseduvate.com',
   },
 };
 
