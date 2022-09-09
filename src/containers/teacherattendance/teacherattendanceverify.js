@@ -400,8 +400,13 @@ export default function TeacherAttendanceVerify() {
   }, [window.location.pathname]);
 
   const getTeacherData = () => {
+    if (!rolesId) {
+      setAlert('error', 'Please Select User Level');
+      return false;
+    }
+
     if (filterData.branch?.branch?.id === undefined) {
-      setAlert('error', 'select branch');
+      setAlert('error', 'Please Select Branch');
       return false;
     }
     setLoading(true);
@@ -533,7 +538,7 @@ export default function TeacherAttendanceVerify() {
         return '#800080';
       case 'halfday':
         return '#4747d1';
-      case 'holiday':
+      case 'H':
         return '#81c3b4';
       case 'NA':
         return 'black';
@@ -745,6 +750,7 @@ export default function TeacherAttendanceVerify() {
                     variant='outlined'
                     label='Branch'
                     placeholder='Branch'
+                    required
                   />
                 )}
               />
