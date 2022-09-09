@@ -1,26 +1,11 @@
 import React, { useState, useRef } from 'react';
 import Layout from 'containers/Layout';
 import { Breadcrumb, Tabs, Select } from 'antd';
-import PeriodView from './PeriodView';
-import AnnualPlan from './AnnualPlan';
+import AnnualPlanTableView from '../TableView';
 const { TabPane } = Tabs;
 
-const LessonPlan = () => {
-  const [volume, setVolume] = useState('');
-  const [showTab, setShowTab] = useState(1);
-  const getVolume = (value) => {
-    setVolume(value);
-  };
-
-  const closeTable = useRef(null);
-  const onChange = (key) => {
-    setShowTab(key);
-    if (key == 1) {
-      setVolume('');
-      closeTable.current();
-    }
-  };
-
+const LessonPlanView = () => {
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   return (
     <React.Fragment>
       <Layout>
@@ -29,29 +14,28 @@ const LessonPlan = () => {
           <div className='col-md-8' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>
               <Breadcrumb.Item
-                className='th-black-1 th-18'
-                onClick={() => {
-                  // setVolume('');
-                  closeTable.current();
-                }}
+                className='th-grey th-18 th-pointer'
+                href={
+                  user_level == 13
+                    ? '/lesson-plan/student-view'
+                    : '/lesson-plan/teacher-view'
+                }
               >
                 Lesson Plan
               </Breadcrumb.Item>
-              {/* {volume && showTab == 1 && (
-                <Breadcrumb.Item className='th-black-1 th-16'>{volume}</Breadcrumb.Item>
-              )} */}
+              <Breadcrumb.Item className='th-black-1 th-18'>Annual Plan</Breadcrumb.Item>
             </Breadcrumb>
           </div>
 
           <div className='row'>
             <div className='col-12'>
               <div className='th-tabs'>
-                <Tabs type='card' onChange={onChange}>
+                <Tabs type='card'>
                   {/* <TabPane tab='PERIOD VIEW' key='1'>
                     <PeriodView />
                   </TabPane> */}
                   <TabPane tab='ANNUAL PLAN' key='1'>
-                    <AnnualPlan getVolume={getVolume} closeTable={closeTable} />
+                    <AnnualPlanTableView />
                   </TabPane>
                 </Tabs>
               </div>
@@ -63,4 +47,4 @@ const LessonPlan = () => {
   );
 };
 
-export default LessonPlan;
+export default LessonPlanView;

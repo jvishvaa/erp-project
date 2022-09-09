@@ -19,7 +19,7 @@ const GradeWiseAttendance = () => {
     (state) => state.commonFilterReducer?.selectedBranch
   );
 
-  const {user_level} = JSON.parse(localStorage.getItem('userDetails')) || {}
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
   const [gradewiseAttendanceData, setGradewiseAttendanceData] = useState([]);
   const [attendanceCountData, setAttendanceCountData] = useState([]);
@@ -147,8 +147,8 @@ const GradeWiseAttendance = () => {
 
   useEffect(() => {
     let selected_branch;
-    if(history?.location?.state?.selectedbranchData){
-      selected_branch = history?.location?.state?.selectedbranchData
+    if (history?.location?.state?.selectedbranchData) {
+      selected_branch = history?.location?.state?.selectedbranchData;
     }
     fetchGradewiseAttendanceData({
       session_year: selectedAcademicYear?.id,
@@ -209,9 +209,14 @@ const GradeWiseAttendance = () => {
             <Breadcrumb.Item href='/dashboard' className='th-grey th-pointer'>
               Dashboard
             </Breadcrumb.Item>
-            {user_level !== 11 && <Breadcrumb.Item onClick={() => history.goBack()} className='th-grey th-pointer'>
-              RoleWise Attendance
-            </Breadcrumb.Item>}
+            {user_level !== 11 && (
+              <Breadcrumb.Item
+                onClick={() => history.goBack()}
+                className='th-grey th-pointer'
+              >
+                RoleWise Attendance
+              </Breadcrumb.Item>
+            )}
             <Breadcrumb.Item className='th-black-1'>Attendance</Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -229,7 +234,7 @@ const GradeWiseAttendance = () => {
               showToday={false}
               suffixIcon={<DownOutlined className='th-black-1' />}
               className='th-black-2 pl-0 th-date-picker'
-              format={'YYYY-MM-DD'}
+              format={'YYYY/MM/DD'}
             />
           </span>
         </div>
