@@ -27,7 +27,11 @@ const FeeReminder = () => {
   };
 
   const handleOk = () => {
-    window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/${token}#/auth/login`, '_blank');
+    window.open(
+      `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
+      '_blank'
+    );
+
     setOpen(false);
   };
 

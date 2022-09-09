@@ -2,12 +2,16 @@ import React from 'react';
 import { Button } from 'antd';
 import ENVCONFIG from 'config/config';
 import reminder from './../../../assets/images/reminder.jpg';
+import './../../Assets/css/common.scss';
 
 const FeeReminderBanner = ({ data }) => {
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handlePay = () => {
-    window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/${token}#/auth/login`, '_blank');
+    window.open(
+      `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
+      '_blank'
+    );
   };
 
   return (
@@ -27,7 +31,7 @@ const FeeReminderBanner = ({ data }) => {
               style={{ marginTop: '110px' }}
             >
               Due Date : {data[0].due_date}
-              <Button onClick={() => handlePay()} className='bg-primary text-white'>
+              <Button onClick={() => handlePay()} className='th-bg-primary th-white'>
                 Pay
               </Button>
             </div>
