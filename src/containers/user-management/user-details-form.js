@@ -341,8 +341,6 @@ const UserDetailsForm = ({
           {formik.errors.date_of_birth ? formik.errors.date_of_birth : ''}
         </FormHelperText>
       </Grid>
-      {/* </Grid> */}
-      {/* <Grid container item xs={12} spacing={4}> */}
       <Grid item md={2} xs={2}>
         <CustomizedSelects
           name={'student_country_code'}
