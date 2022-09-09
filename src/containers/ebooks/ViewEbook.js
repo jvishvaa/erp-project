@@ -17,6 +17,7 @@ import axiosInstance from '../../config/axios';
 import endpoints from '../../config/endpoints';
 import { getModuleInfo } from '../../utility-functions';
 import './viewEbook.css'
+import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -341,6 +342,7 @@ class ViewEbook extends Component {
     return (
   
         <Layout className='layout-container'>
+        <FeeReminder />
         <div className='layout-container-div ebookscroll' style={{
         // background: 'white',
         height: '90vh',
