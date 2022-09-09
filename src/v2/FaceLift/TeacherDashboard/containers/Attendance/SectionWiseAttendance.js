@@ -91,6 +91,8 @@ const SectionWiseAttendance = () => {
   const [searchedValue, setSearchedValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [studentFilter, setStudentFilter] = useState('all');
+  const {user_level} = JSON.parse(localStorage.getItem('userDetails')) || {}
+
 
   const handleDateChange = (value) => {
     if (value) {
@@ -222,11 +224,15 @@ const SectionWiseAttendance = () => {
   }, []);
 
   useEffect(() => {
+    let selected_branch;
+    if(history?.location?.state?.selectedbranchData){
+      selected_branch = history?.location?.state?.selectedbranchData
+    }
     if (sectionId) {
       fetchAttendanceData({
         session_year: selectedAcademicYear?.id,
         date: date,
-        branch_id: selectedBranch?.branch?.id,
+        branch_id: selected_branch?.branch_id || selectedBranch?.branch?.id,
         grade_id: gradeId,
         section_id: sectionId,
       });
@@ -259,9 +265,11 @@ const SectionWiseAttendance = () => {
             <Breadcrumb.Item href='/dashboard' className='th-grey th-pointer'>
               Dashboard
             </Breadcrumb.Item>
-            <Breadcrumb.Item href='/gradewise-attendance' className='th-grey th-pointer'>
+            {user_level !== 11 ? <Breadcrumb.Item onClick={() => history.goBack()} className='th-grey th-pointer'>
+              Gradewise Attendance
+            </Breadcrumb.Item> : <Breadcrumb.Item onClick={() => history.goBack()} className='th-grey th-pointer'>
               Attendance
-            </Breadcrumb.Item>
+            </Breadcrumb.Item>}
             <Breadcrumb.Item className='th-black-1'>Students</Breadcrumb.Item>
           </Breadcrumb>
         </div>

@@ -29,6 +29,10 @@ import GradeWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attenda
 import SectionWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/SectionWiseAttendance';
 import ReportConfigTable from 'containers/assessment-central/ReportCardConfig/ReportConfigTable';
 import CreateReportConfig from 'containers/assessment-central/ReportCardConfig/CreateReportConfig';
+import RoleWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/RoleWiseAttendance';
+import BranchWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/BranchWiseAttendance';
+import StaffAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/staffAttendance'
+
 
 const V2Router = () => {
   useEffect(() => {
@@ -106,6 +110,15 @@ const V2Router = () => {
                         <Route path='/gradewise-attendance'>
                           {({ match }) => <GradeWiseAttendance match={match} />}
                         </Route>{' '}
+                        <Route path='/rolewise-attendance'>
+                          {({ match }) => <RoleWiseAttendance match={match} />}
+                        </Route>
+                        <Route path='/branchwise-attendance'>
+                          {({ match }) => <BranchWiseAttendance match={match} />}
+                        </Route>
+                        <Route path='/Staff-attendance'>
+                          {({ match }) => <StaffAttendance match={match} />}
+                        </Route>
                         <Route path='/sectionwise-attendance'>
                           {({ match }) => <SectionWiseAttendance match={match} />}
                         </Route>
