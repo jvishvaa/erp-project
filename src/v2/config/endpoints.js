@@ -58,6 +58,9 @@ export default {
     feesOverviewData: `${baseFinanceURL}/apiV1/dashboard/finance-dashboard-monthly/`,
     feesStatsData: `${baseFinanceURL}/apiV1/dashboard/finance_dashboard`,
     financeYearList: `${baseFinanceURL}/apiV1/finance-session-year-list/`,
+    staffAttandance: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-wise-stats/`,
+    staffRoleStates: `${msReportsUrl}/api/acad_performance/v1/staff_att/role-wise-stats/`,
+    staffStats: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-role-staff-wise-stats/`,
   },
   teacherDashboard: {
     todaysAttendance: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/attendance-today/`,
