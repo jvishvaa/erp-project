@@ -21,10 +21,7 @@ import moment from 'moment';
 import TeacherAttendanceStatus from './teacherAttendanceStatus';
 import { useSelector } from 'react-redux';
 import Loader from '../../components/loader/loader';
-import {
-  MuiPickersUtilsProvider,
-  KeyboardDatePicker,
-} from '@material-ui/pickers';
+import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -42,9 +39,7 @@ import MomentUtils from '@date-io/moment';
 import NotifyConfirmPopUp from './notifyConfirmPopUp';
 
 function EnhancedTableHead(props) {
-  const {
-    onRequestSort,
-  } = props;
+  const { onRequestSort } = props;
 
   return (
     <TableHead align='left' stickyHeader>
@@ -89,20 +84,20 @@ const useToolbarStyles = makeStyles((theme) => ({
   highlight:
     theme.palette.type === 'light'
       ? {
-        color: theme.palette.secondary.main,
-        backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-      }
+          color: theme.palette.secondary.main,
+          backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+        }
       : {
-        color: theme.palette.text.primary,
-        backgroundColor: theme.palette.secondary.dark,
-      },
+          color: theme.palette.text.primary,
+          backgroundColor: theme.palette.secondary.dark,
+        },
   title: {
     flex: '1 1 100%',
     fontWeight: 'bold',
   },
   button: {
-    background: theme.palette.secondary.main ,
-  }
+    background: theme.palette.secondary.main,
+  },
 }));
 
 const EnhancedTableToolbar = (props) => {
@@ -150,10 +145,8 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     width: '100%',
-
   },
-  table: {
-  },
+  table: {},
   fontColorHeadCell: {
     color: 'black',
   },
@@ -172,18 +165,16 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '26px',
   },
   button: {
-    background: theme.palette.primary.main ,
+    background: theme.palette.primary.main,
     '&:hover': {
       background: theme.palette.primary.main,
+    },
   },
-  }
-
-  
 }));
 
 export default function TeacherAttendance(props) {
   const classes = useStyles();
-  const [openModal, setOpenModal] = useState(false)
+  const [openModal, setOpenModal] = useState(false);
   const [order, setOrder] = React.useState('asc');
   const [loading, setLoading] = React.useState(false);
   const [orderBy, setOrderBy] = React.useState('');
@@ -191,6 +182,8 @@ export default function TeacherAttendance(props) {
   const { setAlert } = useContext(AlertNotificationContext);
   const [roles, setRoles] = React.useState([]);
   const { token } = JSON.parse(localStorage.getItem('userDetails')) || {};
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
+  const user_level = userData?.user_level;
   const [startDate, setStartDate] = React.useState(moment().format('YYYY-MM-DD'));
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
@@ -216,26 +209,23 @@ export default function TeacherAttendance(props) {
   const [selectedallsecctionmappingId, setSelectedallsecctionmappingId] = useState([]);
   const [count, setCount] = useState(false);
   const [showdata, setshowdata] = useState(false);
-  const [isStudentInRole, setIsStudentInRole] = useState(false)
+  const [isStudentInRole, setIsStudentInRole] = useState(false);
 
   const [checkedSelect, setCheckedSelect] = React.useState(false);
   const [openSelect, setOpenSelect] = React.useState(false);
   const [attendanceDialog, setAttendanceDialog] = React.useState('');
-  const [absentvalue, setAbsent] = React.useState(0)
-  const [presentvalue, setPresent] = React.useState(0)
-
-
+  const [absentvalue, setAbsent] = React.useState(0);
+  const [presentvalue, setPresent] = React.useState(0);
 
   const handleChangeSelect = (event) => {
     setCheckedSelect(event.target.checked);
-    setOpenSelect(event.target.checked)
+    setOpenSelect(event.target.checked);
   };
 
   const handleCloseSelect = () => {
     setOpenSelect(false);
-    setCheckedSelect(false)
+    setCheckedSelect(false);
   };
-
 
   const handleDateChange = (name, date) => {
     if (name === 'startDate') setStartDate(date);
@@ -264,7 +254,7 @@ export default function TeacherAttendance(props) {
   }, [moduleId, selectedAcademicYear]);
 
   function getBranch(acadId) {
-    let url = `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`
+    let url = `${endpoints.academics.branches}?session_year=${selectedAcademicYear?.id}&module_id=${moduleId}`;
     axiosInstance
       .get(url)
       .then((result) => {
@@ -273,7 +263,7 @@ export default function TeacherAttendance(props) {
           setBranchList(branches);
         }
       })
-      .catch((error) => { });
+      .catch((error) => {});
   }
 
   const handleBranch = (event, value) => {
@@ -281,7 +271,7 @@ export default function TeacherAttendance(props) {
       setGradeList([]);
       setSelectedGrade([]);
       setSelectedGradeIds('');
-      setSectionId([])
+      setSectionId([]);
       setSectionList([]);
       setSelectedSection([]);
       setSelectedSectionIds('');
@@ -301,7 +291,7 @@ export default function TeacherAttendance(props) {
       setSectionList([]);
       setSelectedSection([]);
       setSelectedSectionIds([]);
-      setSectionId([])
+      setSectionId([]);
     }
   };
 
@@ -310,13 +300,14 @@ export default function TeacherAttendance(props) {
       setSectionList([]);
       setSelectedSection([]);
       setSelectedSectionIds('');
-      setSectionId([])
+      setSectionId([]);
 
       const selectedId = value?.grade_id;
       setSelectedGrade(value);
       setSelectedGradeIds(selectedId);
       callApi(
-        `${endpoints.academics.sections}?session_year=${selectedAcademicYear?.id
+        `${endpoints.academics.sections}?session_year=${
+          selectedAcademicYear?.id
         }&branch_id=${selectedBranchIds}&grade_id=${selectedId?.toString()}&module_id=${moduleId}`,
         'section'
       );
@@ -326,7 +317,7 @@ export default function TeacherAttendance(props) {
       setSelectedSection([]);
       setSelectedGradeIds('');
       setSelectedSectionIds('');
-      setSectionId([])
+      setSectionId([]);
     }
   };
 
@@ -337,10 +328,10 @@ export default function TeacherAttendance(props) {
           ? [...sectionList].filter(({ section_id }) => section_id !== 'all')
           : value;
       let sectionId = [];
-      sectionId = value.map((item) => item.id)
+      sectionId = value.map((item) => item.id);
       setSectionId(sectionId);
-      const selectedsecctionId = value.map((element) => element?.section_id)
-      const selectedsecctionmappingId = value.map((element) => element?.id)
+      const selectedsecctionId = value.map((element) => element?.section_id);
+      const selectedsecctionmappingId = value.map((element) => element?.id);
       setSelectedSection(value);
       setSelectedSectionIds(selectedsecctionId);
       setSelectedallsecctionmappingId(selectedsecctionmappingId);
@@ -365,8 +356,8 @@ export default function TeacherAttendance(props) {
               id: 'all',
               section_id: 'all',
               section__section_name: 'Select All',
-              section_name: 'Select All'
-            }
+              section_name: 'Select All',
+            };
             const data = [selectAllObject, ...result?.data?.data];
             setSectionList(data);
           }
@@ -380,19 +371,19 @@ export default function TeacherAttendance(props) {
   }
 
   const handleChangeSelectPA = (event) => {
-    setAttendanceDialog(event.target.value)
-  }
+    setAttendanceDialog(event.target.value);
+  };
 
   const getRoleApi = async () => {
     try {
-      const result = await axiosInstance.get(endpoints.communication.roles, {
+      const result = await axiosInstance.get(endpoints.userManagement.centralUserLevel, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
       const resultOptions = [];
       if (result.status === 200) {
-        result.data.result.map((items) => resultOptions.push(items.role_name));
+        result.data.result.map((items) => resultOptions.push(items.level_name));
         setRoles(result.data.result);
       } else {
         setAlert('error', result.data.message);
@@ -414,12 +405,12 @@ export default function TeacherAttendance(props) {
       setLoading(true);
       const result = axiosInstance
         .get(
-          `${endpoints.academics.teacherAttendanceData}?branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&session_year=${selectedAcademicYear?.id}&roles=${rolesId}&date=${startDate}`
+          `${endpoints.academics.teacherAttendanceData}?branch_id=${selectedBranchIds}&grade_id=${selectedGradeIds}&section_id=${selectedSectionIds}&session_year=${selectedAcademicYear?.id}&user_level=${rolesId}&date=${startDate}`
         )
         .then((result) => {
           if (result.status === 200) {
             setData(result?.data?.attendance_data);
-            setRecordsData(result?.data?.aggregate_counts)
+            setRecordsData(result?.data?.aggregate_counts);
             setLoading(false);
             setshowdata(true);
           }
@@ -431,65 +422,64 @@ export default function TeacherAttendance(props) {
     }
   };
 
-
   const getReportData = () => {
     const result = axiosInstance
       .get(
-        `${endpoints.academics.dataupdate}?date=${startDate}&roles=${rolesId}&section_mapping_id=${selectedallsecctionmappingId}`
+        `${endpoints.academics.dataupdate}?date=${startDate}&user_level=${rolesId}&section_mapping_id=${selectedallsecctionmappingId}`
       )
       .then((result) => {
         if (result.status === 200) {
-          let present
-          let absent
+          let present;
+          let absent;
           let flag1 = 0;
           let flag2 = 0;
 
           let a = result?.data?.result?.map((item) => {
-            if (item.attendence_status === "present") {
+            if (item.attendence_status === 'present') {
               present = item.count;
-              flag1 = 1
+              flag1 = 1;
             } else {
               absent = item.count;
               flag2 = 1;
             }
-          })
+          });
           if (!flag1) {
             present = 0;
           } else if (!flag2) {
             absent = 0;
           }
-          setAbsent(absent)
-          setPresent(present)
+          setAbsent(absent);
+          setPresent(present);
         }
       })
       .catch((error) => {
         console.log(error);
       });
-  }
+  };
 
   useEffect(() => {
-    getReportData()
-  }, [data, count])
+    getReportData();
+  }, [data, count]);
 
   const handleMark = () => {
-    setLoading(true)
+    setLoading(true);
     let arrSec = [];
-    arrSec.push(sectionId.map((ele) => ele))
+    arrSec.push(sectionId.map((ele) => ele));
     const payload = {
       section_mapping_id: arrSec[0].toString(),
-      role: rolesId,
+      user_level: rolesId,
       date: startDate,
-      attendance_status: attendanceDialog
-    }
+      attendance_status: attendanceDialog,
+    };
     axiosInstance
       .post(`${endpoints.academics.markAllAttendance}`, payload)
       .then((result) => {
-        getTeacherData()
-        handleCloseSelect()
-        setAttendanceDialog('')
+        getTeacherData();
+        handleCloseSelect();
+        setAttendanceDialog('');
       })
-      .catch((error) => { });
-  }
+      .catch((error) => {});
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -499,311 +489,377 @@ export default function TeacherAttendance(props) {
 
   const handleMultipleRoles = (event, value) => {
     if (value) {
-      const isSubset = (array1, array2) => array2.every(element => array1.includes(element));
-      const roleName = value?.role_name.toUpperCase().split('')
-      const studentSpelling = ['S', 'T', 'U', 'D', 'E', 'N', 'T']
-      setIsStudentInRole(isSubset(roleName, studentSpelling))
+      const isSubset = (array1, array2) =>
+        array2.every((element) => array1.includes(element));
+      const roleName = value?.level_name.toUpperCase().split('');
+      const studentSpelling = ['S', 'T', 'U', 'D', 'E', 'N', 'T'];
+      setIsStudentInRole(isSubset(roleName, studentSpelling));
       setRolesId(value?.id);
     } else {
       setRolesId('');
-      setIsStudentInRole(false)
+      setIsStudentInRole(false);
     }
   };
 
   const handleNotifyPopUp = (val) => {
     if (startDate !== moment().format('YYYY-MM-DD')) {
-      setAlert('warning', 'Please select today\'s date')
+      setAlert('warning', "Please select today's date");
     }
     if (sectionId.length == 0 || !selectedBranchIds || !selectedGradeIds) {
-      setAlert('warning','Please select all required fields')
+      setAlert('warning', 'Please select all required fields');
     }
-    if (sectionId.length > 0 && selectedBranchIds && selectedGradeIds && (startDate == moment().format('YYYY-MM-DD'))) {
-      setOpenModal(val)
+    if (
+      sectionId.length > 0 &&
+      selectedBranchIds &&
+      selectedGradeIds &&
+      startDate == moment().format('YYYY-MM-DD')
+    ) {
+      setOpenModal(val);
     }
-  }
-  const local = 'localhost:3000'
-  const dev = 'dev.olvorchidnaigaon.letseduvate.com'
-  const qa = 'qa.olvorchidnaigaon.letseduvate.com'
-  const prod = 'orchids.letseduvate.com'
+  };
+  const local = 'localhost:3000';
+  const dev = 'dev.olvorchidnaigaon.letseduvate.com';
+  const qa = 'qa.olvorchidnaigaon.letseduvate.com';
+  const prod = 'orchids.letseduvate.com';
+
+  const isDateEditable = [1, 2, 8, 9].includes(user_level);
   return (
     <Layout>
-      <div className='attendancescroll' style={{
-        background: 'white',
-        height: '90vh',
-        overflowX: 'hidden',
-        overflowY: 'scroll',
-      }}>
-      <Grid
-        container
-        direction='row'
+      <div
+        className='attendancescroll'
         style={{
-          paddingLeft: '22px',
-          paddingRight: '10px',
+          background: 'white',
+          height: '90vh',
+          overflowX: 'hidden',
+          overflowY: 'scroll',
         }}
       >
-        <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
-          <Breadcrumbs
-            separator={<NavigateNextIcon fontSize='small' />}
-            aria-label='breadcrumb'
-          >
-            <Typography color='textPrimary' variant='h6'>
-              Attendance
-            </Typography>
-            <Typography color='textPrimary'>Mark Attendance</Typography>
-          </Breadcrumbs>
-        </Grid>
-
-        <Grid container spacing={1}>
-          <Grid item xs={12} md={2}>
-            <MuiPickersUtilsProvider utils={MomentUtils}>
-              <KeyboardDatePicker
-                onOpen={() => {
-                  setTimeout(() => {
-                    document
-                      .querySelectorAll(
-                        '.MuiPickersModal-dialogRoot .MuiDialogActions-root button'
-                      )
-                      .forEach((elem) => {
-                        elem.classList.remove('MuiButton-textPrimary');
-                        elem.classList.add('MuiButton-containedPrimary');
-                      });
-                  }, 1000);
-                }}
-                size='small'
-                color='primary'
-                // disableToolbar
-                variant='dialog'
-                format='YYYY-MM-DD'
-                margin='none'
-                id='date-picker-start-date'
-                label='Select date'
-                value={startDate}
-                // maxDate={new Date()}
-                disableFuture={true}
-                onChange={(event, date) => {
-                  handleDateChange('startDate', date);
-                }}
-                KeyboardButtonProps={{
-                  'aria-label': 'change date',
-                }}
-              />
-            </MuiPickersUtilsProvider>
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Autocomplete
-              // multiple
-              size='small'
-              onChange={handleMultipleRoles}
-              value={rolesId}
-              // disableClearable
-              className='dropdownIcon'
-              id='message_log-smsType'
-              options={roles}
-              getOptionLabel={(option) => option?.role_name}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField
-                  className='message_log-textfield'
-                  {...params}
-                  variant='outlined'
-                  label='Role'
-                  placeholder='Role'
-                  required
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Autocomplete
-              id='combo-box-demo'
-              size='small'
-              options={branchList}
-              onChange={handleBranch}
-              value={selectedBranch}
-              getOptionLabel={(option) => option.branch_name}
-              renderInput={(params) => (
-                <TextField {...params} label='Branch' variant='outlined' required />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Autocomplete
-              id='combo-box-demo'
-              size='small'
-              options={gradeList}
-              onChange={handleGrade}
-              value={selectedGrade}
-              getOptionLabel={(option) => option?.grade_name}
-              renderInput={(params) => (
-                <TextField {...params} label='Grade' variant='outlined' required />
-              )}
-            />
-          </Grid>
-          <Grid item xs={12} md={2}>
-            <Autocomplete
-              id='combo-box-demo'
-              size='small'
-              multiple
-              limitTags={1}
-              options={sectionList || []}
-              onChange={handleSection}
-              value={selectedSection || []}
-              getOptionLabel={(option) => option?.section__section_name || ''}
-              filterSelectedOptions
-              renderInput={(params) => (
-                <TextField {...params} label='Section' variant='outlined' required />
-              )}
-            />
-          </Grid>
-
-          <Grid item md={1} xs={12}>
-            <Button onClick={getTeacherData} variant='contained' color='primary'>
-              Search
-            </Button>
-          </Grid>
-       
-          {data?.length > 0 ?
-            <Grid xs={9} container spacing={1} justifyContent="flex-end">
-              <div style={{ display: 'flex', alignItems: 'center', marginRight: '-22px' }} >
-                <Checkbox
-                  checked={checkedSelect}
-                  onChange={handleChangeSelect}
-                  inputProps={{ 'aria-label': 'primary checkbox' }}
-                />
-                <p>Mark All</p>
-              </div>
-            </Grid>
-            : ''}
-        </Grid>
-        <div className='th-sticky-header' style={{ width: '100%' }}>
-          <TableContainer className='tableContainer'>
-            <Table
-              className={classes.table}
-              aria-labelledby='tableTitle'
-              size={dense ? 'small' : 'medium'}
-              aria-label='enhanced table'
-              stickyHeader
+        <Grid
+          container
+          direction='row'
+          style={{
+            paddingLeft: '22px',
+            paddingRight: '10px',
+          }}
+        >
+          <Grid item xs={12} md={6} style={{ marginBottom: 15 }}>
+            <Breadcrumbs
+              separator={<NavigateNextIcon fontSize='small' />}
+              aria-label='breadcrumb'
             >
-              <EnhancedTableHead
-                classes={classes}
-                order={order}
-                onRequestSort={handleRequestSort}
-                rowCount={data?.length}
-              />
-              {loading ? (
-                <Loader />
-              ) : (
-                <TableBody>
-                  {
-                    data?.map((value, i) => {
-                      return (
-                        <TableRow
-                          hover
-                          // onClick={(event) => handleClick(event, row.name)}
-                          role='checkbox'
-                          // aria-checked={isItemSelected}
-                          tabIndex={-1}
-                          key={value?.name}
-                        // selected={isItemSelected}
-                        >
-                          <TableCell align='left' style={{ width: '1px' }}>
-                            {i + 1}
-                          </TableCell>
-                          <TableCell align='left' style={{ width: '1px' }}>
-                            {value?.erp_id}
-                          </TableCell>
-                          <TableCell align='left' style={{ width: '1px' }}>
-                            {value?.name}
-                          </TableCell>
-                          <TableCell align='left' style={{ width: '1px' }}>
-                            {value?.roles__role_name}
-                          </TableCell>
+              <Typography color='textPrimary' variant='h6'>
+                Attendance
+              </Typography>
+              <Typography color='textPrimary'>Mark Attendance</Typography>
+            </Breadcrumbs>
+          </Grid>
 
-                          <TableCell align='right'>
-                            <TeacherAttendanceStatus
-                              user_id={value?.id}
-                              start_date={startDate}
-                              attendence_status={value?.attendence_status}
-                              isStudentInRole={isStudentInRole}
-                              getReportData={getReportData}
-                              setCount={setCount}
-                              index={i}
-                              setDate={setData}
-                              data={data}
-                            />
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })
-                    // })}
-                    /* {emptyRows > 0 && (
+          <Grid container spacing={1}>
+            {isDateEditable && (
+              <Grid item xs={12} md={2}>
+                <MuiPickersUtilsProvider utils={MomentUtils}>
+                  <KeyboardDatePicker
+                    onOpen={() => {
+                      setTimeout(() => {
+                        document
+                          .querySelectorAll(
+                            '.MuiPickersModal-dialogRoot .MuiDialogActions-root button'
+                          )
+                          .forEach((elem) => {
+                            elem.classList.remove('MuiButton-textPrimary');
+                            elem.classList.add('MuiButton-containedPrimary');
+                          });
+                      }, 1000);
+                    }}
+                    size='small'
+                    color='primary'
+                    // disableToolbar
+                    variant='dialog'
+                    format='YYYY-MM-DD'
+                    margin='none'
+                    id='date-picker-start-date'
+                    label='Select date'
+                    value={startDate}
+                    // maxDate={new Date()}
+                    disableFuture={true}
+                    onChange={(event, date) => {
+                      handleDateChange('startDate', date);
+                    }}
+                    KeyboardButtonProps={{
+                      'aria-label': 'change date',
+                    }}
+                  />
+                </MuiPickersUtilsProvider>
+              </Grid>
+            )}
+            <Grid item xs={12} md={2}>
+              <Autocomplete
+                // multiple
+                size='small'
+                onChange={handleMultipleRoles}
+                value={rolesId}
+                // disableClearable
+                className='dropdownIcon'
+                id='message_log-smsType'
+                options={roles}
+                getOptionLabel={(option) => option?.level_name}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField
+                    className='message_log-textfield'
+                    {...params}
+                    variant='outlined'
+                    label='User Level'
+                    placeholder='User Level'
+                    required
+                  />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Autocomplete
+                id='combo-box-demo'
+                size='small'
+                options={branchList}
+                onChange={handleBranch}
+                value={selectedBranch}
+                getOptionLabel={(option) => option.branch_name}
+                renderInput={(params) => (
+                  <TextField {...params} label='Branch' variant='outlined' required />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Autocomplete
+                id='combo-box-demo'
+                size='small'
+                options={gradeList}
+                onChange={handleGrade}
+                value={selectedGrade}
+                getOptionLabel={(option) => option?.grade_name}
+                renderInput={(params) => (
+                  <TextField {...params} label='Grade' variant='outlined' required />
+                )}
+              />
+            </Grid>
+            <Grid item xs={12} md={2}>
+              <Autocomplete
+                id='combo-box-demo'
+                size='small'
+                multiple
+                limitTags={1}
+                options={sectionList || []}
+                onChange={handleSection}
+                value={selectedSection || []}
+                getOptionLabel={(option) => option?.section__section_name || ''}
+                filterSelectedOptions
+                renderInput={(params) => (
+                  <TextField {...params} label='Section' variant='outlined' required />
+                )}
+              />
+            </Grid>
+
+            <Grid item md={1} xs={12}>
+              <Button onClick={getTeacherData} variant='contained' color='primary'>
+                Search
+              </Button>
+            </Grid>
+
+            {data?.length > 0 ? (
+              <Grid xs={9} container spacing={1} justifyContent='flex-end'>
+                <div
+                  style={{ display: 'flex', alignItems: 'center', marginRight: '-22px' }}
+                >
+                  <Checkbox
+                    checked={checkedSelect}
+                    onChange={handleChangeSelect}
+                    inputProps={{ 'aria-label': 'primary checkbox' }}
+                  />
+                  <p>Mark All</p>
+                </div>
+              </Grid>
+            ) : (
+              ''
+            )}
+          </Grid>
+          <div className='th-sticky-header' style={{ width: '100%' }}>
+            <TableContainer className='tableContainer'>
+              <Table
+                className={classes.table}
+                aria-labelledby='tableTitle'
+                size={dense ? 'small' : 'medium'}
+                aria-label='enhanced table'
+                stickyHeader
+              >
+                <EnhancedTableHead
+                  classes={classes}
+                  order={order}
+                  onRequestSort={handleRequestSort}
+                  rowCount={data?.length}
+                />
+                {loading ? (
+                  <Loader />
+                ) : (
+                  <TableBody>
+                    {
+                      data?.map((value, i) => {
+                        return (
+                          <TableRow
+                            hover
+                            // onClick={(event) => handleClick(event, row.name)}
+                            role='checkbox'
+                            // aria-checked={isItemSelected}
+                            tabIndex={-1}
+                            key={value?.name}
+                            // selected={isItemSelected}
+                          >
+                            <TableCell align='left' style={{ width: '1px' }}>
+                              {i + 1}
+                            </TableCell>
+                            <TableCell align='left' style={{ width: '1px' }}>
+                              {value?.erp_id}
+                            </TableCell>
+                            <TableCell align='left' style={{ width: '1px' }}>
+                              {value?.name}
+                            </TableCell>
+                            <TableCell align='left' style={{ width: '1px' }}>
+                              {value?.roles__role_name}
+                            </TableCell>
+
+                            <TableCell align='right'>
+                              <TeacherAttendanceStatus
+                                user_id={value?.id}
+                                start_date={startDate}
+                                attendence_status={value?.attendence_status}
+                                isStudentInRole={isStudentInRole}
+                                getReportData={getReportData}
+                                setCount={setCount}
+                                index={i}
+                                setDate={setData}
+                                data={data}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
+                      // })}
+                      /* {emptyRows > 0 && (
                   <TableRow style={{ height: (dense ? 33 : 53) * emptyRows }}>
                     <TableCell colSpan={6} />
                   </TableRow>
                 )} */
-                  }
-                </TableBody>
+                    }
+                  </TableBody>
+                )}
+              </Table>
+            </TableContainer>
+          </div>
+        </Grid>
+        {showdata ? (
+          <Grid
+            container
+            spacing={1}
+            style={{
+              padding: '15px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'sticky',
+              bottom: '0px',
+              backgroundColor: 'lightgray',
+              width: '97%',
+              marginLeft: 20,
+            }}
+          >
+            {recordsData?.total ? (
+              <h3>
+                Total Present : {presentvalue || 0} &nbsp; Total Absent :{' '}
+                {absentvalue || 0} &nbsp; Total Marked : {absentvalue + presentvalue}{' '}
+                &nbsp; Total Unmarked :{' '}
+                {recordsData?.total - (absentvalue + presentvalue)} &nbsp; Total:{' '}
+                {recordsData?.total}
+              </h3>
+            ) : null}
+            {isStudentInRole &&
+              (recordsData?.total ? true : false) &&
+              (window.location.host == local ||
+                window.location.host == dev ||
+                window.location.host == qa ||
+                window.location.host == prod) && (
+                <Grid item md={2} xs={12} style={{ marginLeft: 15 }}>
+                  <Button
+                    onClick={() => {
+                      handleNotifyPopUp(true);
+                    }}
+                    variant='contained'
+                    color='primary'
+                  >
+                    Notify Absentees
+                  </Button>
+                </Grid>
               )}
-            </Table>
-          </TableContainer>
-        </div>
-      </Grid>
-      {showdata ?
-        <Grid container spacing={1} style={{ padding: '15px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'sticky', bottom: '0px', backgroundColor: 'lightgray', width: '97%', marginLeft: 20 }}>
-          {recordsData?.total ? <h3>Total Present : {presentvalue || 0} &nbsp; Total Absent : {absentvalue || 0}  &nbsp; Total Marked : {absentvalue + presentvalue} &nbsp; Total Unmarked : {recordsData?.total - (absentvalue + presentvalue)} &nbsp; Total: {recordsData?.total}</h3> : null}
-          {isStudentInRole && (recordsData?.total ? true : false) && (window.location.host == local || window.location.host == dev || window.location.host == qa || window.location.host == prod) &&
-            <Grid item md={2} xs={12} style={{ marginLeft: 15 }}>
-              <Button onClick={() => { handleNotifyPopUp(true) }} variant='contained' color='primary'>
-                Notify Absentees
-              </Button>
-            </Grid>}
-        </Grid> : null}
-          
-        <NotifyConfirmPopUp
-        openModal={openModal}
-        handleNotifyPopUp={handleNotifyPopUp}
-        sectionId={sectionId}
-        startDate={startDate}
-        rolesId={rolesId}
-      />
+          </Grid>
+        ) : null}
 
-      <Dialog
-        open={openSelect}
-        onClose={handleCloseSelect}
-        aria-labelledby="responsive-dialog-title"
-      >
-        <DialogTitle id="responsive-dialog-title">{"Please Select Present or Absent?"}</DialogTitle>
-        <DialogContent>
-          <FormControl component='fieldset' name='attendence_status' style={{ display: 'flex', justifyContent: 'space-around' }} >
-            <RadioGroup row={true} value={attendanceDialog} onChange={handleChangeSelectPA}>
-              <Grid item md={3}>
-                <FormControlLabel
-                  value='present'
-                  control={<Radio />}
-                  label='Present'
-                  className='th-font-size-13 th-label'
-                />
-              </Grid>
-              <Grid item md={2} className='absentPadding'>
-                <FormControlLabel
-                  value='absent'
-                  control={<Radio />}
-                  label='Absent'
-                  className='th-font-size-13 th-label'
-                />
-              </Grid>
-            </RadioGroup>
-          </FormControl>
-        </DialogContent>
-        <DialogActions>
-          <Button autoFocus onClick={handleCloseSelect} style={{background: 'darkgrey'}} >
-            Cancel
-          </Button>
-          <Button onClick={handleMark} color="primary"   className={classes.button} >
-            Publish
-          </Button>
-        </DialogActions>
-      </Dialog>
+        <NotifyConfirmPopUp
+          openModal={openModal}
+          handleNotifyPopUp={handleNotifyPopUp}
+          sectionId={sectionId}
+          startDate={startDate}
+          rolesId={rolesId}
+        />
+
+        <Dialog
+          open={openSelect}
+          onClose={handleCloseSelect}
+          aria-labelledby='responsive-dialog-title'
+        >
+          <DialogTitle id='responsive-dialog-title'>
+            {'Please Select Present or Absent?'}
+          </DialogTitle>
+          <DialogContent>
+            <FormControl
+              component='fieldset'
+              name='attendence_status'
+              style={{ display: 'flex', justifyContent: 'space-around' }}
+            >
+              <RadioGroup
+                row={true}
+                value={attendanceDialog}
+                onChange={handleChangeSelectPA}
+              >
+                <Grid item md={3}>
+                  <FormControlLabel
+                    value='present'
+                    control={<Radio />}
+                    label='Present'
+                    className='th-font-size-13 th-label'
+                  />
+                </Grid>
+                <Grid item md={2} className='absentPadding'>
+                  <FormControlLabel
+                    value='absent'
+                    control={<Radio />}
+                    label='Absent'
+                    className='th-font-size-13 th-label'
+                  />
+                </Grid>
+              </RadioGroup>
+            </FormControl>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              autoFocus
+              onClick={handleCloseSelect}
+              style={{ background: 'darkgrey' }}
+            >
+              Cancel
+            </Button>
+            <Button onClick={handleMark} color='primary' className={classes.button}>
+              Publish
+            </Button>
+          </DialogActions>
+        </Dialog>
       </div>
     </Layout>
   );
