@@ -31,8 +31,9 @@ import ReportConfigTable from 'containers/assessment-central/ReportCardConfig/Re
 import CreateReportConfig from 'containers/assessment-central/ReportCardConfig/CreateReportConfig';
 import RoleWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/RoleWiseAttendance';
 import BranchWiseAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/BranchWiseAttendance';
-import StaffAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/staffAttendance'
-
+import StaffAttendance from 'v2/FaceLift/TeacherDashboard/containers/Attendance/staffAttendance';
+import LessonPlan from 'v2/FaceLift/LessonPlan';
+import LessonPlanView from 'v2/FaceLift/LessonPlan/LessonPlanView';
 
 const V2Router = () => {
   useEffect(() => {
@@ -122,12 +123,20 @@ const V2Router = () => {
                         <Route path='/sectionwise-attendance'>
                           {({ match }) => <SectionWiseAttendance match={match} />}
                         </Route>
-
                         <Route exact path='/assessment/report-config'>
                           {({ match }) => <ReportConfigTable match={match} />}
                         </Route>
                         <Route exact path='/report-config/create'>
                           {({ match }) => <CreateReportConfig match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/teacher-view'>
+                          {({ match }) => <LessonPlan match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan/student-view'>
+                          {({ match }) => <LessonPlan match={match} />}
+                        </Route>
+                        <Route path='/lesson-plan-module-view'>
+                          {({ match }) => <LessonPlanView match={match} />}
                         </Route>
                         {/* v1 router */}
                         {V1Router?.map((item) => {

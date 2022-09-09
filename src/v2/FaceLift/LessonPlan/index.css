@@ -12,3 +12,31 @@
   border-color: #1b4ccb !important;
   cursor: pointer;
 }
+.text-through {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid #d9d9d9;
+  line-height: 0.1em;
+  margin: 10px 0 20px;
+}
+
+.text-through span {
+  background: #fff;
+  padding: 0 10px;
+}
+
+.th-collapse .ant-collapse-icon-position-end > .ant-collapse-item > .ant-collapse-header {
+  padding-right: 0px !important;
+}
+
+.th-resources-drawer .ant-drawer-body {
+  padding: 12px !important;
+}
+
+.th-resources-drawer .ant-collapse-header-text {
+  width: 100% !important;
+}
+/* .volume-card:hover {
+  background-color: #868686 !important;
+  opacity: 0.5;
+} */
