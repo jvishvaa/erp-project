@@ -42,6 +42,13 @@ import axiosInstance from 'config/axios';
 import endpoints from 'config/endpoints';
 import { useHistory } from 'react-router-dom';
 import Loader from 'components/loader/loader';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { message} from 'antd';
+
 const UserDetailsForm = ({
   isEdit,
   details,
@@ -137,6 +144,8 @@ const UserDetailsForm = ({
 
   const handleClose = () => {
     setOpen(false);
+    setPassword('')
+    setConformPassword('')
   };
   const handleOpen = () => {
     setOpen(true);
@@ -144,23 +153,18 @@ const UserDetailsForm = ({
 
 
   const submitPasswordDetails =() =>{
-    setLoading(true)
     if(!password){
-      setAlert('error','Please Enter Password')
-      setLoading(false)
-      return
+        message.error('Please Enter Password')
+        return
     } else if(!conformPassword){
-      setAlert('error', 'Please Enter Conform Password')
-      setLoading(false)
+      message.error('Please Enter Confirm Password')
       return
-    }else if(password?.length < 6 && conformPassword?.length < 6){
-      setAlert('error', 'Please Enter More Than 6 Character')
-      setLoading(false)
+    }else if(password?.length < 8 && conformPassword?.length < 8){
+      message.error('Please Enter More Than 8 Character')
       return
     }
     else if(password !== conformPassword){
-      setAlert('error',`Password Doesn't Match`)
-      setLoading(false)
+      message.error(`Password Doesn't Match`)
       return
     } else{
      axiosInstance.post(`${endpoints.userManagement.passwordChange}`,{
@@ -169,22 +173,22 @@ const UserDetailsForm = ({
      })
      .then((res) =>{
       if(res.data.status_code === 200){
-        setAlert('success', res?.data?.message)
+        message.success(res?.data?.message)
         handleClose()
-        setLoading(false)
         history.push({
           pathname: '/user-management/view-users',
         })
       } else {
-        setAlert('error', res?.data?.message)
+        message.error(res?.data?.message)
         handleClose()
-        setLoading(false)
       }
      });
     }
   }
   return (
     <>
+    <div>
+      {loading && <Loader/>}
     <Grid container spacing={4} className='user-details-form-container'>
       <Grid container item xs={12}>
         <Grid item md={4} xs={12}>
@@ -324,6 +328,12 @@ const UserDetailsForm = ({
             fullWidth
             label='Date of Birth'
             required
+            variant='dialog'
+            id='date-picker'
+            KeyboardButtonProps={{
+              'aria-label': 'change date',
+            }}
+            
           />
         </MuiPickersUtilsProvider>
         <FormHelperText style={{ color: 'red' }}>
@@ -466,24 +476,73 @@ const UserDetailsForm = ({
           </FormGroup>
         </FormControl>
       </Grid>
-            <Modal
-            open={open}
-            onClose={handleClose}
-            style={{
-              marginLeft: 500,
-              marginTop: '5%',
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "400px", height: "500px",
-            }}
-          >
-            <div
+      </Grid>
+      <Grid
+        container
+        item
+        xs={12}
+        direction={isMobile ? 'column-reverse' : 'row'}
+        spacing={3}
+      >
+        <Grid item md='2'>
+          <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
+            <Button
+              size='medium'
+              style={{ width: '100%' }}
+              variant='contained'
+              className='cancelButton labelColor'
+              onClick={handleBack}
             >
-              <Paper elevation={2} style={{ padding: 30 }}>
-                <h5 style={{ margin: 20 , textAlign:'center'}}>Change Password</h5>
-                <Divider/>
-                <Grid container direction='column' spacing={3}>
+              Back
+            </Button>
+          </Box>
+        </Grid>
+        <Grid item md='2' style={{ display: isEdit === true ? '' : 'none'}}>
+          <Box display='flex'  justifyContent={isMobile ? 'center' : ''}>
+          {isEdit === true ? (
+          <Button
+              className={classes.formActionButton}
+              variant='contained'
+              style={{ color: 'white', width: '100%'}}
+              color='primary'
+              size='medium'
+              onClick={handleOpen}
+              disabled={isSubmitting}
+            >
+              Change Password
+            </Button>
+
+      ): ''}
+          </Box>
+        </Grid>
+        <Grid item md='2'>
+          <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
+            <Button
+              className={classes.formActionButton}
+              variant='contained'
+              style={{ color: 'white', width: '100%' }}
+              color='primary'
+              size='medium'
+              onClick={() => {
+                formik.handleSubmit();
+              }}
+              disabled={isSubmitting}
+            >
+              {showParentForm || showGuardianForm ? 'Next' : 'Submit'}
+            </Button>
+          </Box>
+        </Grid>
+      </Grid>
+    {open && <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle style={{textAlign:'center'}} id="alert-dialog-title">{"Change Password"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+          <Grid container direction='column' spacing={3}>
                   <Grid item md={12}>
                     <TextField
                         variant='outlined'
@@ -491,7 +550,7 @@ const UserDetailsForm = ({
                         required
                         fullWidth
                         name='password'
-                        label='Password'
+                        label='New Password'
                         type={passwordFlag ? 'password' : 'text'}
                         id='password'
                         className='passwordField'
@@ -545,12 +604,15 @@ const UserDetailsForm = ({
                             />
                   </Grid>
                 </Grid>
-
-                <Grid item md={12}>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+        <Grid item md={12}>
                 <div style={{ display: "flex", marginBottom: '20px', marginTop:'20px', justifyContent:'center' }}>
                   <Button
                     variant='contained'
                     color='primary'
+                    // style={{ marginLeft: '20px' }}
                     onClick={() => {
                       submitPasswordDetails()
                     }}
@@ -572,68 +634,11 @@ const UserDetailsForm = ({
                 </div>
 
                 </Grid>
-              </Paper>
-            </div>
-      </Modal>
-      </Grid>
-      <Grid
-        container
-        item
-        xs={12}
-        direction={isMobile ? 'column-reverse' : 'row'}
-        spacing={3}
-      >
-        <Grid item md='2'>
-          <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
-            <Button
-              size='medium'
-              style={{ width: '100%' }}
-              variant='contained'
-              className='cancelButton labelColor'
-              onClick={handleBack}
-            >
-              Back
-            </Button>
-          </Box>
-        </Grid>
-        <Grid item md='2'>
-          <Box display='flex'  justifyContent={isMobile ? 'center' : ''}>
-          {isEdit === true ? (
-          <Button
-              className={classes.formActionButton}
-              variant='contained'
-              style={{ color: 'white', width: '100%' }}
-              color='primary'
-              size='medium'
-              onClick={handleOpen}
-              disabled={isSubmitting}
-            >
-              Change Password
-            </Button>
-
-      ): ''}
-          </Box>
-        </Grid>
-        <Grid item md='2'>
-          <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
-            <Button
-              className={classes.formActionButton}
-              variant='contained'
-              style={{ color: 'white', width: '100%' }}
-              color='primary'
-              size='medium'
-              onClick={() => {
-                formik.handleSubmit();
-              }}
-              disabled={isSubmitting}
-            >
-              {showParentForm || showGuardianForm ? 'Next' : 'Submit'}
-            </Button>
-          </Box>
-        </Grid>
-      </Grid>
-      {loading && <Loader/>}
+        </DialogActions>
+      </Dialog>}
     </Grid>
+
+    </div>
     </>
   );
 };
