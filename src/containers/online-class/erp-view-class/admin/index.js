@@ -33,6 +33,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import DetailCardView from './DetailCardView';
 import TabPanel from './tab-panel/TabPanel';
 import APIREQUEST from '../../../../config/apiRequest';
+import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 
 const ErpAdminViewClass = ({ history }) => {
 let filteredData = JSON.parse(localStorage.getItem('filterData'))
@@ -1097,6 +1098,7 @@ let filteredData = JSON.parse(localStorage.getItem('filterData'))
   return (
     <>
       <Layout>
+        <FeeReminder />
         <div style={{ height: '100%' }}>
           {loading && <Loader />}
           <CommonBreadcrumbs

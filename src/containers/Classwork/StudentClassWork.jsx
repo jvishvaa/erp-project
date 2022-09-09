@@ -18,6 +18,7 @@ import MobileDatepicker from './MobileDatePicker';
 import endpoints from 'config/endpoints';
 import { LocalizationProvider, DateRangePicker } from '@material-ui/pickers-4.2';
 import MomentUtils from '@material-ui/pickers-4.2/adapter/moment';
+import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 
 // import '../student-homework/student-homework.css';
 const useStyles = makeStyles((theme) => ({
@@ -145,6 +146,7 @@ const StudentClassWorkReport = () => {
   return (
     <>
       <Layout>
+        <FeeReminder />
         <div style={{ height: '100%' }}>
           <Grid container direction='row'>
             <Grid

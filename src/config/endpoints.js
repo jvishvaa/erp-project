@@ -69,6 +69,8 @@ export default {
     userDetails: '/erp_user/user-data/',
     Profilestories: 'https://d3ka3pry54wyko.cloudfront.net/',
     studentDetails: '/erp_user/fetch-user-info/',
+    getUserStatus : '/erp_user/user-information/',
+    getPendingFeeStatus : '/apiV1/fee-defaulters-list/'
   },
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
