@@ -70,6 +70,7 @@ const UserDetailsForm = ({
   const [conformPassword,setConformPassword] = useState('')
   const history = useHistory();
   const [loading,setLoading] = useState(false);
+  const  userLevel  = JSON.parse(localStorage.getItem('userDetails'));
 
   const formik = useFormik({
     initialValues: {
@@ -340,6 +341,8 @@ const UserDetailsForm = ({
           {formik.errors.date_of_birth ? formik.errors.date_of_birth : ''}
         </FormHelperText>
       </Grid>
+      {/* </Grid> */}
+      {/* <Grid container item xs={12} spacing={4}> */}
       <Grid item md={2} xs={2}>
         <CustomizedSelects
           name={'student_country_code'}
@@ -497,7 +500,7 @@ const UserDetailsForm = ({
             </Button>
           </Box>
         </Grid>
-        <Grid item md='2' style={{ display: isEdit === true ? '' : 'none'}}>
+        { isEdit && (userLevel?.is_superuser === true || userLevel?.user_level === 8 || userLevel?.user_level === 1) && <Grid item md='2' >
           <Box display='flex'  justifyContent={isMobile ? 'center' : ''}>
           {isEdit === true ? (
           <Button
@@ -514,7 +517,7 @@ const UserDetailsForm = ({
 
       ): ''}
           </Box>
-        </Grid>
+        </Grid>}
         <Grid item md='2'>
           <Box display='flex' justifyContent={isMobile ? 'center' : ''}>
             <Button
