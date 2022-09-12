@@ -210,7 +210,7 @@ const GradeWiseAttendance = () => {
               Dashboard
             </Breadcrumb.Item>
             {user_level !== 11 && <Breadcrumb.Item onClick={() => history.goBack()} className='th-grey th-pointer'>
-              RoleWise Attendance
+              Rolewise Attendance
             </Breadcrumb.Item>}
             <Breadcrumb.Item className='th-black-1'>Attendance</Breadcrumb.Item>
           </Breadcrumb>
