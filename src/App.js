@@ -428,6 +428,7 @@ import Category from './containers/question-bank/category/category-table';
 import CategoryMapping from './containers/subjectGradeMapping/CategoryMapping';
 import ReportConfigTable from 'containers/assessment-central/ReportCardConfig/ReportConfigTable';
 import CreateReportConfig from 'containers/assessment-central/ReportCardConfig/CreateReportConfig';
+import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
 
 
 function App({ alert, isMsAPI, erpConfig }) {
@@ -1764,6 +1765,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                             </Route>
                             <Route exact path='/allsubjectchapters'>
                               {({ match }) => <AllSubjectChapters match={match} />}
+                            </Route>
+                            <Route exact path='/onboarding-report'>
+                              {({ match }) => <OnboardingReport match={match} />}
                             </Route>
                             <Route exact path='/inductionTraining'>
                               {({ match }) => <InductionTraining match={match} />}
