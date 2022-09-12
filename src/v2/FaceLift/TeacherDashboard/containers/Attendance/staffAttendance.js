@@ -3,8 +3,8 @@ import React, { useContext, useState, useEffect } from 'react';
 import { withRouter, useHistory } from 'react-router-dom';
 import Layout from 'containers/Layout';
 import moment from 'moment';
-import { Table, DatePicker, Breadcrumb, message,Avatar } from 'antd';
-import { DownOutlined, UpOutlined, RightOutlined } from '@ant-design/icons';
+import { Table, DatePicker, Breadcrumb,Avatar, Input } from 'antd';
+import { DownOutlined, UserOutlined, SearchOutlined } from '@ant-design/icons';
 import calendarIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/calendarIcon.svg';
 import axios from 'v2/config/axios';
 import endpoints from 'v2/config/endpoints';
@@ -17,6 +17,7 @@ const StaffAttendance = (props) => {
   const [loading, setLoading] = useState(false);
   const [adminData, setAdminData] = useState([]);
   const [date, setDate] = useState(moment().format('YYYY-MM-DD'));
+  const [searchedValue, setSearchedValue] = useState('');
 
 const handleDateChange = (value) => {
     if (value) {
@@ -71,7 +72,7 @@ const handleDateChange = (value) => {
       align: 'left',
       render: (text, row) => (
         <div className='d-flex align-items-center pl-4'>
-          <Avatar size={40} src={demoPic} />
+          <Avatar size={50} icon={<UserOutlined />} />
           <div className='d-flex flex-column px-2 '>
             <span className='th-black-1 th-16'>{row.erp_user__name}</span>
             <span className='th-grey th-14'>{row.erp_user__erp_id}</span>
@@ -98,53 +99,77 @@ const handleDateChange = (value) => {
 
   return (
     <Layout>
-    <div className='row th-16 py-3 px-2'>
-      <div className='col-md-8'>
-        <Breadcrumb separator='>'>
-          <Breadcrumb.Item href='/dashboard' className='th-grey th-pointer'>
-            Dashboard
-          </Breadcrumb.Item>
-          <Breadcrumb.Item className='th-black-1 th-pointer' onClick={() => history.goBack()} >Rolewise Attendance</Breadcrumb.Item>
-          <Breadcrumb.Item className='th-black-1'>{history?.location?.state?.role?.erp_user__roles__role_name}</Breadcrumb.Item>
-        </Breadcrumb>
-      </div>
+      <div className='row th-16 py-3 px-2'>
+        <div className='col-md-8'>
+          <Breadcrumb separator='>'>
+            <Breadcrumb.Item href='/dashboard' className='th-grey th-pointer'>
+              Dashboard
+            </Breadcrumb.Item>
+            <Breadcrumb.Item
+              className='th-black-1 th-pointer'
+              onClick={() => history.goBack()}
+            >
+              Rolewise Attendance
+            </Breadcrumb.Item>
+            <Breadcrumb.Item className='th-black-1'>
+              {history?.location?.state?.role?.erp_user__roles__role_name}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+        </div>
 
-      <div className='col-md-4 text-right mt-2 mt-sm-0 justify-content-end'>
-        <span className='th-br-4 p-1 th-bg-white'>
-          <img src={calendarIcon} className='pl-2' />
-          <DatePicker
-            disabledDate={(current) => current.isAfter(moment())}
-            allowClear={false}
-            bordered={false}
-            placement='bottomRight'
-            defaultValue={moment()}
-            onChange={(value) => handleDateChange(value)}
-            showToday={false}
-            suffixIcon={<DownOutlined className='th-black-1' />}
-            className='th-black-2 pl-0 th-date-picker'
-            format={'YYYY-MM-DD'}
-          />
-        </span>
-      </div>
-
-      <div className='row mt-3'>
+        <div className='col-md-4 text-right mt-2 mt-sm-0 justify-content-end'>
+          <span className='th-br-4 p-1 th-bg-white'>
+            <img src={calendarIcon} className='pl-2' />
+            <DatePicker
+              disabledDate={(current) => current.isAfter(moment())}
+              allowClear={false}
+              bordered={false}
+              placement='bottomRight'
+              defaultValue={moment()}
+              onChange={(value) => handleDateChange(value)}
+              showToday={false}
+              suffixIcon={<DownOutlined className='th-black-1' />}
+              className='th-black-2 pl-0 th-date-picker'
+              format={'YYYY-MM-DD'}
+            />
+          </span>
+        </div>
         <div className='col-12'>
-          <Table
-            className='th-table'
-            rowClassName={(record, index) =>
-              index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
-            }
-            loading={loading}
-            columns={columns}
-            rowKey={(record) => record?.id}
-            dataSource={adminData}
-            pagination={false}
-            scroll={{ x: 'max-content' }}
-          />
+          <div className='row pt-2 my-2 align-items-center th-bg-white th-br-4 th-13 th-grey th-fw-500'>
+            <div className='col-md-2 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
+              <Input
+                className='th-bg-grey th-br-4'
+                placeholder='Search a student'
+                suffix={<SearchOutlined className='th-grey' />}
+                bordered={false}
+                onChange={(e) => setSearchedValue(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className='row mt-3'>
+          <div className='col-12'>
+            <Table
+              className='th-table'
+              rowClassName={(record, index) =>
+                index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+              }
+              loading={loading}
+              columns={columns}
+              rowKey={(record) => record?.id}
+              dataSource={adminData.filter(
+                (item) =>
+                  item.erp_user__name.toLowerCase().includes(searchedValue.toLowerCase()) ||
+                  item.erp_user__erp_id.toLowerCase().includes(searchedValue.toLowerCase())
+              )}
+              pagination={false}
+              scroll={{ x: 'max-content' }}
+            />
+          </div>
         </div>
       </div>
-    </div>
-  </Layout>
+    </Layout>
   );
 };
 
