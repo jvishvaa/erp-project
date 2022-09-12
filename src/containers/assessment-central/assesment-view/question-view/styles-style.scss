@@ -22,33 +22,33 @@
   .comprehension-question-header-container {
     display: flex;
     justify-content: space-between;
-    padding: 1rem;
-    color: $secondary-color;
-    font-size: 1.2rem;
-    background: linear-gradient(
-      90deg,
-      rgba(246, 210, 255, 1) 20%,
-      rgba(254, 216, 217, 1) 80%
-    );
+    // padding: 1rem;
+    // color: $secondary-color;
+    font-size: 1rem;
+    // background: linear-gradient(
+    //   90deg,
+    //   rgba(246, 210, 255, 1) 20%,
+    //   rgba(254, 216, 217, 1) 80%
+    // );
     align-items: center;
-    border-radius: 10px;
+    // border-radius: 10px;
     margin: 10px 0;
   }
 
   .matrix-container {
     .matrix-columns {
-      border: 1px solid $secondary-color;
-      padding: 1rem;
-      border-radius: 10px;
+      // border: 1px solid $secondary-color;
+      // padding: 1rem;
+      // border-radius: 10px;
       display: flex;
       flex-wrap: wrap;
       .matrix-column {
         width: 45%;
         display: flex;
-        padding: 10px;
-        background-color: #def2ff;
+        // padding: 10px;
+        // background-color: #def2ff;
         margin: 0.5rem;
-        border-radius: 10px;
+        // border-radius: 10px;
       }
     }
   }
@@ -56,9 +56,9 @@
   .true-false-container {
     .true-false-option {
       width: 30%;
-      background-color: #ffffff;
-      border-radius: 8px;
-      padding: 0.5rem;
+      // background-color: #ffffff;
+      // border-radius: 8px;
+      // padding: 0.5rem;
       display: flex;
       justify-content: center;
     }

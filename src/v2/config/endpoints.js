@@ -11,7 +11,7 @@ const {
     msOriginUrl,
     msReportsUrlNew,
   },
-  s3: { BUCKET: s3BUCKET, ERP_BUCKET },
+  s3: { BUCKET: s3BUCKET, ERP_BUCKET, CENTRAL_BUCKET: CENTRAL_BUCKET },
 } = ENVCONFIG;
 
 export default {
@@ -117,6 +117,14 @@ export default {
     generalDiaryUsers: '/academic/general-dairy-users/',
     assignHomeworkDiary: '/academic/assign-homework-dairy/',
   },
+  lessonPlan: {
+    subjects: 'academic/lesson-plan-subjects/',
+    volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
+  },
+  homework: {
+    resourcesFiles: `${CENTRAL_BUCKET}`,
+  },
+
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
