@@ -17,29 +17,32 @@ const useStyles = makeStyles((theme) => ({
   rootViewMore: theme.rootViewMore,
   assesmentQuestions: {
     fontSize: '1.1rem',
-    color: `${theme.palette.secondary.main} !important`,
+    // color: `${theme.palette.secondary.main} !important`,
+    color: 'orange',
     display: 'flex',
     justifyContent: 'space-between',
-    marginLeft: '15px !important',
+    // marginLeft: '15px !important',
   },
   assesmentAnswers: {
     fontSize: '1.1rem',
-    color: `${theme.palette.secondary.main} !important`,
+    // color: `${theme.palette.secondary.main} !important`,
+    color: 'orange',
     display: 'flex',
     justifyContent: 'space-between',
   },
   resourceBulkDownload: {
     fontSize: '1.1rem',
-    color: `${theme.palette.secondary.main} !important`,
+    // color: `${theme.palette.secondary.main} !important`,
+    color: 'orange',
     display: 'flex',
     justifyContent: 'space-between',
   },
   questionContainer: {
-    border: '1px solid #dbdbdb',
-    padding: '1rem',
+    // border: '1px solid #dbdbdb',
+    // padding: '5px',
     fontSize: '0.9rem',
-    borderRadius: '10px',
-    margin: '1rem 0',
+    // borderRadius: '10px',
+    // margin: '1rem 0',
     color: theme.palette.secondary.main,
     wordWrap: 'break-word',
   },
@@ -60,9 +63,8 @@ const ViewMoreCard = ({
   const Data = periodDataForView?.question_answer;
   const history = useHistory();
   const getS3DomainURL = (fileSrc) => {
-    return `${
-      viewMoreData?.parent?.is_central ? endpoints.s3 : endpoints.assessmentErp.s3
-    }/${fileSrc}`;
+    return `${viewMoreData?.parent?.is_central ? endpoints.s3 : endpoints.assessmentErp.s3
+      }/${fileSrc}`;
   };
   const resolveQuestionTypeName = (type) => {
     switch (type) {
@@ -217,99 +219,98 @@ const ViewMoreCard = ({
             </IconButton>
           </div>
           {periodDataForView.is_central ? null : (
-            <div className='headerContent' onClick={handleEdit}>
-              <a>Edit Details</a>
+            <div className='headerContent' style={{ border: '1px solid black', borderRadius: '10px' }} onClick={handleEdit}>
+              <a style={{ marginLeft: '5px', marginRight: '5px' }}>Edit Details</a>
             </div>
           )}
         </div>
       </div>
-      <div className={classes.assesmentQuestions}>Questions</div>
-      <div className='divider'>{/* <Divider/> */}</div>
+      {/* <div className='divider'><Divider/></div> */}
 
       <div className='viewMoreBody'>
+        <div className={classes.assesmentQuestions}>Questions</div>
         {(periodDataForView.question_type == 1 ||
           periodDataForView.question_type == 2) && (
-          <div className='mcq-container'>
-            <div className={classes.questionContainer}>
-              {Data?.map((p) => (
-                <div>
-                  {ReactHtmlParser(p?.question)}
+            <div className='mcq-container'>
+              <div className={classes.questionContainer}>
+                {Data?.map((p) => (
                   <div>
-                    {p?.question?.split('"').filter((str) => str.startsWith('https'))
-                      ?.length > 0 && (
-                      <a
-                        onClick={() => {
-                          openPreview({
-                            currentAttachmentIndex: 0,
-                            attachmentsArray: (() => {
-                              let newArray = p?.question?.split('"');
-                              let filtered = newArray.filter((str) =>
-                                str.startsWith('https')
-                              );
-                              const images = filtered || {};
-                              const attachmentsArray = [];
-                              images.forEach((image) => {
-                                const attachmentObj = {
-                                  src: image,
-                                  name: `${image}`.split('.').slice(0, -1).join('.'),
-                                  extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-                                };
-                                attachmentsArray.push(attachmentObj);
+                    {ReactHtmlParser(p?.question)}
+                    <div>
+                      {p?.question?.split('"').filter((str) => str.startsWith('https'))
+                        ?.length > 0 && (
+                          <a
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: (() => {
+                                  let newArray = p?.question?.split('"');
+                                  let filtered = newArray.filter((str) =>
+                                    str.startsWith('https')
+                                  );
+                                  const images = filtered || {};
+                                  const attachmentsArray = [];
+                                  images.forEach((image) => {
+                                    const attachmentObj = {
+                                      src: image,
+                                      name: `${image}`.split('.').slice(0, -1).join('.'),
+                                      extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                    };
+                                    attachmentsArray.push(attachmentObj);
+                                  });
+                                  return attachmentsArray;
+                                })(),
                               });
-                              return attachmentsArray;
-                            })(),
-                          });
-                        }}
-                      >
-                        <SvgIcon component={() => <VisibilityIcon />} />
-                      </a>
+                            }}
+                          >
+                            <SvgIcon component={() => <VisibilityIcon />} />
+                          </a>
+                        )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className={classes.resourceBulkDownload}>Options</div>
+              <div>
+                {Data?.[0]?.options?.map((obj, i) => (
+                  <div className={classes.questionContainer}>
+                    {`OPTION${i + 1}:   ${obj[`option${i + 1}`]?.optionValue}`}
+                    {`${obj[`option${i + 1}`]?.images}`?.length > 0 && (
+                      <div>
+                        <a
+                          onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: (() => {
+                                const images =
+                                  `${obj[`option${i + 1}`]?.images}`.split(',') || {};
+                                const attachmentsArray = [];
+                                images.forEach((image) => {
+                                  const attachmentObj = {
+                                    src: getS3DomainURL(image),
+                                    name: `${image}`.split('.').slice(0, -1).join('.'),
+                                    extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                  };
+                                  attachmentsArray.push(attachmentObj);
+                                });
+                                return attachmentsArray;
+                              })(),
+                            });
+                          }}
+                        >
+                          <SvgIcon component={() => <VisibilityIcon />} />
+                        </a>
+                      </div>
                     )}
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
+              <div className={classes.assesmentAnswers}>Answers</div>
+              <div className={classes.questionContainer}>
+                {Data[0]?.answer?.map((obj, i) => <div>{obj}</div>) || ''}
+              </div>
             </div>
-
-            <div className={classes.assesmentAnswers}>Answers</div>
-            <div className={classes.questionContainer}>
-              {Data[0]?.answer?.map((obj, i) => <div>{obj}</div>) || ''}
-            </div>
-            <div className={classes.resourceBulkDownload}>Options</div>
-            <div>
-              {Data?.[0]?.options?.map((obj, i) => (
-                <div className={classes.questionContainer}>
-                  {`OPTION${i + 1}:   ${obj[`option${i + 1}`]?.optionValue}`}
-                  {`${obj[`option${i + 1}`]?.images}`?.length > 0 && (
-                    <div>
-                      <a
-                        onClick={() => {
-                          openPreview({
-                            currentAttachmentIndex: 0,
-                            attachmentsArray: (() => {
-                              const images =
-                                `${obj[`option${i + 1}`]?.images}`.split(',') || {};
-                              const attachmentsArray = [];
-                              images.forEach((image) => {
-                                const attachmentObj = {
-                                  src: getS3DomainURL(image),
-                                  name: `${image}`.split('.').slice(0, -1).join('.'),
-                                  extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-                                };
-                                attachmentsArray.push(attachmentObj);
-                              });
-                              return attachmentsArray;
-                            })(),
-                          });
-                        }}
-                      >
-                        <SvgIcon component={() => <VisibilityIcon />} />
-                      </a>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
+          )}
 
         {periodDataForView?.question_type === 3 && (
           <div className='ccc'>
@@ -319,53 +320,40 @@ const ViewMoreCard = ({
                   {ReactHtmlParser(p.question)}
                   {p?.question?.split('"').filter((str) => str.startsWith('https'))
                     ?.length > 0 && (
-                    <div>
-                      <a
-                        onClick={() => {
-                          openPreview({
-                            currentAttachmentIndex: 0,
-                            attachmentsArray: (() => {
-                              let newArray = p?.question?.split('"');
-                              let filtered = newArray.filter((str) =>
-                                str.startsWith('https')
-                              );
-                              const images = filtered || {};
-                              const attachmentsArray = [];
-                              images.forEach((image) => {
-                                const attachmentObj = {
-                                  src: image,
-                                  name: `${image}`.split('.').slice(0, -1).join('.'),
-                                  extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-                                };
-                                attachmentsArray.push(attachmentObj);
-                              });
-                              return attachmentsArray;
-                            })(),
-                          });
-                        }}
-                      >
-                        <SvgIcon component={() => <VisibilityIcon />} />
-                      </a>
-                    </div>
-                  )}
+                      <div>
+                        <a
+                          onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: (() => {
+                                let newArray = p?.question?.split('"');
+                                let filtered = newArray.filter((str) =>
+                                  str.startsWith('https')
+                                );
+                                const images = filtered || {};
+                                const attachmentsArray = [];
+                                images.forEach((image) => {
+                                  const attachmentObj = {
+                                    src: image,
+                                    name: `${image}`.split('.').slice(0, -1).join('.'),
+                                    extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                  };
+                                  attachmentsArray.push(attachmentObj);
+                                });
+                                return attachmentsArray;
+                              })(),
+                            });
+                          }}
+                        >
+                          <SvgIcon component={() => <VisibilityIcon />} />
+                        </a>
+                      </div>
+                    )}
                 </div>
               ))}
             </div>
 
-            <div className={classes.assesmentAnswers}>Answers</div>
-            {/* <Divider className='secondary-divider' /> */}
-            <div>
-              {Data?.[0]?.questionAnswer?.map((obj, index) => (
-                <>
-                  <div style={{ display: 'flex' }} className={classes.questionContainer}>
-                    <div className='option'>{obj?.answer}</div>
-                    <div className='option' style={{ marginLeft: '2rem' }}>
-                      {obj.question}
-                    </div>
-                  </div>
-                </>
-              ))}
-            </div>
+
 
             <div className={classes.resourceBulkDownload}>Options</div>
             <div>
@@ -433,6 +421,21 @@ const ViewMoreCard = ({
                     </div>
                   )}
                 </div>
+              ))}
+            </div>
+
+            <div className={classes.assesmentAnswers}>Answers</div>
+            {/* <Divider className='secondary-divider' /> */}
+            <div>
+              {Data?.[0]?.questionAnswer?.map((obj, index) => (
+                <>
+                  <div style={{ display: 'flex' }} className={classes.questionContainer}>
+                    <div className='option'>{obj?.answer}</div>
+                    <div className='option' style={{ marginLeft: '2rem' }}>
+                      {obj.question}
+                    </div>
+                  </div>
+                </>
               ))}
             </div>
           </div>
@@ -521,9 +524,8 @@ const ViewMoreCard = ({
                                                 .split('.')
                                                 .slice(0, -1)
                                                 .join('.'),
-                                              extension: `.${
-                                                `${image}`.split('.').slice(-1)[0]
-                                              }`,
+                                              extension: `.${`${image}`.split('.').slice(-1)[0]
+                                                }`,
                                             };
                                             attachmentsArray.push(attachmentObj);
                                           });
@@ -557,12 +559,7 @@ const ViewMoreCard = ({
                             )}
                           </div>
                         </div>
-                        <div className={classes.assesmentAnswers}>Answers</div>
-                        <div className={classes.questionContainer}>
-                          {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
-                            <div>{obj}</div>
-                          ))}
-                        </div>
+
                         <div className={classes.resourceBulkDownload}>Options</div>
                         <div className={classes.questionContainer}>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => {
@@ -573,6 +570,12 @@ const ViewMoreCard = ({
                               </div>
                             );
                           })}
+                        </div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
+                        <div className={classes.questionContainer}>
+                          {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
+                            <div>{obj}</div>
+                          ))}
                         </div>
                       </div>
                     </>
@@ -592,24 +595,7 @@ const ViewMoreCard = ({
                             )}
                           </div>
                         </div>
-                        <div className={classes.assesmentAnswers}>Answers</div>
-                        <div>
-                          {childQuestions?.question_answer[0]?.questionAnswer?.map(
-                            (obj, index) => (
-                              <>
-                                <div
-                                  style={{ display: 'flex' }}
-                                  className={classes.questionContainer}
-                                >
-                                  <div className='option'>{obj?.answer}</div>
-                                  <div className='option' style={{ marginLeft: '2rem' }}>
-                                    {obj?.question}
-                                  </div>
-                                </div>
-                              </>
-                            )
-                          )}
-                        </div>
+
 
                         <div className={classes.resourceBulkDownload}>Options</div>
                         <div>
@@ -632,9 +618,8 @@ const ViewMoreCard = ({
                                                 .split('.')
                                                 .slice(0, -1)
                                                 .join('.'),
-                                              extension: `.${
-                                                `${image}`.split('.').slice(-1)[0]
-                                              }`,
+                                              extension: `.${`${image}`.split('.').slice(-1)[0]
+                                                }`,
                                             };
                                             attachmentsArray.push(attachmentObj);
                                           });
@@ -660,6 +645,24 @@ const ViewMoreCard = ({
                             )
                           )}
                         </div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
+                        <div>
+                          {childQuestions?.question_answer[0]?.questionAnswer?.map(
+                            (obj, index) => (
+                              <>
+                                <div
+                                  style={{ display: 'flex' }}
+                                  className={classes.questionContainer}
+                                >
+                                  <div className='option'>{obj?.answer}</div>
+                                  <div className='option' style={{ marginLeft: '2rem' }}>
+                                    {obj?.question}
+                                  </div>
+                                </div>
+                              </>
+                            )
+                          )}
+                        </div>
                       </div>
                     </>
                   );
@@ -678,24 +681,7 @@ const ViewMoreCard = ({
                             )}
                           </div>
                         </div>
-                        <div className={classes.assesmentAnswers}>Answers</div>
-                        <div>
-                          {childQuestions?.question_answer[0]?.questionAnswer?.map(
-                            (obj, index) => (
-                              <>
-                                <div
-                                  style={{ display: 'flex' }}
-                                  className={classes.questionContainer}
-                                >
-                                  <div className='option'>{obj?.answer}</div>
-                                  <div className='option' style={{ marginLeft: '2rem' }}>
-                                    {obj.question}
-                                  </div>
-                                </div>
-                              </>
-                            )
-                          )}
-                        </div>
+
                         <div className={classes.resourceBulkDownload}>Options</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
@@ -717,9 +703,8 @@ const ViewMoreCard = ({
                                                 .split('.')
                                                 .slice(0, -1)
                                                 .join('.'),
-                                              extension: `.${
-                                                `${image}`.split('.').slice(-1)[0]
-                                              }`,
+                                              extension: `.${`${image}`.split('.').slice(-1)[0]
+                                                }`,
                                             };
                                             attachmentsArray.push(attachmentObj);
                                           });
@@ -757,9 +742,8 @@ const ViewMoreCard = ({
                                                   .split('.')
                                                   .slice(0, -1)
                                                   .join('.'),
-                                                extension: `.${
-                                                  `${image}`.split('.').slice(-1)[0]
-                                                }`,
+                                                extension: `.${`${image}`.split('.').slice(-1)[0]
+                                                  }`,
                                               };
                                               attachmentsArray.push(attachmentObj);
                                             });
@@ -773,6 +757,24 @@ const ViewMoreCard = ({
                                   </div>
                                 )}
                               </div>
+                            )
+                          )}
+                        </div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
+                        <div>
+                          {childQuestions?.question_answer[0]?.questionAnswer?.map(
+                            (obj, index) => (
+                              <>
+                                <div
+                                  style={{ display: 'flex' }}
+                                  className={classes.questionContainer}
+                                >
+                                  <div className='option'>{obj?.answer}</div>
+                                  <div className='option' style={{ marginLeft: '2rem' }}>
+                                    {obj.question}
+                                  </div>
+                                </div>
+                              </>
                             )
                           )}
                         </div>
@@ -802,12 +804,7 @@ const ViewMoreCard = ({
                             )}
                           </div>
                         </div>
-                        <div className={classes.assesmentAnswers}>Answers</div>
-                        <div className={classes.questionContainer}>
-                          {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
-                            <div>{obj}</div>
-                          ))}
-                        </div>
+
                         <div className={classes.resourceBulkDownload}>Options</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
@@ -832,9 +829,8 @@ const ViewMoreCard = ({
                                                 .split('.')
                                                 .slice(0, -1)
                                                 .join('.'),
-                                              extension: `.${
-                                                `${image}`.split('.').slice(-1)[0]
-                                              }`,
+                                              extension: `.${`${image}`.split('.').slice(-1)[0]
+                                                }`,
                                             };
                                             attachmentsArray.push(attachmentObj);
                                           });
@@ -848,6 +844,12 @@ const ViewMoreCard = ({
                                 </div>
                               )}
                             </div>
+                          ))}
+                        </div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
+                        <div className={classes.questionContainer}>
+                          {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
+                            <div>{obj}</div>
                           ))}
                         </div>
                       </div>
@@ -866,53 +868,40 @@ const ViewMoreCard = ({
                   {ReactHtmlParser(p.question)}
                   {p?.question?.split('"').filter((str) => str.startsWith('https'))
                     .length > 0 && (
-                    <div>
-                      <a
-                        onClick={() => {
-                          openPreview({
-                            currentAttachmentIndex: 0,
-                            attachmentsArray: (() => {
-                              let newArray = p?.question?.split('"');
-                              let filtered = newArray.filter((str) =>
-                                str.startsWith('https')
-                              );
-                              const images = filtered || {};
-                              const attachmentsArray = [];
-                              images.forEach((image) => {
-                                const attachmentObj = {
-                                  src: image,
-                                  name: `${image}`.split('.').slice(0, -1).join('.'),
-                                  extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-                                };
-                                attachmentsArray.push(attachmentObj);
-                              });
-                              return attachmentsArray;
-                            })(),
-                          });
-                        }}
-                      >
-                        <SvgIcon component={() => <VisibilityIcon />} />
-                      </a>
-                    </div>
-                  )}
+                      <div>
+                        <a
+                          onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: (() => {
+                                let newArray = p?.question?.split('"');
+                                let filtered = newArray.filter((str) =>
+                                  str.startsWith('https')
+                                );
+                                const images = filtered || {};
+                                const attachmentsArray = [];
+                                images.forEach((image) => {
+                                  const attachmentObj = {
+                                    src: image,
+                                    name: `${image}`.split('.').slice(0, -1).join('.'),
+                                    extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                  };
+                                  attachmentsArray.push(attachmentObj);
+                                });
+                                return attachmentsArray;
+                              })(),
+                            });
+                          }}
+                        >
+                          <SvgIcon component={() => <VisibilityIcon />} />
+                        </a>
+                      </div>
+                    )}
                 </div>
               ))}
             </div>
 
-            <div className={classes.assesmentAnswers}>Answers</div>
-            {/* <Divider className='secondary-divider' /> */}
-            <div>
-              {Data?.[0]?.questionAnswer?.map((obj, index) => (
-                <>
-                  <div style={{ display: 'flex' }} className={classes.questionContainer}>
-                    <div className='option'>{obj?.answer}</div>
-                    <div className='option' style={{ marginLeft: '2rem' }}>
-                      {obj.question}
-                    </div>
-                  </div>
-                </>
-              ))}
-            </div>
+
 
             <div className={classes.resourceBulkDownload}>Options</div>
             <div>
@@ -956,6 +945,20 @@ const ViewMoreCard = ({
                 </div>
               ))}
             </div>
+            <div className={classes.assesmentAnswers}>Answers</div>
+            {/* <Divider className='secondary-divider' /> */}
+            <div>
+              {Data?.[0]?.questionAnswer?.map((obj, index) => (
+                <>
+                  <div style={{ display: 'flex' }} className={classes.questionContainer}>
+                    <div className='option'>{obj?.answer}</div>
+                    <div className='option' style={{ marginLeft: '2rem' }}>
+                      {obj.question}
+                    </div>
+                  </div>
+                </>
+              ))}
+            </div>
           </div>
         )}
 
@@ -967,35 +970,35 @@ const ViewMoreCard = ({
                   {ReactHtmlParser(p?.question)}
                   {p?.question?.split('"').filter((str) => str.startsWith('https'))
                     ?.length > 0 && (
-                    <div>
-                      <a
-                        onClick={() => {
-                          openPreview({
-                            currentAttachmentIndex: 0,
-                            attachmentsArray: (() => {
-                              let newArray = p?.question?.split('"');
-                              let filtered = newArray.filter((str) =>
-                                str.startsWith('https')
-                              );
-                              const images = filtered || {};
-                              const attachmentsArray = [];
-                              images.forEach((image) => {
-                                const attachmentObj = {
-                                  src: image,
-                                  name: `${image}`.split('.').slice(0, -1).join('.'),
-                                  extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-                                };
-                                attachmentsArray.push(attachmentObj);
-                              });
-                              return attachmentsArray;
-                            })(),
-                          });
-                        }}
-                      >
-                        <SvgIcon component={() => <VisibilityIcon />} />
-                      </a>
-                    </div>
-                  )}
+                      <div>
+                        <a
+                          onClick={() => {
+                            openPreview({
+                              currentAttachmentIndex: 0,
+                              attachmentsArray: (() => {
+                                let newArray = p?.question?.split('"');
+                                let filtered = newArray.filter((str) =>
+                                  str.startsWith('https')
+                                );
+                                const images = filtered || {};
+                                const attachmentsArray = [];
+                                images.forEach((image) => {
+                                  const attachmentObj = {
+                                    src: image,
+                                    name: `${image}`.split('.').slice(0, -1).join('.'),
+                                    extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                  };
+                                  attachmentsArray.push(attachmentObj);
+                                });
+                                return attachmentsArray;
+                              })(),
+                            });
+                          }}
+                        >
+                          <SvgIcon component={() => <VisibilityIcon />} />
+                        </a>
+                      </div>
+                    )}
                 </div>
               ))}
             </div>
@@ -1017,7 +1020,6 @@ const ViewMoreCard = ({
                         </div>
 
                         <div className={classes.assesmentAnswers}>Answers</div>
-
                         <div className={classes.questionContainer}>
                           <div>
                             {ReactHtmlParser(childQuestions?.question_answer[0]?.answer)}
@@ -1071,9 +1073,8 @@ const ViewMoreCard = ({
                                                 .split('.')
                                                 .slice(0, -1)
                                                 .join('.'),
-                                              extension: `.${
-                                                `${image}`.split('.').slice(-1)[0]
-                                              }`,
+                                              extension: `.${`${image}`.split('.').slice(-1)[0]
+                                                }`,
                                             };
                                             attachmentsArray.push(attachmentObj);
                                           });
@@ -1107,12 +1108,7 @@ const ViewMoreCard = ({
                             )}
                           </div>
                         </div>
-                        <div className={classes.assesmentAnswers}>Answers</div>
-                        <div className={classes.questionContainer}>
-                          {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
-                            <div>{obj}</div>
-                          ))}
-                        </div>
+
                         <div className={classes.resourceBulkDownload}>Options</div>
                         <div className={classes.questionContainer}>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => {
@@ -1123,6 +1119,12 @@ const ViewMoreCard = ({
                               </div>
                             );
                           })}
+                        </div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
+                        <div className={classes.questionContainer}>
+                          {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
+                            <div>{obj}</div>
+                          ))}
                         </div>
                       </div>
                     </>
@@ -1142,24 +1144,7 @@ const ViewMoreCard = ({
                             )}
                           </div>
                         </div>
-                        <div className={classes.assesmentAnswers}>Answers</div>
-                        <div>
-                          {childQuestions?.question_answer[0]?.questionAnswer?.map(
-                            (obj, index) => (
-                              <>
-                                <div
-                                  style={{ display: 'flex' }}
-                                  className={classes.questionContainer}
-                                >
-                                  <div className='option'>{obj?.answer}</div>
-                                  <div className='option' style={{ marginLeft: '2rem' }}>
-                                    {obj?.question}
-                                  </div>
-                                </div>
-                              </>
-                            )
-                          )}
-                        </div>
+
 
                         <div className={classes.resourceBulkDownload}>Options</div>
                         <div>
@@ -1182,9 +1167,8 @@ const ViewMoreCard = ({
                                                 .split('.')
                                                 .slice(0, -1)
                                                 .join('.'),
-                                              extension: `.${
-                                                `${image}`.split('.').slice(-1)[0]
-                                              }`,
+                                              extension: `.${`${image}`.split('.').slice(-1)[0]
+                                                }`,
                                             };
                                             attachmentsArray.push(attachmentObj);
                                           });
@@ -1210,24 +1194,6 @@ const ViewMoreCard = ({
                             )
                           )}
                         </div>
-                      </div>
-                    </>
-                  );
-                }
-                if (childQuestions.question_type === 3) {
-                  return (
-                    <>
-                      <div className='ccc'>
-                        <div className={classes.questionContainer}>
-                          <div>
-                            <span style={{ color: 'red', fontSize: 16 }}>
-                              {`Q${indexQue + 1}`}:{' '}
-                            </span>{' '}
-                            {ReactHtmlParser(
-                              childQuestions?.question_answer[0]?.question
-                            )}
-                          </div>
-                        </div>
                         <div className={classes.assesmentAnswers}>Answers</div>
                         <div>
                           {childQuestions?.question_answer[0]?.questionAnswer?.map(
@@ -1246,6 +1212,25 @@ const ViewMoreCard = ({
                             )
                           )}
                         </div>
+                      </div>
+                    </>
+                  );
+                }
+                if (childQuestions.question_type === 3) {
+                  return (
+                    <>
+                      <div className='ccc'>
+                        <div className={classes.questionContainer}>
+                          <div>
+                            <span style={{ color: 'red', fontSize: 16 }}>
+                              {`Q${indexQue + 1}`}:{' '}
+                            </span>{' '}
+                            {ReactHtmlParser(
+                              childQuestions?.question_answer[0]?.question
+                            )}
+                          </div>
+                        </div>
+
                         <div className={classes.resourceBulkDownload}>Options</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
@@ -1267,9 +1252,8 @@ const ViewMoreCard = ({
                                                 .split('.')
                                                 .slice(0, -1)
                                                 .join('.'),
-                                              extension: `.${
-                                                `${image}`.split('.').slice(-1)[0]
-                                              }`,
+                                              extension: `.${`${image}`.split('.').slice(-1)[0]
+                                                }`,
                                             };
                                             attachmentsArray.push(attachmentObj);
                                           });
@@ -1307,9 +1291,8 @@ const ViewMoreCard = ({
                                                   .split('.')
                                                   .slice(0, -1)
                                                   .join('.'),
-                                                extension: `.${
-                                                  `${image}`.split('.').slice(-1)[0]
-                                                }`,
+                                                extension: `.${`${image}`.split('.').slice(-1)[0]
+                                                  }`,
                                               };
                                               attachmentsArray.push(attachmentObj);
                                             });
@@ -1323,6 +1306,24 @@ const ViewMoreCard = ({
                                   </div>
                                 )}
                               </div>
+                            )
+                          )}
+                        </div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
+                        <div>
+                          {childQuestions?.question_answer[0]?.questionAnswer?.map(
+                            (obj, index) => (
+                              <>
+                                <div
+                                  style={{ display: 'flex' }}
+                                  className={classes.questionContainer}
+                                >
+                                  <div className='option'>{obj?.answer}</div>
+                                  <div className='option' style={{ marginLeft: '2rem' }}>
+                                    {obj?.question}
+                                  </div>
+                                </div>
+                              </>
                             )
                           )}
                         </div>
@@ -1352,12 +1353,7 @@ const ViewMoreCard = ({
                             )}
                           </div>
                         </div>
-                        <div className={classes.assesmentAnswers}>Answers</div>
-                        <div className={classes.questionContainer}>
-                          {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
-                            <div>{obj}</div>
-                          ))}
-                        </div>
+
                         <div className={classes.resourceBulkDownload}>Options</div>
                         <div>
                           {childQuestions?.question_answer[0]?.options?.map((obj, i) => (
@@ -1382,9 +1378,8 @@ const ViewMoreCard = ({
                                                 .split('.')
                                                 .slice(0, -1)
                                                 .join('.'),
-                                              extension: `.${
-                                                `${image}`.split('.').slice(-1)[0]
-                                              }`,
+                                              extension: `.${`${image}`.split('.').slice(-1)[0]
+                                                }`,
                                             };
                                             attachmentsArray.push(attachmentObj);
                                           });
@@ -1398,6 +1393,12 @@ const ViewMoreCard = ({
                                 </div>
                               )}
                             </div>
+                          ))}
+                        </div>
+                        <div className={classes.assesmentAnswers}>Answers</div>
+                        <div className={classes.questionContainer}>
+                          {childQuestions?.question_answer[0]?.answer?.map((obj, i) => (
+                            <div>{obj}</div>
                           ))}
                         </div>
                       </div>
@@ -1417,42 +1418,39 @@ const ViewMoreCard = ({
                     {ReactHtmlParser(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
                       ?.length > 0 && (
-                      <div>
-                        <a
-                          onClick={() => {
-                            openPreview({
-                              currentAttachmentIndex: 0,
-                              attachmentsArray: (() => {
-                                let newArray = p?.question?.split('"');
-                                let filtered = newArray.filter((str) =>
-                                  str.startsWith('https')
-                                );
-                                const images = filtered || {};
-                                const attachmentsArray = [];
-                                images.forEach((image) => {
-                                  const attachmentObj = {
-                                    src: image,
-                                    name: `${image}`.split('.').slice(0, -1).join('.'),
-                                    extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-                                  };
-                                  attachmentsArray.push(attachmentObj);
-                                });
-                                return attachmentsArray;
-                              })(),
-                            });
-                          }}
-                        >
-                          <SvgIcon component={() => <VisibilityIcon />} />
-                        </a>
-                      </div>
-                    )}
+                        <div>
+                          <a
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: (() => {
+                                  let newArray = p?.question?.split('"');
+                                  let filtered = newArray.filter((str) =>
+                                    str.startsWith('https')
+                                  );
+                                  const images = filtered || {};
+                                  const attachmentsArray = [];
+                                  images.forEach((image) => {
+                                    const attachmentObj = {
+                                      src: image,
+                                      name: `${image}`.split('.').slice(0, -1).join('.'),
+                                      extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                    };
+                                    attachmentsArray.push(attachmentObj);
+                                  });
+                                  return attachmentsArray;
+                                })(),
+                              });
+                            }}
+                          >
+                            <SvgIcon component={() => <VisibilityIcon />} />
+                          </a>
+                        </div>
+                      )}
                   </div>
                 ))}
             </div>
-            <div className={classes.assesmentAnswers}>Answers</div>
-            <div className={classes.questionContainer}>
-              {Data && Data?.[0]?.answer.map((obj, i) => <div>{obj}</div>)}
-            </div>
+
             <div className={classes.resourceBulkDownload}>Options</div>
             <div className={classes.questionContainer}>
               {Data &&
@@ -1464,6 +1462,10 @@ const ViewMoreCard = ({
                     </div>
                   );
                 })}
+            </div>
+            <div className={classes.assesmentAnswers}>Answers</div>
+            <div className={classes.questionContainer}>
+              {Data && Data?.[0]?.answer.map((obj, i) => <div>{obj}</div>)}
             </div>
           </div>
         )}
@@ -1477,35 +1479,35 @@ const ViewMoreCard = ({
                     {ReactHtmlParser(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
                       ?.length > 0 && (
-                      <div>
-                        <a
-                          onClick={() => {
-                            openPreview({
-                              currentAttachmentIndex: 0,
-                              attachmentsArray: (() => {
-                                let newArray = p?.question?.split('"');
-                                let filtered = newArray.filter((str) =>
-                                  str.startsWith('https')
-                                );
-                                const images = filtered || {};
-                                const attachmentsArray = [];
-                                images.forEach((image) => {
-                                  const attachmentObj = {
-                                    src: image,
-                                    name: `${image}`.split('.').slice(0, -1).join('.'),
-                                    extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-                                  };
-                                  attachmentsArray.push(attachmentObj);
-                                });
-                                return attachmentsArray;
-                              })(),
-                            });
-                          }}
-                        >
-                          <SvgIcon component={() => <VisibilityIcon />} />
-                        </a>
-                      </div>
-                    )}
+                        <div>
+                          <a
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: (() => {
+                                  let newArray = p?.question?.split('"');
+                                  let filtered = newArray.filter((str) =>
+                                    str.startsWith('https')
+                                  );
+                                  const images = filtered || {};
+                                  const attachmentsArray = [];
+                                  images.forEach((image) => {
+                                    const attachmentObj = {
+                                      src: image,
+                                      name: `${image}`.split('.').slice(0, -1).join('.'),
+                                      extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                    };
+                                    attachmentsArray.push(attachmentObj);
+                                  });
+                                  return attachmentsArray;
+                                })(),
+                              });
+                            }}
+                          >
+                            <SvgIcon component={() => <VisibilityIcon />} />
+                          </a>
+                        </div>
+                      )}
                   </div>
                 ))}
             </div>
@@ -1556,35 +1558,35 @@ const ViewMoreCard = ({
                     {ReactHtmlParser(p.question)}
                     {p?.question?.split('"').filter((str) => str.startsWith('https'))
                       ?.length > 0 && (
-                      <div>
-                        <a
-                          onClick={() => {
-                            openPreview({
-                              currentAttachmentIndex: 0,
-                              attachmentsArray: (() => {
-                                let newArray = p?.question?.split('"');
-                                let filtered = newArray.filter((str) =>
-                                  str.startsWith('https')
-                                );
-                                const images = filtered || {};
-                                const attachmentsArray = [];
-                                images.map((image) => {
-                                  const attachmentObj = {
-                                    src: image,
-                                    name: `${image}`.split('.').slice(0, -1).join('.'),
-                                    extension: `.${`${image}`.split('.').slice(-1)[0]}`,
-                                  };
-                                  attachmentsArray.push(attachmentObj);
-                                });
-                                return attachmentsArray;
-                              })(),
-                            });
-                          }}
-                        >
-                          <SvgIcon component={() => <VisibilityIcon />} />
-                        </a>
-                      </div>
-                    )}
+                        <div>
+                          <a
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: (() => {
+                                  let newArray = p?.question?.split('"');
+                                  let filtered = newArray.filter((str) =>
+                                    str.startsWith('https')
+                                  );
+                                  const images = filtered || {};
+                                  const attachmentsArray = [];
+                                  images.map((image) => {
+                                    const attachmentObj = {
+                                      src: image,
+                                      name: `${image}`.split('.').slice(0, -1).join('.'),
+                                      extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                    };
+                                    attachmentsArray.push(attachmentObj);
+                                  });
+                                  return attachmentsArray;
+                                })(),
+                              });
+                            }}
+                          >
+                            <SvgIcon component={() => <VisibilityIcon />} />
+                          </a>
+                        </div>
+                      )}
                   </div>
                 ))}
             </div>
@@ -1598,15 +1600,15 @@ const ViewMoreCard = ({
         )}
       </div>
       {viewMoreData?.parent?.is_central ? null : (
-        <div style={{ margin: '5px 15px 15px 15px' }}>
+        <div style={{ margin: '5px 15px 15px 15px', display: 'flex' }}>
           {viewMoreData?.parent?.question_status == 2 ||
-          viewMoreData?.parent?.question_status == 3 ? (
+            viewMoreData?.parent?.question_status == 3 ? (
             <Button
               style={{ margin: '0.5rem', color: 'white', width: '100%' }}
               onClick={(e) => handleDelete(viewMoreData)}
               color='secondary'
               variant='contained'
-              size='medium'
+              size='small'
             >
               REJECT
             </Button>
@@ -1617,7 +1619,7 @@ const ViewMoreCard = ({
               onClick={(e) => handlePublish(viewMoreData)}
               color='primary'
               variant='contained'
-              size='medium'
+              size='small'
             >
               PUBLISH
             </Button>

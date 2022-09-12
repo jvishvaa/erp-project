@@ -22,17 +22,17 @@
   .comprehension-question-header-container {
     display: flex;
     justify-content: space-between;
-    padding: 1rem;
-    color: $secondary-color;
-    font-size: 1.2rem;
-    background: linear-gradient(
-      90deg,
-      rgba(246, 210, 255, 1) 20%,
-      rgba(254, 216, 217, 1) 80%
-    );
+    // padding: 1rem;
+    // color: $secondary-color;
+    font-size: 1rem;
+    // background: linear-gradient(
+    //   90deg,
+    //   rgba(246, 210, 255, 1) 20%,
+    //   rgba(254, 216, 217, 1) 80%
+    // );
     align-items: center;
-    border-radius: 10px;
-    margin: 10px 0;
+    // border-radius: 10px;
+    // margin: 10px 0;
   }
   .question-header,
   .answers-header {
@@ -43,10 +43,10 @@
   .answers-container {
     .options-container {
       .option {
-        background-color: #f3f3f3;
-        padding: 1rem;
-        margin: 1rem 0;
-        border-radius: 10px;
+        // background-color: #f3f3f3;
+        // padding: 1rem;
+        // margin: 1rem 0;
+        // border-radius: 10px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -54,10 +54,10 @@
     }
   }
   .question-container {
-    border: 1px solid #dbdbdb;
-    padding: 1rem;
+    // border: 1px solid #dbdbdb;
+    // padding: 1rem;
     font-size: 0.9rem;
-    border-radius: 10px;
+    // border-radius: 10px;
     margin: 1rem 0;
     // word-wrap: break-word;
 
@@ -65,18 +65,18 @@
 
   .matrix-container {
     .matrix-columns {
-      border: 1px solid $secondary-color;
+      // border: 1px solid $secondary-color;
       padding: 1rem;
-      border-radius: 10px;
+      // border-radius: 10px;
       display: flex;
       flex-wrap: wrap;
       .matrix-column {
         width: 45%;
         display: flex;
         padding: 10px;
-        background-color: #def2ff;
+        // background-color: #def2ff;
         margin: 0.5rem;
-        border-radius: 10px;
+        // border-radius: 10px;
       }
     }
   }
@@ -84,9 +84,9 @@
   .true-false-container {
     .true-false-option {
       width: 30%;
-      background-color: #ffffff;
-      border-radius: 8px;
-      padding: 0.5rem;
+      // background-color: #ffffff;
+      // border-radius: 8px;
+      // padding: 0.5rem;
       display: flex;
       justify-content: center;
     }
