@@ -3,6 +3,7 @@ import Layout from 'containers/Layout';
 import { Breadcrumb, Tabs, Select } from 'antd';
 import PeriodView from './PeriodView';
 import AnnualPlan from './AnnualPlan';
+import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 const { TabPane } = Tabs;
 
 const LessonPlan = () => {
@@ -24,7 +25,7 @@ const LessonPlan = () => {
   return (
     <React.Fragment>
       <Layout>
-        {' '}
+        <FeeReminder />{' '}
         <div className='row py-3 px-2'>
           <div className='col-md-8' style={{ zIndex: 2 }}>
             <Breadcrumb separator='>'>

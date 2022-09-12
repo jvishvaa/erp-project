@@ -17,6 +17,7 @@ import {
   CloseOutlined,
   CaretRightOutlined,
   DownloadOutlined,
+  EyeFilled,
 } from '@ant-design/icons';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import pptFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/pptFileIcon.svg';
@@ -44,6 +45,8 @@ const { Panel } = Collapse;
 const getFileIcon = (type) => {
   switch (type) {
     case 'ppt':
+      return pptFileIcon;
+    case 'pptx':
       return pptFileIcon;
     case 'jpeg':
       return imageFileIcon;
@@ -100,61 +103,12 @@ const TableView = () => {
   const [keyConceptsData, setKeyConceptsData] = useState([]);
   const [selectedChapter, setSelectedChapter] = useState([]);
   const [selectedKeyConcept, setSelectedKeyConcept] = useState([]);
-  const [resourcesData, setResourcesData] = useState([
-    {
-      id: 1560,
-      lp_files: [
-        {
-          id: 15139,
-          lesson_id: 1560,
-          document_type: 'Video',
-          file_name: '',
-          media_file: [
-            'dev/lesson_plan_file/38/48/183/666/video/1658469999_big_buck_bunny_720p_1mb.mp4',
-            'dev/lesson_plan_file/38/48/183/666/video/1659510763_big_buck_bunny_720p_1mb.mp4',
-          ],
-          question_papers: [],
-          is_quiz: false,
-        },
-        {
-          id: 15138,
-          lesson_id: 1560,
-          document_type: '',
-          file_name: '',
-          media_file: [],
-          question_papers: [],
-          is_quiz: false,
-        },
-      ],
-      period_name: 'Period-1',
-      created_at: '2022-07-22T05:58:09.363255Z',
-      updated_at: '2022-07-22T05:58:09.363308Z',
-      completed_sections: [
-        {
-          id: 3087,
-          section__section_name: 'SecA',
-        },
-        {
-          id: 3088,
-          section__section_name: 'sec B',
-        },
-      ],
-      all_sections: [
-        {
-          id: 3088,
-          section__section_name: 'sec B',
-        },
-        {
-          id: 3087,
-          section__section_name: 'SecA',
-        },
-      ],
-    },
-  ]);
+  const [resourcesData, setResourcesData] = useState([]);
   const [completeSections, setCompleteSections] = useState([]);
   const [showError, setShowError] = useState(false);
   const [loadingDrawer, setLoadingDrawer] = useState(false);
   const [completionCheck, setCompletionCheck] = useState(false);
+  const [currentPeriodId, setCurrentPeriodId] = useState('');
 
   const showDrawer = () => {
     setDrawerVisible(true);
@@ -248,6 +202,9 @@ const TableView = () => {
       .then((result) => {
         if (result?.data?.status === 200) {
           setAnnualPlanData(result?.data?.data);
+          setLoading(false);
+        } else {
+          setAnnualPlanData([]);
           setLoading(false);
         }
       })
@@ -440,6 +397,7 @@ const TableView = () => {
       setShowError(true);
     }
   };
+
   useEffect(() => {
     if (moduleId) {
       fetchGradeData();
@@ -477,14 +435,21 @@ const TableView = () => {
       setVolumeId(history?.location?.state?.volumeID);
       setVolumeName(history?.location?.state?.volumeName);
       setBoardId(history?.location?.state?.boardID);
+      if (user_level == 13) {
+        fetchSubjectData({
+          session_year: selectedAcademicYear?.id,
+          branch_id: selectedBranch?.branch?.id,
+          module_id: moduleId,
+          grade_id: history?.location?.state?.gradeID,
+        });
+      }
     }
     fetchModuleListData({
       subject_id: history?.location?.state?.subjectID,
       volume: history?.location?.state?.volumeID,
       academic_year: history?.location?.state?.centralAcademicYearID,
       grade_id: history?.location?.state?.gradeID,
-      branch_id: 188,
-      // branch_id: selectedBranch?.branch?.id,
+      branch_id: selectedBranch?.branch?.id,
       board: history?.location?.state?.boardID,
     });
   }, []);
@@ -495,8 +460,9 @@ const TableView = () => {
       setSelectedModuleId(allModules);
     }
   }, [moduleListData]);
+
   useEffect(() => {
-    if (selectedModuleId.length > 0) {
+    if (subjectId && volumeId && selectedModuleId.length > 0) {
       fetchAnnualPlanData({
         module_id: selectedModuleId,
         subject_id: subjectId,
@@ -506,15 +472,16 @@ const TableView = () => {
         board_id: boardId,
       });
     }
-  }, [selectedModuleId]);
+  }, [selectedModuleId, subjectId, volumeId]);
 
-  const expandedRowRender = () => {
+  const expandedRowRender = (record) => {
+    console.log('InnerTable', record);
     const innerColumn = [
       {
         title: '',
         dataIndex: '',
         align: 'center',
-        width: '15%',
+        width: '10%',
       },
       {
         title: '',
@@ -526,12 +493,12 @@ const TableView = () => {
         title: '',
         dataIndex: '',
         align: 'center',
-        width: '20%',
+        width: '25%',
       },
       {
         title: '',
         dataIndex: 'key_concept__topic_name',
-        align: 'left',
+        align: 'center',
         width: tableWidthCalculator(25) + '%',
         render: (text, row, index) => (
           <span
@@ -575,9 +542,9 @@ const TableView = () => {
   };
   const columns = [
     {
-      title: <span className='th-white pl-4 th-fw-700 '>CHAPTER NO.</span>,
+      title: <span className='th-white pl-md-4 th-fw-700 '>SL NO.</span>,
       align: 'center',
-      width: '15%',
+      width: '10%',
       render: (text, row, index) => <span className='th-black-1'>{index + 1}.</span>,
     },
 
@@ -591,7 +558,7 @@ const TableView = () => {
     {
       title: <span className='th-white th-fw-700'>MODULE</span>,
       dataIndex: 'chapter__lt_module__lt_module_name',
-      width: '20%',
+      width: '25%',
       align: 'left',
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
@@ -610,7 +577,6 @@ const TableView = () => {
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
   ];
-  console.log('kkk', completionCheck);
   return (
     <div className='row'>
       <div className='col-12 mb-2'>
@@ -690,7 +656,7 @@ const TableView = () => {
               </Form.Item>
             </div>
             <div className='col-md-3 col-6 pr-0 px-0 pl-md-3'>
-              <div className='mb-2 text-left'>Module</div>
+              <div className='text-left pb-2'>Module</div>
               <Select
                 placeholder='Select Module'
                 showSearch
@@ -705,7 +671,7 @@ const TableView = () => {
                   handleModule(value);
                 }}
                 onClear={handleClearModule}
-                className='w-100 text-left th-black-1 th-bg-white th-br-4'
+                className='w-100 text-left th-black-1 th-bg-white th-br-4 mb-2'
                 bordered={false}
               >
                 <Option key='0' value='All'>
@@ -739,7 +705,7 @@ const TableView = () => {
               <DownOutlined className='th-black-1' onClick={(e) => onExpand(record, e)} />
             )
           }
-          scroll={{ x: 'max-content' }}
+          scroll={{ x: 'max-content', y: 600 }}
         />
       </div>
       <div>
@@ -751,7 +717,7 @@ const TableView = () => {
           visible={drawerVisible}
           // visible={true}
           closable={false}
-          width={'450px'}
+          width={window.innerWidth < 768 ? '90vw' : '450px'}
           className='th-resources-drawer'
           extra={
             <Space>
@@ -779,24 +745,38 @@ const TableView = () => {
                 <Panel
                   header={
                     <div className='row'>
-                      <div className='th-black-1 th-fw-600 col-6 pl-0'>
+                      <div className='th-black-1 th-fw-600 col-5 pl-0'>
                         {selectedKeyConcept.key_concept__topic_name}
                       </div>
-                      <div className='th-black-1 px-0 col-6'>: {item.period_name}</div>
+                      <div className='th-black-1 px-0 col-6 pl-md-2'>
+                        : {item.period_name}
+                      </div>
                     </div>
                   }
                   key={i}
                 >
                   <div className='row mt-1 th-fw-600'>
-                    <div className='col-5 th-black-1 pl-0'>Module</div>
-                    <div className='col-6 th-primary'>
-                      : {selectedChapter.chapter__lt_module__lt_module_name}
+                    <div className='col-5 th-black-1 px-0'>
+                      <div className='row justify-content-between'>
+                        <span>Module</span>
+                        <span>:</span>
+                      </div>
+                    </div>
+
+                    <div className='col-7 th-primary pl-1'>
+                      {selectedChapter.chapter__lt_module__lt_module_name}
                     </div>
                   </div>
                   <div className='row mt-2 th-fw-600'>
-                    <div className='col-5 th-black-1 pl-0'>Chapter Name</div>
-                    <div className='col-6 th-primary'>
-                      : {selectedChapter.chapter__chapter_name}
+                    <div className='col-5 th-black-1 px-0'>
+                      <div className='row justify-content-between'>
+                        <span>Chapter Name</span>
+                        <span>:</span>
+                      </div>
+                    </div>
+
+                    <div className='col-7 th-primary pl-1'>
+                      {selectedChapter.chapter__chapter_name}
                     </div>
                   </div>
                   <div className='row mt-2'>
@@ -804,31 +784,37 @@ const TableView = () => {
                       <span className='th-grey'>Resources</span>
                     </div>
                   </div>
-                  <div style={{ overflowY: 'auto', overflowX: 'hidden', maxHeight: 160 }}>
+                  <div
+                    style={{ overflowY: 'scroll', overflowX: 'hidden', maxHeight: 160 }}
+                    className='th-question'
+                  >
                     {item.lp_files.map((files, i) =>
                       files.media_file?.map((each, index) => {
                         let fullName = each.split(
                           `${files.document_type.toLowerCase()}/`
                         );
                         let fileName = fullName[fullName.length - 1].split('.');
+                        let file = fileName[fileName.length - 2];
                         let extension = fileName[fileName.length - 1];
+                        console.log('FileName', file, extension);
                         return (
                           <div
-                            className='row mt-2 py-2'
+                            className='row mt-2 py-2 align-items-center'
                             style={{ border: '1px solid #d9d9d9' }}
                           >
                             <div className='col-3'>
                               <img src={getFileIcon(extension)} />
                             </div>
                             <div className='col-7 px-0 th-pointer'>
-                              {' '}
+                              <div>{file}</div>
+                            </div>
+                            <div className='col-2 th-pointer'>
                               <a
                                 onClick={() => {
                                   openPreview({
                                     currentAttachmentIndex: 0,
                                     attachmentsArray: [
                                       {
-                                        // src: `${endpoints.announcementList.s3erp}${each}`,
                                         src: `${endpoints.homework.resourcesFiles}/${each}`,
 
                                         name: fileName,
@@ -840,14 +826,8 @@ const TableView = () => {
                                 rel='noopener noreferrer'
                                 target='_blank'
                               >
-                                <div>{fileName}</div>
+                                <EyeFilled />
                               </a>
-                            </div>
-                            <div className='col-2'>
-                              <DownloadOutlined
-                                className='th-primary th-pointer'
-                                onClick={() => handleDownload(each)}
-                              />
                             </div>
                           </div>
                         );
@@ -863,13 +843,19 @@ const TableView = () => {
                         (item) => item?.is_completed === true
                       ).length > 0 ? (
                         <span>
-                          <span className='th-green'>Completed</span> for Section{' '}
-                          {item.section_wise_completion
-                            .filter((item) => item?.is_completed === true)
-                            .map((item) =>
-                              item?.section__section_name.slice(-1).toUpperCase()
-                            )
-                            .join(', ')}
+                          <span className='th-green'>Completed</span>
+                          {user_level !== 13 && (
+                            <>
+                              {' '}
+                              for Section{' '}
+                              {item.section_wise_completion
+                                .filter((item) => item?.is_completed === true)
+                                .map((item) =>
+                                  item?.section__section_name.slice(-1).toUpperCase()
+                                )
+                                .join(', ')}
+                            </>
+                          )}
                         </span>
                       ) : (
                         <span> Not Completed</span>
@@ -882,7 +868,10 @@ const TableView = () => {
                       <div className='col-12' style={{ border: '1px solid #d9d9d9' }}>
                         <div
                           className='row justify-content-between py-2 th-pointer'
-                          onClick={() => showSectionList()}
+                          onClick={() => {
+                            showSectionList();
+                            setCurrentPeriodId(item?.id);
+                          }}
                         >
                           <div>Add / Update Status</div>
                           <div>
@@ -894,7 +883,7 @@ const TableView = () => {
                       </div>
                     </div>
                   )}
-                  {showSection && (
+                  {showSection && currentPeriodId == item?.id && (
                     <div className='row' style={{ border: '1px solid #d9d9d9' }}>
                       {item.section_wise_completion.map((each, i) => (
                         <div className='col-2 p-2'>
@@ -943,9 +932,10 @@ const TableView = () => {
                         <div
                           className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
                           style={{ border: '1px solid #d9d9d9' }}
-                          onClick={() => closeSectionList()}
+                          onClick={() => setCompleteSections([])}
+                          // onClick={() => closeSectionList()}
                         >
-                          Close
+                          Clear
                         </div>
                         <div
                           className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-poinrt'

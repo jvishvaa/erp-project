@@ -25,6 +25,7 @@ const AnnualPlan = () => {
     'ui-revamp1.letseduvate.com',
     'qa.olvorchidnaigaon.letseduvate.com',
   ];
+
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
@@ -38,8 +39,8 @@ const AnnualPlan = () => {
   const [subjectId, setSubjectId] = useState();
   const [subjectName, setSubjectName] = useState();
   const [boardListData, setBoardListData] = useState([]);
-  const [boardId, setBoardId] = useState([]);
-  const [annualPlanData, setAnnualPlanData] = useState([{ volume_name: 'ppp' }]);
+  const [boardId, setBoardId] = useState();
+  const [annualPlanData, setAnnualPlanData] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const fetchAnnualPlanData = (params = {}) => {
@@ -61,7 +62,7 @@ const AnnualPlan = () => {
         setLoading(false);
       });
   };
-
+  console.log('board', boardId);
   const fetchGradeData = () => {
     const params = {
       session_year: selectedAcademicYear?.id,
@@ -114,11 +115,10 @@ const AnnualPlan = () => {
   const handleGrade = (item) => {
     formRef.current.setFieldsValue({
       subject: null,
-      board: null,
+      // board: null,
     });
     setSubjectData([]);
     setSubjectId('');
-    setBoardId('');
     if (item) {
       setGradeId(item.value);
       setGradeName(item.children);
@@ -135,7 +135,6 @@ const AnnualPlan = () => {
     setGradeName('');
     setSubjectId('');
     setSubjectName('');
-    setBoardId('');
   };
   const handleSubject = (item) => {
     // formRef.current.setFieldsValue({
@@ -362,7 +361,7 @@ const AnnualPlan = () => {
                         <div className='row'>
                           <div className='col-5'>{''}</div>
                           <div className='col-6 th-primary pt-1 pl-1'>
-                            View {item?.chapter_name.length - 5} more{' '}
+                            View {item?.chapter_name.length - 4} more{' '}
                             <CaretDownOutlined className='th-grey ml-1' />
                           </div>
                         </div>
