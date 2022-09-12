@@ -421,6 +421,17 @@ import EventsMark from 'containers/attendance/eventsmark';
 import CategoryTable from 'containers/question-bank/category/category-table';
 import CategoryMapping from 'containers/subjectGradeMapping/CategoryMapping';
 import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
+import AdminViewBlog from '../containers/newBlog/AdminViewBlog';
+import AdminCreateBlog from '../containers/newBlog/AdminCreateBlog';
+import AdminPublishBlogShort from '../containers/newBlog/Shortlisted';
+// import BlogWall from '../containers/blog/Admin/BlogWall';
+import StudentViewBlog from '../containers/newBlog/StudentSideBlog';
+import NewEditBlog from '../containers/newBlog/StudentBlog';
+import CreateActivityType from '../containers/newBlog/CreateActivityType';
+import ActivityReview from '../containers/newBlog/BlogReview';
+import AddReview from '../containers/newBlog/AddReview';
+import RatingType from '../containers/newBlog/RatingCreate';
+import AdminEditCreateBlogs from '../containers/newBlog/AdminEditCreateBlogs';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -1634,6 +1645,39 @@ const V1Router = [
   <Route path='/create-announcement'>
     {({ match }) => <NewCommunication match={match} />}
   </Route>,
+  <Route exact path='/blog/blogview'>
+  {({ match }) => <AdminViewBlog match={match} />}
+</Route>,
+<Route exact path='/blog/create'>
+  {({ match }) => <AdminCreateBlog match={match} />}
+</Route>,
+// <Route exact path='/blog/wall'>
+//   {({ match }) => <BlogWall match={match} />}
+// </Route>,
+<Route exact path='/blog/short'>
+  {({ match }) => <AdminPublishBlogShort match={match} />}
+</Route>,
+<Route exact path='/blog/studentview'>
+  {({ match }) => <StudentViewBlog match={match} />}
+</Route>,
+<Route exact path='/blog/createactivitytype'>
+  {({ match }) => <CreateActivityType match={match} />}
+</Route>,
+<Route exact path='/blog/activityreview'>
+  {({ match }) => <ActivityReview match={match} />}
+</Route>,
+<Route exact path='/blog/activityedit'>
+  {({ match }) => <NewEditBlog match={match} />}
+</Route>,
+<Route exact path='/blog/addreview'>
+  {({ match }) => <AddReview match={match} />}
+</Route>,
+<Route exact path='/blog/createratingtype'>
+  {({ match }) => <RatingType match={match} />}
+</Route>,
+<Route exact path='/blog/admineditcreateblogs'>
+{({ match }) => <AdminEditCreateBlogs match={match} />}
+</Route>,
 
   <Route path='/academic-report'>
     {({ match }) => <AcademicReport match={match} />}

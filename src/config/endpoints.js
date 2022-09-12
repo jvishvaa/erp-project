@@ -8,6 +8,7 @@ const {
     baseFinanceURL,
     baseURL,
     baseURLMPQ,
+    newBlogURL,
   },
   s3: {
     BUCKET: s3BUCKET,
@@ -900,6 +901,35 @@ export default {
     homeworkSubmissionReport: `${msReportsUrl}/api/acad_performance/v1/homework/homework-submission-report/`,
     classworkSubmissionReport: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/classwork-details/`,
   },
+
+  newBlog: {
+    activityCreate:`${newBlogURL}/api/activity_detail_create/`,
+    activityWebLogin:`${newBlogURL}/api/web_login/`,
+    activitySessionLogin:`${newBlogURL}/api/update_user_session/`,
+    activityBranch:`${newBlogURL}/api/branches/`,
+    activityGrade:`${newBlogURL}/api/grades/`,
+    activitySection:`${newBlogURL}/api/sections/`,
+    getActivityType:`${newBlogURL}/api/activity_types/`,
+
+    previewDetails: `${newBlogURL}/api/get_activity_detail/`,
+    unAssign:`${newBlogURL}/api/get_activities/`,
+    Assign:`${newBlogURL}/api/get_activities/`,
+    confirmAssign:`${newBlogURL}/api/activity_detail_update/`,
+    pendingReview:`${newBlogURL}/api/review_student_activity/`,
+    activityReview:`${newBlogURL}/api/student_activity_update/`,
+
+    activityTypeSubmit:`${newBlogURL}/api/activity_type_create/`,
+
+    studentReviews:`${newBlogURL}/api/student_review/`,
+    studentReviewss:`${newBlogURL}/api/student_reviews/`,
+
+    studentSideApi:`${newBlogURL}/api/student_activity_get/`,
+    studentSideWriteApi:`${newBlogURL}/api/student_activity_create/`,
+
+
+},
+
+
 
   // s3: 'https://erp-revamp.s3.ap-south-1.amazonaws.com',
   s3: s3BUCKET,

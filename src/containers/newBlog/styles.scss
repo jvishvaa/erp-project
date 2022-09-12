@@ -1,0 +1,32 @@
+@import '../../assets/styles/variables';
+
+
+.common-table {
+    width: 100%;
+    .table-header-row {
+      background-color: '#ffffff';
+
+      tr {
+        th {
+          position: sticky;
+          top: 0;
+          margin: '10px 0';
+          &:not(:last-child) {
+            &:after {
+              content: '';
+              // background-color: orange !important ;
+              width: 2px;
+              height: 60%;
+              position: absolute;
+              border-radius: 5px;
+              right: 0;
+              transform: translateY(-10%);
+            }
+          }
+        }
+      }
+    }
+  }
+  .tox-tinymce{
+    height:372px !important;
+  }
