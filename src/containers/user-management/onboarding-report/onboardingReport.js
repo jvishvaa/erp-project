@@ -9,8 +9,11 @@ import Loader from 'components/loader/loader';
 
 const OnboardingReport = () => {
 const[loading , setLoading] = useState(false)
+const {user_level} = JSON.parse(localStorage.getItem('userDetails')) || {};
+
 
     const downloadExcelFile = () => {
+      if(user_level === 26){
         setLoading(true)
         axiosInstance.get(`${endpoints.userManagement.onBoardingReport}`,{
         headers : {
@@ -25,7 +28,14 @@ const[loading , setLoading] = useState(false)
               });
               FileSaver.saveAs(blob, 'report.xls');
               setLoading(false);
+        }).catch((err) => {
+          setAlert('error', error.response.data.message || error.response.data.msg || 'Download Failed !');
         })
+      }else{
+        setAlert('error',`Access Denied !`)
+      }
+
+       
       };
 
   return (
