@@ -162,6 +162,8 @@ const ViewUsers = withRouter(({ history, ...props }) => {
   const [isEdit , setIsEdit] = useState()
   const filteredData = JSON.parse(sessionStorage.getItem('userFilterData'))
   const filteredDataList = JSON.parse(sessionStorage.getItem('userFilterDataList'))
+  const userData = JSON.parse(localStorage.getItem('userDetails'));
+  const user_level = userData?.user_level;
 
 
 
@@ -371,6 +373,7 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
               emails: items.user.email,
               role: items?.roles?.role_name,
               active: items.is_active,
+              level : items?.level
             })
           );
           setUsersData(resultUsers);
@@ -752,6 +755,14 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
     }
   };
 
+  const isOfOrchids = [
+    'localhost:3000',
+    'ui-revamp1.letseduvate.com',
+    'qa.olvorchidnaigaon.letseduvate.com',
+    'test.orchids.letseduvate.com',
+    'orchids.letseduvate.com'
+  ];
+
   return (
     <Layout>
       <CommonBreadcrumbs
@@ -1101,7 +1112,8 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
                               />
                             </IconButton>
                           ) : items.status === 'active' ? (
-                            <IconButton
+                            (isOfOrchids.includes(window.location.host) && (items.level !== 13 || user_level === 1 )) ? (
+                              <IconButton
                               aria-label='deactivate'
                               onClick={() => handleDeactivate(items.userId, i, '2')}
                               title='Deactivate'
@@ -1110,6 +1122,17 @@ if(history?.location?.state?.isEdit && filteredData && filteredDataList){
                                 style={{ color: themeContext.palette.primary.main }}
                               />
                             </IconButton>
+                            ) : (!isOfOrchids.includes(window.location.host) && <>
+                              <IconButton
+                                aria-label='deactivate'
+                                onClick={() => handleDeactivate(items.userId, i, '2')}
+                                title='Deactivate'
+                              >
+                                <BlockIcon
+                                  style={{ color: themeContext.palette.primary.main }}
+                                />
+                              </IconButton>
+                            </>)
                           ) : (
                             <button
                               type='submit'

@@ -29,8 +29,8 @@ const columns = [
     render: (text, row) => (
       <div className='d-flex align-items-center pl-sm-0 pl-4'>
         {window.location.href.includes('localhost') ||
-          window.location.href.includes('ui-revamp1') ||
-          window.location.href.includes('qa') ? (
+        window.location.href.includes('ui-revamp1') ||
+        window.location.href.includes('qa') ? (
           <>
             <Avatar
               size={40}
@@ -61,8 +61,9 @@ const columns = [
     id: 2,
     render: (text, row) => (
       <span
-        className={`${row.erpusersattendance__attendence_status === 'present' ? 'th-green' : 'th-red'
-          } th-16 th-fw-500`}
+        className={`${
+          row.erpusersattendance__attendence_status === 'present' ? 'th-green' : 'th-red'
+        } th-16 th-fw-500`}
       >
         {row.erpusersattendance__attendence_status === 'present' ? 'P' : 'A'}
       </span>
@@ -91,6 +92,7 @@ const SectionWiseAttendance = () => {
   const [searchedValue, setSearchedValue] = useState('');
   const [loading, setLoading] = useState(false);
   const [studentFilter, setStudentFilter] = useState('all');
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
 
   const handleDateChange = (value) => {
     if (value) {
@@ -222,11 +224,15 @@ const SectionWiseAttendance = () => {
   }, []);
 
   useEffect(() => {
+    let selected_branch;
+    if (history?.location?.state?.selectedbranchData) {
+      selected_branch = history?.location?.state?.selectedbranchData;
+    }
     if (sectionId) {
       fetchAttendanceData({
         session_year: selectedAcademicYear?.id,
         date: date,
-        branch_id: selectedBranch?.branch?.id,
+        branch_id: selected_branch?.branch_id || selectedBranch?.branch?.id,
         grade_id: gradeId,
         section_id: sectionId,
       });
@@ -259,9 +265,21 @@ const SectionWiseAttendance = () => {
             <Breadcrumb.Item href='/dashboard' className='th-grey th-pointer'>
               Dashboard
             </Breadcrumb.Item>
-            <Breadcrumb.Item href='/gradewise-attendance' className='th-grey th-pointer'>
-              Attendance
-            </Breadcrumb.Item>
+            {user_level !== 11 ? (
+              <Breadcrumb.Item
+                onClick={() => history.goBack()}
+                className='th-grey th-pointer'
+              >
+                Gradewise Attendance
+              </Breadcrumb.Item>
+            ) : (
+              <Breadcrumb.Item
+                onClick={() => history.goBack()}
+                className='th-grey th-pointer'
+              >
+                Attendance
+              </Breadcrumb.Item>
+            )}
             <Breadcrumb.Item className='th-black-1'>Students</Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -279,7 +297,7 @@ const SectionWiseAttendance = () => {
               showToday={false}
               suffixIcon={<DownOutlined className='th-black-1' />}
               className='th-black-2 pl-0 th-date-picker'
-              format={'YYYY-MM-DD'}
+              format={'YYYY/MM/DD'}
             />
           </span>
         </div>

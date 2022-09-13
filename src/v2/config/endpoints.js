@@ -11,7 +11,7 @@ const {
     msOriginUrl,
     msReportsUrlNew,
   },
-  s3: { BUCKET: s3BUCKET, ERP_BUCKET },
+  s3: { BUCKET: s3BUCKET, ERP_BUCKET, CENTRAL_BUCKET: CENTRAL_BUCKET },
 } = ENVCONFIG;
 
 export default {
@@ -58,6 +58,9 @@ export default {
     feesOverviewData: `${baseFinanceURL}/apiV1/dashboard/finance-dashboard-monthly/`,
     feesStatsData: `${baseFinanceURL}/apiV1/dashboard/finance_dashboard`,
     financeYearList: `${baseFinanceURL}/apiV1/finance-session-year-list/`,
+    staffAttandance: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-wise-stats/`,
+    staffRoleStates: `${msReportsUrl}/api/acad_performance/v1/staff_att/role-wise-stats/`,
+    staffStats: `${msReportsUrl}/api/acad_performance/v1/staff_att/branch-role-staff-wise-stats/`,
   },
   teacherDashboard: {
     todaysAttendance: `${msReportsUrl}/api/acad_performance/v1/teacher-dashboard/attendance-today/`,
@@ -83,6 +86,10 @@ export default {
   doodle: {
     checkDoodle: `/assessment/check-sys-config/`,
     fetchDoodle: `/erp_user/fetch-doodle/`,
+  },
+  profile: {
+    getUserStatus: '/erp_user/user-information/',
+    getPendingFeeStatus: '/apiV1/fee-defaulters-list/',
   },
   createAnnouncement: {
     membersCount: `/announcement/members/`,
@@ -110,6 +117,14 @@ export default {
     generalDiaryUsers: '/academic/general-dairy-users/',
     assignHomeworkDiary: '/academic/assign-homework-dairy/',
   },
+  lessonPlan: {
+    subjects: 'academic/lesson-plan-subjects/',
+    volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
+  },
+  homework: {
+    resourcesFiles: `${CENTRAL_BUCKET}`,
+  },
+
   announcementList: { s3erp: 'https://d3ka3pry54wyko.cloudfront.net/' },
   s3: s3BUCKET,
   deleteFromS3: '/academic/delete-file/',
