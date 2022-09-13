@@ -103,7 +103,7 @@ const CreateQuestionPaper = ({
   }, [refresh]);
 
   useEffect(() => {
-    if (Number(location.pathname.slice(23)) ) {
+    if (Number(location.pathname.slice(23)) && !isFetched) {
       handleFetch();
     }
   }, []);
@@ -488,9 +488,10 @@ const CreateQuestionPaper = ({
     axiosInstance
       .get(url)
       .then((result) => {
-        console.log(result.data.result,'fetchhh----');
         if (result.data.status_code === 200) {
+          initSetFilter('questionPaperName', result.data.result.paper_name);
           setFilterData(result.data.result)
+
           const { questions: responseQuestions = [], sections: responseSections = [] } =
             result.data.result || {};
           handleTransformResponse(responseQuestions, responseSections); //for edit question-paper
@@ -545,7 +546,6 @@ const CreateQuestionPaper = ({
   },[subjects , filterData])
 
   const handleBranch = (event, value) => {
-    console.log(value);
     formik.setFieldValue('branch', []);
     formik.setFieldValue('grade', {});
     formik.setFieldValue('subject', []);
@@ -833,7 +833,13 @@ const CreateQuestionPaper = ({
               updateQuesionPaper={Number(location.pathname.slice(23))}
               onChangePaperName={(e) =>
                 handleQuestionPaper(e)
+
+                // initSetFilter(
+                //   'questionPaperName',
+                //   e.target.value.replace(/\b(\w)/g, (s) => s.toUpperCase())
+                // )
               }
+              // questionPaperName={questionPaperName}
               questionPaperName={formik.values.questionPaperName}
               onDeleteSection={handleDeleteSection}
               onDeleteQuestion={deleteQuestionSection}
