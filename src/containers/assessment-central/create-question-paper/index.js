@@ -243,6 +243,7 @@ const CreateQuestionPaper = ({
     initDeleteSection(questionId, section);
   };
   const handleEditQuestionPaper = async (isDraft) => {
+    console.log(isDraft);
     try {
       const questionData = [],
         centralQuestionData = [];
@@ -276,8 +277,8 @@ const CreateQuestionPaper = ({
         paper_level: formik.values.question_paper_level?.id,
         section: sectionData,
         sections: sectionData,
-        is_review: 'True',
-        is_draft: 'False',
+        is_review: isDraft ? 'False' : 'True',
+        is_draft: isDraft ? 'True' : 'False',
         is_verified: 'False',
       };
 
@@ -289,10 +290,10 @@ const CreateQuestionPaper = ({
         reqObj = { ...reqObj, central_question: centralQuestionData.flat() };
       }
 
-      if (isDraft) {
-        reqObj.is_draft = 'True';
-        reqObj.is_review = 'False';
-      }
+      // if (isDraft) {
+      //   reqObj.is_draft = 'True';
+      //   reqObj.is_review = 'False';
+      // }
 
       let sectionFlag = true,
         sectionName = '';
@@ -378,8 +379,10 @@ const CreateQuestionPaper = ({
         paper_level: formik.values.question_paper_level?.id,
         section: sectionData,
         sections: sectionData,
-        is_review: 'True',
-        is_draft: 'False',
+        // is_review: 'True',
+        // is_draft: 'False',
+        is_review: isDraft ? 'False' : 'True',
+        is_draft: isDraft ? 'True' : 'False',
       };
 
       if (questionData?.length) {
@@ -565,10 +568,11 @@ const CreateQuestionPaper = ({
       initSetFilter('selectedBranch', value);
     }
   };
-  const handleSubmitPaper = () => {
+  const handleSubmitPaper = (e ) => {
+    console.log(e)
     if (Number(location.pathname.slice(23))) {
-      handleEditQuestionPaper();
-    } else handleCreateQuestionPaper();
+      handleEditQuestionPaper(e);
+    } else handleCreateQuestionPaper(e);
   };
   const handleGrade = (event, value) => {
     formik.setFieldValue('grade', {});
