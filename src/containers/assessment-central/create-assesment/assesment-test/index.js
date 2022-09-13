@@ -104,10 +104,10 @@ const AssesmentTest = ({
     }
     if (fieldName === 'testid') {
       value = event.target.value;
-      if (/^[0-9]{0,6}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
+      if (/^[0-9]{0,5}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
         onTestIdChange(value);
       } else {
-        setAlert('error', 'Test ID can contain numbers & must not exceed length of 6!');
+        setAlert('error', 'Test ID can contain numbers & must not exceed length of 5!');
       }
     }
     if (fieldName === 'testmarks') {
