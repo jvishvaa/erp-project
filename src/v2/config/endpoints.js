@@ -89,7 +89,7 @@ export default {
   },
   profile: {
     getUserStatus: '/erp_user/user-information/',
-    getPendingFeeStatus: '/apiV1/fee-defaulters-list/',
+    getPendingFeeStatus: '/apiV1/fee-defaulters-banner/',
   },
   createAnnouncement: {
     membersCount: `/announcement/members/`,
