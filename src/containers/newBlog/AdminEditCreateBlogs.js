@@ -925,7 +925,7 @@ const AdminEditCreateBlogs = () => {
             Clear
           </Button>{' '}
           &nbsp;&nbsp;&nbsp;&nbsp;
-          <Button variant='contained' color='primary' onClick={dataPost}>
+          <Button variant='contained' disabled={user_level==11} color='primary' onClick={dataPost}>
             Edit Activity
           </Button>
         </div>

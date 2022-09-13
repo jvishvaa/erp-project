@@ -1031,15 +1031,41 @@ const Layout = ({ children, history }) => {
         history.push('/pdf-table');
         break;
       }
+      // case 'Create Activity':{
+      //   history.push('/blog/create');
+      //   break;
+      // }
+      // case 'My Activities':{
+      //   history.push('/blog/studentview')
+      //   break;
+      // }
+      // case  'View Activity':{
+      //   history.push('/blog/blogview')
+      //   break;
+      // }
+      // case 'Create Activity Type': {
+      //   history.push('/blog/createactivitytype')
+      //   break;
+      
+      // }
+      // case  'Blog':{
+      //   history.push('/blog/activityreview')
+      //   break;
+      // }
+      // case 'Create Parameter': {
+      //   history.push('/blog/createratingtype')
+      //   break;
+      
+      // }
       case 'Create Activity':{
         history.push('/blog/create');
         break;
       }
-      case 'My Activities':{
+      case 'My Blogs':{
         history.push('/blog/studentview')
         break;
       }
-      case  'View Activity':{
+      case  'Blog Activity':{
         history.push('/blog/blogview')
         break;
       }
@@ -1052,11 +1078,12 @@ const Layout = ({ children, history }) => {
         history.push('/blog/activityreview')
         break;
       }
-      case 'Create Parameter': {
+      case 'Create Rating': {
         history.push('/blog/createratingtype')
         break;
       
       }
+
 
       case 'Class Section Wise Strength': {
         history.push('/student_count_report');
