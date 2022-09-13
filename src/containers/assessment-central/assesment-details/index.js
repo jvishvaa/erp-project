@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext , useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Grid, IconButton, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -43,7 +43,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
   }
 
   const { setAlert } = useContext(AlertNotificationContext);
-
+  const [ testStart , setTestStart ] = useState(false)
   const downloadAssessment = () => {
     axiosInstance
       .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${assessmentId}`, {
@@ -79,23 +79,24 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
     today = today.replace(/\.\d+/, "");
     console.log(today);
     let payload = {
-      test_duration : testDuration,
+      test_duration: testDuration,
       test_date: today,
       id: assessmentId
     }
     axiosInstance
       // .put(`/assessment/update-test/?test_duration=${testDuration}&test_date=${today}&id=${assessmentId}`)
-      .put(`/assessment/update-test/`,payload)
+      .put(`/assessment/update-test/`, payload)
       .then((res) => {
         console.log(res);
-        if(res.data.status_code == 200){
-          setAlert('success','Test Started')
-        }else {
-          setAlert('error','Failed to Start the Test')
+        if (res.data.status_code == 200) {
+          setAlert('success', 'Test Started')
+          setTestStart(true)
+        } else {
+          setAlert('error', 'Failed to Start the Test')
         }
       })
       .catch((error) => {
-        setAlert('error',error?.message);
+        setAlert('error', error?.message);
       });
   };
 
@@ -133,19 +134,19 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
           </div>
         </div>
         {testDate != null ?
-        <div className='secondary-header-container'>
-          <div className='secondary-text font-lg'>{testName}</div>
-          <div className='secondary-text font-sm sop'>
-            <div>Scheduled on</div>
-            {console.log(testDate?.slice(11, 16), 'dateteimeeeeee')}
-            <div>
-              {testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}{' '}
-              {testDate ? testDate?.slice(11, 16) : '--'}
+          <div className='secondary-header-container'>
+            <div className='secondary-text font-lg'>{testName}</div>
+            <div className='secondary-text font-sm sop'>
+              <div>Scheduled on</div>
+              {console.log(testDate?.slice(11, 16), 'dateteimeeeeee')}
+              <div>
+                {testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}{' '}
+                {testDate ? testDate?.slice(11, 16) : '--'}
+              </div>
+              {/* <p style={{marginRight:'90px'}}>Scheduled on {testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}</p> */}
             </div>
-            {/* <p style={{marginRight:'90px'}}>Scheduled on {testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}</p> */}
           </div>
-        </div>
-        : '' }
+          : ''}
       </div>
       <div className='parameters-container'>
         <div className='parameters-header'>
@@ -245,16 +246,28 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
                   <Button variant='contained' color='primary' onClick={handleTest}>
                     Preview
                   </Button>
-                  </Grid>
+                </Grid>
                 <Grid item xs={12}  >
 
                   {testType == 'Quiz' && test?.test_mode == 1 ?
-                  <>
-                  {testDate == null ?
-                    <Button variant='contained' color='primary' onClick={handleTeststart}>
-                      Start Test
-                    </Button>  
-                    : '' }
+                    <>
+                      {testDate == null ?
+                      <>
+                      {!testStart ?
+                        <Button variant='contained' color='primary' onClick={handleTeststart}>
+                          Start Test
+                        </Button>
+                        : 
+                        <Button variant='contained' color='primary' disabled>
+                          In Progress
+                        </Button>
+                        }
+                        </>
+                        :
+                        <Button variant='contained' disabled color='primary' >
+                          Test Completed
+                        </Button>
+                      }
                     </>
                     : ''}
                 </Grid>
