@@ -167,6 +167,9 @@
 }
 .dropdownSection{
   min-width: 100%;
+  .MuiAutocomplete-inputRoot{
+    font-size: 14px;
+  }
 }
 
 li.assesment-card-popup-menu-item {
