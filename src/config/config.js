@@ -75,7 +75,7 @@ const qa = {
     msReportsUrl: 'https://qa.reports.letseduvate.com',
     baseEvent: 'http://dev-et.letseduvate.com/',
     finance: 'https://qafinance.school.letseduvate.com',
-    newBlogURL:'https://activities-ms.q.letseduvate.com',
+    newBlogURL:'https://activities-ms.qa.letseduvate.com',
   },
 };
 
