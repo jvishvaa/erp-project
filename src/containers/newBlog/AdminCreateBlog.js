@@ -61,6 +61,7 @@ import {
 } from '../../redux/actions';
 import axios from 'axios';
 import CloseIcon from '@material-ui/icons/Close';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 
 const drawerWidth = 350;
 
@@ -540,6 +541,9 @@ const AdminCreateBlog = () => {
         );
       });
   };
+  const goBack = () => {
+    history.push('/blog/blogview');
+  }
 
   const closePreview = () => {
     setAssigned(false);
@@ -575,7 +579,15 @@ const AdminCreateBlog = () => {
           </Breadcrumbs>
         </Grid>
       </Grid>
-      <div style={{ paddingLeft: '22px', paddingRight: '10px' }}>
+      <div style={{    marginLeft:"15px", marginBottom: "18px",
+    marginTop: "-14px", cursor: 'pointer' }} onClick={goBack}>
+          <div>
+            {' '}
+            <ArrowBackIcon style={{ color: '#0000008c' }} />{' '}
+            <span style={{ color: 'gray' }}>Back to</span> &nbsp;
+            <span style={{ color: '#0000008c', fontWeight: 'bold' }}>View Blog</span>
+          </div>
+        </div>      <div style={{ paddingLeft: '22px', paddingRight: '10px' }}>
         <Button
           variant='primary'
           style={{ borderRadius: '1px', color: 'white' }}

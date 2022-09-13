@@ -225,24 +225,30 @@ const todayDate = moment();
           
 
           <div style={{ marginTop: '20px', color: 'gray' }}>Write Your Blog</div>
-          <div style={{ marginTop: '10px' }}>
+          <div
+                  style={{
+                    background: 'white',
+                    // width: '502px',
+                    marginLeft: '34px',
+                    height: 'auto',
+                    marginTop: '12px',
+                    marginBottom: '29px',
+                  }}
+                >
+                  <div >
           <div
         style={{
-          background: `url(${"https://activities-k12.s3.amazonaws.com/dev/olvorchidnaigaon/activity_templates/7/newcakeimage.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=ASIAQWJOGETZRNTK4YK6%2F20220912%2Fap-south-1%2Fs3%2Faws4_request&X-Amz-Date=20220912T102957Z&X-Amz-Expires=21600&X-Amz-SignedHeaders=host&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEPL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCmFwLXNvdXRoLTEiSDBGAiEAn9ksrCbz%2FOFZkFJe%2FX1pNfTFDC%2FvwngVSI2oRE8nQmACIQCq%2FZUSNlTsGerghxWnjnwcgyIvRcpIV8STLbmu8LAd6SrfBAiL%2F%2F%2F%2F%2F%2F%2F%2F%2F%2F8BEAMaDDA0Nzg3ODM4MjgzNSIM2bTWFILUiUd%2F8dTSKrMEVaoV1OyRDrmQ8kN1CO2thaXofbrRTMevFBYfQMWMZG1Ez4uXm%2Bv4zWt%2BBVx3DsV9YKXCdiMPSQ%2FpOmCpzC3p9wP5JOg1qMm40djbdha1zd9qggRkLfKTw5AzRFxXcKbyPScYaAZHNkPACGjhdOpORjDfp1ADLyFOY11vEiHCYUMiBq4%2F4Dca6R9mSAlyHXJ%2Bdwp3870GZ6YLgllA8szIrbHhj3x2a1d%2BYOVzJqpb4q%2BsgKgBLzNJCuUrXEBcSGtEajjA0X2jaKHK88fzM0eKHdXXKqKj9qTWYHp3Oq1VVqvCSZlcw5wPyXvkiOVVJXCe2s0QWZ91cNxX65j8gzl7%2FluszeU%2BQ9XRmrbx9oA%2BzENAPrKY4vwnD7kQFY%2F7Rl2%2Btgg565Qi0HhTq0bTvjKmjQP9MoD6ruXzBkdbEt6t3NHdpjCfQBryUjqp%2Fzk94x9YJ1MG9VoBxtlTGVT2ZLDWyXIgOZB7UDKNNtRzcGN0iLLLh15SNQxQ96QUkYwBqOIxPtFRjTsZx2p1YrH3GojlqxSbhM8LWnF3UIgX8i532M4r8bxOE1%2F6N6gilcOdUq58YI%2FQ0JFK0xIUqR0IKYf5Aqi9Fh7HdM1wEtvCsC4lMu27TpdS2ro96U2v%2FIWGcqTaVVwKpHRiB3%2FWfZ4mosX6bt61EiYvmW4xtDU7VOdTjcWKtjXyA7xMWrau1L0XyNOP6uLkSkzT1ybvwrjLhyCA5sh4Duerf%2FR4hre6MXlq91xu3xgwmI78mAY6qAHjU8jaQEK0GdIVFnLtXhb%2FQh3%2FC3Bgyn9WoCRpteyo0QsGe9od%2FkzXwahfpvJ%2FZcT1N4EqsvSLYH%2B73lLBmW4HcpVLqhqVtKU6pAX8Uu1idZDsBWCQ7qvdtZG69OnTb%2FAFVm6SB%2BjzE3ZAh5%2ByVQXuz1V%2BWTPQWb1Wf%2B8JMGgQa2CVXq3w%2BEOcVubvoozB0wM0GmisAqLv55dRgGoiDyf%2BHawnAzNQvAc%3D&X-Amz-Signature=19465bd2a27ed8fdc44bef3c024d5b113788fde6cd4ae21a710c7fc7a6faf79e"
-        })`,
-          backgroundSize: "contain",
-          position: "relative",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          backgroundColor: "rgba(244 245 247 / 25%)",
-    height: "1000px",
+          background: `url(${previewData?.template_path})`,
+          
         }}
+        className="background-image-write"
       >
         <div className="certificate-text-center certificate-input-box">
-          <textarea className="certificate-box" style={{width: "503px",
-    height: "483px"}} onChange={changeHandle}placeholder="type text here..." />
+          <textarea className="certificate-box" style={{width: "337px",
+    height: "347px"}} onChange={changeHandle}placeholder="type text here..." />
          
         </div>
+      </div>
       </div>
 
             {/* <Grid container

@@ -4,6 +4,13 @@
     /* background-size: cover; */
     background-position: center;
   }
+  .background-image-write{
+    position: relative !important;
+    height: 683px !important;
+    background-size: contain !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+  }
 
   .certificate-input-box{
     
