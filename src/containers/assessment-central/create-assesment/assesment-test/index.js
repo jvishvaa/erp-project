@@ -296,6 +296,7 @@ const AssesmentTest = ({
                             }}
                             value={section}
                             options={section || {}}
+                            style={{fontSize: '14px'}}
                             disabled
                             className='dropdownSection'
                             getOptionLabel={(option) => option.section_name || ''}
@@ -306,6 +307,7 @@ const AssesmentTest = ({
                                 label='Section'
                                 placeholder='Section'
                                 required
+                                style={{fontSize: '14px'}}
                               />
                             )}
                             size='small'
