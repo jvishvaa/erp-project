@@ -12,7 +12,7 @@ import { handleDownloadPdf } from '../../../../src/utility-functions';
 
 const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) => {
   const history = useHistory();
-  console.log(test , "filter");
+  console.log(test, "filter");
   const {
     test_id: id,
     id: assessmentId,
@@ -72,6 +72,16 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
       `/assessment/${question_paper_id}/${assessmentId}/attempt/`
     );
     console.log(test);
+  };
+
+  const handleTeststart = () => {
+    var today = new Date().toISOString();
+    console.log(today);
+    axiosInstance
+      .put(`/assessment/update-test/?test_duration=${testDuration}&test_date=${today}&id=${assessmentId}`)
+      .then((res) => {
+        setAlert('success','Test Started')
+      })
   };
 
   return (
@@ -218,6 +228,15 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
                   <Button variant='contained' color='primary' onClick={handleTest}>
                     Preview
                   </Button>
+                  {testType == 'Quiz' && test?.test_mode == 1 ?
+                  <>
+                  {testDate == null ?
+                    <Button variant='contained' color='primary' onClick={handleTeststart}>
+                      Start Test
+                    </Button>  
+                    : '' }
+                    </>
+                    : ''}
                 </Grid>
               </Grid>
             </div>}
