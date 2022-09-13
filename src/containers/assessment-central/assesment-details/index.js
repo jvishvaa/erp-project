@@ -75,13 +75,28 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
   };
 
   const handleTeststart = () => {
-    var today = new Date().toISOString();
+    var today = new Date().toISOString().replace('Z', '');
+    today = today.replace(/\.\d+/, "");
     console.log(today);
+    let payload = {
+      test_duration : testDuration,
+      test_date: today,
+      id: assessmentId
+    }
     axiosInstance
-      .put(`/assessment/update-test/?test_duration=${testDuration}&test_date=${today}&id=${assessmentId}`)
+      // .put(`/assessment/update-test/?test_duration=${testDuration}&test_date=${today}&id=${assessmentId}`)
+      .put(`/assessment/update-test/`,payload)
       .then((res) => {
-        setAlert('success','Test Started')
+        console.log(res);
+        if(res.data.status_code == 200){
+          setAlert('success','Test Started')
+        }else {
+          setAlert('error','Failed to Start the Test')
+        }
       })
+      .catch((error) => {
+        setAlert('error',error?.message);
+      });
   };
 
   return (
@@ -117,6 +132,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
             </IconButton>
           </div>
         </div>
+        {testDate != null ?
         <div className='secondary-header-container'>
           <div className='secondary-text font-lg'>{testName}</div>
           <div className='secondary-text font-sm sop'>
@@ -129,6 +145,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
             {/* <p style={{marginRight:'90px'}}>Scheduled on {testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}</p> */}
           </div>
         </div>
+        : '' }
       </div>
       <div className='parameters-container'>
         <div className='parameters-header'>
@@ -228,6 +245,9 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
                   <Button variant='contained' color='primary' onClick={handleTest}>
                     Preview
                   </Button>
+                  </Grid>
+                <Grid item xs={12}  >
+
                   {testType == 'Quiz' && test?.test_mode == 1 ?
                   <>
                   {testDate == null ?

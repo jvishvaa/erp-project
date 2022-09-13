@@ -443,8 +443,12 @@ const CreateAssesment = ({
       is_central: selectedQuestionPaper['is_central'],
     };
 
-    if (formik.values.test_type?.exam_name != 'Quiz' && !sectionWiseTest) {
-      reqObj = { ...reqObj, test_date: testDate, test_id: testId };
+    if (formik.values.test_type?.exam_name != 'Quiz' && sectionWiseTest == false) {
+      reqObj = { ...reqObj, test_date: testDate };
+    }
+
+    if (formik.values.test_type?.exam_name != 'Quiz') {
+      reqObj = { ...reqObj, test_id: testId };
     }
 
     if (!paperchecked) {

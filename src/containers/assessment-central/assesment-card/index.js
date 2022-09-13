@@ -200,11 +200,13 @@ const AssesmentCard = ({
             }
           </p>
           {/* <p className='completed'>Completed -30.12.2020</p> */}
+          {value.test_date != null ? 
           <p className="scheduled" style={{ marginLeft: "10px" }}>
             {`Scheduled on - ${moment(value.test_date).format("DD-MM-YYYY")}`}
             {", "}
             {value?.test_date?.slice(11, 16)}
           </p>
+          : '' }
         </div>
         <div className="btn-container">
           {!isSelected && (

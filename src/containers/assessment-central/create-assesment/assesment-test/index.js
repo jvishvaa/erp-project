@@ -104,10 +104,10 @@ const AssesmentTest = ({
     }
     if (fieldName === 'testid') {
       value = event.target.value;
-      if (/^[0-9]{0,9}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
+      if (/^[0-9]{0,6}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
         onTestIdChange(value);
       } else {
-        setAlert('error', 'Test ID can contain numbers & must not exceed length of 9!');
+        setAlert('error', 'Test ID can contain numbers & must not exceed length of 6!');
       }
     }
     if (fieldName === 'testmarks') {
@@ -296,6 +296,7 @@ const AssesmentTest = ({
                             }}
                             value={section}
                             options={section || {}}
+                            style={{fontSize: '14px'}}
                             disabled
                             className='dropdownSection'
                             getOptionLabel={(option) => option.section_name || ''}
@@ -306,6 +307,7 @@ const AssesmentTest = ({
                                 label='Section'
                                 placeholder='Section'
                                 required
+                                style={{fontSize: '14px'}}
                               />
                             )}
                             size='small'

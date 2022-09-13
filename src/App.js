@@ -430,7 +430,6 @@ import ReportConfigTable from 'containers/assessment-central/ReportCardConfig/Re
 import CreateReportConfig from 'containers/assessment-central/ReportCardConfig/CreateReportConfig';
 import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
 
-
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
     isMsAPI();
@@ -778,7 +777,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route exact path='/master-management/subject/grade/mapping'>
                               {({ match }) => <Subjectgrade match={match} />}
                             </Route>
-                            {console.log("aaya12")}
+                            {console.log('aaya12')}
                             <Route exact path='/master-management/category-mapping'>
                               {({ match }) => <CategoryMapping match={match} />}
                             </Route>
@@ -2082,7 +2081,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/student-mark'>
                               {({ match }) => <StudentMark match={match} />}
                             </Route>
-
+                            <Route path='/lesson-plan/teacher-view/annual-plan'>
+                              {({ match }) => <LessonPlan match={match} />}
+                            </Route>
+                            <Route path='/lesson-plan/student-view/annual-plan'>
+                              {({ match }) => <LessonPlan match={match} />}
+                            </Route>
                             <Route path='*'>
                               <ErrorBoundary404 HomeButton={true} />
                             </Route>
