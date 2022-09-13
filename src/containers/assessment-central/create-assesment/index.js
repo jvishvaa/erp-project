@@ -769,6 +769,9 @@ const CreateAssesment = ({
                             onChange={(e, value) => {
                               console.log(value)
                               formik.setFieldValue('test_type', value);
+                              if(value?.exam_name == 'Quiz'){
+                                setSectionWiseTest(false)
+                              }
                             }}
                             value={formik.values.test_type}
                             options={assesmentTypes}
@@ -930,7 +933,9 @@ const CreateAssesment = ({
                               />
                             </Grid>
                           )}
-                          {formik?.values?.test_type?.exam_name == 'Quiz' && selectedSectionData?.length > 0  ? '' :
+                          {selectedSectionData?.length > 0 && formik?.values?.test_type != '' ? 
+                          <>
+                          {formik?.values?.test_type?.exam_name == 'Quiz'   ? '' :
                           <>
                           {sectionToggle ? '' : 
                             <Grid item xs={12} md={4} style={{display : 'flex' , justifyContent: 'center'}} >
@@ -944,6 +949,7 @@ const CreateAssesment = ({
                           }
                           </>
                           }
+                          </> : '' }
                         </Grid>
                       )}
 
