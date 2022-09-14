@@ -16,6 +16,7 @@ const AnnualPlan = () => {
   const formRef = createRef();
   const history = useHistory();
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
+  const { user_level } = JSON.parse(localStorage.getItem('userDetails')) || {};
   const [moduleId, setModuleId] = useState();
 
   let boardFilterArr = [
@@ -74,8 +75,12 @@ const AnnualPlan = () => {
     axios
       .get(`${endpoints.academics.grades}`, { params })
       .then((res) => {
-        if (res.data.status_code === 200) {
-          setGradeData(res.data.data);
+        if (res?.data?.status_code === 200) {
+          setGradeData(res?.data?.data);
+          if (user_level == 13) {
+            setGradeId(res?.data?.data[0]?.grade_id);
+            setGradeName(res?.data?.data[0]?.grade__grade_name);
+          }
         }
       })
       .catch((error) => {
@@ -132,6 +137,16 @@ const AnnualPlan = () => {
       });
     }
   };
+  useEffect(() => {
+    if (user_level == 13) {
+      fetchSubjectData({
+        session_year: selectedAcademicYear?.id,
+        branch_id: selectedBranch?.branch?.id,
+        module_id: moduleId,
+        grade_id: gradeId,
+      });
+    }
+  }, [gradeId]);
   const handleClearGrade = () => {
     setGradeId('');
     setGradeName('');
@@ -253,8 +268,15 @@ const AnnualPlan = () => {
                 <Form.Item name='grade'>
                   <Select
                     allowClear
-                    placeholder='Select Grade'
+                    placeholder={
+                      gradeName ? (
+                        <span className='th-black-1'>{gradeName}</span>
+                      ) : (
+                        'Select Grade'
+                      )
+                    }
                     showSearch
+                    disabled={user_level == 13}
                     optionFilterProp='children'
                     filterOption={(input, options) => {
                       return (
