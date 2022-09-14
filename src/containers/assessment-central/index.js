@@ -190,8 +190,10 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       setBranchDropdown([]);
       setGrades([]);
       setSubjects([]);
-      const data = await fetchBranches(acadId, moduleId);
-      setBranchDropdown(data);
+      if(moduleId){
+        const data = await fetchBranches(acadId, moduleId);
+        setBranchDropdown(data);
+      }
     } catch (e) {
       setAlert('error', 'Failed to fetch branch');
     }
@@ -322,7 +324,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     } else {
       setBranchDropdown([]);
     }
-  }, []);
+  }, [moduleId]);
 
   useEffect(() => {
     if (moduleId && selectedAcademicYear) {
