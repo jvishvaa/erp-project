@@ -182,7 +182,7 @@ const AdminViewBlog = () => {
   const [maxWidth, setMaxWidth] = React.useState('lg');
   const [preview, setPreview] = useState(false);
   let dataes = JSON.parse(localStorage.getItem('userDetails')) || {};
-  // const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
+  const newBranches = JSON.parse(localStorage.getItem('ActivityManagementSession')) || {};
 
   const token = dataes?.token;
   const user_level = dataes?.user_level;
@@ -398,8 +398,8 @@ const AdminViewBlog = () => {
         },
       });
     };
-    const fetchBranches = async() => {
-      const newBranches = await (JSON.parse(localStorage.getItem('ActivityManagementSession'))) || {};
+    const fetchBranches = () => {
+      // const newBranches = await (JSON.parse(localStorage.getItem('ActivityManagementSession'))) || {};
 
     
             const transformedData = newBranches?.branches?.map((obj) => ({
