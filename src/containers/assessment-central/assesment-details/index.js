@@ -7,6 +7,11 @@ import './styles.scss';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import endpoints from '../../../config/endpoints';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 import axiosInstance from '../../../config/axios';
 import { handleDownloadPdf } from '../../../../src/utility-functions';
 
@@ -44,6 +49,17 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [ testStart , setTestStart ] = useState(false)
+  const [confirmAlert, setConfirmAlert] = useState(false);
+
+  const CancelStart = () => {
+    setConfirmAlert(false)
+  }
+
+  const openStartModal = () => {
+    setConfirmAlert(true)
+  }
+
+
   const downloadAssessment = () => {
     axiosInstance
       .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${assessmentId}`, {
@@ -91,12 +107,15 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
         if (res.data.status_code == 200) {
           setAlert('success', 'Test Started')
           setTestStart(true)
+          setConfirmAlert(false)
         } else {
           setAlert('error', 'Failed to Start the Test')
+          setConfirmAlert(false)
         }
       })
       .catch((error) => {
         setAlert('error', error?.message);
+        setConfirmAlert(false)
       });
   };
 
@@ -254,7 +273,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
                       {testDate == null ?
                       <>
                       {!testStart ?
-                        <Button variant='contained' color='primary' onClick={handleTeststart}>
+                        <Button variant='contained' color='primary' onClick={openStartModal}>
                           Start Test
                         </Button>
                         : 
@@ -275,6 +294,27 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
             </div>}
         </div>
       </div>
+      <Dialog open={confirmAlert} onClose={CancelStart}>
+          <DialogTitle id='draggable-dialog-title'>Confirm Start</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Once The Test Is Started, You Can't Stop It.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={CancelStart} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleTeststart}
+            >
+              Start
+            </Button>
+          </DialogActions>
+        </Dialog>
     </div>
   );
 };
