@@ -14,9 +14,11 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogActions from '@material-ui/core/DialogActions';
 import axiosInstance from '../../../config/axios';
 import { handleDownloadPdf } from '../../../../src/utility-functions';
+import Loader from 'components/loader/loader';
 
 const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) => {
   const history = useHistory();
+  const[loading,setLoading] = useState(false)
   console.log(test, "filter");
   const {
     test_id: id,
@@ -30,7 +32,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
     total_mark: totalMark,
     created_at: createdDate,
     updated_at: updatedDate,
-    sectionMap: section_mapping,
+    section_mapping,
     question_paper_id: question_paper_id,
     test_id: test_id
   } = test;
@@ -44,8 +46,36 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
         test: test
       }
     })
-
   }
+
+  const handleDownloadReport = () => {
+    setLoading(true);
+    let url = `${endpoints.assessmentReportTypes.reportPdf}?test=${JSON.stringify(
+      assessmentId
+    )}&section_mapping=${section_mapping.toString()}`;
+    axiosInstance
+      .get(url, {
+        responseType: 'arraybuffer',
+      })
+      .then((res) => {
+        setLoading(false);
+        const {
+          headers = {},
+          message = 'Cannot download Test Report',
+          data = '',
+        } = res || {};
+        const contentType = headers['content-type'] || '';
+        if (contentType === 'application/pdf') {
+          handleDownloadPdf(data, 'test report');
+        } else {
+          setAlert('info', message);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.response.data.message || error.response.data.msg);
+      });
+  };
 
   const { setAlert } = useContext(AlertNotificationContext);
   const [ testStart , setTestStart ] = useState(false)
@@ -121,6 +151,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
 
   return (
     <div className='assesment-details-container'>
+      {loading && <Loader />}
       <div className='header-container'>
         <div
           className='primary-header-container'
@@ -290,6 +321,12 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
                     </>
                     : ''}
                 </Grid>
+                {((filterData?.status?.name === "Completed" || filterData?.status?.id === 2) || testDate != null) && <Grid item xs={12} style={{margin : '4% 0'}}>
+                  <Button variant='contained' color='primary' onClick={handleDownloadReport}>
+                    <GetAppIcon fontSize="small" />
+                    Download Report
+                  </Button>
+                </Grid>}
               </Grid>
             </div>}
         </div>
