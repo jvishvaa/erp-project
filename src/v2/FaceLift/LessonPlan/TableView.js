@@ -18,6 +18,7 @@ import {
   CaretRightOutlined,
   DownloadOutlined,
   EyeFilled,
+  RightOutlined,
 } from '@ant-design/icons';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import pptFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/pptFileIcon.svg';
@@ -109,6 +110,7 @@ const TableView = () => {
   const [loadingDrawer, setLoadingDrawer] = useState(false);
   const [completionCheck, setCompletionCheck] = useState(false);
   const [currentPeriodId, setCurrentPeriodId] = useState('');
+  const [currentPeriodPanel, setCurrentPeriodPanel] = useState(0);
   let isStudent = window.location.pathname.includes('student-view');
 
   const showDrawer = () => {
@@ -116,6 +118,7 @@ const TableView = () => {
   };
 
   const closeDrawer = () => {
+    setCurrentPeriodPanel(0);
     setDrawerVisible(false);
   };
   const showSectionList = () => {
@@ -181,6 +184,7 @@ const TableView = () => {
       });
   };
   const fetchModuleListData = (params = {}) => {
+    setLoading(true);
     axios
       .get(`/academic/get-module-list/`, {
         params: { ...params },
@@ -188,9 +192,13 @@ const TableView = () => {
       .then((result) => {
         if (result?.data?.status_code === 200) {
           setModuleListData(result?.data?.result?.module_list);
+          setLoading(false);
+        } else {
+          setLoading(false);
         }
       })
       .catch((error) => {
+        setLoading(false);
         message.error(error.message);
       });
   };
@@ -458,7 +466,7 @@ const TableView = () => {
   useEffect(() => {
     if (gradeId && volumeId && subjectId) {
       formRef.current.setFieldsValue({
-        module: [],
+        module: ['All'],
       });
       fetchModuleListData({
         subject_id: subjectId,
@@ -519,7 +527,7 @@ const TableView = () => {
         width: tableWidthCalculator(25) + '%',
         render: (text, row, index) => (
           <span
-            className='th-black-2 th-pointer text-truncate'
+            className='th-black-1 th-pointer text-truncate'
             // onClick={() => {
             //   setSelectedKeyConcept(row);
             //   fetchLessonResourcesData(row);
@@ -535,14 +543,19 @@ const TableView = () => {
         dataIndex: 'lp_count',
         align: 'center',
         width: '15%',
-        render: (data) => <span className='th-black-2'>{data}</span>,
+        render: (data) => <span className='th-black-1'>{data}</span>,
       },
       {
         title: '',
         dataIndex: '',
         align: 'center',
         width: '5%',
-        render: (data) => <span className='th-black-'>{''}</span>,
+        render: (data) => (
+          <span className='th-black-1'>
+            {' '}
+            <RightOutlined />
+          </span>
+        ),
       },
     ];
 
@@ -553,9 +566,9 @@ const TableView = () => {
         loading={loadingInner}
         pagination={false}
         showHeader={false}
-        bordered={false}
+        // bordered={false}
         style={{ width: '100%' }}
-        rowClassName={(record, index) => 'th-pointer th-table-row'}
+        rowClassName={(record, index) => 'th-pointer th-row'}
         onRow={(row, rowIndex) => {
           return {
             onClick: (event) => {
@@ -572,7 +585,7 @@ const TableView = () => {
       title: <span className='th-white pl-md-4 th-fw-700 '>SL NO.</span>,
       align: 'center',
       width: '10%',
-      render: (text, row, index) => <span className='th-black-1'>{index + 1}.</span>,
+      render: (text, row, index) => <span className='th-black-1'>{index + 1}</span>,
     },
 
     {
@@ -686,7 +699,7 @@ const TableView = () => {
               <div className='text-left pb-2'>Module</div>
               <Form.Item name='module'>
                 <Select
-                  placeholder='All'
+                  // placeholder={<span className='th-black-1'>All</span>}
                   showSearch
                   mode='multiple'
                   maxTagCount={2}
@@ -701,8 +714,10 @@ const TableView = () => {
                     handleModule(value);
                   }}
                   onClear={handleClearModule}
-                  className='w-100 text-left th-black-1 th-bg-grey th-br-4 mb-2'
+                  className='w-100 text-left th-black-1 th-bg-grey th-br-4'
                   bordered={false}
+                  placement='bottomRight'
+                  showArrow={true}
                   suffixIcon={<DownOutlined className='th-grey' />}
                 >
                   <Option key='0' value='All'>
@@ -721,6 +736,7 @@ const TableView = () => {
           rowClassName={(record, index) =>
             index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
           }
+          expandRowByClick={true}
           columns={columns}
           rowKey={(record) => record?.chapter_id}
           expandable={{ expandedRowRender }}
@@ -764,7 +780,7 @@ const TableView = () => {
           ) : resourcesData.length > 0 ? (
             resourcesData.map((item, i) => (
               <Collapse
-                defaultActiveKey={['0']}
+                defaultActiveKey={currentPeriodPanel}
                 accordion={true}
                 expandIconPosition='right'
                 bordered={true}
@@ -972,9 +988,13 @@ const TableView = () => {
                         >
                           Clear
                         </div>
+                        {console.log('CurrentPanel', currentPeriodPanel)}
                         <div
                           className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
-                          onClick={() => markPeriodComplete(item)}
+                          onClick={() => {
+                            setCurrentPeriodPanel(i);
+                            markPeriodComplete(item);
+                          }}
                         >
                           Update
                         </div>
