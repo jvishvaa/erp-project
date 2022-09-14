@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'antd';
 import ENVCONFIG from 'config/config';
-import reminder from './../../../assets/images/reminder.jpg';
+import reminder from './../../../assets/images/reminder.png';
 import './../../Assets/css/common.scss';
 
 const FeeReminderBanner = ({ data }) => {

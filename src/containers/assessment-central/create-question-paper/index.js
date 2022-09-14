@@ -801,9 +801,9 @@ const CreateQuestionPaper = ({
                   setFilterData()
                   history.push({
                     pathname: '/assessment-question',
-                    state: {
-                      isSet : 'true'
-                    }
+                    // state: {
+                    //   isSet : 'true'
+                    // }
                   })
                 }}
               >

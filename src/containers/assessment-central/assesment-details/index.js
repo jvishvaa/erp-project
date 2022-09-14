@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext , useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Grid, IconButton, Button } from '@material-ui/core';
 import CloseIcon from '@material-ui/icons/Close';
@@ -7,11 +7,18 @@ import './styles.scss';
 import GetAppIcon from '@material-ui/icons/GetApp';
 import { AlertNotificationContext } from '../../../context-api/alert-context/alert-state';
 import endpoints from '../../../config/endpoints';
+import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogActions from '@material-ui/core/DialogActions';
 import axiosInstance from '../../../config/axios';
 import { handleDownloadPdf } from '../../../../src/utility-functions';
+import Loader from 'components/loader/loader';
 
 const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) => {
   const history = useHistory();
+  const[loading,setLoading] = useState(false)
   console.log(test, "filter");
   const {
     test_id: id,
@@ -25,7 +32,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
     total_mark: totalMark,
     created_at: createdDate,
     updated_at: updatedDate,
-    sectionMap: section_mapping,
+    section_mapping,
     question_paper_id: question_paper_id,
     test_id: test_id
   } = test;
@@ -39,10 +46,49 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
         test: test
       }
     })
-
   }
 
+  const handleDownloadReport = () => {
+    setLoading(true);
+    let url = `${endpoints.assessmentReportTypes.reportPdf}?test=${JSON.stringify(
+      assessmentId
+    )}&section_mapping=${section_mapping.toString()}`;
+    axiosInstance
+      .get(url, {
+        responseType: 'arraybuffer',
+      })
+      .then((res) => {
+        setLoading(false);
+        const {
+          headers = {},
+          message = 'Cannot download Test Report',
+          data = '',
+        } = res || {};
+        const contentType = headers['content-type'] || '';
+        if (contentType === 'application/pdf') {
+          handleDownloadPdf(data, 'test report');
+        } else {
+          setAlert('info', message);
+        }
+      })
+      .catch((error) => {
+        setLoading(false);
+        setAlert('error', error.response.data.message || error.response.data.msg);
+      });
+  };
+
   const { setAlert } = useContext(AlertNotificationContext);
+  const [ testStart , setTestStart ] = useState(false)
+  const [confirmAlert, setConfirmAlert] = useState(false);
+
+  const CancelStart = () => {
+    setConfirmAlert(false)
+  }
+
+  const openStartModal = () => {
+    setConfirmAlert(true)
+  }
+
 
   const downloadAssessment = () => {
     axiosInstance
@@ -79,28 +125,33 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
     today = today.replace(/\.\d+/, "");
     console.log(today);
     let payload = {
-      test_duration : testDuration,
+      test_duration: testDuration,
       test_date: today,
       id: assessmentId
     }
     axiosInstance
       // .put(`/assessment/update-test/?test_duration=${testDuration}&test_date=${today}&id=${assessmentId}`)
-      .put(`/assessment/update-test/`,payload)
+      .put(`/assessment/update-test/`, payload)
       .then((res) => {
         console.log(res);
-        if(res.data.status_code == 200){
-          setAlert('success','Test Started')
-        }else {
-          setAlert('error','Failed to Start the Test')
+        if (res.data.status_code == 200) {
+          setAlert('success', 'Test Started')
+          setTestStart(true)
+          setConfirmAlert(false)
+        } else {
+          setAlert('error', 'Failed to Start the Test')
+          setConfirmAlert(false)
         }
       })
       .catch((error) => {
-        setAlert('error',error?.message);
+        setAlert('error', error?.message);
+        setConfirmAlert(false)
       });
   };
 
   return (
     <div className='assesment-details-container'>
+      {loading && <Loader />}
       <div className='header-container'>
         <div
           className='primary-header-container'
@@ -133,19 +184,19 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
           </div>
         </div>
         {testDate != null ?
-        <div className='secondary-header-container'>
-          <div className='secondary-text font-lg'>{testName}</div>
-          <div className='secondary-text font-sm sop'>
-            <div>Scheduled on</div>
-            {console.log(testDate?.slice(11, 16), 'dateteimeeeeee')}
-            <div>
-              {testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}{' '}
-              {testDate ? testDate?.slice(11, 16) : '--'}
+          <div className='secondary-header-container'>
+            <div className='secondary-text font-lg'>{testName}</div>
+            <div className='secondary-text font-sm sop'>
+              <div>Scheduled on</div>
+              {console.log(testDate?.slice(11, 16), 'dateteimeeeeee')}
+              <div>
+                {testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}{' '}
+                {testDate ? testDate?.slice(11, 16) : '--'}
+              </div>
+              {/* <p style={{marginRight:'90px'}}>Scheduled on {testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}</p> */}
             </div>
-            {/* <p style={{marginRight:'90px'}}>Scheduled on {testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}</p> */}
           </div>
-        </div>
-        : '' }
+          : ''}
       </div>
       <div className='parameters-container'>
         <div className='parameters-header'>
@@ -245,23 +296,62 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
                   <Button variant='contained' color='primary' onClick={handleTest}>
                     Preview
                   </Button>
-                  </Grid>
+                </Grid>
                 <Grid item xs={12}  >
 
                   {testType == 'Quiz' && test?.test_mode == 1 ?
-                  <>
-                  {testDate == null ?
-                    <Button variant='contained' color='primary' onClick={handleTeststart}>
-                      Start Test
-                    </Button>  
-                    : '' }
+                    <>
+                      {testDate == null ?
+                      <>
+                      {!testStart ?
+                        <Button variant='contained' color='primary' onClick={openStartModal}>
+                          Start Test
+                        </Button>
+                        : 
+                        <Button variant='contained' color='primary' disabled>
+                          In Progress
+                        </Button>
+                        }
+                        </>
+                        :
+                        <Button variant='contained' disabled color='primary' >
+                          Test Completed
+                        </Button>
+                      }
                     </>
                     : ''}
                 </Grid>
+                {((filterData?.status?.name === "Completed" || filterData?.status?.id === 2) || testDate != null) && <Grid item xs={12} style={{margin : '4% 0'}}>
+                  <Button variant='contained' color='primary' onClick={handleDownloadReport}>
+                    <GetAppIcon fontSize="small" />
+                    Download Report
+                  </Button>
+                </Grid>}
               </Grid>
             </div>}
         </div>
       </div>
+      <Dialog open={confirmAlert} onClose={CancelStart}>
+          <DialogTitle id='draggable-dialog-title'>Confirm Start</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Once The Test Is Started, You Can't Stop It.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={CancelStart} className='labelColor cancelButton'>
+              Cancel
+            </Button>
+            <Button
+              color='primary'
+              variant='contained'
+              style={{ color: 'white' }}
+              onClick={handleTeststart}
+            >
+              Start
+            </Button>
+          </DialogActions>
+        </Dialog>
     </div>
   );
 };

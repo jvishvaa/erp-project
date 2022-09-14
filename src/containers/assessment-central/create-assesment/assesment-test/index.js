@@ -104,10 +104,10 @@ const AssesmentTest = ({
     }
     if (fieldName === 'testid') {
       value = event.target.value;
-      if (/^[0-9]{0,6}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
+      if (/^[0-9]{0,5}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
         onTestIdChange(value);
       } else {
-        setAlert('error', 'Test ID can contain numbers & must not exceed length of 6!');
+        setAlert('error', 'Test ID can contain numbers & must not exceed length of 5!');
       }
     }
     if (fieldName === 'testmarks') {
@@ -119,6 +119,7 @@ const AssesmentTest = ({
       }
     }
   };
+  const minDateTime = new Date();
 
   const { TINYMCE_API_KEY = 'g8mda2t3wiq0cvb9j0vi993og4lm8rrylzof5e6lml5x8wua' } =
     ENVCONFIG || {};
@@ -212,7 +213,7 @@ const AssesmentTest = ({
                             variant='outlined'
                             type='datetime-local'
                             size='small'
-                            inputProps={{ min: new Date().toISOString().slice(0, 16) }}
+                            inputProps={{ min: minDateTime.toISOString().slice(0, 16) }}
                             className='date-time-picker bg-white'
                             value={testDate}
                             color='primary'
@@ -285,7 +286,6 @@ const AssesmentTest = ({
                         </div>
                         : ''}
                       <Grid xs={12} sm={6} style={{ padding: '1%' }} >
-                        {console.log(section)}
                         <Grid xs={12} sm={5} style={{display : 'flex' , justifyContent: 'center' , margin: '0 auto'}} >
                           <Autocomplete
                             id='branch'
