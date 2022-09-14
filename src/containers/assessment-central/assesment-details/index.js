@@ -15,7 +15,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import axiosInstance from '../../../config/axios';
 import { handleDownloadPdf } from '../../../../src/utility-functions';
 
-const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) => {
+const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose  , reportLoad}) => {
   const history = useHistory();
   console.log(test, "filter");
   const {
@@ -32,7 +32,8 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
     updated_at: updatedDate,
     sectionMap: section_mapping,
     question_paper_id: question_paper_id,
-    test_id: test_id
+    test_id: test_id,
+    section_name: section_name
   } = test;
 
   const handleData = () => {
@@ -61,6 +62,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
 
 
   const downloadAssessment = () => {
+    reportLoad(true)
     axiosInstance
       .get(`${endpoints.assessmentErp.downloadAssessmentPdf}?test_id=${assessmentId}`, {
         responseType: 'blob',
@@ -77,9 +79,11 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
         } else {
           setAlert('info', message);
         }
+        reportLoad(false)
       })
       .catch((error) => {
         setAlert(error?.message);
+        reportLoad(false)
       });
   };
 
@@ -119,6 +123,19 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
       });
   };
 
+  const getSection = () => {
+    var sectionName = ''
+    let getsectionname = section_name.map((sec , i ) => {
+      if(section_name?.length - 1 == i )
+      {
+        sectionName +=  `${sec}`
+      }else{
+        sectionName +=  `${sec},`
+      }
+    })
+    return sectionName;
+  }
+
   return (
     <div className='assesment-details-container'>
       <div className='header-container'>
@@ -152,9 +169,15 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
             </IconButton>
           </div>
         </div>
-        {testDate != null ?
+        {/* {testDate != null ? */}
           <div className='secondary-header-container'>
-            <div className='secondary-text font-lg'>{testName}</div>
+            <div style={{minWidth: '60%'}} >
+            <div className='secondary-text font-lg'>{testName}
+            {/* {getSection()} */}
+            </div>
+            <div className='secondary-text font-lg' style={{maxWidth: '65%' , fontSize: '14px'}} >{getSection()}</div>
+            </div>
+        {testDate != null ?
             <div className='secondary-text font-sm sop'>
               <div>Scheduled on</div>
               {console.log(testDate?.slice(11, 16), 'dateteimeeeeee')}
@@ -164,8 +187,9 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose }) =
               </div>
               {/* <p style={{marginRight:'90px'}}>Scheduled on {testDate ? moment(testDate).format('DD-MM-YYYY') : '--'}</p> */}
             </div>
-          </div>
           : ''}
+          </div>
+          {/* : ''} */}
       </div>
       <div className='parameters-container'>
         <div className='parameters-header'>

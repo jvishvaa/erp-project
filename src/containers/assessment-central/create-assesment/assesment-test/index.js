@@ -319,7 +319,7 @@ const AssesmentTest = ({
                               size='small'
                               inputProps={{ min: new Date().toISOString().slice(0, 16) }}
                               className='date-time-picker bg-white'
-                              value={values?.val?.length > 0 ? values?.val[i]?.test_date : ''}
+                              value={values?.val?.length > 0 && values?.val[i] != undefined ? values?.val[i]?.test_date : ''}
                               color='primary'
                               style={{ width: isMobile ? '50%' : '100%' , marginLeft: '10px' }}
                               onChange={(e) => {
