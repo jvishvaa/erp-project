@@ -625,6 +625,11 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     return newfiltered.includes(subjectid)
   }
 
+  const reportLoad = (e , v) => {
+    console.log(e , v);
+    setLoading(e)
+  }
+
   // let newid = filterbasedonsub()
 
   return (
@@ -1201,6 +1206,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                           }}
                           filterData={filterData}
                           handleClose={handleClose}
+                          reportLoad={reportLoad}
                         />
                       </Grid>
                     )}
@@ -1274,6 +1280,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                           }}
                           filterData={filterData}
                           handleClose={handleClose}
+                          reportLoad={reportLoad}
                         />
                       </Grid>
                     )}
@@ -1346,6 +1353,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                             setSelectedAssesmentTest(null);
                           }}
                           filterData={filterData1}
+                          reportLoad={reportLoad}
                         />
                       </Grid>
                     )}

@@ -139,7 +139,7 @@ const handleDateChange = (value) => {
             <div className='col-md-2 col-12 pb-0 pb-sm-2 th-custom-col-padding'>
               <Input
                 className='th-bg-grey th-br-4'
-                placeholder='Search a student'
+                placeholder='Search'
                 suffix={<SearchOutlined className='th-grey' />}
                 bordered={false}
                 onChange={(e) => setSearchedValue(e.target.value)}
