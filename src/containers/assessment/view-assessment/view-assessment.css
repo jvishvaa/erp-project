@@ -4,6 +4,7 @@
 .indexarea{
   display: flex;
   margin-right: 5%;
+  width: 20%;
 }
 .onlinetotal{
   display: flex;

@@ -175,16 +175,16 @@ const ViewAssessments = ({ history, ...restProps }) => {
           </Tabs>
           {status == 1 ?
             <div className='indexarea' >
-              <div className='indexTag' >
-                <p>Index :</p>
+              <div className='onlinetotal' >
+                <p style={{ fontWeight: 600, fontSize: '15px' , margin: 'auto' }} >Index :</p>
               </div>
               <div className='onlinetotal'>
                 <div className='onbox' ></div>
-                <p style={{ fontWeight: 600, fontSize: '15px' }}>Online</p>
+                <p style={{ fontWeight: 600, fontSize: '15px' , margin: 'auto' }}>Online</p>
               </div>
               <div className='offlinetotal'>
                 <div className='offbox'></div>
-                <p style={{ fontWeight: 600, fontSize: '15px' }} >Offline</p>
+                <p style={{ fontWeight: 600, fontSize: '15px', margin: 'auto' }} >Offline</p>
               </div>
             </div>
             : ''}

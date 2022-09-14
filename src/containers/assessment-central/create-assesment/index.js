@@ -661,7 +661,8 @@ const CreateAssesment = ({
   };
 
   const sectionDate = (event, i, section) => {
-    console.log(section);
+    var comDate = moment().format().slice(0,16)
+    if(moment(event.target.value).isAfter(comDate)){
     let vals = [...values.val];
     // vals[i] = event.target.value;
     vals[i] = {
@@ -670,6 +671,9 @@ const CreateAssesment = ({
     }
     setValues({ val: vals });
     console.log(vals);
+  } else {
+    setAlert('error','Please Select Correct Date and Time ')
+  }
   }
 
   const handleChangeSection = (event) => {
@@ -1000,8 +1004,13 @@ const CreateAssesment = ({
               // setInstructions(value);
             }}
             onTestDateChange={(value) => {
+              var comDate = moment().format().slice(0,16)
+              if(moment(value).isAfter(comDate)){
               setTestDate(value);
               initChangeTestFormFields('testDate', value);
+              } else {
+                setAlert('error','Please Select Correct Date and Time')
+              }
             }}
             onTestDurationChange={(value) => {
               setTestDuration(value);
