@@ -241,6 +241,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       branch: formik.values.branch,
       grade: formik.values.grade,
       subject: formik.values.subject,
+      status : formik.values.status
     };
     console.log(filterData1);
     setFilterData(filterData1);
