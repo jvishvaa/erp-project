@@ -104,10 +104,10 @@ const AssesmentTest = ({
     }
     if (fieldName === 'testid') {
       value = event.target.value;
-      if (/^[0-9]{0,5}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
+      if (/^[0-9]{0,9}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
         onTestIdChange(value);
       } else {
-        setAlert('error', 'Test ID can contain numbers & must not exceed length of 5!');
+        setAlert('error', 'Test ID can contain numbers & must not exceed length of 9!');
       }
     }
     if (fieldName === 'testmarks') {
@@ -176,7 +176,7 @@ const AssesmentTest = ({
                     </div>
                   </Grid>
                   {/* <div className='dividerVertical' /> */}
-                  {formik?.values?.test_type?.exam_name == 'Quiz' ? '' :
+                  {formik?.values?.test_type?.exam_name == 'Quiz' || sectionWiseTest == true ? '' :
                     <Grid xs={12} sm={6}>
                       <div className='detail'>
                         <div className={classes.label}>Test ID</div>
