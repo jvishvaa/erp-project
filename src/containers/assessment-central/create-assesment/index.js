@@ -469,11 +469,11 @@ const CreateAssesment = ({
       reqObj = { ...reqObj, test_date: testDate };
     }
 
-    if (formik.values.test_type?.exam_name != 'Quiz' ) {
-      if(sectionWiseTest != true){
-        reqObj = { ...reqObj, test_id: testId };
-      }
-    }
+    // if (formik.values.test_type?.exam_name != 'Quiz' ) {
+    //   if(sectionWiseTest != true){
+    //     reqObj = { ...reqObj, test_id: testId };
+    //   }
+    // }
 
     if (!paperchecked) {
       reqObj = { ...reqObj, test_mark: testMarksArr };
