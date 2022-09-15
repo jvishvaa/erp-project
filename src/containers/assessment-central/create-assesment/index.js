@@ -339,7 +339,7 @@ const CreateAssesment = ({
         }
       }
     }
-    if(sectionWiseTest == false){
+    if(sectionWiseTest == false && formik.values.test_type?.exam_name != 'Quiz' ){
       console.log(testDate);
       var todayDate = moment().format().slice(0,16)
       console.log(moment(testDate).isAfter(todayDate));
