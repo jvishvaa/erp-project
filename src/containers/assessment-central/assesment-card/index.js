@@ -206,6 +206,9 @@ const AssesmentCard = ({
       <div className="name">
         <p style={{ marginLeft: "10px" }}>{value.test_name}</p>
       </div>
+      <div className="name">
+          <p className="idPara" style={{ marginLeft: "10px" , fontSize: '14px' }} >{`Test Id: ${value?.test_id}`}</p>
+        </div>
       <div className="grade-details">
         <div style={{ maxWidth: '50%'}} >
           <div>
