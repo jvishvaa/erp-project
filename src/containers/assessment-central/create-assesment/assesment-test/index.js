@@ -104,10 +104,10 @@ const AssesmentTest = ({
     }
     if (fieldName === 'testid') {
       value = event.target.value;
-      if (/^[0-9]{0,5}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
+      if (/^[0-9]{0,9}$/.test(value) /*.match(/^[0-9a-z]{1,10}$/)*/) {
         onTestIdChange(value);
       } else {
-        setAlert('error', 'Test ID can contain numbers & must not exceed length of 5!');
+        setAlert('error', 'Test ID can contain numbers & must not exceed length of 9!');
       }
     }
     if (fieldName === 'testmarks') {
@@ -176,7 +176,7 @@ const AssesmentTest = ({
                     </div>
                   </Grid>
                   {/* <div className='dividerVertical' /> */}
-                  {formik?.values?.test_type?.exam_name == 'Quiz' ? '' :
+                  {formik?.values?.test_type?.exam_name == 'Quiz' || sectionWiseTest == true || sectionWiseTest == false ? '' :
                     <Grid xs={12} sm={6}>
                       <div className='detail'>
                         <div className={classes.label}>Test ID</div>
@@ -319,7 +319,7 @@ const AssesmentTest = ({
                               size='small'
                               inputProps={{ min: new Date().toISOString().slice(0, 16) }}
                               className='date-time-picker bg-white'
-                              value={values?.val?.length > 0 ? values?.val[i]?.test_date : ''}
+                              value={values?.val?.length > 0 && values?.val[i] != undefined ? values?.val[i]?.test_date : ''}
                               color='primary'
                               style={{ width: isMobile ? '50%' : '100%' , marginLeft: '10px' }}
                               onChange={(e) => {

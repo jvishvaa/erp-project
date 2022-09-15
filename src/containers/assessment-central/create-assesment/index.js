@@ -327,6 +327,28 @@ const CreateAssesment = ({
       return;
     }
 
+   
+    if(sectionWiseTest == true ){
+      const checkDate = values.val.filter(x => x)
+      var todayDate = moment().format().slice(0,16)
+      for (let i = 0; i < checkDate?.length; i++)  {
+        console.log(moment(checkDate[i]?.test_date).isAfter(todayDate));
+        if(moment(checkDate[i]?.test_date).isAfter(todayDate) == false){
+          setAlert('error', 'Please Select Correct Date and Time');
+          return;
+        }
+      }
+    }
+    if(sectionWiseTest == false && formik.values.test_type?.exam_name != 'Quiz' ){
+      console.log(testDate);
+      var todayDate = moment().format().slice(0,16)
+      console.log(moment(testDate).isAfter(todayDate));
+      if(moment(testDate).isAfter(todayDate) == false){
+        setAlert('error', 'Please Select Correct Date and Time');
+        return;
+      }
+    }
+
     testMarks.forEach((obj) => {
       const { parentQuestionId } = obj;
       if (parentQuestionId) {
@@ -447,9 +469,11 @@ const CreateAssesment = ({
       reqObj = { ...reqObj, test_date: testDate };
     }
 
-    if (formik.values.test_type?.exam_name != 'Quiz') {
-      reqObj = { ...reqObj, test_id: testId };
-    }
+    // if (formik.values.test_type?.exam_name != 'Quiz' ) {
+    //   if(sectionWiseTest != true){
+    //     reqObj = { ...reqObj, test_id: testId };
+    //   }
+    // }
 
     if (!paperchecked) {
       reqObj = { ...reqObj, test_mark: testMarksArr };

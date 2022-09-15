@@ -11,7 +11,6 @@ import {
   Tooltip,
 } from "@material-ui/core";
 import moment from "moment";
-
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import "./styles.scss";
 import {
@@ -86,6 +85,22 @@ const AssesmentCard = ({
     selectAssetmentCard(value?.id, checked);
     // filterbasedonsub()
   };
+
+  const getSection = () => {
+    var sectionName = ''
+    let getsectionname = value?.section_name.map((sec , i ) => {
+      // var check = sec.split('')
+      // console.log(check[ check?.length - 1 ]);
+      console.log(value?.section_name?.length , i);
+      if(value?.section_name?.length - 1 == i )
+      {
+        sectionName +=  `${sec}`
+      }else{
+        sectionName +=  `${sec},`
+      }
+    })
+    return sectionName;
+  }
 
 
   return (
@@ -191,17 +206,24 @@ const AssesmentCard = ({
       <div className="name">
         <p style={{ marginLeft: "10px" }}>{value.test_name}</p>
       </div>
+      <div className="name">
+          <p className="idPara" style={{ marginLeft: "10px" , fontSize: '14px' }} >{`Test Id: ${value?.test_id}`}</p>
+        </div>
       <div className="grade-details">
-        <div>
-          <p style={{ marginLeft: "10px" }}>
+        <div style={{ maxWidth: '50%'}} >
+          <div>
+            <Tooltip title={getSection()}>
+          <p style={{ marginLeft: "10px", whiteSpace: 'nowrap' , overflow: 'hidden' , textOverflow: 'ellipsis' , fontSize: '15px' }}>
             {
-              `${value.question_paper__grade_name || value.grade_name} `
+              `${value.question_paper__grade_name || value.grade_name} ${getSection()}`
               // ${value.question_paper_subject_name && value.question_paper_subject_name?.join(', ')}`
             }
           </p>
+          </Tooltip>
+          </div>
           {/* <p className='completed'>Completed -30.12.2020</p> */}
           {value.test_date != null ? 
-          <p className="scheduled" style={{ marginLeft: "10px" }}>
+          <p className="scheduled" style={{ marginLeft: "10px"  }}>
             {`Scheduled on - ${moment(value.test_date).format("DD-MM-YYYY")}`}
             {", "}
             {value?.test_date?.slice(11, 16)}
