@@ -387,7 +387,7 @@ const AnnualPlan = () => {
                               <div className='row pt-1'>
                                 <div className='col-5 text-right pl-4'>
                                   {' '}
-                                  Chapter{i + 1}:{' '}
+                                  Chapter {i + 1}:{' '}
                                 </div>
                                 <div className='col-6 pl-1'>{each}</div>
                               </div>
