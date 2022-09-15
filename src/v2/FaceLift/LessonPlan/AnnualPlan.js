@@ -336,7 +336,7 @@ const AnnualPlan = () => {
                   <div className='col-md-6 p-2'>
                     <div
                       className='th-br-6 shadow-sm th-pointer volume-card'
-                      style={{ border: '1px solid #d9d9d9', height: 250 }}
+                      style={{ border: '1px solid #d9d9d9', height: 260 }}
                       onClick={() =>
                         history.push({
                           pathname: window.location.pathname.includes('teacher-view')
