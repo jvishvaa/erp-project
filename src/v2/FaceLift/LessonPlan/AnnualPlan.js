@@ -336,7 +336,7 @@ const AnnualPlan = () => {
                   <div className='col-md-6 p-2'>
                     <div
                       className='th-br-6 shadow-sm th-pointer volume-card'
-                      style={{ border: '1px solid #d9d9d9', height: 250 }}
+                      style={{ border: '1px solid #d9d9d9', height: 260 }}
                       onClick={() =>
                         history.push({
                           pathname: window.location.pathname.includes('teacher-view')
@@ -387,7 +387,7 @@ const AnnualPlan = () => {
                               <div className='row pt-1'>
                                 <div className='col-5 text-right pl-4'>
                                   {' '}
-                                  Chapter{i + 1}:{' '}
+                                  Chapter {i + 1}:{' '}
                                 </div>
                                 <div className='col-6 pl-1'>{each}</div>
                               </div>

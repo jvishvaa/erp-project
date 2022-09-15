@@ -10,6 +10,7 @@ import {
   Button,
   Radio,
   Spin,
+  Tooltip,
 } from 'antd';
 import {
   DownOutlined,
@@ -17,8 +18,8 @@ import {
   CloseOutlined,
   CaretRightOutlined,
   DownloadOutlined,
-  EyeFilled,
   RightOutlined,
+  EyeFilled,
 } from '@ant-design/icons';
 import { tableWidthCalculator } from 'v2/tableWidthCalculator';
 import pptFileIcon from 'v2/Assets/dashboardIcons/lessonPlanIcons/pptFileIcon.svg';
@@ -186,7 +187,7 @@ const TableView = () => {
   const fetchModuleListData = (params = {}) => {
     setLoading(true);
     axios
-      .get(`/academic/get-module-list/`, {
+      .get(`academic/get-module-list/`, {
         params: { ...params },
       })
       .then((result) => {
@@ -198,8 +199,8 @@ const TableView = () => {
         }
       })
       .catch((error) => {
-        setLoading(false);
         message.error(error.message);
+        setLoading(false);
       });
   };
   const fetchAnnualPlanData = (params = {}) => {
@@ -252,7 +253,7 @@ const TableView = () => {
       is_kit_activity: data?.is_kit_activity,
     };
     axios
-      .get(`/academic/annual-plan/chapter-topic-wise-lp-data/`, {
+      .get(`academic/annual-plan/chapter-topic-wise-lp-data/`, {
         params: { ...params },
       })
       .then((result) => {
@@ -388,7 +389,7 @@ const TableView = () => {
           section_mapping_id: [section],
         };
         axios
-          .post(`academic/v2/lessonplan-completed-status/`, payLoad)
+          .post(`/academic/v2/lessonplan-completed-status/`, payLoad)
           .then((res) => {
             if (res.data.status_code === 200) {
               if (index == completeSections.length - 1) {
@@ -524,25 +525,33 @@ const TableView = () => {
         title: '',
         dataIndex: 'key_concept__topic_name',
         align: 'center',
-        width: tableWidthCalculator(25) + '%',
-        render: (text, row, index) => (
-          <span
-            className='th-black-1 th-pointer text-truncate'
-            // onClick={() => {
-            //   setSelectedKeyConcept(row);
-            //   fetchLessonResourcesData(row);
-            // }}
-          >
-            {index + 1}. {row.key_concept__topic_name}{' '}
-            {row.is_kit_activity === 'true' ? '(Kit Activity)' : null}
-          </span>
-        ),
+        width: tableWidthCalculator(30) + '%',
+        render: (text, row, index) => {
+          return (
+            <div
+              className='th-black-1 th-pointer row'
+              style={{ maxWidth: window.innerWidth < 768 ? '140px' : '300px' }}
+            >
+              <div className='col-md-2 col-0'></div>
+              <div className='col-md-10 col-12 px-md-0'>
+                <Tooltip
+                  placement='bottom'
+                  title={<span>{row.key_concept__topic_name}</span>}
+                >
+                  <div className='text-truncate th-width-95'>
+                    {index + 1}. {row.key_concept__topic_name}
+                  </div>
+                </Tooltip>
+              </div>
+            </div>
+          );
+        },
       },
       {
         title: '',
         dataIndex: 'lp_count',
         align: 'center',
-        width: '15%',
+        width: '10%',
         render: (data) => <span className='th-black-1'>{data}</span>,
       },
       {
@@ -552,7 +561,6 @@ const TableView = () => {
         width: '5%',
         render: (data) => (
           <span className='th-black-1'>
-            {' '}
             <RightOutlined />
           </span>
         ),
@@ -566,7 +574,7 @@ const TableView = () => {
         loading={loadingInner}
         pagination={false}
         showHeader={false}
-        // bordered={false}
+        bordered={false}
         style={{ width: '100%' }}
         rowClassName={(record, index) => 'th-pointer th-row'}
         onRow={(row, rowIndex) => {
@@ -605,14 +613,14 @@ const TableView = () => {
     {
       title: <span className='th-white th-fw-700'>KEY CONCEPTS</span>,
       dataIndex: 'kc_count',
-      width: '25%',
+      width: '30%',
       align: 'center',
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
     {
-      title: <span className='th-white th-fw-700'>TOTAL PERIODS</span>,
+      title: <span className='th-white th-fw-700'>PERIODS</span>,
       dataIndex: 'lp_count',
-      width: '15%',
+      width: '10%',
       align: 'center',
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
@@ -732,9 +740,9 @@ const TableView = () => {
       </div>
       <div className='col-12'>
         <Table
-          className='th-table'
+          className='th-table '
           rowClassName={(record, index) =>
-            index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'
+            `th-pointer ${index % 2 === 0 ? 'th-bg-grey' : 'th-bg-white'}`
           }
           expandRowByClick={true}
           columns={columns}
@@ -795,7 +803,7 @@ const TableView = () => {
                     <div className='row'>
                       <div className='th-black-1 px-0 col-3 pl-0'>
                         <div className='row justify-content-between'>
-                          <span>{item.period_name} </span>
+                          <span className='th-fw-500'>{item.period_name} </span>
                           <span>:&nbsp;</span>
                         </div>
                       </div>
