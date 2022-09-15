@@ -345,7 +345,7 @@ const AssesmentDetails = ({ test, onClick, onClose, filterData, handleClose  , r
                     </>
                     : ''}
                 </Grid>
-                {((filterData?.status?.name === "Completed" || filterData?.status?.id === 2) || testDate != null) && <Grid item xs={12} style={{margin : '4% 0'}}>
+                {((filterData?.status?.name === "Completed" || filterData?.status?.id === 2) || (testType == 'Quiz' && testDate != null)) && <Grid item xs={12} style={{margin : '4% 0'}}>
                   <Button variant='contained' color='primary' onClick={handleDownloadReport}>
                     <GetAppIcon fontSize="small" />
                     Download Report
