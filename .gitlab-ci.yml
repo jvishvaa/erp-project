@@ -95,7 +95,7 @@ code_analysis:
     - qa
 
 
-deploy_blue:
+deploy_stage:
     before_script:
       - sleep 10
       - ip a
@@ -118,8 +118,9 @@ deploy_blue:
       - sudo npm install
       - grep home package.json || true
       - export CI=false
-      - export NODE_OPTIONS=--max_old_space_size=4096
+      #- export NODE_OPTIONS=--max_old_space_size=4096
       - export REACT_APP_UI_ENV=PROD
+      - sudo service uwsgi restart
       - sudo -E bash -c "set \"CI=false\" &&  npm run build"
       # - sudo service uwsgi start
       - sudo rm -rf /home/ubuntu/build_test | true
