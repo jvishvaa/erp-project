@@ -86,7 +86,7 @@ const StudentDashboardNew = () => {
   useEffect(() => {
     fetchDoodle();
     fetchUserStatus();
-  }, []);
+  }, [sessionYear]);
 
   const studentrefer = () => {
     history.push('/studentrefer');
