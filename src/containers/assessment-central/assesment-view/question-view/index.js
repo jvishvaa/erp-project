@@ -217,7 +217,7 @@ const QuestionView = ({ question, showHeader, index }) => {
                   ))}
                 </div>
               </div>
-              
+
             </div>
           )}
           <div>
@@ -231,8 +231,9 @@ const QuestionView = ({ question, showHeader, index }) => {
                   {/* <Divider className='secondary-divider' /> */}
                   <div className='options-container'>
                     {question.question_answer[0]?.options.map((optionObj, subIndex) => (
-                      <div className='option' key={`option-item-${index}`}>
-                        {ReactHtmlParser(optionObj[`option${subIndex + 1}`].optionValue)}
+                      <div className='option' key={`option-item-${index}`} style={{ display: 'flex' }}>
+                        <div>{subIndex + 1}.
+                          {ReactHtmlParser(optionObj[`option${subIndex + 1}`].optionValue)}</div>
                         {`${optionObj[`option${subIndex + 1}`]?.images}`?.length > 0 && (
                           <div>
                             <a
@@ -306,7 +307,7 @@ const QuestionView = ({ question, showHeader, index }) => {
                   </div>
                   <Divider className='secondary-divider' />
                 </div>
-               
+
               </div>
             )}
           </div>
