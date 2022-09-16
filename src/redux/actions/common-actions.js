@@ -23,7 +23,6 @@ export const AssessuploadFile = async (file) => {
   }
 };
 
-
 export const uploadOMRFile = async (file) => {
   try {
     const response = await axiosInstance.post('/assessment/upload-omr-sheet/', file);
@@ -184,10 +183,10 @@ export const fetchBranchList = (session_year) => (dispatch) => {
 
         if (!sessionStorage.getItem('selected_branch')) {
           sessionStorage.setItem('selected_branch', JSON.stringify(branchList[0]));
-          localStorage.setItem('isV2', branchList[0]?.isV2);
+
           dispatch({ type: SELECTED_BRANCH, payload: branchList[0] });
           sessionStorage.setItem('isSessionChanged', false);
-          window.location.reload();
+          // window.location.reload();
         }
 
         dispatch({ type: BRANCH_LIST, payload: branchList });
@@ -199,5 +198,6 @@ export const fetchBranchList = (session_year) => (dispatch) => {
 };
 
 export const selectedVersion = (data) => (dispatch) => {
+  console.log(data, 'SELECTED_VERSION');
   dispatch({ type: SELECTED_VERSION, payload: data });
 };

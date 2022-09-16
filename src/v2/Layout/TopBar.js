@@ -30,7 +30,6 @@ import TopBarStyles from './TopBarStyles';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
-
 import {
   currentSelectedYear,
   currentSelectedBranch,
@@ -145,11 +144,17 @@ const Appbar = ({ children, history, ...props }) => {
   }, [isLogout]);
 
   const handleFinance = () => {
-    window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`, '_blank');
+    window.open(
+      `${ENVCONFIG?.apiGateway?.finance}/sso/finance/${token}#/auth/login`,
+      '_blank'
+    );
   };
 
   const handleTicket = () => {
-    window.open(`${ENVCONFIG?.apiGateway?.finance}/sso/ticket/${token}#/auth/login`, '_blank');
+    window.open(
+      `${ENVCONFIG?.apiGateway?.finance}/sso/ticket/${token}#/auth/login`,
+      '_blank'
+    );
   };
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
@@ -180,31 +185,27 @@ const Appbar = ({ children, history, ...props }) => {
           <Typography color='secondary'>Settings</Typography>
         </MenuItem>
       ) : null}
-      {profileDetails?.is_verified &&
-        (
-          <>
-            <MenuItem
-              onClick={() => setisSwitch(!isSwitch)}
-            >
-              <IconButton aria-label='settings' color='inherit'>
-                <SupervisorAccountIcon color='primary' style={{ fontSize: '2rem' }} />
-              </IconButton>
-              <Typography color='secondary'>Switch Profile</Typography>
-              {!isSwitch && <KeyboardArrowDownIcon />}
-              {isSwitch && <KeyboardArrowUpIcon />}
-
-            </MenuItem>
-            {isSwitch && profileToShown?.map((item) => (
+      {profileDetails?.is_verified && (
+        <>
+          <MenuItem onClick={() => setisSwitch(!isSwitch)}>
+            <IconButton aria-label='settings' color='inherit'>
+              <SupervisorAccountIcon color='primary' style={{ fontSize: '2rem' }} />
+            </IconButton>
+            <Typography color='secondary'>Switch Profile</Typography>
+            {!isSwitch && <KeyboardArrowDownIcon />}
+            {isSwitch && <KeyboardArrowUpIcon />}
+          </MenuItem>
+          {isSwitch &&
+            profileToShown?.map((item) => (
               <MenuItem onClick={() => handleSwitchChange(item)}>
                 {/* <IconButton aria-label='settings' color='inherit'>
             <SettingsIcon color='primary' style={{ fontSize: '2rem' }} />
           </IconButton> */}
                 <Typography color='secondary'>{item?.name}</Typography>
               </MenuItem>
-
             ))}
-
-          </>)}
+        </>
+      )}
       <MenuItem onClick={handleLogout}>
         <IconButton aria-label='logout button' color='inherit'>
           <ExitToAppIcon color='primary' style={{ fontSize: '2rem' }} />
@@ -325,7 +326,7 @@ const Appbar = ({ children, history, ...props }) => {
     });
     dispatch(currentSelectedBranch(selectedBranch));
     sessionStorage.setItem('selected_branch', JSON.stringify(selectedBranch));
-    localStorage.setItem('isV2', selectedBranch?.isV2);
+
     if (window.location.pathname.includes('academic-calendar')) {
       history.push('/');
     }
@@ -349,7 +350,7 @@ const Appbar = ({ children, history, ...props }) => {
       .then((res) => {
         console.log(res);
         if (res.status === 200) {
-          window.location.reload();
+          // window.location.reload();
           setAlert('success', res.data.message);
         } else {
           setAlert('error', res.data.description);
@@ -360,11 +361,6 @@ const Appbar = ({ children, history, ...props }) => {
       });
   }
 
-  const handleVersion = (status) => {
-    dispatch(selectedVersion(status));
-    localStorage.setItem('selectedVersion', status);
-    reseteTheme();
-  };
   const isV2 = IsV2Checker();
 
   const fetchERPSystemConfig = async (status) => {
@@ -391,17 +387,18 @@ const Appbar = ({ children, history, ...props }) => {
   };
 
   const handleSwitchChange = (item) => {
-    sessionStorage.removeItem("branch_list")
-    sessionStorage.removeItem('selected_branch')
-    sessionStorage.removeItem('acad_session_list')
-    sessionStorage.removeItem('acad_session')
+    sessionStorage.removeItem('branch_list');
+    sessionStorage.removeItem('selected_branch');
+    sessionStorage.removeItem('acad_session_list');
+    sessionStorage.removeItem('acad_session');
     // let filterItem = profileDetails?.data?.filter((item) => item.name === (event.target.value || item?.name))
-    let savedProfile = localStorage.setItem('selectProfileDetails', JSON.stringify(item)) || {}
-    setProfile(item?.name)
+    let savedProfile =
+      localStorage.setItem('selectProfileDetails', JSON.stringify(item)) || {};
+    setProfile(item?.name);
     // setProfileName(event?.target?.value.name)
     const phone_number = JSON.parse(localStorage?.getItem('profileNumber')) || {};
-    localStorage.removeItem("userDetails");
-    localStorage.removeItem("navigationData");
+    localStorage.removeItem('userDetails');
+    localStorage.removeItem('navigationData');
     if (phone_number && item) {
       let payload = {
         contact: phone_number,
@@ -409,16 +406,10 @@ const Appbar = ({ children, history, ...props }) => {
         hmac: item?.hmac,
       };
       axiosInstance
-        .post(
-          endpoints.auth.mobileLogin,
-          payload
-        )
+        .post(endpoints.auth.mobileLogin, payload)
         .then((result) => {
           if (result.status === 200) {
-            localStorage.setItem(
-              'mobileLoginDetails',
-              JSON.stringify(result)
-            );
+            localStorage.setItem('mobileLoginDetails', JSON.stringify(result));
             localStorage.setItem(
               'userDetails',
               JSON.stringify(result.data?.login_response?.result?.user_details)
@@ -445,7 +436,7 @@ const Appbar = ({ children, history, ...props }) => {
                 }
               } else if (res === false) {
                 erpConfig = res;
-                history.push('/dashboard')
+                history.push('/dashboard');
               } else {
                 erpConfig = res;
                 history.push('/dashboard');
@@ -453,7 +444,7 @@ const Appbar = ({ children, history, ...props }) => {
               userData['erp_config'] = erpConfig;
               localStorage.setItem('userDetails', JSON.stringify(userData));
               window.location.reload();
-            })
+            });
           } else {
             setAlert('error', result.data.message);
             // setDisableLogin(false)
@@ -463,9 +454,7 @@ const Appbar = ({ children, history, ...props }) => {
           setAlert('error', error.message);
         });
     }
-
-  }
-
+  };
 
   return (
     <>
@@ -579,9 +568,9 @@ const Appbar = ({ children, history, ...props }) => {
               </Grid>
               <div className='ml-1 d-flex align-items-center'>
                 {userData?.user_level == 1 ||
-                  userData?.user_level == 25 ||
-                  userData?.user_level == 13 ||
-                  userData?.is_superuser == true ? (
+                userData?.user_level == 25 ||
+                userData?.user_level == 13 ||
+                userData?.is_superuser == true ? (
                   <>
                     {apps?.finance == true ? (
                       <>
@@ -603,9 +592,9 @@ const Appbar = ({ children, history, ...props }) => {
                   <></>
                 )}
                 {userData?.user_level == 1 ||
-                  userData?.user_level == 25 ||
-                  userData?.user_level == 13 ||
-                  userData?.is_superuser == true ? (
+                userData?.user_level == 25 ||
+                userData?.user_level == 13 ||
+                userData?.is_superuser == true ? (
                   <>
                     {isMobile ? (
                       <IconButton
@@ -620,12 +609,7 @@ const Appbar = ({ children, history, ...props }) => {
                 ) : (
                   <></>
                 )}
-                <Switch
-                  checked={isV2}
-                  checkedChildren='V2'
-                  unCheckedChildren='V1'
-                  onChange={handleVersion}
-                />
+
                 <div className={classes.sectionMobile}>
                   <IconButton
                     aria-label='show more'
@@ -705,52 +689,6 @@ const Appbar = ({ children, history, ...props }) => {
 
           <div className='d-flex align-items-center'>
             {isMobile ? null : (
-              <Switch
-                checked={isV2}
-                checkedChildren={'Older Version'}
-                unCheckedChildren={'Newer Version'}
-                onChange={handleVersion}
-                className='th-top-switch'
-              />
-            )}
-            {/* {profileDetails?.is_verified === true ? (
-              <>
-              {isMobile ? null : (
-              <div className={classes.grow} style={{ margin: '0' }}>
-                <FormControl
-                  className='d-flex flex-row align-items-center th-bg-white th-br-4 '
-                  variant='standard'
-                  sx={{ m: 1, minWidth: 100 }}
-                >
-                  <div className='px-2 th-black-2 th-14'> Logged In As : {profile}</div>
-                  <Select
-                    onChange={handleSwitchChange}
-                    value={profile}
-                    className='th-primary th-bg-white th-br-4 text-left th-topbar-select'
-                    placement='bottomRight'
-                    bordered={false}
-                    showSearch={true}
-                    suffixIcon={<DownOutlined className='th-primary' />}
-                    dropdownMatchSelectWidth={false}
-                    optionFilterProp='children'
-                    filterOption={(input, option) =>
-                      option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                    }
-                  >
-                    {profileDetails?.data?.map((item) => {
-                      return (
-                        <Option value={item?.name}>
-                          {item?.name}
-                        </Option>
-                      );
-                    })}
-                  </Select>
-                </FormControl>
-              </div>
-            )}
-              </>
-            ) : ""} */}
-            {isMobile ? null : (
               <div className={classes.grow} style={{ margin: '0' }}>
                 <FormControl
                   className='d-flex flex-row align-items-center th-bg-white th-br-4 '
@@ -815,9 +753,9 @@ const Appbar = ({ children, history, ...props }) => {
             )}
 
             {userData?.user_level == 1 ||
-              userData?.user_level == 25 ||
-              userData?.user_level == 13 ||
-              userData?.is_superuser == true ? (
+            userData?.user_level == 25 ||
+            userData?.user_level == 13 ||
+            userData?.is_superuser == true ? (
               <>
                 {apps?.finance == true ? (
                   <>
@@ -838,22 +776,22 @@ const Appbar = ({ children, history, ...props }) => {
             ) : (
               <></>
             )}
-                 {userData?.user_level == 1 ||
+            {userData?.user_level == 1 ||
             userData?.user_level == 8 ||
             userData?.user_level == 13 ||
             userData?.user_level == 14 ||
             userData?.user_level == 35 ||
             userData?.is_superuser == true ? (
-                  <>
-                    {isMobile ? null : (
-                      <IconButton
-                      className={classes.grow}
-                      style={{ margin: '0' }}
-                        onClick={handleTicket}
-                      >
-                        <LiveHelpIcon />
-                      </IconButton>
-                    )}
+              <>
+                {isMobile ? null : (
+                  <IconButton
+                    className={classes.grow}
+                    style={{ margin: '0' }}
+                    onClick={handleTicket}
+                  >
+                    <LiveHelpIcon />
+                  </IconButton>
+                )}
               </>
             ) : (
               <></>
