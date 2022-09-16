@@ -40,6 +40,9 @@
           margin-right: 5px;
         }
       }
+      #test-section{
+        font-size: 14px;
+      }
       .form-field-header {
         color: $primary-color;
         font-size: 1.2rem;
@@ -72,9 +75,15 @@
               width: 100%;
               .bg-white {
                 background-color: #ffffff;
+                font-size: 14px;
               }
             }
           }
+         
+        }
+        .bg-white {
+          background-color: #ffffff;
+          font-size: 14px;
         }
       }
       .questions-container {
@@ -166,12 +175,21 @@
   }
 }
 .dropdownSection{
-  min-width: 100%;
+  min-width: 125%;
   .MuiAutocomplete-inputRoot{
+    font-size: 10px !important ;
+    font-weight: 600;
+  }
+  .MuiFormLabel-root{
     font-size: 14px;
   }
 }
-
+.date-time-picker-section{
+  .MuiInputBase-root{
+    font-weight: 600;
+    font-size: 10px;
+  }
+}
 li.assesment-card-popup-menu-item {
   display: flex;
   justify-content: space-between !important;

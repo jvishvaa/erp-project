@@ -162,6 +162,7 @@ const AssesmentTest = ({
                           size='small'
                           placeholder='Test Name'
                           className='bg-white'
+                          id='test-section'
                           style={{ width: '100%' }}
                           value={testName}
                           inputProps={{
@@ -187,6 +188,7 @@ const AssesmentTest = ({
                             size='small'
                             style={{ width: '100%' }}
                             className='bg-white'
+                          id='test-section'
                             name='testid'
                             value={testId}
                             // onChange={(e) => {
@@ -215,6 +217,7 @@ const AssesmentTest = ({
                             size='small'
                             inputProps={{ min: minDateTime.toISOString().slice(0, 16) }}
                             className='date-time-picker bg-white'
+                          id='test-section'
                             value={testDate}
                             color='primary'
                             style={{ width: isMobile ? '50%' : '100%' }}
@@ -237,10 +240,11 @@ const AssesmentTest = ({
                           }}
                           size='small'
                           className='bg-white'
+                          id='test-section'
                           name='duration'
                           placeholder='In Minutes'
                           value={testDuration}
-                          style={{ width: '100%' }}
+                          style={{ width: '100%' , fontSize: '14px' }}
                           onChange={(e) => handleChange(e)}
                         />
                       </div>
@@ -269,6 +273,7 @@ const AssesmentTest = ({
                             }}
                             size='small'
                             className='bg-white'
+                          id='test-section'
                             name='testmarks'
                             value={totalMarks}
                             style={{ width: '100%' }}
@@ -307,7 +312,7 @@ const AssesmentTest = ({
                                 label='Section'
                                 placeholder='Section'
                                 required
-                                style={{fontSize: '14px'}}
+                                style={{fontSize: '10px' , fontWeight: '600'}}
                               />
                             )}
                             size='small'
@@ -318,7 +323,7 @@ const AssesmentTest = ({
                               type='datetime-local'
                               size='small'
                               inputProps={{ min: new Date().toISOString().slice(0, 16) }}
-                              className='date-time-picker bg-white'
+                              className='date-time-picker-section'
                               value={values?.val?.length > 0 && values?.val[i] != undefined ? values?.val[i]?.test_date : ''}
                               color='primary'
                               style={{ width: isMobile ? '50%' : '100%' , marginLeft: '10px' }}
