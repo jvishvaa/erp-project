@@ -243,6 +243,10 @@ const Layout = ({ children, history }) => {
         history.push('/user-management');
         break;
       }
+      case 'OnBoarding Report' : {
+        history.push('/onboarding-report');
+        break;
+      }
       case 'Ebook View': {
         history.push('/ebook/view');
         break;

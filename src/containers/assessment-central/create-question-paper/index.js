@@ -91,6 +91,7 @@ const CreateQuestionPaper = ({
 
   const NavData = JSON.parse(localStorage.getItem('navigationData')) || {};
   const [moduleId, setModuleId] = useState('');
+  const [ filterData ,setFilterData ] = useState()
   const { refresh = false } = history.location?.state || {};
   let preselectedBranch = useSelector((state) => state.commonFilterReducer.selectedBranch);
 
@@ -157,6 +158,7 @@ const CreateQuestionPaper = ({
       grade: selectedGrade,
       subject: selectedSubject,
       question_paper_level: selectedLevel,
+      questionPaperName : questionPaperName,
     },
     onSubmit: (values) => {
       setShowQuestionPaper(true);
@@ -222,6 +224,7 @@ const CreateQuestionPaper = ({
     initSetFilter('selectedGrade', '');
     initSetFilter('selectedSubject', []);
     initSetFilter('selectedLevel', '');
+    setFilterData()
   };
   const handleClearFilters = () => {
     formik.setFieldValue('branch', []);
@@ -240,6 +243,7 @@ const CreateQuestionPaper = ({
     initDeleteSection(questionId, section);
   };
   const handleEditQuestionPaper = async (isDraft) => {
+    console.log(isDraft);
     try {
       const questionData = [],
         centralQuestionData = [];
@@ -273,8 +277,8 @@ const CreateQuestionPaper = ({
         paper_level: formik.values.question_paper_level?.id,
         section: sectionData,
         sections: sectionData,
-        is_review: 'True',
-        is_draft: 'False',
+        is_review: isDraft ? 'False' : 'True',
+        is_draft: isDraft ? 'True' : 'False',
         is_verified: 'False',
       };
 
@@ -286,10 +290,10 @@ const CreateQuestionPaper = ({
         reqObj = { ...reqObj, central_question: centralQuestionData.flat() };
       }
 
-      if (isDraft) {
-        reqObj.is_draft = 'True';
-        reqObj.is_review = 'False';
-      }
+      // if (isDraft) {
+      //   reqObj.is_draft = 'True';
+      //   reqObj.is_review = 'False';
+      // }
 
       let sectionFlag = true,
         sectionName = '';
@@ -314,7 +318,13 @@ const CreateQuestionPaper = ({
       if (finalSubmitFlag) {
         await initEditQuestionPaper(reqObj, location.pathname.slice(23));
         // await initEditQuestionPaper(reqObj);
-        history.push('/assessment-question');
+        // history.push('/assessment-question');
+        history.push({
+          pathname: '/assessment-question',
+          state: {
+            isSet : 'true'
+          }
+        })
         setAlert('success', 'Question Paper Updated successfully');
         handleResetQuestionPaper();
       } else {
@@ -369,8 +379,10 @@ const CreateQuestionPaper = ({
         paper_level: formik.values.question_paper_level?.id,
         section: sectionData,
         sections: sectionData,
-        is_review: 'True',
-        is_draft: 'False',
+        // is_review: 'True',
+        // is_draft: 'False',
+        is_review: isDraft ? 'False' : 'True',
+        is_draft: isDraft ? 'True' : 'False',
       };
 
       if (questionData?.length) {
@@ -409,7 +421,13 @@ const CreateQuestionPaper = ({
 
       if (finalSubmitFlag) {
         await initCreateQuestionPaper(reqObj);
-        history.push('/assessment-question');
+        // history.push('/assessment-question');
+        history.push({
+          pathname: '/assessment-question',
+          state: {
+            isSet : 'true'
+          }
+        })
         setAlert('success', 'Question Paper created successfully');
         handleResetQuestionPaper();
       } else {
@@ -475,6 +493,8 @@ const CreateQuestionPaper = ({
       .then((result) => {
         if (result.data.status_code === 200) {
           initSetFilter('questionPaperName', result.data.result.paper_name);
+          setFilterData(result.data.result)
+
           const { questions: responseQuestions = [], sections: responseSections = [] } =
             result.data.result || {};
           handleTransformResponse(responseQuestions, responseSections); //for edit question-paper
@@ -484,6 +504,49 @@ const CreateQuestionPaper = ({
         setAlert('error', error.message);
       });
   };
+
+
+
+  useEffect(() => {
+    console.log(filterData);
+    if(filterData?.academic_session){
+     let branchVal =  [...branchDropdown].filter((i) => filterData?.academic_session.includes(i?.id))
+     console.log(branchVal);
+     handleBranch(filterData?.academic_session , branchVal)
+
+    //  branchVal.map((item , index) => {
+    //    handleBranch(filterData , item)
+    //  })
+    }
+  },[branchDropdown , filterData])
+
+
+  useEffect(() => {
+    if(filterData?.grade && formik.values.branch){
+      let gradeVal = [...grades].filter((i) => filterData?.grade == i?.grade_id)
+      console.log(gradeVal);
+      handleGrade(filterData , gradeVal[0])
+    }
+
+  },[grades , filterData])
+
+  useEffect(() => {
+    if(filterData?.subject ){
+      let subjectVal = [...subjects].filter((i) => filterData?.subject.includes(i?.subject_id))
+      console.log(subjectVal);
+      handleSubject(filterData , subjectVal)
+      let levelVal = [...levels].filter((i) => filterData?.question_level == i?.id)
+      console.log(levelVal);
+      handleLevel(filterData , levelVal[0])
+    }
+    if(filterData?.paper_name){
+      initSetFilter(
+        'questionPaperName',
+        filterData?.paper_name.replace(/\b(\w)/g, (s) => s.toUpperCase())
+      )
+      formik.setFieldValue('questionPaperName', filterData?.paper_name.replace(/\b(\w)/g, (s) => s.toUpperCase()))
+    }
+  },[subjects , filterData])
 
   const handleBranch = (event, value) => {
     formik.setFieldValue('branch', []);
@@ -505,10 +568,11 @@ const CreateQuestionPaper = ({
       initSetFilter('selectedBranch', value);
     }
   };
-  const handleSubmitPaper = () => {
+  const handleSubmitPaper = (e ) => {
+    console.log(e)
     if (Number(location.pathname.slice(23))) {
-      handleEditQuestionPaper();
-    } else handleCreateQuestionPaper();
+      handleEditQuestionPaper(e);
+    } else handleCreateQuestionPaper(e);
   };
   const handleGrade = (event, value) => {
     formik.setFieldValue('grade', {});
@@ -524,6 +588,11 @@ const CreateQuestionPaper = ({
     }
   };
 
+  const handleLevel = (event , value) => {
+    formik.setFieldValue('question_paper_level', value);
+    initSetFilter('selectedLevel', value);
+  }
+
   const handleSubject = (event, value) => {
     formik.setFieldValue('subject', []);
     initSetFilter('selectedSubject', []);
@@ -532,6 +601,14 @@ const CreateQuestionPaper = ({
       initSetFilter('selectedSubject', value);
     }
   };
+
+  const handleQuestionPaper = (e) => {
+    initSetFilter(
+      'questionPaperName',
+      e.target.value.replace(/\b(\w)/g, (s) => s.toUpperCase())
+    )
+    formik.setFieldValue('questionPaperName', e.target.value.replace(/\b(\w)/g, (s) => s.toUpperCase()))
+  }
 
   return (
     <Layout>
@@ -680,10 +757,11 @@ const CreateQuestionPaper = ({
                     <Autocomplete
                       id='question_paper_level'
                       name='question_paper_level'
-                      onChange={(e, value) => {
-                        formik.setFieldValue('question_paper_level', value);
-                        initSetFilter('selectedLevel', value);
-                      }}
+                      // onChange={(e, value) => {
+                      //   formik.setFieldValue('question_paper_level', value);
+                      //   initSetFilter('selectedLevel', value);
+                      // }}
+                      onChange={handleLevel}
                       value={selectedLevel}
                       options={levels || []}
                       className='dropdownIcon'
@@ -720,11 +798,12 @@ const CreateQuestionPaper = ({
                 className='cancelButton labelColor'
                 style={{ width: '100%' }}
                 onClick={() => {
+                  setFilterData()
                   history.push({
                     pathname: '/assessment-question',
-                    state: {
-                      isSet : 'true'
-                    }
+                    // state: {
+                    //   isSet : 'true'
+                    // }
                   })
                 }}
               >
@@ -757,12 +836,15 @@ const CreateQuestionPaper = ({
               onCreateQuestionPaper={handleSubmitPaper}
               updateQuesionPaper={Number(location.pathname.slice(23))}
               onChangePaperName={(e) =>
-                initSetFilter(
-                  'questionPaperName',
-                  e.target.value.replace(/\b(\w)/g, (s) => s.toUpperCase())
-                )
+                handleQuestionPaper(e)
+
+                // initSetFilter(
+                //   'questionPaperName',
+                //   e.target.value.replace(/\b(\w)/g, (s) => s.toUpperCase())
+                // )
               }
-              questionPaperName={questionPaperName}
+              // questionPaperName={questionPaperName}
+              questionPaperName={formik.values.questionPaperName}
               onDeleteSection={handleDeleteSection}
               onDeleteQuestion={deleteQuestionSection}
             />

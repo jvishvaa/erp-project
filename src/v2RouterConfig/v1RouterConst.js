@@ -420,6 +420,7 @@ import UserProfile from 'containers/login/profiles';
 import EventsMark from 'containers/attendance/eventsmark';
 import CategoryTable from 'containers/question-bank/category/category-table';
 import CategoryMapping from 'containers/subjectGradeMapping/CategoryMapping';
+import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
 
 // const [theme, setTheme] = useState(() => themeGenerator());
 
@@ -434,7 +435,9 @@ const V1Router = [
   <Route path='/user-management'>
     {({ match }) => <UserManagement match={match} />}
   </Route>,
-
+  <Route path='/onboarding-report'>
+  {({ match }) => <OnboardingReport match={match} />}
+  </Route>,
   <Route path='/timetable/studentview'>
     {({ match }) => <TimeTableCheck match={match} />}
   </Route>,

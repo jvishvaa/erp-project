@@ -7,13 +7,17 @@ import {
 import './styles.scss';
 import QuestionView from '../question-view';
 
-const useStyles = makeStyles((theme)=>({
+const useStyles = makeStyles((theme) => ({
   headerName: {
-    color: theme.palette.primary.main,
-    fontSize: '1.1rem',
-    padding: '.75rem',
-    border: '1px solid',
-    margin: '0 5px 0 1rem',
+    // color: theme.palette.primary.main,
+    color: 'red',
+    fontWeight: 'bold',
+    fontSize: '0.8rem',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    // padding: '.75rem',
+    // border: '1px solid',
+    marginRight: '10px',
   }
 }))
 const resolveQuestionTypeName = (type) => {
@@ -77,14 +81,14 @@ const QuestionDetailCard = ({ question, expanded }) => {
           </div>
           {/* <div className='mode'>Online</div> */}
           {/* <div className='is-published'> {'Published'}</div> */}
-          <div className='created'>
-            {/* <div>Created on</div> */}
-            {/* <div style={{ fontWeight: 550, fontSize: '1rem' }}>30.12.2020</div> */}
-          </div>
+          {/* <div className='created'> */}
+          {/* <div>Created on</div> */}
+          {/* <div style={{ fontWeight: 550, fontSize: '1rem' }}>30.12.2020</div> */}
+          {/* </div> */}
           {/* <AssignMarksMenu menuOptions={menuOptions} handleChange={() => {}} /> */}
         </div>
         {/* <Divider style={{ backgroundColor: '#014b7e' }} /> */}
-        <div style={{ padding: '2rem' }}>
+        <div style={{ padding: '0 0.5rem' }}>
           <QuestionView question={question} />
         </div>
       </>

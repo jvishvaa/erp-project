@@ -46,7 +46,7 @@ const resolveMenu = (url) => {
   if (url.includes('orchadio')) return 'Orchadio';
   if (url.includes('student-strength')) return 'School Strength';
   if (url.includes('student-strength')) return 'School Strength';
-
+  if(url.includes('onboarding-report')) return 'Onboarding Report';
   if (url.includes('Store')) return 'Store';
   if (url.includes('student-id-card')) return 'ID Card';
   if (url.includes('circular')) return 'Circular';

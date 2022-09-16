@@ -190,8 +190,10 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       setBranchDropdown([]);
       setGrades([]);
       setSubjects([]);
-      const data = await fetchBranches(acadId, moduleId);
-      setBranchDropdown(data);
+      if(moduleId){
+        const data = await fetchBranches(acadId, moduleId);
+        setBranchDropdown(data);
+      }
     } catch (e) {
       setAlert('error', 'Failed to fetch branch');
     }
@@ -241,6 +243,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
       branch: formik.values.branch,
       grade: formik.values.grade,
       subject: formik.values.subject,
+      status : formik.values.status
     };
     console.log(filterData1);
     setFilterData(filterData1);
@@ -321,7 +324,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     } else {
       setBranchDropdown([]);
     }
-  }, []);
+  }, [moduleId]);
 
   useEffect(() => {
     if (moduleId && selectedAcademicYear) {
@@ -622,6 +625,11 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
     let newfiltered = filtereddata?.map((id) => id?.subjects[0])
     // newfiltered.includes(subjectid)
     return newfiltered.includes(subjectid)
+  }
+
+  const reportLoad = (e , v) => {
+    console.log(e , v);
+    setLoading(e)
   }
 
   // let newid = filterbasedonsub()
@@ -1200,6 +1208,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                           }}
                           filterData={filterData}
                           handleClose={handleClose}
+                          reportLoad={reportLoad}
                         />
                       </Grid>
                     )}
@@ -1273,6 +1282,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                           }}
                           filterData={filterData}
                           handleClose={handleClose}
+                          reportLoad={reportLoad}
                         />
                       </Grid>
                     )}
@@ -1345,6 +1355,7 @@ const Assesment = ({ handleColumnSelectedTestChange, handleClose }) => {
                             setSelectedAssesmentTest(null);
                           }}
                           filterData={filterData1}
+                          reportLoad={reportLoad}
                         />
                       </Grid>
                     )}

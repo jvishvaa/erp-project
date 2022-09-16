@@ -94,7 +94,7 @@ const AttendanceReport = (props) => {
       const acadIds = branchListAttendance?.map((o, i) => (o.id = o.acadId));
     }
     history.push({
-      pathname: '/staff-attendance-report/branch-wise',
+      pathname: '/branchwise-attendance',
       state: {
         acadId: selectedBranchList?.length > 0 ? branchListAttendance : [selectedBranch],
       },
@@ -114,7 +114,7 @@ const AttendanceReport = (props) => {
         fetchAttendanceReportData({
           session_year_id: selectedAcademicYear?.id,
           date_range_type: 'today',
-          acad_session_id: selectedBranch?.branch?.id,
+          acad_session_id: selectedBranch?.id,
         });
       }
     }

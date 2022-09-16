@@ -69,6 +69,8 @@ export default {
     userDetails: '/erp_user/user-data/',
     Profilestories: 'https://d3ka3pry54wyko.cloudfront.net/',
     studentDetails: '/erp_user/fetch-user-info/',
+    getUserStatus : '/erp_user/user-information/',
+    getPendingFeeStatus : '/apiV1/fee-defaulters-list/'
   },
   userManagement: {
     bulkUpload: '/erp_user/uploaded-users-status/',
@@ -77,6 +79,9 @@ export default {
     userLevelList: `${baseURLCentral}/central-admin/user_level_list/`,
     getUserLevel: '/erp_user/level_list/',
     assignLevel: '/erp_user/level_create/',
+    centralUserLevel: '/erp_user/central-user-level/',
+    passwordChange: '/erp_user/password-reset/',
+    onBoardingReport : `${msReportsUrl}/api/reports/v1/onboarding-report/`
   },
   timeTable: {
     tableData: '/academic/time_table/',
@@ -577,7 +582,7 @@ export default {
     categoryMapping: `${baseURL}/assessment/report-card-question-category-mapping/`,
     categoryQuestion: `${baseURL}/assessment/report-card-question-category/`,
     reportConfig: `${baseURL}/assessment/report-card-config-api/`,
-    erpCategory : '/assessment/report-card-question-category-mapping/'
+    erpCategory: '/assessment/report-card-question-category-mapping/',
   },
   assementQP: {
     assementFilter: `${baseURLCentral}/assessment/list-question-paper/`,
