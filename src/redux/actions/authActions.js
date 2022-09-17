@@ -45,18 +45,20 @@ export const login = (payload, isOtpLogin) => (dispatch) => {
   return axios
     .post(url, payload, config)
     .then((response) => {
-      // const data = isOtpLogin ? response.data.login_response : response.data;
-      const data = response.data;
-      dispatch(selectedVersion(data?.result?.is_v2_enabled));
-      localStorage.setItem('isV2', data?.result?.is_v2_enabled);
+      const data = isOtpLogin ? response.data.login_response : response.data;
+      // const data = response.data;
+      // dispatch(selectedVersion(data?.result?.is_v2_enabled));
+      // localStorage.setItem('isV2', data?.result?.is_v2_enabled);
 
       if (data.status_code === 200) {
-        const actualData = isOtpLogin ? data.login_response : data;
-        if (isOtpLogin && data.login_response.status_code !== 200) {
+        const actualData = data;
+        if (isOtpLogin && data.status_code !== 200) {
           dispatch({ type: LOGIN_FAILURE });
-          const result = { isLogin: false, message: data.login_response.message };
+          const result = { isLogin: false, message: data.message };
           return result;
         }
+        dispatch(selectedVersion(data?.result?.is_v2_enabled));
+        localStorage.setItem('isV2', data?.result?.is_v2_enabled);
         dispatch({
           type: LOGIN_SUCCESS,
           userDetails: actualData?.result?.user_details,
