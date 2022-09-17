@@ -142,6 +142,7 @@ const QuestionView = ({ question, showHeader, index }) => {
                   {question?.question_answer[0]?.options?.map((optionObj, subIndex) => (
                     <div className={classes.option} key={`option-item-${index}`}>
                       {/* {ReactHtmlParser(optionObj[`option${subIndex + 1}`]?.optionValue)} */}
+                      {subIndex + 1}.&nbsp;
                       {extractContentOption(optionObj[`option${subIndex + 1}`]?.optionValue)}
 
                       {`${optionObj[`option${subIndex + 1}`]?.images}`?.length > 0 && (
@@ -232,7 +233,7 @@ const QuestionView = ({ question, showHeader, index }) => {
                   <div className='options-container'>
                     {question.question_answer[0]?.options.map((optionObj, subIndex) => (
                       <div className='option' key={`option-item-${index}`} style={{ display: 'flex' }}>
-                        <div>{subIndex + 1}.
+                        <div>{subIndex + 1}.&nbsp;
                           {ReactHtmlParser(optionObj[`option${subIndex + 1}`].optionValue)}</div>
                         {`${optionObj[`option${subIndex + 1}`]?.images}`?.length > 0 && (
                           <div>
