@@ -80,11 +80,11 @@ const StudentDashboardNew = () => {
       )
       .then((res) => {
         setIsUserBlcoked(res.data?.result?.results);
+        fetchDoodle();
       });
   };
 
   useEffect(() => {
-    fetchDoodle();
     fetchUserStatus();
   }, [sessionYear]);
 
