@@ -851,7 +851,7 @@ const TableView = () => {
 
                       files.media_file?.map((each, index) => {
                         console.log(files)
-                        if (user_level == 13 && files?.document_type == "Lesson_Plan" || files?.document_type == "Teacher_Reading_Material") {
+                        if (user_level == 13 && files?.document_type == "Lesson_Plan" || user_level == 13 && files?.document_type == "Teacher_Reading_Material") {
 
                         } else {
                           let fullName = each.split(
