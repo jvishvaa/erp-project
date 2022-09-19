@@ -505,7 +505,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                                         fileUrl={item}
                                         fileName={`Attachment-${i + 1}`}
                                         urlPrefix={
-                                          item.includes('lesson_plan_file')
+                                          item.includes('/lesson_plan_file/')
                                             ? `${endpoints.discussionForum.s3}`
                                             : `${endpoints.discussionForum.s3}/homework`
                                         }
@@ -530,7 +530,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                                       fileUrl={url}
                                       fileName={`Attachment-${i + 1}`}
                                       urlPrefix={
-                                        url.includes('lesson_plan_file')
+                                        url.includes('/lesson_plan_file/')
                                           ? `${endpoints.discussionForum.s3}`
                                           : `${endpoints.discussionForum.s3}/homework`
                                       }
@@ -675,7 +675,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                             fileUrl={url}
                             fileName={`${1 + cindex}`}
                             urlPrefix={
-                              url.includes('lesson_plan_file')
+                              url.includes('/lesson_plan_file/')
                                 ? `${endpoints.discussionForum.s3}`
                                 : `${endpoints.discussionForum.s3}/homework`
                             }
@@ -778,7 +778,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                               fileUrl={item}
                               fileName={`${i + 1 + cindex}`}
                               urlPrefix={
-                                item.includes('lesson_plan_file')
+                                item.includes('/lesson_plan_file/')
                                   ? `${endpoints.discussionForum.s3}`
                                   : `${endpoints.discussionForum.s3}/homework`
                               }
@@ -802,7 +802,7 @@ const StudentSubmitHW = withRouter(({ history, ...props }) => {
                             fileUrl={url}
                             fileName={`${1 + cindex}`}
                             urlPrefix={
-                              url.includes('lesson_plan_file')
+                              url.includes('/lesson_plan_file/')
                                 ? `${endpoints.discussionForum.s3}`
                                 : `${endpoints.discussionForum.s3}/homework`
                             }
