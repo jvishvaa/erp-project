@@ -10,7 +10,9 @@ import './index.css';
 import { useHistory } from 'react-router-dom';
 import { CaretDownOutlined } from '@ant-design/icons';
 import NoDataIcon from 'v2/Assets/dashboardIcons/teacherDashboardIcons/NoDataIcon.svg';
-
+import { EyeFilled } from '@ant-design/icons';
+import { AttachmentPreviewerContext } from 'components/attachment-previewer/attachment-previewer-contexts';
+import courseEnroleModeStyle from 'containers/sure-learning/reusableComponents/courseEnroleModle/courseEnroleMode.style';
 const { Option } = Select;
 
 const AnnualPlan = () => {
@@ -34,6 +36,7 @@ const AnnualPlan = () => {
   const selectedBranch = useSelector(
     (state) => state.commonFilterReducer?.selectedBranch
   );
+  const { openPreview } = React.useContext(AttachmentPreviewerContext) || {};
   const [gradeData, setGradeData] = useState([]);
   const [gradeId, setGradeId] = useState();
   const [gradeName, setGradeName] = useState();
@@ -46,7 +49,6 @@ const AnnualPlan = () => {
   const [YCPPlanData, setYCPPlanData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filtered, setFiltered] = useState(false);
-  let centralAcademicSessionYear;
 
   const fetchAnnualPlanData = (params = {}) => {
     setFiltered(true);
@@ -70,47 +72,6 @@ const AnnualPlan = () => {
       });
   };
 
-  // https://orchids.letseduvate.com/qbox/academic/list-lesson-overview/?volume=20&grade_subject_mapping_id=147&academic_year_id=17
-  const fetchYCPPlanData = (params = {}) => {
-    setFiltered(true);
-    setLoading(true);
-    axios
-      .get(`academic/list-lesson-overview/`, {
-        params: { ...params },
-      })
-      .then((res) => {
-        if (res?.data?.status === 200) {
-          setYCPPlanData(res?.data?.data);
-          setLoading(false);
-        } else {
-          setLoading(false);
-          setYCPPlanData([]);
-        }
-      })
-      .catch((error) => {
-        message.error(error.message);
-        setLoading(false);
-      });
-  };
-  const fetchResourceYear = () => {
-    axiosInstance
-      .get(`${endpoints.lessonPlan.academicYearList}`, {
-        headers: {
-          'x-api-key': 'vikash@12345#1231',
-        },
-      })
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          centralAcademicSessionYear = result?.data?.result?.results?.filter(
-            (item) => item?.session_year == selectedAcademicYear.session_year
-          )[0]?.id;
-        }
-      })
-      .catch((error) => {
-        message.error(error.message);
-      });
-  };
-  console.log('Fetching', centralAcademicSessionYear);
   const fetchGradeData = () => {
     const params = {
       session_year: selectedAcademicYear?.id,
@@ -274,7 +235,6 @@ const AnnualPlan = () => {
         acad_session_id: selectedBranch?.id,
         board_id: boardId,
       });
-      fetchYCPPlanData();
     }
   }, [subjectId, boardId]);
 
@@ -382,25 +342,8 @@ const AnnualPlan = () => {
                 {annualPlanData?.map((item, i) => (
                   <div className='col-md-6 p-2'>
                     <div
-                      className='th-br-6 shadow-sm th-pointer volume-card'
-                      style={{ border: '1px solid #d9d9d9', height: 260 }}
-                      onClick={() =>
-                        history.push({
-                          pathname: window.location.pathname.includes('teacher-view')
-                            ? '/lesson-plan/teacher-view/annual-plan'
-                            : '/lesson-plan/student-view/annual-plan',
-                          state: {
-                            gradeID: gradeId,
-                            gradeName,
-                            subjectID: subjectId,
-                            subjectName,
-                            boardID: boardId,
-                            volumeName: item.volume_name,
-                            volumeID: item.volume_id,
-                            centralAcademicYearID: item.central_academic_year_id,
-                          },
-                        })
-                      }
+                      className='th-br-6 shadow-sm volume-card'
+                      style={{ border: '1px solid #d9d9d9', minHeight: 260 }}
                     >
                       <div
                         className='row px-3 py-1 th-bg-primary th-white th-fw-700'
@@ -416,19 +359,110 @@ const AnnualPlan = () => {
                           <div className='col-md-4 col-8 text-md-right pl-0'>
                             Total Teaching Periods{' '}
                           </div>
-                          <div className='col-md-6 col-4 th-18'>
+                          <div className='col-md-2 col-4 th-18'>
                             {item?.total_teaching_periods}
                           </div>
+                          {item?.ycp_files?.filter((item) => item?.lesson_type == '1')[0]
+                            ?.media_file[0] && (
+                            <div className='col-md-6 col-10 th-18'>
+                              <a
+                                onClick={() => {
+                                  const fileName = item?.ycp_files?.filter(
+                                    (item) => item?.lesson_type == '1'
+                                  )[0]?.media_file[0];
+                                  const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                                  openPreview({
+                                    currentAttachmentIndex: 0,
+                                    attachmentsArray: [
+                                      {
+                                        src: fileSrc,
+                                        name: 'Portion Document',
+                                        extension:
+                                          '.' +
+                                          fileName?.split('.')[
+                                            fileName?.split('.').length - 1
+                                          ],
+                                      },
+                                    ],
+                                  });
+                                }}
+                              >
+                                <div className='row justify-content-between'>
+                                  <div className='col-10 px-0 th-16'>
+                                    Portion Document
+                                  </div>
+                                  <div className='col-1 pl-1'>
+                                    <EyeFilled className='th-primary' fontSize={20} />
+                                  </div>
+                                </div>
+                              </a>
+                            </div>
+                          )}
                         </div>
                         <div className='row py-2 th-fw-600'>
                           <div className='col-md-4 col-8 text-md-right'>
                             Total Chapters
                           </div>
-                          <div className='col-md-6 col-4 th-18 '>
+                          <div className='col-md-2 col-4 th-18 '>
                             {item?.chapter_name?.length}
                           </div>
+                          {item?.ycp_files?.filter((item) => item?.lesson_type == '2')[0]
+                            ?.media_file[0] && (
+                            <div className='col-md-6 col-10 th-18 th-pointer'>
+                              <a
+                                onClick={() => {
+                                  const fileName = item?.ycp_files?.filter(
+                                    (item) => item?.lesson_type == '2'
+                                  )[0]?.media_file[0];
+                                  const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                                  openPreview({
+                                    currentAttachmentIndex: 0,
+                                    attachmentsArray: [
+                                      {
+                                        src: fileSrc,
+                                        name: 'Yearly Curriculum Plan',
+                                        extension:
+                                          '.' +
+                                          fileName?.split('.')[
+                                            fileName?.split('.').length - 1
+                                          ],
+                                      },
+                                    ],
+                                  });
+                                }}
+                              >
+                                <div className='row justify-content-between'>
+                                  <div className='col-10 px-0 th-16'>
+                                    Yearly Curriculum Plan
+                                  </div>
+                                  <div className='col-1 pl-0 mr-1'>
+                                    <EyeFilled className='th-primary' fontSize={20} />
+                                  </div>
+                                </div>
+                              </a>
+                            </div>
+                          )}
                         </div>
-                        <div className='th-grey th-14 col-12 px-0'>
+                        <div
+                          className='th-grey th-14 col-12 px-0'
+                          onClick={() =>
+                            history.push({
+                              pathname: window.location.pathname.includes('teacher-view')
+                                ? '/lesson-plan/teacher-view/annual-plan'
+                                : '/lesson-plan/student-view/annual-plan',
+                              state: {
+                                gradeID: gradeId,
+                                gradeName,
+                                subjectID: subjectId,
+                                subjectName,
+                                boardID: boardId,
+                                volumeName: item.volume_name,
+                                volumeID: item.volume_id,
+                                centralAcademicYearID: item.central_academic_year_id,
+                              },
+                            })
+                          }
+                        >
                           {item.chapter_name?.slice(0, 4).map((each, i) => {
                             return (
                               <div className='row pt-1'>
