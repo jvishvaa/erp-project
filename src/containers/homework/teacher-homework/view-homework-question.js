@@ -72,13 +72,16 @@ const ViewHomeworkQuestion = ({ question, index }) => {
                           fileUrl={item}
                           fileName={`Attachment-${i + 1}`}
                           urlPrefix={
-                            item.includes('lesson_plan_file')
+                            item.includes('/lesson_plan_file/')
                               ? `${endpoints.homework.resourcesFiles}`
                               : `${endpoints.discussionForum.s3}/homework`
                           }
                           index={i}
                           actions={
-                            url.includes('pdf') ? ['download'] : ['preview', 'download']
+                            // item.split('.')[item.split('.').length - 1].includes('pdf')
+                            item.includes('/lesson_plan_file/')
+                              ? ['download']
+                              : ['preview', 'download']
                           }
                         />
                       </div>
@@ -92,13 +95,17 @@ const ViewHomeworkQuestion = ({ question, index }) => {
                         fileUrl={url}
                         fileName={`Attachment-${i + 1}`}
                         urlPrefix={
-                          url.includes('lesson_plan_file')
+                          url.includes('/lesson_plan_file/')
                             ? `${endpoints.homework.resourcesFiles}`
                             : `${endpoints.discussionForum.s3}/homework`
                         }
                         index={i}
                         actions={
-                          url.includes('pdf') ? ['download'] : ['preview', 'download']
+                          url.includes('/lesson_plan_file/')
+                            ? // &&
+                              // url.split('.')[url.split('.').length - 1].includes('ppt')
+                              ['download']
+                            : ['preview', 'download']
                         }
                       />
                     </div>
@@ -119,7 +126,7 @@ const ViewHomeworkQuestion = ({ question, index }) => {
                         return (
                           <img
                             src={
-                              item.includes('lesson_plan_file')
+                              item.includes('/lesson_plan_file/')
                                 ? `${endpoints.homework.resourcesFiles}/${item}`
                                 : `${endpoints.discussionForum.s3}/homework/${item}`
                             }
@@ -135,7 +142,7 @@ const ViewHomeworkQuestion = ({ question, index }) => {
                       return (
                         <img
                           src={
-                            url.includes('lesson_plan_file')
+                            url.includes('/lesson_plan_file/')
                               ? `${endpoints.homework.resourcesFiles}/${url}`
                               : `${endpoints.discussionForum.s3}/homework/${url}`
                           }

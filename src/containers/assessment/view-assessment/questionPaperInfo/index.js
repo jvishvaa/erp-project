@@ -47,10 +47,10 @@ const QuestionPaperInfo = ({
   const [attachmentPreviews, setAttachmentPreviews] = useState([]);
   const [attachments, setAttachments] = useState([]);
   const [sizeValied, setSizeValied] = useState({});
-  const [showSubmit,setShowSubmit] = useState({})
-  const [reloadFlag,setReloadFlag] = useState(false)
-  const [showagain,setShowagain] = useState([])
-  const [allImage,setAllImage] = useState([])
+  const [showSubmit, setShowSubmit] = useState({});
+  const [reloadFlag, setReloadFlag] = useState(false);
+  const [showagain, setShowagain] = useState([]);
+  const [allImage, setAllImage] = useState([]);
 
   const {
     assessmentId: assessmentIdFromContext = null,
@@ -75,7 +75,6 @@ const QuestionPaperInfo = ({
         user_response: userResponseObj,
         test_duration: testDuration,
         test_mode: test_mode,
-
       } = {},
       fetching,
       fetchFailed,
@@ -165,85 +164,92 @@ const QuestionPaperInfo = ({
   };
 
   const SubmitAssessmentAPI = () => {
-    const body = { question_files: attachments, test: assessmentId }
-    const param = { upload_id : showSubmit?.upload_id ,can_reupload : false }
-    if(attachments.length === 0) param['question_files'] = [null]
-    if(attachments.length > 0) param['question_files'] = attachments
+    const body = { question_files: attachments, test: assessmentId };
+    const param = { upload_id: showSubmit?.upload_id, can_reupload: false };
+    if (attachments.length === 0) param['question_files'] = [null];
+    if (attachments.length > 0) param['question_files'] = attachments;
     // return {
     // setLoading(true);
     // setAssessmentId,
-   if(attachments.length === 0){
-     setAlert('warning','Please upload file')
-   }
-   if(attachments.length>0){
-    if(showSubmit.can_reupload){
-      axiosInstance.put(`${endpoints.assessment.imageupload}`, param)
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          setAlert('success', result?.data?.message);
-          setReloadFlag(!reloadFlag)
-          setShowagain([])
-        } else {
-          setAlert('error', result?.data?.message);
-        }
-        // setLoading(false);
-        // props.onClose();
-      })
-      .catch((error) => {
-        // setAlert('error', error?.response.data.developer_msg);
-        // setLoading(false);
-      });
-     }else{
-      axiosInstance.post(`${endpoints.assessment.imageupload}`, body)
-      .then((result) => {
-        if (result?.data?.status_code === 200) {
-          setAlert('success', result?.data?.message);
-          setReloadFlag(!reloadFlag)
-          setShowagain([])
-        } else {
-          setAlert('error', result?.data?.message);
-        }
-        // setLoading(false);
-        // props.onClose();
-      })
-      .catch((error) => {
-        // setAlert('error', error?.response.data.developer_msg);
-        // setLoading(false);
-      });
-   }
-   }
+    if (attachments.length === 0) {
+      setAlert('warning', 'Please upload file');
+    }
+    if (attachments.length > 0) {
+      if (showSubmit.can_reupload) {
+        axiosInstance
+          .put(`${endpoints.assessment.imageupload}`, param)
+          .then((result) => {
+            if (result?.data?.status_code === 200) {
+              setAlert('success', result?.data?.message);
+              setReloadFlag(!reloadFlag);
+              setShowagain([]);
+            } else {
+              setAlert('error', result?.data?.message);
+            }
+            // setLoading(false);
+            // props.onClose();
+          })
+          .catch((error) => {
+            // setAlert('error', error?.response.data.developer_msg);
+            // setLoading(false);
+          });
+      } else {
+        axiosInstance
+          .post(`${endpoints.assessment.imageupload}`, body)
+          .then((result) => {
+            if (result?.data?.status_code === 200) {
+              setAlert('success', result?.data?.message);
+              setReloadFlag(!reloadFlag);
+              setShowagain([]);
+            } else {
+              setAlert('error', result?.data?.message);
+            }
+            // setLoading(false);
+            // props.onClose();
+          })
+          .catch((error) => {
+            // setAlert('error', error?.response.data.developer_msg);
+            // setLoading(false);
+          });
+      }
+    }
     // }
-  }
+  };
 
   const getAssesmentDocument = () => {
     axiosInstance
       .get(`${endpoints.assessment.imageupload}?test_id=${assessmentId}`)
       .then((result) => {
-        console.log(result?.data,'orchids11')
-        if(result?.data?.status_code === 200){
-        setShowSubmit(result?.data)
-        setAttachments((pre)=>[...pre,...result?.data?.result])
-        setAttachmentPreviews((prevState) => [...prevState, ...result?.data?.result]);
-        setShowagain(result?.data?.result)
-        const preImgnames = result?.data?.result.map((i)=>i.split("/")[3])
-        setAllImage((pre)=>[...pre,...preImgnames])
-      }});
+        console.log(result?.data, 'orchids11');
+        if (result?.data?.status_code === 200) {
+          setShowSubmit(result?.data);
+          setAttachments((pre) => [...pre, ...result?.data?.result]);
+          setAttachmentPreviews((prevState) => [...prevState, ...result?.data?.result]);
+          setShowagain(result?.data?.result);
+          const preImgnames = result?.data?.result.map((i) => i.split('/')[3]);
+          setAllImage((pre) => [...pre, ...preImgnames]);
+        }
+      });
   };
 
-  useEffect(()=>getAssesmentDocument(),[reloadFlag])
+  useEffect(() => getAssesmentDocument(), [reloadFlag]);
 
-  const imageValidator = (file)=>{
-    if(file.name.toLowerCase().lastIndexOf('.jpg') > 0 || file.name.toLowerCase().lastIndexOf('.png') > 0  || file.name.toLowerCase().lastIndexOf('.jpeg') > 0){
-      if(file.size < 52428800){
-          const isFileValid = {
-              msg: 'Accepted files: jpeg,jpg,png',
-              msgColor: '#014b7e',
-              isValid: true
-          };
-          return isFileValid;
+  const imageValidator = (file) => {
+    if (
+      file.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
+      file.name.toLowerCase().lastIndexOf('.png') > 0 ||
+      file.name.toLowerCase().lastIndexOf('.jpeg') > 0
+    ) {
+      if (file.size < 52428800) {
+        const isFileValid = {
+          msg: 'Accepted files: jpeg,jpg,png',
+          msgColor: '#014b7e',
+          isValid: true,
+        };
+        return isFileValid;
       }
-  }
-}
+    }
+  };
 
   const handleFileUpload = async (file) => {
     console.log('File', file);
@@ -251,12 +257,11 @@ const QuestionPaperInfo = ({
       return null;
     }
     // const isValid = FileValidators(file);
-    const isValid = imageValidator(file)
-    const uniqueImages = allImage.includes(file.name)
-    if(!uniqueImages) setAllImage((pre)=>[...pre,file.name])
-    if(uniqueImages && allImage.length>0) setAlert('warning',"File already uploaded");
-    !isValid?.isValid && setAlert('error',"Please upload image file and less than 50mb");
-    
+    const isValid = imageValidator(file);
+    const uniqueImages = allImage.includes(file.name);
+    if (!uniqueImages) setAllImage((pre) => [...pre, file.name]);
+    if (uniqueImages && allImage.length > 0) setAlert('warning', 'File already uploaded');
+    !isValid?.isValid && setAlert('error', 'Please upload image file and less than 50mb');
 
     if (isValid?.isValid && !uniqueImages) {
       try {
@@ -264,7 +269,7 @@ const QuestionPaperInfo = ({
           // file.name.toLowerCase().lastIndexOf('.pdf') > 0 ||
           file.name.toLowerCase().lastIndexOf('.jpeg') > 0 ||
           file.name.toLowerCase().lastIndexOf('.jpg') > 0 ||
-          file.name.toLowerCase().lastIndexOf('.png') > 0 
+          file.name.toLowerCase().lastIndexOf('.png') > 0
           // file.name.toLowerCase().lastIndexOf('.mp3') > 0 ||
           // file.name.toLowerCase().lastIndexOf('.mp4') > 0
         ) {
@@ -294,7 +299,6 @@ const QuestionPaperInfo = ({
   };
 
   const removeAttachment = (pageIndex, pdfIndex, deletePdf, item) => {
-
     if (item !== undefined) {
       if (deletePdf) {
         setAttachmentPreviews((prevState) => {
@@ -379,19 +383,23 @@ const QuestionPaperInfo = ({
                 {` ${totalMarks}`}
               </div>
             </div>
-            {test_mode == 2 ? '' :
+            {test_mode == 2 ? (
+              ''
+            ) : (
               <div className={classes.timeTakenContainer}>
                 <div className={classes.timeTakenLabel}>You took</div>
                 <div className={classes.timeTaken}>
-                  {`${timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.minutes
-                    }`}
+                  {`${
+                    timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.minutes
+                  }`}
                   <span className={classes.timeUnits}>min</span>
-                  {` ${timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.seconds
-                    }`}
+                  {` ${
+                    timeDeltaDiff(new Date(endTime), new Date(startTime), true)?.seconds
+                  }`}
                   <span className={classes.timeUnits}>secs</span>
                 </div>
               </div>
-            }
+            )}
           </div>
           <div className={classes.marksBarContainer}>
             <div className={classes.marksBar}>
@@ -443,8 +451,9 @@ const QuestionPaperInfo = ({
           </h4>
         </div>
         <div className={classes.cardDate}>
-          {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${new Date(testDate).toDateString() || (fetching ? 'Loading...' : '')
-            }`}
+          {`${isTestAttempted ? 'Appeared on' : 'Scheduled at'} \n ${
+            new Date(testDate).toDateString() || (fetching ? 'Loading...' : '')
+          }`}
         </div>
       </div>
     </>
@@ -455,20 +464,14 @@ const QuestionPaperInfo = ({
         <h5 className={classes.cardTitleHeading}>Description:</h5>
         <div>
           &nbsp; &nbsp;
-          <h6>
-
-            {ReactHtmlParser(testDescription)}
-          </h6>
+          <h6>{ReactHtmlParser(testDescription)}</h6>
         </div>
       </div>
       <div>
         <h5 className={classes.cardTitleHeading}>Instructions</h5>
         <div>
           &nbsp; &nbsp;
-          <h6>
-
-            {ReactHtmlParser(testInstructions)}
-          </h6>
+          <h6>{ReactHtmlParser(testInstructions)}</h6>
         </div>
       </div>
       {questionsArray && questionsArray.length ? (
@@ -494,380 +497,413 @@ const QuestionPaperInfo = ({
         >
           Take Test
         </Button> */}
-        {test_mode == 1 ? <>
-          {testEndTime < new Date().getTime() ? (
-            <Button
-              style={{
-                padding: '0.3rem 1rem',
-                borderRadius: '0.6rem',
-                fontSize: '0.9rem',
-                margin: 'auto',
-              }}
-              disabled
-            // onClick={() => {
-            //   restProps.history.push(`/assessment/${questionPaperId}/attempt/`);
-            // }}
-            >
-              Not Attempted
-            </Button>
-          ) : (
-            <Button
-              variant='contained'
-              color='primary'
-              style={{
-                fontFamily: 'Andika New Basic, sans-serif',
-                padding: '0.3rem 1rem',
-                borderRadius: '0.6rem',
-                fontSize: '0.9rem',
-                margin: 'auto',
-              }}
-              disabled={!getTestStatus()}
-              onClick={() => {
-                // Object.entries(localStorage).forEach(([key, value]) => {
-                //   if (key?.startsWith('assessment-')) {
-                //     localStorage.removeItem(key);
-                //   }
-                // });
-                restProps.history.push(
-                  `/assessment/${questionPaperId}/${assessmentId}/attempt/`
-                );
-              }}
-            >
-              {getTestStatus() ? <b style={{ fontSize: '20px' }}>Take Test</b> : 'Not Started'}
-            </Button>
-          )}</> :
-          <div>
-
-            {((!showSubmit?.attempted && showSubmit?.is_test_active) || showSubmit?.can_reupload) ?
-              (<>
-            <h5>Upload the image file here.</h5>
-            <input
-              className='file-upload-input'
-              type='file'
-              // style={{ display: 'none' }}
-              name='attachments'
-              // accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
-              accept='.png, .jpg, .jpeg, .PNG, .JPG, .JPEG,'
-              onChange={(e) => {
-                handleFileUpload(e.target.files[0]);
-                e.target.value = null;
-                // onChange('attachments', Array.from(e.target.files)[]);
-              }}
-              ref={fileUploadInput}
-            />
-            {fileUploadInProgress ? (
-              <div>
-                <CircularProgress
-                  color='primary'
-                  style={{ width: '25px', height: '25px', margin: '5px' }}
-                />
-              </div>
-            ) : (
-              <>
-                <IconButton
-                  onClick={() => fileUploadInput.current.click()}
-                  title='Attach files'
-                  style={{ display: 'none' }}
-                >
-                  <Badge badgeContent={attachmentPreviews.length} color='primary' style={{ display: 'none' }}>
-                    <AttachFileIcon color='primary' />
-                  </Badge>
-                </IconButton>
-                <small className={classes.acceptedfiles}>
-                  {' '}
-                  Accepted files: .png, .jpg, .jpeg, .PNG, .JPG, .JPEG,
-                  {/*sizeValied ? 'Accepted files: jpeg,jpg,mp3,mp4,pdf,png' : 'Document size should be less than 5MB !'*/}
-                </small>
-              </>
-            )
-            }
-            {attachmentPreviews.length > 0 && (
-              <Grid item xs={12} style={{width:'44vw'}} className='attachments-grid'>
-                <div className='attachments-list-outer-container'>
-                  <div className='prev-btn'>
-                    {showPrev && (
-                      <IconButton onClick={() => handleScroll('left')}>
-                        <ArrowBackIosIcon />
-                      </IconButton>
-                    )}
-                  </div>
-                  <SimpleReactLightbox>
-                    <div
-                      className='attachments-list'
-                      ref={attachmentsRef}
-                      onScroll={(e) => {
-                        e.preventDefault();
-                      }}
-                    >
-                      {attachmentPreviews.map((url, pdfindex) => {
-                        console.log('URL', url);
-                        let cindex = 0;
-                        attachmentPreviews.forEach((item, index) => {
-                          if (index < pdfindex) {
-                            if (typeof item == 'string') {
-                              cindex = cindex + 1;
-                            } else {
-                              cindex = Object.keys(item).length + cindex;
-                            }
-                          }
-                        });
-                        if (typeof url == 'object') {
-                          return Object.values(url).map((item, i) => {
-                            let imageIndex = Object.keys(url)[i];
-                            return (
-                              <div className='attachment'>
-                                <Attachment
-                                  key={`homework_student_question_attachment_${i}`}
-                                  fileUrl={item}
-                                  fileName={`Attachment-${i + 1 + cindex}`}
-                                  urlPrefix={
-                                    url.includes('lesson_plan_file')
-                                      ? `${endpoints.homework.resourcesS3}`
-                                      : `${endpoints.discussionForum.s3}/homework`
-                                  }
-                                  index={i}
-                                  actions={['preview', 'download', 'delete']}
-                                  onDelete={(index, deletePdf) =>{
-                                    removeAttachment(imageIndex, pdfindex, deletePdf, {
-                                      item,
-                                    })
-                                  }}
-                                  ispdf={true}
-                                />
-                              </div>
-                            );
-                          });
-                        } else
-                          return (
-                            <div className='attachment'>
-                              <Attachment
-                                key={`homework_student_question_attachment_${pdfindex}`}
-                                fileUrl={url}
-                                fileName={`Attachment-${1 + cindex}`}
-                                urlPrefix={
-                                  url.includes('lesson_plan_file')
-                                    ? `${endpoints.homework.resourcesS3}`
-                                    : `${endpoints.discussionForum.s3}/homework`
-                                }
-                                index={pdfindex}
-                                actions={['preview', 'download', 'delete']}
-                                onDelete={(index, deletePdf) =>{
-                                  removeAttachment(index, pdfindex, deletePdf)
-                                  const images = attachments.filter((i)=> i !== attachments[pdfindex])
-                                  setAttachments(images)
-                                  const sameImage = allImage.filter((i)=> i !== allImage[pdfindex])
-                                  setAllImage(sameImage)
-                                }}
-                                ispdf={false}
-                              />
-                            </div>
-                          );
-                      })}
-
-                      <div style={{ position: 'absolute', visibility: 'hidden' }}>
-                        <SRLWrapper>
-                          {attachmentPreviews.map((url, i) => {
-                            console.log('URLSRL', url);
-                            if (typeof url == 'object') {
-                              return Object.values(url).map((item, i) => {
-                                return (
-                                  <img
-                                    src={
-                                      url.includes('lesson_plan_file')
-                                        ? `${endpoints.homework.resourcesS3}`
-                                        : `${endpoints.discussionForum.s3}/homework/${item}`
-                                    }
-                                    onError={(e) => {
-                                      e.target.src = placeholder;
-                                    }}
-                                    alt={`Attachment-${i + 1}`}
-                                  />
-                                );
-                              });
-                            } else
-                              return (
-                                <img
-                                  src={
-                                    url.includes('lesson_plan_file')
-                                      ? `${endpoints.homework.resourcesS3}`
-                                      : `${endpoints.discussionForum.s3}/homework/${url}`
-                                  }
-                                  onError={(e) => {
-                                    e.target.src = placeholder;
-                                  }}
-                                  alt={`Attachment-${i + 1}`}
-                                />
-                              );
-                          })}
-                        </SRLWrapper>
-                      </div>
-                    </div>
-                  </SimpleReactLightbox>
-                  <div className='next-btn'>
-                    {showPrev && (
-                      <IconButton onClick={() => handleScroll('right')}>
-                        <ArrowForwardIosIcon color='primary' />
-                      </IconButton>
-                    )}
-                  </div>
-                </div>
-              </Grid>
-            )}
-            <Grid item xs={12} className='attachments-grid' style={{ paddingTop: '20px' }}>
+        {test_mode == 1 ? (
+          <>
+            {testEndTime < new Date().getTime() ? (
               <Button
-                className={classes.cardStartButton}
+                style={{
+                  padding: '0.3rem 1rem',
+                  borderRadius: '0.6rem',
+                  fontSize: '0.9rem',
+                  margin: 'auto',
+                }}
+                disabled
+                // onClick={() => {
+                //   restProps.history.push(`/assessment/${questionPaperId}/attempt/`);
+                // }}
+              >
+                Not Attempted
+              </Button>
+            ) : (
+              <Button
                 variant='contained'
                 color='primary'
-                style={{ color: 'white' }}
-                onClick={(e) => {
-                  // handleViewMore(questionPaperId);
-                  SubmitAssessmentAPI()
+                style={{
+                  fontFamily: 'Andika New Basic, sans-serif',
+                  padding: '0.3rem 1rem',
+                  borderRadius: '0.6rem',
+                  fontSize: '0.9rem',
+                  margin: 'auto',
+                }}
+                disabled={!getTestStatus()}
+                onClick={() => {
+                  // Object.entries(localStorage).forEach(([key, value]) => {
+                  //   if (key?.startsWith('assessment-')) {
+                  //     localStorage.removeItem(key);
+                  //   }
+                  // });
+                  restProps.history.push(
+                    `/assessment/${questionPaperId}/${assessmentId}/attempt/`
+                  );
                 }}
               >
-                Submit Assessment
+                {getTestStatus() ? (
+                  <b style={{ fontSize: '20px' }}>Take Test</b>
+                ) : (
+                  'Not Started'
+                )}
               </Button>
-            </Grid>
-            </>) : (
+            )}
+          </>
+        ) : (
+          <div>
+            {(!showSubmit?.attempted && showSubmit?.is_test_active) ||
+            showSubmit?.can_reupload ? (
               <>
-              {showagain.length > 0 && (
-              <Grid item xs={12} style={{width:'44vw'}} className='attachments-grid'>
-                <div className='attachments-list-outer-container'>
-                  <div className='prev-btn'>
-                    {setshowPrevAgain && (
-                      <IconButton onClick={() => handleScrollAgain('left')}>
-                        <ArrowBackIosIcon />
-                      </IconButton>
-                    )}
+                <h5>Upload the image file here.</h5>
+                <input
+                  className='file-upload-input'
+                  type='file'
+                  // style={{ display: 'none' }}
+                  name='attachments'
+                  // accept='.png, .jpg, .jpeg, .mp3, .mp4, .pdf, .PNG, .JPG, .JPEG, .MP3, .MP4, .PDF'
+                  accept='.png, .jpg, .jpeg, .PNG, .JPG, .JPEG,'
+                  onChange={(e) => {
+                    handleFileUpload(e.target.files[0]);
+                    e.target.value = null;
+                    // onChange('attachments', Array.from(e.target.files)[]);
+                  }}
+                  ref={fileUploadInput}
+                />
+                {fileUploadInProgress ? (
+                  <div>
+                    <CircularProgress
+                      color='primary'
+                      style={{ width: '25px', height: '25px', margin: '5px' }}
+                    />
                   </div>
-                  <SimpleReactLightbox>
-                    <div
-                      className='attachments-list'
-                      ref={attachmentsInitialRef}
-                      onScroll={(e) => {
-                        e.preventDefault();
-                      }}
+                ) : (
+                  <>
+                    <IconButton
+                      onClick={() => fileUploadInput.current.click()}
+                      title='Attach files'
+                      style={{ display: 'none' }}
                     >
-                      {showagain.map((url, pdfindex) => {
-                        console.log('URL', url);
-                        let cindex = 0;
-                        attachmentPreviews.forEach((item, index) => {
-                          if (index < pdfindex) {
-                            if (typeof item == 'string') {
-                              cindex = cindex + 1;
-                            } else {
-                              cindex = Object.keys(item).length + cindex;
-                            }
-                          }
-                        });
-                        if (typeof url == 'object') {
-                          return Object.values(url).map((item, i) => {
-                            let imageIndex = Object.keys(url)[i];
-                            return (
-                              <div className='attachment'>
-                                <Attachment
-                                  key={`homework_student_question_attachment_${i}`}
-                                  fileUrl={item}
-                                  fileName={`Attachment-${i + 1 + cindex}`}
-                                  urlPrefix={
-                                    url.includes('lesson_plan_file')
-                                      ? `${endpoints.homework.resourcesS3}`
-                                      : `${endpoints.discussionForum.s3}/homework`
-                                  }
-                                  index={i}
-                                  actions={['preview']}
-                                  // onDelete={(index, deletePdf) =>{
-                                  //   removeAttachment(imageIndex, pdfindex, deletePdf, {
-                                  //     item,
-                                  //   })
-                                  // }}
-                                  ispdf={true}
-                                />
-                              </div>
-                            );
-                          });
-                        } else
-                          return (
-                            <div className='attachment'>
-                              <Attachment
-                                key={`homework_student_question_attachment_${pdfindex}`}
-                                fileUrl={url}
-                                fileName={`Attachment-${1 + cindex}`}
-                                urlPrefix={
-                                  url.includes('lesson_plan_file')
-                                    ? `${endpoints.homework.resourcesS3}`
-                                    : `${endpoints.discussionForum.s3}/homework`
+                      <Badge
+                        badgeContent={attachmentPreviews.length}
+                        color='primary'
+                        style={{ display: 'none' }}
+                      >
+                        <AttachFileIcon color='primary' />
+                      </Badge>
+                    </IconButton>
+                    <small className={classes.acceptedfiles}>
+                      {' '}
+                      Accepted files: .png, .jpg, .jpeg, .PNG, .JPG, .JPEG,
+                      {/*sizeValied ? 'Accepted files: jpeg,jpg,mp3,mp4,pdf,png' : 'Document size should be less than 5MB !'*/}
+                    </small>
+                  </>
+                )}
+                {attachmentPreviews.length > 0 && (
+                  <Grid
+                    item
+                    xs={12}
+                    style={{ width: '44vw' }}
+                    className='attachments-grid'
+                  >
+                    <div className='attachments-list-outer-container'>
+                      <div className='prev-btn'>
+                        {showPrev && (
+                          <IconButton onClick={() => handleScroll('left')}>
+                            <ArrowBackIosIcon />
+                          </IconButton>
+                        )}
+                      </div>
+                      <SimpleReactLightbox>
+                        <div
+                          className='attachments-list'
+                          ref={attachmentsRef}
+                          onScroll={(e) => {
+                            e.preventDefault();
+                          }}
+                        >
+                          {attachmentPreviews.map((url, pdfindex) => {
+                            console.log('URL', url);
+                            let cindex = 0;
+                            attachmentPreviews.forEach((item, index) => {
+                              if (index < pdfindex) {
+                                if (typeof item == 'string') {
+                                  cindex = cindex + 1;
+                                } else {
+                                  cindex = Object.keys(item).length + cindex;
                                 }
-                                index={pdfindex}
-                                actions={['preview']}
-                                // onDelete={(index, deletePdf) =>{
-                                //   removeAttachment(index, pdfindex, deletePdf)
-                                //   const images = attachments.filter((i)=> i !== attachments[pdfindex])
-                                //   setAttachments(images)
-                                // }}
-                                ispdf={false}
-                              />
-                            </div>
-                          );
-                      })}
-
-                      <div style={{ position: 'absolute', visibility: 'hidden' }}>
-                        <SRLWrapper>
-                          {showagain.map((url, i) => {
-                            console.log('URLSRL', url);
+                              }
+                            });
                             if (typeof url == 'object') {
                               return Object.values(url).map((item, i) => {
+                                let imageIndex = Object.keys(url)[i];
                                 return (
-                                  <img
-                                    src={
-                                      url.includes('lesson_plan_file')
-                                        ? `${endpoints.homework.resourcesS3}`
-                                        : `${endpoints.discussionForum.s3}/homework/${item}`
-                                    }
-                                    onError={(e) => {
-                                      e.target.src = placeholder;
-                                    }}
-                                    alt={`Attachment-${i + 1}`}
-                                  />
+                                  <div className='attachment'>
+                                    <Attachment
+                                      key={`homework_student_question_attachment_${i}`}
+                                      fileUrl={item}
+                                      fileName={`Attachment-${i + 1 + cindex}`}
+                                      urlPrefix={
+                                        url.includes('/lesson_plan_file/')
+                                          ? `${endpoints.homework.resourcesS3}`
+                                          : `${endpoints.discussionForum.s3}/homework`
+                                      }
+                                      index={i}
+                                      actions={['preview', 'download', 'delete']}
+                                      onDelete={(index, deletePdf) => {
+                                        removeAttachment(
+                                          imageIndex,
+                                          pdfindex,
+                                          deletePdf,
+                                          {
+                                            item,
+                                          }
+                                        );
+                                      }}
+                                      ispdf={true}
+                                    />
+                                  </div>
                                 );
                               });
                             } else
                               return (
-                                <img
-                                  src={
-                                    url.includes('lesson_plan_file')
-                                      ? `${endpoints.homework.resourcesS3}`
-                                      : `${endpoints.discussionForum.s3}/homework/${url}`
-                                  }
-                                  onError={(e) => {
-                                    e.target.src = placeholder;
-                                  }}
-                                  alt={`Attachment-${i + 1}`}
-                                />
+                                <div className='attachment'>
+                                  <Attachment
+                                    key={`homework_student_question_attachment_${pdfindex}`}
+                                    fileUrl={url}
+                                    fileName={`Attachment-${1 + cindex}`}
+                                    urlPrefix={
+                                      url.includes('/lesson_plan_file/')
+                                        ? `${endpoints.homework.resourcesS3}`
+                                        : `${endpoints.discussionForum.s3}/homework`
+                                    }
+                                    index={pdfindex}
+                                    actions={['preview', 'download', 'delete']}
+                                    onDelete={(index, deletePdf) => {
+                                      removeAttachment(index, pdfindex, deletePdf);
+                                      const images = attachments.filter(
+                                        (i) => i !== attachments[pdfindex]
+                                      );
+                                      setAttachments(images);
+                                      const sameImage = allImage.filter(
+                                        (i) => i !== allImage[pdfindex]
+                                      );
+                                      setAllImage(sameImage);
+                                    }}
+                                    ispdf={false}
+                                  />
+                                </div>
                               );
                           })}
-                        </SRLWrapper>
+
+                          <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                            <SRLWrapper>
+                              {attachmentPreviews.map((url, i) => {
+                                console.log('URLSRL', url);
+                                if (typeof url == 'object') {
+                                  return Object.values(url).map((item, i) => {
+                                    return (
+                                      <img
+                                        src={
+                                          url.includes('/lesson_plan_file/')
+                                            ? `${endpoints.homework.resourcesS3}`
+                                            : `${endpoints.discussionForum.s3}/homework/${item}`
+                                        }
+                                        onError={(e) => {
+                                          e.target.src = placeholder;
+                                        }}
+                                        alt={`Attachment-${i + 1}`}
+                                      />
+                                    );
+                                  });
+                                } else
+                                  return (
+                                    <img
+                                      src={
+                                        url.includes('/lesson_plan_file/')
+                                          ? `${endpoints.homework.resourcesS3}`
+                                          : `${endpoints.discussionForum.s3}/homework/${url}`
+                                      }
+                                      onError={(e) => {
+                                        e.target.src = placeholder;
+                                      }}
+                                      alt={`Attachment-${i + 1}`}
+                                    />
+                                  );
+                              })}
+                            </SRLWrapper>
+                          </div>
+                        </div>
+                      </SimpleReactLightbox>
+                      <div className='next-btn'>
+                        {showPrev && (
+                          <IconButton onClick={() => handleScroll('right')}>
+                            <ArrowForwardIosIcon color='primary' />
+                          </IconButton>
+                        )}
                       </div>
                     </div>
-                  </SimpleReactLightbox>
-                  <div className='next-btn'>
-                    {showPrevAgain && (
-                      <IconButton onClick={() => handleScrollAgain('right')}>
-                        <ArrowForwardIosIcon color='primary' />
-                      </IconButton>
-                    )}
-                  </div>
-                </div>
-              </Grid>
-            )}
+                  </Grid>
+                )}
+                <Grid
+                  item
+                  xs={12}
+                  className='attachments-grid'
+                  style={{ paddingTop: '20px' }}
+                >
+                  <Button
+                    className={classes.cardStartButton}
+                    variant='contained'
+                    color='primary'
+                    style={{ color: 'white' }}
+                    onClick={(e) => {
+                      // handleViewMore(questionPaperId);
+                      SubmitAssessmentAPI();
+                    }}
+                  >
+                    Submit Assessment
+                  </Button>
+                </Grid>
+              </>
+            ) : (
+              <>
+                {showagain.length > 0 && (
+                  <Grid
+                    item
+                    xs={12}
+                    style={{ width: '44vw' }}
+                    className='attachments-grid'
+                  >
+                    <div className='attachments-list-outer-container'>
+                      <div className='prev-btn'>
+                        {setshowPrevAgain && (
+                          <IconButton onClick={() => handleScrollAgain('left')}>
+                            <ArrowBackIosIcon />
+                          </IconButton>
+                        )}
+                      </div>
+                      <SimpleReactLightbox>
+                        <div
+                          className='attachments-list'
+                          ref={attachmentsInitialRef}
+                          onScroll={(e) => {
+                            e.preventDefault();
+                          }}
+                        >
+                          {showagain.map((url, pdfindex) => {
+                            console.log('URL', url);
+                            let cindex = 0;
+                            attachmentPreviews.forEach((item, index) => {
+                              if (index < pdfindex) {
+                                if (typeof item == 'string') {
+                                  cindex = cindex + 1;
+                                } else {
+                                  cindex = Object.keys(item).length + cindex;
+                                }
+                              }
+                            });
+                            if (typeof url == 'object') {
+                              return Object.values(url).map((item, i) => {
+                                let imageIndex = Object.keys(url)[i];
+                                return (
+                                  <div className='attachment'>
+                                    <Attachment
+                                      key={`homework_student_question_attachment_${i}`}
+                                      fileUrl={item}
+                                      fileName={`Attachment-${i + 1 + cindex}`}
+                                      urlPrefix={
+                                        url.includes('/lesson_plan_file/')
+                                          ? `${endpoints.homework.resourcesS3}`
+                                          : `${endpoints.discussionForum.s3}/homework`
+                                      }
+                                      index={i}
+                                      actions={['preview']}
+                                      // onDelete={(index, deletePdf) =>{
+                                      //   removeAttachment(imageIndex, pdfindex, deletePdf, {
+                                      //     item,
+                                      //   })
+                                      // }}
+                                      ispdf={true}
+                                    />
+                                  </div>
+                                );
+                              });
+                            } else
+                              return (
+                                <div className='attachment'>
+                                  <Attachment
+                                    key={`homework_student_question_attachment_${pdfindex}`}
+                                    fileUrl={url}
+                                    fileName={`Attachment-${1 + cindex}`}
+                                    urlPrefix={
+                                      url.includes('/lesson_plan_file/')
+                                        ? `${endpoints.homework.resourcesS3}`
+                                        : `${endpoints.discussionForum.s3}/homework`
+                                    }
+                                    index={pdfindex}
+                                    actions={['preview']}
+                                    // onDelete={(index, deletePdf) =>{
+                                    //   removeAttachment(index, pdfindex, deletePdf)
+                                    //   const images = attachments.filter((i)=> i !== attachments[pdfindex])
+                                    //   setAttachments(images)
+                                    // }}
+                                    ispdf={false}
+                                  />
+                                </div>
+                              );
+                          })}
+
+                          <div style={{ position: 'absolute', visibility: 'hidden' }}>
+                            <SRLWrapper>
+                              {showagain.map((url, i) => {
+                                console.log('URLSRL', url);
+                                if (typeof url == 'object') {
+                                  return Object.values(url).map((item, i) => {
+                                    return (
+                                      <img
+                                        src={
+                                          url.includes('/lesson_plan_file/')
+                                            ? `${endpoints.homework.resourcesS3}`
+                                            : `${endpoints.discussionForum.s3}/homework/${item}`
+                                        }
+                                        onError={(e) => {
+                                          e.target.src = placeholder;
+                                        }}
+                                        alt={`Attachment-${i + 1}`}
+                                      />
+                                    );
+                                  });
+                                } else
+                                  return (
+                                    <img
+                                      src={
+                                        url.includes('/lesson_plan_file/')
+                                          ? `${endpoints.homework.resourcesS3}`
+                                          : `${endpoints.discussionForum.s3}/homework/${url}`
+                                      }
+                                      onError={(e) => {
+                                        e.target.src = placeholder;
+                                      }}
+                                      alt={`Attachment-${i + 1}`}
+                                    />
+                                  );
+                              })}
+                            </SRLWrapper>
+                          </div>
+                        </div>
+                      </SimpleReactLightbox>
+                      <div className='next-btn'>
+                        {showPrevAgain && (
+                          <IconButton onClick={() => handleScrollAgain('right')}>
+                            <ArrowForwardIosIcon color='primary' />
+                          </IconButton>
+                        )}
+                      </div>
+                    </div>
+                  </Grid>
+                )}
               </>
             )}
           </div>
-
-        }
-
+        )}
       </div>
       {/* <br /> */}
-    </div >
+    </div>
   );
   return (
     <Paper elevation={2} className={classes.paper}>
