@@ -848,48 +848,54 @@ const TableView = () => {
                     className='th-question'
                   >
                     {item.lp_files.map((files, i) =>
-                      files.media_file?.map((each, index) => {
-                        let fullName = each.split(
-                          `${files.document_type.toLowerCase()}/`
-                        );
-                        let fileName = fullName[fullName.length - 1].split('.');
-                        let file = fileName[fileName.length - 2];
-                        let extension = fileName[fileName.length - 1];
-                        console.log('FileName', file, extension);
-                        return (
-                          <div
-                            className='row mt-2 py-2 align-items-center'
-                            style={{ border: '1px solid #d9d9d9' }}
-                          >
-                            <div className='col-3'>
-                              <img src={getFileIcon(extension)} />
-                            </div>
-                            <div className='col-7 px-0 th-pointer'>
-                              <div>{file}</div>
-                            </div>
-                            <div className='col-2 th-pointer'>
-                              <a
-                                onClick={() => {
-                                  openPreview({
-                                    currentAttachmentIndex: 0,
-                                    attachmentsArray: [
-                                      {
-                                        src: `${endpoints.homework.resourcesFiles}/${each}`,
 
-                                        name: fileName,
-                                        extension: '.' + extension,
-                                      },
-                                    ],
-                                  });
-                                }}
-                                rel='noopener noreferrer'
-                                target='_blank'
-                              >
-                                <EyeFilled />
-                              </a>
+                      files.media_file?.map((each, index) => {
+                        console.log(files)
+                        if (user_level == 13 && files?.document_type == "Lesson_Plan" || files?.document_type == "Teacher_Reading_Material") {
+
+                        } else {
+                          let fullName = each.split(
+                            `${files.document_type.toLowerCase()}/`
+                          );
+                          let fileName = fullName[fullName.length - 1].split('.');
+                          let file = fileName[fileName.length - 2];
+                          let extension = fileName[fileName.length - 1];
+                          console.log('FileName', file, extension);
+                          return (
+                            <div
+                              className='row mt-2 py-2 align-items-center'
+                              style={{ border: '1px solid #d9d9d9' }}
+                            >
+                              <div className='col-3'>
+                                <img src={getFileIcon(extension)} />
+                              </div>
+                              <div className='col-7 px-0 th-pointer'>
+                                <div>{file}</div>
+                              </div>
+                              <div className='col-2 th-pointer'>
+                                <a
+                                  onClick={() => {
+                                    openPreview({
+                                      currentAttachmentIndex: 0,
+                                      attachmentsArray: [
+                                        {
+                                          src: `${endpoints.homework.resourcesFiles}/${each}`,
+
+                                          name: fileName,
+                                          extension: '.' + extension,
+                                        },
+                                      ],
+                                    });
+                                  }}
+                                  rel='noopener noreferrer'
+                                  target='_blank'
+                                >
+                                  <EyeFilled />
+                                </a>
+                              </div>
                             </div>
-                          </div>
-                        );
+                          );
+                        }
                       })
                     )}
                   </div>
@@ -992,7 +998,7 @@ const TableView = () => {
                           className='col-3 th-bg-grey th-black-1 p-2 th-br-6 th-pointer'
                           style={{ border: '1px solid #d9d9d9' }}
                           onClick={() => setCompleteSections([])}
-                          // onClick={() => closeSectionList()}
+                        // onClick={() => closeSectionList()}
                         >
                           Clear
                         </div>
