@@ -1,6 +1,7 @@
 import React, { useState, useEffect, createRef } from 'react';
 import { Select, Form, message, Spin } from 'antd';
 import axios from 'v2/config/axios';
+import axiosInstance from 'axios';
 import endpoints from 'v2/config/endpoints';
 import { useSelector } from 'react-redux';
 import 'slick-carousel/slick/slick.css';
@@ -42,8 +43,10 @@ const AnnualPlan = () => {
   const [boardListData, setBoardListData] = useState([]);
   const [boardId, setBoardId] = useState();
   const [annualPlanData, setAnnualPlanData] = useState([]);
+  const [YCPPlanData, setYCPPlanData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [filtered, setFiltered] = useState(false);
+  let centralAcademicSessionYear;
 
   const fetchAnnualPlanData = (params = {}) => {
     setFiltered(true);
@@ -66,6 +69,48 @@ const AnnualPlan = () => {
         setLoading(false);
       });
   };
+
+  // https://orchids.letseduvate.com/qbox/academic/list-lesson-overview/?volume=20&grade_subject_mapping_id=147&academic_year_id=17
+  const fetchYCPPlanData = (params = {}) => {
+    setFiltered(true);
+    setLoading(true);
+    axios
+      .get(`academic/list-lesson-overview/`, {
+        params: { ...params },
+      })
+      .then((res) => {
+        if (res?.data?.status === 200) {
+          setYCPPlanData(res?.data?.data);
+          setLoading(false);
+        } else {
+          setLoading(false);
+          setYCPPlanData([]);
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+        setLoading(false);
+      });
+  };
+  const fetchResourceYear = () => {
+    axiosInstance
+      .get(`${endpoints.lessonPlan.academicYearList}`, {
+        headers: {
+          'x-api-key': 'vikash@12345#1231',
+        },
+      })
+      .then((result) => {
+        if (result?.data?.status_code === 200) {
+          centralAcademicSessionYear = result?.data?.result?.results?.filter(
+            (item) => item?.session_year == selectedAcademicYear.session_year
+          )[0]?.id;
+        }
+      })
+      .catch((error) => {
+        message.error(error.message);
+      });
+  };
+  console.log('Fetching', centralAcademicSessionYear);
   const fetchGradeData = () => {
     const params = {
       session_year: selectedAcademicYear?.id,
@@ -199,6 +244,7 @@ const AnnualPlan = () => {
     if (moduleId) {
       fetchGradeData();
       fetchBoardListData();
+      // fetchResourceYear();
     }
   }, [moduleId]);
 
@@ -228,6 +274,7 @@ const AnnualPlan = () => {
         acad_session_id: selectedBranch?.id,
         board_id: boardId,
       });
+      fetchYCPPlanData();
     }
   }, [subjectId, boardId]);
 
