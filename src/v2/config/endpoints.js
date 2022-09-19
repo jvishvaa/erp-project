@@ -120,6 +120,8 @@ export default {
   lessonPlan: {
     subjects: 'academic/lesson-plan-subjects/',
     volumeList: `${baseURLCentral}/lesson_plan/list-volume/`,
+    academicYearList: `${baseURLCentral}/lesson_plan/list-session/`,
+    bucket: `${CENTRAL_BUCKET}`,
   },
   homework: {
     resourcesFiles: `${CENTRAL_BUCKET}`,
