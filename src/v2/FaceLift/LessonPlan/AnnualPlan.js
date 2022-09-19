@@ -364,7 +364,7 @@ const AnnualPlan = () => {
                           </div>
                           {item?.ycp_files?.filter((item) => item?.lesson_type == '1')[0]
                             ?.media_file[0] && (
-                            <div className='col-md-6 col-10 th-18'>
+                            <div className='col-md-6 col-10 '>
                               <a
                                 onClick={() => {
                                   const fileName = item?.ycp_files?.filter(
@@ -388,10 +388,10 @@ const AnnualPlan = () => {
                                 }}
                               >
                                 <div className='row justify-content-between'>
-                                  <div className='col-10 px-0 th-16'>
+                                  <div className='col-10 px-0 th-14'>
                                     Portion Document
                                   </div>
-                                  <div className='col-1 pl-1'>
+                                  <div className='col-1 pl-1 th-icon'>
                                     <EyeFilled className='th-primary' fontSize={20} />
                                   </div>
                                 </div>
@@ -408,7 +408,7 @@ const AnnualPlan = () => {
                           </div>
                           {item?.ycp_files?.filter((item) => item?.lesson_type == '2')[0]
                             ?.media_file[0] && (
-                            <div className='col-md-6 col-10 th-18 th-pointer'>
+                            <div className='col-md-6 col-10 th-pointer'>
                               <a
                                 onClick={() => {
                                   const fileName = item?.ycp_files?.filter(
@@ -432,11 +432,11 @@ const AnnualPlan = () => {
                                 }}
                               >
                                 <div className='row justify-content-between'>
-                                  <div className='col-10 px-0 th-16'>
+                                  <div className='col-10 px-0 th-14'>
                                     Yearly Curriculum Plan
                                   </div>
-                                  <div className='col-1 pl-0 mr-1'>
-                                    <EyeFilled className='th-primary' fontSize={20} />
+                                  <div className='col-1 pl-0 mr-1 th-icon'>
+                                    <EyeFilled className='th-primary ' fontSize={20} />
                                   </div>
                                 </div>
                               </a>
@@ -444,7 +444,7 @@ const AnnualPlan = () => {
                           )}
                         </div>
                         <div
-                          className='th-grey th-14 col-12 px-0'
+                          className='th-grey th-14 col-12 px-0 th-pointer'
                           onClick={() =>
                             history.push({
                               pathname: window.location.pathname.includes('teacher-view')

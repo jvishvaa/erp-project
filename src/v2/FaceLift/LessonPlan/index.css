@@ -48,3 +48,6 @@
 .volume-card:hover {
   border: 1px solid #1b4ccb !important;
 }
+.th-icon .anticon-eye > svg {
+  vertical-align: baseline !important;
+}
