@@ -375,7 +375,7 @@ const TableView = () => {
   };
 
   const markPeriodComplete = (item) => {
-    if (completeSections.length > 0) {
+    if (completeSections?.length > 0) {
       setShowError(false);
       completeSections.map((section, index) => {
         let payLoad = {
@@ -395,7 +395,7 @@ const TableView = () => {
           .post(`/academic/v2/lessonplan-completed-status/`, payLoad)
           .then((res) => {
             if (res.data.status_code === 200) {
-              if (index == completeSections.length - 1) {
+              if (index == completeSections?.length - 1) {
                 setCompleteSections([]);
                 closeSectionList();
                 fetchLessonResourcesData(selectedKeyConcept);
@@ -492,7 +492,7 @@ const TableView = () => {
   }, [moduleListData]);
 
   useEffect(() => {
-    if (subjectId && volumeId && selectedModuleId.length > 0) {
+    if (subjectId && volumeId && selectedModuleId?.length > 0) {
       fetchAnnualPlanData({
         module_id: selectedModuleId,
         subject_id: subjectId,
@@ -763,7 +763,7 @@ const TableView = () => {
                           src: fileSrc,
                           name: 'Portion Document',
                           extension:
-                            '.' + fileName?.split('.')[fileName?.split('.').length - 1],
+                            '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
                         },
                       ],
                     });
@@ -797,7 +797,7 @@ const TableView = () => {
                           src: fileSrc,
                           name: 'Portion Document',
                           extension:
-                            '.' + fileName?.split('.')[fileName?.split('.').length - 1],
+                            '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
                         },
                       ],
                     });
@@ -936,12 +936,14 @@ const TableView = () => {
                             files?.document_type == 'Teacher_Reading_Material')
                         ) {
                         } else {
-                          let fullName = each.split(
+                          let fullName = each?.split(
                             `${files.document_type.toLowerCase()}/`
                           );
-                          let fileName = fullName[fullName.length - 1].split('.');
-                          let file = fileName[fileName.length - 2];
-                          let extension = fileName[fileName.length - 1];
+                          let fileName = fullName
+                            ? fullName[fullName?.length - 1]?.split('.')
+                            : null;
+                          let file = fileName ? fileName[fileName?.length - 2] : '';
+                          let extension = fileName ? fileName[fileName?.length - 1] : '';
                           return (
                             <div
                               className='row mt-2 py-2 align-items-center'
@@ -987,7 +989,7 @@ const TableView = () => {
                       Status :{' '}
                       {item?.section_wise_completion?.filter(
                         (item) => item?.is_completed === true
-                      ).length > 0 ? (
+                      )?.length > 0 ? (
                         <span>
                           <span className='th-green th-fw-500'>Completed</span>
                           {!isStudent && (
@@ -1093,7 +1095,7 @@ const TableView = () => {
                           Update
                         </div>
                       </div>
-                      {showError && completeSections.length < 1 && (
+                      {showError && completeSections?.length < 1 && (
                         <div className='th-red'>
                           Please select atleast one section first!
                         </div>
