@@ -183,7 +183,7 @@ const SubmittedQuestion = ({
                         fileUrl={url}
                         fileName={`Attachment-${i + 1}`}
                         urlPrefix={
-                          url.includes('lesson_plan_file')
+                          url.includes('/lesson_plan_file/')
                             ? `${endpoints.homework.resourcesFiles}`
                             : `${endpoints.discussionForum.s3}/homework`
                         }
@@ -260,7 +260,7 @@ const SubmittedQuestion = ({
                         fileUrl={url}
                         fileName={`Attachment-${i + 1}`}
                         urlPrefix={
-                          url.includes('lesson_plan_file')
+                          url.includes('/lesson_plan_file/')
                             ? `${endpoints.homework.resourcesFiles}`
                             : `${endpoints.discussionForum.s3}/homework`
                         }
@@ -311,7 +311,7 @@ const SubmittedQuestion = ({
                     {correctedQuestions.map((url, i) => (
                       <img
                         src={
-                          url.includes('lesson_plan_file')
+                          url.includes('/lesson_plan_file/')
                             ? `${endpoints.homework.resourcesFiles}${url}`
                             : `${endpoints.discussionForum.s3}/homework/${url}`
                         }

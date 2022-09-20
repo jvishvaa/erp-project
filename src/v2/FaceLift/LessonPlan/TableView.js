@@ -113,6 +113,7 @@ const TableView = () => {
   const [currentPeriodId, setCurrentPeriodId] = useState('');
   const [currentPeriodPanel, setCurrentPeriodPanel] = useState(0);
   let isStudent = window.location.pathname.includes('student-view');
+  const [YCPData, setYCPData] = useState([]);
 
   const showDrawer = () => {
     setDrawerVisible(true);
@@ -211,10 +212,12 @@ const TableView = () => {
       })
       .then((result) => {
         if (result?.data?.status === 200) {
-          setAnnualPlanData(result?.data?.data);
+          setAnnualPlanData(result?.data?.data?.chapter_wise_data);
+          setYCPData(result?.data?.data?.lp_ycp_data);
           setLoading(false);
         } else {
           setAnnualPlanData([]);
+          setYCPData([]);
           setLoading(false);
         }
       })
@@ -372,7 +375,7 @@ const TableView = () => {
   };
 
   const markPeriodComplete = (item) => {
-    if (completeSections.length > 0) {
+    if (completeSections?.length > 0) {
       setShowError(false);
       completeSections.map((section, index) => {
         let payLoad = {
@@ -392,7 +395,7 @@ const TableView = () => {
           .post(`/academic/v2/lessonplan-completed-status/`, payLoad)
           .then((res) => {
             if (res.data.status_code === 200) {
-              if (index == completeSections.length - 1) {
+              if (index == completeSections?.length - 1) {
                 setCompleteSections([]);
                 closeSectionList();
                 fetchLessonResourcesData(selectedKeyConcept);
@@ -489,7 +492,7 @@ const TableView = () => {
   }, [moduleListData]);
 
   useEffect(() => {
-    if (subjectId && volumeId && selectedModuleId.length > 0) {
+    if (subjectId && volumeId && selectedModuleId?.length > 0) {
       fetchAnnualPlanData({
         module_id: selectedModuleId,
         subject_id: subjectId,
@@ -500,7 +503,6 @@ const TableView = () => {
       });
     }
   }, [selectedModuleId, subjectId, volumeId]);
-  console.log('Module', selectedModuleId);
   const expandedRowRender = (record) => {
     const innerColumn = [
       {
@@ -625,6 +627,11 @@ const TableView = () => {
       render: (data) => <span className='th-black-1'>{data}</span>,
     },
   ];
+  console.log(
+    'LL',
+    YCPData?.ycp_files?.filter((item) => item?.lesson_type == '2')[0]?.media_file[0],
+    YCPData?.filter((item) => item?.lesson_type == '2')[0]?.media_file[0]
+  );
   return (
     <div className='row'>
       <div className='col-12 mb-2'>
@@ -738,6 +745,80 @@ const TableView = () => {
           </div>
         </Form>
       </div>
+      {!loading && (
+        <div className='col-12 mb-3 px-3'>
+          <div className='row'>
+            {YCPData?.filter((item) => item?.lesson_type == '1')[0]?.media_file[0] && (
+              <div className='col-3'>
+                <a
+                  onClick={() => {
+                    const fileName = YCPData?.filter(
+                      (item) => item?.lesson_type == '1'
+                    )[0]?.media_file[0];
+                    const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                    openPreview({
+                      currentAttachmentIndex: 0,
+                      attachmentsArray: [
+                        {
+                          src: fileSrc,
+                          name: 'Portion Document',
+                          extension:
+                            '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
+                        },
+                      ],
+                    });
+                  }}
+                >
+                  <div className='row th-fw-600 th-pointer th-primary'>
+                    <div className=''>Portion Document</div>
+                    <div className='ml-3'>
+                      <EyeFilled
+                        className='th-primary'
+                        fontSize={20}
+                        style={{ verticalAlign: 'inherit' }}
+                      />
+                    </div>
+                  </div>
+                </a>
+              </div>
+            )}
+            {YCPData?.filter((item) => item?.lesson_type == '2')[0]?.media_file[0] && (
+              <div className='col-3'>
+                <a
+                  onClick={() => {
+                    const fileName = YCPData?.filter(
+                      (item) => item?.lesson_type == '2'
+                    )[0]?.media_file[0];
+                    const fileSrc = `${endpoints.lessonPlan.bucket}/${fileName}`;
+                    openPreview({
+                      currentAttachmentIndex: 0,
+                      attachmentsArray: [
+                        {
+                          src: fileSrc,
+                          name: 'Portion Document',
+                          extension:
+                            '.' + fileName?.split('.')[fileName?.split('.')?.length - 1],
+                        },
+                      ],
+                    });
+                  }}
+                >
+                  <div className='row th-fw-600 th-pointer th-primary'>
+                    <div className=''>Yearly Curriculum Plan</div>
+                    <div className='ml-3'>
+                      <EyeFilled
+                        className='th-primary'
+                        fontSize={20}
+                        style={{ verticalAlign: 'inherit' }}
+                      />
+                    </div>
+                  </div>
+                </a>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
       <div className='col-12'>
         <Table
           className='th-table '
@@ -847,49 +928,57 @@ const TableView = () => {
                     style={{ overflowY: 'scroll', overflowX: 'hidden', maxHeight: 160 }}
                     className='th-question'
                   >
-                    {item.lp_files.map((files, i) =>
-                      files.media_file?.map((each, index) => {
-                        let fullName = each.split(
-                          `${files.document_type.toLowerCase()}/`
-                        );
-                        let fileName = fullName[fullName.length - 1].split('.');
-                        let file = fileName[fileName.length - 2];
-                        let extension = fileName[fileName.length - 1];
-                        console.log('FileName', file, extension);
-                        return (
-                          <div
-                            className='row mt-2 py-2 align-items-center'
-                            style={{ border: '1px solid #d9d9d9' }}
-                          >
-                            <div className='col-3'>
-                              <img src={getFileIcon(extension)} />
-                            </div>
-                            <div className='col-7 px-0 th-pointer'>
-                              <div>{file}</div>
-                            </div>
-                            <div className='col-2 th-pointer'>
-                              <a
-                                onClick={() => {
-                                  openPreview({
-                                    currentAttachmentIndex: 0,
-                                    attachmentsArray: [
-                                      {
-                                        src: `${endpoints.homework.resourcesFiles}/${each}`,
+                    {item?.lp_files.map((files, i) =>
+                      files?.media_file?.map((each, index) => {
+                        if (
+                          (user_level == 13 && files?.document_type == 'Lesson_Plan') ||
+                          (user_level == 13 &&
+                            files?.document_type == 'Teacher_Reading_Material')
+                        ) {
+                        } else {
+                          let fullName = each?.split(
+                            `${files.document_type.toLowerCase()}/`
+                          );
+                          let fileName = fullName
+                            ? fullName[fullName?.length - 1]?.split('.')
+                            : null;
+                          let file = fileName ? fileName[fileName?.length - 2] : '';
+                          let extension = fileName ? fileName[fileName?.length - 1] : '';
+                          return (
+                            <div
+                              className='row mt-2 py-2 align-items-center'
+                              style={{ border: '1px solid #d9d9d9' }}
+                            >
+                              <div className='col-3'>
+                                <img src={getFileIcon(extension)} />
+                              </div>
+                              <div className='col-7 px-0 th-pointer'>
+                                <div>{file}</div>
+                              </div>
+                              <div className='col-2 th-pointer'>
+                                <a
+                                  onClick={() => {
+                                    openPreview({
+                                      currentAttachmentIndex: 0,
+                                      attachmentsArray: [
+                                        {
+                                          src: `${endpoints.homework.resourcesFiles}/${each}`,
 
-                                        name: fileName,
-                                        extension: '.' + extension,
-                                      },
-                                    ],
-                                  });
-                                }}
-                                rel='noopener noreferrer'
-                                target='_blank'
-                              >
-                                <EyeFilled />
-                              </a>
+                                          name: fileName,
+                                          extension: '.' + extension,
+                                        },
+                                      ],
+                                    });
+                                  }}
+                                  rel='noopener noreferrer'
+                                  target='_blank'
+                                >
+                                  <EyeFilled />
+                                </a>
+                              </div>
                             </div>
-                          </div>
-                        );
+                          );
+                        }
                       })
                     )}
                   </div>
@@ -900,7 +989,7 @@ const TableView = () => {
                       Status :{' '}
                       {item?.section_wise_completion?.filter(
                         (item) => item?.is_completed === true
-                      ).length > 0 ? (
+                      )?.length > 0 ? (
                         <span>
                           <span className='th-green th-fw-500'>Completed</span>
                           {!isStudent && (
@@ -996,7 +1085,6 @@ const TableView = () => {
                         >
                           Clear
                         </div>
-                        {console.log('CurrentPanel', currentPeriodPanel)}
                         <div
                           className='col-3 th-bg-primary th-white p-2 mx-2 th-br-6 th-pointer'
                           onClick={() => {
@@ -1007,7 +1095,7 @@ const TableView = () => {
                           Update
                         </div>
                       </div>
-                      {showError && completeSections.length < 1 && (
+                      {showError && completeSections?.length < 1 && (
                         <div className='th-red'>
                           Please select atleast one section first!
                         </div>
