@@ -1121,6 +1121,16 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                               }}
                             >
                               {question.question_files.map((url, i) => {
+                                let cindex = 0;
+                                question.question_files.forEach((item, index) => {
+                                  if (index < i) {
+                                    if (typeof item == 'string') {
+                                      cindex = cindex + 1;
+                                    } else {
+                                      cindex = Object.keys(item).length + cindex;
+                                    }
+                                  }
+                                });
                                 if (typeof url == 'object') {
                                   return Object.values(url).map((item, i) => {
                                     return (
@@ -1128,13 +1138,13 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                         <Attachment
                                           key={`homework_student_question_attachment_${i}`}
                                           fileUrl={item}
-                                          fileName={`Attachment-${i + 1}`}
+                                          fileName={`Attachment-${i + 1 + cindex}`}
                                           urlPrefix={
                                             item.includes('/lesson_plan_file/')
                                               ? `${endpoints.homework.resourcesFiles}`
                                               : `${endpoints.discussionForum.s3}/homework`
                                           }
-                                          index={i}
+                                          index={i + cindex}
                                           onOpenInPenTool={(item) =>
                                             openInPenTool(item, index)
                                           }
@@ -1162,12 +1172,12 @@ const HomeworkSubmission = withRouter(({ history, ...props }) => {
                                             ? `${endpoints.homework.resourcesFiles}`
                                             : `${endpoints.discussionForum.s3}/homework`
                                         }
-                                        index={i}
+                                        index={cindex}
                                         onOpenInPenTool={(url) =>
                                           openInPenTool(url, index)
                                         }
                                         actions={
-                                          url.includes('pdf')
+                                          url.includes('/lesson_plan_file/')
                                             ? ['download']
                                             : [
                                                 'preview',

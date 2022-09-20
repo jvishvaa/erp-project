@@ -702,9 +702,9 @@ const QuestionCard = ({
                                         ? `${endpoints.homework.resourcesFiles}`
                                         : `${endpoints.discussionForum.s3}/homework`
                                     }
-                                    index={i}
+                                    index={i + cindex}
                                     actions={
-                                      item.includes('pdf') || item.includes('ppt')
+                                      item.includes('/lesson_plan_file/')
                                         ? ['download', 'delete']
                                         : ['preview', 'download', 'delete']
                                     }
@@ -732,16 +732,19 @@ const QuestionCard = ({
                                       ? `${endpoints.homework.resourcesFiles}`
                                       : `${endpoints.discussionForum.s3}/homework`
                                   }
-                                  index={pdfindex}
+                                  index={cindex}
                                   actions={
-                                    url.includes('pdf') || url.includes('ppt')
+                                    url.includes('/lesson_plan_file/') &&
+                                    !url.includes('png')
                                       ? ['download', 'delete']
                                       : ['preview', 'download', 'delete']
                                   }
                                   onDelete={(index, deletePdf) =>
                                     removeAttachment(index, pdfindex, deletePdf)
                                   }
-                                  ispdf={false}
+                                  ispdf={
+                                    url.includes('/lesson_plan_file/') ? false : true
+                                  }
                                 />
                               </div>
                             );

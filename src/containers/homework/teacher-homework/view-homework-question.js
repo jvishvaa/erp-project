@@ -63,6 +63,16 @@ const ViewHomeworkQuestion = ({ question, index }) => {
               }}
             >
               {question.question_files.map((url, i) => {
+                let cindex = 0;
+                question.question_files.forEach((item, index) => {
+                  if (index < i) {
+                    if (typeof item == 'string') {
+                      cindex = cindex + 1;
+                    } else {
+                      cindex = Object.keys(item).length + cindex;
+                    }
+                  }
+                });
                 if (typeof url == 'object') {
                   return Object.values(url).map((item, i) => {
                     return (
@@ -76,7 +86,7 @@ const ViewHomeworkQuestion = ({ question, index }) => {
                               ? `${endpoints.homework.resourcesFiles}`
                               : `${endpoints.discussionForum.s3}/homework`
                           }
-                          index={i}
+                          index={i + cindex}
                           actions={
                             // item.split('.')[item.split('.').length - 1].includes('pdf')
                             item.includes('/lesson_plan_file/')
@@ -99,7 +109,7 @@ const ViewHomeworkQuestion = ({ question, index }) => {
                             ? `${endpoints.homework.resourcesFiles}`
                             : `${endpoints.discussionForum.s3}/homework`
                         }
-                        index={i}
+                        index={cindex}
                         actions={
                           url.includes('/lesson_plan_file/')
                             ? // &&
