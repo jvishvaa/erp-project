@@ -4,12 +4,10 @@ import axiosInstance from '../config/axios';
 import endpoints from '../config/endpoints';
 import { IsV2Checker } from 'v2/isV2Checker';
 
-const colorsys = require('colorsys')
+const colorsys = require('colorsys');
 
-  const isV2 = sessionStorage.getItem('selected_branch')
-  ? JSON.parse(sessionStorage.getItem('selected_branch'))?.isV2
-  : '';
-  const isV2Button = JSON.parse(localStorage.getItem('selectedVersion'));
+const isV2 = localStorage.getItem('isV2') ? JSON.parse(localStorage.getItem('isV2')) : '';
+const isV2Button = JSON.parse(localStorage.getItem('isV2'));
 
 export function fetchThemeApi() {
   return axiosInstance
@@ -29,16 +27,16 @@ export function fetchThemeApi() {
         }
       }
     })
-    .catch(() => { });
+    .catch(() => {});
 }
 const getlightestcolor = (color) => {
-  const hex_RGB = colorsys.parseCss(color);//return rgb 
-  var hsv = colorsys.rgb_to_hsv(hex_RGB)//convert to hsv
-  const hue = hsv['h']
-  hsv = { h: hue, s: 6, v: 100 }
-  const lightRGB = colorsys.hsv_to_rgb(hsv)
-  return (colorsys.rgbToHex(lightRGB))
-}
+  const hex_RGB = colorsys.parseCss(color); //return rgb
+  var hsv = colorsys.rgb_to_hsv(hex_RGB); //convert to hsv
+  const hue = hsv['h'];
+  hsv = { h: hue, s: 6, v: 100 };
+  const lightRGB = colorsys.hsv_to_rgb(hsv);
+  return colorsys.rgbToHex(lightRGB);
+};
 
 const getThemeElements = () => {
   let themeDetails = null;
@@ -55,7 +53,7 @@ const getThemeElements = () => {
   };
 
   if (isV2) {
-    if(isV2Button === null || isV2Button){
+    if (isV2Button === null || isV2Button) {
       elements['colors']['primary_color'] = '#1B4CCB';
       elements['colors']['second_color'] = '#32334A';
     }
@@ -95,12 +93,12 @@ export function themeGenerator() {
     second_color: secondarytemp = '#014b7e',
     darkprimary = '#cc5656',
     lightprimary = '#994040',
-    lightestprimary = '#fff6f6  '
+    lightestprimary = '#fff6f6  ',
   } = colors || {};
 
   // const isV2Color = IsV2Checker();
-  const isV2Color = isV2 && (isV2Button === null || isV2Button ) ? true : false ;
-  
+  const isV2Color = isV2 && (isV2Button === null || isV2Button) ? true : false;
+
   return createMuiTheme({
     palette: {
       primary: {
@@ -127,7 +125,7 @@ export function themeGenerator() {
       },
       v2Color2: {
         primaryV2: isV2Color ? '#4a77e8' : '#ef676a',
-      }
+      },
     },
     typography: {
       fontSize: 16,

@@ -17,7 +17,7 @@ import axiosInstance from '../../../../config/axios';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    width: '94%',
+    width: '100%',
   },
   rootViewMore: theme.rootViewMore,
   heading: {
@@ -103,6 +103,12 @@ const ViewMoreCard = ({
             {periodDataForView?.is_review ? 'Review' : null}
             {periodDataForView?.is_verified ? 'Published' : null}
           </div>
+          <div style={{ display: 'flex' }}>
+            <h6>Created on - </h6>
+            <span>
+              {periodDataForView?.created_at?.substring(0, 10)}
+            </span>
+          </div>
         </div>
         <div className='rightHeader'>
           <div className='headerTitle closeIcon'>
@@ -115,12 +121,7 @@ const ViewMoreCard = ({
               <CloseIcon color='primary' />
             </IconButton>
           </div>
-          <div className='headerContent'>
-            <div>Created on</div>
-            <div className='viewUpdatedDate'>
-              {periodDataForView?.created_at?.substring(0, 10)}
-            </div>
-          </div>
+
           {!periodDataForView?.is_central && (
             <Button
               size='small'
@@ -168,14 +169,14 @@ const ViewMoreCard = ({
                 </Accordion>
               ))}
             </div>
-            <div style={{ margin: '5px 15px 15px 5px' }}>
+            <div style={{ display: 'flex', margin: '5px 15px 15px 5px' }}>
               {((periodDataForView?.is_verified || periodDataForView?.is_review) && (!periodDataForView?.is_central)) && (
                 <Button
                   style={{ margin: '0.5rem', color: 'white', width: '100%' }}
                   onClick={() => handlePublish(false)}
                   color='secondary'
                   variant='contained'
-                  size='medium'
+                  size='small'
                 >
                   REJECT
                 </Button>
@@ -186,7 +187,7 @@ const ViewMoreCard = ({
                   onClick={() => handlePublish(true)}
                   color='primary'
                   variant='contained'
-                  size='medium'
+                  size='small'
                 >
                   PUBLISH
                 </Button>

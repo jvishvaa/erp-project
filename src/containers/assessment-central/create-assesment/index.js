@@ -42,6 +42,7 @@ import {
   resetFormState,
 } from '../../../redux/actions';
 import Loader from './../../../components/loader/loader';
+import Checkbox from '@material-ui/core/Checkbox';
 import './styles.scss';
 import AssesmentTest from './assesment-test';
 
@@ -109,12 +110,15 @@ const CreateAssesment = ({
   const selectedAcademicYear = useSelector(
     (state) => state.commonFilterReducer?.selectedYear
   );
+  const [values, setValues] = useState({ val: [] });
+  const [sectionWiseTest, setSectionWiseTest] = useState(false)
+
   const formik = useFormik({
     initialValues: {
       test_mode: '',
       test_type: '',
     },
-    onSubmit: (values) => {},
+    onSubmit: (values) => { },
     validateOnChange: false,
     validateOnBlur: false,
   });
@@ -151,7 +155,7 @@ const CreateAssesment = ({
       const data = await fetchAssesmentTypes();
       setAssesmentTypes(data);
       formik.setFieldValue('test_type', data);
-    } catch (e) {}
+    } catch (e) { }
   };
   // useEffect(() => {
   //   if (moduleId) {
@@ -244,12 +248,12 @@ const CreateAssesment = ({
   };
 
   const getGroup = () => {
-      let acadId = selectedQuestionPaper?.is_central ? branchId : selectedQuestionPaper?.academic_session	  //&group_type=${1}
-      axiosInstance.get(`${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${selectedQuestionPaper?.grade}&is_active=${true}&is_assessment=${true}&is_central_grade=${selectedQuestionPaper?.is_central}`).then((result)=>{
-        if(result?.status === 200){	
-          setGroupList(result?.data)	
-        }	
-      })
+    let acadId = selectedQuestionPaper?.is_central ? branchId : selectedQuestionPaper?.academic_session	  //&group_type=${1}
+    axiosInstance.get(`${endpoints.assessmentErp.getGroups}?acad_session=${acadId}&grade=${selectedQuestionPaper?.grade}&is_active=${true}&is_assessment=${true}&is_central_grade=${selectedQuestionPaper?.is_central}`).then((result) => {
+      if (result?.status === 200) {
+        setGroupList(result?.data)
+      }
+    })
   };
 
   useEffect(() => {
@@ -274,6 +278,13 @@ const CreateAssesment = ({
       resetForm();
     }
   }, [clearForm]);
+
+  // const handleCreateAssesmentTest = () => {
+  //   console.log(values);
+  //   const newVal = values.val.filter(x=>x)
+  //   console.log(newVal , '--------');
+
+  // }
   const handleCreateAssesmentTest = async () => {
     const qMap = new Map();
 
@@ -314,6 +325,28 @@ const CreateAssesment = ({
     if (sectionToggle && groupSectionMappingId.length === 0) {
       setAlert('error', 'Please Select Group');
       return;
+    }
+
+   
+    if(sectionWiseTest == true ){
+      const checkDate = values.val.filter(x => x)
+      var todayDate = moment().format().slice(0,16)
+      for (let i = 0; i < checkDate?.length; i++)  {
+        console.log(moment(checkDate[i]?.test_date).isAfter(todayDate));
+        if(moment(checkDate[i]?.test_date).isAfter(todayDate) == false){
+          setAlert('error', 'Please Select Correct Date and Time');
+          return;
+        }
+      }
+    }
+    if(sectionWiseTest == false && formik.values.test_type?.exam_name != 'Quiz' ){
+      console.log(testDate);
+      var todayDate = moment().format().slice(0,16)
+      console.log(moment(testDate).isAfter(todayDate));
+      if(moment(testDate).isAfter(todayDate) == false){
+        setAlert('error', 'Please Select Correct Date and Time');
+        return;
+      }
     }
 
     testMarks.forEach((obj) => {
@@ -417,10 +450,8 @@ const CreateAssesment = ({
 
     let reqObj = {
       question_paper: selectedQuestionPaper?.id,
-      test_id: testId,
       test_name: testName,
       total_mark: totalMarks,
-      test_date: testDate,
       test_mode: formik.values.test_mode?.id,
       test_type: formik.values.test_type?.id,
       test_duration: testDuration,
@@ -434,11 +465,27 @@ const CreateAssesment = ({
       is_central: selectedQuestionPaper['is_central'],
     };
 
+    if (formik.values.test_type?.exam_name != 'Quiz' && sectionWiseTest == false) {
+      reqObj = { ...reqObj, test_date: testDate };
+    }
+
+    // if (formik.values.test_type?.exam_name != 'Quiz' ) {
+    //   if(sectionWiseTest != true){
+    //     reqObj = { ...reqObj, test_id: testId };
+    //   }
+    // }
+
     if (!paperchecked) {
       reqObj = { ...reqObj, test_mark: testMarksArr };
     }
+
     if (!sectionToggle && selectedSectionData?.length > 0) {
       reqObj = { ...reqObj, section_mapping: selectedSectionMappingId };
+    }
+    if (sectionWiseTest && values?.val?.length > 0) {
+      const newVal = values.val.filter(x => x)
+
+      reqObj = { ...reqObj, section_mapping: newVal };
     }
     if (sectionToggle && groupSectionMappingId.length > 0) {
       reqObj = {
@@ -636,6 +683,27 @@ const CreateAssesment = ({
     setSelectedSectionData([]);
     setSelectedSectionMappingId([]);
   };
+
+  const sectionDate = (event, i, section) => {
+    var comDate = moment().format().slice(0,16)
+    if(moment(event.target.value).isAfter(comDate)){
+    let vals = [...values.val];
+    // vals[i] = event.target.value;
+    vals[i] = {
+      test_date: event.target.value,
+      section_mapping: [section.id]
+    }
+    setValues({ val: vals });
+    console.log(vals);
+  } else {
+    setAlert('error','Please Select Correct Date and Time ')
+  }
+  }
+
+  const handleChangeSection = (event) => {
+    setSectionWiseTest(event.target.checked);
+  };
+
   return (
     <Layout>
       {loading && <Loader />}
@@ -650,7 +718,7 @@ const CreateAssesment = ({
             className='collapsible-section'
             square
             expanded={expandFilter}
-            onChange={() => {}}
+            onChange={() => { }}
           >
             <AccordionSummary>
               <div className='header mv-20'>
@@ -727,7 +795,11 @@ const CreateAssesment = ({
                             name='assesment_type'
                             className='dropdownIcon'
                             onChange={(e, value) => {
+                              console.log(value)
                               formik.setFieldValue('test_type', value);
+                              if(value?.exam_name == 'Quiz'){
+                                setSectionWiseTest(false)
+                              }
                             }}
                             value={formik.values.test_type}
                             options={assesmentTypes}
@@ -803,25 +875,41 @@ const CreateAssesment = ({
                             />
                           </Grid>
                         )}
+                        {/* {formik?.values?.test_type?.exam_name == 'Quiz' ? '' :
+                          <Grid container alignItems='center' style={{ marginTop: 15, display: 'flex', justifyContent: 'space-evenly' }}>
+                            <Grid container
+                              alignItems='center'
+                              justifyContent='center'
+                              xs={12}
+                              md={4}>
+                              <Checkbox
+                                checked={sectionWiseTest}
+                                onChange={handleChangeSection}
+                                inputProps={{ 'aria-label': 'primary checkbox' }}
+                              />
+                            </Grid>
+                            <p>Section Wise</p>
+                          </Grid>
+                        } */}
                       </Grid>
                       {selectedQuestionPaper && (
                         <Grid container alignItems='center' style={{ marginTop: 15 }}>
                           <Grid
-                          container
-                          alignItems='center'
-                          justifyContent='center'
-                          xs={12}
-                          md={4}
-                        >
-                          <Typography>Section</Typography>
-                          <Switch
-                            checked={sectionToggle}
-                            onChange={handleSectionToggle}
-                            color='default'
-                            inputProps={{ 'aria-label': 'checkbox with default color' }}
-                          />
-                          <Typography>Group</Typography>
-                        </Grid>
+                            container
+                            alignItems='center'
+                            justifyContent='center'
+                            xs={12}
+                            md={4}
+                          >
+                            <Typography>Section</Typography>
+                            <Switch
+                              checked={sectionToggle}
+                              onChange={handleSectionToggle}
+                              color='default'
+                              inputProps={{ 'aria-label': 'checkbox with default color' }}
+                            />
+                            <Typography>Group</Typography>
+                          </Grid>
                           {sectionToggle ? (
                             <Grid item xs={12} md={4}>
                               <Autocomplete
@@ -873,8 +961,26 @@ const CreateAssesment = ({
                               />
                             </Grid>
                           )}
+                          {selectedSectionData?.length > 0 && formik?.values?.test_type != '' ? 
+                          <>
+                          {formik?.values?.test_type?.exam_name == 'Quiz'   ? '' :
+                          <>
+                          {sectionToggle ? '' : 
+                            <Grid item xs={12} md={4} style={{display : 'flex' , justifyContent: 'center'}} >
+                              <Checkbox
+                                checked={sectionWiseTest}
+                                onChange={handleChangeSection}
+                                inputProps={{ 'aria-label': 'primary checkbox' }}
+                              />
+                              <p style={{display: 'flex' , alignItems: 'center', margin: '0px', fontSize: '17px'}}  >Section Wise</p>
+                            </Grid>
+                          }
+                          </>
+                          }
+                          </> : '' }
                         </Grid>
                       )}
+
                     </FormControl>
                   </Grid>
                 </Grid>
@@ -922,8 +1028,13 @@ const CreateAssesment = ({
               // setInstructions(value);
             }}
             onTestDateChange={(value) => {
+              var comDate = moment().format().slice(0,16)
+              if(moment(value).isAfter(comDate)){
               setTestDate(value);
               initChangeTestFormFields('testDate', value);
+              } else {
+                setAlert('error','Please Select Correct Date and Time')
+              }
             }}
             onTestDurationChange={(value) => {
               setTestDuration(value);
@@ -935,6 +1046,11 @@ const CreateAssesment = ({
             }}
             paperchecked={paperchecked}
             setChecked={setChecked}
+            formik={formik}
+            selectedSectionData={selectedSectionData}
+            sectionDate={sectionDate}
+            values={values}
+            sectionWiseTest={sectionWiseTest}
           />
         </div>
       </div>

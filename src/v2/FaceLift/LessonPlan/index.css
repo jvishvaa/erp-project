@@ -12,3 +12,42 @@
   border-color: #1b4ccb !important;
   cursor: pointer;
 }
+.text-through {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid #d9d9d9;
+  line-height: 0.1em;
+  margin: 10px 0 20px;
+}
+
+.text-through span {
+  background: #fff;
+  padding: 0 10px;
+}
+
+.th-collapse .ant-collapse-icon-position-end > .ant-collapse-item > .ant-collapse-header {
+  padding-right: 0px !important;
+}
+
+.th-resources-drawer .ant-drawer-body {
+  padding: 12px !important;
+}
+
+.th-resources-drawer .ant-collapse-header-text {
+  width: 100% !important;
+}
+.th-resources-drawer .ant-drawer-header {
+  background-color: #f8f8f8 !important;
+  border-bottom: 2px solid #d9d9d9 !important;
+}
+/* .th-row:hover {
+  background-color: rgba(240, 245, 243, 0.311) !important;
+  background-blend-mode: darken;
+  text-decoration: underline !important;
+} */
+.volume-card:hover {
+  border: 1px solid #1b4ccb !important;
+}
+.th-icon .anticon-eye > svg {
+  vertical-align: baseline !important;
+}

@@ -20,6 +20,7 @@ import unfiltered from '../../../assets/images/unfiltered.svg';
 import selectfilter from '../../../assets/images/selectfilter.svg';
 import BreadcrumbToggler from '../../../components/breadcrumb-toggler';
 import FeedbackLesson from './feedback-LessonPLan'
+import FeeReminder from 'v2/FaceLift/FeeReminder/FeeReminder';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -124,6 +125,7 @@ const LessonPlan = () => {
         overflowX: 'hidden',
         overflowY: 'scroll',
       }} >
+        <FeeReminder />
         <BreadcrumbToggler isFilter={isFilter} setIsFilter={setIsFilter}>
           <CommonBreadcrumbs componentName='Lesson Plan' childComponentName='View' />
         </BreadcrumbToggler>

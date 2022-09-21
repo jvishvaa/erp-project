@@ -4,7 +4,6 @@ import { Divider } from '@material-ui/core';
 import Section from '../section';
 
 const Question = ({ question, onDeleteSection, onDeleteQuestion }) => {
-  console.log(question.sections, 'data section');
   return (
     <>
       <div className='question-container'>

@@ -428,7 +428,7 @@ import Category from './containers/question-bank/category/category-table';
 import CategoryMapping from './containers/subjectGradeMapping/CategoryMapping';
 import ReportConfigTable from 'containers/assessment-central/ReportCardConfig/ReportConfigTable';
 import CreateReportConfig from 'containers/assessment-central/ReportCardConfig/CreateReportConfig';
-
+import OnboardingReport from 'containers/user-management/onboarding-report/onboardingReport';
 
 function App({ alert, isMsAPI, erpConfig }) {
   useEffect(() => {
@@ -777,7 +777,7 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route exact path='/master-management/subject/grade/mapping'>
                               {({ match }) => <Subjectgrade match={match} />}
                             </Route>
-                            {console.log("aaya12")}
+                            {console.log('aaya12')}
                             <Route exact path='/master-management/category-mapping'>
                               {({ match }) => <CategoryMapping match={match} />}
                             </Route>
@@ -1765,6 +1765,9 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route exact path='/allsubjectchapters'>
                               {({ match }) => <AllSubjectChapters match={match} />}
                             </Route>
+                            <Route exact path='/onboarding-report'>
+                              {({ match }) => <OnboardingReport match={match} />}
+                            </Route>
                             <Route exact path='/inductionTraining'>
                               {({ match }) => <InductionTraining match={match} />}
                             </Route>
@@ -2078,7 +2081,12 @@ function App({ alert, isMsAPI, erpConfig }) {
                             <Route path='/student-mark'>
                               {({ match }) => <StudentMark match={match} />}
                             </Route>
-
+                            <Route path='/lesson-plan/teacher-view/annual-plan'>
+                              {({ match }) => <LessonPlan match={match} />}
+                            </Route>
+                            <Route path='/lesson-plan/student-view/annual-plan'>
+                              {({ match }) => <LessonPlan match={match} />}
+                            </Route>
                             <Route path='*'>
                               <ErrorBoundary404 HomeButton={true} />
                             </Route>

@@ -10,31 +10,33 @@ import { AttachmentPreviewerContext } from 'components/attachment-previewer/atta
 
 const useStyles = makeStyles((theme) => ({
   questionHeader: {
-    color: theme.palette.secondary.main,
+    // color: theme.palette.secondary.main,
+    color: 'orange',
     fontSize: '1.1rem',
     margin: '10px 0',
   },
   answersHeader: {
-    color: theme.palette.secondary.main,
+    // color: theme.palette.secondary.main,
+    color: 'orange',
     fontSize: '1.1rem',
     margin: '10px 0',
   },
   questionContainer: {
-    border: '1px solid #dbdbdb',
-    padding: '1rem',
-    fontSize: '0.9rem',
-    borderRadius: '10px',
-    margin: '1rem 0',
-    color: `${theme.palette.secondary.main} !important`,
+    // border: '1px solid #dbdbdb',
+    // padding: '1rem',
+    fontSize: '1.0rem',
+    // borderRadius: '10px',
+    // margin: '1rem 0',
+    // color: `${theme.palette.secondary.main} !important`,
   },
   answersContainer: {
     color: theme.palette.secondary.main,
   },
   option: {
-    backgroundColor: '#f3f3f3',
-    padding: "1rem",
-    margin: '1rem 0',
-    borderRadius: '10px',
+    // backgroundColor: '#f3f3f3',
+    // padding: "1rem",
+    // margin: '1rem 0',
+    // borderRadius: '10px',
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -127,19 +129,20 @@ const QuestionView = ({ question, showHeader, index }) => {
       {expand && (
         <>
           <div className={classes.questionHeader}>Question</div>
-          <Divider className='secondary-divider' />
+          {/* <Divider className='secondary-divider' /> */}
           {questionType == 1 && (
             <div className='mcq-container'>
               <div className={classes.questionContainer}>
                 {ReactHtmlParser(question.question_answer[0].question)}
               </div>
               <div className={classes.answersContainer}>
-                <div className={classes.answersHeader}>Answers</div>
-                <Divider className='secondary-divider' />
+                <div className={classes.answersHeader}>Options</div>
+                {/* <Divider className='secondary-divider' /> */}
                 <div className='options-container'>
                   {question?.question_answer[0]?.options?.map((optionObj, subIndex) => (
                     <div className={classes.option} key={`option-item-${index}`}>
                       {/* {ReactHtmlParser(optionObj[`option${subIndex + 1}`]?.optionValue)} */}
+                      {subIndex + 1}.&nbsp;
                       {extractContentOption(optionObj[`option${subIndex + 1}`]?.optionValue)}
 
                       {`${optionObj[`option${subIndex + 1}`]?.images}`?.length > 0 && (
@@ -173,7 +176,49 @@ const QuestionView = ({ question, showHeader, index }) => {
                     </div>
                   ))}
                 </div>
+                <Divider className='secondary-divider' />
               </div>
+              <div className={classes.answersContainer}>
+                <div className={classes.answersHeader}>Answers</div>
+                <div className='options-container'>
+                  {question?.question_answer[0]?.answer?.map((optionObj, subIndex) => (
+                    <div className={classes.option} key={`option-item-${index}`}>
+                      {/* {ReactHtmlParser(optionObj[`option${subIndex + 1}`]?.optionValue)} */}
+                      {extractContentOption(optionObj)}
+
+                      {/* {`${optionObj[`option${subIndex + 1}`]?.images}`?.length > 0 && (
+                        <div>
+                          <a
+                            onClick={() => {
+                              openPreview({
+                                currentAttachmentIndex: 0,
+                                attachmentsArray: (() => {
+                                  const images =
+                                    `${optionObj[`option${subIndex + 1}`]?.images}`.split(',') || {};
+
+                                  const attachmentsArray = [];
+                                  images.forEach((image) => {
+                                    const attachmentObj = {
+                                      src: getS3DomainURL(image),
+                                      name: `${image}`.split('.').slice(0, -1).join('.'),
+                                      extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                    };
+                                    attachmentsArray.push(attachmentObj);
+                                  });
+                                  return attachmentsArray;
+                                })(),
+                              });
+                            }}
+                          >
+                            <SvgIcon component={() => <VisibilityIcon />} />
+                          </a>
+                        </div>
+                      )} */}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
             </div>
           )}
           <div>
@@ -183,12 +228,13 @@ const QuestionView = ({ question, showHeader, index }) => {
                   {ReactHtmlParser(question.question_answer[0].question)}
                 </div>
                 <div className='answers-container'>
-                  <div className={classes.answersHeader}>Answers</div>
-                  <Divider className='secondary-divider' />
+                  <div className={classes.answersHeader}>Options</div>
+                  {/* <Divider className='secondary-divider' /> */}
                   <div className='options-container'>
                     {question.question_answer[0]?.options.map((optionObj, subIndex) => (
-                      <div className='option' key={`option-item-${index}`}>
-                        {ReactHtmlParser(optionObj[`option${subIndex + 1}`].optionValue)}
+                      <div className='option' key={`option-item-${index}`} style={{ display: 'flex' }}>
+                        <div>{subIndex + 1}.&nbsp;
+                          {ReactHtmlParser(optionObj[`option${subIndex + 1}`].optionValue)}</div>
                         {`${optionObj[`option${subIndex + 1}`]?.images}`?.length > 0 && (
                           <div>
                             <a
@@ -220,7 +266,49 @@ const QuestionView = ({ question, showHeader, index }) => {
                       </div>
                     ))}
                   </div>
+                  <Divider className='secondary-divider' />
                 </div>
+                <div className='answers-container'>
+                  <div className={classes.answersHeader}>Answers</div>
+                  {/* <Divider className='secondary-divider' /> */}
+                  <div className='options-container'>
+                    {question.question_answer[0]?.answer.map((optionObj, subIndex) => (
+                      <div className='option' key={`option-item-${index}`}>
+                        {ReactHtmlParser(optionObj)}
+                        {/* {`${optionObj[`option${subIndex + 1}`]?.images}`?.length > 0 && (
+                          <div>
+                            <a
+                              onClick={() => {
+                                openPreview({
+                                  currentAttachmentIndex: 0,
+                                  attachmentsArray: (() => {
+                                    const images =
+                                      `${optionObj[`option${subIndex + 1}`]?.images}`.split(',') || {};
+
+                                    const attachmentsArray = [];
+                                    images.forEach((image) => {
+                                      const attachmentObj = {
+                                        src: getS3DomainURL(image),
+                                        name: `${image}`.split('.').slice(0, -1).join('.'),
+                                        extension: `.${`${image}`.split('.').slice(-1)[0]}`,
+                                      };
+                                      attachmentsArray.push(attachmentObj);
+                                    });
+                                    return attachmentsArray;
+                                  })(),
+                                });
+                              }}
+                            >
+                              <SvgIcon component={() => <VisibilityIcon />} />
+                            </a>
+                          </div>
+                        )} */}
+                      </div>
+                    ))}
+                  </div>
+                  <Divider className='secondary-divider' />
+                </div>
+
               </div>
             )}
           </div>
@@ -232,7 +320,7 @@ const QuestionView = ({ question, showHeader, index }) => {
               </div>
               <div className='answers-container'>
                 <div className={classes.answersHeader}>Answers Question</div>
-                <Divider className='secondary-divider' />
+                {/* <Divider className='secondary-divider' /> */}
                 <div className='options-container'>
                   {question?.question_answer[0]?.questionAnswer.map((obj, index) => (
                     <div className='option'>
@@ -241,19 +329,20 @@ const QuestionView = ({ question, showHeader, index }) => {
                   ))}
                 </div>
                 <div className='match-info'>OPTIONS</div>
-                <Divider className='secondary-divider' />
+                {/* <Divider className='secondary-divider' /> */}
                 <div className='options-container'>
                   {question?.question_answer[0]?.options.map((obj, index) => (
                     <div className='option'>{obj?.optionValue}</div>
                   ))}
                 </div>
                 <div className='match-info'>MATCHING OPTIONS</div>
-                <Divider className='secondary-divider' />
+                {/* <Divider className='secondary-divider' /> */}
                 <div className='options-container'>
                   {question?.question_answer[0]?.matchingOptions.map((obj, index) => (
                     <div className='option'>{obj?.optionValue}</div>
                   ))}
                 </div>
+                <Divider className='secondary-divider' />
               </div>
             </div>
           )}
@@ -264,12 +353,12 @@ const QuestionView = ({ question, showHeader, index }) => {
               </div>
               <div className='answers-container'>
                 <div className={classes.answersHeader}>Answers</div>
-                <Divider className='secondary-divider' />
+                {/* <Divider className='secondary-divider' /> */}
                 <div className='matrix-columns'>
                   {question.question_answer[0]?.options.map((obj) => (
                     <div className='matrix-column'>
                       <span>{obj.optionValue}</span>
-                      <span className='vertical-divider'></span>
+                      {/* <span className='vertical-divider'></span> */}
                     </div>
                   ))}
                 </div>
@@ -289,19 +378,8 @@ const QuestionView = ({ question, showHeader, index }) => {
                 {ReactHtmlParser(question.question_answer[0]?.question)}
               </div>
               <div className='answers-container'>
-                <div className={classes.answersHeader}>Answers</div>
-                <div className='options-container '>
-                  <div className='option flex-space-between'>
-                    {question.question_answer[0]?.answer.map((obj) => (
-                      <div className='matrix-column'>
-                        <span>{obj}</span>
-                        <span className='vertical-divider'></span>
-                      </div>
-                    ))}{' '}
-                  </div>
-                </div>
-                <div className={classes.answersHeader}>Options</div>
 
+                <div className={classes.answersHeader}>Options</div>
                 <div className='options-container '>
                   {question.question_answer[0]?.options.map((obj, i) => (
                     <div className='option flex-space-between'>
@@ -311,6 +389,17 @@ const QuestionView = ({ question, showHeader, index }) => {
                       </div>
                     </div>
                   ))}
+                </div>
+                <div className={classes.answersHeader}>Answers</div>
+                <div className='options-container '>
+                  <div className='option flex-space-between'>
+                    {question.question_answer[0]?.answer.map((obj) => (
+                      <div className='matrix-column'>
+                        <span>{obj}</span>
+                        {/* <span className='vertical-divider'></span> */}
+                      </div>
+                    ))}{' '}
+                  </div>
                 </div>
               </div>
             </div>
@@ -322,7 +411,7 @@ const QuestionView = ({ question, showHeader, index }) => {
               </div>
               <div className='answers-container'>
                 <div className={classes.answersHeader}>Answers</div>
-                <Divider className='secondary-divider' />
+                {/* <Divider className='secondary-divider' /> */}
                 <div className='options-container'>
                   {question.question_answer[0]?.answer?.map((obj) => (
                     <div className='matrix-column'>
@@ -330,16 +419,17 @@ const QuestionView = ({ question, showHeader, index }) => {
                     </div>
                   ))}
                 </div>
-                <div className={classes.answersHeader}>Options</div>
-                <Divider className='secondary-divider' />
-                <div className='options-container'>
+                {/* <div className={classes.answersHeader}>Options</div> */}
+                {/* <Divider className='secondary-divider' /> */}
+                {/* <div className='options-container'>
                   {question.question_answer[0]?.options?.map((obj, i) => (
                     <div className='matrix-column'>
                       {obj[`option${i + 1}`].optionValue}
                     </div>
                   ))}
-                </div>
+                </div> */}
               </div>
+              <Divider className='secondary-divider' />
             </div>
           )}
           {questionType === 7 && (
@@ -354,6 +444,7 @@ const QuestionView = ({ question, showHeader, index }) => {
                   </div>
                 ))}
               </div>
+              <Divider className='secondary-divider' />
             </div>
           )}
           {questionType === 10 && (
@@ -363,13 +454,14 @@ const QuestionView = ({ question, showHeader, index }) => {
               </div>
               <div className='answers-container'>
                 <div className={classes.answersHeader}>Answers</div>
-                <Divider className='secondary-divider' />
+                {/* <Divider className='secondary-divider' /> */}
                 <div className='options-container'>
                   <div className='option'>
                     {ReactHtmlParser(question.question_answer[0]?.answer)}
                   </div>
                 </div>
               </div>
+              <Divider className='secondary-divider' />
             </div>
           )}
           {questionType === 4 && (
@@ -391,6 +483,7 @@ const QuestionView = ({ question, showHeader, index }) => {
                   </div>
                 ))}
               </div>
+              <Divider className='secondary-divider' />
             </div>
           )}
         </>
