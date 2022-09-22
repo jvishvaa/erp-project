@@ -80,6 +80,8 @@ const Gradingview = () => {
   const [deleteAlert, setDeleteAlert] = useState(false);
   const [deleteIndex, setDeleteIndex] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [gradingDataCopy, setGradingDataCopy] = useState();
 
   useEffect(() => {
     fetchgradingData();
@@ -92,6 +94,7 @@ const Gradingview = () => {
       .then((res) => {
         setLoading(false);
         setGradingData(res.data.result);
+        setGradingDataCopy(res.data.result);
       })
       .catch((error) => {
         setLoading(false);
@@ -139,6 +142,19 @@ const Gradingview = () => {
     setDeleteAlert(false);
   };
 
+  const handleTextSearch = (e) => {
+    setSearchText(e?.target?.value);
+    if (e?.target?.value?.length > 0) {
+      let filterData = gradingDataCopy?.filter((item) => {
+        let grade_name = item.grading_system_name.toLowerCase();
+        return grade_name?.includes(e?.target?.value.toLowerCase());
+      });
+      setGradingData(filterData);
+    } else {
+      setGradingData(gradingDataCopy);
+    }
+  };
+
   const handleEdit = (data) => {
     if (data) {
       history.push({
@@ -174,8 +190,8 @@ const Gradingview = () => {
                   endAdornment={<SearchOutlined color='primary' />}
                   placeholder='Search'
                   label='Search'
-                  //   value={searchText}
-                  //   onChange={handleTextSearch}
+                  value={searchText}
+                  onChange={handleTextSearch}
                 />
               </FormControl>
             </Grid>
@@ -234,8 +250,7 @@ const Gradingview = () => {
                           <IconButton
                             title='Edit'
                             style={{ padding: '5px' }}
-                            onClick={() => handleEdit(items)
-                            }
+                            onClick={() => handleEdit(items)}
                             // onClick={() => handleEdit(items.groupId, i)}
                           >
                             <EditOutlinedIcon color='primary' />
