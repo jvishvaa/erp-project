@@ -20,7 +20,9 @@ const { setAlert } = useContext(AlertNotificationContext);
         setLoading(true)
         axiosInstance.get(`${endpoints.userManagement.onBoardingReport}`,{
         headers : {
-            'X-DTS-HOST': 'qa.olvorchidnaigaon.letseduvate.com',
+            'X-DTS-HOST': `${window.location.host}`,
+            // 'X-DTS-HOST': `qa.olvorchidnaigaon.letseduvate.com/`,
+
         },
         responseType: 'arraybuffer',
           
@@ -32,6 +34,7 @@ const { setAlert } = useContext(AlertNotificationContext);
               FileSaver.saveAs(blob, 'report.xls');
               setLoading(false);
         }).catch((error) => {
+          setLoading(false)
           setAlert('error', error.response.data.message || error.response.data.msg || 'Download Failed !');
         })
       }else{
